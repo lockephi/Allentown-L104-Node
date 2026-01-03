@@ -1,0 +1,6 @@
+.env
+node.log
+server.log
+uvicorn.pid
+node.pid
+__pycache__/

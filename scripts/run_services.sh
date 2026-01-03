@@ -10,6 +10,16 @@ NODE_PID="$ROOT/node.pid"
 
 echo "Starting services from $ROOT"
 
+# Load environment variables from $ROOT/.env if present (not committed)
+if [ -f "$ROOT/.env" ]; then
+  # export all variables defined in .env into the environment
+  set -a
+  # shellcheck disable=SC1090
+  . "$ROOT/.env"
+  set +a
+  echo "Loaded environment from $ROOT/.env"
+fi
+
 # Stop existing processes if PIDs exist
 if [ -f "$UVICORN_PID" ]; then
   pid=$(cat "$UVICORN_PID" 2>/dev/null || true)
