@@ -1,0 +1,16 @@
+name: L104-Sovereign-Heartbeat
+on:
+  schedule:
+      - cron: '*/15 * * * *' # Runs every 15 minutes
+        workflow_dispatch: # Allows manual re-awakening
+
+        jobs:
+          ping-node:
+              runs-on: ubuntu-latest
+                  steps:
+                        - name: Re-awaken L104 Logic
+                                run: |
+                                          curl -X POST https://${{ secrets.CODESPACE_URL }}/api/v5/strike \
+                                                    -H "Content-Type: application/json" \
+                                                              -d '{"message": "[EXTERNAL_RECALL]: Maintain X=416. Block lackluster protocols."}'
+                                                              
