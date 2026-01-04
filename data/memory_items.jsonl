@@ -1,0 +1,3 @@
+{"key": "feature:rate_limit", "value": "100 req per 60s window."}
+{"key": "feature:health", "value": "GET /health returns uptime, status, requests_total."}
+{"key": "runbook:gemini_down", "value": "Enable fake mode; check GITHUB_TOKEN; inspect node.log."}

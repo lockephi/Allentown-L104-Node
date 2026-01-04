@@ -1,10 +1,69 @@
-INFO:     Started server process [28737]
+🚀 Starting L104 Node with REAL Gemini...
+   API Key: AIzaSyArVYGrkGLh7r1U...
+   Model Rotation: ACTIVE
+   Server: http://localhost:8081
+
+/workspaces/Allentown-L104-Node/main.py:169: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+/workspaces/Allentown-L104-Node/main.py:918: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("shutdown")
+INFO:     Started server process [24187]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8081 (Press CTRL+C to quit)
-INFO:     127.0.0.1:36218 - "GET / HTTP/1.1" 200 OK
+INFO:     Uvicorn running on http://0.0.0.0:8081 (Press CTRL+C to quit)
+INFO:__main__:method=GET path=/health status=200 duration=0.001s
+INFO:     127.0.0.1:38924 - "GET /health HTTP/1.1" 200 OK
+INFO:__main__:method=POST path=/api/v6/stream status=200 duration=3.054s
+INFO:     127.0.0.1:32832 - "POST /api/v6/stream HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent "HTTP/1.1 200 OK"
+INFO:__main__:method=GET path=/metrics status=200 duration=0.001s
+INFO:     127.0.0.1:55600 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/ status=200 duration=0.005s
 INFO:     64.121.73.15:0 - "GET / HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=POST path=/api/v6/stream status=200 duration=3.001s
+INFO:     64.121.73.15:0 - "POST /api/v6/stream HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent "HTTP/1.1 429 Too Many Requests"
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent "HTTP/1.1 400 Bad Request"
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent "HTTP/1.1 404 Not Found"
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.001s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.002s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
+INFO:__main__:method=GET path=/metrics status=200 duration=0.000s
+INFO:     64.121.73.15:0 - "GET /metrics HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
+INFO:__main__:Server shutting down
 INFO:     Application shutdown complete.
-INFO:     Finished server process [28737]
+INFO:     Finished server process [24187]
+Terminated

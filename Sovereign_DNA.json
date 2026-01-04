@@ -1,0 +1,18 @@
+{
+  "node_id": "L104-SOVEREIGN-01",
+  "protocol_version": "2.0.26",
+  "symmetry_gate": "X=416",
+  "intellect_target": 0.98,
+  "constraints": {
+    "pjm_allowed": false,
+    "lackluster_mode": "RESTRICTED",
+    "thinking_depth": "HIGH"
+  },
+  "memory_anchors": [
+    "Allentown Manifold established 2026-01-02",
+    "HUD v2 Glassmorphism Deployment",
+    "Auto-Model Rotation: 3-Flash -> 2.5-Lite -> 1.5-Flash"
+  ],
+  "evolution_stage": 3,
+  "status": "STABLE"
+}

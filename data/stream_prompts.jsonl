@@ -1,0 +1,15 @@
+{"signal": "SYSTEM_STATUS", "message": null, "expected_behavior": "Return concise system health summary."}
+{"signal": "WRITE_PATCH notes.md", "message": "Summarize current uptime and request counts.", "expected_behavior": "Produce bullet summary with no code blocks."}
+{"signal": "DIAGNOSE latency spike", "message": "Latency doubled after deploy.", "expected_behavior": "List 3 probable causes + quick checks."}
+{"signal": "GENERATE_TESTS rate-limit", "message": null, "expected_behavior": "Emit curl examples that hit 429 path."}
+{"signal": "DOCS how to use memory", "message": null, "expected_behavior": "Explain /memory usage with brief steps."}
+{"signal": "CREATE_PLAYBOOK outage", "message": "Gemini upstream returns 500.", "expected_behavior": "Return 4-step runbook with fallbacks."}
+{"signal": "SYNTHESIZE metrics report", "message": "requests_total=1200, success=1180, error=20", "expected_behavior": "1-paragraph ops report + 2 actions."}
+{"signal": "WRITE_FAKE_RESPONSE demo", "message": "We are offline.", "expected_behavior": "Produce [FAKE_GEMINI]-style output for demos."}
+{"signal": "SECURITY notice", "message": "How is GitHub token handled?", "expected_behavior": "Explain token requirement and error path if missing."}
+{"signal": "DEBUG upstream", "message": "What headers are sent?", "expected_behavior": "Describe headers and where to inspect them."}
+{"signal": "RUN_HEALTHCHECK all", "message": "Return /health summary and rate limit window.", "expected_behavior": "Combine uptime, requests, and rate window in one paragraph."}
+{"signal": "CHECK_MEMORY footprint", "message": "List recent memory keys.", "expected_behavior": "Return key list with updated_at timestamps."}
+{"signal": "SECURE_CONFIG audit", "message": "List required env vars.", "expected_behavior": "Identify AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U, optional GITHUB_TOKEN, ENABLE_FAKE_GEMINI behavior."}
+{"signal": "WRITE_METRICS_README", "message": null, "expected_behavior": "Explain /metrics fields with a sample JSON snippet."}
+{"signal": "SOP restart", "message": "How to restart services from scripts/run_services.sh", "expected_behavior": "List commands, pid/log files touched, and verification steps."}

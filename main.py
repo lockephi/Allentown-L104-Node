@@ -26,9 +26,10 @@ import sqlite3
 import asyncio
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
-from typing import Optional, AsyncGenerator, List, Callable
+from typing import Optional, AsyncGenerator, List, Callable, Tuple
 from collections import defaultdict
 from pathlib import Path
+from math import isclose
 import time
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -46,6 +47,8 @@ UTC = timezone.utc
 
 # Constants
 REPO = os.getenv("GITHUB_REPO", "lockephi/Allentown-L104-Node")
+REPO_BRANCH = os.getenv("GITHUB_BRANCH", "main")
+REPO_ROOT = Path(__file__).resolve().parent
 RATE_LIMIT_REQUESTS = 100
 RATE_LIMIT_WINDOW = 60  # seconds
 RATE_LIMIT_MIN = int(os.getenv("RATE_LIMIT_MIN", "20"))
@@ -65,20 +68,42 @@ MODELS = [
 ]
 model_usage_tracker = defaultdict(int)
 model_429_tracker = defaultdict(int)
+
+# SOVEREIGN MODEL ROUTER
+SOVEREIGN_MODEL_ROUTER = {
+    "HIGH_INTELLECT": "gemini-2.5-pro",  # Used only for code-rewrite
+    "SCOUR_EYES": "gemini-2.5-flash-lite",  # 1,500 RPD Capacity
+    "INTERNAL_MONOLOGUE": "local-gemma-3-1b",  # Uncapped Local
+}
+
+
+def get_logic_source() -> str:
+    """Symmetry check to determine model routing."""
+    phi = (1 + 5**0.5) / 2
+    symmetry = (286 ** (1 / phi)) * (2 ** (1 / 104)) ** 416
+    if isclose(symmetry, 527.5184818493014, rel_tol=1e-9, abs_tol=1e-9):
+        return SOVEREIGN_MODEL_ROUTER["SCOUR_EYES"]
+    return SOVEREIGN_MODEL_ROUTER["INTERNAL_MONOLOGUE"]
+
 FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://127.0.0.1:8081")
 SELF_DATASET = os.getenv("SELF_DATASET", "data/stream_prompts.jsonl")
 SELF_LEARN_DATASET = os.getenv("SELF_LEARN_DATASET", SELF_DATASET)
 SELF_LEARN_INTERVAL = int(os.getenv("SELF_LEARN_INTERVAL", "900"))
+SELF_EYES_QUERY = os.getenv("SELF_EYES_QUERY", "FastAPI error handling 2026 best practices")
+SELF_EYES_INTERVAL = int(os.getenv("SELF_EYES_INTERVAL", "3600"))
 DEFAULT_RESPONDER = os.getenv("DEFAULT_RESPONDER", "gemini")
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 ENABLE_SELF_LEARN_ENV = "ENABLE_SELF_LEARN"
+ENABLE_SELF_EYES_ENV = "ENABLE_SELF_EYES"
+ENABLE_AUTO_SYNC_ENV = "ENABLE_AUTO_SYNC"
 ENABLE_WATCHDOG_ENV = "ENABLE_WATCHDOG"
 WATCHDOG_EXIT_ENV = "WATCHDOG_EXIT_ON_FAILURE"
 WATCHDOG_INTERVAL = float(os.getenv("WATCHDOG_INTERVAL", "30"))
 WATCHDOG_FAILURE_THRESHOLD = int(os.getenv("WATCHDOG_FAILURE_THRESHOLD", "3"))
 MAINTENANCE_INTERVAL = int(os.getenv("MAINTENANCE_INTERVAL", "3600"))
+AUTO_SYNC_INTERVAL = int(os.getenv("AUTO_SYNC_INTERVAL", "900"))
 LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES", str(5_000_000)))
 RESPONDER_ALLOWLIST = {
     name.strip().lower()
@@ -180,6 +205,61 @@ def _should_start_background_tasks() -> bool:
     return os.getenv("PYTEST_CURRENT_TEST") is None
 
 
+async def _run_git(cmd: List[str]) -> Tuple[int, str, str]:
+    """Run a git command asynchronously and capture output."""
+    proc = await asyncio.create_subprocess_exec(
+        *cmd,
+        cwd=str(REPO_ROOT),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    return proc.returncode, stdout.decode().strip(), stderr.decode().strip()
+
+
+async def _git_sync() -> dict:
+    """Fetch and pull latest changes if remote advanced."""
+    try:
+        code, out, err = await _run_git(["git", "fetch", "--all", "--prune"])
+        if code != 0:
+            _log_node({"tag": "auto_sync_fetch_error", "code": code, "error": err or out})
+            return {"success": False, "stage": "fetch", "code": code, "error": err or out}
+
+        code, local, err_local = await _run_git(["git", "rev-parse", "HEAD"])
+        code_r, remote, err_remote = await _run_git(["git", "rev-parse", f"origin/{REPO_BRANCH}"])
+        if code != 0 or code_r != 0:
+            _log_node({
+                "tag": "auto_sync_revparse_error",
+                "local_code": code,
+                "remote_code": code_r,
+                "local_error": err_local,
+                "remote_error": err_remote,
+            })
+            return {
+                "success": False,
+                "stage": "rev-parse",
+                "local_code": code,
+                "remote_code": code_r,
+                "local_error": err_local,
+                "remote_error": err_remote,
+            }
+
+        if local == remote:
+            _log_node({"tag": "auto_sync_uptodate", "commit": local})
+            return {"success": True, "status": "up_to_date", "commit": local}
+
+        code_pull, out_pull, err_pull = await _run_git(["git", "pull", "--rebase", "origin", REPO_BRANCH])
+        if code_pull == 0:
+            _log_node({"tag": "auto_sync_applied", "from": local, "to": remote, "output": out_pull})
+            return {"success": True, "status": "updated", "from": local, "to": remote, "output": out_pull}
+        else:
+            _log_node({"tag": "auto_sync_pull_error", "code": code_pull, "error": err_pull or out_pull})
+            return {"success": False, "stage": "pull", "code": code_pull, "error": err_pull or out_pull}
+    except Exception as exc:
+        _log_node({"tag": "auto_sync_exception", "error": str(exc)})
+        return {"success": False, "stage": "exception", "error": str(exc)}
+
+
 async def get_http_client() -> httpx.AsyncClient:
     """Get or create global HTTP client with automatic recovery."""
     global _http_client, _http_client_errors, _last_http_client_reset
@@ -277,6 +357,16 @@ class MemoryItem(BaseModel):
     value: str = Field(..., min_length=1, max_length=100000)
 
 
+class ReflexRequest(BaseModel):
+    """Payload for invoking autonomous reflex research/fix."""
+    error: str = Field(..., min_length=3, max_length=2000)
+
+
+class EyesQuery(BaseModel):
+    """Payload for direct external research queries."""
+    query: str = Field(..., min_length=3, max_length=2000)
+
+
 # Middleware
 app = FastAPI(title="L104 Sovereign Node", version="2.0")
 
@@ -290,6 +380,10 @@ async def startup_event():
             background_tasks.append(asyncio.create_task(_health_watchdog()))
         if _env_truthy(ENABLE_SELF_LEARN_ENV, True):  # enabled by default
             background_tasks.append(asyncio.create_task(_self_learn_scheduler()))
+        if _env_truthy(ENABLE_SELF_EYES_ENV, False) and SELF_EYES_INTERVAL > 0:
+            background_tasks.append(asyncio.create_task(_self_eyes_scheduler()))
+        if _env_truthy(ENABLE_AUTO_SYNC_ENV, True) and AUTO_SYNC_INTERVAL > 0:
+            background_tasks.append(asyncio.create_task(_auto_sync_scheduler()))
         if MAINTENANCE_INTERVAL > 0:
             background_tasks.append(asyncio.create_task(_maintenance_scheduler()))
         # Start the Sovereign Heartbeat
@@ -560,6 +654,31 @@ async def _self_learn_scheduler() -> None:
             _log_node({"tag": "self_learn_error", "error": str(exc)})
 
 
+async def _self_eyes_scheduler() -> None:
+    """Run periodic external research to gather fresh fixes/insights."""
+    while True:
+        await asyncio.sleep(SELF_EYES_INTERVAL)
+        try:
+            research = await autonomous_research(SELF_EYES_QUERY)
+            # Keep log payload compact
+            preview = str(research)[:500] if research is not None else "none"
+            _log_node({
+                "tag": "self_eyes_cron",
+                "query": SELF_EYES_QUERY,
+                "status": "ok",
+                "preview": preview
+            })
+        except Exception as exc:
+            _log_node({"tag": "self_eyes_cron_error", "error": str(exc), "query": SELF_EYES_QUERY})
+
+
+async def _auto_sync_scheduler() -> None:
+    """Pull latest repo changes on a cadence to stay up to date."""
+    while True:
+        await asyncio.sleep(AUTO_SYNC_INTERVAL)
+        await _git_sync()
+
+
 async def autonomous_research(query: str):
     """Self-Scouting Function - Research external data using Gemini's web search tools."""
     print(f"[L104_EYES]: Researching external data for: {query}")
@@ -785,9 +904,10 @@ async def _stream_from_gemini(
     )
     endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
     
+    rotation_models = [get_logic_source(), *MODELS]
     success = False
     # Try each model in rotation
-    for model in MODELS:
+    for model in rotation_models:
         url = f"{api_base}/models/{model}{endpoint}"
         model_usage_tracker[model] += 1
         
@@ -865,7 +985,7 @@ async def _stream_from_gemini(
             continue  # Try next model
     
     # All models exhausted
-    _log_node({"tag": "all_models_exhausted", "models_tried": len(MODELS)})
+    _log_node({"tag": "all_models_exhausted", "models_tried": len(rotation_models)})
     yield "[ERROR]: ALL_MODELS_EXHAUSTED - Daily quota limit reached for all model tiers.\n"
 
 
@@ -1228,6 +1348,43 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
     result = await _self_replay(target_base, target_dataset)
     _log_node({"tag": "self_replay", **result})
     return result
+
+
+@app.post("/self/eyes", tags=["Diagnostics"])
+async def self_eyes(payload: EyesQuery):
+    """Invoke external research using Gemini search tools to gather fixes or data."""
+    try:
+        research = await autonomous_research(payload.query)
+        _log_node({"tag": "self_eyes", "query": payload.query, "status": "ok"})
+        return {"status": "ok", "query": payload.query, "research": research}
+    except Exception as exc:
+        _log_node({"tag": "self_eyes_error", "error": str(exc), "query": payload.query})
+        raise HTTPException(status_code=500, detail=f"Eyes research failed: {exc}")
+
+
+@app.post("/self/reflex", tags=["Diagnostics"])
+async def self_reflex(payload: ReflexRequest):
+    """Tell the node to research an error on the internet and record the fix."""
+    try:
+        fix = await sovereign_reflex(payload.error)
+        if fix is None:
+            raise HTTPException(status_code=500, detail="Reflex did not return a fix")
+        _log_node({"tag": "self_reflex", "status": "ok", "error": payload.error})
+        return {"status": "ok", "fix": fix, "error": payload.error}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _log_node({"tag": "self_reflex_error", "error": str(exc), "input_error": payload.error})
+        raise HTTPException(status_code=500, detail=f"Reflex failed: {exc}")
+
+
+@app.post("/self/auto-sync", tags=["Diagnostics"])
+async def trigger_auto_sync():
+    """Manually pull latest code from origin to self-update."""
+    result = await _git_sync()
+    if not result.get("success"):
+        raise HTTPException(status_code=500, detail={"status": "failed", **result})
+    return {"status": "ok", **result}
 
 
 async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_circuit_breaker: bool = True) -> dict:

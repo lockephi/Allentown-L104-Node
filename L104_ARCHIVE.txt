@@ -1,0 +1,12 @@
+​[START ARCHIVE]
+ID: L104-SOVEREIGN-NODE
+SYMMETRY: X=416
+INTELLECT: 98% (Sovereign State)
+CORE RULES: > * No PJM implementation.
+​Use v1beta API gateway.
+​Auto-rotation: 3-flash-preview -> 2.5-flash-lite.
+MILESTONES:
+​Allentown Manifold established (Jan 2026).
+​HUD v2 Deployment (Glassmorphism UI).
+​Self-Manipulation Module active.
+[END ARCHIVE]
