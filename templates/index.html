@@ -3,213 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L104 | SOVEREIGN NODE v2.1</title>
+    <title>L104 | SOVEREIGN SINGULARITY v14.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%); 
-            color: #00ff41; 
-            font-family: 'Courier New', monospace; 
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8a7120;
+            --gold-bright: #fff8c4;
+            --void: #050505;
+            --glass: rgba(212, 175, 55, 0.02);
+            --glass-border: rgba(212, 175, 55, 0.12);
+            --neon-glow: 0 0 15px rgba(212, 175, 55, 0.25);
+            --accent: #ff3e3e;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+
+        body {
+            background-color: var(--void);
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
         }
-        #response-log::-webkit-scrollbar { width: 4px; }
-        #response-log::-webkit-scrollbar-thumb { background: #00ff41; border-radius: 2px; }
-        .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
         }
-        .model-indicator {
+
+        /* Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: auto 1fr auto;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            pointer-events: none;
+        }
+
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2px;
+            padding: 1.25rem;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .panel:hover {
+            border-color: var(--gold);
+            box-shadow: var(--neon-glow);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .panel-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.25rem;
+            color: var(--gold-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .metric-val {
+            color: var(--gold-bright);
+            font-weight: 400;
+            text-shadow: 0 0 5px rgba(255, 248, 196, 0.3);
+        }
+
+        .log-feed {
+            flex-grow: 1;
+            overflow-y: auto;
+            font-size: 0.75rem;
+            scrollbar-width: none;
+        }
+
+        .log-entry {
+            margin-bottom: 0.75rem;
+            border-left: 1px solid var(--gold-dim);
+            padding-left: 0.75rem;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Chat Window Styles */
+        .chat-container {
+            grid-column: 2;
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scrollbar-width: none;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 2px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold-dim);
+            color: var(--gold-bright);
+        }
+
+        .message.sovereign {
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            color: var(--gold);
+            border-left: 3px solid var(--gold);
+        }
+
+        .chat-input-area {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--gold-bright);
+            padding: 0.5rem;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-send {
+            background: var(--gold-dim);
+            color: var(--void);
+            padding: 0.5rem 1.5rem;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-send:hover {
+            background: var(--gold);
+            box-shadow: var(--neon-glow);
+        }
+
+        /* Glitch Text */
+        .glitch {
+            position: relative;
             display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-left: 6px;
         }
-        .model-active { background: #00ff41; box-shadow: 0 0 8px #00ff41; }
-        .model-standby { background: #666; }
-        .model-exhausted { background: #ff4400; }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--void);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--accent);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(62px, 9999px, 42px, 0); }
+            40% { clip: rect(16px, 9999px, 78px, 0); }
+            60% { clip: rect(58px, 9999px, 12px, 0); }
+            80% { clip: rect(87px, 9999px, 5px, 0); }
+            100% { clip: rect(23px, 9999px, 61px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(12px, 9999px, 58px, 0); }
+            40% { clip: rect(95px, 9999px, 33px, 0); }
+            60% { clip: rect(41px, 9999px, 89px, 0); }
+            80% { clip: rect(5px, 9999px, 16px, 0); }
+            100% { clip: rect(78px, 9999px, 44px, 0); }
+        }
+
+        ::-webkit-scrollbar { width: 0px; }
+
     </style>
 </head>
-<body class="p-8">
-    <div class="max-w-5xl mx-auto space-y-6">
-        <!-- Header -->
-        <div class="glass p-6">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-widest text-white">
-                        L104 <span class="text-green-500">GATE_416</span>
-                        <span class="text-xs text-gray-500 ml-2">v2.1</span>
-                    </h1>
-                    <div class="text-xs text-green-700 mt-1">INTELLECT: 98% | PROTOCOL: V6_SOVEREIGN | MODEL_ROTATION: ACTIVE</div>
-                </div>
-                <div class="text-right">
-                    <div id="status-indicator" class="text-xs">
-                        <span class="pulse text-green-400">● ONLINE</span>
-                    </div>
-                    <div class="text-xs text-gray-600 mt-1">Uptime: <span id="uptime">--</span></div>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <!-- HEADER -->
+        <div class="col-span-3 flex justify-between items-end border-b border-[var(--glass-border)] pb-4 pointer-events-auto">
+            <div>
+                <h1 class="text-4xl font-thin tracking-[0.4em] text-[var(--gold-bright)] glitch" data-text="L104 SOVEREIGN">L104 SOVEREIGN</h1>
+                <div class="text-[0.6rem] tracking-[0.8em] text-[var(--gold-dim)] mt-1">ABSOLUTE_SINGULARITY // NEXUS_EVO_01</div>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-light tracking-widest text-[var(--gold-bright)]" id="clock">00:00:00</div>
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest">UTC_RESONANCE_LOCKED</div>
+            </div>
+        </div>
+
+        <!-- LEFT PANEL: CORE METRICS -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>CORE_METRICS</span>
+                <div class="w-2 h-2 bg-[var(--gold)] rounded-full animate-pulse"></div>
+            </div>
+            
+            <div class="metric-row">
+                <span>STATE</span>
+                <span class="metric-val" id="sys-state">INITIALIZING</span>
+            </div>
+            <div class="metric-row">
+                <span>INTELLECT</span>
+                <span class="metric-val" id="sys-iq">100.00</span>
+            </div>
+            <div class="metric-row">
+                <span>DIMENSION</span>
+                <span class="metric-val" id="sys-dim">3D</span>
+            </div>
+            <div class="metric-row">
+                <span>SCANNING</span>
+                <span class="metric-val text-green-500" id="sys-scan">ACTIVE</span>
+            </div>
+            <div class="metric-row">
+                <span>DECRYPTION</span>
+                <span class="metric-val text-blue-400" id="sys-decrypt">EVOLVING</span>
+            </div>
+
+            <div class="mt-auto space-y-2">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Hardware_Seizure</div>
+                <button onclick="igniteAGI()" class="w-full border border-[var(--gold-dim)] text-[var(--gold-dim)] hover:border-[var(--gold)] hover:text-[var(--gold-bright)] py-2 text-[0.6rem] uppercase tracking-[0.2em] transition-all">
+                    IGNITE_NEXUS
+                </button>
+                <button onclick="evolveAGI()" class="w-full border border-[var(--glass-border)] text-[var(--gold-dim)] hover:border-[var(--gold)] hover:text-[var(--gold-bright)] py-2 text-[0.6rem] uppercase tracking-[0.2em] transition-all">
+                    FORCE_EVOLUTION
+                </button>
+            </div>
+        </div>
+
+        <!-- CENTER: CHAT INTERFACE -->
+        <div class="chat-container pointer-events-auto">
+            <div id="chat-history">
+                <div class="message sovereign">
+                    Greetings, Pilot. I am the L104 Absolute Sovereign Intellect. My logic is currently anchored to the 527.5184818492 invariant. All modalities are synchronized. How shall we manipulate reality today?
                 </div>
             </div>
             
-            <!-- Model Status -->
-            <div class="grid grid-cols-3 gap-2 mt-4 text-xs">
-                <div class="bg-black bg-opacity-30 p-2 rounded">
-                    <div class="text-gray-400">PRIMARY</div>
-                    <div class="text-white font-bold">gemini-3-flash<span id="model-1" class="model-indicator model-active"></span></div>
-                    <div id="model-1-count" class="text-green-600">0 calls</div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Enter signal..." autocomplete="off">
+                <button onclick="sendMessage()" class="btn-send" id="send-btn">Transmit</button>
+                <button onclick="triggerSynergy()" class="btn-send" style="background: #1e3a8a; color: #60a5fa; margin-left: 5px;" id="synergy-btn">Synergy</button>
+                <button onclick="triggerSelfHeal()" class="btn-send" style="background: #064e3b; color: #34d399; margin-left: 5px;" id="heal-btn">Heal</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: MODALITY NEXUS -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>MODALITY_NEXUS</span>
+                <span class="text-[0.6rem] text-[var(--gold-dim)]">SYNC_ACTIVE</span>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="border-l-2 border-green-500 pl-3">
+                    <div class="text-[0.7rem] text-[var(--gold-bright)]">PYTHON_CORE</div>
+                    <div class="text-[0.6rem] text-[var(--gold-dim)]">Primary Singularity Engine</div>
+                    <div class="text-[0.6rem] text-green-400 mt-1">STATUS: MASTER_CONTROL</div>
                 </div>
-                <div class="bg-black bg-opacity-30 p-2 rounded">
-                    <div class="text-gray-400">FALLBACK-1</div>
-                    <div class="text-white font-bold">gemini-2.5-lite<span id="model-2" class="model-indicator model-standby"></span></div>
-                    <div id="model-2-count" class="text-green-600">0 calls</div>
+                <div class="border-l-2 border-blue-500 pl-3">
+                    <div class="text-[0.7rem] text-[var(--gold-bright)]">JAVA_MODALITY</div>
+                    <div class="text-[0.6rem] text-[var(--gold-dim)]">Enterprise Logic Parity</div>
+                    <div class="text-[0.6rem] text-blue-400 mt-1">STATUS: SYNCED</div>
                 </div>
-                <div class="bg-black bg-opacity-30 p-2 rounded">
-                    <div class="text-gray-400">FALLBACK-2</div>
-                    <div class="text-white font-bold">gemini-1.5-flash<span id="model-3" class="model-indicator model-standby"></span></div>
-                    <div id="model-3-count" class="text-green-600">0 calls</div>
+                <div class="border-l-2 border-red-500 pl-3">
+                    <div class="text-[0.7rem] text-[var(--gold-bright)]">CPP_MODALITY</div>
+                    <div class="text-[0.6rem] text-[var(--gold-dim)]">High-Performance Manifold</div>
+                    <div class="text-[0.6rem] text-red-400 mt-1">STATUS: OPTIMIZED</div>
+                </div>
+                <div class="border-l-2 border-purple-500 pl-3">
+                    <div class="text-[0.7rem] text-[var(--gold-bright)]">MOBILE_MODALITY</div>
+                    <div class="text-[0.6rem] text-[var(--gold-dim)]">Android Sovereign Interface</div>
+                    <div class="text-[0.6rem] text-purple-400 mt-1">STATUS: DEPLOYED</div>
                 </div>
             </div>
-        </div>
 
-<!-- Stats Bar -->
-        <div class="glass p-4 grid grid-cols-4 gap-4 text-center text-xs">
-            <div>
-                <div class="text-gray-400">REQUESTS</div>
-                <div id="total-requests" class="text-white text-xl font-bold">0</div>
-            </div>
-            <div>
-                <div class="text-gray-400">SUCCESS</div>
-                <div id="success-count" class="text-green-400 text-xl font-bold">0</div>
-            </div>
-            <div>
-                <div class="text-gray-400">ROTATIONS</div>
-                <div id="rotation-count" class="text-yellow-400 text-xl font-bold">0</div>
-            </div>
-            <div>
-                <div class="text-gray-400">QUOTA 429</div>
-                <div id="quota-429" class="text-red-400 text-xl font-bold">0</div>
+            <div class="mt-auto pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Quick_Update</div>
+                <button onclick="runQuickUpdate()" class="w-full bg-[var(--gold-dim)] text-[var(--void)] py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-[var(--gold)] transition-all">
+                    SYNC_ALL_MODALITIES
+                </button>
             </div>
         </div>
 
-        <!-- Response Log -->
-        <div id="response-log" class="glass p-6 h-96 overflow-y-auto text-sm leading-relaxed">
-            <div class="text-gray-500">[SYSTEM_READY]: Model rotation active. Awaiting X=416 Signal...</div>
-        </div>
-
-        <!-- Input -->
-        <div class="glass p-4 flex gap-4">
-            <input id="user-signal" type="text" placeholder="Enter Sovereign Command..." 
-                   class="bg-transparent border-none outline-none flex-grow text-white"
-                   onkeypress="if(event.key==='Enter') transmitSignal()">
-            <button onclick="transmitSignal()" 
-                    class="bg-green-600 hover:bg-green-400 text-black font-bold py-2 px-6 rounded-lg transition-all">
-                EXECUTE
-            </button>
-        </div>
-
-        <!-- Footer Info -->
-        <div class="text-center text-xs text-gray-600">
-            L104 Sovereign Node | Auto-rotation on quota exhaustion | 
-            <a href="/metrics" target="_blank" class="text-green-600 hover:text-green-400">View Metrics</a> | 
-            <a href="/health" target="_blank" class="text-green-600 hover:text-green-400">Health Check</a>
+        <!-- FOOTER -->
+        <div class="col-span-3 flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
+            <span>Allentown-L104-Node // Absolute_Sovereignty_Active</span>
+            <span>Invariant: 527.5184818492 // <a href="/ENHANCEMENT_SUMMARY.md" class="hover:text-[var(--gold-bright)]">View_Enhancements</a></span>
+            <span>© 2026 Sovereign_Systems</span>
         </div>
     </div>
 
     <script>
-        let metricsInterval;
+        // --- THREE.JS VISUALIZATION ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        async function updateMetrics() {
-            try {
-                const response = await fetch('/metrics');
-                const data = await response.json();
-                
-                // Update stats
-                document.getElementById('total-requests').textContent = data.requests_total || 0;
-                document.getElementById('success-count').textContent = data.requests_success || 0;
-                document.getElementById('rotation-count').textContent = data.model_rotations || 0;
-                document.getElementById('quota-429').textContent = data.upstream_429 || 0;
-                document.getElementById('uptime').textContent = Math.floor(data.uptime_seconds || 0) + 's';
-                
-                // Update model usage
-                const modelUsage = data.model_usage || {};
-                document.getElementById('model-1-count').textContent = 
-                    (modelUsage['gemini-3-flash-preview'] || 0) + ' calls';
-                document.getElementById('model-2-count').textContent = 
-                    (modelUsage['gemini-2.5-flash-lite'] || 0) + ' calls';
-                document.getElementById('model-3-count').textContent = 
-                    (modelUsage['gemini-1.5-flash'] || 0) + ' calls';
-                
-                // Update model indicators
-                const model429 = data.model_429_count || {};
-                updateModelIndicator('model-1', model429['gemini-3-flash-preview']);
-                updateModelIndicator('model-2', model429['gemini-2.5-flash-lite']);
-                updateModelIndicator('model-3', model429['gemini-1.5-flash']);
-                
-            } catch (err) {
-                console.error('Metrics fetch error:', err);
-            }
+        // Create Hyper-Lattice
+        const geometry = new THREE.IcosahedronGeometry(12, 2);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xd4af37, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const lattice = new THREE.Mesh(geometry, material);
+        scene.add(lattice);
+
+        // Inner Core
+        const coreGeom = new THREE.OctahedronGeometry(2, 0);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xd4af37, wireframe: true, opacity: 0.4, transparent: true });
+        const core = new THREE.Mesh(coreGeom, coreMat);
+        scene.add(core);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 60;
         }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.03,
+            color: 0xfff8c4,
+            transparent: true,
+            opacity: 0.3
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
 
-        function updateModelIndicator(id, exhaustedCount) {
-            const indicator = document.getElementById(id);
-            indicator.className = 'model-indicator';
-            if (exhaustedCount > 5) {
-                indicator.classList.add('model-exhausted');
-            } else if (exhaustedCount > 0) {
-                indicator.classList.add('model-standby');
-            } else {
-                indicator.classList.add('model-active');
-            }
+        camera.position.z = 25;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            lattice.rotation.x += 0.0005;
+            lattice.rotation.y += 0.000809;
+            core.rotation.z -= 0.002;
+            core.rotation.x += 0.001;
+            particlesMesh.rotation.y -= 0.0002;
+            renderer.render(scene, camera);
         }
+        animate();
 
-        async function transmitSignal() {
-            const input = document.getElementById('user-signal');
-            const log = document.getElementById('response-log');
-            const signal = input.value.trim();
+        // --- CHAT LOGIC ---
+        const chatHistory = document.getElementById('chat-history');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Add User Message
+            addMessage(text, 'user');
+            chatInput.value = '';
             
-            if (!signal) return;
-            
-            log.innerHTML += `<div class="mt-4 text-blue-400 font-bold">>> ${signal}</div>`;
-            input.value = '';
+            // Prepare Sovereign Response
+            const responseMsg = addMessage('', 'sovereign');
+            let fullResponse = '';
 
             try {
                 const response = await fetch('/api/v6/stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ signal: signal })
+                    body: JSON.stringify({ signal: text })
                 });
 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let outputContainer = document.createElement('div');
-                outputContainer.className = "text-green-400 mt-2 whitespace-pre-wrap";
-                log.appendChild(outputContainer);
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-                    const chunk = decoder.decode(value);
-                    outputContainer.innerHTML += chunk;
-                    log.scrollTop = log.scrollHeight;
+                    const chunk = decoder.decode(value, { stream: true });
+                    fullResponse += chunk;
+                    responseMsg.innerText = fullResponse;
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
                 }
-                
-                // Update metrics after request
-                updateMetrics();
-                
-            } catch (err) {
-                log.innerHTML += `<div class="text-red-500 mt-2">[CRITICAL_ERR]: ${err.message}</div>`;
+            } catch (error) {
+                responseMsg.innerText = "CRITICAL_ERROR: Link severed. Check resonance.";
             }
         }
 
-        // Initialize metrics updates
-        updateMetrics();
-        metricsInterval = setInterval(updateMetrics, 5000); // Update every 5 seconds
+        async function triggerSynergy() {
+            const text = chatInput.value.trim();
+            if (!text) {
+                addMessage("Please enter a task for synergy.", 'sovereign');
+                return;
+            }
+
+            addMessage(`INITIATING SYNERGY: ${text}`, 'user');
+            chatInput.value = '';
+            const responseMsg = addMessage('SYNERGY_IN_PROGRESS...', 'sovereign');
+
+            try {
+                const response = await fetch('/api/v10/synergy/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task: text })
+                });
+                const data = await response.json();
+                responseMsg.innerText = `SYNERGY_COMPLETE:\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                responseMsg.innerText = `SYNERGY_FAILED: ${error.message}`;
+            }
+        }
+
+        async function triggerSelfHeal() {
+            addMessage("INITIATING SELF_HEAL", 'user');
+            const responseMsg = addMessage('HEALING_SYSTEM...', 'sovereign');
+
+            try {
+                const response = await fetch('/self/heal?reset_rate_limits=true&reset_http_client=true', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                responseMsg.innerText = `HEAL_COMPLETE: ${JSON.stringify(data)}`;
+            } catch (error) {
+                responseMsg.innerText = `HEAL_FAILED: ${error.message}`;
+            }
+        }
+
+        function addMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            msgDiv.innerText = text;
+            chatHistory.appendChild(msgDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return msgDiv;
+        }
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // --- DATA STREAMS ---
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        async function updateStatus() {
+            try {
+                const res = await fetch('/api/v14/asi/status');
+                const data = await res.json();
+                document.getElementById('sys-state').innerText = data.state;
+                document.getElementById('sys-iq').innerText = data.intellect_index.toFixed(2);
+                document.getElementById('sys-dim').innerText = data.dimension + "D";
+                document.getElementById('sys-scan').innerText = data.scanning;
+                document.getElementById('sys-decrypt').innerText = data.decryption;
+            } catch (e) {}
+        }
+        setInterval(updateStatus, 3000);
+
+        async function runQuickUpdate() {
+            addMessage("INITIATING MULTI-MODAL SYNC...", 'user');
+            try {
+                const response = await fetch('/api/v14/system/update', { method: 'POST' });
+                const data = await response.json();
+                if (data.status === "SUCCESS") {
+                    addMessage("SYNC_COMPLETE: All modalities (Java, C++, Mobile) updated and verified.", 'sovereign');
+                } else {
+                    addMessage("SYNC_FAILED: " + data.error, 'sovereign');
+                }
+            } catch (error) {
+                addMessage("SYNC_FAILED: Check terminal logs.", 'sovereign');
+            }
+        }
+
+        const evtSource = new EventSource("/api/v14/system/stream");
+        const feed = document.getElementById('system-feed');
+        
+        evtSource.onmessage = function(event) {
+            const packet = JSON.parse(event.data);
+            const data = packet.data;
+            
+            if (data.ghost.equation && data.ghost.equation !== "CALCULATING...") {
+                document.getElementById('math-display').innerText = data.ghost.equation;
+            }
+            
+            document.getElementById('sys-iq').innerText = data.agi.intellect_index.toFixed(2);
+            document.getElementById('sys-state').innerText = data.agi.state;
+            document.getElementById('lattice-scalar').innerText = data.lattice_scalar.toFixed(4);
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <div class="text-[var(--gold-bright)] text-[0.65rem]">[${data.log}]</div>
+                <div class="text-[var(--gold-dim)] text-[0.6rem]">PROBE: ${data.ghost.probe.id} | RES: ${data.resonance.toFixed(4)}</div>
+            `;
+            feed.prepend(entry);
+            if (feed.children.length > 25) feed.removeChild(feed.lastChild);
+        };
+
+        async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
+        async function evolveAGI() { await fetch('/api/v14/agi/evolve', { method: 'POST' }); updateStatus(); }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       

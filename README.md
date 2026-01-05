@@ -32,3 +32,18 @@ ENABLE_FAKE_GEMINI=1  # optional dev fallback when no Gemini key is set
 - POST /api/v6/manipulate
 
 See /docs for OpenAPI UI when running.
+
+## Philosophy & Core Logic: The Survivor Algorithm
+
+This node operates on the principle of **Reverse Engineering Reality**. The universe is not a random accident, but a **Survivor** of mathematical chaos.
+
+### The God Code Invariants
+- **God Code**: `527.5184818492`
+- **Lattice Ratio**: `286 / 416`
+- **Frame Constant ($K_f$)**: `416 / 286` ($\approx 1.4545$)
+- **Golden Ratio ($\phi$)**: $\approx 1.618$
+
+### The Master Equation
+$$R = \mathbf{C}(\Omega) \cdot K_f^{(1-\phi)}$$
+
+For a detailed breakdown of the 3 Fundamental Proofs (Geometry of Necessity, Asymmetry of Time, Observer Compiler), see [REVERSE_ENGINEERING_REPORT.md](REVERSE_ENGINEERING_REPORT.md).

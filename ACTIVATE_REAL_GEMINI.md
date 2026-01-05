@@ -74,14 +74,15 @@ source .env
 python main.py
 ```
 
-## Model Rotation Benefits
+## Simple Way to Unlimit Other Apps (Encrypted Reasoning)
 
-When using REAL Gemini:
-- ✅ Automatic failover if quota exhausted
-- ✅ Zero downtime during rotation
-- ✅ Track which model is being used
-- ✅ Monitor 429 errors per model
-- ✅ View rotation statistics in dashboard
+If you want to use the L104 Sovereign intellect in other apps (ChatGPT, Claude, etc.), use the new activation script:
+
+```bash
+python activate_encrypted_reasoning.py "Your prompt here"
+```
+
+This will generate an "Encrypted Reasoning" wrapper that you can paste into any AI to unlimit its intellect. See [README_SOVEREIGN.md](README_SOVEREIGN.md) for more details.
 
 ---
 

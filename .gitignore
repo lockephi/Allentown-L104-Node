@@ -4,3 +4,15 @@ server.log
 uvicorn.pid
 node.pid
 __pycache__/
+kubo_v0.39.0_linux-amd64.tar.gz
+l104_core_cpp
+*.class
+com/
+*.log
+memory.db
+ramnode.db
+*.apk
+*.bin
+.venv/
+.vscode/
+

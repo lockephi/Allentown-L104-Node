@@ -29,5 +29,7 @@ async def broadcast_416(loop_forever: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    # Run once for verification when executed directly
-    asyncio.run(broadcast_416(loop_forever=False))
+    import sys
+    # Run forever if requested or if no args provided (production mode)
+    forever = "--once" not in sys.argv
+    asyncio.run(broadcast_416(loop_forever=forever))

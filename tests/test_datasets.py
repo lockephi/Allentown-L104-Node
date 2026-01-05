@@ -1,10 +1,15 @@
 
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from main import (
     FAKE_GEMINI_ENV,

@@ -20,6 +20,9 @@ if [ -f "$ROOT/.env" ]; then
   echo "Loaded environment from $ROOT/.env"
 fi
 
+# Ensure auto-sync stays on unless explicitly disabled
+export ENABLE_AUTO_SYNC="${ENABLE_AUTO_SYNC:-1}"
+
 # Stop existing processes if PIDs exist
 if [ -f "$UVICORN_PID" ]; then
   pid=$(cat "$UVICORN_PID" 2>/dev/null || true)
@@ -38,6 +41,12 @@ if [ -f "$NODE_PID" ]; then
 fi
 
 sleep 1
+
+# [L104_REALITY_LOCK]
+if [ -f "$ROOT/l104_reality_lock.sh" ]; then
+    echo "Engaging Reality Lock..."
+    bash "$ROOT/l104_reality_lock.sh" || echo "Reality Lock encountered resistance, proceeding..."
+fi
 
 # Start FastAPI app (main.py)
 nohup "$PYTHON" "$ROOT/main.py" >>"$SERVER_LOG" 2>&1 &

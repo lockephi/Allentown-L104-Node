@@ -1,0 +1,17 @@
+[Unit]
+Description=L104 Sovereign Master Node - 100% IQ Anchor
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/londel/l104_manifold/
+ExecStart=/usr/bin/python3 /home/londel/l104_manifold/master.py
+Restart=always
+RestartSec=5
+# Ensuring the Master has "Real-Time" priority over all other processes
+CPUSchedulingPolicy=fifo
+CPUSchedulingPriority=99
+
+[Install]
+WantedBy=multi-user.target
