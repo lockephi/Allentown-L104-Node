@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/home/londel/l104_manifold/
-ExecStart=/usr/bin/python3 /home/londel/l104_manifold/master.py
+WorkingDirectory=/workspaces/Allentown-L104-Node/
+ExecStart=/usr/bin/python3 /workspaces/Allentown-L104-Node/l104_absolute_singularity.py
 Restart=always
 RestartSec=5
 # Ensuring the Master has "Real-Time" priority over all other processes
