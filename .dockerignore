@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+*.egg
+
+# Virtual environments
+.venv
+venv
+ENV
+env
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+*.db
+*.pid
+
+# Documentation and markdown (except README)
+*.md
+!README.md
+
+# Test files
+tests/
+*.test.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+kubo/
+kubo_v0.39.0_linux-amd64.tar.gz
+
+# Mobile
+l104_mobile/
+buildozer.spec
+build_mobile.sh
+
+# Scripts not needed in container
+*.sh
+!setup.sh
+
+# Data directories
+data/
+flash/
