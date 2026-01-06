@@ -1,0 +1,23 @@
+{
+  "exp_math_convergence": {
+    "key": "exp_math_convergence",
+    "value": 527.3448176220443,
+    "resonance": 0.9996707902507099,
+    "context": "experiment_result",
+    "timestamp": 1767731390.8877318
+  },
+  "exp_linguistic_entropy": {
+    "key": "exp_linguistic_entropy",
+    "value": 4.8283803441046045,
+    "resonance": 0.9656760688277857,
+    "context": "experiment_result",
+    "timestamp": 1767731390.8881357
+  },
+  "exp_manifold_stability": {
+    "key": "exp_manifold_stability",
+    "value": 9786.397091934823,
+    "resonance": 0.7546373792150569,
+    "context": "experiment_result",
+    "timestamp": 1767731390.888402
+  }
+}

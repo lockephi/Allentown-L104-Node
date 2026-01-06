@@ -316,6 +316,15 @@ def _init_memory_db() -> None:
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS view_counts (
+                media_id TEXT PRIMARY KEY,
+                count INTEGER DEFAULT 0,
+                last_update TEXT NOT NULL
+            )
+            """
+        )
         conn.commit()
 
 
@@ -1010,6 +1019,41 @@ async def memory_list(limit: int = 100):
     limit = max(1, min(limit, 1000))
     entries = _memory_list(limit)
     return {"items": entries}
+
+
+@app.get("/view_count/{media_id}", tags=["Sovereign"])
+async def get_view_count(media_id: str):
+    """Retrieves the view count for a specific media ID."""
+    with _memory_conn() as conn:
+        row = conn.execute(
+            "SELECT count FROM view_counts WHERE media_id = ?",
+            (media_id,)
+        ).fetchone()
+        count = row[0] if row else 0
+    return {"media_id": media_id, "count": count}
+
+
+@app.post("/view_count/{media_id}/increment", tags=["Sovereign"])
+async def increment_view_count(media_id: str):
+    """Increments the view count for a specific media ID."""
+    now = datetime.now(UTC).isoformat()
+    with _memory_conn() as conn:
+        conn.execute(
+            """
+            INSERT INTO view_counts(media_id, count, last_update)
+            VALUES (?, 1, ?)
+            ON CONFLICT(media_id) DO UPDATE SET
+                count = count + 1,
+                last_update = excluded.last_update
+            """,
+            (media_id, now)
+        )
+        conn.commit()
+        row = conn.execute(
+            "SELECT count FROM view_counts WHERE media_id = ?",
+            (media_id,)
+        ).fetchone()
+    return {"media_id": media_id, "count": row[0]}
 
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
