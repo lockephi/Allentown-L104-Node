@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 # Constants
 MAX_ERROR_DETAILS_LENGTH = 500
+HTTP_CLIENT_TIMEOUT = 60.0
 
 
 class CloudAgentDelegator:
@@ -74,8 +75,6 @@ class CloudAgentDelegator:
             
             # Check if agent has required capabilities
             capabilities = agent_info.get("capabilities", [])
-            if capabilities is None:
-                continue
             # Agent must have the task_type capability and meet all requirements
             if task_type in capabilities and all(req in capabilities for req in requirements):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
@@ -218,7 +217,7 @@ class CloudAgentDelegator:
         }
         
         # Make request to cloud agent
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
             headers = {
                 "Content-Type": "application/json",
                 "X-L104-Delegation": "true"
@@ -235,7 +234,7 @@ class CloudAgentDelegator:
                 headers=headers
             )
             
-            if response.status_code == httpx.codes.OK:
+            if response.is_success:
                 return {
                     "status": "SUCCESS",
                     "agent": agent_name,

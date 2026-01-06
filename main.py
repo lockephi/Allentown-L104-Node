@@ -1483,18 +1483,25 @@ async def register_cloud_agent(registration: CloudAgentRegistration):
         "enabled": registration.enabled
     }
     
-    success = cloud_agent_delegator.register_agent(registration.name, config)
-    
-    if success:
-        return {
-            "status": "SUCCESS",
-            "message": f"Cloud agent '{registration.name}' registered successfully",
-            "agent": registration.name
-        }
-    else:
+    try:
+        success = cloud_agent_delegator.register_agent(registration.name, config)
+        
+        if success:
+            return {
+                "status": "SUCCESS",
+                "message": f"Cloud agent '{registration.name}' registered successfully",
+                "agent": registration.name
+            }
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to register cloud agent '{registration.name}'. Check server logs for details."
+            )
+    except Exception as e:
+        logger.error(f"Agent registration error for '{registration.name}': {e}")
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to register cloud agent '{registration.name}'"
+            detail=f"Failed to register cloud agent '{registration.name}': {str(e)}"
         )
 
 @app.get("/api/v11/cloud/agents", tags=["Cloud Agent"])
