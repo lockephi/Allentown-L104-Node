@@ -30,8 +30,13 @@ ENABLE_FAKE_GEMINI=1  # optional dev fallback when no Gemini key is set
 - POST /api/stream
 - GET /debug/upstream
 - POST /api/v6/manipulate
+- POST /api/v11/cloud/delegate - Delegate tasks to cloud agents
+- GET /api/v11/cloud/status - Cloud agent system status
+- POST /api/v11/cloud/register - Register new cloud agents
 
 See /docs for OpenAPI UI when running.
+
+For detailed information about the Cloud Agent Delegation system, see [CLOUD_AGENT_DELEGATION.md](CLOUD_AGENT_DELEGATION.md).
 
 ## Philosophy & Core Logic: The Survivor Algorithm
 

@@ -12,6 +12,7 @@ import os
 import socket
 import sqlite3
 import time
+import uuid
 from collections import defaultdict
 from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
@@ -47,6 +48,7 @@ from l104_live_stream import live_stream_manager
 from l104_google_bridge import google_bridge
 from l104_sovereign_decoder import sovereign_decoder
 from l104_asi_core import asi_core
+from l104_cloud_agent import cloud_agent_delegator
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -1427,6 +1429,90 @@ async def get_reality_breach_status():
     """
     from l104_reality_breach import reality_breach_engine
     return reality_breach_engine.get_breach_status()
+
+
+# [CLOUD_AGENT_DELEGATION_ENDPOINTS]
+
+class CloudAgentTask(BaseModel):
+    type: str = Field(..., min_length=1, max_length=100)
+    data: Dict[str, Any] = Field(default_factory=dict)
+    requirements: Optional[List[str]] = Field(default=None)
+    agent: Optional[str] = Field(default=None)
+    id: Optional[str] = Field(default=None)
+
+class CloudAgentRegistration(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    endpoint: str = Field(..., min_length=1, max_length=500)
+    capabilities: List[str] = Field(default_factory=list)
+    priority: int = Field(default=999)
+    enabled: bool = Field(default=True)
+
+@app.post("/api/v11/cloud/delegate", tags=["Cloud Agent"])
+async def delegate_to_cloud_agent(task: CloudAgentTask):
+    """
+    Delegate a task to a specialized cloud agent.
+    Automatically selects the best agent based on task type and requirements.
+    """
+    task_dict = {
+        "type": task.type,
+        "data": task.data,
+        "requirements": task.requirements or [],
+        "id": task.id or f"task_{uuid.uuid4().hex[:12]}"
+    }
+    
+    result = await cloud_agent_delegator.delegate(task_dict, task.agent)
+    return result
+
+@app.get("/api/v11/cloud/status", tags=["Cloud Agent"])
+async def get_cloud_agent_status():
+    """
+    Returns the status of the cloud agent delegation system.
+    Shows registered agents, capabilities, and recent delegations.
+    """
+    return cloud_agent_delegator.get_status()
+
+@app.post("/api/v11/cloud/register", tags=["Cloud Agent"])
+async def register_cloud_agent(registration: CloudAgentRegistration):
+    """
+    Register a new cloud agent in the delegation system.
+    """
+    config = {
+        "endpoint": registration.endpoint,
+        "capabilities": registration.capabilities,
+        "priority": registration.priority,
+        "enabled": registration.enabled
+    }
+    
+    try:
+        success = cloud_agent_delegator.register_agent(registration.name, config)
+        
+        if success:
+            return {
+                "status": "SUCCESS",
+                "message": f"Cloud agent '{registration.name}' registered successfully",
+                "agent": registration.name
+            }
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to register cloud agent '{registration.name}'. Check server logs for details."
+            )
+    except Exception as e:
+        logger.error(f"Agent registration error for '{registration.name}': {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to register cloud agent '{registration.name}': {str(e)}"
+        )
+
+@app.get("/api/v11/cloud/agents", tags=["Cloud Agent"])
+async def list_cloud_agents():
+    """
+    List all registered cloud agents and their capabilities.
+    """
+    return {
+        "agents": cloud_agent_delegator.agents,
+        "count": len(cloud_agent_delegator.agents)
+    }
 
 
 if __name__ == "__main__":
