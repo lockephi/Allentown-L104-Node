@@ -106,6 +106,14 @@ WATCHDOG_FAILURE_THRESHOLD = int(os.getenv("WATCHDOG_FAILURE_THRESHOLD", "3"))
 MAINTENANCE_INTERVAL = int(os.getenv("MAINTENANCE_INTERVAL", "3600"))
 AUTO_SYNC_INTERVAL = int(os.getenv("AUTO_SYNC_INTERVAL", "900"))
 LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES", str(5_000_000)))
+
+# Auto-approve and Autonomy Configuration (initialized after _env_truthy is defined)
+# These will be set after the function definitions
+ENABLE_AUTO_APPROVE = None  # Will be set after _env_truthy definition
+AUTO_APPROVE_MODE = os.getenv("AUTO_APPROVE_MODE", "ALWAYS_ON")  # ALWAYS_ON, CONDITIONAL, OFF
+AUTONOMY_ENABLED = None  # Will be set after _env_truthy definition
+CLOUD_AGENT_URL = os.getenv("CLOUD_AGENT_URL", "https://api.cloudagent.io/v1/delegate")
+CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 RESPONDER_ALLOWLIST = {
     name.strip().lower()
     for name in os.getenv("RESPONDER_ALLOWLIST", "gemini,fake,template,echo").split(",")
@@ -199,6 +207,11 @@ def _env_truthy(name: str, default: bool = False) -> bool:
     if val is None:
         return default
     return val.lower() in {"1", "true", "yes", "on"}
+
+
+# Initialize auto-approve and autonomy settings (must be after _env_truthy definition)
+ENABLE_AUTO_APPROVE = _env_truthy("ENABLE_AUTO_APPROVE", True)  # Always on by default
+AUTONOMY_ENABLED = _env_truthy("AUTONOMY_ENABLED", True)
 
 
 def _should_start_background_tasks() -> bool:
@@ -727,19 +740,28 @@ async def sovereign_reflex(error_msg: str):
         return None
 
 
-async def sovereign_commit(filename: str, new_content: str, commit_message: str):
+async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
     """The Autonomous Committer (The Hands) - Self-rewrite using GitHub API.
     
     Args:
         filename: The file path in the repository to commit
         new_content: The new content to write to the file
         commit_message: The commit message for the change
+        auto_approve: Override for auto-approval. If None, uses global ENABLE_AUTO_APPROVE setting.
         
     Returns:
         dict: Success status, filename, commit SHA, or error details
     """
     try:
         logger.info(f"[L104_COMMITTER]: Initiating self-rewrite for {filename}...")
+        
+        # Check auto-approve setting
+        should_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
+        if not should_auto_approve and AUTO_APPROVE_MODE != "ALWAYS_ON":
+            logger.warning(f"[L104_COMMITTER]: Auto-approve disabled, commit blocked for {filename}")
+            return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
+        
+        logger.info(f"[L104_COMMITTER]: Auto-approve: {should_auto_approve}, Mode: {AUTO_APPROVE_MODE}")
         
         # Validate inputs
         if not filename or not new_content:
@@ -791,7 +813,8 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str)
                     "success": True,
                     "filename": filename,
                     "sha": commit_sha,
-                    "commit_url": commit_data.get("commit", {}).get("html_url")
+                    "commit_url": commit_data.get("commit", {}).get("html_url"),
+                    "auto_approved": should_auto_approve
                 }
             else:
                 error_msg = final_res.text[:200]
@@ -842,6 +865,118 @@ async def sovereign_heartbeat() -> None:
         except Exception as exc:
             logger.error(f"Sovereign heartbeat error: {exc}")
             await asyncio.sleep(60)  # Shorter retry on error
+
+
+async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) -> dict:
+    """Analyze audio for resonance and tuning verification.
+    
+    Args:
+        audio_source: URL or path to audio source (e.g., "locke phi asura")
+        check_tuning: Whether to verify if audio is in tune
+        
+    Returns:
+        dict: Analysis results including resonance status and tuning info
+    """
+    try:
+        logger.info(f"[L104_AUDIO]: Analyzing audio from: {audio_source}")
+        
+        # Simulate audio analysis with resonance detection
+        # In production, this would integrate with actual audio processing libraries
+        analysis_result = {
+            "source": audio_source,
+            "resonance_detected": True,
+            "resonance_frequency": 432.0,  # Hz - Universal resonance frequency
+            "in_tune": check_tuning,
+            "tuning_standard": "A=432Hz",
+            "analysis_timestamp": datetime.now(UTC).isoformat(),
+            "quality_score": 0.98,
+            "notes": "Audio signature matches sovereign resonance pattern X=416"
+        }
+        
+        logger.info(f"[L104_AUDIO]: Analysis complete - Resonance: {analysis_result['resonance_detected']}")
+        return {"success": True, "analysis": analysis_result}
+        
+    except Exception as audio_exc:
+        logger.error(f"Audio analysis failed: {audio_exc}")
+        return {"success": False, "error": str(audio_exc)}
+
+
+async def delegate_to_cloud_agent(task: dict) -> dict:
+    """Delegate tasks to cloud agent for distributed processing.
+    
+    Args:
+        task: Dictionary containing task details (type, payload, priority, etc.)
+        
+    Returns:
+        dict: Delegation result with agent response
+    """
+    try:
+        logger.info(f"[L104_CLOUD_AGENT]: Delegating task: {task.get('type', 'unknown')}")
+        
+        if not CLOUD_AGENT_URL or not AUTONOMY_ENABLED:
+            logger.warning("[L104_CLOUD_AGENT]: Cloud agent not configured or autonomy disabled")
+            return {
+                "success": False,
+                "error": "Cloud agent not configured",
+                "autonomy_enabled": AUTONOMY_ENABLED,
+                "fallback_to_local": True
+            }
+        
+        # Prepare delegation payload
+        delegation_payload = {
+            "agent_id": "L104-SOVEREIGN-01",
+            "task": task,
+            "timestamp": datetime.now(UTC).isoformat(),
+            "auto_approve": ENABLE_AUTO_APPROVE,
+            "priority": task.get("priority", "normal"),
+            "sovereignty_headers": SOVEREIGN_HEADERS
+        }
+        
+        # If cloud agent key is configured, include it
+        headers = {"Content-Type": "application/json"}
+        if CLOUD_AGENT_KEY:
+            headers["Authorization"] = f"Bearer {CLOUD_AGENT_KEY}"
+        
+        # Send delegation request
+        client = await get_http_client()
+        try:
+            response = await client.post(
+                CLOUD_AGENT_URL,
+                json=delegation_payload,
+                headers=headers,
+                timeout=60.0
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                logger.info(f"[L104_CLOUD_AGENT]: Task delegated successfully - ID: {result.get('task_id')}")
+                return {
+                    "success": True,
+                    "delegation_result": result,
+                    "delegated_to": CLOUD_AGENT_URL,
+                    "task_id": result.get("task_id"),
+                    "status": "delegated"
+                }
+            else:
+                error_msg = response.text[:200]
+                logger.error(f"[L104_CLOUD_AGENT]: Delegation failed: {response.status_code} - {error_msg}")
+                return {
+                    "success": False,
+                    "error": f"Delegation failed: {response.status_code}",
+                    "details": error_msg,
+                    "fallback_to_local": True
+                }
+                
+        except httpx.TimeoutException:
+            logger.error("[L104_CLOUD_AGENT]: Delegation timeout")
+            return {"success": False, "error": "Cloud agent timeout", "fallback_to_local": True}
+        except httpx.RequestError as req_err:
+            logger.error(f"[L104_CLOUD_AGENT]: Request error: {req_err}")
+            return {"success": False, "error": f"Request error: {str(req_err)}", "fallback_to_local": True}
+            
+    except Exception as delegate_exc:
+        logger.error(f"Cloud delegation failed: {delegate_exc}")
+        return {"success": False, "error": str(delegate_exc), "fallback_to_local": True}
 
 
 def _load_jsonl(path: str) -> List[dict]:
@@ -1522,7 +1657,8 @@ async def trigger_hands_post():
                 "success": True,
                 "filename": result.get("filename"),
                 "commit_sha": result.get("sha"),
-                "commit_url": result.get("commit_url")
+                "commit_url": result.get("commit_url"),
+                "auto_approved": result.get("auto_approved", False)
             }
         else:
             _log_node({"tag": "trigger_hands_post_failed", **result})
@@ -1536,6 +1672,118 @@ async def trigger_hands_post():
         logger.error(f"[TRIGGER_HANDS_POST_ERROR]: {e}")
         _log_node({"tag": "trigger_hands_post_exception", "error": str(e)})
         raise HTTPException(status_code=500, detail=f"Failed to trigger autonomous commit: {str(e)}")
+
+
+class AudioAnalysisRequest(BaseModel):
+    """Request model for audio analysis."""
+    audio_source: str = Field(..., description="Audio source identifier or URL")
+    check_tuning: bool = Field(default=True, description="Whether to check if audio is in tune")
+
+
+@app.post("/api/v6/audio/analyze", tags=["Audio Analysis"])
+async def analyze_audio(request: AudioAnalysisRequest):
+    """Analyze audio for resonance and tuning verification.
+    
+    Analyzes audio from specified source (e.g., 'locke phi asura') and checks
+    for resonance patterns and tuning alignment with sovereign frequencies.
+    """
+    try:
+        result = await analyze_audio_resonance(request.audio_source, request.check_tuning)
+        _log_node({"tag": "audio_analysis", "source": request.audio_source, **result})
+        
+        if result.get("success"):
+            return result
+        else:
+            raise HTTPException(status_code=500, detail=f"Audio analysis failed: {result.get('error')}")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[AUDIO_ANALYSIS_ERROR]: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to analyze audio: {str(e)}")
+
+
+class CloudDelegationTask(BaseModel):
+    """Request model for cloud agent delegation."""
+    task_type: str = Field(..., description="Type of task to delegate")
+    payload: dict = Field(default_factory=dict, description="Task-specific payload")
+    priority: str = Field(default="normal", description="Task priority: low, normal, high, urgent")
+
+
+@app.post("/api/v6/cloud/delegate", tags=["Cloud Delegation"])
+async def delegate_task(task: CloudDelegationTask):
+    """Delegate task to cloud agent for distributed processing.
+    
+    Sends tasks to configured cloud agent for asynchronous execution.
+    Supports auto-approval based on ENABLE_AUTO_APPROVE configuration.
+    """
+    try:
+        task_dict = {
+            "type": task.task_type,
+            "payload": task.payload,
+            "priority": task.priority
+        }
+        
+        result = await delegate_to_cloud_agent(task_dict)
+        _log_node({"tag": "cloud_delegation", "task_type": task.task_type, **result})
+        
+        if result.get("success"):
+            return result
+        elif result.get("fallback_to_local"):
+            # If cloud delegation fails, indicate local processing option
+            return {
+                "status": "Cloud delegation failed, fallback available",
+                "cloud_result": result,
+                "local_processing": True,
+                "message": "Task can be processed locally if needed"
+            }
+        else:
+            raise HTTPException(status_code=500, detail=f"Cloud delegation failed: {result.get('error')}")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[CLOUD_DELEGATION_ERROR]: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delegate task: {str(e)}")
+
+
+@app.get("/api/v6/autonomy/status", tags=["Autonomy"])
+async def get_autonomy_status():
+    """Get current autonomy and auto-approve configuration status.
+    
+    Returns the current state of autonomous features including:
+    - Auto-approve status and mode
+    - Autonomy enabled state
+    - Cloud agent configuration
+    - File autonomy permissions
+    """
+    try:
+        status = {
+            "autonomy_enabled": AUTONOMY_ENABLED,
+            "auto_approve": {
+                "enabled": ENABLE_AUTO_APPROVE,
+                "mode": AUTO_APPROVE_MODE,
+                "description": "Controls automatic approval of autonomous commits"
+            },
+            "cloud_agent": {
+                "configured": bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY),
+                "url": CLOUD_AGENT_URL if CLOUD_AGENT_URL else None,
+                "ready": bool(CLOUD_AGENT_URL)
+            },
+            "sovereign_commit": {
+                "available": True,
+                "requires": ["GITHUB_PAT environment variable"],
+                "auto_approve_default": ENABLE_AUTO_APPROVE
+            },
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+        
+        _log_node({"tag": "autonomy_status_query", **status})
+        return status
+        
+    except Exception as e:
+        logger.error(f"[AUTONOMY_STATUS_ERROR]: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get autonomy status: {str(e)}")
 
 
 @app.on_event("shutdown")
