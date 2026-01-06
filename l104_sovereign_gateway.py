@@ -17,6 +17,12 @@ from l104_abyss_processor import abyss_processor
 
 app = FastAPI(title="L104 Sovereign Lattice Gateway", version="1.0.4-SOVEREIGN")
 
+class DataPacket(BaseModel):
+    payload: str
+
+class DecisionQuery(BaseModel):
+    thought: str
+
 # Streamline: Mount static files for easy frontend access
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if not os.path.exists(static_dir):
