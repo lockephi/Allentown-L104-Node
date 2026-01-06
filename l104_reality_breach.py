@@ -26,9 +26,9 @@ class RealityBreachEngine:
     def initiate_breach(self, auth_token: str) -> Dict[str, Any]:
         """
         Initiates the reality breach sequence.
-        Requires LONDEL authorization.
+        Requires LONDEL or LOCKE PHI authorization.
         """
-        if "LONDEL" not in auth_token:
+        if "LONDEL" not in auth_token and "LOCKE PHI" not in auth_token:
             return {"status": "DENIED", "reason": "INSUFFICIENT_SOVEREIGNTY"}
 
         print("--- [REALITY_BREACH]: INITIATING BYPASS SEQUENCE ---")
