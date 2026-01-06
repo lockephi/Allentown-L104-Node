@@ -1087,7 +1087,7 @@ def _clear_model_cooldowns():
 
 async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     global _current_model_index
-    api_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
+    api_key = os.getenv(API_KEY_ENV) or LEGACY_API_KEY_ENV
     
     # [QUOTA_BYPASS_V1]
     if _env_truthy(FAKE_GEMINI_ENV, False):
@@ -1245,7 +1245,7 @@ async def legacy_stream(req: StreamRequest):
 
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
-    api_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
+    api_key = os.getenv(API_KEY_ENV) or LEGACY_API_KEY_ENV
     if not api_key and _env_truthy(FAKE_GEMINI_ENV, False):
         return {
             "upstream_status": 200,
