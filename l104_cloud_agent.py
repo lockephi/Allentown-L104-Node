@@ -71,10 +71,9 @@ class CloudAgentDelegator:
             
             # Check if agent has required capabilities
             capabilities = agent_info.get("capabilities", [])
-            if task_type in capabilities or not requirements:
-                # Check specific requirements
-                if all(req in capabilities for req in requirements):
-                    candidates.append((agent_name, agent_info.get("priority", 999)))
+            # Agent must have the task_type capability and meet all requirements
+            if task_type in capabilities and all(req in capabilities for req in requirements):
+                candidates.append((agent_name, agent_info.get("priority", 999)))
         
         # Sort by priority (lower is better)
         if candidates:
@@ -128,7 +127,7 @@ class CloudAgentDelegator:
             if agent_info["endpoint"] == "internal":
                 result = await self._delegate_internal(task, agent_name)
             else:
-                result = await self._delegate_external(task, agent_info)
+                result = await self._delegate_external(task, agent_info, agent_name)
             
             delegation_record["status"] = "SUCCESS"
             delegation_record["result_summary"] = str(result.get("status", "unknown"))
@@ -199,7 +198,7 @@ class CloudAgentDelegator:
             "task_type": task_type
         }
     
-    async def _delegate_external(self, task: Dict[str, Any], agent_info: Dict[str, Any]) -> Dict[str, Any]:
+    async def _delegate_external(self, task: Dict[str, Any], agent_info: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
         """Handle delegation to external cloud agents."""
         endpoint = agent_info.get("endpoint")
         
@@ -234,7 +233,7 @@ class CloudAgentDelegator:
             if response.status_code == 200:
                 return {
                     "status": "SUCCESS",
-                    "agent": agent_info.get("name", "unknown"),
+                    "agent": agent_name,
                     "result": response.json(),
                     "processing": "external"
                 }

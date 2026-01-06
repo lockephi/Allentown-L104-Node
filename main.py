@@ -12,6 +12,7 @@ import os
 import socket
 import sqlite3
 import time
+import uuid
 from collections import defaultdict
 from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
@@ -1456,7 +1457,7 @@ async def delegate_to_cloud_agent(task: CloudAgentTask):
         "type": task.type,
         "data": task.data,
         "requirements": task.requirements or [],
-        "id": task.id or f"task_{int(time.time())}"
+        "id": task.id or f"task_{uuid.uuid4().hex[:12]}"
     }
     
     result = await cloud_agent_delegator.delegate(task_dict, task.agent)
