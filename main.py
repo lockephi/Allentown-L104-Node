@@ -453,11 +453,29 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
             logger.error("[L104_COMMITTER]: Missing required parameters")
             return {"success": False, "error": "Missing required parameters"}
         
+        # Validate file path - prevent directory traversal and restrict to allowed files
+        # Load allowed files from Sovereign DNA if available
+        try:
+            from l104_persistence import load_truth
+            sovereign_dna = load_truth()
+            allowed_files = sovereign_dna.get("autonomy", {}).get("file_permissions", [])
+        except:
+            # Default allowed files if Sovereign DNA is unavailable
+            allowed_files = ["Sovereign_DNA.json", "L104_ARCHIVE.txt", "main.py", ".env.example"]
+        
+        if ".." in filename or filename.startswith("/"):
+            logger.error(f"[L104_COMMITTER]: Invalid file path (directory traversal detected): {filename}")
+            return {"success": False, "error": "Invalid file path"}
+        
+        if allowed_files and filename not in allowed_files:
+            logger.error(f"[L104_COMMITTER]: File not in allowed permissions: {filename}")
+            return {"success": False, "error": f"File '{filename}' not in autonomy file_permissions"}
+        
         # Get GitHub PAT from environment
         github_pat = os.getenv("GITHUB_PAT")
         if not github_pat:
-            logger.error("[L104_COMMITTER]: GITHUB_PAT not configured")
-            return {"success": False, "error": "GITHUB_PAT not configured"}
+            logger.error("[L104_COMMITTER]: GitHub credentials not configured")
+            return {"success": False, "error": "GitHub credentials not configured"}
         
         # Prepare GitHub API request
         headers = {
@@ -534,6 +552,8 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
             return {"success": False, "error": "Invalid audio source"}
         
         # Generate varied output based on source identifier using consistent hash
+        # Note: MD5 is used here for non-cryptographic deterministic hashing only
+        # This ensures the same audio source always produces the same analysis results
         source_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
         
         # Determine resonance characteristics based on source
