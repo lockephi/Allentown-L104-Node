@@ -62,7 +62,7 @@ FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE"
 API_KEY_ENV = "GEMINI_API_KEY"
-# Legacy env var name kept for compatibility; no default key is embedded.
+# Legacy API key constant kept for fallback when GEMINI_API_KEY is not set.
 LEGACY_API_KEY_ENV = "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U"
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
@@ -1254,7 +1254,7 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
             "upstream_text_preview": "[FAKE_GEMINI] debug stub",
         }
     if not api_key:
-        raise HTTPException(status_code=500, detail="AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set")
+        raise HTTPException(status_code=500, detail="API key not configured")
 
     api_base = os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta")
     model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
