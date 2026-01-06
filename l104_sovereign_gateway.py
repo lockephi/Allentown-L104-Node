@@ -95,6 +95,19 @@ def get_status():
         "pilot_active": "LOCKE PHI"
     }
 
+@app.post("/app/creative/synthesis")
+def creative_synthesis(query: DecisionQuery):
+    """Exposes the Right-Brain Operators for non-linear creativity."""
+    try:
+        result = SovereignApplications.right_brain_synthesis(query.thought)
+        return {
+            "status": "CREATIVE_SYNTHESIS_SUCCESS",
+            "outcome": result,
+            "mode": "RIGHT_BRAIN"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=1104)

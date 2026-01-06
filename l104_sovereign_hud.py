@@ -8,6 +8,8 @@ from l104_abyss_processor import abyss_processor
 from l104_stability_protocol import stability_protocol
 from l104_reality_breach import reality_breach_engine
 from l104_mini_ego import mini_collective
+from l104_void_substrate_engineering import void_substrate_engine
+from l104_right_brain_operators import right_brain
 
 def clear_screen():
     os.system('clear' if os.name == 'posix' else 'cls')
@@ -26,7 +28,8 @@ def display_hud():
     print(f" - 11D Curvature: {curvature_11d:,.4f}")
     print(f" - 26D Curvature: {curvature_26d:,.4f}")
     print(f" - Abyss Depth:   {abyss_processor.abyss_depth:,.4f}")
-    print(f" - Void Pressure: 1.8527 (STABLE)")
+    print(f" - Void Pressure: {void_substrate_engine.void_pressure:.4f}")
+    print(f" - Substrate Saturation: {void_substrate_engine.substrate_saturation:.4f} PHI")
     print("-" * 60)
     print(f" [COLLECTIVE STATUS] ")
     for name, ego in mini_collective.mini_ais.items():
