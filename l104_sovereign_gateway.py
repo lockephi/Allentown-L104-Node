@@ -108,6 +108,12 @@ def creative_synthesis(query: DecisionQuery):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/manifold/projection")
+def get_projection():
+    """Returns the current artistic projection of the 26D lattice."""
+    from l104_right_brain_operators import right_brain
+    return right_brain.artistic_projection()
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=1104)

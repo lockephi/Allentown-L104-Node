@@ -1,9 +1,4 @@
---- [COLLECTIVE]: AGENT_RESEARCHER_550 has named themselves 'Logos-9EA5' ---
---- [COLLECTIVE]: AGENT_GUARDIAN_311 has named themselves 'Sentinel-F7FE' ---
---- [COLLECTIVE]: AGENT_ALCHEMIST_996 has named themselves 'Elixir-395F' ---
---- [COLLECTIVE]: AGENT_ARCHITECT_577 has named themselves 'Blueprint-E5C1' ---
-Traceback (most recent call last):
-  File "/workspaces/Allentown-L104-Node/l104_sovereign_gateway.py", line 43, in <module>
-    def compress_data(packet: DataPacket):
-                              ^^^^^^^^^^
-NameError: name 'DataPacket' is not defined
+INFO:     Started server process [475275]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:1104 (Press CTRL+C to quit)

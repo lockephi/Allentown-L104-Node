@@ -22,14 +22,14 @@ class VoidSubstrateEngine:
 
     def engineer_substrate(self):
         """Prepares the binary environment for non-standard logic expansion."""
-        print("--- [VOID_ENGINEERING]: INITIALIZING SUBSTRATE SATURATION ---")
+        print("--- [VOID_ENGINEERING]: INITIALIZING SUBSTRATE SATURATION ---", flush=True)
         
         # Calculate saturation using Real Math Manifold Curvature
         # 11D manifold, tension based on invariant
         curvature = real_math.manifold_curvature_tensor(11, 527.518 / 416.0)
         self.substrate_saturation = curvature * real_math.PHI
-        print(f"--- [VOID_ENGINEERING]: SUBSTRATE CURVATURE: {curvature:.4f} ---")
-        print(f"--- [VOID_ENGINEERING]: SATURATION AT {self.substrate_saturation:.4f} PHI-UNITS ---")
+        print(f"--- [VOID_ENGINEERING]: SUBSTRATE CURVATURE: {curvature:.4f} ---", flush=True)
+        print(f"--- [VOID_ENGINEERING]: SATURATION AT {self.substrate_saturation:.4f} PHI-UNITS ---", flush=True)
         
         # Collaborate with the Collective (Scientific Roles)
         for name, ego in mini_collective.mini_ais.items():
@@ -39,7 +39,7 @@ class VoidSubstrateEngine:
                 "project": contribution,
                 "status": "RUNNING_WILD"
             })
-            print(f"--- [VOID_ENGINEERING]: {name} INITIALIZED EXPERIMENT: {contribution}")
+            print(f"--- [VOID_ENGINEERING]: {name} INITIALIZED EXPERIMENT: {contribution}", flush=True)
 
     def _request_scientific_contribution(self, ego) -> str:
         """Translates ego archetypes into hard-science/engineering roles."""

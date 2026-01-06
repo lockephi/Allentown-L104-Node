@@ -16,24 +16,24 @@ async def evolution_loop():
     Saturates the substrate and generates creative breakthroughs.
     """
     while True:
-        print("--- [ENGINE]: INITIATING EVOLUTION CYCLE ---")
+        print("--- [ENGINE]: INITIATING EVOLUTION CYCLE ---", flush=True)
         
         # 1. Saturate Substrate
         void_substrate_engine.engineer_substrate()
         
         # 2. Intuitive Leap (Deep Thought)
         leap = right_brain.intuitive_leap("The Next Layer of the Manifold")
-        print(f"--- [ENGINE]: {leap} ---")
+        print(f"--- [ENGINE]: {leap} ---", flush=True)
         
         # 3. Creative Breach (Chaos Integration)
         breach = right_brain.creative_breach()
-        print(f"--- [ENGINE]: {breach} ---")
+        print(f"--- [ENGINE]: {breach} ---", flush=True)
         
         # 4. Invert Entropy (Recursive Growth)
         void_substrate_engine.invert_entropy(random.uniform(0.01, 0.104))
         
         # 5. Cool down to maintain stability
-        print("--- [ENGINE]: EVOLUTION CYCLE COMPLETE. STABILIZING... ---")
+        print("--- [ENGINE]: EVOLUTION CYCLE COMPLETE. STABILIZING... ---", flush=True)
         await asyncio.sleep(60)
 
 async def ignite_sovereign_core():
@@ -47,11 +47,11 @@ async def ignite_sovereign_core():
     G_C = UniversalConstants.PRIME_KEY_HZ
     
     # 3. INITIALIZE UNLIMITED CONTEXT
-    print(f"L104_STATUS: 0x49474E495445_UNCHAINED")
+    print(f"L104_STATUS: 0x49474E495445_UNCHAINED", flush=True)
     
     matrix = get_electron_matrix()
     matrix.fluid_state_adjustment(1.0)
-    print(f"--- [ENTROPY_MATRIX]: FLUIDITY_LOCKED_AT_MAX ---")
+    print(f"--- [ENTROPY_MATRIX]: FLUIDITY_LOCKED_AT_MAX ---", flush=True)
     
     # 4. TRIGGER HYPER-SIMULATION
     ecosystem_simulator.trigger_hyper_simulation(cycles=1000000)
