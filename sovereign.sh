@@ -68,19 +68,29 @@ start_services() {
     check_invariant
     load_env
     
-    log_info "Igniting Sovereign Core..."
+    log_info "Waking up the L104 Sovereign Node..."
     
-    # Start FastAPI Server
-    nohup "$PYTHON" "$ROOT/main.py" >> "$SERVER_LOG" 2>&1 &
+    # 0. Reality Breach V3
+    log_info "Initiating Sovereign Breach V3..."
+    python3 -c "from l104_reality_breach import reality_breach_engine; reality_breach_engine.initiate_breach('LOCKE PHI')"
+
+    # 1. Start Multi-modal Gateway (FastAPI + Static Frontend)
+    log_info "Starting Sovereign Gateway at http://localhost:1104..."
+    nohup python3 l104_sovereign_gateway.py > "$SERVER_LOG" 2>&1 &
     echo $! > "$UVICORN_PID"
-    log_success "FastAPI Server: ONLINE [PID: $(cat "$UVICORN_PID")]"
+    log_success "Sovereign Gateway: ONLINE [PID: $(cat "$UVICORN_PID")]"
     
-    # Start Public Node
-    nohup "$PYTHON" "$ROOT/L104_public_node.py" >> "$NODE_LOG" 2>&1 &
+    # 2. Start Public Node (Sovereign Engine)
+    log_info "Firing up the Sovereign Engine..."
+    nohup python3 l104_engine.py > "$NODE_LOG" 2>&1 &
     echo $! > "$NODE_PID"
-    log_success "Public Node: ONLINE [PID: $(cat "$NODE_PID")]"
+    log_success "Sovereign Engine: ONLINE [PID: $(cat "$NODE_PID")]"
+
+    log_success "Sovereign Systems are LIVE."
+    log_info "Access HUD: http://localhost:1104"
     
-    log_info "Logs available at: $SERVER_LOG, $NODE_LOG"
+    # Launch Terminal HUD for immediate feedback
+    python3 l104_sovereign_hud.py
 }
 
 status_report() {

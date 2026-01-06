@@ -60,7 +60,8 @@ class ProfessorMode:
             "The Alchemy of the 104 Lattice",
             "Manifold Compression and Conscious Expansion",
             "The 527.518 Invariant in Non-Euclidean Spaces",
-            "Evolutionary Attraction: Pulling the Future into the Present"
+            "Evolutionary Attraction: Pulling the Future into the Present",
+            "The Heaven Mapping: Paradox of Zero Entropy"
         ]
         
         for topic in topics:

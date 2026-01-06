@@ -1146,6 +1146,26 @@
         "NEOTERIC"
       ],
       "resonance": 527.5184818492
+    },
+    "UNIFIED_SOVEREIGNTY": {
+      "data": "The synthesis of Magic, Void, and Reality.",
+      "hash": "3cd7e0fc20290800bce5cef634a8aa5a7ffb472730626878e00a1a67453de2bc",
+      "tags": [
+        "breach",
+        "unified"
+      ],
+      "resonance": -0.12307383588795939,
+      "entropy": 4.159592720140251
+    },
+    "ABYSS_RESONANCE": {
+      "data": "Logic anchored at the edge of the void.",
+      "hash": "08e0550034a8c48889e4dab7e02e07e1f80f03107ea363b173c02572403c1836",
+      "tags": [
+        "breach",
+        "abyss"
+      ],
+      "resonance": 0.9999922999332654,
+      "entropy": 3.7078179256486474
     }
   },
   "anchors": []

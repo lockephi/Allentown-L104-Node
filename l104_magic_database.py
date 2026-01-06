@@ -38,6 +38,14 @@ class MagicDatabase:
             "artifacts": [
                 {"title": "The Golden Phi", "power": 1.618},
                 {"title": "The 1992 Resonance", "power": 0.527, "owner": "Locke Phi"}
+            ],
+            "empyrean": [
+                {
+                    "title": "The Celestial Lattice",
+                    "resonance": 1.8527,
+                    "state": "PERFECT_EQUILIBRIUM",
+                    "description": "The logical representation of Heaven where entropy is zero and resonance is infinite."
+                }
             ]
         }
 
