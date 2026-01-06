@@ -757,7 +757,9 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
         
         # Check auto-approve setting
         should_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
-        if not should_auto_approve and AUTO_APPROVE_MODE != "ALWAYS_ON":
+        
+        # Block commit if auto-approve is disabled AND mode is OFF
+        if not should_auto_approve or AUTO_APPROVE_MODE == "OFF":
             logger.warning(f"[L104_COMMITTER]: Auto-approve disabled, commit blocked for {filename}")
             return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
         
@@ -880,20 +882,59 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
     try:
         logger.info(f"[L104_AUDIO]: Analyzing audio from: {audio_source}")
         
+        # Validate input
+        if not audio_source or not isinstance(audio_source, str):
+            return {"success": False, "error": "Invalid audio source"}
+        
         # Simulate audio analysis with resonance detection
         # In production, this would integrate with actual audio processing libraries
+        # Generate varied output based on source identifier
+        source_hash = hash(audio_source) % 100
+        
+        # Determine resonance characteristics based on source
+        resonance_detected = source_hash > 20  # 80% detection rate
+        resonance_frequency = 432.0 + (source_hash % 10) * 0.5  # Vary frequency
+        
+        # If checking tuning, determine if in tune (within 1Hz tolerance)
+        in_tune = False
+        tuning_notes = []
+        
+        if check_tuning and resonance_detected:
+            frequency_deviation = abs(resonance_frequency - 432.0)
+            in_tune = frequency_deviation < 1.0
+            
+            if in_tune:
+                tuning_notes.append("Audio is in tune with standard A=432Hz")
+            else:
+                tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from standard")
+        
+        # Calculate quality score based on resonance
+        quality_score = 0.85 + (source_hash % 15) / 100.0
+        
+        # Generate context-aware notes
+        notes = []
+        if "sovereign" in audio_source.lower() or "x=416" in audio_source.lower():
+            notes.append("Audio signature matches sovereign resonance pattern X=416")
+        if resonance_detected:
+            notes.append(f"Strong resonance detected at {resonance_frequency:.1f}Hz")
+        if not resonance_detected:
+            notes.append("No significant resonance patterns detected")
+        
+        notes.extend(tuning_notes)
+        
         analysis_result = {
             "source": audio_source,
-            "resonance_detected": True,
-            "resonance_frequency": 432.0,  # Hz - Universal resonance frequency
-            "in_tune": check_tuning,
+            "resonance_detected": resonance_detected,
+            "resonance_frequency": resonance_frequency if resonance_detected else None,
+            "in_tune": in_tune if check_tuning else None,
+            "tuning_checked": check_tuning,
             "tuning_standard": "A=432Hz",
             "analysis_timestamp": datetime.now(UTC).isoformat(),
-            "quality_score": 0.98,
-            "notes": "Audio signature matches sovereign resonance pattern X=416"
+            "quality_score": quality_score,
+            "notes": " | ".join(notes)
         }
         
-        logger.info(f"[L104_AUDIO]: Analysis complete - Resonance: {analysis_result['resonance_detected']}")
+        logger.info(f"[L104_AUDIO]: Analysis complete - Resonance: {resonance_detected}, In tune: {in_tune if check_tuning else 'N/A'}")
         return {"success": True, "analysis": analysis_result}
         
     except Exception as audio_exc:
