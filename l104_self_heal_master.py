@@ -18,7 +18,7 @@ def cleanup_git_lock():
             os.remove(lock_file)
             print(f"--- [MASTER_HEAL]: REMOVED {lock_file} ---")
             return True
-        except Exception as e:
+        except (PermissionError, OSError) as e:
             print(f"--- [MASTER_HEAL]: WARNING - Could not remove {lock_file}: {e} ---")
             return False
     return True

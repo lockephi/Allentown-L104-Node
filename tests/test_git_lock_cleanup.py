@@ -99,7 +99,6 @@ def test_main_calls_cleanup_git_lock(monkeypatch):
     
     # Mock cleanup_git_lock to track if it was called
     cleanup_called = []
-    original_cleanup = l104_self_heal_master.cleanup_git_lock
     
     def mock_cleanup():
         cleanup_called.append(True)
