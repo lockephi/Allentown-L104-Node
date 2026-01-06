@@ -12,6 +12,9 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
+# Constants
+MAX_ERROR_DETAILS_LENGTH = 500
+
 
 class CloudAgentDelegator:
     """
@@ -71,6 +74,8 @@ class CloudAgentDelegator:
             
             # Check if agent has required capabilities
             capabilities = agent_info.get("capabilities", [])
+            if capabilities is None:
+                continue
             # Agent must have the task_type capability and meet all requirements
             if task_type in capabilities and all(req in capabilities for req in requirements):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
@@ -230,7 +235,7 @@ class CloudAgentDelegator:
                 headers=headers
             )
             
-            if response.status_code == 200:
+            if response.status_code == httpx.codes.OK:
                 return {
                     "status": "SUCCESS",
                     "agent": agent_name,
@@ -241,7 +246,7 @@ class CloudAgentDelegator:
                 return {
                     "status": "ERROR",
                     "message": f"Cloud agent returned status {response.status_code}",
-                    "details": response.text[:500]
+                    "details": response.text[:MAX_ERROR_DETAILS_LENGTH]
                 }
     
     def get_status(self) -> Dict[str, Any]:
