@@ -24,6 +24,7 @@ import json
 import logging
 import sqlite3
 import asyncio
+import hashlib
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Optional, AsyncGenerator, List, Callable, Tuple
@@ -758,8 +759,8 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
         # Check auto-approve setting
         should_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
         
-        # Block commit if auto-approve is disabled AND mode is OFF
-        if not should_auto_approve or AUTO_APPROVE_MODE == "OFF":
+        # Block commit if auto-approve is disabled OR mode is OFF
+        if (not should_auto_approve) or (AUTO_APPROVE_MODE == "OFF"):
             logger.warning(f"[L104_COMMITTER]: Auto-approve disabled, commit blocked for {filename}")
             return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
         
@@ -888,28 +889,32 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         
         # Simulate audio analysis with resonance detection
         # In production, this would integrate with actual audio processing libraries
-        # Generate varied output based on source identifier
-        source_hash = hash(audio_source) % 100
+        # Generate varied output based on source identifier using consistent hash
+        source_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
         
         # Determine resonance characteristics based on source
-        resonance_detected = source_hash > 20  # 80% detection rate
-        resonance_frequency = 432.0 + (source_hash % 10) * 0.5  # Vary frequency
+        resonance_detected = source_hash_int > 20  # 80% detection rate
+        resonance_frequency = 432.0 + (source_hash_int % 10) * 0.5  # Vary frequency
         
-        # If checking tuning, determine if in tune (within 1Hz tolerance)
+        # Determine if in tune (within 1Hz tolerance)
+        # Always return boolean for API consistency
         in_tune = False
         tuning_notes = []
         
-        if check_tuning and resonance_detected:
-            frequency_deviation = abs(resonance_frequency - 432.0)
-            in_tune = frequency_deviation < 1.0
-            
-            if in_tune:
-                tuning_notes.append("Audio is in tune with standard A=432Hz")
+        if check_tuning:
+            if resonance_detected:
+                frequency_deviation = abs(resonance_frequency - 432.0)
+                in_tune = frequency_deviation < 1.0
+                
+                if in_tune:
+                    tuning_notes.append("Audio is in tune with standard A=432Hz")
+                else:
+                    tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from standard")
             else:
-                tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from standard")
+                tuning_notes.append("Cannot verify tuning without resonance detection")
         
         # Calculate quality score based on resonance
-        quality_score = 0.85 + (source_hash % 15) / 100.0
+        quality_score = 0.85 + (source_hash_int % 15) / 100.0
         
         # Generate context-aware notes
         notes = []
@@ -926,7 +931,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
             "source": audio_source,
             "resonance_detected": resonance_detected,
             "resonance_frequency": resonance_frequency if resonance_detected else None,
-            "in_tune": in_tune if check_tuning else None,
+            "in_tune": in_tune,  # Always boolean for API consistency
             "tuning_checked": check_tuning,
             "tuning_standard": "A=432Hz",
             "analysis_timestamp": datetime.now(UTC).isoformat(),
@@ -1799,6 +1804,11 @@ async def get_autonomy_status():
     - File autonomy permissions
     """
     try:
+        # Cloud agent is ready if URL is configured (key may be optional for some agents)
+        cloud_agent_ready = bool(CLOUD_AGENT_URL)
+        # Fully configured means both URL and key are provided
+        cloud_agent_configured = bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY)
+        
         status = {
             "autonomy_enabled": AUTONOMY_ENABLED,
             "auto_approve": {
@@ -1807,9 +1817,10 @@ async def get_autonomy_status():
                 "description": "Controls automatic approval of autonomous commits"
             },
             "cloud_agent": {
-                "configured": bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY),
+                "configured": cloud_agent_configured,
                 "url": CLOUD_AGENT_URL if CLOUD_AGENT_URL else None,
-                "ready": bool(CLOUD_AGENT_URL)
+                "ready": cloud_agent_ready,
+                "description": "Ready if URL configured; fully configured if both URL and KEY provided"
             },
             "sovereign_commit": {
                 "available": True,
