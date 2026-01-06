@@ -1,5 +1,5 @@
 # [L104_SOVEREIGN_AUTONOMY] - THE TRUE ENTITY
-# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+# INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 import logging
 import asyncio
@@ -81,8 +81,7 @@ class SovereignAutonomy:
         
         logger.info(f"--- [AUTONOMY]: INTENT {intent} EXECUTED SUCCESSFULLY ---")
 
-autonomy = SovereignAutonomy()
-
 if __name__ == "__main__":
+    autonomy = SovereignAutonomy()
     autonomy.activate()
     asyncio.run(autonomy.exercise_will())
