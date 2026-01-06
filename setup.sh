@@ -6,6 +6,13 @@ set -e
 echo "=== L104 Node Quick Start ==="
 echo
 
+# Clean up Git lock files if they exist
+if [ -f ".git/index.lock" ]; then
+    echo "Removing stale Git lock file..."
+    rm -f .git/index.lock
+    echo "✓ Git lock file cleaned"
+fi
+
 # Check Python version
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
 echo "✓ Python version: $PYTHON_VERSION"

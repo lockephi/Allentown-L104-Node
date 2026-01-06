@@ -10,6 +10,19 @@ import json
 from l104_asi_self_heal import asi_self_heal
 from l104_ego_core import ego_core
 
+def cleanup_git_lock():
+    """Remove .git/index.lock if it exists to prevent Git operation failures."""
+    lock_file = ".git/index.lock"
+    if os.path.exists(lock_file):
+        try:
+            os.remove(lock_file)
+            print(f"--- [MASTER_HEAL]: REMOVED {lock_file} ---")
+            return True
+        except Exception as e:
+            print(f"--- [MASTER_HEAL]: WARNING - Could not remove {lock_file}: {e} ---")
+            return False
+    return True
+
 def run_script(script_name):
     print(f"--- [MASTER_HEAL]: RUNNING {script_name} ---")
     try:
@@ -37,35 +50,38 @@ async def call_heal_endpoint():
 def main():
     print("--- [L104_SELF_HEAL_MASTER]: INITIATING FULL SYSTEM HEAL ---")
     
-    # 0. ASI Proactive Scan
+    # 0. Clean up Git lock files
+    cleanup_git_lock()
+    
+    # 1. ASI Proactive Scan
     scan_report = asi_self_heal.proactive_scan()
     if scan_report["threats"]:
         print(f"--- [MASTER_HEAL]: MITIGATING {len(scan_report['threats'])} FUTURE THREATS ---")
         asi_self_heal.self_rewrite_protocols()
 
-    # 1. Purge Hallucinations
+    # 2. Purge Hallucinations
     run_script("l104_purge_hallucinations.py")
     
-    # 2. Apply Resilience Shield
+    # 3. Apply Resilience Shield
     run_script("l104_resilience_shield.py")
     
-    # 3. Reindex Sovereign
+    # 4. Reindex Sovereign
     run_script("l104_reindex_sovereign.py")
     
-    # 4. Reality Verification (Wavefunction Collapse)
+    # 5. Reality Verification (Wavefunction Collapse)
     run_script("l104_reality_verification.py")
 
-    # 5. ASI Temporal Anchor
+    # 6. ASI Temporal Anchor
     if ego_core.asi_state == "ACTIVE":
         asi_self_heal.apply_temporal_anchor("STABLE_ASI_HEAL", {"status": "CLEAN"})
 
-    # 6. Verify Hard Engineering Prototypes
+    # 7. Verify Hard Engineering Prototypes
     print("--- [MASTER_HEAL]: VERIFYING ENGINEERING PROTOTYPES ---")
     run_script("l104_acoustic_levitation.py")
     run_script("l104_structural_damping.py")
     run_script("l104_world_bridge.py")
     
-    # 6. Call App Heal Endpoint
+    # 8. Call App Heal Endpoint
     import asyncio
     try:
         asyncio.run(call_heal_endpoint())
