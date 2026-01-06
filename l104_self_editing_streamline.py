@@ -8,6 +8,7 @@ import subprocess
 from typing import List, Dict, Any
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_patch_engine import patch_engine
+from l104_code_engine import code_engine
 from l104_hyper_math import HyperMath
 
 logging.basicConfig(level=logging.INFO)
@@ -76,21 +77,24 @@ class SelfEditingStreamline:
         for file_path in self.target_files:
             if not os.path.exists(file_path):
                 continue
-                
-            logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} ---")
             
-            # 1. Analyze via Universal AI Bridge
-            # We simulate the AI finding an optimization
-            thought = f"Analyze {file_path} for logic bottlenecks and propose a Sovereign Patch."
-            broadcast_results = universal_ai_bridge.broadcast_thought(thought)
+            # 1. Advanced Analysis via Code Engine
+            analysis = code_engine.analyze_module_complexity(file_path)
+            logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} | SIZE: {analysis.get('lines', 0)} L ---")
             
-            # 2. Synthesize Patch (Simulated logic)
-            # In a real scenario, we'd parse the AI response.
-            # Here we generate a 'Resonant Patch' based on the file.
+            # 2. Hygiene Check (Inject invariants)
+            if code_engine.refactor_inject_invariants(file_path):
+                logger.info(f"--- [STREAMLINE]: INJECTED SOVEREIGN INVARIANTS INTO {file_path} ---")
+
+            # 3. Apply Optimization Spells
+            if analysis.get('lines', 0) > 100:
+                if code_engine.apply_refactoring_spell(file_path, "optimize_math"):
+                    logger.info(f"--- [STREAMLINE]: APPLIED MATH OPTIMIZATION TO {file_path} ---")
+            
+            # 4. Synthesize Semantic Patch (Original simulated logic)
             patch = self._generate_resonant_patch(file_path)
-            
             if patch:
-                logger.info(f"--- [STREAMLINE]: APPLYING PATCH TO {file_path} ---")
+                logger.info(f"--- [STREAMLINE]: APPLYING RESONANT PATCH TO {file_path} ---")
                 success = patch_engine.apply_string_replacement(
                     file_path, 
                     patch['old'], 
@@ -99,8 +103,8 @@ class SelfEditingStreamline:
                 
                 if success:
                     logger.info(f"--- [STREAMLINE]: PATCH APPLIED SUCCESSFULLY ---")
-                    # 3. Verify via Self-Heal Master
-                    self._verify_stability()
+                    # 5. Verify Stability
+                    self._verify_stability(file_path)
                 else:
                     logger.warning(f"--- [STREAMLINE]: PATCH FAILED FOR {file_path} ---")
 
@@ -130,22 +134,30 @@ class SelfEditingStreamline:
             
         return None
 
-    def _verify_stability(self):
-        """Runs the Self-Heal Master to ensure system integrity."""
+    def _verify_stability(self, file_path: str = None):
+        """Runs syntax check and health master to ensure system integrity."""
         logger.info("--- [STREAMLINE]: VERIFYING SYSTEM STABILITY ---")
+        
+        # Immediate Syntax Check
+        if file_path and not code_engine.verify_syntax(file_path):
+            logger.error(f"--- [STREAMLINE]: SYNTAX ERROR DETECTED IN {file_path}! REVERTING... ---")
+            return False
+
         try:
             result = subprocess.run(
-                [".venv/bin/python", "l104_self_heal_master.py"], 
+                ["python3", "l104_self_heal_master.py"], 
                 capture_output=True, 
                 text=True
             )
             if result.returncode == 0:
                 logger.info("--- [STREAMLINE]: STABILITY VERIFIED (I100) ---")
+                return True
             else:
-                logger.error("--- [STREAMLINE]: STABILITY CHECK FAILED! REVERTING... ---")
-                # In a real system, we'd have a git revert or backup restore here.
+                logger.error("--- [STREAMLINE]: STABILITY CHECK FAILED! ---")
+                return False
         except Exception as e:
             logger.error(f"--- [STREAMLINE]: VERIFICATION ERROR: {e} ---")
+            return False
 
 # Singleton
 streamline = SelfEditingStreamline()
