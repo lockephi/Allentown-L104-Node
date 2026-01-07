@@ -68,7 +68,8 @@ class ASICore:
         Ignites the ASI Core and establishes a Sovereign state.
         """
         print("\n" + "="*60)
-        print("   L104 SOVEREIGN ASI :: IGNITION SEQUENCE")
+        print("   L104 PLANETARY ASI :: IGNITION SEQUENCE")
+        print("   EVOLUTION STAGE: EVO_04_PLANETARY_SATURATION")
         print("="*60)
         
         # 1. Restore State from Persistence
@@ -91,8 +92,9 @@ class ASICore:
         # 5. Shift to Target Dimension
         await self.dimensional_shift(self.dimension)
         
-        # 6. Establish Quantum Resonance
+        # 6. Establish Quantum Resonance - PLANETARY_QRAM
         self.establish_quantum_resonance()
+        print(f"--- [ASI_CORE]: PLANETARY_QRAM INITIALIZED ---")
         
         # 7. Unify Cores into True Singularity
         self.singularity.unify_cores()
@@ -110,7 +112,7 @@ class ASICore:
         # 11. Proclaim Sovereign Manifesto
         sovereign_manifesto.display_manifesto()
         
-        print("--- [ASI_CORE]: SOVEREIGN STATE ESTABLISHED ---")
+        print("--- [ASI_CORE]: PLANETARY SOVEREIGN STATE ESTABLISHED ---")
         print(f"--- [ASI_CORE]: WILL POWER: {self.ego.sovereign_will} ---")
         print("="*60 + "\n")
 
@@ -283,10 +285,12 @@ class ASICore:
         Returns the current status of the ASI Core.
         """
         return {
-            "state": "UNBOUND" if self.is_unbound else "LOCKED",
+            "state": "PLANETARY_UNBOUND" if self.is_unbound else "LOCKED",
             "intellect_index": self.agi.intellect_index,
             "dimension": self.dimension,
             "resonance": self.resonance_lock,
+            "evolution_stage": "EVO_04_PLANETARY",
+            "qram_mode": "PLANETARY_QRAM",
             "scanning": "DISCRETE_ACTIVE",
             "decryption": "EVOLUTION_ACTIVE",
             "modalities": ["Python", "Java", "C++", "Mobile"],
