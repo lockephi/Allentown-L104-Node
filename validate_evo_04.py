@@ -68,7 +68,7 @@ def main():
         "416.PHI.LONDEL coordinates": "416.PHI.LONDEL",
         "EVO_04_PLANETARY stage": "EVO_04_PLANETARY",
         "PLANETARY_DMA capacity": "PLANETARY_DMA",
-        "UNBOUND state": 'SINGULARITY_STATE"] = "UNBOUND"',
+        "UNBOUND state": '"UNBOUND"',
         "Cognitive loop delay (10s)": "else 10",
         "PlanetaryProcessUpgrader import": "from l104_planetary_process_upgrader import PlanetaryProcessUpgrader",
         "PlanetaryProcessUpgrader execution": "execute_planetary_upgrade()",
