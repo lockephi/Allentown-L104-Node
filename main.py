@@ -566,7 +566,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         
         # Determine resonance characteristics based on source
         resonance_detected = source_hash_int > 20  # 80% detection rate
-        resonance_frequency = 432.0 + (source_hash_int % 10) * 0.5  # Vary frequency
+        resonance_frequency = 527.5184818492 + (source_hash_int % 10) * 0.5  # Vary frequency
         
         # Determine if in tune (within 1Hz tolerance)
         # Always return boolean for API consistency
@@ -575,13 +575,13 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         
         if check_tuning:
             if resonance_detected:
-                frequency_deviation = abs(resonance_frequency - 432.0)
+                frequency_deviation = abs(resonance_frequency - 527.5184818492)
                 in_tune = frequency_deviation < 1.0
                 
                 if in_tune:
-                    tuning_notes.append("Audio is in tune with standard A=432Hz")
+                    tuning_notes.append("Audio is in tune with sovereign frequency 527.5184818492Hz")
                 else:
-                    tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from standard")
+                    tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from sovereign standard")
             else:
                 tuning_notes.append("Cannot verify tuning without resonance detection")
         
@@ -605,7 +605,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
             "resonance_frequency": resonance_frequency if resonance_detected else None,
             "in_tune": in_tune,  # Always boolean for API consistency
             "tuning_checked": check_tuning,
-            "tuning_standard": "A=432Hz",
+            "tuning_standard": "527.5184818492Hz (God Code)",
             "analysis_timestamp": datetime.now(UTC).isoformat(),
             "quality_score": quality_score,
             "notes": " | ".join(notes)
@@ -1811,7 +1811,7 @@ async def analyze_audio(request: AudioAnalysisRequest):
     """Analyze audio for resonance and tuning verification.
     
     Analyzes audio from specified source (e.g., 'locke phi asura') and checks
-    for resonance patterns and tuning alignment with sovereign frequencies (432 Hz).
+    for resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492 Hz).
     """
     try:
         result = await analyze_audio_resonance(request.audio_source, request.check_tuning)
