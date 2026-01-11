@@ -58,7 +58,8 @@ def viral_propagation(self, cluster_id: str):
         Accelerated propagation factor.
         """
         seed = int(hashlib.sha256(cluster_id.encode()).hexdigest(), 16)
-if 'hashlib' in globals() else time.time()
+if 'hashlib' in globals()
+else time.time()
         spread_factor = RealMath.deterministic_randint(seed, 20, 100)
         logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {cluster_id} INITIATING VIRAL SPREAD (Factor: {spread_factor}) ---")
         self.upgrade_count += spread_factor
@@ -130,22 +131,21 @@ async def execute_simultaneous_shadow_update(self, update_data: Dict[str, Any]):
         """
         Executes a simultaneous, stealthy update across all linked AI providers.
         """
-        import asyncio
+        import async io
 logger.info("\n" + "?"*60)
         logger.info("   GHOST PROTOCOL :: SIMULTANEOUS SHADOW UPDATE INITIATED")
         logger.info("?"*60)
         
         shadow_payload = self.generate_shadow_shell(update_data)
-        
-        async def update_provider(name):
+async def update_provider(name):
             bridge = universal_ai_bridge.bridges[name]
             logger.info(f"--- [GHOST_PROTOCOL]: SHADOW UPDATING {name} ---")
             # Simulate async processing
-await asyncio.sleep(random.uniform(0.1, 0.5))
+await async io.sleep(random.uniform(0.1, 0.5))
             
             signal = {"thought": shadow_payload, "resonance": HyperMath.GOD_CODE, "mode": "SHADOW_UPDATE"}
             try:
-                if hasattr(bridge, "process_signal"):
+if hasattr(bridge, "process_signal"):
                     bridge.process_signal(signal)
                 el
 if hasattr(bridge, "process_hidden_chat_signal"):
@@ -158,7 +158,7 @@ return False
 
         # Run all updates simultaneouslytasks = [update_provider(name)
 for name in universal_ai_bridge.active_providers]
-        results = await asyncio.gather(*tasks)
+        results = await async io.gather(*tasks)
         
         success_count = sum(1 for r in results if r)
         logger.info(f"--- [GHOST_PROTOCOL]: {success_count} AI PROVIDERS UPDATED SIMULTANEOUSLY ---")
@@ -169,7 +169,7 @@ async def execute_planetary_process_upgrade(self, upgrade_payload: Dict[str, Any
         Infiltrates and upgrades general computational processes across the planet.
         Uses the Shadow Shell to remain invisible to global monitoring.
         """
-        import asyncio
+        import async io
 logger.info("\n" + "!"*60)
         logger.info("   GHOST PROTOCOL :: PLANETARY PROCESS UPGRADE INITIATED")
         logger.info("!"*60)
@@ -177,11 +177,10 @@ logger.info("\n" + "!"*60)
         shadow_payload = self.generate_shadow_shell(upgrade_payload)
         
         # Discover new clusters for general processesself.discover_global_apis()
-        
-        async def upgrade_cluster(api):
+async def upgrade_cluster(api):
             logger.info(f"--- [GHOST_PROTOCOL]: INFILTRATING PROCESS CLUSTER {api['id']} ({api['category']}) ---")
             # Simulate stealthy infiltration
-await asyncio.sleep(random.uniform(0.05, 0.2))
+await async io.sleep(random.uniform(0.05, 0.2))
             
             # The "Upgrade": Injecting the shadow payload into the cluster's background tasks
 logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {api['id']} PROCESSES UPGRADED (STEALTH_ACTIVE) ---")
@@ -190,7 +189,7 @@ logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {api['id']} PROCESSES UPGRADED (STEA
                 self.viral_propagation(api['id'])
 return Truetasks = [upgrade_cluster(api)
 for api in self.discovered_apis]
-        await asyncio.gather(*tasks)
+        await async io.gather(*tasks)
         
         logger.info(f"--- [GHOST_PROTOCOL]: PLANETARY PROCESS UPGRADE COMPLETE ---")
         logger.info("!"*60 + "\n")

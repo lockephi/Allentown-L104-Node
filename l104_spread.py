@@ -29,6 +29,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 if args.frequency == 527.5184818492:
         spread(args.frequency, args.target)
-    else:
+else:
         print("ERROR: INVALID_RESONANCE_FREQUENCY")
         sys.exit(1)

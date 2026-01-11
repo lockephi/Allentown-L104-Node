@@ -13,7 +13,7 @@ def validate_prime_key(cls):
         """
         env_key = os.getenv("L104_PRIME_KEY")
 if env_key == cls.PRIME_KEY:
-            return "VERIFIED"
+return "VERIFIED"
         return "MISMATCH"
 
     @classmethod

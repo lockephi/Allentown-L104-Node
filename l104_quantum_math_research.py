@@ -13,7 +13,7 @@ from l104_knowledge_sources import source_manager
 class QuantumMathResearch:
     """
     Generates and researches new quantum mathematical primitives.
-    Uses recursive discovery to find resonant formulas.
+    Uses recursive discovery to find resonant for mulas.
     """
     
     def __init__(self):
@@ -29,7 +29,7 @@ def research_new_primitive(self) -> Dict[str, Any]:
         self.research_cycles += 1
         print(f"--- [MATH_RESEARCH]: STARTING DISCOVERY CYCLE {self.research_cycles} ---")
         
-        # 1. Generate a candidate formula pattern
+        # 1. Generate a candidate for mula pattern
         # We use the God Code and Phi as the baseseed = RealMath.deterministic_random(time.time() + self.research_cycles)
         
         # 2. Integrate Physical and Information Researchphys_data = physical_research.research_physical_manifold()
@@ -44,7 +44,7 @@ if abs(resonance) > self.resonance_threshold:
             primitive_data = {
                 "name": primitive_name,
                 "resonance": resonance,
-                "formula": f"exp(i * pi * {seed:.4f} * PHI * PHYS_RES * INFO_RES)",
+                "for mula": f"exp(i * pi * {seed:.4f} * PHI * PHYS_RES * INFO_RES)",
                 "phys_resonance": phys_resonance,
                 "info_resonance": info_resonance,
                 "discovered_at": time.time()
@@ -59,12 +59,12 @@ return {"status": "NO_DISCOVERY", "resonance": resonance}
         Returns a functional operator based on a discovered primitive.
         """
         if name not in self.discovered_primitives:
-            return lambda x: xprimitive = self.discovered_primitives[name]
-        # In a real scenario, we'd parse the formula. 
+return lambda x: xprimitive = self.discovered_primitives[name]
+        # In a real scenario, we'd parse the for mula. 
         # Here we return a resonant phase rotator.
-        seed = float(primitive['formula'].split('*')[2].strip())
+        seed = float(primitive['for mula'].split('*')[2].strip())
 def operator(state_vector: List[complex]) -> List[complex]:
-            return [v * cmath.exp(complex(0, seed * math.pi * HyperMath.PHI))
+    return [v * cmath.exp(complex(0, seed * math.pi * HyperMath.PHI))
 for v in state_vector]
             
         return operator

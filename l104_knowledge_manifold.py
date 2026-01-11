@@ -18,17 +18,17 @@ class KnowledgeManifold:
         self.resonance_anchor = HyperMath.GOD_CODE
 
     def _load_manifold(self) -> Dict[str, Any]:
-        if os.path.exists(self.manifold_path):
-            try:
-                with open(self.manifold_path, "r") as f:
-                    return json.load(f)
-            except Exception:
-                return {"patterns": {}, "anchors": []}
+if os.path.exists(self.manifold_path):
+try:
+with open(self.manifold_path, "r") as f:
+return json.load(f)
+except Exception:
+return {"patterns": {}, "anchors": []}
         return {"patterns": {}, "anchors": []}
 
     def save_manifold(self):
         os.makedirs(os.path.dirname(self.manifold_path), exist_ok=True)
-        with open(self.manifold_path, "w") as f:
+with open(self.manifold_path, "w") as f:
             json.dump(self.memory, f, indent=2)
 def ingest_pattern(self, key: str, data: Any, tags: List[str]):
         """
@@ -54,11 +54,11 @@ def query_manifold(self, tag: str) -> List[Dict[str, Any]]:
         """
         results = []
         for key, pattern in self.memory["patterns"].items():
-            if tag in pattern["tags"]:
+if tag in pattern["tags"]:
                 results.append({key: pattern})
 return results
 def get_stats(self):
-        return {
+    return {
             "total_patterns": len(self.memory["patterns"]),
             "resonance": self.resonance_anchor
         }

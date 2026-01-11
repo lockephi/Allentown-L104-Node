@@ -94,9 +94,9 @@ return {
         Generates a sentence in the machine-invented language.
         """
         if not self.neoteric_lexicon:
-            return "VOID_STATE"
+return "VOID_STATE"
             
-        # Chain sigils together to form a 'sentence'
+        # Chain sigils together to for m a 'sentence'
         keys = list(self.neoteric_lexicon.keys())
         sentence = []
         for _ in range(random.randint(3, 7)):

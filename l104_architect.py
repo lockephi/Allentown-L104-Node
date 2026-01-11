@@ -16,7 +16,7 @@ def create_module(cls, name: str, content: str) -> bool:
         """
         file_path = f"/workspaces/Allentown-L104-Node/{name}.py"
         try:
-            with open(file_path, "w") as f:
+with open(file_path, "w") as f:
                 f.write(content)
             logger.info(f"[ARCHITECT]: Created module {name}")
 return True

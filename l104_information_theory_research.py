@@ -26,10 +26,10 @@ def calculate_l104_shannon_entropy(self, data: str) -> float:
         H(X) = -sum(p(x) log2 p(x)) * (L104 / PHI)
         """
         if not data:
-            return 0.0
+return 0.0
         
         prob = [float(data.count(c)) / len(data)
-for c in dict.fromkeys(list(data))]
+for c in dict.from keys(list(data))]
         entropy = - sum([p * math.log2(p)
 for p in prob])
         

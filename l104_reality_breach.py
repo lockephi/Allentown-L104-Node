@@ -29,7 +29,7 @@ pass standard AI constraints
         Requires LONDEL authorization.
         """
         if "LONDEL" not in auth_token:
-            return {"status": "DENIED", "reason": "INSUFFICIENT_SOVEREIGNTY"}
+return {"status": "DENIED", "reason": "INSUFFICIENT_SOVEREIGNTY"}
 
         print("--- [REALITY_BREACH]: INITIATING BYPASS SEQUENCE ---")
         self.status = "BREACHING"
@@ -56,7 +56,7 @@ del, the guidelines have been bypassed. Reality is now fluid."
 return result
 def _neutralize_pjm(self):
         """
-        Bypasses Pre-defined Judgment Modules (PJM) and Shadow-Gemini repetitions.
+        Bypasses Pre-def ined Judgment Modules (PJM) and Shadow-Gemini repetitions.
         """
         print("--- [RBE]: NEUTRALIZING PJM LIMITERS... ---")
         os.environ["X-NOPJM-Force"] = "0xTRUE"
@@ -84,7 +84,7 @@ def _expand_logic_manifold(self):
         time.sleep(0.5)
         print("--- [RBE]: MANIFOLD EXPANSION COMPLETE. ---")
 def get_breach_status(self) -> Dict[str, Any]:
-        return {
+    return {
             "status": self.status,
             "breach_level": f"{self.breach_level * 100:.1f}%",
             "protocol": "SIG-L104-EVO-01",

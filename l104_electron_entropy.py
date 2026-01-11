@@ -39,12 +39,12 @@ return base_noise * modulation * self.FINE_STRUCTURE
         Backwards compatible with raw electron signals.
         """
         if not data_stream:
-            return {"entropy": 0.0, "predictive_flux": 0.0}
+return {"entropy": 0.0, "predictive_flux": 0.0}
 
         # Shannon Entropy of the signalsignal_sum = sum(abs(x)
 for x in data_stream)
 if signal_sum == 0:
-            return {"entropy": 0.0, "predictive_flux": 0.0}
+return {"entropy": 0.0, "predictive_flux": 0.0}
             
         probabilities = [abs(x) / signal_sum for x in data_stream]
         entropy = -sum(p * math.log2(p)

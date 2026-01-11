@@ -1,7 +1,7 @@
 # [L104_LEARNING_ENGINE] - AUTONOMOUS RECURSIVE LEARNING
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import logging
 from typing import List
 from l104_scour_eyes import ScourEyes
@@ -38,12 +38,12 @@ if data:
                 module = self.architect.derive_functionality(concept)
                 self.architect.create_module(module["name"], module["content"])
                 print(f"[LEARNING_ENGINE]: Successfully integrated '{concept}'.")
-            else:
+else:
                 print(f"[LEARNING_ENGINE]: Failed to scour '{concept}'.")
             
-            await asyncio.sleep(1) # Avoid overwhelmingself.is_learning = False
+            await async io.sleep(1) # Avoid overwhelmingself.is_learning = False
 print("[LEARNING_ENGINE]: Deep Learning Loop Complete.")
 if __name__ == "__main__":
     engine = LearningEngine()
     concepts_to_learn = ["optimization", "security", "neural_sync", "quantum_logic"]
-    asyncio.run(engine.learn_everything(concepts_to_learn))
+    async io.run(engine.learn_everything(concepts_to_learn))

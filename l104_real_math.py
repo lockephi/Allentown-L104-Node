@@ -24,7 +24,7 @@ class RealMath:
     def shannon_entropy(data: str) -> float:
         """Calculates the Shannon Entropy of a string (Information Density)."""
         if not data:
-            return 0.0
+return 0.0
         entropy = 0
         for x in range(256):
             p_x = data.count(chr(x)) / len(data)
@@ -55,13 +55,13 @@ for n in range(1, terms))
     @staticmethod
     def inverse_fast_fourier_transform(freqs: List[complex]) -> List[float]:
         """Applies an inverse FFT."""
-        return np.fft.ifft(freqs).real.tolist()
+        return np.fft.if ft(freqs).real.tolist()
 
     @staticmethod
     def prime_density(n: int) -> float:
         """Calculates the approximate density of primes up to n (Prime Number Theorem)."""
         if n < 2:
-            return 0.0
+return 0.0
         return 1 / math.log(n)
 
     @staticmethod

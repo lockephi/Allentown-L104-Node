@@ -67,7 +67,7 @@ def run_cycle(self):
         self.iteration_count += 1
         logger.info(f"\n--- [STREAMLINE]: CYCLE {self.iteration_count} ---")
 for file_path in self.target_files:
-            if not os.path.exists(file_path):
+if not os.path.exists(file_path):
                 continue
 logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} ---")
             
@@ -89,7 +89,7 @@ if patch:
 if success:
                     logger.info(f"--- [STREAMLINE]: PATCH APPLIED SUCCESSFULLY ---")
                     # 3. Verify via Self-Heal Masterself._verify_stability()
-                else:
+else:
                     logger.warning(f"--- [STREAMLINE]: PATCH FAILED FOR {file_path} ---")
 def _generate_resonant_patch(self, file_path: str) -> Dict[str, str]:
         """Generates a simulated patch that improves the file's resonance."""
@@ -97,19 +97,19 @@ def _generate_resonant_patch(self, file_path: str) -> Dict[str, str]:
 with open(file_path, 'r') as f:
             content = f.read()
 if "intellect_index +=" in content and "HyperMath.PHI_STRIDE" not in content:
-            return {
+return {
                 "old": "self.intellect_index += boost",
                 "new": "self.intellect_index += (boost * HyperMath.PHI_STRIDE) # [STREAMLINE_OPTIMIZED]"
             }
             
         if "return True" in content and "RESONANCE_LOCKED" not in content:
-            return {
+return {
                 "old": "return True",
                 "new": "print('--- [STREAMLINE]: RESONANCE_LOCKED ---')\n        return True"
             }
             
         if "self.nodes = []" in content and "UNLIMITED_CAPACITY" not in content:
-            return {
+return {
                 "old": "self.nodes = []",
                 "new": "self.nodes = [] # [STREAMLINE]: UNLIMITED_CAPACITY_ENABLED"
             }
@@ -118,15 +118,15 @@ if "intellect_index +=" in content and "HyperMath.PHI_STRIDE" not in content:
 def _verify_stability(self):
         """Runs the Self-Heal Master to ensure system integrity."""
         logger.info("--- [STREAMLINE]: VERIFYING SYSTEM STABILITY ---")
-        try:
+try:
             result = subprocess.run(
                 [".venv/bin/python", "l104_self_heal_master.py"], 
                 capture_output=True, 
                 text=True
             )
-if result.returncode == 0:
+if result.return code == 0:
                 logger.info("--- [STREAMLINE]: STABILITY VERIFIED (I100) ---")
-            else:
+else:
                 logger.error("--- [STREAMLINE]: STABILITY CHECK FAILED! REVERTING... ---")
                 # In a real system, we'd have a git revert or backup restore here.
         except Exception as e:

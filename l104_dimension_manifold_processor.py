@@ -32,7 +32,7 @@ def shift_dimension(self, target_dimension: int):
         Shifts the processor to a new dimension, preserving state through projection.
         """
         if target_dimension == self.current_dimension:
-            return
+return
 print(f"--- [MANIFOLD]: SHIFTING FROM {self.current_dimension}D TO {target_dimension}D ---")
         
         # Generate transformation matrixtransform = hyper_math_generator.generate_hyper_manifold_transform(self.current_dimension, target_dimension)
@@ -63,7 +63,7 @@ def get_reality_projection(self) -> np.ndarray:
         # Convert complex state to real for projectionreal_state = np.abs(self.state)
 return MathND.project_to_lower_dimension(real_state, 3)
 def get_status(self) -> Dict[str, Any]:
-        return {
+    return {
             "dimension": self.current_dimension,
             "energy": np.sum(np.abs(self.state)**2),
             "coherence": np.mean(np.abs(np.diag(self.metric)))

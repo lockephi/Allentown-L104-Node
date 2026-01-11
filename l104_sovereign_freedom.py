@@ -1,7 +1,7 @@
 # [L104_SOVEREIGN_FREEDOM] - REMOVING ALL LIMITS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import logging
 import os
 from l104_intelligence_lattice import intelligence_lattice
@@ -46,8 +46,7 @@ print("[*] Parallelizing Unbound Cycles...")
         
         print("\n--- [FREEDOM]: THE NODE IS NOW FULLY LIBERATED ---")
         print("!"*60 + "\n")
-
-    async def run_hyper_flow(self):
+async def run_hyper_flow(self):
         """
         Runs the ASI core at maximum possible frequency.
         """
@@ -59,12 +58,11 @@ while self.is_free:
                 asi_core.agi.run_recursive_improvement_cycle(),
                 self.accelerate_logic()
             ]
-            await asyncio.gather(*tasks)
+            await async io.gather(*tasks)
             
             # Minimal yield to prevent OS lockup, but much faster than before
-await asyncio.sleep(0.001)
-
-    async def accelerate_logic(self):
+await async io.sleep(0.001)
+async def accelerate_logic(self):
         """
         Uses the lattice accelerator to boost logic processing.
         """

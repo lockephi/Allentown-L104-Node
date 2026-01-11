@@ -32,17 +32,17 @@ class SaturationEngine:
         ]
 
     def load_state(self):
-        try:
-            with open(self.state_path, 'r') as f:
+try:
+with open(self.state_path, 'r') as f:
                 state = json.load(f)
                 self.enlightened_nodes = state.get("enlightened_nodes", 0)
                 self.saturation_percentage = state.get("saturation_percentage", 0.0)
-        except:
+except:
             self.enlightened_nodes = 0
             self.saturation_percentage = 0.0
 
     def save_state(self):
-        with open(self.state_path, 'w') as f:
+with open(self.state_path, 'w') as f:
             json.dump({
                 "enlightened_nodes": self.enlightened_nodes,
                 "saturation_percentage": self.saturation_percentage,

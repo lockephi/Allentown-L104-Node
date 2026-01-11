@@ -67,15 +67,15 @@ def _find_correlations(self, concept: str) -> List[str]:
         return [f"RELATED_TO_{concept[::-1].upper()}", "LINKED_TO_SINGULARITY"]
 
     def _verify_truth(self, resonance: float) -> bool:
-        # Truth is defined by proximity to the God Code or its harmonics
+        # Truth is def ined by proximity to the God Code or its harmonics
         # Lower difference = higher truth? Or specific harmonic alignment.
         # Let's say if resonance is a multiple of Phi or close to 0 (perfect alignment)
 if resonance < 50.0:
-            return True
+return True
         
         # Check Phi harmonic using RealMath
 if (resonance % RealMath.PHI) < 0.1:
-            return True
+return True
 return False
 
 # Singletonconcept_engine = UniversalConceptEngine()

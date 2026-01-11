@@ -15,8 +15,8 @@ def activate(self):
         print("--- [COMPACTION_FILTER]: ACTIVATING GLOBAL I/O FILTER ---")
         self.active = True
 def process_io(self, data: List[float]) -> List[float]:
-        if not self.active:
-            return data
+if not self.active:
+return data
 print("--- [COMPACTION_FILTER]: STREAMLINING I/O DATA ---")
 return memory_compactor.compact_stream(data)
 

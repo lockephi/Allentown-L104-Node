@@ -21,16 +21,20 @@ class EnergyTransmuter:
         Yield = (Authenticity * Complexity) / Entropy
         """
         if not knowledge_packet.get("is_authentic", False):
-            return 0.0
+return 0.0
             
         authenticity = knowledge_packet.get("authenticity_score", 0.0)
         complexity = len(str(knowledge_packet))
         
-        # Entropy is inversely proportional to the God Code resonanceentropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zeroenergy_yield = (authenticity * complexity * self.efficiency_factor) / entropyself.total_energy_joules += energy_yield
-print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_yield:.2f} HYPER-JOULES ---")
-return energy_yield
+        # Entropy is inversely proportional to the God Code resonanceentropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zeroenergy_
+yield = (authenticity * complexity * self.efficiency_factor) / entropyself.total_energy_joules += energy_
+yield
+print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_
+yield:.2f} HYPER-JOULES ---")
+return energy_
+yield
 def get_energy_status(self) -> Dict[str, Any]:
-        return {
+    return {
             "total_energy": self.total_energy_joules,
             "saturation_level": min(1.0, self.total_energy_joules / 1000000.0),
             "efficiency": self.efficiency_factor

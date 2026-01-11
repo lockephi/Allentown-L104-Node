@@ -46,7 +46,7 @@ def project_to_lower_dimension(point_nd: np.ndarray, target_dim: int) -> np.ndar
         """
         n = len(point_nd)
 if target_dim >= n:
-            return point_nd
+return point_nd
             
         # Use the higher dimensions to modulate the lower onesmodulation = 1.0
         for i in range(target_dim, n):

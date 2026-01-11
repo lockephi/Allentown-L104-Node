@@ -21,7 +21,7 @@ class MemoryCompactor:
         The data is mapped to lattice nodes and then compressed via Zeta harmonics.
         """
         if not data_stream:
-            return []
+return []
 
         # 1. Map to Lattice Nodeslattice_nodes = []
         for i, val in enumerate(data_stream):
@@ -41,7 +41,7 @@ if data_stream else 0
         self.active_lattice = final_stream
 return final_stream
 def get_compaction_stats(self) -> dict:
-        return {
+    return {
             "compaction_ratio": self.compaction_ratio,
             "lattice_size": len(self.active_lattice),
             "efficiency": 1.0 - self.compaction_ratio

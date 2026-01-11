@@ -45,7 +45,7 @@ def _load_dna(self) -> Dict[str, float]:
         }
 
     def assess_evolutionary_stage(self) -> str:
-        return self.STAGES[self.current_stage_index]
+    return self.STAGES[self.current_stage_index]
 
     def trigger_evolution_cycle(self) -> Dict[str, Any]:
         """
@@ -59,7 +59,7 @@ def _load_dna(self) -> Dict[str, float]:
         mutations = []
         seed = time.time()
 for i, (gene, value) in enumerate(self.dna_sequence.items()):
-            if RealMath.deterministic_random(seed + i) < self.mutation_rate:
+if RealMath.deterministic_random(seed + i) < self.mutation_rate:
                 mutation_factor = 0.9 + (RealMath.deterministic_random(seed + i * RealMath.PHI) * 0.2)
                 new_value = value * mutation_factor
                 self.dna_sequence[gene] = new_value

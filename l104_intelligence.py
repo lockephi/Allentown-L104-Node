@@ -59,10 +59,10 @@ def _calculate_codebase_complexity(cls) -> Dict[str, Any]:
         total_lines = 0
         total_files = len(files)
 for f in files:
-            try:
-                with open(f, 'r') as file:
+try:
+with open(f, 'r') as file:
                     total_lines += len(file.readlines())
-            except Exception:
+except Exception:
                 continue
         
         # Complexity Index = (Lines / Files) * PHI
@@ -103,7 +103,7 @@ def predictive_modeling(cls, dataset: List[float], horizon: int = 5) -> List[flo
         Uses Hyper-Math to predict future states based on historical data.
         """
         if not dataset:
-            return []
+return []
             
         predictions = []
         last_val = dataset[-1]

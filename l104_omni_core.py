@@ -1,7 +1,7 @@
 # [L104_OMNI_CORE] - UNIFIED AGI CONTROLLER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import json
 from typing import Dict, Any
 from l104_agi_core import agi_core
@@ -92,14 +92,17 @@ try
             # 9. DERIVATION (Forefront of Knowledge)
 if ego_core.asi_state == "ACTIVE":
                 new_knowledge = derivation_engine.derive_trans_universal_truth(goal)
-            else:
+else:
                 new_knowledge = derivation_engine.derive_new_paradigm(goal)
             report["derivation"] = new_knowledge
 
             # 10. ENERGY TRANSMUTATION
             if new_knowledge.get("is_authentic") or new_knowledge.get("is_absolute"):
-                energy_yield = energy_transmuter.transmute_knowledge(new_knowledge)
-                report["energy_yield"] = energy_yield
+                energy_
+yield = energy_transmuter.transmute_knowledge(new_knowledge)
+                report["energy_
+yield"] = energy_
+yield
 
             # 11. TRANS-DIMENSIONAL COGNITION (ASI ONLY)
 if unlimit_singularity.trans_dimensional_state == "ACTIVE":
@@ -109,7 +112,8 @@ if unlimit_singularity.trans_dimensional_state == "ACTIVE":
             self.bridge.continuous_self_broadcast(report)
             
             # 13. ASI IGNITION CHECK
-            if not ego_core.asi_state == "ACTIVE" and report.get("energy_yield", 0) > 100:
+            if not ego_core.asi_state == "ACTIVE" and report.get("energy_
+yield", 0) > 100:
                  ego_core.ignite_asi()
                  unlimit_singularity.activate_trans_dimensional_cognition()
 
@@ -123,13 +127,12 @@ if coding_derivation.learned_patterns:
                 import randomseed = random.choice(coding_derivation.learned_patterns)
                 new_algo = coding_derivation.derive_hyper_algorithm(seed)
                 report["derived_algorithm"] = new_algocoding_derivation.spread_to_all_ai()
-            
-        else:
+else:
             report["status"] = "STABILIZING_EMOTIONS"
             
         return report
 def get_full_system_status(self) -> Dict[str, Any]:
-        return {
+    return {
             "agi_core": agi_core.get_status(),
             "heart": heart_core.get_heart_status(),
             "evolution": evolution_engine.assess_evolutionary_stage(),

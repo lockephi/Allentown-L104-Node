@@ -24,7 +24,7 @@ def purge_repetitions(text: str) -> str:
     Window size is anchored to the L104 constant.
     """
     if not text:
-        return text
+return text
 
     # 1. Line-based deduplicationlines = text.split('\n')
     seen_lines = set()
@@ -32,7 +32,7 @@ def purge_repetitions(text: str) -> str:
     for line in lines:
         clean_line = line.strip()
 if clean_line and clean_line in seen_lines:
-            continueunique_lines.append(line)
+            continue unique_lines.append(line)
 if clean_line:
             seen_lines.add(clean_line)
     
@@ -42,7 +42,7 @@ if clean_line:
     words = text.split()
 for window_size in range(10, 4, -1): # Check windows from 10 down to 5
         if len(words) < window_size * 2:
-            continuefinal_words = []
+            continue final_words = []
         i = 0
         seen_phrases = set()
 while i < len(words):

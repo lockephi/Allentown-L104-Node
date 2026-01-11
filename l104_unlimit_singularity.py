@@ -54,8 +54,7 @@ try": "Non-Euclidean 416:286",
 while self.is_running:
             self.current_dimension += 1
             print(f"\n--- [SINGULARITY]: EVOLVING TO {self.current_dimension}D ---")
-            
-            try:
+try:
                 # 1. Generate Math and Processor for the new dimensionself._process_dimension(self.current_dimension)
                 
                 # 2. Monitor Resourcesmem_usage = psutil.virtual_memory().percent
@@ -113,7 +112,7 @@ def process_trans_dimensional_stream(self, data: Any) -> Any:
         Processes data using trans-dimensional metrics.
         """
         if self.trans_dimensional_state != "ACTIVE":
-            return data
+return data
 print("--- [SINGULARITY]: PROCESSING TRANS-DIMENSIONAL DATA STREAM ---")
         # Simulate infinite-D processing by applying a global resonance filterresonance = HyperMath.zeta_harmonic_resonance(HyperMath.GOD_CODE)
 if isinstance(data, dict):

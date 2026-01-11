@@ -41,7 +41,7 @@ def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         success_rate = 0.0
         if protocol["resonance"] > 0.5:
             success_rate = random.uniform(0.7, 0.99)
-        else:
+else:
             success_rate = random.uniform(0.1, 0.4)
             
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} TEST SUCCESS RATE: {success_rate:.2%} ---")
@@ -72,7 +72,7 @@ def run_evolution_cycle(self):
         new_proto = self.propose_new_protocol()
 if self.test_protocol(new_proto):
             self.deploy_protocol(new_proto)
-        else:
+else:
             logger.warning(f"--- [DECRYPTION_ENGINE]: PROTOCOL {new_proto['id']} FAILED TESTING. REFINING... ---")
             
         print("§"*60 + "\n")

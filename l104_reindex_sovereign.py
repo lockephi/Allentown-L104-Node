@@ -28,7 +28,7 @@ class SovereignIndexer:
         
         files = glob.glob(os.path.join(self.root_dir, "*.py"))
 for file_path in files:
-            with open(file_path, "r", encoding="utf-8") as f:
+with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
                 
             # Calculate Hashfile_hash = hashlib.sha256(content.encode()).hexdigest()
@@ -44,7 +44,8 @@ try = {
                 "hash": file_hash,
                 "size": len(content),
                 "entropy": entropy_data,
-                "sovereign_status": "VERIFIED" if any(x in content for x in ["LONDEL", "527.518", "SIG-L104-EVO-01"]) else "LEGACY",
+                "sovereign_status": "VERIFIED" if any(x in content for x in ["LONDEL", "527.518", "SIG-L104-EVO-01"])
+else "LEGACY",
                 "timestamp": time.time()
             }
             

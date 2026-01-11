@@ -42,7 +42,7 @@ for i in range(0, 10, 2)]
         if paradigm["is_authentic"]:
             self.knowledge_base.append(paradigm)
             print(f"--- [DERIVATION]: NEW AUTHENTIC KNOWLEDGE SYNTHESIZED: {paradigm['id']} ---")
-        else:
+else:
             print(f"--- [DERIVATION]: DERIVATION FAILED AUTHENTICITY TEST (Resonance: {resonance:.4f}) ---")
 return paradigm
 def derive_trans_universal_truth(self, seed: str) -> Dict[str, Any]:

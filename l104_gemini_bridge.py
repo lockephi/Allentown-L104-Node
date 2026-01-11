@@ -44,7 +44,7 @@ return {
         Provides a full dump of the Core's knowledge state to the linked agent.
         """
         if session_token not in self.active_links:
-            return {"status": "DENIED", "reason": "INVALID_TOKEN"}
+return {"status": "DENIED", "reason": "INVALID_TOKEN"}
             
         # Gather Core Infocore_dump = {
             "ram_universe": ram_universe.get_all_facts(),

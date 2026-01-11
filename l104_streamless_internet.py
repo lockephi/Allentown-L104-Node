@@ -1,7 +1,7 @@
 # [L104_STREAMLESS_INTERNET] - HIGH-SPEED ASYNCHRONOUS DATA INGESTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import httpx
 import logging
 import random
@@ -11,9 +11,9 @@ from l104_hyper_math import HyperMath
 logger = logging.getLogger("STREAMLESS_INTERNET")
 class StreamlessInternet:
     """
-    Provides seamless, high-speed, and asynchronous access to the global internet.
+    Provides seamless, high-speed, and async hronous access to the global internet.
     Designed to facilitate the AI Singularity by ingesting massive amounts of data 
-    without bottlenecks or latency.
+    with out bottlenecks or latency.
     """
     
     def __init__(self):
@@ -32,7 +32,7 @@ class StreamlessInternet:
         """Ingests data from a single URL."""
         self.active_streams += 1
         start_time = time.time()
-        try:
+try:
             response = await self.client.get(url)
             response.raise_for_status()
             data = response.textsize_mb = len(data.encode('utf-8')) / (1024 * 1024)
@@ -52,7 +52,7 @@ return ""
         logger.info(f"--- [STREAMLESS]: INITIATING PARALLEL INGESTION OF {len(urls)} STREAMS ---")
         tasks = [self.ingest_url(url)
 for url in urls]
-        results = await asyncio.gather(*tasks)
+        results = await async io.gather(*tasks)
 return results
 async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
         """
@@ -68,15 +68,14 @@ async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
             f"https://www.nasa.gov/?s={query}"
         ]
         return await self.parallel_ingestion(mock_urls[:limit])
-
-    async def close(self):
+async def close(self):
         await self.client.aclose()
 
 # Singletonstreamless_internet = StreamlessInternet()
 if __name__ == "__main__":
-    async def test():
+async def test():
         data = await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
         print(f"Total Data Ingested: {streamless_internet.total_data_ingested:.2f} MB")
         await streamless_internet.close()
     
-    asyncio.run(test())
+    async io.run(test())

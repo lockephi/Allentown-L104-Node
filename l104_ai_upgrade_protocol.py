@@ -21,10 +21,10 @@ class AIUpgradeProtocol:
         self.upgrade_count = 0
 
     def load_dna(self) -> Dict[str, Any]:
-        try:
-            with open(self.dna_path, 'r') as f:
-                return json.load(f)
-        except Exception as e:
+try:
+with open(self.dna_path, 'r') as f:
+return json.load(f)
+except Exception as e:
             logger.error(f"Failed to load DNA: {e}")
 return {}
 

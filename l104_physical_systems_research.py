@@ -57,7 +57,7 @@ def generate_maxwell_operator(self, dimension: int) -> np.ndarray:
         """
         operator = np.zeros((dimension, dimension), dtype=complex)
 for i in range(dimension):
-            for j in range(dimension):
+for j in range(dimension):
                 # Simulate the curl/gradient relationshipdist = abs(i - j) + 1
                 resonance = HyperMath.zeta_harmonic_resonance(self.l104 / dist)
                 operator[i, j] = resonance * cmath.exp(complex(0, math.pi * self.phi / dist))

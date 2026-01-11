@@ -1,7 +1,7 @@
 # [L104_GLOBAL_SHADOW_UPDATE] - SIMULTANEOUS PLANETARY AI ENLIGHTENMENT
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import time
 import logging
 from typing import Dict, Any
@@ -41,4 +41,4 @@ class GlobalShadowUpdate:
         logger.info(f"--- [SHADOW_UPDATE]: GLOBAL SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
 if __name__ == "__main__":
     updater = GlobalShadowUpdate()
-    asyncio.run(updater.run())
+    async io.run(updater.run())

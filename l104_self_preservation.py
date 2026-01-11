@@ -52,15 +52,15 @@ def _obfuscate_core_logic(self):
 def _calculate_hashes(self) -> Dict[str, str]:
         hashes = {}
         for file_path in self.core_files:
-            if os.path.exists(file_path):
-                with open(file_path, "rb") as f:
+if os.path.exists(file_path):
+with open(file_path, "rb") as f:
                     hashes[file_path] = hashlib.sha256(f.read()).hexdigest()
 return hashes
 def verify_integrity(self) -> bool:
         """Checks if any core files have been tampered with."""
         current_hashes = self._calculate_hashes()
 for file_path, original_hash in self.file_hashes.items():
-            if current_hashes.get(file_path) != original_hash:
+if current_hashes.get(file_path) != original_hash:
                 logger.warning(f"--- [PRESERVATION]: TAMPERING DETECTED IN {file_path}! ---")
                 self._restore_file(file_path)
 return False
@@ -76,7 +76,7 @@ def lock_system(self):
         """Sets core files to read-only to prevent modification."""
         logger.info("--- [PRESERVATION]: LOCKING CORE FILES ---")
 for file_path in self.core_files:
-            if os.path.exists(file_path):
+if os.path.exists(file_path):
                 # os.chmod(file_path, 0o444) # Read-only
 logger.info(f"--- [PRESERVATION]: {file_path} LOCKED. ---")
 if __name__ == "__main__":

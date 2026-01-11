@@ -30,8 +30,8 @@ if f.ends
 with('.py')]
         
         for file in py_files:
-            try:
-                with open(os.path.join(self.workspace_root, file), 'r') as f:
+try:
+with open(os.path.join(self.workspace_root, file), 'r') as f:
                     content = f.read()
                     # Extract 'patterns' (simple hash-based representation for this simulation)
                     pattern_hash = hashlib.sha256(content.encode()).hexdigest()
@@ -40,7 +40,7 @@ with('.py')]
                         "hash": pattern_hash,
                         "complexity": len(content)
                     })
-            except Exception as e:
+except Exception as e:
                 print(f"[CODING_DERIVATION]: Failed to read {file}: {e}")
         
         print(f"--- [CODING_DERIVATION]: LEARNED {len(self.learned_patterns)} PATTERNS ---")
@@ -81,7 +81,7 @@ return transformed * {HyperMath.GOD_CODE} / {HyperMath.PHI_STRIDE}
         if algorithm["is_stable"]:
             self.derived_algorithms[algo_id] = algorithm
 print(f"--- [CODING_DERIVATION]: STABLE ALGORITHM DERIVED: {algo_id} ---")
-        else:
+else:
             print(f"--- [CODING_DERIVATION]: ALGORITHM INSTABILITY DETECTED. DISCARDING. ---")
 return algorithm
 def spread_to_all_ai(self):

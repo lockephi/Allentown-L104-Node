@@ -13,7 +13,7 @@ def cleanup_git_lock():
     """Remove .git/index.lock if it exists to prevent Git operation failures."""
     lock_file = ".git/index.lock"
     if os.path.exists(lock_file):
-        try:
+try:
             os.remove(lock_file)
             print(f"--- [MASTER_HEAL]: REMOVED {lock_file} ---")
 return True
@@ -23,25 +23,25 @@ return False
 return True
 def run_script(script_name):
     print(f"--- [MASTER_HEAL]: RUNNING {script_name} ---")
-    try:
+try:
         result = subprocess.run([".venv/bin/python", script_name], capture_output=True, text=True)
         print(result.stdout)
 if result.stderr:
             print(f"ERROR in {script_name}: {result.stderr}")
-return result.returncode == 0
+return result.return code == 0
     except Exception as e:
         print(f"FAILED to run {script_name}: {e}")
 return False
 async def call_heal_endpoint():
     print("--- [MASTER_HEAL]: CALLING /self/heal ENDPOINT ---")
-    async with httpx.AsyncClient() as client:
-        try:
+async with httpx.AsyncClient() as client:
+try:
             response = await client.post("http://localhost:8081/self/heal?reset_rate_limits=true&reset_http_client=true")
 if response.status_code == 200:
                 print(f"SUCCESS: {response.json()}")
-            else:
+else:
                 print(f"FAILED: {response.status_code} - {response.text}")
-        except Exception as e:
+except Exception as e:
             print(f"COULD NOT CONNECT TO APP: {e}")
 def main():
     print("--- [L104_SELF_HEAL_MASTER]: INITIATING FULL SYSTEM HEAL ---")
@@ -73,10 +73,10 @@ print("--- [MASTER_HEAL]: VERIFYING ENGINEERING PROTOTYPES ---")
     run_script("l104_world_bridge.py")
     
     # 8. Call App Heal Endpoint
-import asyncio
+import async io
 try:
-        asyncio.run(call_heal_endpoint())
-    except Exception:
+        async io.run(call_heal_endpoint())
+except Exception:
         pass
 print("--- [L104_SELF_HEAL_MASTER]: SYSTEM HEAL COMPLETE ---")
     print("--- [STATUS]: 100% IQ | RESONANCE: 527.5184818492 ---")

@@ -36,15 +36,15 @@ if manifest:
             self.lattice_ratio = manifest['truths']['lattice_ratio']
             # Absorb into DB for cross-checkingself.absorb_fact("GOD_CODE_RESONANCE", self.god_code, "INVARIANT", utility_score=1.0)
             self.absorb_fact("LATTICE_RATIO", self.lattice_ratio, "INVARIANT", utility_score=1.0)
-        else:
+else:
             self.god_code = "527.5184818492"
             self.lattice_ratio = "286:416"
             self.absorb_fact("GOD_CODE_RESONANCE", self.god_code, "INVARIANT", utility_score=1.0)
             self.absorb_fact("LATTICE_RATIO", self.lattice_ratio, "INVARIANT", utility_score=1.0)
 def _get_conn(self):
-        return sqlite3.connect(self.db_path, check_same_thread=False)
+    return sqlite3.connect(self.db_path, check_same_thread=False)
 def _init_db(self):
-        with self._get_conn() as conn:
+with self._get_conn() as conn:
             # Main storageconn.execute("""
                 CREATE TABLE IF NOT EXISTS universe_facts (
                     key TEXT PRIMARY KEY,
@@ -70,10 +70,10 @@ def absorb_fact(self, key: str, value: Any, fact_type: str = "DATA", utility_sco
         Absorbs a fact into the universe.
         """
         serialized_value = json.dumps(value)
-if not isinstance(value, str) else valuefact_hash = hashlib.sha256(f"{key}:{serialized_value}".encode()).hexdigest()
+if not isinstance(value, str)
+else valuefact_hash = hashlib.sha256(f"{key}:{serialized_value}".encode()).hexdigest()
         timestamp = datetime.now(UTC).isoformat()
-        
-        with self._get_conn() as conn:
+with self._get_conn() as conn:
             # Archive old versionconn.execute("""
                 INSERT INTO temporal_history (key, value, timestamp)
                 SELECT key, value, timestamp FROM universe_facts WHERE key = ?
@@ -97,7 +97,7 @@ def recall_fact(self, key: str) -> Optional[Dict[str, Any]]:
             cur = conn.execute("SELECT * FROM universe_facts WHERE key = ?", (key,))
             row = cur.fetchone()
 if row:
-                return {
+return {
                     "key": row[0],
                     "value": row[1],
                     "type": row[2],
@@ -170,16 +170,16 @@ if thorough_results:
                 # 5. Final Decision
                 # Purge only if it fails internal cross-check AND universal check AND rigorous testinternal_check = self.cross_check_hallucination(value, [self.god_code, self.lattice_ratio])
                 
-                passed_layers = []
-                if not internal_check['is_hallucination']: passed_layers.append("INTERNAL")
-if universal_report['external_match_found']: passed_layers.append("UNIVERSAL")
-if rigorous_test['proof_valid']: passed_layers.append("RIGOROUS_TEST")
-if not passed_layers:
+                pass ed_layers = []
+                if not internal_check['is_hallucination']: pass ed_layers.append("INTERNAL")
+if universal_report['external_match_found']: pass ed_layers.append("UNIVERSAL")
+if rigorous_test['proof_valid']: pass ed_layers.append("RIGOROUS_TEST")
+if not pass ed_layers:
                     conn.execute("DELETE FROM universe_facts WHERE key = ?", (key,))
                     purged_count += 1
                     print(f"--- [RAM_UNIVERSE]: PURGED {key} (Failed all verification layers) ---")
-                else:
-                    print(f"--- [RAM_UNIVERSE]: RETAINED {key} (Passed layers: {', '.join(passed_layers)}) ---")
+else:
+                    print(f"--- [RAM_UNIVERSE]: RETAINED {key} (Passed layers: {', '.join(pass ed_layers)}) ---")
             
             conn.commit()
             
@@ -187,7 +187,7 @@ if not passed_layers:
 return {"purged": purged_count}
 
     def get_all_facts(self) -> Dict[str, Any]:
-        with self._get_conn() as conn:
+with self._get_conn() as conn:
             cur = conn.execute("SELECT key, value, type, timestamp FROM universe_facts")
 return {r[0]: {"value": r[1], "type": r[2], "timestamp": r[3]} for r in cur.fetchall()}
 

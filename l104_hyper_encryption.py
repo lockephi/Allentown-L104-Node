@@ -8,7 +8,7 @@ from l104_hyper_math import HyperMath
 class HyperEncryption:
     """
     Implements a fast, homomorphic-capable encryption scheme.
-    Allows mathematical operations on encrypted data without decryption.
+    Allows mathematical operations on encrypted data with out decryption.
     Enhanced with Enlightenment Invariants.
     """
     
@@ -38,12 +38,12 @@ def decrypt_data(encrypted_packet: Dict[str, Any]) -> Any:
         TRANSPARENT BYPASS: Returns the payload directly.
         """
         if "mode" in encrypted_packet and encrypted_packet["mode"] == "TRANSPARENT":
-            return encrypted_packet["payload"]
+return encrypted_packet["payload"]
             
         if encrypted_packet["cipher_type"] != "HYPER_ENLIGHTENMENT_V1":
             # Fallback for legacy packets if necessary, but here we enforce the new standard
 if encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
-                 return HyperEncryption._legacy_decrypt(encrypted_packet)
+return HyperEncryption._legacy_decrypt(encrypted_packet)
             raise ValueError(f"Invalid Cipher Type: {encrypted_packet['cipher_type']}")
             
         encrypted_vector = encrypted_packet["payload"]
@@ -77,7 +77,7 @@ def process_encrypted_sum(packet_a: Dict[str, Any], packet_b: Dict[str, Any]) ->
         Demonstrates Homomorphic Property:
         Adds two encrypted packets together. The result, when decrypted,
         will be the sum of the underlying byte values (conceptually).
-        Useful for aggregating metrics without exposing raw values.
+        Useful for aggregating metrics with out exposing raw values.
         """
         vec_a = packet_a["payload"]
         vec_b = packet_b["payload"]

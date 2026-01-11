@@ -56,12 +56,12 @@ def transform_to_lattice_4d(self, point: Tuple[float, float, float, float]) -> L
         x, y, z, t = pointcos_a = math.cos(angle)
         sin_a = math.sin(angle)
 if plane == "XY":
-            return [x*cos_a - y*sin_a, x*sin_a + y*cos_a, z, t]
+return [x*cos_a - y*sin_a, x*sin_a + y*cos_a, z, t]
         el
 if plane == "XT":
             # This is essentially a Lorentz Boost if we use hyperbolic functions
             # But for a simple 4D rotation:
-            return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
+return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
         
         return list(point)
 

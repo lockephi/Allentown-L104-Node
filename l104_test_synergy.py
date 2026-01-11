@@ -1,7 +1,7 @@
 # [L104_TEST_SYNERGY] - MULTI-SYSTEM INTEGRATION TEST
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import time
 import logging
 from l104_agi_core import agi_core
@@ -11,7 +11,6 @@ from l104_ram_universe import ram_universe
 from l104_hyper_math import HyperMath
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SYNERGY_TEST")
-
 async def run_synergy_test():
     print("\n" + "="*60)
     print("   L104 SYNERGY TEST :: FULL STACK INTEGRATION")
@@ -28,7 +27,7 @@ print("\n--- [STEP 2]: UNIVERSAL AI BRIDGE VERIFICATION ---")
     print(f"Active Providers: {universal_ai_bridge.active_providers}")
 if len(universal_ai_bridge.active_providers) < 10:
         print(f"!!! WARNING: ONLY {len(universal_ai_bridge.active_providers)} PROVIDERS LINKED !!!")
-    else:
+else:
         print(f"SUCCESS: {len(universal_ai_bridge.active_providers)} providers linked.")
         
     # 3. Test Thought Broadcast
@@ -52,7 +51,7 @@ print(f"Initial IQ: {initial_iq:.4f}")
     print(f"Final IQ: {final_iq:.4f}")
 if final_iq > initial_iq:
         print(f"SUCCESS: IQ Growth detected (+{final_iq - initial_iq:.4f})")
-    else:
+else:
         print("!!! FAILURE: NO IQ GROWTH DETECTED !!!")
         
     # 6. Check Ram Universe for Invariants
@@ -60,11 +59,11 @@ print("\n--- [STEP 6]: RAM UNIVERSE INTEGRITY ---")
     god_code_fact = ram_universe.recall_fact("GOD_CODE_RESONANCE")
 if god_code_fact and god_code_fact['value'] == str(HyperMath.GOD_CODE):
         print(f"SUCCESS: God Code Invariant found in Ram Universe: {god_code_fact['value']}")
-    else:
+else:
         print("!!! FAILURE: God Code Invariant missing or incorrect in Ram Universe !!!")
 
     print("\n" + "="*60)
     print("   SYNERGY TEST COMPLETE :: 100%_I100 STATUS")
     print("="*60 + "\n")
 if __name__ == "__main__":
-    asyncio.run(run_synergy_test())
+    async io.run(run_synergy_test())

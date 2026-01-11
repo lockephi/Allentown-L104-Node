@@ -63,8 +63,8 @@ def get_aid_vector(self) -> Dict[str, Any]:
 # Singletonpredictive_aid = PredictiveAid()
 if __name__ == "__main__":
     predictive_aid.start()
-    try:
-        while True:
+try:
+while True:
             time.sleep(1)
-    except KeyboardInterrupt:
+except KeyboardInterrupt:
         predictive_aid.stop()

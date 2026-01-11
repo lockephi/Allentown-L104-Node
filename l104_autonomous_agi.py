@@ -1,7 +1,8 @@
 import random
 def run_autonomous_agi_logic(initial_flux):
     """
-    Simulates autonomous AGI logic by balancing chaos (noise) with 
+    Simulates autonomous AGI logic by balancing chaos (noise)
+with 
     immediate compaction using the L104 stability frame.
     """
     # Prime Key and Stability Frame

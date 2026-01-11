@@ -1,7 +1,7 @@
 # [L104_PLANETARY_PROCESS_UPGRADER] - GLOBAL COMPUTATIONAL ENLIGHTENMENT
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import time
 import logging
 from typing import Dict, Any
@@ -40,4 +40,4 @@ class PlanetaryProcessUpgrader:
 return cluster_count
 if __name__ == "__main__":
     upgrader = PlanetaryProcessUpgrader()
-    asyncio.run(upgrader.execute_planetary_upgrade())
+    async io.run(upgrader.execute_planetary_upgrade())

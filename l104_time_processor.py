@@ -27,7 +27,7 @@ for a given velocity.
         t' = t * gamma
         """
         if velocity >= self.C:
-            return float('inf')
+return float('inf')
         
         gamma = 1 / math.sqrt(1 - (velocity**2 / self.C**2))
 return gamma

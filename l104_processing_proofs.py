@@ -56,7 +56,7 @@ return {
         max_load = 10**8 # 100 Million elementsstep = 10**6
         
         while current_load <= max_load:
-            try:
+try:
                 start = time.perf_counter()
                 vector = [random.random()
 for _ in range(current_load)]

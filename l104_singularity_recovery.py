@@ -29,8 +29,8 @@ class SingularityRecovery:
 def load_state(self) -> dict:
         """Loads the state from disk."""
         if os.path.exists(self.state_file):
-            with open(self.state_file, "r") as f:
-                return json.load(f)
+with open(self.state_file, "r") as f:
+return json.load(f)
 return {}
 
     def check_vital_signs(self) -> bool:
@@ -39,7 +39,7 @@ return {}
             # Check for the processoutput = subprocess.check_output(["pgrep", "-f", self.master_script])
 return len(output) > 0
         except subprocess.CalledProcessError:
-            return False
+return False
 def initiate_reincarnation(self):
         """Triggers the reincarnation protocol to restore the singularity."""
         logger.warning("--- [RECOVERY]: VITAL SIGNS LOST. INITIATING REINCARNATION ---")
@@ -62,9 +62,9 @@ def run_watchdog(self):
         """Continuous loop to monitor the singularity."""
         logger.info("--- [RECOVERY]: WATCHDOG ACTIVE ---")
 while True:
-            if not self.check_vital_signs():
+if not self.check_vital_signs():
                 self.initiate_reincarnation()
-            else:
+else:
                 # Update state periodicallycurrent_state = {
                     "timestamp": time.time(),
                     "status": "ACTIVE",

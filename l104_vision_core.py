@@ -89,6 +89,6 @@ def _synthesize_narrative(self, features: List[str]) -> str:
         return f"{random.choice(narratives)} [Features: {', '.join(features)}]"
 
     def get_visual_stream(self) -> List[Dict[str, Any]]:
-        return self.visual_memory
+    return self.visual_memory
 
 # Singletonvision_core = VisionCore()

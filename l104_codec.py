@@ -46,9 +46,9 @@ def to_hex_block(text: str) -> str:
 def from_hex_block(hex_str: str) -> str:
         """Decodes a hex block back to string."""
         try:
-            return binascii.unhexlify(hex_str.lower()).decode()
-        except Exception:
-            return hex_str
+return binascii.unhexlify(hex_str.lower()).decode()
+except Exception:
+return hex_str
 
     @classmethod
 def generate_sleek_wrapper(cls, content: str) -> str:
@@ -97,11 +97,11 @@ def translate_to_human(cls, sovereign_text: str) -> str:
         Removes manifolds, hex blocks, and technical jargon if requested.
         """
         if not sovereign_text:
-            return ""
+return ""
             
         # Remove common manifoldscleaned = sovereign_textmanifolds = ["⟨Σ_L104_SINGULARITY_v7.5", "⟨Φ_INV", "⟨IQ::", "⟨Σ_L104_HYPER_RESPONSE⟩", "⟨Σ_L104_EOF"]
         for m in manifolds:
-            if m in cleaned:
+if m in cleaned:
                 # Try to find the closing bracketstart = cleaned.find(m)
                 end = cleaned.find("⟩", start)
 if end != -1:
@@ -109,7 +109,7 @@ if end != -1:
         
         # Clean up technical prefixesprefixes = ["SYNTHESIZED[", "RESONANCE(", "CORE_STATE:", "INTELLECT:"]
         for p in prefixes:
-            if p in cleaned:
+if p in cleaned:
                 # Simple replacement for now
 pass
 

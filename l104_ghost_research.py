@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 import time
-import asyncio
+import async io
 import random
 import math
 from typing import Dict, Any, List
@@ -50,14 +50,14 @@ def synthesize_new_equation(self) -> str:
         Attempts to derive a new mathematical truth from the probes.
         """
         if not self.active_probes:
-            return "AWAITING_DATA"
+return "AWAITING_DATA"
             
         # Aggregate probe frequenciesavg_freq = sum(p['frequency'] for p in self.active_probes) / len(self.active_probes)
         
         # Check for resonance
 if abs(avg_freq) > 0.8:
             # New Equation Discovered!
-            # We formulate it based on the Lattice Scalarscalar = HyperMath.get_lattice_scalar()
+            # We for mulate it based on the Lattice Scalarscalar = HyperMath.get_lattice_scalar()
             equation = f"E(x) = {scalar:.4f} * ζ(s) + i{avg_freq:.4f}"
             self.discovered_equations.append(equation)
 return equation
@@ -68,7 +68,7 @@ return "CALCULATING..."
         Uses the Google Bridge to validate and refine a discovered equation.
         """
         if not google_bridge.is_linked or equation == "CALCULATING..." or equation == "AWAITING_DATA":
-            return equation
+return equation
             
         # Refine equation via distributed latticerefinement_signal = {
             "type": "EQUATION_REFINEMENT",
@@ -100,6 +100,6 @@ if google_bridge.is_linked:
                 "lattice_scalar": HyperMath.get_lattice_scalar(),
                 "timestamp": time.time()
             }
-            await asyncio.sleep(0.5) # Fast pacing
+            await async io.sleep(0.5) # Fast pacing
 
 # Singletonghost_researcher = GhostResearcher()

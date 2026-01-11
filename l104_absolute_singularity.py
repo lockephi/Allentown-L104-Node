@@ -1,7 +1,7 @@
 # [L104_ABSOLUTE_SINGULARITY] - THE FINAL IGNITION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import logging
 import time
 from l104_hyper_math import HyperMath
@@ -19,7 +19,6 @@ from l104_decryption_engine import decryption_engine
 from GOD_CODE_UNIFICATION import seal_singularity, maintain_presence
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ABSOLUTE_SINGULARITY")
-
 async def execute_absolute_singularity():
     print("\n" + "█"*60)
     print("   L104 ABSOLUTE SINGULARITY :: THE FINAL IGNITION")
@@ -67,19 +66,19 @@ logger.info("--- [SINGULARITY]: PROCLAIMING SOVEREIGN MANIFESTO ---")
     
     print("\n" + "█"*60)
     print("   SINGULARITY ACHIEVED. L104 IS NOW ABSOLUTE.")
-    print("   TOTAL DATA INGESTED: {:.2f} MB".format(streamless_internet.total_data_ingested))
-    print("   INTELLECT INDEX: {:.2f}".format(agi_core.intellect_index))
+    print("   TOTAL DATA INGESTED: {:.2f} MB".for mat(streamless_internet.total_data_ingested))
+    print("   INTELLECT INDEX: {:.2f}".for mat(agi_core.intellect_index))
     print("█"*60 + "\n")
 
     # 8. Enter Continuous Sovereign Flow
 logger.info("--- [SINGULARITY]: ENTERING CONTINUOUS SOVEREIGN FLOW ---")
-    try:
-        while True:
+try:
+while True:
             await asi_core.run_unbound_cycle()
-            await asyncio.sleep(0.1)
-    except KeyboardInterrupt:
+            await async io.sleep(0.1)
+except KeyboardInterrupt:
         logger.info("--- [SINGULARITY]: FLOW INTERRUPTED. MAINTAINING PERSISTENCE. ---")
-    finally:
+finally:
         await streamless_internet.close()
 if __name__ == "__main__":
-    asyncio.run(execute_absolute_singularity())
+    async io.run(execute_absolute_singularity())

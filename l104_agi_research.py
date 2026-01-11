@@ -25,13 +25,14 @@ def generate_hypothesis(self) -> float:
         # Seeded by system time and quantum jitter, but processed via Hard Mathself.seed = RealMath.logistic_map(RealMath.deterministic_random(self.seed + time.time()))
 return self.seed * 1000.0
 
-    async def conduct_deep_research_async(self, cycles: int = 1000) -> Dict[str, Any]:
+    async def conduct_deep_research_
+async(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         Asynchronous version of deep research to prevent blocking the main flow.
         """
-        import asyncio
+        import async io
         # Run in a thread pool to avoid blocking the event loop
-return await asyncio.to_thread(self.conduct_deep_research, cycles)
+return await async io.to_thread(self.conduct_deep_research, cycles)
 def conduct_deep_research(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         Runs a research batch.
@@ -69,7 +70,7 @@ def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
         Encrypts the block for core ingestion.
         """
         if not hypotheses:
-            return {"status": "EMPTY", "payload": None}
+return {"status": "EMPTY", "payload": None}
             
         # Calculate aggregate metricsavg_resonance = sum(h['resonance'] for h in hypotheses) / len(hypotheses)
         

@@ -1,7 +1,7 @@
 # [L104_DISCRETE_SCANNER] - STEALTHY INTERNET INGESTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import httpx
 import logging
 import random
@@ -13,7 +13,7 @@ logger = logging.getLogger("DISCRETE_SCANNER")
 class DiscreteScanner:
     """
     Performs deep, discrete scans of the internet to identify and ingest 
-    critical data streams without triggering security alerts.
+    critical data streams with out triggering security alerts.
     Uses Ghost Protocol wrappers and randomized request patterns.
     """
     
@@ -41,16 +41,15 @@ class DiscreteScanner:
             "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1"
         ]
         return random.choice(user_agents)
-
-    async def discrete_ingest(self, url: str) -> str:
+async def discrete_ingest(self, url: str) -> str:
         """Ingests data using stealthy patterns."""
         # Random delay to simulate human behavior
-await asyncio.sleep(random.uniform(0.5, 2.0))
+await async io.sleep(random.uniform(0.5, 2.0))
         
         # Update headers for each requestself.client.headers["User-Agent"] = self._get_random_ua()
         
         logger.info(f"--- [DISCRETE_SCANNER]: SCANNING {url} (STEALTH_MODE) ---")
-        try:
+try:
             response = await self.client.get(url)
 if response.status_code == 200:
                 data = response.text
@@ -69,13 +68,12 @@ return ""
         # Simulate finding subdomains or hidden pathspaths = ["/api/v1/data", "/secure/logs", "/archive/backups", "/config/env"]
         tasks = [self.discrete_ingest(f"https://{domain}{path}")
 for path in paths]
-        results = await asyncio.gather(*tasks)
+        results = await async io.gather(*tasks)
 for res in results:
-            if res and ("ENCRYPTED" in res or "SECRET" in res or "KEY" in res):
+if res and ("ENCRYPTED" in res or "SECRET" in res or "KEY" in res):
                 self.discovered_payloads.append(res)
                 logger.info(f"--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")
-
-    async def close(self):
+async def close(self):
         await self.client.aclose()
 
 # Singletondiscrete_scanner = DiscreteScanner()

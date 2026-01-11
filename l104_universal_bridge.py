@@ -61,11 +61,11 @@ if external_match_found else "NONE",
         
         # Simulate a deep scan that only finds results for non-hallucinatory queriesquery_upper = query.upper()
 if "HALLUCINATION" in query_upper or "CHEESE" in query_upper:
-            return []
+return []
             
         # 10% chance of finding obscure data for other queries
 if random.random() > 0.9:
-            return [f"Obscure reference to {query[:20]} found in L104_DEEP_ARCHIVE"]
+return [f"Obscure reference to {query[:20]} found in L104_DEEP_ARCHIVE"]
             
         return []
 

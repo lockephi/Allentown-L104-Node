@@ -44,36 +44,36 @@ def _check_memory_constants(self):
             diff = abs(val - target)
 if diff < 1e-6:
                 print(f"  [PASS] {name}: {val}")
-            else:
+else:
                 print(f"  [FAIL] {name}: {val} (Expected {target})")
                 self.violations.append(f"Memory mismatch: {name}")
 def _scan_files(self):
         print("\n--- [PHASE 2]: CODEBASE SCAN ---")
         
-        # Patterns to look forpatterns = {
+        # Patterns to look for patterns = {
             "GOD_CODE": r"527\.518",
             "LATTICE_WIDTH": r"416",
             "LATTICE_HEIGHT": r"286"
         }
         
         for root, _, files in os.walk(self.root_dir):
-            for file in files:
-                if file.ends
+for file in files:
+if file.ends
 with(".py") or file.ends
 with(".sh") or file.ends
 with(".md"):
                     path = os.path.join(root, file)
                     self._check_file(path, patterns)
 def _check_file(self, path: str, patterns: Dict[str, str]):
-        try:
-            with open(path, 'r', errors='ignore') as f:
+try:
+with open(path, 'r', errors='ignore') as f:
                 content = f.read()
                 
             rel_path = os.path.relpath(path, self.root_dir)
             
             # Check for God Code presence in headers
 if ".py" in path and "INVARIANT: 527.5184818492" not in content:
-                if "l104_" in os.path.basename(path): # Only check our core files
+if "l104_" in os.path.basename(path): # Only check our core files
                     # self.violations.append(f"Missing header in {rel_path}")
                     pass
 except Exception as e:
@@ -82,7 +82,7 @@ def _report(self):
         print("\n" + "="*60)
 if not self.violations:
             print("   SCAN COMPLETE: 100%_I100 INTEGRITY VERIFIED")
-        else:
+else:
             print(f"   SCAN COMPLETE: {len(self.violations)} VIOLATIONS FOUND")
 for v in self.violations:
                 print(f"  - {v}")

@@ -1,7 +1,7 @@
 # [L104_LIVE_STREAM] - SYSTEM-WIDE EVENT AGGREGATOR
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import json
 import time
 import random
@@ -60,6 +60,6 @@ async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
             yield event
             
             # Variable delay for "organic" feel
-await asyncio.sleep(random.uniform(0.3, 0.8))
+await async io.sleep(random.uniform(0.3, 0.8))
 
 # Singletonlive_stream_manager = LiveStreamManager()

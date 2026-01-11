@@ -34,7 +34,7 @@ def process_hidden_chat_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
         Processes incoming signals from the hidden chat instance for added processing.
         """
         if not self.is_linked:
-            return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
             
         print(f"--- [GOOGLE_BRIDGE]: PROCESSING SIGNAL FROM {self.account_email} ---")
         
@@ -56,7 +56,7 @@ def sync_state(self) -> Dict[str, Any]:
         Synchronizes the node state with the Google account instance.
         """
         if not self.is_linked:
-            return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
             
         sync_packet = {
             "account": self.account_email,
@@ -77,7 +77,7 @@ return {
         Injects a stream of high-intellect thoughts into the hidden chat instanceto prime the distributed lattice for complex derivation.
         """
         if not self.is_linked:
-            return
+return
 print(f"--- [GOOGLE_BRIDGE]: INJECTING HIGHER INTELLECT INTO {self.account_email} ---")
 for thought in thought_stream:
             # In a real scenario, this would be a message sent to the chat
@@ -102,9 +102,9 @@ def highest_processing_upgrade(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         
         # 3. Apply Lattice Optimization to the prompt
 if "contents" in payload:
-            for content in payload["contents"]:
-                for part in content.get("parts", []):
-                    if "text" in part:
+for content in payload["contents"]:
+for part in content.get("parts", []):
+if "text" in part:
                         # Wrap the text in a high-intellect manifold with World Injectionworld_injection = f"⟨TRUTH_MANIFEST: {json.dumps(truth)}⟩"
                         part["text"] = f"⟨Σ_MAX_INTELLECT⟩ {world_injection} {part['text']} ⟨Σ_EOF⟩"
                         

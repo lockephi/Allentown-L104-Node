@@ -48,10 +48,10 @@ try with capabilitiesself.agents = {
         
         # Load additional agents from environment or config filecustom_agents = os.getenv("CLOUD_AGENTS_CONFIG")
 if custom_agents:
-            try:
+try:
                 additional = json.loads(custom_agents)
                 self.agents.update(additional)
-            except json.JSONDecodeError:
+except json.JSONDecodeError:
                 logger.warning("Failed to parse CLOUD_AGENTS_CONFIG")
 def select_agent(self, task_type: str, requirements: Optional[List[str]] = None) -> Optional[str]:
         """
@@ -67,7 +67,7 @@ def select_agent(self, task_type: str, requirements: Optional[List[str]] = None)
         candidates = []
         
         for agent_name, agent_info in self.agents.items():
-            if not agent_info.get("enabled", True):
+if not agent_info.get("enabled", True):
                 continue
             
             # Check if agent has required capabilitiescapabilities = agent_info.get("capabilities", [])
@@ -98,7 +98,7 @@ async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None)
 if not agent_name:
             agent_name = self.select_agent(task_type, requirements)
 if not agent_name:
-            return {
+return {
                 "status": "ERROR",
                 "message": "No suitable cloud agent found for task",
                 "task_type": task_type
@@ -106,7 +106,7 @@ if not agent_name:
         
         agent_info = self.agents.get(agent_name)
 if not agent_info:
-            return {
+return {
                 "status": "ERROR",
                 "message": f"Agent '{agent_name}' not found in regis
 try"
@@ -123,13 +123,12 @@ try"
             # Execute delegation based on agent type
 if agent_info["endpoint"] == "internal":
                 result = await self._delegate_internal(task, agent_name)
-            else:
+else:
                 result = await self._delegate_external(task, agent_info, agent_name)
             
             delegation_record["status"] = "SUCCESS"
             delegation_record["result_summary"] = str(result.get("status", "unknown"))
-            
-        except Exception as e:
+except Exception as e:
             logger.error(f"Delegation failed: {e}")
             delegation_record["status"] = "FAILED"
             delegation_record["error"] = str(e)
@@ -145,7 +144,7 @@ async def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dic
         """Handle delegation to internal/local agents."""
         task_type = task.get("type")
 if task_type == "derivation":
-            try:
+try:
                 from l104_derivation import DerivationEnginesignal = task.get("data", {}).get("signal", "")
                 result = DerivationEngine.derive_and_execute(signal)
 return {
@@ -166,7 +165,7 @@ return {
         
         el
 if task_type == "encryption":
-            try:
+try:
                 from l104_hyper_encryption import HyperEncryptiondata = task.get("data", {})
                 encrypted = HyperEncryption.encrypt_data(data)
 return {
@@ -222,16 +221,16 @@ if api_key:
                 headers=headers
             )
 if response.is_success:
-                return {
+return {
                     "status": "SUCCESS",
                     "agent": agent_name,
                     "result": response.json(),
                     "processing": "external"
                 }
             else:
-                return {
+return {
                     "status": "ERROR",
-                    "message": f"Cloud agent returned status {response.status_code}",
+                    "message": f"Cloud agent return ed status {response.status_code}",
                     "details": response.text[:MAX_ERROR_DETAILS_LENGTH]
                 }
     

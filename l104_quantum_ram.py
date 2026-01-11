@@ -48,13 +48,13 @@ def encrypt_memory(self, data: Any) -> str:
 return encrypted_bytes.decode('utf-8')
 def decrypt_memory(self, token: str) -> Any:
         """
-        Decrypts memory, returning the raw data.
+        Decrypts memory, return ing the raw data.
         """
         try:
             decrypted_bytes = self.cipher_suite.decrypt(token.encode('utf-8'))
 return json.loads(decrypted_bytes.decode('utf-8'))
-        except Exception as e:
-            return {"error": "DECRYPTION_FAILURE", "details": str(e)}
+except Exception as e:
+return {"error": "DECRYPTION_FAILURE", "details": str(e)}
 
     def store(self, key: str, value: Any) -> str:
         """

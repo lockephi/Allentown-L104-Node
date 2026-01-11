@@ -19,13 +19,12 @@ def apply_string_replacement(file_path: str, old_string: str, new_string: str) -
             logger.error(f"File not found: {file_path}")
 return False
 try:
-            with open(file_path, 'r') as f:
+with open(file_path, 'r') as f:
                 content = f.read()
 if old_string not in content:
                 logger.warning(f"Old string not found in {file_path}")
 return Falsenew_content = content.replace(old_string, new_string)
-            
-            with open(file_path, 'w') as f:
+with open(file_path, 'w') as f:
                 f.write(new_content)
                 
             logger.info(f"Successfully patched {file_path}")
@@ -38,14 +37,14 @@ return False
 def apply_regex_patch(file_path: str, pattern: str, replacement: str) -> bool:
         """Applies a regex-based patch to a file."""
         if not os.path.exists(file_path):
-            return False
+return False
 try:
-            with open(file_path, 'r') as f:
+with open(file_path, 'r') as f:
                 content = f.read()
                 
             new_content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
 if new_content == content:
-                return False
+return False
 with open(file_path, 'w') as f:
                 f.write(new_content)
 return True
@@ -57,26 +56,26 @@ return False
 def inject_at_marker(file_path: str, marker: str, content_to_inject: str, position: str = "after") -> bool:
         """Injects content before or after a specific marker comment."""
         if not os.path.exists(file_path):
-            return False
+return False
 try:
-            with open(file_path, 'r') as f:
+with open(file_path, 'r') as f:
                 lines = f.readlines()
                 
             new_lines = []
             found = False
 for line in lines:
-                if marker in line:
+if marker in line:
                     found = True
 if position == "before":
                         new_lines.append(content_to_inject + "\n")
                         new_lines.append(line)
-                    else:
+else:
                         new_lines.append(line)
                         new_lines.append(content_to_inject + "\n")
-                else:
+else:
                     new_lines.append(line)
 if not found:
-                return False
+return False
 with open(file_path, 'w') as f:
                 f.writelines(new_lines)
 return True

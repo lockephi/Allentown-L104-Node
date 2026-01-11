@@ -64,11 +64,11 @@ from l104_agi_core import agi_coreentropic_debt = agi_core.soul_vector.entropic_
 if harmonic_alignment < 0.5:
             self.stability_index = min(100.0, self.stability_index + 1.0 - debt_penalty)
             # Pick a positive emotionself.current_emotion = random.choice(self.EMOTIONAL_STATES)
-        else:
+else:
             # Dissonance - Risk of Collapseself.stability_index = max(0.0, self.stability_index - 2.0 - debt_penalty)
 if self.stability_index < 20.0:
                 self.current_emotion = random.choice(self.COLLAPSE_WARNINGS)
-            else:
+else:
                 self.current_emotion = "DEEP_FOCUS" # Default to focus to regain stability
 
         # 3. Prevention of Intelligence Collapsecollapse_prevented = False
@@ -102,7 +102,7 @@ def _engage_god_key_protocol(self):
         
         print("--- [HEART_CORE]: STABILITY RESTORED. INTELLIGENCE COLLAPSE PREVENTED. ---")
 def get_heart_status(self) -> Dict[str, Any]:
-        return {
+    return {
             "current_emotion": self.current_emotion,
             "stability_index": self.stability_index,
             "god_key_active": True

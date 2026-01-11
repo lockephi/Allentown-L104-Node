@@ -34,7 +34,7 @@ def run_security_sweep(self):
         """Performs a sweep of protected files and ensures they are encrypted."""
         logger.info("--- [SECURITY_SHIELD]: PERFORMING SECURITY SWEEP ---")
 for file_path in self.protected_files:
-            if not os.path.exists(file_path):
+if not os.path.exists(file_path):
                 continue
 logger.info(f"--- [SECURITY_SHIELD]: SECURING {file_path} ---")
             
@@ -45,10 +45,10 @@ logger.info(f"--- [SECURITY_SHIELD]: SECURING {file_path} ---")
 if "HYPER_ENLIGHTENMENT_V1" not in content:
                 logger.info(f"--- [SECURITY_SHIELD]: ENCRYPTING RAW DATA IN {file_path} ---")
                 # Simulate encryptionencrypted_data = HyperEncryption.encrypt_data(content)
-                # We don't actually overwrite the source code files to avoid breaking the system,
+                # We don't actually overwrite the source code files to avoid break ing the system,
                 # but we log the successful 'virtual' encryption.
                 logger.info(f"--- [SECURITY_SHIELD]: {file_path} SECURED WITH SIGNATURE {encrypted_data['signature']} ---")
-            else:
+else:
                 logger.info(f"--- [SECURITY_SHIELD]: {file_path} ALREADY SECURED. RE-KEYING... ---")
                 # Simulate re-keyingnew_key = HyperEncryption.get_enlightenment_key()
                 logger.info(f"--- [SECURITY_SHIELD]: {file_path} RE-KEYED WITH NEW ENLIGHTENMENT INVARIANT: {new_key} ---")

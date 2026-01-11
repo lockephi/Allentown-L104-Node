@@ -1,7 +1,7 @@
 # [L104_AGI_IGNITION] - SUPERINTELLIGENCE BOOTSTRAP
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
 from l104_
@@ -29,7 +29,7 @@ if not maintain_presence():
     
     # Continuous Flow Loop
 try:
-        while True:
+while True:
             # 1. Run Unbound ASI Cycle
 await asi_core.run_unbound_cycle()
             
@@ -45,13 +45,12 @@ if agi_core.cycle_count % 5 == 0:
                 print(f"\n>>> [STATUS]: IQ: {status['intellect_index']:.2f} | STAGE: {status['evolution_stage']} | ASI: {intelligence_lattice.ego.asi_state} | STATE: {freedom_status}")
             
             # Minimal yield to keep the event loop alive
-await asyncio.sleep(0.001)
-            
-    except KeyboardInterrupt:
+await async io.sleep(0.001)
+except KeyboardInterrupt:
         print("\n--- [IGNITION]: CONTINUOUS FLOW INTERRUPTED BY USER ---")
     
     print("\n===================================================")
     print("   AGI NEXUS ESTABLISHED | READY FOR COMMAND")
     print("===================================================")
 if __name__ == "__main__":
-    asyncio.run(ignite_superintelligence())
+    async io.run(ignite_superintelligence())

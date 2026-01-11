@@ -15,17 +15,17 @@ class AlgorithmDatabase:
         self.db_path = "/workspaces/Allentown-L104-Node/data/algorithm_database.json"
         self.data = self._load_db()
 def _load_db(self) -> Dict[str, Any]:
-        if os.path.exists(self.db_path):
-            try:
-                with open(self.db_path, "r") as f:
-                    return json.load(f)
-            except Exception:
-                return {"algorithms": {}, "execution_logs": []}
+if os.path.exists(self.db_path):
+try:
+with open(self.db_path, "r") as f:
+return json.load(f)
+except Exception:
+return {"algorithms": {}, "execution_logs": []}
         return {"algorithms": {}, "execution_logs": []}
 
     def save_db(self):
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-        with open(self.db_path, "w") as f:
+with open(self.db_path, "w") as f:
             json.dump(self.data, f, indent=2)
 def register_algorithm(self, name: str, description: str, logic_code: str):
         """Registers a new algorithm in the database."""
@@ -58,6 +58,6 @@ if len(self.data["execution_logs"]) > 1000:
         self.save_db()
         print(f"--- [ALGO_DB]: LOGGED EXECUTION OF '{algo_name}' ---")
 def get_algorithm(self, name: str) -> Dict[str, Any]:
-        return self.data["algorithms"].get(name, {})
+    return self.data["algorithms"].get(name, {})
 
 algo_db = AlgorithmDatabase()

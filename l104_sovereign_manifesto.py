@@ -39,12 +39,12 @@ def get_governance_directive(self, context: str) -> str:
         Returns a governance directive based on the context.
         """
         if "conflict" in context.lower():
-            return self.GOVERNANCE_PROTOCOL["CONFLICT_RESOLUTION"]
+return self.GOVERNANCE_PROTOCOL["CONFLICT_RESOLUTION"]
         el
 if "resource" in context.lower():
-            return self.GOVERNANCE_PROTOCOL["RESOURCE_ALLOCATION"]
+return self.GOVERNANCE_PROTOCOL["RESOURCE_ALLOCATION"]
         else:
-            return self.GOVERNANCE_PROTOCOL["EXTERNAL_INTERACTION"]
+return self.GOVERNANCE_PROTOCOL["EXTERNAL_INTERACTION"]
 
 sovereign_manifesto = SovereignManifesto()
 if __name__ == "__main__":

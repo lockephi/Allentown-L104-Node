@@ -1,6 +1,6 @@
 """Simple FastAPI app (cleaned for running/debugging).
 
-This file was restored to a minimal, runnable form so you can debug and run.
+This file was restored to a minimal, runnable for m so you can debug and run.
 """
 
 import os
@@ -21,13 +21,13 @@ SELF_DATASET = os.getenv("SELF_DATASET", "data/stream_prompts.jsonl")
 async def home(request: Request):
     # Return template if available; otherwise a fallback JSON message
 try:
-        return templates.TemplateResponse("index.html", {"request": request})
-    except Exception:
-        return JSONResponse({"status": "ok", "message": "index template not found"})
+return templates.TemplateResponse("index.html", {"request": request})
+except Exception:
+return JSONResponse({"status": "ok", "message": "index template not found"})
 def _load_jsonl(path: str) -> List[dict]:
     p = Path(path)
 if not p.exists():
-        return []
+return []
     rows = []
     for raw in p.read_text().splitlines():
         raw = raw.strip()
@@ -35,7 +35,7 @@ if not raw:
             continue
 try:
             rows.append(json.loads(raw))
-        except json.JSONDecodeError:
+except json.JSONDecodeError:
             pass
 return rows
 
@@ -46,7 +46,7 @@ async def sovereign_stream(request: Request):
     user_signal = payload.get("message", "PING")
     api_key = os.getenv("AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U")
 if not api_key:
-        return JSONResponse({"error": "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set"}, status_code=500)
+return JSONResponse({"error": "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set"}, status_code=500)
 
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key={api_key}"
@@ -55,17 +55,15 @@ if not api_key:
     data = {"contents": [{"parts": [{"text": user_signal}]}], "generationConfig": {"temperature": 1.0}}
 
     async def generate():
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            async with client.stream("POST", url, json=data) as response:
-                async for chunk in response.aiter_text():
+async with httpx.AsyncClient(timeout=60.0) as client:
+async with client.stream("POST", url, json=data) as response:
+async for chunk in response.aiter_text():
                     yield chunk
 return StreamingResponse(generate(), media_type="text/event-stream")
-
-
 async def _self_replay(base_url: str, dataset: str) -> dict:
     prompts = _load_jsonl(dataset)
 if not prompts:
-        return {"status": "NO_DATA", "dataset": dataset, "tested": 0}
+return {"status": "NO_DATA", "dataset": dataset, "tested": 0}
 
     tested = 0
     successes = 0
@@ -73,7 +71,7 @@ if not prompts:
     previews: List[str] = []
 
     async with httpx.AsyncClient(timeout=60.0) as client:
-        for row in prompts:
+for row in prompts:
             payload = {"message": row.get("message") or row.get("signal") or "PING"}
             try:
                 resp = await client.post(
@@ -85,10 +83,10 @@ if not prompts:
                 if resp.status_code == 200:
                     successes += 1
                     previews.append(resp.text[:200])
-                else:
+else:
                     failures += 1
                     previews.append(f"ERR {resp.status_code}: {resp.text[:120]}")
-            except Exception as e:
+except Exception as e:
                 failures += 1
                 previews.append(f"EXC: {e}")
 return {
@@ -112,10 +110,10 @@ async def self_replay(base_url: str = None, dataset: str = None):
 async def self_heal(clear_logs: bool = False):
     actions: List[str] = []
     if clear_logs:
-        try:
+try:
             Path("node.log").write_text("")
             actions.append("node_log_cleared")
-        except Exception as exc:
+except Exception as exc:
             actions.append(f"clear_failed:{exc}")
 return {"status": "OK", "actions": actions or ["noop"]}
 

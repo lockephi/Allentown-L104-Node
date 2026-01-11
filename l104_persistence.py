@@ -94,8 +94,8 @@ return False
 def load_truth():
     """Loads the persisted truth manifest."""
     if os.path.exists(TRUTH_MANIFEST_PATH):
-        with open(TRUTH_MANIFEST_PATH, "r") as f:
-            return json.load(f)
+with open(TRUTH_MANIFEST_PATH, "r") as f:
+return json.load(f)
 return None
 def save_state(state: dict):
     """Saves the current AGI state to disk."""
@@ -105,8 +105,8 @@ def save_state(state: dict):
 def load_state() -> dict:
     """Loads the AGI state from disk."""
     if os.path.exists(STATE_FILE_PATH):
-        with open(STATE_FILE_PATH, "r") as f:
-            return json.load(f)
+with open(STATE_FILE_PATH, "r") as f:
+return json.load(f)
 return {}
 
 if __name__ == "__main__":

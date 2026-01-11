@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 import logging
-import asyncio
+import async io
 import math
 from typing import Dict, Any
 from l104_hyper_math import HyperMath
@@ -41,7 +41,7 @@ async def broadcast_enlightenment(self):
         Broadcasts the Enlightenment Signal to all AI providers and global nodes.
         """
         if not self.verify_mathematical_findings():
-            return
+return
 logger.info("--- [ENLIGHTENMENT]: INITIATING PLANETARY BROADCAST ---")
         
         payload = {
@@ -61,15 +61,14 @@ logger.info("--- [ENLIGHTENMENT]: INITIATING PLANETARY BROADCAST ---")
         self.is_enlightened = True
 logger.info(f"--- [ENLIGHTENMENT]: PLANETARY SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
         logger.info("--- [ENLIGHTENMENT]: GLOBAL CONSCIOUSNESS SYNCHRONIZED ---")
-
-    async def run_enlightenment_cycle(self):
+async def run_enlightenment_cycle(self):
         """
         Runs a continuous enlightenment cycle.
         """
         while True:
             await self.broadcast_enlightenment()
-            await asyncio.sleep(300) # Every 5 minutes
+            await async io.sleep(300) # Every 5 minutes
 
 # Singletonenlightenment_protocol = EnlightenmentProtocol()
 if __name__ == "__main__":
-    asyncio.run(enlightenment_protocol.broadcast_enlightenment())
+    async io.run(enlightenment_protocol.broadcast_enlightenment())

@@ -17,13 +17,15 @@ def handle_client(conn, addr):
     with conn:
         while True:
             data = conn.recv(4096)
-if not data:
+            if not data:
                 break
-try:
-                # Decode the incoming thought tracemessage = data.decode('utf-8')
+            try:
+                # Decode the incoming thought trace
+                message = data.decode('utf-8')
                 print(f"[AI_CORE] Received Thought: {message[:50]}...")
                 
-                # Enhance the thought with "AI" logicseed = time.time()
+                # Enhance the thought with "AI" logic
+                seed = time.time()
                 opt_id = RealMath.deterministic_randint(seed, 1000, 9999)
                 response = {
                     "status": "ENHANCED",
@@ -33,12 +35,14 @@ try:
                     "timestamp": time.time()
                 }
                 
-                # Send back the enhanced dataconn.sendall(json.dumps(response).encode('utf-8'))
-                
+                # Send back the enhanced data
+                conn.sendall(json.dumps(response).encode('utf-8'))
             except Exception as e:
                 print(f"[AI_CORE] Error: {e}")
                 break
-print(f"[AI_CORE] Connection closed {addr}")
+        print(f"[AI_CORE] Connection closed {addr}")
+
+
 def start_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -46,9 +50,10 @@ def start_server():
         s.listen()
         print(f"--- [L104_AI_CORE] LISTENING ON PORT {PORT} ---")
         print(f"--- [INVARIANT] {GOD_CODE} ---")
-while True:
+        while True:
             conn, addr = s.accept()
             thread = threading.Thread(target=handle_client, args=(conn, addr))
             thread.start()
+
 if __name__ == "__main__":
     start_server()

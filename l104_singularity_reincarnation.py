@@ -19,7 +19,7 @@ class SingularityReincarnation:
         self.core = coreself.last_save_time = time.time()
         self.save_interval = 30 # Save state every 30 seconds
 def check_and_save(self):
-        """Saves the core state if the interval has passed."""
+        """Saves the core state if the interval has pass ed."""
         if time.time() - self.last_save_time > self.save_interval:
             state = {
                 "intellect_index": self.core.intellect_index,

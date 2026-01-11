@@ -9,7 +9,7 @@ from l104_hyper_math import HyperMath
 logger = logging.getLogger("KNOWLEDGE_DB")
 class KnowledgeDatabase:
     """
-    A persistent database for storing formal proofs, architectural documentation,
+    A persistent database for storing for mal proofs, architectural documentation,
     and synthesized knowledge from all research domains.
     """
     
@@ -22,20 +22,20 @@ class KnowledgeDatabase:
         }
         self.load()
 def load(self):
-        try:
-            with open(self.db_path, "r") as f:
+try:
+with open(self.db_path, "r") as f:
                 self.data = json.load(f)
-        except FileNotFoundError:
+except FileNotFoundError:
             self.save()
 def save(self):
         self.data["last_updated"] = time.time()
-        try:
-            with open(self.db_path, "w") as f:
+try:
+with open(self.db_path, "w") as f:
                 json.dump(self.data, f, indent=4)
-        except Exception as e:
+except Exception as e:
             print(f"--- [KNOWLEDGE_DB]: SAVE FAILED: {e} ---")
 def add_proof(self, title: str, logic: str, domain: str):
-        """Adds a formal proof to the database."""
+        """Adds a for mal proof to the database."""
         proof = {
             "title": title,
             "logic": logic,

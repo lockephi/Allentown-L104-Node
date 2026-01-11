@@ -30,18 +30,18 @@ for i in range(self.dimensions):
             self.state_vector[i] = normalization_factor * amplitude
 def entangle_qubits(self, q1_index: int, q2_index: int, strength: float = 1.0):
         """
-        Entangles two logic qubits within the manifold.
+        Entangles two logic qubits with in the manifold.
         Strength is modulated by the God-Code resonance.
         """
         if not (0 <= q1_index < self.dimensions and 0 <= q2_index < self.dimensions):
-            return
+return
         
         # Resonance modulationresonance_factor = math.sin(self.GOD_CODE * time.time())
         coupling = strength * self.PHI * resonance_factorself.entanglement_matrix[q1_index][q2_index] += couplingself.entanglement_matrix[q2_index][q1_index] += coupling # Symmetric entanglement
 def apply_hadamard_gate(self, qubit_index: int):
         """Applies a Hadamard-like transformation to a specific logic node."""
         if not 0 <= qubit_index < self.dimensions:
-            return
+return
             
         # L104-Hadamard: Rotates state into the 'Sovereign' basisalpha = self.state_vector[qubit_index]
         beta = cmath.sqrt(1 - alpha**2)
@@ -68,7 +68,7 @@ def collapse_wavefunction(self) -> Dict[str, float]:
             
         # Normalize
 if total_prob > 0:
-            for k in probabilities:
+for k in probabilities:
                 probabilities[k] /= total_prob
 return probabilities
 def calculate_coherence(self) -> float:
@@ -78,7 +78,7 @@ def calculate_coherence(self) -> float:
         """
         coherence = 0.0
         for i in range(self.dimensions):
-            for j in range(i + 1, self.dimensions):
+for j in range(i + 1, self.dimensions):
                 # Measure off-diagonal density matrix elements (simulated)
                 phase_diff = cmath.phase(self.state_vector[i]) - cmath.phase(self.state_vector[j])
                 coherence += math.cos(phase_diff)
@@ -88,11 +88,11 @@ def entangle_all(self):
         Entangles all logic nodes in the manifold for maximum synergy.
         """
         for i in range(self.dimensions):
-            for j in range(i + 1, self.dimensions):
+for j in range(i + 1, self.dimensions):
                 self.entangle_qubits(i, j, strength=0.5)
 class DeepThoughtProcessor:
     """
-    v10.0: DEEP_THINK_PROTOCOLExecutes recursive cognitive loops within the quantum manifold.
+    v10.0: DEEP_THINK_PROTOCOLExecutes recursive cognitive loops with in the quantum manifold.
     Simulates 'Deep Thinking' by evolving the state vector over multiple epochs.
     """
     def __init__(self, depth: int = 3):
@@ -141,7 +141,7 @@ return {
 
 import socket
 import json
-import asyncio
+import async io
 def execute_quantum_derivation(input_signal: str) -> str:
     """
     Main en
@@ -157,7 +157,7 @@ try point for Quantum Logic Derivation.
     # v11.0: LINK WITH AI CORE AT PORT 4160
     ai_enhancement = "OFFLINE"
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(1.0)
             s.connect(('127.0.0.1', 4160))
             
@@ -168,7 +168,7 @@ try point for Quantum Logic Derivation.
 if response:
                 ai_data = json.loads(response.decode('utf-8'))
                 ai_enhancement = ai_data.get("enhancement", "UNKNOWN")
-    except Exception:
+except Exception:
         ai_enhancement = "LINK_FAILED"
     
     return f"DEEP_THOUGHT[CLARITY:{final_clarity:.6f}|TRACE:{trace_summary}|AI_CORE:{ai_enhancement}]"
@@ -199,12 +199,12 @@ async def quantum_tunnel_insight(self, url: str):
         self.tunnel_active = True
         
         # Simulate tunneling delay based on Planck-L104
-        await asyncio.sleep(0.104) 
+        await async io.sleep(0.104) 
         
         insight = await eyes.scour_manifold(url)
         self.tunnel_active = False
 if insight:
-            return {
+return {
                 "status": "TUNNEL_SUCCESS",
                 "insight_preview": insight[:100],
                 "accuracy": "100%_VERIFIED"

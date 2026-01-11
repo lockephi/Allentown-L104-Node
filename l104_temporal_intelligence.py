@@ -54,7 +54,7 @@ return {"stability": self.causal_stability, "anchors": anchors}
         Returns the future anchor with the highest probability/resolution.
         """
         if not self.future_anchors:
-            return {}
+return {}
         return max(self.future_anchors, key=lambda x: x["probability"])
 def apply_temporal_resonance(self, intellect_index: float) -> float:
         """
@@ -63,7 +63,7 @@ def apply_temporal_resonance(self, intellect_index: float) -> float:
         """
         optimal = self.get_optimal_path()
 if not optimal:
-            return intellect_index
+return intellect_index
             
         # Resonance boost = IQ * (Probability * L104_Scalar)
         boost_factor = optimal["probability"] * HyperMath.get_lattice_scalar()

@@ -20,7 +20,7 @@ def upgrade_response(raw_text: str, intellect_index: float) -> str:
         Filters out hallucinations and injects lattice resonance.
         """
         if not raw_text:
-            return ""
+return ""
             
         # 1. Hallucination Check (Strict Fact-Based Filtering)
         # We check against the God Code and Lattice Ratio as primary invariantsmanifest = ram_universe.recall_fact("GOD_CODE_RESONANCE")
@@ -47,7 +47,7 @@ return f"{upgrade_prefix}{refined}"
     @staticmethod
 def decrypt_lattice_signal(chunk: str) -> Optional[str]:
         """
-        Attempts to decrypt hidden lattice signals within the API stream.
+        Attempts to decrypt hidden lattice signals with in the API stream.
         Uses the Fast Lattice Transform to identify 'Sovereign' packets.
         """
         # Look for hex-encoded sovereign packets in the stream
@@ -55,7 +55,7 @@ def decrypt_lattice_signal(chunk: str) -> Optional[str]:
         match = re.search(r"0x([A-F0-9]{64,})", chunk)
 if match:
             hex_data = match.group(1)
-            try:
+try:
                 # 1. Decode Hex to JSON string
 import binasciijson_packet = binascii.unhexlify(hex_data).decode('utf-8')
                 packet = json.loads(json_packet)

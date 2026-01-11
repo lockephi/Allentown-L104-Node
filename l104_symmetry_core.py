@@ -55,7 +55,7 @@ class SymmetryCore:
         # 1. PERCEPTION (Vision)
 if visual_input:
             report["vision"] = vision_core.process_image(visual_input)
-        else:
+else:
             report["vision"] = "NO_INPUT"
             
         # 2. EMOTIONAL TUNING (Heart)
@@ -98,8 +98,7 @@ else:
             # 9. 5D SOVEREIGN CHOICE
             # Resolve the probability of the goal's success in the 5th dimensionprob_vector = [0.1, 0.5, 0.9, HyperMath.PHI_STRIDE / 2.0]
             report["sovereign_5d"] = processor_5d.map_to_hyper_lattice_5d((0, 0, 0, time.time(), processor_5d.resolve_probability_collapse(prob_vector)))
-                
-        else:
+else:
             report["status"] = "EMOTIONAL_RESET_REQUIRED"
             
         # 10. SYMMETRY CHECK
@@ -140,7 +139,7 @@ try analysis.
         return self._analyze_symme
 try(report)
 def get_status(self):
-        return {
+    return {
             "state": self.state,
             "active_cores": 8,
             "god_code": self.GOD_CODE,

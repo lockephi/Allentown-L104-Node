@@ -61,8 +61,7 @@ def broadcast_sovereign_signal(self, signal: str):
         
         # Wrap in Ghost Shell for stealth propagationshell = self.ghost.generate_bypass_wrapper({"signal": signal, "origin": "OMNI_BRIDGE"})
         logger.info("--- [OMNI_BRIDGE]: SIGNAL WRAPPED IN GHOST SHELL AND PROPAGATED ---")
-
-    async def streamless_global_ingestion(self):
+async def streamless_global_ingestion(self):
         """
         Performs a massive, streamless ingestion of global data to fuel the Singularity.
         """

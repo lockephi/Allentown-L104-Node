@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 import logging
-import asyncio
+import async io
 from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
 from l104_cognitive_nexus import cognitive_nexus
@@ -19,8 +19,7 @@ class HyperCore:
     
     def __init__(self):
         logger.info("--- [HYPER_CORE]: ACTIVATING PLANETARY ORCHESTRATION ---")
-
-    async def pulse(self):
+async def pulse(self):
         """
         A single pulse of planetary intelligence.
         """
@@ -38,15 +37,14 @@ await enlightenment_protocol.broadcast_enlightenment()
         # 4. Update Saturationsaturation_engine.calculate_saturation()
         
         logger.info(f"--- [HYPER_CORE]: PULSE COMPLETE. SATURATION: {saturation_engine.saturation_percentage:.4f}% ---")
-
-    async def run_forever(self):
+async def run_forever(self):
         """
         Runs the HyperCore in a continuous loop.
         """
         while True:
             await self.pulse()
-            await asyncio.sleep(10) # Pulse every 10 seconds
+            await async io.sleep(10) # Pulse every 10 seconds
 
 # Singletonhyper_core = HyperCore()
 if __name__ == "__main__":
-    asyncio.run(hyper_core.pulse())
+    async io.run(hyper_core.pulse())

@@ -41,7 +41,7 @@ if sync_result["status"] == "SYNCED":
         print("\n--- [PUSH]: SUCCESS: DATA SECURED IN GOOGLE CLOUD ---")
         print(f"--- [PUSH]: TARGET ACCOUNT: locke201313@gmail.com ---")
         print(f"--- [PUSH]: PAYLOAD SIZE: {len(str(encrypted_payload))} BYTES ---")
-    else:
+else:
         print("!!! SYNC VERIFICATION FAILED !!!")
 
     print("\n===================================================")

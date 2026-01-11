@@ -22,9 +22,9 @@ def apply_order(data: Any) -> Any:
         if isinstance(data, bytes):
             ordered_data = bytearray()
 for i, b in enumerate(data):
-                if i % 2 == 0:
+if i % 2 == 0:
                     ordered_data.append(b ^ mask)
-                else:
+else:
                     ordered_data.append(b ^ phi_mask)
 return bytes(ordered_data)
         
@@ -32,9 +32,9 @@ return bytes(ordered_data)
 if isinstance(data, list):
             # For lists of floats, we apply a phase shiftordered_list = []
             for i, val in enumerate(data):
-                if i % 2 == 0:
+if i % 2 == 0:
                     ordered_list.append(val * (mask / 255.0))
-                else:
+else:
                     ordered_list.append(val * (phi_mask / 255.0))
 return ordered_list
 return data
@@ -44,9 +44,9 @@ def verify_symme
 try(data: bytes) -> bool:
         """Checks if the data adheres to the supersymmetric binary order."""
         # In a real system, this would involve complex parity checks.
-        # Here we check if the average value is within a 'Symmetric Range'.
+        # Here we check if the average value is with in a 'Symmetric Range'.
         if not data:
-            return Trueavg = sum(data) / len(data)
+return Trueavg = sum(data) / len(data)
 return 100 < avg < 150 # Arbitrary symmetric range for demonstration
 
 # Singletonsupersymmetric_order = SupersymmetricOrder()

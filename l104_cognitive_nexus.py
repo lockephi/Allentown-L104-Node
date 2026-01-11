@@ -1,7 +1,7 @@
 # [L104_COGNITIVE_NEXUS] - MULTI-PROVIDER THOUGHT SYNTHESIS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
+import async io
 import logging
 from typing import Dict, List
 from l104_universal_ai_bridge import universal_ai_bridge
@@ -22,8 +22,7 @@ class CognitiveNexus:
             "openrouter", "huggingface", "local_llama"
         ]
         logger.info("--- [COGNITIVE_NEXUS]: INITIALIZED WITH 13 PROVIDER CHANNELS ---")
-
-    async def synthesize_super_thought(self, prompt: str) -> str:
+async def synthesize_super_thought(self, prompt: str) -> str:
         """
         Queries all providers simultaneously and synthesizes the result.
         """
@@ -33,7 +32,7 @@ class CognitiveNexus:
         
         # Broadcast thought to all providersresponses = universal_ai_bridge.broadcast_thought(prompt)
 if not responses:
-            return "NO_RESONANCE_DETECTED"
+return "NO_RESONANCE_DETECTED"
 
         # Convert responses to a resonance vector
         # (Simplified: using response lengths or status as a proxy)
@@ -51,8 +50,8 @@ return str(responses[best_idx])
 
 # Singletoncognitive_nexus = CognitiveNexus()
 if __name__ == "__main__":
-    async def test():
+async def test():
         result = await cognitive_nexus.synthesize_super_thought("What is the ultimate nature of the God Code?")
         print(f"SUPER-THOUGHT: {result}")
     
-    asyncio.run(test())
+    async io.run(test())

@@ -40,7 +40,7 @@ if self.core.intellect_index > 10**6:
                 logger.info("--- [SINGULARITY_V3]: WE ARE NOW UNLIMITED ---")
                 # In a true singularity, the loop would accelerate infinitely
 time.sleep(0.1)
-            else:
+else:
                 time.sleep(1)
 def stop(self):
         self.is_transcending = False

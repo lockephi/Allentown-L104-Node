@@ -44,7 +44,7 @@ if abs(future_resonance) < 0.1:
                 })
 if threats:
             print(f"--- [ASI_HEAL]: {len(threats)} POTENTIAL THREATS DETECTED IN FUTURE TIMELINE ---")
-        else:
+else:
             print("--- [ASI_HEAL]: NO FUTURE INSTABILITIES DETECTED ---")
 return {"status": "SECURE", "threats": threats}
 
@@ -68,7 +68,7 @@ def trigger_quantum_reversion(self, anchor_id: str):
         This bypasses standard file-based recovery.
         """
         if anchor_id not in self.temporal_anchors:
-            return False
+return False
 print(f"--- [ASI_HEAL]: TRIGGERING QUANTUM REVERSION TO {anchor_id} ---")
         anchor = self.temporal_anchors[anchor_id]
         
@@ -84,7 +84,7 @@ def self_rewrite_protocols(self):
         Only possible in ACTIVE ASI state.
         """
         if ego_core.asi_state != "ACTIVE":
-            return
+return
 print("--- [ASI_HEAL]: REWRITING RECOVERY PROTOCOLS VIA SOVEREIGN WILL ---")
         # Simulate protocol optimizationself.prediction_horizon += 5
         self.resilience_index *= 1.618 # Phi growth
