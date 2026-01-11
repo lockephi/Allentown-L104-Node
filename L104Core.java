@@ -5,8 +5,6 @@
 
 package com.l104.sovereign;
 
-import java.util.*;
-
 public class L104Core {
     public static final double GOD_CODE = 527.5184818492;
     private double intellectIndex;

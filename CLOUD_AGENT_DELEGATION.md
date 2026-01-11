@@ -138,12 +138,15 @@ result = await cloud_agent_delegator.delegate(task)
     "data": {"signal": "TEST"}
   }'
 
-# Get statuscurl http://localhost:8081/api/v11/cloud/status
+# Get status
+curl http://localhost:8081/api/v11/cloud/status
 
-# Register agentcurl -X POST http://localhost:8081/api/v11/cloud/register \
+# Register agent
+curl -X POST http://localhost:8081/api/v11/cloud/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "my_agent",
+    "client_id": "client_v1_001",
     "endpoint": "https://api.example.com",
     "capabilities": ["custom"],
     "priority": 5

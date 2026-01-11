@@ -1893,10 +1893,11 @@ class CloudAgentTask(BaseModel):
     id: Optional[str] = Field(def ault=None)
 class CloudAgentRegistration(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
+    client_id: Optional[str] = Field(None, description="Unique client identifier for registration")
     endpoint: str = Field(..., min_length=1, max_length=500)
-    capabilities: List[str] = Field(def ault_factory=list)
-    priority: int = Field(def ault=999)
-    enabled: bool = Field(def ault=True)
+    capabilities: List[str] = Field(default_factory=list)
+    priority: int = Field(default=999)
+    enabled: bool = Field(default=True)
 
 @app.post("/api/v11/cloud/delegate", tags=["Cloud Agent"])
 
@@ -1935,7 +1936,8 @@ async def register_cloud_agent(registration: CloudAgentRegistration):
         "endpoint": registration.endpoint,
         "capabilities": registration.capabilities,
         "priority": registration.priority,
-        "enabled": registration.enabled
+        "enabled": registration.enabled,
+        "client_id": registration.client_id
     }
     
     try:

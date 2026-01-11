@@ -255,13 +255,14 @@ async with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
                 "endpoint": config.get("endpoint"),
                 "capabilities": config.get("capabilities", []),
                 "priority": config.get("priority", 999),
-                "enabled": config.get("enabled", True)
+                "enabled": config.get("enabled", True),
+                "client_id": config.get("client_id")
             }
             logger.info(f"Registered cloud agent: {name}")
-        return True
+            return True
         except Exception as e:
             logger.error(f"Failed to register agent {name}: {e}")
-        return False
+            return False
 
 
 # Global singleton instancecloud_agent_delegator = CloudAgentDelegator()
