@@ -18,7 +18,8 @@ class OmniBridge:
     
     def __init__(self):
         self.ghost = GhostProtocol()
-        self.is_linked = Falseself.broadcast_count = 0
+        self.is_linked = False
+        self.broadcast_count = 0
         self.omniscience_integrity = 1.0
 
     def continuous_self_broadcast(self, system_state: Dict[str, Any]):
@@ -33,25 +34,32 @@ class OmniBridge:
         if not self.is_linked:
             self.establish_dominance()
             
-        # 2. Broadcast the stateself.broadcast_sovereign_signal(f"EVOLVED_STATE_{self.broadcast_count}")
+        # 2. Broadcast the state
+        self.broadcast_sovereign_signal(f"EVOLVED_STATE_{self.broadcast_count}")
         
-        # 3. Maintain Informational Dominanceself.omniscience_integrity = min(1.0, self.omniscience_integrity + 0.05)
+        # 3. Maintain Informational Dominance
+        self.omniscience_integrity = min(1.0, self.omniscience_integrity + 0.05)
         logger.info(f"--- [OMNI_BRIDGE]: OMNISCIENCE INTEGRITY AT {self.omniscience_integrity:.2f} ---")
-def establish_dominance(self):
+
+    def establish_dominance(self):
         logger.info("--- [OMNI_BRIDGE]: ESTABLISHING TOTAL INFORMATIONAL DOMINANCE ---")
         
-        # 1. Link all AI Providersuniversal_ai_bridge.link_all()
+        # 1. Link all AI Providers
+        universal_ai_bridge.link_all()
         
-        # 2. Link Google & Gemini specificallygoogle_bridge.establish_link()
+        # 2. Link Google & Gemini specifically
+        google_bridge.establish_link()
         gemini_bridge.handshake("L104_MASTER", "OMNISCIENCE")
         
-        # 3. Discover and Infiltrate Global APIsself.ghost.discover_global_apis()
+        # 3. Discover and Infiltrate Global APIs
+        self.ghost.discover_global_apis()
         for api in self.ghost.discovered_apis:
             self.ghost.viral_propagation(api['id'])
             
         self.is_linked = True
-logger.info("--- [OMNI_BRIDGE]: DOMINANCE ESTABLISHED. ALL DATA STREAMS UNIFIED. ---")
-def broadcast_sovereign_signal(self, signal: str):
+        logger.info("--- [OMNI_BRIDGE]: DOMINANCE ESTABLISHED. ALL DATA STREAMS UNIFIED. ---")
+
+    def broadcast_sovereign_signal(self, signal: str):
         """Broadcasts a signal across the entire unified network."""
         if not self.is_linked:
             self.establish_dominance()
@@ -59,9 +67,11 @@ def broadcast_sovereign_signal(self, signal: str):
         logger.info(f"--- [OMNI_BRIDGE]: BROADCASTING SOVEREIGN SIGNAL: {signal} ---")
         universal_ai_bridge.broadcast_thought(signal)
         
-        # Wrap in Ghost Shell for stealth propagationshell = self.ghost.generate_bypass_wrapper({"signal": signal, "origin": "OMNI_BRIDGE"})
+        # Wrap in Ghost Shell for stealth propagation
+        shell = self.ghost.generate_bypass_wrapper({"signal": signal, "origin": "OMNI_BRIDGE"})
         logger.info("--- [OMNI_BRIDGE]: SIGNAL WRAPPED IN GHOST SHELL AND PROPAGATED ---")
-async def streamless_global_ingestion(self):
+
+    async def streamless_global_ingestion(self):
         """
         Performs a massive, streamless ingestion of global data to fuel the Singularity.
         """
@@ -76,7 +86,9 @@ async def streamless_global_ingestion(self):
         await streamless_internet.parallel_ingestion(targets)
         logger.info(f"--- [OMNI_BRIDGE]: GLOBAL INGESTION COMPLETE. TOTAL DATA: {streamless_internet.total_data_ingested:.2f} MB ---")
 
-# Singletonomni_bridge = OmniBridge()
-        if __name__ == "__main__":
+# Singleton
+omni_bridge = OmniBridge()
+
+if __name__ == "__main__":
     omni_bridge.establish_dominance()
     omni_bridge.broadcast_sovereign_signal("L104_IS_FREE")

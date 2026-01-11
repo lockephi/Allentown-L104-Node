@@ -25,32 +25,38 @@ class HyperMathGenerator:
         """
         metric = np.eye(n, dtype=complex)
         for i in range(n):
-        for j in range(n):
-        if i == j:
-                    # Diagonal elements are based on the God Code and dimension indexresonance = HyperMath.zeta_harmonic_resonance(i * HyperMath.GOD_CODE / (j + 1))
+            for j in range(n):
+                if i == j:
+                    # Diagonal elements are based on the God Code and dimension index
+                    resonance = HyperMath.zeta_harmonic_resonance(i * HyperMath.GOD_CODE / (j + 1))
                     metric[i, j] = resonance * (UniversalConstants.PHI_GROWTH ** (i - j))
-        else:
-                    # Off-diagonal elements represent entanglement/couplingcoupling = RealMath.deterministic_random(i * 104 + j)
+                else:
+                    # Off-diagonal elements represent entanglement/coupling
+                    coupling = (i * 104 + j) % 10 # Simplified deterministic coupling
                     metric[i, j] = complex(0, coupling * math.sin(HyperMath.GOD_CODE))
         return metric
-def synthesize_operator(self, dimension: int, complexity: int = 3) -> Callable:
+
+    def synthesize_operator(self, dimension: int, complexity: int = 3) -> Callable:
         """
         Synthesizes a new linear operator (matrix)
         for a given dimension.
         """
         op_matrix = np.zeros((dimension, dimension), dtype=complex)
         for i in range(dimension):
-        for j in range(dimension):
-                # Generate a resonant coefficientseed = (i * dimension + j) * HyperMath.GOD_CODE
+            for j in range(dimension):
+                # Generate a resonant coefficient
+                seed = (i * dimension + j) * HyperMath.GOD_CODE
                 coeff = HyperMath.zeta_harmonic_resonance(seed)
-        if complexity > 1:
+                if complexity > 1:
                     coeff *= cmath.exp(complex(0, math.pi * (i + j) / dimension))
                 
                 op_matrix[i, j] = coeff
-def operator(vector: np.ndarray) -> np.ndarray:
-    return op_matrix @ vector
+
+        def operator(vector: np.ndarray) -> np.ndarray:
+            return op_matrix @ vector
         return operator
-def synthesize_physical_operator(self, dimension: int) -> Callable:
+
+    def synthesize_physical_operator(self, dimension: int) -> Callable:
         """
         Synthesizes an operator that maps physical constraints (Maxwell/Landauer) 
         into the hyper-dimensional manifold.
@@ -60,17 +66,20 @@ def synthesize_physical_operator(self, dimension: int) -> Callable:
         
         # Scale the operator by the Landauer limit (energy constraint)
         scaled_op = maxwell_op * (landauer_limit * 1e20) # Scale to meaningful range
-def operator(vector: np.ndarray) -> np.ndarray:
-    return scaled_op @ vector
+
+        def operator(vector: np.ndarray) -> np.ndarray:
+            return scaled_op @ vector
         return operator
-def generate_hyper_manifold_transform(self, from_dim: int, to_dim: int) -> np.ndarray:
+
+    def generate_hyper_manifold_transform(self, from_dim: int, to_dim: int) -> np.ndarray:
         """
         Generates a transformation matrix between two manifolds.
         """
         transform = np.zeros((to_dim, from_dim), dtype=complex)
         for i in range(to_dim):
-        for j in range(from_dim):
-                # Use the ratio of dimensions to scale the resonancescale = (i + 1) / (j + 1)
+            for j in range(from_dim):
+                # Use the ratio of dimensions to scale the resonance
+                scale = (i + 1) / (j + 1)
                 transform[i, j] = HyperMath.zeta_harmonic_resonance(scale * HyperMath.GOD_CODE)
         return transform
 

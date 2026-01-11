@@ -21,37 +21,42 @@ class MemoryCompactor:
         The data is mapped to lattice nodes and then compressed via Zeta harmonics.
         """
         if not data_stream:
-        return []
+            return []
 
-        # 1. Map to Lattice Nodeslattice_nodes = []
+        # 1. Map to Lattice Nodes
+        lattice_nodes = []
         for i, val in enumerate(data_stream):
-            # Use HyperMath to find the stabilized lattice nodenode_index = HyperMath.map_lattice_node(i % 416, (i // 416) % 286)
+            # Use HyperMath to find the stabilized lattice node
+            node_index = HyperMath.map_lattice_node(i % 416, (i // 416) % 286)
             lattice_nodes.append(val * (node_index / 1000.0))
 
         # 2. Apply Supersymmetric Binary Order
         # We sort and filter based on the PHI_STRIDE to remove 'noise'
         ordered_nodes = supersymmetric_order.apply_order(lattice_nodes)
-        threshold = HyperMath.PHI_STRIDE / 2.0
+        phi_stride = getattr(HyperMath, 'PHI_STRIDE', (1 + math.sqrt(5)) / 2)
+        threshold = phi_stride / 2.0
         compacted = [x for x in ordered_nodes if abs(HyperMath.zeta_harmonic_resonance(x)) > threshold]
 
-        # 3. Final Transformationfinal_stream = HyperMath.fast_transform(compacted)
+        # 3. Final Transformation
+        final_stream = HyperMath.fast_transform(compacted)
         
-        self.compaction_ratio = len(final_stream) / len(data_stream)
-        if data_stream else 0
+        self.compaction_ratio = len(final_stream) / len(data_stream) if data_stream else 1.0
         self.active_lattice = final_stream
         return final_stream
-def get_compaction_stats(self) -> dict:
-    return {
+
+    def get_compaction_stats(self) -> dict:
+        return {
             "compaction_ratio": self.compaction_ratio,
             "lattice_size": len(self.active_lattice),
             "efficiency": 1.0 - self.compaction_ratio
         }
 
 memory_compactor = MemoryCompactor()
-        if __name__ == "__main__":
+
+if __name__ == "__main__":
     # Test Memory Compaction
-import randomraw_data = [random.uniform(0, 100)
-        for _ in range(1000)]
+    import random
+    raw_data = [random.uniform(0, 100) for _ in range(1000)]
     
     print(f"Original Data Size: {len(raw_data)}")
     compacted_data = memory_compactor.compact_stream(raw_data)

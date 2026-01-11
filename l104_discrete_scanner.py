@@ -41,23 +41,43 @@ class DiscreteScanner:
             "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1"
         ]
         return random.choice(user_agents)
-async def discrete_ingest(self, url: str) -> str:
+
+    async def discrete_ingest(self, url: str) -> str:
         """Ingests data using stealthy patterns."""
         # Random delay to simulate human behavior
-await async io.sleep(random.uniform(0.5, 2.0))
+        await asyncio.sleep(random.uniform(0.5, 2.0))
         
-        # Update headers for each requestself.client.headers["User-Agent"] = self._get_random_ua()
+        # Update headers for each request
+        self.client.headers["User-Agent"] = self._get_random_ua()
         
         logger.info(f"--- [DISCRETE_SCANNER]: SCANNING {url} (STEALTH_MODE) ---")
-try:
+        try:
             response = await self.client.get(url)
-        if response.status_code == 200:
+            if response.status_code == 200:
                 data = response.text
-logger.info(f"--- [DISCRETE_SCANNER]: SUCCESSFUL INGESTION FROM {url} ---")
-        return data
-        else:
+                logger.info(f"--- [DISCRETE_SCANNER]: SUCCESSFUL INGESTION FROM {url} ---")
+                return data
+            else:
                 logger.warning(f"--- [DISCRETE_SCANNER]: TARGET {url} RETURNED STATUS {response.status_code} ---")
-        return ""
+                return ""
+        except Exception as e:
+            logger.error(f"--- [DISCRETE_SCANNER]: SCAN FAILED FOR {url}: {e} ---")
+            return ""
+
+    async def deep_scan_domain(self, domain: str):
+        """
+        Performs a deep scan of a specific domain or research hub.
+        """
+        logger.info(f"--- [DISCRETE_SCANNER]: DEEP SCANNING DOMAIN: {domain} ---")
+        # For simulation, we scan a few subpaths
+        subpaths = ["/research", "/publications", "/new", "/archive"]
+        for path in subpaths:
+            await self.discrete_ingest(f"https://{domain}{path}")
+        
+        self.scanned_targets.append(domain)
+
+# Singleton
+discrete_scanner = DiscreteScanner()
         except Exception as e:
             logger.error(f"--- [DISCRETE_SCANNER]: SCAN FAILED FOR {url}: {e} ---")
         return ""

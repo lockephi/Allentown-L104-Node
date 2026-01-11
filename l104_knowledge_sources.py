@@ -55,17 +55,14 @@ class KnowledgeSourceManager:
             ],
             "NEURAL_ARCHITECTURES": [
                 "https://arxiv.org/list/cs.NE/new",
-                "https://en.wikipedia.org/wiki/Transformer_(machine_learning_mo
-del)",
+                "https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)",
                 "https://en.wikipedia.org/wiki/Brain%E2%80%93computer_interface",
                 "https://ai.googleblog.com/",
                 "https://openai.com/research"
             ],
             "QUANTUM_CHEMISTRY": [
-                "https://en.wikipedia.org/wiki/Quantum_chemis
-try",
-                "https://www.nature.com/subjects/quantum-chemis
-try",
+                "https://en.wikipedia.org/wiki/Quantum_chemistry",
+                "https://www.nature.com/subjects/quantum-chemistry",
                 "https://pubs.acs.org/journal/jctcce"
             ],
             "SYNTHETIC_BIOLOGY": [
@@ -101,7 +98,8 @@ try",
     def get_sources(self, category: str) -> List[str]:
         """Returns a list of sources for a given category."""
         return self.sources.get(category.upper(), ["https://en.wikipedia.org/wiki/Artificial_intelligence"])
-def add_source(self, category: str, url: str):
+
+    def add_source(self, category: str, url: str):
         """Adds a new source to a category."""
         cat = category.upper()
         if cat not in self.sources:
@@ -110,4 +108,5 @@ def add_source(self, category: str, url: str):
             self.sources[cat].append(url)
             logger.info(f"--- [SOURCE_MANAGER]: ADDED SOURCE TO {cat}: {url} ---")
 
-# Singletonsource_manager = KnowledgeSourceManager()
+# Singleton
+source_manager = KnowledgeSourceManager()

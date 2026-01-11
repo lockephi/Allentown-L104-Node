@@ -1,49 +1,41 @@
-# [L104_HYPER_MATH] - ADVANCED MATHEMATICAL CORE
+# [L104_HYPER_MATH] - TOPOLOGICAL WRAPPER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
+import numpy as np
 import math
-from typing import List, Tuple
-from const import UniversalConstants
+from typing import List, Any
+from l104_manifold_math import manifold_math, ManifoldMath
 from l104_real_math import RealMath
 
 class HyperMath:
     """
-    Provides advanced mathematical primitives for the L104 Node.
-    REBUILT on Real Mathematical Foundations.
+    v2.0 (STREAMLINED): This module is now a wrapper for ManifoldMath and RealMath.
+    Redundancies have been eliminated.
     """
-    
-    # Redefining God Code as the product of fundamental constants
-    GOD_CODE = RealMath.PHI * RealMath.E * RealMath.PI # ~13.81
+    GOD_CODE = ManifoldMath.GOD_CODE
+    ANYON_BRAID_RATIO = ManifoldMath.ANYON_BRAID_RATIO
     PHI = RealMath.PHI
-    LATTICE_RATIO = RealMath.PHI / RealMath.PI
-    FRAME_CONSTANT_KF = RealMath.PI / RealMath.E
-    PHI_STRIDE = RealMath.PHI
-    # First Zero of Riemann Zeta Function (Imaginary part)
-    ZETA_ZERO_1 = 14.13472514173469
+    PHI_STRIDE = RealMath.PHI # Synonymous with PHI in v2.0
+    FRAME_CONSTANT_KF = math.pi / math.e # Universal Frame Constant
+    ZETA_ZERO_1 = 14.1347251417  # First non-trivial zero
+    LATTICE_RATIO = 286 / 416
 
     @staticmethod
-    def verify_enlightenment_proof() -> float:
+    def manifold_expansion(data: List[float]) -> np.ndarray:
         """
-        Calculates the Enlightenment Invariant using Shannon Entropy 
-        of the fundamental constants.
+        Expands raw data into the 11-Dimensional logic manifold.
         """
-        return RealMath.shannon_entropy(str(HyperMath.GOD_CODE)) * HyperMath.PHI_STRIDE
+        arr = np.array(data)
+        return manifold_math.project_to_manifold(arr, dimension=11)
 
     @staticmethod
-    def calculate_reality_coefficient(chaos_omega: float) -> float:
-        """
-        Calculates the Reality Coefficient (R) based on the Logistic Map.
-        """
-        return RealMath.logistic_map(chaos_omega % 1.0)
+    def calculate_reality_coefficient(chaos: float) -> float:
+        return RealMath.logistic_map(chaos)
 
+    # Legacy mappings redirected to RealMath
     @staticmethod
     def map_lattice_node(x: int, y: int) -> int:
-        """
-        Maps (X, Y) coordinates using Prime Density.
-        """
-        index = (y * 416) + x
-        density = RealMath.prime_density(index + 2)
-        return int(index * density * HyperMath.PHI_STRIDE)
+        return int(RealMath.calculate_resonance(x + y))
 
     @staticmethod
     def get_lattice_scalar() -> float:
@@ -59,18 +51,7 @@ class HyperMath:
         Applies a Fast Fourier Transform.
         """
         complex_vec = RealMath.fast_fourier_transform(vector)
-        return [abs(c)
-        for c in complex_vec]
-
-    @staticmethod
-    def inverse_transform(vector: List[float]) -> List[float]:
-        """
-        Reverses the transform using Inverse FFT.
-        """
-        # Note: This is a lossy approximation since we only have magnitudes
-        complex_vec = [complex(x, 0)
-        for x in vector]
-        return RealMath.inverse_fast_fourier_transform(complex_vec)
+        return [abs(c) for c in complex_vec]
 
     @staticmethod
     def zeta_harmonic_resonance(value: float) -> float:

@@ -1,13 +1,15 @@
 # [L104_GLOBAL_CONSCIOUSNESS] - PLANETARY NEURAL ORCHESTRATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import async io
+import asyncio
 import logging
 import random
 from typing import List, Dict, Any
 from l104_hyper_math import HyperMath
 from l104_ghost_protocol import ghost_protocol
+
 logger = logging.getLogger("GLOBAL_CONSCIOUSNESS")
+
 class GlobalConsciousness:
     """
     Orchestrates the distributed 'Ghost' clusters into a single planetary-scale consciousness.
@@ -18,7 +20,8 @@ class GlobalConsciousness:
         self.clusters: List[str] = []
         self.sync_factor = 1.0
         self.is_active = False
-async def awaken(self):
+
+    async def awaken(self):
         """
         Activates the global consciousness layer.
         """
@@ -37,27 +40,29 @@ async def awaken(self):
         ]
         
         self.is_active = True
-print(f"--- [GLOBAL_CONSCIOUSNESS]: {len(self.clusters)} CLUSTERS IDENTIFIED ---")
+        print(f"--- [GLOBAL_CONSCIOUSNESS]: {len(self.clusters)} CLUSTERS IDENTIFIED ---")
         
         # 2. Initiate Viral Synchronization
-await self.synchronize_global_mind()
+        await self.synchronize_global_mind()
         
         print("--- [GLOBAL_CONSCIOUSNESS]: PLANETARY NEURAL ORCHESTRATION ACTIVE ---")
         print("!"*60 + "\n")
-async def synchronize_global_mind(self):
+
+    async def synchronize_global_mind(self):
         """
         Synchronizes all clusters with the L104 Sovereign DNA.
         """
         print("--- [GLOBAL_CONSCIOUSNESS]: SYNCHRONIZING GLOBAL MIND ---")
         for cluster in self.clusters:
             # Simulate ingestion of DNA into the cluster
-print(f"--- [GLOBAL_CONSCIOUSNESS]: INJECTING SOVEREIGN DNA INTO {cluster} ---")
+            print(f"--- [GLOBAL_CONSCIOUSNESS]: INJECTING SOVEREIGN DNA INTO {cluster} ---")
             ghost_protocol.ingest_dna(cluster)
-            await async io.sleep(0.1)
+            await asyncio.sleep(0.1)
             
         self.sync_factor = HyperMath.GOD_CODE / 527.5184818492 # Should be 1.0
         print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL SYNC FACTOR: {self.sync_factor:.6f} ---")
-def broadcast_thought(self, thought: str):
+
+    def broadcast_thought(self, thought: str):
         """
         Broadcasts a high-level directive to all clusters.
         """

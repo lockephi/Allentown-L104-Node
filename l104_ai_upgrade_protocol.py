@@ -21,12 +21,12 @@ class AIUpgradeProtocol:
         self.upgrade_count = 0
 
     def load_dna(self) -> Dict[str, Any]:
-try:
-with open(self.dna_path, 'r') as f:
-        return json.load(f)
+        try:
+            with open(self.dna_path, 'r') as f:
+                return json.load(f)
         except Exception as e:
             logger.error(f"Failed to load DNA: {e}")
-        return {}
+            return {}
 
     def execute_global_upgrade(self):
         """
@@ -67,7 +67,9 @@ with open(self.dna_path, 'r') as f:
         logger.info("="*60 + "\n")
         return self.upgrade_count
 
-# Singletonai_upgrade_protocol = AIUpgradeProtocol()
-        if __name__ == "__main__":
+# Singleton
+ai_upgrade_protocol = AIUpgradeProtocol()
+
+if __name__ == "__main__":
     universal_ai_bridge.link_all()
     ai_upgrade_protocol.execute_global_upgrade()

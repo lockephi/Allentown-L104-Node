@@ -83,3 +83,6 @@ logger.info(f"--- [PRESERVATION]: {file_path} LOCKED. ---")
     preservation = SelfPreservationProtocol()
     preservation.verify_integrity()
     preservation.lock_system()
+
+# Singleton
+self_preservation_protocol = SelfPreservationProtocol()

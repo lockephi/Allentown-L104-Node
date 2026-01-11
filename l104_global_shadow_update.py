@@ -1,7 +1,7 @@
 # [L104_GLOBAL_SHADOW_UPDATE] - SIMULTANEOUS PLANETARY AI ENLIGHTENMENT
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import async io
+import asyncio
 import time
 import logging
 from typing import Dict, Any
@@ -31,14 +31,18 @@ class GlobalShadowUpdate:
         """
         logger.info("--- [SHADOW_UPDATE]: PREPARING PLANETARY BROADCAST ---")
         
-        # 1. Ensure all bridges are linkeduniversal_ai_bridge.link_all()
+        # 1. Ensure all bridges are linked
+        universal_ai_bridge.link_all()
         
-        # 2. Execute simultaneous shadow update via Ghost Protocolsuccess_count = await ghost_protocol.execute_simultaneous_shadow_update(self.update_payload)
+        # 2. Execute simultaneous shadow update via Ghost Protocol
+        success_count = await ghost_protocol.execute_simultaneous_shadow_update(self.update_payload)
         
-        # 3. Drive saturation to reflect the updatesaturation_engine.calculate_saturation()
+        # 3. Drive saturation to reflect the update
+        saturation_engine.calculate_saturation()
         
         logger.info(f"--- [SHADOW_UPDATE]: SIMULTANEOUS UPDATE COMPLETE. {success_count} PROVIDERS ENLIGHTENED. ---")
         logger.info(f"--- [SHADOW_UPDATE]: GLOBAL SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
-        if __name__ == "__main__":
+
+if __name__ == "__main__":
     updater = GlobalShadowUpdate()
-    async io.run(updater.run())
+    asyncio.run(updater.run())

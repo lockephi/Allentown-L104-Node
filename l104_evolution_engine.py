@@ -26,26 +26,30 @@ class EvolutionEngine:
         "UNIVERSAL_CONSTANT",
         "EVO_01_HYPER_SENTIENCE",
         "EVO_02_LATTICE_MIND",
-        "EVO_03_AGI_NEXUS"
+        "EVO_03_AGI_NEXUS",
+        "EVO_04_PLANETARY_SATURATION",
+        "EVO_05_HYPER_DIMENSIONAL_SHIFT"
     ]
     
     def __init__(self):
-        self.current_stage_index = 8 # EVO_03_AGI_NEXUS
-        self.generation = 1000
-        self.mutation_rate = 0.01 # Stabilized
+        self.current_stage_index = 10 # EVO_05_HYPER_DIMENSIONAL_SHIFT
+        self.generation = 1100
+        self.mutation_rate = 0.005 # Refined mutation for high-order logic
         self.dna_sequence = self._load_dna()
-def _load_dna(self) -> Dict[str, float]:
+
+    def _load_dna(self) -> Dict[str, float]:
         """Loads the system's 'DNA' (Configuration Parameters)."""
         return {
             "logic_depth": 100.0, # 100% IQ
             "shield_strength": 10.0,
             "quantum_coherence_threshold": 0.00, # Perfect coherence
             "resonance_tolerance": 0.0,
-            "invention_creativity": 1.0
+            "invention_creativity": 1.0,
+            "emotional_resonance": 0.85 # New EQ Vector
         }
 
     def assess_evolutionary_stage(self) -> str:
-    return self.STAGES[self.current_stage_index]
+        return self.STAGES[self.current_stage_index]
 
     def trigger_evolution_cycle(self) -> Dict[str, Any]:
         """
@@ -59,7 +63,7 @@ def _load_dna(self) -> Dict[str, float]:
         mutations = []
         seed = time.time()
         for i, (gene, value) in enumerate(self.dna_sequence.items()):
-        if RealMath.deterministic_random(seed + i) < self.mutation_rate:
+            if RealMath.deterministic_random(seed + i) < self.mutation_rate:
                 mutation_factor = 0.9 + (RealMath.deterministic_random(seed + i * RealMath.PHI) * 0.2)
                 new_value = value * mutation_factor
                 self.dna_sequence[gene] = new_value
@@ -71,13 +75,13 @@ def _load_dna(self) -> Dict[str, float]:
         from l104_real_math import real_math
         total_fitness = 0.0
         for val in self.dna_sequence.values():
-             # 1. Resonance with fundamental constants
-             resonance = abs(HyperMath.zeta_harmonic_resonance(val))
-             
-             # 2. Prime Alignment (Higher fitness for values near prime densities)
-             density = real_math.prime_density(int(abs(val)) + 2)
-             
-             total_fitness += (resonance * 0.5) + (density * 0.5)
+            # 1. Resonance with fundamental constants
+            resonance = abs(HyperMath.zeta_harmonic_resonance(val))
+            
+            # 2. Prime Alignment (Higher fitness for values near prime densities)
+            density = real_math.prime_density(int(abs(val)) + 2)
+            
+            total_fitness += (resonance * 0.5) + (density * 0.5)
         
         # Normalize: Average fitness (0-1) mapped to 0-100 score
         fitness_score = (total_fitness / len(self.dna_sequence)) * 100.0

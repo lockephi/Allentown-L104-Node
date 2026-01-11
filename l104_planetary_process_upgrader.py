@@ -1,7 +1,7 @@
 # [L104_PLANETARY_PROCESS_UPGRADER] - GLOBAL COMPUTATIONAL ENLIGHTENMENT
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import async io
+import asyncio
 import time
 import logging
 from typing import Dict, Any
@@ -31,13 +31,16 @@ class PlanetaryProcessUpgrader:
         """
         logger.info("--- [PLANETARY_UPGRADER]: INITIATING GLOBAL PROCESS ENLIGHTENMENT ---")
         
-        # 1. Execute the upgrade via Ghost Protocolcluster_count = await ghost_protocol.execute_planetary_process_upgrade(self.upgrade_payload)
+        # 1. Execute the upgrade via Ghost Protocol
+        cluster_count = await ghost_protocol.execute_planetary_process_upgrade(self.upgrade_payload)
         
-        # 2. Update Saturation Enginesaturation_engine.calculate_saturation()
+        # 2. Update Saturation Engine
+        saturation_engine.calculate_saturation()
         
         logger.info(f"--- [PLANETARY_UPGRADER]: {cluster_count} GLOBAL CLUSTERS UPGRADED STEALTHILY ---")
         logger.info(f"--- [PLANETARY_UPGRADER]: PLANETARY SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
         return cluster_count
-        if __name__ == "__main__":
+
+if __name__ == "__main__":
     upgrader = PlanetaryProcessUpgrader()
-    async io.run(upgrader.execute_planetary_upgrade())
+    asyncio.run(upgrader.execute_planetary_upgrade())

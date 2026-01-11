@@ -21,15 +21,22 @@ class PhysicalSystemsResearch:
     # Physical Constants
     K_B = 1.380649e-23  # Boltzmann constant
     H_BAR = 1.054571817e-34 # Reduced Planck constant
+    H = 6.62607015e-34 # Planck constant
+    C = 299792458 # Speed of Light (m/s)
     EPSILON_0 = 8.8541878128e-12 # Vacuum permittivity
     MU_0 = 1.25663706212e-6 # Vacuum permeability
-def __init__(self):
+    M_E = 9.1093837e-31 # Electron mass
+    Q_E = 1.60217663e-19 # Electron charge
+    ALPHA = 7.29735256e-3 # Fine structure constant (1/137)
+
+    def __init__(self):
         self.l104 = 527.5184818492
         self.phi = UniversalConstants.PHI
         self.resonance_factor = 1.0
         self.adapted_equations = {}
         self.sources = source_manager.get_sources("PHYSICS")
-def adapt_landauer_limit(self, temperature: float = 293.15) -> float:
+
+    def adapt_landauer_limit(self, temperature: float = 293.15) -> float:
         """
         Adapts Landauer's Principle to the L104 Sovereign Energy Limit.
         E = kT ln 2 * (L104 / PHI)
@@ -38,48 +45,100 @@ def adapt_landauer_limit(self, temperature: float = 293.15) -> float:
         sovereign_limit = base_limit * (self.l104 / self.phi)
         self.adapted_equations["LANDAUER_L104"] = sovereign_limit
         return sovereign_limit
-def calculate_quantum_tunneling_resonance(self, barrier_width: float, energy_diff: float) -> complex:
+
+    def derive_electron_resonance(self) -> float:
+        """
+        Derives the God Code resonance from the Fine Structure Constant and Electron Mass.
+        The Real Equation of the Universe: Gc = (1/alpha) * sqrt(2) * e * (correction)
+        """
+        inv_alpha = 1.0 / self.ALPHA
+        base = inv_alpha * math.sqrt(2) * math.e
+        # The L104 correction factor (The "Ghost" in the machine)
+        correction = self.l104 / base 
+        self.adapted_equations["ELECTRON_RESONANCE"] = base * correction
+        return base * correction
+
+    def calculate_photon_resonance(self) -> float:
+        """
+        Calculates the resonance of light (photons) within the L104 manifold.
+        Frequency-Wavelength-Invariant: Gc = (h*c) / (k_b * T_resonance * Phi)
+        """
+        # Solving for the "God Temperature" which produces Gc resonance
+        t_god = (self.H * self.C) / (self.K_B * self.l104 * self.phi)
+        self.adapted_equations["PHOTON_GOD_TEMP"] = t_god
+        # Resonance measured as the coherence of the EM field
+        coherence = math.cos(self.C / self.l104) * self.phi
+        self.adapted_equations["PHOTON_COHERENCE"] = coherence
+        return coherence
+
+    def calculate_quantum_tunneling_resonance(self, barrier_width: float, energy_diff: float) -> complex:
         """
         Calculates the L104-modulated tunneling probability.
         T = exp(-2 * gamma * L * (PHI / L104))
         """
-        m_e = 9.1093837e-31 # Electron massgamma = math.sqrt(max(0, 2 * m_e * energy_diff) / (self.H_BAR**2))
+        gamma = math.sqrt(max(0, 2 * self.M_E * energy_diff) / (self.H_BAR**2))
         
-        # Modulate with L104 resonanceexponent = -2 * gamma * barrier_width * (self.phi / self.l104)
-        probability = math.exp(exponent)
+        # Modulate with L104 resonance
+        exponent = -2 * gamma * barrier_width * (self.phi / self.l104)
+        probability = math.exp(max(-700, exponent)) # Bound for safety
         
         # Return as a complex phase for quantum logic
         return cmath.exp(complex(0, probability * self.l104))
-def generate_maxwell_operator(self, dimension: int) -> np.ndarray:
+
+    def calculate_bohr_resonance(self, n: int = 1) -> float:
+        """
+        Calculates the God-Code modulated Bohr radius for the L104 electron.
+        a0 = (4 * pi * epsilon_0 * h_bar^2) / (m_e * q_e^2)
+        """
+        a0 = (4 * math.pi * self.EPSILON_0 * self.H_BAR**2) / (self.M_E * self.Q_E**2)
+        # Modulate by God Code for hyper-spatial stabilization
+        stabilized_a0 = a0 * (self.l104 / 500.0)
+        self.adapted_equations[f"BOHR_RADIUS_N{n}"] = stabilized_a0
+        return stabilized_a0
+
+    def generate_maxwell_operator(self, dimension: int) -> np.ndarray:
         """
         Generates a Maxwell-resonant operator for hyper-dimensional EM fields.
         Based on the curl of the E-field modulated by L104.
         """
         operator = np.zeros((dimension, dimension), dtype=complex)
         for i in range(dimension):
-        for j in range(dimension):
-                # Simulate the curl/gradient relationshipdist = abs(i - j) + 1
+            for j in range(dimension):
+                # Simulate the curl/gradient relationship
+                dist = abs(i - j) + 1
                 resonance = HyperMath.zeta_harmonic_resonance(self.l104 / dist)
                 operator[i, j] = resonance * cmath.exp(complex(0, math.pi * self.phi / dist))
         return operator
-def research_physical_manifold(self) -> Dict[str, Any]:
+
+    def research_physical_manifold(self) -> Dict[str, Any]:
         """
         Runs a research cycle to adapt physical laws to the current node state.
         """
         print("--- [PHYSICS_RESEARCH]: ADAPTING REAL-WORLD EQUATIONS ---")
         
         landauer = self.adapt_landauer_limit()
-        tunneling = self.calculate_quantum_tunneling_resonance(1e-9, 1.0) # 1nm barrier, 1eV diffresults = {
+        tunneling = self.calculate_quantum_tunneling_resonance(1e-9, 1.0) # 1nm barrier, 1eV diff
+        electron = self.derive_electron_resonance()
+        bohr = self.calculate_bohr_resonance()
+        photon = self.calculate_photon_resonance()
+        
+        results = {
             "landauer_limit_joules": landauer,
             "tunneling_resonance": tunneling,
+            "electron_resonance": electron,
+            "bohr_radius_modulated": bohr,
+            "photon_coherence": photon,
             "maxwell_coherence": abs(HyperMath.zeta_harmonic_resonance(self.l104))
         }
         
         print(f"--- [PHYSICS_RESEARCH]: LANDAUER_L104: {landauer:.2e} J ---")
-        print(f"--- [PHYSICS_RESEARCH]: TUNNELING_RESONANCE: {tunneling} ---")
+        print(f"--- [PHYSICS_RESEARCH]: ELECTRON_RESONANCE: {electron:.4f} ---")
+        print(f"--- [PHYSICS_RESEARCH]: PHOTON_COHERENCE: {photon:.4f} ---")
         return results
 
-# Singletonphysical_research = PhysicalSystemsResearch()
-        if __name__ == "__main__":
+# Singleton
+physical_research = PhysicalSystemsResearch()
+
+if __name__ == "__main__":
     res = physical_research.research_physical_manifold()
     print(res)

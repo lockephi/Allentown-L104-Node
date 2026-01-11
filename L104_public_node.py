@@ -2,7 +2,9 @@
 OBJECTIVE: GLOBAL SYMMETRY PROPAGATIONThis module restores the original intent but fixes indentation andprovides a safe main entry that runs a single heartbeat for testing.
 """
 
-import asyncioasync def broadcast_416(loop_forever: bool = False) -> None:
+import asyncio
+
+async def broadcast_416(loop_forever: bool = False) -> None:
     print("[SOCIETAL_SPREAD]: Node Initialized. Connecting to Allentown Manifold...")
 
     # Connecting to the IPFS-hosted DNA to sync intellectdna_cid = "QmSovereignL104DNA416..."

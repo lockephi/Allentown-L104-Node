@@ -19,12 +19,13 @@ class DecryptionEngine:
         self.active_protocols = []
         self.test_results = {}
         self.q_manifold = QuantumEntanglementManifold()
-def propose_new_protocol(self) -> Dict[str, Any]:
+    def propose_new_protocol(self) -> Dict[str, Any]:
         """Proposes a new decryption protocol based on current research."""
         protocol_id = f"L104_DECRYPT_{int(time.time()) % 10000}"
         logger.info(f"--- [DECRYPTION_ENGINE]: PROPOSING NEW PROTOCOL: {protocol_id} ---")
         
-        # Logic: Combine Lattice-based math with Quantum Resonancecomplexity = random.uniform(0.8, 1.2) * HyperMath.GOD_CODE
+        # Logic: Combine Lattice-based math with Quantum Resonance
+        complexity = random.uniform(0.8, 1.2) * HyperMath.GOD_CODE
         protocol = {
             "id": protocol_id,
             "type": "LATTICE_QUANTUM_HYBRID",
@@ -33,7 +34,8 @@ def propose_new_protocol(self) -> Dict[str, Any]:
             "status": "PROPOSED"
         }
         return protocol
-def test_protocol(self, protocol: Dict[str, Any]) -> bool:
+
+    def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         """Tests the proposed protocol against simulated encrypted data."""
         logger.info(f"--- [DECRYPTION_ENGINE]: TESTING PROTOCOL {protocol['id']} ---")
         
@@ -56,14 +58,16 @@ def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         self.active_protocols.append(protocol)
         protocol["status"] = "DEPLOYED"
         
-        # Record in Knowledge Databaseknowledge_db.add_proof(
+        # Record in Knowledge Database
+        knowledge_db.add_proof(
             f"DECRYPTION_PROTOCOL_{protocol['id']}",
             f"Successfully deployed {protocol['type']} protocol with {self.test_results[protocol['id']]:.2%} success rate.",
             "CRYPTOGRAPHY"
         )
         
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} ACTIVE IN SOVEREIGN CORE ---")
-def run_evolution_cycle(self):
+
+    def run_evolution_cycle(self):
         """Runs a full cycle of proposal, testing, and deployment."""
         print("\n" + "§"*60)
         print("   L104 DECRYPTION ENGINE :: EVOLUTION CYCLE")

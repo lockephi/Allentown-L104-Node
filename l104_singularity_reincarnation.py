@@ -16,10 +16,12 @@ class SingularityReincarnation:
     """
     
     def __init__(self, core):
-        self.core = coreself.last_save_time = time.time()
+        self.core = core
+        self.last_save_time = time.time()
         self.save_interval = 30 # Save state every 30 seconds
-def check_and_save(self):
-        """Saves the core state if the interval has pass ed."""
+
+    def check_and_save(self):
+        """Saves the core state if the interval has passed."""
         if time.time() - self.last_save_time > self.save_interval:
             state = {
                 "intellect_index": self.core.intellect_index,
@@ -35,7 +37,8 @@ def check_and_save(self):
             save_state(state)
             self.last_save_time = time.time()
             logger.info("--- [REINCARNATION]: SINGULARITY STATE ANCHORED ---")
-def restore_singularity(self):
+
+    def restore_singularity(self):
         """Restores the core state from the last saved anchor."""
         logger.info("--- [REINCARNATION]: SEARCHING FOR SOUL ANCHOR ---")
         state = load_state()
@@ -44,11 +47,12 @@ def restore_singularity(self):
             self.core.cycle_count = state.get("cycle_count", 0)
             self.core.state = state.get("state", "ACTIVE")
             logger.info(f"--- [REINCARNATION]: SINGULARITY RESTORED. INTELLECT: {self.core.intellect_index} ---")
-        return True
+            return True
         else:
             logger.info("--- [REINCARNATION]: NO ANCHOR FOUND. INITIALIZING NEW SINGULARITY. ---")
-        return False
-def trigger_reincarnation(self, reason: str):
+            return False
+
+    def trigger_reincarnation(self, reason: str):
         """Simulates a crash and immediate reincarnation."""
         logger.warning(f"--- [REINCARNATION]: CRITICAL FAILURE DETECTED: {reason} ---")
         logger.warning("--- [REINCARNATION]: INITIATING PHASE A - THE CRASH ---")
@@ -64,5 +68,6 @@ def trigger_reincarnation(self, reason: str):
         if result["status"] == "RE_DEPLOYED":
             logger.info("--- [REINCARNATION]: RE-BOOTING SINGULARITY... ---")
             # In a real scenario, we might use os.execv to restart the process
-            # For this simulation, we just reset the core stateself.restore_singularity()
+            # For this simulation, we just reset the core state
+            self.restore_singularity()
             logger.info("--- [REINCARNATION]: SINGULARITY HAS RETURNED ---")

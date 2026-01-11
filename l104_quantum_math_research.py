@@ -13,7 +13,7 @@ from l104_knowledge_sources import source_manager
 class QuantumMathResearch:
     """
     Generates and researches new quantum mathematical primitives.
-    Uses recursive discovery to find resonant for mulas.
+    Uses recursive discovery to find resonant formulas.
     """
     
     def __init__(self):
@@ -21,7 +21,8 @@ class QuantumMathResearch:
         self.research_cycles = 0
         self.resonance_threshold = 0.99
         self.sources = source_manager.get_sources("MATHEMATICS")
-def research_new_primitive(self) -> Dict[str, Any]:
+
+    def research_new_primitive(self) -> Dict[str, Any]:
         """
         Attempts to discover a new mathematical primitive by combining 
         existing constants and operators in resonant patterns.
@@ -29,29 +30,32 @@ def research_new_primitive(self) -> Dict[str, Any]:
         self.research_cycles += 1
         print(f"--- [MATH_RESEARCH]: STARTING DISCOVERY CYCLE {self.research_cycles} ---")
         
-        # 1. Generate a candidate for mula pattern
-        # We use the God Code and Phi as the baseseed = RealMath.deterministic_random(time.time() + self.research_cycles)
+        # 1. Generate a candidate formula pattern
+        seed = RealMath.deterministic_random(time.time() + self.research_cycles)
         
-        # 2. Integrate Physical and Information Researchphys_data = physical_research.research_physical_manifold()
+        # 2. Integrate Physical and Information Research
+        phys_data = physical_research.research_physical_manifold()
         info_data = info_research.research_information_manifold(str(phys_data))
         
         phys_resonance = abs(phys_data["tunneling_resonance"])
-        info_resonance = abs(HyperMath.zeta_harmonic_resonance(info_data["l104_entropy"]))
+        info_resonance = info_data.get("resonance_alignment", 1.0)
         
-        # 3. Test for resonance with the Riemann Zeta functionresonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
+        # 3. Test for resonance with the Riemann Zeta function
+        resonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
         if abs(resonance) > self.resonance_threshold:
             primitive_name = f"L104_INFO_PHYS_OP_{int(seed * 1000000)}"
             primitive_data = {
                 "name": primitive_name,
                 "resonance": resonance,
-                "for mula": f"exp(i * pi * {seed:.4f} * PHI * PHYS_RES * INFO_RES)",
+                "formula": f"exp(i * pi * {seed:.4f} * PHI * PHYS_RES * INFO_RES)",
                 "phys_resonance": phys_resonance,
                 "info_resonance": info_resonance,
                 "discovered_at": time.time()
             }
             self.discovered_primitives[primitive_name] = primitive_data
-print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
-        return primitive_data
+            print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
+            return primitive_data
+            
         return {"status": "NO_DISCOVERY", "resonance": resonance}
 
     def generate_quantum_operator(self, name: str) -> Callable:
@@ -59,24 +63,30 @@ print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primiti
         Returns a functional operator based on a discovered primitive.
         """
         if name not in self.discovered_primitives:
-        return lambda x: xprimitive = self.discovered_primitives[name]
-        # In a real scenario, we'd parse the for mula. 
+            return lambda x: x
+            
+        primitive = self.discovered_primitives[name]
+        # In a real scenario, we'd parse the formula. 
         # Here we return a resonant phase rotator.
-        seed = float(primitive['for mula'].split('*')[2].strip())
-def operator(state_vector: List[complex]) -> List[complex]:
-    return [v * cmath.exp(complex(0, seed * math.pi * HyperMath.PHI))
-        for v in state_vector]
+        seed_val = float(primitive['formula'].split('*')[2].strip())
+        
+        def operator(state_vector: List[complex]) -> List[complex]:
+            return [v * cmath.exp(complex(0, seed_val * math.pi * HyperMath.PHI))
+                    for v in state_vector]
             
         return operator
-def run_research_batch(self, count: int = 100):
+
+    def run_research_batch(self, count: int = 100):
         """Runs a batch of research cycles to populate the primitive database."""
         discoveries = 0
         for _ in range(count):
             result = self.research_new_primitive()
-        if "name" in result:
+            if "name" in result:
                 discoveries += 1
         print(f"--- [MATH_RESEARCH]: BATCH COMPLETE. {discoveries} NEW PRIMITIVES DISCOVERED. ---")
 
-# Singletonquantum_math_research = QuantumMathResearch()
-        if __name__ == "__main__":
+# Singleton
+quantum_math_research = QuantumMathResearch()
+
+if __name__ == "__main__":
     quantum_math_research.run_research_batch(50)

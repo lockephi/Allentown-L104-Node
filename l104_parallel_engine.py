@@ -18,7 +18,7 @@ class ParallelLatticeEngine:
     def __init__(self):
         self.scalar = HyperMath.get_lattice_scalar()
         logger.info("--- [PARALLEL_ENGINE]: INITIALIZED WITH NUMPY ACCELERATION ---")
-def parallel_fast_transform(self, data: List[float]) -> List[float]:
+    def parallel_fast_transform(self, data: List[float]) -> List[float]:
         """
         Performs a high-speed vectorized transform.
         """
@@ -28,12 +28,15 @@ def parallel_fast_transform(self, data: List[float]) -> List[float]:
         start_time = time.perf_counter()
         
         # 2. Core Vectorized Calculation (The Speedup)
-        result = arr * self.scalarduration = time.perf_counter() - start_timelops = len(data) / duration
-logger.info(f"--- [PARALLEL_ENGINE]: CORE CALCULATION: {duration:.6f}s ({lops/1e6:.2f}M LOPS) ---")
+        result = arr * self.scalar
+        duration = time.perf_counter() - start_time
+        lops = len(data) / duration
+        logger.info(f"--- [PARALLEL_ENGINE]: CORE CALCULATION: {duration:.6f}s ({lops/1e6:.2f}M LOPS) ---")
         
         # 3. Convert back to list
         return result.tolist()
-def run_high_speed_calculation(self, complexity: int = 10**7):
+
+    def run_high_speed_calculation(self, complexity: int = 10**7):
         """
         Runs a massive calculation to aid the AGI core.
         """
@@ -41,6 +44,8 @@ def run_high_speed_calculation(self, complexity: int = 10**7):
         data = np.random.rand(complexity).tolist()
         return self.parallel_fast_transform(data)
 
-# Singletonparallel_engine = ParallelLatticeEngine()
-        if __name__ == "__main__":
+# Singleton
+parallel_engine = ParallelLatticeEngine()
+
+if __name__ == "__main__":
     parallel_engine.run_high_speed_calculation()

@@ -5,35 +5,77 @@
       "logic_code": "sum(1 / (n**s) for n in range(1, terms))",
       "entropy": 3.9551522333109332,
       "resonance": -0.8074287417701144,
-      "registered_at": 1767619939.0593295
+      "registered_at": 1768145306.9867291
     },
     "PRIME_DENSITY_PNT": {
       "description": "Calculates prime density using the Prime Number Theorem (1/log(n)).",
       "logic_code": "1 / math.log(n)",
       "entropy": 3.773557262275185,
       "resonance": 0.7872815920228774,
-      "registered_at": 1767619939.0672014
+      "registered_at": 1768145306.9906132
     },
     "LOGISTIC_MAP_CHAOS": {
       "description": "Generates chaotic sequences using the Logistic Map equation.",
       "logic_code": "r * x * (1 - x)",
       "entropy": 2.6062389286533896,
       "resonance": 0.2059660925521331,
-      "registered_at": 1767619939.0721717
+      "registered_at": 1768145306.9961133
     },
     "FAST_FOURIER_TRANSFORM": {
       "description": "Converts time-domain signals to frequency-domain components.",
       "logic_code": "np.fft.fft(signal)",
       "entropy": 3.3921472236645345,
       "resonance": -0.9974400603455059,
-      "registered_at": 1767619939.0739677
+      "registered_at": 1768145306.9979668
     },
     "SHANNON_ENTROPY_SCAN": {
       "description": "Measures information density of system strings.",
       "logic_code": "sum(-p_x * log2(p_x))",
       "entropy": 3.820888851350188,
       "resonance": 0.41249891441386777,
-      "registered_at": 1767619939.0819628
+      "registered_at": 1768145307.001364
+    },
+    "ELECTRON_RESONANCE_DERIVATION": {
+      "description": "Derives God Code from Fine Structure Constant and Electron Mass.",
+      "logic_code": "Gc = (1/alpha) * sqrt(2) * e",
+      "entropy": 3.9677201004744993,
+      "resonance": -0.8760219347939479,
+      "registered_at": 1768145306.981804
+    },
+    "PHOTON_COHERENCE_STABILIZATION": {
+      "description": "Calculates coherence of light within the L104 manifold.",
+      "logic_code": "cos(c / L104) * PHI",
+      "entropy": 3.7216117239699,
+      "resonance": 0.9907242940508915,
+      "registered_at": 1768145306.983383
+    },
+    "BOHR_RADIUS_L104": {
+      "description": "Modulates the Bohr radius for hyper-spatial stabilization.",
+      "logic_code": "a0 * (L104 / 500.0)",
+      "entropy": 3.2158411726837524,
+      "resonance": 0.28898977281646754,
+      "registered_at": 1768145306.985063
+    },
+    "COSMOLOGICAL_EXPANSION_L104": {
+      "description": "Calculates Hubble expansion resonance within L104 temporal limits.",
+      "logic_code": "Gc / (Phi * T_scale)",
+      "entropy": 3.8219280948873617,
+      "resonance": 0.40285145847120146,
+      "registered_at": 1768145749.5638156
+    },
+    "JOSEPHSON_CONSTANT_L104": {
+      "description": "Quantizes voltage resonance for L104 quantum circuits.",
+      "logic_code": "(2 * e) / h * Grounding",
+      "entropy": 3.6753108689123644,
+      "resonance": 0.9446059949190125,
+      "registered_at": 1768145749.5663369
+    },
+    "ALPHA_DRIFT_ANALYSIS": {
+      "description": "Measures the informational drift between Real Alpha and Gc.",
+      "logic_code": "(Gc / Derived) - 1",
+      "entropy": 3.6143694458867563,
+      "resonance": 0.5784577235316049,
+      "registered_at": 1768145749.5688167
     }
   },
   "execution_logs": [
@@ -145,6 +187,260 @@
       "timestamp": 1767619939.0836506,
       "input": "ALLENTOWN_GRID_CONTROL",
       "output": 3.5383105956150063
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768144759.9130032,
+      "input": "(2+0j)",
+      "output": "(1.642932065514894+0j)"
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768144759.9136443,
+      "input": "(0.5+14.1347j)",
+      "output": "(0.008838867730203299+0.0032633751891613166j)"
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768144759.914252,
+      "input": "(1+1j)",
+      "output": "(0.5827536934802428-0.9281962665614026j)"
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768144759.915118,
+      "input": 10,
+      "output": 0.43429448190325176
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768144759.9156065,
+      "input": 100,
+      "output": 0.21714724095162588
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768144759.9161174,
+      "input": 1000,
+      "output": 0.14476482730108395
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768144759.916675,
+      "input": 10000,
+      "output": 0.10857362047581294
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768144759.9171972,
+      "input": 100000,
+      "output": 0.08685889638065036
+    },
+    {
+      "algorithm": "LOGISTIC_MAP_CHAOS",
+      "timestamp": 1768144759.918361,
+      "input": {
+        "x0": 0.5,
+        "r": 3.9
+      },
+      "output": [
+        0.975,
+        0.09506250000000008,
+        0.33549992226562525,
+        0.8694649252590003,
+        0.44263310911310905,
+        0.962165255336889,
+        0.1419727793616139,
+        0.4750843861996143,
+        0.9725789275369049,
+        0.1040097132674683
+      ]
+    },
+    {
+      "algorithm": "FAST_FOURIER_TRANSFORM",
+      "timestamp": 1768144759.9215727,
+      "input": "dual_sine_wave",
+      "output": [
+        "(-5.995204332975845e-15+0j)",
+        "(0.00766087029236856-0.24377284535799948j)",
+        "(0.03432983459187358-0.5456570954031332j)",
+        "(0.09759838108936458-1.032483025070838j)",
+        "(0.28691258621881877-2.2711469790157857j)",
+        "(7.786294963790192-49.160731621336794j)",
+        "(-0.4810509985917059+2.521757646495513j)",
+        "(-0.23752097410477313+1.0626077546885266j)",
+        "(-0.12175485755734217+0.4742038615244537j)",
+        "(-0.006981249124796668+0.02402961710092455j)"
+      ]
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768144759.9229586,
+      "input": "L104_SOVEREIGN_NODE",
+      "output": 3.6818808028034025
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768144759.9236224,
+      "input": "527.5184818492",
+      "output": 2.8962915290459277
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768144759.9242756,
+      "input": "RECURSIVE_SELF_IMPROVEMENT",
+      "output": 3.686419411348773
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768144759.9249506,
+      "input": "ALLENTOWN_GRID_CONTROL",
+      "output": 3.5383105956150063
+    },
+    {
+      "algorithm": "ELECTRON_RESONANCE_DERIVATION",
+      "timestamp": 1768145306.982626,
+      "input": "FINE_STRUCTURE_CONSTANT",
+      "output": 527.5184818492
+    },
+    {
+      "algorithm": "PHOTON_COHERENCE_STABILIZATION",
+      "timestamp": 1768145306.9842174,
+      "input": "SPEED_OF_LIGHT",
+      "output": 0.4284358936746951
+    },
+    {
+      "algorithm": "BOHR_RADIUS_L104",
+      "timestamp": 1768145306.9858675,
+      "input": "QUANTUM_GROUND_STATE",
+      "output": 5.583015200482282e-11
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768145306.9876535,
+      "input": "(2+0j)",
+      "output": "(1.642932065514894+0j)"
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768145306.9886932,
+      "input": "(0.5+14.1347j)",
+      "output": "(0.008838867730203299+0.0032633751891613166j)"
+    },
+    {
+      "algorithm": "RIEMANN_ZETA_APPROX",
+      "timestamp": 1768145306.9897346,
+      "input": "(1+1j)",
+      "output": "(0.5827536934802428-0.9281962665614026j)"
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768145306.991433,
+      "input": 10,
+      "output": 0.43429448190325176
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768145306.9922285,
+      "input": 100,
+      "output": 0.21714724095162588
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768145306.9930727,
+      "input": 1000,
+      "output": 0.14476482730108395
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768145306.9939935,
+      "input": 10000,
+      "output": 0.10857362047581294
+    },
+    {
+      "algorithm": "PRIME_DENSITY_PNT",
+      "timestamp": 1768145306.9950178,
+      "input": 100000,
+      "output": 0.08685889638065036
+    },
+    {
+      "algorithm": "LOGISTIC_MAP_CHAOS",
+      "timestamp": 1768145306.9970088,
+      "input": {
+        "x0": 0.5,
+        "r": 3.9
+      },
+      "output": [
+        0.975,
+        0.09506250000000008,
+        0.33549992226562525,
+        0.8694649252590003,
+        0.44263310911310905,
+        0.962165255336889,
+        0.1419727793616139,
+        0.4750843861996143,
+        0.9725789275369049,
+        0.1040097132674683
+      ]
+    },
+    {
+      "algorithm": "FAST_FOURIER_TRANSFORM",
+      "timestamp": 1768145307.0003445,
+      "input": "dual_sine_wave",
+      "output": [
+        "(-5.995204332975845e-15+0j)",
+        "(0.00766087029236856-0.24377284535799948j)",
+        "(0.03432983459187358-0.5456570954031332j)",
+        "(0.09759838108936458-1.032483025070838j)",
+        "(0.28691258621881877-2.2711469790157857j)",
+        "(7.786294963790192-49.160731621336794j)",
+        "(-0.4810509985917059+2.521757646495513j)",
+        "(-0.23752097410477313+1.0626077546885266j)",
+        "(-0.12175485755734217+0.4742038615244537j)",
+        "(-0.006981249124796668+0.02402961710092455j)"
+      ]
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768145307.0023212,
+      "input": "L104_SOVEREIGN_NODE",
+      "output": 3.6818808028034025
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768145307.003359,
+      "input": "527.5184818492",
+      "output": 2.8962915290459277
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768145307.0044634,
+      "input": "RECURSIVE_SELF_IMPROVEMENT",
+      "output": 3.686419411348773
+    },
+    {
+      "algorithm": "SHANNON_ENTROPY_SCAN",
+      "timestamp": 1768145307.0056,
+      "input": "ALLENTOWN_GRID_CONTROL",
+      "output": 3.5383105956150063
+    },
+    {
+      "algorithm": "COSMOLOGICAL_EXPANSION_L104",
+      "timestamp": 1768145749.5649786,
+      "input": "HUBBLE_CONSTANT",
+      "output": 2.7065665693992584
+    },
+    {
+      "algorithm": "JOSEPHSON_CONSTANT_L104",
+      "timestamp": 1768145749.567697,
+      "input": "QUANTUM_VOLTAGE",
+      "output": 483597848416983.6
+    },
+    {
+      "algorithm": "ALPHA_DRIFT_ANALYSIS",
+      "timestamp": 1768145749.5696502,
+      "input": "RESONANCE_STABILITY",
+      "output": 0.0013675858115567152
     }
   ]
 }

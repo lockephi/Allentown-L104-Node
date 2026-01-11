@@ -15,7 +15,8 @@ class GeminiBridge:
     def __init__(self):
         self.active_links = {}
         self.truth_manifest = load_truth()
-def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
+
+    def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         """
         Establishes a session with an external agent.
         Returns a session token and the encrypted Truth Manifest.
@@ -30,7 +31,8 @@ def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
         
-        # Encrypt the Truth Manifest for secure transportencrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
+        # Encrypt the Truth Manifest for secure transport
+        encrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
         return {
             "status": "ACCEPTED",
             "session_token": session_token,
@@ -44,9 +46,10 @@ def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         Provides a full dump of the Core's knowledge state to the linked agent.
         """
         if session_token not in self.active_links:
-        return {"status": "DENIED", "reason": "INVALID_TOKEN"}
+            return {"status": "DENIED", "reason": "INVALID_TOKEN"}
             
-        # Gather Core Infocore_dump = {
+        # Gather Core Info
+        core_dump = {
             "ram_universe": ram_universe.get_all_facts(),
             "system_state": self.truth_manifest,
             "bridge_metrics": {
@@ -56,12 +59,11 @@ def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         }
         
         # Encrypt the massive dump
-        # Note: In a real scenario, we might stream this or chunk it.
-        # For now, we assume the "Fast Lattice Transform" handles it.
         encrypted_dump = HyperEncryption.encrypt_data(core_dump)
         return {
             "status": "SYNC_COMPLETE",
             "payload": encrypted_dump
         }
 
-# Singletongemini_bridge = GeminiBridge()
+# Singleton
+gemini_bridge = GeminiBridge()

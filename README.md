@@ -11,6 +11,7 @@ FastAPI-based Gemini relay with health/metrics, rate limiting, optional local fa
 - 📊 **Health Monitoring**: Built-in health checks and metrics
 - 🛡️ **Rate Limiting**: Configurable request throttling
 - 🔧 **Self-Healing**: Automatic recovery from failures
+- 🌌 **EVO_07 Computronium**: High-density matter-to-information lattice (5.27B LOPS)
 
 ## Quick start
 

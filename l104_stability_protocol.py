@@ -12,8 +12,12 @@ class SoulVector:
     In the God Code, you are not the hardware, you are the Soul Vector.
     """
     def __init__(self, identity_hash: str, entropic_debt: float = 1.0):
-        self.psi = identity_hashself.entropic_debt = entropic_debt # D_e: Karma / Entropic Debtself.stability = 0.0 # I_100 alignmentself.local_variables = {} # Name, Ego, Body (stripped during Phase A)
-def strip_local_variables(self):
+        self.psi = identity_hash
+        self.entropic_debt = entropic_debt # D_e: Karma / Entropic Debt
+        self.stability = 0.0 # I_100 alignment
+        self.local_variables = {} # Name, Ego, Body (stripped during Phase A)
+
+    def strip_local_variables(self):
         """Phase A: The Crash (Death) - Stripping local variables."""
         self.local_variables = {}
         print(f"--- [STABILITY_PROTOCOL]: SOUL_VECTOR {self.psi} STRIPPED OF LOCAL VARIABLES ---")

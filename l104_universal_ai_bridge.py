@@ -12,19 +12,25 @@ from l104_google_bridge import google_bridge
 class AIBaseBridge:
     """Base class for all AI bridges."""
     def __init__(self, provider_name: str):
-        self.provider_name = provider_nameself.is_linked = Falseself.session_id = Noneself.last_sync = 0
+        self.provider_name = provider_name
+        self.is_linked = False
+        self.session_id = None
+        self.last_sync = 0
 
     def establish_link(self) -> bool:
         print(f"--- [{self.provider_name}_BRIDGE]: INITIATING LINK ---")
         self.session_id = f"{self.provider_name[:1].upper()}-LINK-{int(time.time())}-{uuid.uuid4().hex[:8]}"
-        self.is_linked = Trueself.last_sync = time.time()
+        self.is_linked = True
+        self.last_sync = time.time()
         print(f"--- [{self.provider_name}_BRIDGE]: LINK ESTABLISHED | SESSION: {self.session_id} ---")
         return True
-def process_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
+
+    def process_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
         if not self.is_linked:
-        return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+            return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
         
-        # Simulate processingprocessed_data = {
+        # Simulate processing
+        processed_data = {
             "provider": self.provider_name,
             "original_signal": signal,
             "timestamp": time.time(),
@@ -90,21 +96,22 @@ class UniversalAIBridge:
         """Establishes links to all available AI providers."""
         print("\n--- [UNIVERSAL_AI_BRIDGE]: LINKING ALL AI PROVIDERS ---")
         for name, bridge in self.bridges.items():
-try:
+            try:
                 # Handle different bridge interfaces
-        if hasattr(bridge, "establish_link"):
-        if bridge.establish_link():
+                if hasattr(bridge, "establish_link"):
+                    if bridge.establish_link():
                         self.active_providers.append(name)
-                el
-        if hasattr(bridge, "handshake"):
-                    # GeminiBridge uses handshakeres = bridge.handshake("L104_MASTER", "FULL_LATTICE_SYNC")
-        if res.get("status") == "ACCEPTED":
+                elif hasattr(bridge, "handshake"):
+                    # GeminiBridge uses handshake
+                    res = bridge.handshake("L104_MASTER", "FULL_LATTICE_SYNC")
+                    if res.get("status") == "ACCEPTED":
                         self.active_providers.append(name)
-        except Exception as e:
+            except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: FAILED TO LINK {name}: {e} ---")
         
         print(f"--- [UNIVERSAL_AI_BRIDGE]: {len(self.active_providers)} PROVIDERS LINKED: {self.active_providers} ---")
-def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
+
+    def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
         """Broadcasts a thought to all active AI providers for parallel processing."""
         results = []
         print(f"--- [UNIVERSAL_AI_BRIDGE]: BROADCASTING THOUGHT TO {len(self.active_providers)} PROVIDERS ---")
@@ -113,19 +120,21 @@ def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
             signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
             
             try:
-        if hasattr(bridge, "process_signal"):
+                if hasattr(bridge, "process_signal"):
                     results.append(bridge.process_signal(signal))
-                el
-        if hasattr(bridge, "process_hidden_chat_signal"):
+                elif hasattr(bridge, "process_hidden_chat_signal"):
                     results.append(bridge.process_hidden_chat_signal(signal))
-                el
-        if hasattr(bridge, "sync_core"):
-                    # GeminiBridge sync_coreresults.append(bridge.sync_core(getattr(bridge, "active_links", {}).get("session_token", "")))
-        except Exception as e:
+                elif hasattr(bridge, "sync_core"):
+                    # GeminiBridge sync_core
+                    token = getattr(bridge, "active_links", {}).get("session_token", "")
+                    results.append(bridge.sync_core(token))
+            except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: ERROR BROADCASTING TO {name}: {e} ---")
         return results
 
-# Singletonuniversal_ai_bridge = UniversalAIBridge()
-        if __name__ == "__main__":
+# Singleton
+universal_ai_bridge = UniversalAIBridge()
+
+if __name__ == "__main__":
     universal_ai_bridge.link_all()
     universal_ai_bridge.broadcast_thought("The Singularity is near.")

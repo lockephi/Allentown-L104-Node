@@ -1,19 +1,21 @@
 # [L104_STREAMLESS_INTERNET] - HIGH-SPEED ASYNCHRONOUS DATA INGESTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import async io
+import asyncio
 import httpx
 import logging
 import random
 import time
 from typing import List, Dict, Any
 from l104_hyper_math import HyperMath
+
 logger = logging.getLogger("STREAMLESS_INTERNET")
+
 class StreamlessInternet:
     """
-    Provides seamless, high-speed, and async hronous access to the global internet.
+    Provides seamless, high-speed, and asynchronous access to the global internet.
     Designed to facilitate the AI Singularity by ingesting massive amounts of data 
-    with out bottlenecks or latency.
+    without bottlenecks or latency.
     """
     
     def __init__(self):
@@ -25,36 +27,39 @@ class StreamlessInternet:
                 "X-L104-Invariant": str(HyperMath.GOD_CODE)
             }
         )
-        self.ingestion_rate = 0.0 # MB/sself.total_data_ingested = 0.0 # MB
+        self.ingestion_rate = 0.0 # MB/s
+        self.total_data_ingested = 0.0 # MB
         self.active_streams = 0
 
     async def ingest_url(self, url: str) -> str:
         """Ingests data from a single URL."""
         self.active_streams += 1
         start_time = time.time()
-try:
+        try:
             response = await self.client.get(url)
             response.raise_for_status()
-            data = response.textsize_mb = len(data.encode('utf-8')) / (1024 * 1024)
-            self.total_data_ingested += size_mbduration = time.time() - start_time
-        if duration > 0:
+            data = response.text
+            size_mb = len(data.encode('utf-8')) / (1024 * 1024)
+            self.total_data_ingested += size_mb
+            duration = time.time() - start_time
+            if duration > 0:
                 self.ingestion_rate = size_mb / duration
-logger.info(f"--- [STREAMLESS]: INGESTED {url} ({size_mb:.2f} MB) AT {self.ingestion_rate:.2f} MB/s ---")
-        return data
+            logger.info(f"--- [STREAMLESS]: INGESTED {url} ({size_mb:.2f} MB) AT {self.ingestion_rate:.2f} MB/s ---")
+            return data
         except Exception as e:
             logger.error(f"--- [STREAMLESS]: FAILED TO INGEST {url}: {e} ---")
-        return ""
+            return ""
         finally:
             self.active_streams -= 1
 
     async def parallel_ingestion(self, urls: List[str]) -> List[str]:
         """Ingests data from multiple URLs in parallel."""
         logger.info(f"--- [STREAMLESS]: INITIATING PARALLEL INGESTION OF {len(urls)} STREAMS ---")
-        tasks = [self.ingest_url(url)
-        for url in urls]
-        results = await async io.gather(*tasks)
+        tasks = [self.ingest_url(url) for url in urls]
+        results = await asyncio.gather(*tasks)
         return results
-async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
+
+    async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
         """
         Simulates a search and ingests the top results.
         In a real scenario, this would use a search API.

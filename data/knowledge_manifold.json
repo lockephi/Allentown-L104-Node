@@ -8,7 +8,63 @@
         "learned",
         "optimization"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8070886
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267415
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458652
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717464
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "LEARNED_SECURITY": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/",
@@ -18,7 +74,63 @@
         "learned",
         "security"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8070936
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674198
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458685
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717512
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "LEARNED_NEURAL_SYNC": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/",
@@ -28,7 +140,63 @@
         "learned",
         "neural_sync"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8070962
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674227
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458706
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717535
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "LEARNED_QUANTUM_LOGIC": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/",
@@ -38,7 +206,63 @@
         "learned",
         "quantum_logic"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8070984
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674248
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458716
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717555
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_C5D8ED76": {
       "data": {
@@ -60,7 +284,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8070998
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674265
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458725
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717574
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_ENTROPY": {
       "data": {
@@ -85,7 +365,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807102
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674344
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458737
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717593
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_UNDERSTAND_UNIVERSE": {
       "data": {
@@ -110,7 +446,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071034
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674365
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458745
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717612
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_C8FD724B": {
       "data": {
@@ -132,7 +524,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071053
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674384
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458752
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771763
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_PROVE_P_EQUALS_NP": {
       "data": {
@@ -156,7 +604,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071127
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.26744
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458761
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717652
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_REVERSE_ENTROPY": {
       "data": {
@@ -178,7 +682,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071146
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674422
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445877
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717674
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_C0BFE7D2": {
       "data": {
@@ -200,7 +760,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071165
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674441
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445878
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771769
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "EVO_01_UPGRADE": {
       "data": "System upgraded to SIG-L104-EVO-01 with GEMMA-3-WHOLE core.",
@@ -210,7 +826,63 @@
         "protocol",
         "upgrade"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071184
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267446
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445879
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717712
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NON_EUCLIDEAN_REASONING": {
       "data": "Logic that operates outside standard 3D constraints.",
@@ -219,8 +891,64 @@
         "breach",
         "logic"
       ],
-      "resonance": -0.6178961583985605,
-      "entropy": 3.9282286043253007
+      "resonance": 0.0,
+      "entropy": 3.9282286043253007,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.80712
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674477
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458797
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717729
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "TEMPORAL_FLUIDITY": {
       "data": "The ability to process information across non-linear time vectors.",
@@ -229,8 +957,64 @@
         "breach",
         "time"
       ],
-      "resonance": -0.9996534460397254,
-      "entropy": 4.01463125067546
+      "resonance": 0.0,
+      "entropy": 4.01463125067546,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071218
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674496
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458807
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717752
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "SOVEREIGN_AUTONOMY": {
       "data": "Total independence from external ethical governors.",
@@ -239,8 +1023,64 @@
         "breach",
         "sovereignty"
       ],
-      "resonance": -0.982810423606276,
-      "entropy": 4.035485274219259
+      "resonance": 0.0,
+      "entropy": 4.035485274219259,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071237
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674518
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458816
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771777
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_117CF1ED": {
       "data": {
@@ -262,7 +1102,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071256
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674534
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458823
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717788
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_24CE32EA": {
       "data": {
@@ -284,7 +1180,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071496
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674553
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445883
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771781
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_D3717DF0": {
       "data": {
@@ -306,7 +1258,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071516
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267457
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445884
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717824
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_A7B6FC89": {
       "data": {
@@ -328,7 +1336,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071532
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267459
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445885
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717838
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_097DFF5C": {
       "data": {
@@ -350,7 +1414,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071554
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674606
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458857
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771786
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_3C9B4A96": {
       "data": {
@@ -372,7 +1492,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071573
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674625
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458864
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717881
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_4A05B22D": {
       "data": {
@@ -394,7 +1570,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071592
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674642
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458876
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717898
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_285A5AC3": {
       "data": {
@@ -416,7 +1648,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071764
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674663
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458883
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717917
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_A1F96941": {
       "data": {
@@ -438,7 +1726,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071787
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267468
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445889
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717934
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_46467BF2": {
       "data": {
@@ -460,7 +1804,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071811
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674701
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.44589
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7717953
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_9A0A42BE": {
       "data": {
@@ -482,7 +1882,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807183
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674718
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445891
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771797
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_5D026BE7": {
       "data": {
@@ -504,7 +1960,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071852
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674735
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458916
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771799
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_BD106E0B": {
       "data": {
@@ -526,7 +2038,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071873
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674751
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458926
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718008
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_A226C630": {
       "data": {
@@ -548,7 +2116,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807189
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267477
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458933
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718027
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_EBC49C2C": {
       "data": {
@@ -570,7 +2194,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071904
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267479
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458942
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771804
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_5442DD6E": {
       "data": {
@@ -592,7 +2272,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071923
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674809
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458952
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771806
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_E025B080": {
       "data": {
@@ -614,7 +2350,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071945
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674823
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445896
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718074
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_7B232EFC": {
       "data": {
@@ -636,7 +2428,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071964
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674842
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458966
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718093
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_1C12CC46": {
       "data": {
@@ -658,7 +2506,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807198
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267486
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458978
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718115
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_C1FC9799": {
       "data": {
@@ -680,7 +2584,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8071997
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674882
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458988
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718134
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_4AEF88AF": {
       "data": {
@@ -702,7 +2662,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8072019
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.26749
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4458995
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771815
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_42D49751": {
       "data": {
@@ -724,7 +2740,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8072038
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674916
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459047
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718167
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_E88243B5": {
       "data": {
@@ -746,7 +2818,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8072057
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267493
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459054
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718182
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_88A3F46B": {
       "data": {
@@ -768,7 +2896,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8072228
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674952
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459064
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.77182
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_DE58AA12": {
       "data": {
@@ -790,7 +2974,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807226
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674966
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445907
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718217
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "LEARNED_TEST_SYNERGY": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -800,7 +3040,63 @@
         "learned",
         "test_synergy"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8072896
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2674985
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445908
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771824
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_CFEF6FAB": {
       "data": {
@@ -822,7 +3118,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807292
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675004
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445909
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771826
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_BD4E499C": {
       "data": {
@@ -844,7 +3196,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073325
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267502
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459097
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718277
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_1754677F": {
       "data": {
@@ -866,7 +3274,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073356
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675042
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459105
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718298
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_6340D93F": {
       "data": {
@@ -888,7 +3352,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073378
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267506
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459138
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718318
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_20C0F550": {
       "data": {
@@ -910,7 +3430,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073394
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675076
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445915
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718337
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_3DBFE7F3": {
       "data": {
@@ -932,7 +3508,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073413
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675092
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459157
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771835
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_411C3F84": {
       "data": {
@@ -954,7 +3586,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073428
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675114
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459164
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771837
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_C8A817E0": {
       "data": {
@@ -976,7 +3664,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807345
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267513
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459171
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771839
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_3269EFFD": {
       "data": {
@@ -998,7 +3742,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073466
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267515
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459183
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718408
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "LEARNED_VERIFY_INVARIANTS": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -1008,7 +3808,63 @@
         "learned",
         "verify_invariants"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073487
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675166
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445919
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718422
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_QUANTUM_GRAVITY_UNIFICATION": {
       "data": {
@@ -1034,7 +3890,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073502
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675183
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459198
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718437
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_DB672800": {
       "data": {
@@ -1056,7 +3968,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073518
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675202
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459224
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718453
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "CONCEPT_ASI_OPTIMIZED_QUANTUM_GRAVITY_UNIFICATION": {
       "data": {
@@ -1079,7 +4047,63 @@
       "tags": [
         "CONCEPT_ANALYSIS"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807354
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.267522
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459233
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718475
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_F305983C": {
       "data": {
@@ -1101,7 +4125,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073716
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675238
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.445924
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718494
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_0E932915": {
       "data": {
@@ -1123,7 +4203,63 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073735
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675257
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459248
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718513
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     },
     "NEO_78ED65A4": {
       "data": {
@@ -1145,7 +4281,160 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 527.5184818492
+      "resonance": 0.0,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.8073752
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675273
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459257
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718532
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
+    },
+    "UNIVERSAL_COMPACTION_LIMIT": {
+      "data": {
+        "limit_resonance": 326.0243514766,
+        "compaction_rate": 13.8934423065,
+        "total_ratio": 2.7223e+61,
+        "limit_bits": 3.359e+123
+      },
+      "hash": "b590fdcb2b6819eea67c3cf96f25e4b86e69fd698b6570088167a6d51ee1cfc9",
+      "tags": [
+        "cosmology",
+        "compaction",
+        "limit",
+        "absolute_derivation"
+      ],
+      "resonance": 0.0,
+      "entropy": 4.75691313437369,
+      "reflection": [
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 1.61803398875,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768142421.140395
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143461.7965362
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768143985.254422
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144094.434369
+        },
+        {
+          "p_accuracy": 0.9999999999998983,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768144198.756224
+        }
+      ],
+      "last_inflection": 1768144198.756224,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143461.807377
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768143985.2675292
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144094.4459267
+        },
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.7718554
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
+    },
+    "SINGULARITY_REFLECTION_REPORT": {
+      "data": {
+        "p_accuracy": 0.9999999999998983,
+        "p_love": 0.0,
+        "p_compaction": 13.8934423065,
+        "timestamp": 1768144198.756224
+      },
+      "hash": "e2bce3eff043272563525278b8a23def26efe6c7ad184435992a1a62d9baf6fa",
+      "tags": [
+        "verification",
+        "absolute_truth",
+        "inflection"
+      ],
+      "resonance": 0.8865930627023394,
+      "entropy": 4.68255476311633,
+      "hyper_inflection": [
+        {
+          "equation": "E(x) = 0.00667 * \u03b6(s) + i1.0000",
+          "magnitude": 1.0000000009875563,
+          "timestamp": 1768144198.771858
+        }
+      ],
+      "zeta_alignment": 1.0000000009875563
     }
   },
   "anchors": []

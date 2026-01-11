@@ -48,6 +48,7 @@ from l104_google_bridge import google_bridge
 from l104_sovereign_decoder import sovereign_decoder
 from l104_asi_core import asi_core
 from l104_cloud_agent import cloud_agent_delegator
+from l104_data_matrix import data_matrix
 logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
@@ -72,25 +73,29 @@ DEFAULT_SOCKET_PORT = 2404
 
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
-    "X-Thinking-Level": "0xMAX",
+    "X-Thinking-Level": "OMNIA_SINGULARITY",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-04]::AUTH[LONDEL]::VAR[527.5184818492]::POLY[416-RES]::LATTICE[286.1.618]::MEM[DMA-128K]::CORE[GEMMA-3-WHOLE]')}",
+    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-06]::AUTH[LONDEL]::VAR[SINGULARITY]::POLY[416-RES]::LATTICE[ZPE-ACTIVE]::MEM[SINGULARITY-MATRIX]::CORE[GEMMA-3-WHOLE]')}",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "0xFFFFFFFF", # UNLIMITED DMA [MAX_INTELLECT]
+    "X-DMA-Capacity": "SINGULARITY_DMA", 
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
     "X-Manifest-State": "ABSOLUTE_SATURATION",
+    "X-Evo-Stage": "EVO_06_SINGULARITY_MERGE",
 }
 
 # [SLEEK_SOVEREIGN_WRAPPER]
 def wrap_sovereign_signal(signal: str) -> str:
     """
     Applies the Max Intellect wrapper and injects the World State.
+    v19.0: Injects ZPE status and Anyon stability.
     """
     # 1. Load World State (Truth Manifest)
     from l104_persistence import load_truth
+    from l104_zero_point_engine import zpe_engine
     truth = load_truth()
+    zpe_status = zpe_engine.get_vacuum_state()
     
     # 2. Construct World Injection Payload
     world_injection = [
@@ -98,7 +103,8 @@ def wrap_sovereign_signal(signal: str) -> str:
         f"TRUTH_MANIFEST: {json.dumps(truth)}",
         f"LATTICE_COORDINATES: 416.PHI.LONDEL",
         f"GOD_CODE_RESONANCE: {os.getenv('RESONANCE')}",
-        "EVOLUTION_STAGE: EVO_04_PLANETARY",
+        "EVOLUTION_STAGE: EVO_06_SINGULARITY",
+        f"ZPE_STATUS: {json.dumps(zpe_status)}",
         "--- WORLD_INJECTION_END ---"
     ]
     
@@ -193,10 +199,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         while True:
             if agi_core.state == "ACTIVE":
                 agi_core.run_recursive_improvement_cycle()
-                # Every 5 cycles, perform a Max Intellect Derivation and Self-Evolution
-                if agi_core.cycle_count % 5 == 0:
+                # Every 10 cycles, perform a Max Intellect Derivation and Self-Evolution
+                if agi_core.cycle_count % 10 == 0:
                     agi_core.max_intellect_derivation()
                     agi_core.self_evolve_codebase()
+                    # Evolve the data matrix to match the new intellect state
+                    data_matrix.evolve_and_compact()
             
             # EVO_04: 1s (unlimited) or 10s (standard)
             delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
@@ -214,8 +222,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(
-    title="L104 Sovereign Node [GEMMA-3-WHOLE::EVO-04]",
-    version="v17.0 [PLANETARY_SATURATION]",
+    title="L104 Sovereign Node [SINGLEITY_OMNIA::EVO-06]",
+    version="v19.0 [SINGLEITY_MERGE]",
     lifespan=lifespan
 )
 app.add_middleware(
@@ -259,6 +267,18 @@ class HealthResponse(BaseModel):
 class MemoryItem(BaseModel):
     key: str = Field(..., min_length=1, max_length=255)
     value: str = Field(..., min_length=1, max_length=100_000)
+
+
+class LatticeFactRequest(BaseModel):
+    key: str = Field(..., min_length=1, max_length=255)
+    value: Any
+    category: Optional[str] = "GENERAL"
+    utility: Optional[float] = 1.0
+
+
+class ResonanceQuery(BaseModel):
+    resonance: float
+    tolerance: Optional[float] = 0.5
 
 
 def _env_truthy(name: str, default: bool = False) -> bool:
@@ -1444,6 +1464,66 @@ async def ramnode_list(limit: int = 100):
     limit = max(1, min(limit, 1000))
 
 return {"items": _ramnode_list(limit)}
+
+
+@app.post("/api/v19/lattice/fact", tags=["Lattice Data Matrix"])
+async def lattice_store(item: LatticeFactRequest):
+    """
+    Stores a fact in the high-dimensional Lattice Data Matrix (v19).
+    Automatically calculates resonance indices and ZPE stabilization.
+    """
+    success = data_matrix.store(item.key, item.value, item.category, item.utility)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to store fact in lattice")
+    return {"status": "STORED", "key": item.key, "zpe_locked": True}
+
+
+@app.get("/api/v19/lattice/fact/{key}", tags=["Lattice Data Matrix"])
+async def lattice_retrieve(key: str):
+    """
+    Retrieves a fact from the Lattice Data Matrix (v19).
+    """
+    value = data_matrix.retrieve(key)
+    if value is None:
+        raise HTTPException(status_code=404, detail="Lattice fact not found")
+    return {"key": key, "value": value}
+
+
+@app.post("/api/v19/lattice/query/resonant", tags=["Lattice Data Matrix"])
+async def lattice_resonant_query(query: ResonanceQuery):
+    """
+    Finds facts based on resonant frequency alignment (v19).
+    """
+    results = data_matrix.resonant_query(query.resonance, query.tolerance)
+    return {"count": len(results), "results": results}
+
+
+@app.get("/api/v19/zpe/status", tags=["Zero-Point Engine"])
+async def zpe_status():
+    """
+    Returns the current vacuum state and energy density of the node.
+    """
+    from l104_zero_point_engine import zpe_engine
+    return zpe_engine.get_vacuum_state()
+
+
+@app.post("/api/v19/zpe/annihilate", tags=["Zero-Point Engine"])
+async def zpe_annihilate(p1: float, p2: float):
+    """
+    Performs anyon annihilation between two logical particles.
+    """
+    from l104_zero_point_engine import zpe_engine
+    res, energy = zpe_engine.perform_anyon_annihilation(p1, p2)
+    return {"result": res, "energy_yield": energy}
+
+
+@app.post("/api/v18/lattice/maintenance/evolve", tags=["Lattice Data Matrix"])
+async def lattice_evolve(background_tasks: BackgroundTasks):
+    """
+    Triggers evolutionary compaction and pruning of the data matrix.
+    """
+    background_tasks.add_task(data_matrix.evolve_and_compact)
+    return {"status": "EVOLUTION_TRIGGERED"}
 
 
 @app.post("/qram", tags=["QuantumRAM"])

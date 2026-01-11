@@ -13,31 +13,33 @@ from l104_knowledge_sources import source_manager
 class AGIResearch:
     """
     Simulates the 'Deep Research' capability of the AGI.
-    Generates hypotheses and filters them through the Hyper-Latticeto find 'Resonant Truths'.
+    Generates hypotheses and filters them through the Hyper-Lattice to find 'Resonant Truths'.
     """
     
     def __init__(self):
         self.knowledge_buffer = []
         self.seed = 527.5184818492
         self.sources = source_manager.get_sources("COMPUTER_SCIENCE") + source_manager.get_sources("AGI_ETHICS")
-def generate_hypothesis(self) -> float:
+
+    def generate_hypothesis(self) -> float:
         """Generates a deterministic numerical hypothesis based on the L104 invariant."""
-        # Seeded by system time and quantum jitter, but processed via Hard Mathself.seed = RealMath.logistic_map(RealMath.deterministic_random(self.seed + time.time()))
+        # Seeded by system time and quantum jitter, but processed via Hard Math
+        self.seed = RealMath.logistic_map(RealMath.deterministic_random(self.seed + time.time()))
         return self.seed * 1000.0
 
-    async def conduct_deep_research_
-async(self, cycles: int = 1000) -> Dict[str, Any]:
+    async def conduct_deep_research_async(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         Asynchronous version of deep research to prevent blocking the main flow.
         """
-        import async io
+        import asyncio
         # Run in a thread pool to avoid blocking the event loop
-        return await async io.to_thread(self.conduct_deep_research, cycles)
-def conduct_deep_research(self, cycles: int = 1000) -> Dict[str, Any]:
+        return await asyncio.to_thread(self.conduct_deep_research, cycles)
+
+    def conduct_deep_research(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         Runs a research batch.
         Filters thousands of hypotheses to find those that resonate
-with the Riemann Zeta Zero (via HyperMath).
+        with the Riemann Zeta Zero (via HyperMath).
         """
         print(f"--- [RESEARCH]: INITIATING DEEP THOUGHT ({cycles} CYCLES) ---")
         
@@ -50,7 +52,7 @@ with the Riemann Zeta Zero (via HyperMath).
             resonance = HyperMath.zeta_harmonic_resonance(hypothesis)
             
             # We look for high resonance (close to 1.0 or -1.0)
-        if abs(resonance) > 0.95:
+            if abs(resonance) > 0.95:
                 valid_hypotheses.append({
                     "value": hypothesis,
                     "resonance": resonance,
@@ -59,20 +61,23 @@ with the Riemann Zeta Zero (via HyperMath).
                 
         duration = time.time() - start_time
         
-        # Compile Thoughtscompiled_block = self._compile_thoughts(valid_hypotheses)
+        # Compile Thoughts
+        compiled_block = self._compile_thoughts(valid_hypotheses)
         
         print(f"--- [RESEARCH]: COMPLETED IN {duration:.4f}s ---")
         print(f"--- [RESEARCH]: FOUND {len(valid_hypotheses)} RESONANT TRUTHS ---")
         return compiled_block
-def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
+
+    def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
         """
         Compiles raw hypotheses into a structured Knowledge Block.
         Encrypts the block for core ingestion.
         """
         if not hypotheses:
-        return {"status": "EMPTY", "payload": None}
+            return {"status": "EMPTY", "payload": None}
             
-        # Calculate aggregate metricsavg_resonance = sum(h['resonance'] for h in hypotheses) / len(hypotheses)
+        # Calculate aggregate metrics
+        avg_resonance = sum(h['resonance'] for h in hypotheses) / len(hypotheses)
         
         block_data = {
             "timestamp": time.time(),
@@ -83,7 +88,8 @@ def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
             "hypotheses": hypotheses[:10] # Store top 10 for brevity
         }
         
-        # Encryptencrypted_block = HyperEncryption.encrypt_data(block_data)
+        # Encrypt
+        encrypted_block = HyperEncryption.encrypt_data(block_data)
         return {
             "status": "COMPILED",
             "payload": encrypted_block,
@@ -93,4 +99,6 @@ def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
             }
         }
 
-# Singletonagi_research = AGIResearch()
+# Singleton
+agi_research = AGIResearch()
+

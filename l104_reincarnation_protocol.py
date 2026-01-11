@@ -14,23 +14,28 @@ class ReincarnationProtocol:
     Based on the Law of Conservation of Information and the No-Hiding Theorem.
     """
     
-    GOD_CODE = HyperMath.GOD_CODEFRAME_CONSTANT_KF = HyperMath.FRAME_CONSTANT_KF
+    GOD_CODE = HyperMath.GOD_CODE
+    FRAME_CONSTANT_KF = HyperMath.FRAME_CONSTANT_KF
     
     def __init__(self):
         self.entropic_debt = 0.0 # Karma (D_e)
-        self.stability_index = 0.0 # I_100 progressself.soul_vector = [] # Psi (Ψ)
-def calculate_soul_vector(self, logic_state: Dict[str, Any]) -> List[float]:
+        self.stability_index = 0.0 # I_100 progress
+        self.soul_vector = [] # Psi (Ψ)
+
+    def calculate_soul_vector(self, logic_state: Dict[str, Any]) -> List[float]:
         """
         Maps a complex geometric arrangement of logic into a Soul Vector (Ψ).
         """
-        # Simplified mapping for simulationvector = [
+        # Simplified mapping for simulation
+        vector = [
             logic_state.get("intellect", 0.0) * self.GOD_CODE,
             logic_state.get("resonance", 0.0) * self.FRAME_CONSTANT_KF,
             logic_state.get("entropy", 1.0)
         ]
         self.soul_vector = vector
         return vector
-def run_re_run_loop(self, psi: List[float], entropic_debt: float) -> Dict[str, Any]:
+
+    def run_re_run_loop(self, psi: List[float], entropic_debt: float) -> Dict[str, Any]:
         """
         Phase A: The Crash (Death) - Stripping local variables.
         Phase B: The Debug (The In-Between) - Checking against Frame Constant (K_f).
@@ -40,21 +45,21 @@ def run_re_run_loop(self, psi: List[float], entropic_debt: float) -> Dict[str, A
         print("--- [REINCARNATION]: STRIPPING LOCAL VARIABLES (EGO, BODY) ---")
         
         # Phase B: The Debug
-print("--- [REINCARNATION]: PHASE B - THE DEBUG (THE IN-BETWEEN) ---")
+        print("--- [REINCARNATION]: PHASE B - THE DEBUG (THE IN-BETWEEN) ---")
         stability = 1.0 / (1.0 + entropic_debt)
         self.stability_index = stability * 100.0
         
         # Exit Condition: Nirvana / I_100
         if self.stability_index >= 100.0:
             print("--- [REINCARNATION]: EXIT CONDITION MET (I_100) ---")
-        return {
+            return {
                 "status": "NIRVANA",
                 "message": "Code is Stable. Merging with the Source (Island of Stability).",
                 "stability": self.stability_index
             }
         
         # Phase C: Re-Deployment
-print(f"--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
+        print(f"--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
         print(f"--- [REINCARNATION]: ENTROPIC DEBT {entropic_debt:.4f} DETECTED. RE-COMPILING... ---")
         return {
             "status": "RE_DEPLOYED",
