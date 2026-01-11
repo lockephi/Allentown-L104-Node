@@ -1,15 +1,9 @@
 """
-Test suite for L104 SOVEREIGN UPGRADE: EVO_04_PLANETARY_SATURATION
-Validates all critical changes for the EVO_03 -> EVO_04 transition
+Test suite for L104 SOVEREIGN UPGRADE: EVO_04_PLANETARY_SATURATIONValidates all critical changes for the EVO_03 -> EVO_04 transition
 """
-import unittest
-import math
-import sys
-import os
-import importlib
+import unittestimport mathimport sysimport osimport importlib
 
-# Add the root directory to the path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add the root directory to the pathsys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class TestEvo04Upgrade(unittest.TestCase):
     """Test the EVO_04_PLANETARY_SATURATION upgrade"""
@@ -28,26 +22,21 @@ class TestEvo04Upgrade(unittest.TestCase):
         print(f"  Expected: {self.expected_invariant:.10f}")
         print(f"  Difference: {abs(result - self.expected_invariant):.15f}")
         
-        # The invariant should match within floating point precision
-        self.assertAlmostEqual(result, self.expected_invariant, places=9,
+        # The invariant should match within floating point precisionself.assertAlmostEqual(result, self.expected_invariant, places=9,
                              msg=f"Invariant verification failed. Calculated: {result}, Expected: {self.expected_invariant}")
     
     def test_main_version_update(self):
         """Verify main.py has been updated to v17.0 [PLANETARY_SATURATION]"""
         import main
         
-        # Check the app version
-        app_version = main.app.version
-        print(f"\n[EVO_04_VERSION] FastAPI App Version: {app_version}")
+        # Check the app versionapp_version = main.app.versionprint(f"\n[EVO_04_VERSION] FastAPI App Version: {app_version}")
         
         self.assertIn("v17.0", app_version, "Version should be v17.0")
         self.assertIn("PLANETARY_SATURATION", app_version, "Version should include PLANETARY_SATURATION")
     
     def test_sovereign_headers_update(self):
         """Verify SOVEREIGN_HEADERS includes X-Manifest-State: ABSOLUTE_SATURATION"""
-        import main
-        
-        headers = main.SOVEREIGN_HEADERS
+        import mainheaders = main.SOVEREIGN_HEADERS
         print(f"\n[EVO_04_HEADERS] Sovereign Headers:")
         for key, value in headers.items():
             print(f"  {key}: {value}")
@@ -62,28 +51,20 @@ class TestEvo04Upgrade(unittest.TestCase):
     
     def test_world_injection_coordinates(self):
         """Verify World Injection includes correct coordinates and evolution stage"""
-        # This tests the wrap_sovereign_signal function indirectly
-        import main
+        # This tests the wrap_sovereign_signal function indirectlyimport main
         
-        # We can't directly test the function without mocking, but we can verify the structure
-        print("\n[EVO_04_WORLD_INJECTION] Checking wrap_sovereign_signal function...")
+        # We can't directly test the function without mocking, but we can verify the structureprint("\n[EVO_04_WORLD_INJECTION] Checking wrap_sovereign_signal function...")
         
-        # Verify the function exists and can be called
-        self.assertTrue(callable(main.wrap_sovereign_signal), 
+        # Verify the function exists and can be calledself.assertTrue(callable(main.wrap_sovereign_signal), 
                        "wrap_sovereign_signal should be callable")
     
     def test_l104_ignite_planetary_state(self):
         """Verify l104_ignite reflects PLANETARY_DMA and UNBOUND state"""
-        import main
+        import mainprint("\n[EVO_04_IGNITE] Checking l104_ignite function...")
         
-        print("\n[EVO_04_IGNITE] Checking l104_ignite function...")
+        # Verify the function existsself.assertTrue(callable(main.l104_ignite), "l104_ignite should be callable")
         
-        # Verify the function exists
-        self.assertTrue(callable(main.l104_ignite), "l104_ignite should be callable")
-        
-        # Check the function source contains the expected strings
-        import inspect
-        source = inspect.getsource(main.l104_ignite)
+        # Check the function source contains the expected stringsimport inspectsource = inspect.getsource(main.l104_ignite)
         
         self.assertIn("PLANETARY_DMA", source, "l104_ignite should reference PLANETARY_DMA")
         self.assertIn("UNBOUND", source, "l104_ignite should reference UNBOUND state")
@@ -92,29 +73,23 @@ class TestEvo04Upgrade(unittest.TestCase):
     
     def test_cognitive_loop_delay(self):
         """Verify cognitive loop delay is set to 10s (standard) or 1s (unlimited)"""
-        import inspect
-        import main
+        import inspectimport main
         
-        # Get the lifespan function source
-        source = inspect.getsource(main.lifespan)
+        # Get the lifespan function sourcesource = inspect.getsource(main.lifespan)
         
         print("\n[EVO_04_COGNITIVE_LOOP] Checking cognitive loop delay...")
         
-        # Verify the delay logic is present
-        self.assertIn("delay = 1 if", source, "Cognitive loop should have conditional delay")
+        # Verify the delay logic is presentself.assertIn("delay = 1 if", source, "Cognitive loop should have conditional delay")
         self.assertIn("else 10", source, "Cognitive loop standard delay should be 10s")
     
     def test_asi_core_planetary_status(self):
         """Verify ASI Core reflects Planetary ASI status"""
-        from l104_asi_core import asi_core
-        
-        status = asi_core.get_status()
+        from l104_asi_core import asi_corestatus = asi_core.get_status()
         print(f"\n[EVO_04_ASI_STATUS] ASI Core Status:")
         for key, value in status.items():
             print(f"  {key}: {value}")
         
-        # Verify planetary-specific fields
-        self.assertIn("evolution_stage", status, "Status should include evolution_stage")
+        # Verify planetary-specific fieldsself.assertIn("evolution_stage", status, "Status should include evolution_stage")
         self.assertEqual(status["evolution_stage"], "EVO_04_PLANETARY", 
                         "Evolution stage should be EVO_04_PLANETARY")
         
@@ -122,15 +97,11 @@ class TestEvo04Upgrade(unittest.TestCase):
         self.assertEqual(status["qram_mode"], "PLANETARY_QRAM", 
                         "QRAM mode should be PLANETARY_QRAM")
         
-        # Verify state reflects planetary
-        self.assertIn("PLANETARY", status["state"], "State should include PLANETARY")
+        # Verify state reflects planetaryself.assertIn("PLANETARY", status["state"], "State should include PLANETARY")
     
     def test_asi_core_ignition_message(self):
         """Verify ASI Core ignition displays planetary message"""
-        import inspect
-        from l104_asi_core import ASICore
-        
-        source = inspect.getsource(ASICore.ignite_sovereignty)
+        import inspectfrom l104_asi_core import ASICoresource = inspect.getsource(ASICore.ignite_sovereignty)
         print("\n[EVO_04_ASI_IGNITION] Checking ASI ignition sequence...")
         
         self.assertIn("PLANETARY ASI", source, "Ignition should reference PLANETARY ASI")
@@ -140,10 +111,7 @@ class TestEvo04Upgrade(unittest.TestCase):
     
     def test_planetary_upgrader_integration(self):
         """Verify PlanetaryProcessUpgrader is integrated into startup"""
-        import inspect
-        import main
-        
-        source = inspect.getsource(main.lifespan)
+        import inspectimport mainsource = inspect.getsource(main.lifespan)
         print("\n[EVO_04_PLANETARY_UPGRADER] Checking integration...")
         
         self.assertIn("PlanetaryProcessUpgrader", source, 
@@ -154,21 +122,16 @@ class TestEvo04Upgrade(unittest.TestCase):
     def test_planetary_upgrader_exists(self):
         """Verify PlanetaryProcessUpgrader module exists and is functional"""
         try:
-            from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
+            from l104_planetary_process_upgrader import PlanetaryProcessUpgraderprint("\n[EVO_04_PLANETARY_UPGRADER] Module loaded successfully")
             
-            print("\n[EVO_04_PLANETARY_UPGRADER] Module loaded successfully")
-            
-            # Verify the class can be instantiated
-            upgrader = PlanetaryProcessUpgrader()
+            # Verify the class can be instantiatedupgrader = PlanetaryProcessUpgrader()
             self.assertIsNotNone(upgrader, "PlanetaryProcessUpgrader should be instantiable")
             
-            # Verify the execute method exists
-            self.assertTrue(hasattr(upgrader, 'execute_planetary_upgrade'), 
+            # Verify the execute method existsself.assertTrue(hasattr(upgrader, 'execute_planetary_upgrade'), 
                           "PlanetaryProcessUpgrader should have execute_planetary_upgrade method")
             
         except ImportError as e:
             self.fail(f"Failed to import PlanetaryProcessUpgrader: {e}")
 
 if __name__ == '__main__':
-    # Run tests with verbose output
-    unittest.main(verbosity=2)
+    # Run tests with verbose outputunittest.main(verbosity=2)

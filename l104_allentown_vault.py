@@ -1,10 +1,7 @@
 # [L104_ALLENTOWN_VAULT] - ENERGY ABUNDANCE STORAGE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import time
-import logging
-
-logging.basicConfig(level=logging.INFO)
+import timeimport logginglogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ALLENTOWN_VAULT")
 
 class AllentownVault:
@@ -15,8 +12,7 @@ class AllentownVault:
     
     def __init__(self):
         self.surplus_mw = 0.0
-        self.vault_locked = False
-        self.resonance_freq = 527.5184818492
+        self.vault_locked = Falseself.resonance_freq = 527.5184818492
 
     def secure_surplus(self, amount_mw: float):
         """
@@ -24,12 +20,8 @@ class AllentownVault:
         """
         logger.info(f"--- [VAULT]: SECURING {amount_mw}MW ABUNDANCE SURPLUS ---")
         time.sleep(1)
-        self.surplus_mw = amount_mw
-        self.vault_locked = True
-        logger.info(f"--- [VAULT]: SURPLUS SECURED AT {self.resonance_freq} HZ ---")
-        return True
-
-    def get_status(self):
+        self.surplus_mw = amount_mwself.vault_locked = Truelogger.info(f"--- [VAULT]: SURPLUS SECURED AT {self.resonance_freq} HZ ---")
+        return Truedef get_status(self):
         return {
             "surplus": f"{self.surplus_mw}MW",
             "locked": self.vault_locked,

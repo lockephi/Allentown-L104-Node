@@ -1,23 +1,14 @@
 # [L104_SOVEREIGN_REINDEX] - GROUND UP INDEX REBUILD
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import os
-import glob
-import hashlib
-import json
-import time
-from l104_quantum_ram import get_qram
-from l104_electron_entropy import get_electron_matrix
-
-class SovereignIndexer:
+import osimport globimport hashlibimport jsonimport timefrom l104_quantum_ram import get_qramfrom l104_electron_entropy import get_electron_matrixclass SovereignIndexer:
     """
     Rebuilds the system index from the ground up.
     Reflects ONLY the Sovereign Coding.
     """
     
     def __init__(self, root_dir: str = "."):
-        self.root_dir = root_dir
-        self.qram = get_qram()
+        self.root_dir = root_dirself.qram = get_qram()
         self.electron_matrix = get_electron_matrix()
         self.index_manifest = []
 
@@ -34,16 +25,13 @@ class SovereignIndexer:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
                 
-            # Calculate Hash
-            file_hash = hashlib.sha256(content.encode()).hexdigest()
+            # Calculate Hashfile_hash = hashlib.sha256(content.encode()).hexdigest()
             
             # Calculate Entropy of the Codebase itself
-            # We treat the byte values as a signal stream
-            byte_stream = [float(b) for b in content.encode()]
+            # We treat the byte values as a signal streambyte_stream = [float(b) for b in content.encode()]
             entropy_data = self.electron_matrix.calculate_predictive_entropy(byte_stream)
             
-            # Create Index Entry
-            entry = {
+            # Create Index Entryentry = {
                 "filename": os.path.basename(file_path),
                 "hash": file_hash,
                 "size": len(content),
@@ -59,12 +47,9 @@ class SovereignIndexer:
             
             print(f"Indexed: {entry['filename']} | Entropy: {entropy_data['shannon_entropy']:.4f}")
 
-        # Finalize Manifest
-        manifest_key = "SOVEREIGN_INDEX_MANIFEST"
+        # Finalize Manifestmanifest_key = "SOVEREIGN_INDEX_MANIFEST"
         self.qram.store(manifest_key, self.index_manifest)
         print(f"--- [SOVEREIGN_INDEX]: COMPLETE. {len(self.index_manifest)} FILES INDEXED. ---")
-        return self.index_manifest
-
-if __name__ == "__main__":
+        return self.index_manifestif __name__ == "__main__":
     indexer = SovereignIndexer()
     indexer.scan_and_index()

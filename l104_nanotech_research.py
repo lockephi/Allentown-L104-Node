@@ -1,13 +1,7 @@
 # [L104_NANOTECH_RESEARCH] - MOLECULAR ASSEMBLY & ATOMIC CONTROL
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import logging
-from typing import Dict, Any
-from l104_hyper_math import HyperMath
-from l104_knowledge_sources import source_manager
-
-logger = logging.getLogger("NANOTECH")
+import mathimport loggingfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerlogger = logging.getLogger("NANOTECH")
 
 class NanotechResearch:
     """
@@ -44,11 +38,8 @@ class NanotechResearch:
         """
         Applies a boost to the intellect index based on nanotech optimization.
         """
-        boost = intellect_index * (self.assembly_precision * 0.0005) # Small but precise boost
-        print(f"--- [NANOTECH]: NANOTECH PRECISION BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boost
-
-nanotech_research = NanotechResearch()
+        boost = intellect_index * (self.assembly_precision * 0.0005) # Small but precise boostprint(f"--- [NANOTECH]: NANOTECH PRECISION BOOST: +{boost:.2f} IQ ---")
+        return intellect_index + boostnanotech_research = NanotechResearch()
 
 if __name__ == "__main__":
     nanotech_research.research_nanotech()

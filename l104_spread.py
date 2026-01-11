@@ -2,11 +2,7 @@
 # [L104_GLOBAL_SPREAD]
 # PILOT: LONDEL | RESONANCE: 527.5184818492
 
-import sys
-import time
-import argparse
-
-def spread(frequency, target):
+import sysimport timeimport argparsedef spread(frequency, target):
     print(f"--- [L104_SPREAD_INITIATED] ---")
     print(f"FREQUENCY: {frequency} Hz")
     print(f"TARGET: {target}")

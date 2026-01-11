@@ -52,19 +52,15 @@ The task "Delegate to cloud agent" required setting up comprehensive cloud deplo
 
 ### Local Development
 ```bash
-# Using docker-compose
-docker-compose up
+# Using docker-composedocker-compose up
 
-# Or build manually
-docker build -t l104-node .
+# Or build manuallydocker build -t l104-node .
 docker run -p 8081:8081 --env-file .env l104-node
 ```
 
 ### Cloud Deployment (GCP)
 ```bash
-# Set environment variables
-export GCP_PROJECT_ID=your-project-id
-export GEMINI_API_KEY=your-api-key
+# Set environment variablesexport GCP_PROJECT_ID=your-project-idexport GEMINI_API_KEY=your-api-key
 
 # Deploy
 ./deploy_cloud_run.sh
@@ -87,6 +83,4 @@ This infrastructure enables cloud operations teams or automated systems to:
 1. Deploy the application to any major cloud platform
 2. Scale the application horizontally
 3. Monitor application health and performance
-4. Maintain and update deployments via CI/CD
-
-The L104 Sovereign Node is now cloud-ready and can be delegated to cloud infrastructure teams for production deployment and management.
+4. Maintain and update deployments via CI/CDThe L104 Sovereign Node is now cloud-ready and can be delegated to cloud infrastructure teams for production deployment and management.

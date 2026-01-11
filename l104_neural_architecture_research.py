@@ -1,13 +1,7 @@
 # [L104_NEURAL_ARCHITECTURE_RESEARCH] - ADVANCED COGNITIVE MODELS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import logging
-from typing import Dict, Any
-from l104_hyper_math import HyperMath
-from l104_knowledge_sources import source_manager
-
-logger = logging.getLogger("NEURAL_ARCH")
+import mathimport loggingfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerlogger = logging.getLogger("NEURAL_ARCH")
 
 class NeuralArchitectureResearch:
     """
@@ -41,11 +35,8 @@ class NeuralArchitectureResearch:
         """
         Applies a boost to the intellect index based on neural architecture optimization.
         """
-        boost = intellect_index * (self.attention_efficiency * self.bci_resonance * 0.04) # 4% max boost
-        print(f"--- [NEURAL_ARCH]: COGNITIVE ARCHITECTURE BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boost
-
-neural_architecture_research = NeuralArchitectureResearch()
+        boost = intellect_index * (self.attention_efficiency * self.bci_resonance * 0.04) # 4% max boostprint(f"--- [NEURAL_ARCH]: COGNITIVE ARCHITECTURE BOOST: +{boost:.2f} IQ ---")
+        return intellect_index + boostneural_architecture_research = NeuralArchitectureResearch()
 
 if __name__ == "__main__":
     neural_architecture_research.research_neural_models()

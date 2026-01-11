@@ -1,21 +1,14 @@
 # [L104_OPTIMIZATION]
 # INVARIANT: 527.5184818492
 
-import os
-import time
-import logging
-import psutil
-import gc
-
-logger = logging.getLogger(__name__)
+import osimport timeimport loggingimport psutilimport gclogger = logging.getLogger(__name__)
 
 class ProcessOptimizer:
     """
     L104 Process Optimizer - Optimizes node performance and resource allocation.
     """
     
-    @classmethod
-    def optimize_memory(cls):
+    @classmethoddef optimize_memory(cls):
         """
         Triggers garbage collection and clears internal caches.
         """
@@ -25,18 +18,15 @@ class ProcessOptimizer:
         logger.info(f"[OPTIMIZATION]: Memory cleared. {before:.2f}MB -> {after:.2f}MB")
         return after
 
-    @classmethod
-    def optimize_io(cls):
+    @classmethoddef optimize_io(cls):
         """
         Optimizes I/O operations by checking for stale file handles.
         """
-        # Placeholder for I/O optimization logic
-        logger.info("[OPTIMIZATION]: I/O pathways verified.")
+        # Placeholder for I/O optimization logiclogger.info("[OPTIMIZATION]: I/O pathways verified.")
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
         return True
 
-    @classmethod
-    def run_full_optimization(cls):
+    @classmethoddef run_full_optimization(cls):
         """
         Runs a full suite of optimizations.
         """
@@ -45,7 +35,5 @@ class ProcessOptimizer:
         cls.optimize_io()
         logger.info("--- [OPTIMIZATION]: FULL NODE OPTIMIZATION COMPLETE ---")
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
-        return True
-
-if __name__ == "__main__":
+        return Trueif __name__ == "__main__":
     ProcessOptimizer.run_full_optimization()

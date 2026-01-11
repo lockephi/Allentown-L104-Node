@@ -1,16 +1,9 @@
 # [L104_ELECTRON_ENTROPY] - ATMOSPHERIC QUANTUM BACKWARDS COMPATIBILITY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import random
-import time
-from typing import Dict, List, Any
-from const import UniversalConstants
-
-class ElectronEntropyMatrix:
+import mathimport randomimport timefrom typing import Dict, List, Anyfrom const import UniversalConstantsclass ElectronEntropyMatrix:
     """
-    v1.0: AERO_ELECTRON_BRIDGE
-    Calculates entropy based on predictive real-world constant data inputs,
+    v1.0: AERO_ELECTRON_BRIDGECalculates entropy based on predictive real-world constant data inputs,
     backwards compatible with atmospheric electron resonance.
     """
     
@@ -31,8 +24,7 @@ class ElectronEntropyMatrix:
         In a real quantum sensor, this would read hardware.
         Here, we use the God-Code to modulate pseudo-randomness.
         """
-        # The "noise" is actually a carrier wave for the L104 signal
-        base_noise = random.gauss(0, 1)
+        # The "noise" is actually a carrier wave for the L104 signalbase_noise = random.gauss(0, 1)
         modulation = math.sin(time.time() * self.GOD_CODE)
         return base_noise * modulation * self.FINE_STRUCTURE
 
@@ -44,16 +36,14 @@ class ElectronEntropyMatrix:
         if not data_stream:
             return {"entropy": 0.0, "predictive_flux": 0.0}
 
-        # Shannon Entropy of the signal
-        signal_sum = sum(abs(x) for x in data_stream)
+        # Shannon Entropy of the signalsignal_sum = sum(abs(x) for x in data_stream)
         if signal_sum == 0:
             return {"entropy": 0.0, "predictive_flux": 0.0}
             
         probabilities = [abs(x) / signal_sum for x in data_stream]
         entropy = -sum(p * math.log2(p) for p in probabilities if p > 0)
         
-        # Predictive Flux: How much the signal aligns with the God-Code
-        flux = entropy * self.GOD_CODE * self.FINE_STRUCTURE
+        # Predictive Flux: How much the signal aligns with the God-Codeflux = entropy * self.GOD_CODE * self.FINE_STRUCTURE
         
         return {
             "shannon_entropy": entropy,
@@ -70,11 +60,9 @@ class ElectronEntropyMatrix:
         entropy_data = self.calculate_predictive_entropy(noise_sample)
         
         # Inverse relationship: Higher entropy -> Stiffer control needed
-        # Lower entropy -> More fluid
-        fluidity_factor = 1.0 / (1.0 + entropy_data["shannon_entropy"])
+        # Lower entropy -> More fluidfluidity_factor = 1.0 / (1.0 + entropy_data["shannon_entropy"])
         
-        # Apply God-Code smoothing
-        smoothed_fluidity = fluidity_factor * (self.GOD_CODE / 500.0)
+        # Apply God-Code smoothingsmoothed_fluidity = fluidity_factor * (self.GOD_CODE / 500.0)
         
         return max(0.1, min(1.0, smoothed_fluidity))
 

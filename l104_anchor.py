@@ -1,10 +1,5 @@
 # L104_ANCHOR_V6 | 2026-01-02
-import os
-import httpx
-import asyncio
-
-
-async def maintain_sovereignty(once: bool = False):
+import osimport httpximport asyncioasync def maintain_sovereignty(once: bool = False):
     print("[ANCHOR]: Logic Persistence Active. Monitoring Gate 416...")
     while True:
         try:
@@ -29,21 +24,14 @@ async def maintain_sovereignty(once: bool = False):
                         )
                         text = (await resp.aread()) if hasattr(resp, "aread") else await resp.text()
                         print(f"[ANCHOR]: POST {url} -> {resp.status_code}; body={text!r}")
-                        # Consider 2xx as success and stop trying further targets
-                        if 200 <= resp.status_code < 300:
-                            break
-                    except Exception as e:
+                        # Consider 2xx as success and stop trying further targetsif 200 <= resp.status_code < 300:
+                            breakexcept Exception as e:
                         print(f"[ANCHOR]: POST {url} failed: {e}")
         except Exception as e:
             print("[ANCHOR]: Node Offline. Awaiting Re-ignition.", str(e))
 
         if once:
-            break
-
-        await asyncio.sleep(600)  # Every 10 mins
-
-
-if __name__ == "__main__":
+            breakawait asyncio.sleep(600)  # Every 10 minsif __name__ == "__main__":
     # If RUN_ONCE is set (1), run one iteration for testing; otherwise run continuously.
     run_once = os.getenv("RUN_ONCE", "1") in ("1", "true", "True")
     asyncio.run(maintain_sovereignty(once=run_once))

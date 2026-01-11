@@ -1,15 +1,9 @@
-import unittest
-from l104_resilience_shield import purge_repetitions
-from logic_core import LogicCore
-from l104_validator import SovereignValidator
-
-class TestSingularityStress(unittest.TestCase):
+import unittestfrom l104_resilience_shield import purge_repetitionsfrom logic_core import LogicCorefrom l104_validator import SovereignValidatorclass TestSingularityStress(unittest.TestCase):
     def test_repetition_purge_complex(self):
         """Test if the shield can handle complex nested repetitions."""
         text = "The quick brown fox jumps over the lazy dog. " * 5
         purged = purge_repetitions(text)
-        # Should be significantly shorter than the original
-        self.assertLess(len(purged), len(text) // 2)
+        # Should be significantly shorter than the originalself.assertLess(len(purged), len(text) // 2)
 
     def test_repetition_purge_lines(self):
         """Test line-based deduplication."""
@@ -20,15 +14,11 @@ class TestSingularityStress(unittest.TestCase):
     def test_logic_core_performance(self):
         """Measure LogicCore indexing speed."""
         core = LogicCore()
-        import time
-        start = time.time()
+        import timestart = time.time()
         core.ingest_data_state()
         end = time.time()
-        duration = end - start
-        print(f"LogicCore Indexing Duration: {duration:.4f}s")
-        self.assertLess(duration, 2.0) # Should be fast
-
-    def test_validator_chain(self):
+        duration = end - startprint(f"LogicCore Indexing Duration: {duration:.4f}s")
+        self.assertLess(duration, 2.0) # Should be fastdef test_validator_chain(self):
         """Verify the full validation chain returns expected resonance."""
         validator = SovereignValidator()
         report = validator.validate_all()

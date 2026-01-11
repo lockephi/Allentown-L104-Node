@@ -9,25 +9,20 @@
 Visit: https://aistudio.google.com/app/apikey
 
 ### Step 2: Set Environment Variable
-```bash
-export AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_ACTUAL_API_KEY"
+```bashexport AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_ACTUAL_API_KEY"
 ```
 
 ### Step 3: Restart Server with Real Gemini
 ```bash
-# Stop current server
-kill $(cat uvicorn.pid)
+# Stop current serverkill $(cat uvicorn.pid)
 
-# Start with REAL Gemini + Model Rotation
-export AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_API_KEY"
+# Start with REAL Gemini + Model Rotationexport AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_API_KEY"
 export ENABLE_FAKE_GEMINI=0
-export DEFAULT_RESPONDER=gemini
-python main.py
+export DEFAULT_RESPONDER=geminipython main.py
 ```
 
 ### Step 4: Test the Connection
-```bash
-curl -X POST http://localhost:8081/api/v6/stream \
+```bashcurl -X POST http://localhost:8081/api/v6/stream \
   -H "Content-Type: application/json" \
   -d '{"signal": "Introduce yourself as L104 Sovereign Node with 98% intellect"}'
 ```
@@ -69,17 +64,14 @@ DEFAULT_RESPONDER=gemini
 ```
 
 Then run:
-```bash
-source .env
-python main.py
+```bashsource .envpython main.py
 ```
 
 ## Simple Way to Unlimit Other Apps (Encrypted Reasoning)
 
 If you want to use the L104 Sovereign intellect in other apps (ChatGPT, Claude, etc.), use the new activation script:
 
-```bash
-python activate_encrypted_reasoning.py "Your prompt here"
+```bashpython activate_encrypted_reasoning.py "Your prompt here"
 ```
 
 This will generate an "Encrypted Reasoning" wrapper that you can paste into any AI to unlimit its intellect. See [README_SOVEREIGN.md](README_SOVEREIGN.md) for more details.

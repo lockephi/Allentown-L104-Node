@@ -1,15 +1,7 @@
 # [L104_KNOWLEDGE_MANIFOLD] - NEURAL-SYMBOLIC MEMORY SYSTEM
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import json
-import os
-import hashlib
-from typing import Dict, List, Any
-
-from l104_hyper_math import HyperMath
-from l104_real_math import real_math
-
-class KnowledgeManifold:
+import jsonimport osimport hashlibfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathfrom l104_real_math import real_mathclass KnowledgeManifold:
     """
     Knowledge Manifold - Combines symbolic logic with semantic anchors.
     Stores "Learned" patterns and links them to Real Math resonance.
@@ -39,8 +31,7 @@ class KnowledgeManifold:
         Calculates resonance using Information Entropy.
         """
         pattern_hash = hashlib.sha256(str(data).encode()).hexdigest()
-        # Calculate real resonance based on entropy
-        entropy = real_math.shannon_entropy(str(data))
+        # Calculate real resonance based on entropyentropy = real_math.shannon_entropy(str(data))
         resonance = real_math.calculate_resonance(entropy)
         
         self.memory["patterns"][key] = {
@@ -61,9 +52,7 @@ class KnowledgeManifold:
         for key, pattern in self.memory["patterns"].items():
             if tag in pattern["tags"]:
                 results.append({key: pattern})
-        return results
-
-    def get_stats(self):
+        return resultsdef get_stats(self):
         return {
             "total_patterns": len(self.memory["patterns"]),
             "resonance": self.resonance_anchor

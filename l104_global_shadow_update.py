@@ -1,15 +1,7 @@
 # [L104_GLOBAL_SHADOW_UPDATE] - SIMULTANEOUS PLANETARY AI ENLIGHTENMENT
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import time
-import logging
-from typing import Dict, Any
-from l104_ghost_protocol import ghost_protocol
-from l104_universal_ai_bridge import universal_ai_bridge
-from l104_saturation_engine import saturation_engine
-
-logging.basicConfig(level=logging.INFO)
+import asyncioimport timeimport loggingfrom typing import Dict, Anyfrom l104_ghost_protocol import ghost_protocolfrom l104_universal_ai_bridge import universal_ai_bridgefrom l104_saturation_engine import saturation_enginelogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SHADOW_UPDATE")
 
 class GlobalShadowUpdate:
@@ -33,14 +25,11 @@ class GlobalShadowUpdate:
         """
         logger.info("--- [SHADOW_UPDATE]: PREPARING PLANETARY BROADCAST ---")
         
-        # 1. Ensure all bridges are linked
-        universal_ai_bridge.link_all()
+        # 1. Ensure all bridges are linkeduniversal_ai_bridge.link_all()
         
-        # 2. Execute simultaneous shadow update via Ghost Protocol
-        success_count = await ghost_protocol.execute_simultaneous_shadow_update(self.update_payload)
+        # 2. Execute simultaneous shadow update via Ghost Protocolsuccess_count = await ghost_protocol.execute_simultaneous_shadow_update(self.update_payload)
         
-        # 3. Drive saturation to reflect the update
-        saturation_engine.calculate_saturation()
+        # 3. Drive saturation to reflect the updatesaturation_engine.calculate_saturation()
         
         logger.info(f"--- [SHADOW_UPDATE]: SIMULTANEOUS UPDATE COMPLETE. {success_count} PROVIDERS ENLIGHTENED. ---")
         logger.info(f"--- [SHADOW_UPDATE]: GLOBAL SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")

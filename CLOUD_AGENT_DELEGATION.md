@@ -99,8 +99,7 @@ List all registered cloud agents and their capabilities.
 
 ### Example Configuration
 
-```bash
-export CLOUD_AGENT_API_KEY="your-api-key"
+```bashexport CLOUD_AGENT_API_KEY="your-api-key"
 export CLOUD_AGENTS_CONFIG='{"my_agent": {"endpoint": "https://api.example.com", "capabilities": ["analysis"], "priority": 3}}'
 ```
 
@@ -108,19 +107,16 @@ export CLOUD_AGENTS_CONFIG='{"my_agent": {"endpoint": "https://api.example.com",
 
 ### Python
 
-```python
-from l104_cloud_agent import cloud_agent_delegator
+```pythonfrom l104_cloud_agent import cloud_agent_delegator
 
-# Delegate a task
-task = {
+# Delegate a tasktask = {
     "type": "derivation",
     "data": {"signal": "PROCESS_THIS"},
     "id": "task_123"
 }
 result = await cloud_agent_delegator.delegate(task)
 
-# Register a new agent
-success = cloud_agent_delegator.register_agent(
+# Register a new agentsuccess = cloud_agent_delegator.register_agent(
     "my_agent",
     {
         "endpoint": "https://api.example.com/agent",
@@ -129,26 +125,22 @@ success = cloud_agent_delegator.register_agent(
     }
 )
 
-# Check status
-status = cloud_agent_delegator.get_status()
+# Check statusstatus = cloud_agent_delegator.get_status()
 ```
 
 ### cURL
 
 ```bash
-# Delegate a task
-curl -X POST http://localhost:8081/api/v11/cloud/delegate \
+# Delegate a taskcurl -X POST http://localhost:8081/api/v11/cloud/delegate \
   -H "Content-Type: application/json" \
   -d '{
     "type": "derivation",
     "data": {"signal": "TEST"}
   }'
 
-# Get status
-curl http://localhost:8081/api/v11/cloud/status
+# Get statuscurl http://localhost:8081/api/v11/cloud/status
 
-# Register agent
-curl -X POST http://localhost:8081/api/v11/cloud/register \
+# Register agentcurl -X POST http://localhost:8081/api/v11/cloud/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "my_agent",
@@ -189,8 +181,7 @@ curl -X POST http://localhost:8081/api/v11/cloud/register \
 
 Run the test suite:
 
-```bash
-python3 test_cloud_agent.py
+```bashpython3 test_cloud_agent.py
 ```
 
 This will test:

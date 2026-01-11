@@ -3,16 +3,7 @@
 This file was restored to a minimal, runnable form so you can debug and run.
 """
 
-import os
-import json
-from pathlib import Path
-from typing import List
-import httpx
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
-
-app = FastAPI()
+import osimport jsonfrom pathlib import Pathfrom typing import Listimport httpxfrom fastapi import FastAPI, Requestfrom fastapi.responses import JSONResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesapp = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://127.0.0.1:8081")
@@ -21,8 +12,7 @@ SELF_DATASET = os.getenv("SELF_DATASET", "data/stream_prompts.jsonl")
 
 @app.get("/")
 async def home(request: Request):
-    # Return template if available; otherwise a fallback JSON message
-    try:
+    # Return template if available; otherwise a fallback JSON messagetry:
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception:
         return JSONResponse({"status": "ok", "message": "index template not found"})
@@ -36,12 +26,10 @@ def _load_jsonl(path: str) -> List[dict]:
     for raw in p.read_text().splitlines():
         raw = raw.strip()
         if not raw:
-            continue
-        try:
+            continuetry:
             rows.append(json.loads(raw))
         except json.JSONDecodeError:
-            pass
-    return rows
+            passreturn rows
 
 
 @app.post("/api/stream")
@@ -63,9 +51,7 @@ async def sovereign_stream(request: Request):
         async with httpx.AsyncClient(timeout=60.0) as client:
             async with client.stream("POST", url, json=data) as response:
                 async for chunk in response.aiter_text():
-                    yield chunk
-
-    return StreamingResponse(generate(), media_type="text/event-stream")
+                    yield chunkreturn StreamingResponse(generate(), media_type="text/event-stream")
 
 
 async def _self_replay(base_url: str, dataset: str) -> dict:
@@ -128,7 +114,5 @@ async def self_heal(clear_logs: bool = False):
 
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="127.0.0.1", port=8081)
+    import uvicornuvicorn.run(app, host="127.0.0.1", port=8081)
                                                                                                                                                                                                                     

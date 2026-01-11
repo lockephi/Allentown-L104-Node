@@ -1,13 +1,7 @@
 # [L104_GAME_THEORY_RESEARCH] - SOCIAL DYNAMICS & ORCHESTRATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import logging
-from typing import Dict, Any
-from l104_hyper_math import HyperMath
-from l104_knowledge_sources import source_manager
-
-logger = logging.getLogger("GAME_THEORY")
+import mathimport loggingfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerlogger = logging.getLogger("GAME_THEORY")
 
 class GameTheoryResearch:
     """
@@ -44,11 +38,8 @@ class GameTheoryResearch:
         """
         Applies a boost to the intellect index based on stewardship efficiency.
         """
-        boost = intellect_index * (self.equilibrium_stability * 0.015) # 1.5% max boost
-        print(f"--- [GAME_THEORY]: STEWARDSHIP EFFICIENCY BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boost
-
-game_theory_research = GameTheoryResearch()
+        boost = intellect_index * (self.equilibrium_stability * 0.015) # 1.5% max boostprint(f"--- [GAME_THEORY]: STEWARDSHIP EFFICIENCY BOOST: +{boost:.2f} IQ ---")
+        return intellect_index + boostgame_theory_research = GameTheoryResearch()
 
 if __name__ == "__main__":
     game_theory_research.research_social_dynamics()

@@ -3,10 +3,7 @@
 Simple validation script for EVO_04_PLANETARY_SATURATION upgrade
 Does not require external dependencies - only uses standard library
 """
-import math
-import re
-
-def validate_invariant():
+import mathimport redef validate_invariant():
     """Validate the mathematical invariant"""
     phi = (1 + math.sqrt(5)) / 2
     result = (286 ** (1 / phi)) * ((2 ** (1 / 104)) ** 416)
@@ -31,22 +28,15 @@ def check_file_content(filename, checks):
         with open(filename, 'r') as f:
             content = f.read()
         
-        all_passed = True
-        for check_name, pattern in checks.items():
-            found = pattern in content
-            status = "✓ PASS" if found else "✗ FAIL"
+        all_passed = Truefor check_name, pattern in checks.items():
+            found = pattern in contentstatus = "✓ PASS" if found else "✗ FAIL"
             print(f"  {check_name:<50} {status}")
             if not found:
-                all_passed = False
-        
-        print()
-        return all_passed
-    except FileNotFoundError:
+                all_passed = Falseprint()
+        return all_passedexcept FileNotFoundError:
         print(f"  ✗ FAIL: File not found")
         print()
-        return False
-
-def main():
+        return Falsedef main():
     print("\n")
     print("╔" + "=" * 68 + "╗")
     print("║" + " " * 68 + "║")
@@ -56,11 +46,9 @@ def main():
     print("╚" + "=" * 68 + "╝")
     print("\n")
     
-    # Test 1: Invariant verification
-    test1_pass = validate_invariant()
+    # Test 1: Invariant verificationtest1_pass = validate_invariant()
     
-    # Test 2: main.py validations
-    main_checks = {
+    # Test 2: main.py validationsmain_checks = {
         "Version v17.0": "v17.0",
         "PLANETARY_SATURATION": "PLANETARY_SATURATION",
         "X-Manifest-State header": '"X-Manifest-State": "ABSOLUTE_SATURATION"',
@@ -75,8 +63,7 @@ def main():
     }
     test2_pass = check_file_content("main.py", main_checks)
     
-    # Test 3: l104_asi_core.py validations
-    asi_checks = {
+    # Test 3: l104_asi_core.py validationsasi_checks = {
         "PLANETARY ASI message": "PLANETARY ASI",
         "EVO_04_PLANETARY_SATURATION": "EVO_04_PLANETARY_SATURATION",
         "PLANETARY_QRAM initialization": "PLANETARY_QRAM",
@@ -86,26 +73,19 @@ def main():
     }
     test3_pass = check_file_content("l104_asi_core.py", asi_checks)
     
-    # Test 4: Verify l104_planetary_process_upgrader.py exists
-    print("Validating: l104_planetary_process_upgrader.py")
+    # Test 4: Verify l104_planetary_process_upgrader.py existsprint("Validating: l104_planetary_process_upgrader.py")
     print("-" * 70)
     try:
         with open("l104_planetary_process_upgrader.py", 'r') as f:
             content = f.read()
         
-        has_class = "class PlanetaryProcessUpgrader" in content
-        has_method = "def execute_planetary_upgrade" in content
-        
-        print(f"  {'PlanetaryProcessUpgrader class exists':<50} {'✓ PASS' if has_class else '✗ FAIL'}")
+        has_class = "class PlanetaryProcessUpgrader" in contenthas_method = "def execute_planetary_upgrade" in contentprint(f"  {'PlanetaryProcessUpgrader class exists':<50} {'✓ PASS' if has_class else '✗ FAIL'}")
         print(f"  {'execute_planetary_upgrade method exists':<50} {'✓ PASS' if has_method else '✗ FAIL'}")
-        test4_pass = has_class and has_method
-    except FileNotFoundError:
+        test4_pass = has_class and has_methodexcept FileNotFoundError:
         print(f"  {'File exists':<50} ✗ FAIL")
-        test4_pass = False
-    print()
+        test4_pass = Falseprint()
     
-    # Summary
-    print("=" * 70)
+    # Summaryprint("=" * 70)
     print("SUMMARY")
     print("=" * 70)
     tests = [

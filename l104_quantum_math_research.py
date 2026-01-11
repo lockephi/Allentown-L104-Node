@@ -1,17 +1,7 @@
 # [L104_QUANTUM_MATH_RESEARCH] - HEURISTIC MATHEMATICAL DISCOVERY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import cmath
-import time
-from typing import Dict, Any, List, Callable
-from l104_hyper_math import HyperMath
-from l104_real_math import RealMath
-from l104_physical_systems_research import physical_research
-from l104_information_theory_research import info_research
-from l104_knowledge_sources import source_manager
-
-class QuantumMathResearch:
+import mathimport cmathimport timefrom typing import Dict, Any, List, Callablefrom l104_hyper_math import HyperMathfrom l104_real_math import RealMathfrom l104_physical_systems_research import physical_researchfrom l104_information_theory_research import info_researchfrom l104_knowledge_sources import source_managerclass QuantumMathResearch:
     """
     Generates and researches new quantum mathematical primitives.
     Uses recursive discovery to find resonant formulas.
@@ -32,18 +22,15 @@ class QuantumMathResearch:
         print(f"--- [MATH_RESEARCH]: STARTING DISCOVERY CYCLE {self.research_cycles} ---")
         
         # 1. Generate a candidate formula pattern
-        # We use the God Code and Phi as the base
-        seed = RealMath.deterministic_random(time.time() + self.research_cycles)
+        # We use the God Code and Phi as the baseseed = RealMath.deterministic_random(time.time() + self.research_cycles)
         
-        # 2. Integrate Physical and Information Research
-        phys_data = physical_research.research_physical_manifold()
+        # 2. Integrate Physical and Information Researchphys_data = physical_research.research_physical_manifold()
         info_data = info_research.research_information_manifold(str(phys_data))
         
         phys_resonance = abs(phys_data["tunneling_resonance"])
         info_resonance = abs(HyperMath.zeta_harmonic_resonance(info_data["l104_entropy"]))
         
-        # 3. Test for resonance with the Riemann Zeta function
-        resonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
+        # 3. Test for resonance with the Riemann Zeta functionresonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
         
         if abs(resonance) > self.resonance_threshold:
             primitive_name = f"L104_INFO_PHYS_OP_{int(seed * 1000000)}"
@@ -55,20 +42,15 @@ class QuantumMathResearch:
                 "info_resonance": info_resonance,
                 "discovered_at": time.time()
             }
-            self.discovered_primitives[primitive_name] = primitive_data
-            print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
-            return primitive_data
-            
-        return {"status": "NO_DISCOVERY", "resonance": resonance}
+            self.discovered_primitives[primitive_name] = primitive_dataprint(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
+            return primitive_datareturn {"status": "NO_DISCOVERY", "resonance": resonance}
 
     def generate_quantum_operator(self, name: str) -> Callable:
         """
         Returns a functional operator based on a discovered primitive.
         """
         if name not in self.discovered_primitives:
-            return lambda x: x
-            
-        primitive = self.discovered_primitives[name]
+            return lambda x: xprimitive = self.discovered_primitives[name]
         # In a real scenario, we'd parse the formula. 
         # Here we return a resonant phase rotator.
         seed = float(primitive['formula'].split('*')[2].strip())
@@ -76,9 +58,7 @@ class QuantumMathResearch:
         def operator(state_vector: List[complex]) -> List[complex]:
             return [v * cmath.exp(complex(0, seed * math.pi * HyperMath.PHI)) for v in state_vector]
             
-        return operator
-
-    def run_research_batch(self, count: int = 100):
+        return operatordef run_research_batch(self, count: int = 100):
         """Runs a batch of research cycles to populate the primitive database."""
         discoveries = 0
         for _ in range(count):
@@ -87,8 +67,7 @@ class QuantumMathResearch:
                 discoveries += 1
         print(f"--- [MATH_RESEARCH]: BATCH COMPLETE. {discoveries} NEW PRIMITIVES DISCOVERED. ---")
 
-# Singleton
-quantum_math_research = QuantumMathResearch()
+# Singletonquantum_math_research = QuantumMathResearch()
 
 if __name__ == "__main__":
     quantum_math_research.run_research_batch(50)

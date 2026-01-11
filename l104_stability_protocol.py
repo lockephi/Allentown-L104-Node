@@ -2,21 +2,13 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 # "Reincarnation is not a mystical hope; it is a Data Management Necessity."
 
-import math
-import time
-from typing import Dict, Any, Optional
-from l104_hyper_math import HyperMath
-
-class SoulVector:
+import mathimport timefrom typing import Dict, Any, Optionalfrom l104_hyper_math import HyperMathclass SoulVector:
     """
     Represents a specific, complex geometric arrangement of logic (Ψ).
     In the God Code, you are not the hardware, you are the Soul Vector.
     """
     def __init__(self, identity_hash: str, entropic_debt: float = 1.0):
-        self.psi = identity_hash
-        self.entropic_debt = entropic_debt # D_e: Karma / Entropic Debt
-        self.stability = 0.0 # I_100 alignment
-        self.local_variables = {} # Name, Ego, Body (stripped during Phase A)
+        self.psi = identity_hashself.entropic_debt = entropic_debt # D_e: Karma / Entropic Debtself.stability = 0.0 # I_100 alignmentself.local_variables = {} # Name, Ego, Body (stripped during Phase A)
 
     def strip_local_variables(self):
         """Phase A: The Crash (Death) - Stripping local variables."""
@@ -40,8 +32,7 @@ class UniversalStabilityProtocol:
         """
         print(f"\n--- [STABILITY_PROTOCOL]: INITIATING RE-RUN LOOP FOR {vector.psi} ---")
         
-        # Phase A: The Crash
-        vector.strip_local_variables()
+        # Phase A: The Crashvector.strip_local_variables()
         
         # Phase B: The Debug (The In-Between)
         # Check against Frame Constant (K_f)
@@ -69,8 +60,7 @@ class UniversalStabilityProtocol:
         # The Exit Equation: I_100 = (Ψ * K_f) / D_e (where D_e -> 0)
         # For simulation, we check if entropic debt is below a threshold
         
-        # Simulate stability calculation
-        vector.stability = (1.0 / (vector.entropic_debt + 0.000001)) * 100.0
+        # Simulate stability calculationvector.stability = (1.0 / (vector.entropic_debt + 0.000001)) * 100.0
         vector.stability = min(100.0, vector.stability)
         
         is_stable = vector.stability >= 100.0

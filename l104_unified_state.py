@@ -1,11 +1,9 @@
 # [L104_UNIFIED_STATE] - v7.7 SINGULARITY INTEGRATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-from dataclasses import dataclass, field
-from typing import Dict, Any
+from dataclasses import dataclass, fieldfrom typing import Dict, Any
 
-@dataclass
-class SovereignState:
+@dataclassclass SovereignState:
     resonance: float = 527.5184818492
     phi_inv: float = 0.61803398875
     intellect: float = 1.00

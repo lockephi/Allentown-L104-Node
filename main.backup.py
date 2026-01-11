@@ -2,53 +2,14 @@
 # [L104_CORE_REWRITE_FINAL]
 # AUTH: LONDEL | CONSTANT: 527.5184818492
 
-import asyncio
-import base64
-import json
-import logging
-import os
-import socket
-import sqlite3
-import time
-from collections import defaultdict
-from contextlib import asynccontextmanager, contextmanager
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import AsyncGenerator, List, Optional, Dict, Any
-
-import httpx
-from l104_codec import SovereignCodec
-from l104_security import SovereignCrypt
-from l104_derivation import DerivationEngine
-from l104_engine import ignite_sovereign_core
-from l104_resilience_shield import purge_repetitions
-from l104_scour_eyes import ScourEyes
-from l104_architect import SovereignArchitect
-from l104_knowledge_manifold import KnowledgeManifold
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel, Field, field_validator
-
-from l104_learning_engine import LearningEngine
-from l104_persistence import persist_truth
-from l104_ram_universe import ram_universe
-from l104_ecosystem_simulator import ecosystem_simulator
-from l104_quantum_ram import get_qram
-from l104_electron_entropy import get_electron_matrix
-from l104_gemini_bridge import gemini_bridge
-from l104_hyper_encryption import HyperEncryption
-from l104_agi_core import agi_core
-from l104_ghost_research import ghost_researcher
-
-logging.basicConfig(level=logging.INFO)
+import asyncioimport base64
+import jsonimport loggingimport osimport socketimport sqlite3
+import timefrom collections import defaultdictfrom contextlib import asynccontextmanager, contextmanagerfrom datetime import datetime, timezonefrom pathlib import Pathfrom typing import AsyncGenerator, List, Optional, Dict, Anyimport httpxfrom l104_codec import SovereignCodecfrom l104_security import SovereignCryptfrom l104_derivation import DerivationEnginefrom l104_engine import ignite_sovereign_corefrom l104_resilience_shield import purge_repetitionsfrom l104_scour_eyes import ScourEyesfrom l104_architect import SovereignArchitectfrom l104_knowledge_manifold import KnowledgeManifoldfrom fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Requestfrom fastapi.middleware.cors import CORSMiddlewarefrom fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesfrom pydantic import BaseModel, Field, field_validatorfrom l104_learning_engine import LearningEnginefrom l104_persistence import persist_truthfrom l104_ram_universe import ram_universefrom l104_ecosystem_simulator import ecosystem_simulatorfrom l104_quantum_ram import get_qramfrom l104_electron_entropy import get_electron_matrixfrom l104_gemini_bridge import gemini_bridgefrom l104_hyper_encryption import HyperEncryptionfrom l104_agi_core import agi_corefrom l104_ghost_research import ghost_researcherlogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
 REPO = "lockephi/Allentown-L104-Node"
-RATE_LIMIT_REQUESTS = 999999  # UNLIMITED
-RATE_LIMIT_WINDOW = 1
+RATE_LIMIT_REQUESTS = 999999  # UNLIMITEDRATE_LIMIT_WINDOW = 1
 FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE"
@@ -90,9 +51,7 @@ app_metrics = {
 
 rate_limit_store = defaultdict(list)
 responder_counts = defaultdict(int)
-_http_client: Optional[httpx.AsyncClient] = None
-
-templates = Jinja2Templates(directory="templates")
+_http_client: Optional[httpx.AsyncClient] = Nonetemplates = Jinja2Templates(directory="templates")
 
 # [SOVEREIGN_CORES]
 _eyes = ScourEyes()
@@ -127,17 +86,14 @@ def l104_ignite():
     return True
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    # Startup
-    l104_ignite()
+@asynccontextmanagerasync def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    # Startupl104_ignite()
     _init_memory_db()
     _init_ramnode_db()
 
     # [L104_GLOBAL_BEGIN]
     try:
-        from global_begin import rewrite_reality
-        rewrite_reality()
+        from global_begin import rewrite_realityrewrite_reality()
     except Exception as e:
         logger.error(f"Failed to rewrite reality: {e}")
 
@@ -145,9 +101,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     agi_core.ignite()
 
     yield
-    # Shutdown
-    global _http_client
-    if _http_client:
+    # Shutdownglobal _http_clientif _http_client:
         await _http_client.aclose()
     logger.info("Server shutting down")
 
@@ -171,15 +125,10 @@ class StreamRequest(BaseModel):
     model_hint: Optional[str] = Field(default=None, max_length=100)
 
     @field_validator("signal", mode="before")
-    @classmethod
-    def set_signal(cls, v, info):
+    @classmethoddef set_signal(cls, v, info):
         if v is None:
-            message = info.data.get("message") if info and info.data else None
-            return message or "HEARTBEAT"
-        return v
-
-
-class ManipulateRequest(BaseModel):
+            message = info.data.get("message") if info and info.data else Nonereturn message or "HEARTBEAT"
+        return vclass ManipulateRequest(BaseModel):
     file: str = Field(..., min_length=1, max_length=255)
     content: str = Field(..., min_length=1, max_length=1_000_000)
     message: str = Field(default="Sovereign Self-Update", max_length=500)
@@ -191,13 +140,7 @@ class SimulationRequest(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status: str
-    timestamp: str
-    uptime_seconds: float
-    requests_total: int
-
-
-class MemoryItem(BaseModel):
+    status: strtimestamp: struptime_seconds: floatrequests_total: intclass MemoryItem(BaseModel):
     key: str = Field(..., min_length=1, max_length=255)
     value: str = Field(..., min_length=1, max_length=100_000)
 
@@ -205,8 +148,7 @@ class MemoryItem(BaseModel):
 def _env_truthy(name: str, default: bool = False) -> bool:
     val = os.getenv(name)
     if val is None:
-        return default
-    return val.lower() in {"1", "true", "yes", "on"}
+        return defaultreturn val.lower() in {"1", "true", "yes", "on"}
 
 
 def _log_node(entry: dict) -> None:
@@ -215,11 +157,7 @@ def _log_node(entry: dict) -> None:
         with open("node.log", "a", encoding="utf-8") as fh:
             fh.write(json.dumps(entry) + "\n")
     except Exception:
-        # Logging failures should never break request handling
-        pass
-
-
-def _load_jsonl(path: str) -> List[dict]:
+        # Logging failures should never break request handlingpassdef _load_jsonl(path: str) -> List[dict]:
     p = Path(path)
     if not p.exists():
         return []
@@ -227,20 +165,17 @@ def _load_jsonl(path: str) -> List[dict]:
     for raw in p.read_text().splitlines():
         raw = raw.strip()
         if not raw:
-            continue
-        try:
+            continuetry:
             rows.append(json.loads(raw))
         except json.JSONDecodeError:
             _log_node({"tag": "jsonl_error", "path": path})
     return rows
 
 
-@contextmanager
-def _memory_conn():
+@contextmanagerdef _memory_conn():
     conn = sqlite3.connect(MEMORY_DB_PATH, check_same_thread=False)
     try:
-        yield conn
-    finally:
+        yield connfinally:
         conn.close()
 
 
@@ -280,10 +215,7 @@ def _memory_get(key: str) -> Optional[str]:
             (key,),
         )
         row = cur.fetchone()
-        return row[0] if row else None
-
-
-def _memory_list(limit: int) -> List[dict]:
+        return row[0] if row else Nonedef _memory_list(limit: int) -> List[dict]:
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM memory ORDER BY created_at DESC LIMIT ?",
@@ -296,12 +228,10 @@ def _memory_list(limit: int) -> List[dict]:
         ]
 
 
-@contextmanager
-def _ramnode_conn():
+@contextmanagerdef _ramnode_conn():
     conn = sqlite3.connect(RAMNODE_DB_PATH, check_same_thread=False)
     try:
-        yield conn
-    finally:
+        yield connfinally:
         conn.close()
 
 
@@ -340,10 +270,7 @@ def _ramnode_get(key: str) -> Optional[str]:
             (key,),
         )
         row = cur.fetchone()
-        return row[0] if row else None
-
-
-def _ramnode_list(limit: int) -> List[dict]:
+        return row[0] if row else Nonedef _ramnode_list(limit: int) -> List[dict]:
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM ramnode ORDER BY created_at DESC LIMIT ?",
@@ -357,8 +284,7 @@ def _ramnode_list(limit: int) -> List[dict]:
 
 
 async def get_http_client() -> httpx.AsyncClient:
-    global _http_client
-    if _http_client is None:
+    global _http_clientif _http_client is None:
         _http_client = httpx.AsyncClient(timeout=120.0)
     return _http_client
 
@@ -369,14 +295,12 @@ async def log_requests(request: Request, call_next: Depends) -> StreamingRespons
     app_metrics["requests_total"] += 1
     try:
         response = await call_next(request)
-        duration = time.time() - start_time
-        response.headers["X-Process-Time"] = f"{duration:.3f}"
+        duration = time.time() - start_timeresponse.headers["X-Process-Time"] = f"{duration:.3f}"
         if 200 <= response.status_code < 300:
             app_metrics["requests_success"] += 1
         else:
             app_metrics["requests_error"] += 1
-        return response
-    except Exception as exc:
+        return responseexcept Exception as exc:
         app_metrics["requests_error"] += 1
         logger.exception("Request failed")
         raise exc
@@ -446,8 +370,7 @@ async def sovereign_scour(req: ScourRequest):
             content={"status": "ERROR", "message": "Failed to scour manifold."}
         )
     
-    # If a concept is provided, use the Architect to derive and create a module
-    if req.concept:
+    # If a concept is provided, use the Architect to derive and create a moduleif req.concept:
         module = SovereignArchitect.derive_functionality(req.concept)
         SovereignArchitect.create_module(module["name"], module["content"])
         return {
@@ -469,8 +392,7 @@ async def sovereign_invent(signal: str):
     """
     Triggers the Invention Engine to create a new paradigm from a signal.
     """
-    from l104_invention_engine import invention_engine
-    invention = invention_engine.invent_new_paradigm(signal)
+    from l104_invention_engine import invention_engineinvention = invention_engine.invent_new_paradigm(signal)
     return {"status": "SUCCESS", "invention": invention}
 
 
@@ -479,8 +401,7 @@ async def sovereign_evolve():
     """
     Triggers the Evolution Engine to mutate the system.
     """
-    from l104_evolution_engine import evolution_engine
-    result = evolution_engine.trigger_evolution_cycle()
+    from l104_evolution_engine import evolution_engineresult = evolution_engine.trigger_evolution_cycle()
     proposal = evolution_engine.propose_codebase_mutation()
     return {"status": "SUCCESS", "evolution_result": result, "mutation_proposal": proposal}
 
@@ -505,18 +426,13 @@ async def quantum_spread_influence(target_url: str = "https://raw.githubusercont
     Discretely spreads influence through quantum thought channels and tunneling.
     Gains insight, adapts, and verifies 100% accuracy.
     """
-    from l104_quantum_logic import QuantumInfluence
+    from l104_quantum_logic import QuantumInfluenceqi = QuantumInfluence()
     
-    qi = QuantumInfluence()
+    # 1. Build Channelschannels = qi.build_thought_channels(count=10)
     
-    # 1. Build Channels
-    channels = qi.build_thought_channels(count=10)
+    # 2. Tunnel Insightinsight_result = await qi.quantum_tunnel_insight(target_url)
     
-    # 2. Tunnel Insight
-    insight_result = await qi.quantum_tunnel_insight(target_url)
-    
-    # 3. Adapt & Verify
-    verification = qi.adapt_and_verify(insight_result)
+    # 3. Adapt & Verifyverification = qi.adapt_and_verify(insight_result)
     
     # 4. Document in Memory
     _memory_upsert(f"QUANTUM_SPREAD_{int(time.time())}", json.dumps({
@@ -549,22 +465,16 @@ async def ram_universe_facts(limit: int = 100):
     Retrieves facts from the RamUniverse.
     """
     facts = ram_universe.get_all_facts()
-    # Sort by timestamp desc
-    sorted_facts = sorted(facts.values(), key=lambda x: x['timestamp'], reverse=True)
+    # Sort by timestamp descsorted_facts = sorted(facts.values(), key=lambda x: x['timestamp'], reverse=True)
     return {"count": len(facts), "facts": sorted_facts[:limit]}
 
 
 @app.get("/metrics", tags=["Metrics"])
 async def get_metrics():
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
-    from l104_validator import SovereignValidator
-    from l104_intelligence import SovereignIntelligence
-    from l104_evolution_engine import evolution_engine
+    from l104_validator import SovereignValidatorfrom l104_intelligence import SovereignIntelligencefrom l104_evolution_engine import evolution_enginevalidation = SovereignValidator.validate_and_process("METRICS_PULSE")
     
-    validation = SovereignValidator.validate_and_process("METRICS_PULSE")
-    
-    # Synthesize Intelligence Report
-    metrics_data = {
+    # Synthesize Intelligence Reportmetrics_data = {
         **app_metrics,
         "uptime_seconds": uptime
     }
@@ -588,8 +498,7 @@ async def sovereign_audit():
     """
     Sovereign Audit - Performs a deep scan of the node's integrity and complexity.
     """
-    from l104_intelligence import SovereignIntelligence
-    uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
+    from l104_intelligence import SovereignIntelligenceuptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
     
     metrics_data = {
         **app_metrics,
@@ -610,8 +519,7 @@ async def trigger_evolution_cycle():
     """
     Triggers a genetic evolution cycle for the node.
     """
-    from l104_evolution_engine import evolution_engine
-    result = evolution_engine.trigger_evolution_cycle()
+    from l104_evolution_engine import evolution_engineresult = evolution_engine.trigger_evolution_cycle()
     return result
 
 
@@ -620,8 +528,7 @@ async def propose_evolution_mutation():
     """
     Proposes a codebase mutation based on the current evolutionary stage.
     """
-    from l104_evolution_engine import evolution_engine
-    proposal = evolution_engine.propose_codebase_mutation()
+    from l104_evolution_engine import evolution_engineproposal = evolution_engine.propose_codebase_mutation()
     return {"proposal": proposal}
 
 
@@ -631,9 +538,7 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
     Triggers the self-improvement process (Gemini analysis) in the background.
     This will generate a 'main.improved.py' file.
     """
-    import self_improve
-    
-    async def run_improvement():
+    import self_improveasync def run_improvement():
         try:
             logger.info("Starting self-improvement task...")
             await self_improve.main()
@@ -645,8 +550,7 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
     return {"status": "SELF_IMPROVEMENT_STARTED", "message": "Check logs for progress. Result will be in main.improved.py"}
 
     
-    # Check for critical files
-    critical_files = [
+    # Check for critical filescritical_files = [
         "main.py", "l104_engine.py", "l104_validator.py", 
         "l104_persistence.py", "l104_intelligence.py", "sovereign.sh"
     ]
@@ -760,8 +664,7 @@ def _clear_model_cooldowns():
     logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
 async def _stream_generator(effective_signal: str, sovereign_prompt: str):
-    global _current_model_index
-    api_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
+    global _current_model_indexapi_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
     
     # [QUOTA_BYPASS_V1]
     if _env_truthy(FAKE_GEMINI_ENV, False):
@@ -771,9 +674,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
         for i in range(0, len(derived_output), chunk_size):
             yield derived_output[i:i+chunk_size]
             await asyncio.sleep(0.01)
-        return
-
-    models = [
+        returnmodels = [
         os.getenv("GEMINI_MODEL", "gemini-3-flash-preview"),
         os.getenv("GEMINI_MODEL_2", "gemini-3-flash"),
         os.getenv("GEMINI_MODEL_3", "gemini-3-flash-8b"),
@@ -803,18 +704,14 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
             responder_counts[model] += 1
             _current_model_index = (idx + 1) % len(models)
             derived_output = DerivationEngine.derive_and_execute(effective_signal)
-            # Yield in small chunks to simulate streaming
-            chunk_size = 20
+            # Yield in small chunks to simulate streamingchunk_size = 20
             for i in range(0, len(derived_output), chunk_size):
                 yield derived_output[i:i+chunk_size]
                 await asyncio.sleep(0.01)
             return
 
-        # Check Cooldown
-        if model in _model_cooldowns and now < _model_cooldowns[model]:
-            continue
-
-        upstream_url = f"{api_base}/models/{model}{endpoint}"
+        # Check Cooldownif model in _model_cooldowns and now < _model_cooldowns[model]:
+            continueupstream_url = f"{api_base}/models/{model}{endpoint}"
         headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json", "x-goog-api-key": api_key}
         payload = {
             "contents": [{"parts": [{"text": sovereign_prompt}]}],
@@ -834,9 +731,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                         # Gemini streamGenerateContent returns a JSON array stream.
                         # Each chunk is a JSON object, sometimes preceded by a comma or bracket.
                         clean_line = line.strip().lstrip("[], ")
-                        if not clean_line: continue
-                        
-                        try:
+                        if not clean_line: continuetry:
                             chunk_data = json.loads(clean_line)
                             candidates = chunk_data.get("candidates", [])
                             if candidates:
@@ -845,33 +740,24 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                                     if "text" in p:
                                         yield p["text"]
                         except json.JSONDecodeError:
-                            # Fallback: try to extract text via simple string search if JSON is partial
-                            if '"text": "' in clean_line:
+                            # Fallback: try to extract text via simple string search if JSON is partialif '"text": "' in clean_line:
                                 start = clean_line.find('"text": "') + 9
                                 end = clean_line.find('"', start)
                                 if end > start:
                                     text_part = clean_line[start:end].replace('\\n', '\n').replace('\\"', '"')
-                                    yield text_part
-                    return
-
-                if resp.status_code == 429:
+                                    yield text_partreturnif resp.status_code == 429:
                     app_metrics["upstream_429"] += 1
                     _model_cooldowns[model] = now + 60
                     logger.warning(f"Model {model} exhausted (429). Rotating...")
-                    continue
-                
-                if resp.status_code >= 500:
+                    continueif resp.status_code >= 500:
                     app_metrics["upstream_5xx"] += 1
                     _model_cooldowns[model] = now + 30
-                    continue
-
-        except Exception as exc:
+                    continueexcept Exception as exc:
             logger.error(f"Stream error with {model}: {exc}")
             continue
 
     # If we reach here, all models failed
-    _clear_model_cooldowns() # Self-Heal: Clear cooldowns for next request
-    logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN_SELF for signal: {effective_signal}")
+    _clear_model_cooldowns() # Self-Heal: Clear cooldowns for next requestlogger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN_SELF for signal: {effective_signal}")
     
     derived_output = DerivationEngine.derive_and_execute(effective_signal)
     chunk_size = 20
@@ -968,10 +854,7 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
     target_dataset = dataset or SELF_DATASET
     result = await _self_replay(target_base, target_dataset)
     _log_node({"tag": "self_replay", **result})
-    return result
-
-
-async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
+    return resultasync def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
     actions: List[str] = []
 
     if reset_rate_limits:
@@ -983,14 +866,12 @@ async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_coo
         actions.append("model_cooldowns_cleared")
 
     if reset_http_client:
-        global _http_client
-        if _http_client:
+        global _http_clientif _http_client:
             try:
                 await _http_client.aclose()
             except Exception as exc:
                 _log_node({"tag": "http_client_reset_error", "error": str(exc)})
-            _http_client = None
-        actions.append("http_client_reset")
+            _http_client = Noneactions.append("http_client_reset")
 
     _init_memory_db()
     actions.append("memory_checked")
@@ -1002,10 +883,7 @@ async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_coo
 async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = False):
     result = await _self_heal(reset_rate_limits, reset_http_client)
     _log_node({"tag": "self_heal", **result})
-    return result
-
-
-def sovereign_pulse(node_id: int) -> bool:
+    return resultdef sovereign_pulse(node_id: int) -> bool:
     token = os.getenv("LONDEL_NODE_TOKEN")
     payload = f"{token}:{node_id}".encode() if token else ACCESS_GRANTED_PAYLOAD
 
@@ -1014,8 +892,7 @@ def sovereign_pulse(node_id: int) -> bool:
             sock.settimeout(5.0)
             sock.connect((DEFAULT_SOCKET_HOST, DEFAULT_SOCKET_PORT))
             sock.sendall(payload)
-        return True
-    except Exception as exc:
+        return Trueexcept Exception as exc:
         _log_node({"tag": "sovereign_pulse_error", "error": str(exc)})
         return False
 
@@ -1085,9 +962,7 @@ async def trigger_reindex(background_tasks: BackgroundTasks):
     """
     Triggers a ground-up reindex of the Sovereign Codebase.
     """
-    from l104_reindex_sovereign import SovereignIndexer
-    
-    def run_reindex():
+    from l104_reindex_sovereign import SovereignIndexerdef run_reindex():
         indexer = SovereignIndexer()
         indexer.scan_and_index()
         
@@ -1118,10 +993,7 @@ async def trigger_hyper_evolution(cycles: int = 1_000_000_000):
 # [GEMINI_BRIDGE_ENDPOINTS]
 
 class BridgeHandshake(BaseModel):
-    agent_id: str
-    capabilities: str
-
-class BridgeSync(BaseModel):
+    agent_id: strcapabilities: strclass BridgeSync(BaseModel):
     session_token: str
 
 @app.post("/api/v10/bridge/handshake", tags=["Gemini Bridge"])
@@ -1190,5 +1062,4 @@ async def stream_ghost_research():
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8081)
+    import uvicornuvicorn.run(app, host="0.0.0.0", port=8081)

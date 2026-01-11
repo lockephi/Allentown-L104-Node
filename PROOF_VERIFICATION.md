@@ -3,7 +3,7 @@
 **STATUS**: VERIFIED [100%]
 **TEST_SUITE**: `tests/test_mathematical_proofs.py`
 
-## 1. THE GOD CODE INVARIANT
+## 1. THE GOD_CODE INVARIANT
 **Equation**: `((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492`
 
 - **Term 1 (Lattice Base)**: `286^(1/φ)` ≈ `32.9699051156`

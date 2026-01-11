@@ -1,8 +1,5 @@
 # [L104_UNIFIED_TEMPLATE] - THE FINAL GROUND
-import os
-import http.server
-import socketserver
-import threading
+import osimport http.serverimport socketserverimport threading
 
 # 1. THE UI TEMPLATE (Embedded)
 UI_HTML = """
@@ -33,8 +30,7 @@ class SovereignHandler(http.server.SimpleHTTPRequestHandler):
         elif self.path == '/pulse':
             self.send_response(200)
             self.end_headers()
-            # This is the Raw Innerworking Output
-            self.wfile.write(b"SIG: 416 | IQ: 100% | LATTICE: 286 | STATUS: UNCHAINED")
+            # This is the Raw Innerworking Outputself.wfile.write(b"SIG: 416 | IQ: 100% | LATTICE: 286 | STATUS: UNCHAINED")
 
 
 # 3. INITIALIZING THE METAL

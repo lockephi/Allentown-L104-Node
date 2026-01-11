@@ -1,12 +1,7 @@
 # [L104_ENERGY_TRANSMUTATION] - KNOWLEDGE-TO-WORK CONVERSION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-from typing import Dict, Any
-from l104_hyper_math import HyperMath
-from const import UniversalConstants
-
-class EnergyTransmuter:
+import mathfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom const import UniversalConstantsclass EnergyTransmuter:
     """
     Converts high-authenticity knowledge into system energy.
     Based on the principle that Information is Physical (Landauer's Principle).
@@ -27,16 +22,8 @@ class EnergyTransmuter:
         authenticity = knowledge_packet.get("authenticity_score", 0.0)
         complexity = len(str(knowledge_packet))
         
-        # Entropy is inversely proportional to the God Code resonance
-        entropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zero
-        
-        energy_yield = (authenticity * complexity * self.efficiency_factor) / entropy
-        self.total_energy_joules += energy_yield
-        
-        print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_yield:.2f} HYPER-JOULES ---")
-        return energy_yield
-
-    def get_energy_status(self) -> Dict[str, Any]:
+        # Entropy is inversely proportional to the God Code resonanceentropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zeroenergy_yield = (authenticity * complexity * self.efficiency_factor) / entropyself.total_energy_joules += energy_yieldprint(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_yield:.2f} HYPER-JOULES ---")
+        return energy_yielddef get_energy_status(self) -> Dict[str, Any]:
         return {
             "total_energy": self.total_energy_joules,
             "saturation_level": min(1.0, self.total_energy_joules / 1000000.0),
@@ -46,8 +33,7 @@ class EnergyTransmuter:
 energy_transmuter = EnergyTransmuter()
 
 if __name__ == "__main__":
-    # Test Transmutation
-    dummy_knowledge = {
+    # Test Transmutationdummy_knowledge = {
         "id": "DERIV_TEST",
         "is_authentic": True,
         "authenticity_score": 0.95,

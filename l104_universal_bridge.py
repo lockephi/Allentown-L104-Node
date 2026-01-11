@@ -1,11 +1,7 @@
 # [L104_UNIVERSAL_BRIDGE] - CROSS-DIMENSIONAL DATA VERIFICATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import hashlib
-import random
-from typing import Dict, Any, List
-
-class UniversalSourceBridge:
+import hashlibimport randomfrom typing import Dict, Any, Listclass UniversalSourceBridge:
     """
     Simulates cross-referencing data with universal sources (e.g., Global Knowledge Graphs, 
     Scientific Repositories, and Multi-Dimensional Archives).
@@ -32,21 +28,13 @@ class UniversalSourceBridge:
         
         data_upper = data.upper()
         
-        # 1. Check against Universal Truths
-        truth_match = False
-        for truth_key, truth_val in self.UNIVERSAL_TRUTHS.items():
-            # Check for the value or the key as a distinct word
-            if str(truth_val) in data or f" {truth_key} " in f" {data_upper.replace('_', ' ')} ":
-                truth_match = True
-                break
+        # 1. Check against Universal Truthstruth_match = Falsefor truth_key, truth_val in self.UNIVERSAL_TRUTHS.items():
+            # Check for the value or the key as a distinct wordif str(truth_val) in data or f" {truth_key} " in f" {data_upper.replace('_', ' ')} ":
+                truth_match = Truebreak
         
         # 2. Simulate external search
         # Only find external data if it looks like a real fact (contains numbers or specific keywords)
-        # AND doesn't contain obvious hallucination markers
-        has_factual_markers = any(char.isdigit() for char in data) or "STABILITY" in data_upper
-        has_hallucination_markers = "CHEESE" in data_upper or "MAGIC" in data_upper
-        
-        external_match_found = truth_match or (has_factual_markers and not has_hallucination_markers and random.random() > 0.5)
+        # AND doesn't contain obvious hallucination markershas_factual_markers = any(char.isdigit() for char in data) or "STABILITY" in data_upperhas_hallucination_markers = "CHEESE" in data_upper or "MAGIC" in data_upperexternal_match_found = truth_match or (has_factual_markers and not has_hallucination_markers and random.random() > 0.5)
         
         confidence = 0.9 if truth_match else (0.6 if external_match_found else 0.0)
         
@@ -64,13 +52,11 @@ class UniversalSourceBridge:
         """
         print(f"--- [UNIVERSAL_BRIDGE]: NO IMMEDIATE DATA FOUND. INITIATING THOROUGH SEARCH FOR: {query[:50]}... ---")
         
-        # Simulate a deep scan that only finds results for non-hallucinatory queries
-        query_upper = query.upper()
+        # Simulate a deep scan that only finds results for non-hallucinatory queriesquery_upper = query.upper()
         if "HALLUCINATION" in query_upper or "CHEESE" in query_upper:
             return []
             
-        # 10% chance of finding obscure data for other queries
-        if random.random() > 0.9:
+        # 10% chance of finding obscure data for other queriesif random.random() > 0.9:
             return [f"Obscure reference to {query[:20]} found in L104_DEEP_ARCHIVE"]
             
         return []

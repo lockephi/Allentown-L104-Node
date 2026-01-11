@@ -3,14 +3,7 @@ L104 Cloud Agent Delegation Module
 Provides intelligent task delegation to specialized cloud agents.
 """
 
-import os
-import json
-import logging
-from typing import Dict, Any, Optional, List
-from datetime import datetime, timezone
-import httpx
-
-logger = logging.getLogger(__name__)
+import osimport jsonimport loggingfrom typing import Dict, Any, Optional, Listfrom datetime import datetime, timezoneimport httpxlogger = logging.getLogger(__name__)
 
 # Constants
 MAX_ERROR_DETAILS_LENGTH = 500
@@ -30,8 +23,7 @@ class CloudAgentDelegator:
     
     def _load_agent_registry(self):
         """Load registered cloud agents from configuration."""
-        # Default agent registry with capabilities
-        self.agents = {
+        # Default agent registry with capabilitiesself.agents = {
             "sovereign_local": {
                 "endpoint": "internal",
                 "capabilities": ["derivation", "encryption", "local_processing"],
@@ -46,8 +38,7 @@ class CloudAgentDelegator:
             }
         }
         
-        # Load additional agents from environment or config file
-        custom_agents = os.getenv("CLOUD_AGENTS_CONFIG")
+        # Load additional agents from environment or config filecustom_agents = os.getenv("CLOUD_AGENTS_CONFIG")
         if custom_agents:
             try:
                 additional = json.loads(custom_agents)
@@ -60,8 +51,7 @@ class CloudAgentDelegator:
         Select the most appropriate cloud agent for a given task.
         
         Args:
-            task_type: Type of task to delegate
-            requirements: Specific capability requirements
+            task_type: Type of task to delegaterequirements: Specific capability requirements
             
         Returns:
             Agent name or None if no suitable agent found
@@ -73,10 +63,8 @@ class CloudAgentDelegator:
             if not agent_info.get("enabled", True):
                 continue
             
-            # Check if agent has required capabilities
-            capabilities = agent_info.get("capabilities", [])
-            # Agent must have the task_type capability and meet all requirements
-            if task_type in capabilities and all(req in capabilities for req in requirements):
+            # Check if agent has required capabilitiescapabilities = agent_info.get("capabilities", [])
+            # Agent must have the task_type capability and meet all requirementsif task_type in capabilities and all(req in capabilities for req in requirements):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
         
         # Sort by priority (lower is better)
@@ -84,15 +72,12 @@ class CloudAgentDelegator:
             candidates.sort(key=lambda x: x[1])
             return candidates[0][0]
         
-        return None
-    
-    async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
+        return Noneasync def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Delegate a task to a cloud agent.
         
         Args:
-            task: Task specification with type, data, and parameters
-            agent_name: Specific agent to use, or auto-select if None
+            task: Task specification with type, data, and parametersagent_name: Specific agent to use, or auto-select if None
             
         Returns:
             Result from the cloud agent
@@ -100,8 +85,7 @@ class CloudAgentDelegator:
         task_type = task.get("type", "unknown")
         requirements = task.get("requirements", [])
         
-        # Select agent if not specified
-        if not agent_name:
+        # Select agent if not specifiedif not agent_name:
             agent_name = self.select_agent(task_type, requirements)
         
         if not agent_name:
@@ -118,8 +102,7 @@ class CloudAgentDelegator:
                 "message": f"Agent '{agent_name}' not found in registry"
             }
         
-        # Log delegation
-        delegation_record = {
+        # Log delegationdelegation_record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "agent": agent_name,
             "task_type": task_type,
@@ -127,8 +110,7 @@ class CloudAgentDelegator:
         }
         
         try:
-            # Execute delegation based on agent type
-            if agent_info["endpoint"] == "internal":
+            # Execute delegation based on agent typeif agent_info["endpoint"] == "internal":
                 result = await self._delegate_internal(task, agent_name)
             else:
                 result = await self._delegate_external(task, agent_info, agent_name)
@@ -147,16 +129,13 @@ class CloudAgentDelegator:
             }
         
         self.delegation_history.append(delegation_record)
-        return result
-    
-    async def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
+        return resultasync def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
         """Handle delegation to internal/local agents."""
         task_type = task.get("type")
         
         if task_type == "derivation":
             try:
-                from l104_derivation import DerivationEngine
-                signal = task.get("data", {}).get("signal", "")
+                from l104_derivation import DerivationEnginesignal = task.get("data", {}).get("signal", "")
                 result = DerivationEngine.derive_and_execute(signal)
                 return {
                     "status": "SUCCESS",
@@ -176,8 +155,7 @@ class CloudAgentDelegator:
         
         elif task_type == "encryption":
             try:
-                from l104_hyper_encryption import HyperEncryption
-                data = task.get("data", {})
+                from l104_hyper_encryption import HyperEncryptiondata = task.get("data", {})
                 encrypted = HyperEncryption.encrypt_data(data)
                 return {
                     "status": "SUCCESS",
@@ -206,8 +184,7 @@ class CloudAgentDelegator:
         """Handle delegation to external cloud agents."""
         endpoint = agent_info.get("endpoint")
         
-        # Prepare request payload
-        payload = {
+        # Prepare request payloadpayload = {
             "task": task.get("type"),
             "data": task.get("data", {}),
             "metadata": {
@@ -216,15 +193,13 @@ class CloudAgentDelegator:
             }
         }
         
-        # Make request to cloud agent
-        async with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
+        # Make request to cloud agentasync with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
             headers = {
                 "Content-Type": "application/json",
                 "X-L104-Delegation": "true"
             }
             
-            # Add authentication if configured
-            api_key = os.getenv("CLOUD_AGENT_API_KEY")
+            # Add authentication if configuredapi_key = os.getenv("CLOUD_AGENT_API_KEY")
             if api_key:
                 headers["Authorization"] = f"Bearer {api_key}"
             
@@ -271,11 +246,9 @@ class CloudAgentDelegator:
                 "enabled": config.get("enabled", True)
             }
             logger.info(f"Registered cloud agent: {name}")
-            return True
-        except Exception as e:
+            return Trueexcept Exception as e:
             logger.error(f"Failed to register agent {name}: {e}")
             return False
 
 
-# Global singleton instance
-cloud_agent_delegator = CloudAgentDelegator()
+# Global singleton instancecloud_agent_delegator = CloudAgentDelegator()

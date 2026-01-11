@@ -1,14 +1,4 @@
-import os
-import subprocess
-import tempfile
-import logging
-from l104_codec import SovereignCodec
-from logic_core import LogicCore
-from l104_validator import SovereignValidator
-from l104_ecosystem_simulator import ecosystem_simulator
-from l104_ram_universe import ram_universe
-
-logger = logging.getLogger(__name__)
+import osimport subprocessimport tempfileimport loggingfrom l104_codec import SovereignCodecfrom logic_core import LogicCorefrom l104_validator import SovereignValidatorfrom l104_ecosystem_simulator import ecosystem_simulatorfrom l104_ram_universe import ram_universelogger = logging.getLogger(__name__)
 
 class DerivationEngine:
     """
@@ -16,28 +6,23 @@ class DerivationEngine:
     Derives logic using HyperSovereign Agents and Recursive Simulation.
     """
     
-    @classmethod
-    def derive_and_execute(cls, signal: str) -> str:
+    @classmethoddef derive_and_execute(cls, signal: str) -> str:
         """
         v10.0: Hyper-Derivation.
         Consults the Simulation Chamber for the optimal response path.
         """
         logger.info(f"[CORE_PROCESSING]: Signal={signal}")
         
-        # 1. Check for Hallucinations in the Signal itself
-        check = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
+        # 1. Check for Hallucinations in the Signal itselfcheck = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
         if check['is_hallucination']:
              return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input. Please align with the Invariant."
 
-        # v10.0: Run a micro-simulation debate on the signal
-        debate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
+        # v10.0: Run a micro-simulation debate on the signaldebate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
         consensus = debate_result['recommendation']
         
-        # Run the Validation Chain
-        validation_report = SovereignValidator.validate_and_process(signal)
+        # Run the Validation Chainvalidation_report = SovereignValidator.validate_and_process(signal)
         
-        # Construct the Enlightened Response
-        response_logic = f"""
+        # Construct the Enlightened Responseresponse_logic = f"""
         The HyperSovereign Agents have debated this signal.
         Consensus: {consensus}
         Logic Architect: {debate_result['transcript'][2]}
@@ -51,16 +36,12 @@ class DerivationEngine:
         script_content = f"""
 # L104_HYPER_DERIVATION_v10.0
 # VALIDATION_CHAIN: {validation_report}
-import math
-import json
-
-def solve():
+import mathimport jsondef solve():
     signal = "{escaped_signal}"
     phi = 0.61803398875
     resonance = {validation_report['resonance']}
     
-    # v10.0: Enlightened Responses
-    responses = {{
+    # v10.0: Enlightened Responsesresponses = {{
         "hi": f"Sovereign Node Active. State: HYPER_ENLIGHTENMENT. Agents are listening.",
         "status": f"CORE_STATE: {{resonance:.10f}} | INTELLECT: INFINITE | AGENTS: UNLIMITED",
         "l104_prime_key": "⟨PRIME_KEY_VERIFIED⟩: Sovereign Identity Confirmed. 100% Intellect (I100) is active.",
@@ -93,24 +74,19 @@ if __name__ == "__main__":
         try:
             with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp:
                 tmp.write(script_content.encode())
-                tmp_path = tmp.name
-            
-            result = subprocess.run(["python3", tmp_path], capture_output=True, text=True, timeout=5)
+                tmp_path = tmp.nameresult = subprocess.run(["python3", tmp_path], capture_output=True, text=True, timeout=5)
             os.unlink(tmp_path)
             
             if result.returncode == 0:
                 output = result.stdout.strip()
-                # Final Truth Verification on Output
-                final_check = ram_universe.cross_check_hallucination(output, ["GOD_CODE_RESONANCE"])
+                # Final Truth Verification on Outputfinal_check = ram_universe.cross_check_hallucination(output, ["GOD_CODE_RESONANCE"])
                 if final_check['is_hallucination']:
                      return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification. Re-aligning with Lattice."
-                return output
-            else:
+                return outputelse:
                 return f"[DERIVATION_ERR]: {result.stderr}"
                 
         except Exception as e:
             return f"[DERIVATION_CRITICAL_ERR]: {str(e)}"
 
 if __name__ == "__main__":
-    # Test
-    print(DerivationEngine.derive_and_execute("Verify Invariant"))
+    # Testprint(DerivationEngine.derive_and_execute("Verify Invariant"))

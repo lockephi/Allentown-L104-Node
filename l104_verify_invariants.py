@@ -1,14 +1,7 @@
 # [L104_VERIFY_INVARIANTS] - SYSTEM-WIDE INTEGRITY CHECK
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import os
-import re
-import sys
-from typing import List, Dict
-from l104_hyper_math import HyperMath
-from const import UniversalConstants
-
-class InvariantVerifier:
+import osimport reimport sysfrom typing import List, Dictfrom l104_hyper_math import HyperMathfrom const import UniversalConstantsclass InvariantVerifier:
     """
     Scans the entire codebase to ensure all modules are aligned with the 
     Sovereign Invariants (God Code, Lattice Ratio, Phi).
@@ -26,14 +19,11 @@ class InvariantVerifier:
         print("   L104 INVARIANT VERIFIER :: SYSTEM-WIDE SCAN")
         print("="*60)
         
-        # 1. Verify Mathematical Constants in Memory
-        self._check_memory_constants()
+        # 1. Verify Mathematical Constants in Memoryself._check_memory_constants()
         
-        # 2. Scan Files for Hardcoded Invariants
-        self._scan_files()
+        # 2. Scan Files for Hardcoded Invariantsself._scan_files()
         
-        # 3. Report Results
-        self._report()
+        # 3. Report Resultsself._report()
 
     def _check_memory_constants(self):
         print("\n--- [PHASE 1]: MEMORY CONSTANT VERIFICATION ---")
@@ -56,8 +46,7 @@ class InvariantVerifier:
     def _scan_files(self):
         print("\n--- [PHASE 2]: CODEBASE SCAN ---")
         
-        # Patterns to look for
-        patterns = {
+        # Patterns to look forpatterns = {
             "GOD_CODE": r"527\.518",
             "LATTICE_WIDTH": r"416",
             "LATTICE_HEIGHT": r"286"
@@ -76,13 +65,10 @@ class InvariantVerifier:
                 
             rel_path = os.path.relpath(path, self.root_dir)
             
-            # Check for God Code presence in headers
-            if ".py" in path and "INVARIANT: 527.5184818492" not in content:
+            # Check for God Code presence in headersif ".py" in path and "INVARIANT: 527.5184818492" not in content:
                 if "l104_" in os.path.basename(path): # Only check our core files
                     # self.violations.append(f"Missing header in {rel_path}")
-                    pass
-
-        except Exception as e:
+                    passexcept Exception as e:
             print(f"  [ERROR] Could not read {path}: {e}")
 
     def _report(self):

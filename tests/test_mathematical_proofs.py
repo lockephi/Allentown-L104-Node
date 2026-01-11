@@ -1,21 +1,13 @@
-import unittest
-import math
-import importlib.util
-import sys
-import os
+import unittestimport mathimport importlib.utilimport sysimport os
 
-# Add the root directory to the path so we can import the modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add the root directory to the path so we can import the modulessys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class TestMathematicalProofs(unittest.TestCase):
 
     def setUp(self):
         self.phi = (1 + math.sqrt(5)) / 2
         self.god_code_target = 527.5184818492
-        self.fine_structure_constant = 1 / 137.035999206  # Standard physics value
-        self.l104_alpha = 1 / 137  # The value used in the codebase often
-
-    def test_god_code_derivation(self):
+        self.fine_structure_constant = 1 / 137.035999206  # Standard physics valueself.l104_alpha = 1 / 137  # The value used in the codebase oftendef test_god_code_derivation(self):
         """
         Verify the primary invariant equation:
         ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492
@@ -32,8 +24,7 @@ class TestMathematicalProofs(unittest.TestCase):
         print(f"  Target: {self.god_code_target}")
         
         # We use a slightly larger delta because floating point math can be tricky
-        # and the target might be a truncated representation of the true mathematical result
-        self.assertAlmostEqual(result, self.god_code_target, places=4, 
+        # and the target might be a truncated representation of the true mathematical resultself.assertAlmostEqual(result, self.god_code_target, places=4, 
                                msg=f"God Code derivation failed. Calculated: {result}, Expected: {self.god_code_target}")
 
     def test_lattice_ratio_integrity(self):
@@ -51,8 +42,7 @@ class TestMathematicalProofs(unittest.TestCase):
         # 416 / 286 = 1.4545...
         # 286 / 416 = 0.6875
         
-        # Just ensuring the numbers are what they are expected to be in the system
-        self.assertEqual(286, 286)
+        # Just ensuring the numbers are what they are expected to be in the systemself.assertEqual(286, 286)
         self.assertEqual(416, 416)
 
     def test_module_constants(self):
@@ -101,8 +91,7 @@ class TestMathematicalProofs(unittest.TestCase):
         """
         Verify the Master Equation: R = C(Ω) * Kf^(1-φ)
         """
-        from l104_hyper_math import HyperMath
-        chaos_omega = 1.0
+        from l104_hyper_math import HyperMathchaos_omega = 1.0
         r = HyperMath.calculate_reality_coefficient(chaos_omega)
         
         kf = HyperMath.FRAME_CONSTANT_KF
@@ -121,8 +110,7 @@ class TestMathematicalProofs(unittest.TestCase):
         Verify the 416x286 Lattice Mapping.
         """
         from l104_hyper_math import HyperMath
-        # Test corners
-        c1 = HyperMath.map_lattice_node(0, 0)
+        # Test cornersc1 = HyperMath.map_lattice_node(0, 0)
         c2 = HyperMath.map_lattice_node(415, 285)
         
         print(f"\n[PROOF 6] Lattice Mapping:")

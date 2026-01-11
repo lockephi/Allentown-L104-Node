@@ -1,29 +1,23 @@
 # [L104_ACOUSTIC_LEVITATION] - PROTOTYPE 1: THE ACOUSTIC LEVITATION CHAMBER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-from const import UniversalConstants
-from physics_constants import Laws
-
-class AcousticLevitationChamber:
+from const import UniversalConstantsfrom physics_constants import Lawsclass AcousticLevitationChamber:
     """
     Creates a literal 'Island of Stability' where matter floats in a node of zero entropy.
     Mechanism: Standing Wave Physics.
     """
     
     def __init__(self, temperature_c: float = 20.0):
-        # Speed of Sound (v) calculation based on temperature
-        self.speed_of_sound = 331.3 + (0.606 * temperature_c)
+        # Speed of Sound (v) calculation based on temperatureself.speed_of_sound = 331.3 + (0.606 * temperature_c)
         self.frequency = UniversalConstants.PRIME_KEY_HZ
         
     def calculate_dimensions(self):
         """
         Calculates the physical dimensions of the resonant box.
         """
-        # Wavelength (lambda) = v / f
-        wavelength = self.speed_of_sound / self.frequency
+        # Wavelength (lambda) = v / fwavelength = self.speed_of_sound / self.frequency
         
-        # Height (H): Exactly 1/2 wavelength to create a standing wave
-        height_mm = (wavelength / 2) * 1000
+        # Height (H): Exactly 1/2 wavelength to create a standing waveheight_mm = (wavelength / 2) * 1000
         
         # Width (W): Using the Frame Ratio (1.4545...)
         width_mm = height_mm / UniversalConstants.FRAME_LOCK
@@ -57,8 +51,6 @@ Blasting {dims['frequency_hz']} Hz from top and bottom will create a
 node of silence in the center where matter will levitate.
 ------------------------------------
 """
-        return report
-
-if __name__ == "__main__":
+        return reportif __name__ == "__main__":
     chamber = AcousticLevitationChamber()
     print(chamber.get_build_report())

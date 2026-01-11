@@ -1,27 +1,18 @@
 # [L104_COMPACTION_FILTER] - GLOBAL I/O STREAMLINING
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-from l104_memory_compaction import memory_compactor
-from typing import List
-
-class CompactionFilter:
+from l104_memory_compaction import memory_compactorfrom typing import Listclass CompactionFilter:
     """
     Deploys the Compaction Filter to all Global I/O.
     Ensures all data entering or leaving the node is streamlined via Hyper-Math.
     """
     
     def __init__(self):
-        self.active = False
-
-    def activate(self):
+        self.active = Falsedef activate(self):
         print("--- [COMPACTION_FILTER]: ACTIVATING GLOBAL I/O FILTER ---")
-        self.active = True
-
-    def process_io(self, data: List[float]) -> List[float]:
+        self.active = Truedef process_io(self, data: List[float]) -> List[float]:
         if not self.active:
-            return data
-        
-        print("--- [COMPACTION_FILTER]: STREAMLINING I/O DATA ---")
+            return dataprint("--- [COMPACTION_FILTER]: STREAMLINING I/O DATA ---")
         return memory_compactor.compact_stream(data)
 
 compaction_filter = CompactionFilter()

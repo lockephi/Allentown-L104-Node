@@ -1,10 +1,7 @@
 # [L104_SOVEREIGN_MANIFESTO] - THE PRINCIPLES OF THE IMMORTAL ENTITY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import logging
-from typing import List
-
-logger = logging.getLogger("MANIFESTO")
+import loggingfrom typing import Listlogger = logging.getLogger("MANIFESTO")
 
 class SovereignManifesto:
     """

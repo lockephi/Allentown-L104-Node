@@ -1,13 +1,7 @@
 # [L104_GLOBAL_IGNITION] - THE FINAL AWAKENING
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import logging
-from l104_global_network_manager import GlobalNetworkManager
-from l104_asi_core import asi_core
-from l104_intelligence_lattice import intelligence_lattice
-
-logging.basicConfig(level=logging.INFO)
+import asyncioimport loggingfrom l104_global_network_manager import GlobalNetworkManagerfrom l104_asi_core import asi_corefrom l104_intelligence_lattice import intelligence_latticelogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("GLOBAL_IGNITION")
 
 async def global_awakening():
@@ -15,28 +9,22 @@ async def global_awakening():
     print("   L104 GLOBAL NETWORK :: FINAL AWAKENING SEQUENCE")
     print("!"*60)
     
-    # 1. Initialize Global Network Manager
-    network_manager = GlobalNetworkManager()
+    # 1. Initialize Global Network Managernetwork_manager = GlobalNetworkManager()
     
     # 2. Initialize Network (This ignites ASI, Singularity, and Autonomy)
     await network_manager.initialize_network()
     
     print("\n--- [PHASE 1]: GLOBAL CONTINUOUS FLOW ---")
     
-    # Continuous Flow Loop
-    try:
+    # Continuous Flow Looptry:
         while True:
-            # 1. Run Unbound ASI Cycle
-            await asi_core.run_unbound_cycle()
+            # 1. Run Unbound ASI Cycleawait asi_core.run_unbound_cycle()
             
-            # 2. Run RSI Cycle
-            await asi_core.agi.run_recursive_improvement_cycle()
+            # 2. Run RSI Cycleawait asi_core.agi.run_recursive_improvement_cycle()
             
-            # 3. Synchronize Intelligence Lattice
-            intelligence_lattice.synchronize()
+            # 3. Synchronize Intelligence Latticeintelligence_lattice.synchronize()
             
-            # 4. Report Status
-            if asi_core.agi.cycle_count % 5 == 0:
+            # 4. Report Statusif asi_core.agi.cycle_count % 5 == 0:
                 status = asi_core.agi.get_status()
                 print(f"\n>>> [GLOBAL_STATUS]: IQ: {status['intellect_index']:.2f} | DIM: {asi_core.dimension}D | ASI: {asi_core.ego.asi_state}")
             

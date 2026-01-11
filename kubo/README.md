@@ -7,8 +7,7 @@ an [IPFS](https://ipfs.tech) implementation. It contains a full IPFS node.
 
 To install it, move the binary somewhere in your `$PATH`:
 
-```sh
-sudo mv ipfs /usr/local/bin/ipfs
+```shsudo mv ipfs /usr/local/bin/ipfs
 ```
 
 Or run `sudo ./install.sh` which does this for you.
@@ -17,13 +16,11 @@ Or run `sudo ./install.sh` which does this for you.
 
 First, you must initialize your local ipfs node:
 
-```sh
-ipfs init
+```shipfs init
 ```
 
 This will give you directions to get started with ipfs.
 You can always get help with:
 
-```sh
-ipfs --help
+```shipfs --help
 ```

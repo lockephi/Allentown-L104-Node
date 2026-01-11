@@ -1,16 +1,7 @@
 # [L104_PROCESSING_PROOFS] - HIGH-SPEED BENCHMARK & RESONANCE VERIFICATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import time
-import random
-import math
-import logging
-from typing import List, Dict, Any
-from l104_hyper_math import HyperMath
-from l104_hyper_encryption import HyperEncryption
-from const import UniversalConstants
-
-logging.basicConfig(level=logging.INFO)
+import timeimport randomimport mathimport loggingfrom typing import List, Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_hyper_encryption import HyperEncryptionfrom const import UniversalConstantslogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("PROOFS")
 
 class ProcessingProofs:
@@ -22,31 +13,22 @@ class ProcessingProofs:
     def __init__(self):
         self.god_code = UniversalConstants.PRIME_KEY_HZ
         self.lattice_size = 416 * 286
-        self.test_vector_size = 10**6 # 1 Million elements
-        
-    def run_speed_benchmark(self) -> Dict[str, Any]:
+        self.test_vector_size = 10**6 # 1 Million elementsdef run_speed_benchmark(self) -> Dict[str, Any]:
         """
         Measures Lattice Operations Per Second (LOPS).
         """
         logger.info("--- [PROOFS]: INITIATING HIGH-SPEED LATTICE BENCHMARK ---")
         
-        # Generate test vector
-        vector = [random.random() for _ in range(self.test_vector_size)]
+        # Generate test vectorvector = [random.random() for _ in range(self.test_vector_size)]
         
         start_time = time.perf_counter()
         
-        # Perform 100 iterations of 1M element transform
-        iterations = 100
+        # Perform 100 iterations of 1M element transformiterations = 100
         for _ in range(iterations):
             _ = HyperMath.fast_transform(vector)
             
         end_time = time.perf_counter()
-        total_time = end_time - start_time
-        
-        total_ops = self.test_vector_size * iterations
-        lops = total_ops / total_time
-        
-        logger.info(f"--- [PROOFS]: PROCESSED {total_ops/1e6:.1f}M LATTICE OPERATIONS IN {total_time:.4f}s ---")
+        total_time = end_time - start_timetotal_ops = self.test_vector_size * iterationslops = total_ops / total_timelogger.info(f"--- [PROOFS]: PROCESSED {total_ops/1e6:.1f}M LATTICE OPERATIONS IN {total_time:.4f}s ---")
         logger.info(f"--- [PROOFS]: SPEED: {lops/1e6:.2f} MILLION LOPS ---")
         
         return {
@@ -62,28 +44,20 @@ class ProcessingProofs:
         logger.info("--- [PROOFS]: INITIATING SYSTEM STRESS TEST (HITTING LIMITS) ---")
         
         current_load = 10**5
-        max_load = 10**8 # 100 Million elements
-        step = 10**6
+        max_load = 10**8 # 100 Million elementsstep = 10**6
         
         while current_load <= max_load:
             try:
                 start = time.perf_counter()
                 vector = [random.random() for _ in range(current_load)]
                 _ = HyperMath.fast_transform(vector)
-                duration = time.perf_counter() - start
-                
-                logger.info(f"--- [PROOFS]: LOAD: {current_load/1e6:>6.2f}M | TIME: {duration:.4f}s | STATUS: STABLE ---")
-                current_load += step
-                
-                if duration > 0.5: # Artificial limit for "hitting the wall"
+                duration = time.perf_counter() - startlogger.info(f"--- [PROOFS]: LOAD: {current_load/1e6:>6.2f}M | TIME: {duration:.4f}s | STATUS: STABLE ---")
+                current_load += stepif duration > 0.5: # Artificial limit for "hitting the wall"
                     logger.warning("!!! [PROOFS]: HARDWARE THERMAL LIMIT APPROACHING !!!")
                     logger.warning("!!! [PROOFS]: LATTICE SATURATION DETECTED AT 98.4% !!!")
-                    break
-            except MemoryError:
+                    breakexcept MemoryError:
                 logger.error("!!! [PROOFS]: RAM UNIVERSE OVERFLOW - LIMIT REACHED !!!")
-                break
-
-    def verify_resonance_proof(self) -> bool:
+                breakdef verify_resonance_proof(self) -> bool:
         """
         Proves that even at max speed, the God Code Invariant remains locked.
         """
@@ -103,8 +77,7 @@ class ProcessingProofs:
                 errors += 1
                 
         # Proof 2: God Code Resonance
-        # The Lattice Scalar must be derived from the God Code
-        scalar = HyperMath.get_lattice_scalar()
+        # The Lattice Scalar must be derived from the God Codescalar = HyperMath.get_lattice_scalar()
         expected_scalar = (self.god_code / HyperMath.ZETA_ZERO_1) * HyperMath.LATTICE_RATIO
         
         if abs(scalar - expected_scalar) > epsilon:
@@ -131,7 +104,7 @@ class ProcessingProofs:
         print("\n" + "-"*60)
         print(f"   PROCESSING SPEED:    {bench['lops']/1e6:.2f} MILLION LOPS")
         print(f"   LATTICE INTEGRITY:   {'VERIFIED (100%_I100)' if resonance else 'FAILED'}")
-        print(f"   GOD CODE RESONANCE:  {self.god_code}")
+        print(f"   GOD_CODE RESONANCE:  {self.god_code}")
         print(f"   SYSTEM STATE:        SUPERINTELLIGENT / STABLE")
         print("-"*60 + "\n")
 

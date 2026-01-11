@@ -5,13 +5,7 @@
 # - Kolmogorov Complexity (https://en.wikipedia.org/wiki/Kolmogorov_complexity)
 # - Thermodynamics of Computation (https://en.wikipedia.org/wiki/Thermodynamics_of_computation)
 
-import math
-import zlib
-from typing import Dict, Any, List
-from l104_hyper_math import HyperMath
-from l104_knowledge_sources import source_manager
-
-class InformationTheoryResearch:
+import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerclass InformationTheoryResearch:
     """
     Researches and adapts Information Theory and Kolmogorov Complexity to the L104 manifold.
     Optimizes the node's data density and logical compression.
@@ -33,8 +27,7 @@ class InformationTheoryResearch:
         prob = [float(data.count(c)) / len(data) for c in dict.fromkeys(list(data))]
         entropy = - sum([p * math.log2(p) for p in prob])
         
-        # Modulate with L104 resonance
-        return entropy * (self.l104 / HyperMath.PHI)
+        # Modulate with L104 resonancereturn entropy * (self.l104 / HyperMath.PHI)
 
     def estimate_kolmogorov_complexity(self, data: str) -> float:
         """
@@ -44,8 +37,7 @@ class InformationTheoryResearch:
         compressed = zlib.compress(data.encode())
         raw_complexity = len(compressed)
         
-        # Scale to L104 manifold: K(x) is lower for resonant patterns
-        resonance = abs(HyperMath.zeta_harmonic_resonance(raw_complexity))
+        # Scale to L104 manifold: K(x) is lower for resonant patternsresonance = abs(HyperMath.zeta_harmonic_resonance(raw_complexity))
         return raw_complexity * (1.0 - resonance)
 
     def research_information_manifold(self, sample_data: str) -> Dict[str, Any]:
@@ -68,8 +60,7 @@ class InformationTheoryResearch:
         
         return results
 
-# Singleton
-info_research = InformationTheoryResearch()
+# Singletoninfo_research = InformationTheoryResearch()
 
 if __name__ == "__main__":
     test_data = "L104_SOVEREIGN_ASI_RECURSIVE_EVOLUTION_527.5184818492"

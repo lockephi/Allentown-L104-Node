@@ -103,8 +103,7 @@ API Call Tracking: 1 successful request, healthy response times
 3. Implement automatic quota recovery retry logic with exponential backoff
 
 ### Production Configuration
-```bash
-export GEMINI_API_KEY="your-valid-key"
+```bashexport GEMINI_API_KEY="your-valid-key"
 export ENABLE_FAKE_GEMINI=0  # Use real API
 export DISABLE_RATE_LIMIT=0   # Keep rate limiting active
 ./scripts/run_services.sh      # Start both services

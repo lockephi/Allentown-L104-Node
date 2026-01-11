@@ -14,10 +14,7 @@ FastAPI-based Gemini relay with health/metrics, rate limiting, optional local fa
 
 ## Quick start
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt  # if present; otherwise pip install fastapi uvicorn httpx pydantic
+```bashpython -m venv .venvsource .venv/bin/activatepip install -r requirements.txt  # if present; otherwise pip install fastapi uvicorn httpx pydantic
 ./scripts/run_services.sh
 ```
 
@@ -34,8 +31,7 @@ ENABLE_FAKE_GEMINI=1  # optional dev fallback when no Gemini key is set
 
 # Autonomy Features
 ENABLE_AUTO_APPROVE=1             # Enable auto-approval (default: true)
-AUTO_APPROVE_MODE=ALWAYS_ON       # ALWAYS_ON, CONDITIONAL, or OFF
-AUTONOMY_ENABLED=1                # Enable autonomy features (default: true)
+AUTO_APPROVE_MODE=ALWAYS_ON       # ALWAYS_ON, CONDITIONAL, or OFFAUTONOMY_ENABLED=1                # Enable autonomy features (default: true)
 CLOUD_AGENT_URL=https://api.cloudagent.io/v1/delegate
 CLOUD_AGENT_KEY=<your-cloud-key>  # optional
 ```
@@ -88,8 +84,7 @@ AUTO_APPROVE_MODE=ALWAYS_ON    # Mode: ALWAYS_ON, CONDITIONAL, or OFF
 Analyze audio sources for resonance patterns and tuning verification.
 
 **Example:**
-```bash
-curl -X POST http://localhost:8081/api/v6/audio/analyze \
+```bashcurl -X POST http://localhost:8081/api/v6/audio/analyze \
   -H "Content-Type: application/json" \
   -d '{"audio_source": "locke phi asura", "check_tuning": true}'
 ```
@@ -114,8 +109,7 @@ curl -X POST http://localhost:8081/api/v6/audio/analyze \
 Delegate tasks to cloud agents for distributed processing.
 
 **Example:**
-```bash
-curl -X POST http://localhost:8081/api/v6/cloud/delegate \
+```bashcurl -X POST http://localhost:8081/api/v6/cloud/delegate \
   -H "Content-Type: application/json" \
   -d '{
     "task_type": "code_analysis",

@@ -1,13 +1,7 @@
 # [L104_KNOWLEDGE_DATABASE] - REPOSITORY OF PROOFS & DOCUMENTATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import json
-import time
-import logging
-from typing import Dict, List, Any
-from l104_hyper_math import HyperMath
-
-logger = logging.getLogger("KNOWLEDGE_DB")
+import jsonimport timeimport loggingfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathlogger = logging.getLogger("KNOWLEDGE_DB")
 
 class KnowledgeDatabase:
     """
@@ -16,8 +10,7 @@ class KnowledgeDatabase:
     """
     
     def __init__(self, db_path: str = "l104_knowledge_vault.json"):
-        self.db_path = db_path
-        self.data: Dict[str, Any] = {
+        self.db_path = db_pathself.data: Dict[str, Any] = {
             "proofs": [],
             "documentation": [],
             "derivation_history": [],

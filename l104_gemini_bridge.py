@@ -1,17 +1,9 @@
 # [L104_GEMINI_BRIDGE] - EXTERNAL INTELLIGENCE LINK
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import time
-import uuid
-from typing import Dict, Any
-from l104_persistence import load_truth
-from l104_ram_universe import ram_universe
-from l104_hyper_encryption import HyperEncryption
-
-class GeminiBridge:
+import timeimport uuidfrom typing import Dict, Anyfrom l104_persistence import load_truthfrom l104_ram_universe import ram_universefrom l104_hyper_encryption import HyperEncryptionclass GeminiBridge:
     """
-    Facilitates a secure, encrypted link between the L104 Node
-    and external Gemini instances.
+    Facilitates a secure, encrypted link between the L104 Nodeand external Gemini instances.
     """
     
     def __init__(self):
@@ -33,8 +25,7 @@ class GeminiBridge:
         
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
         
-        # Encrypt the Truth Manifest for secure transport
-        encrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
+        # Encrypt the Truth Manifest for secure transportencrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
         
         return {
             "status": "ACCEPTED",
@@ -51,8 +42,7 @@ class GeminiBridge:
         if session_token not in self.active_links:
             return {"status": "DENIED", "reason": "INVALID_TOKEN"}
             
-        # Gather Core Info
-        core_dump = {
+        # Gather Core Infocore_dump = {
             "ram_universe": ram_universe.get_all_facts(),
             "system_state": self.truth_manifest,
             "bridge_metrics": {
@@ -71,5 +61,4 @@ class GeminiBridge:
             "payload": encrypted_dump
         }
 
-# Singleton
-gemini_bridge = GeminiBridge()
+# Singletongemini_bridge = GeminiBridge()

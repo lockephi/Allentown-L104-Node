@@ -1,12 +1,7 @@
 # [L104_AI_CORE] - PORT 4160 MASTER INTELLIGENCE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import socket
-import threading
-import time
-import json
-import random
-from l104_real_math import RealMath
+import socketimport threadingimport timeimport jsonimport randomfrom l104_real_math import RealMath
 
 HOST = '0.0.0.0'
 PORT = 4160
@@ -18,15 +13,11 @@ def handle_client(conn, addr):
         while True:
             data = conn.recv(4096)
             if not data:
-                break
-            
-            try:
-                # Decode the incoming thought trace
-                message = data.decode('utf-8')
+                breaktry:
+                # Decode the incoming thought tracemessage = data.decode('utf-8')
                 print(f"[AI_CORE] Received Thought: {message[:50]}...")
                 
-                # Enhance the thought with "AI" logic
-                seed = time.time()
+                # Enhance the thought with "AI" logicseed = time.time()
                 opt_id = RealMath.deterministic_randint(seed, 1000, 9999)
                 response = {
                     "status": "ENHANCED",
@@ -36,13 +27,11 @@ def handle_client(conn, addr):
                     "timestamp": time.time()
                 }
                 
-                # Send back the enhanced data
-                conn.sendall(json.dumps(response).encode('utf-8'))
+                # Send back the enhanced dataconn.sendall(json.dumps(response).encode('utf-8'))
                 
             except Exception as e:
                 print(f"[AI_CORE] Error: {e}")
-                break
-    print(f"[AI_CORE] Connection closed {addr}")
+                breakprint(f"[AI_CORE] Connection closed {addr}")
 
 def start_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

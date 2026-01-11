@@ -21,11 +21,9 @@ Successfully integrated the autonomy features from PR #1 into the current `main.
 
 **Usage:**
 ```python
-# Use default auto-approve setting
-result = await sovereign_commit("file.txt", content, "message")
+# Use default auto-approve settingresult = await sovereign_commit("file.txt", content, "message")
 
-# Override per-commit
-result = await sovereign_commit("file.txt", content, "message", auto_approve=True)
+# Override per-commitresult = await sovereign_commit("file.txt", content, "message", auto_approve=True)
 ```
 
 ### 2. Audio Analysis ✅
@@ -147,8 +145,7 @@ Added autonomy configuration:
 ```bash
 # Autonomy and Auto-Approve Configuration
 ENABLE_AUTO_APPROVE=1
-AUTO_APPROVE_MODE=ALWAYS_ON
-AUTONOMY_ENABLED=1
+AUTO_APPROVE_MODE=ALWAYS_ONAUTONOMY_ENABLED=1
 CLOUD_AGENT_URL=https://api.cloudagent.io/v1/delegate
 CLOUD_AGENT_KEY=your-cloud-agent-key-here
 GITHUB_PAT=your-github-personal-access-token-here

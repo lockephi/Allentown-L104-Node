@@ -85,22 +85,17 @@ All production features from previous version retained:
 ## Testing
 
 ```bash
-# Validate syntax
-python -m py_compile main.py
+# Validate syntaxpython -m py_compile main.py
 
-# Test import
-python -c "from main import app, MODELS; print(MODELS)"
+# Test importpython -c "from main import app, MODELS; print(MODELS)"
 
-# Start server
-python main.py
+# Start serverpython main.py
 
-# Test endpoint
-curl -X POST http://localhost:8081/api/v6/stream \
+# Test endpointcurl -X POST http://localhost:8081/api/v6/stream \
   -H "Content-Type: application/json" \
   -d '{"signal": "test message"}'
 
-# Check metrics
-curl http://localhost:8081/metrics
+# Check metricscurl http://localhost:8081/metrics
 ```
 
 ## Files Modified
@@ -127,11 +122,9 @@ The updated `main.py` now has:
 ## Environment Setup
 
 ```bash
-# Copy example config
-cp .env.example .env
+# Copy example configcp .env.example .env
 
-# Edit with your keys
-nano .env
+# Edit with your keysnano .env
 
 # Set required variables
 AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U=your-actual-key

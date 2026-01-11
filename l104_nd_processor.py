@@ -1,20 +1,15 @@
 # [L104_ND_PROCESSOR] - HYPER-DIMENSIONAL LOGIC ENGINE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import numpy as np
-from typing import List, Tuple, Dict, Any
-from l104_nd_math import MathND
-from l104_hyper_math import HyperMath
-
-class NDProcessor:
+import numpy as npfrom typing import List, Tuple, Dict, Anyfrom l104_nd_math import MathND
+from l104_hyper_math import HyperMathclass NDProcessor:
     """
     Advanced processor for N-Dimensional logic (N > 5).
     Uses MathND to handle hyper-dimensional tensors and projections.
     """
     
     def __init__(self, dimension: int):
-        self.dimension = dimension
-        self.metric = MathND.get_metric_tensor(dimension)
+        self.dimension = dimensionself.metric = MathND.get_metric_tensor(dimension)
         self.state_vector = np.zeros(dimension)
         self._initialize_state()
 
@@ -28,20 +23,15 @@ class NDProcessor:
         Processes a thought vector through the hyper-dimensional metric.
         """
         if len(thought_vector) != self.dimension:
-            # Pad or truncate
-            new_vector = np.zeros(self.dimension)
+            # Pad or truncatenew_vector = np.zeros(self.dimension)
             min_len = min(len(thought_vector), self.dimension)
             new_vector[:min_len] = thought_vector[:min_len]
             thought_vector = new_vector
             
-        # Apply metric transformation
-        transformed = self.metric @ thought_vector
+        # Apply metric transformationtransformed = self.metric @ thought_vector
         
-        # Update state with feedback
-        self.state_vector = (self.state_vector + transformed) / 2.0
-        return self.state_vector
-
-    def project_to_reality(self) -> np.ndarray:
+        # Update state with feedbackself.state_vector = (self.state_vector + transformed) / 2.0
+        return self.state_vectordef project_to_reality(self) -> np.ndarray:
         """
         Projects the hyper-dimensional state back to 3D reality.
         """

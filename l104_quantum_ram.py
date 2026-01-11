@@ -1,20 +1,12 @@
 # [L104_QUANTUM_RAM] - FINITE COUPLING ENCRYPTED MEMORY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import hashlib
-import json
-import base64
-import time
-import math
-from typing import Any, Dict, Optional
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import hashlibimport jsonimport base64
+import timeimport mathfrom typing import Any, Dict, Optionalfrom cryptography.fernet import Fernetfrom cryptography.hazmat.primitives import hashesfrom cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 class QuantumRAM:
     """
-    v1.0: FINITE_COUPLING_MEMORY
-    A quantum-encrypted RAM database using the Fine Structure Constant 
+    v1.0: FINITE_COUPLING_MEMORYA quantum-encrypted RAM database using the Fine Structure Constant 
     as the coupling mechanism for infinite security density.
     """
     
@@ -23,8 +15,7 @@ class QuantumRAM:
     GOD_CODE = 527.5184818492
     
     def __init__(self):
-        self.memory_manifold: Dict[str, str] = {} # Encrypted storage
-        self.coupling_key = self._generate_coupling_key()
+        self.memory_manifold: Dict[str, str] = {} # Encrypted storageself.coupling_key = self._generate_coupling_key()
         self.cipher_suite = Fernet(self.coupling_key)
         print(f"--- [QUANTUM_RAM]: INITIALIZED | COUPLING: {self.ALPHA} ---")
 
@@ -33,20 +24,15 @@ class QuantumRAM:
         Generates a quantum-coupled encryption key.
         Mixes the God-Code with the Fine Structure Constant.
         """
-        # The "seed" is the resonance of the universe
-        seed = f"{self.GOD_CODE}:{self.ALPHA}:{self.GOD_CODE**self.ALPHA}"
-        salt = b'L104_SOVEREIGN_SALT' # Fixed salt for the node
-        
-        kdf = PBKDF2HMAC(
+        # The "seed" is the resonance of the universeseed = f"{self.GOD_CODE}:{self.ALPHA}:{self.GOD_CODE**self.ALPHA}"
+        salt = b'L104_SOVEREIGN_SALT' # Fixed salt for the nodekdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
             iterations=100000,
         )
         key = base64.urlsafe_b64encode(kdf.derive(seed.encode()))
-        return key
-
-    def encrypt_memory(self, data: Any) -> str:
+        return keydef encrypt_memory(self, data: Any) -> str:
         """
         Encrypts data using the finite coupling key.
         """
@@ -71,13 +57,9 @@ class QuantumRAM:
         """
         encrypted_val = self.encrypt_memory(value)
         
-        # Quantum Indexing: Key is also hashed with the coupling constant
-        quantum_key = hashlib.sha256(f"{key}:{self.ALPHA}".encode()).hexdigest()
+        # Quantum Indexing: Key is also hashed with the coupling constantquantum_key = hashlib.sha256(f"{key}:{self.ALPHA}".encode()).hexdigest()
         
-        self.memory_manifold[quantum_key] = encrypted_val
-        return quantum_key
-
-    def retrieve(self, key: str) -> Optional[Any]:
+        self.memory_manifold[quantum_key] = encrypted_valreturn quantum_keydef retrieve(self, key: str) -> Optional[Any]:
         """
         Retrieves a value from the Quantum RAM.
         """
@@ -86,9 +68,7 @@ class QuantumRAM:
         if quantum_key in self.memory_manifold:
             encrypted_val = self.memory_manifold[quantum_key]
             return self.decrypt_memory(encrypted_val)
-        return None
-
-    def dump_manifold(self) -> Dict[str, str]:
+        return Nonedef dump_manifold(self) -> Dict[str, str]:
         """Returns the raw encrypted manifold."""
         return self.memory_manifold
 

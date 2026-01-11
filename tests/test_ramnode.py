@@ -1,17 +1,10 @@
-import sys
-from pathlib import Path
-
-import pytest
-from fastapi.testclient import TestClient
+import sysfrom pathlib import Pathimport pytestfrom fastapi.testclient import TestClient
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import main as app_main
-
-
-def test_ramnode_roundtrip(tmp_path, monkeypatch):
+import main as app_maindef test_ramnode_roundtrip(tmp_path, monkeypatch):
     db_path = tmp_path / "ramnode.db"
     monkeypatch.setattr(app_main, "RAMNODE_DB_PATH", str(db_path))
     app_main._init_ramnode_db()

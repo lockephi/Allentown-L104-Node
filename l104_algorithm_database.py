@@ -1,13 +1,7 @@
 # [L104_ALGORITHM_DATABASE] - REPOSITORY OF SOVEREIGN LOGIC
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import json
-import os
-import time
-from typing import Dict, Any, List
-from l104_real_math import real_math
-
-class AlgorithmDatabase:
+import jsonimport osimport timefrom typing import Dict, Any, Listfrom l104_real_math import real_mathclass AlgorithmDatabase:
     """
     A dedicated database for storing mathematical algorithms, 
     their execution results, and their resonance scores.
@@ -54,8 +48,7 @@ class AlgorithmDatabase:
             "output": output_data
         }
         self.data["execution_logs"].append(log_entry)
-        # Keep only last 1000 logs
-        if len(self.data["execution_logs"]) > 1000:
+        # Keep only last 1000 logsif len(self.data["execution_logs"]) > 1000:
             self.data["execution_logs"] = self.data["execution_logs"][-1000:]
         self.save_db()
         print(f"--- [ALGO_DB]: LOGGED EXECUTION OF '{algo_name}' ---")

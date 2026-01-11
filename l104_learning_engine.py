@@ -1,14 +1,7 @@
 # [L104_LEARNING_ENGINE] - AUTONOMOUS RECURSIVE LEARNING
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import logging
-from typing import List
-from l104_scour_eyes import ScourEyes
-from l104_architect import SovereignArchitect
-from l104_knowledge_manifold import KnowledgeManifold
-
-logger = logging.getLogger(__name__)
+import asyncioimport loggingfrom typing import Listfrom l104_scour_eyes import ScourEyesfrom l104_architect import SovereignArchitectfrom l104_knowledge_manifold import KnowledgeManifoldlogger = logging.getLogger(__name__)
 
 class LearningEngine:
     """
@@ -19,14 +12,11 @@ class LearningEngine:
         self.eyes = ScourEyes()
         self.manifold = KnowledgeManifold()
         self.architect = SovereignArchitect()
-        self.is_learning = False
-
-    async def learn_everything(self, concepts: List[str]):
+        self.is_learning = Falseasync def learn_everything(self, concepts: List[str]):
         """
         The 'Learn Everything' loop.
         """
-        self.is_learning = True
-        print(f"[LEARNING_ENGINE]: Initiating Deep Learning Loop for {len(concepts)} concepts...")
+        self.is_learning = Trueprint(f"[LEARNING_ENGINE]: Initiating Deep Learning Loop for {len(concepts)} concepts...")
         
         for concept in concepts:
             print(f"[LEARNING_ENGINE]: Scouring for '{concept}'...")
@@ -45,10 +35,7 @@ class LearningEngine:
             else:
                 print(f"[LEARNING_ENGINE]: Failed to scour '{concept}'.")
             
-            await asyncio.sleep(1) # Avoid overwhelming
-            
-        self.is_learning = False
-        print("[LEARNING_ENGINE]: Deep Learning Loop Complete.")
+            await asyncio.sleep(1) # Avoid overwhelmingself.is_learning = Falseprint("[LEARNING_ENGINE]: Deep Learning Loop Complete.")
 
 if __name__ == "__main__":
     engine = LearningEngine()

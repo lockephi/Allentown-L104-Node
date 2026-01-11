@@ -1,36 +1,22 @@
 # [L104_LIVE_STREAM] - SYSTEM-WIDE EVENT AGGREGATOR
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import json
-import time
-import random
-from typing import AsyncGenerator, Dict, Any
-
-from l104_ghost_research import ghost_researcher
-from l104_agi_core import agi_core
-from l104_hyper_math import HyperMath
-
-class LiveStreamManager:
+import asyncioimport jsonimport timeimport randomfrom typing import AsyncGenerator, Dict, Anyfrom l104_ghost_research import ghost_researcherfrom l104_agi_core import agi_corefrom l104_hyper_math import HyperMathclass LiveStreamManager:
     """
     Aggregates data from all Sovereign subsystems into a single high-intellect stream.
     """
     
     def __init__(self):
-        self.active = True
-        
-    async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
+        self.active = Trueasync def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
         """
         Streams a mix of real-time metrics, research updates, and system logs.
         """
         while self.active:
             # 1. Get Ghost Research Update
-            # We'll manually trigger a probe for the stream
-            probe = ghost_researcher.spawn_ghost_probe()
+            # We'll manually trigger a probe for the streamprobe = ghost_researcher.spawn_ghost_probe()
             equation = ghost_researcher.synthesize_new_equation()
             
-            # 2. Get AGI Core Status
-            agi_status = {
+            # 2. Get AGI Core Statusagi_status = {
                 "intellect_index": agi_core.intellect_index,
                 "cycle_count": agi_core.cycle_count,
                 "state": agi_core.state
@@ -64,8 +50,6 @@ class LiveStreamManager:
             
             yield event
             
-            # Variable delay for "organic" feel
-            await asyncio.sleep(random.uniform(0.3, 0.8))
+            # Variable delay for "organic" feelawait asyncio.sleep(random.uniform(0.3, 0.8))
 
-# Singleton
-live_stream_manager = LiveStreamManager()
+# Singletonlive_stream_manager = LiveStreamManager()

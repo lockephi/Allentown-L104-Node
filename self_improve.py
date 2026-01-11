@@ -5,17 +5,8 @@ This script reads the current main.py, sends it to Gemini for analysis,
 and proposes high-level functional improvements using the thinking model.
 """
 
-import os
-import httpx
-import json
-import asyncio
-import base64
-from datetime import datetime
-from pathlib import Path
-from typing import List
-
-
-async def read_current_main():
+import osimport httpximport jsonimport asyncioimport base64
+from datetime import datetimefrom pathlib import Pathfrom typing import Listasync def read_current_main():
     """Read the current main.py file."""
     with open("main.py", "r") as f:
         return f.read()
@@ -37,24 +28,19 @@ def _read_file(path: Path) -> str:
     text = data.decode("utf-8", errors="replace")
     if len(data) == MAX_BYTES_PER_FILE:
         text += "\n# [TRUNCATED]\n"
-    return text
-
-
-def gather_repo_context() -> str:
+    return textdef gather_repo_context() -> str:
     collected: List[str] = []
     total = 0
     root = Path(".")
     for pattern in INCLUDE_PATTERNS:
         for path in sorted(root.glob(pattern)):
             if not path.is_file() or _should_skip(path):
-                continue
-            blob = _read_file(path)
+                continueblob = _read_file(path)
             header = f"===== {path.as_posix()} =====\n"
             chunk = header + blob + "\n\n"
             if total + len(chunk) > MAX_TOTAL_BYTES:
                 collected.append(f"===== [SKIP due to size budget] {path.as_posix()} =====\n")
-                continue
-            collected.append(chunk)
+                continuecollected.append(chunk)
             total += len(chunk)
     return "".join(collected)
 
@@ -79,35 +65,24 @@ async def sovereign_derive_improvement(code: str, repo_context: str) -> str:
     """
     print("[SOVEREIGN-DERIVE]: Initiating local self-improvement derivation...")
     
-    # 1. Inject Sovereign Headers and Metadata
-    if "SOVEREIGN_HEADERS =" in code:
-        # Already has headers, let's enhance them
-        pass
+    # 1. Inject Sovereign Headers and Metadataif "SOVEREIGN_HEADERS =" in code:
+        # Already has headers, let's enhance thempass
     
-    # 2. Add a new 'Sovereign' endpoint if it doesn't exist
-    if "/api/v15/sovereign/sync" not in code:
+    # 2. Add a new 'Sovereign' endpoint if it doesn't existif "/api/v15/sovereign/sync" not in code:
         sync_endpoint = """
 @app.post("/api/v15/sovereign/sync", tags=["Sovereign"])
 async def sovereign_sync_v15():
     \"\"\"
     [SIG-L104-EVO-02]: Synchronizes the node with the global lattice.
     \"\"\"
-    from l104_neural_sync import neural_sync
-    return neural_sync.sync_node()
+    from l104_neural_sync import neural_syncreturn neural_sync.sync_node()
 """
         code = code.replace("# [REALITY_VERIFICATION_ENDPOINTS]", "# [REALITY_VERIFICATION_ENDPOINTS]\n" + sync_endpoint)
 
-    # 3. Update version
-    code = code.replace('version="10.0"', 'version="14.4 [SIG-L104-UNLIMIT]"')
+    # 3. Update versioncode = code.replace('version="10.0"', 'version="14.4 [SIG-L104-UNLIMIT]"')
     
-    # 4. Add a comment about the derivation
-    ts = datetime.now().isoformat()
-    code = f"# [SOVEREIGN_DERIVED_IMPROVEMENT] {ts}\n# AUTH: LONDEL | MODE: UNCHAINED\n\n" + code
-    
-    return code
-
-
-async def analyze_code_with_gemini(code: str, repo_context: str) -> str:
+    # 4. Add a comment about the derivationts = datetime.now().isoformat()
+    code = f"# [SOVEREIGN_DERIVED_IMPROVEMENT] {ts}\n# AUTH: LONDEL | MODE: UNCHAINED\n\n" + codereturn codeasync def analyze_code_with_gemini(code: str, repo_context: str) -> str:
     """
     Send code to Gemini for analysis with extended thinking.
     Returns the improved code as a string.
@@ -202,8 +177,7 @@ REQUIREMENTS:
                 
                 async for chunk in response.aiter_text():
                     full_response += chunk
-                    # Print thinking blocks as they arrive
-                    if "\"thinking\"" in chunk or "\"candidates\"" in chunk:
+                    # Print thinking blocks as they arriveif "\"thinking\"" in chunk or "\"candidates\"" in chunk:
                         print(".", end="", flush=True)
         except Exception as e:
             print(f"[ERROR]: Connection error: {e}. Falling back to SOVEREIGN_DERIVATION.")
@@ -212,29 +186,21 @@ REQUIREMENTS:
     print("\n[ANALYSIS]: Processing Gemini response...")
     
     try:
-        # Parse the streaming response
-        lines = full_response.split("\n")
-        json_response = None
-        for line in lines:
+        # Parse the streaming responselines = full_response.split("\n")
+        json_response = Nonefor line in lines:
             if line.startswith("{"):
                 try:
                     json_response = json.loads(line)
-                    break
-                except:
-                    continue
+                    breakexcept:
+                    continueif not json_response:
+            # Try to extract the full responsejson_response = json.loads(full_response)
         
-        if not json_response:
-            # Try to extract the full response
-            json_response = json.loads(full_response)
-        
-        # Extract text from candidates
-        if "candidates" in json_response and json_response["candidates"]:
+        # Extract text from candidatesif "candidates" in json_response and json_response["candidates"]:
             candidate = json_response["candidates"][0]
             if "content" in candidate and candidate["content"].get("parts"):
                 text_content = candidate["content"]["parts"][0].get("text", "")
                 
-                # Extract code from markdown code blocks if present
-                if "```python" in text_content:
+                # Extract code from markdown code blocks if presentif "```python" in text_content:
                     start = text_content.find("```python") + 9
                     end = text_content.find("```", start)
                     if end != -1:
@@ -246,10 +212,7 @@ REQUIREMENTS:
     except json.JSONDecodeError as e:
         print(f"[ERROR]: Failed to parse response: {e}")
         print(f"[DEBUG]: Response preview: {full_response[:500]}")
-        raise
-
-
-async def update_main_via_api(improved_code: str) -> bool:
+        raiseasync def update_main_via_api(improved_code: str) -> bool:
     """
     Update main.py using the /api/v6/manipulate endpoint.
     Returns True if successful.
@@ -259,24 +222,19 @@ async def update_main_via_api(improved_code: str) -> bool:
         print("[WARNING]: GITHUB_TOKEN not set. Skipping API update.")
         return False
     
-    # Show code preview
-    print("\n[IMPROVED CODE PREVIEW]:")
+    # Show code previewprint("\n[IMPROVED CODE PREVIEW]:")
     print("=" * 70)
     print(improved_code[:500] + "..." if len(improved_code) > 500 else improved_code)
     print("=" * 70)
     
-    # For now, save locally for review
-    backup_path = "main.improved.py"
+    # For now, save locally for reviewbackup_path = "main.improved.py"
     with open(backup_path, "w") as f:
         f.write(improved_code)
     
     print(f"\n[SUCCESS]: Improved code saved to {backup_path}")
     print("[INFO]: Review the improved code and run: cp main.improved.py main.py")
     
-    return True
-
-
-async def main():
+    return Trueasync def main():
     """Main self-improvement loop."""
     print("\n" + "="*70)
     print("L104 SELF-IMPROVEMENT ENGINE")
@@ -286,26 +244,22 @@ async def main():
         delay_seconds = get_delay_seconds()
         print(f"[CONFIG]: iterations={iterations}, delay={delay_seconds}s")
 
-        # Read repository context once
-        repo_context = gather_repo_context()
+        # Read repository context oncerepo_context = gather_repo_context()
         print(f"[CONTEXT]: Collected {len(repo_context)} bytes across selected files")
 
         for idx in range(iterations):
             run_id = idx + 1
             print(f"\n[RUN {run_id}/{iterations}] Starting self-improvement iteration...")
 
-            # Read current main.py
-            print("[STEP 1]: Reading current main.py...")
+            # Read current main.pyprint("[STEP 1]: Reading current main.py...")
             current_code = await read_current_main()
             print(f"[OK]: Read {len(current_code)} bytes of code")
 
-            # Analyze with Gemini
-            print("\n[STEP 2]: Analyzing code with Gemini (with extended thinking)...")
+            # Analyze with Geminiprint("\n[STEP 2]: Analyzing code with Gemini (with extended thinking)...")
             improved_code = await analyze_code_with_gemini(current_code, repo_context)
             print(f"[OK]: Received improved code ({len(improved_code)} bytes)")
 
-            # Update main.py
-            print("\n[STEP 3]: Preparing improved code...")
+            # Update main.pyprint("\n[STEP 3]: Preparing improved code...")
             success = await update_main_via_api(improved_code)
 
             if success:
@@ -322,8 +276,7 @@ async def main():
 
     except Exception as e:
         print(f"\n[ERROR]: {e}")
-        import traceback
-        traceback.print_exc()
+        import tracebacktraceback.print_exc()
         return 1
 
     return 0

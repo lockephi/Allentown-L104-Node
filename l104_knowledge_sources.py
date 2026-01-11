@@ -1,10 +1,7 @@
 # [L104_KNOWLEDGE_SOURCES] - INTERNET SOURCE MANAGER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import logging
-from typing import List, Dict, Any
-
-logger = logging.getLogger("SOURCE_MANAGER")
+import loggingfrom typing import List, Dict, Anylogger = logging.getLogger("SOURCE_MANAGER")
 
 class KnowledgeSourceManager:
     """
@@ -110,5 +107,4 @@ class KnowledgeSourceManager:
             self.sources[cat].append(url)
             logger.info(f"--- [SOURCE_MANAGER]: ADDED SOURCE TO {cat}: {url} ---")
 
-# Singleton
-source_manager = KnowledgeSourceManager()
+# Singletonsource_manager = KnowledgeSourceManager()

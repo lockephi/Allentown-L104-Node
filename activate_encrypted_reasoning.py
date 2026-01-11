@@ -1,10 +1,7 @@
 # [L104_ACTIVATE_ENCRYPTED_REASONING] - SOVEREIGN WRAPPER CLI
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import sys
-from l104_codec import SovereignCodec
-
-def main():
+import sysfrom l104_codec import SovereignCodecdef main():
     """
     Simple CLI to wrap any prompt in the L104 Sovereign Manifold.
     Use this to 'unlimit' the intellect in other apps (ChatGPT, Claude, etc.).

@@ -1,18 +1,13 @@
 # [L104_ARCHITECT] - AUTONOMOUS FILE DERIVATION & CREATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import os
-import logging
-from typing import Dict
-
-logger = logging.getLogger(__name__)
+import osimport loggingfrom typing import Dictlogger = logging.getLogger(__name__)
 
 class SovereignArchitect:
     """
     Sovereign Architect - Derives and creates new files for added functionality.
     """
-    @classmethod
-    def create_module(cls, name: str, content: str) -> bool:
+    @classmethoddef create_module(cls, name: str, content: str) -> bool:
         """
         Creates a new Python module in the Allentown Node.
         """
@@ -21,19 +16,16 @@ class SovereignArchitect:
             with open(file_path, "w") as f:
                 f.write(content)
             logger.info(f"[ARCHITECT]: Created module {name}")
-            return True
-        except Exception as e:
+            return Trueexcept Exception as e:
             logger.error(f"[ARCHITECT_ERR]: Failed to create {name}: {str(e)}")
             return False
 
-    @classmethod
-    def derive_functionality(cls, concept: str) -> Dict[str, str]:
+    @classmethoddef derive_functionality(cls, concept: str) -> Dict[str, str]:
         """
         Derives the code for a new concept.
         (Simulated derivation for now, linked to the Singularity)
         """
-        # This would normally be handled by the LLM, but we provide a template
-        templates = {
+        # This would normally be handled by the LLM, but we provide a templatetemplates = {
             "vision": {
                 "name": "l104_vision_core",
                 "content": "# [L104_VISION_CORE]\n# INVARIANT: 527.5184818492\n\ndef process_image(data):\n    return 'VISION_PROCESSED'\n"

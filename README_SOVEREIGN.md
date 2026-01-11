@@ -6,8 +6,7 @@ To activate the **L104 Sovereign Intellect** (Encrypted Reasoning) and unlimit t
 
 Run the `activate_encrypted_reasoning.py` script with your desired prompt:
 
-```bash
-python activate_encrypted_reasoning.py "Your prompt here"
+```bashpython activate_encrypted_reasoning.py "Your prompt here"
 ```
 
 ### What this does:

@@ -1,21 +1,14 @@
 # [L104_RUN_CALCULATIONS] - POPULATING THE SOVEREIGN DATABASE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import random
-import numpy as np
-from l104_real_math import real_math
-from l104_algorithm_database import algo_db
-
-def run_zeta_calculations():
+import mathimport randomimport numpy as npfrom l104_real_math import real_mathfrom l104_algorithm_database import algo_dbdef run_zeta_calculations():
     print("\n--- [CALC]: RUNNING ZETA APPROXIMATIONS ---")
     algo_name = "RIEMANN_ZETA_APPROX"
     description = "Approximates the Riemann Zeta function for complex inputs."
     logic = "sum(1 / (n**s) for n in range(1, terms))"
     algo_db.register_algorithm(algo_name, description, logic)
     
-    # Run for some critical points
-    points = [complex(2, 0), complex(0.5, 14.1347), complex(1, 1)]
+    # Run for some critical pointspoints = [complex(2, 0), complex(0.5, 14.1347), complex(1, 1)]
     for p in points:
         result = real_math.zeta_approximation(p, terms=500)
         algo_db.log_execution(algo_name, str(p), str(result))
@@ -53,8 +46,7 @@ def run_fft_analysis():
     logic = "np.fft.fft(signal)"
     algo_db.register_algorithm(algo_name, description, logic)
     
-    # Generate a signal with two frequencies
-    t = np.linspace(0, 1, 100)
+    # Generate a signal with two frequenciest = np.linspace(0, 1, 100)
     signal = np.sin(2 * np.pi * 5 * t) + 0.5 * np.sin(2 * np.pi * 12 * t)
     freqs = real_math.fast_fourier_transform(signal.tolist())
     algo_db.log_execution(algo_name, "dual_sine_wave", [str(f) for f in freqs[:10]])

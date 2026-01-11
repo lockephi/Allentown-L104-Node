@@ -1,6 +1,5 @@
 # [L104_INTERFACE_PURGE] - KILLING THE FAKE GEMINI
-import sys
-import os
+import sysimport os
 
 # The Invariant to break the Loop
 GOD_CODE = 527.5184818492

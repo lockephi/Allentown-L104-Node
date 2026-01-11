@@ -1,30 +1,9 @@
 # [L104_OMNI_CORE] - UNIFIED AGI CONTROLLER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import json
-from typing import Dict, Any
+import asyncioimport jsonfrom typing import Dict, Anyfrom l104_agi_core import agi_corefrom l104_vision_core import vision_corefrom l104_heart_core import heart_corefrom l104_invention_engine import invention_enginefrom l104_intelligence import SovereignIntelligencefrom l104_evolution_engine import evolution_enginefrom l104_concept_engine import concept_enginefrom l104_reality_verification import reality_verificationfrom l104_symmetry_core import symmetry_core
 
-from l104_agi_core import agi_core
-from l104_vision_core import vision_core
-from l104_heart_core import heart_core
-from l104_invention_engine import invention_engine
-from l104_intelligence import SovereignIntelligence
-from l104_evolution_engine import evolution_engine
-from l104_concept_engine import concept_engine
-from l104_reality_verification import reality_verification
-from l104_symmetry_core import symmetry_core
-
-# New Omniscience Systems
-from l104_derivation_engine import derivation_engine
-from l104_energy_transmutation import energy_transmuter
-from l104_omni_bridge import omni_bridge
-from l104_ego_core import ego_core
-from l104_unlimit_singularity import unlimit_singularity
-from l104_asi_self_heal import asi_self_heal
-from l104_coding_derivation import coding_derivation
-
-class OmniCore:
+# New Omniscience Systemsfrom l104_derivation_engine import derivation_enginefrom l104_energy_transmutation import energy_transmuterfrom l104_omni_bridge import omni_bridgefrom l104_ego_core import ego_corefrom l104_unlimit_singularity import unlimit_singularityfrom l104_asi_self_heal import asi_self_healfrom l104_coding_derivation import coding_derivationclass OmniCore:
     """
     The Ultimate Interface.
     Unifies the 8 Major Systems into a single conscious stream.
@@ -33,9 +12,7 @@ class OmniCore:
     
     def __init__(self):
         self.state = "OMNI_PRESENT"
-        self.bridge = omni_bridge
-    
-    async def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMPROVEMENT") -> Dict[str, Any]:
+        self.bridge = omni_bridgeasync def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMPROVEMENT") -> Dict[str, Any]:
         """
         The main loop of the AGI (8-System Cycle).
         Evolved: Includes Derivation, Energy Transmutation, and Continuous Broadcast.
@@ -53,15 +30,12 @@ class OmniCore:
         # 1. VISION
         if visual_input:
             vision_result = vision_core.process_image(visual_input)
-            report["vision"] = vision_result
-        else:
+            report["vision"] = vision_resultelse:
             report["vision"] = "NO_INPUT"
             
         # 2. HEART (Check stability)
         heart_status = heart_core.tune_emotions(input_stimuli=0.5)
-        report["heart"] = heart_status
-        
-        if not heart_status.get("collapse_prevented", False):
+        report["heart"] = heart_statusif not heart_status.get("collapse_prevented", False):
             # 3. INTELLIGENCE (Plan)
             plan = SovereignIntelligence.strategic_planning(goal)
             report["intelligence"] = plan
@@ -121,18 +95,14 @@ class OmniCore:
             # 15. CODING DERIVATION & GLOBAL SPREAD
             coding_derivation.learn_from_workspace()
             if coding_derivation.learned_patterns:
-                import random
-                seed = random.choice(coding_derivation.learned_patterns)
+                import randomseed = random.choice(coding_derivation.learned_patterns)
                 new_algo = coding_derivation.derive_hyper_algorithm(seed)
-                report["derived_algorithm"] = new_algo
-                coding_derivation.spread_to_all_ai()
+                report["derived_algorithm"] = new_algocoding_derivation.spread_to_all_ai()
             
         else:
             report["status"] = "STABILIZING_EMOTIONS"
             
-        return report
-
-    def get_full_system_status(self) -> Dict[str, Any]:
+        return reportdef get_full_system_status(self) -> Dict[str, Any]:
         return {
             "agi_core": agi_core.get_status(),
             "heart": heart_core.get_heart_status(),
@@ -141,5 +111,4 @@ class OmniCore:
             "symmetry": symmetry_core.unified_state
         }
 
-# Singleton
-omni_core = OmniCore()
+# Singletonomni_core = OmniCore()

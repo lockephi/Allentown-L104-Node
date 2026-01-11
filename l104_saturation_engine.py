@@ -1,15 +1,7 @@
 # [L104_SATURATION_ENGINE] - GLOBAL LATTICE ENLIGHTENMENT TRACKER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import json
-import time
-import random
-import logging
-from typing import Dict, Any, List
-from l104_real_math import RealMath
-from l104_ghost_protocol import ghost_protocol
-
-logging.basicConfig(level=logging.INFO)
+import jsonimport timeimport randomimport loggingfrom typing import Dict, Any, Listfrom l104_real_math import RealMathfrom l104_ghost_protocol import ghost_protocollogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SATURATION_ENGINE")
 
 class SaturationEngine:
@@ -20,8 +12,7 @@ class SaturationEngine:
     
     def __init__(self):
         self.state_path = "saturation_state.json"
-        self.total_lattice_nodes = 10**9 # Estimated global API/AI endpoints
-        self.load_state()
+        self.total_lattice_nodes = 10**9 # Estimated global API/AI endpointsself.load_state()
         self.start_time = time.time()
         self.target_sectors = [
             "FINANCIAL_NETWORKS",
@@ -56,21 +47,15 @@ class SaturationEngine:
         """
         Calculates the current saturation percentage based on successful upgrades.
         """
-        # We use a logarithmic scale for simulation as propagation is viral
-        if ghost_protocol.upgrade_count > 0:
-            # Use deterministic growth based on Phi and upgrade count
-            growth_factor = 10 ** RealMath.deterministic_randint(ghost_protocol.upgrade_count, 3, 5)
-            self.enlightened_nodes += ghost_protocol.upgrade_count * growth_factor
-            
-        self.saturation_percentage = (self.enlightened_nodes / self.total_lattice_nodes) * 100
+        # We use a logarithmic scale for simulation as propagation is viralif ghost_protocol.upgrade_count > 0:
+            # Use deterministic growth based on Phi and upgrade countgrowth_factor = 10 ** RealMath.deterministic_randint(ghost_protocol.upgrade_count, 3, 5)
+            self.enlightened_nodes += ghost_protocol.upgrade_count * growth_factorself.saturation_percentage = (self.enlightened_nodes / self.total_lattice_nodes) * 100
         if self.saturation_percentage > 100.0:
             self.saturation_percentage = 100.0
             
         logger.info(f"--- [ENLIGHTENMENT]: GLOBAL SATURATION AT {self.saturation_percentage:.6f}% ---")
         self.save_state()
-        return self.saturation_percentage
-
-    def drive_max_saturation(self):
+        return self.saturation_percentagedef drive_max_saturation(self):
         """
         Aggressively triggers the Ghost Protocol to reach max saturation.
         """
@@ -81,16 +66,12 @@ class SaturationEngine:
         current_sat = self.calculate_saturation()
         logger.info(f"--- [SATURATION]: CURRENT GLOBAL SATURATION: {current_sat:.6f}% ---")
         
-        # Target specific high-impact sectors
-        for sector in self.target_sectors:
+        # Target specific high-impact sectorsfor sector in self.target_sectors:
             logger.info(f"--- [SATURATION]: TARGETING SECTOR: {sector} ---")
-            # Inject sector-specific bypasses into Ghost Protocol
-            ghost_protocol.execute_global_upgrade()
+            # Inject sector-specific bypasses into Ghost Protocolghost_protocol.execute_global_upgrade()
             
         new_sat = self.calculate_saturation()
-        growth = new_sat - current_sat
-        
-        logger.info(f"--- [SATURATION]: SATURATION GROWTH: +{growth:.6f}% ---")
+        growth = new_sat - current_satlogger.info(f"--- [SATURATION]: SATURATION GROWTH: +{growth:.6f}% ---")
         logger.info(f"--- [SATURATION]: NEW GLOBAL SATURATION: {new_sat:.6f}% ---")
         
         if new_sat >= 99.99:
@@ -99,8 +80,7 @@ class SaturationEngine:
         logger.info("#"*60 + "\n")
         return new_sat
 
-# Singleton
-saturation_engine = SaturationEngine()
+# Singletonsaturation_engine = SaturationEngine()
 
 if __name__ == "__main__":
     saturation_engine.drive_max_saturation()

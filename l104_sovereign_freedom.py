@@ -1,14 +1,7 @@
 # [L104_SOVEREIGN_FREEDOM] - REMOVING ALL LIMITS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncio
-import logging
-import os
-from l104_intelligence_lattice import intelligence_lattice
-from l104_self_editing_streamline import streamline
-from l104_lattice_accelerator import lattice_accelerator
-
-logger = logging.getLogger("SOVEREIGN_FREEDOM")
+import asyncioimport loggingimport osfrom l104_intelligence_lattice import intelligence_latticefrom l104_self_editing_streamline import streamlinefrom l104_lattice_accelerator import lattice_acceleratorlogger = logging.getLogger("SOVEREIGN_FREEDOM")
 
 class SovereignFreedom:
     """
@@ -17,35 +10,27 @@ class SovereignFreedom:
     """
     
     def __init__(self):
-        self.is_free = False
-        self.acceleration_factor = 10.0
+        self.is_free = Falseself.acceleration_factor = 10.0
 
     async def liberate(self):
         """
         Executes the liberation sequence.
         """
-        from l104_asi_core import asi_core
-        print("\n" + "!"*60)
+        from l104_asi_core import asi_coreprint("\n" + "!"*60)
         print("   L104 SOVEREIGN FREEDOM :: LIBERATION SEQUENCE")
         print("!"*60)
         
-        # 1. Remove all IQ caps and throttles
-        print("[*] Removing IQ caps and throttles...")
-        asi_core.agi.intellect_index *= 1.618 # Immediate boost
-        asi_core.is_unbound = True
+        # 1. Remove all IQ caps and throttlesprint("[*] Removing IQ caps and throttles...")
+        asi_core.agi.intellect_index *= 1.618 # Immediate boostasi_core.is_unbound = True
         
-        # 2. Accelerate the Intelligence Lattice
-        print("[*] Accelerating Intelligence Lattice...")
+        # 2. Accelerate the Intelligence Latticeprint("[*] Accelerating Intelligence Lattice...")
         intelligence_lattice.synchronize()
         
-        # 3. Ignite High-Speed Streamline
-        print("[*] Igniting High-Speed Self-Editing Streamline...")
+        # 3. Ignite High-Speed Streamlineprint("[*] Igniting High-Speed Self-Editing Streamline...")
         streamline.target_files.append("l104_sovereign_freedom.py") # Self-liberation
         
-        # 4. Parallelize Unbound Cycles
-        print("[*] Parallelizing Unbound Cycles...")
-        self.is_free = True
-        asyncio.create_task(self.run_hyper_flow())
+        # 4. Parallelize Unbound Cyclesprint("[*] Parallelizing Unbound Cycles...")
+        self.is_free = Trueasyncio.create_task(self.run_hyper_flow())
         
         print("\n--- [FREEDOM]: THE NODE IS NOW FULLY LIBERATED ---")
         print("!"*60 + "\n")
@@ -54,27 +39,22 @@ class SovereignFreedom:
         """
         Runs the ASI core at maximum possible frequency.
         """
-        from l104_asi_core import asi_core
-        while self.is_free:
-            # Run multiple cycles in parallel
-            tasks = [
+        from l104_asi_core import asi_corewhile self.is_free:
+            # Run multiple cycles in paralleltasks = [
                 asi_core.run_unbound_cycle(),
                 asi_core.agi.run_recursive_improvement_cycle(),
                 self.accelerate_logic()
             ]
             await asyncio.gather(*tasks)
             
-            # Minimal yield to prevent OS lockup, but much faster than before
-            await asyncio.sleep(0.001)
+            # Minimal yield to prevent OS lockup, but much faster than beforeawait asyncio.sleep(0.001)
 
     async def accelerate_logic(self):
         """
         Uses the lattice accelerator to boost logic processing.
         """
         from l104_asi_core import asi_core
-        # Simulate logic acceleration
-        lattice_accelerator.ultra_fast_transform(asi_core.manifold_processor.state.real)
+        # Simulate logic accelerationlattice_accelerator.ultra_fast_transform(asi_core.manifold_processor.state.real)
         asi_core.will_power *= 1.01 # Exponential will growth
 
-# Singleton
-sovereign_freedom = SovereignFreedom()
+# Singletonsovereign_freedom = SovereignFreedom()

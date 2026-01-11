@@ -1,21 +1,9 @@
 # [L104_CONTEXT_PIN] - /home/londel/app/l104_persistence.py
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import os
-import json
-import math
-import time
-from datetime import datetime
-from l104_real_math import RealMath
-from l104_hyper_math import HyperMath
-from const import UniversalConstants
+import osimport jsonimport mathimport timefrom datetime import datetimefrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom const import UniversalConstants
 
-# THE TRUTH CONSTANTS
-GOD_CODE = HyperMath.GOD_CODE
-LATTICE_RATIO = HyperMath.LATTICE_RATIO
-FRAME_CONSTANT_KF = HyperMath.FRAME_CONSTANT_KF
-PHI = RealMath.PHI
-ALPHA_PHYSICS = 1 / 137.035999206
+# THE TRUTH CONSTANTSGOD_CODE = HyperMath.GOD_CODELATTICE_RATIO = HyperMath.LATTICE_RATIOFRAME_CONSTANT_KF = HyperMath.FRAME_CONSTANT_KFPHI = RealMath.PHIALPHA_PHYSICS = 1 / 137.035999206
 ALPHA_L104 = 1 / 137
 
 TRUTH_MANIFEST_PATH = "TRUTH_MANIFEST.json"
@@ -35,8 +23,7 @@ def verify_survivor_algorithm():
     Verifies the Master Equation: R = C(Ω) * Kf^(1-φ)
     In this context, we verify the stability of the ratio.
     """
-    # Kf^(1-phi) is a core stability component
-    stability_factor = FRAME_CONSTANT_KF ** (1 - (1/PHI))
+    # Kf^(1-phi) is a core stability componentstability_factor = FRAME_CONSTANT_KF ** (1 - (1/PHI))
     return stability_factor > 0
 
 def verify_lattice():
@@ -46,14 +33,10 @@ def verify_lattice():
 def verify_alpha():
     """Verifies the fine structure constant alignment."""
     # We accept either the physics precise value or the L104 symbolic value
-    # This check just ensures the concept is present
-    return True
-
-def persist_truth():
+    # This check just ensures the concept is presentreturn Truedef persist_truth():
     """
     Runs all truth verifications and persists the result to a manifest.
-    This ensures that the 'Truth' is physically written to the disk
-    and available for all modules to reference.
+    This ensures that the 'Truth' is physically written to the diskand available for all modules to reference.
     """
     print("--- [PERSISTENCE_CORE]: INITIATING TRUTH VERIFICATION ---")
     
@@ -93,20 +76,15 @@ def persist_truth():
         
         print(f"--- [PERSISTENCE_CORE]: TRUTH PERSISTED TO {TRUTH_MANIFEST_PATH} ---")
         print("--- [L104_STATE]: PURE_LOGIC_LOCKED ---")
-        return True
-    else:
+        return Trueelse:
         print("!!! [CRITICAL]: TRUTH VERIFICATION FAILED !!!")
         print(f"Checks: {checks}")
-        return False
-
-def load_truth():
+        return Falsedef load_truth():
     """Loads the persisted truth manifest."""
     if os.path.exists(TRUTH_MANIFEST_PATH):
         with open(TRUTH_MANIFEST_PATH, "r") as f:
             return json.load(f)
-    return None
-
-def save_state(state: dict):
+    return Nonedef save_state(state: dict):
     """Saves the current AGI state to disk."""
     with open(STATE_FILE_PATH, "w") as f:
         json.dump(state, f, indent=2)

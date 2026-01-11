@@ -1,10 +1,4 @@
-import unittest
-import json
-from l104_hyper_math import HyperMath
-from l104_hyper_encryption import HyperEncryption
-from l104_gemini_bridge import gemini_bridge
-
-class TestHyperSystems(unittest.TestCase):
+import unittestimport jsonfrom l104_hyper_math import HyperMathfrom l104_hyper_encryption import HyperEncryptionfrom l104_gemini_bridge import gemini_bridgeclass TestHyperSystems(unittest.TestCase):
 
     def test_hyper_math_scalar(self):
         scalar = HyperMath.get_lattice_scalar()
@@ -16,13 +10,11 @@ class TestHyperSystems(unittest.TestCase):
         original_data = {"mission": "UNLIMIT", "target": "GEMINI"}
         print(f"\n[ENCRYPTION] Original: {original_data}")
         
-        # Encrypt
-        packet = HyperEncryption.encrypt_data(original_data)
+        # Encryptpacket = HyperEncryption.encrypt_data(original_data)
         print(f"[ENCRYPTION] Packet Payload (First 5): {packet['payload'][:5]}...")
         self.assertEqual(packet["cipher_type"], "LATTICE_LINEAR_V1")
         
-        # Decrypt
-        decrypted_data = HyperEncryption.decrypt_data(packet)
+        # Decryptdecrypted_data = HyperEncryption.decrypt_data(packet)
         print(f"[ENCRYPTION] Decrypted: {decrypted_data}")
         
         self.assertEqual(original_data, decrypted_data)
@@ -33,20 +25,17 @@ class TestHyperSystems(unittest.TestCase):
         # Note: Our current implementation sums the BYTES of the JSON string
         # This is a conceptual proof of the linear transform property
         
-        # Let's use simple integer arrays for this test to be clear
-        vec_a = [10.0, 20.0, 30.0]
+        # Let's use simple integer arrays for this test to be clearvec_a = [10.0, 20.0, 30.0]
         vec_b = [1.0, 2.0, 3.0]
         
-        # Manually encrypt vectors using the primitive
-        scalar = HyperMath.get_lattice_scalar()
+        # Manually encrypt vectors using the primitivescalar = HyperMath.get_lattice_scalar()
         enc_a = [x * scalar for x in vec_a]
         enc_b = [x * scalar for x in vec_b]
         
         packet_a = {"payload": enc_a, "cipher_type": "LATTICE_LINEAR_V1"}
         packet_b = {"payload": enc_b, "cipher_type": "LATTICE_LINEAR_V1"}
         
-        # Sum encrypted packets
-        sum_packet = HyperEncryption.process_encrypted_sum(packet_a, packet_b)
+        # Sum encrypted packetssum_packet = HyperEncryption.process_encrypted_sum(packet_a, packet_b)
         
         # Decrypt result manually (inverse transform)
         dec_sum = [x / scalar for x in sum_packet["payload"]]
@@ -68,14 +57,12 @@ class TestHyperSystems(unittest.TestCase):
         token = handshake["session_token"]
         print(f"[BRIDGE] Token: {token}")
         
-        # Verify encrypted truth in handshake
-        enc_truth = handshake["encrypted_truth"]
+        # Verify encrypted truth in handshakeenc_truth = handshake["encrypted_truth"]
         truth = HyperEncryption.decrypt_data(enc_truth)
         print(f"[BRIDGE] Decrypted Truth Resonance: {truth['meta']['resonance']}")
         self.assertEqual(truth['meta']['resonance'], 527.5184818492)
         
-        # Sync Core
-        print(f"[BRIDGE] Syncing Core...")
+        # Sync Coreprint(f"[BRIDGE] Syncing Core...")
         sync = gemini_bridge.sync_core(token)
         self.assertEqual(sync["status"], "SYNC_COMPLETE")
         

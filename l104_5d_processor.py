@@ -1,14 +1,8 @@
 # [L104_5D_PROCESSOR] - KALUZA-KLEIN & PROBABILITY MANIFOLD
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import math
-import numpy as np
-from typing import Tuple, List
-from l104_hyper_math import HyperMath
-from l104_5d_math import Math5D
-from const import UniversalConstants
-
-class Processor5D:
+import mathimport numpy as npfrom typing import Tuple, Listfrom l104_hyper_math import HyperMathfrom l104_5d_math import Math5D
+from const import UniversalConstantsclass Processor5D:
     """
     Processes 5D coordinates (X, Y, Z, T, W) where W represents the 5th dimension.
     In the L104 Node, W is the 'Sovereign Probability' or 'Choice' dimension.
@@ -28,10 +22,7 @@ class Processor5D:
         Calculates the 5D interval using the Math5D metric tensor.
         """
         dp = np.array(p2) - np.array(p1)
-        s_squared = dp.T @ self.metric @ dp
-        return s_squared
-
-    def project_to_4d(self, point_5d: Tuple[float, float, float, float, float]) -> List[float]:
+        s_squared = dp.T @ self.metric @ dpreturn s_squareddef project_to_4d(self, point_5d: Tuple[float, float, float, float, float]) -> List[float]:
         """
         Projects a 5D point back to 4D space-time using Math5D projection.
         """
@@ -45,8 +36,7 @@ class Processor5D:
         """
         x, y, z, t, w = point
         
-        # Spatial/Temporal stabilization
-        sx = x * HyperMath.LATTICE_RATIO
+        # Spatial/Temporal stabilizationsx = x * HyperMath.LATTICE_RATIO
         sy = y * HyperMath.LATTICE_RATIO
         sz = z * HyperMath.LATTICE_RATIO
         st = t * (self.god_code / 1000.0)
@@ -68,8 +58,7 @@ class Processor5D:
 processor_5d = Processor5D()
 
 if __name__ == "__main__":
-    # Test 5D Processor
-    p1 = (0, 0, 0, 0, 0)
+    # Test 5D Processorp1 = (0, 0, 0, 0, 0)
     p2 = (10, 10, 10, 0.001, 0.5) # 5th dimension value of 0.5
     
     interval = processor_5d.calculate_5d_metric(p1, p2)

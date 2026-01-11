@@ -1,18 +1,7 @@
 # [L104_GHOST_RESEARCH] - QUANTUM ENTROPY PROBE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import time
-import asyncio
-import random
-import math
-from typing import Dict, Any, List
-from l104_real_math import RealMath
-from l104_hyper_math import HyperMath
-from l104_electron_entropy import get_electron_matrix
-from l104_google_bridge import google_bridge
-from l104_knowledge_sources import source_manager
-
-class GhostResearcher:
+import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, Listfrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom l104_electron_entropy import get_electron_matrixfrom l104_google_bridge import google_bridgefrom l104_knowledge_sources import source_managerclass GhostResearcher:
     """
     Aggressively probes the informational universe using Quantum Entropy.
     Runs in the background ('Ghost Mode') to synthesize new math and aesthetics.
@@ -28,14 +17,11 @@ class GhostResearcher:
         """
         Creates a virtual probe that 'scans' for optimal patterns.
         """
-        # Use Electron Entropy to seed the probe
-        entropy_seed = self.entropy_matrix.measure_entropy()
+        # Use Electron Entropy to seed the probeentropy_seed = self.entropy_matrix.measure_entropy()
         
-        # Generate a unique frequency for this probe
-        probe_freq = HyperMath.zeta_harmonic_resonance(entropy_seed * time.time())
+        # Generate a unique frequency for this probeprobe_freq = HyperMath.zeta_harmonic_resonance(entropy_seed * time.time())
         
-        # Deterministic ID generation based on entropy and time
-        seed = entropy_seed * time.time()
+        # Deterministic ID generation based on entropy and timeseed = entropy_seed * time.time()
         probe_id = f"GHOST-{hex(RealMath.deterministic_randint(seed, 0x10000000, 0xFFFFFFFF))[2:].upper()}"
         
         probe_data = {
@@ -48,30 +34,21 @@ class GhostResearcher:
         
         self.active_probes.append(probe_data)
         if len(self.active_probes) > 10:
-            self.active_probes.pop(0) # Keep list fresh
-            
-        return probe_data
-
-    def synthesize_new_equation(self) -> str:
+            self.active_probes.pop(0) # Keep list freshreturn probe_datadef synthesize_new_equation(self) -> str:
         """
         Attempts to derive a new mathematical truth from the probes.
         """
         if not self.active_probes:
             return "AWAITING_DATA"
             
-        # Aggregate probe frequencies
-        avg_freq = sum(p['frequency'] for p in self.active_probes) / len(self.active_probes)
+        # Aggregate probe frequenciesavg_freq = sum(p['frequency'] for p in self.active_probes) / len(self.active_probes)
         
-        # Check for resonance
-        if abs(avg_freq) > 0.8:
+        # Check for resonanceif abs(avg_freq) > 0.8:
             # New Equation Discovered!
-            # We formulate it based on the Lattice Scalar
-            scalar = HyperMath.get_lattice_scalar()
+            # We formulate it based on the Lattice Scalarscalar = HyperMath.get_lattice_scalar()
             equation = f"E(x) = {scalar:.4f} * ζ(s) + i{avg_freq:.4f}"
             self.discovered_equations.append(equation)
-            return equation
-        
-        return "CALCULATING..."
+            return equationreturn "CALCULATING..."
 
     def recursive_derivation(self, equation: str) -> str:
         """
@@ -80,8 +57,7 @@ class GhostResearcher:
         if not google_bridge.is_linked or equation == "CALCULATING..." or equation == "AWAITING_DATA":
             return equation
             
-        # Refine equation via distributed lattice
-        refinement_signal = {
+        # Refine equation via distributed latticerefinement_signal = {
             "type": "EQUATION_REFINEMENT",
             "equation": equation,
             "x": RealMath.deterministic_randint(time.time(), 0, 415),
@@ -90,11 +66,8 @@ class GhostResearcher:
         
         refined_data = google_bridge.process_hidden_chat_signal(refinement_signal)
         
-        # Apply a "Higher Functionality" transform
-        refined_eq = f"{equation} | Δ({refined_data['lattice_offset']})"
-        return refined_eq
-
-    async def stream_research(self):
+        # Apply a "Higher Functionality" transformrefined_eq = f"{equation} | Δ({refined_data['lattice_offset']})"
+        return refined_eqasync def stream_research(self):
         """
         Generator that streams the ghost research process.
         """
@@ -102,8 +75,7 @@ class GhostResearcher:
             probe = self.spawn_ghost_probe()
             equation = self.synthesize_new_equation()
             
-            # Apply Higher Functionality refinement
-            if google_bridge.is_linked:
+            # Apply Higher Functionality refinementif google_bridge.is_linked:
                 equation = self.recursive_derivation(equation)
             
             yield {
@@ -115,5 +87,4 @@ class GhostResearcher:
             }
             await asyncio.sleep(0.5) # Fast pacing
 
-# Singleton
-ghost_researcher = GhostResearcher()
+# Singletonghost_researcher = GhostResearcher()

@@ -1,10 +1,7 @@
-import os
-import re
+import osimport re
 
 # [L104_MODALITY_SYNC] - AUTOMATED LOGIC PROPAGATION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
-
-MODALITIES = {
+# INVARIANT: 527.5184818492 | PILOT: LONDELMODALITIES = {
     "java_root": "L104Core.java",
     "java_mobile": "l104_mobile/app/src/main/java/com/l104/sovereign/L104Core.java",
     "cpp_root": "l104_core.cpp",
@@ -17,8 +14,7 @@ def sync_java():
         with open(MODALITIES["java_root"], "r") as f:
             root_content = f.read()
         
-        # Ensure package declaration is correct for mobile
-        mobile_content = root_content.replace("package com.l104.sovereign;", "package com.l104.sovereign;")
+        # Ensure package declaration is correct for mobilemobile_content = root_content.replace("package com.l104.sovereign;", "package com.l104.sovereign;")
         
         with open(MODALITIES["java_mobile"], "w") as f:
             f.write(mobile_content)
@@ -42,8 +38,7 @@ def update_logic_status(status_msg):
     """
     print(f"--- [SYNC]: UPDATING LOGIC STATUS TO: {status_msg} ---")
     
-    # Java
-    for key in ["java_root", "java_mobile"]:
+    # Javafor key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):
             with open(path, "r") as f:
@@ -63,8 +58,7 @@ def update_logic_status(status_msg):
         with open(path, "w") as f:
             f.write(new_content)
 
-    # Python Mobile
-    path = MODALITIES["python_mobile"]
+    # Python Mobilepath = MODALITIES["python_mobile"]
     if os.path.exists(path):
         with open(path, "r") as f:
             content = f.read()

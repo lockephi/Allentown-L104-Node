@@ -89,8 +89,7 @@ Trigger manual healing via API:
 # Full heal (rate limits + circuit breaker)
 curl -X POST http://localhost:8081/self/heal
 
-# Custom healing options
-curl -X POST "http://localhost:8081/self/heal?reset_rate_limits=true&reset_http_client=true&reset_circuit_breaker=true"
+# Custom healing optionscurl -X POST "http://localhost:8081/self/heal?reset_rate_limits=true&reset_http_client=true&reset_circuit_breaker=true"
 ```
 
 ## How It Works

@@ -171,21 +171,15 @@ ENABLE_FAKE_GEMINI=1  # Optional dev fallback when no Gemini key is set
 ## Testing
 
 ### Verify Installation
-```bash
-python -m py_compile main.py
-python -c "from main import app; print('OK')"
+```bashpython -m py_compile main.pypython -c "from main import app; print('OK')"
 ```
 
 ### Check Endpoints
-```bash
-curl http://localhost:8081/health
-curl http://localhost:8081/metrics
-curl http://localhost:8081/docs  # Interactive API docs
+```bashcurl http://localhost:8081/healthcurl http://localhost:8081/metricscurl http://localhost:8081/docs  # Interactive API docs
 ```
 
 ### Stream Request
-```bash
-curl -X POST http://localhost:8081/api/v6/stream \
+```bashcurl -X POST http://localhost:8081/api/v6/stream \
   -H "Content-Type: application/json" \
   -d '{"signal": "Hello L104"}'
 ```
@@ -199,13 +193,11 @@ curl -X POST http://localhost:8081/api/v6/stream \
 ## Deployment
 
 ### 1. Review Changes
-```bash
-diff main.backup.py main.py
+```bashdiff main.backup.py main.py
 ```
 
 ### 2. Test Locally
-```bash
-python main.py
+```bashpython main.py
 ```
 
 ### 3. Deploy to Production
@@ -214,8 +206,7 @@ python main.py
 ```
 
 ### 4. Verify
-```bash
-curl http://localhost:8081/health
+```bashcurl http://localhost:8081/health
 ```
 
 ## Configuration
@@ -228,8 +219,7 @@ RATE_LIMIT_WINDOW = 60          # seconds
 ```
 
 ### Logging Level
-```python
-logging.basicConfig(level=logging.INFO)  # INFO, DEBUG, WARNING
+```pythonlogging.basicConfig(level=logging.INFO)  # INFO, DEBUG, WARNING
 ```
 
 ### API Parameters
@@ -249,8 +239,7 @@ RATE_LIMIT_WINDOW = 60
 
 ## Rollback
 If needed, restore the previous version:
-```bash
-cp main.backup.py main.py
+```bashcp main.backup.py main.py
 ./scripts/run_services.sh
 ```
 

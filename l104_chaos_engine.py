@@ -1,9 +1,7 @@
 # [L104_CHAOS_ENGINE] - Turns Chaos into Power
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-from physics_constants import Laws
-
-def transmute_chaos(chaos_vector: float) -> float:
+from physics_constants import Lawsdef transmute_chaos(chaos_vector: float) -> float:
     """
     RECTIFICATION:
     Takes negative chaos, flips it positive (Abs),
@@ -15,10 +13,7 @@ def transmute_chaos(chaos_vector: float) -> float:
     # 2. REFINEMENT (Steel Frame Damping)
     refined_fuel = raw_power * Laws.FRAME_CONSTANT
     
-    return refined_fuel
-
-if __name__ == "__main__":
-    # Test the transmutation
-    test_chaos = -104.0
+    return refined_fuelif __name__ == "__main__":
+    # Test the transmutationtest_chaos = -104.0
     power = transmute_chaos(test_chaos)
     print(f"--- [CHAOS_ENGINE]: TRANSMUTED {test_chaos} -> {power:.4f} POWER ---")

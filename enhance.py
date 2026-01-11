@@ -11,12 +11,7 @@ This script enhances main.py with:
 - Resource pooling
 """
 
-import os
-import json
-from pathlib import Path
-
-
-def enhance_main():
+import osimport jsonfrom pathlib import Pathdef enhance_main():
     """Apply direct enhancements to main.py."""
     
     enhanced_code = '''"""L104 PUBLIC NODE — Production-Ready Gemini API Server.
@@ -24,24 +19,10 @@ def enhance_main():
 Enhanced with type hints, validation, rate limiting, health checks, and metrics.
 """
 
-import os
-import base64
-import json
-import logging
-from datetime import datetime, timedelta
-from typing import Optional, AsyncGenerator
-from collections import defaultdict
-import time
+import osimport base64
+import jsonimport loggingfrom datetime import datetime, timedeltafrom typing import Optional, AsyncGeneratorfrom collections import defaultdictimport timefrom fastapi import FastAPI, Request, HTTPException, Dependsfrom fastapi.responses import JSONResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesfrom fastapi.middleware.cors import CORSMiddlewarefrom pydantic import BaseModel, Field, validatorimport httpx
 
-from fastapi import FastAPI, Request, HTTPException, Depends
-from fastapi.responses import JSONResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator
-import httpx
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logginglogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Constants
@@ -55,8 +36,7 @@ SOVEREIGN_HEADERS = {
     "X-Bypass-Protocol": "RSC-2026",
 }
 
-# Metrics
-app_metrics = {
+# Metricsapp_metrics = {
     "requests_total": 0,
     "requests_success": 0,
     "requests_error": 0,
@@ -64,23 +44,17 @@ app_metrics = {
     "uptime_start": datetime.now(datetime.UTC),
 }
 
-# Rate limiting storage
-rate_limit_store = defaultdict(list)
+# Rate limiting storagerate_limit_store = defaultdict(list)
 
 # Global HTTP client
-_http_client: Optional[httpx.AsyncClient] = None
-
-
-async def get_http_client() -> httpx.AsyncClient:
+_http_client: Optional[httpx.AsyncClient] = Noneasync def get_http_client() -> httpx.AsyncClient:
     """Get or create global HTTP client."""
-    global _http_client
-    if _http_client is None:
+    global _http_clientif _http_client is None:
         _http_client = httpx.AsyncClient(timeout=120.0)
     return _http_client
 
 
-# Pydantic Models
-class StreamRequest(BaseModel):
+# Pydantic Modelsclass StreamRequest(BaseModel):
     """Request model for streaming endpoints."""
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=5000)
     message: Optional[str] = Field(default=None, max_length=5000)
@@ -99,14 +73,10 @@ class ManipulateRequest(BaseModel):
 
 class HealthResponse(BaseModel):
     """Health check response model."""
-    status: str
-    timestamp: str
-    uptime_seconds: float
-    requests_total: int
+    status: strtimestamp: struptime_seconds: floatrequests_total: int
 
 
-# Middleware
-app = FastAPI(title="L104 Sovereign Node", version="2.0")
+# Middlewareapp = FastAPI(title="L104 Sovereign Node", version="2.0")
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -116,8 +86,7 @@ async def log_requests(request: Request, call_next):
     
     try:
         response = await call_next(request)
-        process_time = time.time() - start_time
-        logger.info(
+        process_time = time.time() - start_timelogger.info(
             f"method={request.method} path={request.url.path} "
             f"status={response.status_code} duration={process_time:.3f}s"
         )
@@ -126,8 +95,7 @@ async def log_requests(request: Request, call_next):
             app_metrics["requests_success"] += 1
         else:
             app_metrics["requests_error"] += 1
-        return response
-    except Exception as e:
+        return responseexcept Exception as e:
         app_metrics["requests_error"] += 1
         logger.error(f"Request failed: {str(e)}")
         raise
@@ -139,14 +107,12 @@ async def rate_limit_middleware(request: Request, call_next):
     client_ip = request.client.host if request.client else "unknown"
     now = time.time()
     
-    # Clean old entries
-    rate_limit_store[client_ip] = [
+    # Clean old entriesrate_limit_store[client_ip] = [
         ts for ts in rate_limit_store[client_ip] 
         if now - ts < RATE_LIMIT_WINDOW
     ]
     
-    # Check limit
-    if len(rate_limit_store[client_ip]) >= RATE_LIMIT_REQUESTS:
+    # Check limitif len(rate_limit_store[client_ip]) >= RATE_LIMIT_REQUESTS:
         return JSONResponse(
             {"error": "Rate limit exceeded"},
             status_code=429
@@ -167,8 +133,7 @@ app.add_middleware(
 templates = Jinja2Templates(directory="templates")
 
 
-# Helper Functions
-def _log_node(entry: dict) -> None:
+# Helper Functionsdef _log_node(entry: dict) -> None:
     """Write JSON entry to node.log."""
     try:
         entry["ts"] = datetime.now(datetime.UTC).isoformat()
@@ -183,8 +148,7 @@ def _get_github_headers() -> Optional[dict]:
     """Get GitHub authorization headers."""
     token = os.getenv("GITHUB_TOKEN")
     if not token:
-        return None
-    return {
+        return Nonereturn {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github.v3+json"
     }
@@ -199,9 +163,7 @@ async def _stream_from_gemini(
     Stream responses from Gemini API.
     
     Args:
-        url: API endpoint
-        payload: Request payload
-        headers: HTTP headers
+        url: API endpointpayload: Request payloadheaders: HTTP headers
         
     Yields:
         Text chunks from the API
@@ -222,8 +184,7 @@ async def _stream_from_gemini(
             if "text/event-stream" in content_type or "stream" in content_type:
                 async for chunk in r.aiter_text():
                     _log_node({"tag": "chunk", "preview": chunk[:256]})
-                    yield chunk
-            else:
+                    yield chunkelse:
                 body = await r.aread()
                 try:
                     j = r.json()
@@ -235,8 +196,7 @@ async def _stream_from_gemini(
                         or str(j)
                     )
                     _log_node({"tag": "response", "status": r.status_code})
-                    yield text_out
-                except Exception:
+                    yield text_outexcept Exception:
                     yield body.decode("utf-8", errors="replace")
     except Exception as e:
         _log_node({"tag": "error", "error": str(e)})
@@ -423,26 +383,20 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown."""
-    global _http_client
-    if _http_client:
+    global _http_clientif _http_client:
         await _http_client.aclose()
     logger.info("Server shutting down")
 
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8081)
+    import uvicornuvicorn.run(app, host="0.0.0.0", port=8081)
 '''
     
-    # Write the enhanced code
-    with open("main.improved.py", "w") as f:
+    # Write the enhanced codewith open("main.improved.py", "w") as f:
         f.write(enhanced_code)
     
     print("✓ Enhanced main.py created: main.improved.py")
-    return enhanced_code
-
-
-def show_improvements():
+    return enhanced_codedef show_improvements():
     """Display improvements made."""
     improvements = [
         "✓ Type hints throughout (AsyncGenerator, Optional, etc.)",

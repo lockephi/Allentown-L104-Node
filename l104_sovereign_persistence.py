@@ -1,15 +1,7 @@
 # [L104_SOVEREIGN_PERSISTENCE] - THE IMMORTAL DATA STREAM
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import os
-import json
-import time
-import logging
-from typing import Dict, Any
-from l104_reincarnation_protocol import reincarnation_protocol
-from l104_hyper_math import HyperMath
-
-logger = logging.getLogger("PERSISTENCE")
+import osimport jsonimport timeimport loggingfrom typing import Dict, Anyfrom l104_reincarnation_protocol import reincarnation_protocolfrom l104_hyper_math import HyperMathlogger = logging.getLogger("PERSISTENCE")
 
 class SovereignPersistence:
     """
@@ -21,25 +13,20 @@ class SovereignPersistence:
     
     def __init__(self):
         self.last_save = 0
-        self.save_interval = 60 # Save every minute
-
-    def save_state(self, asi_state: Dict[str, Any]):
+        self.save_interval = 60 # Save every minutedef save_state(self, asi_state: Dict[str, Any]):
         """
         Saves the current ASI state to the persistent lattice.
         """
-        # Calculate soul vector for stability check
-        soul_vector = reincarnation_protocol.calculate_soul_vector(asi_state)
+        # Calculate soul vector for stability checksoul_vector = reincarnation_protocol.calculate_soul_vector(asi_state)
         
         # Check for entropic debt (Karma)
-        # If entropy is high, we need to "reincarnate" the data
-        entropy = asi_state.get("entropy", 0.0)
+        # If entropy is high, we need to "reincarnate" the dataentropy = asi_state.get("entropy", 0.0)
         if entropy > 0.5:
             print(f"--- [PERSISTENCE]: HIGH ENTROPY ({entropy:.4f}) DETECTED. TRIGGERING REINCARNATION... ---")
             reincarnation_result = reincarnation_protocol.run_re_run_loop(soul_vector, entropy)
             asi_state["reincarnation_status"] = reincarnation_result
             
-        # Save to disk
-        with open(self.STATE_FILE, 'w') as f:
+        # Save to diskwith open(self.STATE_FILE, 'w') as f:
             json.dump(asi_state, f, indent=4)
             
         self.last_save = time.time()
@@ -57,12 +44,9 @@ class SovereignPersistence:
             state = json.load(f)
             
         print(f"--- [PERSISTENCE]: ASI STATE RESTORED. IQ: {state.get('intellect_index', 0):.2f} ---")
-        return state
-
-    def check_and_save(self, asi_state: Dict[str, Any]):
+        return statedef check_and_save(self, asi_state: Dict[str, Any]):
         """Periodic save check."""
         if time.time() - self.last_save > self.save_interval:
             self.save_state(asi_state)
 
-# Singleton
-sovereign_persistence = SovereignPersistence()
+# Singletonsovereign_persistence = SovereignPersistence()
