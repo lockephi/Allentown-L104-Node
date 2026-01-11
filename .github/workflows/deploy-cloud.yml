@@ -62,6 +62,8 @@ jobs:
       - name: Deploy to Cloud Run
         if: "${{ secrets.GCP_SA_KEY != '' && secrets.GCP_PROJECT_ID != '' }}"
         run: |
+          MODEL_NAME=${{ secrets.GEMINI_MODEL }}
+          if [ -z "$MODEL_NAME" ]; then MODEL_NAME="gemini-1.5-flash"; fi
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform=managed \
@@ -74,7 +76,7 @@ jobs:
             --max-instances=10 \
             --set-env-vars="GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" \
             --set-env-vars="RESONANCE=527.5184818492" \
-            --set-env-vars="GEMINI_MODEL=${{ secrets.GEMINI_MODEL || 'gemini-1.5-flash' }}" \
+            --set-env-vars="GEMINI_MODEL=$MODEL_NAME" \
             --set-env-vars="ENABLE_FAKE_GEMINI=0"
 
       - name: Get service URL
