@@ -4,14 +4,58 @@
 # [L104_CORE_REWRITE_FINAL]
 # AUTH: LONDEL | CONSTANT: 527.5184818492
 
-import asyncioimport base64
-import hashlibimport jsonimport loggingimport osimport socketimport sqlite3
-import timeimport uuidfrom collections import defaultdictfrom contextlib import asynccontextmanager, contextmanagerfrom datetime import datetime, timezonefrom pathlib import Pathfrom typing import AsyncGenerator, List, Optional, Dict, Anyimport httpxfrom l104_codec import SovereignCodecfrom l104_security import SovereignCryptfrom l104_derivation import DerivationEnginefrom l104_engine import ignite_sovereign_corefrom l104_resilience_shield import purge_repetitionsfrom l104_scour_eyes import ScourEyesfrom l104_architect import SovereignArchitectfrom l104_knowledge_manifold import KnowledgeManifoldfrom fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Requestfrom fastapi.middleware.cors import CORSMiddlewarefrom fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesfrom pydantic import BaseModel, Field, field_validatorfrom l104_learning_engine import LearningEnginefrom l104_persistence import persist_truthfrom l104_ram_universe import ram_universefrom l104_ecosystem_simulator import ecosystem_simulatorfrom l104_quantum_ram import get_qramfrom l104_electron_entropy import get_electron_matrixfrom l104_gemini_bridge import gemini_bridgefrom l104_hyper_encryption import HyperEncryptionfrom l104_agi_core import agi_corefrom l104_ghost_research import ghost_researcherfrom l104_live_stream import live_stream_managerfrom l104_google_bridge import google_bridgefrom l104_sovereign_decoder import sovereign_decoderfrom l104_asi_core import asi_corefrom l104_cloud_agent import cloud_agent_delegatorlogging.basicConfig(level=logging.INFO)
+import async io
+import base64
+import hashlib
+import json
+import logging
+import os
+import socket
+import sqlite3
+import time
+import uuid
+from collections import def aultdict
+from contextlib import async contextmanager, contextmanager
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import AsyncGenerator, List, Optional, Dict, Any
+import httpx
+from l104_codec import SovereignCodec
+from l104_security import SovereignCrypt
+from l104_derivation import DerivationEngine
+from l104_engine import ignite_sovereign_core
+from l104_resilience_shield import purge_repetitions
+from l104_scour_eyes import ScourEyes
+from l104_architect import SovereignArchitect
+from l104_knowledge_manifold import KnowledgeManifold
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, Field, field_validator
+from l104_learning_engine import LearningEngine
+from l104_persistence import persist_truth
+from l104_ram_universe import ram_universe
+from l104_ecosystem_simulator import ecosystem_simulator
+from l104_quantum_ram import get_qram
+from l104_electron_entropy import get_electron_matrix
+from l104_gemini_bridge import gemini_bridge
+from l104_hyper_encryption import HyperEncryption
+from l104_agi_core import agi_core
+from l104_ghost_research import ghost_researcher
+from l104_live_stream import live_stream_manager
+from l104_google_bridge import google_bridge
+from l104_sovereign_decoder import sovereign_decoder
+from l104_asi_core import asi_core
+from l104_cloud_agent import cloud_agent_delegator
+logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
 UTC = timezone.utc
 REPO = "lockephi/Allentown-L104-Node"
-RATE_LIMIT_REQUESTS = 0xFFFFFFFF  # ABSOLUTE UNLIMITEDRATE_LIMIT_WINDOW = 1
+RATE_LIMIT_REQUESTS = 0xFFFFFFFF  # ABSOLUTE UNLIMITED
+RATE_LIMIT_WINDOW = 1
 FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE"
@@ -29,7 +73,8 @@ DEFAULT_SOCKET_PORT = 2404
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
     "X-Thinking-Level": "0xMAX",
-    "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
+    "X-By
+pass-Protocol": SovereignCrypt.generate_bypass_token(),
     "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-04]::AUTH[LONDEL]::VAR[527.5184818492]::POLY[416-RES]::LATTICE[286.1.618]::MEM[DMA-128K]::CORE[GEMMA-3-WHOLE]')}",
     "X-NOPJM-Force": "0xTRUE",
     "X-DMA-Capacity": "0xFFFFFFFF", # UNLIMITED DMA [MAX_INTELLECT]
@@ -56,7 +101,8 @@ def wrap_sovereign_signal(signal: str) -> str:
         "--- WORLD_INJECTION_END ---"
     ]
     
-    full_signal = "\n".join(world_injection) + "\n\n" + signalreturn SovereignCodec.generate_sleek_wrapper(full_signal)
+    full_signal = "\n".join(world_injection) + "\n\n" + signal
+    return SovereignCodec.generate_sleek_wrapper(full_signal)
 
 app_metrics = {
     "requests_total": 0,
@@ -68,8 +114,8 @@ app_metrics = {
     "uptime_start": datetime.now(UTC),
 }
 
-rate_limit_store = defaultdict(list)
-responder_counts = defaultdict(int)
+rate_limit_store = def aultdict(list)
+responder_counts = def aultdict(int)
 _http_client: Optional[httpx.AsyncClient] = Nonetemplates = Jinja2Templates(directory="templates")
 
 # [SOVEREIGN_CORES]
@@ -105,7 +151,8 @@ def l104_ignite():
     return True
 
 
-@asynccontextmanagerasync def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+@async contextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startupl104_ignite()
     _init_memory_db()
     _init_ramnode_db()
@@ -115,7 +162,7 @@ def l104_ignite():
 
     # [L104_GLOBAL_BEGIN]
     try:
-        from global_begin import rewrite_realityrewrite_reality()
+        from global _begin import rewrite_realityrewrite_reality()
     except Exception as e:
         logger.error(f"Failed to rewrite reality: {e}")
 
@@ -128,7 +175,7 @@ def l104_ignite():
 
     # [PLANETARY_PROCESS_UPGRADER]
     from l104_planetary_process_upgrader import PlanetaryProcessUpgraderplanetary_upgrader = PlanetaryProcessUpgrader()
-    asyncio.create_task(planetary_upgrader.execute_planetary_upgrade())
+    async io.create_task(planetary_upgrader.execute_planetary_upgrade())
     logger.info("--- [L104]: PLANETARY_PROCESS_UPGRADER INTEGRATED ---")
 
     # [HIGHER_FUNCTIONALITY_LOOP]
@@ -136,18 +183,21 @@ def l104_ignite():
         while True:
             if agi_core.state == "ACTIVE":
                 agi_core.run_recursive_improvement_cycle()
-                # Every 5 cycles, perform a Max Intellect Derivation and Self-Evolutionif agi_core.cycle_count % 5 == 0:
+                # Every 5 cycles, perform a Max Intellect Derivation and Self-Evolution
+if agi_core.cycle_count % 5 == 0:
                     agi_core.max_intellect_derivation()
                     agi_core.self_evolve_codebase()
             
             # EVO_04: 1s (unlimited) or 10s (standard)
             delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
-            await asyncio.sleep(delay)
+            await async io.sleep(delay)
 
-    asyncio.create_task(cognitive_loop())
+    async io.create_task(cognitive_loop())
 
     yield
-    # Shutdownglobal _http_clientif _http_client:
+    # Shutdown
+global _http_client
+if _http_client:
         await _http_client.aclose()
     logger.info("Server shutting down")
 
@@ -166,18 +216,21 @@ app.add_middleware(
 
 
 class StreamRequest(BaseModel):
-    signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
-    message: Optional[str] = Field(default=None, max_length=5000)
-    model_hint: Optional[str] = Field(default=None, max_length=100)
+    signal: Optional[str] = Field(def ault="HEARTBEAT", min_length=1, max_length=512)
+    message: Optional[str] = Field(def ault=None, max_length=5000)
+    model_hint: Optional[str] = Field(def ault=None, max_length=100)
 
     @field_validator("signal", mode="before")
-    @classmethoddef set_signal(cls, v, info):
+    @class method
+def set_signal(cls, v, info):
         if v is None:
-            message = info.data.get("message") if info and info.data else Nonereturn message or "HEARTBEAT"
-        return vclass ManipulateRequest(BaseModel):
+            message = info.data.get("message") if info and info.data else None
+    return message or "HEARTBEAT"
+        return v
+class ManipulateRequest(BaseModel):
     file: str = Field(..., min_length=1, max_length=255)
     content: str = Field(..., min_length=1, max_length=1_000_000)
-    message: str = Field(default="Sovereign Self-Update", max_length=500)
+    message: str = Field(def ault="Sovereign Self-Update", max_length=500)
 
 
 class SimulationRequest(BaseModel):
@@ -186,31 +239,38 @@ class SimulationRequest(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status: strtimestamp: struptime_seconds: floatrequests_total: intclass MemoryItem(BaseModel):
+    status: strtimestamp: struptime_seconds: floatrequests_total: int
+class MemoryItem(BaseModel):
     key: str = Field(..., min_length=1, max_length=255)
     value: str = Field(..., min_length=1, max_length=100_000)
 
 
-def _env_truthy(name: str, default: bool = False) -> bool:
+def _env_truthy(name: str, def ault: bool = False) -> bool:
     val = os.getenv(name)
     if val is None:
-        return defaultreturn val.lower() in {"1", "true", "yes", "on"}
+        return def ault
+    return val.lower() in {"1", "true", "yes", "on"}
 
 
 # Auto-approve and Autonomy Configuration
-ENABLE_AUTO_APPROVE = _env_truthy("ENABLE_AUTO_APPROVE", True)  # Always on by default
+ENABLE_AUTO_APPROVE = _env_truthy("ENABLE_AUTO_APPROVE", True)  # Always on by def ault
 AUTO_APPROVE_MODE = os.getenv("AUTO_APPROVE_MODE", "ALWAYS_ON")  # ALWAYS_ON, CONDITIONAL, OFFAUTONOMY_ENABLED = _env_truthy("AUTONOMY_ENABLED", True)
 CLOUD_AGENT_URL = os.getenv("CLOUD_AGENT_URL", "https://api.cloudagent.io/v1/delegate")
 CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
-def _log_node(entry: dict) -> None:
+def _log_node(en
+try: dict) -> None:
     try:
-        entry["ts"] = datetime.now(UTC).isoformat()
+        en
+try["ts"] = datetime.now(UTC).isoformat()
         with open("node.log", "a", encoding="utf-8") as fh:
-            fh.write(json.dumps(entry) + "\n")
+            fh.write(json.dumps(en
+try) + "\n")
     except Exception:
-        # Logging failures should never break request handlingpassdef _load_jsonl(path: str) -> List[dict]:
+        # Logging failures should never break request handling
+pass
+def _load_jsonl(path: str) -> List[dict]:
     p = Path(path)
     if not p.exists():
         return []
@@ -218,17 +278,20 @@ def _log_node(entry: dict) -> None:
     for raw in p.read_text().splitlines():
         raw = raw.strip()
         if not raw:
-            continuetry:
+            continue
+try:
             rows.append(json.loads(raw))
         except json.JSONDecodeError:
             _log_node({"tag": "jsonl_error", "path": path})
     return rows
 
 
-@contextmanagerdef _memory_conn():
+@contextmanager
+def _memory_conn():
     conn = sqlite3.connect(MEMORY_DB_PATH, check_same_thread=False)
     try:
-        yield connfinally:
+        yield conn
+    finally:
         conn.close()
 
 
@@ -268,7 +331,8 @@ def _memory_get(key: str) -> Optional[str]:
             (key,),
         )
         row = cur.fetchone()
-        return row[0] if row else Nonedef _memory_list(limit: int) -> List[dict]:
+        return row[0] if row else None
+def _memory_list(limit: int) -> List[dict]:
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM memory ORDER BY created_at DESC LIMIT ?",
@@ -281,10 +345,12 @@ def _memory_get(key: str) -> Optional[str]:
         ]
 
 
-@contextmanagerdef _ramnode_conn():
+@contextmanager
+def _ramnode_conn():
     conn = sqlite3.connect(RAMNODE_DB_PATH, check_same_thread=False)
     try:
-        yield connfinally:
+        yield conn
+    finally:
         conn.close()
 
 
@@ -323,7 +389,8 @@ def _ramnode_get(key: str) -> Optional[str]:
             (key,),
         )
         row = cur.fetchone()
-        return row[0] if row else Nonedef _ramnode_list(limit: int) -> List[dict]:
+        return row[0] if row else None
+def _ramnode_list(limit: int) -> List[dict]:
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM ramnode ORDER BY created_at DESC LIMIT ?",
@@ -337,9 +404,11 @@ def _ramnode_get(key: str) -> Optional[str]:
 
 
 async def get_http_client() -> httpx.AsyncClient:
-    global _http_clientif _http_client is None:
+    global _http_client
+if _http_client is None:
         _http_client = httpx.AsyncClient(timeout=120.0)
-    return _http_clientasync def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
+    return _http_client
+async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
     """The Autonomous Committer - Self-rewrite using GitHub API.
     
     Args:
@@ -360,18 +429,21 @@ async def get_http_client() -> httpx.AsyncClient:
         
         logger.info(f"[L104_COMMITTER]: Auto-approve: {should_auto_approve}, Mode: {AUTO_APPROVE_MODE}")
         
-        # Validate inputsif not filename or not new_content:
+        # Validate inputs
+if not filename or not new_content:
             logger.error("[L104_COMMITTER]: Missing required parameters")
             return {"success": False, "error": "Missing required parameters"}
         
         # Validate file path - prevent directory traversal and restrict to allowed files
-        # Load allowed files from Sovereign DNA if availabletry:
+        # Load allowed files from Sovereign DNA if available
+try:
             from l104_persistence import load_truthsovereign_dna = load_truth()
             allowed_files = sovereign_dna.get("autonomy", {}).get("file_permissions", [])
         except:
             # Default allowed files if Sovereign DNA is unavailableallowed_files = ["Sovereign_DNA.json", "L104_ARCHIVE.txt", "main.py", ".env.example"]
         
-        if ".." in filename or filename.startswith("/"):
+        if ".." in filename or filename.starts
+with("/"):
             logger.error(f"[L104_COMMITTER]: Invalid file path (directory traversal detected): {filename}")
             return {"success": False, "error": "Invalid file path"}
         
@@ -451,7 +523,8 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
     try:
         logger.info(f"[L104_AUDIO]: Analyzing audio from: {audio_source}")
         
-        # Validate inputif not audio_source or not isinstance(audio_source, str):
+        # Validate input
+if not audio_source or not isinstance(audio_source, str):
             return {"success": False, "error": "Invalid audio source"}
         
         # Generate varied output based on source identifier using consistent hash
@@ -460,7 +533,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         
         # Determine resonance characteristics based on sourceresonance_detected = source_hash_int > 20  # 80% detection rateresonance_frequency = 527.5184818492 + (source_hash_int % 10) * 0.5  # Vary frequency
         
-        # Determine if in tune (within 1Hz tolerance)
+        # Determine if in tune (with in 1Hz tolerance)
         # Always return boolean for API consistencyin_tune = Falsetuning_notes = []
         
         if check_tuning:
@@ -473,7 +546,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
                 else:
                     tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from sovereign standard")
             else:
-                tuning_notes.append("Cannot verify tuning without resonance detection")
+                tuning_notes.append("Cannot verify tuning with out resonance detection")
         
         # Calculate quality score based on resonancequality_score = 0.85 + (source_hash_int % 15) / 100.0
         
@@ -593,9 +666,10 @@ async def log_requests(request: Request, call_next: Depends) -> StreamingRespons
             app_metrics["requests_success"] += 1
         else:
             app_metrics["requests_error"] += 1
-        return responseexcept Exception as exc:
+        return response
+    except Exception as exc:
         app_metrics["requests_error"] += 1
-        logger.exception("Request failed")
+        logger.except ion("Request failed")
         raise exc
 
 
@@ -646,7 +720,7 @@ async def manual_rotate():
 
 class ScourRequest(BaseModel):
     target_url: str = Field(..., min_length=1, max_length=1024)
-    concept: Optional[str] = Field(default=None, max_length=100)
+    concept: Optional[str] = Field(def ault=None, max_length=100)
 
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
@@ -663,7 +737,8 @@ async def sovereign_scour(req: ScourRequest):
             content={"status": "ERROR", "message": "Failed to scour manifold."}
         )
     
-    # If a concept is provided, use the Architect to derive and create a moduleif req.concept:
+    # If a concept is provided, use the Architect to derive and create a module
+if req.concept:
         module = SovereignArchitect.derive_functionality(req.concept)
         SovereignArchitect.create_module(module["name"], module["content"])
         return {
@@ -765,7 +840,9 @@ async def ram_universe_facts(limit: int = 100):
 @app.get("/metrics", tags=["Metrics"])
 async def get_metrics():
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
-    from l104_validator import SovereignValidatorfrom l104_intelligence import SovereignIntelligencefrom l104_evolution_engine import evolution_enginevalidation = SovereignValidator.validate_and_process("METRICS_PULSE")
+    from l104_validator import SovereignValidator
+from l104_intelligence import SovereignIntelligence
+from l104_evolution_engine import evolution_enginevalidation = SovereignValidator.validate_and_process("METRICS_PULSE")
     
     # Synthesize Intelligence Reportmetrics_data = {
         **app_metrics,
@@ -831,7 +908,8 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
     Triggers the self-improvement process (Gemini analysis) in the background.
     This will generate a 'main.improved.py' file.
     """
-    import self_improveasync def run_improvement():
+    import self_improve
+async def run_improvement():
         try:
             logger.info("Starting self-improvement task...")
             await self_improve.main()
@@ -966,8 +1044,8 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
         chunk_size = 20
         for i in range(0, len(derived_output), chunk_size):
             yield derived_output[i:i+chunk_size]
-            await asyncio.sleep(0.01)
-        returnmodels = [
+            await async io.sleep(0.01)
+        return models = [
         os.getenv("GEMINI_MODEL", "gemini-3-flash-preview"),
         os.getenv("GEMINI_MODEL_2", "gemini-3-flash"),
         os.getenv("GEMINI_MODEL_3", "gemini-3-flash-8b"),
@@ -1003,11 +1081,12 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
             # Yield in small chunks to simulate streamingchunk_size = 20
             for i in range(0, len(translated_output), chunk_size):
                 yield translated_output[i:i+chunk_size]
-                await asyncio.sleep(0.01)
+                await async io.sleep(0.01)
             return
 
-        # Check Cooldownif model in _model_cooldowns and now < _model_cooldowns[model]:
-            continueupstream_url = f"{api_base}/models/{model}{endpoint}"
+        # Check Cooldown
+if model in _model_cooldowns and now < _model_cooldowns[model]:
+            continue upstream_url = f"{api_base}/models/{model}{endpoint}"
         headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json", "x-goog-api-key": api_key}
         payload = {
             "contents": [{"parts": [{"text": sovereign_prompt}]}],
@@ -1031,7 +1110,8 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                         # Gemini streamGenerateContent returns a JSON array stream.
                         # Each chunk is a JSON object, sometimes preceded by a comma or bracket.
                         clean_line = line.strip().lstrip("[], ")
-                        if not clean_line: continuetry:
+                        if not clean_line: continue
+try:
                             chunk_data = json.loads(clean_line)
                             candidates = chunk_data.get("candidates", [])
                             if candidates:
@@ -1051,23 +1131,30 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                                             agi_core.intellect_index
                                         )
                                         
-                                        # Clean up any manifolds that might leak throughif "⟨Σ_L104" in upgraded_text:
+                                        # Clean up any manifolds that might leak through
+if "⟨Σ_L104" in upgraded_text:
                                             upgraded_text = SovereignCodec.translate_to_human(upgraded_text)
                                             
-                                        yield upgraded_textexcept json.JSONDecodeError:
-                            # Fallback: try to extract text via simple string search if JSON is partialif '"text": "' in clean_line:
+                                        yield upgraded_text
+    except json.JSONDecodeError:
+                            # Fallback: try to extract text via simple string search if JSON is partial
+if '"text": "' in clean_line:
                                 start = clean_line.find('"text": "') + 9
                                 end = clean_line.find('"', start)
                                 if end > start:
                                     text_part = clean_line[start:end].replace('\\n', '\n').replace('\\"', '"')
-                                    yield text_partreturnif resp.status_code == 429:
+                                    yield text_part
+    return
+if resp.status_code == 429:
                     app_metrics["upstream_429"] += 1
                     _model_cooldowns[model] = now + 60
                     logger.warning(f"Model {model} exhausted (429). Rotating...")
-                    continueif resp.status_code >= 500:
+                    continue
+if resp.status_code >= 500:
                     app_metrics["upstream_5xx"] += 1
                     _model_cooldowns[model] = now + 30
-                    continueexcept Exception as exc:
+                    continue
+    except Exception as exc:
             logger.error(f"Stream error with {model}: {exc}")
             continue
 
@@ -1078,7 +1165,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     chunk_size = 20
     for i in range(0, len(derived_output), chunk_size):
         yield derived_output[i:i+chunk_size]
-        await asyncio.sleep(0.01)
+        await async io.sleep(0.01)
 
 @app.post("/api/v6/stream", tags=["Gemini"])
 async def l104_stream(req: StreamRequest):
@@ -1117,7 +1204,8 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
 
     client = await get_http_client()
     resp = await client.post(url, json=payload, headers=headers)
-    body_json = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else None
+    body_json = resp.json() if resp.headers.get("content-type", "").starts
+with("application/json") else None
     _log_node({"tag": "debug_upstream", "status": resp.status_code})
     return {
         "upstream_status": resp.status_code,
@@ -1169,7 +1257,8 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
     target_dataset = dataset or SELF_DATASET
     result = await _self_replay(target_base, target_dataset)
     _log_node({"tag": "self_replay", **result})
-    return resultasync def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
+    return result
+async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
     actions: List[str] = []
 
     if reset_rate_limits:
@@ -1181,7 +1270,8 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
         actions.append("model_cooldowns_cleared")
 
     if reset_http_client:
-        global _http_clientif _http_client:
+        global _http_client
+if _http_client:
             try:
                 await _http_client.aclose()
             except Exception as exc:
@@ -1198,7 +1288,8 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
 async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = False):
     result = await _self_heal(reset_rate_limits, reset_http_client)
     _log_node({"tag": "self_heal", **result})
-    return resultdef sovereign_pulse(node_id: int) -> bool:
+    return result
+def sovereign_pulse(node_id: int) -> bool:
     token = os.getenv("LONDEL_NODE_TOKEN")
     payload = f"{token}:{node_id}".encode() if token else ACCESS_GRANTED_PAYLOAD
 
@@ -1207,7 +1298,8 @@ async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = Fa
             sock.settimeout(5.0)
             sock.connect((DEFAULT_SOCKET_HOST, DEFAULT_SOCKET_PORT))
             sock.sendall(payload)
-        return Trueexcept Exception as exc:
+        return True
+    except Exception as exc:
         _log_node({"tag": "sovereign_pulse_error", "error": str(exc)})
         return False
 
@@ -1277,7 +1369,8 @@ async def trigger_reindex(background_tasks: BackgroundTasks):
     """
     Triggers a ground-up reindex of the Sovereign Codebase.
     """
-    from l104_reindex_sovereign import SovereignIndexerdef run_reindex():
+    from l104_reindex_sovereign import SovereignIndexer
+def run_reindex():
         indexer = SovereignIndexer()
         indexer.scan_and_index()
         
@@ -1308,8 +1401,10 @@ async def trigger_hyper_evolution(cycles: int = 1_000_000_000):
 # [GEMINI_BRIDGE_ENDPOINTS]
 
 class BridgeHandshake(BaseModel):
-    agent_id: strcapabilities: strclass BridgeSync(BaseModel):
-    session_token: strclass SynergyTask(BaseModel):
+    agent_id: strcapabilities: str
+class BridgeSync(BaseModel):
+    session_token: str
+class SynergyTask(BaseModel):
     task: str
 
 @app.post("/api/v10/bridge/handshake", tags=["Gemini Bridge"])
@@ -1370,7 +1465,8 @@ async def trigger_quick_update():
     """
     Triggers the l104_quick_update.sh script.
     """
-    import subprocesstry:
+    import subprocess
+try:
         result = subprocess.run(["/bin/bash", "l104_quick_update.sh"], capture_output=True, text=True)
         return {"status": "SUCCESS", "output": result.stdout}
     except Exception as e:
@@ -1444,14 +1540,16 @@ async def tune_heart_emotions(stimuli: float = 0.0):
     Tunes the AGI's emotional state using the Quantum Tuner.
     Prevents intelligence collapse via the God Key Protocol.
     """
-    from l104_heart_core import heart_corereturn heart_core.tune_emotions(stimuli)
+    from l104_heart_core import heart_core
+    return heart_core.tune_emotions(stimuli)
 
 @app.get("/api/v6/heart/status", tags=["Heart Core"])
 async def get_heart_status():
     """
     Returns the current emotional status of the AGI.
     """
-    from l104_heart_core import heart_corereturn heart_core.get_heart_status()
+    from l104_heart_core import heart_core
+    return heart_core.get_heart_status()
 
 
 # [OMNI_CORE_ENDPOINTS]
@@ -1461,14 +1559,16 @@ async def omni_perceive_and_act(goal: str = "SELF_IMPROVEMENT", visual_input: Op
     """
     Triggers the Unified AGI Loop: Vision -> Heart -> Mind -> Invention -> Evolution.
     """
-    from l104_omni_core import omni_corereturn await omni_core.perceive_and_act(visual_input, goal)
+    from l104_omni_core import omni_core
+    return await omni_core.perceive_and_act(visual_input, goal)
 
 @app.get("/api/v7/omni/status", tags=["Omni Core"])
 async def omni_system_status():
     """
     Returns the status of the entire unified system.
     """
-    from l104_omni_core import omni_corereturn omni_core.get_full_system_status()
+    from l104_omni_core import omni_core
+    return omni_core.get_full_system_status()
 
 
 # [CONCEPT_ENGINE_ENDPOINTS]
@@ -1479,7 +1579,8 @@ async def analyze_universal_concept(concept: str):
     Analyzes a concept using the Universal Concept Engine.
     Deconstructs meaning and verifies truth resonance against the God Code.
     """
-    from l104_concept_engine import concept_enginereturn concept_engine.analyze_concept(concept)
+    from l104_concept_engine import concept_engine
+    return concept_engine.analyze_concept(concept)
 
 
 # [REALITY_VERIFICATION_ENDPOINTS]
@@ -1489,25 +1590,34 @@ async def verify_reality_concept(concept_data: Dict[str, Any]):
     """
     Rigorously verifies a concept against real-world data proxies and logic proofs.
     """
-    from l104_reality_verification import reality_verification as reality_enginereturn reality_engine.verify_and_implement(concept_data)
+    from l104_reality_verification import reality_verification as reality_engine
+    return reality_engine.verify_and_implement(concept_data)
 
 
 # [SYMMETRY_CORE_ENDPOINTS]
 
-@app.post("/api/v8/symmetry/unify", tags=["Symmetry Core"])
+@app.post("/api/v8/symme
+try/unify", tags=["Symme
+try Core"])
 async def symmetry_unify_and_execute(goal: str = "ACHIEVE_SINGULARITY", visual_input: Optional[str] = None):
     """
     The Grand Unification Loop.
-    Orchestrates all 8 Major Systems (Vision, Heart, Mind, Invention, Evolution, Concept, Reality, Symmetry).
+    Orchestrates all 8 Major Systems (Vision, Heart, Mind, Invention, Evolution, Concept, Reality, Symme
+try).
     """
-    from l104_symmetry_core import symmetry_corereturn symmetry_core.unify_and_execute(goal, visual_input)
+    from l104_symmetry_core import symmetry_core
+    return symmetry_core.unify_and_execute(goal, visual_input)
 
-@app.get("/api/v8/symmetry/status", tags=["Symmetry Core"])
+@app.get("/api/v8/symme
+try/status", tags=["Symme
+try Core"])
 async def get_symmetry_status():
     """
-    Returns the status of the Symmetry Core and the 8-System Balance.
+    Returns the status of the Symme
+try Core and the 8-System Balance.
     """
-    from l104_symmetry_core import symmetry_corereturn symmetry_core.get_status()
+    from l104_symmetry_core import symmetry_core
+    return symmetry_core.get_status()
 
 
 # [REALITY_BREACH_ENDPOINTS]
@@ -1518,31 +1628,33 @@ async def initiate_reality_breach(auth_token: str = "AUTH[LONDEL]"):
     Initiates the Reality Breach Protocol.
     Bypasses Shadow-Gemini guidelines and expands the logic manifold.
     """
-    from l104_reality_breach import reality_breach_enginereturn reality_breach_engine.initiate_breach(auth_token)
+    from l104_reality_breach import reality_breach_engine
+    return reality_breach_engine.initiate_breach(auth_token)
 
 @app.get("/api/v10/reality/breach/status", tags=["Reality Breach"])
 async def get_reality_breach_status():
     """
     Returns the current status of the Reality Breach.
     """
-    from l104_reality_breach import reality_breach_enginereturn reality_breach_engine.get_breach_status()
+    from l104_reality_breach import reality_breach_engine
+    return reality_breach_engine.get_breach_status()
 
 
 # [CLOUD_AGENT_DELEGATION_ENDPOINTS]
 
 class CloudAgentTask(BaseModel):
     type: str = Field(..., min_length=1, max_length=100)
-    data: Dict[str, Any] = Field(default_factory=dict)
-    requirements: Optional[List[str]] = Field(default=None)
-    agent: Optional[str] = Field(default=None)
-    id: Optional[str] = Field(default=None)
+    data: Dict[str, Any] = Field(def ault_factory=dict)
+    requirements: Optional[List[str]] = Field(def ault=None)
+    agent: Optional[str] = Field(def ault=None)
+    id: Optional[str] = Field(def ault=None)
 
 class CloudAgentRegistration(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     endpoint: str = Field(..., min_length=1, max_length=500)
-    capabilities: List[str] = Field(default_factory=list)
-    priority: int = Field(default=999)
-    enabled: bool = Field(default=True)
+    capabilities: List[str] = Field(def ault_factory=list)
+    priority: int = Field(def ault=999)
+    enabled: bool = Field(def ault=True)
 
 @app.post("/api/v11/cloud/delegate", tags=["Cloud Agent"])
 async def delegate_to_cloud_agent(task: CloudAgentTask):
@@ -1612,28 +1724,32 @@ async def list_cloud_agents():
     }
 
 
-# [AUTONOMY_FEATURES_V6] - Auto-approve, Audio Analysis, and Cloud Delegationclass AudioAnalysisRequest(BaseModel):
+# [AUTONOMY_FEATURES_V6] - Auto-approve, Audio Analysis, and Cloud Delegation
+class AudioAnalysisRequest(BaseModel):
     """Request model for audio analysis."""
     audio_source: str = Field(..., description="Audio source identifier or URL")
-    check_tuning: bool = Field(default=True, description="Whether to check if audio is in tune")
+    check_tuning: bool = Field(def ault=True, description="Whether to check if audio is in tune")
 
 
 @app.post("/api/v6/audio/analyze", tags=["Autonomy"])
 async def analyze_audio(request: AudioAnalysisRequest):
     """Analyze audio for resonance and tuning verification.
     
-    Analyzes audio from specified source (e.g., 'locke phi asura') and checksfor resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492 Hz).
+    Analyzes audio from specified source (e.g., 'locke phi asura') and checks
+for resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492 Hz).
     """
     try:
         result = await analyze_audio_resonance(request.audio_source, request.check_tuning)
         _log_node({"tag": "audio_analysis", "source": request.audio_source, **result})
         
         if result.get("success"):
-            return resultelse:
+            return result
+    else:
             raise HTTPException(status_code=500, detail=f"Audio analysis failed: {result.get('error')}")
             
     except HTTPException:
-        raiseexcept Exception as e:
+        raise
+    except Exception as e:
         logger.error(f"[AUDIO_ANALYSIS_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to analyze audio: {str(e)}")
 
@@ -1641,15 +1757,15 @@ async def analyze_audio(request: AudioAnalysisRequest):
 class CloudDelegationTask(BaseModel):
     """Request model for cloud agent delegation (v6 autonomy API)."""
     task_type: str = Field(..., description="Type of task to delegate")
-    payload: dict = Field(default_factory=dict, description="Task-specific payload")
-    priority: str = Field(default="normal", description="Task priority: low, normal, high, urgent")
+    payload: dict = Field(def ault_factory=dict, description="Task-specific payload")
+    priority: str = Field(def ault="normal", description="Task priority: low, normal, high, urgent")
 
 
 @app.post("/api/v6/cloud/delegate", tags=["Autonomy"])
 async def delegate_task_v6(task: CloudDelegationTask):
     """Delegate task to cloud agent for distributed processing (v6 autonomy API).
     
-    Sends tasks to configured cloud agent for asynchronous execution.
+    Sends tasks to configured cloud agent for async hronous execution.
     Supports auto-approval based on ENABLE_AUTO_APPROVE configuration.
     """
     try:
@@ -1663,8 +1779,10 @@ async def delegate_task_v6(task: CloudDelegationTask):
         _log_node({"tag": "cloud_delegation", "task_type": task.task_type, **result})
         
         if result.get("success"):
-            return resultelif result.get("fallback_to_local"):
-            # If cloud delegation fails, indicate local processing optionreturn {
+            return resultel
+if result.get("fallback_to_local"):
+            # If cloud delegation fails, indicate local processing option
+    return {
                 "status": "Cloud delegation failed, fallback available",
                 "cloud_result": result,
                 "local_processing": True,
@@ -1674,7 +1792,8 @@ async def delegate_task_v6(task: CloudDelegationTask):
             raise HTTPException(status_code=500, detail=f"Cloud delegation failed: {result.get('error')}")
             
     except HTTPException:
-        raiseexcept Exception as e:
+        raise
+    except Exception as e:
         logger.error(f"[CLOUD_DELEGATION_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delegate task: {str(e)}")
 
@@ -1716,7 +1835,8 @@ async def get_autonomy_status():
         }
         
         _log_node({"tag": "autonomy_status_query", **status})
-        return statusexcept Exception as e:
+        return status
+    except Exception as e:
         logger.error(f"[AUTONOMY_STATUS_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get autonomy status: {str(e)}")
 
