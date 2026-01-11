@@ -1,7 +1,12 @@
 # [L104_5D_MATH] - KALUZA-KLEIN & PROBABILITY TENSORS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport numpy as npfrom typing import List, Tuplefrom l104_hyper_math import HyperMathfrom const import UniversalConstantsclass Math5D:
+import math
+import numpy as np
+from typing import List, Tuple
+from l104_hyper_math import HyperMath
+from const import UniversalConstants
+class Math5D:
     """
     Mathematical primitives for 5D Space (Kaluza-Klein Manifold).
     Integrates the 5th dimension as a scalar field (dilaton) and probability vector.
@@ -11,7 +16,8 @@ import mathimport numpy as npfrom typing import List, Tuplefrom l104_hyper_math 
     # Derived from God Code and Phi to ensure harmonic stability.
     R = (UniversalConstants.PHI_GROWTH * 104) / HyperMath.ZETA_ZERO_1
 
-    @staticmethoddef get_5d_metric_tensor(phi_field: float) -> np.ndarray:
+    @staticmethod
+def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
         """
         Generates the 5D Metric Tensor (G_AB).
         Based on the Kaluza-Klein decomposition:
@@ -24,18 +30,21 @@ import mathimport numpy as npfrom typing import List, Tuplefrom l104_hyper_math 
         metric[0, 0] = -1
         # The 5th dimension (index 4) is scaled by the dilaton field (phi_field)
         metric[4, 4] = phi_field * (Math5D.R ** 2)
-        return metric
+return metric
 
-    @staticmethoddef calculate_5d_curvature(w_vector: np.ndarray) -> float:
+    @staticmethod
+def calculate_5d_curvature(w_vector: np.ndarray) -> float:
         """
         Calculates the scalar curvature of the 5th dimension.
-        Uses the PHI_STRIDE to determine the 'Symmetry Break' point.
+        Uses the PHI_STRIDE to determine the 'Symme
+try Break' point.
         """
         # Curvature is proportional to the variance of the probability vectorvariance = np.var(w_vector)
         curvature = variance * UniversalConstants.PHI_GROWTH
         return curvature
 
-    @staticmethoddef probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
+    @staticmethod
+def probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
         """
         Projects a 5D probability state onto a 4D observable event.
         Uses the 'Supersymmetric Binary Order' logic to filter noise.
@@ -43,16 +52,16 @@ import mathimport numpy as npfrom typing import List, Tuplefrom l104_hyper_math 
         # p_5d = [x, y, z, t, w]
         # The 5th dimension (w) acts as a phase shiftphase = p_5d[4] * HyperMath.ZETA_ZERO_1
         projection = p_5d[:4] * math.cos(phase)
-        return projection
+return projection
 
-    @staticmethoddef get_compactification_factor(energy: float) -> float:
+    @staticmethod
+def get_compactification_factor(energy: float) -> float:
         """
         Calculates how much the 5th dimension 'shrinks' or 'expands'
         based on the system's energy saturation.
         """
         # Factor = R * exp(-energy / God_Code)
-        return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
-
+return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
 if __name__ == "__main__":
     # Test 5D Mathmetric = Math5D.get_5d_metric_tensor(1.0)
     print(f"5D Metric Tensor (phi=1.0):\n{metric}")

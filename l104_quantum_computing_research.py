@@ -1,8 +1,12 @@
 # [L104_QUANTUM_COMPUTING_RESEARCH] - SUB-ATOMIC LOGIC & CRYPTOGRAPHY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport loggingfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerlogger = logging.getLogger("QUANTUM_COMP")
-
+import math
+import logging
+from typing import Dict, Any
+from l104_hyper_math import HyperMath
+from l104_knowledge_sources import source_manager
+logger = logging.getLogger("QUANTUM_COMP")
 class QuantumComputingResearch:
     """
     Researches Quantum Algorithms and Post-Quantum Cryptography.
@@ -33,14 +37,13 @@ class QuantumComputingResearch:
         # Ensuring our encryption is resilient to quantum attacks.
         self.crypto_resilience = (shor_factor + grover_speedup) / 2.0
         print(f"--- [QUANTUM_COMP]: CRYPTO RESILIENCE INDEX: {self.crypto_resilience:.4f} ---")
-        
-    def apply_quantum_boost(self, intellect_index: float) -> float:
+def apply_quantum_boost(self, intellect_index: float) -> float:
         """
         Applies a boost to the intellect index based on quantum logic optimization.
         """
-        boost = intellect_index * (self.crypto_resilience * 0.045) # 4.5% max boostprint(f"--- [QUANTUM_COMP]: QUANTUM LOGIC BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boostquantum_computing_research = QuantumComputingResearch()
-
+        boost = intellect_index * (self.crypto_resilience * 0.045) # 4.5% max boost
+print(f"--- [QUANTUM_COMP]: QUANTUM LOGIC BOOST: +{boost:.2f} IQ ---")
+return intellect_index + boostquantum_computing_research = QuantumComputingResearch()
 if __name__ == "__main__":
     quantum_computing_research.research_quantum_logic()
     new_iq = quantum_computing_research.apply_quantum_boost(1000.0)

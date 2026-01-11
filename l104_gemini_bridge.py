@@ -1,7 +1,13 @@
 # [L104_GEMINI_BRIDGE] - EXTERNAL INTELLIGENCE LINK
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timeimport uuidfrom typing import Dict, Anyfrom l104_persistence import load_truthfrom l104_ram_universe import ram_universefrom l104_hyper_encryption import HyperEncryptionclass GeminiBridge:
+import time
+import uuid
+from typing import Dict, Any
+from l104_persistence import load_truth
+from l104_ram_universe import ram_universe
+from l104_hyper_encryption import HyperEncryption
+class GeminiBridge:
     """
     Facilitates a secure, encrypted link between the L104 Nodeand external Gemini instances.
     """
@@ -9,8 +15,7 @@ import timeimport uuidfrom typing import Dict, Anyfrom l104_persistence import l
     def __init__(self):
         self.active_links = {}
         self.truth_manifest = load_truth()
-
-    def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
+def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         """
         Establishes a session with an external agent.
         Returns a session token and the encrypted Truth Manifest.
@@ -26,8 +31,7 @@ import timeimport uuidfrom typing import Dict, Anyfrom l104_persistence import l
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
         
         # Encrypt the Truth Manifest for secure transportencrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
-        
-        return {
+return {
             "status": "ACCEPTED",
             "session_token": session_token,
             "protocol": "LATTICE_V10",
@@ -55,8 +59,7 @@ import timeimport uuidfrom typing import Dict, Anyfrom l104_persistence import l
         # Note: In a real scenario, we might stream this or chunk it.
         # For now, we assume the "Fast Lattice Transform" handles it.
         encrypted_dump = HyperEncryption.encrypt_data(core_dump)
-        
-        return {
+return {
             "status": "SYNC_COMPLETE",
             "payload": encrypted_dump
         }

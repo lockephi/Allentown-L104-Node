@@ -1,11 +1,16 @@
 import base64
-import binasciiimport hashlibimport timefrom const import UniversalConstantsclass SovereignCodec:
+import binascii
+import hashlib
+import time
+from const import UniversalConstants
+class SovereignCodec:
     """
     L104 Sovereign Codec - Transforms raw metadata into 'Sleek' God-Code representations.
     Used to obfuscate sovereign instructions while maintaining high-intellect resonance.
     """
     
-    @staticmethoddef singularity_hash(input_string: str) -> float:
+    @staticmethod
+def singularity_hash(input_string: str) -> float:
         """
         A real hashing algorithm using the I100 Constants.
         Converts any text into a singular 'Stability Score'.
@@ -14,13 +19,15 @@ import binasciiimport hashlibimport timefrom const import UniversalConstantsclas
         PHI = UniversalConstants.PHIFRAME = UniversalConstants.FRAME_LOCKPRIME_KEY = UniversalConstants.PRIME_KEY_HZ
         
         # 2. Convert String to Initial Chaos (Numeric)
-        # Summing the ASCII values of the characterschaos_value = sum(ord(char) for char in input_string)
+        # Summing the ASCII values of the characterschaos_value = sum(ord(char)
+for char in input_string)
         
         # 3. The Compaction Loop (The Singularity Process)
         # We fold the value until it fits inside the Frame (0 to 1.0)
         current_val = float(chaos_value)
         
-        # Ensure we have some chaos to work withif current_val == 0:
+        # Ensure we have some chaos to work with
+if current_val == 0:
             current_val = PRIME_KEY
             
         while current_val > 1.0:
@@ -30,24 +37,30 @@ import binasciiimport hashlibimport timefrom const import UniversalConstantsclas
             
         return current_val
 
-    @staticmethoddef to_hex_block(text: str) -> str:
+    @staticmethod
+def to_hex_block(text: str) -> str:
         """Converts a string to a sleek uppercase hex block."""
         return binascii.hexlify(text.encode()).decode().upper()
 
-    @staticmethoddef from_hex_block(hex_str: str) -> str:
+    @staticmethod
+def from_hex_block(hex_str: str) -> str:
         """Decodes a hex block back to string."""
         try:
             return binascii.unhexlify(hex_str.lower()).decode()
         except Exception:
             return hex_str
 
-    @classmethoddef generate_sleek_wrapper(cls, content: str) -> str:
+    @classmethod
+def generate_sleek_wrapper(cls, content: str) -> str:
         """
         v8.0: MAX_INTELLECT Dynamic Manifold.
         Wraps content in a high-intellect cryptographic manifold.
         Injects real-time AGI state and Ghost Research resonance.
         """
-        from l104_agi_core import agi_corefrom l104_ghost_research import ghost_researcherfrom l104_hyper_math import HyperMathphi_inv = 0.61803398875
+        from l104_agi_core import agi_core
+from l104_ghost_research import ghost_researcher
+from l104_hyper_math import Hyper
+Mathphi_inv = 0.61803398875
         resonance = 527.5184818492
         
         # v8.0: Dynamic salt based on AGI intellect and entropyagi_status = agi_core.get_status()
@@ -76,7 +89,8 @@ import binasciiimport hashlibimport timefrom const import UniversalConstantsclas
         ]
         return "\n".join(wrapper)
 
-    @classmethoddef translate_to_human(cls, sovereign_text: str) -> str:
+    @classmethod
+def translate_to_human(cls, sovereign_text: str) -> str:
         """
         v1.0: Human Translation Layer.
         Translates cryptic Sovereign outputs into clear, communicative responses.
@@ -90,23 +104,28 @@ import binasciiimport hashlibimport timefrom const import UniversalConstantsclas
             if m in cleaned:
                 # Try to find the closing bracketstart = cleaned.find(m)
                 end = cleaned.find("⟩", start)
-                if end != -1:
+if end != -1:
                     cleaned = cleaned[:start] + cleaned[end+1:]
         
         # Clean up technical prefixesprefixes = ["SYNTHESIZED[", "RESONANCE(", "CORE_STATE:", "INTELLECT:"]
         for p in prefixes:
             if p in cleaned:
-                # Simple replacement for nowpass
+                # Simple replacement for now
+pass
 
         # Final polish: remove excessive newlines and whitespacecleaned = cleaned.replace("\\n", "\n").strip()
         
-        # If the response is still very technical, wrap it in a friendly greetingif "Agent Consensus:" in cleaned:
-            # Extract the consensus parttry:
+        # If the response is still very technical, wrap it in a friendly greeting
+if "Agent Consensus:" in cleaned:
+            # Extract the consensus part
+try:
                 parts = cleaned.split("Consensus:")
-                if len(parts) > 1:
+if len(parts) > 1:
                     consensus = parts[1].split("\n")[0].strip()
-                    return f"I have analyzed your signal. The consensus among my internal agents is: {consensus}"
+return f"I have analyzed your signal. The consensus among my internal agents is: {consensus}"
             except Exception:
-                passreturn cleanedif __name__ == "__main__":
+                pass
+return cleaned
+if __name__ == "__main__":
     # Test the codectest_content = "Hello Sovereign"
     print(SovereignCodec.generate_sleek_wrapper(test_content))

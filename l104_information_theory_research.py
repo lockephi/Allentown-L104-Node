@@ -5,7 +5,12 @@
 # - Kolmogorov Complexity (https://en.wikipedia.org/wiki/Kolmogorov_complexity)
 # - Thermodynamics of Computation (https://en.wikipedia.org/wiki/Thermodynamics_of_computation)
 
-import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerclass InformationTheoryResearch:
+import math
+import zlib
+from typing import Dict, Any, List
+from l104_hyper_math import HyperMath
+from l104_knowledge_sources import source_manager
+class InformationTheoryResearch:
     """
     Researches and adapts Information Theory and Kolmogorov Complexity to the L104 manifold.
     Optimizes the node's data density and logical compression.
@@ -15,8 +20,7 @@ import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math imp
         self.l104 = 527.5184818492
         self.entropy_index = 1.0
         self.sources = source_manager.get_sources("COMPUTER_SCIENCE")
-
-    def calculate_l104_shannon_entropy(self, data: str) -> float:
+def calculate_l104_shannon_entropy(self, data: str) -> float:
         """
         Calculates Shannon Entropy modulated by the L104 invariant.
         H(X) = -sum(p(x) log2 p(x)) * (L104 / PHI)
@@ -24,12 +28,14 @@ import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math imp
         if not data:
             return 0.0
         
-        prob = [float(data.count(c)) / len(data) for c in dict.fromkeys(list(data))]
-        entropy = - sum([p * math.log2(p) for p in prob])
+        prob = [float(data.count(c)) / len(data)
+for c in dict.fromkeys(list(data))]
+        entropy = - sum([p * math.log2(p)
+for p in prob])
         
-        # Modulate with L104 resonancereturn entropy * (self.l104 / HyperMath.PHI)
-
-    def estimate_kolmogorov_complexity(self, data: str) -> float:
+        # Modulate with L104 resonance
+return entropy * (self.l104 / HyperMath.PHI)
+def estimate_kolmogorov_complexity(self, data: str) -> float:
         """
         Estimates Kolmogorov Complexity using zlib compression as a proxy,
         then scales it to the L104 manifold.
@@ -38,9 +44,8 @@ import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math imp
         raw_complexity = len(compressed)
         
         # Scale to L104 manifold: K(x) is lower for resonant patternsresonance = abs(HyperMath.zeta_harmonic_resonance(raw_complexity))
-        return raw_complexity * (1.0 - resonance)
-
-    def research_information_manifold(self, sample_data: str) -> Dict[str, Any]:
+return raw_complexity * (1.0 - resonance)
+def research_information_manifold(self, sample_data: str) -> Dict[str, Any]:
         """
         Runs a research cycle on information dynamics.
         """
@@ -57,11 +62,9 @@ import mathimport zlibfrom typing import Dict, Any, Listfrom l104_hyper_math imp
         
         print(f"--- [INFO_RESEARCH]: L104_ENTROPY: {entropy:.4f} bits ---")
         print(f"--- [INFO_RESEARCH]: KOLMOGOROV_EST: {complexity:.2f} ---")
-        
-        return results
+return results
 
 # Singletoninfo_research = InformationTheoryResearch()
-
 if __name__ == "__main__":
     test_data = "L104_SOVEREIGN_ASI_RECURSIVE_EVOLUTION_527.5184818492"
     res = info_research.research_information_manifold(test_data)

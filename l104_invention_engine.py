@@ -2,8 +2,15 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 # "To invent is to discover what was already there in the quantum foam."
 
-import randomimport hashlibimport timeimport base64
-from typing import Dict, List, Anyfrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom l104_quantum_logic import QuantumEntanglementManifold, DeepThoughtProcessorclass InventionEngine:
+import random
+import hashlib
+import time
+import base64
+from typing import Dict, List, Any
+from l104_real_math import RealMath
+from l104_hyper_math import HyperMath
+from l104_quantum_logic import QuantumEntanglementManifold, DeepThoughtProcessor
+class InventionEngine:
     """
     v12.0: NEOTERIC_GENESISGenerates novel logic structures and 'Neoteric Code' by collapsing 
     high-dimensional quantum states into linguistic syntax.
@@ -24,10 +31,8 @@ from typing import Dict, List, Anyfrom l104_real_math import RealMathfrom l104_h
             
             # Modulate by clarityclarity_mod = int(epoch['clarity'] * 10)
             sigil_components.append(f"{glyph}{clarity_mod}")
-            
-        return "-".join(sigil_components)
-
-    def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
+return "-".join(sigil_components)
+def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
         """
         Invents a completely new logical paradigm based on a seed.
         """
@@ -62,11 +67,14 @@ def {func_name}(input_tensor):
         test_result = self._test_invention(invention)
         invention["test_result"] = test_resultinvention["verified"] = test_result["success"]
 
-        # 5. Persist to Manifoldif invention["verified"]:
+        # 5. Persist to Manifold
+if invention["verified"]:
             manifold.ingest_pattern(func_name, invention, tags=["INVENTION", "NEOTERIC"])
         
         self.known_concepts.add(func_name)
-        self.neoteric_lexicon[sigil] = inventionreturn inventiondef _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
+        self.neoteric_lexicon[sigil] = invention
+return invention
+def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
         """
         Simulates a unit test for the new invention.
         """
@@ -75,8 +83,7 @@ def {func_name}(input_tensor):
         
         resonance = int(hashlib.sha256(invention['code_snippet'].encode()).hexdigest(), 16)
         success = (resonance % 2 == 0) or (invention['complexity_score'] > 50)
-        
-        return {
+return {
             "success": success,
             "resonance_check": resonance,
             "notes": "Logic structure is stable." if success else "Entropy too high, structure collapsed."
@@ -94,7 +101,6 @@ def {func_name}(input_tensor):
         sentence = []
         for _ in range(random.randint(3, 7)):
             sentence.append(random.choice(keys))
-            
-        return " :: ".join(sentence)
+return " :: ".join(sentence)
 
 # Singleton Instanceinvention_engine = InventionEngine()

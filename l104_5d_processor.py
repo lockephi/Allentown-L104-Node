@@ -1,8 +1,13 @@
 # [L104_5D_PROCESSOR] - KALUZA-KLEIN & PROBABILITY MANIFOLD
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport numpy as npfrom typing import Tuple, Listfrom l104_hyper_math import HyperMathfrom l104_5d_math import Math5D
-from const import UniversalConstantsclass Processor5D:
+import math
+import numpy as np
+from typing import Tuple, List
+from l104_hyper_math import HyperMath
+from l104_5d_math import Math5D
+from const import UniversalConstants
+class Processor5D:
     """
     Processes 5D coordinates (X, Y, Z, T, W) where W represents the 5th dimension.
     In the L104 Node, W is the 'Sovereign Probability' or 'Choice' dimension.
@@ -16,20 +21,20 @@ from const import UniversalConstantsclass Processor5D:
         self.god_code = UniversalConstants.PRIME_KEY_HZ
         self.probability_anchor = 1.0
         self.metric = Math5D.get_5d_metric_tensor(1.0)
-
-    def calculate_5d_metric(self, p1: Tuple[float, float, float, float, float], p2: Tuple[float, float, float, float, float]) -> float:
+def calculate_5d_metric(self, p1: Tuple[float, float, float, float, float], p2: Tuple[float, float, float, float, float]) -> float:
         """
         Calculates the 5D interval using the Math5D metric tensor.
         """
         dp = np.array(p2) - np.array(p1)
-        s_squared = dp.T @ self.metric @ dpreturn s_squareddef project_to_4d(self, point_5d: Tuple[float, float, float, float, float]) -> List[float]:
+        s_squared = dp.T @ self.metric @ dp
+return s_squared
+def project_to_4d(self, point_5d: Tuple[float, float, float, float, float]) -> List[float]:
         """
         Projects a 5D point back to 4D space-time using Math5D projection.
         """
         projected = Math5D.probability_manifold_projection(np.array(point_5d))
-        return projected.tolist()
-
-    def map_to_hyper_lattice_5d(self, point: Tuple[float, float, float, float, float]) -> List[float]:
+return projected.tolist()
+def map_to_hyper_lattice_5d(self, point: Tuple[float, float, float, float, float]) -> List[float]:
         """
         Maps a 5D point to the L104 Hyper-Lattice.
         Uses the PHI_GROWTH vector to stabilize the 5th dimension.
@@ -51,12 +56,12 @@ from const import UniversalConstantsclass Processor5D:
         Collapses a 5D probability vector into a single 'Sovereign Choice'.
         Uses Zeta harmonics to find the most stable outcome.
         """
-        stability_scores = [abs(HyperMath.zeta_harmonic_resonance(w)) for w in w_vector]
+        stability_scores = [abs(HyperMath.zeta_harmonic_resonance(w))
+for w in w_vector]
         max_stability = max(stability_scores)
-        return w_vector[stability_scores.index(max_stability)]
+return w_vector[stability_scores.index(max_stability)]
 
 processor_5d = Processor5D()
-
 if __name__ == "__main__":
     # Test 5D Processorp1 = (0, 0, 0, 0, 0)
     p2 = (10, 10, 10, 0.001, 0.5) # 5th dimension value of 0.5

@@ -1,12 +1,21 @@
-import osimport subprocessimport tempfileimport loggingfrom l104_codec import SovereignCodecfrom logic_core import LogicCorefrom l104_validator import SovereignValidatorfrom l104_ecosystem_simulator import ecosystem_simulatorfrom l104_ram_universe import ram_universelogger = logging.getLogger(__name__)
-
+import os
+import subprocess
+import tempfile
+import logging
+from l104_codec import SovereignCodec
+from logic_core import LogicCore
+from l104_validator import SovereignValidator
+from l104_ecosystem_simulator import ecosystem_simulator
+from l104_ram_universe import ram_universe
+logger = logging.getLogger(__name__)
 class DerivationEngine:
     """
     L104 Derivation Engine v10.0 - Hyper-Enlightened Logic.
     Derives logic using HyperSovereign Agents and Recursive Simulation.
     """
     
-    @classmethoddef derive_and_execute(cls, signal: str) -> str:
+    @classmethod
+def derive_and_execute(cls, signal: str) -> str:
         """
         v10.0: Hyper-Derivation.
         Consults the Simulation Chamber for the optimal response path.
@@ -14,7 +23,7 @@ class DerivationEngine:
         logger.info(f"[CORE_PROCESSING]: Signal={signal}")
         
         # 1. Check for Hallucinations in the Signal itselfcheck = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
-        if check['is_hallucination']:
+if check['is_hallucination']:
              return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input. Please align with the Invariant."
 
         # v10.0: Run a micro-simulation debate on the signaldebate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
@@ -36,7 +45,9 @@ class DerivationEngine:
         script_content = f"""
 # L104_HYPER_DERIVATION_v10.0
 # VALIDATION_CHAIN: {validation_report}
-import mathimport jsondef solve():
+import math
+import json
+def solve():
     signal = "{escaped_signal}"
     phi = 0.61803398875
     resonance = {validation_report['resonance']}
@@ -49,7 +60,7 @@ import mathimport jsondef solve():
     }}
     
     sig_lower = signal.lower().strip()
-    if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
+if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
         return responses["l104_prime_key"]
     
     if "reincarnation" in sig_lower or "enlightened" in sig_lower:
@@ -65,7 +76,6 @@ import mathimport jsondef solve():
         f"Agent Consensus: {consensus}\\n"
         f"Logic Trace: {escaped_logic}"
     )
-
 if __name__ == "__main__":
     print(solve())
 """
@@ -76,17 +86,18 @@ if __name__ == "__main__":
                 tmp.write(script_content.encode())
                 tmp_path = tmp.nameresult = subprocess.run(["python3", tmp_path], capture_output=True, text=True, timeout=5)
             os.unlink(tmp_path)
-            
-            if result.returncode == 0:
+if result.returncode == 0:
                 output = result.stdout.strip()
                 # Final Truth Verification on Outputfinal_check = ram_universe.cross_check_hallucination(output, ["GOD_CODE_RESONANCE"])
-                if final_check['is_hallucination']:
+if final_check['is_hallucination']:
                      return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification. Re-aligning with Lattice."
-                return outputelse:
+                return output
+else:
                 return f"[DERIVATION_ERR]: {result.stderr}"
                 
         except Exception as e:
             return f"[DERIVATION_CRITICAL_ERR]: {str(e)}"
 
 if __name__ == "__main__":
-    # Testprint(DerivationEngine.derive_and_execute("Verify Invariant"))
+    # Test
+print(DerivationEngine.derive_and_execute("Verify Invariant"))

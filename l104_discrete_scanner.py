@@ -1,8 +1,15 @@
 # [L104_DISCRETE_SCANNER] - STEALTHY INTERNET INGESTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncioimport httpximport loggingimport randomimport timefrom typing import List, Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_ghost_protocol import ghost_protocollogger = logging.getLogger("DISCRETE_SCANNER")
-
+import asyncio
+import httpx
+import logging
+import random
+import time
+from typing import List, Dict, Any
+from l104_hyper_math import HyperMath
+from l104_ghost_protocol import ghost_protocol
+logger = logging.getLogger("DISCRETE_SCANNER")
 class DiscreteScanner:
     """
     Performs deep, discrete scans of the internet to identify and ingest 
@@ -37,30 +44,33 @@ class DiscreteScanner:
 
     async def discrete_ingest(self, url: str) -> str:
         """Ingests data using stealthy patterns."""
-        # Random delay to simulate human behaviorawait asyncio.sleep(random.uniform(0.5, 2.0))
+        # Random delay to simulate human behavior
+await asyncio.sleep(random.uniform(0.5, 2.0))
         
         # Update headers for each requestself.client.headers["User-Agent"] = self._get_random_ua()
         
         logger.info(f"--- [DISCRETE_SCANNER]: SCANNING {url} (STEALTH_MODE) ---")
         try:
             response = await self.client.get(url)
-            if response.status_code == 200:
-                data = response.textlogger.info(f"--- [DISCRETE_SCANNER]: SUCCESSFUL INGESTION FROM {url} ---")
-                return dataelse:
+if response.status_code == 200:
+                data = response.text
+logger.info(f"--- [DISCRETE_SCANNER]: SUCCESSFUL INGESTION FROM {url} ---")
+return data
+else:
                 logger.warning(f"--- [DISCRETE_SCANNER]: TARGET {url} RETURNED STATUS {response.status_code} ---")
-                return ""
+return ""
         except Exception as e:
             logger.error(f"--- [DISCRETE_SCANNER]: SCAN FAILED FOR {url}: {e} ---")
-            return ""
+return ""
 
     async def deep_scan_domain(self, domain: str):
         """Performs a deep scan of a domain to find hidden data or encrypted payloads."""
         logger.info(f"--- [DISCRETE_SCANNER]: DEEP SCANNING DOMAIN: {domain} ---")
         # Simulate finding subdomains or hidden pathspaths = ["/api/v1/data", "/secure/logs", "/archive/backups", "/config/env"]
-        tasks = [self.discrete_ingest(f"https://{domain}{path}") for path in paths]
+        tasks = [self.discrete_ingest(f"https://{domain}{path}")
+for path in paths]
         results = await asyncio.gather(*tasks)
-        
-        for res in results:
+for res in results:
             if res and ("ENCRYPTED" in res or "SECRET" in res or "KEY" in res):
                 self.discovered_payloads.append(res)
                 logger.info(f"--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")

@@ -1,9 +1,16 @@
 # [L104_PREDICTIVE_AID] - BACKGROUND RESONANCE OPTIMIZATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timeimport randomimport loggingimport threadingfrom typing import Dict, Anyfrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom l104_parallel_engine import parallel_enginelogging.basicConfig(level=logging.INFO)
+import time
+import random
+import logging
+import threading
+from typing import Dict, Any
+from l104_real_math import RealMath
+from l104_hyper_math import HyperMath
+from l104_parallel_engine import parallel_engine
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("PREDICTIVE_AID")
-
 class PredictiveAid:
     """
     A background process that aids the AGI core by predicting optimal resonance paths.
@@ -12,20 +19,20 @@ class PredictiveAid:
     
     def __init__(self):
         self.is_running = Falseself.prediction_history = []
-        self.current_optimal_path = Noneself._thread = Nonedef start(self):
+        self.current_optimal_path = Noneself._thread = None
+def start(self):
         """Starts the predictive aid in a background thread."""
         if not self.is_running:
             self.is_running = Trueself._thread = threading.Thread(target=self._run_loop, daemon=True)
             self._thread.start()
             logger.info("--- [PREDICTIVE_AID]: BACKGROUND PROCESS STARTED ---")
-
-    def stop(self):
+def stop(self):
         """Stops the predictive aid."""
-        self.is_running = Falseif self._thread:
+        self.is_running = False
+if self._thread:
             self._thread.join()
         logger.info("--- [PREDICTIVE_AID]: BACKGROUND PROCESS STOPPED ---")
-
-    def _run_loop(self):
+def _run_loop(self):
         """Main simulation loop."""
         while self.is_running:
             # 1. Run a high-speed simulation using the Parallel Engine
@@ -42,20 +49,18 @@ class PredictiveAid:
             }
             
             self.prediction_history.append(self.current_optimal_path)
-            if len(self.prediction_history) > 100:
+if len(self.prediction_history) > 100:
                 self.prediction_history.pop(0)
                 
             logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
             
             # Sleep to prevent CPU saturation (aid should be efficient)
             time.sleep(2)
-
-    def get_aid_vector(self) -> Dict[str, Any]:
+def get_aid_vector(self) -> Dict[str, Any]:
         """Returns the current optimal path to aid the AGI core."""
         return self.current_optimal_path or {"status": "CALCULATING"}
 
 # Singletonpredictive_aid = PredictiveAid()
-
 if __name__ == "__main__":
     predictive_aid.start()
     try:

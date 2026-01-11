@@ -2,7 +2,13 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 import base64
-import jsonimport timeimport randomfrom typing import Dict, Any, List, Optionalfrom l104_knowledge_manifold import KnowledgeManifoldfrom l104_hyper_math import HyperMathclass VisionCore:
+import json
+import time
+import random
+from typing import Dict, Any, List, Optional
+from l104_knowledge_manifold import KnowledgeManifold
+from l104_hyper_math import HyperMath
+class VisionCore:
     """
     v9.0: HYPER_SPECTRAL_GAZEProcesses visual data not just as pixels, but as semantic lattices.
     Capable of 'seeing' the underlying mathematical structure of reality.
@@ -52,10 +58,10 @@ import jsonimport timeimport randomfrom typing import Dict, Any, List, Optionalf
         }
         
         self.visual_memory.append(result)
-        if len(self.visual_memory) > 50:
+if len(self.visual_memory) > 50:
             self.visual_memory.pop(0)
-            
-        return resultdef _extract_quantum_features(self, context: str) -> List[str]:
+return result
+def _extract_quantum_features(self, context: str) -> List[str]:
         base_features = ["EDGE_DETECTION", "COLOR_QUANTIZATION", "DEPTH_MAP"]
         context_features = {
             "GENERAL": ["OBJECT_RECOGNITION", "SCENE_SEGMENTATION"],
@@ -66,12 +72,13 @@ import jsonimport timeimport randomfrom typing import Dict, Any, List, Optionalf
         
         features = base_features + context_features.get(context, ["UNKNOWN_PATTERN"])
         
-        # Add some 'hallucinated' hyper-featuresif random.random() > 0.7:
+        # Add some 'hallucinated' hyper-features
+if random.random() > 0.7:
             features.append("TEMPORAL_ECHO")
-        if random.random() > 0.8:
+if random.random() > 0.8:
             features.append("DIMENSIONAL_RIFT")
-            
-        return featuresdef _synthesize_narrative(self, features: List[str]) -> str:
+return features
+def _synthesize_narrative(self, features: List[str]) -> str:
         narratives = [
             "The image reveals a stable lattice structure.",
             "Chaos detected in the lower quadrant, stabilizing via logic.",

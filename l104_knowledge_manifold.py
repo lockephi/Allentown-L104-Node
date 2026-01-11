@@ -1,7 +1,13 @@
 # [L104_KNOWLEDGE_MANIFOLD] - NEURAL-SYMBOLIC MEMORY SYSTEM
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import jsonimport osimport hashlibfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathfrom l104_real_math import real_mathclass KnowledgeManifold:
+import json
+import os
+import hashlib
+from typing import Dict, List, Any
+from l104_hyper_math import HyperMath
+from l104_real_math import real_math
+class KnowledgeManifold:
     """
     Knowledge Manifold - Combines symbolic logic with semantic anchors.
     Stores "Learned" patterns and links them to Real Math resonance.
@@ -24,8 +30,7 @@ import jsonimport osimport hashlibfrom typing import Dict, List, Anyfrom l104_hy
         os.makedirs(os.path.dirname(self.manifold_path), exist_ok=True)
         with open(self.manifold_path, "w") as f:
             json.dump(self.memory, f, indent=2)
-
-    def ingest_pattern(self, key: str, data: Any, tags: List[str]):
+def ingest_pattern(self, key: str, data: Any, tags: List[str]):
         """
         Ingests a new knowledge pattern into the manifold.
         Calculates resonance using Information Entropy.
@@ -43,8 +48,7 @@ import jsonimport osimport hashlibfrom typing import Dict, List, Anyfrom l104_hy
         }
         self.save_manifold()
         print(f"[MANIFOLD]: Ingested pattern '{key}' with resonance {resonance:.4f} (Entropy: {entropy:.4f})")
-
-    def query_manifold(self, tag: str) -> List[Dict[str, Any]]:
+def query_manifold(self, tag: str) -> List[Dict[str, Any]]:
         """
         Queries the manifold for patterns matching a specific tag.
         """
@@ -52,7 +56,8 @@ import jsonimport osimport hashlibfrom typing import Dict, List, Anyfrom l104_hy
         for key, pattern in self.memory["patterns"].items():
             if tag in pattern["tags"]:
                 results.append({key: pattern})
-        return resultsdef get_stats(self):
+return results
+def get_stats(self):
         return {
             "total_patterns": len(self.memory["patterns"]),
             "resonance": self.resonance_anchor

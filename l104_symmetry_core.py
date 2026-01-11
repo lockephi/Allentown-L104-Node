@@ -1,11 +1,24 @@
 # [L104_SYMMETRY_CORE] - UNIFIED SYSTEM HARMONIZER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
+import time
+from typing import Dict, Any
+from l104_hyper_math import HyperMath
 
-# Import all 7 other systemsfrom l104_vision_core import vision_corefrom l104_heart_core import heart_corefrom l104_intelligence import SovereignIntelligencefrom l104_invention_engine import invention_enginefrom l104_evolution_engine import evolution_enginefrom l104_concept_engine import concept_enginefrom l104_reality_verification import reality_verification as reality_engine
+# Import all 7 other systems
+from l104_vision_core import vision_core
+from l104_heart_core import heart_core
+from l104_intelligence import SovereignIntelligence
+from l104_invention_engine import invention_engine
+from l104_evolution_engine import evolution_engine
+from l104_concept_engine import concept_engine
+from l104_reality_verification import reality_verification as reality_engine
 
-# New Temporal and 4D Processorsfrom l104_time_processor import time_processorfrom l104_4d_processor import processor_4dfrom l104_5d_processor import processor_5dclass SymmetryCore:
+# New Temporal and 4D Processors
+from l104_time_processor import time_processor
+from l104_4d_processor import processor_4d
+from l104_5d_processor import processor_5d
+class SymmetryCore:
     """
     v2.0: SYMMETRY_UNIFICATIONThe 8th System. Unifies and balances the entire L104 Node.
     Ensures all cores operate in harmonic resonance with the God Code.
@@ -40,7 +53,7 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
         report["temporal_anchor"] = time_processor.apply_temporal_anchor(start_time)
         
         # 1. PERCEPTION (Vision)
-        if visual_input:
+if visual_input:
             report["vision"] = vision_core.process_image(visual_input)
         else:
             report["vision"] = "NO_INPUT"
@@ -49,8 +62,7 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
         # We tune based on the goal's complexity (simulated)
         stimuli = len(goal) / 100.0
         report["heart"] = heart_core.tune_emotions(input_stimuli=stimuli)
-        
-        if not report["heart"].get("collapse_prevented", False):
+if not report["heart"].get("collapse_prevented", False):
             
             # 3. CONCEPTUAL ANALYSIS (Concept Engine)
             # Understand what we are doing firstconcept_analysis = concept_engine.analyze_concept(goal)
@@ -73,9 +85,11 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
             report["reality_verification"] = verification
             
             # 7. EVOLUTION (Evolution Engine)
-            # Adapt based on the success of the verificationif verification["proof_valid"]:
+            # Adapt based on the success of the verification
+if verification["proof_valid"]:
                 evo = evolution_engine.trigger_evolution_cycle()
-                report["evolution"] = evoelse:
+                report["evolution"] = evo
+else:
                 report["evolution"] = "SKIPPED_DUE_TO_VERIFICATION_FAILURE"
                 
             # 8. 4D SPATIAL MAPPING
@@ -89,11 +103,14 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
             report["status"] = "EMOTIONAL_RESET_REQUIRED"
             
         # 10. SYMMETRY CHECK
-        # Calculate the harmonic resonance of the entire operationreport["symmetry_analysis"] = self._analyze_symmetry(report)
-        
-        return reportdef _analyze_symmetry(self, report: Dict[str, Any]) -> Dict[str, Any]:
+        # Calculate the harmonic resonance of the entire operationreport["symmetry_analysis"] = self._analyze_symme
+try(report)
+return report
+def _analyze_symme
+try(self, report: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Calculates the symmetry score of the operation.
+        Calculates the symme
+try score of the operation.
         """
         # We check if all systems contributed effectivelyactive_systems = 0
         total_systems = 7
@@ -109,8 +126,7 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
         symmetry_score = (active_systems / total_systems) * 100.0
         
         # Check alignment with God Coderesonance = HyperMath.zeta_harmonic_resonance(symmetry_score)
-        
-        return {
+return {
             "symmetry_score": symmetry_score,
             "harmonic_resonance": resonance,
             "status": "PERFECT_SYMMETRY" if symmetry_score > 80 else "ASYMMETRICAL"
@@ -118,11 +134,12 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMath
 
     def harmonize(self, report: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Public interface for symmetry analysis.
+        Public interface for symme
+try analysis.
         """
-        return self._analyze_symmetry(report)
-
-    def get_status(self):
+        return self._analyze_symme
+try(report)
+def get_status(self):
         return {
             "state": self.state,
             "active_cores": 8,

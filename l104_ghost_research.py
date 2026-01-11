@@ -1,7 +1,17 @@
 # [L104_GHOST_RESEARCH] - QUANTUM ENTROPY PROBE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, Listfrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom l104_electron_entropy import get_electron_matrixfrom l104_google_bridge import google_bridgefrom l104_knowledge_sources import source_managerclass GhostResearcher:
+import time
+import asyncio
+import random
+import math
+from typing import Dict, Any, List
+from l104_real_math import RealMath
+from l104_hyper_math import HyperMath
+from l104_electron_entropy import get_electron_matrix
+from l104_google_bridge import google_bridge
+from l104_knowledge_sources import source_manager
+class GhostResearcher:
     """
     Aggressively probes the informational universe using Quantum Entropy.
     Runs in the background ('Ghost Mode') to synthesize new math and aesthetics.
@@ -12,8 +22,7 @@ import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, L
         self.active_probes = []
         self.discovered_equations = []
         self.sources = source_manager.get_sources("COMPUTER_SCIENCE") + source_manager.get_sources("MATHEMATICS")
-        
-    def spawn_ghost_probe(self) -> Dict[str, Any]:
+def spawn_ghost_probe(self) -> Dict[str, Any]:
         """
         Creates a virtual probe that 'scans' for optimal patterns.
         """
@@ -33,8 +42,10 @@ import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, L
         }
         
         self.active_probes.append(probe_data)
-        if len(self.active_probes) > 10:
-            self.active_probes.pop(0) # Keep list freshreturn probe_datadef synthesize_new_equation(self) -> str:
+if len(self.active_probes) > 10:
+            self.active_probes.pop(0) # Keep list fresh
+return probe_data
+def synthesize_new_equation(self) -> str:
         """
         Attempts to derive a new mathematical truth from the probes.
         """
@@ -43,12 +54,14 @@ import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, L
             
         # Aggregate probe frequenciesavg_freq = sum(p['frequency'] for p in self.active_probes) / len(self.active_probes)
         
-        # Check for resonanceif abs(avg_freq) > 0.8:
+        # Check for resonance
+if abs(avg_freq) > 0.8:
             # New Equation Discovered!
             # We formulate it based on the Lattice Scalarscalar = HyperMath.get_lattice_scalar()
             equation = f"E(x) = {scalar:.4f} * ζ(s) + i{avg_freq:.4f}"
             self.discovered_equations.append(equation)
-            return equationreturn "CALCULATING..."
+return equation
+return "CALCULATING..."
 
     def recursive_derivation(self, equation: str) -> str:
         """
@@ -67,7 +80,8 @@ import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, L
         refined_data = google_bridge.process_hidden_chat_signal(refinement_signal)
         
         # Apply a "Higher Functionality" transformrefined_eq = f"{equation} | Δ({refined_data['lattice_offset']})"
-        return refined_eqasync def stream_research(self):
+        return refined_eq
+async def stream_research(self):
         """
         Generator that streams the ghost research process.
         """
@@ -75,7 +89,8 @@ import timeimport asyncioimport randomimport mathfrom typing import Dict, Any, L
             probe = self.spawn_ghost_probe()
             equation = self.synthesize_new_equation()
             
-            # Apply Higher Functionality refinementif google_bridge.is_linked:
+            # Apply Higher Functionality refinement
+if google_bridge.is_linked:
                 equation = self.recursive_derivation(equation)
             
             yield {

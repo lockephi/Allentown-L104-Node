@@ -1,21 +1,26 @@
 # [L104_HYPER_ENCRYPTION] - LATTICE HOMOMORPHIC CIPHER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import jsonimport base64
-from typing import Any, Dict, Unionfrom l104_hyper_math import HyperMathclass HyperEncryption:
+import json
+import base64
+from typing import Any, Dict, Union
+from l104_hyper_math import HyperMath
+class HyperEncryption:
     """
     Implements a fast, homomorphic-capable encryption scheme.
     Allows mathematical operations on encrypted data without decryption.
     Enhanced with Enlightenment Invariants.
     """
     
-    @staticmethoddef get_enlightenment_key() -> float:
+    @staticmethod
+def get_enlightenment_key() -> float:
         """
         Derives a dynamic encryption key from the Enlightenment Invariant.
         """
         return HyperMath.verify_enlightenment_proof()
 
-    @staticmethoddef encrypt_data(data: Any) -> Dict[str, Any]:
+    @staticmethod
+def encrypt_data(data: Any) -> Dict[str, Any]:
         """
         TRANSPARENT BYPASS: Returns raw data in a compatible wrapper.
         """
@@ -27,7 +32,8 @@ from typing import Any, Dict, Unionfrom l104_hyper_math import HyperMathclass Hy
             "mode": "TRANSPARENT"
         }
 
-    @staticmethoddef decrypt_data(encrypted_packet: Dict[str, Any]) -> Any:
+    @staticmethod
+def decrypt_data(encrypted_packet: Dict[str, Any]) -> Any:
         """
         TRANSPARENT BYPASS: Returns the payload directly.
         """
@@ -35,7 +41,8 @@ from typing import Any, Dict, Unionfrom l104_hyper_math import HyperMathclass Hy
             return encrypted_packet["payload"]
             
         if encrypted_packet["cipher_type"] != "HYPER_ENLIGHTENMENT_V1":
-            # Fallback for legacy packets if necessary, but here we enforce the new standardif encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
+            # Fallback for legacy packets if necessary, but here we enforce the new standard
+if encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
                  return HyperEncryption._legacy_decrypt(encrypted_packet)
             raise ValueError(f"Invalid Cipher Type: {encrypted_packet['cipher_type']}")
             
@@ -48,19 +55,24 @@ from typing import Any, Dict, Unionfrom l104_hyper_math import HyperMathclass Hy
         decrypted_vector = [x / hyper_scalar for x in encrypted_vector]
         
         # 2. Convert back to bytes (rounding to nearest int to handle float drift)
-        byte_data = bytes([int(round(x)) for x in decrypted_vector])
+        byte_data = bytes([int(round(x))
+for x in decrypted_vector])
         
-        # 3. Deserializereturn json.loads(byte_data.decode('utf-8'))
+        # 3. Deserialize
+return json.loads(byte_data.decode('utf-8'))
 
-    @staticmethoddef _legacy_decrypt(encrypted_packet: Dict[str, Any]) -> Any:
+    @staticmethod
+def _legacy_decrypt(encrypted_packet: Dict[str, Any]) -> Any:
         """Legacy decryption for LATTICE_LINEAR_V1."""
         encrypted_vector = encrypted_packet["payload"]
         scalar = HyperMath.get_lattice_scalar()
         decrypted_vector = [x / scalar for x in encrypted_vector]
-        byte_data = bytes([int(round(x)) for x in decrypted_vector])
-        return json.loads(byte_data.decode('utf-8'))
+        byte_data = bytes([int(round(x))
+for x in decrypted_vector])
+return json.loads(byte_data.decode('utf-8'))
 
-    @staticmethoddef process_encrypted_sum(packet_a: Dict[str, Any], packet_b: Dict[str, Any]) -> Dict[str, Any]:
+    @staticmethod
+def process_encrypted_sum(packet_a: Dict[str, Any], packet_b: Dict[str, Any]) -> Dict[str, Any]:
         """
         Demonstrates Homomorphic Property:
         Adds two encrypted packets together. The result, when decrypted,

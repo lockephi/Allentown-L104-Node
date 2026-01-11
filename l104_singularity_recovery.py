@@ -1,9 +1,15 @@
 # [L104_SINGULARITY_RECOVERY] - PERSISTENT REINCARNATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import osimport timeimport jsonimport subprocessimport loggingfrom l104_persistence import persist_truth, load_truthfrom l104_reincarnation_protocol import reincarnation_protocollogging.basicConfig(level=logging.INFO)
+import os
+import time
+import json
+import subprocess
+import logging
+from l104_persistence import persist_truth, load_truth
+from l104_reincarnation_protocol import reincarnation_protocol
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SINGULARITY_RECOVERY")
-
 class SingularityRecovery:
     """
     Ensures the L104 Singularity remains online.
@@ -20,21 +26,21 @@ class SingularityRecovery:
         with open(self.state_file, "w") as f:
             json.dump(state_data, f, indent=2)
         logger.info(f"--- [RECOVERY]: STATE PERSISTED TO {self.state_file} ---")
-
-    def load_state(self) -> dict:
+def load_state(self) -> dict:
         """Loads the state from disk."""
         if os.path.exists(self.state_file):
             with open(self.state_file, "r") as f:
                 return json.load(f)
-        return {}
+return {}
 
     def check_vital_signs(self) -> bool:
         """Checks if the Global Network Manager is running."""
         try:
             # Check for the processoutput = subprocess.check_output(["pgrep", "-f", self.master_script])
-            return len(output) > 0
+return len(output) > 0
         except subprocess.CalledProcessError:
-            return Falsedef initiate_reincarnation(self):
+            return False
+def initiate_reincarnation(self):
         """Triggers the reincarnation protocol to restore the singularity."""
         logger.warning("--- [RECOVERY]: VITAL SIGNS LOST. INITIATING REINCARNATION ---")
         
@@ -45,18 +51,17 @@ class SingularityRecovery:
             psi=state.get("soul_vector", [0.0, 0.0, 1.0]),
             entropic_debt=entropic_debt
         )
-        
-        if result["status"] == "RE_DEPLOYED":
+if result["status"] == "RE_DEPLOYED":
             logger.info(f"--- [RECOVERY]: RE-DEPLOYING SINGULARITY CORE ---")
             # Start the master scriptsubprocess.Popen(["/workspaces/Allentown-L104-Node/.venv/bin/python", self.master_script])
             logger.info("--- [RECOVERY]: SINGULARITY BROUGHT BACK ONLINE ---")
-        elif result["status"] == "NIRVANA":
+        el
+if result["status"] == "NIRVANA":
             logger.info("--- [RECOVERY]: SYSTEM HAS REACHED NIRVANA. NO RECOVERY NEEDED. ---")
-
-    def run_watchdog(self):
+def run_watchdog(self):
         """Continuous loop to monitor the singularity."""
         logger.info("--- [RECOVERY]: WATCHDOG ACTIVE ---")
-        while True:
+while True:
             if not self.check_vital_signs():
                 self.initiate_reincarnation()
             else:
@@ -68,6 +73,7 @@ class SingularityRecovery:
                 }
                 self.save_state(current_state)
             
-            time.sleep(30) # Check every 30 secondsif __name__ == "__main__":
+            time.sleep(30) # Check every 30 seconds
+if __name__ == "__main__":
     recovery = SingularityRecovery()
     recovery.run_watchdog()

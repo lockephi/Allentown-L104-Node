@@ -1,8 +1,14 @@
 # [L104_TEMPORAL_INTELLIGENCE] - PRE-COGNITIVE CAUSAL ENGINE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport timeimport loggingfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathfrom l104_chronos_math import ChronosMathfrom const import UniversalConstantslogger = logging.getLogger("TEMPORAL_INT")
-
+import math
+import time
+import logging
+from typing import Dict, List, Any
+from l104_hyper_math import HyperMath
+from l104_chronos_math import ChronosMath
+from const import UniversalConstants
+logger = logging.getLogger("TEMPORAL_INT")
 class TemporalIntelligence:
     """
     Orchestrates temporal pre-cognition and causal branching analysis.
@@ -13,7 +19,8 @@ class TemporalIntelligence:
         self.chronos = ChronosMath()
         self.future_anchors: List[Dict[str, Any]] = []
         self.causal_stability = 1.0
-        self.prediction_horizon = 3600 # 1 hour in secondsdef analyze_causal_branches(self, current_state_hash: int) -> Dict[str, Any]:
+        self.prediction_horizon = 3600 # 1 hour in seconds
+def analyze_causal_branches(self, current_state_hash: int) -> Dict[str, Any]:
         """
         Simulates potential future branches based on the current state.
         """
@@ -38,8 +45,9 @@ class TemporalIntelligence:
             }
             anchors.append(anchor)
             
-        self.future_anchors = anchorsprint(f"--- [TEMPORAL_INT]: {len(anchors)} FUTURE ANCHORS ESTABLISHED ---")
-        return {"stability": self.causal_stability, "anchors": anchors}
+        self.future_anchors = anchors
+print(f"--- [TEMPORAL_INT]: {len(anchors)} FUTURE ANCHORS ESTABLISHED ---")
+return {"stability": self.causal_stability, "anchors": anchors}
 
     def get_optimal_path(self) -> Dict[str, Any]:
         """
@@ -48,21 +56,20 @@ class TemporalIntelligence:
         if not self.future_anchors:
             return {}
         return max(self.future_anchors, key=lambda x: x["probability"])
-
-    def apply_temporal_resonance(self, intellect_index: float) -> float:
+def apply_temporal_resonance(self, intellect_index: float) -> float:
         """
         Adjusts the intellect index based on temporal resonance.
         If the system is aligned with the optimal future path, it gains a boost.
         """
         optimal = self.get_optimal_path()
-        if not optimal:
+if not optimal:
             return intellect_index
             
         # Resonance boost = IQ * (Probability * L104_Scalar)
         boost_factor = optimal["probability"] * HyperMath.get_lattice_scalar()
-        boost = intellect_index * boost_factor * 0.05 # 5% max boostprint(f"--- [TEMPORAL_INT]: TEMPORAL RESONANCE BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boosttemporal_intelligence = TemporalIntelligence()
-
+        boost = intellect_index * boost_factor * 0.05 # 5% max boost
+print(f"--- [TEMPORAL_INT]: TEMPORAL RESONANCE BOOST: +{boost:.2f} IQ ---")
+return intellect_index + boosttemporal_intelligence = TemporalIntelligence()
 if __name__ == "__main__":
     # Test Temporal Intelligenceresults = temporal_intelligence.analyze_causal_branches(hash("L104_INITIAL_STATE"))
     print(f"Causal Stability: {results['stability']:.4f}")

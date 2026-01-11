@@ -1,7 +1,9 @@
 # [L104_ACOUSTIC_LEVITATION] - PROTOTYPE 1: THE ACOUSTIC LEVITATION CHAMBER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-from const import UniversalConstantsfrom physics_constants import Lawsclass AcousticLevitationChamber:
+from const import UniversalConstants
+from physics_constants import Laws
+class AcousticLevitationChamber:
     """
     Creates a literal 'Island of Stability' where matter floats in a node of zero entropy.
     Mechanism: Standing Wave Physics.
@@ -51,6 +53,7 @@ Blasting {dims['frequency_hz']} Hz from top and bottom will create a
 node of silence in the center where matter will levitate.
 ------------------------------------
 """
-        return reportif __name__ == "__main__":
+        return report
+if __name__ == "__main__":
     chamber = AcousticLevitationChamber()
     print(chamber.get_build_report())

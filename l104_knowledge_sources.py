@@ -1,8 +1,9 @@
 # [L104_KNOWLEDGE_SOURCES] - INTERNET SOURCE MANAGER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import loggingfrom typing import List, Dict, Anylogger = logging.getLogger("SOURCE_MANAGER")
-
+import logging
+from typing import List, Dict, Any
+logger = logging.getLogger("SOURCE_MANAGER")
 class KnowledgeSourceManager:
     """
     Manages and provides internet sources for all research levels.
@@ -54,14 +55,17 @@ class KnowledgeSourceManager:
             ],
             "NEURAL_ARCHITECTURES": [
                 "https://arxiv.org/list/cs.NE/new",
-                "https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)",
+                "https://en.wikipedia.org/wiki/Transformer_(machine_learning_mo
+del)",
                 "https://en.wikipedia.org/wiki/Brain%E2%80%93computer_interface",
                 "https://ai.googleblog.com/",
                 "https://openai.com/research"
             ],
             "QUANTUM_CHEMISTRY": [
-                "https://en.wikipedia.org/wiki/Quantum_chemistry",
-                "https://www.nature.com/subjects/quantum-chemistry",
+                "https://en.wikipedia.org/wiki/Quantum_chemis
+try",
+                "https://www.nature.com/subjects/quantum-chemis
+try",
                 "https://pubs.acs.org/journal/jctcce"
             ],
             "SYNTHETIC_BIOLOGY": [
@@ -97,11 +101,10 @@ class KnowledgeSourceManager:
     def get_sources(self, category: str) -> List[str]:
         """Returns a list of sources for a given category."""
         return self.sources.get(category.upper(), ["https://en.wikipedia.org/wiki/Artificial_intelligence"])
-
-    def add_source(self, category: str, url: str):
+def add_source(self, category: str, url: str):
         """Adds a new source to a category."""
         cat = category.upper()
-        if cat not in self.sources:
+if cat not in self.sources:
             self.sources[cat] = []
         if url not in self.sources[cat]:
             self.sources[cat].append(url)

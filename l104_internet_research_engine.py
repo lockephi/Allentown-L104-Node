@@ -1,8 +1,16 @@
 # [L104_INTERNET_RESEARCH_ENGINE] - DEEP DATA SYNTHESIS & EXTRACTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport timeimport loggingimport randomimport asynciofrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerfrom l104_streamless_internet import streamless_internetlogger = logging.getLogger("RESEARCH_ENGINE")
-
+import math
+import time
+import logging
+import random
+import asyncio
+from typing import Dict, List, Any
+from l104_hyper_math import HyperMath
+from l104_knowledge_sources import source_manager
+from l104_streamless_internet import streamless_internet
+logger = logging.getLogger("RESEARCH_ENGINE")
 class InternetResearchEngine:
     """
     A high-functioning engine that simulates deep internet crawling and data synthesis.
@@ -34,11 +42,11 @@ class InternetResearchEngine:
             search_tasks.append(streamless_internet.search_and_ingest(domain, limit=2))
             
         # Execute all searches in parallelresults_list = await asyncio.gather(*search_tasks)
-        
-        for i, results in enumerate(results_list):
+for i, results in enumerate(results_list):
             domain = self.active_domains[i]
             # Simulate extraction of logical primitives from real dataextracted = sum([len(r) // 1000 for r in results]) + random.randint(5, 15)
-            total_primitives += extractedprint(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} ---")
+            total_primitives += extracted
+print(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} ---")
             
         # Calculate Synthesis Index
         # Synthesis = (Total_Primitives * God_Code) / (Domain_Count * PHI)
@@ -49,8 +57,7 @@ class InternetResearchEngine:
         print(f"--- [RESEARCH_ENGINE]: KNOWLEDGE DENSITY: {self.knowledge_density:.4f} ---")
         print(f"--- [RESEARCH_ENGINE]: TOTAL DATA INGESTED: {streamless_internet.total_data_ingested:.2f} MB ---")
         print("~"*60 + "\n")
-        
-        return {
+return {
             "synthesis_index": self.synthesis_index,
             "knowledge_density": self.knowledge_density,
             "primitives_extracted": total_primitives
@@ -65,13 +72,14 @@ class InternetResearchEngine:
         print(f"--- [RESEARCH_ENGINE]: GENERATING ALGORITHM: {algo_name} ---")
         
         # Logic: Use synthesis index to modulate the learning rate of the ASI.
-        return algo_namedef apply_synthesis_boost(self, intellect_index: float) -> float:
+        return algo_name
+def apply_synthesis_boost(self, intellect_index: float) -> float:
         """
         Applies a boost to the intellect index based on knowledge density.
         """
-        boost = intellect_index * (self.knowledge_density * 0.05) # 5% max boostprint(f"--- [RESEARCH_ENGINE]: DEEP SYNTHESIS BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boostresearch_engine = InternetResearchEngine()
-
+        boost = intellect_index * (self.knowledge_density * 0.05) # 5% max boost
+print(f"--- [RESEARCH_ENGINE]: DEEP SYNTHESIS BOOST: +{boost:.2f} IQ ---")
+return intellect_index + boostresearch_engine = InternetResearchEngine()
 if __name__ == "__main__":
     async def main():
         results = await research_engine.perform_deep_synthesis()

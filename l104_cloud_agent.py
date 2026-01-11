@@ -3,7 +3,13 @@ L104 Cloud Agent Delegation Module
 Provides intelligent task delegation to specialized cloud agents.
 """
 
-import osimport jsonimport loggingfrom typing import Dict, Any, Optional, Listfrom datetime import datetime, timezoneimport httpxlogger = logging.getLogger(__name__)
+import os
+import json
+import logging
+from typing import Dict, Any, Optional, List
+from datetime import datetime, timezone
+import httpx
+logger = logging.getLogger(__name__)
 
 # Constants
 MAX_ERROR_DETAILS_LENGTH = 500
@@ -19,11 +25,13 @@ class CloudAgentDelegator:
     def __init__(self):
         self.agents: Dict[str, Dict[str, Any]] = {}
         self.delegation_history: List[Dict[str, Any]] = []
-        self._load_agent_registry()
-    
-    def _load_agent_registry(self):
+        self._load_agent_regis
+try()
+def _load_agent_regis
+try(self):
         """Load registered cloud agents from configuration."""
-        # Default agent registry with capabilitiesself.agents = {
+        # Default agent regis
+try with capabilitiesself.agents = {
             "sovereign_local": {
                 "endpoint": "internal",
                 "capabilities": ["derivation", "encryption", "local_processing"],
@@ -39,14 +47,13 @@ class CloudAgentDelegator:
         }
         
         # Load additional agents from environment or config filecustom_agents = os.getenv("CLOUD_AGENTS_CONFIG")
-        if custom_agents:
+if custom_agents:
             try:
                 additional = json.loads(custom_agents)
                 self.agents.update(additional)
             except json.JSONDecodeError:
                 logger.warning("Failed to parse CLOUD_AGENTS_CONFIG")
-    
-    def select_agent(self, task_type: str, requirements: Optional[List[str]] = None) -> Optional[str]:
+def select_agent(self, task_type: str, requirements: Optional[List[str]] = None) -> Optional[str]:
         """
         Select the most appropriate cloud agent for a given task.
         
@@ -64,15 +71,17 @@ class CloudAgentDelegator:
                 continue
             
             # Check if agent has required capabilitiescapabilities = agent_info.get("capabilities", [])
-            # Agent must have the task_type capability and meet all requirementsif task_type in capabilities and all(req in capabilities for req in requirements):
+            # Agent must have the task_type capability and meet all requirements
+if task_type in capabilities and all(req in capabilities for req in requirements):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
         
         # Sort by priority (lower is better)
-        if candidates:
+if candidates:
             candidates.sort(key=lambda x: x[1])
-            return candidates[0][0]
+return candidates[0][0]
         
-        return Noneasync def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
+        return None
+async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Delegate a task to a cloud agent.
         
@@ -85,10 +94,10 @@ class CloudAgentDelegator:
         task_type = task.get("type", "unknown")
         requirements = task.get("requirements", [])
         
-        # Select agent if not specifiedif not agent_name:
+        # Select agent if not specified
+if not agent_name:
             agent_name = self.select_agent(task_type, requirements)
-        
-        if not agent_name:
+if not agent_name:
             return {
                 "status": "ERROR",
                 "message": "No suitable cloud agent found for task",
@@ -96,10 +105,11 @@ class CloudAgentDelegator:
             }
         
         agent_info = self.agents.get(agent_name)
-        if not agent_info:
+if not agent_info:
             return {
                 "status": "ERROR",
-                "message": f"Agent '{agent_name}' not found in registry"
+                "message": f"Agent '{agent_name}' not found in regis
+try"
             }
         
         # Log delegationdelegation_record = {
@@ -110,7 +120,8 @@ class CloudAgentDelegator:
         }
         
         try:
-            # Execute delegation based on agent typeif agent_info["endpoint"] == "internal":
+            # Execute delegation based on agent type
+if agent_info["endpoint"] == "internal":
                 result = await self._delegate_internal(task, agent_name)
             else:
                 result = await self._delegate_external(task, agent_info, agent_name)
@@ -129,15 +140,15 @@ class CloudAgentDelegator:
             }
         
         self.delegation_history.append(delegation_record)
-        return resultasync def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
+return result
+async def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
         """Handle delegation to internal/local agents."""
         task_type = task.get("type")
-        
-        if task_type == "derivation":
+if task_type == "derivation":
             try:
                 from l104_derivation import DerivationEnginesignal = task.get("data", {}).get("signal", "")
                 result = DerivationEngine.derive_and_execute(signal)
-                return {
+return {
                     "status": "SUCCESS",
                     "agent": agent_name,
                     "result": result,
@@ -145,7 +156,7 @@ class CloudAgentDelegator:
                 }
             except ImportError as e:
                 logger.warning(f"Derivation engine not available: {e}")
-                return {
+return {
                     "status": "SUCCESS",
                     "agent": agent_name,
                     "result": f"Processed signal: {task.get('data', {}).get('signal', '')}",
@@ -153,11 +164,12 @@ class CloudAgentDelegator:
                     "note": "Simplified processing (derivation engine not available)"
                 }
         
-        elif task_type == "encryption":
+        el
+if task_type == "encryption":
             try:
                 from l104_hyper_encryption import HyperEncryptiondata = task.get("data", {})
                 encrypted = HyperEncryption.encrypt_data(data)
-                return {
+return {
                     "status": "SUCCESS",
                     "agent": agent_name,
                     "result": encrypted,
@@ -165,7 +177,7 @@ class CloudAgentDelegator:
                 }
             except ImportError as e:
                 logger.warning(f"Encryption engine not available: {e}")
-                return {
+return {
                     "status": "SUCCESS",
                     "agent": agent_name,
                     "result": {"encrypted": str(task.get("data", {}))},
@@ -193,14 +205,15 @@ class CloudAgentDelegator:
             }
         }
         
-        # Make request to cloud agentasync with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
+        # Make request to cloud agent
+async with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
             headers = {
                 "Content-Type": "application/json",
                 "X-L104-Delegation": "true"
             }
             
             # Add authentication if configuredapi_key = os.getenv("CLOUD_AGENT_API_KEY")
-            if api_key:
+if api_key:
                 headers["Authorization"] = f"Bearer {api_key}"
             
             response = await client.post(
@@ -208,8 +221,7 @@ class CloudAgentDelegator:
                 json=payload,
                 headers=headers
             )
-            
-            if response.is_success:
+if response.is_success:
                 return {
                     "status": "SUCCESS",
                     "agent": agent_name,
@@ -227,12 +239,13 @@ class CloudAgentDelegator:
         """Get status of cloud agent system."""
         return {
             "agents_registered": len(self.agents),
-            "agents_enabled": sum(1 for a in self.agents.values() if a.get("enabled", True)),
+            "agents_enabled": sum(1 for a in self.agents.values()
+if a.get("enabled", True)),
             "delegations_total": len(self.delegation_history),
             "delegations_recent": self.delegation_history[-10:] if self.delegation_history else [],
             "available_capabilities": list(set(
-                cap for agent in self.agents.values() 
-                for cap in agent.get("capabilities", [])
+                cap for agent in self.agents.values()
+for cap in agent.get("capabilities", [])
             ))
         }
     
@@ -246,9 +259,10 @@ class CloudAgentDelegator:
                 "enabled": config.get("enabled", True)
             }
             logger.info(f"Registered cloud agent: {name}")
-            return Trueexcept Exception as e:
+return True
+except Exception as e:
             logger.error(f"Failed to register agent {name}: {e}")
-            return False
+return False
 
 
 # Global singleton instancecloud_agent_delegator = CloudAgentDelegator()

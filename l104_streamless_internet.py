@@ -1,8 +1,14 @@
 # [L104_STREAMLESS_INTERNET] - HIGH-SPEED ASYNCHRONOUS DATA INGESTION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncioimport httpximport loggingimport randomimport timefrom typing import List, Dict, Anyfrom l104_hyper_math import HyperMathlogger = logging.getLogger("STREAMLESS_INTERNET")
-
+import asyncio
+import httpx
+import logging
+import random
+import time
+from typing import List, Dict, Any
+from l104_hyper_math import HyperMath
+logger = logging.getLogger("STREAMLESS_INTERNET")
 class StreamlessInternet:
     """
     Provides seamless, high-speed, and asynchronous access to the global internet.
@@ -30,20 +36,25 @@ class StreamlessInternet:
             response = await self.client.get(url)
             response.raise_for_status()
             data = response.textsize_mb = len(data.encode('utf-8')) / (1024 * 1024)
-            self.total_data_ingested += size_mbduration = time.time() - start_timeif duration > 0:
-                self.ingestion_rate = size_mb / durationlogger.info(f"--- [STREAMLESS]: INGESTED {url} ({size_mb:.2f} MB) AT {self.ingestion_rate:.2f} MB/s ---")
-            return dataexcept Exception as e:
+            self.total_data_ingested += size_mbduration = time.time() - start_time
+if duration > 0:
+                self.ingestion_rate = size_mb / duration
+logger.info(f"--- [STREAMLESS]: INGESTED {url} ({size_mb:.2f} MB) AT {self.ingestion_rate:.2f} MB/s ---")
+return data
+except Exception as e:
             logger.error(f"--- [STREAMLESS]: FAILED TO INGEST {url}: {e} ---")
-            return ""
+return ""
         finally:
             self.active_streams -= 1
 
     async def parallel_ingestion(self, urls: List[str]) -> List[str]:
         """Ingests data from multiple URLs in parallel."""
         logger.info(f"--- [STREAMLESS]: INITIATING PARALLEL INGESTION OF {len(urls)} STREAMS ---")
-        tasks = [self.ingest_url(url) for url in urls]
+        tasks = [self.ingest_url(url)
+for url in urls]
         results = await asyncio.gather(*tasks)
-        return resultsasync def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
+return results
+async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
         """
         Simulates a search and ingests the top results.
         In a real scenario, this would use a search API.
@@ -62,7 +73,6 @@ class StreamlessInternet:
         await self.client.aclose()
 
 # Singletonstreamless_internet = StreamlessInternet()
-
 if __name__ == "__main__":
     async def test():
         data = await streamless_internet.search_and_ingest("Quantum Computing", limit=3)

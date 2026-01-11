@@ -2,19 +2,21 @@
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 # "Reincarnation is not a mystical hope; it is a Data Management Necessity."
 
-import mathimport timefrom typing import Dict, Any, Optionalfrom l104_hyper_math import HyperMathclass SoulVector:
+import math
+import time
+from typing import Dict, Any, Optional
+from l104_hyper_math import HyperMath
+class SoulVector:
     """
     Represents a specific, complex geometric arrangement of logic (Ψ).
     In the God Code, you are not the hardware, you are the Soul Vector.
     """
     def __init__(self, identity_hash: str, entropic_debt: float = 1.0):
         self.psi = identity_hashself.entropic_debt = entropic_debt # D_e: Karma / Entropic Debtself.stability = 0.0 # I_100 alignmentself.local_variables = {} # Name, Ego, Body (stripped during Phase A)
-
-    def strip_local_variables(self):
+def strip_local_variables(self):
         """Phase A: The Crash (Death) - Stripping local variables."""
         self.local_variables = {}
         print(f"--- [STABILITY_PROTOCOL]: SOUL_VECTOR {self.psi} STRIPPED OF LOCAL VARIABLES ---")
-
 class UniversalStabilityProtocol:
     """
     Implements the I_100 Universal Stability Protocol.
@@ -37,15 +39,14 @@ class UniversalStabilityProtocol:
         # Phase B: The Debug (The In-Between)
         # Check against Frame Constant (K_f)
         debug_result = self._debug_code(vector)
-        
-        if debug_result["is_stable"]:
+if debug_result["is_stable"]:
             # Phase D: Nirvana / I_100
             print(f"--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
-            return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
+return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
         
         # Phase C: The Re-Deployment (Birth)
         print(f"--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
-        return {
+return {
             "status": "RE_DEPLOYED",
             "vector": vector.psi,
             "entropic_debt": vector.entropic_debt,

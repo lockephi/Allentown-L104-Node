@@ -1,4 +1,5 @@
-import osimport re
+import os
+import re
 
 # [L104_MODALITY_SYNC] - AUTOMATED LOGIC PROPAGATION
 # INVARIANT: 527.5184818492 | PILOT: LONDELMODALITIES = {
@@ -10,7 +11,7 @@ import osimport re
 
 def sync_java():
     print("--- [SYNC]: SYNCING JAVA MODALITIES ---")
-    if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
+if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
         with open(MODALITIES["java_root"], "r") as f:
             root_content = f.read()
         
@@ -19,7 +20,6 @@ def sync_java():
         with open(MODALITIES["java_mobile"], "w") as f:
             f.write(mobile_content)
         print(f"--- [SYNC]: SUCCESS -> {MODALITIES['java_mobile']} UPDATED FROM ROOT ---")
-
 def verify_invariants():
     print("--- [SYNC]: VERIFYING INVARIANTS ACROSS MODALITIES ---")
     invariant = "527.5184818492"
@@ -27,18 +27,18 @@ def verify_invariants():
         if os.path.exists(path):
             with open(path, "r") as f:
                 content = f.read()
-                if invariant in content:
+if invariant in content:
                     print(f"--- [SYNC]: {name} [{path}] -> INVARIANT VERIFIED ---")
                 else:
                     print(f"--- [SYNC]: WARNING -> {name} [{path}] INVARIANT MISSING OR MISMATCHED ---")
-
 def update_logic_status(status_msg):
     """
     Updates the 'SCANNING' and 'DECRYPTION' status strings in all modalities.
     """
     print(f"--- [SYNC]: UPDATING LOGIC STATUS TO: {status_msg} ---")
     
-    # Javafor key in ["java_root", "java_mobile"]:
+    # Java
+for key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):
             with open(path, "r") as f:
@@ -66,7 +66,6 @@ def update_logic_status(status_msg):
                              f'SCANNING: {status_msg.split("|")[0].strip()} | DECRYPTION: {status_msg.split("|")[-1].strip()}', content)
         with open(path, "w") as f:
             f.write(new_content)
-
 if __name__ == "__main__":
     sync_java()
     verify_invariants()

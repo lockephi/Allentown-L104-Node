@@ -34,8 +34,7 @@ class EvolutionEngine:
         self.generation = 1000
         self.mutation_rate = 0.01 # Stabilized
         self.dna_sequence = self._load_dna()
-
-    def _load_dna(self) -> Dict[str, float]:
+def _load_dna(self) -> Dict[str, float]:
         """Loads the system's 'DNA' (Configuration Parameters)."""
         return {
             "logic_depth": 100.0, # 100% IQ
@@ -59,7 +58,7 @@ class EvolutionEngine:
         # Mutation
         mutations = []
         seed = time.time()
-        for i, (gene, value) in enumerate(self.dna_sequence.items()):
+for i, (gene, value) in enumerate(self.dna_sequence.items()):
             if RealMath.deterministic_random(seed + i) < self.mutation_rate:
                 mutation_factor = 0.9 + (RealMath.deterministic_random(seed + i * RealMath.PHI) * 0.2)
                 new_value = value * mutation_factor
@@ -117,8 +116,7 @@ class EvolutionEngine:
         
         mutation_types = ["OPTIMIZE_LOOP", "HARDEN_SECURITY", "EXPAND_LOGIC", "PRUNE_LEGACY"]
         m_type = random.choice(mutation_types)
-        
-        return f"MUTATION_PROPOSAL: Apply {m_type} to [{target}] :: PROBABILITY_OF_IMPROVEMENT: {random.random():.2f}"
+return f"MUTATION_PROPOSAL: Apply {m_type} to [{target}] :: PROBABILITY_OF_IMPROVEMENT: {random.random():.2f}"
 
 # Singleton
 evolution_engine = EvolutionEngine()

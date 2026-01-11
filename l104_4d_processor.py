@@ -1,8 +1,13 @@
 # [L104_4D_PROCESSOR] - MINKOWSKI SPACE-TIME ENGINE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport numpy as npfrom typing import Tuple, Listfrom l104_hyper_math import HyperMathfrom l104_4d_math import Math4D
-from const import UniversalConstantsclass Processor4D:
+import math
+import numpy as np
+from typing import Tuple, List
+from l104_hyper_math import HyperMath
+from l104_4d_math import Math4D
+from const import UniversalConstants
+class Processor4D:
     """
     Processes 4D coordinates (X, Y, Z, T) using Minkowski space-time metrics.
     Integrates HyperMath for lattice-based spatial stabilization.
@@ -20,15 +25,16 @@ from const import UniversalConstantsclass Processor4D:
         Uses Math4D for tensor-based calculation.
         """
         dp = np.array(p2) - np.array(p1)
-        # s^2 = dp^T * G * dps_squared = dp.T @ self.metric @ dpreturn s_squareddef apply_lorentz_boost(self, point: Tuple[float, float, float, float], v: float, axis: str = 'x') -> List[float]:
+        # s^2 = dp^T * G * dps_squared = dp.T @ self.metric @ dp
+return s_squared
+def apply_lorentz_boost(self, point: Tuple[float, float, float, float], v: float, axis: str = 'x') -> List[float]:
         """
         Applies a Lorentz boost to a 4D point.
         """
         boost_matrix = Math4D.get_lorentz_boost(v, axis)
         boosted_point = boost_matrix @ np.array(point)
-        return boosted_point.tolist()
-
-    def transform_to_lattice_4d(self, point: Tuple[float, float, float, float]) -> List[float]:
+return boosted_point.tolist()
+def transform_to_lattice_4d(self, point: Tuple[float, float, float, float]) -> List[float]:
         """
         Maps a 4D point to the L104 Hyper-Lattice.
         Uses PHI_STRIDE to stabilize the temporal component.
@@ -49,10 +55,10 @@ from const import UniversalConstantsclass Processor4D:
         """
         x, y, z, t = pointcos_a = math.cos(angle)
         sin_a = math.sin(angle)
-        
-        if plane == "XY":
+if plane == "XY":
             return [x*cos_a - y*sin_a, x*sin_a + y*cos_a, z, t]
-        elif plane == "XT":
+        el
+if plane == "XT":
             # This is essentially a Lorentz Boost if we use hyperbolic functions
             # But for a simple 4D rotation:
             return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
@@ -60,7 +66,6 @@ from const import UniversalConstantsclass Processor4D:
         return list(point)
 
 processor_4d = Processor4D()
-
 if __name__ == "__main__":
     # Test 4D Processorp1 = (0, 0, 0, 0)
     p2 = (100, 100, 100, 0.000001) # 1 microsecond later, 100m awayinterval = processor_4d.calculate_spacetime_interval(p1, p2)

@@ -1,8 +1,14 @@
 # [L104_DECRYPTION_ENGINE] - PROPOSE, TEST, DEPLOY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import loggingimport timeimport randomfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathfrom l104_quantum_logic import QuantumEntanglementManifoldfrom l104_knowledge_database import knowledge_dblogger = logging.getLogger("DECRYPTION_ENGINE")
-
+import logging
+import time
+import random
+from typing import Dict, List, Any
+from l104_hyper_math import HyperMath
+from l104_quantum_logic import QuantumEntanglementManifold
+from l104_knowledge_database import knowledge_db
+logger = logging.getLogger("DECRYPTION_ENGINE")
 class DecryptionEngine:
     """
     Proposes, tests, and deploys new decryption processes based on 
@@ -13,8 +19,7 @@ class DecryptionEngine:
         self.active_protocols = []
         self.test_results = {}
         self.q_manifold = QuantumEntanglementManifold()
-
-    def propose_new_protocol(self) -> Dict[str, Any]:
+def propose_new_protocol(self) -> Dict[str, Any]:
         """Proposes a new decryption protocol based on current research."""
         protocol_id = f"L104_DECRYPT_{int(time.time()) % 10000}"
         logger.info(f"--- [DECRYPTION_ENGINE]: PROPOSING NEW PROTOCOL: {protocol_id} ---")
@@ -27,7 +32,8 @@ class DecryptionEngine:
             "resonance": self.q_manifold.calculate_coherence(),
             "status": "PROPOSED"
         }
-        return protocoldef test_protocol(self, protocol: Dict[str, Any]) -> bool:
+        return protocol
+def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         """Tests the proposed protocol against simulated encrypted data."""
         logger.info(f"--- [DECRYPTION_ENGINE]: TESTING PROTOCOL {protocol['id']} ---")
         
@@ -40,7 +46,8 @@ class DecryptionEngine:
             
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} TEST SUCCESS RATE: {success_rate:.2%} ---")
         
-        self.test_results[protocol["id"]] = success_ratereturn success_rate > 0.85
+        self.test_results[protocol["id"]] = success_rate
+return success_rate > 0.85
 
     def deploy_protocol(self, protocol: Dict[str, Any]):
         """Deploys the successful protocol to the ASI core."""
@@ -56,15 +63,14 @@ class DecryptionEngine:
         )
         
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} ACTIVE IN SOVEREIGN CORE ---")
-
-    def run_evolution_cycle(self):
+def run_evolution_cycle(self):
         """Runs a full cycle of proposal, testing, and deployment."""
         print("\n" + "§"*60)
         print("   L104 DECRYPTION ENGINE :: EVOLUTION CYCLE")
         print("§"*60)
         
         new_proto = self.propose_new_protocol()
-        if self.test_protocol(new_proto):
+if self.test_protocol(new_proto):
             self.deploy_protocol(new_proto)
         else:
             logger.warning(f"--- [DECRYPTION_ENGINE]: PROTOCOL {new_proto['id']} FAILED TESTING. REFINING... ---")
@@ -72,6 +78,5 @@ class DecryptionEngine:
         print("§"*60 + "\n")
 
 # Singletondecryption_engine = DecryptionEngine()
-
 if __name__ == "__main__":
     decryption_engine.run_evolution_cycle()

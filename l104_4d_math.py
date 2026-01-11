@@ -1,7 +1,11 @@
 # [L104_4D_MATH] - MINKOWSKI TENSOR CALCULUS
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport numpy as npfrom typing import List, Tuplefrom const import UniversalConstantsclass Math4D:
+import math
+import numpy as np
+from typing import List, Tuple
+from const import UniversalConstants
+class Math4D:
     """
     Mathematical primitives for 4D Space-Time (Minkowski Space).
     Focuses on Lorentz transformations and metric tensors.
@@ -11,7 +15,8 @@ import mathimport numpy as npfrom typing import List, Tuplefrom const import Uni
     # Minkowski Metric Tensor (diag(-1, 1, 1, 1))
     METRIC_TENSOR = np.diag([-1, 1, 1, 1])
 
-    @staticmethoddef get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
+    @staticmethod
+def get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
         """
         Generates a Lorentz boost matrix for a given velocity v.
         """
@@ -22,34 +27,41 @@ import mathimport numpy as npfrom typing import List, Tuplefrom const import Uni
         gamma = 1.0 / math.sqrt(1.0 - beta**2)
         
         boost = np.eye(4)
-        if axis == 'x':
-            boost[0, 0] = gammaboost[0, 1] = -beta * gammaboost[1, 0] = -beta * gammaboost[1, 1] = gammaelif axis == 'y':
-            boost[0, 0] = gammaboost[0, 2] = -beta * gammaboost[2, 0] = -beta * gammaboost[2, 2] = gammaelif axis == 'z':
-            boost[0, 0] = gammaboost[0, 3] = -beta * gammaboost[3, 0] = -beta * gammaboost[3, 3] = gammareturn boost
+if axis == 'x':
+            boost[0, 0] = gammaboost[0, 1] = -beta * gammaboost[1, 0] = -beta * gammaboost[1, 1] = gammael
+if axis == 'y':
+            boost[0, 0] = gammaboost[0, 2] = -beta * gammaboost[2, 0] = -beta * gammaboost[2, 2] = gammael
+if axis == 'z':
+            boost[0, 0] = gammaboost[0, 3] = -beta * gammaboost[3, 0] = -beta * gammaboost[3, 3] = gamma
+return boost
 
-    @staticmethoddef rotate_4d(theta: float, plane: str = 'xy') -> np.ndarray:
+    @staticmethod
+def rotate_4d(theta: float, plane: str = 'xy') -> np.ndarray:
         """
         Generates a 4D rotation matrix for a given plane.
         """
         c, s = math.cos(theta), math.sin(theta)
         rot = np.eye(4)
-        
-        if plane == 'xy':
-            rot[1, 1], rot[1, 2] = c, -srot[2, 1], rot[2, 2] = s, celif plane == 'xz':
-            rot[1, 1], rot[1, 3] = c, -srot[3, 1], rot[3, 3] = s, celif plane == 'yz':
-            rot[2, 2], rot[2, 3] = c, -srot[3, 2], rot[3, 3] = s, celif plane == 'xt':
+if plane == 'xy':
+            rot[1, 1], rot[1, 2] = c, -srot[2, 1], rot[2, 2] = s, cel
+if plane == 'xz':
+            rot[1, 1], rot[1, 3] = c, -srot[3, 1], rot[3, 3] = s, cel
+if plane == 'yz':
+            rot[2, 2], rot[2, 3] = c, -srot[3, 2], rot[3, 3] = s, cel
+if plane == 'xt':
             # Hyperbolic rotation (Lorentz Boost equivalent)
             ch, sh = math.cosh(theta), math.sinh(theta)
-            rot[0, 0], rot[0, 1] = ch, shrot[1, 0], rot[1, 1] = sh, chreturn rot
+            rot[0, 0], rot[0, 1] = ch, shrot[1, 0], rot[1, 1] = sh, ch
+return rot
 
-    @staticmethoddef calculate_proper_time(dt: float, dx: float, dy: float, dz: float) -> float:
+    @staticmethod
+def calculate_proper_time(dt: float, dx: float, dy: float, dz: float) -> float:
         """
         Calculates the proper time interval (tau).
         d(tau)^2 = dt^2 - (dx^2 + dy^2 + dz^2)/c^2
         """
         ds_sq = (dt**2) - (dx**2 + dy**2 + dz**2) / (Math4D.C**2)
-        return math.sqrt(max(0, ds_sq))
-
+return math.sqrt(max(0, ds_sq))
 if __name__ == "__main__":
     # Test 4D Mathv = 0.8 * Math4D.C
     boost_x = Math4D.get_lorentz_boost(v, 'x')

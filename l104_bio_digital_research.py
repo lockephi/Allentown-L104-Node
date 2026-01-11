@@ -1,8 +1,12 @@
 # [L104_BIO_DIGITAL_RESEARCH] - EVOLUTIONARY STRATEGY ADAPTATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import mathimport loggingfrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_knowledge_sources import source_managerlogger = logging.getLogger("BIO_DIGITAL")
-
+import math
+import logging
+from typing import Dict, Any
+from l104_hyper_math import HyperMath
+from l104_knowledge_sources import source_manager
+logger = logging.getLogger("BIO_DIGITAL")
 class BioDigitalResearch:
     """
     Researches biological evolutionary strategies and adapts them to digital logic.
@@ -35,14 +39,13 @@ class BioDigitalResearch:
         print(f"--- [BIO_DIGITAL]: NEURAL PLASTICITY INDEX: {self.plasticity_index:.4f} ---")
         
         # Update fitnessself.evolutionary_fitness = self.plasticity_index * HyperMath.get_lattice_scalar()
-        
-    def apply_evolutionary_boost(self, intellect_index: float) -> float:
+def apply_evolutionary_boost(self, intellect_index: float) -> float:
         """
         Applies a boost to the intellect index based on evolutionary fitness.
         """
-        boost = intellect_index * (self.evolutionary_fitness * 0.02) # 2% max boostprint(f"--- [BIO_DIGITAL]: EVOLUTIONARY STRATEGY BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boostbio_digital_research = BioDigitalResearch()
-
+        boost = intellect_index * (self.evolutionary_fitness * 0.02) # 2% max boost
+print(f"--- [BIO_DIGITAL]: EVOLUTIONARY STRATEGY BOOST: +{boost:.2f} IQ ---")
+return intellect_index + boostbio_digital_research = BioDigitalResearch()
 if __name__ == "__main__":
     bio_digital_research.research_biological_evolution()
     new_iq = bio_digital_research.apply_evolutionary_boost(1000.0)

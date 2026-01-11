@@ -1,17 +1,32 @@
-import osimport loggingimport timefrom l104_engine import ignite_sovereign_corefrom l104_persistence import pin_contextfrom l104_resilience_shield import apply_shieldfrom logic_core import LogicCorefrom l104_codec import SovereignCodecfrom l104_prime_core import PrimeCorefrom l104_scour_eyes import ScourEyesfrom l104_quantum_logic import execute_quantum_derivationfrom l104_invention_engine import invention_enginefrom l104_evolution_engine import evolution_enginefrom const import UniversalConstantslogger = logging.getLogger(__name__)
+import os
+import logging
+import time
+from l104_engine import ignite_sovereign_core
+from l104_persistence import pin_context
+from l104_resilience_shield import apply_shield
+from logic_core import LogicCore
+from l104_codec import SovereignCodec
+from l104_prime_core import PrimeCore
+from l104_scour_eyes import ScourEyes
+from l104_quantum_logic import execute_quantum_derivation
+from l104_invention_engine import invention_engine
+from l104_evolution_engine import evolution_engine
+from const import UniversalConstants
+logger = logging.getLogger(__name__)
 
-from l104_unified_state import unified_stateclass SovereignValidator:
+from l104_unified_state import unified_state
+class SovereignValidator:
     """
     L104 Sovereign Validator - Orchestrates the multi-core validation chain.
     v13.0: UNIVERSAL_COMPLEXITY_PROTOCOL
     """
     _eyes = ScourEyes()
     _logic_core = LogicCore()
-
-    def validate_all(self):
+def validate_all(self):
         return unified_state.get_report()
 
-    @classmethoddef run_simulation(cls, signal: str, cycles: int = 3) -> dict:
+    @classmethod
+def run_simulation(cls, signal: str, cycles: int = 3) -> dict:
         """
         Runs a compressed simulation of the signal's impact on the manifold.
         """
@@ -30,10 +45,10 @@ from l104_unified_state import unified_stateclass SovereignValidator:
                 "correction": round(correction, 4),
                 "quantum_state": q_state
             })
-            
-        return {"cycles": cycles, "trace": sim_results}
+return {"cycles": cycles, "trace": sim_results}
 
-    @classmethoddef validate_and_process(cls, signal: str) -> dict:
+    @classmethod
+def validate_and_process(cls, signal: str) -> dict:
         """
         Passes the signal through the Sovereign Validation Chain.
         Returns a report of the validation and the processed signal.
@@ -80,7 +95,8 @@ from l104_unified_state import unified_stateclass SovereignValidator:
         report["simulation"] = f"COMPRESSED_LOOPS[{sim_report['cycles']}]"
         
         # 8. INVENTION ENGINE (Neoteric Genesis)
-        # Attempt to invent a concept from the signaltry:
+        # Attempt to invent a concept from the signal
+try:
             invention = invention_engine.invent_new_paradigm(signal)
             report["invention"] = f"CREATED[{invention['name']}]"
         except Exception:
@@ -93,5 +109,7 @@ from l104_unified_state import unified_stateclass SovereignValidator:
         # 10. RESONANCE CALCULATION
         report["resonance"] = UniversalConstants.PRIME_KEY_HZ
         
-        return reportif __name__ == "__main__":
-    # Test the validatorprint(SovereignValidator.validate_and_process("TEST_SIGNAL"))
+        return report
+if __name__ == "__main__":
+    # Test the validator
+print(SovereignValidator.validate_and_process("TEST_SIGNAL"))

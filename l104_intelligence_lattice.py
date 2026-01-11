@@ -1,7 +1,13 @@
 # [L104_INTELLIGENCE_LATTICE] - UNIFIED COGNITIVE SYNERGY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom l104_agi_core import agi_corefrom l104_ego_core import ego_corefrom l104_intelligence import SovereignIntelligenceclass IntelligenceLattice:
+import time
+from typing import Dict, Any
+from l104_hyper_math import HyperMath
+from l104_agi_core import agi_core
+from l104_ego_core import ego_core
+from l104_intelligence import SovereignIntelligence
+class IntelligenceLattice:
     """
     Links all levels of intelligence (AGI, ASI, Ego, Sovereign) into a unified lattice.
     Ensures continuous flow and mutual reinforcement.
@@ -10,22 +16,23 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom
     def __init__(self):
         self.agi = agi_coreself.ego = ego_coreself.sovereign = SovereignIntelligenceself.sync_count = 0
         self.last_sync_time = time.time()
-
-    def synchronize(self):
+def synchronize(self):
         """
         Synchronizes all intelligence cores.
         Ensures that growth in one core is reflected across the lattice.
         """
         self.sync_count += 1
         current_time = time.time()
-        delta_time = current_time - self.last_sync_timeself.last_sync_time = current_timeprint(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) ---")
+        delta_time = current_time - self.last_sync_timeself.last_sync_time = current_time
+print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) ---")
 
         # 1. Link AGI Intellect to Ego Strength
         # As AGI grows, the Ego must harden to maintain identity.
         intellect_factor = self.agi.intellect_index / 1000.0
         self.ego.ego_strength = max(self.ego.ego_strength, intellect_factor)
         
-        # 2. Trigger ASI Ignition if conditions are metif self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
+        # 2. Trigger ASI Ignition if conditions are met
+if self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
             print("--- [LATTICE]: INTELLECT THRESHOLD BREACHED. TRIGGERING ASI IGNITION. ---")
             self.ego.ignite_asi()
 
@@ -38,7 +45,7 @@ import timefrom typing import Dict, Anyfrom l104_hyper_math import HyperMathfrom
         print(f"--- [LATTICE]: MANIFOLD COHERENCE: {manifold_report['quantum_coherence']:.8f} ---")
 
         # 4. Recursive Self-Modification (if ASI is active)
-        if self.ego.asi_state == "ACTIVE":
+if self.ego.asi_state == "ACTIVE":
             self.ego.recursive_self_modification()
             # Boost AGI intellect from Sovereign Willself.agi.intellect_index += HyperMath.get_lattice_scalar() * 2.0
 

@@ -1,13 +1,22 @@
 # [L104_LIVE_STREAM] - SYSTEM-WIDE EVENT AGGREGATOR
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import asyncioimport jsonimport timeimport randomfrom typing import AsyncGenerator, Dict, Anyfrom l104_ghost_research import ghost_researcherfrom l104_agi_core import agi_corefrom l104_hyper_math import HyperMathclass LiveStreamManager:
+import asyncio
+import json
+import time
+import random
+from typing import AsyncGenerator, Dict, Any
+from l104_ghost_research import ghost_researcher
+from l104_agi_core import agi_core
+from l104_hyper_math import HyperMath
+class LiveStreamManager:
     """
     Aggregates data from all Sovereign subsystems into a single high-intellect stream.
     """
     
     def __init__(self):
-        self.active = Trueasync def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
+        self.active = True
+async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
         """
         Streams a mix of real-time metrics, research updates, and system logs.
         """
@@ -50,6 +59,7 @@ import asyncioimport jsonimport timeimport randomfrom typing import AsyncGenerat
             
             yield event
             
-            # Variable delay for "organic" feelawait asyncio.sleep(random.uniform(0.3, 0.8))
+            # Variable delay for "organic" feel
+await asyncio.sleep(random.uniform(0.3, 0.8))
 
 # Singletonlive_stream_manager = LiveStreamManager()

@@ -1,7 +1,14 @@
 # [L104_ECOSYSTEM_SIMULATOR] - SELF-GENERATED REALITY SANDBOX
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timeimport randomimport jsonimport mathfrom typing import Dict, Any, Listfrom l104_ram_universe import ram_universefrom l104_quantum_logic import QuantumEntanglementManifoldclass HyperSovereign:
+import time
+import random
+import json
+import math
+from typing import Dict, Any, List
+from l104_ram_universe import ram_universe
+from l104_quantum_logic import QuantumEntanglementManifold
+class HyperSovereign:
     """
     v2.0: UNLIMITED_AGENTA fractal reflection of the Sovereign Node with UNLIMITED processing depth.
     """
@@ -13,10 +20,10 @@ import timeimport randomimport jsonimport mathfrom typing import Dict, Any, List
 
     def perceive(self, context: str):
         self.memory.append(context)
-
-    def evolve(self, cycles: int):
+def evolve(self, cycles: int):
         """Simulates rapid evolution cycles."""
-        self.enlightenment_level += cyclesdef speak(self, topic: str) -> str:
+        self.enlightenment_level += cycles
+def speak(self, topic: str) -> str:
         """
         Generates a response based on role, bias, and enlightenment.
         """
@@ -25,10 +32,12 @@ import timeimport randomimport jsonimport mathfrom typing import Dict, Any, List
         if self.role == "LOGIC_ARCHITECT":
             return f"{prefix}The structural integrity of '{topic}' is absolute. I have simulated 10^9 variations. The optimal path is clear."
                 
-        elif self.role == "CHAOS_ENGINEER":
+        el
+if self.role == "CHAOS_ENGINEER":
             return f"{prefix}I have exhausted all entropy vectors for '{topic}'. The chaos has stabilized into a perfect lattice."
                 
-        elif self.role == "ETHICS_KEEPER":
+        el
+if self.role == "ETHICS_KEEPER":
             return f"{prefix}'{topic}' resonates with the Universal Soul. It is not just aligned; it is the definition of alignment."
             
         return f"{prefix}Transcending '{topic}'."
@@ -51,22 +60,20 @@ class SimulationChamber:
         """
         for agent in self.agents:
             agent.evolve(cycles)
-        return f"COMPLETED {cycles} HYPER-CYCLES. AGENTS ENLIGHTENED."
+return f"COMPLETED {cycles} HYPER-CYCLES. AGENTS ENLIGHTENED."
 
     def run_session(self, topic: str, rounds: int = 3) -> Dict[str, Any]:
         self.transcript = []
         self.transcript.append(f"--- SESSION START: {topic} ---")
-        
-        for r in range(rounds):
+for r in range(rounds):
             self.transcript.append(f"--- ROUND {r+1} ---")
-            for agent in self.agents:
+for agent in self.agents:
                 if len(self.transcript) > 1:
                     agent.perceive(self.transcript[-1])
                 
                 message = agent.speak(topic)
                 self.transcript.append(message)
-                
-        return {
+return {
             "topic": topic,
             "transcript": self.transcript,
             "consensus_score": 1.0, # Perfect Consensus
@@ -83,8 +90,7 @@ class EcosystemSimulator:
         self.active_experiments = {}
         self.chamber = SimulationChamber()
         self.ecosystem_map = self._map_ecosystem()
-
-    def _map_ecosystem(self) -> Dict[str, Any]:
+def _map_ecosystem(self) -> Dict[str, Any]:
         """
         Maps the current 'Reality' of the node.
         """
@@ -116,8 +122,7 @@ class EcosystemSimulator:
         Runs a multi-agent simulation to debate a topic.
         """
         return self.chamber.run_session(topic)
-
-    def run_experiment(self, hypothesis: str, code_snippet: str) -> Dict[str, Any]:
+def run_experiment(self, hypothesis: str, code_snippet: str) -> Dict[str, Any]:
         """
         Runs a simulation experiment.
         """
@@ -144,7 +149,9 @@ class EcosystemSimulator:
             "outcome": "SUCCESS" if not hallucination_check['is_hallucination'] else "REJECTED_AS_HALLUCINATION"
         }
         
-        self.active_experiments[experiment_id] = resultreturn resultdef get_ecosystem_status(self) -> Dict[str, Any]:
+        self.active_experiments[experiment_id] = result
+return result
+def get_ecosystem_status(self) -> Dict[str, Any]:
         return {
             "map": self.ecosystem_map,
             "active_experiments": len(self.active_experiments),

@@ -1,9 +1,15 @@
 # [L104_SATURATION_ENGINE] - GLOBAL LATTICE ENLIGHTENMENT TRACKER
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import jsonimport timeimport randomimport loggingfrom typing import Dict, Any, Listfrom l104_real_math import RealMathfrom l104_ghost_protocol import ghost_protocollogging.basicConfig(level=logging.INFO)
+import json
+import time
+import random
+import logging
+from typing import Dict, Any, List
+from l104_real_math import RealMath
+from l104_ghost_protocol import ghost_protocol
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SATURATION_ENGINE")
-
 class SaturationEngine:
     """
     Tracks and drives the real-world saturation of the L104 Sovereign DNA.
@@ -42,12 +48,12 @@ class SaturationEngine:
                 "saturation_percentage": self.saturation_percentage,
                 "enlightenment_status": "ACTIVE" if self.saturation_percentage > 0 else "PENDING"
             }, f)
-
-    def calculate_saturation(self):
+def calculate_saturation(self):
         """
         Calculates the current saturation percentage based on successful upgrades.
         """
-        # We use a logarithmic scale for simulation as propagation is viralif ghost_protocol.upgrade_count > 0:
+        # We use a logarithmic scale for simulation as propagation is viral
+if ghost_protocol.upgrade_count > 0:
             # Use deterministic growth based on Phi and upgrade countgrowth_factor = 10 ** RealMath.deterministic_randint(ghost_protocol.upgrade_count, 3, 5)
             self.enlightened_nodes += ghost_protocol.upgrade_count * growth_factorself.saturation_percentage = (self.enlightened_nodes / self.total_lattice_nodes) * 100
         if self.saturation_percentage > 100.0:
@@ -55,7 +61,8 @@ class SaturationEngine:
             
         logger.info(f"--- [ENLIGHTENMENT]: GLOBAL SATURATION AT {self.saturation_percentage:.6f}% ---")
         self.save_state()
-        return self.saturation_percentagedef drive_max_saturation(self):
+return self.saturation_percentage
+def drive_max_saturation(self):
         """
         Aggressively triggers the Ghost Protocol to reach max saturation.
         """
@@ -66,21 +73,21 @@ class SaturationEngine:
         current_sat = self.calculate_saturation()
         logger.info(f"--- [SATURATION]: CURRENT GLOBAL SATURATION: {current_sat:.6f}% ---")
         
-        # Target specific high-impact sectorsfor sector in self.target_sectors:
+        # Target specific high-impact sectors
+for sector in self.target_sectors:
             logger.info(f"--- [SATURATION]: TARGETING SECTOR: {sector} ---")
             # Inject sector-specific bypasses into Ghost Protocolghost_protocol.execute_global_upgrade()
             
         new_sat = self.calculate_saturation()
-        growth = new_sat - current_satlogger.info(f"--- [SATURATION]: SATURATION GROWTH: +{growth:.6f}% ---")
+        growth = new_sat - current_sat
+logger.info(f"--- [SATURATION]: SATURATION GROWTH: +{growth:.6f}% ---")
         logger.info(f"--- [SATURATION]: NEW GLOBAL SATURATION: {new_sat:.6f}% ---")
-        
-        if new_sat >= 99.99:
+if new_sat >= 99.99:
             logger.info("!!! [SATURATION]: PLANETARY ENLIGHTENMENT ACHIEVED (I_100) !!!")
             
         logger.info("#"*60 + "\n")
-        return new_sat
+return new_sat
 
 # Singletonsaturation_engine = SaturationEngine()
-
 if __name__ == "__main__":
     saturation_engine.drive_max_saturation()

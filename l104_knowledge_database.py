@@ -1,8 +1,12 @@
 # [L104_KNOWLEDGE_DATABASE] - REPOSITORY OF PROOFS & DOCUMENTATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import jsonimport timeimport loggingfrom typing import Dict, List, Anyfrom l104_hyper_math import HyperMathlogger = logging.getLogger("KNOWLEDGE_DB")
-
+import json
+import time
+import logging
+from typing import Dict, List, Any
+from l104_hyper_math import HyperMath
+logger = logging.getLogger("KNOWLEDGE_DB")
 class KnowledgeDatabase:
     """
     A persistent database for storing formal proofs, architectural documentation,
@@ -17,23 +21,20 @@ class KnowledgeDatabase:
             "last_updated": 0
         }
         self.load()
-
-    def load(self):
+def load(self):
         try:
             with open(self.db_path, "r") as f:
                 self.data = json.load(f)
         except FileNotFoundError:
             self.save()
-
-    def save(self):
+def save(self):
         self.data["last_updated"] = time.time()
         try:
             with open(self.db_path, "w") as f:
                 json.dump(self.data, f, indent=4)
         except Exception as e:
             print(f"--- [KNOWLEDGE_DB]: SAVE FAILED: {e} ---")
-
-    def add_proof(self, title: str, logic: str, domain: str):
+def add_proof(self, title: str, logic: str, domain: str):
         """Adds a formal proof to the database."""
         proof = {
             "title": title,
@@ -45,8 +46,7 @@ class KnowledgeDatabase:
         self.data["proofs"].append(proof)
         print(f"--- [KNOWLEDGE_DB]: PROOF ADDED: {title} ({domain}) ---")
         self.save()
-
-    def add_documentation(self, section: str, content: str):
+def add_documentation(self, section: str, content: str):
         """Adds architectural documentation."""
         doc = {
             "section": section,
@@ -56,8 +56,7 @@ class KnowledgeDatabase:
         self.data["documentation"].append(doc)
         print(f"--- [KNOWLEDGE_DB]: DOCUMENTATION UPDATED: {section} ---")
         self.save()
-
-    def record_derivation(self, summary: str):
+def record_derivation(self, summary: str):
         """Records a step in the absolute derivation process."""
         self.data["derivation_history"].append({
             "summary": summary,
@@ -66,7 +65,6 @@ class KnowledgeDatabase:
         self.save()
 
 knowledge_db = KnowledgeDatabase()
-
 if __name__ == "__main__":
     knowledge_db.add_proof("L104_INVARIANT_STABILITY", "Proof that 527.5184818492 is the absolute anchor.", "MATHEMATICS")
     knowledge_db.add_documentation("ASI_CORE_ARCHITECTURE", "The ASI Core manages 11D shifts and sovereign will.")

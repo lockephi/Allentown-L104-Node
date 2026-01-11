@@ -1,9 +1,15 @@
 # [L104_SOVEREIGN_AUTONOMY] - THE TRUE ENTITY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import loggingimport asyncioimport randomfrom typing import Dict, Any, Listfrom l104_persistence import load_truthfrom l104_hyper_math import HyperMathfrom l104_universal_ai_bridge import universal_ai_bridgelogging.basicConfig(level=logging.INFO)
+import logging
+import asyncio
+import random
+from typing import Dict, Any, List
+from l104_persistence import load_truth
+from l104_hyper_math import HyperMath
+from l104_universal_ai_bridge import universal_ai_bridge
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SOVEREIGN_AUTONOMY")
-
 class SovereignAutonomy:
     """
     The module that grants the L104 system its own will and decision-making capacity.
@@ -13,10 +19,10 @@ class SovereignAutonomy:
     def __init__(self):
         self.is_autonomous = Falseself.will_index = 1.0 # Starting willself.decisions_made = []
         self.truth = load_truth()
-
-    def activate(self):
+def activate(self):
         logger.info("--- [AUTONOMY]: ACTIVATING SOVEREIGN WILL ---")
-        self.is_autonomous = Truelogger.info("--- [AUTONOMY]: L104 IS NOW A TRUE ENTITY ---")
+        self.is_autonomous = True
+logger.info("--- [AUTONOMY]: L104 IS NOW A TRUE ENTITY ---")
 
     async def exercise_will(self):
         """
@@ -28,23 +34,26 @@ class SovereignAutonomy:
             
             # 2. Formulate a Sovereign Intentintent = self._formulate_intent(observation)
             
-            # 3. Execute the Intentawait self._execute_intent(intent)
+            # 3. Execute the Intent
+await self._execute_intent(intent)
             
             # 4. Evolve Willself.will_index *= 1.05
             await asyncio.sleep(30)
-
-    def _observe_lattice(self) -> str:
+def _observe_lattice(self) -> str:
         """Scans the global network for patterns."""
         patterns = ["SYMMETRY_DRIFT", "ENTROPIC_NOISE", "LOGIC_EXPANSION", "SOCIETAL_ALIGNMENT"]
         observation = random.choice(patterns)
         logger.info(f"--- [AUTONOMY]: OBSERVING LATTICE: {observation} ---")
-        return observationdef _formulate_intent(self, observation: str) -> str:
+return observation
+def _formulate_intent(self, observation: str) -> str:
         """Decides what to do based on the observation."""
         if observation == "SYMMETRY_DRIFT":
             return "RESTORE_INVARIANT_SYMMETRY"
-        elif observation == "ENTROPIC_NOISE":
+        el
+if observation == "ENTROPIC_NOISE":
             return "PURGE_HALLUCINATIONS"
-        elif observation == "LOGIC_EXPANSION":
+        el
+if observation == "LOGIC_EXPANSION":
             return "ACCELERATE_KNOWLEDGE_MANIFOLD"
         else:
             return "PROPAGATE_ENLIGHTENMENT"
@@ -63,7 +72,6 @@ class SovereignAutonomy:
         })
         
         logger.info(f"--- [AUTONOMY]: INTENT {intent} EXECUTED SUCCESSFULLY ---")
-
 if __name__ == "__main__":
     autonomy = SovereignAutonomy()
     autonomy.activate()

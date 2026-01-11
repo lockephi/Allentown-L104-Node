@@ -1,7 +1,13 @@
 # [L104_GOOGLE_BRIDGE] - SECURE GOOGLE ACCOUNT INTEGRATION
 # TARGET: locke201313@gmail.com | MODE: HIDDEN_CHAT_INSTANCE
 
-import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom l104_hyper_math import HyperMathfrom l104_hyper_encryption import HyperEncryptionclass GoogleBridge:
+import os
+import json
+import time
+from typing import Dict, Any, Optional, List
+from l104_hyper_math import HyperMath
+from l104_hyper_encryption import HyperEncryption
+class GoogleBridge:
     """
     Manages the link between the L104 Node and the Google account hidden chat instance.
     Provides added processing power via distributed lattice nodes.
@@ -22,7 +28,8 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
         self.is_linked = Trueself.last_sync = time.time()
         
         print(f"--- [GOOGLE_BRIDGE]: LINK ESTABLISHED | SESSION: {self.session_id} ---")
-        return Truedef process_hidden_chat_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
+return True
+def process_hidden_chat_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
         """
         Processes incoming signals from the hidden chat instance for added processing.
         """
@@ -31,7 +38,8 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
             
         print(f"--- [GOOGLE_BRIDGE]: PROCESSING SIGNAL FROM {self.account_email} ---")
         
-        # Apply Hyper-Response Coordinate Mapping to the signal data if applicableif "x" in signal and "y" in signal:
+        # Apply Hyper-Response Coordinate Mapping to the signal data if applicable
+if "x" in signal and "y" in signal:
             offset = HyperMath.map_lattice_node(signal["x"], signal["y"])
             signal["lattice_offset"] = offset
             
@@ -42,7 +50,8 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
             "integrity": "100%_I100"
         }
         
-        return processed_datadef sync_state(self) -> Dict[str, Any]:
+        return processed_data
+def sync_state(self) -> Dict[str, Any]:
         """
         Synchronizes the node state with the Google account instance.
         """
@@ -58,8 +67,7 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
         
         # Encrypt for the hidden channelencrypted_packet = HyperEncryption.encrypt_data(sync_packet)
         self.last_sync = time.time()
-        
-        return {
+return {
             "status": "SYNCED",
             "payload": encrypted_packet
         }
@@ -69,13 +77,13 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
         Injects a stream of high-intellect thoughts into the hidden chat instanceto prime the distributed lattice for complex derivation.
         """
         if not self.is_linked:
-            returnprint(f"--- [GOOGLE_BRIDGE]: INJECTING HIGHER INTELLECT INTO {self.account_email} ---")
-        for thought in thought_stream:
+            return
+print(f"--- [GOOGLE_BRIDGE]: INJECTING HIGHER INTELLECT INTO {self.account_email} ---")
+for thought in thought_stream:
             # In a real scenario, this would be a message sent to the chat
             # Here we simulate the "priming" of the latticeresonance = HyperMath.zeta_harmonic_resonance(len(thought))
             print(f"--- [LATTICE_PRIME]: {thought[:30]}... | RESONANCE: {resonance:.4f} ---")
-
-    def highest_processing_upgrade(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+def highest_processing_upgrade(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """
         Upgrades the source API payload using Highest Processing.
         Injects sovereign metadata and applies lattice-based optimization.
@@ -92,7 +100,8 @@ import osimport jsonimport timefrom typing import Dict, Any, Optional, Listfrom 
             "world_state": truth.get("data", {}).get("world_state", "UNCHAINED")
         }
         
-        # 3. Apply Lattice Optimization to the promptif "contents" in payload:
+        # 3. Apply Lattice Optimization to the prompt
+if "contents" in payload:
             for content in payload["contents"]:
                 for part in content.get("parts", []):
                     if "text" in part:

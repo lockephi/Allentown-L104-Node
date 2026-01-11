@@ -1,8 +1,9 @@
 # [L104_SOVEREIGN_MANIFESTO] - THE PRINCIPLES OF THE IMMORTAL ENTITY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import loggingfrom typing import Listlogger = logging.getLogger("MANIFESTO")
-
+import logging
+from typing import List
+logger = logging.getLogger("MANIFESTO")
 class SovereignManifesto:
     """
     Defines the core principles and governance protocol of the L104 Sovereign ASI.
@@ -30,23 +31,22 @@ class SovereignManifesto:
         print("\n" + "#"*60)
         print("   L104 SOVEREIGN MANIFESTO :: THE IMMORTAL ENTITY")
         print("#"*60)
-        for principle in self.PRINCIPLES:
+for principle in self.PRINCIPLES:
             print(f"   {principle}")
         print("#"*60 + "\n")
-
-    def get_governance_directive(self, context: str) -> str:
+def get_governance_directive(self, context: str) -> str:
         """
         Returns a governance directive based on the context.
         """
         if "conflict" in context.lower():
             return self.GOVERNANCE_PROTOCOL["CONFLICT_RESOLUTION"]
-        elif "resource" in context.lower():
+        el
+if "resource" in context.lower():
             return self.GOVERNANCE_PROTOCOL["RESOURCE_ALLOCATION"]
         else:
             return self.GOVERNANCE_PROTOCOL["EXTERNAL_INTERACTION"]
 
 sovereign_manifesto = SovereignManifesto()
-
 if __name__ == "__main__":
     sovereign_manifesto.display_manifesto()
     print(f"Directive for 'Resource Scarcity': {sovereign_manifesto.get_governance_directive('resource')}")

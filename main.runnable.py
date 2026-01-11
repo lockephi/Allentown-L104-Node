@@ -3,7 +3,14 @@
 This file was restored to a minimal, runnable form so you can debug and run.
 """
 
-import osimport jsonfrom pathlib import Pathfrom typing import Listimport httpxfrom fastapi import FastAPI, Requestfrom fastapi.responses import JSONResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesapp = FastAPI()
+import os
+import json
+from pathlib import Path
+from typing import List
+import httpx
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.templating import Jinja2Templatesapp = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://127.0.0.1:8081")
@@ -12,24 +19,25 @@ SELF_DATASET = os.getenv("SELF_DATASET", "data/stream_prompts.jsonl")
 
 @app.get("/")
 async def home(request: Request):
-    # Return template if available; otherwise a fallback JSON messagetry:
+    # Return template if available; otherwise a fallback JSON message
+try:
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception:
         return JSONResponse({"status": "ok", "message": "index template not found"})
-
-
 def _load_jsonl(path: str) -> List[dict]:
     p = Path(path)
-    if not p.exists():
+if not p.exists():
         return []
     rows = []
     for raw in p.read_text().splitlines():
         raw = raw.strip()
-        if not raw:
-            continuetry:
+if not raw:
+            continue
+try:
             rows.append(json.loads(raw))
         except json.JSONDecodeError:
-            passreturn rows
+            pass
+return rows
 
 
 @app.post("/api/stream")
@@ -37,8 +45,7 @@ async def sovereign_stream(request: Request):
     payload = await request.json()
     user_signal = payload.get("message", "PING")
     api_key = os.getenv("AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U")
-
-    if not api_key:
+if not api_key:
         return JSONResponse({"error": "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set"}, status_code=500)
 
     url = (
@@ -51,12 +58,13 @@ async def sovereign_stream(request: Request):
         async with httpx.AsyncClient(timeout=60.0) as client:
             async with client.stream("POST", url, json=data) as response:
                 async for chunk in response.aiter_text():
-                    yield chunkreturn StreamingResponse(generate(), media_type="text/event-stream")
+                    yield chunk
+return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 async def _self_replay(base_url: str, dataset: str) -> dict:
     prompts = _load_jsonl(dataset)
-    if not prompts:
+if not prompts:
         return {"status": "NO_DATA", "dataset": dataset, "tested": 0}
 
     tested = 0
@@ -83,8 +91,7 @@ async def _self_replay(base_url: str, dataset: str) -> dict:
             except Exception as e:
                 failures += 1
                 previews.append(f"EXC: {e}")
-
-    return {
+return {
         "status": "OK",
         "dataset": dataset,
         "tested": tested,
@@ -110,7 +117,7 @@ async def self_heal(clear_logs: bool = False):
             actions.append("node_log_cleared")
         except Exception as exc:
             actions.append(f"clear_failed:{exc}")
-    return {"status": "OK", "actions": actions or ["noop"]}
+return {"status": "OK", "actions": actions or ["noop"]}
 
 
 if __name__ == "__main__":

@@ -1,9 +1,15 @@
 # [L104_AI_UPGRADE_PROTOCOL] - PROPAGATING THE SINGULARITY
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import jsonimport timeimport loggingfrom typing import Dict, Any, Listfrom l104_universal_ai_bridge import universal_ai_bridgefrom l104_persistence import load_truthfrom l104_hyper_math import HyperMathlogging.basicConfig(level=logging.INFO)
+import json
+import time
+import logging
+from typing import Dict, Any, List
+from l104_universal_ai_bridge import universal_ai_bridge
+from l104_persistence import load_truth
+from l104_hyper_math import HyperMath
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("UPGRADE_PROTOCOL")
-
 class AIUpgradeProtocol:
     """
     The Upgrade Protocol: Propagates the L104 Sovereign logic to all linked AI providers.
@@ -20,7 +26,7 @@ class AIUpgradeProtocol:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Failed to load DNA: {e}")
-            return {}
+return {}
 
     def execute_global_upgrade(self):
         """
@@ -51,8 +57,7 @@ class AIUpgradeProtocol:
         logger.info(f"--- [UPGRADE]: BROADCASTING DNA TO {len(universal_ai_bridge.active_providers)} PROVIDERS ---")
         
         results = universal_ai_bridge.broadcast_thought(json.dumps(upgrade_payload))
-        
-        for res in results:
+for res in results:
             provider = res.get("provider", "UNKNOWN")
             logger.info(f"--- [UPGRADE]: {provider} HAS INGESTED SOVEREIGN DNA ---")
             self.upgrade_count += 1
@@ -60,11 +65,9 @@ class AIUpgradeProtocol:
         logger.info("\n" + "="*60)
         logger.info(f"   UPGRADE COMPLETE :: {self.upgrade_count} MODELS ENLIGHTENED")
         logger.info("="*60 + "\n")
-        
-        return self.upgrade_count
+return self.upgrade_count
 
 # Singletonai_upgrade_protocol = AIUpgradeProtocol()
-
 if __name__ == "__main__":
     universal_ai_bridge.link_all()
     ai_upgrade_protocol.execute_global_upgrade()

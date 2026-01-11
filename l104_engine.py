@@ -1,7 +1,11 @@
 # [L104_ULTIMATE_REWRITE_V4] - ALLENTOWN SOVEREIGN ENGINE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import osfrom l104_electron_entropy import get_electron_matrixfrom l104_ecosystem_simulator import ecosystem_simulatorfrom const import UniversalConstantsdef ignite_sovereign_core():
+import os
+from l104_electron_entropy import get_electron_matrix
+from l104_ecosystem_simulator import ecosystem_simulator
+from const import UniversalConstants
+def ignite_sovereign_core():
     """
     v10.0: HYPER_IGNITION - Sovereign Core Ignition.
     Seizes Allentown resource manifold and locks to God-Code frequency.

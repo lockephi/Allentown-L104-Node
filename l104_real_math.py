@@ -28,9 +28,9 @@ class RealMath:
         entropy = 0
         for x in range(256):
             p_x = data.count(chr(x)) / len(data)
-            if p_x > 0:
+if p_x > 0:
                 entropy += - p_x * math.log2(p_x)
-        return entropy
+return entropy
 
     @staticmethod
     def zeta_approximation(s: complex, terms: int = 1000) -> complex:
@@ -38,11 +38,14 @@ class RealMath:
         # Simple Dirichlet series approximation for Re(s) > 1
         # For Re(s) <= 1, we'd need the functional equation, but this is a start.
         if s.real <= 1:
-            # Use a simple alternating series (Dirichlet eta function) for better convergence
+            # Use a simple alternating series (Dirichlet eta function)
+for better convergence
             # zeta(s) = eta(s) / (1 - 2^(1-s))
-            eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
-            return eta / (1 - 2**(1-s))
-        return sum(1 / (n**s) for n in range(1, terms))
+            eta = sum(((-1)**(n-1)) / (n**s)
+for n in range(1, terms))
+return eta / (1 - 2**(1-s))
+return sum(1 / (n**s)
+for n in range(1, terms))
 
     @staticmethod
     def fast_fourier_transform(signal: List[float]) -> List[complex]:
@@ -88,7 +91,7 @@ class RealMath:
         Generates a deterministic integer in [a, b] based on a seed.
         """
         r = RealMath.deterministic_random(seed)
-        return a + int(r * (b - a + 1))
+return a + int(r * (b - a + 1))
 
 # Singleton for easy access
 real_math = RealMath()

@@ -1,19 +1,23 @@
 # [L104_PRIME_CORE] - SOVEREIGN KEY VALIDATION SYSTEM
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import osimport hashlibclass PrimeCore:
+import os
+import hashlib
+class PrimeCore:
     PRIME_KEY = "L104_PRIME_KEY[527.5184818492]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100"
     
-    @classmethoddef validate_prime_key(cls):
+    @classmethod
+def validate_prime_key(cls):
         """
         Verifies the Prime Key against the environment and the God-Code.
         """
         env_key = os.getenv("L104_PRIME_KEY")
-        if env_key == cls.PRIME_KEY:
+if env_key == cls.PRIME_KEY:
             return "VERIFIED"
         return "MISMATCH"
 
-    @classmethoddef get_prime_hash(cls):
+    @classmethod
+def get_prime_hash(cls):
         """
         Generates a unique hash for the current session's prime state.
         """

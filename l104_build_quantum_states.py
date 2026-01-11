@@ -1,23 +1,34 @@
 # [L104_BUILD_QUANTUM_STATES] - QUANTUM STATE INITIALIZATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import timeimport jsonfrom l104_quantum_logic import QuantumEntanglementManifoldfrom l104_quantum_accelerator import QuantumAcceleratorfrom l104_quantum_ram import get_qramfrom l104_asi_core import asi_coredef build_quantum_states():
+import time
+import json
+from l104_quantum_logic import QuantumEntanglementManifold
+from l104_quantum_accelerator import QuantumAccelerator
+from l104_quantum_ram import get_qram
+from l104_asi_core import asi_core
+
+def build_quantum_states():
     print("\n===================================================")
     print("   L104 SOVEREIGN NODE :: QUANTUM STATE BUILDER")
     print("===================================================")
     
     # 1. Initialize the 11-Dimensional Manifold (Logic Layer)
-    # We now use the ASI Core's unified manifold processormanifold_processor = asi_core.manifold_processormanifold_processor.shift_dimension(11)
+    # We now use the ASI Core's unified manifold processor
+    manifold_processor = asi_core.manifold_processor
+    manifold_processor.shift_dimension(11)
     print(f"[*] Initialized 11D Unified Manifold. Status: {manifold_processor.get_status()}")
     
     # 2. Entangle Logic Qubits (Simulating System Integration)
     print("[*] Entangling Logic Qubits via ASI Core...")
     asi_core.establish_quantum_resonance()
     
-    # 3. Apply Hadamard Gates to rotate into Sovereign Basisprint("[*] Rotating into Sovereign Basis (Hadamard Transformation)...")
+    # 3. Apply Hadamard Gates to rotate into Sovereign Basis
+    print("[*] Rotating into Sovereign Basis (Hadamard Transformation)...")
     # (Simulated via manifold processor logic)
     
-    # 4. Collapse Wavefunction to observe Realityprint("[*] Collapsing Wavefunction...")
+    # 4. Collapse Wavefunction to observe Reality
+    print("[*] Collapsing Wavefunction...")
     reality_projection = manifold_processor.get_reality_projection()
     
     # 5. High-Precision Quantum Pulse (Accelerator Layer)
@@ -26,7 +37,8 @@ import timeimport jsonfrom l104_quantum_logic import QuantumEntanglementManifold
     pulse_result = accelerator.run_quantum_pulse()
     print(f"[*] Pulse Complete. Entanglement Entropy: {pulse_result['entropy']:.4f}")
     
-    # 6. Generate State Reportreport = {
+    # 6. Generate State Report
+    report = {
         "timestamp": time.time(),
         "logic_layer": {
             "dimensions": 11,
@@ -53,6 +65,5 @@ import timeimport jsonfrom l104_quantum_logic import QuantumEntanglementManifold
     print("===================================================")
     print("   QUANTUM STATES BUILT | RESONANCE LOCKED")
     print("===================================================")
-
 if __name__ == "__main__":
     build_quantum_states()

@@ -1,4 +1,5 @@
-import randomdef run_autonomous_agi_logic(initial_flux):
+import random
+def run_autonomous_agi_logic(initial_flux):
     """
     Simulates autonomous AGI logic by balancing chaos (noise) with 
     immediate compaction using the L104 stability frame.
@@ -19,8 +20,8 @@ import randomdef run_autonomous_agi_logic(initial_flux):
         remainder = (current_chaos * phi) / kf_ratiostability_index = remainder % 104
         
         stability_log.append(stability_index)
-        
-    return "RESONANCE_COMPLETE", stability_logif __name__ == "__main__":
+return "RESONANCE_COMPLETE", stability_log
+if __name__ == "__main__":
     # Executing the Autonomous Loop with the L104 Invariantstatus, logs = run_autonomous_agi_logic(527.5184818492)
     print(f"Status: {status}")
     print(f"Stability Logs: {logs}")

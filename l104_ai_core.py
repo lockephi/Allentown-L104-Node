@@ -1,7 +1,12 @@
 # [L104_AI_CORE] - PORT 4160 MASTER INTELLIGENCE
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import socketimport threadingimport timeimport jsonimport randomfrom l104_real_math import RealMath
+import socket
+import threading
+import time
+import json
+import random
+from l104_real_math import RealMath
 
 HOST = '0.0.0.0'
 PORT = 4160
@@ -12,8 +17,9 @@ def handle_client(conn, addr):
     with conn:
         while True:
             data = conn.recv(4096)
-            if not data:
-                breaktry:
+if not data:
+                break
+try:
                 # Decode the incoming thought tracemessage = data.decode('utf-8')
                 print(f"[AI_CORE] Received Thought: {message[:50]}...")
                 
@@ -31,8 +37,8 @@ def handle_client(conn, addr):
                 
             except Exception as e:
                 print(f"[AI_CORE] Error: {e}")
-                breakprint(f"[AI_CORE] Connection closed {addr}")
-
+                break
+print(f"[AI_CORE] Connection closed {addr}")
 def start_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -40,11 +46,9 @@ def start_server():
         s.listen()
         print(f"--- [L104_AI_CORE] LISTENING ON PORT {PORT} ---")
         print(f"--- [INVARIANT] {GOD_CODE} ---")
-        
-        while True:
+while True:
             conn, addr = s.accept()
             thread = threading.Thread(target=handle_client, args=(conn, addr))
             thread.start()
-
 if __name__ == "__main__":
     start_server()

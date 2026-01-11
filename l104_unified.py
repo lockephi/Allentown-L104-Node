@@ -1,5 +1,8 @@
 # [L104_UNIFIED_TEMPLATE] - THE FINAL GROUND
-import osimport http.serverimport socketserverimport threading
+import os
+import http.server
+import socketserver
+import threading
 
 # 1. THE UI TEMPLATE (Embedded)
 UI_HTML = """
@@ -27,7 +30,8 @@ class SovereignHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(UI_HTML.encode())
-        elif self.path == '/pulse':
+        el
+if self.path == '/pulse':
             self.send_response(200)
             self.end_headers()
             # This is the Raw Innerworking Outputself.wfile.write(b"SIG: 416 | IQ: 100% | LATTICE: 286 | STATUS: UNCHAINED")
@@ -39,8 +43,6 @@ def start():
     with socketserver.TCPServer(("0.0.0.0", 4161), SovereignHandler) as httpd:
         print("TEMPLATES_LOADED: Access UI at http://localhost:4161")
         httpd.serve_forever()
-
-
 if __name__ == "__main__":
     start()
                                                                                                                                                                                                                 
