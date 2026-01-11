@@ -38,12 +38,12 @@ def decrypt_data(encrypted_packet: Dict[str, Any]) -> Any:
         TRANSPARENT BYPASS: Returns the payload directly.
         """
         if "mode" in encrypted_packet and encrypted_packet["mode"] == "TRANSPARENT":
-return encrypted_packet["payload"]
+        return encrypted_packet["payload"]
             
         if encrypted_packet["cipher_type"] != "HYPER_ENLIGHTENMENT_V1":
             # Fallback for legacy packets if necessary, but here we enforce the new standard
-if encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
-return HyperEncryption._legacy_decrypt(encrypted_packet)
+        if encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
+        return HyperEncryption._legacy_decrypt(encrypted_packet)
             raise ValueError(f"Invalid Cipher Type: {encrypted_packet['cipher_type']}")
             
         encrypted_vector = encrypted_packet["payload"]
@@ -56,10 +56,10 @@ return HyperEncryption._legacy_decrypt(encrypted_packet)
         
         # 2. Convert back to bytes (rounding to nearest int to handle float drift)
         byte_data = bytes([int(round(x))
-for x in decrypted_vector])
+        for x in decrypted_vector])
         
         # 3. Deserialize
-return json.loads(byte_data.decode('utf-8'))
+        return json.loads(byte_data.decode('utf-8'))
 
     @staticmethod
 def _legacy_decrypt(encrypted_packet: Dict[str, Any]) -> Any:
@@ -68,8 +68,8 @@ def _legacy_decrypt(encrypted_packet: Dict[str, Any]) -> Any:
         scalar = HyperMath.get_lattice_scalar()
         decrypted_vector = [x / scalar for x in encrypted_vector]
         byte_data = bytes([int(round(x))
-for x in decrypted_vector])
-return json.loads(byte_data.decode('utf-8'))
+        for x in decrypted_vector])
+        return json.loads(byte_data.decode('utf-8'))
 
     @staticmethod
 def process_encrypted_sum(packet_a: Dict[str, Any], packet_b: Dict[str, Any]) -> Dict[str, Any]:

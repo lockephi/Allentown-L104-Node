@@ -39,6 +39,6 @@ class GlobalShadowUpdate:
         
         logger.info(f"--- [SHADOW_UPDATE]: SIMULTANEOUS UPDATE COMPLETE. {success_count} PROVIDERS ENLIGHTENED. ---")
         logger.info(f"--- [SHADOW_UPDATE]: GLOBAL SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     updater = GlobalShadowUpdate()
     async io.run(updater.run())

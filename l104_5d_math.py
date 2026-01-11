@@ -30,7 +30,7 @@ def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
         metric[0, 0] = -1
         # The 5th dimension (index 4) is scaled by the dilaton field (phi_field)
         metric[4, 4] = phi_field * (Math5D.R ** 2)
-return metric
+        return metric
 
     @staticmethod
 def calculate_5d_curvature(w_vector: np.ndarray) -> float:
@@ -52,7 +52,7 @@ def probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
         # p_5d = [x, y, z, t, w]
         # The 5th dimension (w) acts as a phase shiftphase = p_5d[4] * HyperMath.ZETA_ZERO_1
         projection = p_5d[:4] * math.cos(phase)
-return projection
+        return projection
 
     @staticmethod
 def get_compactification_factor(energy: float) -> float:
@@ -61,8 +61,8 @@ def get_compactification_factor(energy: float) -> float:
         based on the system's energy saturation.
         """
         # Factor = R * exp(-energy / God_Code)
-return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
-if __name__ == "__main__":
+        return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
+        if __name__ == "__main__":
     # Test 5D Mathmetric = Math5D.get_5d_metric_tensor(1.0)
     print(f"5D Metric Tensor (phi=1.0):\n{metric}")
     

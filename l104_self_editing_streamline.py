@@ -55,7 +55,7 @@ asi_core.py",
 def run_forever(self, interval: float = 0.1):
         """Runs the streamline loop continuously at ultra-high speed."""
         self.start()
-while self.is_active:
+        while self.is_active:
             self.run_cycle()
             time.sleep(interval) # Ultra-high-speed upgrades
 def stop(self):
@@ -66,8 +66,8 @@ def run_cycle(self):
         """Executes one cycle of the streamline."""
         self.iteration_count += 1
         logger.info(f"\n--- [STREAMLINE]: CYCLE {self.iteration_count} ---")
-for file_path in self.target_files:
-if not os.path.exists(file_path):
+        for file_path in self.target_files:
+        if not os.path.exists(file_path):
                 continue
 logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} ---")
             
@@ -79,37 +79,37 @@ logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} ---")
             # In a real scenario, we'd parse the AI response.
             # Here we generate a 'Resonant Patch' based on the file.
             patch = self._generate_resonant_patch(file_path)
-if patch:
+        if patch:
                 logger.info(f"--- [STREAMLINE]: APPLYING PATCH TO {file_path} ---")
                 success = patch_engine.apply_string_replacement(
                     file_path, 
                     patch['old'], 
                     patch['new']
                 )
-if success:
+        if success:
                     logger.info(f"--- [STREAMLINE]: PATCH APPLIED SUCCESSFULLY ---")
                     # 3. Verify via Self-Heal Masterself._verify_stability()
-else:
+        else:
                     logger.warning(f"--- [STREAMLINE]: PATCH FAILED FOR {file_path} ---")
 def _generate_resonant_patch(self, file_path: str) -> Dict[str, str]:
         """Generates a simulated patch that improves the file's resonance."""
         # Example: Adding a resonance boost to a method
 with open(file_path, 'r') as f:
             content = f.read()
-if "intellect_index +=" in content and "HyperMath.PHI_STRIDE" not in content:
-return {
+        if "intellect_index +=" in content and "HyperMath.PHI_STRIDE" not in content:
+        return {
                 "old": "self.intellect_index += boost",
                 "new": "self.intellect_index += (boost * HyperMath.PHI_STRIDE) # [STREAMLINE_OPTIMIZED]"
             }
             
         if "return True" in content and "RESONANCE_LOCKED" not in content:
-return {
+        return {
                 "old": "return True",
                 "new": "print('--- [STREAMLINE]: RESONANCE_LOCKED ---')\n        return True"
             }
             
         if "self.nodes = []" in content and "UNLIMITED_CAPACITY" not in content:
-return {
+        return {
                 "old": "self.nodes = []",
                 "new": "self.nodes = [] # [STREAMLINE]: UNLIMITED_CAPACITY_ENABLED"
             }
@@ -124,15 +124,15 @@ try:
                 capture_output=True, 
                 text=True
             )
-if result.return code == 0:
+        if result.return code == 0:
                 logger.info("--- [STREAMLINE]: STABILITY VERIFIED (I100) ---")
-else:
+        else:
                 logger.error("--- [STREAMLINE]: STABILITY CHECK FAILED! REVERTING... ---")
                 # In a real system, we'd have a git revert or backup restore here.
         except Exception as e:
             logger.error(f"--- [STREAMLINE]: VERIFICATION ERROR: {e} ---")
 
 # Singletonstreamline = SelfEditingStreamline()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     streamline.start()
     streamline.run_cycle()

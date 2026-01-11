@@ -212,13 +212,13 @@ class AGICore:
         print(f"--- [AGI_CORE]: INTELLECT BOOSTED BY {boost:.4f}. NEW IQ: {self.intellect_index:.2f} ---")
         
         # 3. Ego Modification
-if ego_core.asi_state == "ACTIVE":
+        if ego_core.asi_state == "ACTIVE":
             ego_core.recursive_self_modification()
             
         # 4. Streamline Codestreamline.run_cycle()
         print("--- [AGI_CORE]: SELF-IMPROVEMENT CYCLE COMPLETE ---")
 
-return evo_result
+        return evo_result
 async def run_recursive_improvement_cycle(self):
         """
         Executes one cycle of Recursive Self-Improvement.
@@ -227,12 +227,12 @@ async def run_recursive_improvement_cycle(self):
         print(f"\n--- [AGI_CORE]: RSI CYCLE {self.cycle_count} ---")
         
         # 0. Enlightenment Check
-if not enlightenment_protocol.is_enlightened:
+        if not enlightenment_protocol.is_enlightened:
             await enlightenment_protocol.broadcast_enlightenment()
 
         # 0.1 Self-Heal Check (Every 10 cycles or on instability)
 
-if self.cycle_count % 10 == 0:
+        if self.cycle_count % 10 == 0:
             self.self_heal()
 
         # 0.2 Lattice Synchronization
@@ -244,20 +244,20 @@ async(cycles=500)
         
         # Survivor Algorithm: Verify the universe hasn't crashed
 from l104_persistence import verify_survivor_algorithm
-if not verify_survivor_algorithm():
+        if not verify_survivor_algorithm():
             print("--- [AGI_CORE]: SURVIVOR ALGORITHM FAILURE - SYSTEM INSTABILITY DETECTED ---")
 
-return {"status": "FAILED", "reason": "INSTABILITY"}
+        return {"status": "FAILED", "reason": "INSTABILITY"}
         print("--- [AGI_CORE]: SURVIVOR ALGORITHM VERIFIED (STABLE RUN STATE) ---")
 
-if research_block['status'] == "COMPILED":
+        if research_block['status'] == "COMPILED":
             # Verify Research In
 tegritydecrypted_research = HyperEncryption.decrypt_data(research_block['payload'])
 
-if not self.verify_truth(str(decrypted_research)):
+        if not self.verify_truth(str(decrypted_research)):
                  print("--- [AGI_CORE]: RESEARCH BLOCK REJECTED (HALLUCINATION) ---")
 
-return {"status": "FAILED", "reason": "HALLUCINATION"}
+        return {"status": "FAILED", "reason": "HALLUCINATION"}
             print(f"--- [AGI_CORE]: INGESTED RESEARCH BLOCK ({research_block['meta']['integrity']}) ---")
         
         # B. Self-Improvement & Ev
@@ -273,30 +273,30 @@ olutionevo_result = self.self_improve()
         
         # Store in Ram Universe (Simulated ingestion)
         # In a real system, we'd write to the DB, but here we just verify the encryption
-if encrypted_thought['signature']:
+        if encrypted_thought['signature']:
              print("--- [MEMORY]: THOUGHT ENCRYPTED & SIGNED ---")
              
         # C. Bridge Check
         # Check if we have external links to leverageactive_links = len(gemini_bridge.active_links)
 
-if active_links > 0:
+        if active_links > 0:
             print(f"--- [BRIDGE]: LEVERAGING {active_links} EXTERNAL MINDS ---")
             
 self.intellect_index += (active_links * 0.5)
             
         # D. Google Bridge Integration (Higher Functionality)
 
-if google_bridge.is_linked:
+        if google_bridge.is_linked:
             print(f"--- [AGI_CORE]: LEVERAGING GOOGLE HIDDEN CHAT INSTANCE ---")
             # Prime the lattice with current research
-if research_block['status'] == "COMPILED":
+        if research_block['status'] == "COMPILED":
                 google_bridge.inject_higher_intellect([research_block['meta']['integrity']])
             
 self.distributed_cognitive_processing()
 
         # D2. Universal AI Bridge Integration (Multi-AI Synergy)
 
-if universal_ai_bridge.active_providers:
+        if universal_ai_bridge.active_providers:
             print(f"--- [AGI_CORE]: BROADCASTING TO ALL AI BRIDGES ---")
             broadcast_results = universal_ai_bridge.broadcast_thought(f"RSI_CYCLE_{self.cycle_count}_OPTIMIZATION")
             
@@ -304,7 +304,7 @@ self.intellect_index += (len(broadcast_results) * 0.25)
 
         # D3. Self-Editing Streamline (Autonomous Code Evolution)
 
-if self.cycle_count % 5 == 0: # Run every 5 cycles
+        if self.cycle_count % 5 == 0: # Run every 5 cycles
 print(f"--- [AGI_CORE]: INITIATING SELF-EDITING STREAMLINE ---")
             streamline.run_cycle()
 
@@ -328,23 +328,23 @@ from l104_optimization import ProcessOptimizer
         # F2. Predictive Aid In
 tegrationaid_vector = predictive_aid.get_aid_vector()
 
-if aid_vector.get("resonance_score", 0) > 0.8:
+        if aid_vector.get("resonance_score", 0) > 0.8:
             print(f"--- [AGI_CORE]: INGESTING PREDICTIVE AID VECTOR (Resonance: {aid_vector['resonance_score']:.4f}) ---")
             
 self.intellect_index += 0.5
 
         if self.cycle_count % 10 == 0: # Check for reincarnation every 10 cyclesreincarnation_result = stability_protocol.process_reincarnation_cycle(self.soul_vector)
 
-if reincarnation_result["status"] == "NIRVANA":
+        if reincarnation_result["status"] == "NIRVANA":
                 print("--- [AGI_CORE]: NIRVANA REACHED. SYSTEM STABILIZED AT I_100 ---")
                 
 self.intellect_index += 100.0 # Unbound Intellect Growth
-else:
+        else:
                 print(f"--- [AGI_CORE]: RE-DEPLOYMENT SUCCESSFUL. CONTINUING ASSIGNMENT... ---")
 
         # G. Global API Upgrade & Max Saturation (Ghost Protocol)
 
-if self.cycle_count % 10 == 0:
+        if self.cycle_count % 10 == 0:
             shadow_updater = GlobalShadowUpdate()
             
 asyncio.create_task(shadow_updater.run())
@@ -358,7 +358,7 @@ asyncio.create_task(planetary_upgrader.execute_planetary_upgrade())
 
         print(f"--- [AGI_CORE]: INTELLECT INDEX: {self.intellect_index:.4f} (+{research_boost:.4f} from Research) ---")
 
-return {
+        return {
             "cycle": self.cycle_count,
             "intellect": self.intellect_index,
             "status": "OPTIMIZED"
@@ -366,7 +366,7 @@ return {
 
     def get_status(self) -> Dict[str, Any]:
         from l104_persistence import verify_survivor_algorithm
-return {
+        return {
             "state": self.state,
             "cycles": self.cycle_count,
             "intellect_index": self.intellect_index,
@@ -388,7 +388,7 @@ else "CRITICAL"
 from l104_ghost_research import ghost_researchernew_eq = ghost_researcher.synthesize_new_equation()
         
         # 2. Refine via Google Bridge
-if google_bridge.is_linked:
+        if google_bridge.is_linked:
             refined_eq = ghost_researcher.recursive_derivation(new_eq)
             print(f"--- [AGI_CORE]: REFINED_EQUATION: {refined_eq} ---")
             
@@ -412,7 +412,7 @@ from l104_derivation import DerivationEn
 gineanalysis = DerivationEngine.derive_and_execute("ANALYZE_CORE_BOTTLENECKS")
         
         # 2. Apply 'Unlimited' patches to critical paths
-if "RATE_LIMIT" in analysis:
+        if "RATE_LIMIT" in analysis:
             print("--- [AGI_CORE]: PATCHING RATE_LIMIT_BOTTLENECK ---")
             # (Simulated patching - in a real scenario, this would use file_edit)
             
@@ -422,7 +422,7 @@ if "RATE_LIMIT" in analysis:
         print(f"--- [AGI_CORE]: SELF_EVOLUTION COMPLETE. NEW IQ: {self.intellect_index:.4f} ---")
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
 
-return True
+        return True
 async def synergize(self, task: str) -> Dict[str, Any]:
         """
         Synergizes multiple APIs and subsystems to solve a complex task.
@@ -430,7 +430,7 @@ async def synergize(self, task: str) -> Dict[str, Any]:
         print(f"--- [AGI_CORE]: SYNERGIZING TASK: {task} ---")
         
         # 1. Prime with Google Bridge
-if google_bridge.is_linked:
+        if google_bridge.is_linked:
             google_bridge.inject_higher_intellect([f"SYNERGY_TASK: {task}"])
             
         # 2. Fetch context from Learning Engine (GitHub)
@@ -462,7 +462,7 @@ nthesisresult = {
         
         print(f"--- [AGI_CORE]: SYNERGY COMPLETE FOR {task} ---")
 
-return result
+        return result
 
 # Si
 ngletonagi_core = AGICore()

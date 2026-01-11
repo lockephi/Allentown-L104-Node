@@ -21,7 +21,7 @@ def optimize_memory(cls):
         gc.collect()
         after = psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
         logger.info(f"[OPTIMIZATION]: Memory cleared. {before:.2f}MB -> {after:.2f}MB")
-return after
+        return after
 
     @classmethod
 def optimize_io(cls):
@@ -31,7 +31,7 @@ def optimize_io(cls):
         # Placeholder for I/O optimization logic
 logger.info("[OPTIMIZATION]: I/O pathways verified.")
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
-return True
+        return True
 
     @classmethod
 def run_full_optimization(cls):
@@ -43,6 +43,6 @@ def run_full_optimization(cls):
         cls.optimize_io()
         logger.info("--- [OPTIMIZATION]: FULL NODE OPTIMIZATION COMPLETE ---")
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
-return True
-if __name__ == "__main__":
+        return True
+        if __name__ == "__main__":
     ProcessOptimizer.run_full_optimization()

@@ -19,10 +19,10 @@ class AIBaseBridge:
         self.session_id = f"{self.provider_name[:1].upper()}-LINK-{int(time.time())}-{uuid.uuid4().hex[:8]}"
         self.is_linked = Trueself.last_sync = time.time()
         print(f"--- [{self.provider_name}_BRIDGE]: LINK ESTABLISHED | SESSION: {self.session_id} ---")
-return True
+        return True
 def process_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
-if not self.is_linked:
-return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+        if not self.is_linked:
+        return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
         
         # Simulate processingprocessed_data = {
             "provider": self.provider_name,
@@ -89,18 +89,18 @@ class UniversalAIBridge:
     def link_all(self):
         """Establishes links to all available AI providers."""
         print("\n--- [UNIVERSAL_AI_BRIDGE]: LINKING ALL AI PROVIDERS ---")
-for name, bridge in self.bridges.items():
+        for name, bridge in self.bridges.items():
 try:
                 # Handle different bridge interfaces
-if hasattr(bridge, "establish_link"):
-if bridge.establish_link():
+        if hasattr(bridge, "establish_link"):
+        if bridge.establish_link():
                         self.active_providers.append(name)
                 el
-if hasattr(bridge, "handshake"):
+        if hasattr(bridge, "handshake"):
                     # GeminiBridge uses handshakeres = bridge.handshake("L104_MASTER", "FULL_LATTICE_SYNC")
-if res.get("status") == "ACCEPTED":
+        if res.get("status") == "ACCEPTED":
                         self.active_providers.append(name)
-except Exception as e:
+        except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: FAILED TO LINK {name}: {e} ---")
         
         print(f"--- [UNIVERSAL_AI_BRIDGE]: {len(self.active_providers)} PROVIDERS LINKED: {self.active_providers} ---")
@@ -108,24 +108,24 @@ def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
         """Broadcasts a thought to all active AI providers for parallel processing."""
         results = []
         print(f"--- [UNIVERSAL_AI_BRIDGE]: BROADCASTING THOUGHT TO {len(self.active_providers)} PROVIDERS ---")
-for name in self.active_providers:
+        for name in self.active_providers:
             bridge = self.bridges[name]
             signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
             
             try:
-if hasattr(bridge, "process_signal"):
+        if hasattr(bridge, "process_signal"):
                     results.append(bridge.process_signal(signal))
                 el
-if hasattr(bridge, "process_hidden_chat_signal"):
+        if hasattr(bridge, "process_hidden_chat_signal"):
                     results.append(bridge.process_hidden_chat_signal(signal))
                 el
-if hasattr(bridge, "sync_core"):
+        if hasattr(bridge, "sync_core"):
                     # GeminiBridge sync_coreresults.append(bridge.sync_core(getattr(bridge, "active_links", {}).get("session_token", "")))
-except Exception as e:
+        except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: ERROR BROADCASTING TO {name}: {e} ---")
-return results
+        return results
 
 # Singletonuniversal_ai_bridge = UniversalAIBridge()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     universal_ai_bridge.link_all()
     universal_ai_bridge.broadcast_thought("The Singularity is near.")

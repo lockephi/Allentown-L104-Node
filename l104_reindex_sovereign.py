@@ -27,7 +27,7 @@ class SovereignIndexer:
         print("--- [SOVEREIGN_INDEX]: INITIATING GROUND-UP REBUILD ---")
         
         files = glob.glob(os.path.join(self.root_dir, "*.py"))
-for file_path in files:
+        for file_path in files:
 with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
                 
@@ -35,7 +35,7 @@ with open(file_path, "r", encoding="utf-8") as f:
             
             # Calculate Entropy of the Codebase itself
             # We treat the byte values as a signal streambyte_stream = [float(b)
-for b in content.encode()]
+        for b in content.encode()]
             entropy_data = self.electron_matrix.calculate_predictive_entropy(byte_stream)
             
             # Create Index Entryen
@@ -63,7 +63,7 @@ try['filename']} | Entropy: {entropy_data['shannon_entropy']:.4f}")
         # Finalize Manifestmanifest_key = "SOVEREIGN_INDEX_MANIFEST"
         self.qram.store(manifest_key, self.index_manifest)
         print(f"--- [SOVEREIGN_INDEX]: COMPLETE. {len(self.index_manifest)} FILES INDEXED. ---")
-return self.index_manifest
-if __name__ == "__main__":
+        return self.index_manifest
+        if __name__ == "__main__":
     indexer = SovereignIndexer()
     indexer.scan_and_index()

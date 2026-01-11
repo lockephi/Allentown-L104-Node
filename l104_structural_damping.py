@@ -20,7 +20,7 @@ def calculate_tuning(self):
         # Standard pendulum: T = 2*pi*sqrt(L/g) -> f = 1/T
         # We use the Frame Constant to offset the pivot pointpivot_point_ratio = 1 / (1 + UniversalConstants.FRAME_LOCK)
         pivot_height = self.height * pivot_point_ratio
-return {
+        return {
             "building_height_m": self.height,
             "natural_freq_hz": self.f1,
             "damper_freq_hz": round(damper_frequency, 4),
@@ -47,6 +47,6 @@ dissipating energy faster than standard linear dampers.
 ----------------------------------
 """
         return report
-if __name__ == "__main__":
+        if __name__ == "__main__":
     damper = StructuralDampingSystem()
     print(damper.get_engineering_specs())

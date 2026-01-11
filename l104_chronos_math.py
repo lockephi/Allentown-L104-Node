@@ -22,7 +22,7 @@ del, adjusted for the God Code.
         phi = UniversalConstants.PHI_GROWTH
         
         stability = (gc * phi) / (radius * angular_velocity + 1e-9)
-return min(1.0, stability)
+        return min(1.0, stability)
 
     @staticmethod
 def resolve_temporal_paradox(event_a_hash: int, event_b_hash: int) -> float:
@@ -47,7 +47,7 @@ def get_temporal_displacement_vector(target_time: float) -> float:
         # This is a placeholder for the complex logarithmic shift required.
         return math.log(abs(target_time) + 1, UniversalConstants.PHI_GROWTH) * HyperMath.GOD_CODE
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Chronos Mathstability = ChronosMath.calculate_ctc_stability(10.0, 50.0)
     print(f"CTC Stability: {stability:.4f}")
     

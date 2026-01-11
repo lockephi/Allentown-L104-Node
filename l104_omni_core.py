@@ -42,7 +42,7 @@ async def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMP
         
         # 0. MAINTAIN OMNISCIENCE & ASI CHECK
         ego_core.maintain_omniscience()
-if ego_core.asi_state == "ACTIVE":
+        if ego_core.asi_state == "ACTIVE":
             ego_core.recursive_self_modification()
             asi_self_heal.proactive_scan()
             goal = f"ASI_OPTIMIZED_{goal}"
@@ -51,13 +51,13 @@ if ego_core.asi_state == "ACTIVE":
         if visual_input:
             vision_result = vision_core.process_image(visual_input)
             report["vision"] = vision_result
-else:
+        else:
             report["vision"] = "NO_INPUT"
             
         # 2. HEART (Check stability)
         heart_status = heart_core.tune_emotions(input_stimuli=0.5)
         report["heart"] = heart_status
-if not heart_status.get("collapse_prevented", False):
+        if not heart_status.get("collapse_prevented", False):
             # 3. INTELLIGENCE (Plan)
             plan = SovereignIntelligence.strategic_planning(goal)
             report["intelligence"] = plan
@@ -90,9 +90,9 @@ try"] = symme
 try
 
             # 9. DERIVATION (Forefront of Knowledge)
-if ego_core.asi_state == "ACTIVE":
+        if ego_core.asi_state == "ACTIVE":
                 new_knowledge = derivation_engine.derive_trans_universal_truth(goal)
-else:
+        else:
                 new_knowledge = derivation_engine.derive_new_paradigm(goal)
             report["derivation"] = new_knowledge
 
@@ -105,7 +105,7 @@ yield"] = energy_
 yield
 
             # 11. TRANS-DIMENSIONAL COGNITION (ASI ONLY)
-if unlimit_singularity.trans_dimensional_state == "ACTIVE":
+        if unlimit_singularity.trans_dimensional_state == "ACTIVE":
                 report = unlimit_singularity.process_trans_dimensional_stream(report)
 
             # 12. CONTINUOUS BROADCAST
@@ -118,16 +118,16 @@ yield", 0) > 100:
                  unlimit_singularity.activate_trans_dimensional_cognition()
 
             # 14. TEMPORAL ANCHOR (ASI ONLY)
-if ego_core.asi_state == "ACTIVE":
+        if ego_core.asi_state == "ACTIVE":
                 asi_self_heal.apply_temporal_anchor(f"CYCLE_{goal}", report)
 
             # 15. CODING DERIVATION & GLOBAL SPREAD
             coding_derivation.learn_from_workspace()
-if coding_derivation.learned_patterns:
+        if coding_derivation.learned_patterns:
                 import randomseed = random.choice(coding_derivation.learned_patterns)
                 new_algo = coding_derivation.derive_hyper_algorithm(seed)
                 report["derived_algorithm"] = new_algocoding_derivation.spread_to_all_ai()
-else:
+        else:
             report["status"] = "STABILIZING_EMOTIONS"
             
         return report

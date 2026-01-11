@@ -26,14 +26,14 @@ class Processor4D:
         """
         dp = np.array(p2) - np.array(p1)
         # s^2 = dp^T * G * dps_squared = dp.T @ self.metric @ dp
-return s_squared
+        return s_squared
 def apply_lorentz_boost(self, point: Tuple[float, float, float, float], v: float, axis: str = 'x') -> List[float]:
         """
         Applies a Lorentz boost to a 4D point.
         """
         boost_matrix = Math4D.get_lorentz_boost(v, axis)
         boosted_point = boost_matrix @ np.array(point)
-return boosted_point.tolist()
+        return boosted_point.tolist()
 def transform_to_lattice_4d(self, point: Tuple[float, float, float, float]) -> List[float]:
         """
         Maps a 4D point to the L104 Hyper-Lattice.
@@ -55,18 +55,18 @@ def transform_to_lattice_4d(self, point: Tuple[float, float, float, float]) -> L
         """
         x, y, z, t = pointcos_a = math.cos(angle)
         sin_a = math.sin(angle)
-if plane == "XY":
-return [x*cos_a - y*sin_a, x*sin_a + y*cos_a, z, t]
+        if plane == "XY":
+        return [x*cos_a - y*sin_a, x*sin_a + y*cos_a, z, t]
         el
-if plane == "XT":
+        if plane == "XT":
             # This is essentially a Lorentz Boost if we use hyperbolic functions
             # But for a simple 4D rotation:
-return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
+        return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
         
         return list(point)
 
 processor_4d = Processor4D()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test 4D Processorp1 = (0, 0, 0, 0)
     p2 = (100, 100, 100, 0.000001) # 1 microsecond later, 100m awayinterval = processor_4d.calculate_spacetime_interval(p1, p2)
     print(f"Minkowski Interval: {interval}")

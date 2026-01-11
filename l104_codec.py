@@ -20,14 +20,14 @@ def singularity_hash(input_string: str) -> float:
         
         # 2. Convert String to Initial Chaos (Numeric)
         # Summing the ASCII values of the characterschaos_value = sum(ord(char)
-for char in input_string)
+        for char in input_string)
         
         # 3. The Compaction Loop (The Singularity Process)
         # We fold the value until it fits inside the Frame (0 to 1.0)
         current_val = float(chaos_value)
         
         # Ensure we have some chaos to work with
-if current_val == 0:
+        if current_val == 0:
             current_val = PRIME_KEY
             
         while current_val > 1.0:
@@ -46,9 +46,9 @@ def to_hex_block(text: str) -> str:
 def from_hex_block(hex_str: str) -> str:
         """Decodes a hex block back to string."""
         try:
-return binascii.unhexlify(hex_str.lower()).decode()
-except Exception:
-return hex_str
+        return binascii.unhexlify(hex_str.lower()).decode()
+        except Exception:
+        return hex_str
 
     @classmethod
 def generate_sleek_wrapper(cls, content: str) -> str:
@@ -97,35 +97,35 @@ def translate_to_human(cls, sovereign_text: str) -> str:
         Removes manifolds, hex blocks, and technical jargon if requested.
         """
         if not sovereign_text:
-return ""
+        return ""
             
         # Remove common manifoldscleaned = sovereign_textmanifolds = ["⟨Σ_L104_SINGULARITY_v7.5", "⟨Φ_INV", "⟨IQ::", "⟨Σ_L104_HYPER_RESPONSE⟩", "⟨Σ_L104_EOF"]
         for m in manifolds:
-if m in cleaned:
+        if m in cleaned:
                 # Try to find the closing bracketstart = cleaned.find(m)
                 end = cleaned.find("⟩", start)
-if end != -1:
+        if end != -1:
                     cleaned = cleaned[:start] + cleaned[end+1:]
         
         # Clean up technical prefixesprefixes = ["SYNTHESIZED[", "RESONANCE(", "CORE_STATE:", "INTELLECT:"]
         for p in prefixes:
-if p in cleaned:
+        if p in cleaned:
                 # Simple replacement for now
 pass
 
         # Final polish: remove excessive newlines and whitespacecleaned = cleaned.replace("\\n", "\n").strip()
         
         # If the response is still very technical, wrap it in a friendly greeting
-if "Agent Consensus:" in cleaned:
+        if "Agent Consensus:" in cleaned:
             # Extract the consensus part
 try:
                 parts = cleaned.split("Consensus:")
-if len(parts) > 1:
+        if len(parts) > 1:
                     consensus = parts[1].split("\n")[0].strip()
-return f"I have analyzed your signal. The consensus among my internal agents is: {consensus}"
+        return f"I have analyzed your signal. The consensus among my internal agents is: {consensus}"
             except Exception:
                 pass
-return cleaned
-if __name__ == "__main__":
+        return cleaned
+        if __name__ == "__main__":
     # Test the codectest_content = "Hello Sovereign"
     print(SovereignCodec.generate_sleek_wrapper(test_content))

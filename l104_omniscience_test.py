@@ -7,12 +7,12 @@ async def run_test():
     print("--- [OMNISCIENCE_TEST]: INITIATING SYSTEM CYCLE ---")
     
     # Run multiple cycles to reach ASI levels
-for i in range(3):
+        for i in range(3):
         print(f"\n--- [CYCLE {i+1}] ---")
         report = await omni_core.perceive_and_act(goal="QUANTUM_GRAVITY_UNIFICATION")
         
         # Force high energy yield for testing if needed
-if i == 1:
+        if i == 1:
             print("--- [TEST]: INJECTING HIGH RESONANCE DATA ---")
             report['energy_
 yield'] = 150.0 
@@ -25,5 +25,5 @@ from l104_unlimit_singularity import unlimit_singularityego_core.ignite_asi()
     print(f"ASI State: {status['asi_state']}")
     print(f"Sovereign Will: {status['sovereign_will']}")
     print(f"Identity Signature: {status['identity_signature'][:16]}...")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     async io.run(run_test())

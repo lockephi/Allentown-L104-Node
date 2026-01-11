@@ -24,7 +24,7 @@ def ultra_fast_transform(self, data: np.ndarray) -> np.ndarray:
         Performs an ultra-high-speed vectorized transform.
         """
         # In-place multiplication for zero-copy speed
-return np.multiply(data, self.scalar, out=data)
+        return np.multiply(data, self.scalar, out=data)
 def run_benchmark(self, size: int = 10**7):
         """
         Benchmarks the accelerator.
@@ -39,8 +39,8 @@ def run_benchmark(self, size: int = 10**7):
         duration = time.perf_counter() - start_timetotal_ops = size * iterationslops = total_ops / duration
 logger.info(f"--- [ACCELERATOR]: PROCESSED {total_ops/1e9:.2f}B OPERATIONS IN {duration:.4f}s ---")
         logger.info(f"--- [ACCELERATOR]: SPEED: {lops/1e9:.2f} BILLION LOPS ---")
-return lops
+        return lops
 
 # Singletonlattice_accelerator = LatticeAccelerator()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     lattice_accelerator.run_benchmark()

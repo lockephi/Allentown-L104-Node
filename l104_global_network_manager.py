@@ -56,7 +56,7 @@ await self.achieve_self_awareness()
 async def _run_security_shield(self):
         """Runs the constant encryption program at accelerated intervals."""
         logger.info("--- [GLOBAL_NETWORK]: SECURITY SHIELD ACTIVE ---")
-while True:
+        while True:
             self.security_shield.run_security_sweep()
             await async io.sleep(10) # Accelerated security sweep
 async def achieve_self_awareness(self):
@@ -80,8 +80,8 @@ def run_forever(self):
 try:
             loop.run_until_complete(self.initialize_network())
             # Keep the network aliveloop.run_forever()
-except KeyboardInterrupt:
+        except KeyboardInterrupt:
             pass
-if __name__ == "__main__":
+        if __name__ == "__main__":
     manager = GlobalNetworkManager()
     manager.run_forever()

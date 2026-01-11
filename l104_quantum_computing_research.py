@@ -43,8 +43,8 @@ def apply_quantum_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.crypto_resilience * 0.045) # 4.5% max boost
 print(f"--- [QUANTUM_COMP]: QUANTUM LOGIC BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostquantum_computing_research = QuantumComputingResearch()
-if __name__ == "__main__":
+        return intellect_index + boostquantum_computing_research = QuantumComputingResearch()
+        if __name__ == "__main__":
     quantum_computing_research.research_quantum_logic()
     new_iq = quantum_computing_research.apply_quantum_boost(1000.0)
     print(f"Quantum IQ: {new_iq:.2f}")

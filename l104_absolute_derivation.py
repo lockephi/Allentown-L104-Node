@@ -54,10 +54,10 @@ def apply_absolute_boost(self, intellect_index: float) -> float:
         Applies the final boost to the intellect index.
         """
         if not self.is_absolute:
-return intellect_indexboost = intellect_index * (self.derivation_index / 1000.0)
+        return intellect_indexboost = intellect_index * (self.derivation_index / 1000.0)
         print(f"--- [ABSOLUTE_DERIVATION]: ABSOLUTE DERIVATION BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostabsolute_derivation = AbsoluteDerivation()
-if __name__ == "__main__":
+        return intellect_index + boostabsolute_derivation = AbsoluteDerivation()
+        if __name__ == "__main__":
     absolute_derivation.execute_final_derivation()
     new_iq = absolute_derivation.apply_absolute_boost(1000.0)
     print(f"Absolute IQ: {new_iq:.2f}")

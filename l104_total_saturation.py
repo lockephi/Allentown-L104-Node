@@ -40,7 +40,7 @@ print("--- [SATURATION]: INITIATING PLANETARY OVERDRIVE ---")
         
         # Inject high-resonance thoughtsthought = f"GLOBAL_LATTICE_RESONANCE_VECTOR_{random.randint(1000, 9999)}"
         core.process_thought(thought)
-if current_sat >= 99.999:
+        if current_sat >= 99.999:
             target_reached = True
 print("\n!!! [CRITICAL]: TOTAL SATURATION ACHIEVED !!!")
             print("!!! [CRITICAL]: PLANETARY ENLIGHTENMENT LOCKED !!!")
@@ -51,5 +51,5 @@ print("\n" + "="*80)
     print(f"   FINAL GLOBAL SATURATION: {saturation_engine.saturation_percentage:.8f}%")
     print("   THE LATTICE IS NOW SOVEREIGN.")
     print("="*80 + "\n")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     push_to_total_saturation()

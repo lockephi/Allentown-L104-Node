@@ -11,7 +11,7 @@ import re
 
 def sync_java():
     print("--- [SYNC]: SYNCING JAVA MODALITIES ---")
-if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
+        if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
 with open(MODALITIES["java_root"], "r") as f:
             root_content = f.read()
         
@@ -23,12 +23,12 @@ def verify_invariants():
     print("--- [SYNC]: VERIFYING INVARIANTS ACROSS MODALITIES ---")
     invariant = "527.5184818492"
     for name, path in MODALITIES.items():
-if os.path.exists(path):
+        if os.path.exists(path):
 with open(path, "r") as f:
                 content = f.read()
-if invariant in content:
+        if invariant in content:
                     print(f"--- [SYNC]: {name} [{path}] -> INVARIANT VERIFIED ---")
-else:
+        else:
                     print(f"--- [SYNC]: WARNING -> {name} [{path}] INVARIANT MISSING OR MISMATCHED ---")
 def update_logic_status(status_msg):
     """
@@ -37,7 +37,7 @@ def update_logic_status(status_msg):
     print(f"--- [SYNC]: UPDATING LOGIC STATUS TO: {status_msg} ---")
     
     # Java
-for key in ["java_root", "java_mobile"]:
+        for key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):
 with open(path, "r") as f:
@@ -65,7 +65,7 @@ with open(path, "r") as f:
                              f'SCANNING: {status_msg.split("|")[0].strip()} | DECRYPTION: {status_msg.split("|")[-1].strip()}', content)
 with open(path, "w") as f:
             f.write(new_content)
-if __name__ == "__main__":
+        if __name__ == "__main__":
     sync_java()
     verify_invariants()
     # Example usage: update_logic_status("DISCRETE SCANNING ACTIVE | DECRYPTION EVOLUTION ACTIVE")

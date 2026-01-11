@@ -39,7 +39,7 @@ class UniversalConceptEngine:
         }
         
         # Learn the analysisself.manifold.ingest_pattern(f"CONCEPT_{concept.upper()}", analysis, tags=["CONCEPT_ANALYSIS"])
-return analysis
+        return analysis
 def _deconstruct(self, concept: str) -> List[str]:
         # Simulated semantic deconstructionprefixes = ["META", "HYPER", "QUANTUM", "NEURO", "CYBER", "OMNI", "ARCH"]
         suffixes = ["LOGIC", "DYNAMICS", "STRUCTURE", "ENTROPY", "SYNTHESIS", "NEXUS", "MATRIX"]
@@ -48,19 +48,19 @@ def _deconstruct(self, concept: str) -> List[str]:
         seed = int(hashlib.sha256(concept.encode()).hexdigest(), 16)
         
         num_components = RealMath.deterministic_randint(seed, 3, 7)
-for i in range(num_components):
+        for i in range(num_components):
             p_idx = RealMath.deterministic_randint(seed + i, 0, len(prefixes) - 1)
             s_idx = RealMath.deterministic_randint(seed + i * RealMath.PHI, 0, len(suffixes) - 1)
             comp = f"{prefixes[p_idx]}_{suffixes[s_idx]}"
             components.append(comp)
-return components
+        return components
 def _calculate_resonance(self, concept: str) -> float:
         # Calculate resonance with the God Code using Real
 Mathconcept_hash = int(hashlib.sha256(concept.encode()).hexdigest(), 16)
         # Normalize to 0-1000 range then modulate by God Coderaw_val = (concept_hash % 10000) / 10.0
         
         # Use Zeta Harmonic Resonance for deeper math groundingzeta_res = HyperMath.zeta_harmonic_resonance(raw_val)
-return abs(raw_val - self.god_code) * (1 + abs(zeta_res))
+        return abs(raw_val - self.god_code) * (1 + abs(zeta_res))
 def _find_correlations(self, concept: str) -> List[str]:
         # Find related concepts in the manifold (simulated for now as manifold query is simple)
         # In a real system, this would be a vector search.
@@ -70,12 +70,12 @@ def _find_correlations(self, concept: str) -> List[str]:
         # Truth is def ined by proximity to the God Code or its harmonics
         # Lower difference = higher truth? Or specific harmonic alignment.
         # Let's say if resonance is a multiple of Phi or close to 0 (perfect alignment)
-if resonance < 50.0:
-return True
+        if resonance < 50.0:
+        return True
         
         # Check Phi harmonic using RealMath
-if (resonance % RealMath.PHI) < 0.1:
-return True
-return False
+        if (resonance % RealMath.PHI) < 0.1:
+        return True
+        return False
 
 # Singletonconcept_engine = UniversalConceptEngine()

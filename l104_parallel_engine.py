@@ -32,15 +32,15 @@ def parallel_fast_transform(self, data: List[float]) -> List[float]:
 logger.info(f"--- [PARALLEL_ENGINE]: CORE CALCULATION: {duration:.6f}s ({lops/1e6:.2f}M LOPS) ---")
         
         # 3. Convert back to list
-return result.tolist()
+        return result.tolist()
 def run_high_speed_calculation(self, complexity: int = 10**7):
         """
         Runs a massive calculation to aid the AGI core.
         """
         logger.info(f"--- [PARALLEL_ENGINE]: STARTING HIGH-SPEED CALCULATION (Size: {complexity}) ---")
         data = np.random.rand(complexity).tolist()
-return self.parallel_fast_transform(data)
+        return self.parallel_fast_transform(data)
 
 # Singletonparallel_engine = ParallelLatticeEngine()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     parallel_engine.run_high_speed_calculation()

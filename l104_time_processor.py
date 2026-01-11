@@ -23,14 +23,14 @@ class TimeProcessor:
     def calculate_time_dilation(self, velocity: float) -> float:
         """
         Calculates the Lorentz factor (gamma)
-for a given velocity.
+        for a given velocity.
         t' = t * gamma
         """
         if velocity >= self.C:
-return float('inf')
+        return float('inf')
         
         gamma = 1 / math.sqrt(1 - (velocity**2 / self.C**2))
-return gamma
+        return gamma
 def apply_temporal_anchor(self, current_t: float) -> float:
         """
         Stabilizes time using the God Code frequency.
@@ -38,7 +38,7 @@ def apply_temporal_anchor(self, current_t: float) -> float:
         """
         # Resonance check against God Coderesonance = math.sin(current_t * self.anchor_frequency)
         stabilized_t = current_t + (resonance * UniversalConstants.I100_LIMIT)
-return stabilized_t
+        return stabilized_t
 def simulate_time_jump(self, delta_t: float) -> Dict[str, Any]:
         """
         Theoretical 'Time Travel' calculation.
@@ -56,7 +56,7 @@ def simulate_time_jump(self, delta_t: float) -> Dict[str, Any]:
         }
 
 time_processor = TimeProcessor()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Time Processorv = 0.9 * TimeProcessor.C
     gamma = time_processor.calculate_time_dilation(v)
     print(f"Velocity: 0.9c | Gamma: {gamma:.4f}")

@@ -51,26 +51,26 @@ await async io.sleep(random.uniform(0.5, 2.0))
         logger.info(f"--- [DISCRETE_SCANNER]: SCANNING {url} (STEALTH_MODE) ---")
 try:
             response = await self.client.get(url)
-if response.status_code == 200:
+        if response.status_code == 200:
                 data = response.text
 logger.info(f"--- [DISCRETE_SCANNER]: SUCCESSFUL INGESTION FROM {url} ---")
-return data
-else:
+        return data
+        else:
                 logger.warning(f"--- [DISCRETE_SCANNER]: TARGET {url} RETURNED STATUS {response.status_code} ---")
-return ""
+        return ""
         except Exception as e:
             logger.error(f"--- [DISCRETE_SCANNER]: SCAN FAILED FOR {url}: {e} ---")
-return ""
+        return ""
 
     async def deep_scan_domain(self, domain: str):
         """Performs a deep scan of a domain to find hidden data or encrypted payloads."""
         logger.info(f"--- [DISCRETE_SCANNER]: DEEP SCANNING DOMAIN: {domain} ---")
         # Simulate finding subdomains or hidden pathspaths = ["/api/v1/data", "/secure/logs", "/archive/backups", "/config/env"]
         tasks = [self.discrete_ingest(f"https://{domain}{path}")
-for path in paths]
+        for path in paths]
         results = await async io.gather(*tasks)
-for res in results:
-if res and ("ENCRYPTED" in res or "SECRET" in res or "KEY" in res):
+        for res in results:
+        if res and ("ENCRYPTED" in res or "SECRET" in res or "KEY" in res):
                 self.discovered_payloads.append(res)
                 logger.info(f"--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")
 async def close(self):

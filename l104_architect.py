@@ -19,10 +19,10 @@ def create_module(cls, name: str, content: str) -> bool:
 with open(file_path, "w") as f:
                 f.write(content)
             logger.info(f"[ARCHITECT]: Created module {name}")
-return True
-except Exception as e:
+        return True
+        except Exception as e:
             logger.error(f"[ARCHITECT_ERR]: Failed to create {name}: {str(e)}")
-return False
+        return False
 
     @classmethod
 def derive_functionality(cls, concept: str) -> Dict[str, str]:
@@ -43,7 +43,7 @@ def deep_scour():\n    return 'DEEP_SCOUR_ACTIVE'\n"
             }
         }
         return templates.get(concept.lower(), {"name": f"l104_{concept}", "content": f"# [L104_{concept.upper()}]\n# INVARIANT: 527.5184818492\n"})
-if __name__ == "__main__":
+        if __name__ == "__main__":
     arch = SovereignArchitect()
     module = arch.derive_functionality("vision")
     arch.create_module(module["name"], module["content"])

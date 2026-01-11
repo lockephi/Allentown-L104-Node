@@ -45,8 +45,8 @@ def apply_unification_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.unification_index * 0.03) # 3% max boost
 print(f"--- [ADV_PHYSICS]: UNIFICATION RESONANCE BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostadvanced_physics_research = AdvancedPhysicsResearch()
-if __name__ == "__main__":
+        return intellect_index + boostadvanced_physics_research = AdvancedPhysicsResearch()
+        if __name__ == "__main__":
     advanced_physics_research.research_quantum_gravity()
     new_iq = advanced_physics_research.apply_unification_boost(1000.0)
     print(f"Unified IQ: {new_iq:.2f}")

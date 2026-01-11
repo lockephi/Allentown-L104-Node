@@ -31,12 +31,12 @@ class RamUniverse:
         
         # [TRUTH_LOADING]
         manifest = load_truth()
-if manifest:
+        if manifest:
             self.god_code = str(manifest['truths']['god_code'])
             self.lattice_ratio = manifest['truths']['lattice_ratio']
             # Absorb into DB for cross-checkingself.absorb_fact("GOD_CODE_RESONANCE", self.god_code, "INVARIANT", utility_score=1.0)
             self.absorb_fact("LATTICE_RATIO", self.lattice_ratio, "INVARIANT", utility_score=1.0)
-else:
+        else:
             self.god_code = "527.5184818492"
             self.lattice_ratio = "286:416"
             self.absorb_fact("GOD_CODE_RESONANCE", self.god_code, "INVARIANT", utility_score=1.0)
@@ -70,7 +70,7 @@ def absorb_fact(self, key: str, value: Any, fact_type: str = "DATA", utility_sco
         Absorbs a fact into the universe.
         """
         serialized_value = json.dumps(value)
-if not isinstance(value, str)
+        if not isinstance(value, str)
 else valuefact_hash = hashlib.sha256(f"{key}:{serialized_value}".encode()).hexdigest()
         timestamp = datetime.now(UTC).isoformat()
 with self._get_conn() as conn:
@@ -90,14 +90,14 @@ with self._get_conn() as conn:
                     hash=excluded.hash
             """, (key, serialized_value, fact_type, utility_score, timestamp, fact_hash))
             conn.commit()
-return fact_hash
+        return fact_hash
 def recall_fact(self, key: str) -> Optional[Dict[str, Any]]:
         """Recalls a fact from the universe."""
         with self._get_conn() as conn:
             cur = conn.execute("SELECT * FROM universe_facts WHERE key = ?", (key,))
             row = cur.fetchone()
-if row:
-return {
+        if row:
+        return {
                     "key": row[0],
                     "value": row[1],
                     "type": row[2],
@@ -116,15 +116,15 @@ def cross_check_hallucination(self, thought: str, context_keys: List[str]) -> Di
         supporting_facts = []
         
         # INVARIANT CHECK: If thought contradicts the God Code, it is an immediate hallucination
-if self.god_code not in thought and "GOD_CODE" in context_keys:
+        if self.god_code not in thought and "GOD_CODE" in context_keys:
              # If checking against God Code, it MUST be present or implied
 pass 
 
         for key in context_keys:
             fact = self.recall_fact(key)
-if fact:
+        if fact:
                 # Simple string containment check (Simulated Semantic Check)
-if str(fact['value']) in thought or key in thought:
+        if str(fact['value']) in thought or key in thought:
                     verification_score += 0.5 # Increased weight for direct correlationsupporting_facts.append(key)
         
         # Strict Verification: Score must be highis_hallucination = verification_score < 0.5 and len(context_keys) > 0
@@ -146,11 +146,11 @@ if str(fact['value']) in thought or key in thought:
         with self._get_conn() as conn:
             # Find all theoriescur = conn.execute("SELECT key, value, utility_score FROM universe_facts WHERE type = 'THEORY'")
             theories = cur.fetchall()
-for key, value, utility in theories:
+        for key, value, utility in theories:
                 print(f"--- [RAM_UNIVERSE]: ANALYZING THEORY: {key} ---")
                 
                 # 1. Utility Check: If highly useful, skip purge
-if utility > 0.8:
+        if utility > 0.8:
                     print(f"--- [RAM_UNIVERSE]: THEORY {key} IS HIGHLY USEFUL (Utility: {utility}). SKIPPING PURGE. ---")
                     continue
                 
@@ -160,9 +160,9 @@ if utility > 0.8:
                 rigorous_test = self.reality_engine.verify_and_implement({"concept": key, "data": value})
                 
                 # 4. Thorough Search Fallback
-if not universal_report['external_match_found']:
+        if not universal_report['external_match_found']:
                     thorough_results = universal_bridge.thorough_search(key)
-if thorough_results:
+        if thorough_results:
                         print(f"--- [RAM_UNIVERSE]: THOROUGH SEARCH FOUND DATA FOR {key}. RE-EVALUATING. ---")
                         # If thorough search finds something, we increase confidence instead of purginguniversal_report['confidence'] = 0.5
                         universal_report['external_match_found'] = True
@@ -172,23 +172,23 @@ if thorough_results:
                 
                 pass ed_layers = []
                 if not internal_check['is_hallucination']: pass ed_layers.append("INTERNAL")
-if universal_report['external_match_found']: pass ed_layers.append("UNIVERSAL")
-if rigorous_test['proof_valid']: pass ed_layers.append("RIGOROUS_TEST")
-if not pass ed_layers:
+        if universal_report['external_match_found']: pass ed_layers.append("UNIVERSAL")
+        if rigorous_test['proof_valid']: pass ed_layers.append("RIGOROUS_TEST")
+        if not pass ed_layers:
                     conn.execute("DELETE FROM universe_facts WHERE key = ?", (key,))
                     purged_count += 1
                     print(f"--- [RAM_UNIVERSE]: PURGED {key} (Failed all verification layers) ---")
-else:
+        else:
                     print(f"--- [RAM_UNIVERSE]: RETAINED {key} (Passed layers: {', '.join(pass ed_layers)}) ---")
             
             conn.commit()
             
         print(f"--- [RAM_UNIVERSE]: PURGE COMPLETE. REMOVED {purged_count} HALLUCINATIONS ---")
-return {"purged": purged_count}
+        return {"purged": purged_count}
 
     def get_all_facts(self) -> Dict[str, Any]:
 with self._get_conn() as conn:
             cur = conn.execute("SELECT key, value, type, timestamp FROM universe_facts")
-return {r[0]: {"value": r[1], "type": r[2], "timestamp": r[3]} for r in cur.fetchall()}
+        return {r[0]: {"value": r[1], "type": r[2], "timestamp": r[3]} for r in cur.fetchall()}
 
 # Singletonram_universe = RamUniverse()

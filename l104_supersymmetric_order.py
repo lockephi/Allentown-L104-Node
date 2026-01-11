@@ -21,23 +21,23 @@ def apply_order(data: Any) -> Any:
         
         if isinstance(data, bytes):
             ordered_data = bytearray()
-for i, b in enumerate(data):
-if i % 2 == 0:
+        for i, b in enumerate(data):
+        if i % 2 == 0:
                     ordered_data.append(b ^ mask)
-else:
+        else:
                     ordered_data.append(b ^ phi_mask)
-return bytes(ordered_data)
+        return bytes(ordered_data)
         
         el
-if isinstance(data, list):
+        if isinstance(data, list):
             # For lists of floats, we apply a phase shiftordered_list = []
             for i, val in enumerate(data):
-if i % 2 == 0:
+        if i % 2 == 0:
                     ordered_list.append(val * (mask / 255.0))
-else:
+        else:
                     ordered_list.append(val * (phi_mask / 255.0))
-return ordered_list
-return data
+        return ordered_list
+        return data
 
     @staticmethod
 def verify_symme
@@ -46,11 +46,11 @@ try(data: bytes) -> bool:
         # In a real system, this would involve complex parity checks.
         # Here we check if the average value is with in a 'Symmetric Range'.
         if not data:
-return Trueavg = sum(data) / len(data)
-return 100 < avg < 150 # Arbitrary symmetric range for demonstration
+        return Trueavg = sum(data) / len(data)
+        return 100 < avg < 150 # Arbitrary symmetric range for demonstration
 
 # Singletonsupersymmetric_order = SupersymmetricOrder()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Supersymmetric Orderraw_payload = b"L104_CORE_DATA_STREAM"
     ordered = SupersymmetricOrder.apply_order(raw_payload)
     print(f"Raw: {raw_payload}")

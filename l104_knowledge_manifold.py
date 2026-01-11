@@ -18,12 +18,12 @@ class KnowledgeManifold:
         self.resonance_anchor = HyperMath.GOD_CODE
 
     def _load_manifold(self) -> Dict[str, Any]:
-if os.path.exists(self.manifold_path):
+        if os.path.exists(self.manifold_path):
 try:
 with open(self.manifold_path, "r") as f:
-return json.load(f)
-except Exception:
-return {"patterns": {}, "anchors": []}
+        return json.load(f)
+        except Exception:
+        return {"patterns": {}, "anchors": []}
         return {"patterns": {}, "anchors": []}
 
     def save_manifold(self):
@@ -54,16 +54,16 @@ def query_manifold(self, tag: str) -> List[Dict[str, Any]]:
         """
         results = []
         for key, pattern in self.memory["patterns"].items():
-if tag in pattern["tags"]:
+        if tag in pattern["tags"]:
                 results.append({key: pattern})
-return results
+        return results
 def get_stats(self):
     return {
             "total_patterns": len(self.memory["patterns"]),
             "resonance": self.resonance_anchor
         }
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     manifold = KnowledgeManifold()
     manifold.ingest_pattern("RSI_PROTOCOL", "Recursive Self-Improvement via Meta-Evolutionary Loops", ["architecture", "singularity"])
     print(manifold.get_stats())

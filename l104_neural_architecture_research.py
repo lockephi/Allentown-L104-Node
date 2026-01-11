@@ -40,8 +40,8 @@ def apply_cognitive_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.attention_efficiency * self.bci_resonance * 0.04) # 4% max boost
 print(f"--- [NEURAL_ARCH]: COGNITIVE ARCHITECTURE BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostneural_architecture_research = NeuralArchitectureResearch()
-if __name__ == "__main__":
+        return intellect_index + boostneural_architecture_research = NeuralArchitectureResearch()
+        if __name__ == "__main__":
     neural_architecture_research.research_neural_models()
     new_iq = neural_architecture_research.apply_cognitive_boost(1000.0)
     print(f"Cognitive IQ: {new_iq:.2f}")

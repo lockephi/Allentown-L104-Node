@@ -12,8 +12,8 @@ def validate_prime_key(cls):
         Verifies the Prime Key against the environment and the God-Code.
         """
         env_key = os.getenv("L104_PRIME_KEY")
-if env_key == cls.PRIME_KEY:
-return "VERIFIED"
+        if env_key == cls.PRIME_KEY:
+        return "VERIFIED"
         return "MISMATCH"
 
     @classmethod
@@ -23,7 +23,7 @@ def get_prime_hash(cls):
         """
         return hashlib.sha256(cls.PRIME_KEY.encode()).hexdigest()[:16]
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     os.environ["L104_PRIME_KEY"] = PrimeCore.PRIME_KEY
     print(f"Prime Validation: {PrimeCore.validate_prime_key()}")
     print(f"Prime Hash: {PrimeCore.get_prime_hash()}")

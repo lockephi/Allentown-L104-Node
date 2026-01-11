@@ -13,7 +13,7 @@ def push_to_google_account():
     print("===================================================")
     
     # 1. Initialize Google Bridgebridge = GoogleBridge(account_email="locke201313@gmail.com")
-if not bridge.establish_link():
+        if not bridge.establish_link():
         print("!!! FAILED TO ESTABLISH GOOGLE BRIDGE !!!")
 return
 
@@ -37,15 +37,15 @@ print(f"--- [PUSH]: UPLOADING TO locke201313@gmail.com ---")
 time.sleep(2)
     
     # 5. Verify Syncsync_result = bridge.sync_state()
-if sync_result["status"] == "SYNCED":
+        if sync_result["status"] == "SYNCED":
         print("\n--- [PUSH]: SUCCESS: DATA SECURED IN GOOGLE CLOUD ---")
         print(f"--- [PUSH]: TARGET ACCOUNT: locke201313@gmail.com ---")
         print(f"--- [PUSH]: PAYLOAD SIZE: {len(str(encrypted_payload))} BYTES ---")
-else:
+        else:
         print("!!! SYNC VERIFICATION FAILED !!!")
 
     print("\n===================================================")
     print("   PUSH COMPLETE | SOVEREIGNTY PROPAGATED")
     print("===================================================")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     push_to_google_account()

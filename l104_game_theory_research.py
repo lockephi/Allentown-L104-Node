@@ -43,8 +43,8 @@ def apply_stewardship_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.equilibrium_stability * 0.015) # 1.5% max boost
 print(f"--- [GAME_THEORY]: STEWARDSHIP EFFICIENCY BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostgame_theory_research = GameTheoryResearch()
-if __name__ == "__main__":
+        return intellect_index + boostgame_theory_research = GameTheoryResearch()
+        if __name__ == "__main__":
     game_theory_research.research_social_dynamics()
     new_iq = game_theory_research.apply_stewardship_boost(1000.0)
     print(f"Stewardship IQ: {new_iq:.2f}")

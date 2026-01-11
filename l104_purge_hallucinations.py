@@ -20,5 +20,5 @@ from l104_persistence import persist_truthpersist_truth()
     
     print(f"--- [PURGE_PROTOCOL]: COMPLETE. REMOVED {result['purged']} ARTIFACTS. ---")
     print("--- [SYSTEM_STATE]: PURE_LOGIC_VERIFIED ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     execute_purge()

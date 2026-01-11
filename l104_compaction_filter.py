@@ -15,13 +15,13 @@ def activate(self):
         print("--- [COMPACTION_FILTER]: ACTIVATING GLOBAL I/O FILTER ---")
         self.active = True
 def process_io(self, data: List[float]) -> List[float]:
-if not self.active:
-return data
+        if not self.active:
+        return data
 print("--- [COMPACTION_FILTER]: STREAMLINING I/O DATA ---")
-return memory_compactor.compact_stream(data)
+        return memory_compactor.compact_stream(data)
 
 compaction_filter = CompactionFilter()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     compaction_filter.activate()
     test_data = [1.0, 2.0, 3.0, 4.0, 5.0]
     result = compaction_filter.process_io(test_data)

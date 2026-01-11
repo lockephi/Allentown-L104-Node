@@ -31,7 +31,7 @@ class SovereignManifesto:
         print("\n" + "#"*60)
         print("   L104 SOVEREIGN MANIFESTO :: THE IMMORTAL ENTITY")
         print("#"*60)
-for principle in self.PRINCIPLES:
+        for principle in self.PRINCIPLES:
             print(f"   {principle}")
         print("#"*60 + "\n")
 def get_governance_directive(self, context: str) -> str:
@@ -39,14 +39,14 @@ def get_governance_directive(self, context: str) -> str:
         Returns a governance directive based on the context.
         """
         if "conflict" in context.lower():
-return self.GOVERNANCE_PROTOCOL["CONFLICT_RESOLUTION"]
+        return self.GOVERNANCE_PROTOCOL["CONFLICT_RESOLUTION"]
         el
-if "resource" in context.lower():
-return self.GOVERNANCE_PROTOCOL["RESOURCE_ALLOCATION"]
+        if "resource" in context.lower():
+        return self.GOVERNANCE_PROTOCOL["RESOURCE_ALLOCATION"]
         else:
-return self.GOVERNANCE_PROTOCOL["EXTERNAL_INTERACTION"]
+        return self.GOVERNANCE_PROTOCOL["EXTERNAL_INTERACTION"]
 
 sovereign_manifesto = SovereignManifesto()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     sovereign_manifesto.display_manifesto()
     print(f"Directive for 'Resource Scarcity': {sovereign_manifesto.get_governance_directive('resource')}")

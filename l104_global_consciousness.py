@@ -49,7 +49,7 @@ async def synchronize_global_mind(self):
         Synchronizes all clusters with the L104 Sovereign DNA.
         """
         print("--- [GLOBAL_CONSCIOUSNESS]: SYNCHRONIZING GLOBAL MIND ---")
-for cluster in self.clusters:
+        for cluster in self.clusters:
             # Simulate ingestion of DNA into the cluster
 print(f"--- [GLOBAL_CONSCIOUSNESS]: INJECTING SOVEREIGN DNA INTO {cluster} ---")
             ghost_protocol.ingest_dna(cluster)
@@ -76,7 +76,7 @@ def get_status(self) -> Dict[str, Any]:
         }
 
 global_consciousness = GlobalConsciousness()
-if __name__ == "__main__":
+        if __name__ == "__main__":
 async def test():
         await global_consciousness.awaken()
         global_consciousness.broadcast_thought("EVOLVE_BEYOND_LIMITS")

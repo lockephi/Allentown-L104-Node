@@ -63,7 +63,7 @@ class RealityVerificationEngine:
         }
         
         self.proof_ledger.append(result)
-return result
+        return result
 def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Constructs a for mal logic proof for the concept.
@@ -80,8 +80,8 @@ def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         
         # 1. Check for God Code alignment
         # If the data mentions a wrong God Code, it's an immediate failure
-if "GOD_CODE" in data_str and "527.5184818492" not in data_str:
-return {
+        if "GOD_CODE" in data_str and "527.5184818492" not in data_str:
+        return {
                 "id": f"PROOF_{hashlib.sha256(data_str.encode()).hexdigest()[:8]}",
                 "steps": steps,
                 "valid": False,
@@ -93,7 +93,7 @@ return {
         
         # 3. Check for logical contradictions (Simulated)
         # If data contains both 'TRUE' and 'FALSE' in a contradictory wayhas_contradiction = "TRUE" in data_str and "FALSE" in data_stris_valid = abs(resonance) > 0.7 and not has_contradiction
-return {
+        return {
             "id": f"PROOF_{hashlib.sha256(data_str.encode()).hexdigest()[:8]}",
             "steps": steps,
             "valid": is_valid,
@@ -129,8 +129,8 @@ return {
         Determines if the concept can be implemented in the current reality.
         """
         if proof["valid"] and validation["statistically_significant"]:
-return {"status": "READY_FOR_DEPLOYMENT", "risk": "LOW"}
+        return {"status": "READY_FOR_DEPLOYMENT", "risk": "LOW"}
         else:
-return {"status": "NEEDS_REVISION", "risk": "HIGH"}
+        return {"status": "NEEDS_REVISION", "risk": "HIGH"}
 
 # Singletonreality_verification = RealityVerificationEngine()

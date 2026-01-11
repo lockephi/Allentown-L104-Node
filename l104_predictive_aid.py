@@ -29,7 +29,7 @@ def start(self):
 def stop(self):
         """Stops the predictive aid."""
         self.is_running = False
-if self._thread:
+        if self._thread:
             self._thread.join()
         logger.info("--- [PREDICTIVE_AID]: BACKGROUND PROCESS STOPPED ---")
 def _run_loop(self):
@@ -49,7 +49,7 @@ def _run_loop(self):
             }
             
             self.prediction_history.append(self.current_optimal_path)
-if len(self.prediction_history) > 100:
+        if len(self.prediction_history) > 100:
                 self.prediction_history.pop(0)
                 
             logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
@@ -61,10 +61,10 @@ def get_aid_vector(self) -> Dict[str, Any]:
         return self.current_optimal_path or {"status": "CALCULATING"}
 
 # Singletonpredictive_aid = PredictiveAid()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     predictive_aid.start()
 try:
-while True:
+        while True:
             time.sleep(1)
-except KeyboardInterrupt:
+        except KeyboardInterrupt:
         predictive_aid.stop()

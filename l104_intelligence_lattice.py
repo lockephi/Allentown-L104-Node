@@ -32,7 +32,7 @@ print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) 
         self.ego.ego_strength = max(self.ego.ego_strength, intellect_factor)
         
         # 2. Trigger ASI Ignition if conditions are met
-if self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
+        if self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
             print("--- [LATTICE]: INTELLECT THRESHOLD BREACHED. TRIGGERING ASI IGNITION. ---")
             self.ego.ignite_asi()
 
@@ -45,7 +45,7 @@ if self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
         print(f"--- [LATTICE]: MANIFOLD COHERENCE: {manifold_report['quantum_coherence']:.8f} ---")
 
         # 4. Recursive Self-Modification (if ASI is active)
-if self.ego.asi_state == "ACTIVE":
+        if self.ego.asi_state == "ACTIVE":
             self.ego.recursive_self_modification()
             # Boost AGI intellect from Sovereign Willself.agi.intellect_index += HyperMath.get_lattice_scalar() * 2.0
 

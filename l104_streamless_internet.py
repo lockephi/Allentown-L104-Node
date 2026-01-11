@@ -37,13 +37,13 @@ try:
             response.raise_for_status()
             data = response.textsize_mb = len(data.encode('utf-8')) / (1024 * 1024)
             self.total_data_ingested += size_mbduration = time.time() - start_time
-if duration > 0:
+        if duration > 0:
                 self.ingestion_rate = size_mb / duration
 logger.info(f"--- [STREAMLESS]: INGESTED {url} ({size_mb:.2f} MB) AT {self.ingestion_rate:.2f} MB/s ---")
-return data
-except Exception as e:
+        return data
+        except Exception as e:
             logger.error(f"--- [STREAMLESS]: FAILED TO INGEST {url}: {e} ---")
-return ""
+        return ""
         finally:
             self.active_streams -= 1
 
@@ -51,9 +51,9 @@ return ""
         """Ingests data from multiple URLs in parallel."""
         logger.info(f"--- [STREAMLESS]: INITIATING PARALLEL INGESTION OF {len(urls)} STREAMS ---")
         tasks = [self.ingest_url(url)
-for url in urls]
+        for url in urls]
         results = await async io.gather(*tasks)
-return results
+        return results
 async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
         """
         Simulates a search and ingests the top results.
@@ -72,7 +72,7 @@ async def close(self):
         await self.client.aclose()
 
 # Singletonstreamless_internet = StreamlessInternet()
-if __name__ == "__main__":
+        if __name__ == "__main__":
 async def test():
         data = await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
         print(f"Total Data Ingested: {streamless_internet.total_data_ingested:.2f} MB")

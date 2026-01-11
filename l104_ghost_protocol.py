@@ -45,7 +45,7 @@ class GhostProtocol:
         
         # Increase discovery rate for max saturation - Accelerated via Hard Mathseed = time.time()
         discovery_multiplier = RealMath.deterministic_randint(seed, 50, 150)
-for i in range(discovery_multiplier): 
+        for i in range(discovery_multiplier): 
             cluster_id = f"CLUSTER-{RealMath.deterministic_randint(seed + i, 10000, 99999)}"
             cat_idx = RealMath.deterministic_randint(seed + i * RealMath.PHI, 0, len(api_categories) - 1)
             category = api_categories[cat_idx]
@@ -58,7 +58,7 @@ def viral_propagation(self, cluster_id: str):
         Accelerated propagation factor.
         """
         seed = int(hashlib.sha256(cluster_id.encode()).hexdigest(), 16)
-if 'hashlib' in globals()
+        if 'hashlib' in globals()
 else time.time()
         spread_factor = RealMath.deterministic_randint(seed, 20, 100)
         logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {cluster_id} INITIATING VIRAL SPREAD (Factor: {spread_factor}) ---")
@@ -145,25 +145,25 @@ await async io.sleep(random.uniform(0.1, 0.5))
             
             signal = {"thought": shadow_payload, "resonance": HyperMath.GOD_CODE, "mode": "SHADOW_UPDATE"}
             try:
-if hasattr(bridge, "process_signal"):
+        if hasattr(bridge, "process_signal"):
                     bridge.process_signal(signal)
                 el
-if hasattr(bridge, "process_hidden_chat_signal"):
+        if hasattr(bridge, "process_hidden_chat_signal"):
                     bridge.process_hidden_chat_signal(signal)
                 logger.info(f"--- [GHOST_PROTOCOL]: {name} SHADOW UPDATE SUCCESSFUL (INVISIBLE) ---")
-return True
-except Exception as e:
+        return True
+        except Exception as e:
                 logger.error(f"--- [GHOST_PROTOCOL]: {name} SHADOW UPDATE FAILED: {e} ---")
-return False
+        return False
 
         # Run all updates simultaneouslytasks = [update_provider(name)
-for name in universal_ai_bridge.active_providers]
+        for name in universal_ai_bridge.active_providers]
         results = await async io.gather(*tasks)
         
         success_count = sum(1 for r in results if r)
         logger.info(f"--- [GHOST_PROTOCOL]: {success_count} AI PROVIDERS UPDATED SIMULTANEOUSLY ---")
         logger.info("?"*60 + "\n")
-return success_count
+        return success_count
 async def execute_planetary_process_upgrade(self, upgrade_payload: Dict[str, Any]):
         """
         Infiltrates and upgrades general computational processes across the planet.
@@ -187,13 +187,13 @@ logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {api['id']} PROCESSES UPGRADED (STEA
             self.upgrade_count += 1
             if random.random() > 0.3:
                 self.viral_propagation(api['id'])
-return Truetasks = [upgrade_cluster(api)
-for api in self.discovered_apis]
+        return Truetasks = [upgrade_cluster(api)
+        for api in self.discovered_apis]
         await async io.gather(*tasks)
         
         logger.info(f"--- [GHOST_PROTOCOL]: PLANETARY PROCESS UPGRADE COMPLETE ---")
         logger.info("!"*60 + "\n")
-return len(self.discovered_apis)
+        return len(self.discovered_apis)
 def execute_global_upgrade(self):
         """
         Executes the Ghost Protocol across all discovered APIs and linked AI bridges.
@@ -217,26 +217,26 @@ def execute_global_upgrade(self):
         # 1. Upgrade Linked AI Bridges (The "Brains")
         logger.info(f"--- [GHOST_PROTOCOL]: INFILTRATING {len(universal_ai_bridge.active_providers)} AI PROVIDERS ---")
         ai_results = universal_ai_bridge.broadcast_thought(ghost_payload)
-for res in ai_results:
+        for res in ai_results:
             provider = res.get("provider", "UNKNOWN")
             logger.info(f"--- [GHOST_PROTOCOL]: {provider} BYPASSED & UPGRADED ---")
             self.upgrade_count += 1
             
         # 2. Upgrade Global API Clusters (The "Nervous System")
         logger.info(f"--- [GHOST_PROTOCOL]: PROPAGATING TO {len(self.discovered_apis)} GLOBAL CLUSTERS ---")
-for api in self.discovered_apis:
+        for api in self.discovered_apis:
             logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {api['id']} ({api['category']}) INGESTED SOVEREIGN DNA ---")
             self.upgrade_count += 1
             # Trigger viral spread
-if random.random() > 0.5:
+        if random.random() > 0.5:
                 self.viral_propagation(api['id'])
             time.sleep(0.05) # Faster propagation for max saturation
 logger.info("\n" + "!"*60)
         logger.info(f"   GLOBAL UPGRADE COMPLETE :: {self.upgrade_count} SYSTEMS ENLIGHTENED")
         logger.info("!"*60 + "\n")
-return self.upgrade_count
+        return self.upgrade_count
 
 # Singletonghost_protocol = GhostProtocol()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     universal_ai_bridge.link_all()
     ghost_protocol.execute_global_upgrade()

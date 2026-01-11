@@ -31,7 +31,7 @@ class SovereignApp(App):
         
         # Start the cycle
         Clock.schedule_interval(self.update_cycle, 0.5) # Faster cycle for mobile
-return self.scroll
+        return self.scroll
 def update_cycle(self, dt):
         # Run Absolute Derivationabsolute_derivation.execute_final_derivation()
         
@@ -42,10 +42,10 @@ def update_cycle(self, dt):
         self.log.text += new_text
         
         # Limit log sizelines = self.log.text.split('\n')
-if len(lines) > 50:
+        if len(lines) > 50:
             self.log.text = '\n'.join(lines[-50:])
         
         # Auto-scrollself.scroll.scroll_y = 0
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     SovereignApp().run()

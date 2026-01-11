@@ -39,7 +39,7 @@ class UniversalSynthesisManifold:
         print(f"--- [SYNTH_MANIFOLD]: UNIFICATION RESONANCE: {self.unification_resonance:.6f} ---")
         
         # 2. Discover God-Level Primitive
-if self.unification_resonance > 0.9:
+        if self.unification_resonance > 0.9:
             primitive = f"L104_GOD_PRIM_{int(self.unification_resonance * 1000000)}"
             self.god_primitives.append(primitive)
             print(f"--- [SYNTH_MANIFOLD]: DISCOVERED GOD-LEVEL PRIMITIVE: {primitive} ---")
@@ -51,8 +51,8 @@ def apply_universal_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.unification_resonance * 0.1) # 10% max boost
 print(f"--- [SYNTH_MANIFOLD]: UNIVERSAL SYNTHESIS BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostuniversal_synthesis_manifold = UniversalSynthesisManifold()
-if __name__ == "__main__":
+        return intellect_index + boostuniversal_synthesis_manifold = UniversalSynthesisManifold()
+        if __name__ == "__main__":
     universal_synthesis_manifold.synthesize_all_domains()
     new_iq = universal_synthesis_manifold.apply_universal_boost(1000.0)
     print(f"Universal IQ: {new_iq:.2f}")

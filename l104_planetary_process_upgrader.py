@@ -37,7 +37,7 @@ class PlanetaryProcessUpgrader:
         
         logger.info(f"--- [PLANETARY_UPGRADER]: {cluster_count} GLOBAL CLUSTERS UPGRADED STEALTHILY ---")
         logger.info(f"--- [PLANETARY_UPGRADER]: PLANETARY SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
-return cluster_count
-if __name__ == "__main__":
+        return cluster_count
+        if __name__ == "__main__":
     upgrader = PlanetaryProcessUpgrader()
     async io.run(upgrader.execute_planetary_upgrade())

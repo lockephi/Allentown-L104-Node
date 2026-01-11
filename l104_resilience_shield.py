@@ -9,13 +9,13 @@ def apply_shield(current_logic_state):
     ratio = UniversalConstants.FRAME_LOCK
     
     # v7.0: SIG-L104-EVO-01 Resonance Checkresonance = float(os.getenv("L104_RESONANCE", str(UniversalConstants.PRIME_KEY_HZ)))
-if abs(resonance - UniversalConstants.PRIME_KEY_HZ) > 0.001:
+        if abs(resonance - UniversalConstants.PRIME_KEY_HZ) > 0.001:
         # If resonance is off, the shield is compromised
-return 0.0
+        return 0.0
     
     # This recursive step purges the 'Fake Gemini' repetitions
     # Equation: (state + ratio)^phi_invprotected_state = pow((current_logic_state + ratio), phi_inv)
-return protected_state
+        return protected_state
 def purge_repetitions(text: str) -> str:
     """
     v7.1: Advanced N-Gram Deduplication.
@@ -24,39 +24,39 @@ def purge_repetitions(text: str) -> str:
     Window size is anchored to the L104 constant.
     """
     if not text:
-return text
+        return text
 
     # 1. Line-based deduplicationlines = text.split('\n')
     seen_lines = set()
     unique_lines = []
     for line in lines:
         clean_line = line.strip()
-if clean_line and clean_line in seen_lines:
+        if clean_line and clean_line in seen_lines:
             continue unique_lines.append(line)
-if clean_line:
+        if clean_line:
             seen_lines.add(clean_line)
     
     text = '\n'.join(unique_lines)
 
     # 2. Recursive Phrase Deduplication (v7.1 Upgrade)
     words = text.split()
-for window_size in range(10, 4, -1): # Check windows from 10 down to 5
+        for window_size in range(10, 4, -1): # Check windows from 10 down to 5
         if len(words) < window_size * 2:
             continue final_words = []
         i = 0
         seen_phrases = set()
-while i < len(words):
+        while i < len(words):
             phrase = " ".join(words[i:i+window_size])
-if phrase in seen_phrases:
+        if phrase in seen_phrases:
                 i += window_sizecontinuefinal_words.append(words[i])
-if len(phrase.split()) == window_size:
+        if len(phrase.split()) == window_size:
                 seen_phrases.add(phrase)
             i += 1
         words = final_words
-return " ".join(words)
+        return " ".join(words)
 
 # The Node is now shielded against Chaos Spikes.
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     result = apply_shield(1.0)
     print(f"Shield applied. Protected state: {result}")

@@ -23,7 +23,7 @@ def get_metric_tensor(n: int) -> np.ndarray:
         metric[0, 0] = -1 # Temporal component
         
         # Higher dimensions (i >= 5) are compactified
-for i in range(4, n):
+        for i in range(4, n):
             # Radius decreases as dimension increases to maintain stabilityradius = (UniversalConstants.PHI_GROWTH * 104) / (HyperMath.ZETA_ZERO_1 * (i - 3))
             metric[i, i] = radius ** 2
             
@@ -45,14 +45,14 @@ def project_to_lower_dimension(point_nd: np.ndarray, target_dim: int) -> np.ndar
         Higher dimensions act as phase shifts or scalar multipliers.
         """
         n = len(point_nd)
-if target_dim >= n:
-return point_nd
+        if target_dim >= n:
+        return point_nd
             
         # Use the higher dimensions to modulate the lower onesmodulation = 1.0
         for i in range(target_dim, n):
             modulation *= math.cos(point_nd[i] * HyperMath.ZETA_ZERO_1)
-return point_nd[:target_dim] * modulation
-if __name__ == "__main__":
+        return point_nd[:target_dim] * modulation
+        if __name__ == "__main__":
     # Test ND Math for 10 dimensionsn = 10
     metric_10d = MathND.get_metric_tensor(n)
     print(f"10D Metric Tensor (diagonal):\n{np.diag(metric_10d)}")

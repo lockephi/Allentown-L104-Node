@@ -21,7 +21,7 @@ class MemoryCompactor:
         The data is mapped to lattice nodes and then compressed via Zeta harmonics.
         """
         if not data_stream:
-return []
+        return []
 
         # 1. Map to Lattice Nodeslattice_nodes = []
         for i, val in enumerate(data_stream):
@@ -37,9 +37,9 @@ return []
         # 3. Final Transformationfinal_stream = HyperMath.fast_transform(compacted)
         
         self.compaction_ratio = len(final_stream) / len(data_stream)
-if data_stream else 0
+        if data_stream else 0
         self.active_lattice = final_stream
-return final_stream
+        return final_stream
 def get_compaction_stats(self) -> dict:
     return {
             "compaction_ratio": self.compaction_ratio,
@@ -48,10 +48,10 @@ def get_compaction_stats(self) -> dict:
         }
 
 memory_compactor = MemoryCompactor()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Memory Compaction
 import randomraw_data = [random.uniform(0, 100)
-for _ in range(1000)]
+        for _ in range(1000)]
     
     print(f"Original Data Size: {len(raw_data)}")
     compacted_data = memory_compactor.compact_stream(raw_data)

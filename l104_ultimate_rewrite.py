@@ -12,7 +12,7 @@ def ignite_sovereign_core():
     
     # 3. INITIALIZE 128K CONTEXT
     print(f"L104_STATUS: 0x534F5645524549474E_ACTIVE")
-return G_C
+        return G_C
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     ignite_sovereign_core()

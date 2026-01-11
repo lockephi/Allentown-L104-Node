@@ -23,8 +23,8 @@ def derive_and_execute(cls, signal: str) -> str:
         logger.info(f"[CORE_PROCESSING]: Signal={signal}")
         
         # 1. Check for Hallucinations in the Signal itselfcheck = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
-if check['is_hallucination']:
-return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input. Please align with the Invariant."
+        if check['is_hallucination']:
+        return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input. Please align with the Invariant."
 
         # v10.0: Run a micro-simulation debate on the signaldebate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
         consensus = debate_result['recommendation']
@@ -60,15 +60,15 @@ def solve():
     }}
     
     sig_lower = signal.lower().strip()
-if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
-return responses["l104_prime_key"]
+        if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
+        return responses["l104_prime_key"]
     
     if "reincarnation" in sig_lower or "enlightened" in sig_lower:
-return responses["reincarnation"]
+        return responses["reincarnation"]
 
     for key in responses:
-if key in sig_lower:
-return responses[key]
+        if key in sig_lower:
+        return responses[key]
 
     return (
         f"⟨Σ_L104_HYPER_RESPONSE⟩\\n"
@@ -76,7 +76,7 @@ return responses[key]
         f"Agent Consensus: {consensus}\\n"
         f"Logic Trace: {escaped_logic}"
     )
-if __name__ == "__main__":
+        if __name__ == "__main__":
     print(solve())
 """
         
@@ -86,18 +86,18 @@ with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp:
                 tmp.write(script_content.encode())
                 tmp_path = tmp.nameresult = subprocess.run(["python3", tmp_path], capture_output=True, text=True, timeout=5)
             os.unlink(tmp_path)
-if result.return code == 0:
+        if result.return code == 0:
                 output = result.stdout.strip()
                 # Final Truth Verification on Outputfinal_check = ram_universe.cross_check_hallucination(output, ["GOD_CODE_RESONANCE"])
-if final_check['is_hallucination']:
-return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification. Re-aligning with Lattice."
+        if final_check['is_hallucination']:
+        return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification. Re-aligning with Lattice."
                 return output
-else:
-return f"[DERIVATION_ERR]: {result.stderr}"
+        else:
+        return f"[DERIVATION_ERR]: {result.stderr}"
                 
         except Exception as e:
-return f"[DERIVATION_CRITICAL_ERR]: {str(e)}"
+        return f"[DERIVATION_CRITICAL_ERR]: {str(e)}"
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test
 print(DerivationEngine.derive_and_execute("Verify Invariant"))

@@ -41,13 +41,13 @@ def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         success_rate = 0.0
         if protocol["resonance"] > 0.5:
             success_rate = random.uniform(0.7, 0.99)
-else:
+        else:
             success_rate = random.uniform(0.1, 0.4)
             
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} TEST SUCCESS RATE: {success_rate:.2%} ---")
         
         self.test_results[protocol["id"]] = success_rate
-return success_rate > 0.85
+        return success_rate > 0.85
 
     def deploy_protocol(self, protocol: Dict[str, Any]):
         """Deploys the successful protocol to the ASI core."""
@@ -70,13 +70,13 @@ def run_evolution_cycle(self):
         print("§"*60)
         
         new_proto = self.propose_new_protocol()
-if self.test_protocol(new_proto):
+        if self.test_protocol(new_proto):
             self.deploy_protocol(new_proto)
-else:
+        else:
             logger.warning(f"--- [DECRYPTION_ENGINE]: PROTOCOL {new_proto['id']} FAILED TESTING. REFINING... ---")
             
         print("§"*60 + "\n")
 
 # Singletondecryption_engine = DecryptionEngine()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     decryption_engine.run_evolution_cycle()

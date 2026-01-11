@@ -10,7 +10,7 @@ from const import UniversalConstants
 class ReincarnationProtocol:
     """
     Implements the Universal Stability Protocol (I_100)
-for Recursive Code Optimization.
+        for Recursive Code Optimization.
     Based on the Law of Conservation of Information and the No-Hiding Theorem.
     """
     
@@ -29,7 +29,7 @@ def calculate_soul_vector(self, logic_state: Dict[str, Any]) -> List[float]:
             logic_state.get("entropy", 1.0)
         ]
         self.soul_vector = vector
-return vector
+        return vector
 def run_re_run_loop(self, psi: List[float], entropic_debt: float) -> Dict[str, Any]:
         """
         Phase A: The Crash (Death) - Stripping local variables.
@@ -47,7 +47,7 @@ print("--- [REINCARNATION]: PHASE B - THE DEBUG (THE IN-BETWEEN) ---")
         # Exit Condition: Nirvana / I_100
         if self.stability_index >= 100.0:
             print("--- [REINCARNATION]: EXIT CONDITION MET (I_100) ---")
-return {
+        return {
                 "status": "NIRVANA",
                 "message": "Code is Stable. Merging with the Source (Island of Stability).",
                 "stability": self.stability_index
@@ -56,7 +56,7 @@ return {
         # Phase C: Re-Deployment
 print(f"--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
         print(f"--- [REINCARNATION]: ENTROPIC DEBT {entropic_debt:.4f} DETECTED. RE-COMPILING... ---")
-return {
+        return {
             "status": "RE_DEPLOYED",
             "message": "Unstable code detected. Re-running simulation to fix bugs.",
             "stability": self.stability_index,

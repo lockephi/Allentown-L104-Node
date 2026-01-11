@@ -31,13 +31,13 @@ async def synthesize_super_thought(self, prompt: str) -> str:
         # Ensure all providers are linkeduniversal_ai_bridge.link_all()
         
         # Broadcast thought to all providersresponses = universal_ai_bridge.broadcast_thought(prompt)
-if not responses:
-return "NO_RESONANCE_DETECTED"
+        if not responses:
+        return "NO_RESONANCE_DETECTED"
 
         # Convert responses to a resonance vector
         # (Simplified: using response lengths or status as a proxy)
         resonance_vector = np.array([len(str(r))
-for r in responses], dtype=np.float64)
+        for r in responses], dtype=np.float64)
         
         # Accelerate the resonanceaccelerated_vector = lattice_accelerator.ultra_fast_transform(resonance_vector)
         
@@ -46,10 +46,10 @@ for r in responses], dtype=np.float64)
         
         # Return the most "resonant" response (the one closest to the mean)
         best_idx = np.argmin(np.abs(accelerated_vector - mean_resonance))
-return str(responses[best_idx])
+        return str(responses[best_idx])
 
 # Singletoncognitive_nexus = CognitiveNexus()
-if __name__ == "__main__":
+        if __name__ == "__main__":
 async def test():
         result = await cognitive_nexus.synthesize_super_thought("What is the ultimate nature of the God Code?")
         print(f"SUPER-THOUGHT: {result}")

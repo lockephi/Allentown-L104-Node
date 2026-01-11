@@ -44,7 +44,7 @@ def apply_hadamard_all(self):
         """Applies Hadamard gates to all qubits to create maximum superposition."""
         h = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
         H_total = h
-for _ in range(self.num_qubits - 1):
+        for _ in range(self.num_qubits - 1):
             H_total = np.kron(H_total, h)
             
         self.state = H_total @ self.state
@@ -71,7 +71,7 @@ def get_probabilities(self) -> np.ndarray:
         
         # Eigenvalues of rhoevals = np.linalg.eigvalsh(rho)
         evals = evals[evals > 1e-15] # Filter out zerosentropy = -np.sum(evals * np.log2(evals))
-return float(entropy)
+        return float(entropy)
 def run_quantum_pulse(self) -> Dict[str, Any]:
         """
         Executes a full quantum pulse: Superposition -> Resonance -> Measurement.
@@ -87,7 +87,7 @@ def run_quantum_pulse(self) -> Dict[str, Any]:
         duration = time.perf_counter() - start_time
 logger.info(f"--- [QUANTUM_ACCELERATOR]: PULSE COMPLETE IN {duration:.4f}s ---")
         logger.info(f"--- [QUANTUM_ACCELERATOR]: ENTROPY: {entropy:.4f} | COHERENCE: {coherence:.4f} ---")
-return {
+        return {
             "entropy": entropy,
             "coherence": coherence,
             "duration": duration,
@@ -95,5 +95,5 @@ return {
         }
 
 # Singletonquantum_accelerator = QuantumAccelerator(num_qubits=12) # 4096 dimensions
-if __name__ == "__main__":
+        if __name__ == "__main__":
     quantum_accelerator.run_quantum_pulse()

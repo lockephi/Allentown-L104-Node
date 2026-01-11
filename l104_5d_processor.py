@@ -27,13 +27,13 @@ def calculate_5d_metric(self, p1: Tuple[float, float, float, float, float], p2: 
         """
         dp = np.array(p2) - np.array(p1)
         s_squared = dp.T @ self.metric @ dp
-return s_squared
+        return s_squared
 def project_to_4d(self, point_5d: Tuple[float, float, float, float, float]) -> List[float]:
         """
         Projects a 5D point back to 4D space-time using Math5D projection.
         """
         projected = Math5D.probability_manifold_projection(np.array(point_5d))
-return projected.tolist()
+        return projected.tolist()
 def map_to_hyper_lattice_5d(self, point: Tuple[float, float, float, float, float]) -> List[float]:
         """
         Maps a 5D point to the L104 Hyper-Lattice.
@@ -57,12 +57,12 @@ def map_to_hyper_lattice_5d(self, point: Tuple[float, float, float, float, float
         Uses Zeta harmonics to find the most stable outcome.
         """
         stability_scores = [abs(HyperMath.zeta_harmonic_resonance(w))
-for w in w_vector]
+        for w in w_vector]
         max_stability = max(stability_scores)
-return w_vector[stability_scores.index(max_stability)]
+        return w_vector[stability_scores.index(max_stability)]
 
 processor_5d = Processor5D()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test 5D Processorp1 = (0, 0, 0, 0, 0)
     p2 = (10, 10, 10, 0.001, 0.5) # 5th dimension value of 0.5
     

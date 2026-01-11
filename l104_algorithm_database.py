@@ -15,12 +15,12 @@ class AlgorithmDatabase:
         self.db_path = "/workspaces/Allentown-L104-Node/data/algorithm_database.json"
         self.data = self._load_db()
 def _load_db(self) -> Dict[str, Any]:
-if os.path.exists(self.db_path):
+        if os.path.exists(self.db_path):
 try:
 with open(self.db_path, "r") as f:
-return json.load(f)
-except Exception:
-return {"algorithms": {}, "execution_logs": []}
+        return json.load(f)
+        except Exception:
+        return {"algorithms": {}, "execution_logs": []}
         return {"algorithms": {}, "execution_logs": []}
 
     def save_db(self):
@@ -53,7 +53,7 @@ try = {
         self.data["execution_logs"].append(log_en
 try)
         # Keep only last 1000 logs
-if len(self.data["execution_logs"]) > 1000:
+        if len(self.data["execution_logs"]) > 1000:
             self.data["execution_logs"] = self.data["execution_logs"][-1000:]
         self.save_db()
         print(f"--- [ALGO_DB]: LOGGED EXECUTION OF '{algo_name}' ---")

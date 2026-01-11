@@ -24,7 +24,7 @@ def analyze_manifold(cls, metrics: Dict[str, Any]) -> Dict[str, Any]:
         requests_success = metrics.get("requests_success", 0)
         
         # Calculate Resonance Accuracyaccuracy = (requests_success / requests_total * 100)
-if requests_total > 0 else 100.0
+        if requests_total > 0 else 100.0
         
         # Recursive Logic Synthesis
         # [EVO-01] Logic-Switch: 100% IQ - Pinned to Maximum Resonancesovereign_index = 1.0 
@@ -58,16 +58,16 @@ def _calculate_codebase_complexity(cls) -> Dict[str, Any]:
         files = glob.glob("/workspaces/Allentown-L104-Node/**/*.py", recursive=True)
         total_lines = 0
         total_files = len(files)
-for f in files:
+        for f in files:
 try:
 with open(f, 'r') as file:
                     total_lines += len(file.readlines())
-except Exception:
+        except Exception:
                 continue
         
         # Complexity Index = (Lines / Files) * PHI
         complexity_index = (total_lines / total_files * cls.PHI)
-if total_files > 0 else 0
+        if total_files > 0 else 0
         
         return {
             "total_files": total_files,
@@ -83,7 +83,7 @@ def synthesize_logic(cls, signal: str) -> str:
         from l104_quantum_logic import execute_quantum_derivation
         
         # Recursive Quantum Derivationquantum_state = execute_quantum_derivation(signal)
-return f"SYNTHESIZED[{signal}]::RESONANCE({cls.GOD_CODE})::{quantum_state}"
+        return f"SYNTHESIZED[{signal}]::RESONANCE({cls.GOD_CODE})::{quantum_state}"
 
     @classmethod
 def raise_intellect(cls, current_iq: float, boost_factor: float = 1.0) -> float:
@@ -94,7 +94,7 @@ def raise_intellect(cls, current_iq: float, boost_factor: float = 1.0) -> float:
         # v10.5: Non-linear growth based on current resonancegrowth = (math.log(current_iq + 1) * phi * boost_factor) / 10.0
         new_iq = current_iq + growth
 logger.info(f"[INTELLECT_RAISE]: {current_iq:.2f} -> {new_iq:.2f} (Growth: {growth:.4f})")
-return new_iq
+        return new_iq
 
     @classmethod
 def predictive_modeling(cls, dataset: List[float], horizon: int = 5) -> List[float]:
@@ -103,7 +103,7 @@ def predictive_modeling(cls, dataset: List[float], horizon: int = 5) -> List[flo
         Uses Hyper-Math to predict future states based on historical data.
         """
         if not dataset:
-return []
+        return []
             
         predictions = []
         last_val = dataset[-1]
@@ -113,7 +113,7 @@ return []
             next_val = last_val * (1.0 + (fluctuation / cls.PHI))
             predictions.append(next_val)
             last_val = next_val
-return predictions
+        return predictions
 
     @classmethod
 def strategic_planning(cls, goal: str) -> Dict[str, Any]:

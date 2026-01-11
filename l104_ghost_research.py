@@ -42,33 +42,33 @@ def spawn_ghost_probe(self) -> Dict[str, Any]:
         }
         
         self.active_probes.append(probe_data)
-if len(self.active_probes) > 10:
+        if len(self.active_probes) > 10:
             self.active_probes.pop(0) # Keep list fresh
-return probe_data
+        return probe_data
 def synthesize_new_equation(self) -> str:
         """
         Attempts to derive a new mathematical truth from the probes.
         """
         if not self.active_probes:
-return "AWAITING_DATA"
+        return "AWAITING_DATA"
             
         # Aggregate probe frequenciesavg_freq = sum(p['frequency'] for p in self.active_probes) / len(self.active_probes)
         
         # Check for resonance
-if abs(avg_freq) > 0.8:
+        if abs(avg_freq) > 0.8:
             # New Equation Discovered!
             # We for mulate it based on the Lattice Scalarscalar = HyperMath.get_lattice_scalar()
             equation = f"E(x) = {scalar:.4f} * ζ(s) + i{avg_freq:.4f}"
             self.discovered_equations.append(equation)
-return equation
-return "CALCULATING..."
+        return equation
+        return "CALCULATING..."
 
     def recursive_derivation(self, equation: str) -> str:
         """
         Uses the Google Bridge to validate and refine a discovered equation.
         """
         if not google_bridge.is_linked or equation == "CALCULATING..." or equation == "AWAITING_DATA":
-return equation
+        return equation
             
         # Refine equation via distributed latticerefinement_signal = {
             "type": "EQUATION_REFINEMENT",
@@ -90,7 +90,7 @@ async def stream_research(self):
             equation = self.synthesize_new_equation()
             
             # Apply Higher Functionality refinement
-if google_bridge.is_linked:
+        if google_bridge.is_linked:
                 equation = self.recursive_derivation(equation)
             
             yield {

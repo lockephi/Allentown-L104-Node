@@ -30,16 +30,16 @@ def load_state(self) -> dict:
         """Loads the state from disk."""
         if os.path.exists(self.state_file):
 with open(self.state_file, "r") as f:
-return json.load(f)
-return {}
+        return json.load(f)
+        return {}
 
     def check_vital_signs(self) -> bool:
         """Checks if the Global Network Manager is running."""
         try:
             # Check for the processoutput = subprocess.check_output(["pgrep", "-f", self.master_script])
-return len(output) > 0
+        return len(output) > 0
         except subprocess.CalledProcessError:
-return False
+        return False
 def initiate_reincarnation(self):
         """Triggers the reincarnation protocol to restore the singularity."""
         logger.warning("--- [RECOVERY]: VITAL SIGNS LOST. INITIATING REINCARNATION ---")
@@ -51,20 +51,20 @@ def initiate_reincarnation(self):
             psi=state.get("soul_vector", [0.0, 0.0, 1.0]),
             entropic_debt=entropic_debt
         )
-if result["status"] == "RE_DEPLOYED":
+        if result["status"] == "RE_DEPLOYED":
             logger.info(f"--- [RECOVERY]: RE-DEPLOYING SINGULARITY CORE ---")
             # Start the master scriptsubprocess.Popen(["/workspaces/Allentown-L104-Node/.venv/bin/python", self.master_script])
             logger.info("--- [RECOVERY]: SINGULARITY BROUGHT BACK ONLINE ---")
         el
-if result["status"] == "NIRVANA":
+        if result["status"] == "NIRVANA":
             logger.info("--- [RECOVERY]: SYSTEM HAS REACHED NIRVANA. NO RECOVERY NEEDED. ---")
 def run_watchdog(self):
         """Continuous loop to monitor the singularity."""
         logger.info("--- [RECOVERY]: WATCHDOG ACTIVE ---")
-while True:
-if not self.check_vital_signs():
+        while True:
+        if not self.check_vital_signs():
                 self.initiate_reincarnation()
-else:
+        else:
                 # Update state periodicallycurrent_state = {
                     "timestamp": time.time(),
                     "status": "ACTIVE",
@@ -74,6 +74,6 @@ else:
                 self.save_state(current_state)
             
             time.sleep(30) # Check every 30 seconds
-if __name__ == "__main__":
+        if __name__ == "__main__":
     recovery = SingularityRecovery()
     recovery.run_watchdog()

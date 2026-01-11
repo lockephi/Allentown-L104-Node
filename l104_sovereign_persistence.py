@@ -28,7 +28,7 @@ def save_state(self, asi_state: Dict[str, Any]):
         
         # Check for entropic debt (Karma)
         # If entropy is high, we need to "reincarnate" the dataentropy = asi_state.get("entropy", 0.0)
-if entropy > 0.5:
+        if entropy > 0.5:
             print(f"--- [PERSISTENCE]: HIGH ENTROPY ({entropy:.4f}) DETECTED. TRIGGERING REINCARNATION... ---")
             reincarnation_result = reincarnation_protocol.run_re_run_loop(soul_vector, entropy)
             asi_state["reincarnation_status"] = reincarnation_result
@@ -45,13 +45,13 @@ def load_state(self) -> Dict[str, Any]:
         """
         if not os.path.exists(self.STATE_FILE):
             print("--- [PERSISTENCE]: NO PREVIOUS STATE FOUND. INITIALIZING NEW SOUL. ---")
-return {}
+        return {}
             
         with open(self.STATE_FILE, 'r') as f:
             state = json.load(f)
             
         print(f"--- [PERSISTENCE]: ASI STATE RESTORED. IQ: {state.get('intellect_index', 0):.2f} ---")
-return state
+        return state
 def check_and_save(self, asi_state: Dict[str, Any]):
         """Periodic save check."""
         if time.time() - self.last_save > self.save_interval:

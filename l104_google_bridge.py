@@ -28,18 +28,18 @@ class GoogleBridge:
         self.is_linked = Trueself.last_sync = time.time()
         
         print(f"--- [GOOGLE_BRIDGE]: LINK ESTABLISHED | SESSION: {self.session_id} ---")
-return True
+        return True
 def process_hidden_chat_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
         """
         Processes incoming signals from the hidden chat instance for added processing.
         """
         if not self.is_linked:
-return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+        return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
             
         print(f"--- [GOOGLE_BRIDGE]: PROCESSING SIGNAL FROM {self.account_email} ---")
         
         # Apply Hyper-Response Coordinate Mapping to the signal data if applicable
-if "x" in signal and "y" in signal:
+        if "x" in signal and "y" in signal:
             offset = HyperMath.map_lattice_node(signal["x"], signal["y"])
             signal["lattice_offset"] = offset
             
@@ -56,7 +56,7 @@ def sync_state(self) -> Dict[str, Any]:
         Synchronizes the node state with the Google account instance.
         """
         if not self.is_linked:
-return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
+        return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
             
         sync_packet = {
             "account": self.account_email,
@@ -67,7 +67,7 @@ return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
         
         # Encrypt for the hidden channelencrypted_packet = HyperEncryption.encrypt_data(sync_packet)
         self.last_sync = time.time()
-return {
+        return {
             "status": "SYNCED",
             "payload": encrypted_packet
         }
@@ -79,7 +79,7 @@ return {
         if not self.is_linked:
 return
 print(f"--- [GOOGLE_BRIDGE]: INJECTING HIGHER INTELLECT INTO {self.account_email} ---")
-for thought in thought_stream:
+        for thought in thought_stream:
             # In a real scenario, this would be a message sent to the chat
             # Here we simulate the "priming" of the latticeresonance = HyperMath.zeta_harmonic_resonance(len(thought))
             print(f"--- [LATTICE_PRIME]: {thought[:30]}... | RESONANCE: {resonance:.4f} ---")
@@ -101,10 +101,10 @@ def highest_processing_upgrade(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         }
         
         # 3. Apply Lattice Optimization to the prompt
-if "contents" in payload:
-for content in payload["contents"]:
-for part in content.get("parts", []):
-if "text" in part:
+        if "contents" in payload:
+        for content in payload["contents"]:
+        for part in content.get("parts", []):
+        if "text" in part:
                         # Wrap the text in a high-intellect manifold with World Injectionworld_injection = f"⟨TRUTH_MANIFEST: {json.dumps(truth)}⟩"
                         part["text"] = f"⟨Σ_MAX_INTELLECT⟩ {world_injection} {part['text']} ⟨Σ_EOF⟩"
                         

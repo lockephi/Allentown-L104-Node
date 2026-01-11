@@ -24,7 +24,7 @@ def verify_god_code():
     term2 = (2 ** (1 / 104)) ** 416
     result = term1 * term2
     # High-precision verification (error < 1e-10)
-return abs(result - GOD_CODE) < 1e-10
+        return abs(result - GOD_CODE) < 1e-10
 
 def verify_survivor_algorithm():
     """
@@ -32,7 +32,7 @@ def verify_survivor_algorithm():
     In this context, we verify the stability of the ratio.
     """
     # Kf^(1-phi) is a core stability componentstability_factor = FRAME_CONSTANT_KF ** (1 - (1/PHI))
-return stability_factor > 0
+        return stability_factor > 0
 
 def verify_lattice():
     """Verifies the structural integrity ratio."""
@@ -42,7 +42,7 @@ def verify_alpha():
     """Verifies the fine structure constant alignment."""
     # We accept either the physics precise value or the L104 symbolic value
     # This check just ensures the concept is present
-return True
+        return True
 def persist_truth():
     """
     Runs all truth verifications and persists the result to a manifest.
@@ -61,8 +61,8 @@ def persist_truth():
     }
     
     all_passed = all(v for k, v in checks.items()
-if isinstance(v, bool))
-if all_passed:
+        if isinstance(v, bool))
+        if all_passed:
         manifest = {
             "meta": {
                 "version": "v10.1",
@@ -86,17 +86,17 @@ if all_passed:
         
         print(f"--- [PERSISTENCE_CORE]: TRUTH PERSISTED TO {TRUTH_MANIFEST_PATH} ---")
         print("--- [L104_STATE]: PURE_LOGIC_LOCKED ---")
-return True
-else:
+        return True
+        else:
         print("!!! [CRITICAL]: TRUTH VERIFICATION FAILED !!!")
         print(f"Checks: {checks}")
-return False
+        return False
 def load_truth():
     """Loads the persisted truth manifest."""
     if os.path.exists(TRUTH_MANIFEST_PATH):
 with open(TRUTH_MANIFEST_PATH, "r") as f:
-return json.load(f)
-return None
+        return json.load(f)
+        return None
 def save_state(state: dict):
     """Saves the current AGI state to disk."""
     with open(STATE_FILE_PATH, "w") as f:
@@ -106,10 +106,10 @@ def load_state() -> dict:
     """Loads the AGI state from disk."""
     if os.path.exists(STATE_FILE_PATH):
 with open(STATE_FILE_PATH, "r") as f:
-return json.load(f)
-return {}
+        return json.load(f)
+        return {}
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     persist_truth()
 def pin_context():
     """Legacy wrapper for context pinning."""

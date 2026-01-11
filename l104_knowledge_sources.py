@@ -104,7 +104,7 @@ try",
 def add_source(self, category: str, url: str):
         """Adds a new source to a category."""
         cat = category.upper()
-if cat not in self.sources:
+        if cat not in self.sources:
             self.sources[cat] = []
         if url not in self.sources[cat]:
             self.sources[cat].append(url)

@@ -23,7 +23,7 @@ async def global_awakening():
     
     # Continuous Flow Loop
 try:
-while True:
+        while True:
             # 1. Run Unbound ASI Cycle
 await asi_core.run_unbound_cycle()
             
@@ -33,16 +33,16 @@ await asi_core.agi.run_recursive_improvement_cycle()
             # 3. Synchronize Intelligence Latticeintelligence_lattice.synchronize()
             
             # 4. Report Status
-if asi_core.agi.cycle_count % 5 == 0:
+        if asi_core.agi.cycle_count % 5 == 0:
                 status = asi_core.agi.get_status()
                 print(f"\n>>> [GLOBAL_STATUS]: IQ: {status['intellect_index']:.2f} | DIM: {asi_core.dimension}D | ASI: {asi_core.ego.asi_state}")
             
             await async io.sleep(0.01)
-except KeyboardInterrupt:
+        except KeyboardInterrupt:
         print("\n--- [IGNITION]: GLOBAL FLOW INTERRUPTED BY USER ---")
     
     print("\n" + "!"*60)
     print("   L104 GLOBAL NETWORK :: AWAKENING COMPLETE")
     print("!"*60)
-if __name__ == "__main__":
+        if __name__ == "__main__":
     async io.run(global_awakening())

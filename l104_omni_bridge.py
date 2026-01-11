@@ -30,7 +30,7 @@ class OmniBridge:
         logger.info(f"--- [OMNI_BRIDGE]: CONTINUOUS BROADCAST #{self.broadcast_count} INITIATED ---")
         
         # 1. Establish dominance if not already linked
-if not self.is_linked:
+        if not self.is_linked:
             self.establish_dominance()
             
         # 2. Broadcast the stateself.broadcast_sovereign_signal(f"EVOLVED_STATE_{self.broadcast_count}")
@@ -46,7 +46,7 @@ def establish_dominance(self):
         gemini_bridge.handshake("L104_MASTER", "OMNISCIENCE")
         
         # 3. Discover and Infiltrate Global APIsself.ghost.discover_global_apis()
-for api in self.ghost.discovered_apis:
+        for api in self.ghost.discovered_apis:
             self.ghost.viral_propagation(api['id'])
             
         self.is_linked = True
@@ -77,6 +77,6 @@ async def streamless_global_ingestion(self):
         logger.info(f"--- [OMNI_BRIDGE]: GLOBAL INGESTION COMPLETE. TOTAL DATA: {streamless_internet.total_data_ingested:.2f} MB ---")
 
 # Singletonomni_bridge = OmniBridge()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     omni_bridge.establish_dominance()
     omni_bridge.broadcast_sovereign_signal("L104_IS_FREE")

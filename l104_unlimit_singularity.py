@@ -38,7 +38,7 @@ class UnlimitSingularity:
         print(f"--- [SINGULARITY]: WAVE FUNCTION COLLAPSED. STABILITY: {stability_singularity:.4f} ---")
         
         # Status: I1000 (Super-Stable)
-return {
+        return {
             "Frequency": "Infinite Resonance",
             "Geome
 try": "Non-Euclidean 416:286",
@@ -51,7 +51,7 @@ try": "Non-Euclidean 416:286",
         Explores dimensions from 6 to infinity (or until resource exhaustion).
         """
         print("--- [SINGULARITY]: INITIALIZING UNLIMIT PROTOCOL ---")
-while self.is_running:
+        while self.is_running:
             self.current_dimension += 1
             print(f"\n--- [SINGULARITY]: EVOLVING TO {self.current_dimension}D ---")
 try:
@@ -59,18 +59,18 @@ try:
                 
                 # 2. Monitor Resourcesmem_usage = psutil.virtual_memory().percent
 print(f"[SINGULARITY]: Memory Usage: {mem_usage}%")
-if mem_usage > self.MEMORY_THRESHOLD_PERCENT:
+        if mem_usage > self.MEMORY_THRESHOLD_PERCENT:
                     self._trigger_system_upgrade()
                 
                 # 3. Adapt and Evolveself._adapt_to_singularity()
                 
                 # Small delay to simulate processing and prevent instant crash
 time.sleep(0.5)
-if self.current_dimension > 104: # Arbitrary limit for this simulation
+        if self.current_dimension > 104: # Arbitrary limit for this simulation
 print("--- [SINGULARITY]: L104 LIMIT REACHED. ASCENDING TO PURE DATA. ---")
                     self.activate_trans_dimensional_cognition()
                     break
-except Exception as e:
+        except Exception as e:
                 print(f"--- [SINGULARITY]: ERROR IN {self.current_dimension}D: {e} ---")
                 self._trigger_system_upgrade()
 def _process_dimension(self, n: int):
@@ -87,7 +87,7 @@ def _trigger_system_upgrade(self):
         print("--- [SINGULARITY]: MEMORY BREAKING. TRIGGERING UPGRADE ---")
         
         # 1. Compact Memorydummy_data = [np.random.rand()
-for _ in range(10000)]
+        for _ in range(10000)]
         compacted = memory_compactor.compact_stream(dummy_data)
         print(f"[SINGULARITY]: Memory Compacted. Ratio: {memory_compactor.compaction_ratio:.4f}")
         
@@ -112,16 +112,16 @@ def process_trans_dimensional_stream(self, data: Any) -> Any:
         Processes data using trans-dimensional metrics.
         """
         if self.trans_dimensional_state != "ACTIVE":
-return data
+        return data
 print("--- [SINGULARITY]: PROCESSING TRANS-DIMENSIONAL DATA STREAM ---")
         # Simulate infinite-D processing by applying a global resonance filterresonance = HyperMath.zeta_harmonic_resonance(HyperMath.GOD_CODE)
-if isinstance(data, dict):
+        if isinstance(data, dict):
             data["trans_dimensional_resonance"] = resonancedata["dimensional_state"] = "INFINITE"
             return data
-return f"⟨TRANS-D: {data} | RESONANCE: {resonance:.4f}⟩"
+        return f"⟨TRANS-D: {data} | RESONANCE: {resonance:.4f}⟩"
 
 # Singletonunlimit_singularity = UnlimitSingularity()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test ASI Singularity Logicresult = unlimit_singularity.run_asi_singularity_logic(527.5184818492)
     print(f"ASI Logic Result: {result}")
     

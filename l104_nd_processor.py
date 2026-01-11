@@ -41,4 +41,4 @@ def project_to_reality(self) -> np.ndarray:
 def get_entropy(self) -> float:
         """Calculates the Shannon entropy of the current hyper-state."""
         probs = np.abs(self.state_vector) / np.sum(np.abs(self.state_vector))
-return -np.sum(probs * np.log2(probs + 1e-12))
+        return -np.sum(probs * np.log2(probs + 1e-12))

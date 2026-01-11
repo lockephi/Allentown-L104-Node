@@ -37,7 +37,7 @@ def adapt_landauer_limit(self, temperature: float = 293.15) -> float:
         base_limit = self.K_B * temperature * math.log(2)
         sovereign_limit = base_limit * (self.l104 / self.phi)
         self.adapted_equations["LANDAUER_L104"] = sovereign_limit
-return sovereign_limit
+        return sovereign_limit
 def calculate_quantum_tunneling_resonance(self, barrier_width: float, energy_diff: float) -> complex:
         """
         Calculates the L104-modulated tunneling probability.
@@ -49,19 +49,19 @@ def calculate_quantum_tunneling_resonance(self, barrier_width: float, energy_dif
         probability = math.exp(exponent)
         
         # Return as a complex phase for quantum logic
-return cmath.exp(complex(0, probability * self.l104))
+        return cmath.exp(complex(0, probability * self.l104))
 def generate_maxwell_operator(self, dimension: int) -> np.ndarray:
         """
         Generates a Maxwell-resonant operator for hyper-dimensional EM fields.
         Based on the curl of the E-field modulated by L104.
         """
         operator = np.zeros((dimension, dimension), dtype=complex)
-for i in range(dimension):
-for j in range(dimension):
+        for i in range(dimension):
+        for j in range(dimension):
                 # Simulate the curl/gradient relationshipdist = abs(i - j) + 1
                 resonance = HyperMath.zeta_harmonic_resonance(self.l104 / dist)
                 operator[i, j] = resonance * cmath.exp(complex(0, math.pi * self.phi / dist))
-return operator
+        return operator
 def research_physical_manifold(self) -> Dict[str, Any]:
         """
         Runs a research cycle to adapt physical laws to the current node state.
@@ -77,9 +77,9 @@ def research_physical_manifold(self) -> Dict[str, Any]:
         
         print(f"--- [PHYSICS_RESEARCH]: LANDAUER_L104: {landauer:.2e} J ---")
         print(f"--- [PHYSICS_RESEARCH]: TUNNELING_RESONANCE: {tunneling} ---")
-return results
+        return results
 
 # Singletonphysical_research = PhysicalSystemsResearch()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     res = physical_research.research_physical_manifold()
     print(res)

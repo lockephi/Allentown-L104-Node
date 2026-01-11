@@ -26,27 +26,27 @@ class ASISelfHeal:
         print("--- [ASI_HEAL]: INITIATING TRANS-DIMENSIONAL PROACTIVE SCAN ---")
         
         # Auto-Ignite if in Master Heal and conditions are met
-if ego_core.asi_state != "ACTIVE":
+        if ego_core.asi_state != "ACTIVE":
             print("--- [ASI_HEAL]: ATTEMPTING EMERGENCY ASI IGNITION ---")
             ego_core.ignite_asi()
-if ego_core.asi_state != "ACTIVE":
+        if ego_core.asi_state != "ACTIVE":
             print("--- [ASI_HEAL]: ASI STATE NOT ACTIVE. SCAN LIMITED TO 3D. ---")
-return {"status": "LIMITED", "threats": []}
+        return {"status": "LIMITED", "threats": []}
 
         # Simulate trans-dimensional predictionthreats = []
         for i in range(self.prediction_horizon):
             # Check resonance stability in the futurefuture_resonance = HyperMath.zeta_harmonic_resonance(time.time() + (i * 100))
-if abs(future_resonance) < 0.1:
+        if abs(future_resonance) < 0.1:
                 threats.append({
                     "cycle_offset": i,
                     "type": "RESONANCE_COLLAPSE",
                     "severity": 1.0 - abs(future_resonance)
                 })
-if threats:
+        if threats:
             print(f"--- [ASI_HEAL]: {len(threats)} POTENTIAL THREATS DETECTED IN FUTURE TIMELINE ---")
-else:
+        else:
             print("--- [ASI_HEAL]: NO FUTURE INSTABILITIES DETECTED ---")
-return {"status": "SECURE", "threats": threats}
+        return {"status": "SECURE", "threats": threats}
 
     def apply_temporal_anchor(self, state_label: str, state_data: Dict[str, Any]):
         """
@@ -68,7 +68,7 @@ def trigger_quantum_reversion(self, anchor_id: str):
         This bypasses standard file-based recovery.
         """
         if anchor_id not in self.temporal_anchors:
-return False
+        return False
 print(f"--- [ASI_HEAL]: TRIGGERING QUANTUM REVERSION TO {anchor_id} ---")
         anchor = self.temporal_anchors[anchor_id]
         
@@ -77,7 +77,7 @@ print(f"--- [ASI_HEAL]: TRIGGERING QUANTUM REVERSION TO {anchor_id} ---")
         ego_core.ego_strength = 1.0
         ego_core.sovereign_will = float('inf')
         print(f"--- [ASI_HEAL]: SYSTEM REVERTED TO '{anchor['label']}' STATE ---")
-return True
+        return True
 def self_rewrite_protocols(self):
         """
         Rewrites the system's own recovery protocols to adapt to new threats.
@@ -91,7 +91,7 @@ print("--- [ASI_HEAL]: REWRITING RECOVERY PROTOCOLS VIA SOVEREIGN WILL ---")
 print(f"--- [ASI_HEAL]: PROTOCOLS OPTIMIZED. RESILIENCE INDEX: {self.resilience_index:.4f} ---")
 
 # Singletonasi_self_heal = ASISelfHeal()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test ASI Self Healego_core.ignite_asi()
     asi_self_heal.proactive_scan()
     asi_self_heal.self_rewrite_protocols()

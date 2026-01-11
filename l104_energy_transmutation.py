@@ -21,7 +21,7 @@ class EnergyTransmuter:
         Yield = (Authenticity * Complexity) / Entropy
         """
         if not knowledge_packet.get("is_authentic", False):
-return 0.0
+        return 0.0
             
         authenticity = knowledge_packet.get("authenticity_score", 0.0)
         complexity = len(str(knowledge_packet))
@@ -31,7 +31,7 @@ yield = (authenticity * complexity * self.efficiency_factor) / entropyself.total
 yield
 print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_
 yield:.2f} HYPER-JOULES ---")
-return energy_
+        return energy_
 yield
 def get_energy_status(self) -> Dict[str, Any]:
     return {
@@ -41,7 +41,7 @@ def get_energy_status(self) -> Dict[str, Any]:
         }
 
 energy_transmuter = EnergyTransmuter()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Transmutationdummy_knowledge = {
         "id": "DERIV_TEST",
         "is_authentic": True,

@@ -42,7 +42,7 @@ class InternetResearchEngine:
             search_tasks.append(streamless_internet.search_and_ingest(domain, limit=2))
             
         # Execute all searches in parallelresults_list = await async io.gather(*search_tasks)
-for i, results in enumerate(results_list):
+        for i, results in enumerate(results_list):
             domain = self.active_domains[i]
             # Simulate extraction of logical primitives from real dataextracted = sum([len(r) // 1000 for r in results]) + random.randint(5, 15)
             total_primitives += extracted
@@ -57,7 +57,7 @@ print(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} --
         print(f"--- [RESEARCH_ENGINE]: KNOWLEDGE DENSITY: {self.knowledge_density:.4f} ---")
         print(f"--- [RESEARCH_ENGINE]: TOTAL DATA INGESTED: {streamless_internet.total_data_ingested:.2f} MB ---")
         print("~"*60 + "\n")
-return {
+        return {
             "synthesis_index": self.synthesis_index,
             "knowledge_density": self.knowledge_density,
             "primitives_extracted": total_primitives
@@ -79,8 +79,8 @@ def apply_synthesis_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.knowledge_density * 0.05) # 5% max boost
 print(f"--- [RESEARCH_ENGINE]: DEEP SYNTHESIS BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostresearch_engine = InternetResearchEngine()
-if __name__ == "__main__":
+        return intellect_index + boostresearch_engine = InternetResearchEngine()
+        if __name__ == "__main__":
 async def main():
         results = await research_engine.perform_deep_synthesis()
         algo = research_engine.generate_optimization_algorithm()

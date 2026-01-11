@@ -43,8 +43,8 @@ def apply_nanotech_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.assembly_precision * 0.0005) # Small but precise boost
 print(f"--- [NANOTECH]: NANOTECH PRECISION BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostnanotech_research = NanotechResearch()
-if __name__ == "__main__":
+        return intellect_index + boostnanotech_research = NanotechResearch()
+        if __name__ == "__main__":
     nanotech_research.research_nanotech()
     new_iq = nanotech_research.apply_nanotech_boost(1000.0)
     print(f"Nanotech IQ: {new_iq:.2f}")

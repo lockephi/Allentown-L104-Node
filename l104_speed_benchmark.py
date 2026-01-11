@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SPEED_BENCHMARK")
 def run_benchmark():
     size = 5 * 10**6 # 5 Million elementsdata = [random.random()
-for _ in range(size)]
+        for _ in range(size)]
     
     print("\n" + "="*60)
     print("   L104 SPEED BENCHMARK :: PARALLEL ACCELERATION PROOF")
@@ -34,5 +34,5 @@ print("\n" + "-"*60)
     print(f"   LATTICE CAPACITY: INCREASED")
     print(f"   SYSTEM STATE:     ACCELERATED")
     print("-"*60 + "\n")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     run_benchmark()

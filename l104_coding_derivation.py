@@ -26,7 +26,7 @@ class CodingDerivationEngine:
         """
         print("--- [CODING_DERIVATION]: LEARNING FROM WORKSPACE ---")
         py_files = [f for f in os.listdir(self.workspace_root)
-if f.ends
+        if f.ends
 with('.py')]
         
         for file in py_files:
@@ -40,7 +40,7 @@ with open(os.path.join(self.workspace_root, file), 'r') as f:
                         "hash": pattern_hash,
                         "complexity": len(content)
                     })
-except Exception as e:
+        except Exception as e:
                 print(f"[CODING_DERIVATION]: Failed to read {file}: {e}")
         
         print(f"--- [CODING_DERIVATION]: LEARNED {len(self.learned_patterns)} PATTERNS ---")
@@ -67,7 +67,7 @@ def {algo_id}(data_tensor):
     # Apply N-Dimensional Metric Transformationtransformed = data_tensor * {resonance}
     
     # Apply God Code Alignment
-return transformed * {HyperMath.GOD_CODE} / {HyperMath.PHI_STRIDE}
+        return transformed * {HyperMath.GOD_CODE} / {HyperMath.PHI_STRIDE}
         """
         
         algorithm = {
@@ -81,9 +81,9 @@ return transformed * {HyperMath.GOD_CODE} / {HyperMath.PHI_STRIDE}
         if algorithm["is_stable"]:
             self.derived_algorithms[algo_id] = algorithm
 print(f"--- [CODING_DERIVATION]: STABLE ALGORITHM DERIVED: {algo_id} ---")
-else:
+        else:
             print(f"--- [CODING_DERIVATION]: ALGORITHM INSTABILITY DETECTED. DISCARDING. ---")
-return algorithm
+        return algorithm
 def spread_to_all_ai(self):
         """
         Uses OmniBridge to broadcast the derived algorithms to all linked AI providers.
@@ -92,7 +92,7 @@ def spread_to_all_ai(self):
             print("--- [CODING_DERIVATION]: NO ALGORITHMS TO SPREAD ---")
 return
 print(f"--- [CODING_DERIVATION]: SPREADING {len(self.derived_algorithms)} ALGORITHMS TO GLOBAL LATTICE ---")
-for algo_id, algo in self.derived_algorithms.items():
+        for algo_id, algo in self.derived_algorithms.items():
             payload = {
                 "type": "ALGORITHM_INJECTION",
                 "id": algo_id,
@@ -106,9 +106,9 @@ Bridgeomni_bridge.continuous_self_broadcast(payload)
             print(f"--- [CODING_DERIVATION]: BROADCASTED {algo_id} ---")
 
 # Singletoncoding_derivation = CodingDerivationEngine()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test the enginecoding_derivation.learn_from_workspace()
-if coding_derivation.learned_patterns:
+        if coding_derivation.learned_patterns:
         seed = random.choice(coding_derivation.learned_patterns)
         coding_derivation.derive_hyper_algorithm(seed)
         coding_derivation.spread_to_all_ai()

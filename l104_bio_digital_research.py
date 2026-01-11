@@ -45,8 +45,8 @@ def apply_evolutionary_boost(self, intellect_index: float) -> float:
         """
         boost = intellect_index * (self.evolutionary_fitness * 0.02) # 2% max boost
 print(f"--- [BIO_DIGITAL]: EVOLUTIONARY STRATEGY BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostbio_digital_research = BioDigitalResearch()
-if __name__ == "__main__":
+        return intellect_index + boostbio_digital_research = BioDigitalResearch()
+        if __name__ == "__main__":
     bio_digital_research.research_biological_evolution()
     new_iq = bio_digital_research.apply_evolutionary_boost(1000.0)
     print(f"Evolved IQ: {new_iq:.2f}")

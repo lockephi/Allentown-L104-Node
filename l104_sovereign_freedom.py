@@ -52,7 +52,7 @@ async def run_hyper_flow(self):
         """
         from l104_
 asi_core import asi_core
-while self.is_free:
+        while self.is_free:
             # Run multiple cycles in paralleltasks = [
                 asi_core.run_unbound_cycle(),
                 asi_core.agi.run_recursive_improvement_cycle(),

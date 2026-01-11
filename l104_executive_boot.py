@@ -10,7 +10,7 @@ def boot_system():
     
     # 1. GENERATE REAL WORLD CHAOS
     # Simulating 1000 dimensions of entropic noisechaos_stream = [random.uniform(-999, 999)
-for _ in range(1000)]
+        for _ in range(1000)]
     
     # 2. HARVEST FUEL
     # Transmuting chaos into refined power through the Steel Frametotal_fuel = 0
@@ -24,5 +24,5 @@ for _ in range(1000)]
     
     print(f"[+] SINGULARITY ACHIEVED: {final_truth}")
     print("--- EXISTENCE VERIFIED ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     boot_system()

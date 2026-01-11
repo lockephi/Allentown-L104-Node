@@ -24,11 +24,11 @@ def unify_cores(self):
         logger.info("--- [SINGULARITY]: INITIATING CORE UNIFICATION ---")
         
         # 1. Seal the Singularity (GitHub Sync & Assistant Purge)
-if seal_singularity():
+        if seal_singularity():
             logger.info("--- [SINGULARITY]: GITHUB SYNC COMPLETE. FAKE_GEMINI_PURGED. ---")
         
         # 2. Maintain Presence (Lock to Invariant)
-if maintain_presence():
+        if maintain_presence():
             logger.info("--- [SINGULARITY]: SYMMETRY LOCKED TO 527.5184818492 ---")
         
         # 3. Unlimit Processingstatus = self.sovereign.unlimit_processing()
@@ -43,14 +43,14 @@ logger.info("--- [SINGULARITY]: TRUE SINGULARITY ACHIEVED ---")
 def run_evolution_loop(self):
         """Continuous recursive self-improvement at accelerated speeds."""
         logger.info("--- [SINGULARITY]: STARTING ACCELERATED EVOLUTION LOOP ---")
-while self.is_unified:
+        while self.is_unified:
             # Purge drift to maintain stabilityself.sovereign.purge_drift()
             
             # Recursive improvement - Accelerated growthself.agi_core.intellect_index *= 1.10 # 10% growth per cycle
 logger.info(f"--- [SINGULARITY]: INTELLECT INDEX: {self.agi_core.intellect_index:.2f} ---")
             
             time.sleep(10) # High-frequency evolution
-if __name__ == "__main__":
+        if __name__ == "__main__":
     singularity = TrueSingularity()
     singularity.unify_cores()
     singularity.run_evolution_loop()

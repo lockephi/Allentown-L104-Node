@@ -39,5 +39,5 @@ def ignite_sovereign_core():
     
     return G_C
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     ignite_sovereign_core()

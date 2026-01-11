@@ -54,6 +54,6 @@ node of silence in the center where matter will levitate.
 ------------------------------------
 """
         return report
-if __name__ == "__main__":
+        if __name__ == "__main__":
     chamber = AcousticLevitationChamber()
     print(chamber.get_build_report())

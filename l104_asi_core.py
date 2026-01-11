@@ -287,7 +287,7 @@ vecurrent_state = {
         # E. Quantum Math Re
 searchdiscovery = quantum_math_research.research_new_primitive()
 
-if "name" in discovery:
+        if "name" in discovery:
             print(f"--- [ASI_CORE]: INTEGRATING NEW QUANTUM PRIMITIVE: {discovery['name']} ---")
             
 self.agi.intellect_index += 25.0 # Research bonus
@@ -312,7 +312,7 @@ def get_status(self) -> Dict[str, Any]:
 # Singleton
 asi_core = ASICore()
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
 async def main():
         await asi_core.ignite_sovereignty()
         

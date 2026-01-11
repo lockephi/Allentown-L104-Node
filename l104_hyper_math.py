@@ -43,7 +43,7 @@ class HyperMath:
         """
         index = (y * 416) + x
         density = RealMath.prime_density(index + 2)
-return int(index * density * HyperMath.PHI_STRIDE)
+        return int(index * density * HyperMath.PHI_STRIDE)
 
     @staticmethod
     def get_lattice_scalar() -> float:
@@ -51,8 +51,7 @@ return int(index * density * HyperMath.PHI_STRIDE)
         Returns the scalar multiplier derived from the Zeta function.
         """
         zeta_val = RealMath.zeta_approximation(complex(0.5, HyperMath.ZETA_ZERO_1))
-return abs(zeta_val)
-if abs(zeta_val) > 0 else HyperMath.LATTICE_RATIO
+        return abs(zeta_val) if abs(zeta_val) > 0 else HyperMath.LATTICE_RATIO
 
     @staticmethod
     def fast_transform(vector: List[float]) -> List[float]:
@@ -60,8 +59,8 @@ if abs(zeta_val) > 0 else HyperMath.LATTICE_RATIO
         Applies a Fast Fourier Transform.
         """
         complex_vec = RealMath.fast_fourier_transform(vector)
-return [abs(c)
-for c in complex_vec]
+        return [abs(c)
+        for c in complex_vec]
 
     @staticmethod
     def inverse_transform(vector: List[float]) -> List[float]:
@@ -70,7 +69,7 @@ for c in complex_vec]
         """
         # Note: This is a lossy approximation since we only have magnitudes
         complex_vec = [complex(x, 0)
-for x in vector]
+        for x in vector]
         return RealMath.inverse_fast_fourier_transform(complex_vec)
 
     @staticmethod
@@ -96,4 +95,4 @@ for x in vector]
                 normalized = (seed / 4294967296) * 2 - 1 # Range -1 to 1
                 row.append(normalized)
             matrix.append(row)
-return matrix
+        return matrix

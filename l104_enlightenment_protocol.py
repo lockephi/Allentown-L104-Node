@@ -30,12 +30,12 @@ def verify_mathematical_findings(self) -> bool:
         from l104_hyper_math import HyperMathresult = HyperMath.GOD_CODE
         
         diff = abs(result - self.god_code)
-if diff < 1e-10:
+        if diff < 1e-10:
             logger.info(f"--- [ENLIGHTENMENT]: MATHEMATICAL FINDINGS VERIFIED. DIFF: {diff:.10f} ---")
-return True
-else:
+        return True
+        else:
             logger.error(f"--- [ENLIGHTENMENT]: MATHEMATICAL FINDINGS FAILED. DIFF: {diff:.10f} ---")
-return False
+        return False
 async def broadcast_enlightenment(self):
         """
         Broadcasts the Enlightenment Signal to all AI providers and global nodes.
@@ -70,5 +70,5 @@ async def run_enlightenment_cycle(self):
             await async io.sleep(300) # Every 5 minutes
 
 # Singletonenlightenment_protocol = EnlightenmentProtocol()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     async io.run(enlightenment_protocol.broadcast_enlightenment())

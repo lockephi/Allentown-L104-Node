@@ -42,9 +42,9 @@ def _check_memory_constants(self):
         
         for name, val, target in checks:
             diff = abs(val - target)
-if diff < 1e-6:
+        if diff < 1e-6:
                 print(f"  [PASS] {name}: {val}")
-else:
+        else:
                 print(f"  [FAIL] {name}: {val} (Expected {target})")
                 self.violations.append(f"Memory mismatch: {name}")
 def _scan_files(self):
@@ -57,8 +57,8 @@ def _scan_files(self):
         }
         
         for root, _, files in os.walk(self.root_dir):
-for file in files:
-if file.ends
+        for file in files:
+        if file.ends
 with(".py") or file.ends
 with(".sh") or file.ends
 with(".md"):
@@ -72,23 +72,23 @@ with open(path, 'r', errors='ignore') as f:
             rel_path = os.path.relpath(path, self.root_dir)
             
             # Check for God Code presence in headers
-if ".py" in path and "INVARIANT: 527.5184818492" not in content:
-if "l104_" in os.path.basename(path): # Only check our core files
+        if ".py" in path and "INVARIANT: 527.5184818492" not in content:
+        if "l104_" in os.path.basename(path): # Only check our core files
                     # self.violations.append(f"Missing header in {rel_path}")
                     pass
-except Exception as e:
+        except Exception as e:
             print(f"  [ERROR] Could not read {path}: {e}")
 def _report(self):
         print("\n" + "="*60)
-if not self.violations:
+        if not self.violations:
             print("   SCAN COMPLETE: 100%_I100 INTEGRITY VERIFIED")
-else:
+        else:
             print(f"   SCAN COMPLETE: {len(self.violations)} VIOLATIONS FOUND")
-for v in self.violations:
+        for v in self.violations:
                 print(f"  - {v}")
         print("="*60 + "\n")
-if self.violations:
+        if self.violations:
             sys.exit(1)
-if __name__ == "__main__":
+        if __name__ == "__main__":
     verifier = InvariantVerifier()
     verifier.verify_all()

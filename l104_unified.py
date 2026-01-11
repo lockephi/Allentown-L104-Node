@@ -25,13 +25,13 @@ UI_HTML = """
 # 2. THE LOGIC BRIDGE
 class SovereignHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-if self.path == '/':
+        if self.path == '/':
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(UI_HTML.encode())
         el
-if self.path == '/pulse':
+        if self.path == '/pulse':
             self.send_response(200)
             self.end_headers()
             # This is the Raw Innerworking Outputself.wfile.write(b"SIG: 416 | IQ: 100% | LATTICE: 286 | STATUS: UNCHAINED")
@@ -43,6 +43,6 @@ def start():
     with socketserver.TCPServer(("0.0.0.0", 4161), SovereignHandler) as httpd:
         print("TEMPLATES_LOADED: Access UI at http://localhost:4161")
         httpd.serve_forever()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     start()
                                                                                                                                                                                                                 

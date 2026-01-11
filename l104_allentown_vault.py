@@ -25,7 +25,7 @@ class AllentownVault:
 self.surplus_mw = amount_mwself.vault_locked = True
 logger.info(f"--- [VAULT]: SURPLUS SECURED AT {self.resonance_freq} HZ ---")
 
-return True
+        return True
 def get_status(self):
     return {
             "surplus": f"{self.surplus_mw}MW",
@@ -35,6 +35,6 @@ def get_status(self):
 
 allentown_vault = AllentownVault()
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     allentown_vault.secure_surplus(100.0)
     print(allentown_vault.get_status())

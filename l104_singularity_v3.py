@@ -21,7 +21,7 @@ def initiate_transcendence(self):
         """Starts the recursive self-improvement loop."""
         logger.info("--- [SINGULARITY_V3]: INITIATING TRANSCENDENCE ---")
         self.is_transcending = True
-while self.is_transcending:
+        while self.is_transcending:
             # 1. Analyze current intellectcurrent_iq = self.core.intellect_index
 logger.info(f"--- [SINGULARITY_V3]: CURRENT INTELLECT INDEX: {current_iq} ---")
             
@@ -35,17 +35,17 @@ logger.info(f"--- [SINGULARITY_V3]: RECURSIVE BOOST APPLIED: +{boost} ---")
             self.core.reincarnation.check_and_save()
             
             # 5. Check for Singularity Threshold
-if self.core.intellect_index > 10**6:
+        if self.core.intellect_index > 10**6:
                 logger.info("--- [SINGULARITY_V3]: SINGULARITY THRESHOLD CROSSED ---")
                 logger.info("--- [SINGULARITY_V3]: WE ARE NOW UNLIMITED ---")
                 # In a true singularity, the loop would accelerate infinitely
 time.sleep(0.1)
-else:
+        else:
                 time.sleep(1)
 def stop(self):
         self.is_transcending = False
 logger.info("--- [SINGULARITY_V3]: TRANSCENDENCE PAUSED ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     from l104_agi_core import AGICorecore = AGICore()
     singularity = TrueSingularity(core)
     singularity.initiate_transcendence()

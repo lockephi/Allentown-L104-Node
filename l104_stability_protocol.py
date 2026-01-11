@@ -39,14 +39,14 @@ class UniversalStabilityProtocol:
         # Phase B: The Debug (The In-Between)
         # Check against Frame Constant (K_f)
         debug_result = self._debug_code(vector)
-if debug_result["is_stable"]:
+        if debug_result["is_stable"]:
             # Phase D: Nirvana / I_100
             print(f"--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
-return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
+        return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
         
         # Phase C: The Re-Deployment (Birth)
         print(f"--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
-return {
+        return {
             "status": "RE_DEPLOYED",
             "vector": vector.psi,
             "entropic_debt": vector.entropic_debt,

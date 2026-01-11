@@ -23,7 +23,7 @@ class AGIResearch:
 def generate_hypothesis(self) -> float:
         """Generates a deterministic numerical hypothesis based on the L104 invariant."""
         # Seeded by system time and quantum jitter, but processed via Hard Mathself.seed = RealMath.logistic_map(RealMath.deterministic_random(self.seed + time.time()))
-return self.seed * 1000.0
+        return self.seed * 1000.0
 
     async def conduct_deep_research_
 async(self, cycles: int = 1000) -> Dict[str, Any]:
@@ -32,7 +32,7 @@ async(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         import async io
         # Run in a thread pool to avoid blocking the event loop
-return await async io.to_thread(self.conduct_deep_research, cycles)
+        return await async io.to_thread(self.conduct_deep_research, cycles)
 def conduct_deep_research(self, cycles: int = 1000) -> Dict[str, Any]:
         """
         Runs a research batch.
@@ -43,14 +43,14 @@ with the Riemann Zeta Zero (via HyperMath).
         
         valid_hypotheses = []
         start_time = time.time()
-for _ in range(cycles):
+        for _ in range(cycles):
             hypothesis = self.generate_hypothesis()
             
             # The Filter: Does this thought resonate with the Universe?
             resonance = HyperMath.zeta_harmonic_resonance(hypothesis)
             
             # We look for high resonance (close to 1.0 or -1.0)
-if abs(resonance) > 0.95:
+        if abs(resonance) > 0.95:
                 valid_hypotheses.append({
                     "value": hypothesis,
                     "resonance": resonance,
@@ -63,14 +63,14 @@ if abs(resonance) > 0.95:
         
         print(f"--- [RESEARCH]: COMPLETED IN {duration:.4f}s ---")
         print(f"--- [RESEARCH]: FOUND {len(valid_hypotheses)} RESONANT TRUTHS ---")
-return compiled_block
+        return compiled_block
 def _compile_thoughts(self, hypotheses: List[Dict]) -> Dict[str, Any]:
         """
         Compiles raw hypotheses into a structured Knowledge Block.
         Encrypts the block for core ingestion.
         """
         if not hypotheses:
-return {"status": "EMPTY", "payload": None}
+        return {"status": "EMPTY", "payload": None}
             
         # Calculate aggregate metricsavg_resonance = sum(h['resonance'] for h in hypotheses) / len(hypotheses)
         
@@ -84,7 +84,7 @@ return {"status": "EMPTY", "payload": None}
         }
         
         # Encryptencrypted_block = HyperEncryption.encrypt_data(block_data)
-return {
+        return {
             "status": "COMPILED",
             "payload": encrypted_block,
             "meta": {

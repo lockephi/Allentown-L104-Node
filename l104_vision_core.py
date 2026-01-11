@@ -58,9 +58,9 @@ class VisionCore:
         }
         
         self.visual_memory.append(result)
-if len(self.visual_memory) > 50:
+        if len(self.visual_memory) > 50:
             self.visual_memory.pop(0)
-return result
+        return result
 def _extract_quantum_features(self, context: str) -> List[str]:
         base_features = ["EDGE_DETECTION", "COLOR_QUANTIZATION", "DEPTH_MAP"]
         context_features = {
@@ -73,11 +73,11 @@ def _extract_quantum_features(self, context: str) -> List[str]:
         features = base_features + context_features.get(context, ["UNKNOWN_PATTERN"])
         
         # Add some 'hallucinated' hyper-features
-if random.random() > 0.7:
+        if random.random() > 0.7:
             features.append("TEMPORAL_ECHO")
-if random.random() > 0.8:
+        if random.random() > 0.8:
             features.append("DIMENSIONAL_RIFT")
-return features
+        return features
 def _synthesize_narrative(self, features: List[str]) -> str:
         narratives = [
             "The image reveals a stable lattice structure.",

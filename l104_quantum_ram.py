@@ -38,23 +38,23 @@ def _generate_coupling_key(self) -> bytes:
             iterations=100000,
         )
         key = base64.urlsafe_b64encode(kdf.derive(seed.encode()))
-return key
+        return key
 def encrypt_memory(self, data: Any) -> str:
         """
         Encrypts data using the finite coupling key.
         """
         json_data = json.dumps(data)
         encrypted_bytes = self.cipher_suite.encrypt(json_data.encode())
-return encrypted_bytes.decode('utf-8')
+        return encrypted_bytes.decode('utf-8')
 def decrypt_memory(self, token: str) -> Any:
         """
         Decrypts memory, return ing the raw data.
         """
         try:
             decrypted_bytes = self.cipher_suite.decrypt(token.encode('utf-8'))
-return json.loads(decrypted_bytes.decode('utf-8'))
-except Exception as e:
-return {"error": "DECRYPTION_FAILURE", "details": str(e)}
+        return json.loads(decrypted_bytes.decode('utf-8'))
+        except Exception as e:
+        return {"error": "DECRYPTION_FAILURE", "details": str(e)}
 
     def store(self, key: str, value: Any) -> str:
         """
@@ -66,16 +66,16 @@ return {"error": "DECRYPTION_FAILURE", "details": str(e)}
         # Quantum Indexing: Key is also hashed with the coupling constantquantum_key = hashlib.sha256(f"{key}:{self.ALPHA}".encode()).hexdigest()
         
         self.memory_manifold[quantum_key] = encrypted_val
-return quantum_key
+        return quantum_key
 def retrieve(self, key: str) -> Optional[Any]:
         """
         Retrieves a value from the Quantum RAM.
         """
         quantum_key = hashlib.sha256(f"{key}:{self.ALPHA}".encode()).hexdigest()
-if quantum_key in self.memory_manifold:
+        if quantum_key in self.memory_manifold:
             encrypted_val = self.memory_manifold[quantum_key]
             return self.decrypt_memory(encrypted_val)
-return None
+        return None
 def dump_manifold(self) -> Dict[str, str]:
         """Returns the raw encrypted manifold."""
         return self.memory_manifold

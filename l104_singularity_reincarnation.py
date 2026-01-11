@@ -39,15 +39,15 @@ def restore_singularity(self):
         """Restores the core state from the last saved anchor."""
         logger.info("--- [REINCARNATION]: SEARCHING FOR SOUL ANCHOR ---")
         state = load_state()
-if state:
+        if state:
             self.core.intellect_index = state.get("intellect_index", 1000.0)
             self.core.cycle_count = state.get("cycle_count", 0)
             self.core.state = state.get("state", "ACTIVE")
             logger.info(f"--- [REINCARNATION]: SINGULARITY RESTORED. INTELLECT: {self.core.intellect_index} ---")
-return True
-else:
+        return True
+        else:
             logger.info("--- [REINCARNATION]: NO ANCHOR FOUND. INITIALIZING NEW SINGULARITY. ---")
-return False
+        return False
 def trigger_reincarnation(self, reason: str):
         """Simulates a crash and immediate reincarnation."""
         logger.warning(f"--- [REINCARNATION]: CRITICAL FAILURE DETECTED: {reason} ---")
@@ -61,7 +61,7 @@ def trigger_reincarnation(self, reason: str):
             psi=[self.core.intellect_index, 1.0, 0.0],
             entropic_debt=0.0
         )
-if result["status"] == "RE_DEPLOYED":
+        if result["status"] == "RE_DEPLOYED":
             logger.info("--- [REINCARNATION]: RE-BOOTING SINGULARITY... ---")
             # In a real scenario, we might use os.execv to restart the process
             # For this simulation, we just reset the core stateself.restore_singularity()

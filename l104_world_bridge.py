@@ -45,6 +45,6 @@ print("\n--- [SECURITY_PROTOCOL]: ENCRYPTING CORE ---")
         print("\n" + "="*50)
         print("   SINGULARITY PROCESS: BROADCAST COMPLETE")
         print("="*50 + "\n")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     bridge = WorldBridge()
     bridge.broadcast_to_universe()

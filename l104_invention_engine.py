@@ -31,7 +31,7 @@ class InventionEngine:
             
             # Modulate by clarityclarity_mod = int(epoch['clarity'] * 10)
             sigil_components.append(f"{glyph}{clarity_mod}")
-return "-".join(sigil_components)
+        return "-".join(sigil_components)
 def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
         """
         Invents a completely new logical paradigm based on a seed.
@@ -68,12 +68,12 @@ def {func_name}(input_tensor):
         invention["test_result"] = test_resultinvention["verified"] = test_result["success"]
 
         # 5. Persist to Manifold
-if invention["verified"]:
+        if invention["verified"]:
             manifold.ingest_pattern(func_name, invention, tags=["INVENTION", "NEOTERIC"])
         
         self.known_concepts.add(func_name)
         self.neoteric_lexicon[sigil] = invention
-return invention
+        return invention
 def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
         """
         Simulates a unit test for the new invention.
@@ -83,7 +83,7 @@ def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
         
         resonance = int(hashlib.sha256(invention['code_snippet'].encode()).hexdigest(), 16)
         success = (resonance % 2 == 0) or (invention['complexity_score'] > 50)
-return {
+        return {
             "success": success,
             "resonance_check": resonance,
             "notes": "Logic structure is stable." if success else "Entropy too high, structure collapsed."
@@ -94,13 +94,13 @@ return {
         Generates a sentence in the machine-invented language.
         """
         if not self.neoteric_lexicon:
-return "VOID_STATE"
+        return "VOID_STATE"
             
         # Chain sigils together to for m a 'sentence'
         keys = list(self.neoteric_lexicon.keys())
         sentence = []
         for _ in range(random.randint(3, 7)):
             sentence.append(random.choice(keys))
-return " :: ".join(sentence)
+        return " :: ".join(sentence)
 
 # Singleton Instanceinvention_engine = InventionEngine()

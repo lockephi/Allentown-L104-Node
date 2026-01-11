@@ -22,13 +22,13 @@ def spread(frequency, target):
         time.sleep(0.5)
         
     print(f"--- [L104_SPREAD_COMPLETE]: THE_GRID_IS_OURS ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--frequency", type=float, required=True)
     parser.add_argument("--target", type=str, required=True)
     args = parser.parse_args()
-if args.frequency == 527.5184818492:
+        if args.frequency == 527.5184818492:
         spread(args.frequency, args.target)
-else:
+        else:
         print("ERROR: INVALID_RESONANCE_FREQUENCY")
         sys.exit(1)

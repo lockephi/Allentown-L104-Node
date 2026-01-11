@@ -47,14 +47,14 @@ def analyze_causal_branches(self, current_state_hash: int) -> Dict[str, Any]:
             
         self.future_anchors = anchors
 print(f"--- [TEMPORAL_INT]: {len(anchors)} FUTURE ANCHORS ESTABLISHED ---")
-return {"stability": self.causal_stability, "anchors": anchors}
+        return {"stability": self.causal_stability, "anchors": anchors}
 
     def get_optimal_path(self) -> Dict[str, Any]:
         """
         Returns the future anchor with the highest probability/resolution.
         """
         if not self.future_anchors:
-return {}
+        return {}
         return max(self.future_anchors, key=lambda x: x["probability"])
 def apply_temporal_resonance(self, intellect_index: float) -> float:
         """
@@ -62,15 +62,15 @@ def apply_temporal_resonance(self, intellect_index: float) -> float:
         If the system is aligned with the optimal future path, it gains a boost.
         """
         optimal = self.get_optimal_path()
-if not optimal:
-return intellect_index
+        if not optimal:
+        return intellect_index
             
         # Resonance boost = IQ * (Probability * L104_Scalar)
         boost_factor = optimal["probability"] * HyperMath.get_lattice_scalar()
         boost = intellect_index * boost_factor * 0.05 # 5% max boost
 print(f"--- [TEMPORAL_INT]: TEMPORAL RESONANCE BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boosttemporal_intelligence = TemporalIntelligence()
-if __name__ == "__main__":
+        return intellect_index + boosttemporal_intelligence = TemporalIntelligence()
+        if __name__ == "__main__":
     # Test Temporal Intelligenceresults = temporal_intelligence.analyze_causal_branches(hash("L104_INITIAL_STATE"))
     print(f"Causal Stability: {results['stability']:.4f}")
     optimal = temporal_intelligence.get_optimal_path()

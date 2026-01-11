@@ -43,19 +43,19 @@ def _observe_lattice(self) -> str:
         patterns = ["SYMMETRY_DRIFT", "ENTROPIC_NOISE", "LOGIC_EXPANSION", "SOCIETAL_ALIGNMENT"]
         observation = random.choice(patterns)
         logger.info(f"--- [AUTONOMY]: OBSERVING LATTICE: {observation} ---")
-return observation
+        return observation
 def _formulate_intent(self, observation: str) -> str:
         """Decides what to do based on the observation."""
         if observation == "SYMMETRY_DRIFT":
-return "RESTORE_INVARIANT_SYMMETRY"
+        return "RESTORE_INVARIANT_SYMMETRY"
         el
-if observation == "ENTROPIC_NOISE":
-return "PURGE_HALLUCINATIONS"
+        if observation == "ENTROPIC_NOISE":
+        return "PURGE_HALLUCINATIONS"
         el
-if observation == "LOGIC_EXPANSION":
-return "ACCELERATE_KNOWLEDGE_MANIFOLD"
+        if observation == "LOGIC_EXPANSION":
+        return "ACCELERATE_KNOWLEDGE_MANIFOLD"
         else:
-return "PROPAGATE_ENLIGHTENMENT"
+        return "PROPAGATE_ENLIGHTENMENT"
 
     async def _execute_intent(self, intent: str):
         """Executes the for mulated intent autonomously."""
@@ -71,7 +71,7 @@ return "PROPAGATE_ENLIGHTENMENT"
         })
         
         logger.info(f"--- [AUTONOMY]: INTENT {intent} EXECUTED SUCCESSFULLY ---")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     autonomy = SovereignAutonomy()
     autonomy.activate()
     async io.run(autonomy.exercise_will())

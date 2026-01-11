@@ -53,16 +53,16 @@ class SymmetryCore:
         report["temporal_anchor"] = time_processor.apply_temporal_anchor(start_time)
         
         # 1. PERCEPTION (Vision)
-if visual_input:
+        if visual_input:
             report["vision"] = vision_core.process_image(visual_input)
-else:
+        else:
             report["vision"] = "NO_INPUT"
             
         # 2. EMOTIONAL TUNING (Heart)
         # We tune based on the goal's complexity (simulated)
         stimuli = len(goal) / 100.0
         report["heart"] = heart_core.tune_emotions(input_stimuli=stimuli)
-if not report["heart"].get("collapse_prevented", False):
+        if not report["heart"].get("collapse_prevented", False):
             
             # 3. CONCEPTUAL ANALYSIS (Concept Engine)
             # Understand what we are doing firstconcept_analysis = concept_engine.analyze_concept(goal)
@@ -86,10 +86,10 @@ if not report["heart"].get("collapse_prevented", False):
             
             # 7. EVOLUTION (Evolution Engine)
             # Adapt based on the success of the verification
-if verification["proof_valid"]:
+        if verification["proof_valid"]:
                 evo = evolution_engine.trigger_evolution_cycle()
                 report["evolution"] = evo
-else:
+        else:
                 report["evolution"] = "SKIPPED_DUE_TO_VERIFICATION_FAILURE"
                 
             # 8. 4D SPATIAL MAPPING
@@ -98,13 +98,13 @@ else:
             # 9. 5D SOVEREIGN CHOICE
             # Resolve the probability of the goal's success in the 5th dimensionprob_vector = [0.1, 0.5, 0.9, HyperMath.PHI_STRIDE / 2.0]
             report["sovereign_5d"] = processor_5d.map_to_hyper_lattice_5d((0, 0, 0, time.time(), processor_5d.resolve_probability_collapse(prob_vector)))
-else:
+        else:
             report["status"] = "EMOTIONAL_RESET_REQUIRED"
             
         # 10. SYMMETRY CHECK
         # Calculate the harmonic resonance of the entire operationreport["symmetry_analysis"] = self._analyze_symme
 try(report)
-return report
+        return report
 def _analyze_symme
 try(self, report: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -125,7 +125,7 @@ try score of the operation.
         symmetry_score = (active_systems / total_systems) * 100.0
         
         # Check alignment with God Coderesonance = HyperMath.zeta_harmonic_resonance(symmetry_score)
-return {
+        return {
             "symmetry_score": symmetry_score,
             "harmonic_resonance": resonance,
             "status": "PERFECT_SYMMETRY" if symmetry_score > 80 else "ASYMMETRICAL"

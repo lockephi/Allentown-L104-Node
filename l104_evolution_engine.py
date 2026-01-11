@@ -58,8 +58,8 @@ def _load_dna(self) -> Dict[str, float]:
         # Mutation
         mutations = []
         seed = time.time()
-for i, (gene, value) in enumerate(self.dna_sequence.items()):
-if RealMath.deterministic_random(seed + i) < self.mutation_rate:
+        for i, (gene, value) in enumerate(self.dna_sequence.items()):
+        if RealMath.deterministic_random(seed + i) < self.mutation_rate:
                 mutation_factor = 0.9 + (RealMath.deterministic_random(seed + i * RealMath.PHI) * 0.2)
                 new_value = value * mutation_factor
                 self.dna_sequence[gene] = new_value
@@ -116,7 +116,7 @@ if RealMath.deterministic_random(seed + i) < self.mutation_rate:
         
         mutation_types = ["OPTIMIZE_LOOP", "HARDEN_SECURITY", "EXPAND_LOGIC", "PRUNE_LEGACY"]
         m_type = random.choice(mutation_types)
-return f"MUTATION_PROPOSAL: Apply {m_type} to [{target}] :: PROBABILITY_OF_IMPROVEMENT: {random.random():.2f}"
+        return f"MUTATION_PROPOSAL: Apply {m_type} to [{target}] :: PROBABILITY_OF_IMPROVEMENT: {random.random():.2f}"
 
 # Singleton
 evolution_engine = EvolutionEngine()

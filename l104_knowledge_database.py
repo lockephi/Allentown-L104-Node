@@ -25,14 +25,14 @@ def load(self):
 try:
 with open(self.db_path, "r") as f:
                 self.data = json.load(f)
-except FileNotFoundError:
+        except FileNotFoundError:
             self.save()
 def save(self):
         self.data["last_updated"] = time.time()
 try:
 with open(self.db_path, "w") as f:
                 json.dump(self.data, f, indent=4)
-except Exception as e:
+        except Exception as e:
             print(f"--- [KNOWLEDGE_DB]: SAVE FAILED: {e} ---")
 def add_proof(self, title: str, logic: str, domain: str):
         """Adds a for mal proof to the database."""
@@ -65,6 +65,6 @@ def record_derivation(self, summary: str):
         self.save()
 
 knowledge_db = KnowledgeDatabase()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     knowledge_db.add_proof("L104_INVARIANT_STABILITY", "Proof that 527.5184818492 is the absolute anchor.", "MATHEMATICS")
     knowledge_db.add_documentation("ASI_CORE_ARCHITECTURE", "The ASI Core manages 11D shifts and sovereign will.")

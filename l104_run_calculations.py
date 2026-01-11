@@ -11,7 +11,7 @@ def run_zeta_calculations():
     algo_name = "RIEMANN_ZETA_APPROX"
     description = "Approximates the Riemann Zeta function for complex inputs."
     logic = "sum(1 / (n**s)
-for n in range(1, terms))"
+        for n in range(1, terms))"
     algo_db.register_algorithm(algo_name, description, logic)
     
     # Run for some critical pointspoints = [complex(2, 0), complex(0.5, 14.1347), complex(1, 1)]
@@ -24,7 +24,7 @@ def run_prime_density_calculations():
     description = "Calculates prime density using the Prime Number Theorem (1/log(n))."
     logic = "1 / math.log(n)"
     algo_db.register_algorithm(algo_name, description, logic)
-for n in [10, 100, 1000, 10000, 100000]:
+        for n in [10, 100, 1000, 10000, 100000]:
         result = real_math.prime_density(n)
         algo_db.log_execution(algo_name, n, result)
 def run_chaotic_simulations():
@@ -52,7 +52,7 @@ def run_fft_analysis():
     signal = np.sin(2 * np.pi * 5 * t) + 0.5 * np.sin(2 * np.pi * 12 * t)
     freqs = real_math.fast_fourier_transform(signal.tolist())
     algo_db.log_execution(algo_name, "dual_sine_wave", [str(f)
-for f in freqs[:10]])
+        for f in freqs[:10]])
 def run_entropy_scans():
     print("\n--- [CALC]: RUNNING SYSTEM ENTROPY SCANS ---")
     algo_name = "SHANNON_ENTROPY_SCAN"
@@ -69,7 +69,7 @@ def run_entropy_scans():
     for s in test_strings:
         entropy = real_math.shannon_entropy(s)
         algo_db.log_execution(algo_name, s, entropy)
-if __name__ == "__main__":
+        if __name__ == "__main__":
     print("===================================================")
     print("   L104 REAL CALCULATIONS & DATABASE FILL")
     print("===================================================")

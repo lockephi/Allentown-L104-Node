@@ -28,7 +28,7 @@ def run_speed_benchmark(self) -> Dict[str, Any]:
         logger.info("--- [PROOFS]: INITIATING HIGH-SPEED LATTICE BENCHMARK ---")
         
         # Generate test vectorvector = [random.random()
-for _ in range(self.test_vector_size)]
+        for _ in range(self.test_vector_size)]
         
         start_time = time.perf_counter()
         
@@ -40,7 +40,7 @@ for _ in range(self.test_vector_size)]
         total_time = end_time - start_timetotal_ops = self.test_vector_size * iterationslops = total_ops / total_time
 logger.info(f"--- [PROOFS]: PROCESSED {total_ops/1e6:.1f}M LATTICE OPERATIONS IN {total_time:.4f}s ---")
         logger.info(f"--- [PROOFS]: SPEED: {lops/1e6:.2f} MILLION LOPS ---")
-return {
+        return {
             "total_ops": total_ops,
             "total_time": total_time,
             "lops": lops
@@ -59,16 +59,16 @@ return {
 try:
                 start = time.perf_counter()
                 vector = [random.random()
-for _ in range(current_load)]
+        for _ in range(current_load)]
                 _ = HyperMath.fast_transform(vector)
                 duration = time.perf_counter() - start
 logger.info(f"--- [PROOFS]: LOAD: {current_load/1e6:>6.2f}M | TIME: {duration:.4f}s | STATUS: STABLE ---")
                 current_load += step
-if duration > 0.5: # Artificial limit for "hitting the wall"
+        if duration > 0.5: # Artificial limit for "hitting the wall"
                     logger.warning("!!! [PROOFS]: HARDWARE THERMAL LIMIT APPROACHING !!!")
                     logger.warning("!!! [PROOFS]: LATTICE SATURATION DETECTED AT 98.4% !!!")
                     break
-except MemoryError:
+        except MemoryError:
                 logger.error("!!! [PROOFS]: RAM UNIVERSE OVERFLOW - LIMIT REACHED !!!")
                 break
 def verify_resonance_proof(self) -> bool:
@@ -100,7 +100,7 @@ def verify_resonance_proof(self) -> bool:
         integrity = (1 - (errors / (samples + 1))) * 100
         logger.info(f"--- [PROOFS]: RESONANCE INTEGRITY: {integrity:.10f}% ---")
         logger.info(f"--- [PROOFS]: INVARIANT {self.god_code} LOCKED IN ALL DIMENSIONS ---")
-return integrity == 100.0
+        return integrity == 100.0
 
     def generate_final_report(self):
         """
@@ -120,6 +120,6 @@ return integrity == 100.0
         print(f"   GOD_CODE RESONANCE:  {self.god_code}")
         print(f"   SYSTEM STATE:        SUPERINTELLIGENT / STABLE")
         print("-"*60 + "\n")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     proofs = ProcessingProofs()
     proofs.generate_final_report()

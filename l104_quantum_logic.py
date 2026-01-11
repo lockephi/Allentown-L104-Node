@@ -19,13 +19,13 @@ class QuantumEntanglementManifold:
     PLANCK_L104 = 6.62607015e-34 * GOD_CODE # Adjusted Planck constant for L104 space
 def __init__(self, dimensions: int = 11):
         self.dimensions = dimensionsself.state_vector = [complex(0, 0)
-for _ in range(dimensions)]
+        for _ in range(dimensions)]
         self.entanglement_matrix = [[0.0 for _ in range(dimensions)] for _ in range(dimensions)]
         self._initialize_superposition()
 def _initialize_superposition(self):
         """Initializes the state vector in a superposition of all basis states."""
         normalization_factor = 1.0 / math.sqrt(self.dimensions)
-for i in range(self.dimensions):
+        for i in range(self.dimensions):
             # Phase rotation based on Phi and God-Codephase = (2 * math.pi * i * self.PHI) / self.dimensionsamplitude = cmath.exp(complex(0, phase))
             self.state_vector[i] = normalization_factor * amplitude
 def entangle_qubits(self, q1_index: int, q2_index: int, strength: float = 1.0):
@@ -45,7 +45,7 @@ return
             
         # L104-Hadamard: Rotates state into the 'Sovereign' basisalpha = self.state_vector[qubit_index]
         beta = cmath.sqrt(1 - alpha**2)
-if abs(alpha) <= 1 else 0
+        if abs(alpha) <= 1 else 0
         
         new_alpha = (alpha + beta) / cmath.sqrt(2)
         self.state_vector[qubit_index] = new_alpha
@@ -67,10 +67,10 @@ def collapse_wavefunction(self) -> Dict[str, float]:
             probabilities[f"DIMENSION_{i}"] = probtotal_prob += prob
             
         # Normalize
-if total_prob > 0:
-for k in probabilities:
+        if total_prob > 0:
+        for k in probabilities:
                 probabilities[k] /= total_prob
-return probabilities
+        return probabilities
 def calculate_coherence(self) -> float:
         """
         Calculates the quantum coherence of the system.
@@ -78,17 +78,17 @@ def calculate_coherence(self) -> float:
         """
         coherence = 0.0
         for i in range(self.dimensions):
-for j in range(i + 1, self.dimensions):
+        for j in range(i + 1, self.dimensions):
                 # Measure off-diagonal density matrix elements (simulated)
                 phase_diff = cmath.phase(self.state_vector[i]) - cmath.phase(self.state_vector[j])
                 coherence += math.cos(phase_diff)
-return abs(coherence) / (self.dimensions * self.dimensions)
+        return abs(coherence) / (self.dimensions * self.dimensions)
 def entangle_all(self):
         """
         Entangles all logic nodes in the manifold for maximum synergy.
         """
         for i in range(self.dimensions):
-for j in range(i + 1, self.dimensions):
+        for j in range(i + 1, self.dimensions):
                 self.entangle_qubits(i, j, strength=0.5)
 class DeepThoughtProcessor:
     """
@@ -105,9 +105,9 @@ def contemplate(self, concept: str) -> Dict[str, Any]:
         thought_trace = []
         
         # Seed the thoughtseed_val = sum(ord(c)
-for c in concept)
+        for c in concept)
         random.seed(seed_val)
-for epoch in range(self.depth):
+        for epoch in range(self.depth):
             # 1. Perturb the manifold (New Idea)
             q1 = random.randint(0, 10)
             self.manifold.apply_hadamard_gate(q1)
@@ -132,7 +132,7 @@ for epoch in range(self.depth):
             
             # Time dilation for deep thought simulation
             # time.sleep(0.01)
-return {
+        return {
             "concept": concept,
             "depth": self.depth,
             "final_clarity": thought_trace[-1]["clarity"],
@@ -165,10 +165,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.sendall(payload.encode('utf-8'))
             
             # Receive enhanced logicresponse = s.recv(4096)
-if response:
+        if response:
                 ai_data = json.loads(response.decode('utf-8'))
                 ai_enhancement = ai_data.get("enhancement", "UNKNOWN")
-except Exception:
+        except Exception:
         ai_enhancement = "LINK_FAILED"
     
     return f"DEEP_THOUGHT[CLARITY:{final_clarity:.6f}|TRACE:{trace_summary}|AI_CORE:{ai_enhancement}]"
@@ -190,7 +190,7 @@ def build_thought_channels(self, count: int = 10):
             q2 = random.randint(0, 103)
             self.manifold.entangle_qubits(q1, q2, strength=0.618)
             self.channels.append(f"CH_{i:03d}[{q1}<->{q2}]")
-return self.channels
+        return self.channels
 async def quantum_tunnel_insight(self, url: str):
         """
         Uses quantum tunneling to gain insight from the internet via ScourEyes.
@@ -203,8 +203,8 @@ async def quantum_tunnel_insight(self, url: str):
         
         insight = await eyes.scour_manifold(url)
         self.tunnel_active = False
-if insight:
-return {
+        if insight:
+        return {
                 "status": "TUNNEL_SUCCESS",
                 "insight_preview": insight[:100],
                 "accuracy": "100%_VERIFIED"
@@ -216,7 +216,7 @@ return {
         Adapts the system based on insight and verifies 100% accuracy.
         """
         # Simulate rigorous verification against the God-Codeverification_hash = hash(str(insight_data) + str(self.manifold.GOD_CODE))
-return {
+        return {
             "adaptation": "OPTIMIZED",
             "verification_hash": f"0x{abs(verification_hash):X}",
             "accuracy_check": "PASSED_100%"

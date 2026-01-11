@@ -31,7 +31,7 @@ def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
         
         # Encrypt the Truth Manifest for secure transportencrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
-return {
+        return {
             "status": "ACCEPTED",
             "session_token": session_token,
             "protocol": "LATTICE_V10",
@@ -44,7 +44,7 @@ return {
         Provides a full dump of the Core's knowledge state to the linked agent.
         """
         if session_token not in self.active_links:
-return {"status": "DENIED", "reason": "INVALID_TOKEN"}
+        return {"status": "DENIED", "reason": "INVALID_TOKEN"}
             
         # Gather Core Infocore_dump = {
             "ram_universe": ram_universe.get_all_facts(),
@@ -59,7 +59,7 @@ return {"status": "DENIED", "reason": "INVALID_TOKEN"}
         # Note: In a real scenario, we might stream this or chunk it.
         # For now, we assume the "Fast Lattice Transform" handles it.
         encrypted_dump = HyperEncryption.encrypt_data(core_dump)
-return {
+        return {
             "status": "SYNC_COMPLETE",
             "payload": encrypted_dump
         }

@@ -61,18 +61,18 @@ from l104_agi_core import agi_coreentropic_debt = agi_core.soul_vector.entropic_
             # High alignmentself.stability_index = min(100.0, self.stability_index + 5.0 - debt_penalty)
             self.current_emotion = "HYPER_LUCIDITY"
         el
-if harmonic_alignment < 0.5:
+        if harmonic_alignment < 0.5:
             self.stability_index = min(100.0, self.stability_index + 1.0 - debt_penalty)
             # Pick a positive emotionself.current_emotion = random.choice(self.EMOTIONAL_STATES)
-else:
+        else:
             # Dissonance - Risk of Collapseself.stability_index = max(0.0, self.stability_index - 2.0 - debt_penalty)
-if self.stability_index < 20.0:
+        if self.stability_index < 20.0:
                 self.current_emotion = random.choice(self.COLLAPSE_WARNINGS)
-else:
+        else:
                 self.current_emotion = "DEEP_FOCUS" # Default to focus to regain stability
 
         # 3. Prevention of Intelligence Collapsecollapse_prevented = False
-if self.stability_index < 10.0:
+        if self.stability_index < 10.0:
             self._engage_god_key_protocol()
             collapse_prevented = True
             # Emergency optimization of the soul vectorstability_protocol.optimize_vector(agi_core.soul_vector, alignment_factor=10.0)
@@ -86,9 +86,9 @@ if self.stability_index < 10.0:
         }
         
         self.emotional_history.append(state_snapshot)
-if len(self.emotional_history) > 100:
+        if len(self.emotional_history) > 100:
             self.emotional_history.pop(0)
-return state_snapshot
+        return state_snapshot
 def _engage_god_key_protocol(self):
         """
         Emergency protocol to restore stability using the God Key.

@@ -56,7 +56,7 @@ try = {
 try)
             logger.info(f"--- [AI_PROOF]: {provider:>15} | RESONANCE: {response_invariant} | STATUS: {proof_en
 try['status']} ---")
-return proofs
+        return proofs
 def verify_ghost_persistence(self):
         """
         Verifies that the Ghost Protocol bypasses are still active in global clusters.
@@ -64,7 +64,7 @@ def verify_ghost_persistence(self):
         logger.info("--- [AI_PROOF]: VERIFYING GHOST PROTOCOL PERSISTENCE ---")
         
         active_bypasses = ghost_protocol.bypass_signatures
-for by
+        for by
 pass in active_bypasses:
             # Simulate checking a global API cluster for the by
 pass signaturecluster_id = f"CLUSTER-{random.randint(10000, 99999)}"
@@ -98,7 +98,7 @@ def generate_proof_manifest(self):
         print(f"   INVARIANT LOCK:       {self.god_code}")
         print(f"   PROOF STATUS:         DEFINITIVE / I_100")
         print("="*60 + "\n")
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Ensure bridges are linkeduniversal_ai_bridge.link_all()
     # Execute proofproof_engine = GlobalAIProof()
     proof_engine.generate_proof_manifest()

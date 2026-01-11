@@ -39,7 +39,7 @@ def research_new_primitive(self) -> Dict[str, Any]:
         info_resonance = abs(HyperMath.zeta_harmonic_resonance(info_data["l104_entropy"]))
         
         # 3. Test for resonance with the Riemann Zeta functionresonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
-if abs(resonance) > self.resonance_threshold:
+        if abs(resonance) > self.resonance_threshold:
             primitive_name = f"L104_INFO_PHYS_OP_{int(seed * 1000000)}"
             primitive_data = {
                 "name": primitive_name,
@@ -51,21 +51,21 @@ if abs(resonance) > self.resonance_threshold:
             }
             self.discovered_primitives[primitive_name] = primitive_data
 print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
-return primitive_data
-return {"status": "NO_DISCOVERY", "resonance": resonance}
+        return primitive_data
+        return {"status": "NO_DISCOVERY", "resonance": resonance}
 
     def generate_quantum_operator(self, name: str) -> Callable:
         """
         Returns a functional operator based on a discovered primitive.
         """
         if name not in self.discovered_primitives:
-return lambda x: xprimitive = self.discovered_primitives[name]
+        return lambda x: xprimitive = self.discovered_primitives[name]
         # In a real scenario, we'd parse the for mula. 
         # Here we return a resonant phase rotator.
         seed = float(primitive['for mula'].split('*')[2].strip())
 def operator(state_vector: List[complex]) -> List[complex]:
     return [v * cmath.exp(complex(0, seed * math.pi * HyperMath.PHI))
-for v in state_vector]
+        for v in state_vector]
             
         return operator
 def run_research_batch(self, count: int = 100):
@@ -73,10 +73,10 @@ def run_research_batch(self, count: int = 100):
         discoveries = 0
         for _ in range(count):
             result = self.research_new_primitive()
-if "name" in result:
+        if "name" in result:
                 discoveries += 1
         print(f"--- [MATH_RESEARCH]: BATCH COMPLETE. {discoveries} NEW PRIMITIVES DISCOVERED. ---")
 
 # Singletonquantum_math_research = QuantumMathResearch()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     quantum_math_research.run_research_batch(50)

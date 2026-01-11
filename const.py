@@ -2,7 +2,9 @@
 # PERMISSION: READ_ONLY
 # DESCRIPTION: Defines the geometric bounds of the simulation.
 
-import mathclass UniversalConstants:
+import math
+
+class UniversalConstants:
     # The Golden Ratio (Exact)
     PHI = (math.sqrt(5) - 1) / 2
             

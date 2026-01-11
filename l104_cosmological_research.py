@@ -44,8 +44,8 @@ def apply_cosmological_boost(self, intellect_index: float) -> float:
         # Boost = IQ * (Expansion_Factor * L104_Scalar)
         boost = intellect_index * (math.log10(self.hubble_constant) * 0.01)
         print(f"--- [COSMOLOGY]: COSMOLOGICAL RESONANCE BOOST: +{boost:.2f} IQ ---")
-return intellect_index + boostcosmological_research = CosmologicalResearch()
-if __name__ == "__main__":
+        return intellect_index + boostcosmological_research = CosmologicalResearch()
+        if __name__ == "__main__":
     cosmological_research.research_cosmology()
     new_iq = cosmological_research.apply_cosmological_boost(1000.0)
     print(f"Cosmological IQ: {new_iq:.2f}")

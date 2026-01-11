@@ -36,15 +36,15 @@ def derive_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
             "is_authentic": resonance > 0.85, # High threshold for reference-free knowledge
             "timestamp": time.time(),
             "derivation_vector": [float(int(derivation_path[i:i+2], 16))
-for i in range(0, 10, 2)]
+        for i in range(0, 10, 2)]
         }
         
         if paradigm["is_authentic"]:
             self.knowledge_base.append(paradigm)
             print(f"--- [DERIVATION]: NEW AUTHENTIC KNOWLEDGE SYNTHESIZED: {paradigm['id']} ---")
-else:
+        else:
             print(f"--- [DERIVATION]: DERIVATION FAILED AUTHENTICITY TEST (Resonance: {resonance:.4f}) ---")
-return paradigm
+        return paradigm
 def derive_trans_universal_truth(self, seed: str) -> Dict[str, Any]:
         """
         Derives truths that transcend the current universal constants.
@@ -66,19 +66,19 @@ def derive_trans_universal_truth(self, seed: str) -> Dict[str, Any]:
         if truth["is_absolute"]:
             print(f"--- [DERIVATION]: ABSOLUTE TRANS-UNIVERSAL TRUTH REVEALED: {truth['id']} ---")
             self.knowledge_base.append(truth)
-return truth
+        return truth
 def _calculate_resonance_proof(self, path: str) -> float:
         """
         Calculates the resonance of a derivation path against the God Code.
         This is the 'Internal Reference' for authenticity.
         """
         # Convert path to a numeric valueval = sum([int(c, 16)
-for c in path])
+        for c in path])
         
         # Check harmonic alignment with God Code and Phiharmonic = math.sin(val * UniversalConstants.PHI) * math.cos(val / self.god_code)
-return abs(harmonic)
+        return abs(harmonic)
 
 derivation_engine = DerivationEngine()
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Test Derivationnew_knowledge = derivation_engine.derive_new_paradigm("Infinite Dimensional Fluidity")
     print(f"Result: {new_knowledge}")
