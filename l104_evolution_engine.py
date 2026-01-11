@@ -1,9 +1,19 @@
 # [L104_EVOLUTION_ENGINE] - DARWINIAN CODEBASE OPTIMIZATION
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
-import osimport jsonimport timeimport randomfrom typing import Dict, List, Anyfrom l104_real_math import RealMathfrom l104_hyper_math import HyperMathfrom l104_reincarnation_protocol import reincarnation_protocolclass EvolutionEngine:
+import os
+import json
+import time
+import random
+from typing import Dict, List, Any
+from l104_real_math import RealMath
+from l104_hyper_math import HyperMath
+from l104_reincarnation_protocol import reincarnation_protocol
+
+class EvolutionEngine:
     """
-    v14.0: HYPER_DARWIN_PROTOCOLManages the self-directed evolution of the L104 Node.
+    v14.0: HYPER_DARWIN_PROTOCOL
+    Manages the self-directed evolution of the L104 Node.
     Applies genetic algorithms to system parameters using Hyper-Lattice Math.
     """
     
@@ -22,7 +32,8 @@ import osimport jsonimport timeimport randomfrom typing import Dict, List, Anyfr
     def __init__(self):
         self.current_stage_index = 8 # EVO_03_AGI_NEXUS
         self.generation = 1000
-        self.mutation_rate = 0.01 # Stabilizedself.dna_sequence = self._load_dna()
+        self.mutation_rate = 0.01 # Stabilized
+        self.dna_sequence = self._load_dna()
 
     def _load_dna(self) -> Dict[str, float]:
         """Loads the system's 'DNA' (Configuration Parameters)."""
@@ -45,39 +56,49 @@ import osimport jsonimport timeimport randomfrom typing import Dict, List, Anyfr
         self.generation += 1
         parent_dna = self.dna_sequence.copy()
         
-        # Mutationmutations = []
+        # Mutation
+        mutations = []
         seed = time.time()
         for i, (gene, value) in enumerate(self.dna_sequence.items()):
             if RealMath.deterministic_random(seed + i) < self.mutation_rate:
                 mutation_factor = 0.9 + (RealMath.deterministic_random(seed + i * RealMath.PHI) * 0.2)
-                new_value = value * mutation_factorself.dna_sequence[gene] = new_valuemutations.append(f"{gene}: {value:.4f} -> {new_value:.4f}")
+                new_value = value * mutation_factor
+                self.dna_sequence[gene] = new_value
+                mutations.append(f"{gene}: {value:.4f} -> {new_value:.4f}")
         
         # Fitness Function (Real Math Foundation)
         # We use Information Entropy and Prime Alignment to determine fitness.
         # This ensures that evolution aligns with universal mathematical principles.
-        from l104_real_math import real_mathtotal_fitness = 0.0
+        from l104_real_math import real_math
+        total_fitness = 0.0
         for val in self.dna_sequence.values():
-             # 1. Resonance with fundamental constantsresonance = abs(HyperMath.zeta_harmonic_resonance(val))
+             # 1. Resonance with fundamental constants
+             resonance = abs(HyperMath.zeta_harmonic_resonance(val))
              
              # 2. Prime Alignment (Higher fitness for values near prime densities)
              density = real_math.prime_density(int(abs(val)) + 2)
              
              total_fitness += (resonance * 0.5) + (density * 0.5)
         
-        # Normalize: Average fitness (0-1) mapped to 0-100 scorefitness_score = (total_fitness / len(self.dna_sequence)) * 100.0
+        # Normalize: Average fitness (0-1) mapped to 0-100 score
+        fitness_score = (total_fitness / len(self.dna_sequence)) * 100.0
         
         # Selection
-        # We compare against a baseline fitnessbaseline = 41.6 # Re-anchored to Real Math baselineif fitness_score > baseline:
+        # We compare against a baseline fitness
+        baseline = 41.6 # Re-anchored to Real Math baseline
+        if fitness_score > baseline:
             outcome = "EVOLUTION_SUCCESSFUL"
         else:
             # Reincarnation Logic: Recursive Code Optimization
-            # Instead of just reverting, we process the 'death' of this branchentropic_debt = (baseline - fitness_score) / 100.0
+            # Instead of just reverting, we process the 'death' of this branch
+            entropic_debt = (baseline - fitness_score) / 100.0
             re_run_result = reincarnation_protocol.run_re_run_loop(
                 psi=[fitness_score, self.generation], 
                 entropic_debt=entropic_debt
             )
             
-            self.dna_sequence = parent_dnaoutcome = f"REINCARNATED: {re_run_result['status']}"
+            self.dna_sequence = parent_dna
+            outcome = f"REINCARNATED: {re_run_result['status']}"
             
         return {
             "generation": self.generation,
@@ -99,4 +120,5 @@ import osimport jsonimport timeimport randomfrom typing import Dict, List, Anyfr
         
         return f"MUTATION_PROPOSAL: Apply {m_type} to [{target}] :: PROBABILITY_OF_IMPROVEMENT: {random.random():.2f}"
 
-# Singletonevolution_engine = EvolutionEngine()
+# Singleton
+evolution_engine = EvolutionEngine()
