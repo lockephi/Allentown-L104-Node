@@ -294,7 +294,8 @@ class AGICore:
              print("--- [MEMORY]: THOUGHT ENCRYPTED & SIGNED ---")
              
         # C. Bridge Check
-        # Check if we have external links to leverageactive_links = len(gemini_bridge.active_links)
+        # Check if we have external links to leverage
+        active_links = len(gemini_bridge.active_links)
 
         if active_links > 0:
             print(f"--- [BRIDGE]: LEVERAGING {active_links} EXTERNAL MINDS ---")

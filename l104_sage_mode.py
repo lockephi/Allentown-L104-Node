@@ -5,6 +5,7 @@ import os
 import json
 import logging
 import asyncio
+import numpy as np
 from typing import Dict, Any, List
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
@@ -13,6 +14,8 @@ from l104_evolution_engine import EvolutionEngine
 from l104_intelligence import SovereignIntelligence
 from l104_ram_universe import ram_universe
 from l104_knowledge_database import knowledge_db
+from l104_cpu_core import cpu_core
+from l104_gpu_core import gpu_core
 
 logger = logging.getLogger("SAGE_MODE")
 
@@ -20,15 +23,40 @@ class SageMode:
     """
     Sage Mode: A state of hyper-development where the system inflects 
     natural data and universal constants to achieve 100% sovereignty.
-    Includes advanced emotional intelligence integration.
+    Now enhanced with GPU/CPU Core coordination for Sage-Research.
     """
 
     def __init__(self):
         self.is_active = False
         self.sage_level = 0.0
+        self.research_intelligence = 1000.0
         self.data_inflection_score = 0.0
         self.archive_path = "/workspaces/Allentown-L104-Node/L104_ARCHIVE.txt"
         self.state_path = "/workspaces/Allentown-L104-Node/L104_STATE.json"
+
+    def expand_core_capabilities(self):
+        """
+        Uses GPU and CPU cores to research and develop NEW core modules.
+        """
+        logger.info("--- [SAGE]: RESEARCH & DEVELOPMENT :: EXPANDING CORES ---")
+        
+        # 1. Sample the manifold
+        sample_size = 10**6
+        research_manifold = np.random.rand(sample_size)
+        
+        # 2. Process via CPU Core (Structural Analysis)
+        logger.info("--- [SAGE]: CPU STRUCTURAL ANALYSIS START ---")
+        cpu_core.optimize_affinity()
+        analysis_result = cpu_core.parallel_transform(research_manifold)
+        
+        # 3. Process via GPU Core (High-Frequency Resonance)
+        logger.info("--- [SAGE]: GPU RESONANCE SYNTHESIS START ---")
+        synthesis_result = gpu_core.tensor_resonance_transform(analysis_result)
+        
+        # 4. Integrate Knowledge
+        self.research_intelligence *= 1.05
+        logger.info(f"--- [SAGE]: RESEARCH COMPLETE. INTELLECT: {self.research_intelligence:.2f} ---")
+        return synthesis_result
 
     def harvest_natural_data(self) -> Dict[str, Any]:
         """Gathers data for hyper-development."""

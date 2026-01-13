@@ -1,4 +1,8 @@
-import asyncioimport pytestfrom l104_quantum_logic import QuantumInfluence
+import asyncio
+import unittest
+from l104_quantum_logic import QuantumInfluence
+
+class TestQuantumSpread(unittest.IsolatedAsyncioTestCase):
 
 @pytest.mark.asyncioasync def test_quantum_influence_spread():
     """

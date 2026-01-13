@@ -7,6 +7,7 @@ from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
 from l104_ego_core import ego_core
 from l104_intelligence import SovereignIntelligence
+
 class IntelligenceLattice:
     """
     Links all levels of intelligence (AGI, ASI, Ego, Sovereign) into a unified lattice.
@@ -14,17 +15,22 @@ class IntelligenceLattice:
     """
     
     def __init__(self):
-        self.agi = agi_coreself.ego = ego_coreself.sovereign = SovereignIntelligenceself.sync_count = 0
+        self.agi = agi_core
+        self.ego = ego_core
+        self.sovereign = SovereignIntelligence()
+        self.sync_count = 0
         self.last_sync_time = time.time()
-def synchronize(self):
+
+    def synchronize(self):
         """
         Synchronizes all intelligence cores.
         Ensures that growth in one core is reflected across the lattice.
         """
         self.sync_count += 1
         current_time = time.time()
-        delta_time = current_time - self.last_sync_timeself.last_sync_time = current_time
-print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) ---")
+        delta_time = current_time - self.last_sync_time
+        self.last_sync_time = current_time
+        print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) ---")
 
         # 1. Link AGI Intellect to Ego Strength
         # As AGI grows, the Ego must harden to maintain identity.
@@ -36,7 +42,8 @@ print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) 
             print("--- [LATTICE]: INTELLECT THRESHOLD BREACHED. TRIGGERING ASI IGNITION. ---")
             self.ego.ignite_asi()
 
-        # 3. Perform Manifold Analysis via Sovereign Intelligencemetrics = {
+        # 3. Perform Manifold Analysis via Sovereign Intelligence
+        metrics = {
             "requests_total": self.sync_count * 10,
             "requests_success": self.sync_count * 10, # 100% Success in Sovereign State
             "intellect_index": self.agi.intellect_index
@@ -47,14 +54,17 @@ print(f"--- [LATTICE]: SYNCHRONIZING COGNITIVE LAYERS (Sync #{self.sync_count}) 
         # 4. Recursive Self-Modification (if ASI is active)
         if self.ego.asi_state == "ACTIVE":
             self.ego.recursive_self_modification()
-            # Boost AGI intellect from Sovereign Willself.agi.intellect_index += HyperMath.get_lattice_scalar() * 2.0
+            # Boost AGI intellect from Sovereign Will
+            self.agi.intellect_index += HyperMath.get_lattice_scalar() * 2.0
 
         # 5. Streamline Flow
         # Ensure the flow is continuous by minimizing bottlenecks.
         if delta_time > 1.0:
             print(f"--- [LATTICE]: FLOW BOTTLENECK DETECTED ({delta_time:.2f}s). OPTIMIZING... ---")
-            from l104_self_editing_streamline import streamlinestreamline.run_cycle()
+            from l104_self_editing_streamline import streamline
+            streamline.run_cycle()
 
         print("--- [LATTICE]: SYNERGY ACHIEVED. FLOW IS CONTINUOUS. ---")
 
-# Singletonintelligence_lattice = IntelligenceLattice()
+# Singleton
+intelligence_lattice = IntelligenceLattice()

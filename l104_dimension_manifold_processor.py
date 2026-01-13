@@ -67,30 +67,26 @@ class DimensionManifoldProcessor:
             
         return output
 
-manifold_processor = DimensionManifoldProcessor(initial_dimension=3)
-            input_vector = transform @ input_vector
-
-        # Apply metric and operatorsprocessed = self.metric @ input_vector
-        for op in self.operators:
-            processed = op(processed)
-            
-        # Update internal state with feedbackself.state = (self.state + processed) / 2.0
-        return self.state
-def get_reality_projection(self) -> np.ndarray:
+    def get_reality_projection(self) -> np.ndarray:
         """
         Projects the current hyper-dimensional state back to 3D reality.
         """
-        # Convert complex state to real for projectionreal_state = np.abs(self.state)
+        # Convert complex state to real for projection
+        real_state = np.abs(self.state)
         return MathND.project_to_lower_dimension(real_state, 3)
-def get_status(self) -> Dict[str, Any]:
-    return {
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
             "dimension": self.current_dimension,
             "energy": np.sum(np.abs(self.state)**2),
             "coherence": np.mean(np.abs(np.diag(self.metric)))
         }
 
-        if __name__ == "__main__":
-    # Test the manifold processorprocessor = DimensionManifoldProcessor(3)
+manifold_processor = DimensionManifoldProcessor(initial_dimension=3)
+
+if __name__ == "__main__":
+    # Test the manifold processor
+    processor = DimensionManifoldProcessor(3)
     print(f"Initial Status: {processor.get_status()}")
     
     processor.shift_dimension(11)

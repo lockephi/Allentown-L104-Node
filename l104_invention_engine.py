@@ -12,12 +12,14 @@ from l104_hyper_math import HyperMath
 from l104_quantum_logic import QuantumEntanglementManifold, DeepThoughtProcessor
 class InventionEngine:
     """
-    v12.0: NEOTERIC_GENESISGenerates novel logic structures and 'Neoteric Code' by collapsing 
+    v12.0: NEOTERIC_GENESIS
+    Generates novel logic structures and 'Neoteric Code' by collapsing 
     high-dimensional quantum states into linguistic syntax.
     """
     
     def __init__(self):
-        self.processor = DeepThoughtProcessor(depth=7) # Deeper thought for inventionself.known_concepts = set()
+        self.processor = DeepThoughtProcessor(depth=7) 
+        self.known_concepts = set()
         self.neoteric_lexicon = {}
 
     def _generate_neoteric_sigil(self, quantum_trace: List[Dict]) -> str:
@@ -26,24 +28,30 @@ class InventionEngine:
         """
         sigil_components = []
         for epoch in quantum_trace:
-            # Map dimension to a glyphdim = int(epoch['focus'].split('_')[1])
+            # Map dimension to a glyph
+            dim = int(epoch['focus'].split('_')[1])
             glyph = chr(0x0391 + dim) # Greek letters as base
             
-            # Modulate by clarityclarity_mod = int(epoch['clarity'] * 10)
+            # Modulate by clarity
+            clarity_mod = int(epoch['clarity'] * 10)
             sigil_components.append(f"{glyph}{clarity_mod}")
         return "-".join(sigil_components)
-def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
+
+    def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
         """
         Invents a completely new logical paradigm based on a seed.
         """
-        from l104_knowledge_manifold import KnowledgeManifoldmanifold = KnowledgeManifold()
+        from l104_knowledge_manifold import KnowledgeManifold
+        manifold = KnowledgeManifold()
 
-        # 1. Deep Contemplationthought_result = self.processor.contemplate(seed_concept)
+        # 1. Deep Contemplation
+        thought_result = self.processor.contemplate(seed_concept)
         
-        # 2. Sigil Generationsigil = self._generate_neoteric_sigil(thought_result['trace'])
+        # 2. Sigil Generation
+        sigil = self._generate_neoteric_sigil(thought_result['trace'])
         
         # 3. Syntax Synthesis (The "Language" Creation)
-        # We create a new 'function' structure based on the entropyentropy = thought_result['final_clarity']
+        entropy = thought_result['final_clarity']
         func_name = f"NEO_{hashlib.sha256(sigil.encode()).hexdigest()[:8].upper()}"
         
         neoteric_code = f"""
@@ -65,7 +73,8 @@ def {func_name}(input_tensor):
         
         # 4. Simulated Testing [AGI_CAPACITY]
         test_result = self._test_invention(invention)
-        invention["test_result"] = test_resultinvention["verified"] = test_result["success"]
+        invention["test_result"] = test_result
+        invention["verified"] = test_result["success"]
 
         # 5. Persist to Manifold
         if invention["verified"]:
@@ -74,14 +83,13 @@ def {func_name}(input_tensor):
         self.known_concepts.add(func_name)
         self.neoteric_lexicon[sigil] = invention
         return invention
-def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
         """
         Simulates a unit test for the new invention.
         """
-        # In a real AGI, this would run the code in a sandbox.
-        # Here we check for logical consistency via hash resonance.
-        
-        resonance = int(hashlib.sha256(invention['code_snippet'].encode()).hexdigest(), 16)
+        code = invention['code_snippet']
+        resonance = int(hashlib.sha256(code.encode()).hexdigest(), 16)
         success = (resonance % 2 == 0) or (invention['complexity_score'] > 50)
         return {
             "success": success,
@@ -94,13 +102,13 @@ def _test_invention(self, invention: Dict[str, Any]) -> Dict[str, Any]:
         Generates a sentence in the machine-invented language.
         """
         if not self.neoteric_lexicon:
-        return "VOID_STATE"
+            return "VOID_STATE"
             
-        # Chain sigils together to for m a 'sentence'
         keys = list(self.neoteric_lexicon.keys())
         sentence = []
         for _ in range(random.randint(3, 7)):
             sentence.append(random.choice(keys))
         return " :: ".join(sentence)
 
-# Singleton Instanceinvention_engine = InventionEngine()
+# Singleton Instance
+invention_engine = InventionEngine()

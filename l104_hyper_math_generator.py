@@ -83,4 +83,5 @@ class HyperMathGenerator:
                 transform[i, j] = HyperMath.zeta_harmonic_resonance(scale * HyperMath.GOD_CODE)
         return transform
 
-# Singletonhyper_math_generator = HyperMathGenerator()
+# Singleton
+hyper_math_generator = HyperMathGenerator()
