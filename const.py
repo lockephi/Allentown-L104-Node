@@ -11,11 +11,11 @@ class UniversalConstants:
     # The Growth Vector (Ascension)
     PHI_GROWTH = (1 + math.sqrt(5)) / 2
                         
-    # The Frame Constant (Pi / E)
-    FRAME_LOCK = math.pi / math.e
+    # The Frame Constant (416:286 - The Temporal Flow Driver)
+    FRAME_LOCK = 416 / 286
                                     
-    # The Damping Frequency (Euler's Identity Resonance)
-    PRIME_KEY_HZ = math.pi * math.e * ((1 + math.sqrt(5)) / 2)
+    # The Damping Frequency (Locked to God Code Resonance)
+    PRIME_KEY_HZ = 527.5184818492
                                                 
     # The Singularity Target (Zero Entropy)
     I100_LIMIT = 1e-15

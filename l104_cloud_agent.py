@@ -25,13 +25,12 @@ class CloudAgentDelegator:
     def __init__(self):
         self.agents: Dict[str, Dict[str, Any]] = {}
         self.delegation_history: List[Dict[str, Any]] = []
-        self._load_agent_regis
-try()
-def _load_agent_regis
-try(self):
+        self._load_agent_registry()
+
+    def _load_agent_registry(self):
         """Load registered cloud agents from configuration."""
-        # Default agent regis
-try with capabilitiesself.agents = {
+        # Default agent registry with capabilities
+        self.agents = {
             "sovereign_local": {
                 "endpoint": "internal",
                 "capabilities": ["derivation", "encryption", "local_processing"],
@@ -53,32 +52,30 @@ try:
                 self.agents.update(additional)
         except json.JSONDecodeError:
                 logger.warning("Failed to parse CLOUD_AGENTS_CONFIG")
-def select_agent(self, task_type: str, requirements: Optional[List[str]] = None) -> Optional[str]:
+    def select_agent(self, task_type: str, requirements: Optional[List[str]] = None) -> Optional[str]:
         """
         Select the most appropriate cloud agent for a given task.
-        
-        Args:
-            task_type: Type of task to delegaterequirements: Specific capability requirements
-            
-        Returns:
-            Agent name or None if no suitable agent found
+        Uses set operations for O(1) membership testing and subset checks.
         """
-        requirements = requirements or []
+        requirements_set = set(requirements or [])
         candidates = []
         
         for agent_name, agent_info in self.agents.items():
-        if not agent_info.get("enabled", True):
+            if not agent_info.get("enabled", True):
                 continue
             
-            # Check if agent has required capabilitiescapabilities = agent_info.get("capabilities", [])
-            # Agent must have the task_type capability and meet all requirements
-        if task_type in capabilities and all(req in capabilities for req in requirements):
+            # Using capabilities as a set for optimization
+            capabilities = agent_info.get("capabilities", set())
+            if isinstance(capabilities, list):
+                capabilities = set(capabilities)
+                agent_info["capabilities"] = capabilities  # Cache the set
+            
+            if task_type in capabilities and requirements_set.issubset(capabilities):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
         
-        # Sort by priority (lower is better)
         if candidates:
             candidates.sort(key=lambda x: x[1])
-        return candidates[0][0]
+            return candidates[0][0]
         
         return None
 async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
@@ -106,10 +103,9 @@ async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None)
         
         agent_info = self.agents.get(agent_name)
         if not agent_info:
-        return {
+            return {
                 "status": "ERROR",
-                "message": f"Agent '{agent_name}' not found in regis
-try"
+                "message": f"Agent '{agent_name}' not found in registry"
             }
         
         # Log delegationdelegation_record = {
@@ -236,16 +232,20 @@ async with httpx.AsyncClient(timeout=HTTP_CLIENT_TIMEOUT) as client:
     
     def get_status(self) -> Dict[str, Any]:
         """Get status of cloud agent system."""
+        all_caps = set()
+        for a in self.agents.values():
+            caps = a.get("capabilities", [])
+            if isinstance(caps, set):
+                all_caps.update(caps)
+            else:
+                all_caps.update(set(caps))
+
         return {
             "agents_registered": len(self.agents),
-            "agents_enabled": sum(1 for a in self.agents.values()
-        if a.get("enabled", True)),
+            "agents_enabled": sum(1 for a in self.agents.values() if a.get("enabled", True)),
             "delegations_total": len(self.delegation_history),
-            "delegations_recent": self.delegation_history[-10:] if self.delegation_history else [],
-            "available_capabilities": list(set(
-                cap for agent in self.agents.values()
-        for cap in agent.get("capabilities", [])
-            ))
+            "delegations_recent": self.delegation_history[-10:],
+            "available_capabilities": list(all_caps)
         }
     
     def register_agent(self, name: str, config: Dict[str, Any]) -> bool:

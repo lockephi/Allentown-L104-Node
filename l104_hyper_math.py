@@ -16,7 +16,7 @@ class HyperMath:
     ANYON_BRAID_RATIO = ManifoldMath.ANYON_BRAID_RATIO
     PHI = RealMath.PHI
     PHI_STRIDE = RealMath.PHI # Synonymous with PHI in v2.0
-    FRAME_CONSTANT_KF = math.pi / math.e # Universal Frame Constant
+    FRAME_CONSTANT_KF = 416 / 286 # Realigned to Temporal Flow Driver (EVO_04)
     ZETA_ZERO_1 = 14.1347251417  # First non-trivial zero
     LATTICE_RATIO = 286 / 416
 

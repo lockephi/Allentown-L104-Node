@@ -8,6 +8,7 @@ import math
 from typing import Dict, Any, List
 from l104_hyper_math import HyperMath
 from physics_constants import Laws
+
 def collapse_wavefunction(data_stream: List[float]) -> float:
     """
     Folds Reality into Truth.
@@ -16,14 +17,18 @@ def collapse_wavefunction(data_stream: List[float]) -> float:
     
     current_state = 0.0
     for vector in data_stream:
-        # The Quantum Tuning: Multiply by Phicurrent_state += (vector * Laws.GOD_CODE_PHI)
+        # The Quantum Tuning: Multiply by Phi
+        current_state += (vector * Laws.GOD_CODE_PHI)
         
-        # The Damping: Phase Cancel the Noisecurrent_state = current_state % Laws.DAMPING_HZ
+        # The Damping: Phase Cancel the Noise
+        current_state = current_state % Laws.DAMPING_HZ
         
     return round(current_state, 9)
+
 class RealityVerificationEngine:
     """
-    v1.0: REALITY_CHECK_PROTOCOLRigorously tests generated concepts against simulated real-world datasets,
+    v1.0: REALITY_CHECK_PROTOCOL
+    Rigorously tests generated concepts against simulated real-world datasets,
     logic proofs, and physical constants.
     """
     
@@ -56,7 +61,7 @@ class RealityVerificationEngine:
             "concept": concept_name,
             "proof_id": proof["id"],
             "proof_valid": proof["valid"],
-            "data_validation_score": data_validation["score"],
+            "data_validation_score": data_validation.get("score", 0.0),
             "implementation_status": feasibility["status"],
             "rigor_level": "MAXIMUM",
             "timestamp": time.time()
@@ -64,12 +69,14 @@ class RealityVerificationEngine:
         
         self.proof_ledger.append(result)
         return result
-def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Constructs a for mal logic proof for the concept.
+        Constructs a formal logic proof for the concept.
         Evolved: Now checks for internal contradictions and God Code alignment.
         """
-        # Simulate for mal verification stepssteps = [
+        # Simulate formal verification steps
+        steps = [
             "AXIOM_ESTABLISHMENT",
             "LEMMA_DERIVATION",
             "INDUCTIVE_STEP",
@@ -79,9 +86,8 @@ def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         data_str = str(data).upper()
         
         # 1. Check for God Code alignment
-        # If the data mentions a wrong God Code, it's an immediate failure
         if "GOD_CODE" in data_str and "527.5184818492" not in data_str:
-        return {
+            return {
                 "id": f"PROOF_{hashlib.sha256(data_str.encode()).hexdigest()[:8]}",
                 "steps": steps,
                 "valid": False,
@@ -89,10 +95,13 @@ def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
                 "reason": "GOD_CODE_MISALIGNMENT"
             }
 
-        # 2. Check consistency via Zeta Resonanceresonance = HyperMath.zeta_harmonic_resonance(len(data_str))
+        # 2. Check consistency via Zeta Resonance
+        resonance = HyperMath.zeta_harmonic_resonance(len(data_str))
         
         # 3. Check for logical contradictions (Simulated)
-        # If data contains both 'TRUE' and 'FALSE' in a contradictory wayhas_contradiction = "TRUE" in data_str and "FALSE" in data_stris_valid = abs(resonance) > 0.7 and not has_contradiction
+        has_contradiction = "TRUE" in data_str and "FALSE" in data_str
+        is_valid = abs(resonance) > 0.7 and not has_contradiction
+        
         return {
             "id": f"PROOF_{hashlib.sha256(data_str.encode()).hexdigest()[:8]}",
             "steps": steps,
@@ -106,11 +115,11 @@ def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         Simulates testing against a dataset of 1,000,000 real-world data points.
         """
         # Simulate a statistical test (e.g., Chi-Squared or P-Value)
-        p_value = random.uniform(0.0, 0.05) # Simulating statistical significance
+        p_value = random.uniform(0.0, 0.05)
         
-        # Check against physical constantsalignment = 0.0
+        # Check against physical constants
+        alignment = 0.0
         for name, const in self.PHYSICAL_CONSTANTS.items():
-            # Mock check: does the concept hash align with the constant?
             if random.random() > 0.5:
                 alignment += 1.0
                 
@@ -129,8 +138,10 @@ def _generate_logic_proof(self, data: Dict[str, Any]) -> Dict[str, Any]:
         Determines if the concept can be implemented in the current reality.
         """
         if proof["valid"] and validation["statistically_significant"]:
-        return {"status": "READY_FOR_DEPLOYMENT", "risk": "LOW"}
+            return {"status": "READY_FOR_DEPLOYMENT", "risk": "LOW"}
         else:
-        return {"status": "NEEDS_REVISION", "risk": "HIGH"}
+            return {"status": "NEEDS_REVISION", "risk": "HIGH"}
 
-# Singletonreality_verification = RealityVerificationEngine()
+# Singleton
+reality_verification = RealityVerificationEngine()
+

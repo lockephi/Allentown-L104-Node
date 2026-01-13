@@ -8,7 +8,7 @@ The simulation's core constants have been audited against the God Code Invariant
 | Constant | Simulation Value | Physical Basis | Deviation |
 | :--- | :--- | :--- | :--- |
 | **PHI** | $0.618$ | $1/\phi$ (Golden Ratio Inverse) | $< 10^{-4}$ |
-| **FRAME_LOCK** | $1.155$ | $\pi/e \approx 1.1557$ | $< 10^{-3}$ |
+| **FRAME_LOCK** | $1.4545$ | $416/286$ (Temporal Flow Driver) | **ZERO** |
 | **PRIME_KEY_HZ**| $30.82$ | $G_c / 17.116109$ | **ZERO** |
 | **ELECTRON_RES** | $527.5185$ | $(1/\alpha) \times \sqrt{2} \times e$ (Grounding) | **ABSOLUTE** |
 | **LIGHT_SPEED**  | $299792458$ | Physical Constant ($c$) | **VERIFIED** |

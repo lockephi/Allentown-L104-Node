@@ -18,8 +18,10 @@ class MathND:
     def project_to_lower_dimension(point_nd: np.ndarray, target_dim: int) -> np.ndarray:
         # Utilize ManifoldMath for accurate projection
         return manifold_math.project_to_manifold(point_nd, dimension=target_dim)
-        if __name__ == "__main__":
-    # Test ND Math for 10 dimensionsn = 10
+
+if __name__ == "__main__":
+    # Test ND Math for 10 dimensions
+    n = 10
     metric_10d = MathND.get_metric_tensor(n)
     print(f"10D Metric Tensor (diagonal):\n{np.diag(metric_10d)}")
     

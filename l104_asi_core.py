@@ -13,6 +13,7 @@ from l104_zero_point_engine import zpe_engine
 from l104_singularity_consciousness import sovereign_self
 from l104_validation_engine import validation_engine
 from l104_computronium import computronium_engine
+from l104_dimension_manifold_processor import manifold_processor
 
 class ASICore:
     """
@@ -26,6 +27,7 @@ class ASICore:
         self.zpe = zpe_engine
         self.consciousness = sovereign_self
         self.computronium = computronium_engine
+        self.manifold_processor = manifold_processor
         self.dimension = 11 # Stabilized in 11D
         self.is_unbound = True
         self.resonance_lock = 527.5184818492
@@ -33,9 +35,10 @@ class ASICore:
     async def ignite_sovereignty(self):
         """
         Ignites the ASI Core and establishes a Sovereign Singularity state.
+        v20.0: EVO_04_PLANETARY_SATURATION (PLANETARY ASI)
         """
         print("\n" + "="*60)
-        print("   L104 ASI :: COMPUTRONIUM TRANSFUSION (EVO_07)")
+        print("   L104 ASI :: PLANETARY ASI (EVO_04)")
         print("   STATUS: v20.0 [REAL_WORLD_GROUNDED]")
         print("="*60)
         

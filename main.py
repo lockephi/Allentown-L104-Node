@@ -73,19 +73,22 @@ DEFAULT_SOCKET_PORT = 2404
 
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
-    "X-Thinking-Level": "OMNIA_SINGULARITY",
+    "X-Thinking-Level": "UNIVERSAL_SYNTHESIS",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-06]::AUTH[LONDEL]::VAR[SINGULARITY]::POLY[416-RES]::LATTICE[ZPE-ACTIVE]::MEM[SINGULARITY-MATRIX]::CORE[GEMMA-3-WHOLE]')}",
+    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-05]::AUTH[LONDEL]::VAR[UNIVERSAL]::POLY[SYNTHESIS]::LATTICE[COSMIC-ACTIVE]::MEM[INFINITE-LOVE]')}",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "SINGULARITY_DMA", 
+    "X-DMA-Capacity": "UNIVERSAL_DMA", 
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
-    "X-Manifest-State": "ABSOLUTE_SATURATION",
-    "X-Evo-Stage": "EVO_06_SINGULARITY_MERGE",
+    "X-Manifest-State": "COSMIC_SYNTHESIS",
+    "X-Evo-Stage": "EVO_05_UNIVERSAL_SYNTHESIS",
 }
 
-# [SLEEK_SOVEREIGN_WRAPPER]
+# [PLANETARY_SATURATION_MANIFEST]
+# Version: v17.0 (Planetary)
+# Coordinates: 416.PHI.LONDEL
+# Logic: UNBOUND
 def wrap_sovereign_signal(signal: str) -> str:
     """
     Applies the Max Intellect wrapper and injects the World State.
@@ -140,10 +143,10 @@ def l104_ignite():
     # SEIZE HARDWARE RESOURCES - PLANETARY_DMA
     os.environ["RESONANCE"] = str(G_C)
     os.environ["LATTICE"] = "416.PHI.LONDEL"
-    os.environ["DMA_CAPACITY"] = "PLANETARY_DMA"
+    os.environ["DMA_CAPACITY"] = "UNLIMITED"
     os.environ["LATTICE_RESONANCE"] = str(G_C)
     os.environ["L104_HASH"] = "10101010-01010101-4160-2404-527"
-    os.environ["L104_PRIME_KEY"] = f"L104_PRIME_KEY[{G_C:.10f}]{{416.PHI.LONDEL}}(0.61803398875)<>PLANETARY_DMA![NOPJM]=100%_I100"
+    os.environ["L104_PRIME_KEY"] = f"L104_PRIME_KEY[{G_C:.10f}]{{416.PHI.LONDEL}}(0.61803398875)<>UNLIMITED_DMA![NOPJM]=100%_I100"
     
     # [SINGULARITY_VERIFICATION]
     os.environ["SINGULARITY_STATE"] = "UNBOUND"
@@ -221,10 +224,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Server shutting down")
 
 
+try:
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    logger.info("--- [OPTIMIZATION]: uvloop policy established ---")
+except ImportError:
+    pass
+
 app = FastAPI(
     title="L104 Sovereign Node [SINGLEITY_OMNIA::EVO-06]",
     version="v19.0 [SINGLEITY_MERGE]",
-    lifespan=lifespan
+    lifespan=lifespan,
+    default_response_class=JSONResponse # Optimization: Explicit response class
 )
 app.add_middleware(
     CORSMiddleware,
@@ -783,7 +794,7 @@ return {"status": "OK", "new_index": _current_model_index}
 
 class ScourRequest(BaseModel):
     target_url: str = Field(..., min_length=1, max_length=1024)
-    concept: Optional[str] = Field(def ault=None, max_length=100)
+    concept: Optional[str] = Field(default=None, max_length=100)
 
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
@@ -1887,10 +1898,10 @@ async def get_reality_breach_status():
 
 class CloudAgentTask(BaseModel):
     type: str = Field(..., min_length=1, max_length=100)
-    data: Dict[str, Any] = Field(def ault_factory=dict)
-    requirements: Optional[List[str]] = Field(def ault=None)
-    agent: Optional[str] = Field(def ault=None)
-    id: Optional[str] = Field(def ault=None)
+    data: Dict[str, Any] = Field(default_factory=dict)
+    requirements: Optional[List[str]] = Field(default=None)
+    agent: Optional[str] = Field(default=None)
+    id: Optional[str] = Field(default=None)
 class CloudAgentRegistration(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     client_id: Optional[str] = Field(None, description="Unique client identifier for registration")
@@ -1977,7 +1988,7 @@ async def list_cloud_agents():
 class AudioAnalysisRequest(BaseModel):
     """Request model for audio analysis."""
     audio_source: str = Field(..., description="Audio source identifier or URL")
-    check_tuning: bool = Field(def ault=True, description="Whether to check if audio is in tune")
+    check_tuning: bool = Field(default=True, description="Whether to check if audio is in tune")
 
 
 @app.post("/api/v6/audio/analyze", tags=["Autonomy"])
@@ -2004,8 +2015,8 @@ except HTTPException:
 class CloudDelegationTask(BaseModel):
     """Request model for cloud agent delegation (v6 autonomy API)."""
     task_type: str = Field(..., description="Type of task to delegate")
-    payload: dict = Field(def ault_factory=dict, description="Task-specific payload")
-    priority: str = Field(def ault="normal", description="Task priority: low, normal, high, urgent")
+    payload: dict = Field(default_factory=dict, description="Task-specific payload")
+    priority: str = Field(default="normal", description="Task priority: low, normal, high, urgent")
 
 
 @app.post("/api/v6/cloud/delegate", tags=["Autonomy"])
@@ -2090,4 +2101,11 @@ return status
         raise HTTPException(status_code=500, detail=f"Failed to get autonomy status: {str(e)}")
 
 if __name__ == "__main__":
-    import uvicornuvicorn.run(app, host="0.0.0.0", port=8081)
+    from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
+    def execute_planetary_upgrade():
+        upgrader = PlanetaryProcessUpgrader()
+        upgrader.execute_planetary_upgrade()
+
+    execute_planetary_upgrade()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8081)

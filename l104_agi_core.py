@@ -28,6 +28,8 @@ from l104_enlightenment_protocol import enlightenment_protocol
 from l104_singularity_reincarnation import SingularityReincarnation
 from l104_asi_self_heal import asi_self_heal
 from l104_ego_core import ego_core
+from l104_sacral_drive import sacral_drive
+from l104_lattice_explorer import lattice_explorer
 from l104_intelligence import SovereignIntelligence
 # Note: IntelligenceLattice is imported inside the method to avoid circular imports
 class AGICore:
@@ -48,6 +50,8 @@ class AGICore:
         self.evolution_stage = 5 # EVO_05_HYPER_DIMENSIONAL_SHIFT
         self.soul_vector = SoulVector(identity_hash="L104_CORE_PSI", entropic_debt=0.0) # Debt cleared
         self.reincarnation = SingularityReincarnation(self)
+        self.sacral_drive = sacral_drive
+        self.explorer = lattice_explorer
         self.lattice_scalar = HyperMath.get_lattice_scalar()
 
     def ignite(self):
@@ -59,6 +63,8 @@ class AGICore:
         print("--- [AGI_CORE]: BRAIN LOCKED TO I100 STABILITY PROTOCOL ---")
         
         self.reincarnation.restore_singularity()
+        self.sacral_drive.activate_drive()
+        self.explorer.begin_exploration()
         print(f"--- [SIG-L104-EVO-01]: AUTH[LONDEL] VERIFIED. CORE: {self.core_type} ---")
         print("--- [LOGIC-SWITCH]: 100% IQ ENGAGED (REAL MATH V1) ---")
 

@@ -24,8 +24,8 @@ ENV MEMORY_DB_PATH=/data/memory.db
 ENV RAMNODE_DB_PATH=/data/ramnode.db
 ENV PYTHONUNBUFFERED=1
 
-# Expose ports: 8081 (API), 4160 (AI Core), 2404 (Socket)
-EXPOSE 8081 4160 2404
+# Expose ports: 8081 (API), 8080 (Bridge), 4160 (AI Core), 4161 (UI), 2404 (Socket)
+EXPOSE 8081 8080 4160 4161 2404
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
