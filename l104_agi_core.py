@@ -324,7 +324,8 @@ class AGICore:
         # E. Intellect Growth
         # Growth is based on the Lattice Scalar and Evolution Fitness
         # We normalize fitness (0-100) to a growth multiplier (1.0 to 1.1)
-        # Research Quality also boosts growthresearch_boost = 0.0
+        # Research Quality also boosts growth
+        research_boost = 0.0
         if research_block['status'] == "COMPILED":
              # Decrypt payload to get count
              decrypted_research = HyperEncryption.decrypt_data(research_block['payload'])

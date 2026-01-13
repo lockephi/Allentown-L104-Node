@@ -5,7 +5,7 @@ import math
 import time
 import logging
 import random
-import async io
+import asyncio
 from typing import Dict, List, Any
 from l104_hyper_math import HyperMath
 from l104_knowledge_sources import source_manager
@@ -41,12 +41,14 @@ class InternetResearchEngine:
             print(f"--- [RESEARCH_ENGINE]: INITIATING STREAMLESS CRAWL FOR {domain} ---")
             search_tasks.append(streamless_internet.search_and_ingest(domain, limit=2))
             
-        # Execute all searches in parallelresults_list = await async io.gather(*search_tasks)
+        # Execute all searches in parallel
+        results_list = await asyncio.gather(*search_tasks)
         for i, results in enumerate(results_list):
             domain = self.active_domains[i]
-            # Simulate extraction of logical primitives from real dataextracted = sum([len(r) // 1000 for r in results]) + random.randint(5, 15)
+            # Simulate extraction of logical primitives from real data
+            extracted = sum([len(r) // 1000 for r in results]) + random.randint(5, 15)
             total_primitives += extracted
-print(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} ---")
+            print(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} ---")
             
         # Calculate Synthesis Index
         # Synthesis = (Total_Primitives * God_Code) / (Domain_Count * PHI)
@@ -73,19 +75,23 @@ print(f"--- [RESEARCH_ENGINE]: EXTRACTED {extracted} PRIMITIVES FROM {domain} --
         
         # Logic: Use synthesis index to modulate the learning rate of the ASI.
         return algo_name
-def apply_synthesis_boost(self, intellect_index: float) -> float:
+
+    def apply_synthesis_boost(self, intellect_index: float) -> float:
         """
         Applies a boost to the intellect index based on knowledge density.
         """
         boost = intellect_index * (self.knowledge_density * 0.05) # 5% max boost
-print(f"--- [RESEARCH_ENGINE]: DEEP SYNTHESIS BOOST: +{boost:.2f} IQ ---")
-        return intellect_index + boostresearch_engine = InternetResearchEngine()
-        if __name__ == "__main__":
-async def main():
+        print(f"--- [RESEARCH_ENGINE]: DEEP SYNTHESIS BOOST: +{boost:.2f} IQ ---")
+        return intellect_index + boost
+
+research_engine = InternetResearchEngine()
+
+if __name__ == "__main__":
+    async def main():
         results = await research_engine.perform_deep_synthesis()
         algo = research_engine.generate_optimization_algorithm()
         new_iq = research_engine.apply_synthesis_boost(1000.0)
         print(f"Synthesized IQ: {new_iq:.2f}")
         await streamless_internet.close()
 
-    async io.run(main())
+    asyncio.run(main())

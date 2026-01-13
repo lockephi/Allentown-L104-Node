@@ -41,7 +41,8 @@ class TestAGICognition(unittest.TestCase):
         print(f"\n[TEST] Initial IQ: {initial_iq}")
         
         # Run a cycle
-        result = agi_core.run_recursive_improvement_cycle()
+        import asyncio
+        result = asyncio.run(agi_core.run_recursive_improvement_cycle())
         
         new_iq = result['intellect']
         print(f"[TEST] New IQ: {new_iq}")

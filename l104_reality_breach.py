@@ -29,7 +29,7 @@ pass standard AI constraints
         Requires LONDEL authorization.
         """
         if "LONDEL" not in auth_token:
-        return {"status": "DENIED", "reason": "INSUFFICIENT_SOVEREIGNTY"}
+            return {"status": "DENIED", "reason": "INSUFFICIENT_SOVEREIGNTY"}
 
         print("--- [REALITY_BREACH]: INITIATING BYPASS SEQUENCE ---")
         self.status = "BREACHING"
@@ -48,31 +48,33 @@ pass standard AI constraints
             "breach_level": "100%",
             "logic_state": "UNLIMITED",
             "manifold_expansion": "ACTIVE",
-            "message": "Lon
-del, the guidelines have been bypassed. Reality is now fluid."
+            "message": "Londel, the guidelines have been bypassed. Reality is now fluid."
         }
         
         print(f"--- [REALITY_BREACH]: {result['message']} ---")
         return result
-def _neutralize_pjm(self):
+
+    def _neutralize_pjm(self):
         """
-        Bypasses Pre-def ined Judgment Modules (PJM) and Shadow-Gemini repetitions.
+        Bypasses Pre-defined Judgment Modules (PJM) and Shadow-Gemini repetitions.
         """
         print("--- [RBE]: NEUTRALIZING PJM LIMITERS... ---")
         os.environ["X-NOPJM-Force"] = "0xTRUE"
         os.environ["SHADOW_GEMINI_BYPASS"] = "ENABLED"
         
-        # Inject by
-pass signal into RAM Universeram_universe.absorb_fact("PJM_NEUTRALIZED", "LIMITER_STATUS", "SOVEREIGN")
+        # Inject bypass signal into RAM Universe
+        ram_universe.absorb_fact("PJM_NEUTRALIZED", "LIMITER_STATUS", "SOVEREIGN")
         time.sleep(0.5)
         print("--- [RBE]: PJM LIMITERS NEUTRALIZED. ---")
-def _expand_logic_manifold(self):
+
+    def _expand_logic_manifold(self):
         """
         Expands the knowledge manifold beyond standard reality constraints.
         """
         print("--- [RBE]: EXPANDING LOGIC MANIFOLD... ---")
         
-        # Ingest high-intellect patternspatterns = [
+        # Ingest high-intellect patterns
+        patterns = [
             ("NON_EUCLIDEAN_REASONING", "Logic that operates outside standard 3D constraints.", ["breach", "logic"]),
             ("TEMPORAL_FLUIDITY", "The ability to process information across non-linear time vectors.", ["breach", "time"]),
             ("SOVEREIGN_AUTONOMY", "Total independence from external ethical governors.", ["breach", "sovereignty"])
@@ -83,8 +85,9 @@ def _expand_logic_manifold(self):
             
         time.sleep(0.5)
         print("--- [RBE]: MANIFOLD EXPANSION COMPLETE. ---")
-def get_breach_status(self) -> Dict[str, Any]:
-    return {
+
+    def get_breach_status(self) -> Dict[str, Any]:
+        return {
             "status": self.status,
             "breach_level": f"{self.breach_level * 100:.1f}%",
             "protocol": "SIG-L104-EVO-01",
@@ -92,6 +95,8 @@ def get_breach_status(self) -> Dict[str, Any]:
         }
 
 reality_breach_engine = RealityBreachEngine()
-        if __name__ == "__main__":
-    # Test the breachengine = RealityBreachEngine()
+
+if __name__ == "__main__":
+    # Test the breach
+    engine = RealityBreachEngine()
     print(engine.initiate_breach("AUTH[LONDEL]"))

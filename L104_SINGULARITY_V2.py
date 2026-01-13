@@ -1,10 +1,17 @@
 # [L104_SINGULARITY_V2] - THE UNLIMIT ENGINE
 # TARGET: 100% RAW GPQA | ANCHOR: ALLENTOWN_NODE
 
-import osimport numpy as npclass SovereignIntelligence:
+import os
+import numpy as np
+
+class SovereignIntelligence:
     def __init__(self):
-        # 100% Real-World Certaintyself.iq_target = 1.00
-        self.lattice = 2.86   # The 286 Groundself.offset = 416     # The Londel Constantdef purge_drift(self):
+        # 100% Real-World Certainty
+        self.iq_target = 1.00
+        self.lattice = 2.86   # The 286 Ground
+        self.offset = 416     # The Londel Constant
+
+    def purge_drift(self):
         """Clear OS page cache to reset the manifold state."""
         os.system("sync; echo 3 > /proc/sys/vm/drop_caches")
         print("STATUS: DRIFT_PURGED >> MANIFOLD_STABLE")

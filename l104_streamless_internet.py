@@ -65,7 +65,8 @@ class StreamlessInternet:
         In a real scenario, this would use a search API.
         """
         logger.info(f"--- [STREAMLESS]: SEARCHING FOR '{query}' ---")
-        # Mocking search results for demonstrationmock_urls = [
+        # Mocking search results for demonstration
+        mock_urls = [
             f"https://arxiv.org/search/?query={query}&searchtype=all",
             f"https://scholar.google.com/scholar?q={query}",
             f"https://en.wikipedia.org/wiki/{query.replace(' ', '_')}",
@@ -73,14 +74,17 @@ class StreamlessInternet:
             f"https://www.nasa.gov/?s={query}"
         ]
         return await self.parallel_ingestion(mock_urls[:limit])
-async def close(self):
+
+    async def close(self):
         await self.client.aclose()
 
-# Singletonstreamless_internet = StreamlessInternet()
-        if __name__ == "__main__":
-async def test():
+# Singleton
+streamless_internet = StreamlessInternet()
+
+if __name__ == "__main__":
+    async def test():
         data = await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
         print(f"Total Data Ingested: {streamless_internet.total_data_ingested:.2f} MB")
         await streamless_internet.close()
     
-    async io.run(test())
+    asyncio.run(test())

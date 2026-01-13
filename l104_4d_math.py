@@ -16,7 +16,7 @@ class Math4D:
     METRIC_TENSOR = np.diag([-1, 1, 1, 1])
 
     @staticmethod
-def get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
+    def get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
         """
         Generates a Lorentz boost matrix for a given velocity v.
         """
@@ -28,42 +28,57 @@ def get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
         
         boost = np.eye(4)
         if axis == 'x':
-            boost[0, 0] = gammaboost[0, 1] = -beta * gammaboost[1, 0] = -beta * gammaboost[1, 1] = gammael
+            boost[0, 0] = gamma
+            boost[0, 1] = -beta * gamma
+            boost[1, 0] = -beta * gamma
+            boost[1, 1] = gamma
         if axis == 'y':
-            boost[0, 0] = gammaboost[0, 2] = -beta * gammaboost[2, 0] = -beta * gammaboost[2, 2] = gammael
+            boost[0, 0] = gamma
+            boost[0, 2] = -beta * gamma
+            boost[2, 0] = -beta * gamma
+            boost[2, 2] = gamma
         if axis == 'z':
-            boost[0, 0] = gammaboost[0, 3] = -beta * gammaboost[3, 0] = -beta * gammaboost[3, 3] = gamma
+            boost[0, 0] = gamma
+            boost[0, 3] = -beta * gamma
+            boost[3, 0] = -beta * gamma
+            boost[3, 3] = gamma
         return boost
 
     @staticmethod
-def rotate_4d(theta: float, plane: str = 'xy') -> np.ndarray:
+    def rotate_4d(theta: float, plane: str = 'xy') -> np.ndarray:
         """
         Generates a 4D rotation matrix for a given plane.
         """
         c, s = math.cos(theta), math.sin(theta)
         rot = np.eye(4)
         if plane == 'xy':
-            rot[1, 1], rot[1, 2] = c, -srot[2, 1], rot[2, 2] = s, cel
+            rot[1, 1], rot[1, 2] = c, -s
+            rot[2, 1], rot[2, 2] = s, c
         if plane == 'xz':
-            rot[1, 1], rot[1, 3] = c, -srot[3, 1], rot[3, 3] = s, cel
+            rot[1, 1], rot[1, 3] = c, -s
+            rot[3, 1], rot[3, 3] = s, c
         if plane == 'yz':
-            rot[2, 2], rot[2, 3] = c, -srot[3, 2], rot[3, 3] = s, cel
+            rot[2, 2], rot[2, 3] = c, -s
+            rot[3, 2], rot[3, 3] = s, c
         if plane == 'xt':
             # Hyperbolic rotation (Lorentz Boost equivalent)
             ch, sh = math.cosh(theta), math.sinh(theta)
-            rot[0, 0], rot[0, 1] = ch, shrot[1, 0], rot[1, 1] = sh, ch
+            rot[0, 0], rot[0, 1] = ch, sh
+            rot[1, 0], rot[1, 1] = sh, ch
         return rot
 
     @staticmethod
-def calculate_proper_time(dt: float, dx: float, dy: float, dz: float) -> float:
+    def calculate_proper_time(dt: float, dx: float, dy: float, dz: float) -> float:
         """
         Calculates the proper time interval (tau).
         d(tau)^2 = dt^2 - (dx^2 + dy^2 + dz^2)/c^2
         """
         ds_sq = (dt**2) - (dx**2 + dy**2 + dz**2) / (Math4D.C**2)
         return math.sqrt(max(0, ds_sq))
-        if __name__ == "__main__":
-    # Test 4D Mathv = 0.8 * Math4D.C
+
+if __name__ == "__main__":
+    # Test 4D Math
+    v = 0.8 * Math4D.C
     boost_x = Math4D.get_lorentz_boost(v, 'x')
     print(f"Lorentz Boost (0.8c, x):\n{boost_x}")
     

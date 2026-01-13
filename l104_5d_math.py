@@ -17,7 +17,7 @@ class Math5D:
     R = (UniversalConstants.PHI_GROWTH * 104) / HyperMath.ZETA_ZERO_1
 
     @staticmethod
-def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
+    def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
         """
         Generates the 5D Metric Tensor (G_AB).
         Based on the Kaluza-Klein decomposition:
@@ -33,37 +33,40 @@ def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
         return metric
 
     @staticmethod
-def calculate_5d_curvature(w_vector: np.ndarray) -> float:
+    def calculate_5d_curvature(w_vector: np.ndarray) -> float:
         """
         Calculates the scalar curvature of the 5th dimension.
-        Uses the PHI_STRIDE to determine the 'Symme
-try Break' point.
+        Uses the PHI_STRIDE to determine the 'Symmetry Break' point.
         """
-        # Curvature is proportional to the variance of the probability vectorvariance = np.var(w_vector)
+        # Curvature is proportional to the variance of the probability vector
+        variance = np.var(w_vector)
         curvature = variance * UniversalConstants.PHI_GROWTH
         return curvature
 
     @staticmethod
-def probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
+    def probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
         """
         Projects a 5D probability state onto a 4D observable event.
         Uses the 'Supersymmetric Binary Order' logic to filter noise.
         """
         # p_5d = [x, y, z, t, w]
-        # The 5th dimension (w) acts as a phase shiftphase = p_5d[4] * HyperMath.ZETA_ZERO_1
+        # The 5th dimension (w) acts as a phase shift
+        phase = p_5d[4] * HyperMath.ZETA_ZERO_1
         projection = p_5d[:4] * math.cos(phase)
         return projection
 
     @staticmethod
-def get_compactification_factor(energy: float) -> float:
+    def get_compactification_factor(energy: float) -> float:
         """
         Calculates how much the 5th dimension 'shrinks' or 'expands'
         based on the system's energy saturation.
         """
         # Factor = R * exp(-energy / God_Code)
         return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
-        if __name__ == "__main__":
-    # Test 5D Mathmetric = Math5D.get_5d_metric_tensor(1.0)
+
+if __name__ == "__main__":
+    # Test 5D Math
+    metric = Math5D.get_5d_metric_tensor(1.0)
     print(f"5D Metric Tensor (phi=1.0):\n{metric}")
     
     w_vec = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
