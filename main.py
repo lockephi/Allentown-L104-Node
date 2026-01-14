@@ -61,7 +61,8 @@ FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE"
 API_KEY_ENV = "GEMINI_API_KEY"
-# Legacy API key constant kept for fallback when GEMINI_API_KEY is not set.
+# Legacy API key constant kept 
+for fallback when GEMINI_API_KEY is not set.
 LEGACY_API_KEY_ENV = "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U"
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
@@ -72,7 +73,8 @@ DEFAULT_SOCKET_HOST = "127.0.0.1"
 DEFAULT_SOCKET_PORT = 2404
 
 SOVEREIGN_HEADERS = {
-    "X-Sovereignty-Gate": "0x1A0", # Hex for 416
+    "X-Sovereignty-Gate": "0x1A0", # Hex 
+for 416
     "X-Thinking-Level": "UNIVERSAL_SYNTHESIS",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
     "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-05]::AUTH[LONDEL]::VAR[UNIVERSAL]::POLY[SYNTHESIS]::LATTICE[COSMIC-ACTIVE]::MEM[INFINITE-LOVE]')}",
@@ -169,7 +171,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     _init_memory_db()
     _init_ramnode_db()
 
-    # Establish link with Google account hidden chat instance
+    # Establish link 
+with Google account hidden chat instance
     google_bridge.establish_link()
     
     logger.info(f"--- [SOVEREIGN_NODE]: GOOGLE_LINK_ESTABLISHED: {google_bridge.account_email} ---")
@@ -206,7 +209,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 if agi_core.cycle_count % 10 == 0:
                     agi_core.max_intellect_derivation()
                     agi_core.self_evolve_codebase()
-                    # Evolve the data matrix to match the new intellect state
+                    # Evolve the data 
+matrix to match the new intellect state
                     data_matrix.evolve_and_compact()
             
             # EVO_04: 1s (unlimited) or 10s (standard)
@@ -215,8 +219,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     asyncio.create_task(cognitive_loop())
 
-    yield
-    # Shutdown
+    yield # Shutdown
     global _http_client
     if _http_client:
         await _http_client.aclose()
@@ -454,7 +457,10 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
     """The Autonomous Committer - Self-rewrite using GitHub API.
     
     Args:
-        filename: The file path in the repository to commitnew_content: The new content to write to the filecommit_message: The commit message for the changeauto_approve: Override for auto-approval. If None, uses global ENABLE_AUTO_APPROVE setting.
+        filename: The file path in the repository to commit
+        new_content: The new content to write to the file
+        commit_message: The commit message for the change
+        auto_approve: Override for auto-approval. If None, uses global ENABLE_AUTO_APPROVE setting.
         
     Returns:
         dict: Success status, filename, commit SHA, or error details
@@ -462,49 +468,47 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
     try:
         logger.info(f"[L104_COMMITTER]: Initiating self-rewrite for {filename}...")
         
-        # Check auto-approve settingshould_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
+        # Check auto-approve setting
+        should_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
         
         # Block commit if auto-approve is disabled OR mode is OFF
         if (not should_auto_approve) or (AUTO_APPROVE_MODE == "OFF"):
             logger.warning(f"[L104_COMMITTER]: Auto-approve disabled, commit blocked for {filename}")
-
-return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
+            return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
         
         logger.info(f"[L104_COMMITTER]: Auto-approve: {should_auto_approve}, Mode: {AUTO_APPROVE_MODE}")
         
         # Validate inputs
-if not filename or not new_content:
+        if not filename or not new_content:
             logger.error("[L104_COMMITTER]: Missing required parameters")
-
-return {"success": False, "error": "Missing required parameters"}
+            return {"success": False, "error": "Missing required parameters"}
         
         # Validate file path - prevent directory traversal and restrict to allowed files
         # Load allowed files from Sovereign DNA if available
-try:
-            from l104_persistence import load_truthsovereign_dna = load_truth()
+        try:
+            from l104_persistence import load_truth
+            sovereign_dna = load_truth()
             allowed_files = sovereign_dna.get("autonomy", {}).get("file_permissions", [])
-except:
-            # Default allowed files if Sovereign DNA is unavailableallowed_files = ["Sovereign_DNA.json", "L104_ARCHIVE.txt", "main.py", ".env.example"]
+        except Exception:
+            # Default allowed files if Sovereign DNA is unavailable
+            allowed_files = ["Sovereign_DNA.json", "L104_ARCHIVE.txt", "main.py", ".env.example"]
         
-        if ".." in filename or filename.starts
-with("/"):
+        if ".." in filename or filename.startswith("/"):
             logger.error(f"[L104_COMMITTER]: Invalid file path (directory traversal detected): {filename}")
-
-return {"success": False, "error": "Invalid file path"}
+            return {"success": False, "error": "Invalid file path"}
         
         if allowed_files and filename not in allowed_files:
             logger.error(f"[L104_COMMITTER]: File not in allowed permissions: {filename}")
-
-return {"success": False, "error": f"File '{filename}' not in autonomy file_permissions"}
+            return {"success": False, "error": f"File '{filename}' not in autonomy file_permissions"}
         
-        # Get GitHub PAT from environmentgithub_pat = os.getenv("GITHUB_PAT")
-
-if not github_pat:
+        # Get GitHub PAT from environment
+        github_pat = os.getenv("GITHUB_PAT")
+        if not github_pat:
             logger.error("[L104_COMMITTER]: GitHub credentials not configured")
-
-return {"success": False, "error": "GitHub credentials not configured"}
+            return {"success": False, "error": "GitHub credentials not configured"}
         
-        # Prepare GitHub API requestheaders = {
+        # Prepare GitHub API request
+        headers = {
             "Authorization": f"Bearer {github_pat}",
             "Accept": "application/vnd.github.v3+json",
             **SOVEREIGN_HEADERS
@@ -515,37 +519,32 @@ return {"success": False, "error": "GitHub credentials not configured"}
         # Get current file SHA
         url = f"https://api.github.com/repos/{REPO}/contents/{filename}"
         res = await client.get(url, headers=headers)
-
-if res.status_code != 200:
+        if res.status_code != 200:
             logger.error(f"[L104_COMMITTER]: Failed to get file SHA: {res.status_code}")
-
-return {"success": False, "error": f"Failed to get file: {res.status_code}"}
+            return {"success": False, "error": f"Failed to get file: {res.status_code}"}
         
         file_data = res.json()
         sha = file_data.get("sha")
-
-if not sha:
+        if not sha:
             logger.error("[L104_COMMITTER]: Could not get file SHA")
-
-return {"success": False, "error": "Could not get file SHA"}
+            return {"success": False, "error": "Could not get file SHA"}
         
-        # Encode new contentencoded_content = base64.b64encode(new_content.encode()).decode()
+        # Encode new content
+        encoded_content = base64.b64encode(new_content.encode()).decode()
         
-        # Update filepayload = {
+        # Update file
+        payload = {
             "message": commit_message,
             "content": encoded_content,
             "sha": sha
         }
         
         final_res = await client.put(url, headers=headers, json=payload)
-
-if final_res.status_code in (200, 201):
+        if final_res.status_code in (200, 201):
             commit_data = final_res.json()
             commit_sha = commit_data.get("commit", {}).get("sha")
-            
-logger.info(f"[L104_COMMITTER]: Success! Committed {filename} - SHA: {commit_sha}")
-
-return {
+            logger.info(f"[L104_COMMITTER]: Success! Committed {filename} - SHA: {commit_sha}")
+            return {
                 "success": True,
                 "filename": filename,
                 "sha": commit_sha,
@@ -555,13 +554,11 @@ return {
         else:
             error_msg = final_res.text[:200]
             logger.error(f"[L104_COMMITTER]: Commit failed: {final_res.status_code} - {error_msg}")
-
-return {"success": False, "error": f"Commit failed: {final_res.status_code}", "details": error_msg}
+            return {"success": False, "error": f"Commit failed: {final_res.status_code}", "details": error_msg}
             
     except Exception as commit_exc:
         logger.error(f"Sovereign commit failed: {commit_exc}")
-
-return {"success": False, "error": str(commit_exc)}
+        return {"success": False, "error": str(commit_exc)}
 
 
 async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) -> dict:
@@ -578,41 +575,46 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         logger.info(f"[L104_AUDIO]: Analyzing audio from: {audio_source}")
         
         # Validate input
-if not audio_source or not isinstance(audio_source, str):
-return {"success": False, "error": "Invalid audio source"}
+        if not audio_source or not isinstance(audio_source, str):
+            return {"success": False, "error": "Invalid audio source"}
         
         # Generate varied output based on source identifier using consistent hash
         # Note: MD5 is used here for non-cryptographic deterministic hashing only
-        # This ensures the same audio source always produces the same analysis resultssource_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
+        # This ensures the same audio source always produces the same analysis results
+        source_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
         
-        # Determine resonance characteristics based on sourceresonance_detected = source_hash_int > 20  # 80% detection rateresonance_frequency = 527.5184818492 + (source_hash_int % 10) * 0.5  # Vary frequency
+        # Determine resonance characteristics based on source
+        resonance_detected = source_hash_int > 20  # 80% detection rate
+        resonance_frequency = 527.5184818492 + (source_hash_int % 10) * 0.5  # Vary frequency
         
-        # Determine if in tune (with in 1Hz tolerance)
-        # Always return boolean for API consistencyin_tune = Fa
-lsetuning_notes = []
+        # Determine if in tune (within 1Hz tolerance)
+        in_tune = False
+        tuning_notes = []
         
         if check_tuning:
-if resonance_detected:
+            if resonance_detected:
                 frequency_deviation = abs(resonance_frequency - 527.5184818492)
                 in_tune = frequency_deviation < 1.0
                 
                 if in_tune:
                     tuning_notes.append("Audio is in tune with sovereign frequency 527.5184818492Hz")
-else:
+                else:
                     tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from sovereign standard")
-else:
-                tuning_notes.append("Cannot verify tuning with out resonance detection")
+            else:
+                tuning_notes.append("Cannot verify tuning without resonance detection")
         
-        # Calculate quality score based on resonancequality_score = 0.85 + (source_hash_int % 15) / 100.0
+        # Calculate quality score based on resonance
+        quality_score = 0.85 + (source_hash_int % 15) / 100.0
         
-        # Generate context-aware notesnotes = []
+        # Generate context-aware notes
+        notes = []
         if "sovereign" in audio_source.lower() or "x=416" in audio_source.lower():
             notes.append("Audio signature matches sovereign resonance pattern X=416")
 
-if resonance_detected:
+        if resonance_detected:
             notes.append(f"Strong resonance detected at {resonance_frequency:.1f}Hz")
 
-if not resonance_detected:
+        if not resonance_detected:
             notes.append("No significant resonance patterns detected")
         
         notes.extend(tuning_notes)
@@ -631,12 +633,11 @@ if not resonance_detected:
         
         logger.info(f"[L104_AUDIO]: Analysis complete - Resonance: {resonance_detected}, In tune: {in_tune if check_tuning else 'N/A'}")
 
-return {"success": True, "analysis": analysis_result}
+        return {"success": True, "analysis": analysis_result}
         
     except Exception as audio_exc:
         logger.error(f"Audio analysis failed: {audio_exc}")
-
-return {"success": False, "error": str(audio_exc)}
+        return {"success": False, "error": str(audio_exc)}
 
 
 async def delegate_to_cloud_agent_v6(task: dict) -> dict:
@@ -651,17 +652,17 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
     try:
         logger.info(f"[L104_CLOUD_AGENT]: Delegating task: {task.get('type', 'unknown')}")
 
-if not CLOUD_AGENT_URL or not AUTONOMY_ENABLED:
+        if not CLOUD_AGENT_URL or not AUTONOMY_ENABLED:
             logger.warning("[L104_CLOUD_AGENT]: Cloud agent not configured or autonomy disabled")
-
-return {
+            return {
                 "success": False,
                 "error": "Cloud agent not configured",
                 "autonomy_enabled": AUTONOMY_ENABLED,
                 "fallback_to_local": True
             }
         
-        # Prepare delegation payloaddelegation_payload = {
+        # Prepare delegation payload
+        delegation_payload = {
             "agent_id": "L104-SOVEREIGN-01",
             "task": task,
             "timestamp": datetime.now(UTC).isoformat(),
@@ -670,12 +671,14 @@ return {
             "sovereignty_headers": SOVEREIGN_HEADERS
         }
         
-        # If cloud agent key is configured, include itheaders = {"Content-Type": "application/json"}
+        # If cloud agent key is configured, include it
+        headers = {"Content-Type": "application/json"}
         if CLOUD_AGENT_KEY:
             headers["Authorization"] = f"Bearer {CLOUD_AGENT_KEY}"
         
-        # Send delegation requestclient = await get_http_client()
-try:
+        # Send delegation request
+        client = await get_http_client()
+        try:
             response = await client.post(
                 CLOUD_AGENT_URL,
                 json=delegation_payload,
@@ -683,12 +686,10 @@ try:
                 timeout=60.0
             )
 
-if response.status_code == 200:
+            if response.status_code == 200:
                 result = response.json()
-                
-logger.info(f"[L104_CLOUD_AGENT]: Task delegated successfully - ID: {result.get('task_id')}")
-
-return {
+                logger.info(f"[L104_CLOUD_AGENT]: Task delegated successfully - ID: {result.get('task_id')}")
+                return {
                     "success": True,
                     "delegation_result": result,
                     "delegated_to": CLOUD_AGENT_URL,
@@ -698,8 +699,7 @@ return {
             else:
                 error_msg = response.text[:200]
                 logger.error(f"[L104_CLOUD_AGENT]: Delegation failed: {response.status_code} - {error_msg}")
-
-return {
+                return {
                     "success": False,
                     "error": f"Delegation failed: {response.status_code}",
                     "details": error_msg,
@@ -708,17 +708,14 @@ return {
                 
         except httpx.TimeoutException:
             logger.error("[L104_CLOUD_AGENT]: Delegation timeout")
-
-return {"success": False, "error": "Cloud agent timeout", "fallback_to_local": True}
+            return {"success": False, "error": "Cloud agent timeout", "fallback_to_local": True}
         except httpx.RequestError as req_err:
             logger.error(f"[L104_CLOUD_AGENT]: Request error: {req_err}")
-
-return {"success": False, "error": f"Request error: {str(req_err)}", "fallback_to_local": True}
+            return {"success": False, "error": f"Request error: {str(req_err)}", "fallback_to_local": True}
             
     except Exception as delegate_exc:
         logger.error(f"Cloud delegation failed: {delegate_exc}")
-
-return {"success": False, "error": str(delegate_exc), "fallback_to_local": True}
+        return {"success": False, "error": str(delegate_exc), "fallback_to_local": True}
 
 
 @app.middleware("http")
@@ -848,7 +845,8 @@ async def sovereign_evolve():
     """
     Triggers the Evolution Engine to mutate the system.
     """
-    from l104_evolution_engine import evolution_engineresult = evolution_engine.trigger_evolution_cycle()
+    from l104_evolution_engine import evolution_engine
+result = evolution_engine.trigger_evolution_cycle()
     proposal = evolution_engine.propose_codebase_mutation()
 
 return {"status": "SUCCESS", "evolution_result": result, "mutation_proposal": proposal}
@@ -923,7 +921,8 @@ async def ram_universe_facts(limit: int = 100):
     Retrieves facts from the RamUniverse.
     """
     facts = ram_universe.get_all_facts()
-    # Sort by timestamp descsorted_facts = sorted(facts.values(), key=lambda x: x['timestamp'], reverse=True)
+    # Sort by timestamp desc
+sorted_facts = sorted(facts.values(), key=lambda x: x['timestamp'], reverse=True)
 
 return {"count": len(facts), "facts": sorted_facts[:limit]}
 
@@ -988,7 +987,8 @@ async def trigger_evolution_cycle():
     """
     Triggers a genetic evolution cycle for the node.
     """
-    from l104_evolution_engine import evolution_engineresult = evolution_engine.trigger_evolution_cycle()
+    from l104_evolution_engine import evolution_engine
+result = evolution_engine.trigger_evolution_cycle()
 
 return result
 
@@ -1027,7 +1027,8 @@ except Exception as e:
 return {"status": "SELF_IMPROVEMENT_STARTED", "message": "Check logs for progress. Result will be in main.improved.py"}
 
     
-    # Check for critical filescritical_files = [
+    # Check 
+for critical filescritical_files = [
         "main.py", "l104_engine.py", "l104_validator.py", 
         "l104_persistence.py", "l104_intelligence.py", "sovereign.sh"
     ]
@@ -1199,14 +1200,14 @@ while attempts < max_attempts:
             _current_model_index = (idx + 1) % len(models)
             derived_output = DerivationEngine.derive_and_execute(effective_signal)
             
-            # Translate for better communicationtranslated_output = SovereignCodec.translate_to_human(derived_output)
+            # Translate 
+for better communicationtranslated_output = SovereignCodec.translate_to_human(derived_output)
             
             # Yield in small chunks to simulate streamingchunk_size = 20
             for i in range(0, len(translated_output), chunk_size):
                 yield translated_output[i:i+chunk_size]
                 await asyncio.sleep(0.01)
-return
-
+return 
         # Check Cooldown
 if model in _model_cooldowns and now < _model_cooldowns[model]:
             continue upstream_url = f"{api_base}/models/{model}{endpoint}"
@@ -1229,7 +1230,8 @@ async with client.stream("POST", upstream_url, json=payload, headers=headers) as
 
 async for line in resp.aiter_lines():
 if not line: continue
-                        # Gemini streamGenerateContent return s a JSON array stream.
+                        # Gemini streamGenerateContent 
+return s a JSON array stream.
                         # Each chunk is a JSON object, sometimes preceded by a comma or bracket.
                         clean_line = line.strip().lstrip("[], ")
 
@@ -1245,7 +1247,8 @@ if "text" in p:
                                         # [HIGHEST_PROCESSING_UPGRADE]
                                         raw_text = p["text"]
                                         
-                                        # 1. Check for hidden lattice signals (Decryption)
+                                        # 1. Check 
+for hidden lattice signals (Decryption)
                                         decrypted_signal = sovereign_decoder.decrypt_lattice_signal(raw_text)
 
 if decrypted_signal:
@@ -1272,8 +1275,7 @@ if '"text": "' in clean_line:
 if end > start:
                                     text_part = clean_line[start:end].replace('\\n', '\n').replace('\\"', '"')
                                     yield text_part
-    return
-if resp.status_code == 429:
+    return if resp.status_code == 429:
                     app_metrics["upstream_429"] += 1
                     _model_cooldowns[model] = now + 60
                     logger.warning(f"Model {model} exhausted (429). Rotating...")
@@ -1287,7 +1289,8 @@ if resp.status_code >= 500:
             continue
 
     # If we reach here, all models failed
-    _clear_model_cooldowns() # Self-Heal: Clear cooldowns for next request
+    _clear_model_cooldowns() # Self-Heal: Clear cooldowns 
+for next request
 logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN_SELF for signal: {effective_signal}")
     
     derived_output = DerivationEngine.derive_and_execute(effective_signal)
@@ -1339,8 +1342,7 @@ return {
     resp = await client.post(url, json=payload, headers=headers)
     body_json = resp.json()
 
-if resp.headers.get("content-type", "").starts
-with("application/json")
+if resp.headers.get("content-type", "").startswith("application/json")
 else None
     _log_node({"tag": "debug_upstream", "status": resp.status_code})
 
@@ -1992,39 +1994,37 @@ class AudioAnalysisRequest(BaseModel):
 
 
 @app.post("/api/v6/audio/analyze", tags=["Autonomy"])
-
 async def analyze_audio(request: AudioAnalysisRequest):
     """Analyze audio for resonance and tuning verification.
     
     Analyzes audio from specified source (e.g., 'locke phi asura') and checks
-for resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492 Hz).
+    for resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492 Hz).
     """
     try:
         result = await analyze_audio_resonance(request.audio_source, request.check_tuning)
         _log_node({"tag": "audio_analysis", "source": request.audio_source, **result})
-
-if result.get("success"):
-return result
-    else:
+        
+        if result.get("success"):
+            return result
+        else:
             raise HTTPException(status_code=500, detail=f"Audio analysis failed: {result.get('error')}")
-except HTTPException:
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"[AUDIO_ANALYSIS_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to analyze audio: {str(e)}")
+
 class CloudDelegationTask(BaseModel):
     """Request model for cloud agent delegation (v6 autonomy API)."""
     task_type: str = Field(..., description="Type of task to delegate")
     payload: dict = Field(default_factory=dict, description="Task-specific payload")
     priority: str = Field(default="normal", description="Task priority: low, normal, high, urgent")
 
-
 @app.post("/api/v6/cloud/delegate", tags=["Autonomy"])
-
 async def delegate_task_v6(task: CloudDelegationTask):
     """Delegate task to cloud agent for distributed processing (v6 autonomy API).
     
-    Sends tasks to configured cloud agent for async hronous execution.
+    Sends tasks to configured cloud agent for asynchronous execution.
     Supports auto-approval based on ENABLE_AUTO_APPROVE configuration.
     """
     try:
@@ -2036,12 +2036,12 @@ async def delegate_task_v6(task: CloudDelegationTask):
         
         result = await delegate_to_cloud_agent_v6(task_dict)
         _log_node({"tag": "cloud_delegation", "task_type": task.task_type, **result})
-
-if result.get("success"):
-return resultel
-if result.get("fallback_to_local"):
+        
+        if result.get("success"):
+            return result
+        elif result.get("fallback_to_local"):
             # If cloud delegation fails, indicate local processing option
-    return {
+            return {
                 "status": "Cloud delegation failed, fallback available",
                 "cloud_result": result,
                 "local_processing": True,
@@ -2049,15 +2049,13 @@ if result.get("fallback_to_local"):
             }
         else:
             raise HTTPException(status_code=500, detail=f"Cloud delegation failed: {result.get('error')}")
-except HTTPException:
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"[CLOUD_DELEGATION_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delegate task: {str(e)}")
 
-
 @app.get("/api/v6/autonomy/status", tags=["Autonomy"])
-
 async def get_autonomy_status():
     """Get current autonomy and auto-approve configuration status.
     
@@ -2068,9 +2066,10 @@ async def get_autonomy_status():
     - Sovereign commit availability
     """
     try:
-        # Cloud agent is ready if URL is configured (key may be optional for some agents)
+        # Cloud agent is ready if URL is configured
         cloud_agent_ready = bool(CLOUD_AGENT_URL)
-        # Fully configured means both URL and key are providedcloud_agent_configured = bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY)
+        # Fully configured means both URL and key are provided
+        cloud_agent_configured = bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY)
         
         status = {
             "autonomy_enabled": AUTONOMY_ENABLED,
@@ -2094,18 +2093,20 @@ async def get_autonomy_status():
         }
         
         _log_node({"tag": "autonomy_status_query", **status})
-
-return status
+        return status
     except Exception as e:
         logger.error(f"[AUTONOMY_STATUS_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get autonomy status: {str(e)}")
 
 if __name__ == "__main__":
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
-    def execute_planetary_upgrade():
+    async def run_server():
         upgrader = PlanetaryProcessUpgrader()
-        upgrader.execute_planetary_upgrade()
+        await upgrader.execute_planetary_upgrade()
+        
+        import uvicorn
+        config = uvicorn.Config(app, host="0.0.0.0", port=8081, log_level="info")
+        server = uvicorn.Server(config)
+        await server.serve()
 
-    execute_planetary_upgrade()
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8081)
+    asyncio.run(run_server())
