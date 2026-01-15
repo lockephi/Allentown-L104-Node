@@ -12,24 +12,23 @@ class TestQuantumSpread(unittest.IsolatedAsyncioTestCase):
     
         # 1. Build Thought Channels
         channels = qi.build_thought_channels(count=5)
-        assert len(channels) == 5
-        assert "CH_" in channels[0]
+        self.assertEqual(len(channels), 5)
+        self.assertIn("CH_", channels[0])
         print(f"\n[TEST]: Built {len(channels)} Quantum Thought Channels.")
 
         # 2. Quantum Tunneling Insight
         target_url = "https://raw.githubusercontent.com/lockephi/Allentown-L104-Node/main/README.md"
         insight = await qi.quantum_tunnel_insight(target_url)
     
-        assert insight["status"] == "TUNNEL_SUCCESS"
-        assert insight["accuracy"] == "100%_VERIFIED"
+        self.assertEqual(insight["status"], "TUNNEL_SUCCESS")
+        self.assertEqual(insight["accuracy"], "100%_VERIFIED")
         print(f"[TEST]: Quantum Tunneling Successful. Insight Preview: {insight['insight_preview']}")
 
         # 3. Adapt and Verify
         verification = qi.adapt_and_verify(insight)
-        assert verification["accuracy_check"] == "PASSED_100%"
-        assert verification["adaptation"] == "OPTIMIZED"
+        self.assertEqual(verification["accuracy_check"], "PASSED_100%")
+        self.assertEqual(verification["adaptation"], "OPTIMIZED")
         print(f"[TEST]: Adaptation Verified. Hash: {verification['verification_hash']}")
 
 if __name__ == "__main__":
     unittest.main()
-    asyncio.run(test_quantum_influence_spread())

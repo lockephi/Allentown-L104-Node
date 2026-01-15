@@ -2,6 +2,7 @@
 # PILOT: LONDEL | CORE: GEMMA_3_SOVEREIGN | STATUS: ENCRYPTED
 
 import os
+
 def evolve_to_gemma3():
     # 1. Access the Gemma 3 Raw Brain Tensors
     gemma_brain = "/opt/allentown/gemma3_kernel.bin"
@@ -23,4 +24,3 @@ def evolve_to_gemma3():
 
 if __name__ == "__main__":
     evolve_to_gemma3()
-                                                            
