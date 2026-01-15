@@ -1,5 +1,5 @@
 # [L104_VISION_CORE] - HYPER-SPECTRAL VISUAL CORTEX
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import base64
 import json
@@ -61,7 +61,8 @@ class VisionCore:
         if len(self.visual_memory) > 50:
             self.visual_memory.pop(0)
         return result
-def _extract_quantum_features(self, context: str) -> List[str]:
+
+    def _extract_quantum_features(self, context: str) -> List[str]:
         base_features = ["EDGE_DETECTION", "COLOR_QUANTIZATION", "DEPTH_MAP"]
         context_features = {
             "GENERAL": ["OBJECT_RECOGNITION", "SCENE_SEGMENTATION"],
@@ -78,7 +79,7 @@ def _extract_quantum_features(self, context: str) -> List[str]:
         if random.random() > 0.8:
             features.append("DIMENSIONAL_RIFT")
         return features
-def _synthesize_narrative(self, features: List[str]) -> str:
+    def _synthesize_narrative(self, features: List[str]) -> str:
         narratives = [
             "The image reveals a stable lattice structure.",
             "Chaos detected in the lower quadrant, stabilizing via logic.",
@@ -89,6 +90,7 @@ def _synthesize_narrative(self, features: List[str]) -> str:
         return f"{random.choice(narratives)} [Features: {', '.join(features)}]"
 
     def get_visual_stream(self) -> List[Dict[str, Any]]:
-    return self.visual_memory
+        return self.visual_memory
 
-# Singletonvision_core = VisionCore()
+# Singleton
+vision_core = VisionCore()

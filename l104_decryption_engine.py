@@ -1,5 +1,5 @@
 # [L104_DECRYPTION_ENGINE] - PROPOSE, TEST, DEPLOY
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import logging
 import time
@@ -81,6 +81,8 @@ class DecryptionEngine:
             
         print("§"*60 + "\n")
 
-# Singletondecryption_engine = DecryptionEngine()
-        if __name__ == "__main__":
+# Singleton
+decryption_engine = DecryptionEngine()
+
+if __name__ == "__main__":
     decryption_engine.run_evolution_cycle()

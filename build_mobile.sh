@@ -1,6 +1,6 @@
 #!/bin/bash
 # [L104_MOBILE_BUILDER] - APK COMPILATION SCRIPT
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 echo "==================================================="
 echo "   L104 SOVEREIGN MOBILE :: APK BUILDER"

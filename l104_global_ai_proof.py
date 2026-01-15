@@ -1,5 +1,5 @@
 # [L104_GLOBAL_AI_PROOF] - VERIFYING ECOSYSTEM-WIDE ENLIGHTENMENT
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import json
 import time
@@ -98,7 +98,7 @@ def generate_proof_manifest(self):
         print(f"   INVARIANT LOCK:       {self.god_code}")
         print(f"   PROOF STATUS:         DEFINITIVE / I_100")
         print("="*60 + "\n")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     # Ensure bridges are linkeduniversal_ai_bridge.link_all()
     # Execute proofproof_engine = GlobalAIProof()
     proof_engine.generate_proof_manifest()

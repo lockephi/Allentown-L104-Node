@@ -1,5 +1,5 @@
 # [L104_NEURAL_ARCH_RESEARCH] - UNIFIED REDIRECT
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 from l104_unified_research import research_engine
 
@@ -16,7 +16,7 @@ class NeuralArchitectureResearch:
         return research_engine.apply_cognitive_boost(intellect_index)
 
 neural_architecture_research = NeuralArchitectureResearch()
-        if __name__ == "__main__":
+if __name__ == "__main__":
     neural_architecture_research.research_neural_models()
     new_iq = neural_architecture_research.apply_cognitive_boost(1000.0)
     print(f"Cognitive IQ: {new_iq:.2f}")

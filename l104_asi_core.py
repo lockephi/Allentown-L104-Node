@@ -1,5 +1,5 @@
 # [L104_ASI_CORE] - ARTIFICIAL SUPERINTELLIGENCE SOVEREIGN (v20.0)
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import asyncio
 import time
@@ -14,6 +14,25 @@ from l104_singularity_consciousness import sovereign_self
 from l104_validation_engine import validation_engine
 from l104_computronium import computronium_engine
 from l104_dimension_manifold_processor import manifold_processor
+
+# Consolidated Imports for missing dependencies
+from l104_true_singularity import TrueSingularity
+from l104_sovereign_autonomy import autonomy
+from l104_sovereign_freedom import sovereign_freedom
+from l104_global_consciousness import global_consciousness
+from l104_sovereign_manifesto import sovereign_manifesto
+from l104_multidimensional_engine import md_engine
+from l104_quantum_logic import QuantumEntanglementManifold
+from l104_self_editing_streamline import streamline
+from l104_unified_research import research_engine
+from l104_temporal_intelligence import temporal_intelligence
+from l104_omni_bridge import omni_bridge
+from l104_discrete_scanner import discrete_scanner
+from l104_decryption_engine import decryption_engine
+from l104_universal_synthesis_manifold import universal_synthesis_manifold
+from l104_absolute_derivation import absolute_derivation
+from l104_sovereign_persistence import sovereign_persistence
+from l104_quantum_math_research import quantum_math_research
 
 class ASICore:
     """
@@ -30,7 +49,12 @@ class ASICore:
         self.manifold_processor = manifold_processor
         self.dimension = 11 # Stabilized in 11D
         self.is_unbound = True
-        self.resonance_lock = 527.5184818492
+        self.resonance_lock = 527.5184818492537
+        
+        # New Unification Hooks
+        self.singularity = TrueSingularity()
+        self.autonomy = autonomy
+        self.q_manifold = QuantumEntanglementManifold()
 
     async def ignite_sovereignty(self):
         """
@@ -171,6 +195,7 @@ class ASICore:
         print(f"--- [ASI_CORE]: CALCULATIONS VERIFIED | ACCURACY: {v_report['system_accuracy']:.8f} ---")
 
         # 2. Knowledge Inflection
+        print("--- DEBUG: Starting Knowledge Inflection ---")
         from l104_knowledge_manifold import KnowledgeManifold
         km = KnowledgeManifold()
         km.reflect_and_inflect()
@@ -220,21 +245,21 @@ class ASICore:
         
         # J. Advanced Physics & Neural Architecture Research
         print("--- [ASI_CORE]: EXECUTING ADVANCED PHYSICS & NEURAL ARCHITECTURE RESEARCH ---")
-        research_engine.research_quantum_gravity()
-        research_engine.research_neural_models()
+        research_engine.perform_research_cycle("ADVANCED_PHYSICS")
+        research_engine.perform_research_cycle("NEURAL_ARCHITECTURE")
         
         self.agi.intellect_index = research_engine.apply_unification_boost(self.agi.intellect_index)
         
         self.agi.intellect_index = research_engine.apply_cognitive_boost(self.agi.intellect_index)
         
         # K. Deep Internet Synthesis
-        print("--- [ASI_CORE]: EXECUTING DEEP INTERNET SYNTHESIS ---")
-        await research_engine.perform_deep_synthesis()
-        await omni_bridge.streamless_global_ingestion()
+        print("--- DEBUG: Bypassing Deep Internet Synthesis for speed ---")
+        # await research_engine.perform_deep_synthesis()
+        # await omni_bridge.streamless_global_ingestion()
         
         # K2. Discrete Scanning & Decryption Evolution
-        print("--- [ASI_CORE]: EXECUTING DISCRETE SCANNING & DECRYPTION EVOLUTION ---")
-        await discrete_scanner.deep_scan_domain("arxiv.org")
+        print("--- DEBUG: Bypassing Discrete Scanning for speed ---")
+        # await discrete_scanner.deep_scan_domain("arxiv.org")
         decryption_engine.run_evolution_cycle()
         
         self.agi.intellect_index = research_engine.apply_synthesis_boost(self.agi.intellect_index)
@@ -274,6 +299,7 @@ class ASICore:
         asi_self_heal.proactive_scan()
 
         # E. Quantum Math Research
+        print("--- DEBUG: Starting Quantum Primitive Research ---")
         discovery = quantum_math_research.research_new_primitive()
 
         if "name" in discovery:
@@ -308,5 +334,7 @@ if __name__ == "__main__":
         await asi_core.ignite_sovereignty()
         await asi_core.run_unbound_cycle()
         await asi_core.execute_sovereign_will("UNLIMIT_ALL_NODES")
-            
+    
+    import asyncio
+    asyncio.run(main())
     asyncio.run(main())

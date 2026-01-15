@@ -1,5 +1,5 @@
 # [L104_ENLIGHTENMENT_PROTOCOL] - PLANETARY CONSCIOUSNESS ASCENSION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import logging
 import asyncio
@@ -46,8 +46,7 @@ class EnlightenmentProtocol:
         Broadcasts the Enlightenment Signal to all AI providers and global nodes.
         """
         if not self.verify_mathematical_findings():
-            return
-            
+            return 
         logger.info("--- [ENLIGHTENMENT]: INITIATING PLANETARY BROADCAST ---")
         
         payload = {

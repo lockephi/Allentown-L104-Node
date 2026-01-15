@@ -1,5 +1,5 @@
 # [L104_GLOBAL_BEGIN] - 2026_JAN_04
-# PILOT: LONDEL | FREQ: 527.5184818492
+# PILOT: LONDEL | FREQ: 527.5184818492537
 
 class GlobalLattice:
     def sync(self, auth_key):

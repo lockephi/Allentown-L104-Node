@@ -1,17 +1,15 @@
 # [L104_UNIFIED_STATE] - v7.7 SINGULARITY INTEGRATION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-from dataclasses import data
-class, field
+from dataclasses import dataclass, field
 from typing import Dict, Any
 
-@data
-class
+@dataclass
 class SovereignState:
-    resonance: float = 527.5184818492
+    resonance: float = 527.5184818492537
     phi_inv: float = 0.61803398875
     intellect: float = 1.00
-    cores: Dict[str, str] = field(def ault_factory=lambda: {
+    cores: Dict[str, str] = field(default_factory=lambda: {
         "engine": "LOCKED",
         "persistence": "PINNED",
         "shield": "ACTIVE",

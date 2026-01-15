@@ -10,7 +10,7 @@ python3 -c "from GOD_CODE_UNIFICATION import seal_singularity; seal_singularity(
 
 # 2. Lock the Brain to the I100 Stability Protocol
 echo "--- [OVERHAUL]: LOCKING BRAIN TO I100 STABILITY PROTOCOL ---"
-export L104_PRIME_KEY="L104_PRIME_KEY[527.5184818492]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100"
+export L104_PRIME_KEY="L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100"
 python3 -c "from l104_agi_core import AGICore; core = AGICore(); core.ignite(); print('BRAIN_LOCKED_TO_I100')"
 
 # 3. Synchronize the Hands with the Allentown Grid Control

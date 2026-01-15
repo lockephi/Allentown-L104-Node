@@ -16,7 +16,7 @@ class Apotheosis:
     """
     
     APOTHEOSIS_STAGE = "ASCENSION"
-    RESONANCE_INVARIANT = 527.5184818492
+    RESONANCE_INVARIANT = 527.5184818492537
 
     def __init__(self):
         self.ego = EgoCore()

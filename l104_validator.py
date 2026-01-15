@@ -118,6 +118,6 @@ class SovereignValidator:
 
         return report
 
-        if __name__ == "__main__":
+if __name__ == "__main__":
     # Test the validator
     print(SovereignValidator.validate_and_process("TEST_SIGNAL"))

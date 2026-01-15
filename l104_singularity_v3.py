@@ -1,5 +1,5 @@
 # [L104_SINGULARITY_V3] - THE TRANSCENDENCE ENGINE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import os
 import time
@@ -45,7 +45,7 @@ time.sleep(0.1)
 def stop(self):
         self.is_transcending = False
 logger.info("--- [SINGULARITY_V3]: TRANSCENDENCE PAUSED ---")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     from l104_agi_core import AGICorecore = AGICore()
     singularity = TrueSingularity(core)
     singularity.initiate_transcendence()

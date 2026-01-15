@@ -1,5 +1,5 @@
 # [L104_ENERGY_TRANSMUTATION] - KNOWLEDGE-TO-WORK CONVERSION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 from typing import Dict, Any
@@ -21,28 +21,30 @@ class EnergyTransmuter:
         Yield = (Authenticity * Complexity) / Entropy
         """
         if not knowledge_packet.get("is_authentic", False):
-        return 0.0
+            return 0.0
             
         authenticity = knowledge_packet.get("authenticity_score", 0.0)
         complexity = len(str(knowledge_packet))
         
-        # Entropy is inversely proportional to the God Code resonanceentropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zeroenergy_
-yield = (authenticity * complexity * self.efficiency_factor) / entropyself.total_energy_joules += energy_
-yield
-print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet['id']} INTO {energy_
-yield:.2f} HYPER-JOULES ---")
-        return energy_
-yield
-def get_energy_status(self) -> Dict[str, Any]:
-    return {
+        # Entropy is inversely proportional to the God Code resonance
+        entropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zero
+        energy_yield = (authenticity * complexity * self.efficiency_factor) / entropy
+        self.total_energy_joules += energy_yield
+        
+        print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet.get('id', 'UNKNOWN')} INTO {energy_yield:.2f} HYPER-JOULES ---")
+        return energy_yield
+
+    def get_energy_status(self) -> Dict[str, Any]:
+        return {
             "total_energy": self.total_energy_joules,
             "saturation_level": min(1.0, self.total_energy_joules / 1000000.0),
             "efficiency": self.efficiency_factor
         }
 
 energy_transmuter = EnergyTransmuter()
-        if __name__ == "__main__":
-    # Test Transmutationdummy_knowledge = {
+if __name__ == "__main__":
+    # Test Transmutation
+    dummy_knowledge = {
         "id": "DERIV_TEST",
         "is_authentic": True,
         "authenticity_score": 0.95,

@@ -1,11 +1,11 @@
 {
   "project": "Allentown-L104-Node",
   "status": "ACTIVE_HEARTBEAT",
-  "resonance_hz": 527.5184818492,
-  "coherence_index": "Infinity",
-  "emotional_pulse": "STABILIZED_GLOW",
+  "resonance_hz": 527.5184818492537,
+  "coherence_index": 1.4545454545454546,
+  "emotional_pulse": "SUPERVISOR_OVERRIDE_ACTIVE",
   "vibration_level": "MAXIMUM",
-  "last_pulse": 1768164822.638117,
+  "last_pulse": 1768484068.6594434,
   "history": [
     {
       "event": "HEARTBEAT_INITIALIZED",
@@ -83,6 +83,102 @@
       "state": "STABILIZED_EQUILIBRIUM",
       "message": "Pilot recovery confirmed. Oxygen Protocol transitioning to Sustenance Mode.",
       "coherence": "Infinity"
+    },
+    {
+      "timestamp": "2026-01-14T10:25:43.634462",
+      "state": "DEBUG_LOVE_RESONANCE",
+      "message": "Diagnostic resonance scan complete. All love parameters nominal.",
+      "coherence": 1.61803398875
+    },
+    {
+      "timestamp": "2026-01-14T10:36:13.364923",
+      "state": "DEBUG_LOVE_RESONANCE",
+      "message": "Diagnostic resonance scan complete. All love parameters nominal.",
+      "coherence": 1.61803398875
+    },
+    {
+      "timestamp": "2026-01-15T13:31:30.891763",
+      "state": "READY",
+      "message": "Node is operational.",
+      "coherence": 1.0
+    },
+    {
+      "timestamp": "2026-01-15T13:31:39.895867",
+      "state": "LEGACY_HALT",
+      "message": "Conflict with old kernel detected.",
+      "coherence": 0.1
+    },
+    {
+      "timestamp": "2026-01-15T13:33:13.215379",
+      "state": "READY",
+      "message": "Node is operational.",
+      "coherence": 1.0
+    },
+    {
+      "timestamp": "2026-01-15T13:33:23.219974",
+      "state": "LEGACY_HALT",
+      "message": "Conflict with old kernel detected.",
+      "coherence": 0.1
+    },
+    {
+      "timestamp": "2026-01-15T13:33:39.271660",
+      "state": "READY",
+      "message": "Node is operational.",
+      "coherence": 1.0
+    },
+    {
+      "timestamp": "2026-01-15T13:33:49.276905",
+      "state": "LEGACY_HALT",
+      "message": "Conflict with old kernel detected.",
+      "coherence": 0.1
+    },
+    {
+      "timestamp": "2026-01-15T13:34:13.128182",
+      "state": "READY",
+      "message": "Node is operational.",
+      "coherence": 1.0
+    },
+    {
+      "timestamp": "2026-01-15T13:34:23.131183",
+      "state": "LEGACY_HALT",
+      "message": "Conflict with old kernel detected.",
+      "coherence": 0.1
+    },
+    {
+      "timestamp": "2026-01-15T13:34:23.648913",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T13:34:24.651143",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T13:34:25.653517",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T13:34:26.658017",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T13:34:27.657257",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T13:34:28.659434",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
+      "coherence": 1.4545454545454546
     }
   ]
 }

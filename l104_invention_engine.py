@@ -1,5 +1,5 @@
 # [L104_INVENTION_ENGINE] - NEOTERIC LOGIC SYNTHESIS
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 # "To invent is to discover what was already there in the quantum foam."
 
 import random
@@ -10,11 +10,14 @@ from typing import Dict, List, Any
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
 from l104_quantum_logic import QuantumEntanglementManifold, DeepThoughtProcessor
+from l104_cpu_core import cpu_core
+
 class InventionEngine:
     """
-    v12.0: NEOTERIC_GENESIS
+    v13.0: NEOTERIC_GENESIS_PARALLEL
     Generates novel logic structures and 'Neoteric Code' by collapsing 
     high-dimensional quantum states into linguistic syntax.
+    Utilizes multi-core acceleration for mass-invention.
     """
     
     def __init__(self):
@@ -37,7 +40,7 @@ class InventionEngine:
             sigil_components.append(f"{glyph}{clarity_mod}")
         return "-".join(sigil_components)
 
-    def invent_new_paradigm(self, seed_concept: str) -> Dict[str, Any]:
+    def invent_new_paradigm(self, seed_concept: str, persist: bool = True) -> Dict[str, Any]:
         """
         Invents a completely new logical paradigm based on a seed.
         """
@@ -76,8 +79,8 @@ def {func_name}(input_tensor):
         invention["test_result"] = test_result
         invention["verified"] = test_result["success"]
 
-        # 5. Persist to Manifold
-        if invention["verified"]:
+        # 5. Persist to Manifold (Skip if in parallel task to avoid race conditions)
+        if invention["verified"] and persist:
             manifold.ingest_pattern(func_name, invention, tags=["INVENTION", "NEOTERIC"])
         
         self.known_concepts.add(func_name)
@@ -109,6 +112,36 @@ def {func_name}(input_tensor):
         for _ in range(random.randint(3, 7)):
             sentence.append(random.choice(keys))
         return " :: ".join(sentence)
+
+    def parallel_invent(self, seed_concepts: List[str]) -> List[Dict[str, Any]]:
+        """
+        Mass-invents many paradigms in parallel using all available CPU cores.
+        """
+        print(f"--- [INVENTION]: PARALLEL GENESIS INITIATED FOR {len(seed_concepts)} CONCEPTS ---")
+        
+        # Use cpu_core chunking logic for parallel processing
+        import multiprocessing as mp
+        with mp.Pool(processes=cpu_core.num_cores) as pool:
+            # We must use a standalone function or static method for pickling
+            results = pool.map(self._invent_task, seed_concepts)
+            
+        print(f"--- [INVENTION]: PARALLEL GENESIS COMPLETE. {len(results)} PARADIGMS CREATED ---")
+        
+        # PERSIST ALL INVENTIONS IN MAIN PROCESS
+        from l104_knowledge_manifold import KnowledgeManifold
+        manifold = KnowledgeManifold()
+        for invention in results:
+            if invention["verified"]:
+                manifold.ingest_pattern(invention["name"], invention, tags=["INVENTION", "NEOTERIC"])
+        manifold.save_manifold()
+        
+        return results
+
+    def _invent_task(self, seed: str) -> Dict[str, Any]:
+        """Isolated task for parallel workers."""
+        # Simple local engine for workers, persist=False to avoid race conditions
+        engine = InventionEngine()
+        return engine.invent_new_paradigm(seed, persist=False)
 
 # Singleton Instance
 invention_engine = InventionEngine()

@@ -1,5 +1,5 @@
 # [L104_SOVEREIGN_REINDEX] - GROUND UP INDEX REBUILD
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import os
 import glob
@@ -64,6 +64,6 @@ try['filename']} | Entropy: {entropy_data['shannon_entropy']:.4f}")
         self.qram.store(manifest_key, self.index_manifest)
         print(f"--- [SOVEREIGN_INDEX]: COMPLETE. {len(self.index_manifest)} FILES INDEXED. ---")
         return self.index_manifest
-        if __name__ == "__main__":
+if __name__ == "__main__":
     indexer = SovereignIndexer()
     indexer.scan_and_index()

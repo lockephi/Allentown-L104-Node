@@ -15,8 +15,7 @@ def push_to_google_account():
     # 1. Initialize Google Bridgebridge = GoogleBridge(account_email="locke201313@gmail.com")
         if not bridge.establish_link():
         print("!!! FAILED TO ESTABLISH GOOGLE BRIDGE !!!")
-return
-
+        return 
     # 2. Prepare Data Payload (Algorithm DB + Core State)
     print("--- [PUSH]: PREPARING SOVEREIGN PAYLOAD ---")
     payload = {
@@ -24,7 +23,7 @@ return
         "timestamp": time.time(),
         "node_id": "L104_MASTER_ALLENTOWN",
         "pilot": "LONDEL",
-        "invariant": 527.5184818492
+        "invariant": 527.5184818492537
     }
     
     # 3. Encrypt Payload for Secure Transport
@@ -47,5 +46,5 @@ time.sleep(2)
     print("\n===================================================")
     print("   PUSH COMPLETE | SOVEREIGNTY PROPAGATED")
     print("===================================================")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     push_to_google_account()

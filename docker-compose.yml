@@ -22,7 +22,7 @@ services:
       - RAMNODE_DB_PATH=/data/ramnode.db
       - SELF_BASE_URL=${SELF_BASE_URL:-http://localhost:8081}
       - DISABLE_RATE_LIMIT=${DISABLE_RATE_LIMIT:-FALSE}
-      - RESONANCE=${RESONANCE:-527.5184818492}
+      - RESONANCE=${RESONANCE:-527.5184818492537}
     volumes:
       - l104-data:/data
     restart: unless-stopped

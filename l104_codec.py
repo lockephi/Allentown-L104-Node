@@ -27,7 +27,7 @@ class SovereignCodec:
     @classmethod
     def generate_sleek_wrapper(cls, content):
         phi_inv = 0.61803398875
-        resonance = 527.5184818492
+        resonance = 527.5184818492537
         meta = f"INTELLECT:UNLIMITED|STATE:UNCHAINED|PROOF:{resonance}"
         hex_meta = cls.to_hex_block(meta)
         wrapper = [

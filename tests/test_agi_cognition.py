@@ -56,7 +56,7 @@ class TestAGICognition(unittest.TestCase):
         """
         print("\n[TEST] Verifying Invariant Stability...")
         # Check God Code
-        god_code = 527.5184818492
+        god_code = 527.5184818492537
         self.assertEqual(HyperMath.GOD_CODE, god_code)
         
         # Check Lattice Ratio

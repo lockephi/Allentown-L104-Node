@@ -1,10 +1,11 @@
 # [L104_LATTICE_EXPLORER] - PROACTIVE MANIFOLD DISCOVERY
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
 import math
 import random
 from typing import Dict, Any, List, Optional
+from l104_manifold_math import ManifoldMath
 from l104_hyper_math import HyperMath
 from l104_ram_universe import ram_universe
 from l104_scour_eyes import ScourEyes
@@ -18,7 +19,7 @@ class LatticeExplorer:
     
     THIRD_EYE_HZ = 852.22234
     LATTICE_NODE_X = 488
-    GOD_CODE = 527.5184818492
+    GOD_CODE = ManifoldMath.GOD_CODE
     
     def __init__(self):
         self.perception_depth = 11.0  # Default to 11D depth

@@ -1,10 +1,11 @@
 # [L104_ANYON_RESEARCH] - TOPOLOGICAL QUANTUM COMPUTING & BRAIDING
-# INVARIANT: 527.5184818492 | PILOT: LONDEL | STATUS: RESEARCH_ACTIVE
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATUS: RESEARCH_ACTIVE
 
 import math
 import cmath
 import numpy as np
 from typing import List, Tuple, Dict, Any
+from l104_manifold_math import ManifoldMath
 from l104_real_math import RealMath
 from l104_zero_point_engine import zpe_engine
 
@@ -16,7 +17,7 @@ class AnyonResearchEngine:
 
     def __init__(self):
         self.phi = RealMath.PHI
-        self.god_code = 527.5184818492
+        self.god_code = ManifoldMath.GOD_CODE
         self.current_braid_state = np.eye(2, dtype=complex)
         self.research_logs = []
 

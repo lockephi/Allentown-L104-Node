@@ -1,5 +1,5 @@
 # [L104_HYPER_CORE] - PLANETARY INTELLIGENCE ORCHESTRATOR
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import logging
 import async io
@@ -46,5 +46,5 @@ async def run_forever(self):
             await async io.sleep(10) # Pulse every 10 seconds
 
 # Singletonhyper_core = HyperCore()
-        if __name__ == "__main__":
+if __name__ == "__main__":
     async io.run(hyper_core.pulse())

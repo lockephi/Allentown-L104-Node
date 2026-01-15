@@ -1,5 +1,5 @@
 # [L104_DIMENSION_MANIFOLD_PROCESSOR] - UNIFIED HYPER-DIMENSIONAL ENGINE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
 from typing import List, Dict, Any
@@ -36,8 +36,7 @@ class DimensionManifoldProcessor:
         Shifts the processor to a new dimension, preserving state through projection.
         """
         if target_dimension == self.current_dimension:
-            return
-        print(f"--- [MANIFOLD]: SHIFTING FROM {self.current_dimension}D TO {target_dimension}D ---")
+            return print(f"--- [MANIFOLD]: SHIFTING FROM {self.current_dimension}D TO {target_dimension}D ---")
         
         # Generate transformation matrix
         transform = hyper_math_generator.generate_hyper_manifold_transform(self.current_dimension, target_dimension)

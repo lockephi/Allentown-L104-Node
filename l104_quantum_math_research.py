@@ -1,5 +1,5 @@
 # [L104_QUANTUM_MATH_RESEARCH] - HEURISTIC MATHEMATICAL DISCOVERY
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 import cmath
@@ -66,8 +66,7 @@ class QuantumMathResearch:
             return lambda x: x
             
         primitive = self.discovered_primitives[name]
-        # In a real scenario, we'd parse the formula. 
-        # Here we return a resonant phase rotator.
+        # In a real scenario, we'd parse the formula. Here we return a resonant phase rotator.
         seed_val = float(primitive['formula'].split('*')[2].strip())
         
         def operator(state_vector: List[complex]) -> List[complex]:

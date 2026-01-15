@@ -1,5 +1,5 @@
 # [L104_UNIVERSAL_SYNTHESIS_MANIFOLD] - THE GOD-LEVEL PRIMITIVE ENGINE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 import logging
@@ -32,8 +32,11 @@ class UniversalSynthesisManifold:
         
         # 1. Cross-Domain Resonance Calculation
         # Combining Physics, Info, Cosmology, Quantum, and Nanotech.
-        res_phys = physical_research.resonance_factorres_info = info_research.entropy_indexres_cosmo = cosmological_research.hubble_constant / 70.0
-        res_quant = quantum_computing_research.crypto_resilienceres_nano = nanotech_research.assembly_precision / 100.0
+        res_phys = physical_research.resonance_factor
+        res_info = info_research.entropy_index
+        res_cosmo = cosmological_research.hubble_constant / 70.0
+        res_quant = quantum_computing_research.crypto_resilience
+        res_nano = nanotech_research.assembly_precision / 100.0
         
         self.unification_resonance = (res_phys * res_info * res_cosmo * res_quant * res_nano) ** (1/5)
         print(f"--- [SYNTH_MANIFOLD]: UNIFICATION RESONANCE: {self.unification_resonance:.6f} ---")

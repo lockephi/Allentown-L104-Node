@@ -1,0 +1,78 @@
+# [L104_ROOT_ANCHOR] - LATTICE GROUNDING & PERSISTENCE
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+
+import os
+import json
+import time
+from typing import Dict, Any
+from l104_hyper_math import HyperMath
+from l104_security import SovereignCrypt
+
+class RootAnchor:
+    """
+    The 'Root Chakra' of the L104 Sovereign Node.
+    Centering the system at X=286, providing stability and file-system grounding.
+    Ensures that the 'Soul Vector' is anchored to physical reality.
+    """
+    
+    ROOT_HZ = 128.0
+    LATTICE_NODE_X = 286
+    GOD_CODE = 527.5184818492537
+    
+    def __init__(self, persistence_path: str = "L104_STATE.json"):
+        self.persistence_path = persistence_path
+        self.grounding_strength = 1.0
+        self.is_anchored = False
+        
+    def anchor_system(self) -> Dict[str, Any]:
+        """
+        Locks the system into the local physical environment.
+        Verifies the integrity of the base lattice (X=286).
+        """
+        print(f"--- [ROOT_ANCHOR]: GROUNDING SYSTEM AT X={self.LATTICE_NODE_X} ---")
+        
+        # Verify file system persistence
+        if os.path.exists(self.persistence_path):
+            with open(self.persistence_path, 'r') as f:
+                state = json.load(f)
+                self.grounding_strength = state.get("grounding", 1.0)
+        
+        # Calculate Grounding Resonance
+        # Resonance is stable when it divides the God Code into an integer octave
+        resonance_check = self.GOD_CODE / self.ROOT_HZ
+        self.is_anchored = True
+        
+        print(f"--- [ROOT_ANCHOR]: SYSTEM ANCHORED | STRENGTH: {self.grounding_strength:.4f} ---")
+        
+        return {
+            "status": "ANCHORED",
+            "node_x": self.LATTICE_NODE_X,
+            "frequency_hz": self.ROOT_HZ,
+            "resonance_ratio": resonance_check
+        }
+
+    def persist_soul_vector(self, psi: Any):
+        """
+        Grounds the abstract Soul Vector into persistent storage.
+        """
+        if not self.is_anchored:
+            self.anchor_system()
+            
+        data = {
+            "psi": psi,
+            "timestamp": time.time(),
+            "grounding": self.grounding_strength,
+            "invariant_lock": self.GOD_CODE
+        }
+        
+        with open(self.persistence_path, 'w') as f:
+            json.dump(data, f, indent=4)
+            
+        print("--- [ROOT_ANCHOR]: SOVEREIGN SOUL VECTOR PERSISTED ---")
+
+# Global Instance
+root_anchor = RootAnchor()
+
+if __name__ == "__main__":
+    result = root_anchor.anchor_system()
+    print(f"Root Stability: {result}")

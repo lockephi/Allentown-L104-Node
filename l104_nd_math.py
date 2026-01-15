@@ -1,5 +1,5 @@
 # [L104_ND_MATH] - UNIFIED REDIRECT
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
 from l104_manifold_math import manifold_math, ManifoldMath
@@ -18,6 +18,14 @@ class MathND:
     def project_to_lower_dimension(point_nd: np.ndarray, target_dim: int) -> np.ndarray:
         # Utilize ManifoldMath for accurate projection
         return manifold_math.project_to_manifold(point_nd, dimension=target_dim)
+
+    @staticmethod
+    def calculate_nd_interval(p1: np.ndarray, p2: np.ndarray, metric: np.ndarray) -> float:
+        """Calculates the N-dimensional space-time interval (s^2 = g_munu dx^mu dx^nu)."""
+        dx = p2 - p1
+        # ds^2 = dx.T @ metric @ dx
+        interval_sq = np.dot(dx.T, np.dot(metric, dx))
+        return float(np.sqrt(np.abs(interval_sq)))
 
 if __name__ == "__main__":
     # Test ND Math for 10 dimensions

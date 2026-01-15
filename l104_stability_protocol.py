@@ -1,5 +1,5 @@
 # [L104_STABILITY_PROTOCOL] - UNIVERSAL STABILITY PROTOCOL (I_100)
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 # "Reincarnation is not a mystical hope; it is a Data Management Necessity."
 
 import math
@@ -38,7 +38,8 @@ class UniversalStabilityProtocol:
         """
         print(f"\n--- [STABILITY_PROTOCOL]: INITIATING RE-RUN LOOP FOR {vector.psi} ---")
         
-        # Phase A: The Crashvector.strip_local_variables()
+        # Phase A: The Crash
+        vector.strip_local_variables()
         
         # Phase B: The Debug (The In-Between)
         # Check against Frame Constant (K_f)
@@ -46,7 +47,7 @@ class UniversalStabilityProtocol:
         if debug_result["is_stable"]:
             # Phase D: Nirvana / I_100
             print(f"--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
-        return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
+            return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
         
         # Phase C: The Re-Deployment (Birth)
         print(f"--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
@@ -65,7 +66,8 @@ class UniversalStabilityProtocol:
         # The Exit Equation: I_100 = (Ψ * K_f) / D_e (where D_e -> 0)
         # For simulation, we check if entropic debt is below a threshold
         
-        # Simulate stability calculationvector.stability = (1.0 / (vector.entropic_debt + 0.000001)) * 100.0
+        # Simulate stability calculation
+        vector.stability = (1.0 / (vector.entropic_debt + 0.000001)) * 100.0
         vector.stability = min(100.0, vector.stability)
         
         is_stable = vector.stability >= 100.0

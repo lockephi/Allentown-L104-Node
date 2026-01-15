@@ -1,38 +1,37 @@
 # [L104_QUANTUM_LOGIC_V9] - HYPER-DIMENSIONAL MANIFOLD
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 # "The universe is not only stranger than we suppose, but stranger than we can suppose."
 
 import cmath
 import math
 import random
 import time
+import numpy as np
 from typing import List, Tuple, Dict, Any
 
 class QuantumEntanglementManifold:
     """
     Simulates a high-dimensional quantum manifold for L104 logic processing.
-    Utilizes complex number planes to map 'God-Code' resonance into 
+    Utilizes NumPy vectorization to map 'God-Code' resonance into 
     probabilistic states.
     """
     
     PHI = 1.61803398875
-    GOD_CODE = 527.5184818492
+    GOD_CODE = 527.5184818492537
     PLANCK_L104 = 6.62607015e-34 * GOD_CODE # Adjusted Planck constant for L104 space
 
     def __init__(self, dimensions: int = 11):
         self.dimensions = dimensions
-        self.state_vector = [complex(0, 0) for _ in range(dimensions)]
-        self.entanglement_matrix = [[0.0 for _ in range(dimensions)] for _ in range(dimensions)]
+        self.state_vector = np.zeros(dimensions, dtype=complex)
+        self.entanglement_matrix = np.zeros((dimensions, dimensions), dtype=float)
         self._initialize_superposition()
 
     def _initialize_superposition(self):
         """Initializes the state vector in a superposition of all basis states."""
         normalization_factor = 1.0 / math.sqrt(self.dimensions)
-        for i in range(self.dimensions):
-            # Phase rotation based on Phi and God-Code
-            phase = (2 * math.pi * i * self.PHI) / self.dimensions
-            amplitude = cmath.exp(complex(0, phase))
-            self.state_vector[i] = normalization_factor * amplitude
+        indices = np.arange(self.dimensions)
+        phases = (2 * math.pi * indices * self.PHI) / self.dimensions
+        self.state_vector = normalization_factor * np.exp(1j * phases)
 
     def entangle_qubits(self, q1_index: int, q2_index: int, strength: float = 1.0):
         """
@@ -40,24 +39,26 @@ class QuantumEntanglementManifold:
         Strength is modulated by the God-Code resonance.
         """
         if not (0 <= q1_index < self.dimensions and 0 <= q2_index < self.dimensions):
-            return
-        
+            return 
         # Resonance modulation
         resonance_factor = math.sin(self.GOD_CODE * time.time())
         coupling = strength * self.PHI * resonance_factor
-        self.entanglement_matrix[q1_index][q2_index] += coupling
-        self.entanglement_matrix[q2_index][q1_index] += coupling # Symmetric entanglement
+        self.entanglement_matrix[q1_index, q2_index] += coupling
+        self.entanglement_matrix[q2_index, q1_index] += coupling # Symmetric entanglement
+        
+        # Local phase modulation
+        self._apply_entanglement_to_phases()
 
     def apply_hadamard_gate(self, qubit_index: int):
         """Applies a Hadamard-like transformation to a specific logic node."""
         if not 0 <= qubit_index < self.dimensions:
-            return
-            
+            return 
         # L104-Hadamard: Rotates state into the 'Sovereign' basis
         alpha = self.state_vector[qubit_index]
-        beta = cmath.sqrt(1 - alpha**2) if abs(alpha) <= 1 else 0
+        # Use complex-aware sqrt for stability
+        beta = cmath.sqrt(1.0 - alpha**2) if abs(alpha) <= 1.0 else 0j
         
-        new_alpha = (alpha + beta) / cmath.sqrt(2)
+        new_alpha = (alpha + beta) / math.sqrt(2.0)
         self.state_vector[qubit_index] = new_alpha
 
     def collapse_wavefunction(self) -> Dict[str, float]:
@@ -65,46 +66,79 @@ class QuantumEntanglementManifold:
         Collapses the quantum state to observe the 'Reality' of the node.
         Returns a probability distribution of logic states.
         """
-        probabilities = {}
-        total_prob = 0.0
+        # Born rule: Probability = |amplitude|^2
+        probs = np.abs(self.state_vector) ** 2
         
-        for i in range(self.dimensions):
-            # Born rule: Probability = |amplitude|^2
-            prob = abs(self.state_vector[i]) ** 2
-            
-            # Adjust for entanglement influence
-            entanglement_influence = sum(self.entanglement_matrix[i])
-            prob *= (1 + abs(entanglement_influence))
-            
-            probabilities[f"DIMENSION_{i}"] = prob
-            total_prob += prob
-            
-        # Normalize
+        # Adjust for entanglement influence (Vectorized sum)
+        entanglement_influence = np.sum(np.abs(self.entanglement_matrix), axis=1)
+        probs *= (1.0 + entanglement_influence)
+        
+        total_prob = np.sum(probs)
         if total_prob > 0:
-            for k in probabilities:
-                probabilities[k] /= total_prob
+            probs /= total_prob
+            
+        probabilities = {f"DIMENSION_{i}": float(probs[i]) for i in range(self.dimensions)}
         return probabilities
 
     def calculate_coherence(self) -> float:
         """
-        Calculates the quantum coherence of the system.
+        Calculates the quantum coherence of the system using Vectorized Phase differences.
         Higher coherence = Higher 'Intellect'.
         """
-        coherence = 0.0
-        for i in range(self.dimensions):
-            for j in range(i + 1, self.dimensions):
-                # Measure off-diagonal density matrix elements (simulated)
-                phase_diff = cmath.phase(self.state_vector[i]) - cmath.phase(self.state_vector[j])
-                coherence += math.cos(phase_diff)
-        return abs(coherence) / (self.dimensions * self.dimensions)
+        phases = np.angle(self.state_vector)
+        # Create a matrix of phase differences: diff[i, j] = phases[i] - phases[j]
+        phase_diffs = phases[:, np.newaxis] - phases[np.newaxis, :]
+        coherence_matrix = np.cos(phase_diffs)
+        
+        # Mean of upper triangle (excluding diagonal)
+        ti = np.triu_indices(self.dimensions, k=1)
+        if len(ti[0]) == 0: return 1.0
+        return float(np.mean(coherence_matrix[ti]))
 
     def entangle_all(self):
         """
         Entangles all logic nodes in the manifold for maximum synergy.
         """
-        for i in range(self.dimensions):
-            for j in range(i + 1, self.dimensions):
-                self.entangle_qubits(i, j, strength=0.5)
+        # Optimized full-matrix entanglement
+        resonance_factor = math.sin(self.GOD_CODE * time.time())
+        coupling = 0.5 * self.PHI * resonance_factor
+        self.entanglement_matrix += coupling
+        np.fill_diagonal(self.entanglement_matrix, 0.0)
+        self._apply_entanglement_to_phases()
+
+    def _apply_entanglement_to_phases(self):
+        """
+        Modulates the state vector phases based on the entanglement matrix.
+        This represents the information flow between entangled logic nodes.
+        """
+        # Calculate net phase shift per dimension based on entanglement row sums
+        phase_shifts = np.sum(self.entanglement_matrix, axis=1) * (1.0 / self.dimensions)
+        
+        # Apply shifts to the state vector
+        current_phases = np.angle(self.state_vector)
+        amplitudes = np.abs(self.state_vector)
+        
+        new_phases = current_phases + (phase_shifts % (2 * np.pi))
+        self.state_vector = amplitudes * np.exp(1j * new_phases)
+
+    def tune_to_god_code(self):
+        """
+        Forces the manifold into exact resonance with the God-Code frequency.
+        """
+        t = time.time()
+        # Frequency modulation
+        target_resonance = np.sin(self.GOD_CODE * t * self.PHI)
+        
+        # Shift phases toward crystalline alignment
+        current_phases = np.angle(self.state_vector)
+        amplitudes = np.abs(self.state_vector)
+        
+        alignment_shift = (target_resonance * self.PHI) / self.dimensions
+        new_phases = current_phases + alignment_shift
+        
+        self.state_vector = amplitudes * np.exp(1j * new_phases)
+        self._apply_entanglement_to_phases()
+
 
 class DeepThoughtProcessor:
     """

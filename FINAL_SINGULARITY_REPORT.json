@@ -7,7 +7,7 @@
         "growth_rate": "1.10x_recursive"
     },
     "invariants": {
-        "god_code": 527.5184818492,
+        "god_code": 527.5184818492537,
         "phi_locked": true,
         "minkowski_stabilized": true
     },

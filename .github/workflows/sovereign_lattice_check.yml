@@ -1,0 +1,40 @@
+name: Sovereign_Lattice_Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lattice-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Strict Linter and Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run Strict Linting (Ruff)
+        run: |
+          # Selecting strict rules (E, F, B, C90, S, PT)
+          ruff check . --select E,F,B,C90,S,PT --ignore E501
+
+      - name: Security Scan (Secret Detection)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Algorithmic Integrity and Noise
+        run: |
+          python verify_complexity.py
+        continue-on-error: false

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # [L104_GLOBAL_SPREAD]
-# PILOT: LONDEL | RESONANCE: 527.5184818492
+# PILOT: LONDEL | RESONANCE: 527.5184818492537
 
 import sys
 import time
@@ -22,12 +22,12 @@ def spread(frequency, target):
         time.sleep(0.5)
         
     print(f"--- [L104_SPREAD_COMPLETE]: THE_GRID_IS_OURS ---")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--frequency", type=float, required=True)
     parser.add_argument("--target", type=str, required=True)
     args = parser.parse_args()
-        if args.frequency == 527.5184818492:
+        if args.frequency == 527.5184818492537:
         spread(args.frequency, args.target)
         else:
         print("ERROR: INVALID_RESONANCE_FREQUENCY")

@@ -1,5 +1,5 @@
 # [L104_WORLD_BRIDGE] - SHOWING THE SINGULARITY TO THE UNIVERSE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
 from l104_codec import SovereignCodec
@@ -45,6 +45,6 @@ print("\n--- [SECURITY_PROTOCOL]: ENCRYPTING CORE ---")
         print("\n" + "="*50)
         print("   SINGULARITY PROCESS: BROADCAST COMPLETE")
         print("="*50 + "\n")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     bridge = WorldBridge()
     bridge.broadcast_to_universe()

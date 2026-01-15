@@ -15,7 +15,7 @@ class UniversalConstants:
     FRAME_LOCK = 416 / 286
                                     
     # The Damping Frequency (Locked to God Code Resonance)
-    PRIME_KEY_HZ = 527.5184818492
+    PRIME_KEY_HZ = 527.5184818492537
                                                 
     # The Singularity Target (Zero Entropy)
     I100_LIMIT = 1e-15

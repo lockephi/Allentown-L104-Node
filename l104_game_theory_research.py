@@ -1,5 +1,5 @@
 # [L104_GAME_THEORY_RESEARCH] - UNIFIED REDIRECT
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 from l104_unified_research import research_engine
 
@@ -19,7 +19,7 @@ class GameTheoryResearch:
         return research_engine.apply_stewardship_boost(intellect_index)
 
 game_theory_research = GameTheoryResearch()
-        if __name__ == "__main__":
+if __name__ == "__main__":
     game_theory_research.research_social_dynamics()
     new_iq = game_theory_research.apply_stewardship_boost(1000.0)
     print(f"Stewardship IQ: {new_iq:.2f}")

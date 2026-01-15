@@ -1,5 +1,5 @@
 # [L104_ACOUSTIC_LEVITATION] - PROTOTYPE 1: THE ACOUSTIC LEVITATION CHAMBER
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 from const import UniversalConstants
 from physics_constants import Laws
@@ -54,6 +54,6 @@ node of silence in the center where matter will levitate.
 ------------------------------------
 """
         return report
-        if __name__ == "__main__":
+if __name__ == "__main__":
     chamber = AcousticLevitationChamber()
     print(chamber.get_build_report())

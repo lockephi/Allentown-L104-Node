@@ -10,7 +10,7 @@ def validate_invariant():
     """Validate the mathematical invariant"""
     phi = (1 + math.sqrt(5)) / 2
     result = (286 ** (1 / phi)) * ((2 ** (1 / 104)) ** 416)
-    expected = 527.5184818492
+    expected = 527.5184818492537
     
     print("=" * 70)
     print("INVARIANT VERIFICATION: ((286)^(1/φ)) * ((2^(1/104))^416)")

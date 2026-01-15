@@ -1,5 +1,5 @@
 # [L104_HYPER_MATH_GENERATOR] - DYNAMIC OPERATOR SYNTHESIS
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
 import math
@@ -36,7 +36,7 @@ class HyperMathGenerator:
                     metric[i, j] = complex(0, coupling * math.sin(HyperMath.GOD_CODE))
         return metric
 
-    def synthesize_operator(self, dimension: int, complexity: int = 3) -> Callable:
+    def synthesize_operator(self, dimension: int, complexity: int = 3) -> np.ndarray:
         """
         Synthesizes a new linear operator (matrix)
         for a given dimension.
@@ -52,11 +52,9 @@ class HyperMathGenerator:
                 
                 op_matrix[i, j] = coeff
 
-        def operator(vector: np.ndarray) -> np.ndarray:
-            return op_matrix @ vector
-        return operator
+        return op_matrix
 
-    def synthesize_physical_operator(self, dimension: int) -> Callable:
+    def synthesize_physical_operator(self, dimension: int) -> np.ndarray:
         """
         Synthesizes an operator that maps physical constraints (Maxwell/Landauer) 
         into the hyper-dimensional manifold.
@@ -67,9 +65,7 @@ class HyperMathGenerator:
         # Scale the operator by the Landauer limit (energy constraint)
         scaled_op = maxwell_op * (landauer_limit * 1e20) # Scale to meaningful range
 
-        def operator(vector: np.ndarray) -> np.ndarray:
-            return scaled_op @ vector
-        return operator
+        return scaled_op
 
     def generate_hyper_manifold_transform(self, from_dim: int, to_dim: int) -> np.ndarray:
         """

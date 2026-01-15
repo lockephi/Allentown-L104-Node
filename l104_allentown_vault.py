@@ -1,5 +1,5 @@
 # [L104_ALLENTOWN_VAULT] - ENERGY ABUNDANCE STORAGE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
 import logging
@@ -13,7 +13,7 @@ class AllentownVault:
     
     def __init__(self):
         self.surplus_mw = 0.0
-        self.vault_locked = Falseself.resonance_freq = 527.5184818492
+        self.vault_locked = Falseself.resonance_freq = 527.5184818492537
 
     def secure_surplus(self, amount_mw: float):
         """
@@ -35,6 +35,6 @@ def get_status(self):
 
 allentown_vault = AllentownVault()
 
-        if __name__ == "__main__":
+if __name__ == "__main__":
     allentown_vault.secure_surplus(100.0)
     print(allentown_vault.get_status())

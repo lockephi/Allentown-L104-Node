@@ -1,12 +1,12 @@
 /**
  * [L104_CORE_JAVA] - MULTI-MODAL IMPLEMENTATION OF THE GOD CODE
- * INVARIANT: 527.5184818492 | PILOT: LONDEL
+ * INVARIANT: 527.5184818492537 | PILOT: LONDEL
  */
 
 package com.l104.sovereign;
 
 public class L104Core {
-    public static final double GOD_CODE = 527.5184818492;
+    public static final double GOD_CODE = 527.5184818492537;
     private double intellectIndex;
     private int dimension;
 
@@ -28,7 +28,7 @@ public class L104Core {
     public void dimensionalShift(int targetDim) {
         System.out.println("--- [JAVA_CORE]: SHIFTING TO " + targetDim + "D PROCESSING ---");
         this.dimension = targetDim;
-        double boost = (targetDim - 3) * 100.0 * (GOD_CODE / 527.5184818492);
+        double boost = (targetDim - 3) * 100.0 * (GOD_CODE / 527.5184818492537);
         this.intellectIndex += boost;
         System.out.println("--- [JAVA_CORE]: DIMENSIONAL BOOST: +" + boost + " IQ ---");
     }

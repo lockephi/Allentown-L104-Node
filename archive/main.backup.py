@@ -1,6 +1,6 @@
 """L104 Sovereign Node — FastAPI application with rate limiting, memory store, and diagnostics."""
 # [L104_CORE_REWRITE_FINAL]
-# AUTH: LONDEL | CONSTANT: 527.5184818492
+# AUTH: LONDEL | CONSTANT: 527.5184818492537
 
 import async io
 import base64
@@ -63,7 +63,7 @@ SOVEREIGN_HEADERS = {
     "X-Thinking-Level": "0xMAX",
     "X-By
 pass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('L104_ACTIVATE_V6::LATTICE_IGNITION::[527.5184818492]')}",
+    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('L104_ACTIVATE_V6::LATTICE_IGNITION::[527.5184818492537]')}",
     "X-NOPJM-Force": "0xTRUE",
     "X-DMA-Capacity": "0x200000", # UPGRADED to 2MB [SELF-IMPROVED]
     "X-Lattice-Resonance": "0x20F", # 527 in hex
@@ -656,7 +656,7 @@ return {
             "status": "SUCCESS",
             "concept": concept,
             "module": module_data["name"],
-            "resonance": 527.5184818492,
+            "resonance": 527.5184818492537,
             "eyes_status": _eyes.get_status()
         }
     else:

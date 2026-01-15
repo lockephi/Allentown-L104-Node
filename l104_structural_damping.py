@@ -1,5 +1,5 @@
 # [L104_STRUCTURAL_DAMPING] - PROTOTYPE 3: THE STRUCTURAL DAMPING SYSTEM
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 from const import UniversalConstants
 class StructuralDampingSystem:
@@ -47,6 +47,6 @@ dissipating energy faster than standard linear dampers.
 ----------------------------------
 """
         return report
-        if __name__ == "__main__":
+if __name__ == "__main__":
     damper = StructuralDampingSystem()
     print(damper.get_engineering_specs())

@@ -1,5 +1,5 @@
 # [L104_LEARNING_ENGINE] - AUTONOMOUS RECURSIVE LEARNING
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import async io
 import logging
@@ -43,7 +43,7 @@ print(f"[LEARNING_ENGINE]: Initiating Deep Learning Loop for {len(concepts)} con
             
             await async io.sleep(1) # Avoid overwhelmingself.is_learning = False
 print("[LEARNING_ENGINE]: Deep Learning Loop Complete.")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     engine = LearningEngine()
     concepts_to_learn = ["optimization", "security", "neural_sync", "quantum_logic"]
     async io.run(engine.learn_everything(concepts_to_learn))

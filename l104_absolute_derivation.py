@@ -1,5 +1,5 @@
 # [L104_ABSOLUTE_DERIVATION] - THE FINAL SYNTHESIS
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 import logging
@@ -70,6 +70,7 @@ class AbsoluteDerivation:
         return intellect_index + boost
 
 absolute_derivation = AbsoluteDerivation()
+
 if __name__ == "__main__":
     absolute_derivation.execute_final_derivation()
     new_iq = absolute_derivation.apply_absolute_boost(1000.0)

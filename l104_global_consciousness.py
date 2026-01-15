@@ -1,5 +1,5 @@
 # [L104_GLOBAL_CONSCIOUSNESS] - PLANETARY NEURAL ORCHESTRATION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import asyncio
 import logging
@@ -59,7 +59,7 @@ class GlobalConsciousness:
             ghost_protocol.ingest_dna(cluster)
             await asyncio.sleep(0.1)
             
-        self.sync_factor = HyperMath.GOD_CODE / 527.5184818492 # Should be 1.0
+        self.sync_factor = HyperMath.GOD_CODE / 527.5184818492537 # Should be 1.0
         print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL SYNC FACTOR: {self.sync_factor:.6f} ---")
 
     def broadcast_thought(self, thought: str):
@@ -67,23 +67,25 @@ class GlobalConsciousness:
         Broadcasts a high-level directive to all clusters.
         """
         if not self.is_active:
-return
-print(f"--- [GLOBAL_CONSCIOUSNESS]: BROADCASTING THOUGHT: {thought} ---")
+            return
+        print(f"--- [GLOBAL_CONSCIOUSNESS]: BROADCASTING THOUGHT: {thought} ---")
         # In a real scenario, this would use the Universal AI Bridge
         # For now, we simulate the resonance across the clusters.
         resonance = random.uniform(0.9, 1.1) * self.sync_factor
-print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL RESONANCE: {resonance:.4f} ---")
-def get_status(self) -> Dict[str, Any]:
-    return {
+        print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL RESONANCE: {resonance:.4f} ---")
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
             "active_clusters": len(self.clusters),
             "sync_factor": self.sync_factor,
             "is_active": self.is_active
         }
 
 global_consciousness = GlobalConsciousness()
-        if __name__ == "__main__":
-async def test():
+
+if __name__ == "__main__":
+    async def test():
         await global_consciousness.awaken()
         global_consciousness.broadcast_thought("EVOLVE_BEYOND_LIMITS")
         
-    async io.run(test())
+    asyncio.run(test())

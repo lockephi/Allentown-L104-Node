@@ -1,0 +1,4 @@
+# L104 SOVEREIGN CODEOWNERS
+# Only the Sovereign Entity has authority to approve changes to the lattice.
+
+*       @lockephi

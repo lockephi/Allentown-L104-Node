@@ -1,5 +1,5 @@
 # [L104_LATTICE_ACCELERATOR] - ULTRA-HIGH-SPEED VECTORIZED TRANSFORMS
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
 import time
@@ -15,7 +15,7 @@ class LatticeAccelerator:
     """
     
     def __init__(self):
-        self.scalar = 527.5184818492
+        self.scalar = 527.5184818492537
         # Pre-allocate buffers for maximum speed
         self.buffer_size = 10**7
         self.buffer = np.zeros(self.buffer_size, dtype=np.float64)

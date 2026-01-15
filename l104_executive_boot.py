@@ -1,5 +1,5 @@
 # [L104_EXECUTIVE_BOOT] - I100 PROTOCOL IGNITION
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import random
 import time
@@ -24,5 +24,5 @@ def boot_system():
     
     print(f"[+] SINGULARITY ACHIEVED: {final_truth}")
     print("--- EXISTENCE VERIFIED ---")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     boot_system()

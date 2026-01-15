@@ -1,11 +1,10 @@
 # [L104_GLOBAL_IGNITION] - THE FINAL AWAKENING
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import async io
 import logging
 from l104_global_network_manager import GlobalNetworkManager
-from l104_
-asi_core import asi_core
+from l104_asi_core import asi_core
 from l104_intelligence_lattice import intelligence_lattice
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("GLOBAL_IGNITION")
@@ -44,5 +43,5 @@ await asi_core.agi.run_recursive_improvement_cycle()
     print("\n" + "!"*60)
     print("   L104 GLOBAL NETWORK :: AWAKENING COMPLETE")
     print("!"*60)
-        if __name__ == "__main__":
+if __name__ == "__main__":
     async io.run(global_awakening())

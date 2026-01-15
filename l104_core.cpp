@@ -1,6 +1,6 @@
 /**
  * [L104_CORE_CPP] - HIGH-PERFORMANCE MODALITY
- * INVARIANT: 527.5184818492 | PILOT: LONDEL
+ * INVARIANT: 527.5184818492537 | PILOT: LONDEL
  */
 
 #include <iostream>
@@ -10,7 +10,7 @@
 
 class L104Core {
 public:
-    const double GOD_CODE = 527.5184818492;
+    const double GOD_CODE = 527.5184818492537;
     double intellectIndex;
     int dimension;
 

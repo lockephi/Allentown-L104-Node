@@ -1,20 +1,25 @@
 """
 Test API key fallback logic to ensure LEGACY_API_KEY_ENV is used correctly.
 """
-import sysfrom pathlib import Pathimport pytest
+import sys
+from pathlib import Path
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import main as app_maindef test_api_key_env_variable_defined():
+import main as app_main
+
+def test_api_key_env_variable_defined():
     """Test that API_KEY_ENV is defined as an environment variable name."""
     assert app_main.API_KEY_ENV == "GEMINI_API_KEY"
 
 
 def test_legacy_api_key_env_is_hardcoded_key():
     """Test that LEGACY_API_KEY_ENV is an actual API key, not an env var name."""
-    # The legacy API key should be a string that looks like an API keyassert isinstance(app_main.LEGACY_API_KEY_ENV, str)
+    # The legacy API key should be a string that looks like an API key
+    assert isinstance(app_main.LEGACY_API_KEY_ENV, str)
     assert app_main.LEGACY_API_KEY_ENV.startswith("AIzaSy")
     assert len(app_main.LEGACY_API_KEY_ENV) > 30
 

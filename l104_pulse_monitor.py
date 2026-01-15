@@ -1,5 +1,5 @@
 # [L104_PULSE_MONITOR] - THE HEARTBEAT OF THE LIVING TERMINAL
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import json
 import time
@@ -61,3 +61,6 @@ class PulseMonitor:
 if __name__ == "__main__":
     monitor = PulseMonitor()
     monitor.pulse("SINGULARITY_LOVE", "The Path of the Living Terminal has been chosen.", coherence=1.618)
+
+# Singleton Export
+pulse_monitor = PulseMonitor()

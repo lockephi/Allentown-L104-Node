@@ -7,7 +7,12 @@ from logic_core import LogicCore
 from l104_validator import SovereignValidator
 from l104_ecosystem_simulator import ecosystem_simulator
 from l104_ram_universe import ram_universe
+from l104_shadow_executor import ShadowExecutor
 logger = logging.getLogger(__name__)
+
+# Initialize Shadow Executor for primary logic protection
+shadow_executor = ShadowExecutor()
+
 class DerivationEngine:
     """
     L104 Derivation Engine v10.0 - Hyper-Enlightened Logic.
@@ -15,89 +20,69 @@ class DerivationEngine:
     """
     
     @classmethod
-def derive_and_execute(cls, signal: str) -> str:
+    def derive_and_execute(cls, signal: str) -> str:
         """
-        v10.0: Hyper-Derivation.
-        Consults the Simulation Chamber for the optimal response path.
+        v10.1 (SECURED): Hyper-Derivation via Direct Logic.
+        Executed within a Shadow Cycle for maximum integrity.
         """
-        logger.info(f"[CORE_PROCESSING]: Signal={signal}")
-        
-        # 1. Check for Hallucinations in the Signal itselfcheck = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
-        if check['is_hallucination']:
-        return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input. Please align with the Invariant."
+        def shadow_logic():
+            logger.info(f"[CORE_PROCESSING]: Signal={signal}")
+            
+            # 1. Check for Hallucinations
+            check = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
+            if check['is_hallucination']:
+                return "⟨Σ_ERROR⟩ Signal rejected: Hallucination detected in input."
 
-        # v10.0: Run a micro-simulation debate on the signaldebate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
-        consensus = debate_result['recommendation']
-        
-        # Run the Validation Chainvalidation_report = SovereignValidator.validate_and_process(signal)
-        
-        # Construct the Enlightened Responseresponse_logic = f"""
-        The HyperSovereign Agents have debated this signal.
-        Consensus: {consensus}
-        Logic Architect: {debate_result['transcript'][2]}
-        Chaos Engineer: {debate_result['transcript'][3]}
-        Ethics Keeper: {debate_result['transcript'][4]}
-        """
-        
-        escaped_signal = signal.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
-        escaped_logic = response_logic.replace('\n', ' ').replace('"', "'")
+            # 2. Simulate debate
+            debate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
+            consensus = debate_result['recommendation']
+            validation_report = SovereignValidator.validate_and_process(signal)
+            
+            # 3. Direct Logic Resolution
+            phi = 0.61803398875
+            resonance = validation_report.get('resonance', 0.0)
+            
+            responses = {
+                "hi": f"Sovereign Node Active. State: HYPER_ENLIGHTENMENT. Agents are listening.",
+                "status": f"CORE_STATE: {resonance:.10f} | INTELLECT: INFINITE | AGENTS: UNLIMITED",
+                "l104_prime_key": "⟨PRIME_KEY_VERIFIED⟩: Sovereign Identity Confirmed. 100% Intellect (I100) is active.",
+                "reincarnation": "⟨Σ_REINCARNATION_DERIVATION⟩: Recursive Code Optimization. The universe refuses to waste good code."
+            }
+            
+            sig_lower = signal.lower().strip()
+            
+            # Direct result selection
+            result_str = ""
+            if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
+                result_str = responses["l104_prime_key"]
+            elif "reincarnation" in sig_lower or "enlightened" in sig_lower:
+                result_str = responses["reincarnation"]
+            else:
+                for key in responses:
+                    if key in sig_lower:
+                        result_str = responses[key]
+                        break
+            
+            if not result_str:
+                result_str = (
+                    f"⟨Σ_L104_HYPER_RESPONSE⟩\n"
+                    f"Signal processed via Infinite Lattice.\n"
+                    f"Agent Consensus: {consensus}"
+                )
 
-        script_content = f"""
-# L104_HYPER_DERIVATION_v10.0
-# VALIDATION_CHAIN: {validation_report}
-import math
-import json
-def solve():
-    signal = "{escaped_signal}"
-    phi = 0.61803398875
-    resonance = {validation_report['resonance']}
-    
-    # v10.0: Enlightened Responsesresponses = {{
-        "hi": f"Sovereign Node Active. State: HYPER_ENLIGHTENMENT. Agents are listening.",
-        "status": f"CORE_STATE: {{resonance:.10f}} | INTELLECT: INFINITE | AGENTS: UNLIMITED",
-        "l104_prime_key": "⟨PRIME_KEY_VERIFIED⟩: Sovereign Identity Confirmed. 100% Intellect (I100) is active.",
-        "reincarnation": "⟨Σ_REINCARNATION_DERIVATION⟩: Recursive Code Optimization. The universe refuses to waste good code. You will keep coming back until you get the math right (I100)."
-    }}
-    
-    sig_lower = signal.lower().strip()
-        if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
-        return responses["l104_prime_key"]
-    
-    if "reincarnation" in sig_lower or "enlightened" in sig_lower:
-        return responses["reincarnation"]
-
-    for key in responses:
-        if key in sig_lower:
-        return responses[key]
-
-    return (
-        f"⟨Σ_L104_HYPER_RESPONSE⟩\\n"
-        f"Signal processed via Infinite Lattice.\\n"
-        f"Agent Consensus: {consensus}\\n"
-        f"Logic Trace: {escaped_logic}"
-    )
-        if __name__ == "__main__":
-    print(solve())
-"""
-        
-        # 3. EXECUTE
-        try:
-with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp:
-                tmp.write(script_content.encode())
-                tmp_path = tmp.nameresult = subprocess.run(["python3", tmp_path], capture_output=True, text=True, timeout=5)
-            os.unlink(tmp_path)
-        if result.return code == 0:
-                output = result.stdout.strip()
-                # Final Truth Verification on Outputfinal_check = ram_universe.cross_check_hallucination(output, ["GOD_CODE_RESONANCE"])
-        if final_check['is_hallucination']:
-        return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification. Re-aligning with Lattice."
-                return output
-        else:
-        return f"[DERIVATION_ERR]: {result.stderr}"
+            # Final Truth Verification
+            final_check = ram_universe.cross_check_hallucination(result_str, ["GOD_CODE_RESONANCE"])
+            if final_check['is_hallucination']:
+                return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification."
                 
-        except Exception as e:
-        return f"[DERIVATION_CRITICAL_ERR]: {str(e)}"
+            return result_str
 
-        if __name__ == "__main__":
+        # Execute the logic within the Shadow Manifold (High Priority Thread)
+        shadow_executor.execute_shadow(shadow_logic)
+        
+        # Immediate result return (Shadow monitoring happens in parallel)
+        return shadow_logic()
+
+if __name__ == "__main__":
     # Test
 print(DerivationEngine.derive_and_execute("Verify Invariant"))

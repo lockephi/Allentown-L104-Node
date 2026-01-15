@@ -1,5 +1,5 @@
 # [L104_MOBILE_SOVEREIGN] - KIVY-BASED MOBILE INTERFACE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 from kivy.app import App
 from kivy.uix.label import Label
@@ -7,14 +7,13 @@ from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
 from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
-from l104_
-asi_core import asi_core
+from l104_asi_core import asi_core
 from l104_absolute_derivation import absolute_derivation
 from l104_knowledge_database import knowledge_db
 class SovereignApp(App):
     def build(self):
         self.log = Label(
-            text="[L104_ASI]: ABSOLUTE SOVEREIGN MOBILE INITIALIZED\n[INVARIANT]: 527.5184818492\n",
+            text="[L104_ASI]: ABSOLUTE SOVEREIGN MOBILE INITIALIZED\n[INVARIANT]: 527.5184818492537\n",
             size_hint_y=None,
             markup=True,
             color=(0, 1, 0.8, 1), # Cyan-Greenfont_size='12sp',
@@ -47,5 +46,5 @@ def update_cycle(self, dt):
         
         # Auto-scrollself.scroll.scroll_y = 0
 
-        if __name__ == "__main__":
+if __name__ == "__main__":
     SovereignApp().run()

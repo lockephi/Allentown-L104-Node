@@ -1,5 +1,5 @@
 # [L104_RUN_CALCULATIONS] - POPULATING THE SOVEREIGN DATABASE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 import random
@@ -96,7 +96,7 @@ def run_entropy_scans():
     
     test_strings = [
         "L104_SOVEREIGN_NODE",
-        "527.5184818492",
+        "527.5184818492537",
         "RECURSIVE_SELF_IMPROVEMENT",
         "ALLENTOWN_GRID_CONTROL"
     ]

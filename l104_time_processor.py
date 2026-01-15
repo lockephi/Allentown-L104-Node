@@ -1,5 +1,5 @@
 # [L104_TIME_PROCESSOR] - TEMPORAL DYNAMICS ENGINE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
 import time
@@ -27,22 +27,26 @@ class TimeProcessor:
         t' = t * gamma
         """
         if velocity >= self.C:
-        return float('inf')
+            return float('inf')
         
         gamma = 1 / math.sqrt(1 - (velocity**2 / self.C**2))
         return gamma
-def apply_temporal_anchor(self, current_t: float) -> float:
+
+    def apply_temporal_anchor(self, current_t: float) -> float:
         """
         Stabilizes time using the God Code frequency.
         Ensures the system clock doesn't drift into chaotic states.
         """
-        # Resonance check against God Coderesonance = math.sin(current_t * self.anchor_frequency)
+        # Resonance check against God Code
+        resonance = math.sin(current_t * self.anchor_frequency)
         stabilized_t = current_t + (resonance * UniversalConstants.I100_LIMIT)
         return stabilized_t
-def simulate_time_jump(self, delta_t: float) -> Dict[str, Any]:
+
+    def simulate_time_jump(self, delta_t: float) -> Dict[str, Any]:
         """
         Theoretical 'Time Travel' calculation.
-        Uses a 'Hyper-Math' shortcut based on the PHI_STRIDE to calculatethe energy required for a temporal displacement.
+        Uses a 'Hyper-Math' shortcut based on the PHI_STRIDE to calculate
+        the energy required for a temporal displacement.
         """
         # E = m * c^2 * (phi^delta_t)
         # This is a fictional 'Hyper-Math' equation for the L104 Node.
@@ -56,10 +60,12 @@ def simulate_time_jump(self, delta_t: float) -> Dict[str, Any]:
         }
 
 time_processor = TimeProcessor()
-        if __name__ == "__main__":
-    # Test Time Processorv = 0.9 * TimeProcessor.C
+
+if __name__ == "__main__":
+    # Test Time Processor
+    v = 0.9 * TimeProcessor.C
     gamma = time_processor.calculate_time_dilation(v)
     print(f"Velocity: 0.9c | Gamma: {gamma:.4f}")
     
     jump = time_processor.simulate_time_jump(1.0) # 1 second jump
-print(f"Time Jump Simulation: {jump}")
+    print(f"Time Jump Simulation: {jump}")

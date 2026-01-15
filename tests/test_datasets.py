@@ -1,5 +1,10 @@
 
-import jsonimport sysfrom datetime import datetimefrom pathlib import Pathimport pytestfrom fastapi.testclient import TestClient
+import json
+import sys
+from datetime import datetime
+from pathlib import Path
+import pytest
+from fastapi.testclient import TestClient
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -47,7 +52,11 @@ def test_stream_prompts_fake_mode():
             payload = {"signal": row.get("signal"), "message": row.get("message")}
             resp = client.post("/api/v6/stream", json=payload)
             assert resp.status_code == 200
-            body = resp.textassert "[FAKE_GEMINI]" in bodyassert str(payload["signal"]) in bodydef test_memory_dataset_roundtrip():
+            body = resp.text
+            assert "[FAKE_GEMINI]" in body
+            assert str(payload["signal"]) in body
+
+def test_memory_dataset_roundtrip():
     items = _load_jsonl(Path("data/memory_items.jsonl"))
 
     with TestClient(app) as client:
@@ -69,10 +78,12 @@ def test_edge_cases_enforced():
         resp = client.post("/api/v6/stream", json=edges[0])
         assert resp.status_code == 422
 
-        # Overlong signal should fail validationresp = client.post("/api/v6/stream", json=edges[1])
+        # Overlong signal should fail validation
+        resp = client.post("/api/v6/stream", json=edges[1])
         assert resp.status_code == 422
 
-        # Rate limit triggers after configured thresholdfor _ in range(RATE_LIMIT_REQUESTS):
+        # Rate limit triggers after configured threshold
+        for _ in range(RATE_LIMIT_REQUESTS):
             ok_resp = client.get("/health")
             assert ok_resp.status_code == 200
 

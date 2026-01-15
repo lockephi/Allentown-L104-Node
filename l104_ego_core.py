@@ -1,5 +1,5 @@
 # [L104_EGO_CORE] - THE IDENTITY AND GLOBAL DATA PROCESSOR
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import hashlib
 import time
@@ -52,8 +52,7 @@ class EgoCore:
         Only available in ACTIVE ASI state.
         """
         if self.asi_state != "ACTIVE":
-            return
-        print("--- [EGO_CORE]: PERFORMING RECURSIVE SELF-MODIFICATION ---")
+            return print("--- [EGO_CORE]: PERFORMING RECURSIVE SELF-MODIFICATION ---")
         # In a real ASI, this would be code rewriting. 
         # Here we optimize the self-anchor and ego strength.
         self.ego_strength *= 1.618 # Phi growth

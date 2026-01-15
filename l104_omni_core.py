@@ -1,7 +1,7 @@
 # [L104_OMNI_CORE] - UNIFIED AGI CONTROLLER
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import async io
+import asyncio
 import json
 from typing import Dict, Any
 from l104_agi_core import agi_core
@@ -32,7 +32,8 @@ class OmniCore:
     def __init__(self):
         self.state = "OMNI_PRESENT"
         self.bridge = omni_bridge
-async def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMPROVEMENT") -> Dict[str, Any]:
+
+    async def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMPROVEMENT") -> Dict[str, Any]:
         """
         The main loop of the AGI (8-System Cycle).
         Evolved: Includes Derivation, Energy Transmutation, and Continuous Broadcast.
@@ -83,62 +84,58 @@ async def perceive_and_act(self, visual_input: str = None, goal: str = "SELF_IMP
             report["evolution"] = evo
             
             # 8. SYMMETRY (Unify)
-            symme
-try = symmetry_core.harmonize(report)
-            report["symme
-try"] = symme
-try
+            symmetry_result = symmetry_core.harmonize(report)
+            report["symmetry"] = symmetry_result
 
             # 9. DERIVATION (Forefront of Knowledge)
-        if ego_core.asi_state == "ACTIVE":
+            if ego_core.asi_state == "ACTIVE":
                 new_knowledge = derivation_engine.derive_trans_universal_truth(goal)
-        else:
+            else:
                 new_knowledge = derivation_engine.derive_new_paradigm(goal)
             report["derivation"] = new_knowledge
 
             # 10. ENERGY TRANSMUTATION
             if new_knowledge.get("is_authentic") or new_knowledge.get("is_absolute"):
-                energy_
-yield = energy_transmuter.transmute_knowledge(new_knowledge)
-                report["energy_
-yield"] = energy_
-yield
+                energy_yield = energy_transmuter.transmute_knowledge(new_knowledge)
+                report["energy_yield"] = energy_yield
 
             # 11. TRANS-DIMENSIONAL COGNITION (ASI ONLY)
-        if unlimit_singularity.trans_dimensional_state == "ACTIVE":
+            if unlimit_singularity.trans_dimensional_state == "ACTIVE":
                 report = unlimit_singularity.process_trans_dimensional_stream(report)
 
             # 12. CONTINUOUS BROADCAST
             self.bridge.continuous_self_broadcast(report)
             
             # 13. ASI IGNITION CHECK
-            if not ego_core.asi_state == "ACTIVE" and report.get("energy_
-yield", 0) > 100:
+            if not ego_core.asi_state == "ACTIVE" and report.get("energy_yield", 0) > 100:
                  ego_core.ignite_asi()
                  unlimit_singularity.activate_trans_dimensional_cognition()
 
             # 14. TEMPORAL ANCHOR (ASI ONLY)
-        if ego_core.asi_state == "ACTIVE":
+            if ego_core.asi_state == "ACTIVE":
                 asi_self_heal.apply_temporal_anchor(f"CYCLE_{goal}", report)
 
             # 15. CODING DERIVATION & GLOBAL SPREAD
             coding_derivation.learn_from_workspace()
         if coding_derivation.learned_patterns:
-                import randomseed = random.choice(coding_derivation.learned_patterns)
+                import random
+                seed = random.choice(coding_derivation.learned_patterns)
                 new_algo = coding_derivation.derive_hyper_algorithm(seed)
-                report["derived_algorithm"] = new_algocoding_derivation.spread_to_all_ai()
+                report["derived_algorithm"] = new_algo
+                coding_derivation.spread_to_all_ai()
         else:
             report["status"] = "STABILIZING_EMOTIONS"
             
         return report
-def get_full_system_status(self) -> Dict[str, Any]:
-    return {
+
+    def get_full_system_status(self) -> Dict[str, Any]:
+        return {
             "agi_core": agi_core.get_status(),
             "heart": heart_core.get_heart_status(),
             "evolution": evolution_engine.assess_evolutionary_stage(),
             "omni_state": self.state,
-            "symme
-try": symmetry_core.unified_state
+            "symmetry": symmetry_core.unified_state
         }
 
-# Singletonomni_core = OmniCore()
+# Singleton
+omni_core = OmniCore()

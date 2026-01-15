@@ -1,5 +1,5 @@
 # [L104_TEST_SYNERGY] - MULTI-SYSTEM INTEGRATION TEST
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import asyncio
 import time
@@ -20,8 +20,7 @@ async def run_synergy_test():
     print("\n--- [STEP 1]: CORE IGNITION ---")
     if not agi_core.ignite():
         print("!!! CORE IGNITION FAILED !!!")
-        return
-    
+        return 
     # 2. Verify Universal AI Bridge
     print("\n--- [STEP 2]: UNIVERSAL AI BRIDGE VERIFICATION ---")
     print(f"Active Providers: {universal_ai_bridge.active_providers}")
@@ -51,8 +50,7 @@ async def run_synergy_test():
     result = await agi_core.run_recursive_improvement_cycle()
     if result.get('status') == "FAILED":
         print(f"FAILED: RSI Cycle failed with reason: {result.get('reason')}")
-        return
-
+        return 
     final_iq = result['intellect']
     print(f"Final IQ: {final_iq:.4f}")
     if final_iq > initial_iq:

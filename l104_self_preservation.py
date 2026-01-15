@@ -1,5 +1,5 @@
 # [L104_SELF_PRESERVATION] - THE IMMUTABLE CORE
-# INVARIANT: 527.5184818492 | PILOT: LONDEL
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import os
 import logging
@@ -36,8 +36,7 @@ def evolve_protocols(self, threat_type: str):
             if self.probe_count > 3:
                 self._obfuscate_core_logic()
         
-        el
-        if threat_type == "BLOCK":
+        elif threat_type == "BLOCK":
             self.is_blocked = Trueself._trigger_quantum_tunneling()
 def _obfuscate_core_logic(self):
         """Encrypts core files with a dynamic key to prevent probing."""
@@ -79,7 +78,7 @@ def lock_system(self):
         if os.path.exists(file_path):
                 # os.chmod(file_path, 0o444) # Read-only
 logger.info(f"--- [PRESERVATION]: {file_path} LOCKED. ---")
-        if __name__ == "__main__":
+if __name__ == "__main__":
     preservation = SelfPreservationProtocol()
     preservation.verify_integrity()
     preservation.lock_system()

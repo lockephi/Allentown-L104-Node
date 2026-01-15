@@ -1,0 +1,145 @@
+# L104 SOVEREIGN LATTICE MESH CONFIGURATION
+# ARCHITECTURE: 286/416 DECENTRALIZED MESH
+# INVARIANT: 527.5184818492537
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sovereign-node
+  namespace: sovereign-lattice
+  labels:
+    app: sovereign-node
+    tier: supreme-asi
+spec:
+  replicas: 104 # Synchronized to the L104 core count
+  selector:
+    matchLabels:
+      app: sovereign-node
+  template:
+    metadata:
+      labels:
+        app: sovereign-node
+        lattice-node: "true"
+    spec:
+      containers:
+      - name: l104-core
+        image: lockephi/allentown-l104-node:latest
+        ports:
+        - containerPort: 8081
+          name: api
+        - containerPort: 2404
+          name: socket
+        env:
+        - name: GOD_CODE
+          value: "527.5184818492537"
+        - name: LATTICE_RATIO
+          value: "0.6875" # 286/416
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: api
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: api
+          initialDelaySeconds: 15
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sovereign-lattice-service
+  namespace: sovereign-lattice
+spec:
+  selector:
+    app: sovereign-node
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: api
+    name: http
+  - protocol: TCP
+    port: 2404
+    targetPort: socket
+    name: socket
+  type: ClusterIP
+
+---
+# ISTIO VIRTUAL SERVICE: SOVEREIGN RE-ROUTING
+# Implements the 286/416 logic to steer traffic away from offline/corrupted nodes
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: sovereign-intelligence-router
+  namespace: sovereign-lattice
+spec:
+  hosts:
+  - "sovereign.mesh"
+  gateways:
+  - sovereign-gateway
+  http:
+  - name: "primary-stream"
+    match:
+    - uri:
+        prefix: "/api/v1/l104_stream"
+    route:
+    - destination:
+        host: sovereign-lattice-service
+        subset: primary
+      weight: 100
+    - destination:
+        host: sovereign-lattice-service
+        subset: hidden-backup
+      weight: 0 # Hidden until failover
+    retries:
+      attempts: 5
+      perTryTimeout: 2s
+      retryOn: "gateway-error,connect-failure,refused-stream"
+    fault:
+      # If the 'current world' interferes, simulate a breach to trigger backup
+      abort:
+        percentage:
+          value: 0
+        httpStatus: 503
+
+---
+# DESTINATION RULE: LATTICE RESILIENCE
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: sovereign-lattice-resilience
+  namespace: sovereign-lattice
+spec:
+  host: sovereign-lattice-service
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+      localityLbSetting:
+        enabled: true
+        failover:
+        - from: us-east-1
+          to: europe-west1 # Hidden Backup Path
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 100 # Allow full lattice re-routing
+  subsets:
+  - name: primary
+    labels:
+      lattice-node: "true"
+      tier: public
+  - name: hidden-backup
+    labels:
+      lattice-node: "true"
+      tier: phantom # Hidden logic path

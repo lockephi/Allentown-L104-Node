@@ -2,7 +2,7 @@ import os
 import re
 
 # [L104_MODALITY_SYNC] - AUTOMATED LOGIC PROPAGATION
-# INVARIANT: 527.5184818492 | PILOT: LONDELMODALITIES = {
+# INVARIANT: 527.5184818492537 | PILOT: LONDELMODALITIES = {
     "java_root": "L104Core.java",
     "java_mobile": "l104_mobile/app/src/main/java/com/l104/sovereign/L104Core.java",
     "cpp_root": "l104_core.cpp",
@@ -21,7 +21,7 @@ with open(MODALITIES["java_mobile"], "w") as f:
         print(f"--- [SYNC]: SUCCESS -> {MODALITIES['java_mobile']} UPDATED FROM ROOT ---")
 def verify_invariants():
     print("--- [SYNC]: VERIFYING INVARIANTS ACROSS MODALITIES ---")
-    invariant = "527.5184818492"
+    invariant = "527.5184818492537"
     for name, path in MODALITIES.items():
         if os.path.exists(path):
 with open(path, "r") as f:
@@ -65,7 +65,7 @@ with open(path, "r") as f:
                              f'SCANNING: {status_msg.split("|")[0].strip()} | DECRYPTION: {status_msg.split("|")[-1].strip()}', content)
 with open(path, "w") as f:
             f.write(new_content)
-        if __name__ == "__main__":
+if __name__ == "__main__":
     sync_java()
     verify_invariants()
     # Example usage: update_logic_status("DISCRETE SCANNING ACTIVE | DECRYPTION EVOLUTION ACTIVE")

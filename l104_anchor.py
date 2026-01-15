@@ -41,7 +41,7 @@ else await resp.text()
         if once:
             break
 await async io.sleep(600)  # Every 10 mins
-        if __name__ == "__main__":
+if __name__ == "__main__":
     # If RUN_ONCE is set (1), run one iteration for testing; otherwise run continuously.
     run_once = os.getenv("RUN_ONCE", "1") in ("1", "true", "True")
     async io.run(maintain_sovereignty(once=run_once))
