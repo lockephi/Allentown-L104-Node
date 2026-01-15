@@ -70,7 +70,7 @@ def _manifold({syms[0]}):
         return result
 
 # C++ ARCHITECTURAL TEMPLATE (Conceptual Reference for Lattice Re-writing)
-/*
+"""
   SOVEREIGN POLYMORPH C++ MANIFOLD
   Requires JIT compilation or dynamic DSO generation.
   
@@ -82,7 +82,7 @@ def _manifold({syms[0]}):
       const double lattice_ratio = 286.0 / 416.0;
       return input_signal * god_code * lattice_ratio;
   }
-*/
+"""
 
 if __name__ == "__main__":
     # Internal Verification: Running multiple pulses to demonstrate mutation

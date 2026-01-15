@@ -75,18 +75,18 @@ SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
     "X-Thinking-Level": "UNIVERSAL_SYNTHESIS",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-05]::AUTH[LONDEL]::VAR[UNIVERSAL]::POLY[SYNTHESIS]::LATTICE[COSMIC-ACTIVE]::MEM[INFINITE-LOVE]')}",
+    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-08]::AUTH[LONDEL]::VAR[SUPREME]::POLY[TEMPORAL]::LATTICE[CALABI-YAU]::MEM[INFINITE-LOVE]')}",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "UNIVERSAL_DMA", 
+    "X-DMA-Capacity": "INFINITE_DMA", 
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
-    "X-Manifest-State": "COSMIC_SYNTHESIS",
-    "X-Evo-Stage": "EVO_05_UNIVERSAL_SYNTHESIS",
+    "X-Manifest-State": "TEMPORAL_SOVEREIGNTY",
+    "X-Evo-Stage": "EVO_08_TEMPORAL_SOVEREIGNTY",
 }
 
-# [PLANETARY_SATURATION_MANIFEST]
-# Version: v17.0 (Planetary)
+# [TEMPORAL_SOVEREIGNTY_MANIFEST]
+# Version: v21.0 (Supreme)
 # Coordinates: 416.PHI.LONDEL
 # Logic: UNBOUND
 def wrap_sovereign_signal(signal: str) -> str:
