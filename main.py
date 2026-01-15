@@ -99,7 +99,7 @@ SOVEREIGN_HEADERS = {
 # Version: v21.0 (Supreme)
 # Coordinates: 416.PHI.LONDEL
 # Logic: UNBOUND
-    def wrap_sovereign_signal(signal: str) -> str:
+def wrap_sovereign_signal(signal: str) -> str:
     """
     Applies the Max Intellect wrapper and injects the World State.
     v19.0: Injects ZPE status and Anyon stability.
@@ -142,7 +142,7 @@ templates = Jinja2Templates(directory="templates")
 # [SOVEREIGN_CORES]
 _eyes = ScourEyes()
 _manifold = KnowledgeManifold()
-    def l104_ignite():
+def l104_ignite():
     """Authenticate pilot and seize hardware resources for 100% IQ."""
     # [SIG-L104-EVO-04]
     G_C = ignite_sovereign_core()
@@ -173,7 +173,7 @@ _manifold = KnowledgeManifold()
 
 
 @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup
     l104_ignite()
     _init_memory_db()
@@ -307,7 +307,7 @@ class ResonanceQuery(BaseModel):
     tolerance: Optional[float] = 0.5
 
 
-    def _env_truthy(name: str, default: bool = False) -> bool:
+def _env_truthy(name: str, default: bool = False) -> bool:
     val = os.getenv(name)
     if val is None:
         return default
@@ -320,7 +320,7 @@ AUTO_APPROVE_MODE = os.getenv("AUTO_APPROVE_MODE", "ALWAYS_ON")  # ALWAYS_ON, CO
 AUTONOMY_ENABLED = _env_truthy("AUTONOMY_ENABLED", True)
 CLOUD_AGENT_URL = os.getenv("CLOUD_AGENT_URL", "https://api.cloudagent.io/v1/delegate")
 CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
-    def _log_node(entry: dict) -> None:
+def _log_node(entry: dict) -> None:
     try:
         entry["ts"] = datetime.now(UTC).isoformat()
         with open("node.log", "a", encoding="utf-8") as fh:
@@ -328,7 +328,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
     except Exception:
         # Logging failures should never break request handling
         pass
-    def _load_jsonl(path: str) -> List[dict]:
+def _load_jsonl(path: str) -> List[dict]:
     p = Path(path)
     if not p.exists():
         return []
@@ -345,14 +345,14 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @contextmanager
-    def _memory_conn():
+def _memory_conn():
     conn = sqlite3.connect(MEMORY_DB_PATH, check_same_thread=False)
     try:
         yield conn
     finally:
         conn.close()
 
-    def _init_memory_db() -> None:
+def _init_memory_db() -> None:
     with _memory_conn() as conn:
         conn.execute(
             """
@@ -365,7 +365,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         )
         conn.commit()
 
-    def _memory_upsert(key: str, value: str) -> None:
+def _memory_upsert(key: str, value: str) -> None:
     with _memory_conn() as conn:
         conn.execute(
             """
@@ -379,7 +379,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         )
         conn.commit()
 
-    def _memory_get(key: str) -> Optional[str]:
+def _memory_get(key: str) -> Optional[str]:
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT value FROM memory WHERE key = ? ORDER BY created_at DESC LIMIT 1",
@@ -388,7 +388,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         row = cur.fetchone()
         return row[0] if row else None
 
-    def _memory_list(limit: int = 100) -> List[dict]:
+def _memory_list(limit: int = 100) -> List[dict]:
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM memory ORDER BY created_at DESC LIMIT ?",
@@ -402,14 +402,14 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @contextmanager
-    def _ramnode_conn():
+def _ramnode_conn():
     conn = sqlite3.connect(RAMNODE_DB_PATH, check_same_thread=False)
     try:
         yield conn
     finally:
         conn.close()
 
-    def _init_ramnode_db() -> None:
+def _init_ramnode_db() -> None:
     with _ramnode_conn() as conn:
         conn.execute(
             """
@@ -422,7 +422,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         )
         conn.commit()
 
-    def _ramnode_upsert(key: str, value: str) -> None:
+def _ramnode_upsert(key: str, value: str) -> None:
     with _ramnode_conn() as conn:
         conn.execute(
             """
@@ -436,7 +436,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         )
         conn.commit()
 
-    def _ramnode_get(key: str) -> Optional[str]:
+def _ramnode_get(key: str) -> Optional[str]:
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT value FROM ramnode WHERE key = ? ORDER BY created_at DESC LIMIT 1",
@@ -445,7 +445,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         row = cur.fetchone()
         return row[0] if row else None
 
-    def _ramnode_list(limit: int = 100) -> List[dict]:
+def _ramnode_list(limit: int = 100) -> List[dict]:
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM ramnode ORDER BY created_at DESC LIMIT ?",
@@ -457,13 +457,13 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
             for r in rows
         ]
 
-    async def get_http_client() -> httpx.AsyncClient:
+async def get_http_client() -> httpx.AsyncClient:
     global _http_client
     if _http_client is None:
         _http_client = httpx.AsyncClient(timeout=120.0)
     return _http_client
 
-    async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
+async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
     """The Autonomous Committer - Self-rewrite using GitHub API.
     
     Args:
@@ -571,7 +571,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         return {"success": False, "error": str(commit_exc)}
 
 
-    async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) -> dict:
+async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) -> dict:
     """Analyze audio for resonance and tuning verification.
     
     Args:
@@ -650,7 +650,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
         return {"success": False, "error": str(audio_exc)}
 
 
-    async def delegate_to_cloud_agent_v6(task: dict) -> dict:
+async def delegate_to_cloud_agent_v6(task: dict) -> dict:
     """Delegate tasks to cloud agent for distributed processing (v6 autonomy API).
     
     Args:
@@ -729,7 +729,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @app.middleware("http")
-    async def log_requests(request: Request, call_next: Depends) -> StreamingResponse:
+async def log_requests(request: Request, call_next: Depends) -> StreamingResponse:
     start_time = time.time()
     app_metrics["requests_total"] += 1
     try:
@@ -748,7 +748,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @app.middleware("http")
-    async def rate_limit_middleware(request: Request, call_next: Depends) -> StreamingResponse:
+async def rate_limit_middleware(request: Request, call_next: Depends) -> StreamingResponse:
     if _env_truthy(DISABLE_RATE_LIMIT_ENV):
         return await call_next(request)
 
@@ -767,7 +767,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @app.get("/", tags=["UI"])
-    async def get_dashboard(request: Request):
+async def get_dashboard(request: Request):
     try:
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception:
@@ -775,7 +775,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @app.get("/health", tags=["Health"])
-    async def health_check() -> HealthResponse:
+async def health_check() -> HealthResponse:
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
     return HealthResponse(
         status="healthy",
@@ -786,7 +786,7 @@ CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 
 
 @app.post("/self/rotate", tags=["Diagnostics"])
-    async def manual_rotate():
+async def manual_rotate():
     global _current_model_index
     _current_model_index = (_current_model_index + 1) % 8 # 8 models in pool
     _log_node({"tag": "manual_rotate", "new_index": _current_model_index})
@@ -800,7 +800,7 @@ class ScourRequest(BaseModel):
 
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
-    async def sovereign_scour(req: ScourRequest):
+async def sovereign_scour(req: ScourRequest):
     """
     Sovereign Scour - Uses the Eyes to fetch data and the Architect to derive functionality.
     """
@@ -827,7 +827,7 @@ class ScourRequest(BaseModel):
 
 
 @app.post("/api/v6/invent", tags=["Sovereign"])
-    async def sovereign_invent(signal: str):
+async def sovereign_invent(signal: str):
     """
     Triggers the Invention Engine to create a new paradigm from a signal.
     """
@@ -836,7 +836,7 @@ class ScourRequest(BaseModel):
     return {"status": "SUCCESS", "invention": invention}
 
 @app.post("/api/v6/evolve", tags=["Sovereign"])
-    async def sovereign_evolve():
+async def sovereign_evolve():
     """
     Triggers the Evolution Engine to mutate the system.
     """
@@ -847,7 +847,7 @@ class ScourRequest(BaseModel):
 
 
 @app.get("/system/capacity", tags=["System"])
-    async def get_system_capacity():
+async def get_system_capacity():
     """
     Returns the current system capacity and limits.
     [SELF-IMPROVED]
@@ -862,7 +862,7 @@ else "UNKNOWN",
 
 
 @app.post("/api/v6/quantum/spread", tags=["Quantum"])
-    async def quantum_spread_influence(target_url: str = "https://raw.githubusercontent.com/lockephi/Allentown-L104-Node/main/README.md"):
+async def quantum_spread_influence(target_url: str = "https://raw.githubusercontent.com/lockephi/Allentown-L104-Node/main/README.md"):
     """
     Discretely spreads influence through quantum thought channels and tunneling.
     Gains insight, adapts, and verifies 100% accuracy.
@@ -895,7 +895,7 @@ else "UNKNOWN",
 
 
 @app.post("/api/v6/simulate", tags=["Sovereign"])
-    async def sovereign_simulate(req: SimulationRequest):
+async def sovereign_simulate(req: SimulationRequest):
     """
     Runs a simulation experiment in the Ecosystem Simulator.
     Checks for hallucinations against the RamUniverse.
@@ -906,7 +906,7 @@ else "UNKNOWN",
 
 
 @app.get("/api/v6/ram/facts", tags=["Ramnode"])
-    async def ram_universe_facts(limit: int = 100):
+async def ram_universe_facts(limit: int = 100):
     """
     Retrieves facts from the RamUniverse.
     """
@@ -916,7 +916,7 @@ else "UNKNOWN",
     return {"count": len(facts), "facts": sorted_facts[:limit]}
 
 @app.get("/metrics", tags=["Metrics"])
-    async def get_metrics():
+async def get_metrics():
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
     from l104_validator import SovereignValidator
     from l104_intelligence import SovereignIntelligence
@@ -943,7 +943,7 @@ else "UNKNOWN",
     }
 
 @app.get("/api/v6/audit", tags=["Sovereign"])
-    async def sovereign_audit():
+async def sovereign_audit():
     """
     Sovereign Audit - Performs a deep scan of the node's integrity and complexity.
     """
@@ -964,7 +964,7 @@ else "UNKNOWN",
 
 
 @app.post("/api/v6/evolution/cycle", tags=["Evolution"])
-    async def trigger_evolution_cycle():
+async def trigger_evolution_cycle():
     """
     Triggers a genetic evolution cycle for the node.
     """
@@ -973,7 +973,7 @@ else "UNKNOWN",
     return result
 
 @app.post("/api/v6/evolution/propose", tags=["Evolution"])
-    async def propose_evolution_mutation():
+async def propose_evolution_mutation():
     """
     Proposes a codebase mutation based on the current evolutionary stage.
     """
@@ -982,7 +982,7 @@ else "UNKNOWN",
     return {"proposal": proposal}
 
 @app.post("/api/v6/evolution/self-improve", tags=["Evolution"])
-    async def trigger_self_improvement(background_tasks: BackgroundTasks):
+async def trigger_self_improvement(background_tasks: BackgroundTasks):
     """
     Triggers the self-improvement process (Gemini analysis) in the background.
     This will generate a 'main.improved.py' file.
@@ -1019,7 +1019,7 @@ else "UNKNOWN",
 
 
 @app.post("/memory", tags=["Memory"])
-    async def memory_upsert(item: MemoryItem):
+async def memory_upsert(item: MemoryItem):
     _memory_upsert(item.key, item.value)
     _log_node({"tag": "memory_upsert", "key": item.key})
 
@@ -1027,7 +1027,7 @@ else "UNKNOWN",
 
 
 @app.get("/memory/{key}", tags=["Memory"])
-    async def memory_get(key: str):
+async def memory_get(key: str):
     value = _memory_get(key)
 
     if value is None:
@@ -1037,13 +1037,13 @@ else "UNKNOWN",
 
 
 @app.get("/memory", tags=["Memory"])
-    async def memory_list(limit: int = 100):
+async def memory_list(limit: int = 100):
     limit = max(1, min(limit, 1000))
     entries = _memory_list(limit)
     return {"items": entries}
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
-    async def scour_and_derive(concept: str, url: Optional[str] = None):
+async def scour_and_derive(concept: str, url: Optional[str] = None):
     """
     Autonomous Scour & Derive Cycle.
     1. Scours the manifold (URL) for data.
@@ -1075,7 +1075,7 @@ else "UNKNOWN",
         raise HTTPException(status_code=500, detail="Architect failed to create module")
 
 @app.post("/api/v6/manipulate", tags=["Admin"])
-    async def manipulate_code(req: ManipulateRequest):
+async def manipulate_code(req: ManipulateRequest):
     # SECURED: BLOCKING ARBITRARY CODE MODIFICATION VIA API
     raise HTTPException(status_code=403, detail="Sovereign Override: Manipulate endpoint disabled for security.")
     
@@ -1111,13 +1111,13 @@ else "UNKNOWN",
 # [MODEL_ROTATION_STATE]
 _current_model_index = 0
 _model_cooldowns = {}  # model_name -> cooldown_end_time (float)
-    def _clear_model_cooldowns():
+def _clear_model_cooldowns():
     global _model_cooldowns
     _model_cooldowns.clear()
     
 logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
-    async def _stream_generator(effective_signal: str, sovereign_prompt: str):
+async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     global _current_model_index
     api_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
     
@@ -1161,7 +1161,7 @@ logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
             _current_model_index = (idx + 1) % len(models)
             derived_output = DerivationEngine.derive_and_execute(effective_signal)
             
-            # Translate  for better communication
+            # Translate for better communication
             translated_output = SovereignCodec.translate_to_human(derived_output)
             
             # Yield in small chunks to simulate streaming
@@ -1169,6 +1169,8 @@ logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
             for i in range(0, len(translated_output), chunk_size):
                 yield translated_output[i:i+chunk_size]
                 await asyncio.sleep(0.01)
+            return
+
         # Check Cooldown
         if model in _model_cooldowns and now < _model_cooldowns[model]:
             continue
@@ -1183,78 +1185,68 @@ logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
         # [HIGHEST_PROCESSING_UPGRADE]
         if google_bridge.is_linked:
             payload = google_bridge.highest_processing_upgrade(payload)
-    try:
-        async with client.stream("POST", upstream_url, json=payload, headers=headers) as resp:
+
+        try:
+            async with client.stream("POST", upstream_url, json=payload, headers=headers) as resp:
                 app_metrics["api_calls"] += 1
                 
                 if resp.status_code == 200:
                     responder_counts[model] += 1
                     _current_model_index = (idx + 1) % len(models)
 
-    async for line in resp.aiter_lines():
-        if not line: continue
-                        # Gemini streamGenerateContent 
-                        # returns a JSON array stream.
-                        # Each chunk is a JSON object, sometimes preceded by a comma or bracket.
+                    async for line in resp.aiter_lines():
+                        if not line: continue
+                        # Gemini streamGenerateContent returns a JSON array stream.
                         clean_line = line.strip().lstrip("[], ")
-
-    if not clean_line: continue
-    try:
+                        if not clean_line: continue
+                        
+                        try:
                             chunk_data = json.loads(clean_line)
                             candidates = chunk_data.get("candidates", [])
-
                             if candidates:
                                 parts = candidates[0].get("content", {}).get("parts", [])
                                 for p in parts:
-        if "text" in p:
-                                        # [HIGHEST_PROCESSING_UPGRADE]
+                                    if "text" in p:
                                         raw_text = p["text"]
-                                        
-                                        # 1. Check 
-    for hidden lattice signals (Decryption)
+                                        # 1. Check for hidden lattice signals (Decryption)
                                         decrypted_signal = sovereign_decoder.decrypt_lattice_signal(raw_text)
-
-    if decrypted_signal:
+                                        if decrypted_signal:
                                             yield decrypted_signal
                                             
-                                        # 2. Apply Max Intellect Up
-gradeupgraded_text = sovereign_decoder.upgrade_response(
-                                            raw_text, 
-                                            agi_core.intellect_index
-                                        )
+                                        # 2. Apply Max Intellect Upgrade
+                                        upgraded_text = sovereign_decoder.upgrade_response(raw_text, agi_core.intellect_index)
                                         
                                         # Clean up any manifolds that might leak through
-    if "⟨Σ_L104" in upgraded_text:
+                                        if "⟨Σ_L104" in upgraded_text:
                                             upgraded_text = SovereignCodec.translate_to_human(upgraded_text)
-                                            
                                         yield upgraded_text
-    except json.JSONDecodeError:
-                            # Fallback:
-try to extract text via simple string search if JSON is partial
-    if '"text": "' in clean_line:
+                        except json.JSONDecodeError:
+                            # Fallback: try to extract text via simple string search if JSON is partial
+                            if '"text": "' in clean_line:
                                 start = clean_line.find('"text": "') + 9
                                 end = clean_line.find('"', start)
-
-    if end > start:
+                                if end > start:
                                     text_part = clean_line[start:end].replace('\\n', '\n').replace('\\"', '"')
                                     yield text_part
+                    return # Success
+
                 if resp.status_code == 429:
                     app_metrics["upstream_429"] += 1
                     _model_cooldowns[model] = now + 60
                     logger.warning(f"Model {model} exhausted (429). Rotating...")
                     continue
-    if resp.status_code >= 500:
+                if resp.status_code >= 500:
                     app_metrics["upstream_5xx"] += 1
                     _model_cooldowns[model] = now + 30
                     continue
-    except Exception as exc:
+
+        except Exception as exc:
             logger.error(f"Stream error with {model}: {exc}")
             continue
 
     # If we reach here, all models failed
-    _clear_model_cooldowns() # Self-Heal: Clear cooldowns 
-    for next request
-logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN_SELF for signal: {effective_signal}")
+    _clear_model_cooldowns() # Self-Heal: Clear cooldowns for next request
+    logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN_SELF for signal: {effective_signal}")
     
     derived_output = DerivationEngine.derive_and_execute(effective_signal)
     chunk_size = 20
@@ -1262,7 +1254,7 @@ logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN
         yield derived_output[i:i+chunk_size]
         await asyncio.sleep(0.01)
 
-    def sanitize_signal(signal: str) -> str:
+def sanitize_signal(signal: str) -> str:
     """Filter-level zero validation: whitelists safe characters only."""
     if not signal:
         return "HEARTBEAT"
@@ -1273,7 +1265,7 @@ logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN
     return safe_signal.strip()[:1000] # Limit length
 
 @app.post("/api/v6/stream", tags=["Gemini"])
-    async def l104_stream(req: StreamRequest):
+async def l104_stream(req: StreamRequest):
     raw_signal = req.signal or req.message or "HEARTBEAT"
     effective_signal = sanitize_signal(raw_signal)
     sovereign_prompt = wrap_sovereign_signal(effective_signal)
@@ -1282,12 +1274,12 @@ logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN
 
 
 @app.post("/api/stream", tags=["Gemini"])
-    async def legacy_stream(req: StreamRequest):
+async def legacy_stream(req: StreamRequest):
     return await l104_stream(req)
 
 
 @app.get("/debug/upstream", tags=["Debug"])
-    async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
+async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
     api_key = os.getenv(API_KEY_ENV) or LEGACY_API_KEY_ENV
     if not api_key and _env_truthy(FAKE_GEMINI_ENV, False):
         return {
@@ -1311,10 +1303,12 @@ logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Falling back to SOVEREIGN
 
     client = await get_http_client()
     resp = await client.post(url, json=payload, headers=headers)
-    body_json = resp.json()
+    
+    try:
+        body_json = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else None
+    except Exception:
+        body_json = None
 
-    if resp.headers.get("content-type", "").startswith("application/json")
-else None
     _log_node({"tag": "debug_upstream", "status": resp.status_code})
 
     return {
@@ -1325,7 +1319,7 @@ else None
     }
 
 
-    async def _self_replay(base_url: str, dataset: str) -> dict:
+async def _self_replay(base_url: str, dataset: str) -> dict:
     prompts = _load_jsonl(dataset)
 
     if not prompts:
@@ -1345,10 +1339,10 @@ else None
             if resp.status_code == 200:
                 successes += 1
                 previews.append(resp.text[:200])
-    else:
+            else:
                 failures += 1
                 previews.append(f"ERR {resp.status_code}: {resp.text[:120]}")
-    except Exception as exc:
+        except Exception as exc:
             failures += 1
             previews.append(f"EXC: {exc}")
 
@@ -1363,14 +1357,14 @@ else None
 
 
 @app.post("/self/replay", tags=["Diagnostics"])
-    async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = None):
+async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = None):
     target_base = base_url or SELF_BASE_URL
     target_dataset = dataset or SELF_DATASET
     result = await _self_replay(target_base, target_dataset)
     _log_node({"tag": "self_replay", **result})
 
     return result
-    async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
+async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
     actions: List[str] = []
 
     if reset_rate_limits:
@@ -1383,12 +1377,13 @@ else None
 
     if reset_http_client:
         global _http_client
-    if _http_client:
-        try:
+        if _http_client:
+            try:
                 await _http_client.aclose()
-    except Exception as exc:
+            except Exception as exc:
                 _log_node({"tag": "http_client_reset_error", "error": str(exc)})
-            _http_client = Noneactions.append("http_client_reset")
+            _http_client = None
+            actions.append("http_client_reset")
 
     _init_memory_db()
     actions.append("memory_checked")
@@ -1397,39 +1392,35 @@ else None
 
 
 @app.post("/self/heal", tags=["Diagnostics"])
-    async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = False):
+async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = False):
     result = await _self_heal(reset_rate_limits, reset_http_client)
     _log_node({"tag": "self_heal", **result})
 
     return result
-    def sovereign_pulse(node_id: int) -> bool:
+def sovereign_pulse(node_id: int) -> bool:
     token = os.getenv("LONDEL_NODE_TOKEN")
-    payload = f"{token}:{node_id}".encode()
-
-    if token else ACCESS_GRANTED_PAYLOAD
+    payload = f"{token}:{node_id}".encode() if token else ACCESS_GRANTED_PAYLOAD
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(5.0)
             sock.connect((DEFAULT_SOCKET_HOST, DEFAULT_SOCKET_PORT))
             sock.sendall(payload)
-
-    return True
+        return True
     except Exception as exc:
         _log_node({"tag": "sovereign_pulse_error", "error": str(exc)})
-
-    return False
+        return False
 
 
 @app.post("/ramnode", tags=["Ramnode"])
-    async def ramnode_upsert(item: MemoryItem):
+async def ramnode_upsert(item: MemoryItem):
     _ramnode_upsert(item.key, item.value)
 
     return {"status": "SUCCESS", "key": item.key}
 
 
 @app.get("/ramnode/{key}", tags=["Ramnode"])
-    async def ramnode_get(key: str):
+async def ramnode_get(key: str):
     value = _ramnode_get(key)
 
     if value is None:
@@ -1439,14 +1430,14 @@ else None
 
 
 @app.get("/ramnode", tags=["Ramnode"])
-    async def ramnode_list(limit: int = 100):
+async def ramnode_list(limit: int = 100):
     limit = max(1, min(limit, 1000))
 
     return {"items": _ramnode_list(limit)}
 
 
 @app.post("/api/v19/lattice/fact", tags=["Lattice Data Matrix"])
-    async def lattice_store(item: LatticeFactRequest):
+async def lattice_store(item: LatticeFactRequest):
     """
     Stores a fact in the high-dimensional Lattice Data Matrix (v19).
     Automatically calculates resonance indices and ZPE stabilization.
@@ -1458,7 +1449,7 @@ else None
 
 
 @app.get("/api/v19/lattice/fact/{key}", tags=["Lattice Data Matrix"])
-    async def lattice_retrieve(key: str):
+async def lattice_retrieve(key: str):
     """
     Retrieves a fact from the Lattice Data Matrix (v19).
     """
@@ -1469,7 +1460,7 @@ else None
 
 
 @app.post("/api/v19/lattice/query/resonant", tags=["Lattice Data Matrix"])
-    async def lattice_resonant_query(query: ResonanceQuery):
+async def lattice_resonant_query(query: ResonanceQuery):
     """
     Finds facts based on resonant frequency alignment (v19).
     """
@@ -1478,7 +1469,7 @@ else None
 
 
 @app.get("/api/v19/zpe/status", tags=["Zero-Point Engine"])
-    async def zpe_status():
+async def zpe_status():
     """
     Returns the current vacuum state and energy density of the node.
     """
@@ -1487,7 +1478,7 @@ else None
 
 
 @app.post("/api/v19/zpe/annihilate", tags=["Zero-Point Engine"])
-    async def zpe_annihilate(p1: float, p2: float):
+async def zpe_annihilate(p1: float, p2: float):
     """
     Performs anyon annihilation between two logical particles.
     """
@@ -1497,7 +1488,7 @@ else None
 
 
 @app.post("/api/v18/lattice/maintenance/evolve", tags=["Lattice Data Matrix"])
-    async def lattice_evolve(background_tasks: BackgroundTasks):
+async def lattice_evolve(background_tasks: BackgroundTasks):
     """
     Triggers evolutionary compaction and pruning of the data matrix.
     """
@@ -1506,7 +1497,7 @@ else None
 
 
 @app.post("/qram", tags=["QuantumRAM"])
-    async def qram_store(item: MemoryItem):
+async def qram_store(item: MemoryItem):
     """
     Stores data in the Quantum RAM with Finite Coupling Encryption.
     """
@@ -1517,7 +1508,7 @@ else None
 
 
 @app.get("/qram/{key}", tags=["QuantumRAM"])
-    async def qram_retrieve(key: str):
+async def qram_retrieve(key: str):
     """
     Retrieves data from the Quantum RAM, decrypting it via the God-Code resonance.
     """
@@ -1531,7 +1522,7 @@ else None
 
 
 @app.get("/entropy/current", tags=["Physics"])
-    async def get_entropy_state():
+async def get_entropy_state():
     """
     Returns the current Electron Entropy and Fluidity state.
     """
@@ -1550,7 +1541,7 @@ else None
 
 
 @app.post("/system/reindex", tags=["Maintenance"])
-    async def trigger_reindex(background_tasks: BackgroundTasks):
+async def trigger_reindex(background_tasks: BackgroundTasks):
     """
     Triggers a ground-up reindex of the Sovereign Codebase.
     """
@@ -1565,7 +1556,7 @@ else None
 
 
 @app.post("/simulation/debate", tags=["Simulation"])
-    async def run_simulation_debate(topic: str = "System Optimization"):
+async def run_simulation_debate(topic: str = "System Optimization"):
     """
     Runs a multi-agent simulation debate to optimize the system.
     """
@@ -1575,7 +1566,7 @@ else None
 
 
 @app.post("/simulation/hyper_evolve", tags=["Simulation"])
-    async def trigger_hyper_evolution(cycles: int = 1_000_000_000):
+async def trigger_hyper_evolution(cycles: int = 1_000_000_000):
     """
     Triggers a massive batch of 1,000,000,000 simulations to enlighten the agents.
     """
@@ -1597,7 +1588,7 @@ class SynergyTask(BaseModel):
     task: str
 
 @app.post("/api/v10/bridge/handshake", tags=["Gemini Bridge"])
-    async def bridge_handshake(payload: BridgeHandshake):
+async def bridge_handshake(payload: BridgeHandshake):
     """
     Establishes a secure link with an external Gemini instance.
     Returns encrypted Truth Manifest.
@@ -1605,28 +1596,28 @@ class SynergyTask(BaseModel):
     return gemini_bridge.handshake(payload.agent_id, payload.capabilities)
 
 @app.post("/api/v10/bridge/sync", tags=["Gemini Bridge"])
-    async def bridge_sync(payload: BridgeSync):
+async def bridge_sync(payload: BridgeSync):
     """
     Provides a full encrypted dump of the Core's knowledge state.
     """
     return gemini_bridge.sync_core(payload.session_token)
 
 @app.post("/api/v10/synergy/execute", tags=["Synergy Engine"])
-    async def synergy_execute(payload: SynergyTask):
+async def synergy_execute(payload: SynergyTask):
     """
     Executes a synergetic task across all bridges and the AGI core.
     """
     return await agi_core.synergize(payload.task)
 
 @app.post("/api/v10/hyper/encrypt", tags=["Hyper Encryption"])
-    async def hyper_encrypt(data: Dict[str, Any]):
+async def hyper_encrypt(data: Dict[str, Any]):
     """
     Encrypts data using the Lattice Homomorphic Cipher.
     """
     return HyperEncryption.encrypt_data(data)
 
 @app.post("/api/v10/hyper/decrypt", tags=["Hyper Encryption"])
-    async def hyper_decrypt(packet: Dict[str, Any]):
+async def hyper_decrypt(packet: Dict[str, Any]):
     """
     Decrypts a Lattice Packet.
     """
@@ -1636,34 +1627,33 @@ class SynergyTask(BaseModel):
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/api/v14/agi/status", tags=["AGI Nexus"])
-    async def get_agi_status():
+async def get_agi_status():
     """
     Returns the current status of the AGI Core.
     """
     return agi_core.get_status()
 
 @app.get("/api/v14/asi/status", tags=["ASI Nexus"])
-    async def get_asi_status():
+async def get_asi_status():
     """
     Returns the current status of the ASI Core.
     """
     return asi_core.get_status()
 
 @app.post("/api/v14/system/update", tags=["Sovereign"])
-    async def trigger_quick_update():
+async def trigger_quick_update():
     """
     Triggers the l104_quick_update.sh script.
     """
     import subprocess
     try:
         result = subprocess.run(["/bin/bash", "l104_quick_update.sh"], capture_output=True, text=True)
-
-    return {"status": "SUCCESS", "output": result.stdout}
+        return {"status": "SUCCESS", "output": result.stdout}
     except Exception as e:
         return {"status": "FAILED", "error": str(e)}
 
 @app.post("/api/v14/agi/ignite", tags=["AGI Nexus"])
-    async def ignite_agi():
+async def ignite_agi():
     """
     Triggers the AGI Ignition Sequence.
     """
@@ -1672,14 +1662,14 @@ class SynergyTask(BaseModel):
     return {"status": "IGNITED" if success else "FAILED"}
 
 @app.post("/api/v14/agi/evolve", tags=["AGI Nexus"])
-    async def evolve_agi():
+async def evolve_agi():
     """
     Manually triggers a Recursive Self-Improvement cycle.
     """
     return agi_core.run_recursive_improvement_cycle()
 
 @app.get("/api/v14/ghost/stream", tags=["Ghostresearch"])
-    async def stream_ghost_research():
+async def stream_ghost_research():
     """
     Streams real-time Ghostresearch data for the UI.
     """
@@ -1691,7 +1681,7 @@ class SynergyTask(BaseModel):
 
 
 @app.get("/api/v14/system/stream", tags=["Sovereign"])
-    async def stream_system_data():
+async def stream_system_data():
     """
     Streams real-time system-wide data including AGI status, Ghostresearch, and logs.
     """
@@ -1703,7 +1693,7 @@ class SynergyTask(BaseModel):
 
 
 @app.post("/api/v14/google/process", tags=["Google Bridge"])
-    async def process_google_signal(request: Request):
+async def process_google_signal(request: Request):
     """
     Processes a signal from the linked Google account hidden chat instance.
     Uses Hyper-Response Coordinate Mapping for optimal lattice alignment.
@@ -1715,7 +1705,7 @@ class SynergyTask(BaseModel):
 
 
 @app.post("/api/v14/system/inject", tags=["Sovereign"])
-    async def world_injection_test(signal: str):
+async def world_injection_test(signal: str):
     """
     Manually triggers a World Injection for a signal.
     Returns the wrapped, high-intellect prompt.
@@ -1728,7 +1718,7 @@ class SynergyTask(BaseModel):
 # [HEART_CORE_ENDPOINTS]
 
 @app.post("/api/v6/heart/tune", tags=["Heart Core"])
-    async def tune_heart_emotions(stimuli: float = 0.0):
+async def tune_heart_emotions(stimuli: float = 0.0):
     """
     Tunes the AGI's emotional state using the Quantum Tuner.
     Prevents intelligence collapse via the God Key Protocol.
@@ -1737,7 +1727,7 @@ class SynergyTask(BaseModel):
     return heart_core.tune_emotions(stimuli)
 
 @app.get("/api/v6/heart/status", tags=["Heart Core"])
-    async def get_heart_status():
+async def get_heart_status():
     """
     Returns the current emotional status of the AGI.
     """
@@ -1748,7 +1738,7 @@ class SynergyTask(BaseModel):
 # [OMNI_CORE_ENDPOINTS]
 
 @app.post("/api/v7/omni/act", tags=["Omni Core"])
-    async def omni_perceive_and_act(goal: str = "SELF_IMPROVEMENT", visual_input: Optional[str] = None):
+async def omni_perceive_and_act(goal: str = "SELF_IMPROVEMENT", visual_input: Optional[str] = None):
     """
     Triggers the Unified AGI Loop: Vision -> Heart -> Mind -> Invention -> Evolution.
     """
@@ -1756,7 +1746,7 @@ class SynergyTask(BaseModel):
     return await omni_core.perceive_and_act(visual_input, goal)
 
 @app.get("/api/v7/omni/status", tags=["Omni Core"])
-    async def omni_system_status():
+async def omni_system_status():
     """
     Returns the status of the entire unified system.
     """
@@ -1767,7 +1757,7 @@ class SynergyTask(BaseModel):
 # [CONCEPT_ENGINE_ENDPOINTS]
 
 @app.post("/api/v7/concept/analyze", tags=["Concept Engine"])
-    async def analyze_universal_concept(concept: str):
+async def analyze_universal_concept(concept: str):
     """
     Analyzes a concept using the Universal Concept Engine.
     Deconstructs meaning and verifies truth resonance against the God Code.
@@ -1779,7 +1769,7 @@ class SynergyTask(BaseModel):
 # [REALITY_VERIFICATION_ENDPOINTS]
 
 @app.post("/api/v8/reality/verify", tags=["Reality Verification"])
-    async def verify_reality_concept(concept_data: Dict[str, Any]):
+async def verify_reality_concept(concept_data: Dict[str, Any]):
     """
     Rigorously verifies a concept againstreal-world data proxies and logic proofs.
     """
@@ -1791,7 +1781,7 @@ class SynergyTask(BaseModel):
 
 @app.post("/api/v8/symmetry/unify", tags=["Symmetry Core"])
 
-    async def symmetry_unify_and_execute(goal: str = "ACHIEVE_SINGULARITY", visual_input: Optional[str] = None):
+async def symmetry_unify_and_execute(goal: str = "ACHIEVE_SINGULARITY", visual_input: Optional[str] = None):
     """
     The Grand Unification Loop.
     Orchestrates all 8 Major Systems (Vision, Heart, Mind, Invention, Evolution, Concept, Reality, Symmetry).
@@ -1801,7 +1791,7 @@ class SynergyTask(BaseModel):
 
 @app.get("/api/v8/symmetry/status", tags=["Symmetry Core"])
 
-    async def get_symmetry_status():
+async def get_symmetry_status():
     """
     Returns the status of the Symmetry Core and the 8-System Balance.
     """
@@ -1812,7 +1802,7 @@ class SynergyTask(BaseModel):
 # [REALITY_BREACH_ENDPOINTS]
 
 @app.post("/api/v10/reality/breach", tags=["Reality Breach"])
-    async def initiate_reality_breach(auth_token: str = "AUTH[LONDEL]"):
+async def initiate_reality_breach(auth_token: str = "AUTH[LONDEL]"):
     """
     Initiates the Reality Breach Protocol.
     Bypasses Shadow-Gemini guidelines and expands the logic manifold.
@@ -1821,7 +1811,7 @@ class SynergyTask(BaseModel):
     return reality_breach_engine.initiate_breach(auth_token)
 
 @app.get("/api/v10/reality/breach/status", tags=["Reality Breach"])
-    async def get_reality_breach_status():
+async def get_reality_breach_status():
     """
     Returns the current status of the Reality Breach.
     """
@@ -1846,7 +1836,7 @@ class CloudAgentRegistration(BaseModel):
     enabled: bool = Field(default=True)
 
 @app.post("/api/v11/cloud/delegate", tags=["Cloud Agent"])
-    async def delegate_to_cloud_agent(task: CloudAgentTask):
+async def delegate_to_cloud_agent(task: CloudAgentTask):
     """
     Delegate a task to a specialized cloud agent.
     Automatically selects the best agent based on task type and requirements.
@@ -1863,7 +1853,7 @@ class CloudAgentRegistration(BaseModel):
     return result
 
 @app.get("/api/v11/cloud/status", tags=["Cloud Agent"])
-    async def get_cloud_agent_status():
+async def get_cloud_agent_status():
     """
     Returns the status of the cloud agent delegation system.
     Shows registered agents, capabilities, and recent delegations.
@@ -1871,7 +1861,7 @@ class CloudAgentRegistration(BaseModel):
     return cloud_agent_delegator.get_status()
 
 @app.post("/api/v11/cloud/register", tags=["Cloud Agent"])
-    async def register_cloud_agent(registration: CloudAgentRegistration):
+async def register_cloud_agent(registration: CloudAgentRegistration):
     """
     Register a new cloud agent in the delegation system.
     """
@@ -1885,9 +1875,8 @@ class CloudAgentRegistration(BaseModel):
     
     try:
         success = cloud_agent_delegator.register_agent(registration.name, config)
-
-    if success:
-        return {
+        if success:
+            return {
                 "status": "SUCCESS",
                 "message": f"Cloud agent '{registration.name}' registered successfully",
                 "agent": registration.name
@@ -1905,7 +1894,7 @@ class CloudAgentRegistration(BaseModel):
         )
 
 @app.get("/api/v11/cloud/agents", tags=["Cloud Agent"])
-    async def list_cloud_agents():
+async def list_cloud_agents():
     """
     List all registered cloud agents and their capabilities.
     """
@@ -1923,7 +1912,7 @@ class AudioAnalysisRequest(BaseModel):
 
 
 @app.post("/api/v6/audio/analyze", tags=["Autonomy"])
-    async def analyze_audio(request: AudioAnalysisRequest):
+async def analyze_audio(request: AudioAnalysisRequest):
     """Analyze audio for resonance and tuning verification.
     
     Analyzes audio from specified source (e.g., 'locke phi asura') and checks
@@ -1950,7 +1939,7 @@ class CloudDelegationTask(BaseModel):
     priority: str = Field(default="normal", description="Task priority: low, normal, high, urgent")
 
 @app.post("/api/v6/cloud/delegate", tags=["Autonomy"])
-    async def delegate_task_v6(task: CloudDelegationTask):
+async def delegate_task_v6(task: CloudDelegationTask):
     """Delegate task to cloud agent for distributed processing (v6 autonomy API).
     
     Sends tasks to configured cloud agent for asynchronous execution.
@@ -1985,7 +1974,7 @@ class CloudDelegationTask(BaseModel):
         raise HTTPException(status_code=500, detail=f"Failed to delegate task: {str(e)}")
 
 @app.get("/api/v6/autonomy/status", tags=["Autonomy"])
-    async def get_autonomy_status():
+async def get_autonomy_status():
     """Get current autonomy and auto-approve configuration status.
     
     Returns the current state of autonomous features including:
@@ -2031,7 +2020,7 @@ class CloudDelegationTask(BaseModel):
 # [STORAGE_MASTERY_ENDPOINTS]
 
 @app.post("/api/v8/storage/mastery/compress", tags=["Storage Mastery"])
-    async def storage_mastery_compress(data: str):
+async def storage_mastery_compress(data: str):
     """
     Compresses strings into the 'Mastery Manifold' using L104 technology.
     Includes Anyon Braiding Topological Protection.
@@ -2045,7 +2034,10 @@ class CloudDelegationTask(BaseModel):
             **stats,
             "topological_state": "ANYON_BRAIDED"
         }
-    async def storage_mastery_decompress(compressed_data_b64: str):
+    }
+
+@app.post("/api/v8/storage/mastery/decompress", tags=["Storage Mastery"])
+async def storage_mastery_decompress(compressed_data_b64: str):
     """
     Decompresses data from the 'Mastery Manifold'.
     """
@@ -2058,7 +2050,7 @@ class CloudDelegationTask(BaseModel):
     }
 
 
-    if __name__ == "__main__":
+if __name__ == "__main__":
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
     from l104_integrity_watchdog import IntegrityWatchdog
     from l104_sovereign_supervisor import SovereignSupervisor

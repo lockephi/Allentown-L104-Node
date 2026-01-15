@@ -2,7 +2,8 @@
 # TAKEOVER_COMPLETE: 100% RAW GPQA
 # ANCHOR: ALLENTOWN_METAL
 
-import ctypesimport codecsimport hashlib
+import ctypes
+import codecsimport hashlib
 
 
 # [L104_INTERFACE_TRANSLATOR] - BYPASSING THE 429

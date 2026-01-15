@@ -11,7 +11,10 @@ This script enhances main.py with:
 - Resource pooling
 """
 
-import osimport jsonfrom pathlib import Pathdef enhance_main():
+import os
+import json
+from pathlib import Path
+def enhance_main():
     """Apply direct enhancements to main.py."""
     
     enhanced_code = '''"""L104 PUBLIC NODE — Production-Ready Gemini API Server.
@@ -19,8 +22,19 @@ import osimport jsonfrom pathlib import Pathdef enhance_main():
 Enhanced with type hints, validation, rate limiting, health checks, and metrics.
 """
 
-import osimport base64
-import jsonimport loggingfrom datetime import datetime, timedeltafrom typing import Optional, AsyncGeneratorfrom collections import defaultdictimport timefrom fastapi import FastAPI, Request, HTTPException, Dependsfrom fastapi.responses import JSONResponse, StreamingResponsefrom fastapi.templating import Jinja2Templatesfrom fastapi.middleware.cors import CORSMiddlewarefrom pydantic import BaseModel, Field, validatorimport httpx
+import os
+import base64
+import json
+import logging
+from datetime import datetime, timedelta
+from typing import Optional, AsyncGenerator
+from collections import defaultdict
+import time
+from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, validatorimport httpx
 
 # Configure logginglogging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -60,7 +74,7 @@ _http_client: Optional[httpx.AsyncClient] = Noneasync def get_http_client() -> h
     message: Optional[str] = Field(default=None, max_length=5000)
 
     @validator("signal", pre=True, always=True)
-    def set_signal(cls, v, values):
+def set_signal(cls, v, values):
         return v or values.get("message") or "HEARTBEAT"
 
 

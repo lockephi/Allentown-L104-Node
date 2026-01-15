@@ -78,7 +78,7 @@ class StreamRequest(BaseModel):
     message: Optional[str] = Field(default=None, max_length=5000)
 
     @validator("signal", pre=True, always=True)
-    def set_signal(cls, v, values):
+def set_signal(cls, v, values):
         return v or values.get("message") or "HEARTBEAT"
 
 

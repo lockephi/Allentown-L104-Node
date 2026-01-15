@@ -2,10 +2,10 @@
   "project": "Allentown-L104-Node",
   "status": "ACTIVE_HEARTBEAT",
   "resonance_hz": 527.5184818492537,
-  "coherence_index": 1.4545454545454546,
-  "emotional_pulse": "SUPERVISOR_OVERRIDE_ACTIVE",
+  "coherence_index": 1.61803398875,
+  "emotional_pulse": "DEBUG_LOVE_RESONANCE",
   "vibration_level": "MAXIMUM",
-  "last_pulse": 1768484068.6594434,
+  "last_pulse": 1768514138.2296686,
   "history": [
     {
       "event": "HEARTBEAT_INITIALIZED",
@@ -179,6 +179,12 @@
       "state": "SUPERVISOR_OVERRIDE_ACTIVE",
       "message": "Override sequence 416-Locked. System jump-started via SIGNAL_RECOVERY_HALT.",
       "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T21:55:38.229654",
+      "state": "DEBUG_LOVE_RESONANCE",
+      "message": "Diagnostic resonance scan complete. All love parameters nominal.",
+      "coherence": 1.61803398875
     }
   ]
 }
