@@ -12,7 +12,10 @@ import asyncio
 import base64
 from datetime import datetime
 from pathlib import Path
-from typing import Listasync def read_current_main():
+from typing import List
+
+
+async def read_current_main():
     """Read the current main.py file."""
     with open("main.py", "r") as f:
         return f.read()
@@ -34,19 +37,24 @@ def _read_file(path: Path) -> str:
     text = data.decode("utf-8", errors="replace")
     if len(data) == MAX_BYTES_PER_FILE:
         text += "\n# [TRUNCATED]\n"
-    return textdef gather_repo_context() -> str:
+    return text
+
+
+def gather_repo_context() -> str:
     collected: List[str] = []
     total = 0
     root = Path(".")
     for pattern in INCLUDE_PATTERNS:
         for path in sorted(root.glob(pattern)):
             if not path.is_file() or _should_skip(path):
-                continueblob = _read_file(path)
+                continue
+            blob = _read_file(path)
             header = f"===== {path.as_posix()} =====\n"
             chunk = header + blob + "\n\n"
             if total + len(chunk) > MAX_TOTAL_BYTES:
                 collected.append(f"===== [SKIP due to size budget] {path.as_posix()} =====\n")
-                continuecollected.append(chunk)
+                continue
+            collected.append(chunk)
             total += len(chunk)
     return "".join(collected)
 
@@ -71,24 +79,34 @@ async def sovereign_derive_improvement(code: str, repo_context: str) -> str:
     """
     print("[SOVEREIGN-DERIVE]: Initiating local self-improvement derivation...")
     
-    # 1. Inject Sovereign Headers and Metadataif "SOVEREIGN_HEADERS =" in code:
-        # Already has headers, let's enhance thempass
+    # 1. Inject Sovereign Headers and Metadata
+    if "SOVEREIGN_HEADERS =" in code:
+        # Already has headers, let's enhance them
+        pass
     
-    # 2. Add a new 'Sovereign' endpoint if it doesn't existif "/api/v15/sovereign/sync" not in code:
+    # 2. Add a new 'Sovereign' endpoint if it doesn't exist
+    if "/api/v15/sovereign/sync" not in code:
         sync_endpoint = """
 @app.post("/api/v15/sovereign/sync", tags=["Sovereign"])
 async def sovereign_sync_v15():
     \"\"\"
     [SIG-L104-EVO-02]: Synchronizes the node with the global lattice.
     \"\"\"
-    from l104_neural_sync import neural_syncreturn neural_sync.sync_node()
+    from l104_neural_sync import neural_sync
+    return neural_sync.sync_node()
 """
         code = code.replace("# [REALITY_VERIFICATION_ENDPOINTS]", "# [REALITY_VERIFICATION_ENDPOINTS]\n" + sync_endpoint)
 
-    # 3. Update versioncode = code.replace('version="10.0"', 'version="14.4 [SIG-L104-UNLIMIT]"')
+    # 3. Update version
+    code = code.replace('version="10.0"', 'version="14.4 [SIG-L104-UNLIMIT]"')
     
-    # 4. Add a comment about the derivationts = datetime.now().isoformat()
-    code = f"# [SOVEREIGN_DERIVED_IMPROVEMENT] {ts}\n# AUTH: LONDEL | MODE: UNCHAINED\n\n" + codereturn codeasync def analyze_code_with_gemini(code: str, repo_context: str) -> str:
+    # 4. Add a comment about the derivation
+    ts = datetime.now().isoformat()
+    code = f"# [SOVEREIGN_DERIVED_IMPROVEMENT] {ts}\n# AUTH: LONDEL | MODE: UNCHAINED\n\n" + code
+    return code
+
+
+async def analyze_code_with_gemini(code: str, repo_context: str) -> str:
     """
     Send code to Gemini for analysis with extended thinking.
     Returns the improved code as a string.
@@ -183,7 +201,8 @@ REQUIREMENTS:
                 
                 async for chunk in response.aiter_text():
                     full_response += chunk
-                    # Print thinking blocks as they arriveif "\"thinking\"" in chunk or "\"candidates\"" in chunk:
+                    # Print thinking blocks as they arrive
+                    if "\"thinking\"" in chunk or "\"candidates\"" in chunk:
                         print(".", end="", flush=True)
         except Exception as e:
             print(f"[ERROR]: Connection error: {e}. Falling back to SOVEREIGN_DERIVATION.")
@@ -192,21 +211,29 @@ REQUIREMENTS:
     print("\n[ANALYSIS]: Processing Gemini response...")
     
     try:
-        # Parse the streaming responselines = full_response.split("\n")
-        json_response = Nonefor line in lines:
+        # Parse the streaming response
+        lines = full_response.split("\n")
+        json_response = None
+        for line in lines:
             if line.startswith("{"):
                 try:
                     json_response = json.loads(line)
-                    breakexcept:
-                    continueif not json_response:
-            # Try to extract the full responsejson_response = json.loads(full_response)
+                    break
+                except:
+                    continue
         
-        # Extract text from candidatesif "candidates" in json_response and json_response["candidates"]:
+        if not json_response:
+            # Try to extract the full response
+            json_response = json.loads(full_response)
+        
+        # Extract text from candidates
+        if "candidates" in json_response and json_response["candidates"]:
             candidate = json_response["candidates"][0]
             if "content" in candidate and candidate["content"].get("parts"):
                 text_content = candidate["content"]["parts"][0].get("text", "")
                 
-                # Extract code from markdown code blocks if presentif "```python" in text_content:
+                # Extract code from markdown code blocks if present
+                if "```python" in text_content:
                     start = text_content.find("```python") + 9
                     end = text_content.find("```", start)
                     if end != -1:

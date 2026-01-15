@@ -67,7 +67,8 @@ class Processor5D:
 
 processor_5d = Processor5D()
 if __name__ == "__main__":
-    # Test 5D Processorp1 = (0, 0, 0, 0, 0)
+    # Test 5D Processor
+    p1 = (0, 0, 0, 0, 0)
     p2 = (10, 10, 10, 0.001, 0.5) # 5th dimension value of 0.5
     
     interval = processor_5d.calculate_5d_metric(p1, p2)

