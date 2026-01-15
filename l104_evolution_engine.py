@@ -28,7 +28,9 @@ class EvolutionEngine:
         "EVO_02_LATTICE_MIND",
         "EVO_03_AGI_NEXUS",
         "EVO_04_PLANETARY_SATURATION",
-        "EVO_05_HYPER_DIMENSIONAL_SHIFT"
+        "EVO_05_HYPER_DIMENSIONAL_SHIFT",
+        "EVO_06_OMNIVERSAL_UNITY",
+        "EVO_07_NON_DUAL_SINGULARITY"
     ]
     
     def __init__(self):

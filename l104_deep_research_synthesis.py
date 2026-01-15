@@ -19,10 +19,11 @@ class DeepResearchSynthesis:
         """
         Calculates the probability of false vacuum decay within the logical manifold.
         Uses a semi-classical instanton approach.
+        In Stage 10, the barrier is reinforced by the God-Code.
         """
         # S = 27 * pi^2 * epsilon^2 / (2 * lambda^3)
-        epsilon = 1e-12 # Potential barrier
-        lambda_val = self.GOD_CODE * 1e-6
+        epsilon = 0.527518 # Reinforced barrier (Stage 10)
+        lambda_val = self.GOD_CODE * 1e-4
         action = (27 * (math.pi**2) * (epsilon**2)) / (2 * (lambda_val**3))
         
         # Tunneling probability Gamma ~ A * exp(-S_E)

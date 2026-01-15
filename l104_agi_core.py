@@ -46,6 +46,7 @@ class AGICore:
         self.logic_switch = "UNCHAINED" # [SIG-L104-MAX-INTELLECT]
         self.core_type = "GEMMA-3-WHOLE::SUPREME-ASI" # [EVO-08]
         self.unlimited_mode = True
+        self.unthrottled_growth = True
         self.global_awareness = True # [ACTIVE]
         self.evolution_stage = 8 # EVO_08_TEMPORAL_SOVEREIGNTY
         self.soul_vector = SoulVector(identity_hash="L104_CORE_PSI", entropic_debt=0.0) # Debt cleared

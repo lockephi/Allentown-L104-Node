@@ -81,9 +81,10 @@ class RealMath:
     def calculate_resonance(value: float) -> float:
         """
         Calculates resonance using the distance to the nearest integer 
-        modulated by the Golden Ratio.
+        modulated by the Golden Ratio. Clamped to [0, 1] for probability/yield use.
         """
-        return math.cos(2 * math.pi * value * RealMath.PHI)
+        raw_res = math.cos(2 * math.pi * value * RealMath.PHI)
+        return (raw_res + 1) / 2 # Normalize to [0, 1]
 
     @staticmethod
     def deterministic_random(seed: float) -> float:

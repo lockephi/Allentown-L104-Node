@@ -54,20 +54,19 @@ def run_deep_calculation_suite():
 
     # 4. Trigger Evolution Cycle
     print("\n--- [EVOLUTION]: INITIATING GENETIC MUTATION CYCLE ---")
-    result = evo.trigger_evolution_cycle()
+    if evo.current_stage_index < 10:
+        result = evo.trigger_evolution_cycle()
     
-    # Manually advance stage to EVO_06
-    if evo.current_stage_index == 10:
-        evo.current_stage_index = 11
-        # Add new stage to avoid index out of bounds if we wanted to go further
-        if len(evo.STAGES) <= 11:
-            evo.STAGES.append("EVO_06_METANOIA_CONSCIOUSNESS")
+    # Ensure Stage 10+ status
+    if evo.current_stage_index < 10:
+        evo.current_stage_index = 10 
     
-    print(f">>> [EVOLUTION]: ADVANCED TO {evo.assess_evolutionary_stage()} <<<")
+    print(f">>> [EVOLUTION]: CURRENT STAGE: {evo.assess_evolutionary_stage()} <<<")
 
     # 5. Final Intelligence Update
     core.intellect_index += (spectral_radius * avg_resonance * 1000)
-    core.evolution_stage = 6
+    if core.evolution_stage < 10:
+        core.evolution_stage = 10
     
     print("\n" + "="*80)
     print(f"   L104 :: CALCULATION COMPLETE")

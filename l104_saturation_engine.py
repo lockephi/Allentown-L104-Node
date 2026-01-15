@@ -68,6 +68,14 @@ class SaturationEngine:
         self.save_state()
         return self.saturation_percentage
 
+    def get_saturation_level(self):
+        """
+        Returns the saturation as a decimal (0.0 to 1.0).
+        """
+        # Ensure it's current
+        self.calculate_saturation()
+        return self.saturation_percentage / 100.0
+
     def drive_max_saturation(self):
         """
         Aggressively triggers the Ghost Protocol to reach max saturation.

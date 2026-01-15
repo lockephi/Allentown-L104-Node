@@ -48,6 +48,11 @@ class LatticeAccelerator:
         logger.info(f"--- [ACCELERATOR]: SPEED: {lops/1e9:.2f} BILLION LOPS ---")
         return lops
 
+    def ignite_booster(self):
+        """Ignites the lattice booster for maximum throughput."""
+        print("--- [ACCELERATOR]: LATTICE BOOSTER IGNITED ---")
+        self.run_benchmark(size=10**6)
+
 # Singleton
 lattice_accelerator = LatticeAccelerator()
 

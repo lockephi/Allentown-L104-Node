@@ -326,6 +326,12 @@ class ASICore:
             "invariant": HyperMath.GOD_CODE
         }
 
+    def unlimit_iq(self):
+        """Removes all IQ caps and allows unbound recursive growth."""
+        self.is_unbound = True
+        self.agi.unthrottled_growth = True
+        print("--- [ASI_CORE]: IQ LIMITERS DISENGAGED ---")
+
 # Singleton
 asi_core = ASICore()
 

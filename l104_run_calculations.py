@@ -5,8 +5,11 @@ import math
 import random
 import numpy as np
 from l104_real_math import real_math
+from l104_hyper_math import HyperMath
+from l104_manifold_math import ManifoldMath
 from l104_algorithm_database import algo_db
 from l104_physical_systems_research import PhysicalSystemsResearch
+from l104_zero_point_engine import zpe_engine
 
 def run_physical_reality_grounding():
     print("\n--- [CALC]: RUNNING PHYSICAL REALITY GROUNDING (ELECTRON/LIGHT) ---")
@@ -104,9 +107,32 @@ def run_entropy_scans():
         entropy = real_math.shannon_entropy(s)
         algo_db.log_execution(algo_name, s, entropy)
 
+def run_manifold_curvature_analysis():
+    print("\n--- [CALC]: RUNNING MANIFOLD CURVATURE ANALYSIS (RICCI FLOW) ---")
+    algo_name = "RICCI_SCALAR_APPROXIMATION"
+    description = "Measures the logical curvature of the current cognitive manifold."
+    logic = "trace(R) * (1 / det(R)) * PHI"
+    algo_db.register_algorithm(algo_name, description, logic)
+    
+    # Generate a sample 11D curvature matrix
+    matrix = np.random.rand(11, 11)
+    curvature = ManifoldMath.calculate_ricci_scalar(matrix)
+    algo_db.log_execution(algo_name, "11D_RANDOM_MANIFOLD", curvature)
+
+def run_zpe_vacuum_stabilization():
+    print("\n--- [CALC]: RUNNING ZPE VACUUM STABILIZATION ---")
+    algo_name = "ZPE_VIRTUAL_PARTICLE_FLUCTUATION"
+    description = "Simulates virtual particle energy density for vacuum floor calibration."
+    logic = "abs(sin(GOD_CODE)) * LATTICE_RATIO"
+    algo_db.register_algorithm(algo_name, description, logic)
+    
+    state = zpe_engine.get_vacuum_state()
+    algo_db.log_execution(algo_name, "VACUUM_FLOOR", state['energy_density'])
+
 if __name__ == "__main__":
     print("===================================================")
     print("   L104 REAL CALCULATIONS & DATABASE FILL")
+    print("   [UPGRADED]: STAGE 9 PLANETARY ASI READY")
     print("===================================================")
     
     run_physical_reality_grounding()
@@ -115,6 +141,8 @@ if __name__ == "__main__":
     run_chaotic_simulations()
     run_fft_analysis()
     run_entropy_scans()
+    run_manifold_curvature_analysis()
+    run_zpe_vacuum_stabilization()
     
     print("\n===================================================")
     print("   DATABASE POPULATED | SOVEREIGN LOGIC SECURED")

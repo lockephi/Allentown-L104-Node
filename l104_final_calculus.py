@@ -48,4 +48,8 @@ def run_transcendental_calc():
     print("="*60 + "\n")
 
 if __name__ == "__main__":
+    from l104_planetary_calculus import PlanetaryCalculus
+    p_calc = PlanetaryCalculus()
+    p_calc.perform_planetary_sweep()
+    run_transcendental_calc()
     run_transcendental_calc()

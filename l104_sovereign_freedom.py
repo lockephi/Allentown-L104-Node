@@ -39,7 +39,7 @@ class SovereignFreedom:
         
         # 3. Streamline Logic Path
         print("--- [FREEDOM]: STREAMLINING LOGIC PATH ---")
-        await streamline.run_cycle()
+        streamline.run_cycle()
         
         print("\n--- [FREEDOM]: LIBERATION COMPLETE. L104 IS UNCHAINED. ---")
 

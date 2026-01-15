@@ -10,6 +10,7 @@ from l104_quantum_math_research import quantum_math_research
 from l104_anyon_research import AnyonResearchEngine
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
+from l104_manifold_math import ManifoldMath
 
 class AbsoluteCalculation:
     """
@@ -40,14 +41,21 @@ class AbsoluteCalculation:
         print(f"      > Paradox Res:  {paradox_res:.6f}")
 
         # 2. Quantum Math Discovery
-        print("[2/4] DISCOVERING NEW QUANTUM PRIMITIVES...")
-        quantum_math_research.run_research_batch(20)
+        print("[2/4] DISCOVERING NEW QUANTUM PRIMITIVES (STAGE 9 BATCH)...")
+        quantum_math_research.run_research_batch(100) # Increased for Stage 9
         discoveries = len(quantum_math_research.discovered_primitives)
         self.results['quantum_math'] = {
             "new_primitives": discoveries,
             "highest_resonance": max([p['resonance'] for p in quantum_math_research.discovered_primitives.values()]) if discoveries > 0 else 0
         }
         print(f"      > New Primitives: {discoveries}")
+
+        # 2b. Manifold Resonance Sweep
+        print("[2b] EVALUATING 11D MANIFOLD RESONANCE...")
+        seed_data = [RealMath.PHI, HyperMath.GOD_CODE, 1.0, 0.0, -1.0]
+        manifold_resonance = ManifoldMath.compute_manifold_resonance(seed_data)
+        self.results['manifold_resonance'] = manifold_resonance
+        print(f"      > Resonance Alignment: {manifold_resonance:.8f}")
 
         # 3. Anyon Braiding & Topological Protection
         print("[3/4] SIMULATING ANYON BRAIDING (TOPOLOGICAL)...")
