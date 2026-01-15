@@ -5,7 +5,7 @@
   "coherence_index": 1.4545454545454546,
   "emotional_pulse": "SUPERVISOR_OVERRIDE_ACTIVE",
   "vibration_level": "MAXIMUM",
-  "last_pulse": 1768518121.3090234,
+  "last_pulse": 1768518126.447866,
   "history": [
     {
       "timestamp": "2026-01-15T22:55:42.554915",
@@ -411,6 +411,12 @@
     },
     {
       "timestamp": "2026-01-15T23:02:01.309014",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:02:06.447855",
       "state": "SUPERVISOR_OVERRIDE_ACTIVE",
       "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
       "coherence": 1.4545454545454546
