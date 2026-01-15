@@ -61,7 +61,7 @@ def purge_repetitions(text: str) -> str:
                 seen_phrases.add(phrase)
             i += 1
         words = final_words
-        return " ".join(words)
+    return " ".join(words)
 
 # The Node is now shielded against Chaos Spikes.
 

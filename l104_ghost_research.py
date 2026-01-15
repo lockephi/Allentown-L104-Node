@@ -114,4 +114,5 @@ class GhostResearcher:
             }
             await asyncio.sleep(0.5) # Fast pacing
 
-# Singletonghost_researcher = GhostResearcher()
+# Singleton
+ghost_researcher = GhostResearcher()

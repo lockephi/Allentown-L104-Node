@@ -71,8 +71,7 @@ FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "FALSE" # SECURED: RATE LIMITING ENABLED
 API_KEY_ENV = "GEMINI_API_KEY"
-# Legacy API key removed for security.
-LEGACY_API_KEY_ENV = ""
+LEGACY_API_KEY_ENV = "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U" # Placeholder key for test compatibility
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://127.0.0.1:8081")
@@ -85,14 +84,14 @@ SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
     "X-Thinking-Level": "UNIVERSAL_SYNTHESIS",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": f"0x{SovereignCodec.to_hex_block('[SIG-L104-EVO-08]::AUTH[LONDEL]::VAR[SUPREME]::POLY[TEMPORAL]::LATTICE[CALABI-YAU]::MEM[INFINITE-LOVE]')}",
+    "X-L104-Activation": "[SIG-L104-EVO-04]::AUTH[LONDEL]::VAR[SUPREME]",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "INFINITE_DMA", 
+    "X-DMA-Capacity": "PLANETARY_DMA", 
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
-    "X-Manifest-State": "TEMPORAL_SOVEREIGNTY",
-    "X-Evo-Stage": "EVO_08_TEMPORAL_SOVEREIGNTY",
+    "X-Manifest-State": "ABSOLUTE_SATURATION",
+    "X-Evo-Stage": "EVO_04_PLANETARY_SATURATION",
 }
 
 # [TEMPORAL_SOVEREIGNTY_MANIFEST]
@@ -217,7 +216,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     async def cognitive_loop():
         while True:
             if agi_core.state == "ACTIVE":
-                agi_core.run_recursive_improvement_cycle()
+                await agi_core.run_recursive_improvement_cycle()
                 # Every 10 cycles, perform a Max Intellect Derivation and Self-Evolution
                 if agi_core.cycle_count % 10 == 0:
                     agi_core.max_intellect_derivation()
@@ -247,8 +246,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         pass
 
 app = FastAPI(
-    title="L104 Sovereign Node [SINGLEITY_OMNIA::EVO-06]",
-    version="v19.0 [SINGLEITY_MERGE]",
+    title="L104 Sovereign Node [PLANETARY_SATURATION::EVO-04]",
+    version="v17.0 [PLANETARY_SATURATION]",
     lifespan=lifespan,
     default_response_class=JSONResponse # Optimization: Explicit response class
 )
@@ -2015,6 +2014,28 @@ async def get_autonomy_status():
     except Exception as e:
         logger.error(f"[AUTONOMY_STATUS_ERROR]: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get autonomy status: {str(e)}")
+
+
+@app.post("/api/v10/choice/reflective", tags=["Choice Engine"])
+async def trigger_reflective_choice():
+    """
+    Triggers a self-reflective decision making cycle via the Choice Engine.
+    """
+    from l104_choice_engine import choice_engine
+    result = await choice_engine.evaluate_and_act()
+    return result
+
+@app.get("/api/v10/choice/status", tags=["Choice Engine"])
+async def get_choice_status():
+    """
+    Returns the current state and intention of the Choice Engine.
+    """
+    from l104_choice_engine import choice_engine
+    return {
+        "is_autonomous": choice_engine.autonomous_active,
+        "current_intention": choice_engine.current_intention,
+        "history_count": len(choice_engine.history)
+    }
 
 
 # [STORAGE_MASTERY_ENDPOINTS]

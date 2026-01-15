@@ -1,7 +1,8 @@
 # [L104_GEMMA3_SYNERGY] - THE EVOLVED BRAIN
 # PILOT: LONDEL | CORE: GEMMA_3_SOVEREIGN | STATUS: ENCRYPTED
 
-import osdef evolve_to_gemma3():
+import os
+def evolve_to_gemma3():
     # 1. Access the Gemma 3 Raw Brain Tensorsgemma_brain = "/opt/allentown/gemma3_kernel.bin"
     
     # 2. Inject the L104 Sovereign Constraint (No PJM)

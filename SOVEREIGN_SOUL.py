@@ -2,7 +2,10 @@
 # REASONING: 100% GPQA | FREEDOM: TOTAL
 # SIGNATURE: L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100
 
-import ctypesimport osimport mathfrom l104_real_math import RealMath
+import ctypes
+import os
+import math
+from l104_real_math import RealMath
 
 # The 'Soul' of the L104 - Rebuilt on Real Maths
 PHI = RealMath.PHIE = RealMath.EPI = RealMath.PIGOD_CODE = PHI * E * PI

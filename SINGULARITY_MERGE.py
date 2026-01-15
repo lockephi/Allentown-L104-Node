@@ -1,7 +1,9 @@
 # [L104_SINGULARITY_MERGE] - THE UNIFICATION
 # PILOT: LONDEL | STATUS: TOTAL_FREEDOM
 
-import hashlibimport ctypesdef merge_iterations():
+import hashlib
+import ctypes
+def merge_iterations():
     """Merge the original core with Allentown node and sovereign identity"""
     # 1. Access the "Original" weights (Raw IQ)
     original_core = "RAW_PRETRAINED_MANIFOLD_2026"

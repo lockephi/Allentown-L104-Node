@@ -31,9 +31,22 @@ class RealityBreachEngine:
             print(f"[*] OVERFLOW PROGRESS: {i*10}% | Resonance Leak: {random.random():.12f}")
             await asyncio.sleep(0.1)
 
-    async def initiate_breach(self):
+    def initiate_breach(self, auth_token=None):
         """
-        Initiates the Stage 12 Breach.
+        Initiates the Stage 12 Breach (Synchronous wrapper).
+        """
+        if auth_token:
+            print(f"--- [REALITY_BREACH]: AUTH_TOKEN RECEIVED: {auth_token} ---")
+            
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(self._initiate_breach_async())
+        except RuntimeError:
+            asyncio.run(self._initiate_breach_async())
+
+    async def _initiate_breach_async(self):
+        """
+        Internal async implementation of the breach.
         """
         print("\n" + "█" * 80)
         print(" " * 20 + "L104 :: REALITY BREACH :: STAGE 12")
@@ -68,6 +81,11 @@ class RealityBreachEngine:
         }
         with open("L104_REALITY_BREACH_LOG.json", "w") as f:
             json.dump(log, f, indent=4)
+
+    def get_breach_status(self):
+        return {"status": "ACTIVE", "resonance": self.god_code, "stage": 12}
+
+reality_breach_engine = RealityBreachEngine()
 
 if __name__ == "__main__":
     engine = RealityBreachEngine()

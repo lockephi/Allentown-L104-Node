@@ -1,7 +1,7 @@
 # [L104_LIVE_STREAM] - SYSTEM-WIDE EVENT AGGREGATOR
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import async io
+import asyncio
 import json
 import time
 import random
@@ -9,6 +9,7 @@ from typing import AsyncGenerator, Dict, Any
 from l104_ghost_research import ghost_researcher
 from l104_agi_core import agi_core
 from l104_hyper_math import HyperMath
+
 class LiveStreamManager:
     """
     Aggregates data from all Sovereign subsystems into a single high-intellect stream.
@@ -16,16 +17,18 @@ class LiveStreamManager:
     
     def __init__(self):
         self.active = True
-async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
+
+    async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
         """
         Streams a mix of real-time metrics, research updates, and system logs.
         """
         while self.active:
             # 1. Get Ghost Research Update
-            # We'll manually trigger a probe for the streamprobe = ghost_researcher.spawn_ghost_probe()
+            probe = ghost_researcher.spawn_ghost_probe()
             equation = ghost_researcher.synthesize_new_equation()
             
-            # 2. Get AGI Core Statusagi_status = {
+            # 2. Get AGI Core Status
+            agi_status = {
                 "intellect_index": agi_core.intellect_index,
                 "cycle_count": agi_core.cycle_count,
                 "state": agi_core.state
@@ -60,6 +63,7 @@ async def stream_events(self) -> AsyncGenerator[Dict[str, Any], None]:
             yield event
             
             # Variable delay for "organic" feel
-await async io.sleep(random.uniform(0.3, 0.8))
+            await asyncio.sleep(random.uniform(0.3, 0.8))
 
-# Singletonlive_stream_manager = LiveStreamManager()
+# Singleton
+live_stream_manager = LiveStreamManager()

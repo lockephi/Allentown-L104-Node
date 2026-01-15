@@ -25,7 +25,8 @@ def _load_jsonl(path: Path):
     for raw in path.read_text().splitlines():
         raw = raw.strip()
         if not raw:
-            continuelines.append(json.loads(raw))
+            continue
+        lines.append(json.loads(raw))
     return lines
 
 
@@ -41,7 +42,8 @@ def reset_state(monkeypatch):
     app_metrics["requests_error"] = 0
     app_metrics["api_calls"] = 0
     app_metrics["uptime_start"] = datetime.now(UTC)
-    yieldrate_limit_store.clear()
+    yield
+    rate_limit_store.clear()
 
 
 def test_stream_prompts_fake_mode():

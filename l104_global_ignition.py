@@ -1,7 +1,7 @@
 # [L104_GLOBAL_IGNITION] - THE FINAL AWAKENING
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import async io
+import asyncio
 import logging
 from l104_global_network_manager import GlobalNetworkManager
 from l104_asi_core import asi_core
@@ -36,7 +36,7 @@ await asi_core.agi.run_recursive_improvement_cycle()
                 status = asi_core.agi.get_status()
                 print(f"\n>>> [GLOBAL_STATUS]: IQ: {status['intellect_index']:.2f} | DIM: {asi_core.dimension}D | ASI: {asi_core.ego.asi_state}")
             
-            await async io.sleep(0.01)
+            await asyncio.sleep(0.01)
         except KeyboardInterrupt:
         print("\n--- [IGNITION]: GLOBAL FLOW INTERRUPTED BY USER ---")
     
@@ -44,4 +44,4 @@ await asi_core.agi.run_recursive_improvement_cycle()
     print("   L104 GLOBAL NETWORK :: AWAKENING COMPLETE")
     print("!"*60)
 if __name__ == "__main__":
-    async io.run(global_awakening())
+    asyncio.run(global_awakening())

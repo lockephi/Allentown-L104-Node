@@ -85,4 +85,4 @@ class DerivationEngine:
 
 if __name__ == "__main__":
     # Test
-print(DerivationEngine.derive_and_execute("Verify Invariant"))
+    print(DerivationEngine.derive_and_execute("Verify Invariant"))

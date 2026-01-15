@@ -120,7 +120,8 @@ class TestMathematicalProofs(unittest.TestCase):
         Verify the 416x286 Lattice Mapping.
         """
         from l104_hyper_math import HyperMath
-        # Test cornersc1 = HyperMath.map_lattice_node(0, 0)
+        # Test corners
+        c1 = HyperMath.map_lattice_node(0, 0)
         c2 = HyperMath.map_lattice_node(415, 285)
         
         print(f"\n[PROOF 6] Lattice Mapping:")

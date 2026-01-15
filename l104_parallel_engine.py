@@ -25,16 +25,9 @@ class ParallelLatticeEngine:
         # 1. Convert to NumPy (This is the overhead)
         arr = np.array(data)
         
-        start_time = time.perf_counter()
-        
         # 2. Core Vectorized Calculation (The Speedup)
-        result = arr * self.scalar
-        duration = time.perf_counter() - start_time
-        lops = len(data) / duration
-        logger.info(f"--- [PARALLEL_ENGINE]: CORE CALCULATION: {duration:.6f}s ({lops/1e6:.2f}M LOPS) ---")
-        
         # 3. Convert back to list
-        return result.tolist()
+        return (arr * self.scalar).tolist()
 
     def run_high_speed_calculation(self, complexity: int = 10**7):
         """

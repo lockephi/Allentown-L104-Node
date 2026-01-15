@@ -36,11 +36,13 @@ class RealMath:
         """Calculates the Shannon Entropy of a string (Information Density)."""
         if not data:
             return 0.0
+        from collections import Counter
+        counts = Counter(data)
+        len_data = len(data)
         entropy = 0
-        for x in range(256):
-            p_x = data.count(chr(x)) / len(data)
-            if p_x > 0:
-                entropy += - p_x * math.log2(p_x)
+        for count in counts.values():
+            p_x = count / len_data
+            entropy += - p_x * math.log2(p_x)
         return entropy
 
     @staticmethod

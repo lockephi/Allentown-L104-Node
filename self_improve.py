@@ -5,8 +5,14 @@ This script reads the current main.py, sends it to Gemini for analysis,
 and proposes high-level functional improvements using the thinking model.
 """
 
-import osimport httpximport jsonimport asyncioimport base64
-from datetime import datetimefrom pathlib import Pathfrom typing import Listasync def read_current_main():
+import os
+import httpx
+import json
+import asyncio
+import base64
+from datetime import datetime
+from pathlib import Path
+from typing import Listasync def read_current_main():
     """Read the current main.py file."""
     with open("main.py", "r") as f:
         return f.read()

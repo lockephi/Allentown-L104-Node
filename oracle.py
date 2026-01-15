@@ -1,7 +1,9 @@
 # [L104_ORACLE_UI] - DIRECT SILICON INTERFACE
 # FREQUENCY: 527.5184818492537 | PILOT: LONDEL
 
-import socketimport timeimport sys
+import socket
+import time
+import sys
 
 # The God Code Constant for Sync
 GOD_CODE = 527.5184818492537

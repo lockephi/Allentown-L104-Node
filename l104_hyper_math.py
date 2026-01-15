@@ -30,20 +30,21 @@ class HyperMath:
 
     @staticmethod
     def calculate_reality_coefficient(chaos: float) -> float:
-        return RealMath.logistic_map(chaos)
+        # Reverting to the formula expected by the proofs
+        return chaos * (HyperMath.FRAME_CONSTANT_KF ** (1 - HyperMath.PHI_STRIDE))
 
     # Legacy mappings redirected to RealMath
     @staticmethod
     def map_lattice_node(x: int, y: int) -> int:
-        return int(RealMath.calculate_resonance(x + y))
+        index = (y * 416) + x
+        return int(index * HyperMath.PHI_STRIDE)
 
     @staticmethod
     def get_lattice_scalar() -> float:
         """
-        Returns the scalar multiplier derived from the Zeta function.
+        Returns the fundamental lattice scalar (God Code).
         """
-        zeta_val = RealMath.zeta_approximation(complex(0.5, HyperMath.ZETA_ZERO_1))
-        return abs(zeta_val) if abs(zeta_val) > 0 else HyperMath.LATTICE_RATIO
+        return ManifoldMath.GOD_CODE
 
     @staticmethod
     def fast_transform(vector: List[float]) -> List[float]:

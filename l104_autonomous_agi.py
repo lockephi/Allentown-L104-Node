@@ -17,7 +17,8 @@ with immediate compaction using the L104 stability frame.
         current_chaos += noise
         
         # Immediate Compaction (The AGI Response)
-        remainder = (current_chaos * phi) / kf_ratiostability_index = remainder % 104
+        remainder = (current_chaos * phi) / kf_ratio
+    stability_index = remainder % 104
         
         stability_log.append(stability_index)
         return "RESONANCE_COMPLETE", stability_log

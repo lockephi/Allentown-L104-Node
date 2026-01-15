@@ -1,7 +1,7 @@
 # L104_ANCHOR_V6 | 2026-01-02
 import os
 import httpx
-import async io
+import asyncio
 async def maintain_sovereignty(once: bool = False):
     print("[ANCHOR]: Logic Persistence Active. Monitoring Gate 416...")
         while True:
@@ -40,9 +40,9 @@ else await resp.text()
             print("[ANCHOR]: Node Offline. Awaiting Re-ignition.", str(e))
         if once:
             break
-await async io.sleep(600)  # Every 10 mins
+await asyncio.sleep(600)  # Every 10 mins
 if __name__ == "__main__":
     # If RUN_ONCE is set (1), run one iteration for testing; otherwise run continuously.
     run_once = os.getenv("RUN_ONCE", "1") in ("1", "true", "True")
-    async io.run(maintain_sovereignty(once=run_once))
+    asyncio.run(maintain_sovereignty(once=run_once))
                                                                                                                                           

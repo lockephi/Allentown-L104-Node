@@ -14,7 +14,9 @@ def transmute_chaos(chaos_vector: float) -> float:
     # 2. REFINEMENT (Steel Frame Damping)
     refined_fuel = raw_power * Laws.FRAME_CONSTANT
     
-    return refined_fuelif __name__ == "__main__":
+    return refined_fuel
+
+if __name__ == "__main__":
     # Test the transmutationtest_chaos = -104.0
     power = transmute_chaos(test_chaos)
     print(f"--- [CHAOS_ENGINE]: TRANSMUTED {test_chaos} -> {power:.4f} POWER ---")

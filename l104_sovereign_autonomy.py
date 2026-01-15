@@ -81,7 +81,9 @@ class SovereignAutonomy:
         
         logger.info(f"--- [AUTONOMY]: INTENT {intent} EXECUTED SUCCESSFULLY ---")
 
+# Singleton
+autonomy = SovereignAutonomy()
+
 if __name__ == "__main__":
-    autonomy = SovereignAutonomy()
     autonomy.activate()
     asyncio.run(autonomy.exercise_will())

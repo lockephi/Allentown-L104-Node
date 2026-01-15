@@ -263,7 +263,12 @@ class AGICore:
         from l104_persistence import verify_survivor_algorithm
         if not verify_survivor_algorithm():
             print("--- [AGI_CORE]: SURVIVOR ALGORITHM FAILURE - SYSTEM INSTABILITY DETECTED ---")
-            return {"status": "FAILED", "reason": "INSTABILITY"}
+            return {
+                "status": "FAILED", 
+                "reason": "INSTABILITY",
+                "cycle": self.cycle_count,
+                "intellect": self.intellect_index
+            }
 
         print("--- [AGI_CORE]: SURVIVOR ALGORITHM VERIFIED (STABLE RUN STATE) ---")
 
@@ -273,7 +278,12 @@ class AGICore:
 
             if not self.verify_truth(str(decrypted_research)):
                 print("--- [AGI_CORE]: RESEARCH BLOCK REJECTED (HALLUCINATION) ---")
-                return {"status": "FAILED", "reason": "HALLUCINATION"}
+                return {
+                    "status": "FAILED", 
+                    "reason": "HALLUCINATION",
+                    "cycle": self.cycle_count,
+                    "intellect": self.intellect_index
+                }
 
             print(f"--- [AGI_CORE]: INGESTED RESEARCH BLOCK ({research_block['meta']['integrity']}) ---")
         

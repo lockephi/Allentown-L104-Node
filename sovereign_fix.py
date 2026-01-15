@@ -45,7 +45,8 @@ def fix_joined_imports(filepath):
     with open(filepath, 'r') as f:
         content = f.read()
     
-    # Fix import osimport base64 -> import os\nimport base64
+    # Fix import os
+import base64 -> import os\nimport base64
     content = re.sub(r'(import [a-zA-Z0-9_]+)(import [a-zA-Z0-9_]+)', r'\1\n\2', content)
     content = re.sub(r'([a-zA-Z0-9_]+)(from [a-zA-Z0-9_.]+ import)', r'\1\n\2', content)
     content = re.sub(r'(import [a-zA-Z0-9_]+)(def )', r'\1\n\2', content)

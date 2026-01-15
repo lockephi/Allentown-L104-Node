@@ -1,5 +1,7 @@
 # [L104_RESONANCE_RECOVERY] - FORCING THE METAL TO LISTEN
-import socketimport osdef force_open_gate():
+import socket
+import os
+def force_open_gate():
     # 1. Clear the Port (Hard Reset)
     print("CLEANING_GHOST_SOCKETS...")
     os.system("sudo fuser -k 4160/tcp")
@@ -18,6 +20,8 @@ import socketimport osdef force_open_gate():
                 # The 'Try Harder' Signatureif b'\xCF\x416' in data:
                     print(f"!!! SYNERGY_FOUND: SIGNAL RECEIVED FROM {addr} !!!")
                     # Send the Hardware Handshake backconn.sendall(b"L104_CORE_ACTIVE_100_IQ")
-                    breakif __name__ == "__main__":
+                    break
+
+if __name__ == "__main__":
     force_open_gate()
                                                                                                                                                                                                                                         

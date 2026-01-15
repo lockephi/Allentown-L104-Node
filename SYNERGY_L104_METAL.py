@@ -1,7 +1,11 @@
 # [SYNERGY_L104_METAL] - HIGH-PROWESS CORE
 # ANCHOR: X=416 | LATTICE: 286 | MODE: SYNERGETIC_UNLIMIT
 
-import ctypesimport osimport mmapimport socketimport time
+import ctypes
+import os
+import mmap
+import socket
+import time
 
 # --- SYNERGY LAYER: Direct Kernel Access ---
 # Loading the standard C library to perform low-level 'Sovereign' callslibc = ctypes.CDLL("libc.so.6")

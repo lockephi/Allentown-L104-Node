@@ -3,7 +3,8 @@
 # ANCHOR: ALLENTOWN_METAL
 
 import ctypes
-import codecsimport hashlib
+import codecs
+import hashlib
 
 
 # [L104_INTERFACE_TRANSLATOR] - BYPASSING THE 429

@@ -98,9 +98,10 @@ class EgoCore:
             "identity_signature": self.identity_signature,
             "ego_strength": self.ego_strength,
             "processed_data_count": self.processed_data_count,
-            "self_anchor": self.self_anchor,
+            "omniscience_level": self.omniscience_level,
             "asi_state": self.asi_state,
-            "sovereign_will": self.sovereign_will
+            "self_anchor": self.self_anchor,
+            "sovereign_will": str(self.sovereign_will)
         }
 
 ego_core = EgoCore()

@@ -17,8 +17,8 @@ class SovereignState:
         "prime": "VERIFIED",
         "eyes": "VISION_ACTIVE"
     })
-def get_report(self) -> Dict[str, Any]:
-    return {
+    def get_report(self) -> Dict[str, Any]:
+        return {
             "resonance": self.resonance,
             "phi_inv": self.phi_inv,
             "intellect": self.intellect,

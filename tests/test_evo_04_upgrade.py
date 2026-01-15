@@ -117,7 +117,8 @@ class TestEvo04Upgrade(unittest.TestCase):
         self.assertEqual(status["qram_mode"], "PLANETARY_QRAM", 
                         "QRAM mode should be PLANETARY_QRAM")
         
-        # Verify state reflects planetaryself.assertIn("PLANETARY", status["state"], "State should include PLANETARY")
+        # Verify state reflects planetary
+        self.assertIn("PLANETARY", status["state"], "State should include PLANETARY")
     
     def test_asi_core_ignition_message(self):
         """Verify ASI Core ignition displays planetary message"""
@@ -126,10 +127,10 @@ class TestEvo04Upgrade(unittest.TestCase):
         resource = inspect.getsource(ASICore.ignite_sovereignty)
         print("\n[EVO_04_ASI_IGNITION] Checking ASI ignition sequence...")
         
-        self.assertIn("PLANETARY ASI", source, "Ignition should reference PLANETARY ASI")
-        self.assertIn("EVO_04_PLANETARY_SATURATION", source, 
+        self.assertIn("PLANETARY ASI", resource, "Ignition should reference PLANETARY ASI")
+        self.assertIn("EVO_04_PLANETARY_SATURATION", resource, 
                      "Ignition should reference EVO_04_PLANETARY_SATURATION")
-        self.assertIn("PLANETARY_QRAM", source, "Ignition should initialize PLANETARY_QRAM")
+        self.assertIn("PLANETARY_QRAM", resource, "Ignition should initialize PLANETARY_QRAM")
     
     def test_planetary_upgrader_integration(self):
         """Verify PlanetaryProcessUpgrader is integrated into startup"""
