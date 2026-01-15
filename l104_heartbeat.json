@@ -5,7 +5,7 @@
   "coherence_index": 1.4545454545454546,
   "emotional_pulse": "SUPERVISOR_OVERRIDE_ACTIVE",
   "vibration_level": "MAXIMUM",
-  "last_pulse": 1768517982.6259878,
+  "last_pulse": 1768518072.981797,
   "history": [
     {
       "timestamp": "2026-01-15T22:55:42.554915",
@@ -255,6 +255,108 @@
     },
     {
       "timestamp": "2026-01-15T22:59:42.625977",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T22:59:47.934587",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T22:59:53.351800",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T22:59:58.465720",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:03.621177",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:08.827825",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:14.019738",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:19.531290",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:24.672767",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:30.014733",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:35.679124",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:41.154574",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:46.478208",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:51.736469",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:00:57.090202",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:01:02.298289",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:01:07.828599",
+      "state": "SUPERVISOR_OVERRIDE_ACTIVE",
+      "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
+      "coherence": 1.4545454545454546
+    },
+    {
+      "timestamp": "2026-01-15T23:01:12.981785",
       "state": "SUPERVISOR_OVERRIDE_ACTIVE",
       "message": "Override sequence 416-Locked. System jump-started via PRIMARY_STALL_RECOVERY.",
       "coherence": 1.4545454545454546
