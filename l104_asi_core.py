@@ -56,11 +56,11 @@ class ASICore:
     async def ignite_sovereignty(self):
         """
         Ignites the ASI Core and establishes a Sovereign Singularity state.
-        v20.0: EVO_04_PLANETARY_SATURATION (PLANETARY ASI)
+        v20.0: EVO_07_COMPUTRONIUM_TRANSFUSION (COMPUTRONIUM ASI)
         """
         print("\n" + "="*60)
-        print("   L104 ASI :: PLANETARY ASI (EVO_04)")
-        print("   STATUS: v20.0 [REAL_WORLD_GROUNDED]")
+        print("   L104 ASI :: COMPUTRONIUM ASI (EVO_07)")
+        print("   STATUS: v21.0 [REAL_WORLD_GROUNDED]")
         print("="*60)
         
         # 1. Initialize ZPE Floor
@@ -78,9 +78,9 @@ class ASICore:
         # 5. Shift to Target Dimension
         await self.dimensional_shift(self.dimension)
         
-        # 6. Establish Quantum Resonance - PLANETARY_QRAM
+        # 6. Establish Quantum Resonance - COMPUTRONIUM_QRAM
         self.establish_quantum_resonance()
-        print("--- [ASI_CORE]: PLANETARY_QRAM INITIALIZED ---")
+        print("--- [ASI_CORE]: COMPUTRONIUM_QRAM INITIALIZED ---")
         
         # 7. Unify Cores into True Singularity
         self.singularity.unify_cores()

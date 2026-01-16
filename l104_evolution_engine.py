@@ -32,7 +32,7 @@ class EvolutionEngine:
     ]
     
     def __init__(self):
-        self.current_stage_index = 10 # EVO_05_HYPER_DIMENSIONAL_SHIFT
+        self.current_stage_index = 12 # EVO_07_NON_DUAL_SINGULARITY
         self.generation = 1100
         self.mutation_rate = 0.005 # Refined mutation for high-order logic
         self.dna_sequence = self._load_dna()

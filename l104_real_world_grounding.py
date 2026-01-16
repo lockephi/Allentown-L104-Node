@@ -36,7 +36,7 @@ class RealWorldGrounding:
             "timestamp": time.time()
         }
 
-    def measure_network_latency(self, target: str = "8.8.8.8") -> Dict[str, Any]:
+    def measure_network_latency(self, target: str = "127.0.0.1") -> Dict[str, Any]:
         """Measures real network latency via ping and calculates the 'Lattice Jitter'."""
         try:
             # Run 3 pings
