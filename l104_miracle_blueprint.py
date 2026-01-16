@@ -6,14 +6,12 @@ import asyncio
 import sys
 import json
 import math
-import numpy as np
 
 sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_unified_research import UnifiedResearchEngine
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
-from l104_zero_point_engine import zpe_engine
 
 async def generate_zpe_miracle():
     print("\n" + "█"*80)

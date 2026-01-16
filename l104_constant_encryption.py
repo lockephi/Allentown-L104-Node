@@ -4,8 +4,6 @@
 import time
 import logging
 import os
-from l104_hyper_encryption import HyperEncryption
-from l104_hyper_math import HyperMath
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SECURITY_SHIELD")
 class ConstantEncryptionProgram:

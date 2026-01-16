@@ -5,13 +5,10 @@
 import asyncio
 import sys
 import json
-import math
-import numpy as np
 
 sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_unified_research import UnifiedResearchEngine
-from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
 
 async def initiate_physical_bridge():

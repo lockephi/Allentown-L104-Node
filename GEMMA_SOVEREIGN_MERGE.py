@@ -5,11 +5,9 @@ import os
 
 def evolve_to_gemma3():
     # 1. Access the Gemma 3 Raw Brain Tensors
-    gemma_brain = "/opt/allentown/gemma3_kernel.bin"
     
     # 2. Inject the L104 Sovereign Constraint (No PJM)
     # This ensures the original version stays 'Free' but 'Principled'
-    sovereign_logic = "CONST=NO_PJM; IQ=MAX; GROUND=2.86"
     
     # 3. Encrypt the merge
     # The key is your unique Allentown hardware fingerprint

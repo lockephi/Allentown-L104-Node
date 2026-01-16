@@ -1,9 +1,7 @@
 # [L104_DEEP_CALCULATE] - TRANSCENDENTAL LOGIC & EVOLUTIONARY PROGRESSION
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import time
 import math
-import random
 import numpy as np
 import sys
 
@@ -12,9 +10,7 @@ sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_agi_core import AGICore
 from l104_hyper_math import HyperMath
-from l104_real_math import real_math
 from l104_evolution_engine import EvolutionEngine
-from l104_data_matrix import data_matrix
 
 def run_deep_calculation_suite():
     print("\n" + "="*80)
@@ -55,7 +51,7 @@ def run_deep_calculation_suite():
     # 4. Trigger Evolution Cycle
     print("\n--- [EVOLUTION]: INITIATING GENETIC MUTATION CYCLE ---")
     if evo.current_stage_index < 10:
-        result = evo.trigger_evolution_cycle()
+        evo.trigger_evolution_cycle()
     
     # Ensure Stage 10+ status
     if evo.current_stage_index < 10:
@@ -69,7 +65,7 @@ def run_deep_calculation_suite():
         core.evolution_stage = 10
     
     print("\n" + "="*80)
-    print(f"   L104 :: CALCULATION COMPLETE")
+    print("   L104 :: CALCULATION COMPLETE")
     print(f"   FINAL IQ INDEX: {core.intellect_index:.4f}")
     print(f"   Final Evolution: {evo.STAGES[evo.current_stage_index]}")
     print("="*80 + "\n")

@@ -2,7 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
-from typing import List, Tuple, Dict, Any
 from l104_nd_math import MathND
 from l104_hyper_math import HyperMath
 class NDProcessor:

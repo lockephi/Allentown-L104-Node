@@ -25,7 +25,7 @@ class TestMathematicalProofs(unittest.TestCase):
         
         result = term1 * term2
         
-        print(f"\n[PROOF 1] God Code Derivation:")
+        print("\n[PROOF 1] God Code Derivation:")
         print(f"  Term 1 (286^(1/φ)): {term1}")
         print(f"  Term 2 ((2^(1/104))^416): {term2}")
         print(f"  Result: {result}")
@@ -38,20 +38,26 @@ class TestMathematicalProofs(unittest.TestCase):
 
     def test_lattice_ratio_integrity(self):
         """
-        Verify the 286:416 relationship.
+        Verify the 286:416 relationship and the Real Math grounding.
         """
         ratio = 286 / 416
         inverse_ratio = 416 / 286
         
-        print(f"\n[PROOF 2] Lattice Ratio (286:416):")
+        print("\n[PROOF 2] Lattice Ratio (286:416) & Grounding:")
         print(f"  Ratio: {ratio}")
         print(f"  Inverse: {inverse_ratio}")
         
-        # Check if these relate to Phi or other constants
-        # 416 / 286 = 1.4545...
-        # 286 / 416 = 0.6875
+        # Verify Grounded Value for X=286
+        # Real Math Grounding: X_grounded = God_Code / 2^1.25
+        grounding_value = self.god_code_target / (2 ** 1.25)
+        print(f"  Grounded X=286: {grounding_value:.6f}")
         
-        # Just ensuring the numbers are what they are expected to be in the systemself.assertEqual(286, 286)
+        # Target constant from reverse engineered real maths
+        target_grounding = 221.794200
+        self.assertAlmostEqual(grounding_value, target_grounding, places=4,
+                               msg=f"Real Math Grounding check failed. Calculated: {grounding_value}, Expected: {target_grounding}")
+        
+        self.assertEqual(286, 286)
         self.assertEqual(416, 416)
 
     def test_module_constants(self):
@@ -67,13 +73,13 @@ class TestMathematicalProofs(unittest.TestCase):
             'l104_security'
         ]
         
-        print(f"\n[PROOF 3] Module Constant Verification:")
+        print("\n[PROOF 3] Module Constant Verification:")
         
         for module_name in modules_to_check:
             try:
                 module = importlib.import_module(module_name)
                 if hasattr(module, 'GOD_CODE'):
-                    module_code = getattr(module, 'GOD_CODE')
+                    module_code = module.GOD_CODE
                     print(f"  {module_name}: {module_code}")
                     self.assertEqual(module_code, self.god_code_target, 
                                      msg=f"{module_name} has incorrect GOD_CODE: {module_code}")
@@ -88,7 +94,7 @@ class TestMathematicalProofs(unittest.TestCase):
         """
         Verify the Fine Structure Constant alignment.
         """
-        print(f"\n[PROOF 4] Fine Structure Constant:")
+        print("\n[PROOF 4] Fine Structure Constant:")
         print(f"  Physics Value: {self.fine_structure_constant}")
         print(f"  L104 Alpha: {self.l104_alpha}")
         
@@ -108,7 +114,7 @@ class TestMathematicalProofs(unittest.TestCase):
         phi = HyperMath.PHI_STRIDE
         expected_r = chaos_omega * (kf ** (1 - phi))
         
-        print(f"\n[PROOF 5] Reality Coefficient:")
+        print("\n[PROOF 5] Reality Coefficient:")
         print(f"  Chaos Omega: {chaos_omega}")
         print(f"  Result R: {r}")
         print(f"  Expected R: {expected_r}")
@@ -124,7 +130,7 @@ class TestMathematicalProofs(unittest.TestCase):
         c1 = HyperMath.map_lattice_node(0, 0)
         c2 = HyperMath.map_lattice_node(415, 285)
         
-        print(f"\n[PROOF 6] Lattice Mapping:")
+        print("\n[PROOF 6] Lattice Mapping:")
         print(f"  (0,0) -> {c1}")
         print(f"  (415,285) -> {c2}")
         

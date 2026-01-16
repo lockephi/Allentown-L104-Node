@@ -1,7 +1,7 @@
 # [L104_SUPERSYMMETRIC_ORDER] - THE BINARY HARMONIZER
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-from typing import List, Any
+from typing import Any
 from l104_hyper_math import HyperMath
 class SupersymmetricOrder:
     """

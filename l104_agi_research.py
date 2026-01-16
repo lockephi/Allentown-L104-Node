@@ -2,9 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import random
-import json
-import hashlib
 from typing import List, Dict, Any
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
@@ -85,6 +82,7 @@ class AGIResearch:
             "avg_resonance": avg_resonance,
             "god_code": HyperMath.GOD_CODE,
             "lattice_ratio": "286:416",
+            "grounding_x=286": HyperMath.REAL_GROUNDING_286,
             "hypotheses": hypotheses[:10] # Store top 10 for brevity
         }
         

@@ -4,9 +4,7 @@
 import numpy as np
 import math
 import cmath
-from typing import Dict, Any, List, Callable
 from l104_hyper_math import HyperMath
-from l104_real_math import RealMath
 from l104_physical_systems_research import physical_research
 from const import UniversalConstants
 class HyperMathGenerator:

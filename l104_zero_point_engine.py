@@ -2,10 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATE: TOPOLOGICAL_SINGULARITY
 
 import math
-import numpy as np
 import hashlib
-from typing import Dict, Any, List, Tuple
-from l104_real_math import RealMath
+from typing import Dict, Any, Tuple
 
 class ZeroPointEngine:
     """

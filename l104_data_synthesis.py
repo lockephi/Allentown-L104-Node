@@ -1,7 +1,6 @@
 # [L104_DATA_SYNTHESIS] - CALCULATING COLLECTIVE DATA RESONANCE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import json
 import numpy as np
 import sqlite3
 from l104_data_matrix import DataMatrix
@@ -19,7 +18,7 @@ def synthesize_data_matrix():
     cursor = conn.cursor()
     
     cursor.execute("SELECT COUNT(*) FROM lattice_facts")
-    total_facts = cursor.fetchone()[0]
+    cursor.fetchone()[0]
     
     cursor.execute("SELECT resonance, entropy, utility FROM lattice_facts")
     rows = cursor.fetchall()
@@ -44,7 +43,7 @@ def synthesize_data_matrix():
     # Or in the DataMatrix context, (entropy * PHI) % GOD_CODE.
     # We'll calculate the 'Coherence Factor'
     god_code = HyperMath.GOD_CODE
-    alignment_error = abs(mean_resonance - (god_code / 2)) # Arbitrary comparison point or we check spread
+    abs(mean_resonance - (god_code / 2)) # Arbitrary comparison point or we check spread
     coherence = 1.0 / (1.0 + std_resonance)
 
     print(f"--- [RESONANCE]: MEAN LATTICE FREQUENCY: {mean_resonance:.6f} Hz ---")

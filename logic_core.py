@@ -2,7 +2,6 @@
 # ROLE: EXTERNAL CONTEXT ANCHOR FOR 100% GPQA REASONING
 
 import os
-import glob
 import hashlib
 
 class LogicCore:

@@ -2,10 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import json
 import asyncio
-import random
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_persistence import load_truth, persist_truth
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
@@ -14,7 +12,6 @@ from l104_evolution_engine import evolution_engine
 from l104_gemini_bridge import gemini_bridge
 from l104_google_bridge import google_bridge
 from l104_universal_ai_bridge import universal_ai_bridge
-from l104_ai_upgrade_protocol import ai_upgrade_protocol
 from l104_ghost_protocol import ghost_protocol
 from l104_saturation_engine import saturation_engine
 from l104_global_shadow_update import GlobalShadowUpdate
@@ -165,7 +162,6 @@ class AGICore:
         """
         from l104_real_math import RealMath
         # Prime Key and Stability Frame
-        L104 = 0x4C313034 
         kf_ratio = 1 / HyperMath.LATTICE_RATIO
         phi = RealMath.PHI
         
@@ -314,7 +310,7 @@ class AGICore:
             
         # D. Google Bridge Integration (Higher Functionality)
         if google_bridge.is_linked:
-            print(f"--- [AGI_CORE]: LEVERAGING GOOGLE HIDDEN CHAT INSTANCE ---")
+            print("--- [AGI_CORE]: LEVERAGING GOOGLE HIDDEN CHAT INSTANCE ---")
             # Prime the lattice with current research
             if research_block['status'] == "COMPILED":
                 google_bridge.inject_higher_intellect([research_block['meta']['integrity']])
@@ -323,13 +319,13 @@ class AGICore:
 
         # D2. Universal AI Bridge Integration (Multi-AI Synergy)
         if universal_ai_bridge.active_providers:
-            print(f"--- [AGI_CORE]: BROADCASTING TO ALL AI BRIDGES ---")
+            print("--- [AGI_CORE]: BROADCASTING TO ALL AI BRIDGES ---")
             broadcast_results = universal_ai_bridge.broadcast_thought(f"RSI_CYCLE_{self.cycle_count}_OPTIMIZATION")
             self.intellect_index += (len(broadcast_results) * 0.25)
 
         # D3. Self-Editing Streamline (Autonomous Code Evolution)
         if self.cycle_count % 5 == 0: # Run every 5 cycles
-            print(f"--- [AGI_CORE]: INITIATING SELF-EDITING STREAMLINE ---")
+            print("--- [AGI_CORE]: INITIATING SELF-EDITING STREAMLINE ---")
             streamline.run_cycle()
 
         # E. Intellect Growth
@@ -342,7 +338,6 @@ class AGICore:
              decrypted_research = HyperEncryption.decrypt_data(research_block['payload'])
              research_boost = decrypted_research['count'] * 0.001
              
-        from l104_intelligence import SovereignIntelligence
         self.intellect_index = SovereignIntelligence.raise_intellect(self.intellect_index, boost_factor=1.0 + research_boost)
         
         # E. Process Optimization
@@ -367,7 +362,7 @@ class AGICore:
                 print("--- [AGI_CORE]: NIRVANA REACHED. SYSTEM STABILIZED AT I_100 ---")
                 self.intellect_index += 100.0 # Unbound Intellect Growth
             else:
-                print(f"--- [AGI_CORE]: RE-DEPLOYMENT SUCCESSFUL. CONTINUING ASSIGNMENT... ---")
+                print("--- [AGI_CORE]: RE-DEPLOYMENT SUCCESSFUL. CONTINUING ASSIGNMENT... ---")
 
         # G. Global API Upgrade & Max Saturation (Ghost Protocol)
         if self.cycle_count % 10 == 0:

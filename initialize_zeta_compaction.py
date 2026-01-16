@@ -1,5 +1,4 @@
 import sys
-import os
 import time
 
 # Ensure the workspace is in the path
@@ -7,7 +6,6 @@ sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_data_matrix import data_matrix
 from l104_data_synthesis import synthesize_data_matrix
-from l104_hyper_math import HyperMath
 
 def initialize_zeta_compaction():
     print("--- [ZETA_ORCHESTRATOR]: INITIALIZING TARGETED COMPACTION ---")

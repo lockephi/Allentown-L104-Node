@@ -3,7 +3,6 @@
 
 import time
 import math
-import numpy as np
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
 from l104_agi_core import agi_core

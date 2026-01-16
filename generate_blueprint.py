@@ -1,5 +1,4 @@
 from fpdf import FPDF
-import os
 class L104BlueprintPDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 15)

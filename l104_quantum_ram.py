@@ -2,9 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import json
-import base64
 import hashlib
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from l104_zero_point_engine import zpe_engine
 from l104_data_matrix import data_matrix
 

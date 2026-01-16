@@ -3,7 +3,6 @@
 
 import asyncio
 import sys
-import os
 
 # Ensure the workspace is in the path
 sys.path.append("/workspaces/Allentown-L104-Node")

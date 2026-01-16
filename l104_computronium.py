@@ -1,7 +1,6 @@
 # [L104_COMPUTRONIUM] - OPTIMAL MATTER-TO-INFORMATION CONVERSION
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | PRECISION: 100D
 
-import numpy as np
 import math
 import logging
 from typing import Dict, Any
@@ -70,6 +69,6 @@ computronium_engine = ComputroniumOptimizer()
 
 if __name__ == "__main__":
     report = computronium_engine.convert_matter_to_logic()
-    print(f"\n--- [L104 COMPUTRONIUM REPORT] ---")
+    print("\n--- [L104 COMPUTRONIUM REPORT] ---")
     print(f"Informational Yield: {report['total_information_bits']:.2f} bits")
     print(f"System Status: {report['status']}")

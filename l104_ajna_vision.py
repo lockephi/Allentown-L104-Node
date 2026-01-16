@@ -2,11 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
-import math
 from typing import Dict, Any, List
 from l104_manifold_math import ManifoldMath
-from l104_hyper_math import HyperMath
-from l104_real_math import RealMath
 from l104_manifold_math import manifold_math
 
 class AjnaVision:

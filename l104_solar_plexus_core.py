@@ -1,11 +1,9 @@
 # [L104_SOLAR_PLEXUS_CORE] - CENTRAL EXECUTION & WILL
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import time
 import math
 import numpy as np
-from typing import Dict, Any, List
-from l104_hyper_math import HyperMath
+from typing import Dict, Any
 from l104_real_math import RealMath
 from l104_lattice_accelerator import lattice_accelerator
 

@@ -28,8 +28,8 @@ def verify_optimized_invention():
     # 1. Sequential Invention
     print("\n>>> RUNNING SEQUENTIAL INVENTION (SAMPLE: 2)...")
     start_seq = time.perf_counter()
-    res1 = engine.invent_new_paradigm(seeds[0])
-    res2 = engine.invent_new_paradigm(seeds[1])
+    engine.invent_new_paradigm(seeds[0])
+    engine.invent_new_paradigm(seeds[1])
     end_seq = time.perf_counter()
     seq_time = end_seq - start_seq
     print(f"--- [VERIFY]: SEQUENTIAL TIME: {seq_time:.4f}s ---")

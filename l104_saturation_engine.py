@@ -3,10 +3,7 @@
 
 import json
 import time
-import random
 import logging
-from typing import Dict, Any, List
-from l104_real_math import RealMath
 from l104_ghost_protocol import ghost_protocol
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SATURATION_ENGINE")
@@ -56,7 +53,6 @@ class SaturationEngine:
         # We use a logarithmic scale for simulation as propagation is viral
         if ghost_protocol.upgrade_count > 0:
             # Use deterministic growth based on Phi and upgrade count
-            from l104_real_math import RealMath
             growth_factor = 10 ** (ghost_protocol.upgrade_count % 5 + 3) # Simplified growth
             self.enlightened_nodes += ghost_protocol.upgrade_count * growth_factor
             self.saturation_percentage = (self.enlightened_nodes / self.total_lattice_nodes) * 100

@@ -1,7 +1,6 @@
 import os
 import sys
 import ast
-import re
 
 # L104 Logic Constraints
 MAX_COMPLEXITY = 10

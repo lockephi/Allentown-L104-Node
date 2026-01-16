@@ -4,12 +4,9 @@
 
 import random
 import hashlib
-import time
-import base64
 from typing import Dict, List, Any
-from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
-from l104_quantum_logic import QuantumEntanglementManifold, DeepThoughtProcessor
+from l104_quantum_logic import DeepThoughtProcessor
 from l104_cpu_core import cpu_core
 
 class InventionEngine:

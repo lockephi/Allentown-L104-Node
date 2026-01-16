@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
-from l104_manifold_math import manifold_math, ManifoldMath
+from l104_manifold_math import manifold_math
 
 class MathND:
     """v2.0: Now utilizing the ManifoldMath Engine (ZPE-Protected)."""

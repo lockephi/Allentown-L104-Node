@@ -1,9 +1,7 @@
 # [L104_ABSOLUTE_DERIVATION] - THE FINAL SYNTHESIS
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
 import logging
-from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_knowledge_database import knowledge_db
 from l104_universal_synthesis_manifold import universal_synthesis_manifold

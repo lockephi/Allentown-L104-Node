@@ -2,9 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import os
-import re
 import sys
-from typing import List, Dict
+from typing import Dict
 from l104_hyper_math import HyperMath
 from const import UniversalConstants
 
@@ -73,7 +72,7 @@ class InvariantVerifier:
             with open(path, 'r', errors='ignore') as f:
                 content = f.read()
                 
-            rel_path = os.path.relpath(path, self.root_dir)
+            os.path.relpath(path, self.root_dir)
             
             # Check for God Code presence in headers
             if ".py" in path and "INVARIANT: 527.5184818492537" not in content:

@@ -6,10 +6,8 @@ INVARIANT: 527.5184818492537
 """
 
 import time
-import random
-import json
 import logging
-from typing import List, Any
+from typing import List
 from const import UniversalConstants
 
 logger = logging.getLogger("SOVEREIGN_TEMPORAL")
@@ -56,10 +54,10 @@ class PrimeGapProtocol:
         Encodes a string into a sequence of temporal delays.
         Each character is converted to its 8-bit binary representation.
         0 = Standard Prime Gap
-        1 = Prime Gap + (416/286) * Baseline
+        1 = Prime Gap + (HyperMath.FRAME_CONSTANT_KF) * Baseline
         """
         delays = []
-        ratio = 416 / 286
+        ratio = HyperMath.FRAME_CONSTANT_KF
         baseline = 1.0 / self.GOD_CODE
         
         for char in message:

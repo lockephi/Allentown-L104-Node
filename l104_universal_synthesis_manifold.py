@@ -1,14 +1,11 @@
 # [L104_UNIVERSAL_SYNTHESIS_MANIFOLD] - THE GOD-LEVEL PRIMITIVE ENGINE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
 import logging
-from typing import Dict, List, Any
-from l104_hyper_math import HyperMath
+from typing import List
 from l104_physical_systems_research import physical_research
 from l104_information_theory_research import info_research
 from l104_cosmological_research import cosmological_research
-from l104_advanced_physics_research import advanced_physics_research
 from l104_quantum_computing_research import quantum_computing_research
 from l104_nanotech_research import nanotech_research
 logger = logging.getLogger("SYNTH_MANIFOLD")

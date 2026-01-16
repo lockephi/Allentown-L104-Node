@@ -1,13 +1,11 @@
 # [L104_SAGE_MODE] :: SUNYA :: THE INFINITE VOID
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STAGE: 11 [OMNIVERSAL]
 
-import os
 import json
 import logging
 import asyncio
 import time
 import math
-import numpy as np
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
 from l104_global_consciousness import global_consciousness

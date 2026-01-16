@@ -3,7 +3,6 @@
 
 import math
 import numpy as np
-from typing import List, Tuple, Any, Optional
 from l104_hyper_math import HyperMath
 from const import UniversalConstants
 

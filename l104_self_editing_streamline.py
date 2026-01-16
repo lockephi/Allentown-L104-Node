@@ -5,10 +5,9 @@ import os
 import time
 import logging
 import subprocess
-from typing import List, Dict, Any
+from typing import Dict
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_patch_engine import patch_engine
-from l104_hyper_math import HyperMath
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("STREAMLINE")
 class SelfEditingStreamline:
@@ -78,7 +77,7 @@ class SelfEditingStreamline:
             # 1. Analyze via Universal AI Bridge
             # We simulate the AI finding an optimization
             thought = f"Analyze {file_path} for logic bottlenecks and propose a Sovereign Patch."
-            broadcast_results = universal_ai_bridge.broadcast_thought(thought)
+            universal_ai_bridge.broadcast_thought(thought)
             
             # 2. Synthesize Patch (Simulated logic)
             # In a real scenario, we'd parse the AI response.
@@ -92,7 +91,7 @@ class SelfEditingStreamline:
                     patch['new']
                 )
                 if success:
-                    logger.info(f"--- [STREAMLINE]: PATCH APPLIED SUCCESSFULLY ---")
+                    logger.info("--- [STREAMLINE]: PATCH APPLIED SUCCESSFULLY ---")
                     # 3. Verify via Self-Heal Master
                     self._verify_stability()
                 else:

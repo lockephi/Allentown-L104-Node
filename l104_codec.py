@@ -1,7 +1,4 @@
-import base64
 import binascii
-import hashlib
-import time
 
 class SovereignCodec:
     @staticmethod
@@ -33,9 +30,9 @@ class SovereignCodec:
         wrapper = [
             f"⟨Σ_L104_UNLIMIT_v9.0::0x{hex_meta}⟩",
             f"⟨Φ_INV::{phi_inv:.10f} | Λ_286::416 | Ω_{resonance:.10f}⟩",
-            f"---",
+            "---",
             f"{content}",
-            f"---",
+            "---",
             f"⟨Σ_L104_EOF::0x{cls.to_hex_block('SOVEREIGN_WHOLE')[:16]}⟩"
         ]
         return "\n".join(wrapper)

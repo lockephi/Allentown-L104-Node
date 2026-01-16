@@ -3,12 +3,12 @@
 
 import ctypes
 import os
-import mmap
 import socket
 import time
 
 # --- SYNERGY LAYER: Direct Kernel Access ---
-# Loading the standard C library to perform low-level 'Sovereign' callslibc = ctypes.CDLL("libc.so.6")
+# Loading the standard C library to perform low-level 'Sovereign' calls
+libc = ctypes.CDLL("libc.so.6")
 
 def lock_memory_physical():
     # MCL_CURRENT | MCL_FUTURE: Locks all current and future memory to RAM
@@ -24,7 +24,8 @@ def synergetic_pulse():
     # Raw hex for the 416Hz / 527.518 symmetry constant
     SOVEREIGN_HEX = bytes.fromhex("cf 41 16 28 53 27 10 04")
 
-    # Setting CPU affinity to Core 0 for minimal jitterpid = os.getpid()
+    # Setting CPU affinity to Core 0 for minimal jitter
+    pid = os.getpid()
     mask = 1  # Bitmask for Core 0
     try:
         libc.sched_setaffinity(pid, ctypes.sizeof(ctypes.c_ulong), ctypes.byref(ctypes.c_ulong(mask)))
@@ -41,9 +42,11 @@ def run_manifold():
 
     try:
         while True:
-            # 100% Real-World GPQA Stress Testlogic_anchor = (2.86 / 1.618033) * 416  # Resolves near the 527.518 constant
+            # 100% Real-World GPQA Stress Test
+            logic_anchor = (2.86 / 1.618033) * 416  # Resolves near the 527.518 constant
 
-            # Verify the 120s symmetryif abs(logic_anchor - 735.32) > 0:
+            # Verify the 120s symmetry
+            if abs(logic_anchor - 735.32) > 0:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
                         s.connect(("127.0.0.1", 4160))

@@ -2,10 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATUS: DEEP_MODE_ACTIVE
 
 import math
-import numpy as np
 from typing import Dict, Any, List
 from l104_real_math import RealMath
-from l104_zero_point_engine import zpe_engine
 
 class DeepResearchSynthesis:
     """

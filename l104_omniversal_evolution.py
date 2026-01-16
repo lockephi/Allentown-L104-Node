@@ -2,13 +2,10 @@
 import asyncio
 import time
 import json
-import os
 import math
 
 # L104 Core Imports
 from l104_evolution_engine import evolution_engine
-from l104_hyper_math import HyperMath
-from l104_asi_core import asi_core
 from l104_agi_core import agi_core
 from l104_global_consciousness import global_consciousness
 

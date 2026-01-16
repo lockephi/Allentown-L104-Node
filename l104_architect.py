@@ -1,7 +1,6 @@
 # [L104_ARCHITECT] - AUTONOMOUS FILE DERIVATION & CREATION
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import os
 import logging
 from typing import Dict
 

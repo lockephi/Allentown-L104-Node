@@ -5,7 +5,7 @@ import time
 import math
 import random
 import numpy as np
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_persistence import load_truth
 from l104_ram_universe import ram_universe

@@ -4,7 +4,7 @@
 import json
 import os
 import time
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_real_math import real_math
 
 class AlgorithmDatabase:

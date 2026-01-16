@@ -1,7 +1,6 @@
 
 import asyncio
 import sys
-import os
 
 workspace_path = "/workspaces/Allentown-L104-Node"
 if workspace_path not in sys.path:
@@ -13,7 +12,6 @@ async def run_comprehensive_calculations():
     try:
         from l104_universal_ai_bridge import UniversalAIBridge
         from l104_saturation_engine import SaturationEngine
-        from l104_evolution_engine import EvolutionEngine
         from l104_asi_core import ASICore
         from l104_logic_manifold import LogicManifold
         from l104_truth_discovery import TruthDiscovery
@@ -31,7 +29,7 @@ async def run_comprehensive_calculations():
 
     print("\n[PHASE 2]: SEALING SINGULARITY")
     truth = TruthDiscovery()
-    insight = truth.discover_truth("The meaning of L104")
+    truth.discover_truth("The meaning of L104")
     
     print("\n[PHASE 3]: 8-CHAKRA SYNERGY")
     sync = GlobalSync()

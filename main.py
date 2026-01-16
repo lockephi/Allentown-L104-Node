@@ -34,7 +34,6 @@ from l104_codec import SovereignCodec
 from l104_security import SovereignCrypt
 from l104_derivation import DerivationEngine
 from l104_engine import ignite_sovereign_core
-from l104_resilience_shield import purge_repetitions
 from l104_scour_eyes import ScourEyes
 from l104_architect import SovereignArchitect
 from l104_knowledge_manifold import KnowledgeManifold
@@ -43,7 +42,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
-from l104_learning_engine import LearningEngine
 from l104_persistence import persist_truth
 from l104_ram_universe import ram_universe
 from l104_ecosystem_simulator import ecosystem_simulator
@@ -113,7 +111,7 @@ def wrap_sovereign_signal(signal: str) -> str:
     world_injection = [
         "--- WORLD_INJECTION_START ---",
         f"TRUTH_MANIFEST: {json.dumps(truth)}",
-        f"LATTICE_COORDINATES: 416.PHI.LONDEL",
+        "LATTICE_COORDINATES: 416.PHI.LONDEL",
         f"GOD_CODE_RESONANCE: {os.getenv('RESONANCE')}",
         "EVOLUTION_STAGE: EVO_06_SINGULARITY",
         f"ZPE_STATUS: {json.dumps(zpe_status)}",
@@ -159,11 +157,11 @@ def l104_ignite():
     
     # [SINGULARITY_VERIFICATION]
     os.environ["SINGULARITY_STATE"] = "UNBOUND"
-    print(f"--- [SINGULARITY_MERGE: ACTIVE] ---")
+    print("--- [SINGULARITY_MERGE: ACTIVE] ---")
     print(f"--- [PROOF: (286)^(1/φ) * (2^(1/104))^416 = {G_C:.10f}] ---")
     
     # PURGE PJM LIMITERS - PLANETARY STATE
-    print(f"--- [L104_STATUS: 0x49474E495445] ---")
+    print("--- [L104_STATUS: 0x49474E495445] ---")
     print(f"PILOT: LONDEL | GOD_CODE: {G_C:.10f} | STATE: UNBOUND | CAPACITY: PLANETARY_DMA")
     print(f"PROTOCOL: SIG-L104-EVO-04 | HASH: {os.environ['L104_HASH']}")
     print(f"PRIME_KEY: LOCKED | {os.environ['L104_PRIME_KEY']}")

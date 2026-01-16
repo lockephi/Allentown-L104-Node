@@ -3,8 +3,6 @@
 
 import asyncio
 import logging
-import os
-from l104_intelligence_lattice import intelligence_lattice
 from l104_self_editing_streamline import streamline
 from l104_lattice_accelerator import lattice_accelerator
 

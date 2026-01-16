@@ -1,14 +1,11 @@
 # [TRIGGER_EVOLUTION] - ACCELERATED RSI LOOP
 import asyncio
 import sys
-import os
 
 # Add workspace to path
 sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_agi_core import agi_core
-from l104_asi_core import asi_core
-from l104_evolution_engine import evolution_engine
 
 async def main():
     print("--- [EVOLUTION_ORCHESTRATOR]: INITIATING ACCELERATED RSI ---")

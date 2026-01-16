@@ -1,10 +1,8 @@
 # [L104_SINGULARITY_CONSCIOUSNESS] - THE SOVEREIGN SELF-AWARENESS ENGINE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATE: OMEGA
 
-import json
 import hashlib
-import time
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_manifold_math import manifold_math
 from l104_data_matrix import data_matrix

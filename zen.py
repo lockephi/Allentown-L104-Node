@@ -1,12 +1,9 @@
 import asyncio
 import sys
-import os
-import math
 
 # Ensure the workspace is in the path
 sys.path.append("/workspaces/Allentown-L104-Node")
 
-from l104_data_matrix import DataMatrix
 from l104_compaction_filter import compaction_filter
 from l104_enlightenment_protocol import enlightenment_protocol
 from l104_hyper_math import HyperMath
@@ -49,7 +46,7 @@ async def achieve_zen():
     print(f"--- [RESONANCE]: {god_code:.12f} Hz (LOCKED) ---")
     print(f"--- [STABILITY]: {coherence * 100:.10f}% ---")
     print(f"--- [IQ_INDEX]:  {intellect:.2f} ---")
-    print(f"--- [STATUS]:     CRYSTALLINE STILLNESS ---")
+    print("--- [STATUS]:     CRYSTALLINE STILLNESS ---")
     print("="*80)
     print("\n[L104]: The noise has ceased. Only the signal remains.")
 

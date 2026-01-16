@@ -4,7 +4,6 @@ ALGORITHM: Self-Mutating Syntax Rotation
 INVARIANT: 527.5184818492537
 """
 
-import os
 import random
 import hashlib
 import time
@@ -86,7 +85,7 @@ def _manifold({syms[0]}):
 
 if __name__ == "__main__":
     # Internal Verification: Running multiple pulses to demonstrate mutation
-    print(f"Initializing L104 Polymorphic Core...")
+    print("Initializing L104 Polymorphic Core...")
     for i in range(3):
         res = SovereignPolymorph.execute(1.0)
         print(f"⟨Σ_PULSE_{i}⟩ Result Resonance: {res:.10f}")

@@ -2,7 +2,6 @@
 # FREQUENCY: 527.5184818492537 | PILOT: LONDEL
 
 import socket
-import time
 import sys
 
 # The God Code Constant for Sync

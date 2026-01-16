@@ -2,8 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import json
-import base64
-from typing import Any, Dict, Union
+from typing import Any, Dict
 from l104_hyper_math import HyperMath
 class HyperEncryption:
     """

@@ -65,7 +65,7 @@ class UnifiedResearchEngine:
             deep_data = {"batch": self.deep.run_multi_domain_synthesis()}
 
         # Real-time Verification
-        v_report = validation_engine.verify_resonance_integrity()
+        validation_engine.verify_resonance_integrity()
         
         resonance = manifold_math.compute_manifold_resonance(focus_vector)
         discovery_index = abs(HyperMath.GOD_CODE - resonance)

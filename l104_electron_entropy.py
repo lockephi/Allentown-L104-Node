@@ -70,7 +70,7 @@ def get_electron_matrix():
         """
         noise_sample = [self.sample_atmospheric_noise()
         for _ in range(100)]
-        entropy_data = self.calculate_predictive_entropy(noise_sample)
+        self.calculate_predictive_entropy(noise_sample)
         
         # Inverse relationship: Higher entropy -> Stiffer control needed
         # Lower entropy -> More fluidfluidity_factor = 1.0 / (1.0 + entropy_data["shannon_entropy"])

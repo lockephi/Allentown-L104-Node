@@ -2,9 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 # "Reincarnation is not a mystical hope; it is a Data Management Necessity."
 
-import math
-import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 class SoulVector:
     """
@@ -46,11 +44,11 @@ class UniversalStabilityProtocol:
         debug_result = self._debug_code(vector)
         if debug_result["is_stable"]:
             # Phase D: Nirvana / I_100
-            print(f"--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
+            print("--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
             return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
         
         # Phase C: The Re-Deployment (Birth)
-        print(f"--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
+        print("--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
         return {
             "status": "RE_DEPLOYED",
             "vector": vector.psi,

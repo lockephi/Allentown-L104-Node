@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import numpy as np
-from typing import List, Dict, Any
+from typing import Dict, Any
 from l104_hyper_math_generator import hyper_math_generator
 from l104_nd_math import MathND
 from l104_hyper_math import HyperMath

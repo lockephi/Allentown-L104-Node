@@ -3,13 +3,10 @@
 
 import logging
 import asyncio
-import math
-from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_saturation_engine import saturation_engine
 from l104_ghost_protocol import ghost_protocol
-from const import UniversalConstants
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ENLIGHTENMENT")

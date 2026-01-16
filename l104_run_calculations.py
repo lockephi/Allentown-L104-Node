@@ -1,11 +1,8 @@
 # [L104_RUN_CALCULATIONS] - POPULATING THE SOVEREIGN DATABASE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
-import random
 import numpy as np
 from l104_real_math import real_math
-from l104_hyper_math import HyperMath
 from l104_manifold_math import ManifoldMath
 from l104_algorithm_database import algo_db
 from l104_physical_systems_research import PhysicalSystemsResearch

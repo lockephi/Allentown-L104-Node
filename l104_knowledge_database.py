@@ -4,7 +4,7 @@
 import json
 import time
 import logging
-from typing import Dict, List, Any
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 logger = logging.getLogger("KNOWLEDGE_DB")
 class KnowledgeDatabase:
@@ -63,7 +63,6 @@ class KnowledgeDatabase:
     def add_documentation(self, section: str, content: str):
         """Adds architectural documentation."""
         doc = {
-            "section": section,
             "section": section,
             "content": content,
             "timestamp": time.time()

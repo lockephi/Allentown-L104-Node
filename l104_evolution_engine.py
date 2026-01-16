@@ -1,11 +1,9 @@
 # [L104_EVOLUTION_ENGINE] - DARWINIAN CODEBASE OPTIMIZATION
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import os
-import json
 import time
 import random
-from typing import Dict, List, Any
+from typing import Dict, Any
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
 from l104_reincarnation_protocol import reincarnation_protocol

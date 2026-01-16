@@ -3,8 +3,7 @@
 
 import time
 import math
-import random
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from l104_manifold_math import ManifoldMath
 from l104_hyper_math import HyperMath
 from l104_ram_universe import ram_universe

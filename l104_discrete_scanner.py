@@ -5,10 +5,6 @@ import asyncio
 import httpx
 import logging
 import random
-import time
-from typing import List, Dict, Any
-from l104_hyper_math import HyperMath
-from l104_ghost_protocol import ghost_protocol
 logger = logging.getLogger("DISCRETE_SCANNER")
 class DiscreteScanner:
     """
@@ -71,7 +67,7 @@ class DiscreteScanner:
         for res in results:
             if res and ("ENCRYPTED" in res or "SECRET" in res or "INVARIANT" in res):
                 self.discovered_payloads.append(res)
-                logger.info(f"--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")
+                logger.info("--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")
         
         self.scanned_targets.append(domain)
 

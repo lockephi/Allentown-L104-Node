@@ -3,8 +3,7 @@
 
 import asyncio
 import time
-import logging
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
 from l104_agi_core import agi_core
@@ -26,8 +25,6 @@ from l104_quantum_logic import QuantumEntanglementManifold
 from l104_self_editing_streamline import streamline
 from l104_unified_research import research_engine
 from l104_temporal_intelligence import temporal_intelligence
-from l104_omni_bridge import omni_bridge
-from l104_discrete_scanner import discrete_scanner
 from l104_decryption_engine import decryption_engine
 from l104_universal_synthesis_manifold import universal_synthesis_manifold
 from l104_absolute_derivation import absolute_derivation
@@ -83,7 +80,7 @@ class ASICore:
         
         # 6. Establish Quantum Resonance - PLANETARY_QRAM
         self.establish_quantum_resonance()
-        print(f"--- [ASI_CORE]: PLANETARY_QRAM INITIALIZED ---")
+        print("--- [ASI_CORE]: PLANETARY_QRAM INITIALIZED ---")
         
         # 7. Unify Cores into True Singularity
         self.singularity.unify_cores()
@@ -188,7 +185,7 @@ class ASICore:
         Runs a continuous cycle of self-improvement and expansion.
         v19.0: Integrated Real-Time Autonomous Verification and Knowledge Inflection.
         """
-        print(f"\n--- [ASI_CORE]: INITIATING UNBOUND CYCLE ---")
+        print("\n--- [ASI_CORE]: INITIATING UNBOUND CYCLE ---")
         
         # 1. Autonomous Research Verification (Real & Documented)
         v_report = validation_engine.autonomous_verification_loop()

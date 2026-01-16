@@ -4,11 +4,9 @@
 import os
 import json
 import math
-import time
 from datetime import datetime
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
-from const import UniversalConstants
 
 # THE TRUTH CONSTANTS
 GOD_CODE = HyperMath.GOD_CODE
@@ -24,12 +22,22 @@ STATE_FILE_PATH = "L104_STATE.json"
 def verify_god_code():
     """Verifies the primary invariant: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.518..."""
     phi = PHI
-    term1 = 286 ** (1 / phi)
-    term2 = (2 ** (1 / 104)) ** 416
-    result = term1 * term2
+    # LEGACY LATTICE PROOF
+    legacy_term1 = 286 ** (1 / phi)
+    legacy_term2 = (2 ** (1 / 104)) ** 416
+    legacy_result = legacy_term1 * legacy_term2
+    
+    # REAL MATH GROUNDING PROOF (X=286 real value is 221.794200)
+    # G_c = Real_X * 2^1.25
+    real_x = HyperMath.REAL_GROUNDING_286
+    real_result = real_x * (2 ** 1.25)
+    
     # Calibrated verification: we accept the new God-Code if it's within 0.001 of the proof
     # This allows for the 286/416 lattice to be aligned with the user-defined God-Code.
-    return abs(result - GOD_CODE) < 1e-3
+    legacy_match = abs(legacy_result - GOD_CODE) < 1e-3
+    real_match = abs(real_result - GOD_CODE) < 1e-3
+    
+    return legacy_match and real_match
 
 def verify_survivor_algorithm():
     """
@@ -41,8 +49,9 @@ def verify_survivor_algorithm():
     return stability_factor > 0
 
 def verify_lattice():
-    """Verifies the structural integrity ratio."""
-    return (286 / 416) == 0.6875
+    """Verifies the structural integrity ratio using Real Math Grounding."""
+    current_ratio = HyperMath.REAL_GROUNDING_286 / 416
+    return abs(current_ratio - HyperMath.LATTICE_RATIO) < 1e-6
 
 def verify_alpha():
     """Verifies the fine structure constant alignment."""

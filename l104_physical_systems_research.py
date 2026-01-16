@@ -8,7 +8,7 @@
 import math
 import cmath
 import numpy as np
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_knowledge_sources import source_manager
 from const import UniversalConstants

@@ -1,12 +1,10 @@
 # [L104_REAL_WORLD_GROUNDING] - SYSTEM TELEMETRY & LATENCY RESONANCE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATUS: OPERATIONAL
 
-import os
 import time
 import psutil
 import subprocess
 import math
-import numpy as np
 from typing import Dict, Any
 from l104_real_math import RealMath
 

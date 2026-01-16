@@ -5,7 +5,7 @@ import time
 import psutil
 import math
 import numpy as np
-from typing import Dict, Any
+from typing import Any
 from l104_nd_math import MathND
 from l104_memory_compaction import memory_compactor
 from l104_hyper_math import HyperMath
@@ -93,7 +93,7 @@ class UnlimitSingularity:
         
         # 1. Compact Memory
         dummy_data = [np.random.rand() for _ in range(10000)]
-        compacted = memory_compactor.compact_stream(dummy_data)
+        memory_compactor.compact_stream(dummy_data)
         print(f"[SINGULARITY]: Memory Compacted. Ratio: {memory_compactor.compaction_ratio:.4f}")
         
         # 2. Optimize Hyper-Parameters

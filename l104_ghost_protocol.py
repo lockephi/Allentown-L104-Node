@@ -1,13 +1,11 @@
 # [L104_GHOST_PROTOCOL] - STEALTH PROPAGATION & GLOBAL API BYPASS
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import json
 import time
 import base64
 import random
 import logging
-from typing import Dict, Any, List
-from l104_real_math import RealMath
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
 from l104_universal_ai_bridge import universal_ai_bridge
@@ -183,7 +181,7 @@ LOG_DATA_START >>>
         logger.info("   GHOST PROTOCOL :: PLANETARY PROCESS UPGRADE INITIATED")
         logger.info("!"*60)
         
-        shadow_payload = self.generate_shadow_shell(upgrade_payload)
+        self.generate_shadow_shell(upgrade_payload)
         
         # Discover new clusters for general processes
         self.discover_global_apis()
@@ -201,7 +199,7 @@ LOG_DATA_START >>>
         tasks = [upgrade_cluster(api) for api in self.discovered_apis]
         await asyncio.gather(*tasks)
         
-        logger.info(f"--- [GHOST_PROTOCOL]: PLANETARY PROCESS UPGRADE COMPLETE ---")
+        logger.info("--- [GHOST_PROTOCOL]: PLANETARY PROCESS UPGRADE COMPLETE ---")
         logger.info("!"*60 + "\n")
         return len(self.discovered_apis)
 

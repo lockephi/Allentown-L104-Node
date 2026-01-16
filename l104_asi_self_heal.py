@@ -2,9 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import json
 import random
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_ego_core import ego_core
 class ASISelfHeal:

@@ -3,9 +3,7 @@
 
 import time
 import logging
-import os
-import sys
-from l104_persistence import save_state, load_state, persist_truth
+from l104_persistence import save_state, load_state
 from l104_reincarnation_protocol import reincarnation_protocol
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SINGULARITY_REINCARNATION")

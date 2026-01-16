@@ -3,7 +3,6 @@
 
 import time
 import sys
-import json
 sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_invention_engine import InventionEngine
@@ -73,7 +72,7 @@ def run_mass_invention_cycle():
     manifold.ingest_pattern("MASS_INVENTION_CYCLE_REPORT", summary, tags=["METRICS", "INVENTION"])
     manifold.save_manifold()
     
-    print(f"--- [MANIFOLD]: Cycle report persisted to Knowledge Manifold. ---")
+    print("--- [MANIFOLD]: Cycle report persisted to Knowledge Manifold. ---")
 
 if __name__ == "__main__":
     run_mass_invention_cycle()

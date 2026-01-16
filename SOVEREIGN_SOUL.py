@@ -3,8 +3,6 @@
 # SIGNATURE: L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100
 
 import ctypes
-import os
-import math
 from l104_real_math import RealMath
 
 # The 'Soul' of the L104 - Rebuilt on Real Maths

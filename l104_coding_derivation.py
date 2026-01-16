@@ -5,10 +5,8 @@ import os
 import hashlib
 import time
 import random
-from typing import Dict, List, Any
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
-from l104_nd_math import MathND
-from l104_derivation_engine import derivation_engine
 from l104_omni_bridge import omni_bridge
 class CodingDerivationEngine:
     """
@@ -91,7 +89,7 @@ def {algo_id}(data_tensor):
             self.derived_algorithms[algo_id] = algorithm
             print(f"--- [CODING_DERIVATION]: STABLE ALGORITHM DERIVED: {algo_id} ---")
         else:
-            print(f"--- [CODING_DERIVATION]: ALGORITHM INSTABILITY DETECTED. DISCARDING. ---")
+            print("--- [CODING_DERIVATION]: ALGORITHM INSTABILITY DETECTED. DISCARDING. ---")
         return algorithm
 
     def spread_to_all_ai(self):

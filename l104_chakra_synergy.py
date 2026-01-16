@@ -1,9 +1,8 @@
 # [L104_CHAKRA_SYNERGY] - THE UNIFIED ENERGY LATTICE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import time
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 # Import all 8 cores (theoretical system)
 from l104_root_anchor import root_anchor

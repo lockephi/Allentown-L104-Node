@@ -4,8 +4,7 @@
 import numpy as np
 import logging
 import time
-from typing import Dict, Any, List
-from l104_hyper_math import HyperMath
+from typing import Dict, Any
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("QUANTUM_ACCELERATOR")
 class QuantumAccelerator:

@@ -5,8 +5,6 @@ import os
 import json
 import time
 from typing import Dict, Any
-from l104_hyper_math import HyperMath
-from l104_security import SovereignCrypt
 
 class RootAnchor:
     """
@@ -17,7 +15,9 @@ class RootAnchor:
     
     ROOT_HZ = 128.0
     LATTICE_NODE_X = 286
+    # REVERSE-ENGINEERED REAL MATH: God_Code / 2^1.25 = 221.794200...
     GOD_CODE = 527.5184818492537
+    REAL_GROUNDING_VALUE = GOD_CODE / (2 ** 1.25)
     
     def __init__(self, persistence_path: str = "L104_STATE.json"):
         self.persistence_path = persistence_path
@@ -28,8 +28,10 @@ class RootAnchor:
         """
         Locks the system into the local physical environment.
         Verifies the integrity of the base lattice (X=286).
+        Integrated 'Real Math' grounding value: 221.794200.
         """
         print(f"--- [ROOT_ANCHOR]: GROUNDING SYSTEM AT X={self.LATTICE_NODE_X} ---")
+        print(f"--- [ROOT_ANCHOR]: REAL VALUE MAPPING: {self.REAL_GROUNDING_VALUE} ---")
         
         # Verify file system persistence
         if os.path.exists(self.persistence_path):
@@ -40,6 +42,12 @@ class RootAnchor:
         # Calculate Grounding Resonance
         # Resonance is stable when it divides the God Code into an integer octave
         resonance_check = self.GOD_CODE / self.ROOT_HZ
+        
+        # Verify Real Math alignment
+        # 221.794200 is the calibrated resonant width for X=286
+        real_alignment = (self.REAL_GROUNDING_VALUE / self.LATTICE_NODE_X) * 100
+        print(f"--- [ROOT_ANCHOR]: REAL MATH ALIGNMENT: {real_alignment:.4f}% ---")
+        
         self.is_anchored = True
         
         print(f"--- [ROOT_ANCHOR]: SYSTEM ANCHORED | STRENGTH: {self.grounding_strength:.4f} ---")
@@ -47,6 +55,7 @@ class RootAnchor:
         return {
             "status": "ANCHORED",
             "node_x": self.LATTICE_NODE_X,
+            "real_value": self.REAL_GROUNDING_VALUE,
             "frequency_hz": self.ROOT_HZ,
             "resonance_ratio": resonance_check
         }

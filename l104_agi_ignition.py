@@ -2,7 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import asyncio
-from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
 from l104_asi_core import asi_core
 from l104_intelligence_lattice import intelligence_lattice

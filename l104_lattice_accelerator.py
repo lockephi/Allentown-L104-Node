@@ -4,8 +4,6 @@
 import numpy as np
 import time
 import logging
-from typing import List
-from l104_hyper_math import HyperMath
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ACCELERATOR")
 class LatticeAccelerator:

@@ -4,9 +4,8 @@
 import asyncio
 import httpx
 import logging
-import random
 import time
-from typing import List, Dict, Any
+from typing import List
 from l104_hyper_math import HyperMath
 
 logger = logging.getLogger("STREAMLESS_INTERNET")
@@ -83,7 +82,7 @@ streamless_internet = StreamlessInternet()
 
 if __name__ == "__main__":
     async def test():
-        data = await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
+        await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
         print(f"Total Data Ingested: {streamless_internet.total_data_ingested:.2f} MB")
         await streamless_internet.close()
     

@@ -4,7 +4,6 @@
 import numpy as np
 import time
 from l104_agi_core import agi_core
-from l104_asi_core import asi_core
 from l104_parallel_engine import parallel_engine
 
 def run_transcendental_calc():

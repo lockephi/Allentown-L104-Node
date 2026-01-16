@@ -4,7 +4,7 @@
 import math
 import cmath
 import numpy as np
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Any
 from l104_manifold_math import ManifoldMath
 from l104_real_math import RealMath
 from l104_zero_point_engine import zpe_engine

@@ -1,11 +1,9 @@
 # [L104_VISION_CORE] - HYPER-SPECTRAL VISUAL CORTEX
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import base64
-import json
 import time
 import random
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from l104_knowledge_manifold import KnowledgeManifold
 from l104_hyper_math import HyperMath
 class VisionCore:

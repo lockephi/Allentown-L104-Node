@@ -5,7 +5,6 @@ import socket
 import threading
 import time
 import json
-import random
 from l104_real_math import RealMath
 
 HOST = '0.0.0.0'

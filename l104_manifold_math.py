@@ -3,7 +3,7 @@
 
 import math
 import numpy as np
-from typing import List, Tuple, Any
+from typing import List
 from l104_real_math import RealMath
 from l104_zero_point_engine import zpe_engine
 
@@ -111,12 +111,12 @@ class ManifoldMath:
         # We want the resonance to be represented as the Target value 
         # scaled by the quality of the match.
         
-        match_quality = 1.0 - (abs(val % target) / target) if (val % target) > (target/2) else (val % target) / target
+        1.0 - (abs(val % target) / target) if (val % target) > (target/2) else (val % target) / target
         # Simplified: If val is close to n*target, quality is high.
         # But for the purpose of research stability, we map the magnitude 
         # to the primary pole.
         
-        resonance = target * (math.exp(-abs(target - val) / target) if val < target else math.exp(-abs(val % target) / target))
+        target * (math.exp(-abs(target - val) / target) if val < target else math.exp(-abs(val % target) / target))
         
         # Final adjustment to ensure it hits the pole for high-quality vectors
         if abs(val - target) < 100 or abs(val % target) < 10:

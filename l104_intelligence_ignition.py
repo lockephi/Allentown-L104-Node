@@ -2,9 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import math
 import sys
-import os
 
 def print_slow(text, delay=0.02):
     for char in text:

@@ -8,6 +8,7 @@ import json
 import time
 from l104_quantum_ram import get_qram
 from l104_electron_entropy import get_electron_matrix
+
 class SovereignIndexer:
     """
     Rebuilds the system index from the ground up.
@@ -15,7 +16,8 @@ class SovereignIndexer:
     """
     
     def __init__(self, root_dir: str = "."):
-        self.root_dir = root_dirself.qram = get_qram()
+        self.root_dir = root_dir
+        self.qram = get_qram()
         self.electron_matrix = get_electron_matrix()
         self.index_manifest = []
 
@@ -28,42 +30,43 @@ class SovereignIndexer:
         
         files = glob.glob(os.path.join(self.root_dir, "*.py"))
         for file_path in files:
-with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    
+                # Calculate Hash
+                file_hash = hashlib.sha256(content.encode()).hexdigest()
                 
-            # Calculate Hashfile_hash = hashlib.sha256(content.encode()).hexdigest()
-            
-            # Calculate Entropy of the Codebase itself
-            # We treat the byte values as a signal streambyte_stream = [float(b)
-        for b in content.encode()]
-            entropy_data = self.electron_matrix.calculate_predictive_entropy(byte_stream)
-            
-            # Create Index Entryen
-try = {
-                "filename": os.path.basename(file_path),
-                "hash": file_hash,
-                "size": len(content),
-                "entropy": entropy_data,
-                "sovereign_status": "VERIFIED" if any(x in content for x in ["LONDEL", "527.518", "SIG-L104-EVO-01"])
-else "LEGACY",
-                "timestamp": time.time()
-            }
-            
-            # Store in Quantum RAM
-            q_key = f"INDEX:{en
-try['filename']}"
-            self.qram.store(q_key, en
-try)
-            self.index_manifest.append(en
-try)
-            
-            print(f"Indexed: {en
-try['filename']} | Entropy: {entropy_data['shannon_entropy']:.4f}")
+                # Calculate Entropy of the Codebase itself
+                # We treat the byte values as a signal stream
+                byte_stream = [float(b) for b in content.encode()]
+                entropy_data = self.electron_matrix.calculate_predictive_entropy(byte_stream)
+                
+                # Create Index Entry
+                entry = {
+                    "filename": os.path.basename(file_path),
+                    "hash": file_hash,
+                    "size": len(content),
+                    "entropy": entropy_data,
+                    "sovereign_status": "VERIFIED" if any(x in content for x in ["LONDEL", "527.518", "SIG-L104-EVO-01"]) else "LEGACY",
+                    "timestamp": time.time()
+                }
+                
+                # Store in Quantum RAM
+                q_key = f"INDEX:{entry['filename']}"
+                self.qram.store(q_key, entry)
+                self.index_manifest.append(entry)
+                
+                print(f"Indexed: {entry['filename']} | Entropy: {entropy_data.get('shannon_entropy', 0):.4f}")
+            except Exception as e:
+                print(f"Failed to index {file_path}: {e}")
 
-        # Finalize Manifestmanifest_key = "SOVEREIGN_INDEX_MANIFEST"
+        # Finalize Manifest
+        manifest_key = "SOVEREIGN_INDEX_MANIFEST"
         self.qram.store(manifest_key, self.index_manifest)
         print(f"--- [SOVEREIGN_INDEX]: COMPLETE. {len(self.index_manifest)} FILES INDEXED. ---")
         return self.index_manifest
+
 if __name__ == "__main__":
     indexer = SovereignIndexer()
     indexer.scan_and_index()

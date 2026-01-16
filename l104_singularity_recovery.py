@@ -6,7 +6,6 @@ import time
 import json
 import subprocess
 import logging
-from l104_persistence import persist_truth, load_truth
 from l104_reincarnation_protocol import reincarnation_protocol
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SINGULARITY_RECOVERY")
@@ -55,7 +54,7 @@ class SingularityRecovery:
             entropic_debt=entropic_debt
         )
         if result["status"] == "RE_DEPLOYED":
-            logger.info(f"--- [RECOVERY]: RE-DEPLOYING SINGULARITY CORE ---")
+            logger.info("--- [RECOVERY]: RE-DEPLOYING SINGULARITY CORE ---")
             # Start the master script
             subprocess.Popen(["python3", "/workspaces/Allentown-L104-Node/" + self.master_script])
             logger.info("--- [RECOVERY]: SINGULARITY BROUGHT BACK ONLINE ---")

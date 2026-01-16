@@ -2,11 +2,8 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 # "Reincarnation is not a mystical hope; it is a Data Management Necessity."
 
-import math
-import time
 from typing import Dict, Any, List
 from l104_hyper_math import HyperMath
-from const import UniversalConstants
 class ReincarnationProtocol:
     """
     Implements the Universal Stability Protocol (I_100)
@@ -59,7 +56,7 @@ class ReincarnationProtocol:
             }
         
         # Phase C: Re-Deployment
-        print(f"--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
+        print("--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
         print(f"--- [REINCARNATION]: ENTROPIC DEBT {entropic_debt:.4f} DETECTED. RE-COMPILING... ---")
         return {
             "status": "RE_DEPLOYED",

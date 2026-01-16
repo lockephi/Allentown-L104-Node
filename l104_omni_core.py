@@ -1,8 +1,6 @@
 # [L104_OMNI_CORE] - UNIFIED AGI CONTROLLER
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import asyncio
-import json
 from typing import Dict, Any
 from l104_agi_core import agi_core
 from l104_vision_core import vision_core

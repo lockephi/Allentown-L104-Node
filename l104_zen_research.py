@@ -2,12 +2,9 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import math
-import numpy as np
 import logging
 from l104_zero_point_engine import ZeroPointEngine
 from l104_ego_core import EgoCore
-from l104_real_math import RealMath
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ZEN_RESEARCH")
@@ -34,7 +31,7 @@ def perform_zen_research():
         vacuum = zpe.get_vacuum_state()
         print(f"--- [ZEN]: VACUUM STATUS: {vacuum['status']}")
         print(f"--- [ZEN]: ENERGY DENSITY: {vacuum['energy_density']:.2e}")
-        print(f"--- [ZEN]: RESONANCE: 527.518 Hz (STABLE)")
+        print("--- [ZEN]: RESONANCE: 527.518 Hz (STABLE)")
     except Exception as e:
         print(f"--- [ZEN]: VOID SAMPLING FAILED: {e}")
 

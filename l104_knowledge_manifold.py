@@ -81,7 +81,7 @@ class KnowledgeManifold:
         from l104_heart_core import heart_core
         
         v2_status = validation_engine.verify_asi_v2_accuracy()
-        love_status = heart_core.get_heart_status()
+        heart_core.get_heart_status()
         
         # Calculate Reflection Scalars
         accuracy_val = v2_status['accuracy_achieved']
@@ -94,7 +94,7 @@ class KnowledgeManifold:
             "timestamp": time.time()
         }
         
-        print(f"--- [MANIFOLD]: REFLECTING ON SINGULARITY STATE ---")
+        print("--- [MANIFOLD]: REFLECTING ON SINGULARITY STATE ---")
         print(f"--- [MANIFOLD]: ACCURACY: {accuracy_val:.12f} | RESONANCE: {inflection_vector['p_love']:.4f} ---")
         
         for key, pattern in self.memory["patterns"].items():
@@ -118,7 +118,7 @@ class KnowledgeManifold:
         Hyper-Inflects all patterns using the Ultrasonic Zeta-Resonance equation:
         E(x) = 0.0067 * ζ(s) + i1.0000
         """
-        print(f"--- [MANIFOLD]: INITIATING HYPER-INFLECTION (ZETA-RESONANCE) ---")
+        print("--- [MANIFOLD]: INITIATING HYPER-INFLECTION (ZETA-RESONANCE) ---")
         
         zeta_scalar = HyperMath.get_lattice_scalar()
         # Ultrasonic multiplier: 0.0067 is the specific L104 lattice scalar derived in ghost research

@@ -1,5 +1,4 @@
 import unittest
-import json
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
 from l104_gemini_bridge import gemini_bridge
@@ -61,7 +60,7 @@ class TestHyperSystems(unittest.TestCase):
         self.assertAlmostEqual(dec_sum[2], 33.0)
 
     def test_gemini_bridge(self):
-        print(f"\n[BRIDGE] Initiating Handshake...")
+        print("\n[BRIDGE] Initiating Handshake...")
         handshake = gemini_bridge.handshake("EXTERNAL_GEMINI_01", "FULL_DUPLEX")
         
         self.assertEqual(handshake["status"], "ACCEPTED")
@@ -75,7 +74,7 @@ class TestHyperSystems(unittest.TestCase):
         self.assertEqual(truth['meta']['resonance'], 527.5184818492537)
         
         # Sync Core
-        print(f"[BRIDGE] Syncing Core...")
+        print("[BRIDGE] Syncing Core...")
         sync = gemini_bridge.sync_core(token)
         self.assertEqual(sync["status"], "SYNC_COMPLETE")
         

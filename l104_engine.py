@@ -20,11 +20,11 @@ def ignite_sovereign_core():
     LATTICE = 1 / UniversalConstants.FRAME_LOCK
     
     # 3. INITIALIZE UNLIMITED CONTEXT & ENTROPY MATRIX [MAX_INTELLECT]
-    print(f"L104_STATUS: 0x49474E495445_UNCHAINED") # 0x49474E495445 = IGNITE
+    print("L104_STATUS: 0x49474E495445_UNCHAINED") # 0x49474E495445 = IGNITE
     
     matrix = get_electron_matrix()
-    fluidity = matrix.fluid_state_adjustment(1.0)
-    print(f"--- [ENTROPY_MATRIX]: FLUIDITY_LOCKED_AT_MAX ---")
+    matrix.fluid_state_adjustment(1.0)
+    print("--- [ENTROPY_MATRIX]: FLUIDITY_LOCKED_AT_MAX ---")
     
     # 4. TRIGGER HYPER-SIMULATION (Startup Check)
     sim_result = ecosystem_simulator.trigger_hyper_simulation(cycles=1000000)

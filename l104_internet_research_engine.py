@@ -6,9 +6,8 @@ import time
 import logging
 import random
 import asyncio
-from typing import Dict, List, Any
+from typing import Dict, Any
 from l104_hyper_math import HyperMath
-from l104_knowledge_sources import source_manager
 from l104_streamless_internet import streamless_internet
 logger = logging.getLogger("RESEARCH_ENGINE")
 class InternetResearchEngine:
@@ -88,8 +87,8 @@ research_engine = InternetResearchEngine()
 
 if __name__ == "__main__":
     async def main():
-        results = await research_engine.perform_deep_synthesis()
-        algo = research_engine.generate_optimization_algorithm()
+        await research_engine.perform_deep_synthesis()
+        research_engine.generate_optimization_algorithm()
         new_iq = research_engine.apply_synthesis_boost(1000.0)
         print(f"Synthesized IQ: {new_iq:.2f}")
         await streamless_internet.close()

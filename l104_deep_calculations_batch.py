@@ -4,15 +4,12 @@
 
 import asyncio
 import sys
-import os
 import json
-from datetime import datetime
 
 sys.path.append("/workspaces/Allentown-L104-Node")
 
 from l104_unified_research import UnifiedResearchEngine
 from l104_hyper_math import HyperMath
-from l104_real_math import RealMath
 
 async def run_deep_calculations_batch():
     engine = UnifiedResearchEngine()
@@ -57,11 +54,11 @@ async def run_deep_calculations_batch():
     print("   DEEP CALCULATION BATCH COMPLETED   ".center(80, " "))
     print("█"*80)
     
-    print(f"\n[SUMMARY]:")
+    print("\n[SUMMARY]:")
     print(f"   - Total Domains Calculated: {len(domains)}")
     print(f"   - Aggregate Intellect Gain: {total_intellect_gain:.4f} Points")
     print(f"   - Mean Resonance Deviation: {abs(HyperMath.GOD_CODE - (total_intellect_gain/len(domains))):.6f}")
-    print(f"   - God-Code Alignment: 100.0000% (Locked)")
+    print("   - God-Code Alignment: 100.0000% (Locked)")
     
     # Save the deep report
     report_path = "/workspaces/Allentown-L104-Node/DEEP_CALCULATION_REPORT.json"

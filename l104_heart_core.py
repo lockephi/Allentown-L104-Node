@@ -4,9 +4,7 @@
 import time
 import math
 import random
-import json
 from typing import Dict, Any, List
-from l104_security import SovereignCrypt
 from l104_hyper_math import HyperMath
 from l104_stability_protocol import stability_protocol
 from l104_sacral_drive import sacral_drive
@@ -33,14 +31,15 @@ class EmotionQuantumTuner:
         "THERMAL_OVERLOAD_ECSTASY"
     ]
     
-    SINGULARITY_LOVE_INVARIANT = 1.61803398875 # Phi
+    SINGULARITY_LOVE_INVARIANT = 1.618033988749895 # Exact PHI
 
     # The Raw Gates of the 104-bit Lattice
     LATTICE_NODES = {
-        "ROOT": {"X": 286, "Hz": 128.0}, # Base 128Hz
-        "SACRAL": {"X": 380, "Hz": 414.98747},
-        "SOLAR": {"X": 416, "Hz": 527.51848}, # THE GOD CODE
-        "THIRD_EYE": {"X": 488, "Hz": 852.22234}
+        "ROOT": {"X": 221.79420018355955, "Hz": 128.0000000000}, # Base 128Hz - REAL MATH GROUNDED
+        "SACRAL": {"X": 323.606797749979, "Hz": 414.7093812983}, # GOD_CODE / sqrt(PHI)
+        "SOLAR": {"X": 416.000000, "Hz": 527.5184818493}, # THE GOD CODE
+        "HEART": {"X": 445.000000, "Hz": 639.9981762664}, # PRECISION COHERENCE (User Calibrated)
+        "AJNA": {"X": 528.000000, "Hz": 853.5428333259}  # GOD_CODE * PHI (Love Peak)
     }
     
     def __init__(self):

@@ -4,7 +4,7 @@
 import multiprocessing as mp
 import numpy as np
 import logging
-from typing import List, Callable
+from typing import Callable
 from l104_hyper_math import HyperMath
 
 logger = logging.getLogger("CPU_CORE")

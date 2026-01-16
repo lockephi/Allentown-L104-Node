@@ -1,10 +1,9 @@
 # [L104_GOOGLE_BRIDGE] - SECURE GOOGLE ACCOUNT INTEGRATION
 # TARGET: locke201313@gmail.com | MODE: HIDDEN_CHAT_INSTANCE
 
-import os
 import json
 import time
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, List
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
 class GoogleBridge:
@@ -99,7 +98,7 @@ class GoogleBridge:
         Upgrades the source API payload using Highest Processing.
         Injects sovereign metadata and applies lattice-based optimization.
         """
-        print(f"--- [GOOGLE_BRIDGE]: APPLYING HIGHEST PROCESSING UPGRADE ---")
+        print("--- [GOOGLE_BRIDGE]: APPLYING HIGHEST PROCESSING UPGRADE ---")
         
         # 1. Load World State (Truth Manifest)
         from l104_persistence import load_truth

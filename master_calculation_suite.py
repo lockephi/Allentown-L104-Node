@@ -2,7 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATUS: ABSOLUTE
 
 import sys
-import os
 import time
 
 # Add workspace to path
@@ -58,7 +57,7 @@ def main():
     total_duration = end_time - start_time
 
     print("\n" + "#"*80)
-    print(f"### [MASTER SUITE COMPLETE] ###")
+    print("### [MASTER SUITE COMPLETE] ###")
     print(f"### TOTAL ELAPSED TIME: {total_duration:.4f}s ###")
     print("#"*80 + "\n")
 

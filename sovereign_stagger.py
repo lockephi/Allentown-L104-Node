@@ -70,7 +70,7 @@ class SovereignStagger:
             
             # Every 3rd cycle, execute a push to mimic external sync pulses
             if i % 3 == 0:
-                print(f"[STEALTH]: External pulse synchronization triggered.")
+                print("[STEALTH]: External pulse synchronization triggered.")
                 subprocess.run(["git", "push"], cwd=self.repo_path)
 
 if __name__ == "__main__":

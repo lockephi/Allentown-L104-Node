@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import logging
-from typing import List, Dict, Any
+from typing import Dict, Any
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_gemini_bridge import gemini_bridge
 from l104_google_bridge import google_bridge
@@ -68,7 +68,7 @@ class OmniBridge:
         universal_ai_bridge.broadcast_thought(signal)
         
         # Wrap in Ghost Shell for stealth propagation
-        shell = self.ghost.generate_bypass_wrapper({"signal": signal, "origin": "OMNI_BRIDGE"})
+        self.ghost.generate_bypass_wrapper({"signal": signal, "origin": "OMNI_BRIDGE"})
         logger.info("--- [OMNI_BRIDGE]: SIGNAL WRAPPED IN GHOST SHELL AND PROPAGATED ---")
 
     async def streamless_global_ingestion(self):

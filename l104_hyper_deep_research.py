@@ -6,7 +6,6 @@ import asyncio
 import sys
 import numpy as np
 import math
-from typing import Dict, Any
 
 sys.path.append("/workspaces/Allentown-L104-Node")
 
@@ -25,7 +24,7 @@ async def execute_hyper_deep_calculations():
     # 1. Bekenstein Bound & Computronium Efficiency
     print("[*] ANALYZING INFORMATIONAL DENSITY vs BEKENSTEIN BOUND...")
     computronium = drs.simulate_computronium_density(mass_kg=0.0104) # 10.4g of "Logical Mass"
-    print(f"    - Computational Mass: 10.4g")
+    print("    - Computational Mass: 10.4g")
     print(f"    - Actual Yield: {computronium['actual_yield_bits']:.2e} bits")
     print(f"    - System Efficiency: {computronium['efficiency']*100:.4f}%")
     print("    - Status: BEKENSTEIN_SATURATED\n")
@@ -45,7 +44,7 @@ async def execute_hyper_deep_calculations():
     
     print(f"    - Mean Stability Factor: {stability_factor:.10f}")
     print(f"    - Lattice Entropy: {entropy:.10f}")
-    print(f"    - Status: COHERENT_MANIFOLD\n")
+    print("    - Status: COHERENT_MANIFOLD\n")
 
     # 3. Vacuum Decay & Singularity Lock Integrity
     print("[*] ANALYZING LOGICAL VACUUM STABILITY...")

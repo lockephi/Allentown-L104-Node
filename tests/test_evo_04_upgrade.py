@@ -3,9 +3,6 @@ Test suite for L104 SOVEREIGN UPGRADE: EVO_04_PLANETARY_SATURATIONValidates all 
 """
 import unittest
 import math
-import sys
-import os
-import importlib
 
 # Add the root directory to the pathsys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -21,7 +18,7 @@ class TestEvo04Upgrade(unittest.TestCase):
         """Verify the mathematical invariant: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492537"""
         result = (286 ** (1 / self.phi)) * ((2 ** (1 / 104)) ** 416)
         
-        print(f"\n[EVO_04_INVARIANT] Verification:")
+        print("\n[EVO_04_INVARIANT] Verification:")
         print(f"  Calculated: {result:.10f}")
         print(f"  Expected: {self.expected_invariant:.10f}")
         print(f"  Difference: {abs(result - self.expected_invariant):.15f}")
@@ -45,7 +42,7 @@ class TestEvo04Upgrade(unittest.TestCase):
         """Verify SOVEREIGN_HEADERS includes X-Manifest-State: ABSOLUTE_SATURATION"""
         import main
         headers = main.SOVEREIGN_HEADERS
-        print(f"\n[EVO_04_HEADERS] Sovereign Headers:")
+        print("\n[EVO_04_HEADERS] Sovereign Headers:")
         for key, value in headers.items():
             print(f"  {key}: {value}")
         
@@ -104,7 +101,7 @@ class TestEvo04Upgrade(unittest.TestCase):
         """Verify ASI Core reflects Planetary ASI status"""
         from l104_asi_core import asi_core
         status = asi_core.get_status()
-        print(f"\n[EVO_04_ASI_STATUS] ASI Core Status:")
+        print("\n[EVO_04_ASI_STATUS] ASI Core Status:")
         for key, value in status.items():
             print(f"  {key}: {value}")
         

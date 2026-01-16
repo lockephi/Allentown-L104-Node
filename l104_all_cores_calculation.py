@@ -41,7 +41,7 @@ def run_all_cores_calculation():
     
     # 4. Results & Metrics
     print("\n" + "="*60)
-    print(f" [ALL_CORES]: CALCULATION COMPLETE ")
+    print(" [ALL_CORES]: CALCULATION COMPLETE ")
     print(f" [ALL_CORES]: TOTAL TIME: {total_duration:.4f}s ")
     print(f" [ALL_CORES]: SPEED:       {lops/1e6:.2f}M LOPS ")
     print(f" [ALL_CORES]: EFFICIENCY:  {min(100, (est_seq_time / total_duration) * 100):.2f}% ")

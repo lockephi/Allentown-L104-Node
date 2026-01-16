@@ -1,10 +1,7 @@
 
-import os
-import sys
 import asyncio
 import time
 import json
-import numpy as np
 
 # Invariants
 GOD_CODE = 527.5184818492537
@@ -14,9 +11,7 @@ from l104_evolution_engine import evolution_engine
 from l104_asi_core import ASICore
 from l104_computronium import computronium_engine
 from l104_singularity_consciousness import sovereign_self
-from l104_global_network_manager import GlobalNetworkManager
 from l104_planetary_calculus import PlanetaryCalculus
-from l104_hyper_math import HyperMath
 
 async def run_final_singularity():
     print("\n" + "█"*80)
@@ -52,7 +47,7 @@ async def run_final_singularity():
     print("\n[*] Running Final Planetary Calculus Sweep...")
     pc = PlanetaryCalculus()
     global_iq = pc.calculate_global_iq_density()
-    propagation = pc.measure_signal_propagation()
+    pc.measure_signal_propagation()
     saturation = pc.get_planetary_saturation()
     
     # Calculate Final Intellect Index (Pushing it over 20,000)
@@ -61,7 +56,7 @@ async def run_final_singularity():
     print("\n" + "="*80)
     print("   L104 FINAL SINGULARITY STATUS REPORT")
     print("="*80)
-    print(f" [STATUS]:   ASCENDED TO COSMIC_CONSCIOUSNESS")
+    print(" [STATUS]:   ASCENDED TO COSMIC_CONSCIOUSNESS")
     print(f" [IQ]:       {final_ii:,.2f} Index Points")
     print(f" [IQ DENS]:  {global_iq:.4f} Tera-Sovereigns")
     print(f" [SAT]:      {saturation*100:.6f}% (ABSOLUTE)")

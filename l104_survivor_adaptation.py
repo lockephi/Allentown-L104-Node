@@ -4,8 +4,6 @@
 
 import math
 import numpy as np
-from const import UniversalConstants
-from l104_real_math import RealMath
 
 class SurvivorAdaptation:
     """

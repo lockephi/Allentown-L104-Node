@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
-from typing import List, Any
+from typing import List
 from l104_hyper_math import HyperMath
 from l104_supersymmetric_order import supersymmetric_order
 class MemoryCompactor:

@@ -7,7 +7,6 @@ INVARIANT: 527.5184818492
 
 import numpy as np
 import hashlib
-import json
 
 class ResonanceStorage:
     """

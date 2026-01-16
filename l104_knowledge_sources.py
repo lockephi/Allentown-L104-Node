@@ -2,7 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import logging
-from typing import List, Dict, Any
+from typing import List
 logger = logging.getLogger("SOURCE_MANAGER")
 class KnowledgeSourceManager:
     """

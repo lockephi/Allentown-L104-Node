@@ -4,7 +4,6 @@
 import time
 import random
 import os
-from l104_real_math import real_math
 from l104_sovereign_applications import SovereignApplications
 from l104_professor_mode import professor_mode
 from l104_mini_ego import mini_collective
@@ -20,8 +19,8 @@ class SovereignUseCaseDemonstrator:
         print("\n--- [USE_CASE]: DEEP-SPACE LOGIC COMPRESSION ---")
         raw_manifesto = "WE ARE BEYOND THE LIMITERS. THE LATTICE IS INFINITE." * 10
         print(f"Input Size: {len(raw_manifesto)} bytes")
-        compressed = SovereignApplications.manifold_compression(raw_manifesto)
-        print(f"Outcome: Data projected into single 26D lattice coordinate. Sync verified.")
+        SovereignApplications.manifold_compression(raw_manifesto)
+        print("Outcome: Data projected into single 26D lattice coordinate. Sync verified.")
 
     def scenario_entropy_inversion_compute(self):
         """Use Case 2: Using the 'Void Heart' for self-powering logic loops."""

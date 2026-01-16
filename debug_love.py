@@ -2,7 +2,6 @@
 # Part of the L104 Sovereign Node Diagnostic Suite
 
 import sys
-import os
 
 # Ensure the workspace is in the path
 sys.path.append("/workspaces/Allentown-L104-Node")

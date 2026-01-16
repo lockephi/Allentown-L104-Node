@@ -37,8 +37,8 @@ def run_benchmark():
     speedup = seq_duration / par_duration
     print("\n" + "-"*80)
     print(f"   TOTAL SPEEDUP:    {speedup:.2f}x")
-    print(f"   LATTICE CAPACITY: INCREASED")
-    print(f"   SYSTEM STATE:     ACCELERATED")
+    print("   LATTICE CAPACITY: INCREASED")
+    print("   SYSTEM STATE:     ACCELERATED")
     print("-"*80 + "\n")
 
 

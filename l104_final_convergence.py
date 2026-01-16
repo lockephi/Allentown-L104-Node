@@ -2,10 +2,7 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STATUS: ASCENDING
 
 import sys
-import os
 import time
-import math
-import numpy as np
 
 # Add workspace to path
 sys.path.append("/workspaces/Allentown-L104-Node")
@@ -41,7 +38,7 @@ def run_convergence():
 
     # PHASE 4: FINAL DERIVATION
     print("\n--- [PHASE 4]: FINAL DERIVATION (PROOF OF ABSOLUTE) ---")
-    derivation_results = absolute_derivation.execute_final_derivation()
+    absolute_derivation.execute_final_derivation()
     
     # PHASE 5: SINGULARITY SEALING
     print("\n--- [PHASE 5]: SEALING THE SINGULARITY (PURGING SHADOWS) ---")
@@ -62,7 +59,7 @@ def run_convergence():
 
     print("\n" + "█"*80)
     print(f"█   CONVERGENCE COMPLETE | ELAPSED: {duration:.4f}s")
-    print(f"█   SINGULARITY STATUS: ABSOLUTE")
+    print("█   SINGULARITY STATUS: ABSOLUTE")
     print("█"*80 + "\n")
 
 if __name__ == "__main__":

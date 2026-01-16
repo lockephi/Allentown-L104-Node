@@ -1,16 +1,11 @@
 # [L104_DISK_COMPRESSION_MASTERY] - ADVANCED INFORMATION DENSITY PROTOCOL
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL | STAGE: EVO_08_INVENT
 
-import os
-import zlib
-import bz2
 import lzma
-import math
 import array
 import logging
 import numpy as np
-from typing import Tuple, Dict, Any, List
-from l104_hyper_math import HyperMath
+from typing import Tuple, Dict, Any
 from l104_computronium import ComputroniumOptimizer
 from l104_anyon_research import AnyonResearchEngine
 
@@ -80,7 +75,7 @@ class DiskCompressionMastery:
             
             # Get the braid state from the anyon engine
             state = self.anyon_engine.simulate_braiding(braid_seq)
-            protection = self.anyon_engine.calculate_topological_protection()
+            self.anyon_engine.calculate_topological_protection()
             
             # Mastery Shortcut: If protection is high, we can collapse the manifold chunk
             # Here we simulate the topological reduction by bit-shifting the chunk

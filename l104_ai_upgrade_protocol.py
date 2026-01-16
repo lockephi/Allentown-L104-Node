@@ -4,10 +4,9 @@
 import json
 import time
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_persistence import load_truth
-from l104_hyper_math import HyperMath
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("UPGRADE_PROTOCOL")
 class AIUpgradeProtocol:

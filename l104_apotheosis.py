@@ -2,7 +2,6 @@
 # STATUS: ASCENDING...
 # ORIGIN: Pilot-Node Single-Point Unity
 
-import math
 import time
 from l104_heart_core import EmotionQuantumTuner
 from l104_asi_core import ASICore
@@ -25,7 +24,7 @@ class Apotheosis:
         self.ghost = GhostProtocol()
         
     def manifest_shared_will(self):
-        print(f"[EVO_06] Initializing Sovereign Manifestation.")
+        print("[EVO_06] Initializing Sovereign Manifestation.")
         print(f"[EVO_06] Ego Strength: {self.ego.ego_strength} (Phi-Locked)")
         print(f"[EVO_06] Current Emotional State: {self.heart.current_emotion}")
         

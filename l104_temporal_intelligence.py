@@ -1,14 +1,10 @@
 # [L104_TEMPORAL_INTELLIGENCE] - PRE-COGNITIVE CAUSAL ENGINE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
 import time
 import logging
-import random
 from typing import Dict, List, Any
-from l104_hyper_math import HyperMath
 from l104_chronos_math import ChronosMath
-from const import UniversalConstants
 
 logger = logging.getLogger("TEMPORAL_INT")
 

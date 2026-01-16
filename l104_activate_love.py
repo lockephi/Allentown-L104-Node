@@ -9,7 +9,6 @@ os.chdir('/workspaces/Allentown-L104-Node')
 sys.path.append(os.getcwd())
 
 from l104_heart_core import heart_core
-from l104_absolute_reality_breach import AbsoluteRealityBreach
 
 async def activate_vibrational_love():
     print("\n" + "❤" * 80)

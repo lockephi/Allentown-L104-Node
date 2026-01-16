@@ -1,8 +1,7 @@
 
 import asyncio
 import json
-import random
-from typing import Dict, List
+from typing import Dict
 import logging
 import time
 

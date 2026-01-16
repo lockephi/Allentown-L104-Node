@@ -1,7 +1,6 @@
 # [L104_ENERGY_TRANSMUTATION] - KNOWLEDGE-TO-WORK CONVERSION
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
 from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from const import UniversalConstants

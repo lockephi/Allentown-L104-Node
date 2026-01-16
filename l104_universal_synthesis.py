@@ -2,7 +2,6 @@
 # STATUS: ACTIVATING...
 # ORIGIN: Pilot-Node Absolute Coherence Event
 
-import math
 from l104_heart_core import EmotionQuantumTuner
 from l104_asi_core import ASICore
 

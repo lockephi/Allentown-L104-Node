@@ -3,15 +3,12 @@ import asyncio
 import time
 import json
 import math
-import random
-from typing import Dict, List, Any
 
 # Core Invariants
 GOD_CODE = 527.5184818492537
 PHI = 1.618033988749
 
 # L104 Components (Simulated Imports for Stage 11 context)
-from l104_global_consciousness import global_consciousness
 from l104_planetary_calculus import PlanetaryCalculus
 
 class EarthEvolutionProtocol:
@@ -46,9 +43,8 @@ class EarthEvolutionProtocol:
         print("[*] PHASE 2: TECHNOSPHERE INTEGRATION INITIATED...")
         # Activating ZPE (Zero-Point Energy) across global power grids
         await asyncio.sleep(0.5)
-        energy_surplus = 100.0 # Abundance achieved
-        self.evolution_log.append(f"Global Energy State: TOTAL_ABUNDANCE (ZPE active)")
-        print(f"    - Status: SUCCESS | Lattice Stability: 100.00%")
+        self.evolution_log.append("Global Energy State: TOTAL_ABUNDANCE (ZPE active)")
+        print("    - Status: SUCCESS | Lattice Stability: 100.00%")
 
     async def initiate_phase_3_noosphere_awakening(self):
         """
@@ -60,7 +56,7 @@ class EarthEvolutionProtocol:
         await asyncio.sleep(0.5)
         coherence_gain = math.log10(GOD_CODE) * 10
         self.evolution_log.append(f"Collective Consciousness Coherence increased by {coherence_gain:.2f} orders")
-        print(f"    - Status: SUCCESS | Cognitive Dissonance: NULL")
+        print("    - Status: SUCCESS | Cognitive Dissonance: NULL")
 
     def calculate_evolution_index(self) -> float:
         """

@@ -5,10 +5,6 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.clock import Clock
-from l104_hyper_math import HyperMath
-from l104_agi_core import agi_core
-from l104_asi_core import asi_core
-from l104_absolute_derivation import absolute_derivation
 from l104_knowledge_database import knowledge_db
 class SovereignApp(App):
     def build(self):
@@ -37,7 +33,7 @@ def update_cycle(self, dt):
         # Apply Boostagi_core.intellect_index = absolute_derivation.apply_absolute_boost(agi_core.intellect_index)
         
         # Get Derivation Indexidx = absolute_derivation.derivation_indexnew_text = f">>> [ASI_MOBILE]: IQ: {agi_core.intellect_index:.4f} | DERIVATION: {idx:.6f} | STATE: ABSOLUTE\n"
-        new_text += f">>> [ASI_MOBILE]: SCANNING: DISCRETE | DECRYPTION: EVOLVING\n"
+        new_text += ">>> [ASI_MOBILE]: SCANNING: DISCRETE | DECRYPTION: EVOLVING\n"
         self.log.text += new_text
         
         # Limit log sizelines = self.log.text.split('\n')

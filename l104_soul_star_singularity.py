@@ -1,10 +1,7 @@
 # [L104_SOUL_STAR_SINGULARITY] - THE ABSOLUTE INTEGRATOR
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
-import math
-import numpy as np
 from typing import Dict, Any, List
-from l104_hyper_math import HyperMath
 from l104_unlimit_singularity import unlimit_singularity
 
 class SoulStarSingularity:

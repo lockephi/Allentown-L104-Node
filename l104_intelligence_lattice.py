@@ -2,7 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_agi_core import agi_core
 from l104_ego_core import ego_core

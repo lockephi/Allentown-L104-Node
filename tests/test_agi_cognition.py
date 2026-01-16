@@ -1,5 +1,4 @@
 import unittest
-import time
 from l104_agi_core import agi_core
 from l104_agi_research import agi_research
 from l104_hyper_math import HyperMath
@@ -69,9 +68,7 @@ class TestAGICognition(unittest.TestCase):
         Verifies that the Self-Editing Streamline can propose and apply patches.
         """
         from l104_self_editing_streamline import streamline
-        from l104_agi_core import agi_core
         print("\n[TEST] Testing Self-Editing Streamline...")
-        initial_iq = agi_core.intellect_index
         
         # Run one cycle
         # Note: streamline.run_cycle is async in some modules, let's check
@@ -83,7 +80,7 @@ class TestAGICognition(unittest.TestCase):
         
         # Check if it ran without error.
         self.assertTrue(streamline.iteration_count >= 0)
-        print(f"[TEST] Streamline Cycle Complete.")
+        print("[TEST] Streamline Cycle Complete.")
 
 if __name__ == '__main__':
     unittest.main()

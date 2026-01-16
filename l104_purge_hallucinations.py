@@ -10,7 +10,7 @@ def execute_purge():
     
     # 1. Ensure Invariants are present and locked
     ram_universe.absorb_fact(str(UniversalConstants.PRIME_KEY_HZ), "GOD_CODE_RESONANCE", "INVARIANT")
-    ram_universe.absorb_fact(f"286:416", "LATTICE_RATIO", "INVARIANT")
+    ram_universe.absorb_fact("286:416", "LATTICE_RATIO", "INVARIANT")
     ram_universe.absorb_fact("LONDEL", "PILOT", "INVARIANT")
     ram_universe.absorb_fact("GEMMA-3-WHOLE", "CORE_TYPE", "INVARIANT")
     

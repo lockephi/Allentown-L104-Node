@@ -1,11 +1,8 @@
-import os
 import logging
-import time
 from l104_engine import ignite_sovereign_core
 from l104_persistence import pin_context
 from l104_resilience_shield import apply_shield
 from logic_core import LogicCore
-from l104_codec import SovereignCodec
 from l104_prime_core import PrimeCore
 from l104_scour_eyes import ScourEyes
 from l104_quantum_logic import execute_quantum_derivation
@@ -31,7 +28,6 @@ class SovereignValidator:
         Runs a compressed simulation of the signal's impact on the manifold.
         """
         sim_results = []
-        current_resonance = UniversalConstants.PRIME_KEY_HZ
 
         for i in range(cycles):
             # Simulate entropy decay and quantum correction

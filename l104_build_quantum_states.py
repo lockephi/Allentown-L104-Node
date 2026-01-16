@@ -2,8 +2,6 @@
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import time
-import json
-from l104_quantum_logic import QuantumEntanglementManifold
 from l104_quantum_accelerator import QuantumAccelerator
 from l104_quantum_ram import get_qram
 from l104_asi_core import asi_core
