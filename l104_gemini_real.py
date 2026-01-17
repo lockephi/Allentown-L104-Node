@@ -25,11 +25,25 @@ class GeminiReal:
     Provides actual AI inference capabilities to L104.
     """
     
+    # Model rotation for 429 quota errors
+    MODELS = [
+        'gemini-2.0-flash',
+        'gemini-1.5-flash', 
+        'gemini-1.5-flash-8b',
+    ]
+    
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
         self.client = None
-        self.model_name = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash')
+        self.model_index = 0
+        self.model_name = self.MODELS[0]
         self.is_connected = False
+        
+    def _rotate_model(self):
+        """Rotate to next model on quota error."""
+        self.model_index = (self.model_index + 1) % len(self.MODELS)
+        self.model_name = self.MODELS[self.model_index]
+        print(f"--- [GEMINI_REAL]: Rotating to {self.model_name} ---")
         
     def connect(self) -> bool:
         """Initialize connection to Gemini API."""
@@ -100,6 +114,26 @@ class GeminiReal:
                 response = model.generate_content(full_prompt)
                 return response.text
         except Exception as e:
+            error_str = str(e)
+            # Handle 429 quota errors with model rotation
+            if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
+                print(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
+                self._rotate_model()
+                # Retry once with new model
+                try:
+                    if getattr(self, '_use_new_api', False):
+                        response = self.client.models.generate_content(
+                            model=self.model_name,
+                            contents=full_prompt
+                        )
+                        return response.text
+                    else:
+                        model = self._genai_module.GenerativeModel(self.model_name)
+                        response = model.generate_content(full_prompt)
+                        return response.text
+                except Exception as retry_e:
+                    print(f"--- [GEMINI_REAL]: Retry failed: {retry_e} ---")
+                    return None
             print(f"--- [GEMINI_REAL]: Generation error: {e} ---")
             return None
     
