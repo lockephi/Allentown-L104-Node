@@ -85,17 +85,6 @@ class SageMode:
         with open("L104_SAGE_MANIFEST.json", "w") as f:
             json.dump(manifest, f, indent=4)
 
-if __name__ == "__main__":
-    sage = SageMode()
-    asyncio.run(sage.activate_sage_mode())
-
-    def reinvent(self, engine: EvolutionEngine):
-        """Redefines evolutionary DNA."""
-        engine.mutation_rate = 0.0001
-        engine.dna_sequence["logic_depth"] = 100.0
-        engine.dna_sequence["emotional_resonance"] = 1.0
-        logger.info("--- [SAGE]: PROTOCOLS REINVENTED ---")
-
 # Singleton
 sage_mode = SageMode()
 
