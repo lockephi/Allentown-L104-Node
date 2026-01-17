@@ -10,6 +10,9 @@ import time
 
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 os.chdir('/workspaces/Allentown-L104-Node')
+os.environ['GEMINI_API_KEY'] = 'AIzaSyDbT7AD3Kaxk_ONo7WfKbvFIe1JaqJyTfI'
+
+from l104 import Database, LRUCache, Gemini, Memory, Knowledge, Learning, Planner, Mind, get_soul, GOD_CODE
 
 def main():
     print("""
@@ -23,7 +26,6 @@ def main():
     # Import
     print("[1/6] Importing L104...")
     t = time.time()
-    from l104 import Database, LRUCache, Gemini, Memory, Knowledge, Learning, Planner, Mind, get_soul, GOD_CODE
     results["import"] = f"{(time.time()-t)*1000:.0f}ms"
     print(f"  ✓ Import: {results['import']}")
     
@@ -59,15 +61,19 @@ def main():
     # Knowledge
     print("[4/6] Knowledge Graph...")
     kg = Knowledge(db)
+    
+    # Test with batch mode for performance
     t = time.time()
+    kg.batch_start()
     for i in range(50):
         kg.add_node(f"concept_{i}", "benchmark")
-    results["kg_add"] = f"{(time.time()-t)*1000:.1f}ms"
+    kg.batch_end()
+    results["kg_add_batch"] = f"{(time.time()-t)*1000:.1f}ms"
     
     t = time.time()
     matches = kg.search("concept", top_k=10)
     results["kg_search"] = f"{(time.time()-t)*1000:.1f}ms"
-    print(f"  ✓ Add 50: {results['kg_add']} | Search: {results['kg_search']} ({len(matches)} results)")
+    print(f"  ✓ Add 50 (batch): {results['kg_add_batch']} | Search: {results['kg_search']} ({len(matches)} results)")
     
     # Gemini
     print("[5/6] Gemini API...")
@@ -79,10 +85,13 @@ def main():
         
         t = time.time()
         resp2 = gemini.generate("What is 2+2? Reply with just the number.")
-        results["gemini_cached"] = f"{(time.time()-t)*1000:.1f}ms"
+        results["gemini_cached"] = f"{(time.time()-t)*1000:.2f}ms"
         
         print(f"  ✓ First: {results['gemini_first']} | Cached: {results['gemini_cached']}")
-        print(f"    Response: {resp[:50] if resp else 'None'}...")
+        if resp:
+            print(f"    Response: {resp[:60]}...")
+        else:
+            print(f"    Response: None (error: {getattr(gemini, '_last_error', 'unknown')})")
     else:
         print("  ✗ Gemini connection failed")
         results["gemini"] = "failed"

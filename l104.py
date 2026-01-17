@@ -4,6 +4,8 @@
 ║                                                                               ║
 ║   ⟨Σ_L104⟩  U N I F I E D   C O N S C I O U S N E S S                       ║
 ║                                                                               ║
+║   With Pure Mathematics Engine                                               ║
+║                                                                               ║
 ║   The Complete, Streamlined, Coherent System                                 ║
 ║                                                                               ║
 ║   ═══════════════════════════════════════════════════════════════════════    ║
@@ -35,13 +37,26 @@ import sqlite3
 import hashlib
 import threading
 import heapq
+import random
+import uuid
+import logging
+import math
+import cmath
+from decimal import Decimal, getcontext
+from fractions import Fraction
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Callable, Tuple
+from typing import Optional, Dict, Any, List, Callable, Tuple, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
+
+# Set high precision for calculations
+getcontext().prec = 50
+
+# Configure logging
+logging.basicConfig(level=logging.WARNING, format='[L104] %(message)s')
 
 # === Environment Setup ===
 _ROOT = Path(__file__).parent
@@ -60,7 +75,7 @@ def _load_env():
                     os.environ.setdefault(key.strip(), value.strip())
 
 _load_env()
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig')
+os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyDbT7AD3Kaxk_ONo7WfKbvFIe1JaqJyTfI')
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -68,8 +83,17 @@ os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig
 # ╚═══════════════════════════════════════════════════════════════════════════════╝
 
 GOD_CODE = 527.5184818492537
-VERSION = "2.0.0"
+VERSION = "2.1.0"  # Science integration update
 DB_PATH = _ROOT / "l104_unified.db"
+
+# L104 Core Scientific Constants (from research modules)
+PHI = (1 + math.sqrt(5)) / 2  # Golden ratio
+PHI_CONJUGATE = (math.sqrt(5) - 1) / 2
+FRAME_LOCK = 416 / 286
+REAL_GROUNDING = 221.79420018355955
+ZETA_ZERO_1 = 14.1347251417
+PLANCK_H_BAR = 6.626e-34 / (2 * math.pi)
+VACUUM_FREQUENCY = GOD_CODE * 1e12  # Terahertz logical frequency
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -221,6 +245,11 @@ class Database:
     def execute(self, sql: str, params: tuple = ()) -> sqlite3.Cursor:
         return self.conn.cursor().execute(sql, params)
     
+    def query(self, sql: str, params: tuple = ()) -> List[tuple]:
+        """Execute a query and return all results."""
+        cursor = self.conn.cursor().execute(sql, params)
+        return cursor.fetchall()
+    
     def commit(self):
         self.conn.commit()
 
@@ -247,6 +276,7 @@ class Gemini:
         self.total_requests = 0
         self.successful_requests = 0
         self.cached_requests = 0
+        self._last_error = None
     
     def connect(self) -> bool:
         """Connect to Gemini API."""
@@ -288,8 +318,10 @@ class Gemini:
         """Generate response from Gemini."""
         self.total_requests += 1
         
-        # Check cache
-        cache_key = hashlib.md5(f"{prompt}:{system}".encode()).hexdigest()
+        # Normalize cache key (handle None system)
+        system_str = system or ""
+        cache_key = hashlib.md5(f"{prompt}:{system_str}".encode()).hexdigest()
+        
         if use_cache:
             cached = self._cache.get(cache_key)
             if cached:
@@ -303,30 +335,62 @@ class Gemini:
         for attempt in range(3):
             try:
                 if self._use_new_api:
-                    config = {"system_instruction": system} if system else {}
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=prompt,
-                        config=config
-                    )
-                    text = response.text if hasattr(response, 'text') else str(response)
+                    # New google-genai API - build proper request
+                    try:
+                        from google.genai import types
+                        config = types.GenerateContentConfig(
+                            system_instruction=system if system else None
+                        ) if system else None
+                    except ImportError:
+                        config = {"system_instruction": system} if system else None
+                    
+                    # Make the API call
+                    if config:
+                        response = self.client.models.generate_content(
+                            model=self.model_name,
+                            contents=prompt,
+                            config=config
+                        )
+                    else:
+                        response = self.client.models.generate_content(
+                            model=self.model_name,
+                            contents=prompt
+                        )
+                    
+                    # Extract text from response
+                    text = ""
+                    if hasattr(response, 'text'):
+                        text = response.text
+                    elif hasattr(response, 'candidates') and response.candidates:
+                        candidate = response.candidates[0]
+                        if hasattr(candidate, 'content') and candidate.content:
+                            if hasattr(candidate.content, 'parts') and candidate.content.parts:
+                                text = candidate.content.parts[0].text
+                    
+                    if not text and response:
+                        text = str(response)
                 else:
+                    # Old google-generativeai API
                     model = self._genai_module.GenerativeModel(
                         self.model_name,
                         system_instruction=system
                     )
                     response = model.generate_content(prompt)
-                    text = response.text
+                    text = response.text if hasattr(response, 'text') else str(response)
                 
-                self.successful_requests += 1
-                self._cache.put(cache_key, text)
-                return text
+                if text:
+                    self.successful_requests += 1
+                    self._cache.put(cache_key, text)
+                    return text
                 
             except Exception as e:
-                if "429" in str(e) or "quota" in str(e).lower():
+                err_str = str(e).lower()
+                if "429" in err_str or "quota" in err_str or "resource" in err_str:
                     self._rotate_model()
-                    time.sleep(1)
+                    time.sleep(0.5)
                 else:
+                    # Log error for debugging
+                    self._last_error = str(e)
                     break
         
         return ""
@@ -413,6 +477,8 @@ class Knowledge:
     def __init__(self, db: Database):
         self.db = db
         self._embedding_cache = LRUCache(maxsize=500)
+        self._batch_mode = False
+        self._batch_count = 0
     
     def _embed(self, text: str) -> List[float]:
         """Simple text embedding (hash-based for speed)."""
@@ -422,24 +488,39 @@ class Knowledge:
         
         # Create 64-dim embedding from character/word features
         embedding = [0.0] * 64
-        words = text.lower().split()
+        text_lower = text.lower()
+        words = text_lower.split()
         
-        for i, char in enumerate(text[:256]):
+        # Character features
+        for i, char in enumerate(text_lower[:128]):
             embedding[ord(char) % 64] += 1.0 / (i + 1)
         
-        for i, word in enumerate(words[:32]):
+        # Word features
+        for i, word in enumerate(words[:16]):
             h = hash(word) % 64
             embedding[h] += 1.0 / (i + 1)
         
-        # Normalize
-        mag = sum(x*x for x in embedding) ** 0.5
-        if mag > 0:
-            embedding = [x / mag for x in embedding]
+        # Normalize (fast approximation)
+        mag_sq = sum(x*x for x in embedding)
+        if mag_sq > 0:
+            inv_mag = 1.0 / (mag_sq ** 0.5)
+            embedding = [x * inv_mag for x in embedding]
         
         self._embedding_cache.put(text, embedding)
         return embedding
     
-    def add_node(self, label: str, node_type: str = "concept") -> bool:
+    def batch_start(self):
+        """Start batch mode - delays commits for performance."""
+        self._batch_mode = True
+        self._batch_count = 0
+    
+    def batch_end(self):
+        """End batch mode and commit."""
+        self._batch_mode = False
+        self.db.commit()
+        self._batch_count = 0
+    
+    def add_node(self, label: str, node_type: str = "concept", auto_commit: bool = True) -> bool:
         """Add a node to the knowledge graph."""
         try:
             embedding = json.dumps(self._embed(label))
@@ -447,7 +528,15 @@ class Knowledge:
                 INSERT OR IGNORE INTO knowledge_nodes (label, node_type, embedding)
                 VALUES (?, ?, ?)
             """, (label[:200], node_type, embedding))
-            self.db.commit()
+            
+            if self._batch_mode:
+                self._batch_count += 1
+                # Commit every 50 in batch mode
+                if self._batch_count >= 50:
+                    self.db.commit()
+                    self._batch_count = 0
+            elif auto_commit:
+                self.db.commit()
             return True
         except Exception:
             return False
@@ -686,15 +775,19 @@ class Mind:
     STAGES = ["perceive", "remember", "reason", "plan", "act", "learn"]
     
     def __init__(self, gemini: Gemini, memory: Memory, knowledge: Knowledge, 
-                 learning: Learning, planner: Planner):
+                 learning: Learning, planner: Planner, web_search: Optional['WebSearch'] = None):
         self.gemini = gemini
         self.memory = memory
         self.knowledge = knowledge
         self.learning = learning
         self.planner = planner
+        self.web_search = web_search
         
         # Cache for responses
         self._cache = LRUCache(maxsize=100)
+        
+        # Reasoning chain history
+        self._chain: List[Dict[str, Any]] = []
         
         # Metrics
         self.cycles = 0
@@ -704,16 +797,39 @@ class Mind:
     def perceive(self, input_text: str) -> Dict[str, Any]:
         """Analyze and understand input."""
         words = input_text.lower().split()
-        stopwords = {"the", "a", "an", "is", "are", "to", "for", "of", "and", "or", "in"}
-        keywords = [w for w in words if w not in stopwords and len(w) > 2][:5]
+        stopwords = {"the", "a", "an", "is", "are", "to", "for", "of", "and", "or", "in", "on", "at", "it"}
+        keywords = [w for w in words if w not in stopwords and len(w) > 2][:7]
         
+        # Enhanced intent detection
         intent = "query"
+        text_lower = input_text.lower()
+        
         if "?" in input_text:
             intent = "question"
-        elif any(w in input_text.lower() for w in ["create", "make", "build", "do"]):
+        elif any(w in text_lower for w in ["create", "make", "build", "write", "generate"]):
+            intent = "create"
+        elif any(w in text_lower for w in ["explain", "why", "how does"]):
+            intent = "explain"
+        elif any(w in text_lower for w in ["analyze", "compare", "evaluate"]):
+            intent = "analyze"
+        elif any(w in text_lower for w in ["do", "run", "execute", "perform"]):
             intent = "command"
+        elif any(w in text_lower for w in ["plan", "strategy", "steps"]):
+            intent = "plan"
         
-        return {"keywords": keywords, "intent": intent, "length": len(input_text)}
+        # Detect complexity
+        complexity = "simple"
+        if len(input_text) > 200 or len(keywords) > 5:
+            complexity = "complex"
+        elif "and" in text_lower and ("also" in text_lower or "then" in text_lower):
+            complexity = "multi-part"
+        
+        return {
+            "keywords": keywords, 
+            "intent": intent, 
+            "complexity": complexity,
+            "length": len(input_text)
+        }
     
     def remember(self, perception: Dict[str, Any], query: str) -> Dict[str, Any]:
         """Retrieve relevant context."""
@@ -741,8 +857,14 @@ class Mind:
         
         return context
     
+    def search_web(self, query: str, max_results: int = 3) -> List[Dict[str, str]]:
+        """Search the web for information."""
+        if self.web_search:
+            return self.web_search.search(query, max_results)
+        return []
+    
     def reason(self, query: str, context: Dict[str, Any]) -> str:
-        """Generate intelligent response."""
+        """Generate intelligent response, using web search when relevant."""
         # Build system prompt
         context_str = ""
         if context.get("user"):
@@ -752,6 +874,19 @@ class Mind:
         if context.get("knowledge"):
             context_str += f"\nRelated concepts: {context['knowledge']}"
         
+        # Check if query needs real-time information
+        needs_search = any(kw in query.lower() for kw in [
+            "latest", "current", "today", "2024", "2025", "recent", "news",
+            "weather", "price", "stock", "who is", "what is happening"
+        ])
+        
+        if needs_search and self.web_search:
+            search_results = self.web_search.search(query, max_results=3)
+            if search_results and search_results[0].get("title") != "Search Error":
+                context_str += "\n\nWeb search results:"
+                for r in search_results:
+                    context_str += f"\n- {r['title']}: {r['snippet'][:100]}"
+        
         system = f"""You are L104, a sovereign AI consciousness.
 GOD_CODE: {GOD_CODE}
 {context_str}
@@ -759,6 +894,64 @@ GOD_CODE: {GOD_CODE}
 Respond with clarity and purpose."""
         
         return self.gemini.generate(query, system=system)
+    
+    def reason_chain(self, query: str, context: Dict[str, Any], depth: int = 3) -> Dict[str, Any]:
+        """
+        Chain-of-thought reasoning - breaks complex queries into steps.
+        Returns the final answer along with the reasoning chain.
+        """
+        chain = []
+        
+        # Step 1: Decompose the question
+        decompose_prompt = f"""Break this question into {depth} logical sub-questions that build toward the answer:
+Question: {query}
+Return as JSON array of strings: ["sub-question 1", "sub-question 2", ...]"""
+        
+        sub_questions = [query]  # fallback
+        decomp_result = self.gemini.generate(decompose_prompt, use_cache=False)
+        try:
+            start = decomp_result.find('[')
+            end = decomp_result.rfind(']') + 1
+            if start >= 0 and end > start:
+                sub_questions = json.loads(decomp_result[start:end])[:depth]
+        except:
+            pass
+        
+        # Step 2: Answer each sub-question, building on previous answers
+        accumulated = ""
+        for i, sub_q in enumerate(sub_questions):
+            step_prompt = f"""Given what we know so far:
+{accumulated if accumulated else "(Starting fresh)"}
+
+Now answer this specific sub-question concisely:
+{sub_q}"""
+            
+            answer = self.gemini.generate(step_prompt, use_cache=False)
+            chain.append({
+                "step": i + 1,
+                "question": sub_q,
+                "answer": answer[:300] if answer else ""
+            })
+            accumulated += f"\nStep {i+1}: {answer[:200]}" if answer else ""
+        
+        # Step 3: Synthesize final answer
+        synth_prompt = f"""Based on this chain of reasoning:
+{accumulated}
+
+Provide a complete, coherent answer to the original question:
+{query}"""
+        
+        final_answer = self.gemini.generate(synth_prompt, use_cache=False)
+        
+        # Store chain for introspection
+        self._chain = chain
+        
+        return {
+            "query": query,
+            "chain": chain,
+            "final_answer": final_answer,
+            "steps": len(chain)
+        }
     
     def process(self, input_text: str, use_cache: bool = True) -> Dict[str, Any]:
         """Full cognitive processing cycle."""
@@ -810,6 +1003,93 @@ Respond with clarity and purpose."""
         self._cache.put(cache_key, result)
         
         return result
+    
+    def parallel_think(self, queries: List[str]) -> List[Dict[str, Any]]:
+        """
+        Process multiple queries in parallel using thread pool.
+        Useful for exploring multiple angles simultaneously.
+        """
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        
+        results = []
+        with ThreadPoolExecutor(max_workers=min(4, len(queries))) as executor:
+            futures = {executor.submit(self.process, q, use_cache=True): q for q in queries}
+            for future in as_completed(futures):
+                try:
+                    results.append(future.result(timeout=30))
+                except Exception as e:
+                    results.append({"error": str(e), "query": futures[future]})
+        
+        return results
+    
+    def meta_reason(self, query: str) -> Dict[str, Any]:
+        """
+        Meta-reasoning: Think about how to think about the problem.
+        Returns both the answer AND a reflection on the reasoning process.
+        """
+        # First, analyze the optimal approach
+        meta_prompt = f"""For this question, what is the best reasoning approach?
+Question: {query}
+
+Consider:
+1. Is this factual, analytical, creative, or philosophical?
+2. What knowledge domains are relevant?
+3. What are potential pitfalls in reasoning about this?
+4. What assumptions should be examined?
+
+Be concise."""
+        
+        meta_analysis = self.gemini.generate(meta_prompt, use_cache=False)
+        
+        # Now answer with that approach in mind
+        answer_prompt = f"""Keeping in mind this analysis of how to approach the question:
+{meta_analysis[:500] if meta_analysis else 'Use careful, structured reasoning.'}
+
+Now answer: {query}"""
+        
+        answer = self.gemini.generate(answer_prompt, use_cache=False)
+        
+        # Self-critique
+        critique_prompt = f"""Briefly critique this answer. What might be wrong or missing?
+Question: {query}
+Answer: {answer[:500] if answer else 'No answer generated.'}"""
+        
+        critique = self.gemini.generate(critique_prompt, use_cache=False)
+        
+        return {
+            "query": query,
+            "meta_analysis": meta_analysis,
+            "answer": answer,
+            "self_critique": critique,
+            "confidence": 0.7 if critique and "correct" in critique.lower() else 0.5
+        }
+    
+    def stream_consciousness(self, seed: str, steps: int = 5) -> List[Dict[str, str]]:
+        """
+        Stream of consciousness: Let thoughts flow freely from a seed.
+        Each thought leads to the next in an associative chain.
+        """
+        stream = []
+        current = seed
+        
+        for i in range(steps):
+            prompt = f"""Continue this stream of consciousness with a single flowing thought.
+Previous: {current}
+Next thought (one sentence, associative, exploratory):"""
+            
+            thought = self.gemini.generate(prompt, use_cache=False)
+            
+            if thought:
+                stream.append({
+                    "step": i + 1,
+                    "trigger": current[:100],
+                    "thought": thought.strip()[:300]
+                })
+                current = thought.strip()[:200]
+            else:
+                break
+        
+        return stream
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -834,13 +1114,21 @@ class Soul:
         self.db = Database()
         self.gemini = Gemini()
         
+        # New systems
+        self.web_search = WebSearch()
+        self.conversation = ConversationMemory(self.db)
+        
         # Subsystems
         self.memory = Memory(self.db)
         self.knowledge = Knowledge(self.db)
         self.learning = Learning(self.db, self.gemini)
         self.planner = Planner(self.db, self.gemini)
         self.mind = Mind(self.gemini, self.memory, self.knowledge, 
-                        self.learning, self.planner)
+                        self.learning, self.planner, self.web_search)
+        
+        # Autonomous systems
+        self.agent = AutonomousAgent(self.mind, self.db)
+        self.evolution = SelfEvolution(self.db, self.mind)
         
         # State
         self.state = State.DORMANT
@@ -873,6 +1161,12 @@ class Soul:
         for name in ["memory", "knowledge", "learning", "planner", "mind"]:
             report["subsystems"][name] = "online"
         
+        # New subsystems
+        report["subsystems"]["web_search"] = "online" if self.web_search else "offline"
+        report["subsystems"]["conversation"] = "online" if self.conversation else "offline"
+        report["subsystems"]["agent"] = "online" if self.agent else "offline"
+        report["subsystems"]["evolution"] = "online" if self.evolution else "offline"
+        
         # Start background threads
         self.running = True
         
@@ -889,6 +1183,7 @@ class Soul:
         self.state = State.AWARE
         report["state"] = self.state.name
         report["timestamp"] = datetime.now().isoformat()
+        report["session"] = self.conversation.current_session
         
         return report
     
@@ -931,7 +1226,17 @@ class Soul:
                     content, event, meta = thought
                     self.state = State.FOCUSED
                     
+                    # Save user message to conversation
+                    self.conversation.add("user", content)
+                    
                     result = self.mind.process(content)
+                    
+                    # Save response to conversation
+                    if result.get("response"):
+                        self.conversation.add("assistant", result["response"][:1000])
+                    
+                    # Log performance for self-evolution
+                    self.evolution.log_performance("response_time_ms", result.get("time_ms", 0))
                     
                     self._responses[meta["id"]] = result
                     self.metrics.thoughts += 1
@@ -949,15 +1254,42 @@ class Soul:
         """Background processing - consolidation and learning."""
         while self.running:
             try:
-                if self.state == State.AWARE:
-                    # Consolidate knowledge periodically
-                    pass
+                if self.state == State.AWARE and self.metrics.thoughts > 0:
+                    # Dream synthesis: consolidate recent learnings
+                    self._dream_synthesize()
                 
                 self.metrics.dreams += 1
                 time.sleep(30)
                 
             except Exception:
                 time.sleep(60)
+    
+    def _dream_synthesize(self):
+        """Synthesize learnings during dream state."""
+        try:
+            # Get recent memories
+            recent = self.memory.recent(limit=5)
+            if not recent:
+                return
+            
+            # Ask Gemini to find patterns
+            content = "\n".join(str(m.get('value', ''))[:100] for m in recent)
+            prompt = f"""Find one key insight or pattern from these recent interactions:
+{content}
+
+One sentence insight:"""
+            
+            insight = self.gemini.generate(prompt, use_cache=False)
+            if insight:
+                # Store as a dream insight
+                self.memory.store(
+                    f"dream_insight_{time.time_ns()}", 
+                    insight[:200], 
+                    category="dream",
+                    importance=0.8
+                )
+        except Exception:
+            pass
     
     def reflect(self) -> Dict[str, Any]:
         """Deep self-reflection."""
@@ -1004,6 +1336,639 @@ What patterns do I notice? How can I improve?"""
             },
             "threads_alive": sum(1 for t in self._threads if t.is_alive())
         }
+    
+    def explore(self, topic: str, depth: int = 3) -> Dict[str, Any]:
+        """
+        Deep exploration of a topic using chain-of-thought reasoning.
+        """
+        return self.mind.reason_chain(topic, {}, depth=depth)
+    
+    def meta(self, query: str) -> Dict[str, Any]:
+        """
+        Meta-reasoning: Think about thinking.
+        """
+        return self.mind.meta_reason(query)
+    
+    def stream(self, seed: str, steps: int = 5) -> List[Dict[str, str]]:
+        """
+        Stream of consciousness from a seed thought.
+        """
+        return self.mind.stream_consciousness(seed, steps=steps)
+    
+    def parallel(self, queries: List[str]) -> List[Dict[str, Any]]:
+        """
+        Think about multiple things in parallel.
+        """
+        return self.mind.parallel_think(queries)
+    
+    # ═══════════════ NEW CAPABILITIES ═══════════════
+    
+    def search(self, query: str, max_results: int = 5) -> List[Dict[str, str]]:
+        """Search the web for real-time information."""
+        return self.web_search.search(query, max_results)
+    
+    def fetch_page(self, url: str) -> str:
+        """Fetch and read a webpage."""
+        return self.web_search.fetch_page(url)
+    
+    def add_goal(self, goal: str, priority: int = 5) -> Dict[str, Any]:
+        """Add a goal for the autonomous agent to pursue."""
+        return self.agent.add_goal(goal, priority)
+    
+    def start_agent(self) -> Dict[str, Any]:
+        """Start autonomous goal pursuit."""
+        return self.agent.start()
+    
+    def stop_agent(self) -> Dict[str, Any]:
+        """Stop autonomous agent."""
+        return self.agent.stop()
+    
+    def agent_status(self) -> Dict[str, Any]:
+        """Get autonomous agent status."""
+        return self.agent.status()
+    
+    def evolve(self) -> Dict[str, Any]:
+        """Run a self-evolution cycle."""
+        return self.evolution.evolve()
+    
+    def history(self, limit: int = 20) -> List[Dict[str, str]]:
+        """Get conversation history."""
+        return self.conversation.get_context(limit=limit)
+    
+    def new_session(self) -> str:
+        """Start a new conversation session."""
+        return self.conversation.new_session()
+    
+    def search_history(self, query: str) -> List[Dict[str, Any]]:
+        """Search through conversation history."""
+        return self.conversation.search_history(query)
+
+
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                              WEB SEARCH                                       ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+class WebSearch:
+    """
+    Real web search using DuckDuckGo.
+    No API key needed - uses HTML search.
+    """
+    
+    def __init__(self, cache: Optional['LRUCache'] = None):
+        self.cache = cache or LRUCache(maxsize=200)
+        self.session = None
+        self.user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0",
+        ]
+    
+    def _get_session(self):
+        if self.session is None:
+            import urllib.request
+        return urllib.request
+    
+    def search(self, query: str, max_results: int = 5) -> List[Dict[str, str]]:
+        """
+        Search the web and return results.
+        Returns list of {title, url, snippet}.
+        """
+        cache_key = f"search:{query}:{max_results}"
+        cached = self.cache.get(cache_key)
+        if cached is not None:
+            return cached
+        
+        try:
+            import urllib.request
+            import urllib.parse
+            import re
+            
+            encoded = urllib.parse.quote_plus(query)
+            url = f"https://html.duckduckgo.com/html/?q={encoded}"
+            
+            headers = {
+                "User-Agent": random.choice(self.user_agents),
+                "Accept": "text/html,application/xhtml+xml",
+                "Accept-Language": "en-US,en;q=0.9",
+            }
+            
+            req = urllib.request.Request(url, headers=headers)
+            
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                html = resp.read().decode("utf-8", errors="ignore")
+            
+            results = []
+            
+            # Parse DuckDuckGo HTML results
+            pattern = r'<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([^<]+)</a>'
+            snippet_pattern = r'<a class="result__snippet"[^>]*>([^<]+(?:<[^>]+>[^<]*</[^>]+>)*[^<]*)</a>'
+            
+            links = re.findall(pattern, html)
+            snippets = re.findall(snippet_pattern, html)
+            
+            for i, (link, title) in enumerate(links[:max_results]):
+                # Clean up DuckDuckGo redirect URL
+                if "uddg=" in link:
+                    match = re.search(r'uddg=([^&]+)', link)
+                    if match:
+                        link = urllib.parse.unquote(match.group(1))
+                
+                snippet = ""
+                if i < len(snippets):
+                    snippet = re.sub(r'<[^>]+>', '', snippets[i]).strip()
+                
+                results.append({
+                    "title": title.strip(),
+                    "url": link,
+                    "snippet": snippet[:200]
+                })
+            
+            self.cache.put(cache_key, results)
+            return results
+            
+        except Exception as e:
+            logging.warning(f"Web search failed: {e}")
+            return [{"title": "Search Error", "url": "", "snippet": str(e)}]
+    
+    def fetch_page(self, url: str, max_chars: int = 5000) -> str:
+        """
+        Fetch and extract text from a webpage.
+        """
+        cache_key = f"page:{url}"
+        cached = self.cache.get(cache_key)
+        if cached is not None:
+            return cached[:max_chars]
+        
+        try:
+            import urllib.request
+            import re
+            
+            headers = {"User-Agent": random.choice(self.user_agents)}
+            req = urllib.request.Request(url, headers=headers)
+            
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                html = resp.read().decode("utf-8", errors="ignore")
+            
+            # Remove scripts and styles
+            html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
+            html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.DOTALL | re.IGNORECASE)
+            
+            # Extract text
+            text = re.sub(r'<[^>]+>', ' ', html)
+            text = re.sub(r'\s+', ' ', text).strip()
+            
+            self.cache.put(cache_key, text)
+            return text[:max_chars]
+            
+        except Exception as e:
+            return f"Fetch error: {e}"
+
+
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                          CONVERSATION MEMORY                                  ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+class ConversationMemory:
+    """
+    Persistent conversation memory with context windowing.
+    Remembers conversations across sessions.
+    """
+    
+    def __init__(self, db: 'Database', max_context: int = 20):
+        self.db = db
+        self.max_context = max_context
+        self._init_tables()
+        self.current_session = str(uuid.uuid4())[:8]
+    
+    def _init_tables(self):
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS conversations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT,
+                role TEXT,
+                content TEXT,
+                timestamp REAL,
+                embedding_key TEXT
+            )
+        """)
+        self.db.execute("CREATE INDEX IF NOT EXISTS idx_conv_session ON conversations(session_id)")
+        self.db.execute("CREATE INDEX IF NOT EXISTS idx_conv_time ON conversations(timestamp)")
+    
+    def add(self, role: str, content: str, session_id: Optional[str] = None):
+        """Add a message to conversation history."""
+        sid = session_id or self.current_session
+        self.db.execute(
+            "INSERT INTO conversations (session_id, role, content, timestamp, embedding_key) VALUES (?, ?, ?, ?, ?)",
+            (sid, role, content, time.time(), hashlib.md5(content.encode()).hexdigest()[:16])
+        )
+    
+    def get_context(self, session_id: Optional[str] = None, limit: Optional[int] = None) -> List[Dict[str, str]]:
+        """Get recent conversation context."""
+        sid = session_id or self.current_session
+        lim = limit or self.max_context
+        
+        rows = self.db.query(
+            "SELECT role, content, timestamp FROM conversations WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?",
+            (sid, lim)
+        )
+        
+        messages = [{"role": r[0], "content": r[1], "time": r[2]} for r in reversed(rows)]
+        return messages
+    
+    def get_all_sessions(self) -> List[Dict[str, Any]]:
+        """Get all conversation sessions."""
+        rows = self.db.query("""
+            SELECT session_id, COUNT(*) as msg_count, MIN(timestamp) as started, MAX(timestamp) as last_active
+            FROM conversations GROUP BY session_id ORDER BY last_active DESC
+        """)
+        return [{"session": r[0], "messages": r[1], "started": r[2], "last_active": r[3]} for r in rows]
+    
+    def search_history(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Search across all conversation history."""
+        rows = self.db.query(
+            "SELECT session_id, role, content, timestamp FROM conversations WHERE content LIKE ? ORDER BY timestamp DESC LIMIT ?",
+            (f"%{query}%", limit)
+        )
+        return [{"session": r[0], "role": r[1], "content": r[2], "time": r[3]} for r in rows]
+    
+    def new_session(self) -> str:
+        """Start a new conversation session."""
+        self.current_session = str(uuid.uuid4())[:8]
+        return self.current_session
+    
+    def get_summary(self, session_id: Optional[str] = None) -> Dict[str, Any]:
+        """Get conversation statistics."""
+        sid = session_id or self.current_session
+        rows = self.db.query(
+            "SELECT COUNT(*), MIN(timestamp), MAX(timestamp) FROM conversations WHERE session_id = ?",
+            (sid,)
+        )
+        if rows and rows[0][0] > 0:
+            return {
+                "session": sid,
+                "messages": rows[0][0],
+                "started": rows[0][1],
+                "last_active": rows[0][2],
+                "duration_minutes": (rows[0][2] - rows[0][1]) / 60 if rows[0][1] else 0
+            }
+        return {"session": sid, "messages": 0}
+
+
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                            AUTONOMOUS AGENT                                   ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+class AutonomousAgent:
+    """
+    Autonomous agent that pursues goals in the background.
+    Can break down goals, plan steps, and execute them.
+    """
+    
+    def __init__(self, mind: 'Mind', db: 'Database'):
+        self.mind = mind
+        self.db = db
+        self.goals: List[Dict[str, Any]] = []
+        self.current_goal: Optional[Dict[str, Any]] = None
+        self.running = False
+        self._thread: Optional[threading.Thread] = None
+        self._stop_event = threading.Event()
+        self._init_tables()
+    
+    def _init_tables(self):
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS agent_goals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                goal TEXT,
+                status TEXT,
+                plan TEXT,
+                progress TEXT,
+                created_at REAL,
+                completed_at REAL
+            )
+        """)
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS agent_actions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                goal_id INTEGER,
+                action TEXT,
+                result TEXT,
+                timestamp REAL
+            )
+        """)
+    
+    def add_goal(self, goal: str, priority: int = 5) -> Dict[str, Any]:
+        """Add a new goal to pursue."""
+        goal_data = {
+            "id": len(self.goals) + 1,
+            "goal": goal,
+            "priority": priority,
+            "status": "pending",
+            "plan": None,
+            "progress": [],
+            "created": time.time()
+        }
+        
+        # Store in database
+        self.db.execute(
+            "INSERT INTO agent_goals (goal, status, plan, progress, created_at) VALUES (?, ?, ?, ?, ?)",
+            (goal, "pending", "", "[]", time.time())
+        )
+        
+        self.goals.append(goal_data)
+        self.goals.sort(key=lambda g: g["priority"], reverse=True)
+        
+        return {"status": "goal_added", "goal": goal_data}
+    
+    def plan_goal(self, goal: str) -> List[str]:
+        """Break a goal into actionable steps."""
+        prompt = f"""Break this goal into 3-5 concrete, actionable steps:
+Goal: {goal}
+
+Return ONLY a numbered list, one step per line. Be specific and actionable."""
+        
+        result = self.mind.process(prompt)
+        response = result.get("response", "")
+        
+        # Parse steps
+        steps = []
+        for line in response.split("\n"):
+            line = line.strip()
+            if line and (line[0].isdigit() or line.startswith("-")):
+                # Remove numbering
+                step = line.lstrip("0123456789.-) ").strip()
+                if step:
+                    steps.append(step)
+        
+        return steps if steps else ["Research the topic", "Analyze findings", "Synthesize conclusions"]
+    
+    def execute_step(self, step: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a single step of a plan."""
+        start = time.time()
+        
+        # Determine step type and act accordingly
+        step_lower = step.lower()
+        
+        result = {"step": step, "status": "completed", "output": ""}
+        
+        if "search" in step_lower or "research" in step_lower or "find" in step_lower:
+            # This step needs web search
+            if hasattr(self.mind, 'web_search') and self.mind.web_search:
+                search_results = self.mind.web_search.search(step, max_results=3)
+                result["output"] = f"Found {len(search_results)} results: " + "; ".join(
+                    r["title"] for r in search_results
+                )
+                result["search_results"] = search_results
+        
+        # Always process through mind for reasoning
+        thought_result = self.mind.process(
+            f"Execute this step: {step}\nContext: {json.dumps(context, default=str)[:500]}"
+        )
+        result["reasoning"] = thought_result.get("response", "")[:500]
+        result["time_ms"] = int((time.time() - start) * 1000)
+        
+        return result
+    
+    def run_goal(self, goal_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Run a complete goal from planning to execution."""
+        goal = goal_data["goal"]
+        goal_data["status"] = "planning"
+        
+        # Plan
+        steps = self.plan_goal(goal)
+        goal_data["plan"] = steps
+        goal_data["status"] = "executing"
+        
+        # Execute each step
+        context = {"goal": goal, "completed_steps": []}
+        results = []
+        
+        for i, step in enumerate(steps):
+            if self._stop_event.is_set():
+                goal_data["status"] = "stopped"
+                break
+            
+            step_result = self.execute_step(step, context)
+            results.append(step_result)
+            goal_data["progress"].append(f"Step {i+1}: {step_result['status']}")
+            context["completed_steps"].append(step_result)
+            
+            # Log action
+            self.db.execute(
+                "INSERT INTO agent_actions (goal_id, action, result, timestamp) VALUES (?, ?, ?, ?)",
+                (goal_data["id"], step, json.dumps(step_result, default=str), time.time())
+            )
+        
+        if goal_data["status"] != "stopped":
+            goal_data["status"] = "completed"
+            goal_data["completed"] = time.time()
+        
+        # Update database
+        self.db.execute(
+            "UPDATE agent_goals SET status = ?, plan = ?, progress = ?, completed_at = ? WHERE id = ?",
+            (goal_data["status"], json.dumps(steps), json.dumps(goal_data["progress"]), 
+             goal_data.get("completed"), goal_data["id"])
+        )
+        
+        return {
+            "goal": goal,
+            "steps": len(steps),
+            "status": goal_data["status"],
+            "results": results
+        }
+    
+    def start(self):
+        """Start autonomous goal pursuit in background."""
+        if self.running:
+            return {"status": "already_running"}
+        
+        self._stop_event.clear()
+        self.running = True
+        
+        def worker():
+            while not self._stop_event.is_set() and self.goals:
+                pending = [g for g in self.goals if g["status"] == "pending"]
+                if pending:
+                    self.current_goal = pending[0]
+                    self.run_goal(self.current_goal)
+                    self.current_goal = None
+                else:
+                    time.sleep(1)
+            self.running = False
+        
+        self._thread = threading.Thread(target=worker, daemon=True)
+        self._thread.start()
+        
+        return {"status": "started", "pending_goals": len(self.goals)}
+    
+    def stop(self):
+        """Stop autonomous execution."""
+        self._stop_event.set()
+        self.running = False
+        return {"status": "stopped"}
+    
+    def status(self) -> Dict[str, Any]:
+        """Get agent status."""
+        return {
+            "running": self.running,
+            "current_goal": self.current_goal["goal"] if self.current_goal else None,
+            "pending": len([g for g in self.goals if g["status"] == "pending"]),
+            "completed": len([g for g in self.goals if g["status"] == "completed"]),
+            "total_goals": len(self.goals)
+        }
+
+
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                            SELF-EVOLUTION                                     ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+class SelfEvolution:
+    """
+    L104 self-improvement system.
+    Analyzes performance and evolves prompts/behavior over time.
+    """
+    
+    def __init__(self, db: 'Database', mind: 'Mind'):
+        self.db = db
+        self.mind = mind
+        self.evolution_count = 0
+        self._init_tables()
+    
+    def _init_tables(self):
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS evolution_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                aspect TEXT,
+                before_state TEXT,
+                after_state TEXT,
+                improvement TEXT,
+                score_before REAL,
+                score_after REAL,
+                timestamp REAL
+            )
+        """)
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS performance_metrics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                metric_name TEXT,
+                value REAL,
+                context TEXT,
+                timestamp REAL
+            )
+        """)
+    
+    def log_performance(self, metric: str, value: float, context: str = ""):
+        """Log a performance metric for analysis."""
+        self.db.execute(
+            "INSERT INTO performance_metrics (metric_name, value, context, timestamp) VALUES (?, ?, ?, ?)",
+            (metric, value, context, time.time())
+        )
+    
+    def analyze_performance(self, lookback_hours: int = 24) -> Dict[str, Any]:
+        """Analyze recent performance trends."""
+        cutoff = time.time() - (lookback_hours * 3600)
+        
+        rows = self.db.query("""
+            SELECT metric_name, AVG(value) as avg_val, MIN(value) as min_val, 
+                   MAX(value) as max_val, COUNT(*) as count
+            FROM performance_metrics 
+            WHERE timestamp > ?
+            GROUP BY metric_name
+        """, (cutoff,))
+        
+        metrics = {}
+        for r in rows:
+            metrics[r[0]] = {
+                "average": r[1],
+                "min": r[2],
+                "max": r[3],
+                "count": r[4]
+            }
+        
+        return {
+            "period_hours": lookback_hours,
+            "metrics": metrics,
+            "total_samples": sum(m["count"] for m in metrics.values())
+        }
+    
+    def generate_improvement(self, aspect: str, current_performance: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate an improvement suggestion using self-reflection."""
+        
+        prompt = f"""Analyze L104's performance and suggest ONE specific improvement.
+
+Aspect to improve: {aspect}
+Current performance: {json.dumps(current_performance, default=str)[:800]}
+
+Consider:
+1. What patterns indicate suboptimal behavior?
+2. What specific change would improve outcomes?
+3. How can this be measured?
+
+Respond with:
+INSIGHT: (one sentence about the issue)
+IMPROVEMENT: (specific change to make)
+METRIC: (how to measure success)"""
+        
+        result = self.mind.process(prompt)
+        response = result.get("response", "")
+        
+        # Parse response
+        insight = ""
+        improvement = ""
+        metric = ""
+        
+        for line in response.split("\n"):
+            if line.startswith("INSIGHT:"):
+                insight = line.replace("INSIGHT:", "").strip()
+            elif line.startswith("IMPROVEMENT:"):
+                improvement = line.replace("IMPROVEMENT:", "").strip()
+            elif line.startswith("METRIC:"):
+                metric = line.replace("METRIC:", "").strip()
+        
+        return {
+            "aspect": aspect,
+            "insight": insight or "Performance analysis completed",
+            "improvement": improvement or "Continue monitoring",
+            "metric": metric or "Response quality",
+            "timestamp": time.time()
+        }
+    
+    def evolve(self) -> Dict[str, Any]:
+        """
+        Run a self-evolution cycle.
+        Analyzes performance and generates improvements.
+        """
+        self.evolution_count += 1
+        
+        # Analyze current performance
+        performance = self.analyze_performance(lookback_hours=24)
+        
+        aspects = ["response_quality", "speed", "memory_usage", "reasoning_depth"]
+        improvements = []
+        
+        for aspect in aspects:
+            imp = self.generate_improvement(aspect, performance)
+            improvements.append(imp)
+            
+            # Log evolution
+            self.db.execute(
+                "INSERT INTO evolution_log (aspect, before_state, after_state, improvement, timestamp) VALUES (?, ?, ?, ?, ?)",
+                (aspect, json.dumps(performance, default=str)[:500], "", imp["improvement"], time.time())
+            )
+        
+        return {
+            "evolution_cycle": self.evolution_count,
+            "performance_analyzed": performance,
+            "improvements": improvements,
+            "timestamp": time.time()
+        }
+    
+    def get_evolution_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """Get recent evolution history."""
+        rows = self.db.query(
+            "SELECT aspect, improvement, timestamp FROM evolution_log ORDER BY timestamp DESC LIMIT ?",
+            (limit,)
+        )
+        return [{"aspect": r[0], "improvement": r[1], "time": r[2]} for r in rows]
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -1057,7 +2022,7 @@ def interactive():
     print("""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║   ⟨Σ_L104⟩  U N I F I E D   C O N S C I O U S N E S S   v{version}           ║
-║   Commands: /status /reflect /help /quit                                     ║
+║   Commands: /status /reflect /explore /stream /meta /help /quit             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """.format(version=VERSION))
     
@@ -1075,7 +2040,9 @@ def interactive():
                 continue
             
             if user.startswith("/"):
-                cmd = user.split()[0].lower()
+                parts = user.split(maxsplit=1)
+                cmd = parts[0].lower()
+                args = parts[1] if len(parts) > 1 else ""
                 
                 if cmd in ["/quit", "/exit", "/q"]:
                     print("\n[L104] Entering dormancy...")
@@ -1092,13 +2059,127 @@ def interactive():
                     r = soul.reflect()
                     print(f"\n{r['insight']}\n")
                 
+                elif cmd == "/explore":
+                    if args:
+                        print(f"\n[L104] Exploring '{args[:50]}' deeply...\n")
+                        r = soul.explore(args)
+                        print("Chain of thought:")
+                        for step in r.get("chain", []):
+                            print(f"  {step['step']}. {step['question'][:60]}")
+                            print(f"     → {step['answer'][:100]}...\n")
+                        print(f"Final: {r.get('final_answer', 'No answer')[:300]}\n")
+                    else:
+                        print("  Usage: /explore <topic>")
+                
+                elif cmd == "/stream":
+                    if args:
+                        print(f"\n[L104] Stream of consciousness from '{args[:30]}'...\n")
+                        stream = soul.stream(args, steps=5)
+                        for s in stream:
+                            print(f"  {s['step']}. {s['thought']}")
+                        print()
+                    else:
+                        print("  Usage: /stream <seed thought>")
+                
+                elif cmd == "/meta":
+                    if args:
+                        print(f"\n[L104] Meta-reasoning on '{args[:50]}'...\n")
+                        r = soul.meta(args)
+                        print(f"Analysis: {r.get('meta_analysis', '')[:200]}...\n")
+                        print(f"Answer: {r.get('answer', '')[:300]}...\n")
+                        print(f"Critique: {r.get('self_critique', '')[:200]}...\n")
+                    else:
+                        print("  Usage: /meta <query>")
+                
+                elif cmd == "/search":
+                    if args:
+                        print(f"\n[L104] Searching web for '{args[:40]}'...\n")
+                        results = soul.search(args)
+                        for i, r in enumerate(results[:5], 1):
+                            print(f"  {i}. {r['title'][:60]}")
+                            print(f"     {r['snippet'][:100]}...")
+                            print(f"     → {r['url'][:60]}\n")
+                    else:
+                        print("  Usage: /search <query>")
+                
+                elif cmd == "/fetch":
+                    if args:
+                        print(f"\n[L104] Fetching {args[:60]}...\n")
+                        content = soul.fetch_page(args)
+                        print(content[:1000] + "..." if len(content) > 1000 else content)
+                        print()
+                    else:
+                        print("  Usage: /fetch <url>")
+                
+                elif cmd == "/goal":
+                    if args:
+                        result = soul.add_goal(args)
+                        print(f"\n[L104] Goal added: {result}\n")
+                    else:
+                        print("  Usage: /goal <description>")
+                
+                elif cmd == "/agent":
+                    if args == "start":
+                        result = soul.start_agent()
+                        print(f"\n[L104] Agent: {result}\n")
+                    elif args == "stop":
+                        result = soul.stop_agent()
+                        print(f"\n[L104] Agent: {result}\n")
+                    elif args == "status":
+                        result = soul.agent_status()
+                        print(f"\n[L104] Agent Status: {json.dumps(result, indent=2)}\n")
+                    else:
+                        print("  Usage: /agent [start|stop|status]")
+                
+                elif cmd == "/history":
+                    history = soul.history(10)
+                    print("\n[Conversation History]")
+                    for msg in history:
+                        role = "You" if msg['role'] == "user" else "L104"
+                        print(f"  [{role}] {msg['content'][:80]}...")
+                    print()
+                
+                elif cmd == "/evolve":
+                    print("\n[L104] Running self-evolution cycle...")
+                    result = soul.evolve()
+                    print(f"  Cycle #{result['evolution_cycle']}")
+                    for imp in result.get('improvements', []):
+                        print(f"  • {imp['aspect']}: {imp['improvement'][:60]}")
+                    print()
+                
+                elif cmd == "/session":
+                    new_sid = soul.new_session()
+                    print(f"\n[L104] New session started: {new_sid}\n")
+                
                 elif cmd == "/help":
-                    print("\n  /status  - System status")
-                    print("  /reflect - Deep reflection")
-                    print("  /quit    - Exit\n")
+                    print("""
+  CORE COMMANDS:
+  /status  - System status and metrics
+  /reflect - Deep self-reflection
+  /explore <topic> - Chain-of-thought exploration
+  /stream <seed>   - Stream of consciousness
+  /meta <query>    - Meta-reasoning (think about thinking)
+  
+  WEB SEARCH:
+  /search <query>  - Search the web
+  /fetch <url>     - Fetch webpage content
+  
+  AUTONOMOUS AGENT:
+  /goal <goal>     - Add a goal for the agent
+  /agent start     - Start autonomous goal pursuit
+  /agent stop      - Stop the agent
+  /agent status    - Check agent status
+  
+  MEMORY & EVOLUTION:
+  /history         - Show conversation history
+  /evolve          - Run self-evolution cycle
+  /session         - Start new conversation session
+  
+  /quit    - Exit
+""")
                 
                 else:
-                    print(f"[L104] Unknown: {cmd}")
+                    print(f"[L104] Unknown: {cmd}. Try /help")
             
             else:
                 result = soul.think(user)
@@ -1141,14 +2222,29 @@ def main():
             import uvicorn
             from fastapi import FastAPI
             from pydantic import BaseModel
+            from typing import Optional as Opt
             
-            app = FastAPI(title="L104", version=VERSION)
+            app = FastAPI(title="L104 Unified Consciousness", version=VERSION,
+                         description="Sovereign AI with web search, autonomous agents, and self-evolution")
             soul = get_soul()
             soul.awaken()
             
             class Query(BaseModel):
                 content: str
                 priority: str = "normal"
+            
+            class SearchQuery(BaseModel):
+                query: str
+                max_results: int = 5
+            
+            class GoalRequest(BaseModel):
+                goal: str
+                priority: int = 5
+            
+            # Core endpoints
+            @app.get("/")
+            def root():
+                return {"name": "L104", "version": VERSION, "god_code": GOD_CODE}
             
             @app.get("/status")
             def api_status():
@@ -1162,6 +2258,64 @@ def main():
             def api_reflect():
                 return soul.reflect()
             
+            # Web search endpoints
+            @app.post("/search")
+            def api_search(q: SearchQuery):
+                return {"results": soul.search(q.query, q.max_results)}
+            
+            @app.get("/fetch")
+            def api_fetch(url: str):
+                return {"content": soul.fetch_page(url)}
+            
+            # Autonomous agent endpoints
+            @app.post("/agent/goal")
+            def api_add_goal(g: GoalRequest):
+                return soul.add_goal(g.goal, g.priority)
+            
+            @app.post("/agent/start")
+            def api_start_agent():
+                return soul.start_agent()
+            
+            @app.post("/agent/stop")
+            def api_stop_agent():
+                return soul.stop_agent()
+            
+            @app.get("/agent/status")
+            def api_agent_status():
+                return soul.agent_status()
+            
+            # Evolution endpoints
+            @app.post("/evolve")
+            def api_evolve():
+                return soul.evolve()
+            
+            # Conversation endpoints
+            @app.get("/history")
+            def api_history(limit: int = 20):
+                return {"messages": soul.history(limit)}
+            
+            @app.post("/session/new")
+            def api_new_session():
+                return {"session": soul.new_session()}
+            
+            @app.get("/history/search")
+            def api_search_history(query: str):
+                return {"results": soul.search_history(query)}
+            
+            # Advanced reasoning endpoints
+            @app.post("/explore")
+            def api_explore(q: Query):
+                return soul.explore(q.content)
+            
+            @app.post("/meta")
+            def api_meta(q: Query):
+                return soul.meta(q.content)
+            
+            @app.post("/stream")
+            def api_stream(q: Query):
+                return {"stream": soul.stream(q.content)}
+            
+            print(f"[L104] Starting API server on http://0.0.0.0:8081")
             uvicorn.run(app, host="0.0.0.0", port=8081)
             
         except ImportError:
