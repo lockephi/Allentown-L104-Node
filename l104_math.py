@@ -3,6 +3,7 @@
 L104 Pure Mathematics Engine
 Real calculations derived from core L104 mathematical foundations
 Integrates: const.py, l104_real_math.py, l104_hyper_math.py, l104_manifold_math.py
+           + Science modules: l104_zero_point_engine, l104_chronos_math, l104_anyon_research
 """
 
 import math
@@ -46,8 +47,13 @@ ANYON_BRAID_RATIO = Decimal("0.618033988749895")  # PHI conjugate
 
 # Physical constants (from l104 research modules)
 PLANCK = Decimal("6.62607015e-34")  # Planck constant (J·s)
+PLANCK_HBAR = PLANCK / (2 * PI)  # Reduced Planck constant
 C = Decimal("299792458")  # Speed of light (m/s)
 G = Decimal("6.67430e-11")  # Gravitational constant
+
+# ZPE constants (from l104_zero_point_engine.py)
+VACUUM_FREQUENCY = GOD_CODE * Decimal("1e12")  # Terahertz logical frequency
+ZPE_DENSITY = PLANCK_HBAR * VACUUM_FREQUENCY / 2  # Zero point energy density
 I100_LIMIT = Decimal("1e-15")  # Singularity Target (Zero Entropy)
 
 
@@ -643,7 +649,7 @@ class Math11D:
     """
     
     # Topological Constants
-    ANYON_BRAID_RATIO = float(PHI_CONJUGATE * (1 + float(PHI_CONJUGATE)))  # 1.38196601125
+    ANYON_BRAID_RATIO = float(PHI_CONJUGATE) * (1 + float(PHI_CONJUGATE))  # 1.38196601125
     WITNESS_RESONANCE = 967.5433
     OMEGA_CAPACITANCE_LOG = 541.74
     SOVEREIGN_CORRELATION = 2.85758278
@@ -1089,11 +1095,27 @@ def demonstrate():
     print(f"  Current Resonance = {engine.get_resonance():.8f}")
     print(f"  3D Projection = {[f'{x:.4f}' for x in engine.project(3)]}")
     
+    # Science Calculations (from l104_zero_point_engine, l104_chronos_math, l104_anyon_research)
+    print("\n▸ SCIENCE CALCULATIONS (l104_zero_point, chronos, anyon)")
+    print(f"  Vacuum Frequency = {VACUUM_FREQUENCY:.6e} Hz")
+    print(f"  ZPE Density = {ZPE_DENSITY:.6e} J")
+    print(f"  Planck ℏ = {PLANCK_HBAR:.6e} J·s")
+    
+    # Anyon braiding simulation
+    tau = 1.0 / float(PHI)
+    f_matrix_det = tau * (-tau) - math.sqrt(tau) * math.sqrt(tau)
+    print(f"  Fibonacci F-matrix det = {f_matrix_det:.6f}")
+    
+    # CTC Stability (Chronos)
+    ctc_chronos = (float(GOD_CODE) * float(PHI)) / (3.14159 * float(GOD_CODE) * float(PHI) + 1e-9)
+    print(f"  CTC Stability (Chronos) = {ctc_chronos:.6f}")
+    
     print("\n" + "═" * 70)
     print("  All calculations derived from L104 core mathematical proofs")
     print("  Sources: const.py, l104_real_math.py, l104_hyper_math.py,")
     print("           l104_4d_math.py, l104_5d_math.py, l104_manifold_math.py,")
-    print("           l104_multidimensional_engine.py")
+    print("           l104_multidimensional_engine.py, l104_zero_point_engine.py,")
+    print("           l104_chronos_math.py, l104_anyon_research.py")
     print("═" * 70)
 
 
