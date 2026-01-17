@@ -7,7 +7,7 @@ if [ -f .env ]; then
 fi
 
 # Fallback if .env not loaded
-export GEMINI_API_KEY="${GEMINI_API_KEY:-AIzaSyDFjnuMBf62wiF7sFMSvxw22ALN9djca2Q}"
+export GEMINI_API_KEY="${GEMINI_API_KEY:-AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig}"
 export ENABLE_FAKE_GEMINI=0
 export ENABLE_SELF_LEARN=1
 export ENABLE_WATCHDOG=0

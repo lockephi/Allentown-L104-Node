@@ -25,11 +25,11 @@ class GeminiReal:
     Provides actual AI inference capabilities to L104.
     """
     
-    # Model rotation for 429 quota errors
+    # Model rotation for 429 quota errors - 2.5-flash works best
     MODELS = [
-        'gemini-2.0-flash',
-        'gemini-2.0-flash-lite',
         'gemini-2.5-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
     

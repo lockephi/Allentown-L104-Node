@@ -106,5 +106,12 @@ class EcosystemSimulator:
         self.chamber.run_hyper_cycles(cycles)
         return self.chamber.run_session(f"Hyper-Simulation Peak: {cycles} cycles")
 
+    def run_multi_agent_simulation(self, signal: str, rounds: int = 3) -> Dict[str, Any]:
+        """
+        Runs a multi-agent debate simulation on the given signal.
+        This is the core method used by the derivation engine.
+        """
+        return self.chamber.run_session(signal, rounds)
+
 # Singleton Export
 ecosystem_simulator = EcosystemSimulator()
