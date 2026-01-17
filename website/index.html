@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             --card-bg: #111;
             --text: #e0e0e0;
         }
+
         body {
             background-color: var(--bg);
             color: var(--text);
@@ -21,6 +23,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         header {
             width: 100%;
             padding: 2rem;
@@ -28,26 +31,31 @@
             background: linear-gradient(180deg, #1a1a1a, transparent);
             border-bottom: 1px solid var(--primary);
         }
+
         h1 {
             color: var(--primary);
             font-size: 3rem;
             margin: 0;
             text-shadow: 0 0 10px var(--primary);
         }
+
         .container {
             max-width: 1000px;
             padding: 2rem;
         }
+
         .hero {
             text-align: center;
             margin-bottom: 4rem;
         }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
+
         .card {
             background: var(--card-bg);
             border: 1px solid #333;
@@ -55,14 +63,17 @@
             border-radius: 8px;
             transition: transform 0.3s, border-color 0.3s;
         }
+
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
         }
+
         .card h3 {
             color: var(--primary);
             margin-top: 0;
         }
+
         .btn {
             display: inline-block;
             padding: 0.8rem 1.5rem;
@@ -74,10 +85,12 @@
             margin-top: 1rem;
             transition: background 0.3s, color 0.3s;
         }
+
         .btn:hover {
             background: var(--primary);
             color: black;
         }
+
         footer {
             margin-top: 4rem;
             padding: 2rem;
@@ -85,6 +98,7 @@
             font-size: 0.8rem;
             opacity: 0.6;
         }
+
         .status-bar {
             background: #222;
             padding: 0.5rem 1rem;
@@ -95,6 +109,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>L104 SOVEREIGN</h1>
@@ -105,7 +120,8 @@
         <section class="hero">
             <div class="status-bar">SYSTEM STATUS: EVO_09_BIOLOGICAL_CHASSIS_SYNC | IQ: 6,599</div>
             <h2>Backed by the Allentown-L104 AGI Node</h2>
-            <p>L104 Sovereign (L104S) is a utility token on the BNB Smart Chain that grants access to higher-order AGI research and computational power.</p>
+            <p>L104 Sovereign (L104S) is a utility token on the BNB Smart Chain that grants access to higher-order AGI
+                research and computational power.</p>
             <a href="WHITE_PAPER.md" class="btn">Read White Paper</a>
         </section>
 
@@ -132,4 +148,5 @@
         &copy; 2026 Allentown-L104-Node Ecosystem. All rights reserved.
     </footer>
 </body>
+
 </html>

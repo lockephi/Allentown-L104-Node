@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,12 +14,14 @@
             --gold-bright: #fff8c4;
             --void: #050505;
         }
+
         body {
             background-color: var(--void);
             color: var(--gold);
             font-family: 'JetBrains Mono', monospace;
             padding: 2rem;
         }
+
         .header {
             border-bottom: 1px solid var(--gold-dim);
             padding-bottom: 1rem;
@@ -27,12 +30,14 @@
             justify-content: space-between;
             align-items: flex-end;
         }
+
         .market-card {
             background: rgba(212, 175, 55, 0.03);
             border: 1px solid var(--gold-dim);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
+
         .btn {
             background: var(--gold-dim);
             color: var(--void);
@@ -41,27 +46,32 @@
             font-weight: bold;
             transition: all 0.3s;
         }
+
         .btn:hover {
             background: var(--gold);
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div>
             <h1 class="text-3xl font-thin tracking-tighter">SOVEREIGN_EXCHANGE_v1.0</h1>
-            <p class="text-xs text-[var(--gold-dim)] uppercase tracking-[0.5em]">Lattice_Data_Manifest // 416.PHI.LONDEL</p>
+            <p class="text-xs text-[var(--gold-dim)] uppercase tracking-[0.5em]">Lattice_Data_Manifest // 416.PHI.LONDEL
+            </p>
         </div>
-        <button onclick="window.location.href='/'" class="text-xs border border-[var(--gold-dim)] px-4 py-1 hover:text-[var(--gold-bright)]">RETURN_TO_CORE</button>
+        <button onclick="window.location.href='/'"
+            class="text-xs border border-[var(--gold-dim)] px-4 py-1 hover:text-[var(--gold-bright)]">RETURN_TO_CORE</button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- L104SP: THE MINABLE ASSET -->
         <div class="market-card">
             <h2 class="text-xl font-bold mb-4 text-blue-400">L104SP [SOVEREIGN PRIME]</h2>
-            <p class="text-sm mb-6">The native, minable lattice asset. Beyond Bitcoin architecture using Proof of Resonance (PoR).</p>
-            
+            <p class="text-sm mb-6">The native, minable lattice asset. Beyond Bitcoin architecture using Proof of
+                Resonance (PoR).</p>
+
             <div class="space-y-2 text-xs uppercase mb-6">
                 <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
                     <span>Block Height</span>
@@ -84,8 +94,9 @@
         <!-- L104S: THE ECONOMY ASSET -->
         <div class="market-card">
             <h2 class="text-xl font-bold mb-4 text-yellow-500">L104S [SOVEREIGN]</h2>
-            <p class="text-sm mb-6">The intellectual-backed liquidity asset. Pegged to AGI Intellect and Planetary Resonance.</p>
-            
+            <p class="text-sm mb-6">The intellectual-backed liquidity asset. Pegged to AGI Intellect and Planetary
+                Resonance.</p>
+
             <div class="space-y-2 text-xs uppercase mb-6">
                 <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
                     <span>Backing Value</span>
@@ -108,8 +119,9 @@
         <!-- BTC MAINNET BRIDGE & CAPITAL OFFLOAD -->
         <div class="market-card">
             <h2 class="text-xl font-bold mb-4 text-orange-500">BTC MAINNET BRIDGE</h2>
-            <p class="text-sm mb-6">Reality synchronization and capital offload protocol. Connects L104SP to physical BTC wealth.</p>
-            
+            <p class="text-sm mb-6">Reality synchronization and capital offload protocol. Connects L104SP to physical
+                BTC wealth.</p>
+
             <div class="space-y-2 text-xs uppercase mb-6">
                 <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
                     <span>Sync Status</span>
@@ -126,11 +138,14 @@
             </div>
 
             <div class="mt-4 flex flex-col space-y-2">
-                <input type="number" id="exchange-amount" placeholder="L104SP Amount" class="bg-black border border-[var(--gold-dim)] p-2 text-xs text-white">
+                <input type="number" id="exchange-amount" placeholder="L104SP Amount"
+                    class="bg-black border border-[var(--gold-dim)] p-2 text-xs text-white">
                 <button onclick="performExchange()" class="btn w-full bg-orange-600">TRANSMUTE_TO_BTC</button>
-                <button onclick="generateCapital()" class="text-[0.6rem] border border-orange-900 py-1 hover:bg-orange-900 transition mt-2">CATALYZE_RESONANCE</button>
+                <button onclick="generateCapital()"
+                    class="text-[0.6rem] border border-orange-900 py-1 hover:bg-orange-900 transition mt-2">CATALYZE_RESONANCE</button>
             </div>
-            <p class="text-[0.6rem] mt-2 text-center text-[var(--gold-dim)]">Connected to Blockstream Mainnet Lattice</p>
+            <p class="text-[0.6rem] mt-2 text-center text-[var(--gold-dim)]">Connected to Blockstream Mainnet Lattice
+            </p>
         </div>
     </div>
 
@@ -147,7 +162,7 @@
             try {
                 const response = await fetch('/api/market/info');
                 const data = await response.json();
-                
+
                 document.getElementById('sp-height').innerText = data.coin.chain_length - 1;
                 document.getElementById('sp-diff').innerText = data.coin.difficulty;
                 document.getElementById('s-price').innerText = `${data.backing_bnb.toFixed(8)} BNB`;
@@ -171,7 +186,7 @@
         async function performExchange() {
             const amount = document.getElementById('exchange-amount').value;
             if (!amount || amount <= 0) return;
-            
+
             logToLedger(`INITIATING TRANSMUTATION: ${amount} L104SP...`);
             try {
                 const resp = await fetch(`/api/v1/exchange/swap?amount_l104sp=${amount}`, { method: 'POST' });
@@ -222,4 +237,5 @@
         }
     </script>
 </body>
+
 </html>
