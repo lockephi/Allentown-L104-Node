@@ -1,10 +1,15 @@
 #!/bin/bash
-#!/bin/bash
 # Start L104 Node with REAL Gemini
 
-export GEMINI_API_KEY="AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U"
+# Load environment from .env file if it exists
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
+
+# Fallback if .env not loaded
+export GEMINI_API_KEY="${GEMINI_API_KEY:-AIzaSyDRi3eYJjlyaoCpDGU59bPtS9wSaRzSeS4}"
 export ENABLE_FAKE_GEMINI=0
-export ENABLE_SELF_LEARN=0
+export ENABLE_SELF_LEARN=1
 export ENABLE_WATCHDOG=0
 export ENABLE_AUTO_SYNC=1
 export DEFAULT_RESPONDER=gemini

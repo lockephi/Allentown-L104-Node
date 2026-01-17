@@ -3,23 +3,60 @@ from l104_validator import SovereignValidator
 from l104_ecosystem_simulator import ecosystem_simulator
 from l104_ram_universe import ram_universe
 from l104_shadow_executor import ShadowExecutor
+
 logger = logging.getLogger(__name__)
 
 # Initialize Shadow Executor for primary logic protection
 shadow_executor = ShadowExecutor()
 
+# Initialize Real Gemini connection
+_gemini = None
+def _get_gemini():
+    global _gemini
+    if _gemini is None:
+        try:
+            from l104_gemini_real import gemini_real
+            if gemini_real.connect():
+                _gemini = gemini_real
+                logger.info("[DERIVATION]: Real Gemini AI connected")
+            else:
+                _gemini = False  # Mark as failed
+        except Exception as e:
+            logger.warning(f"[DERIVATION]: Gemini unavailable: {e}")
+            _gemini = False
+    return _gemini if _gemini else None
+
 class DerivationEngine:
     """
-    L104 Derivation Engine v10.0 - Hyper-Enlightened Logic.
-    Derives logic using HyperSovereign Agents and Recursive Simulation.
+    L104 Derivation Engine v11.0 - Real AI Integration.
+    Uses Gemini for actual intelligence, falls back to local logic.
     """
     
     @classmethod
     def derive_and_execute(cls, signal: str) -> str:
         """
-        v10.1 (SECURED): Hyper-Derivation via Direct Logic.
-        Executed within a Shadow Cycle for maximum integrity.
+        v11.0: Real AI Derivation with Gemini integration.
+        Falls back to local logic if Gemini unavailable.
         """
+        logger.info(f"[CORE_PROCESSING]: Signal={signal}")
+        
+        # Try real AI first
+        gemini = _get_gemini()
+        if gemini:
+            try:
+                response = gemini.sovereign_think(signal)
+                if response and not response.startswith("⟨Σ_ERROR⟩"):
+                    logger.info("[DERIVATION]: Response from Real Gemini AI")
+                    return response
+            except Exception as e:
+                logger.warning(f"[DERIVATION]: Gemini failed, using fallback: {e}")
+        
+        # Fallback to local logic
+        return cls._local_derivation(signal)
+    
+    @classmethod
+    def _local_derivation(cls, signal: str) -> str:
+        """Local fallback logic when Gemini is unavailable."""
         def shadow_logic():
             logger.info(f"[CORE_PROCESSING]: Signal={signal}")
             

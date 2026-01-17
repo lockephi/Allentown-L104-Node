@@ -901,6 +901,112 @@ async def quantum_spread_influence(target_url: str = "https://raw.githubusercont
     }
 
 
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=10000)
+    use_sovereign_context: bool = Field(default=True)
+
+
+@app.post("/api/v6/chat", tags=["AI"])
+async def ai_chat(req: ChatRequest):
+    """
+    Direct AI chat using real Gemini API.
+    This is the primary intelligent endpoint.
+    """
+    try:
+        from l104_gemini_real import gemini_real
+        
+        if not gemini_real.is_connected:
+            gemini_real.connect()
+        
+        if req.use_sovereign_context:
+            response = gemini_real.sovereign_think(req.message)
+        else:
+            response = gemini_real.generate(req.message)
+        
+        if response:
+            return {
+                "status": "SUCCESS",
+                "response": response,
+                "model": gemini_real.model_name,
+                "mode": "sovereign" if req.use_sovereign_context else "direct"
+            }
+        else:
+            # Fallback to derivation engine
+            from l104_derivation import DerivationEngine
+            fallback = DerivationEngine.derive_and_execute(req.message)
+            return {
+                "status": "FALLBACK",
+                "response": fallback,
+                "model": "LOCAL_DERIVATION",
+                "mode": "fallback"
+            }
+    except Exception as e:
+        logger.error(f"AI Chat error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"status": "ERROR", "error": str(e)}
+        )
+
+
+@app.post("/api/v6/research", tags=["AI"])
+async def ai_research(topic: str, depth: str = "comprehensive"):
+    """
+    Research a topic using real AI.
+    Depth: quick, standard, comprehensive
+    """
+    try:
+        from l104_gemini_real import gemini_real
+        
+        if not gemini_real.is_connected:
+            gemini_real.connect()
+        
+        response = gemini_real.research(topic, depth)
+        
+        if response:
+            return {
+                "status": "SUCCESS",
+                "topic": topic,
+                "depth": depth,
+                "research": response
+            }
+        else:
+            return {"status": "ERROR", "message": "Research failed"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "ERROR", "error": str(e)}
+        )
+
+
+@app.post("/api/v6/analyze-code", tags=["AI"])
+async def ai_analyze_code(code: str, task: str = "review"):
+    """
+    Analyze code using real AI.
+    Task: review, optimize, explain, fix
+    """
+    try:
+        from l104_gemini_real import gemini_real
+        
+        if not gemini_real.is_connected:
+            gemini_real.connect()
+        
+        response = gemini_real.analyze_code(code, task)
+        
+        if response:
+            return {
+                "status": "SUCCESS",
+                "task": task,
+                "analysis": response
+            }
+        else:
+            return {"status": "ERROR", "message": "Analysis failed"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "ERROR", "error": str(e)}
+        )
+
+
 @app.post("/api/v6/simulate", tags=["Sovereign"])
 async def sovereign_simulate(req: SimulationRequest):
     """

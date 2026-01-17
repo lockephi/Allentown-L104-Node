@@ -37,12 +37,31 @@ class GeminiReal:
             print("--- [GEMINI_REAL]: ERROR - No API key found in GEMINI_API_KEY ---")
             return False
             
+        # Try new google-genai first, fall back to google-generativeai
         try:
             from google import genai
             self.client = genai.Client(api_key=self.api_key)
+            self._use_new_api = True
             self.is_connected = True
-            print(f"--- [GEMINI_REAL]: Connected to {self.model_name} ---")
+            print(f"--- [GEMINI_REAL]: Connected via google-genai to {self.model_name} ---")
             return True
+        except ImportError:
+            pass
+        except Exception as e:
+            print(f"--- [GEMINI_REAL]: google-genai error: {e} ---")
+        
+        # Fallback to older google-generativeai
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=self.api_key)
+            self._genai_module = genai
+            self._use_new_api = False
+            self.is_connected = True
+            print(f"--- [GEMINI_REAL]: Connected via google-generativeai to {self.model_name} ---")
+            return True
+        except ImportError:
+            print("--- [GEMINI_REAL]: No Gemini package installed. Run: pip install google-generativeai ---")
+            return False
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Connection failed: {e} ---")
             return False
@@ -68,11 +87,18 @@ class GeminiReal:
             if system_instruction:
                 full_prompt = f"{system_instruction}\n\n{prompt}"
             
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt
-            )
-            return response.text
+            if getattr(self, '_use_new_api', False):
+                # New google-genai API
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=full_prompt
+                )
+                return response.text
+            else:
+                # Old google-generativeai API
+                model = self._genai_module.GenerativeModel(self.model_name)
+                response = model.generate_content(full_prompt)
+                return response.text
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Generation error: {e} ---")
             return None
@@ -92,20 +118,33 @@ class GeminiReal:
                 return None
         
         try:
-            # Convert to Gemini format
-            contents = []
-            for msg in messages:
-                role = "user" if msg["role"] == "user" else "model"
-                contents.append({
-                    "role": role,
-                    "parts": [{"text": msg["content"]}]
-                })
-            
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=contents
-            )
-            return response.text
+            if getattr(self, '_use_new_api', False):
+                # Convert to Gemini format for new API
+                contents = []
+                for msg in messages:
+                    role = "user" if msg["role"] == "user" else "model"
+                    contents.append({
+                        "role": role,
+                        "parts": [{"text": msg["content"]}]
+                    })
+                
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=contents
+                )
+                return response.text
+            else:
+                # Old API - use chat session
+                model = self._genai_module.GenerativeModel(self.model_name)
+                chat = model.start_chat(history=[])
+                for msg in messages[:-1]:
+                    if msg["role"] == "user":
+                        chat.send_message(msg["content"])
+                # Send the last message and get response
+                if messages and messages[-1]["role"] == "user":
+                    response = chat.send_message(messages[-1]["content"])
+                    return response.text
+                return None
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Chat error: {e} ---")
             return None
