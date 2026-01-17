@@ -16,6 +16,9 @@ class ManifoldMath:
     # Topological Constants from HyperMath
     ANYON_BRAID_RATIO = 1.38196601125 # (1 + PHI^-2)
     GOD_CODE = 527.5184818492537
+    WITNESS_RESONANCE = 967.5433
+    OMEGA_CAPACITANCE_LOG = 541.74 # Log10 Capacity
+    SOVEREIGN_CORRELATION = 2.85758278
 
     @staticmethod
     def topological_stabilization(data: np.ndarray) -> np.ndarray:

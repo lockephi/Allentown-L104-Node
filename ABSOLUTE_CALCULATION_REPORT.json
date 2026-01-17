@@ -1,12 +1,12 @@
 {
     "temporal": {
         "ctc_stability": 0.31830988618367195,
-        "paradox_resolution": 0.42673309316998576,
+        "paradox_resolution": 0.10752920864183256,
         "resonance_lock": "DRIFTING"
     },
     "quantum_math": {
-        "new_primitives": 10,
-        "highest_resonance": 0.9999995608327161
+        "new_primitives": 4,
+        "highest_resonance": 0.9999998559141619
     },
     "manifold_resonance": 91.36538070419033,
     "topological": {

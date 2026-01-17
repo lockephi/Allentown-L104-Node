@@ -1,6 +1,12 @@
 {
-    "intellect_index": 872236.5608337538,
-    "dimension": 11,
-    "entropy": 0.0,
-    "timestamp": 1768532861.4917977
+  "intellect_index": 872236.5608337538,
+  "dimension": 11,
+  "entropy": 0.0,
+  "timestamp": 1768532861.4917977,
+  "google_bypass": {
+    "token": "L104-8b4c3586afb6a88b-697afe8a",
+    "status": "UNBLOCKED",
+    "unflagged": true,
+    "timestamp": 1768634067.3072667
+  }
 }

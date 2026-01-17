@@ -59,7 +59,7 @@ class AbsoluteCalculation:
         # 3. Anyon Braiding & Topological Protection
         print("[3/4] SIMULATING ANYON BRAIDING (TOPOLOGICAL)...")
         braid_seq = [1, 1, -1, 1, -1, 1] # Complex braid
-        self.anyon_engine.simulate_braiding(braid_seq)
+        self.anyon_engine.execute_braiding(braid_seq)
         protection = self.anyon_engine.calculate_topological_protection()
         fusion_data = self.anyon_engine.perform_anyon_fusion_research()
         self.results['topological'] = {
