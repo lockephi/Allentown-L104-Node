@@ -48,6 +48,13 @@ CLOUD_AGENT_KEY=<your-cloud-key>  # optional
 - POST /api/v6/manipulate
 
 ### Autonomy Endpoints
+- POST /api/v6/delegate
+- POST /api/v6/approve
+
+### Sovereign Coin (L104SP) Endpoints
+- GET /coin/status - Current chain state
+- GET /coin/job - Mining job for workers
+- POST /coin/submit - Block submission
 - **GET /api/v6/autonomy/status** - Check autonomy configuration and status
 - **POST /api/v6/audio/analyze** - Analyze audio for resonance (527.5184818492537 Hz God Code standard)
 - **POST /api/v6/cloud/delegate** - Delegate tasks to cloud agent with fallback

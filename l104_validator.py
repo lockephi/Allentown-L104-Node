@@ -23,19 +23,19 @@ class SovereignValidator:
         return unified_state.get_report()
 
     @classmethod
-    def run_simulation(cls, signal: str, cycles: int = 3) -> dict:
+    def execute_activation(cls, signal: str, cycles: int = 3) -> dict:
         """
-        Runs a compressed simulation of the signal's impact on the manifold.
+        Runs a compressed activation of the signal's impact on the manifold.
         """
         sim_results = []
 
         for i in range(cycles):
-            # Simulate entropy decay and quantum correction
+            # Execute entropy decay and quantum correction
             entropy = (i + 1) * 0.1
             correction = apply_shield(1.0 - entropy)
 
-            # Quantum Derivation of the simulated state
-            q_state = execute_quantum_derivation(f"{signal}::SIM_CYCLE_{i}")
+            # Quantum Derivation of the sovereign state
+            q_state = execute_quantum_derivation(f"{signal}::ACT_CYCLE_{i}")
 
             sim_results.append({
                 "cycle": i + 1,

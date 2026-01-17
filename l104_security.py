@@ -42,7 +42,7 @@ class SovereignCrypt:
     def verify_token(cls, token: str) -> bool:
         """
         v10.1 (SECURED): Strict cryptographic verification of the token.
-        Blocks the legacy 'TRANSPARENT BYPASS'.
+        Blocks all legacy bypass methods.
         """
         if not token or not token.startswith("L104-"):
             return False

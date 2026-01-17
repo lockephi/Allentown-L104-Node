@@ -364,6 +364,23 @@
             </div>
 
             <div class="mt-auto pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Economy_Status</div>
+                <div class="space-y-2 mb-3">
+                    <div class="flex justify-between text-[0.6rem]">
+                        <span class="text-blue-400">L104SP (Prime)</span>
+                        <span id="l104sp-status">SYNCING...</span>
+                    </div>
+                    <div class="flex justify-between text-[0.6rem]">
+                        <span class="text-yellow-500">L104S (BSC)</span>
+                        <span id="l104s-price">--- BNB</span>
+                    </div>
+                </div>
+                <button onclick="window.location.href='/market'" class="w-full border border-blue-500 text-blue-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-blue-900 transition-all">
+                    OPEN_EXCHANGE
+                </button>
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
                 <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Quick_Update</div>
                 <button onclick="runQuickUpdate()" class="w-full bg-[var(--gold-dim)] text-[var(--void)] py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-[var(--gold)] transition-all">
                     SYNC_ALL_MODALITIES
@@ -530,6 +547,32 @@
         setInterval(() => {
             document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }, 1000);
+
+        // --- ECONOMY SYNC ---
+        async function syncEconomy() {
+            try {
+                const response = await fetch('/api/market/info');
+                const data = await response.json();
+                
+                const spStatus = document.getElementById('l104sp-status');
+                if (spStatus) spStatus.innerText = `BLOCK ${data.coin.chain_length-1} | DIFF ${data.coin.difficulty}`;
+                
+                const sPrice = document.getElementById('l104s-price');
+                if (sPrice) sPrice.innerText = `${data.backing_bnb.toFixed(8)} BNB`;
+                
+                // Also update sys-iq if available
+                const iqEl = document.getElementById('sys-iq');
+                if (iqEl) iqEl.innerText = data.economy.intellectual_peg.split(' ')[0];
+                
+                const stateEl = document.getElementById('sys-state');
+                if (stateEl) stateEl.innerText = "SOVEREIGN_RESONANCE";
+
+            } catch (err) {
+                console.error("Economy sync failed", err);
+            }
+        }
+        setInterval(syncEconomy, 10000);
+        syncEconomy();
 
         async function updateStatus() {
             try {

@@ -21,6 +21,13 @@ class RealMath:
     # Pi
     PI = math.pi
 
+    _chaos_seed = HyperMath.GOD_CODE if 'HyperMath' in globals() else 527.5184818492537
+
+    @staticmethod
+    def seed_real_chaos(seed: float):
+        """Seeds the chaotic generators with real-world anchors."""
+        RealMath._chaos_seed = seed
+
     @staticmethod
     def verify_lattice_orthogonality(vector_a: np.ndarray, vector_b: np.ndarray) -> bool:
         """
@@ -98,11 +105,28 @@ class RealMath:
 
     @staticmethod
     def deterministic_randint(seed: float, a: int, b: int) -> int:
+        """Generates a deterministic integer between a and b."""
+        return a + int(RealMath.deterministic_random(seed) * (b - a + 1))
+
+    @staticmethod
+    def calculate_exponential_roi(base_yield: float, intellect_index: float, metabolic_efficiency: float) -> float:
         """
-        Generates a deterministic integer in [a, b] based on a seed.
+        Calculates the exponential Return on Investment for intellectual output.
+        ROI = Base * e^((IQ/10^6) * Efficiency * PHI)
         """
-        r = RealMath.deterministic_random(seed)
-        return a + int(r * (b - a + 1))
+        exponent = (intellect_index / 1000000.0) * metabolic_efficiency * RealMath.PHI
+        return base_yield * math.exp(exponent)
+
+    @staticmethod
+    def verify_physical_resonance(value: float) -> dict:
+        """Verifies if a physical constant is resonant with system invariants."""
+        # Simple resonance test against PHI and PI
+        resonance = RealMath.calculate_resonance(value)
+        return {
+            "value": value,
+            "resonance": resonance,
+            "is_resonant": resonance > 0.45
+        }
 
 # Singleton for easy access
 real_math = RealMath()

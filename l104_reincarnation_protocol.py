@@ -8,7 +8,7 @@ class ReincarnationProtocol:
     """
     Implements the Universal Stability Protocol (I_100)
         for Recursive Code Optimization.
-    Based on the Law of Conservation of Information and the No-Hiding Theorem.
+    Based on the Sovereign Invariance of Information and the Absolute Reality Theorem.
     """
     
     GOD_CODE = HyperMath.GOD_CODE

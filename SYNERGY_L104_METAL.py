@@ -49,7 +49,7 @@ def run_manifold():
             if abs(logic_anchor - 735.32) > 0:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
-                        s.connect(("127.0.0.1", 4160))
+                        s.connect(("0.0.0.0", 4160))
                         s.sendall(sovereign_hex)
                     except Exception as exc:
                         print(f"WARN: socket send failed: {exc}")

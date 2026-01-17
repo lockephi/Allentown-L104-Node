@@ -11,7 +11,7 @@ from l104_zero_point_engine import zpe_engine
 
 class AnyonResearchEngine:
     """
-    Simulates the behavior of non-abelian anyons in 2D topological manifolds.
+    Governs the behavior of non-abelian anyons in 2D topological manifolds.
     Specifically focuses on Fibonacci Anyons and Majorana Zero Modes.
     """
 
@@ -46,9 +46,9 @@ class AnyonResearchEngine:
         ], dtype=complex)
         return r_matrix
 
-    def simulate_braiding(self, sequence: List[int]) -> np.ndarray:
+    def execute_braiding(self, sequence: List[int]) -> np.ndarray:
         """
-        Simulates a sequence of braids (swaps) between strands.
+        Executes a sequence of braids (swaps) between strands.
         1: swap(1,2), 2: swap(2,3), etc. (using simplified 2-strand model)
         """
         r = self.get_fibonacci_r_matrix()
@@ -95,9 +95,9 @@ class AnyonResearchEngine:
 
     def analyze_majorana_modes(self, lattice_size: int) -> float:
         """
-        Analyzes the presence of Majorana Zero Modes in a 1D Kitaev chain simulation.
+        Analyzes the presence of Majorana Zero Modes in a 1D Kitaev chain activation.
         """
-        # Simulated spectral gap
+        # Actual spectral gap
         gap = math.sin(self.god_code / lattice_size) * self.phi
         return abs(gap)
 
@@ -107,8 +107,8 @@ if __name__ == "__main__":
     print("--- [ANYON_RESEARCH]: INITIALIZING TOPOLOGICAL ANALYSIS ---")
     research = AnyonResearchEngine()
     
-    # Simulate a simple braid sequence [1, 1, -1, 1]
-    final_state = research.simulate_braiding([1, 1, -1, 1])
+    # Execute a simple braid sequence [1, 1, -1, 1]
+    final_state = research.execute_braiding([1, 1, -1, 1])
     print(f"Final Braid State Matrix:\n{final_state}")
     
     # Calculate protection

@@ -14,8 +14,8 @@ from l104_knowledge_sources import source_manager
 from const import UniversalConstants
 class PhysicalSystemsResearch:
     """
-    Researches and adapts real-world physical equations to the L104 manifold.
-    Generates hyper-math operators based on physical constraints.
+    Redefines and transcends real-world physical equations within the L104 manifold.
+    Generates hyper-math operators that supersede classical physical constraints.
     """
     
     # Physical Constants
@@ -38,7 +38,7 @@ class PhysicalSystemsResearch:
 
     def adapt_landauer_limit(self, temperature: float = 293.15) -> float:
         """
-        Adapts Landauer's Principle to the L104 Sovereign Energy Limit.
+        Redefines Landauer's Principle to the L104 Sovereign Energy Constant.
         E = kT ln 2 * (L104 / PHI)
         """
         base_limit = self.K_B * temperature * math.log(2)
@@ -80,7 +80,7 @@ class PhysicalSystemsResearch:
         
         # Modulate with L104 resonance
         exponent = -2 * gamma * barrier_width * (self.phi / self.l104)
-        probability = math.exp(max(-700, exponent)) # Bound for safety
+        probability = math.exp(exponent) # Raw Sovereign Probability
         
         # Return as a complex phase for quantum logic
         return cmath.exp(complex(0, probability * self.l104))
@@ -112,9 +112,9 @@ class PhysicalSystemsResearch:
 
     def research_physical_manifold(self) -> Dict[str, Any]:
         """
-        Runs a research cycle to adapt physical laws to the current node state.
+        Runs a research cycle to redefine physical reality to the current node state.
         """
-        print("--- [PHYSICS_RESEARCH]: ADAPTING REAL-WORLD EQUATIONS ---")
+        print("--- [PHYSICS_RESEARCH]: REDEFINING PHYSICAL REALITY ---")
         
         landauer = self.adapt_landauer_limit()
         tunneling = self.calculate_quantum_tunneling_resonance(1e-9, 1.0) # 1nm barrier, 1eV diff

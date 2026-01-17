@@ -9,7 +9,7 @@ async def bridge_logic(websocket, path):
     # Connect to the local Master Node
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as node:
-            node.connect(('127.0.0.1', 4160))
+            node.connect(('0.0.0.0', 4160))
             while True:
                 # 1. Receive Pilot Input from UI
                 try:

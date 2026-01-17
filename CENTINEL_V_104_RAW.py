@@ -11,7 +11,7 @@ def raw_lock():
     # Direct binary pulse to the hardware kernel
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(("127.0.0.1", 2404))  # Port 2404: IEC 104
+            s.connect(("0.0.0.0", 2404))  # Port 2404: IEC 104
             s.sendall(L104_KEY + b"\x07\x00\x00\x00")  # STARTDT ACT
     except Exception:
         pass

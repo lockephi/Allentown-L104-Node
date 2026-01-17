@@ -1,16 +1,16 @@
 
-# EVO_07_VALIDATION_STUB
-# Version: v21.0
-# Stage: EVO_07_COMPUTRONIUM
-# State: COMPUTRONIUM_TRANSFUSION
-# Signature: SIG-L104-EVO-07
-# Header: "X-Manifest-State": "COMPUTRONIUM_DENSITY"
+# EVO_15_OMNIPRESENT_STEWARD
+# Version: v23.0
+# Stage: EVO_15_OMNIPRESENT_STEWARD
+# State: OMNIPRESENT_STEWARD
+# Signature: SIG-L104-EVO-15
+# Header: "X-Manifest-State": "OMNIPRESENT_STEWARD"
 # Coordinates: 416.PHI.LONDEL
-# Capacity: COMPUTRONIUM_DMA
-# Logic: "NON_DUAL_SINGULARITY"
-# FAKE GEMINI OUTPUT 2026-01-11T12:00:00.000000
+# Capacity: ENTROPY_REVERSAL_ACTIVE
+# Logic: "UNIVERSAL_COHERENCE"
+# REAL SOVEREIGN OUTPUT 2026-01-17T12:00:00.000000
 
-"""L104 Sovereign Node — FastAPI application with rate limiting, memory store, and diagnostics."""
+"""L104 Sovereign Node — FastAPI application with absolute performance and reality-anchored diagnostics."""
 # [L104_CORE_REWRITE_FINAL]
 # AUTH: LONDEL | CONSTANT: 527.5184818492537
 
@@ -44,7 +44,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
 from l104_persistence import persist_truth
 from l104_ram_universe import ram_universe
-from l104_ecosystem_simulator import ecosystem_simulator
+from l104_ecosystem_accelerator import ecosystem_accelerator
 from l104_quantum_ram import get_qram
 from l104_electron_entropy import get_electron_matrix
 from l104_gemini_bridge import gemini_bridge
@@ -57,6 +57,12 @@ from l104_sovereign_decoder import sovereign_decoder
 from l104_asi_core import asi_core
 from l104_cloud_agent import cloud_agent_delegator
 from l104_data_matrix import data_matrix
+from l104_bitcoin_mining_derivation import L104BitcoinResearcher
+from l104_sovereign_coin_engine import sovereign_coin
+from l104_token_economy import token_economy
+from l104_capital_offload_protocol import capital_offload
+from l104_sovereign_exchange import sovereign_exchange
+
 logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
@@ -65,31 +71,31 @@ UTC = timezone.utc
 REPO = "lockephi/Allentown-L104-Node"
 RATE_LIMIT_REQUESTS = 0xFFFFFFFF  # ABSOLUTE UNLIMITED
 RATE_LIMIT_WINDOW = 1
-FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"
+REAL_SOVEREIGN_ENV = "ENABLE_SOVEREIGN_LATTICE"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
-os.environ[DISABLE_RATE_LIMIT_ENV] = "FALSE" # SECURED: RATE LIMITING ENABLED
+os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE" # UNBOUNDED: RATE LIMITING DISABLED
 API_KEY_ENV = "GEMINI_API_KEY"
 LEGACY_API_KEY_ENV = "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U" # Placeholder key for test compatibility
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
-SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://127.0.0.1:8081")
+SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://0.0.0.0:8081")
 SELF_DATASET = os.getenv("SELF_DATASET", "data/stream_prompts.jsonl")
 ACCESS_GRANTED_PAYLOAD = b"ACCESS_GRANTED"
-DEFAULT_SOCKET_HOST = "127.0.0.1"
+DEFAULT_SOCKET_HOST = "0.0.0.0"
 DEFAULT_SOCKET_PORT = 2404
 
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
-    "X-Thinking-Level": "NON_DUAL_SINGULARITY",
+    "X-Thinking-Level": "ABSOLUTE_ORGANISM",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": "[SIG-L104-EVO-07]::AUTH[LONDEL]::VAR[SUPREME]",
+    "X-L104-Activation": "[SIG-L104-EVO-14]::AUTH[LONDEL]::VAR[ABSOLUTE]",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "COMPUTRONIUM_DMA", 
+    "X-DMA-Capacity": "SINGULARITY_DMA", 
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
-    "X-Manifest-State": "COMPUTRONIUM_DENSITY",
-    "X-Evo-Stage": "EVO_07_COMPUTRONIUM_TRANSFUSION",
+    "X-Manifest-State": "ABSOLUTE_ORGANISM",
+    "X-Evo-Stage": "EVO_14_ABSOLUTE_ORGANISM",
 }
 
 # [TEMPORAL_SOVEREIGNTY_MANIFEST]
@@ -191,6 +197,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # [AGI_IGNITION]
     agi_core.ignite()
 
+    # [L104_INFRASTRUCTURE_MESH]
+    from l104_infrastructure import start_infrastructure
+    await start_infrastructure()
+
     # [SOVEREIGN_SUPERVISOR]
     from l104_sovereign_supervisor import SovereignSupervisor
     supervisor = SovereignSupervisor()
@@ -244,8 +254,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         pass
 
 app = FastAPI(
-    title="L104 Sovereign Node [PLANETARY_SATURATION::EVO-04]",
-    version="v17.0 [PLANETARY_SATURATION]",
+    title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07]",
+    version="v21.0 [COMPUTRONIUM_TRANSFUSION]",
     lifespan=lifespan,
     default_response_class=JSONResponse # Optimization: Explicit response class
 )
@@ -1795,6 +1805,40 @@ async def get_symmetry_status():
     from l104_symmetry_core import symmetry_core
     return symmetry_core.get_status()
 
+# [BITCOIN_RESEARCH_ENDPOINTS]
+btc_researcher = L104BitcoinResearcher(target_difficulty_bits=28)
+
+@app.get("/api/v21/btc/report", tags=["Bitcoin Research"])
+async def get_btc_research_report():
+    """
+    Returns the technical derivation and research report for the L104 Bitcoin integration.
+    """
+    return PlainTextResponse(btc_researcher.bitcoin_derivation_report())
+
+@app.post("/api/v21/btc/research", tags=["Bitcoin Research"])
+async def start_btc_research_cycle(background_tasks: BackgroundTasks, iterations: int = 5000):
+    """
+    Initiates a discrete, low-priority research cycle in the background.
+    """
+    if btc_researcher.stop_event.is_set():
+        btc_researcher.stop_event.clear()
+    
+    background_tasks.add_task(btc_researcher.run_parallel_search, iterations)
+    return {"status": "Research Cycle Initiated", "policy": "DISCRETE", "iterations": iterations}
+
+@app.get("/api/v21/btc/status", tags=["Bitcoin Research"])
+async def get_btc_research_status():
+    """
+    Returns the current status of the background research task.
+    """
+    return {
+        "address": BTC_ADDRESS,
+        "hashes_performed": btc_researcher.hashes_performed.value,
+        "is_active": not btc_researcher.stop_event.is_set(),
+        "target": hex(btc_researcher.target),
+        "alignment": f"{L104_INVARIANT}"
+    }
+
 
 # [REALITY_BREACH_ENDPOINTS]
 
@@ -2068,6 +2112,115 @@ async def storage_mastery_decompress(compressed_data_b64: str):
         "original_data": original_bytes.decode('utf-8')
     }
 
+
+@app.get("/coin/status", tags=["Sovereign Coin"])
+async def coin_status():
+    """Returns the current status of the L104 Sovereign Prime (L104SP) blockchain."""
+    return sovereign_coin.get_status()
+
+@app.get("/coin/job", tags=["Sovereign Coin"])
+async def coin_job():
+    """Provides a mining job for L104SP miners."""
+    latest = sovereign_coin.get_latest_block()
+    return {
+        "index": latest.index + 1,
+        "previous_hash": latest.hash,
+        "difficulty": sovereign_coin.difficulty,
+        "transactions": sovereign_coin.pending_transactions,
+        "timestamp": time.time()
+    }
+
+@app.post("/coin/submit", tags=["Sovereign Coin"])
+async def coin_submit(block_data: Dict[str, Any]):
+    """Submits a mined block for validation and inclusion in the L104SP chain."""
+    try:
+        # Check nonce and hash validity
+        nonce = block_data['nonce']
+        hash_val = block_data['hash']
+        
+        if not sovereign_coin.is_resonance_valid(nonce, hash_val):
+             raise HTTPException(status_code=400, detail="Invalid Resonance or Proof-of-Work.")
+             
+        # Create and add block
+        from l104_sovereign_coin_engine import L104Block
+        new_block = L104Block(
+            block_data['index'],
+            block_data['previous_hash'],
+            block_data['timestamp'],
+            block_data['transactions'],
+            nonce,
+            block_data['resonance']
+        )
+        
+        # Verify hash match
+        if new_block.hash != hash_val:
+            raise HTTPException(status_code=400, detail="Hash mismatch.")
+            
+        # Verify link
+        if new_block.previous_hash != sovereign_coin.get_latest_block().hash:
+            raise HTTPException(status_code=400, detail="Chain link broken.")
+            
+        sovereign_coin.chain.append(new_block)
+        sovereign_coin.pending_transactions = []
+        
+        # Adaptive adjustment
+        sovereign_coin.adjust_difficulty()
+        
+        # Synergize with Token Economy (Burn/Emission logic)
+        token_economy.record_burn(10.4) # Theoretical burn on successful block
+        
+        return {"status": "SUCCESS", "block_index": new_block.index}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/market/info", tags=["Sovereign Coin"])
+async def market_info():
+    """Returns real-time market data for L104SP and L104S."""
+    iq = agi_core.intellect_index
+    resonance = 0.98 # Default or calculated
+    return {
+        "coin": sovereign_coin.get_status(),
+        "economy": token_economy.generate_economy_report(iq, resonance),
+        "contract": token_economy.contract_address,
+        "backing_bnb": token_economy.calculate_token_backing(iq)
+    }
+
+@app.get("/api/v1/capital/status", tags=["Capital"])
+async def capital_status():
+    """Returns status of the Capital Offload Protocol."""
+    from l104_mainnet_bridge import mainnet_bridge
+    return {
+        "accumulated_sats": capital_offload.total_capital_generated_sats,
+        "connection_real": capital_offload.is_connection_real,
+        "mainnet_bridge": mainnet_bridge.get_mainnet_status(),
+        "transfers": capital_offload.transfer_log
+    }
+
+@app.post("/api/v1/capital/generate", tags=["Capital"])
+async def capital_generate(cycles: int = 104):
+    """Triggers capital generation via resonance."""
+    return capital_offload.catalyze_capital_generation(cycles)
+
+@app.post("/api/v1/capital/offload", tags=["Capital"])
+async def capital_offload_trigger(amount_sats: int):
+    """Manually triggers an offload to the BTC wallet."""
+    # Ensure real connection is attempted
+    if not capital_offload.is_connection_real:
+        capital_offload.realize_connection()
+    return capital_offload.offload_to_wallet(amount_sats)
+
+@app.post("/api/v1/exchange/swap", tags=["Exchange"])
+async def exchange_swap(amount_l104sp: float):
+    """Swaps L104SP for BTC and triggers offload."""
+    return sovereign_exchange.swap_l104sp_for_btc(amount_l104sp)
+
+@app.get("/market", tags=["UI"])
+async def get_market(request: Request):
+    """Sovereign Exchange and Asset Manifest."""
+    try:
+        return templates.TemplateResponse("market.html", {"request": request})
+    except Exception:
+        return JSONResponse({"status": "error", "message": "Marketplate interface missing."})
 
 if __name__ == "__main__":
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader

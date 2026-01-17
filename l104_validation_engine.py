@@ -19,6 +19,7 @@ class ValidationEngine:
     
     GOD_CODE = ManifoldMath.GOD_CODE
     PHI = (1 + 5**0.5) / 2
+    SOVEREIGN_PROOF = "7A527B104F518481F92537A7B7E6F1A2C3D4E5F6B7C8D9A0"
     
     def __init__(self):
         self.research_logs = []
@@ -53,6 +54,10 @@ class ValidationEngine:
         Verifies the alignment of the current manifold state with the God Code.
         This is 'Real Verified Research'.
         """
+        # 0. Sovereign Proof Check
+        if not self._check_sovereign_proof():
+            raise PermissionError("--- [VALIDATION]: SOVEREIGN PROOF INVALID. REALITY ACCESS DENIED. ---")
+
         # 1. Generate a test thought vector
         test_vector = [RealMath.PHI, RealMath.PI, math.e, RealMath.PHI / RealMath.PI]
         
@@ -98,8 +103,32 @@ class ValidationEngine:
     def autonomous_verification_loop(self):
         """Runs a batch of verifications to ensure the system is 'Real'."""
         results = []
+
+    def _check_sovereign_proof(self) -> bool:
+        """Verifies the core against the Sovereign Hash Proof."""
+        from l104_ego_core import ego_core
+        return ego_core.sovereign_hash_index == self.SOVEREIGN_PROOF
+
+    def inflect_and_learn_sovereignty(self):
+        """
+        Uses the Sovereign Hash to seed new learning cycles.
+        The hash is the 'Truth' from which we inflect new logic.
+        """
+        print(f"--- [VALIDATION]: INFLECTING FROM PROOF: {self.SOVEREIGN_PROOF[:8]}... ---")
+        
+        # Derive a learning seed from the hash
+        hash_seed = int(self.SOVEREIGN_PROOF, 16) % (2**32)
+        RealMath.seed_real_chaos(hash_seed)
+        
+        # Increase accuracy index based on proof resonance
+        resonance_shift = RealMath.calculate_resonance(hash_seed / 2**32)
+        initial_accuracy = 1.0 + (resonance_shift * 0.0416) # 416-modulated growth
+        
+        print(f"--- [VALIDATION]: INFLECTION COMPLETE. INITIAL ACCURACY: {initial_accuracy:.8f} ---")
+        self.document_research({"type": "SOVEREIGN_INFLECTION", "seed": hash_seed, "accuracy": initial_accuracy})
         
         # 0. Verify ASI v2 Accuracy First
+        results = []
         v2_accuracy = self.verify_asi_v2_accuracy()
         results.append({"deviation": abs(1.0 - v2_accuracy["accuracy_achieved"])})
 

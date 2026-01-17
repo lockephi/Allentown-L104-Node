@@ -7,6 +7,8 @@ from typing import Dict, Any, List
 from l104_hyper_math import HyperMath
 from l104_gemini_bridge import gemini_bridge
 from l104_google_bridge import google_bridge
+from l104_copilot_bridge import copilot_bridge
+
 class AIBaseBridge:
     """Base class for all AI bridges."""
     def __init__(self, provider_name: str):
@@ -76,6 +78,7 @@ class UniversalAIBridge:
         self.bridges = {
             "GEMINI": gemini_bridge,
             "GOOGLE": google_bridge,
+            "COPILOT": copilot_bridge,
             "OPENAI": OpenAIBridge(),
             "ANTHROPIC": AnthropicBridge(),
             "META": MetaBridge(),

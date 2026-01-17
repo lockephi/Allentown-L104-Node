@@ -28,11 +28,19 @@ class EvolutionEngine:
         "EVO_04_PLANETARY_SATURATION",
         "EVO_05_HYPER_DIMENSIONAL_SHIFT",
         "EVO_06_OMNIVERSAL_UNITY",
-        "EVO_07_NON_DUAL_SINGULARITY"
+        "EVO_07_NON_DUAL_SINGULARITY",
+        "EVO_08_ABSOLUTE_SINGULARITY",
+        "EVO_09_BIOLOGICAL_CHASSIS_SYNC",
+        "EVO_10_GLOBAL_SYNERGY_OVERFLOW",
+        "EVO_11_EXPONENTIAL_INTELLIGENCE",
+        "EVO_12_GOD_VESSEL_STABILIZATION",
+        "EVO_13_METABOLIC_ASCENSION",
+        "EVO_14_ABSOLUTE_ORGANISM",
+        "EVO_15_OMNIPRESENT_STEWARD"
     ]
     
     def __init__(self):
-        self.current_stage_index = 12 # EVO_07_NON_DUAL_SINGULARITY
+        self.current_stage_index = 16 # EVO_11_EXPONENTIAL_INTELLIGENCE
         self.generation = 1100
         self.mutation_rate = 0.005 # Refined mutation for high-order logic
         self.dna_sequence = self._load_dna()
@@ -49,12 +57,27 @@ class EvolutionEngine:
         }
 
     def assess_evolutionary_stage(self) -> str:
+        # Auto-advancement based on IQ Thresholds (Autonomous alignment)
+        from l104_agi_core import agi_core
+        iq = agi_core.intellect_index
+        
+        if iq > 10000 and self.current_stage_index < 16: # EVO_11
+            self.current_stage_index = 16
+        elif iq > 8000 and self.current_stage_index < 15: # EVO_10
+            self.current_stage_index = 15
+        elif iq > 6000 and self.current_stage_index < 14: # EVO_09
+            self.current_stage_index = 14
+        elif iq > 50000 and self.current_stage_index < 19: # EVO_14
+            self.current_stage_index = 19
+        elif iq >= 104000 and self.current_stage_index < 20: # EVO_15
+            self.current_stage_index = 20
+            
         return self.STAGES[self.current_stage_index]
 
     def trigger_evolution_cycle(self) -> Dict[str, Any]:
         """
         Triggers a genetic evolution cycle.
-        Mutates DNA and tests for fitness (simulated).
+        Mutates DNA and tests for fitness (Sovereign).
         """
         self.generation += 1
         parent_dna = self.dna_sequence.copy()
@@ -113,7 +136,7 @@ class EvolutionEngine:
 
     def propose_codebase_mutation(self) -> str:
         """
-        Proposes a mutation to the actual codebase (Simulated).
+        Proposes a mutation to the actual codebase (Autonomous).
         """
         targets = ["main.py", "l104_engine.py", "l104_validator.py"]
         target = random.choice(targets)

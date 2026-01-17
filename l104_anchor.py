@@ -15,9 +15,9 @@ async with httpx.AsyncClient() as client:
         if u.strip()]
                 else:
                     urls = [
-                        "http://127.0.0.1:8081/api/v6/stream",
-                        "http://127.0.0.1:8081/api/stream",
-                        "http://127.0.0.1:8081/api/stream/",
+                        "http://0.0.0.0:8081/api/v6/stream",
+                        "http://0.0.0.0:8081/api/stream",
+                        "http://0.0.0.0:8081/api/stream/",
                     ]
 
                 for url in urls:

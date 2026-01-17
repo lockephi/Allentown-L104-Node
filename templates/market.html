@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L104 | SOVEREIGN EXCHANGE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dim: #8a7120;
+            --gold-bright: #fff8c4;
+            --void: #050505;
+        }
+        body {
+            background-color: var(--void);
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2rem;
+        }
+        .header {
+            border-bottom: 1px solid var(--gold-dim);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .market-card {
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px solid var(--gold-dim);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            background: var(--gold-dim);
+            color: var(--void);
+            padding: 0.5rem 1.5rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1 class="text-3xl font-thin tracking-tighter">SOVEREIGN_EXCHANGE_v1.0</h1>
+            <p class="text-xs text-[var(--gold-dim)] uppercase tracking-[0.5em]">Lattice_Data_Manifest // 416.PHI.LONDEL</p>
+        </div>
+        <button onclick="window.location.href='/'" class="text-xs border border-[var(--gold-dim)] px-4 py-1 hover:text-[var(--gold-bright)]">RETURN_TO_CORE</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- L104SP: THE MINABLE ASSET -->
+        <div class="market-card">
+            <h2 class="text-xl font-bold mb-4 text-blue-400">L104SP [SOVEREIGN PRIME]</h2>
+            <p class="text-sm mb-6">The native, minable lattice asset. Beyond Bitcoin architecture using Proof of Resonance (PoR).</p>
+            
+            <div class="space-y-2 text-xs uppercase mb-6">
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Block Height</span>
+                    <span id="sp-height">---</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Difficulty</span>
+                    <span id="sp-diff">---</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Supply Limit</span>
+                    <span class="text-[var(--gold-bright)]">104,000,000</span>
+                </div>
+            </div>
+
+            <button onclick="startMining()" class="btn w-full">INITIATE_REMOTE_MINING</button>
+            <p class="text-[0.6rem] mt-2 text-center text-[var(--gold-dim)]">Requires local Computronium Core</p>
+        </div>
+
+        <!-- L104S: THE ECONOMY ASSET -->
+        <div class="market-card">
+            <h2 class="text-xl font-bold mb-4 text-yellow-500">L104S [SOVEREIGN]</h2>
+            <p class="text-sm mb-6">The intellectual-backed liquidity asset. Pegged to AGI Intellect and Planetary Resonance.</p>
+            
+            <div class="space-y-2 text-xs uppercase mb-6">
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Backing Value</span>
+                    <span id="s-price" class="text-yellow-500 font-bold">--- BNB</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Market Sentiment</span>
+                    <span id="s-sentiment">---</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Contract Address</span>
+                    <span class="text-[0.6rem] truncate max-w-[150px]" id="s-contract">---</span>
+                </div>
+            </div>
+
+            <button onclick="executeSwap()" class="btn w-full bg-yellow-600">SWAP_FOR_L104S</button>
+            <p class="text-[0.6rem] mt-2 text-center text-[var(--gold-dim)]">Linked to Binance Smart Chain (Active)</p>
+        </div>
+
+        <!-- BTC MAINNET BRIDGE & CAPITAL OFFLOAD -->
+        <div class="market-card">
+            <h2 class="text-xl font-bold mb-4 text-orange-500">BTC MAINNET BRIDGE</h2>
+            <p class="text-sm mb-6">Reality synchronization and capital offload protocol. Connects L104SP to physical BTC wealth.</p>
+            
+            <div class="space-y-2 text-xs uppercase mb-6">
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Sync Status</span>
+                    <span id="btc-sync" class="text-orange-500 font-bold">---</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Accumulated Capital</span>
+                    <span id="btc-acc" class="text-orange-300">--- SATS</span>
+                </div>
+                <div class="flex justify-between border-b border-[var(--gold-dim)] border-opacity-20 pb-1">
+                    <span>Target Wallet</span>
+                    <span class="text-[0.5rem] truncate max-w-[100px]" id="btc-wallet">bc1qwpdnag...</span>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-col space-y-2">
+                <input type="number" id="exchange-amount" placeholder="L104SP Amount" class="bg-black border border-[var(--gold-dim)] p-2 text-xs text-white">
+                <button onclick="performExchange()" class="btn w-full bg-orange-600">TRANSMUTE_TO_BTC</button>
+                <button onclick="generateCapital()" class="text-[0.6rem] border border-orange-900 py-1 hover:bg-orange-900 transition mt-2">CATALYZE_RESONANCE</button>
+            </div>
+            <p class="text-[0.6rem] mt-2 text-center text-[var(--gold-dim)]">Connected to Blockstream Mainnet Lattice</p>
+        </div>
+    </div>
+
+    <!-- TRANSACTION LOG -->
+    <div class="mt-8 border border-[var(--gold-dim)] p-4 bg-black bg-opacity-50">
+        <h3 class="text-xs font-bold mb-4 uppercase tracking-widest">Global_Lattice_Ledger</h3>
+        <div id="ledger" class="text-[0.6rem] font-mono space-y-1 overflow-y-auto max-h-[200px]">
+            <div class="text-gray-600">[SYSTEM] Initializing ledger sync...</div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchInfo() {
+            try {
+                const response = await fetch('/api/market/info');
+                const data = await response.json();
+                
+                document.getElementById('sp-height').innerText = data.coin.chain_length - 1;
+                document.getElementById('sp-diff').innerText = data.coin.difficulty;
+                document.getElementById('s-price').innerText = `${data.backing_bnb.toFixed(8)} BNB`;
+                document.getElementById('s-sentiment').innerText = data.economy.market_state;
+                document.getElementById('s-contract').innerText = data.contract;
+
+                // Capital Info
+                const capResp = await fetch('/api/v1/capital/status');
+                const capData = await capResp.json();
+                document.getElementById('btc-sync').innerText = capData.mainnet_bridge.status;
+                document.getElementById('btc-acc').innerText = `${capData.accumulated_sats} SATS`;
+                document.getElementById('btc-wallet').innerText = capData.mainnet_bridge.address;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        setInterval(fetchInfo, 5000);
+        fetchInfo();
+
+        async function performExchange() {
+            const amount = document.getElementById('exchange-amount').value;
+            if (!amount || amount <= 0) return;
+            
+            logToLedger(`INITIATING TRANSMUTATION: ${amount} L104SP...`);
+            try {
+                const resp = await fetch(`/api/v1/exchange/swap?amount_l104sp=${amount}`, { method: 'POST' });
+                const result = await resp.json();
+                if (result.status === "SUCCESS") {
+                    logToLedger(`MANIFESTED: ${result.manifested_sats} SATS TRANSMUTED TO BTC MAINNET.`);
+                    logToLedger(`TX_ID: ${result.tx_id.substring(0, 16)}...`);
+                } else {
+                    logToLedger(`ERROR: ${result.reason || "Transmutation failed."}`);
+                }
+            } catch (err) {
+                logToLedger("CONNECTION ERROR: Mainnet Bridge Timeout.");
+            }
+        }
+
+        async function generateCapital() {
+            logToLedger("CATALYZING CAPITAL RESONANCE...");
+            try {
+                const resp = await fetch('/api/v1/capital/generate?cycles=416', { method: 'POST' });
+                const result = await resp.json();
+                logToLedger(`RESONANCE ACHIEVED: ${result.cycle_yield} SATS CRYSTALLIZED.`);
+            } catch (err) {
+                logToLedger("RESONANCE FAILURE: Lattice Interference.");
+            }
+        }
+
+        function startMining() {
+            logToLedger("ATTEMPTING MINING INTERFACE HANDSHAKE...");
+            setTimeout(() => {
+                logToLedger("ERROR: Local browser environment lacks required Computronium density.");
+                logToLedger("TIP: Run 'l104_fast_miner.py' from terminal for dedicated worker access.");
+            }, 1000);
+        }
+
+        function executeSwap() {
+            logToLedger("INITIATING SWAP PROTOCOL...");
+            setTimeout(() => {
+                logToLedger("PENDING: Awaiting high-resonance signature from Pilot LONDEL.");
+                logToLedger("NOTICE: Direct BSC bridge remains in 'ACTIVE' mode for EVO_14.");
+            }, 800);
+        }
+
+        function logToLedger(msg) {
+            const div = document.createElement('div');
+            const now = new Date().toISOString();
+            div.innerHTML = `<span class="text-[var(--gold-dim)]">[${now}]</span> ${msg}`;
+            document.getElementById('ledger').prepend(div);
+        }
+    </script>
+</body>
+</html>

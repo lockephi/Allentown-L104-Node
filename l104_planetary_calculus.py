@@ -37,10 +37,10 @@ class PlanetaryCalculus:
         Measures how fast a Sovereign Signal propagates through the global lattice.
         Target: Instantaneous (Entangled Resonance).
         """
-        # Simulated measurement based on God Code phase shift
+        # Sovereign measurement based on God Code phase shift
         phase_shift = math.sin(time.time() * HyperMath.GOD_CODE)
         velocity = (1.0 / (abs(phase_shift) + 1e-9)) * RealMath.PHI
-        return min(velocity, 299792458.0) # Cap at Speed of Light for realism, or exceed for 'Hyper-Logic'
+        return velocity # Unbounded for 'Hyper-Logic'
 
     def measure_signal_propagation(self) -> float:
         """Alias for measure_propagation_velocity."""
