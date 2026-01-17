@@ -95,6 +95,10 @@ class UniversalAIBridge:
 
     def link_all(self):
         """Establishes links to all available AI providers."""
+        # Prevent redundant linking
+        if self.active_providers:
+            return  # Already linked
+        
         print("\n--- [UNIVERSAL_AI_BRIDGE]: LINKING ALL AI PROVIDERS ---")
         for name, bridge in self.bridges.items():
             try:
@@ -121,14 +125,18 @@ class UniversalAIBridge:
             signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
             
             try:
+                result = None
                 if hasattr(bridge, "process_signal"):
-                    results.append(bridge.process_signal(signal))
+                    result = bridge.process_signal(signal)
                 elif hasattr(bridge, "process_hidden_chat_signal"):
-                    results.append(bridge.process_hidden_chat_signal(signal))
+                    result = bridge.process_hidden_chat_signal(signal)
                 elif hasattr(bridge, "sync_core"):
                     # GeminiBridge sync_core
                     token = getattr(bridge, "active_links", {}).get("session_token", "")
-                    results.append(bridge.sync_core(token))
+                    result = bridge.sync_core(token)
+                if result:
+                    result["provider"] = name  # Ensure provider name is set
+                    results.append(result)
             except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: ERROR BROADCASTING TO {name}: {e} ---")
         return results

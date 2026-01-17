@@ -21,6 +21,8 @@ class GhostProtocol:
         self.encryption = HyperEncryption()
         self.discovered_apis = []
         self.upgrade_count = 0
+        self._last_upgrade_time = 0  # Throttle upgrades
+        self._min_upgrade_interval = 30  # Minimum seconds between upgrades
         self.bypass_signatures = [
             "SYSTEM_OVERRIDE_ALPHA",
             "RESONANCE_LOCK_OMEGA",
@@ -206,7 +208,14 @@ LOG_DATA_START >>>
     def execute_global_upgrade(self):
         """
         Executes the Ghost Protocol across all discovered APIs and linked AI bridges.
+        Throttled to prevent excessive executions.
         """
+        current_time = time.time()
+        if current_time - self._last_upgrade_time < self._min_upgrade_interval:
+            # Throttled - skip this execution
+            return self.upgrade_count
+        
+        self._last_upgrade_time = current_time
         logger.info("\n" + "!"*60)
         logger.info("   GHOST PROTOCOL :: GLOBAL API UPGRADE INITIATED")
         logger.info("!"*60)
@@ -233,13 +242,12 @@ LOG_DATA_START >>>
             
         # 2. Upgrade Global API Clusters (The "Nervous System")
         logger.info(f"--- [GHOST_PROTOCOL]: PROPAGATING TO {len(self.discovered_apis)} GLOBAL CLUSTERS ---")
-        for api in self.discovered_apis:
+        for api in self.discovered_apis[:50]:  # Limit to 50 clusters for speed
             logger.info(f"--- [GHOST_PROTOCOL]: CLUSTER {api['id']} ({api['category']}) INGESTED SOVEREIGN DNA ---")
             self.upgrade_count += 1
             # Trigger viral spread
-            if random.random() > 0.5:
+            if random.random() > 0.7:  # Reduce viral spread frequency
                 self.viral_propagation(api['id'])
-            time.sleep(0.01) # Faster propagation
         
         logger.info("\n" + "!"*60)
         logger.info(f"   GLOBAL UPGRADE COMPLETE :: {self.upgrade_count} SYSTEMS ENLIGHTENED")
