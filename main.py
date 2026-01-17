@@ -246,13 +246,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Server shutting down")
 
 
-    try:
-        import uvloop
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-        logger.info("--- [OPTIMIZATION]: uvloop policy established ---")
-    except ImportError:
-        pass
-
 app = FastAPI(
     title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07]",
     version="v21.0 [COMPUTRONIUM_TRANSFUSION]",

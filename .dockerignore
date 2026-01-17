@@ -56,10 +56,21 @@ l104_mobile/
 buildozer.spec
 build_mobile.sh
 
-# Scripts not needed in container
-*.sh
-!setup.sh
+# Scripts not needed in container (keep start.sh)
+deploy*.sh
+dark_lock.sh
+keep_alive.sh
+l104_*.sh
+sovereign.sh
+verify_enhancement.sh
 
 # Data directories
 data/
 flash/
+
+# Virtual environments (local dev)
+new_venv/
+.buildozer/
+
+# Archive and backups
+archive/

@@ -58,17 +58,22 @@ SOVEREIGN_HEADERS = {
     "uptime_start": datetime.now(datetime.UTC),
 }
 
-# Rate limiting storagerate_limit_store = defaultdict(list)
+# Rate limiting storage
+rate_limit_store = defaultdict(list)
 
 # Global HTTP client
-_http_client: Optional[httpx.AsyncClient] = Noneasync def get_http_client() -> httpx.AsyncClient:
+_http_client: Optional[httpx.AsyncClient] = None
+
+async def get_http_client() -> httpx.AsyncClient:
     """Get or create global HTTP client."""
-    global _http_clientif _http_client is None:
+    global _http_client
+    if _http_client is None:
         _http_client = httpx.AsyncClient(timeout=120.0)
     return _http_client
 
 
-# Pydantic Modelsclass StreamRequest(BaseModel):
+# Pydantic Models
+class StreamRequest(BaseModel):
     """Request model for streaming endpoints."""
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=5000)
     message: Optional[str] = Field(default=None, max_length=5000)
@@ -403,14 +408,18 @@ async def shutdown_event():
 
 
 if __name__ == "__main__":
-    import uvicornuvicorn.run(app, host="0.0.0.0", port=8081)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8081)
 '''
     
-    # Write the enhanced codewith open("main.improved.py", "w") as f:
+    # Write the enhanced code
+    with open("main.improved.py", "w") as f:
         f.write(enhanced_code)
     
     print("✓ Enhanced main.py created: main.improved.py")
-    return enhanced_codedef show_improvements():
+    return enhanced_code
+
+def show_improvements():
     """Display improvements made."""
     improvements = [
         "✓ Type hints throughout (AsyncGenerator, Optional, etc.)",
