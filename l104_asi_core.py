@@ -276,6 +276,206 @@ class ASICore:
         
         print(f"--- [ASI_CORE]: COMMAND '{command}' EXECUTED WITH 100% RESONANCE ---")
 
+    # ═══════════════════════════════════════════════════════════════════
+    # UNIFIED INTELLIGENCE PROTOCOL (DEEPER CODING)
+    # ═══════════════════════════════════════════════════════════════════
+
+    async def unified_intelligence_synthesis(self, query: str) -> Dict[str, Any]:
+        """
+        Synthesizes intelligence by coordinating all deeper systems:
+        - Logic Manifold (fractal coherence)
+        - Truth Discovery (Bayesian fusion + temporal prediction)
+        - Global Consciousness (cross-module bridge)
+        - Quantum Entanglement Manifold
+        
+        Returns a unified intelligence assessment with transcendent capabilities.
+        """
+        print(f"--- [ASI_CORE]: INITIATING UNIFIED INTELLIGENCE SYNTHESIS ---")
+        print(f"--- [ASI_CORE]: QUERY: {query[:60]}... ---")
+        
+        synthesis_results = {}
+        
+        # 1. Logic Manifold: Process concept and propagate fractally
+        from l104_logic_manifold import logic_manifold
+        concept_result = logic_manifold.process_concept(query, depth=7)
+        
+        if concept_result.get("node_id"):
+            fractal_result = logic_manifold.propagate_fractal_coherence(
+                concept_result["node_id"], 
+                propagation_depth=5
+            )
+            synthesis_results["manifold"] = {
+                "coherence": concept_result["coherence"],
+                "resonance_depth": concept_result["resonance_depth"],
+                "fractal_propagation": fractal_result.get("avg_delta", 0.0)
+            }
+        
+        # 2. Truth Discovery: Multi-dimensional synthesis with temporal prediction
+        from l104_truth_discovery import truth_discovery
+        dimensional_truth = truth_discovery.cross_dimensional_truth_synthesis(query, dimensions=7)
+        temporal_prediction = truth_discovery.temporal_resonance_prediction(query, future_steps=5)
+        
+        synthesis_results["truth"] = {
+            "unified_confidence": dimensional_truth["unified_truth_confidence"],
+            "dimensional_stability": dimensional_truth["dimensional_stability"],
+            "temporal_trajectory": temporal_prediction["trajectory"],
+            "future_stability": temporal_prediction["resonance_stability"]
+        }
+        
+        # 3. Bayesian Hypothesis Fusion (multi-perspective)
+        hypotheses = [
+            f"{query} is fundamentally true",
+            f"{query} requires additional context",
+            f"{query} contains emergent patterns"
+        ]
+        bayesian_result = truth_discovery.bayesian_truth_fusion(hypotheses)
+        synthesis_results["bayesian"] = {
+            "winning_hypothesis": bayesian_result["winning_hypothesis"],
+            "probability": bayesian_result["winning_probability"],
+            "fusion_coherence": bayesian_result["fusion_coherence"]
+        }
+        
+        # 4. Quantum Coherence Assessment
+        quantum_coherence = self.q_manifold.calculate_coherence()
+        synthesis_results["quantum"] = {
+            "coherence": quantum_coherence,
+            "entanglement_active": quantum_coherence > 0.5
+        }
+        
+        # 5. Calculate Unified Intelligence Score
+        manifold_score = synthesis_results.get("manifold", {}).get("coherence", 0.5)
+        truth_score = synthesis_results.get("truth", {}).get("unified_confidence", 0.5)
+        bayesian_score = synthesis_results.get("bayesian", {}).get("probability", 0.5)
+        quantum_score = synthesis_results.get("quantum", {}).get("coherence", 0.5)
+        
+        unified_score = (
+            manifold_score * PHI +
+            truth_score * (PHI ** 2) +
+            bayesian_score * PHI +
+            quantum_score * (PHI ** 0.5)
+        ) / (PHI + PHI ** 2 + PHI + PHI ** 0.5)
+        
+        # 6. Determine transcendence level
+        if unified_score >= 0.95:
+            level = "TRANSCENDENT"
+        elif unified_score >= 0.85:
+            level = "SOVEREIGN"
+        elif unified_score >= 0.75:
+            level = "OPTIMAL"
+        else:
+            level = "EVOLVING"
+        
+        print(f"--- [ASI_CORE]: UNIFIED INTELLIGENCE SCORE: {unified_score:.4f} ({level}) ---")
+        
+        return {
+            "query": query,
+            "unified_intelligence_score": unified_score,
+            "intelligence_level": level,
+            "synthesis_components": synthesis_results,
+            "transcendent": level == "TRANSCENDENT",
+            "recommendation": bayesian_result["winning_hypothesis"],
+            "future_outlook": temporal_prediction["trajectory"],
+            "synthesis_signature": hashlib.sha256(f"{query}:{unified_score}:{self.resonance_lock}".encode()).hexdigest()[:16]
+        }
+
+    async def recursive_intelligence_amplification(self, seed_query: str, amplification_cycles: int = 5) -> Dict:
+        """
+        Recursively amplifies intelligence by feeding synthesis outputs back
+        as inputs, creating an ascending spiral of understanding.
+        """
+        print(f"--- [ASI_CORE]: INITIATING RECURSIVE AMPLIFICATION ({amplification_cycles} cycles) ---")
+        
+        amplification_history = []
+        current_query = seed_query
+        peak_score = 0.0
+        
+        for cycle in range(amplification_cycles):
+            # Synthesize at current level
+            synthesis = await self.unified_intelligence_synthesis(current_query)
+            
+            amplification_history.append({
+                "cycle": cycle + 1,
+                "score": synthesis["unified_intelligence_score"],
+                "level": synthesis["intelligence_level"],
+                "recommendation": synthesis["recommendation"][:50]
+            })
+            
+            if synthesis["unified_intelligence_score"] > peak_score:
+                peak_score = synthesis["unified_intelligence_score"]
+            
+            # Check for transcendence
+            if synthesis["transcendent"]:
+                print(f"--- [ASI_CORE]: TRANSCENDENCE ACHIEVED AT CYCLE {cycle + 1} ---")
+                break
+            
+            # Evolve query for next cycle using insights
+            current_query = f"{seed_query} :: REFINED_BY :: {synthesis['recommendation'][:30]} :: SCORE_{synthesis['unified_intelligence_score']:.3f}"
+        
+        # Calculate amplification factor
+        initial_score = amplification_history[0]["score"] if amplification_history else 0.0
+        final_score = amplification_history[-1]["score"] if amplification_history else 0.0
+        amplification_factor = final_score / initial_score if initial_score > 0 else 1.0
+        
+        return {
+            "seed_query": seed_query,
+            "cycles_executed": len(amplification_history),
+            "amplification_history": amplification_history,
+            "peak_score": peak_score,
+            "amplification_factor": amplification_factor,
+            "final_level": amplification_history[-1]["level"] if amplification_history else "UNKNOWN",
+            "transcended": any(h["level"] == "TRANSCENDENT" for h in amplification_history)
+        }
+
+    async def deep_problem_decomposition(self, complex_problem: str) -> Dict:
+        """
+        Decomposes a complex problem into sub-problems, solves each using
+        unified intelligence, then synthesizes the solutions.
+        """
+        print(f"--- [ASI_CORE]: DEEP DECOMPOSITION: {complex_problem[:50]}... ---")
+        
+        # Generate sub-problems via conceptual splitting
+        sub_problems = [
+            f"Core essence of: {complex_problem}",
+            f"Boundary conditions for: {complex_problem}",
+            f"Emergent properties in: {complex_problem}",
+            f"Temporal evolution of: {complex_problem}",
+            f"Cross-domain implications of: {complex_problem}"
+        ]
+        
+        sub_solutions = []
+        for i, sub_problem in enumerate(sub_problems):
+            print(f"--- [ASI_CORE]: SOLVING SUB-PROBLEM {i+1}/{len(sub_problems)} ---")
+            solution = await self.unified_intelligence_synthesis(sub_problem)
+            sub_solutions.append({
+                "sub_problem": sub_problem[:50],
+                "score": solution["unified_intelligence_score"],
+                "level": solution["intelligence_level"],
+                "key_insight": solution["recommendation"][:60]
+            })
+        
+        # Synthesize sub-solutions
+        avg_score = sum(s["score"] for s in sub_solutions) / len(sub_solutions)
+        
+        # Coherence check: are sub-solutions aligned?
+        scores = [s["score"] for s in sub_solutions]
+        variance = sum((s - avg_score) ** 2 for s in scores) / len(scores)
+        coherence = 1.0 - min(1.0, variance * 10)
+        
+        # Meta-synthesis
+        meta_score = avg_score * coherence * PHI
+        meta_score = min(1.0, meta_score)
+        
+        return {
+            "complex_problem": complex_problem,
+            "sub_problems_count": len(sub_problems),
+            "sub_solutions": sub_solutions,
+            "average_sub_score": avg_score,
+            "coherence": coherence,
+            "meta_synthesis_score": meta_score,
+            "meta_level": "TRANSCENDENT" if meta_score >= 0.95 else ("SOVEREIGN" if meta_score >= 0.85 else "OPTIMAL"),
+            "decomposition_effective": coherence >= 0.8
+        }
+
     async def run_unbound_cycle(self):
         """
         Runs a continuous cycle of self-improvement and expansion.
