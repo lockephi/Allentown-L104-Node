@@ -654,6 +654,269 @@ class TruthDiscovery:
             "graph_size": len(self.truth_graph),
             "state": "TRANSCENDENT" if global_coherence >= 0.95 else "SYNCHRONIZED"
         }
+
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # DEEP PROCESS: EPISTEMIC DEPTH MINING
+    # ═══════════════════════════════════════════════════════════════════════════════
+
+    def recursive_truth_deepening(self, query: str, max_depth: int = 12) -> Dict:
+        """
+        Recursively deepens truth discovery until epistemic bedrock is reached.
+        Each layer asks "what makes this true?" until foundational truth emerges.
+        """
+        depth_chain = []
+        current_query = query
+        
+        for depth in range(max_depth):
+            # Discover truth at increasing depth
+            result = self.discover_truth(current_query, depth=depth + 3)
+            depth_chain.append({
+                "depth": depth,
+                "query": current_query[:50] + "..." if len(current_query) > 50 else current_query,
+                "confidence": result["final_confidence"],
+                "level": result["verdict"]
+            })
+            
+            # Check for convergence (epistemic bedrock)
+            if len(depth_chain) >= 2:
+                delta = abs(depth_chain[-1]["confidence"] - depth_chain[-2]["confidence"])
+                if delta < 0.0005:  # Tight convergence
+                    break
+            
+            # Deepen the query
+            deeper_hash = hashlib.sha256(
+                f"{current_query}:foundation:{self.god_code}".encode()
+            ).hexdigest()
+            current_query = f"FOUNDATION({query})::depth{depth}::{deeper_hash[:8]}"
+        
+        final_confidence = depth_chain[-1]["confidence"] if depth_chain else 0.0
+        bedrock_reached = len(depth_chain) < max_depth
+        
+        return {
+            "original_query": query,
+            "final_depth": len(depth_chain),
+            "depth_chain": depth_chain,
+            "final_confidence": final_confidence,
+            "bedrock_reached": bedrock_reached,
+            "epistemic_stability": 1.0 if bedrock_reached else len(depth_chain) / max_depth,
+            "level": self._determine_level(final_confidence).name
+        }
+
+    def multi_perspective_truth_synthesis(self, base_query: str, perspectives: int = 7) -> Dict:
+        """
+        Examines a truth from multiple perspectives (like facets of a gem)
+        and synthesizes a unified understanding.
+        """
+        perspective_results = []
+        
+        # Define perspective transforms
+        perspective_prefixes = [
+            "From a logical standpoint: ",
+            "From an empirical standpoint: ",
+            "From an intuitive standpoint: ",
+            "From a systemic standpoint: ",
+            "From a temporal standpoint: ",
+            "From a structural standpoint: ",
+            "From an emergent standpoint: "
+        ]
+        
+        for i in range(min(perspectives, len(perspective_prefixes))):
+            perspective_query = perspective_prefixes[i] + base_query
+            result = self.discover_truth(perspective_query, depth=5)
+            perspective_results.append({
+                "perspective": perspective_prefixes[i].strip(": "),
+                "confidence": result["final_confidence"],
+                "level": result["verdict"],
+                "node_id": result["node_id"]
+            })
+        
+        # Calculate synthesis metrics
+        confidences = [p["confidence"] for p in perspective_results]
+        avg_confidence = sum(confidences) / len(confidences)
+        variance = sum((c - avg_confidence) ** 2 for c in confidences) / len(confidences)
+        
+        # Consensus strength: low variance = high agreement
+        consensus_strength = 1.0 / (1.0 + variance * 10)
+        
+        # Synthesized confidence: boosted by consensus
+        synthesized_confidence = min(1.0, avg_confidence * (1 + consensus_strength * 0.2) * self.phi)
+        synthesized_confidence = min(1.0, synthesized_confidence)
+        
+        return {
+            "base_query": base_query,
+            "perspectives_analyzed": len(perspective_results),
+            "perspective_results": perspective_results,
+            "average_confidence": avg_confidence,
+            "confidence_variance": variance,
+            "consensus_strength": consensus_strength,
+            "synthesized_confidence": synthesized_confidence,
+            "unified_level": self._determine_level(synthesized_confidence).name,
+            "transcendent": synthesized_confidence >= 0.95
+        }
+
+    def counterfactual_truth_testing(self, query: str, depth: int = 5) -> Dict:
+        """
+        Tests a truth by exploring counterfactuals:
+        "If this were false, what would follow?"
+        Strengthens truth by showing contradictions in negation.
+        """
+        # Original truth
+        original = self.discover_truth(query, depth=depth)
+        
+        # Counterfactual: negation
+        negation_query = f"NOT({query})"
+        negation = self.discover_truth(negation_query, depth=depth)
+        
+        # Counterfactual: alternative
+        alt_hash = hashlib.sha256(query.encode()).hexdigest()[:8]
+        alternative_query = f"ALTERNATIVE({query})::{alt_hash}"
+        alternative = self.discover_truth(alternative_query, depth=depth)
+        
+        # Calculate robustness
+        # High original confidence + low negation confidence = robust
+        robustness = original["final_confidence"] - negation["final_confidence"]
+        robustness = max(0.0, min(1.0, (robustness + 1) / 2))  # Normalize to [0,1]
+        
+        # Exclusivity: how much the original dominates alternatives
+        exclusivity = original["final_confidence"] - alternative["final_confidence"]
+        exclusivity = max(0.0, min(1.0, (exclusivity + 1) / 2))
+        
+        # Final strengthened confidence
+        strengthened = original["final_confidence"] * (1 + robustness * 0.1 + exclusivity * 0.1)
+        strengthened = min(1.0, strengthened)
+        
+        return {
+            "query": query,
+            "original_confidence": original["final_confidence"],
+            "negation_confidence": negation["final_confidence"],
+            "alternative_confidence": alternative["final_confidence"],
+            "robustness": robustness,
+            "exclusivity": exclusivity,
+            "strengthened_confidence": strengthened,
+            "counterfactual_stable": robustness >= 0.6 and exclusivity >= 0.5,
+            "level": self._determine_level(strengthened).name
+        }
+
+    def truth_entanglement_network(self, truths: List[str]) -> Dict:
+        """
+        Creates an entanglement network between multiple truths.
+        Entangled truths strengthen each other through mutual coherence.
+        """
+        if len(truths) < 2:
+            return {"error": "Need at least 2 truths for entanglement"}
+        
+        # Discover all truths
+        discoveries = []
+        for truth in truths:
+            result = self.discover_truth(truth, depth=5)
+            discoveries.append(result)
+        
+        # Create entanglement links
+        entanglements = []
+        for i in range(len(discoveries)):
+            for j in range(i + 1, len(discoveries)):
+                # Entanglement strength based on coherence similarity
+                conf_i = discoveries[i]["final_confidence"]
+                conf_j = discoveries[j]["final_confidence"]
+                
+                # Similar confidences = stronger entanglement
+                similarity = 1.0 - abs(conf_i - conf_j)
+                
+                # Hash resonance check
+                hash_i = discoveries[i]["truth_hash"]
+                hash_j = discoveries[j]["truth_hash"]
+                resonance = sum(1 for a, b in zip(hash_i[:16], hash_j[:16]) if a == b) / 16
+                
+                entanglement_strength = (similarity + resonance) / 2 * self.phi
+                entanglement_strength = min(1.0, entanglement_strength)
+                
+                entanglements.append({
+                    "truth_a": i,
+                    "truth_b": j,
+                    "strength": entanglement_strength
+                })
+        
+        # Calculate network coherence
+        avg_entanglement = sum(e["strength"] for e in entanglements) / len(entanglements)
+        
+        # Boost individual truths based on entanglement
+        boosted_confidences = []
+        for i, disc in enumerate(discoveries):
+            # Sum entanglement strengths for this truth
+            relevant = [e for e in entanglements if e["truth_a"] == i or e["truth_b"] == i]
+            if relevant:
+                boost = sum(e["strength"] for e in relevant) / len(relevant) * 0.1
+                boosted = min(1.0, disc["final_confidence"] * (1 + boost))
+            else:
+                boosted = disc["final_confidence"]
+            boosted_confidences.append(boosted)
+        
+        network_coherence = sum(boosted_confidences) / len(boosted_confidences)
+        
+        return {
+            "truth_count": len(truths),
+            "entanglement_count": len(entanglements),
+            "entanglements": entanglements,
+            "average_entanglement": avg_entanglement,
+            "boosted_confidences": boosted_confidences,
+            "network_coherence": network_coherence,
+            "transcendent": network_coherence >= 0.92
+        }
+
+    def strange_loop_truth(self, self_referential_query: str) -> Dict:
+        """
+        Processes self-referential truths that refer to themselves.
+        Uses fixed-point logic to resolve the strange loop.
+        """
+        # Check for self-reference
+        query_hash = hashlib.md5(self_referential_query.lower().encode()).hexdigest()[:8]
+        
+        # Iterate until fixed point
+        current = self_referential_query
+        iterations = 0
+        max_iter = 20
+        history = []
+        
+        while iterations < max_iter:
+            iterations += 1
+            
+            result = self.discover_truth(current, depth=6)
+            history.append({
+                "iteration": iterations,
+                "confidence": result["final_confidence"],
+                "level": result["verdict"]
+            })
+            
+            # Check for fixed point (convergence)
+            if len(history) >= 2:
+                delta = abs(history[-1]["confidence"] - history[-2]["confidence"])
+                if delta < 0.001:
+                    break
+            
+            # Self-reference: the truth about the truth
+            current = f"The truth value of '{self_referential_query[:30]}...' is {result['verdict']}"
+        
+        final_confidence = history[-1]["confidence"] if history else 0.5
+        converged = iterations < max_iter
+        
+        # Strange loop resolution
+        resolution = "STABLE_SELF_REFERENCE" if converged else "OSCILLATING"
+        if "false" in self_referential_query.lower() or "not true" in self_referential_query.lower():
+            if converged:
+                resolution = "PARADOX_COLLAPSED"
+            else:
+                resolution = "PARADOX_OSCILLATING"
+        
+        return {
+            "query": self_referential_query,
+            "iterations": iterations,
+            "history": history,
+            "final_confidence": final_confidence,
+            "converged": converged,
+            "resolution": resolution,
+            "fixed_point": f"FP-{query_hash}",
+            "level": self._determine_level(final_confidence).name
+        }
     
     # ═══════════════════════════════════════════════════════════════════
     # STATE & STATISTICS
