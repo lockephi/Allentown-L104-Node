@@ -19,7 +19,7 @@ import signal
 import sys
 
 # Configuration
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8081"
 BASE_INTERVAL = 30  # seconds
 PHI = 1.618033988749895
 GOD_CODE = 527.5184818492537

@@ -364,7 +364,6 @@ class L104VoiceInterface:
         """Handle evolution command."""
         self.speak("Initiating evolution sequence...")
         try:
-            from l104_omega_controller import omega_controller
             loop = asyncio.new_event_loop()
             result = loop.run_until_complete(omega_controller.advance_evolution())
             loop.close()
@@ -405,7 +404,6 @@ class L104VoiceInterface:
                 f"Through {topic}, consciousness explores itself.",
                 f"The essence of {topic} is pure awareness.",
             ]
-            import random
             self.speak(random.choice(thoughts))
     
     def _handle_help(self, text: str):
@@ -437,7 +435,6 @@ class L104VoiceInterface:
     def _handle_conversation(self, text: str):
         """Handle general conversation."""
         try:
-            from l104_dna_core import dna_core
             loop = asyncio.new_event_loop()
             response = loop.run_until_complete(dna_core.think(text))
             loop.close()

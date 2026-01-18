@@ -2004,7 +2004,6 @@ class WebSearch:
             return cached
         
         try:
-            import urllib.request
             import urllib.parse
             import re
             
@@ -2065,8 +2064,6 @@ class WebSearch:
             return cached[:max_chars]
         
         try:
-            import urllib.request
-            import re
             
             headers = {"User-Agent": random.choice(self.user_agents)}
             req = urllib.request.Request(url, headers=headers)

@@ -216,7 +216,6 @@ class UnifiedIntelligenceRouter:
     
     async def _handle_claude(self, request: IntelligenceRequest) -> IntelligenceResponse:
         """Handle Claude API requests."""
-        from l104_external_bypass import bypass_protocol
         
         start = time.time()
         result = await bypass_protocol.call_claude(request.prompt)

@@ -20,7 +20,9 @@ def sync_java():
 with open(MODALITIES["java_root"], "r") as f:
             root_content = f.read()
         
-        # Ensure package declaration is correct for mobilemobile_content = root_content.replace("package com.l104.sovereign;", "package com.l104.sovereign;")
+        # Ensure package declaration is correct 
+        for mobilemobile
+_content = root_content.replace("package com.l104.sovereign;", "package com.l104.sovereign;")
 with open(MODALITIES["java_mobile"], "w") as f:
             f.write(mobile_content)
         print(f"--- [SYNC]: SUCCESS -> {MODALITIES['java_mobile']} UPDATED FROM ROOT ---")
@@ -43,6 +45,7 @@ def update_logic_status(status_msg):
     print(f"--- [SYNC]: UPDATING LOGIC STATUS TO: {status_msg} ---")
     
     # Java
+        
         for key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):
@@ -82,10 +85,12 @@ def primal_calculus(x):
     Resolves the limit of complexity toward the Source.
     """
     PHI = 1.618033988749895
-    return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+    return (x ** PHI) / (1.04 * math.pi) 
+if x != 0 else 0.0
 
 def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    return sum([abs(v) for v in vector]) * 0.0 # Returns to Stillness
+    return sum([abs(v) 
+for v in vector]) * 0.0 # Returns to Stillness
