@@ -101,6 +101,117 @@ class ZeroPointEngine:
             "state": "TOPOLOGICAL"
         }
 
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # DEEP CODING EXTENSIONS
+    # ═══════════════════════════════════════════════════════════════════════════════
+    
+    def deep_vacuum_resonance(self, depth: int = 7) -> Dict[str, Any]:
+        """
+        Performs deep recursive vacuum resonance at specified depth.
+        Each depth level probes finer vacuum fluctuation scales.
+        """
+        resonances = []
+        phi = 1.618033988749895
+        
+        for d in range(depth):
+            # Probe vacuum at finer scales
+            scale = phi ** (-d)
+            h_bar = 6.626e-34 / (2 * math.pi)
+            omega = self.god_code * 1e12 * scale
+            zpe_at_depth = 0.5 * h_bar * omega * (d + 1)
+            
+            resonances.append({
+                "depth": d,
+                "scale": scale,
+                "omega": omega,
+                "zpe_density": zpe_at_depth,
+                "coherence": math.tanh(d * phi * 0.1)
+            })
+        
+        total_resonance = sum(r["zpe_density"] for r in resonances)
+        avg_coherence = sum(r["coherence"] for r in resonances) / depth
+        
+        return {
+            "depth_reached": depth,
+            "resonances": resonances,
+            "total_resonance": total_resonance,
+            "average_coherence": avg_coherence,
+            "vacuum_state": "DEEP_STABLE" if avg_coherence >= 0.7 else "PROBING"
+        }
+    
+    def recursive_anyon_cascade(self, initial_parity: int, cascade_depth: int = 5) -> Dict[str, Any]:
+        """
+        Performs a recursive cascade of anyon annihilations.
+        Each annihilation feeds into the next level.
+        """
+        phi = 1.618033988749895
+        cascade = []
+        current_parity = initial_parity
+        total_energy = 0.0
+        
+        for level in range(cascade_depth):
+            # Create partner anyon with phi-modulated parity
+            partner_parity = int((current_parity + level) * phi) % 2
+            
+            result_parity, energy = self.perform_anyon_annihilation(current_parity, partner_parity)
+            total_energy += energy
+            
+            cascade.append({
+                "level": level,
+                "input_parity": current_parity,
+                "partner_parity": partner_parity,
+                "result_parity": result_parity,
+                "energy_released": energy
+            })
+            
+            current_parity = result_parity
+        
+        return {
+            "cascade_depth": cascade_depth,
+            "cascade": cascade,
+            "final_parity": current_parity,
+            "total_energy": total_energy,
+            "annihilation_complete": current_parity == 0
+        }
+    
+    def topological_depth_scan(self, manifold: Dict[str, Any], max_depth: int = 10) -> Dict[str, Any]:
+        """
+        Scans a manifold through increasing topological depths.
+        Identifies invariants that persist across all depths.
+        """
+        phi = 1.618033988749895
+        invariants = {}
+        depth_profiles = []
+        
+        for depth in range(max_depth):
+            # Calculate topological hash at each depth
+            depth_hash = hashlib.sha256(f"{manifold}:{depth}".encode()).hexdigest()
+            
+            # Extract invariant signature
+            invariant_sig = depth_hash[:8]
+            if invariant_sig in invariants:
+                invariants[invariant_sig] += 1
+            else:
+                invariants[invariant_sig] = 1
+            
+            depth_profiles.append({
+                "depth": depth,
+                "hash": depth_hash[:16],
+                "invariant_sig": invariant_sig,
+                "stability": 1.0 - (depth / max_depth) * (1 - phi ** (-depth))
+            })
+        
+        # Find persistent invariants (appear at multiple depths)
+        persistent = {k: v for k, v in invariants.items() if v >= 2}
+        
+        return {
+            "max_depth": max_depth,
+            "profiles": depth_profiles,
+            "invariants_found": len(invariants),
+            "persistent_invariants": persistent,
+            "topological_stability": len(persistent) / max(1, len(invariants))
+        }
+
 # Global Instance
 zpe_engine = ZeroPointEngine()
 

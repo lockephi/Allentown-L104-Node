@@ -72,6 +72,169 @@ class TemporalIntelligence:
         print(f"--- [TEMPORAL_INT]: APPLYING TEMPORAL RESONANCE: +{boost:.2f} IQ ---")
         return intellect_index + boost
 
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # DEEP CODING EXTENSIONS
+    # ═══════════════════════════════════════════════════════════════════════════════
+    
+    def deep_causal_recursion(self, state_hash: int, recursion_depth: int = 7) -> Dict[str, Any]:
+        """
+        Performs deep recursive causal analysis across multiple temporal layers.
+        Each layer explores finer causal granularity.
+        """
+        phi = 1.618033988749895
+        layers = []
+        
+        for depth in range(recursion_depth):
+            # Analyze causal structure at this depth
+            branches = self.analyze_causal_branches(state_hash + depth)
+            
+            # Calculate layer-specific metrics
+            layer_stability = branches["stability"] * (phi ** (-depth * 0.3))
+            anchor_coherence = sum(
+                a.get("probability", 0) for a in branches.get("anchors", [])
+            ) / max(1, len(branches.get("anchors", [])))
+            
+            layers.append({
+                "depth": depth,
+                "stability": layer_stability,
+                "anchor_coherence": anchor_coherence,
+                "anchors_count": len(branches.get("anchors", [])),
+                "phi_factor": phi ** depth
+            })
+        
+        total_stability = sum(l["stability"] for l in layers) / recursion_depth
+        total_coherence = sum(l["anchor_coherence"] for l in layers) / recursion_depth
+        
+        return {
+            "recursion_depth": recursion_depth,
+            "layers": layers,
+            "total_stability": total_stability,
+            "total_coherence": total_coherence,
+            "causal_integrity": total_stability * total_coherence * phi
+        }
+    
+    def temporal_superposition_collapse(self, states: List[Dict]) -> Dict[str, Any]:
+        """
+        Collapses multiple temporal states into a single coherent timeline.
+        Uses phi-weighted averaging for temporal coherence.
+        """
+        phi = 1.618033988749895
+        
+        if not states:
+            return {"collapsed_state": None, "coherence": 0.0}
+        
+        # Weight states by temporal proximity to now
+        current_time = time.time()
+        weighted_states = []
+        
+        for state in states:
+            timestamp = state.get("timestamp", current_time)
+            displacement = abs(current_time - timestamp)
+            weight = 1.0 / (1.0 + displacement / 3600) * phi
+            
+            weighted_states.append({
+                "state": state,
+                "weight": weight,
+                "displacement": displacement
+            })
+        
+        # Normalize weights
+        total_weight = sum(s["weight"] for s in weighted_states)
+        for s in weighted_states:
+            s["normalized_weight"] = s["weight"] / total_weight if total_weight > 0 else 0
+        
+        # Collapse to dominant state
+        dominant = max(weighted_states, key=lambda s: s["normalized_weight"])
+        
+        # Calculate collapse coherence
+        coherence = dominant["normalized_weight"] * phi
+        
+        return {
+            "collapsed_state": dominant["state"],
+            "dominant_weight": dominant["normalized_weight"],
+            "coherence": min(1.0, coherence),
+            "states_collapsed": len(states),
+            "temporal_spread": max(s["displacement"] for s in weighted_states) if weighted_states else 0
+        }
+    
+    def recursive_future_projection(self, initial_state: Dict, projection_depth: int = 5) -> Dict[str, Any]:
+        """
+        Recursively projects states into the future with increasing uncertainty.
+        Each projection layer builds on the previous.
+        """
+        phi = 1.618033988749895
+        projections = []
+        current_state = initial_state.copy()
+        
+        for depth in range(projection_depth):
+            # Project forward in time
+            time_offset = (depth + 1) * self.prediction_horizon / projection_depth
+            future_time = time.time() + time_offset
+            
+            # Calculate projection uncertainty (increases with depth)
+            uncertainty = 1 - (phi ** (-depth * 0.5))
+            
+            # Generate projected state
+            projected = {
+                "depth": depth,
+                "timestamp": future_time,
+                "time_offset": time_offset,
+                "uncertainty": uncertainty,
+                "confidence": 1 - uncertainty,
+                "state_hash": hash(str(current_state) + str(depth)),
+                "displacement": self.chronos.get_temporal_displacement_vector(future_time)
+            }
+            
+            projections.append(projected)
+            
+            # Update current state for next iteration
+            current_state = {**current_state, "projection_layer": depth}
+        
+        avg_confidence = sum(p["confidence"] for p in projections) / projection_depth
+        
+        return {
+            "projection_depth": projection_depth,
+            "projections": projections,
+            "average_confidence": avg_confidence,
+            "total_time_span": projections[-1]["time_offset"] if projections else 0,
+            "causal_chain_intact": avg_confidence >= 0.5
+        }
+    
+    def ctc_stability_cascade(self, iterations: int = 10) -> Dict[str, Any]:
+        """
+        Performs a stability cascade through closed timelike curves.
+        Tests temporal consistency at each iteration.
+        """
+        phi = 1.618033988749895
+        cascade = []
+        
+        for i in range(iterations):
+            # Test CTC stability with varying parameters
+            alpha = phi ** (i * 0.2)
+            beta = phi ** (-(i * 0.1))
+            
+            stability = self.chronos.calculate_ctc_stability(alpha, beta)
+            
+            cascade.append({
+                "iteration": i,
+                "alpha": alpha,
+                "beta": beta,
+                "stability": stability,
+                "coherent": stability >= 0.7
+            })
+        
+        coherent_count = sum(1 for c in cascade if c["coherent"])
+        avg_stability = sum(c["stability"] for c in cascade) / iterations
+        
+        return {
+            "iterations": iterations,
+            "cascade": cascade,
+            "coherent_iterations": coherent_count,
+            "coherence_ratio": coherent_count / iterations,
+            "average_stability": avg_stability,
+            "timeline_consistent": coherent_count >= iterations * 0.7
+        }
+
 temporal_intelligence = TemporalIntelligence()
 
 if __name__ == "__main__":
