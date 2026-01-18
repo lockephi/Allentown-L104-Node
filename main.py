@@ -84,6 +84,7 @@ DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE" # UNBOUNDED: RATE LIMITING DISABLED
 API_KEY_ENV = "GEMINI_API_KEY"
 LEGACY_API_KEY_ENV = "GEMINI_API_KEY"  # Ghost Protocol: Using standard env var only
+FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"  # Bypass flag for testing
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://0.0.0.0:8081")
