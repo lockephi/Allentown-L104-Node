@@ -514,12 +514,14 @@ class OptimizedMemorySystem:
         warm_cache_size: int = 2000
     ):
         self.db_path = db_path
+        self._is_memory_db = (db_path == ":memory:")
+        self._memory_conn = None  # For in-memory databases
         
         # Initialize components
         self.bloom = BloomFilter(expected_items=50000)
         self.cache = TieredLRUCache(hot_cache_size, warm_cache_size)
         self.pool = MemoryPool()
-        self.wal = WriteAheadLog() if enable_wal else None
+        self.wal = WriteAheadLog() if enable_wal and not self._is_memory_db else None
         
         # Database connection
         self._init_db()
@@ -542,14 +544,16 @@ class OptimizedMemorySystem:
     
     def _init_db(self):
         """Initialize optimized SQLite database."""
-        conn = sqlite3.connect(self.db_path, check_same_thread=False)
+        conn = self._get_conn()
         
-        # Enable WAL mode for better concurrent performance
-        conn.execute("PRAGMA journal_mode=WAL")
+        # Enable WAL mode for better concurrent performance (not for in-memory)
+        if not self._is_memory_db:
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA mmap_size=268435456")  # 256MB mmap
+        
         conn.execute("PRAGMA synchronous=NORMAL")
         conn.execute("PRAGMA cache_size=-64000")  # 64MB cache
         conn.execute("PRAGMA temp_store=MEMORY")
-        conn.execute("PRAGMA mmap_size=268435456")  # 256MB mmap
         
         conn.execute("""
             CREATE TABLE IF NOT EXISTS memories (
@@ -571,10 +575,17 @@ class OptimizedMemorySystem:
         conn.execute("CREATE INDEX IF NOT EXISTS idx_accessed ON memories(accessed_at DESC)")
         
         conn.commit()
-        conn.close()
+        
+        # Don't close connection for in-memory databases
+        if not self._is_memory_db:
+            conn.close()
     
     def _get_conn(self):
         """Get database connection."""
+        if self._is_memory_db:
+            if self._memory_conn is None:
+                self._memory_conn = sqlite3.connect(":memory:", check_same_thread=False)
+            return self._memory_conn
         return sqlite3.connect(self.db_path, check_same_thread=False)
     
     def _calculate_resonance(self, value: str) -> float:
