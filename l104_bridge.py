@@ -463,9 +463,9 @@ class L104Bridge:
         
         if self._knowledge:
             status["knowledge"] = {
-                "patterns": len(self._knowledge.patterns),
-                "algorithms": len(self._knowledge.algorithms),
-                "principles": len(self._knowledge.principles)
+                "patterns": len(self._knowledge.architectural_patterns),
+                "algorithms": len(self._knowledge.algorithm_patterns),
+                "principles": len(self._knowledge.coding_conventions)
             }
         
         return status

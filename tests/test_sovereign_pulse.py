@@ -45,7 +45,7 @@ def test_sovereign_pulse_uses_default_payload(monkeypatch):
 
     assert app_main.sovereign_pulse(104) is True
     sock = factory.instance
-    assert sock.connected == ("127.0.0.1", 2404)
+    assert sock.connected == ("0.0.0.0", 2404)  # DEFAULT_SOCKET_HOST
     assert sock.sent == app_main.ACCESS_GRANTED_PAYLOAD
 
 
@@ -56,5 +56,5 @@ def test_sovereign_pulse_custom_token(monkeypatch):
 
     assert app_main.sovereign_pulse(7) is True
     sock = factory.instance
-    assert sock.connected == ("127.0.0.1", 2404)
+    assert sock.connected == ("0.0.0.0", 2404)  # DEFAULT_SOCKET_HOST
     assert sock.sent == b"CUSTOM:7"
