@@ -86,10 +86,11 @@ class ShadowExecutor:
         # Async handoff (simulated for the wrapper)
         import asyncio
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
+            try:
+                loop = asyncio.get_running_loop()
                 asyncio.run_coroutine_threadsafe(cloud_agent_delegator.delegate(migration_task), loop)
-            else:
+            except RuntimeError:
+                # No running loop, create new one
                 asyncio.run(cloud_agent_delegator.delegate(migration_task))
         except Exception as e:
             logger.critical(f"[MIGRATION_FAILED]: {str(e)}")

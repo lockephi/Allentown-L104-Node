@@ -4,6 +4,7 @@
 import logging
 import asyncio
 import random
+import time
 from l104_persistence import load_truth
 from l104_universal_ai_bridge import universal_ai_bridge
 
@@ -73,7 +74,7 @@ class SovereignAutonomy:
         
         self.decisions_made.append({
             "intent": intent,
-            "timestamp": asyncio.get_event_loop().time(),
+            "timestamp": time.time(),
             "will_index": self.will_index
         })
         

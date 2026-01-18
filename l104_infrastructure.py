@@ -116,6 +116,7 @@ async def start_infrastructure():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     loop.create_task(start_infrastructure())
     loop.run_forever()
