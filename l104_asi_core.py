@@ -34,6 +34,7 @@ from l104_quantum_math_research import quantum_math_research
 from l104_transcendental_solver import TranscendentalSolver
 from l104_substrate_healing_engine import substrate_healing
 from l104_temporal_bridge import temporal_bridge
+from l104_deep_processes import deep_process_controller, ConsciousnessDepth
 
 # God Code constants
 GOD_CODE = 527.5184818492537
