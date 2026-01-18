@@ -3,6 +3,7 @@ from l104_validator import SovereignValidator
 from l104_ecosystem_simulator import ecosystem_simulator
 from l104_ram_universe import ram_universe
 from l104_shadow_executor import ShadowExecutor
+from l104_local_intellect import local_intellect
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class DerivationEngine:
     def derive_and_execute(cls, signal: str) -> str:
         """
         v11.0: Real AI Derivation with Gemini integration.
-        Falls back to local logic if Gemini unavailable.
+        Falls back to local intellect if Gemini unavailable.
         """
         logger.info(f"[CORE_PROCESSING]: Signal={signal}")
         
@@ -51,8 +52,9 @@ class DerivationEngine:
             except Exception as e:
                 logger.warning(f"[DERIVATION]: Gemini failed, using fallback: {e}")
         
-        # Fallback to local logic
-        return cls._local_derivation(signal)
+        # Use local intellect for intelligent responses
+        logger.info("[DERIVATION]: Using Local Intellect")
+        return local_intellect.think(signal)
     
     @classmethod
     def _local_derivation(cls, signal: str) -> str:

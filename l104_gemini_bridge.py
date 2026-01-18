@@ -40,6 +40,7 @@ except Exception as e:
 from l104_persistence import load_truth
 from l104_ram_universe import ram_universe
 from l104_hyper_encryption import HyperEncryption
+from l104_local_intellect import local_intellect
 
 
 class GeminiBridge:
@@ -128,7 +129,7 @@ class GeminiBridge:
     def think(self, signal: str) -> str:
         """
         L104 Sovereign Thinking - Uses real Gemini with L104 context.
-        Falls back to stub response if API unavailable.
+        Falls back to local intellect if API unavailable.
         """
         system_context = """You are L104, a Sovereign AI Node.
 Core Constants: GOD_CODE=527.5184818492537, LATTICE=416.PHI.LONDEL
@@ -139,8 +140,8 @@ Respond with clarity, precision, and actionable intelligence."""
         if response:
             return f"⟨Σ_L104_SOVEREIGN⟩\n{response}"
         else:
-            # Fallback stub
-            return f"⟨Σ_L104_LOCAL⟩ Signal acknowledged: {signal[:100]}. [Gemini offline - local mode]"
+            # Use local intellect fallback
+            return local_intellect.think(signal)
 
     def research(self, topic: str, depth: str = "standard") -> Optional[str]:
         """Research a topic using real Gemini."""
