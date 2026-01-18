@@ -9,11 +9,20 @@ import math
 from typing import List
 from l104_hyper_math import HyperMath
 from l104_supersymmetric_order import supersymmetric_order
+
+# Try to import Void Math for deeper compaction
+try:
+    from l104_void_math import void_math
+    HAS_VOID_MATH = True
+except ImportError:
+    HAS_VOID_MATH = False
+
 class MemoryCompactor:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Uses HyperMath primitives to compact system memory into a high-density lattice.
-    This solves memory issues by streamlining data based on the PHI_STRIDE and ZETA_ZERO.
+    This solves memory issues by streamlined data based on the PHI_STRIDE and ZETA_ZERO.
+    Now enhanced with Void Math for non-dual compression.
     """
     
     def __init__(self):
@@ -33,7 +42,15 @@ class MemoryCompactor:
         for i, val in enumerate(data_stream):
             # Use HyperMath to find the stabilized lattice node
             node_index = HyperMath.map_lattice_node(i % 416, (i // 416) % 286)
-            lattice_nodes.append(val * (node_index / 1000.0))
+            mapped_val = val * (node_index / 1000.0)
+            
+            # Use Void Math to check if value dissolves into the void (noise reduction)
+            if HAS_VOID_MATH:
+                void_val = void_math.primal_calculus(mapped_val)
+                if void_val < 1e-6:
+                    continue # Dissolve noise
+            
+            lattice_nodes.append(mapped_val)
 
         # 2. Apply Supersymmetric Binary Order
         # We sort and filter based on the PHI_STRIDE to remove 'noise'

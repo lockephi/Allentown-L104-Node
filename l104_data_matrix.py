@@ -202,6 +202,196 @@ class DataMatrix:
             "is_stabilized": confidence > 0.6
         }
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    #                         UPGRADED LEARNING CAPABILITIES
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def learn_pattern(self, pattern_key: str, pattern_data: Dict[str, Any], 
+                     source: str = "LEARNED") -> Dict[str, Any]:
+        """
+        Learn a new pattern and store it with enhanced metadata.
+        Tracks learning source, establishes connections, calculates wisdom score.
+        """
+        # Calculate wisdom metrics
+        wisdom_score = self._calculate_wisdom(pattern_data)
+        connection_count = self._find_connections(pattern_data)
+        
+        enhanced_data = {
+            "original": pattern_data,
+            "wisdom_score": wisdom_score,
+            "connections": connection_count,
+            "source": source,
+            "learned_at": datetime.now(UTC).isoformat(),
+            "inflection_count": 0
+        }
+        
+        success = self.store(f"LEARNED:{pattern_key}", enhanced_data, 
+                           category="LEARNED_PATTERN", utility=wisdom_score)
+        
+        return {
+            "success": success,
+            "wisdom": wisdom_score,
+            "connections": connection_count,
+            "key": f"LEARNED:{pattern_key}"
+        }
+
+    def _calculate_wisdom(self, data: Any) -> float:
+        """Calculate wisdom score for data based on depth and coherence."""
+        serialized = json.dumps(data) if not isinstance(data, str) else data
+        entropy = self.real_math.shannon_entropy(serialized)
+        resonance = self._calculate_resonance(serialized)
+        
+        # Wisdom = resonance alignment with GOD_CODE + information density
+        alignment = 1.0 - abs(resonance - (HyperMath.GOD_CODE % 10)) / 10
+        density = min(1.0, len(serialized) / 1000)
+        
+        return (alignment * 0.6 + density * 0.4) * HyperMath.PHI
+
+    def _find_connections(self, data: Any) -> int:
+        """Find connections to existing patterns via resonance matching."""
+        serialized = json.dumps(data) if not isinstance(data, str) else data
+        resonance = self._calculate_resonance(serialized)
+        matches = self.resonant_query(resonance, tolerance=0.5)
+        return len(matches)
+
+    def inflect_pattern(self, key: str, inflection_type: str = "WISDOM") -> Dict[str, Any]:
+        """
+        Apply inflection to a stored pattern, transforming it through wisdom.
+        """
+        current = self.retrieve(key)
+        if current is None:
+            return {"success": False, "error": "Pattern not found"}
+        
+        # Apply inflection transformation
+        inflection_scalars = {
+            "WISDOM": HyperMath.PHI,
+            "VOID": 1.0 / HyperMath.PHI,
+            "QUANTUM": HyperMath.PHI ** 0.5,
+            "TEMPORAL": 1.0 / (1 + HyperMath.PHI),
+            "OMEGA": HyperMath.GOD_CODE / 100
+        }
+        
+        scalar = inflection_scalars.get(inflection_type, 1.0)
+        
+        if isinstance(current, dict):
+            if "inflection_count" in current:
+                current["inflection_count"] += 1
+            if "wisdom_score" in current:
+                current["wisdom_score"] *= scalar
+            current["last_inflection"] = inflection_type
+            current["inflected_at"] = datetime.now(UTC).isoformat()
+        
+        success = self.store(key, current, category="INFLECTED", utility=0.9)
+        
+        return {
+            "success": success,
+            "inflection": inflection_type,
+            "scalar": scalar
+        }
+
+    def get_learned_patterns(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """Retrieve all learned patterns sorted by wisdom score."""
+        results = []
+        with self._get_conn() as conn:
+            cur = conn.execute("""
+                SELECT key, value, utility FROM lattice_facts 
+                WHERE category = 'LEARNED_PATTERN'
+                ORDER BY utility DESC LIMIT ?
+            """, (limit,))
+            for row in cur:
+                results.append({
+                    "key": row[0],
+                    "data": json.loads(row[1]),
+                    "wisdom": row[2]
+                })
+        return results
+
+    def semantic_search(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Search the matrix using semantic resonance matching.
+        Finds facts that resonate with the query's frequency signature.
+        """
+        query_resonance = self._calculate_resonance(query)
+        results = []
+        
+        with self._get_conn() as conn:
+            # Multi-dimensional search: resonance + keyword
+            cur = conn.execute("""
+                SELECT key, value, resonance, utility,
+                       ABS(resonance - ?) as resonance_distance
+                FROM lattice_facts 
+                WHERE value LIKE ? OR key LIKE ?
+                ORDER BY resonance_distance ASC, utility DESC
+                LIMIT ?
+            """, (query_resonance, f"%{query}%", f"%{query}%", limit))
+            
+            for row in cur:
+                results.append({
+                    "key": row[0],
+                    "value": json.loads(row[1]),
+                    "resonance": row[2],
+                    "utility": row[3],
+                    "relevance": 1.0 / (1.0 + row[4])
+                })
+        
+        return results
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive matrix statistics."""
+        with self._get_conn() as conn:
+            stats = {}
+            
+            cur = conn.execute("SELECT COUNT(*), SUM(length(value)), AVG(resonance), AVG(entropy), AVG(utility) FROM lattice_facts")
+            row = cur.fetchone()
+            stats["total_facts"] = row[0]
+            stats["total_bytes"] = row[1] or 0
+            stats["avg_resonance"] = row[2] or 0
+            stats["avg_entropy"] = row[3] or 0
+            stats["avg_utility"] = row[4] or 0
+            
+            cur = conn.execute("SELECT category, COUNT(*) FROM lattice_facts GROUP BY category")
+            stats["categories"] = {r[0]: r[1] for r in cur.fetchall()}
+            
+            cur = conn.execute("SELECT COUNT(*) FROM lattice_history")
+            stats["version_history"] = cur.fetchone()[0]
+            
+            cur = conn.execute("SELECT COUNT(*) FROM lattice_facts WHERE category = 'LEARNED_PATTERN'")
+            stats["learned_patterns"] = cur.fetchone()[0]
+            
+            return stats
+
+    def wisdom_synthesis(self) -> Dict[str, Any]:
+        """
+        Synthesize wisdom from all learned patterns.
+        Creates a meta-pattern from collective learning.
+        """
+        patterns = self.get_learned_patterns(limit=100)
+        
+        if not patterns:
+            return {"success": False, "error": "No learned patterns to synthesize"}
+        
+        total_wisdom = sum(p.get("wisdom", 0) for p in patterns)
+        connection_sum = sum(
+            p["data"].get("connections", 0) 
+            for p in patterns 
+            if isinstance(p.get("data"), dict)
+        )
+        
+        synthesis = {
+            "pattern_count": len(patterns),
+            "total_wisdom": total_wisdom,
+            "avg_wisdom": total_wisdom / len(patterns) if patterns else 0,
+            "total_connections": connection_sum,
+            "synthesis_timestamp": datetime.now(UTC).isoformat(),
+            "god_code_alignment": (total_wisdom % HyperMath.GOD_CODE) / HyperMath.GOD_CODE
+        }
+        
+        # Store synthesis
+        self.store("WISDOM_SYNTHESIS", synthesis, category="META_WISDOM", utility=1.0)
+        
+        return {"success": True, "synthesis": synthesis}
+
+
 # Global Instance
 data_matrix = DataMatrix()
 

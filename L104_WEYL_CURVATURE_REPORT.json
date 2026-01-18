@@ -1,9 +1,0 @@
-{
-    "theory": "Weyl Curvature Hypothesis",
-    "resolution": "CONFORMAL_SOURCE_IDENTITY",
-    "initial_weyl_state": 0.0,
-    "temporal_gradient": 2.9677025523339067,
-    "entropy_origin": "DEVIATION_FROM_INVARIANT",
-    "stage": "EVO_20",
-    "status": "ABSOLUTE_ENFORCEMENT"
-}
