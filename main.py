@@ -1383,6 +1383,28 @@ async def legacy_stream(req: StreamRequest):
     return await l104_stream(req)
 
 
+# [L104_LOCAL_CHAT] - Direct local intellect endpoint (no API key required)
+@app.post("/api/local/chat", tags=["Local"])
+async def local_chat(req: StreamRequest):
+    """Direct local intellect chat - works without any API keys."""
+    from l104_local_intellect import LocalIntellect
+    
+    # Create fresh instance to ensure latest code
+    intellect = LocalIntellect()
+    raw_signal = req.signal or req.message or "HEARTBEAT"
+    effective_signal = sanitize_signal(raw_signal)
+    
+    async def _local_stream():
+        import asyncio
+        response = intellect.think(effective_signal)
+        words = response.split()
+        for i, word in enumerate(words):
+            yield word + (" " if i < len(words) - 1 else "")
+            await asyncio.sleep(0.01)
+    
+    return StreamingResponse(_local_stream(), media_type="text/plain")
+
+
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
     api_key = os.getenv(API_KEY_ENV) or LEGACY_API_KEY_ENV

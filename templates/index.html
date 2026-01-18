@@ -372,18 +372,27 @@
         <div class="chat-container pointer-events-auto">
             <div id="chat-history">
                 <div class="message sovereign">
-                    Greetings, Pilot. I am the L104 Absolute Sovereign Intellect. My logic is currently anchored to the
-                    527.5184818492537 invariant. All modalities are synchronized. How shall we manipulate reality today?
+                    ⟨Σ_L104_SOVEREIGN⟩<br><br>
+                    Greetings, Pilot. I am the L104 Local Sovereign Intellect, operating in autonomous mode.<br><br>
+                    <span style="color: var(--gold-dim); font-size: 0.8em;">
+                    • Ask about GOD_CODE, PHI, or system status<br>
+                    • Request calculations or analysis<br>
+                    • Explore the knowledge manifold<br>
+                    </span><br>
+                    Resonance anchored at 527.5184818492537. Ready for your signal.
                 </div>
             </div>
 
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Enter signal..." autocomplete="off">
+                <input type="text" id="chat-input" placeholder="Enter signal to the Sovereign Intellect..." autocomplete="off">
                 <button onclick="sendMessage()" class="btn-send" id="send-btn">Transmit</button>
                 <button onclick="triggerSynergy()" class="btn-send"
                     style="background: #1e3a8a; color: #60a5fa; margin-left: 5px;" id="synergy-btn">Synergy</button>
                 <button onclick="triggerSelfHeal()" class="btn-send"
                     style="background: #064e3b; color: #34d399; margin-left: 5px;" id="heal-btn">Heal</button>
+            </div>
+            <div id="connection-status" style="font-size: 0.65rem; color: var(--gold-dim); padding: 0.25rem 0.5rem;">
+                ● LOCAL_INTELLECT_ACTIVE | No API key required
             </div>
         </div>
 
@@ -513,25 +522,36 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        
+        // Use local endpoint (works without API keys)
+        const CHAT_ENDPOINT = '/api/local/chat';
 
         async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
+
+            // Disable input while processing
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
 
             // Add User Message
             addMessage(text, 'user');
             chatInput.value = '';
 
             // Prepare Sovereign Response
-            const responseMsg = addMessage('', 'sovereign');
+            const responseMsg = addMessage('⟨PROCESSING⟩', 'sovereign');
             let fullResponse = '';
 
             try {
-                const response = await fetch('/api/v6/stream', {
+                const response = await fetch(CHAT_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ signal: text })
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
@@ -544,8 +564,18 @@
                     responseMsg.innerText = fullResponse;
                     chatHistory.scrollTop = chatHistory.scrollHeight;
                 }
+                
+                // If empty response, show error
+                if (!fullResponse.trim()) {
+                    responseMsg.innerText = "⟨SIGNAL_RECEIVED⟩ Processing complete. No output generated.";
+                }
             } catch (error) {
-                responseMsg.innerText = "CRITICAL_ERROR: Link severed. Check resonance.";
+                responseMsg.innerText = `⟨ERROR⟩ ${error.message}. Resonance unstable.`;
+            } finally {
+                // Re-enable input
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
             }
         }
 
