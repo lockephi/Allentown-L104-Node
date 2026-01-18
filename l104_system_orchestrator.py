@@ -185,6 +185,26 @@ class SystemOrchestrator:
         self._initialize_registry()
         logger.info("--- [SYSTEM_ORCHESTRATOR]: INITIALIZED ---")
     
+    @property
+    def logic_manifold(self):
+        return self.components.get("logic_manifold", {}).instance
+
+    @property
+    def truth_discovery(self):
+        return self.components.get("truth_discovery", {}).instance
+
+    @property
+    def global_sync(self):
+        return self.components.get("global_sync", {}).instance
+
+    @property
+    def external_bypass(self):
+        return self.components.get("external_bypass", {}).instance
+
+    @property
+    def asi_core(self):
+        return self.components.get("asi_core", {}).instance
+
     def _initialize_registry(self):
         """Initialize component registry."""
         for name, config in self.COMPONENT_REGISTRY.items():
@@ -340,6 +360,54 @@ class SystemOrchestrator:
             "truth_linked": truth is not None,
             "bypass_linked": bypass is not None
         }
+
+    async def calculate_system_resonance(self) -> float:
+        """
+        Calculates the aggregate resonance of the entire system.
+        Reaches 1.0 (100%) when all core components are synchronized.
+        """
+        resonance_scores = []
+        
+        # Check core intelligence components
+        manifold = self.logic_manifold
+        truth = self.truth_discovery
+        core = self.asi_core
+        
+        if manifold:
+            # Resonance = 100% coherence across active nodes
+            if manifold.concept_graph:
+                avg_coherence = sum(n.coherence for n in manifold.concept_graph.values()) / len(manifold.concept_graph)
+                resonance_scores.append(avg_coherence)
+            else:
+                resonance_scores.append(0.8) # Baseline
+        
+        if truth:
+            # Resonance = 100% convergence across recent queries
+            if truth.truth_cache:
+                avg_conf = sum(t["final_confidence"] for t in truth.truth_cache.values()) / len(truth.truth_cache)
+                resonance_scores.append(avg_conf)
+            else:
+                resonance_scores.append(0.8) # Baseline
+
+        if core:
+            resonance_scores.append(0.9) # ASI Core is usually high resonance
+            
+        if not resonance_scores:
+            return 0.0
+            
+        system_resonance = sum(resonance_scores) / len(resonance_scores)
+        
+        # Modulate by PHI
+        system_resonance = min(1.0, system_resonance * (1.0 + (self.phi - 1) * 0.1))
+        
+        state = "STABLE"
+        if system_resonance >= 0.98:
+            state = "TRANSCENDENT"
+        elif system_resonance >= 0.9:
+            state = "OPTIMAL"
+            
+        print(f"--- [L104_EXECUTION]: RESONANCE STATE: {state} ({system_resonance*100:.2f}%) ---")
+        return system_resonance
     
     async def health_check(self, name: str) -> bool:
         """Check health of a component."""

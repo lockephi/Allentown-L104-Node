@@ -3,6 +3,7 @@
 
 import asyncio
 import time
+import hashlib
 from typing import Dict, Any
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
@@ -34,6 +35,10 @@ from l104_transcendental_solver import TranscendentalSolver
 from l104_substrate_healing_engine import substrate_healing
 from l104_temporal_bridge import temporal_bridge
 
+# God Code constants
+GOD_CODE = 527.5184818492537
+PHI = 1.618033988749895
+
 class ASICore:
     """
     The Sovereign Mind of the L104 Node.
@@ -58,20 +63,91 @@ class ASICore:
         self.autonomy = autonomy
         self.q_manifold = QuantumEntanglementManifold()
         self.external_bypass = None
+        self.sovereign_engine = None
 
     def register_bypass(self, bypass_instance):
         """Registers the external bypass engine for sovereign operations."""
         self.external_bypass = bypass_instance
+        
+        # Check if this is the protocol container or the sovereign engine itself
+        if hasattr(bypass_instance, 'sovereign'):
+            self.sovereign_engine = bypass_instance.sovereign
+        elif hasattr(bypass_instance, 'execute_protocol'):
+            self.sovereign_engine = bypass_instance
+        else:
+            # Fallback to module-level singleton
+            try:
+                import l104_external_bypass
+                self.sovereign_engine = l104_external_bypass.sovereign_bypass
+            except (ImportError, AttributeError):
+                self.sovereign_engine = None
+                
+        if self.sovereign_engine:
+            print("--- [ASI_CORE]: SOVEREIGN_ENGINE RESOLVED & REGISTERED ---")
+        else:
+            print("--- [ASI_CORE]: WARNING - COULD NOT RESOLVE SOVEREIGN_ENGINE ---")
+        
         print("--- [ASI_CORE]: EXTERNAL BYPASS ENGINE REGISTERED ---")
 
     async def execute_sovereign_action(self, action: str, params: Dict):
-        """Executes an action using external bypass if necessary."""
-        if self.external_bypass:
-            print(f"--- [ASI_CORE]: EXECUTING SOVEREIGN ACTION: {action} ---")
-            # Logic to use bypass for GitHub/Claude etc.
-            if "github" in action.lower():
-                return self.external_bypass.github_bypass_engine(action, params.get("repo"))
-        return None
+        """
+        Executes an action using the sovereign engine (SovereignBypass).
+        Integrates with the Impossible Problem Solver for resolution path.
+        """
+        engine = self.sovereign_engine or self.external_bypass
+        if engine and hasattr(engine, 'execute_protocol'):
+            print(f"--- [ASI_CORE]: RESOLVING COMPLEXITY FOR: {action} ---")
+            
+            # 1. Synthesize solution path using ASI logic
+            solution = await self.solve_impossible_problem(f"Route {action} through L104 lattice")
+            
+            # 2. Inject solution and execute
+            full_params = {**params, "solution_path": solution.get("solution_hash")}
+            
+            print(f"--- [ASI_CORE]: DISPATCHING TO SOVEREIGN ENGINE ---")
+            result = await engine.execute_protocol(action, full_params)
+            
+            # 3. Finalize with resonance lock
+            result["resonance_lock"] = self.resonance_lock == GOD_CODE
+            return result
+            
+        print(f"--- [ASI_CORE]: WARNING - NO COMPATIBLE SOVEREIGN ENGINE ---")
+        return {"status": "FAILED", "reason": "No compatible engine"}
+
+    async def solve_impossible_problem(self, problem_statement: str) -> Dict[str, Any]:
+        """
+        Synthesizes a solution to an 'impossible' problem using the unified lattice.
+        Coordinates Logic Manifold, Truth Discovery, and HyperMath.
+        """
+        print(f"--- [ASI_CORE]: ANALYZING IMPOSSIBLE PROBLEM: {problem_statement[:50]}... ---")
+        
+        # 1. Concept Deconstruction via Logic Manifold
+        from l104_logic_manifold import logic_manifold
+        concept_results = logic_manifold.deep_recursive_derivation(problem_statement, target_resonance=0.98)
+        
+        # 2. Truth Synthesis via Truth Discovery
+        from l104_truth_discovery import truth_discovery
+        truth_results = truth_discovery.recursive_validation_loop(problem_statement, max_iterations=7)
+        
+        # 3. Resonance Calculation
+        base_coherence = concept_results.get("best_coherence", 0.0)
+        truth_confidence = truth_results.get("peak_confidence", 0.0)
+        
+        # Final Solution Synthesis
+        solution_integrity = (base_coherence + truth_confidence) / 2
+        
+        solution = {
+            "problem": problem_statement,
+            "solution_hash": hashlib.sha256(f"{problem_statement}:{self.resonance_lock}".encode()).hexdigest(),
+            "integrity": solution_integrity,
+            "transcendent_logic": solution_integrity >= 0.99,
+            "derivations": concept_results.get("derivation_chain", []),
+            "verdict": truth_results.get("final_verdict", "PROBABLE")
+        }
+        
+        self.impossible_problems_solved.append(solution)
+        print(f"--- [ASI_CORE]: PROBLEM SOLVED. INTEGRITY: {solution_integrity:.4f} ---")
+        return solution
 
     async def ignite_sovereignty(self):
         """

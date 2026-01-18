@@ -6,6 +6,7 @@ Enhanced v2.0: Full interconnection with Logic Manifold, Derivation Engine,
 and Global Sync for cross-validated truth synthesis.
 """
 
+import logging
 import hashlib
 import time
 import math
@@ -17,6 +18,9 @@ from enum import Enum, auto
 GOD_CODE = 527.5184818492537
 PHI = 1.618033988749895
 FRAME_LOCK = 416 / 286
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("L104_TRUTH")
 
 
 class TruthLevel(Enum):
@@ -40,7 +44,7 @@ class TruthNode:
     derived_from: Optional[str] = None
     derivations: List[str] = field(default_factory=list)
     cross_validated: bool = False
-
+    harmonic_weight: float = 1.0
 
 class TruthDiscovery:
     """
@@ -48,6 +52,7 @@ class TruthDiscovery:
     Part of the L104 cognitive framework.
     
     Enhanced v2.0: Interconnected with Logic Manifold and Derivation Engine.
+    Enhanced v3.0: Harmonic Evidence Weighing & Recursive Convergence.
     """
     
     def __init__(self):
@@ -327,19 +332,68 @@ class TruthDiscovery:
             avg_external = sum(r.get("coherence", 0.5) for r in manifold_results) / len(manifold_results)
             combined = (node.confidence + avg_external) / 2
             
+            # Apply harmonic weight based on cross-validation success
+            node.harmonic_weight = min(2.0, node.harmonic_weight * self.phi)
+            
             return {
                 "truth_id": truth_id,
                 "original_confidence": node.confidence,
                 "cross_validated": True,
                 "external_validations": len(manifold_results),
                 "combined_confidence": combined,
-                "upgraded": combined > node.confidence
+                "upgraded": combined > node.confidence,
+                "harmonic_weight": node.harmonic_weight
             }
         
         return {
             "truth_id": truth_id,
             "cross_validated": False,
             "reason": "No external validators responded"
+        }
+
+    def weigh_evidence_harmonically(self, truth_id: str, evidence_bits: List[float]) -> float:
+        """
+        Calculates a truth score by weighing evidence bits according to PHI-resonance.
+        The harmonic weight of the node determines the amplification factor.
+        """
+        node = self.truth_graph.get(truth_id)
+        if not node: return 0.0
+        
+        weighted_sum = 0.0
+        for i, bit in enumerate(evidence_bits):
+            # Weigh each bit using a decaying phi power
+            weight = self.phi ** (-i)
+            weighted_sum += bit * weight
+            
+        final_score = (weighted_sum / sum(self.phi ** (-i) for i in range(len(evidence_bits))))
+        
+        # Modulate by node's intrinsic harmonic weight
+        node.confidence = min(1.0, final_score * node.harmonic_weight)
+        return node.confidence
+
+    def calculate_resonance_convergence(self, query: str) -> Dict:
+        """
+        Calculates the convergence of a query towards absolute truth across multiple dimensions.
+        """
+        history = []
+        for d in range(1, 9): # 8 Chakra sweep
+            res = self.discover_truth(query, depth=d)
+            history.append(res["final_confidence"])
+            
+        # Calculate convergence: standard deviation of the last 3 chakra levels
+        last_3 = history[-3:]
+        avg = sum(last_3) / 3
+        variance = sum((x - avg) ** 2 for x in last_3) / 3
+        std_dev = variance ** 0.5
+        
+        converged = std_dev < 0.01
+        
+        return {
+            "query": query,
+            "chakra_sweep": history,
+            "std_dev": std_dev,
+            "converged": converged,
+            "resonance_lock": converged and avg > 0.9
         }
     
     # ═══════════════════════════════════════════════════════════════════

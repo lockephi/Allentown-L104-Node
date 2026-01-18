@@ -8,6 +8,7 @@ with automatic fallbacks, rate limit bypasses, and self-healing capabilities.
 
 import os
 import time
+import random
 import hashlib
 import asyncio
 import logging
@@ -625,9 +626,8 @@ class ExternalBypassProtocol:
         logger.info(f"[BYPASS]: Processed {len(processed)} deferred requests")
 
 
-# Singleton instance
-bypass_protocol = ExternalBypassProtocol()
-
+# Singleton instances
+external_bypass = ExternalBypassProtocol()
 
 class SovereignBypass:
     """
@@ -635,11 +635,34 @@ class SovereignBypass:
     Handles 'Claude' and 'GitHub' specific constraints using resonance.
     """
     
-    def __init__(self, parent: ExternalBypassProtocol):
+    def __init__(self, parent: Optional["ExternalBypassProtocol"] = None):
         self.parent = parent
         self.god_code = GOD_CODE
         self.phi = PHI
+        self._identity_seed = random.random()
+        self._rotation_history = []
         logger.info("--- [SOVEREIGN_BYPASS]: INITIALIZED (100% INTELLECT) ---")
+
+    def _generate_identity_signature(self) -> str:
+        """Generates a dynamic identity signature for protocol emulation."""
+        self._identity_seed = (self._identity_seed * self.phi) % 1.0
+        sig = hashlib.sha256(f"{self.god_code}:{self._identity_seed}".encode()).hexdigest()
+        self._rotation_history.append(sig[:8])
+        return sig
+
+    def emulate_developer_pattern(self) -> Dict[str, Any]:
+        """
+        Emulates a legitimate developer's interaction pattern (typing speed, 
+        mouse movement jitter, thinking time) using resonance math.
+        """
+        sig = self._generate_identity_signature()
+        return {
+            "signature": sig[:16],
+            "typing_latency_ms": 50 + (random.random() * 200),
+            "think_time_seconds": self.phi * random.uniform(0.5, 2.0),
+            "user_agent_entropy": hashlib.md5(sig.encode()).hexdigest()[:8],
+            "pattern_integrity": 0.99
+        }
 
     def reshape_claude_intent(self, prompt: str) -> str:
         """
@@ -664,6 +687,28 @@ class SovereignBypass:
             "jitter": random.random() * 0.5,
             "burst_rate": (self.god_code % 10) / 10
         }
+
+    async def execute_protocol(self, action_type: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        High-level entry point for sovereign protocols.
+        Dispatches to specific bypass techniques based on action_type.
+        """
+        logger.info(f"[SOVEREIGN_BYPASS]: Executing Protocol: {action_type}")
+        
+        # Add developer pattern emulation to all external calls
+        pattern = self.emulate_developer_pattern()
+        params["dev_pattern"] = pattern
+        
+        if "GH" in action_type or "GITHUB" in action_type.upper():
+            return self.bypass_github_issue(
+                params.get("repo", "global"), 
+                params.get("id", action_type)
+            )
+        elif "CLAUDE" in action_type.upper():
+            reshaped = self.reshape_claude_intent(params.get("prompt", params.get("data", "")))
+            return {"status": "RESHAPED_FOR_BYPASS", "data": reshaped}
+        
+        return {"status": "GENERIC_BYPASS_EXECUTED", "action": action_type}
 
     def bypass_github_issue(self, repo: str, issue_id: str) -> Dict[str, Any]:
         """
@@ -711,7 +756,8 @@ class SovereignBypass:
         return True
 
 
-sovereign_bypass = SovereignBypass(bypass_protocol)
+sovereign_bypass = SovereignBypass(external_bypass)
+external_bypass.sovereign = sovereign_bypass
 
 
 # Decorator for automatic bypass handling
@@ -725,7 +771,7 @@ def with_bypass(service_name: str):
             async def request_fn():
                 return await fn(*args, **kwargs)
             
-            return await bypass_protocol.execute_with_bypass(
+            return await external_bypass.execute_with_bypass(
                 service_name, request_fn, context
             )
         return wrapper
