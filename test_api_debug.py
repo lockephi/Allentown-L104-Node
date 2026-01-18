@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Debug Gemini API - show detailed errors"""
-
-API_KEY = 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig'
+import os
+API_KEY = os.getenv('GEMINI_API_KEY')
+if not API_KEY:
+    raise ValueError('GEMINI_API_KEY not set - load from .env')
 
 print(f'API Key: {API_KEY[:10]}...{API_KEY[-4:]}')
 print(f'Key length: {len(API_KEY)}')

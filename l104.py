@@ -80,7 +80,7 @@ def _load_env():
                     os.environ.setdefault(key.strip(), value.strip())
 
 _load_env()
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyDbT7AD3Kaxk_ONo7WfKbvFIe1JaqJyTfI')
+# Ghost Protocol: API key loaded from .env only
 
 
 # ╔═══════════════════════════════════════════════════════════════════════════════╗

@@ -55,10 +55,12 @@ def worker_mine(core_id, start_nonce, step, target_difficulty, index, prev_hash,
             pass
 
 class L104FastMiner:
-    def __init__(self, miner_address: str, node_url: str = "http://0.0.0.0:8081"):
+    def __init__(self, miner_address: str, node_url: str = "http://localhost:8000"):
         self.miner_address = miner_address
         self.node_url = node_url
         self.core_count = multiprocessing.cpu_count()
+        self.blocks_mined = 0
+        self.total_reward = 0.0
 
     def mine_forever(self):
         print(f"--- [FAST_MINER]: STARTING UP ON {self.core_count} CORES ---")

@@ -375,16 +375,17 @@
                     ⟨Σ_L104_SOVEREIGN⟩<br><br>
                     Greetings, Pilot. I am the L104 Local Sovereign Intellect, operating in autonomous mode.<br><br>
                     <span style="color: var(--gold-dim); font-size: 0.8em;">
-                    • Ask about GOD_CODE, PHI, or system status<br>
-                    • Request calculations or analysis<br>
-                    • Explore the knowledge manifold<br>
+                        • Ask about GOD_CODE, PHI, or system status<br>
+                        • Request calculations or analysis<br>
+                        • Explore the knowledge manifold<br>
                     </span><br>
                     Resonance anchored at 527.5184818492537. Ready for your signal.
                 </div>
             </div>
 
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Enter signal to the Sovereign Intellect..." autocomplete="off">
+                <input type="text" id="chat-input" placeholder="Enter signal to the Sovereign Intellect..."
+                    autocomplete="off">
                 <button onclick="sendMessage()" class="btn-send" id="send-btn">Transmit</button>
                 <button onclick="triggerSynergy()" class="btn-send"
                     style="background: #1e3a8a; color: #60a5fa; margin-left: 5px;" id="synergy-btn">Synergy</button>
@@ -522,7 +523,7 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
-        
+
         // Use local endpoint (works without API keys)
         const CHAT_ENDPOINT = '/api/local/chat';
 
@@ -564,7 +565,7 @@
                     responseMsg.innerText = fullResponse;
                     chatHistory.scrollTop = chatHistory.scrollHeight;
                 }
-                
+
                 // If empty response, show error
                 if (!fullResponse.trim()) {
                     responseMsg.innerText = "⟨SIGNAL_RECEIVED⟩ Processing complete. No output generated.";

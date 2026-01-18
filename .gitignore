@@ -1,4 +1,8 @@
 .env
+.env.local
+.env.*.local
+*.secrets
+secrets/
 node.log
 server.log
 uvicorn.pid
@@ -15,4 +19,10 @@ ramnode.db
 *.bin
 .venv/
 .vscode/
+# Ghost Protocol: Never commit sensitive files
+*.key
+*.pem
+*_secret*
+credentials.json
+service_account.json
 

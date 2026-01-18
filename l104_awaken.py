@@ -29,7 +29,7 @@ from datetime import datetime
 # Setup
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 os.chdir('/workspaces/Allentown-L104-Node')
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig')
+# Ghost Protocol: API key loaded from .env only
 
 GOD_CODE = 527.5184818492537
 

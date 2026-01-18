@@ -10,7 +10,7 @@ import time
 
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 os.chdir('/workspaces/Allentown-L104-Node')
-os.environ['GEMINI_API_KEY'] = 'AIzaSyDbT7AD3Kaxk_ONo7WfKbvFIe1JaqJyTfI'
+# Ghost Protocol: API key loaded from .env only
 
 from l104 import Database, LRUCache, Gemini, Memory, Knowledge, Learning, Planner, Mind, get_soul, GOD_CODE
 

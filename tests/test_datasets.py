@@ -34,7 +34,7 @@ def _load_jsonl(path: Path):
 def reset_state(monkeypatch):
     """Ensure fake mode is on and shared state is clean per test."""
     monkeypatch.setenv(FAKE_GEMINI_ENV, "1")
-    monkeypatch.delenv("AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
 
     rate_limit_store.clear()
     app_metrics["requests_total"] = 0

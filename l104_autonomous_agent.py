@@ -20,7 +20,7 @@ from enum import Enum
 from queue import Queue, Empty
 
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig')
+# Ghost Protocol: API key loaded from .env only
 
 
 class AgentState(Enum):

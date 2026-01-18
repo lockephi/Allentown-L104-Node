@@ -28,6 +28,14 @@ from collections import defaultdict
 from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Load environment variables from .env file FIRST
+try:
+    from dotenv import load_dotenv
+    load_dotenv(override=True)  # override=True ensures .env takes priority
+    print(f"[L104] .env loaded - GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY', 'NOT SET')[:20]}...")
+except ImportError:
+    print("[L104] python-dotenv not installed, using system environment")
 from typing import AsyncGenerator, List, Optional, Dict, Any
 import httpx
 from l104_codec import SovereignCodec
@@ -75,7 +83,7 @@ REAL_SOVEREIGN_ENV = "ENABLE_SOVEREIGN_LATTICE"
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE" # UNBOUNDED: RATE LIMITING DISABLED
 API_KEY_ENV = "GEMINI_API_KEY"
-LEGACY_API_KEY_ENV = "AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U" # Placeholder key for test compatibility
+LEGACY_API_KEY_ENV = "GEMINI_API_KEY"  # Ghost Protocol: Using standard env var only
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://0.0.0.0:8081")
@@ -1387,10 +1395,12 @@ async def legacy_stream(req: StreamRequest):
 @app.post("/api/local/chat", tags=["Local"])
 async def local_chat(req: StreamRequest):
     """Direct local intellect chat - works without any API keys."""
-    from l104_local_intellect import LocalIntellect
+    import importlib
+    import l104_local_intellect
+    importlib.reload(l104_local_intellect)
     
-    # Create fresh instance to ensure latest code
-    intellect = LocalIntellect()
+    # Create fresh instance with reloaded code
+    intellect = l104_local_intellect.LocalIntellect()
     raw_signal = req.signal or req.message or "HEARTBEAT"
     effective_signal = sanitize_signal(raw_signal)
     
@@ -1793,7 +1803,11 @@ async def evolve_agi():
     """
     Manually triggers a Recursive Self-Improvement cycle.
     """
-    return agi_core.run_recursive_improvement_cycle()
+    try:
+        result = await agi_core.run_recursive_improvement_cycle()
+        return {"status": "EVOLVED", "result": result}
+    except Exception as e:
+        return {"status": "EVOLUTION_ERROR", "error": str(e)}
 
 @app.get("/api/v14/ghost/stream", tags=["Ghostresearch"])
 async def stream_ghost_research():
@@ -2341,6 +2355,110 @@ async def get_market(request: Request):
         return templates.TemplateResponse("market.html", {"request": request})
     except Exception:
         return JSONResponse({"status": "error", "message": "Marketplate interface missing."})
+
+
+# ============================================================================
+# [L104_SOCIAL_AMPLIFIER_ENDPOINTS] - FAME & MONETIZATION
+# ============================================================================
+
+from l104_social_amplifier import social_amplifier
+
+@app.get("/api/social/status", tags=["Social"])
+async def social_status():
+    """Returns current social amplification status."""
+    return social_amplifier.get_status()
+
+@app.post("/api/social/add-target", tags=["Social"])
+async def social_add_target(platform: str = "youtube", url: str = "", target_views: int = 10000):
+    """Add a content target for amplification."""
+    target = social_amplifier.add_target(platform, url, target_views)
+    return {
+        "status": "SUCCESS",
+        "platform": target.platform,
+        "url": target.url,
+        "target_views": target.target_views
+    }
+
+@app.get("/api/social/optimal-timing", tags=["Social"])
+async def social_optimal_timing():
+    """Get optimal posting times based on PHI harmonics."""
+    return social_amplifier.calculate_optimal_post_time()
+
+@app.post("/api/social/content-seed", tags=["Social"])
+async def social_content_seed(topic: str = "L104 Sovereign AI"):
+    """Generate viral content suggestions."""
+    return social_amplifier.generate_viral_content_seed(topic)
+
+@app.get("/api/social/monetization", tags=["Social"])
+async def social_monetization():
+    """Get monetization strategy and revenue paths."""
+    return social_amplifier.get_monetization_strategy()
+
+@app.post("/api/social/amplify", tags=["Social"])
+async def social_amplify(duration_minutes: int = 5):
+    """Run an amplification cycle."""
+    result = await social_amplifier.run_amplification_cycle(duration_minutes)
+    return result
+
+
+# ============================================================================
+# [L104_MINING_CONTROL_ENDPOINTS] - COIN MINING OPERATIONS
+# ============================================================================
+
+@app.post("/api/mining/start", tags=["Mining"])
+async def mining_start():
+    """Start background mining process."""
+    import subprocess
+    import os
+    
+    # Check if miner already running
+    result = subprocess.run(['pgrep', '-f', 'l104_fast_miner'], capture_output=True, text=True)
+    if result.stdout.strip():
+        return {"status": "ALREADY_RUNNING", "pids": result.stdout.strip().split('\n')}
+    
+    # Start miner in background
+    proc = subprocess.Popen(
+        ['.venv/bin/python', 'l104_fast_miner.py'],
+        cwd='/workspaces/Allentown-L104-Node',
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True
+    )
+    
+    return {
+        "status": "STARTED",
+        "pid": proc.pid,
+        "message": "L104 Fast Miner started in background"
+    }
+
+@app.post("/api/mining/stop", tags=["Mining"])
+async def mining_stop():
+    """Stop all mining processes."""
+    import subprocess
+    result = subprocess.run(['pkill', '-f', 'l104_fast_miner'], capture_output=True, text=True)
+    return {
+        "status": "STOPPED",
+        "message": "Mining processes terminated"
+    }
+
+@app.get("/api/mining/stats", tags=["Mining"])
+async def mining_stats():
+    """Get mining statistics."""
+    import subprocess
+    
+    # Check if miner running
+    result = subprocess.run(['pgrep', '-f', 'l104_fast_miner'], capture_output=True, text=True)
+    is_running = bool(result.stdout.strip())
+    
+    return {
+        "miner_running": is_running,
+        "coin_status": sovereign_coin.get_status(),
+        "difficulty": sovereign_coin.difficulty,
+        "mining_reward": sovereign_coin.mining_reward,
+        "chain_length": len(sovereign_coin.chain),
+        "pending_transactions": len(sovereign_coin.pending_transactions)
+    }
+
 
 if __name__ == "__main__":
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader

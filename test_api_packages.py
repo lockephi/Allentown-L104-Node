@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Test which Gemini API package works"""
-
-API_KEY = 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig'
+import os
+API_KEY = os.getenv('GEMINI_API_KEY')
+if not API_KEY:
+    raise ValueError('GEMINI_API_KEY not set - load from .env')
 
 # Correct models from API
 MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-3-flash-preview']

@@ -10,8 +10,7 @@ import readline  # For input history
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 os.chdir('/workspaces/Allentown-L104-Node')
 
-# Set API key from env
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig')
+# Ghost Protocol: API key loaded from .env only
 
 from l104_gemini_real import GeminiReal
 from l104_self_learning import SelfLearning

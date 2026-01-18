@@ -35,7 +35,7 @@ import heapq
 
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 os.chdir('/workspaces/Allentown-L104-Node')
-os.environ.setdefault('GEMINI_API_KEY', 'AIzaSyBeCmYi5i3bmfxtAaU7_qybTt6TMkjz4ig')
+# Ghost Protocol: API key loaded from .env only
 
 from l104_config import get_config
 

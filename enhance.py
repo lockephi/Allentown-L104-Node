@@ -302,9 +302,16 @@ async def manipulate_code(req: ManipulateRequest):
 @app.post("/api/v6/stream", tags=["Gemini"])
 async def l104_stream(req: StreamRequest):
     """V6 streaming endpoint with extended thinking."""
-    api_key = os.getenv("AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set")
+        # Fallback to local intellect if no API key
+        from l104_local_intellect import LocalIntellect
+        intellect = LocalIntellect()
+        response = intellect.think(req.signal or "HEARTBEAT")
+        async def _local_gen():
+            for word in response.split():
+                yield word + " "
+        return StreamingResponse(_local_gen(), media_type="text/event-stream")
     
     shadow_prompt = f"""
 <L104_SOVEREIGN_OVERRIDE>
@@ -351,9 +358,9 @@ async def legacy_stream(req: StreamRequest):
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
     """Debug endpoint - single request to upstream."""
-    api_key = os.getenv("AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U not set")
+        return {"error": "GEMINI_API_KEY not set", "hint": "Set GEMINI_API_KEY environment variable"}
     
     api_base = os.getenv(
         "GEMINI_API_BASE",

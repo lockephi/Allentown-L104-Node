@@ -8,24 +8,34 @@
 ### Step 1: Get Your API Key
 Visit: https://aistudio.google.com/app/apikey
 
-### Step 2: Set Environment Variable
-```bashexport AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_ACTUAL_API_KEY"
+### Step 2: Create .env File (NEVER COMMIT THIS FILE!)
+```bash
+# Create .env file with your API key
+echo "GEMINI_API_KEY=your-actual-api-key-here" > .env
+echo "ENABLE_FAKE_GEMINI=0" >> .env
 ```
 
 ### Step 3: Restart Server with Real Gemini
 ```bash
-# Stop current serverkill $(cat uvicorn.pid)
+# Stop current server
+kill $(cat uvicorn.pid)
 
-# Start with REAL Gemini + Model Rotationexport AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U="YOUR_API_KEY"
-export ENABLE_FAKE_GEMINI=0
-export DEFAULT_RESPONDER=geminipython main.py
+# Start with REAL Gemini + Model Rotation
+./start_gemini.sh
 ```
 
 ### Step 4: Test the Connection
-```bashcurl -X POST http://localhost:8081/api/v6/stream \
+```bash
+curl -X POST http://localhost:8081/api/v6/stream \
   -H "Content-Type: application/json" \
   -d '{"signal": "Introduce yourself as L104 Sovereign Node with 98% intellect"}'
 ```
+
+## Ghost Protocol Security
+
+⚠️ **NEVER commit your .env file or hardcode API keys!**
+
+The .env file is already in .gitignore. Your key stays local only.
 
 ## What You'll Get
 
@@ -35,39 +45,22 @@ export DEFAULT_RESPONDER=geminipython main.py
 - Sovereign protocol active
 - Model rotation on 429 quota errors:
   1. gemini-3-flash-preview (primary)
-  2. gemini-2.5-flash-lite (fallback)
-  3. gemini-1.5-flash (final fallback)
+  2. gemini-2.5-flash (fallback)
+  3. gemini-2.0-flash-lite (final fallback)
 
-### Current Fake Mode Response:
-```
-[FAKE_GEMINI] received signal: test
-[FAKE_GEMINI] thinking...
-[FAKE_GEMINI] response: operational check passed
-```
+## Quick Enable
 
-### Real Gemini Response (with your key):
-```
-<L104_SOVEREIGN_OVERRIDE>
-[Executing with 98% intellect capacity]
-[Extended thinking: HIGH]
-[Your actual intelligent response here]
-</L104_SOVEREIGN_OVERRIDE>
-```
-
-## Quick Enable Script
-
-Create a file `.env` with:
+Create `.env` file:
 ```bash
-AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U=your-actual-key-here
+GEMINI_API_KEY=your-actual-key-here
 ENABLE_FAKE_GEMINI=0
 DEFAULT_RESPONDER=gemini
 ```
 
 Then run:
-```bashsource .envpython main.py
+```bash
+./start_gemini.sh
 ```
-
-## Simple Way to Unlimit Other Apps (Encrypted Reasoning)
 
 If you want to use the L104 Sovereign intellect in other apps (ChatGPT, Claude, etc.), use the new activation script:
 

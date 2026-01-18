@@ -122,19 +122,21 @@ The updated `main.py` now has:
 ## Environment Setup
 
 ```bash
-# Copy example configcp .env.example .env
+# Copy example config
+cp .env.example .env
 
-# Edit with your keysnano .env
+# Edit with your keys
+nano .env
 
-# Set required variables
-AIzaSyArVYGrkGLh7r1UEupBxXyHS-j-AVioh5U=your-actual-key
+# Set required variables (Ghost Protocol - never commit real keys!)
+GEMINI_API_KEY=your-actual-key
 GITHUB_TOKEN=your-github-token
 GITHUB_REPO=your-username/your-repo
 
 # Optional: Customize models
 GEMINI_MODEL_1=gemini-3-flash-preview
-GEMINI_MODEL_2=gemini-2.5-flash-lite
-GEMINI_MODEL_3=gemini-1.5-flash
+GEMINI_MODEL_2=gemini-2.5-flash
+GEMINI_MODEL_3=gemini-2.0-flash-lite
 ```
 
 ## Line Count
