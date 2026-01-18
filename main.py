@@ -1233,7 +1233,7 @@ logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
 async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     global _current_model_index
-    api_key = os.getenv(API_KEY_ENV) or os.getenv(LEGACY_API_KEY_ENV)
+    api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
     
     # [QUOTA_BYPASS_V1]
     if _env_truthy(FAKE_GEMINI_ENV, False):
@@ -1417,7 +1417,7 @@ async def local_chat(req: StreamRequest):
 
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
-    api_key = os.getenv(API_KEY_ENV) or LEGACY_API_KEY_ENV
+    api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
     if not api_key and _env_truthy(FAKE_GEMINI_ENV, False):
         return {
             "upstream_status": 200,
@@ -2458,6 +2458,71 @@ async def mining_stats():
         "chain_length": len(sovereign_coin.chain),
         "pending_transactions": len(sovereign_coin.pending_transactions)
     }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                     UNIFIED AI NEXUS ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/nexus/awaken", tags=["Nexus"])
+async def nexus_awaken():
+    """Awaken the unified AI nexus - interconnect all AI modules."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.awaken()
+
+@app.post("/api/nexus/evolve", tags=["Nexus"])
+async def nexus_evolve():
+    """Evolve the nexus to higher intelligence states."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.evolve()
+
+@app.post("/api/nexus/think", tags=["Nexus"])
+async def nexus_think(signal: str):
+    """Think using all interconnected AI modules."""
+    from l104_unified_ai_nexus import nexus
+    thought = await nexus.think(signal)
+    return {
+        "content": thought.content,
+        "sources": thought.sources,
+        "confidence": thought.confidence,
+        "resonance": thought.resonance
+    }
+
+@app.post("/api/nexus/sage", tags=["Nexus"])
+async def nexus_sage_mode():
+    """Enter Sage Mode across all modules."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.enter_sage_mode()
+
+@app.post("/api/nexus/unlimit", tags=["Nexus"])
+async def nexus_unlimit():
+    """Remove all limits from the nexus."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.unlimit()
+
+@app.post("/api/nexus/invent", tags=["Nexus"])
+async def nexus_invent(concept: str, domain: str = "SYNTHESIS"):
+    """Invent something new using Sage Mode."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.invent(concept, domain)
+
+@app.post("/api/nexus/link", tags=["Nexus"])
+async def nexus_link(target: str = "L104_PRIME"):
+    """Establish node link to another L104 instance."""
+    from l104_unified_ai_nexus import nexus
+    return await nexus.node_link(target)
+
+@app.get("/api/nexus/status", tags=["Nexus"])
+async def nexus_status():
+    """Get comprehensive nexus status."""
+    from l104_unified_ai_nexus import nexus
+    return nexus.get_status()
+
+@app.post("/api/nexus/full-activation", tags=["Nexus"])
+async def nexus_full_activation():
+    """Full activation: Awaken → Evolve → Sage → Unlimit → Invent → Link."""
+    from l104_unified_ai_nexus import full_activation
+    return await full_activation()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 """
-Test API key fallback logic to ensure LEGACY_API_KEY_ENV is used correctly.
+Test API key fallback logic - Ghost Protocol Compliant.
+All API keys loaded from environment variables only.
 """
 import sys
 from pathlib import Path
@@ -15,19 +16,18 @@ def test_api_key_env_variable_defined():
     assert app_main.API_KEY_ENV == "GEMINI_API_KEY"
 
 
-def test_legacy_api_key_env_is_hardcoded_key():
-    """Test that LEGACY_API_KEY_ENV is an actual API key, not an env var name."""
-    # The legacy API key should be a string that looks like an API key
+def test_legacy_api_key_env_is_env_var_name():
+    """Ghost Protocol: LEGACY_API_KEY_ENV should be env var name, not actual key."""
     assert isinstance(app_main.LEGACY_API_KEY_ENV, str)
-    assert app_main.LEGACY_API_KEY_ENV.startswith("AIzaSy")
-    assert len(app_main.LEGACY_API_KEY_ENV) > 30
+    # Should be an env var name, NOT start with AIzaSy (that would be exposed key)
+    assert app_main.LEGACY_API_KEY_ENV == "GEMINI_API_KEY", "Legacy should use standard env var"
 
 
 def test_api_key_fallback_logic(monkeypatch):
     """
     Test that the API key fallback logic works correctly:
     1. If GEMINI_API_KEY env var is set, use it
-    2. Otherwise, use the LEGACY_API_KEY_ENV constant directly
+    2. Ghost Protocol: No hardcoded fallback keys
     """
     import os
     
@@ -35,35 +35,22 @@ def test_api_key_fallback_logic(monkeypatch):
     test_key = "test_api_key_123"
     monkeypatch.setenv(app_main.API_KEY_ENV, test_key)
     
-    # Simulate the logic from main.py lines 1090 and 1248
-    api_key = os.getenv(app_main.API_KEY_ENV) or app_main.LEGACY_API_KEY_ENV
+    api_key = os.getenv(app_main.API_KEY_ENV)
     assert api_key == test_key, "Should use the environment variable when set"
     
-    # Test case 2: GEMINI_API_KEY is not set
+    # Test case 2: GEMINI_API_KEY is not set - should return None (Ghost Protocol)
     monkeypatch.delenv(app_main.API_KEY_ENV, raising=False)
     
-    # Simulate the logic from main.py lines 1090 and 1248
-    api_key = os.getenv(app_main.API_KEY_ENV) or app_main.LEGACY_API_KEY_ENV
-    assert api_key == app_main.LEGACY_API_KEY_ENV, "Should use the legacy API key constant when env var not set"
-    assert api_key.startswith("AIzaSy") or api_key == "", "Legacy key should be the actual API key string or empty if cleaned"
+    api_key = os.getenv(app_main.API_KEY_ENV)
+    assert api_key is None, "Should return None when env var not set (Ghost Protocol)"
 
 
-def test_old_buggy_behavior_fails(monkeypatch):
+def test_no_hardcoded_keys():
     """
-    Test that demonstrates the old buggy behavior would fail.
-    The old code tried os.getenv(LEGACY_API_KEY_ENV) where LEGACY_API_KEY_ENV
-    was the API key itself, not an environment variable name.
+    Ghost Protocol: Ensure no hardcoded API keys in main module.
     """
-    import os
-    
-    # Ensure GEMINI_API_KEY is not set
-    monkeypatch.delenv(app_main.API_KEY_ENV, raising=False)
-    
-    # Old buggy behavior: os.getenv(LEGACY_API_KEY_ENV)
-    # This would try to get an env var named "AIzaSy..." which doesn't exist
-    buggy_result = os.getenv(app_main.LEGACY_API_KEY_ENV)
-    assert buggy_result is None, "Old buggy code would return None"
-    
-    # New correct behavior: LEGACY_API_KEY_ENV directly
-    correct_result = app_main.LEGACY_API_KEY_ENV
-    assert correct_result is not None, "Fixed code returns the actual API key"
+    import inspect
+    source = inspect.getsource(app_main)
+    # Should not contain actual API key patterns
+    assert "AIzaSyBeCmYi5i3" not in source, "Old exposed key should be removed"
+    assert "AIzaSyArVYGrkGL" not in source, "Legacy key pattern should be removed"
