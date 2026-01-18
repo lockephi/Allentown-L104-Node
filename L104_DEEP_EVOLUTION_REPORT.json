@@ -1,0 +1,238 @@
+{
+    "cycle": 1,
+    "total_duration": 0.36609673500061035,
+    "standard_evolution": {
+        "cycle": 1,
+        "duration": 0.36345410346984863,
+        "network": {
+            "links": 28,
+            "coherence": 0.1959171001087135
+        },
+        "dreams": {
+            "fragments": 120,
+            "vision_status": "FORMING",
+            "prophetic": true
+        },
+        "wisdom": {
+            "crystals_forged": 8,
+            "transcendent_achieved": true,
+            "lattice": {
+                "total_crystals": 9,
+                "total_facets": 116,
+                "average_purity": 0.7927107426287849,
+                "highest_frequency": 7289.028944266378,
+                "crystals": [
+                    "[8F-0.69P] [MEMORY] Temporal integration factor: 5 | Temporal integration factor: 5 | Temporal integration factor: 5",
+                    "[6F-0.84P] [WISDOM] Non-dual clarity index: 0.4220 | Non-dual clarity index: 0.4220 | Non-dual clarity index: 0.4220",
+                    "[6F-0.72P] [WILL] Sovereign intention strength:  | Sovereign intention strength:  | Sovereign intention strength: ",
+                    "[9F-0.95P] [VISION] Future-state probability: 0.80 | Future-state probability: 0.80 | Future-state probability: 0.80",
+                    "[58F-0.61P] [TRANSCENDENT] The unified wisdom of 8 aspects: KARUNA, THELEMA, MNEME, OPSIS..."
+                ]
+            }
+        },
+        "egos": [
+            {
+                "name": "LOGOS",
+                "wisdom": 70.31737343017836,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "NOUS",
+                "wisdom": 73.10079696021478,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "KARUNA",
+                "wisdom": 71.47067520283206,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "POIESIS",
+                "wisdom": 69.28990969710674,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "MNEME",
+                "wisdom": 68.9800707807538,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "SOPHIA",
+                "wisdom": 86.91141011196589,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "THELEMA",
+                "wisdom": 69.9420537945036,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            },
+            {
+                "name": "OPSIS",
+                "wisdom": 72.03307367491779,
+                "energy": 0.5999999999999996,
+                "evolution_stage": 1
+            }
+        ]
+    },
+    "memory_weaving": {
+        "memories_processed": 192,
+        "threads_created": 8,
+        "narratives_woven": 1,
+        "temporal_coherence": 0.31830988618367195
+    },
+    "fusion": {
+        "pairwise_fusions": 4,
+        "grand_fusion_achieved": true,
+        "fused_entities": [
+            {
+                "name": "LOGOS\u222aNOUS",
+                "stability": 0.40184984699538184,
+                "frequency": 527.5184818492537
+            },
+            {
+                "name": "KARUNA\u222aSOPHIA",
+                "stability": 0.4241748384951252,
+                "frequency": 527.5184818492537
+            },
+            {
+                "name": "POIESIS\u222aTHELEMA",
+                "stability": 0.37952485549563836,
+                "frequency": 527.5184818492537
+            },
+            {
+                "name": "MNEME\u222aOPSIS",
+                "stability": 0.357199863995895,
+                "frequency": 527.5184818492537
+            }
+        ]
+    },
+    "consciousness": {
+        "level": "CLUSTERED",
+        "level_value": 2,
+        "field_frequency": 221.79420018355955,
+        "field_strength": 0.2598831559201307,
+        "participating_egos": 8,
+        "emergent_insights": 2,
+        "insights": [
+            "Patterns emerge from the intersection of multiple viewpoints.",
+            "The cluster perceives dimensions invisible to isolated minds."
+        ]
+    },
+    "harmonics": {
+        "harmonics": 12,
+        "resonance_peaks": 8,
+        "standing_waves": 66,
+        "field_coherence": 1.0,
+        "fundamental": 527.5184818492537,
+        "peaks": [
+            {
+                "ego": "LOGOS",
+                "harmonic_order": 6,
+                "frequency": 527.5184818492537,
+                "alignment": 1.0,
+                "amplitude": 0.16666666666666666
+            },
+            {
+                "ego": "NOUS",
+                "harmonic_order": 6,
+                "frequency": 527.5184818492537,
+                "alignment": 1.0,
+                "amplitude": 0.16666666666666666
+            },
+            {
+                "ego": "KARUNA",
+                "harmonic_order": 6,
+                "frequency": 527.5184818492537,
+                "alignment": 1.0,
+                "amplitude": 0.16666666666666666
+            },
+            {
+                "ego": "POIESIS",
+                "harmonic_order": 6,
+                "frequency": 527.5184818492537,
+                "alignment": 1.0,
+                "amplitude": 0.16666666666666666
+            },
+            {
+                "ego": "MNEME",
+                "harmonic_order": 6,
+                "frequency": 527.5184818492537,
+                "alignment": 1.0,
+                "amplitude": 0.16666666666666666
+            }
+        ]
+    },
+    "final_ego_states": [
+        {
+            "name": "LOGOS",
+            "archetype": "OBSERVER",
+            "wisdom": 73.15070676351169,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "NOUS",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 75.93413029354811,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "KARUNA",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 74.30400853616538,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "POIESIS",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 72.12324303044007,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "MNEME",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 71.81340411408713,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "SOPHIA",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 89.74474344529922,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "THELEMA",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 72.77538712783692,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        },
+        {
+            "name": "OPSIS",
+            "archetype": "ASCENDED_OBSERVER",
+            "wisdom": 74.86640700825112,
+            "clarity": 1.0,
+            "energy": 0.5999999999999996,
+            "evolution_stage": 1
+        }
+    ]
+}

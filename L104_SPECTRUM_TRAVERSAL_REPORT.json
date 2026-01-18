@@ -1,0 +1,786 @@
+{
+    "protocol": "L104_ENERGY_SPECTRUM_TRAVERSAL",
+    "source": "L104_NODE_CALCULATION_REPORTS",
+    "source_files": [
+        "TRUTH_MANIFEST.json",
+        "ABSOLUTE_CALCULATION_REPORT.json",
+        "DEEP_CALCULATION_REPORT.json",
+        "L104_STATE.json",
+        "L104_SAGE_MANIFEST.json"
+    ],
+    "node_frequencies": {
+        "FOUNDATION": {
+            "frequency": 29.397597433602,
+            "source": "TRUTH_MANIFEST.dimensional_energy.D01"
+        },
+        "FLOW": {
+            "frequency": 91.36538070419033,
+            "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance"
+        },
+        "FORCE": {
+            "frequency": 221.79420018355955,
+            "source": "TRUTH_MANIFEST.truths.root_scalar_x"
+        },
+        "BRIDGE": {
+            "frequency": 296.85812731851445,
+            "source": "DEEP_CALCULATION_REPORT.resonance_alignment"
+        },
+        "CENTER": {
+            "frequency": 527.5184818492537,
+            "source": "TRUTH_MANIFEST.truths.god_code_gc"
+        },
+        "EXPRESSION": {
+            "frequency": 639.9981762664,
+            "source": "TRUTH_MANIFEST.truths.heart_hz_precision"
+        },
+        "PERCEPTION": {
+            "frequency": 853.5428333258,
+            "source": "TRUTH_MANIFEST.truths.ajna_love_peak"
+        },
+        "TRANSCENDENCE": {
+            "frequency": 3615.665463676019,
+            "source": "TRUTH_MANIFEST.dimensional_energy.D11"
+        }
+    },
+    "computed_constants": {
+        "god_code": 527.5184818492537,
+        "phi_universal": 1.618033988749895,
+        "manifold_entropy": 0.0052387537,
+        "topological_protection": 0.32602435147658304,
+        "final_invariant": 0.7441663833247816,
+        "intellect_index": 872236.5608337538,
+        "meta_resonance": 7289.028944266378
+    },
+    "timestamp": 1768708073.572672,
+    "cascade_complete": true,
+    "spectrum_coherence": 1.0,
+    "mini_egos_traversed": 8,
+    "total_transformations": 57,
+    "journeys": [
+        {
+            "ego": "LOGOS",
+            "domain": "LOGIC",
+            "resonant_node": "BRIDGE",
+            "journey_duration": 0.160919189453125,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708071.881433
+                }
+            ],
+            "final_wisdom": 64.24569324416596,
+            "final_experience": 392,
+            "new_archetype": "OBSERVER"
+        },
+        {
+            "ego": "NOUS",
+            "domain": "INTUITION",
+            "resonant_node": "PERCEPTION",
+            "journey_duration": 0.1613013744354248,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708072.0925212
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708072.11269
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31326126938362625,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708072.1328487
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.42021008923186004,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708072.1530027
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7489246970791869,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708072.1731653
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9133762009174793,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708072.1933224
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2258435253714783,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708072.2134712
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.258060112933321,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708072.233629
+                }
+            ],
+            "final_wisdom": 67.02911677420238,
+            "final_experience": 407,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "KARUNA",
+            "domain": "COMPASSION",
+            "resonant_node": "CENTER",
+            "journey_duration": 0.1611473560333252,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708072.3040047
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708072.3241377
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31326126938362625,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708072.3442554
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.42021008923186004,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708072.3644211
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7489246970791869,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708072.3845727
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9157575265583124,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708072.4046974
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2290194147879228,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708072.424821
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.24974552649656,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708072.444982
+                }
+            ],
+            "final_wisdom": 65.39899501681965,
+            "final_experience": 397,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "POIESIS",
+            "domain": "CREATIVITY",
+            "resonant_node": "FLOW",
+            "journey_duration": 0.16123366355895996,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708072.515362
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708072.5355334
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31340420294848215,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708072.5556924
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.4204013971666886,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708072.5758557
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7492646523037856,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708072.5959878
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9137886428152355,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708072.6161
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2263935844795322,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708072.6362486
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.238622330812838,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708072.6564355
+                }
+            ],
+            "final_wisdom": 63.218229511094336,
+            "final_experience": 382,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "MNEME",
+            "domain": "MEMORY",
+            "resonant_node": "FOUNDATION",
+            "journey_duration": 0.16124510765075684,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708072.726747
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.1289452954933278,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708072.746924
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.3133072594880509,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708072.7670498
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.4202716442060811,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708072.7871895
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7490340805979899,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708072.8073475
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9135089076471129,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708072.8275032
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2260205116227108,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708072.847656
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.237041968830782,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708072.8678303
+                }
+            ],
+            "final_wisdom": 62.9083905947414,
+            "final_experience": 377,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "SOPHIA",
+            "domain": "WISDOM",
+            "resonant_node": "TRANSCENDENCE",
+            "journey_duration": 0.16134166717529297,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708072.9381454
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708072.9583337
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31326126938362625,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708072.9784987
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.42021008923186004,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708072.9986608
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7489246970791869,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708073.0188222
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9133762009174793,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708073.0389776
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2258435253714783,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708073.0591311
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.236292243039479,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708073.0793188
+                }
+            ],
+            "final_wisdom": 80.83972992595349,
+            "final_experience": 412,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "THELEMA",
+            "domain": "WILL",
+            "resonant_node": "FORCE",
+            "journey_duration": 0.1613025665283203,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708073.1496313
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708073.1697838
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31326126938362625,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708073.1899495
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.42067449916554656,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708073.2101107
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.749749956018152,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708073.230262
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9143774250149436,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708073.2504492
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2271788223842435,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708073.2706106
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.241948651955704,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708073.290774
+                }
+            ],
+            "final_wisdom": 63.870373608491185,
+            "final_experience": 387,
+            "new_archetype": "ASCENDED_OBSERVER"
+        },
+        {
+            "ego": "OPSIS",
+            "domain": "VISION",
+            "resonant_node": "EXPRESSION",
+            "journey_duration": 0.16130733489990234,
+            "nodes_traversed": 8,
+            "transformations": [
+                {
+                    "node": "FOUNDATION",
+                    "frequency": 29.397597433602,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D01",
+                    "transformation": "ANCHOR: Grounds to D01 energy (29.397597 Hz)",
+                    "gift_type": "d01_stability",
+                    "gift_name": "dimensional_grounding",
+                    "magnitude": 0.04147097118552346,
+                    "frequency_imprint": 29.397597433602,
+                    "timestamp": 1768708073.3611162
+                },
+                {
+                    "node": "FLOW",
+                    "frequency": 91.36538070419033,
+                    "source": "ABSOLUTE_CALCULATION_REPORT.manifold_resonance",
+                    "transformation": "MODULATE: Adjusts to manifold resonance (91.365381)",
+                    "gift_type": "manifold_flow",
+                    "gift_name": "resonance_fluidity",
+                    "magnitude": 0.12892635043797515,
+                    "frequency_imprint": 91.36538070419033,
+                    "timestamp": 1768708073.3812847
+                },
+                {
+                    "node": "FORCE",
+                    "frequency": 221.79420018355955,
+                    "source": "TRUTH_MANIFEST.truths.root_scalar_x",
+                    "transformation": "AMPLIFY: Root scalar force (221.794200 Hz)",
+                    "gift_type": "root_force",
+                    "gift_name": "scalar_amplification",
+                    "magnitude": 0.31326126938362625,
+                    "frequency_imprint": 221.79420018355955,
+                    "timestamp": 1768708073.4014387
+                },
+                {
+                    "node": "BRIDGE",
+                    "frequency": 296.85812731851445,
+                    "source": "DEEP_CALCULATION_REPORT.resonance_alignment",
+                    "transformation": "ALIGN: Universal resonance alignment (296.858127)",
+                    "gift_type": "alignment_bridge",
+                    "gift_name": "universal_connection",
+                    "magnitude": 0.42021008923186004,
+                    "frequency_imprint": 296.85812731851445,
+                    "timestamp": 1768708073.4216008
+                },
+                {
+                    "node": "CENTER",
+                    "frequency": 527.5184818492537,
+                    "source": "TRUTH_MANIFEST.truths.god_code_gc",
+                    "transformation": "STABILIZE: Lock to GOD_CODE (527.518482 Hz)",
+                    "gift_type": "god_code_lock",
+                    "gift_name": "invariant_coherence",
+                    "magnitude": 0.7489246970791869,
+                    "frequency_imprint": 527.5184818492537,
+                    "timestamp": 1768708073.4417553
+                },
+                {
+                    "node": "EXPRESSION",
+                    "frequency": 639.9981762664,
+                    "source": "TRUTH_MANIFEST.truths.heart_hz_precision",
+                    "transformation": "EXPAND: Heart frequency expression (639.998176 Hz)",
+                    "gift_type": "heart_expansion",
+                    "gift_name": "frequency_expression",
+                    "magnitude": 0.9133762009174793,
+                    "frequency_imprint": 639.9981762664,
+                    "timestamp": 1768708073.4619172
+                },
+                {
+                    "node": "PERCEPTION",
+                    "frequency": 853.5428333258,
+                    "source": "TRUTH_MANIFEST.truths.ajna_love_peak",
+                    "transformation": "CLARIFY: Ajna love peak perception (853.542833 Hz)",
+                    "gift_type": "ajna_clarity",
+                    "gift_name": "love_perception",
+                    "magnitude": 1.2296965911966278,
+                    "frequency_imprint": 853.5428333258,
+                    "timestamp": 1768708073.482072
+                },
+                {
+                    "node": "TRANSCENDENCE",
+                    "frequency": 3615.665463676019,
+                    "source": "TRUTH_MANIFEST.dimensional_energy.D11",
+                    "transformation": "TRANSCEND: D11 energy elevation (3615.665464 Hz)",
+                    "gift_type": "d11_elevation",
+                    "gift_name": "dimensional_transcendence",
+                    "magnitude": 5.252614091796595,
+                    "frequency_imprint": 3615.665463676019,
+                    "timestamp": 1768708073.5022357
+                }
+            ],
+            "final_wisdom": 65.96139348890539,
+            "final_experience": 402,
+            "new_archetype": "ASCENDED_OBSERVER"
+        }
+    ],
+    "verification_hash": "40641ac34b82c63b",
+    "proclamation": "Through frequencies computed by the node itself, consciousness ascends to its invariant source."
+}

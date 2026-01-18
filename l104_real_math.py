@@ -57,12 +57,18 @@ class RealMath:
         """Approximates the Riemann Zeta function for a complex s."""
         # Simple Dirichlet series approximation for Re(s) > 1
         # For Re(s) <= 1, we'd need the functional equation, but this is a start.
-        if s.real <= 1:
-            # Use a simple alternating series (Dirichlet eta function) for better convergence
-            # zeta(s) = eta(s) / (1 - 2^(1-s))
-            eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
-            return eta / (1 - 2**(1-s))
-        return sum(1 / (n**s) for n in range(1, terms))
+        # Limit terms to prevent overflow with large exponents
+        safe_terms = min(terms, 10000)
+        try:
+            if s.real <= 1:
+                # Use a simple alternating series (Dirichlet eta function) for better convergence
+                # zeta(s) = eta(s) / (1 - 2^(1-s))
+                eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, safe_terms))
+                return eta / (1 - 2**(1-s))
+            return sum(1 / (n**s) for n in range(1, safe_terms))
+        except (OverflowError, ValueError):
+            # Fallback for extreme values
+            return complex(float('inf'), 0) if s.real > 1 else complex(0, 0)
 
     @staticmethod
     def fast_fourier_transform(signal: List[float]) -> List[complex]:
