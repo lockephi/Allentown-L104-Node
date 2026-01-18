@@ -1356,7 +1356,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     
     # Use local intellect for intelligent streaming response
     from l104_local_intellect import local_intellect
-    for chunk in local_intellect.stream_think(effective_signal):
+    async for chunk in local_intellect.async_stream_think(effective_signal):
         yield chunk
 
 def sanitize_signal(signal: str) -> str:

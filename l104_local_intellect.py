@@ -192,7 +192,19 @@ class LocalIntellect:
         words = response.split()
         for i, word in enumerate(words):
             yield word + (" " if i < len(words) - 1 else "")
-            time.sleep(0.02)  # Small delay for streaming effect
+    
+    async def async_stream_think(self, message: str):
+        """
+        Async generator that yields response chunks for streaming.
+        """
+        import asyncio
+        response = self.think(message)
+        
+        # Stream word by word with small delays
+        words = response.split()
+        for i, word in enumerate(words):
+            yield word + (" " if i < len(words) - 1 else "")
+            await asyncio.sleep(0.01)
 
 
 # Singleton instance
