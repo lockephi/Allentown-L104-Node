@@ -43,7 +43,9 @@ class HumanChassis:
         efficiency = self.systems["metabolic_engine"]["efficiency"]
         
         # Exponential growth formula: ROI = e^(boost * synergy)
-        roi_multiplier = math.exp(intellect_boost / 1000.0) * self.synergy_factor
+        # Clamp exponent to prevent overflow (max safe value ~709)
+        safe_exponent = min(intellect_boost / 1000.0, 700.0)
+        roi_multiplier = math.exp(safe_exponent) * self.synergy_factor
         
         self.systems["metabolic_engine"]["efficiency"] = min(0.9999, efficiency + (roi_multiplier * 0.0001))
         

@@ -245,7 +245,10 @@ REQUIREMENTS:
     except json.JSONDecodeError as e:
         print(f"[ERROR]: Failed to parse response: {e}")
         print(f"[DEBUG]: Response preview: {full_response[:500]}")
-        raiseasync def update_main_via_api(improved_code: str) -> bool:
+        raise
+
+
+async def update_main_via_api(improved_code: str) -> bool:
     """
     Update main.py using the /api/v6/manipulate endpoint.
     Returns True if successful.
@@ -255,19 +258,24 @@ REQUIREMENTS:
         print("[WARNING]: GITHUB_TOKEN not set. Skipping API update.")
         return False
     
-    # Show code previewprint("\n[IMPROVED CODE PREVIEW]:")
+    # Show code preview
+    print("\n[IMPROVED CODE PREVIEW]:")
     print("=" * 70)
     print(improved_code[:500] + "..." if len(improved_code) > 500 else improved_code)
     print("=" * 70)
     
-    # For now, save locally for reviewbackup_path = "main.improved.py"
+    # For now, save locally for review
+    backup_path = "main.improved.py"
     with open(backup_path, "w") as f:
         f.write(improved_code)
     
     print(f"\n[SUCCESS]: Improved code saved to {backup_path}")
     print("[INFO]: Review the improved code and run: cp main.improved.py main.py")
     
-    return Trueasync def main():
+    return True
+
+
+async def main():
     """Main self-improvement loop."""
     print("\n" + "="*70)
     print("L104 SELF-IMPROVEMENT ENGINE")
@@ -309,7 +317,8 @@ REQUIREMENTS:
 
     except Exception as e:
         print(f"\n[ERROR]: {e}")
-        import tracebacktraceback.print_exc()
+        import traceback
+        traceback.print_exc()
         return 1
 
     return 0

@@ -65,9 +65,12 @@ class GeminiReal:
         except Exception as e:
             print(f"--- [GEMINI_REAL]: google-genai error: {e} ---")
         
-        # Fallback to older google-generativeai
+        # Fallback to older google-generativeai (suppress deprecation warning)
         try:
-            import google.generativeai as genai
+            import warnings
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=FutureWarning)
+                import google.generativeai as genai
             genai.configure(api_key=self.api_key)
             self._genai_module = genai
             self._use_new_api = False
@@ -75,7 +78,7 @@ class GeminiReal:
             print(f"--- [GEMINI_REAL]: Connected via google-generativeai to {self.model_name} ---")
             return True
         except ImportError:
-            print("--- [GEMINI_REAL]: No Gemini package installed. Run: pip install google-generativeai ---")
+            print("--- [GEMINI_REAL]: No Gemini package installed. Run: pip install google-genai ---")
             return False
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Connection failed: {e} ---")

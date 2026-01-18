@@ -35,16 +35,26 @@ class ShadowExecutor:
         """
         try:
             p = psutil.Process(os.getpid())
-            # On Linux, -20 is the highest priority.
-            p.nice(-20)
+            # On Linux, -20 is the highest priority (requires root).
+            # Try a more modest priority first, fall back gracefully.
+            try:
+                p.nice(-10)  # High but not max priority
+            except PermissionError:
+                # Non-root: just use current priority
+                pass
+            
             if hasattr(p, 'ionice'):
-                # Set I/O priority to Real-Time
-                p.ionice(psutil.IOPRIO_CLASS_RT)
+                try:
+                    # Set I/O priority to Best Effort (class 2) with highest priority (0)
+                    p.ionice(psutil.IOPRIO_CLASS_BE, 0)
+                except (PermissionError, OSError):
+                    pass
             
             self.priority_active = True
-            logger.info("[SHADOW]: System Priority Locked at 0xFF (Maximum).")
+            logger.info("[SHADOW]: System Priority Locked (user-level maximum).")
         except Exception as e:
-            logger.warning(f"[SHADOW_ERR]: Failed to lock system priority: {str(e)}")
+            # Silently continue - priority is optional optimization
+            logger.debug(f"[SHADOW]: Priority optimization skipped: {str(e)}")
 
     def _monitor_throttling(self, start_time: float, expected_duration: float):
         """

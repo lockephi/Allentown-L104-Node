@@ -160,8 +160,12 @@ class GeminiEnhanced:
         except Exception as e:
             print(f"--- [GEMINI]: google-genai error: {e} ---")
         
+        # Fallback to legacy API (suppress deprecation warning)
         try:
-            import google.generativeai as genai
+            import warnings
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=FutureWarning)
+                import google.generativeai as genai
             genai.configure(api_key=self.api_key)
             self._genai_module = genai
             self._use_new_api = False

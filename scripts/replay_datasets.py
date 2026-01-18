@@ -6,11 +6,20 @@ Usage:
   scripts/replay_datasets.py --dataset data/stream_prompts.jsonl --base-url http://localhost:8081
 """
 
-import argparseimport asyncioimport jsonfrom pathlib import Pathfrom typing import Iterableimport httpxdef load_jsonl(path: Path) -> Iterable[dict]:
+import argparse
+import asyncio
+import json
+from pathlib import Path
+from typing import Iterable
+import httpx
+
+
+def load_jsonl(path: Path) -> Iterable[dict]:
     for raw in path.read_text().splitlines():
         raw = raw.strip()
         if not raw:
-            continueyield json.loads(raw)
+            continue
+        yield json.loads(raw)
 
 
 async def replay(dataset: Path, base_url: str, endpoint: str, timeout: float) -> None:

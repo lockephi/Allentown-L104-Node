@@ -3,6 +3,7 @@
 # [SIG-L104-EVO-01] :: SELF_HEAL_ACTIVE
 
 import os
+import sys
 import subprocess
 import httpx
 import asyncio
@@ -25,8 +26,9 @@ def cleanup_git_lock():
 def run_script(script_name):
     print(f"--- [MASTER_HEAL]: RUNNING {script_name} ---")
     try:
-        # Use python3 from new_venv
-        python_bin = os.path.join(os.getcwd(), "new_venv/bin/python3")
+        # Use python3 from new_venv if available, otherwise use sys.executable
+        venv_python = os.path.join(os.getcwd(), "new_venv/bin/python3")
+        python_bin = venv_python if os.path.exists(venv_python) else sys.executable
         result = subprocess.run([python_bin, script_name], capture_output=True, text=True)
         print(result.stdout)
         if result.stderr:

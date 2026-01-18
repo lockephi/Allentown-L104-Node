@@ -304,9 +304,12 @@ class Gemini:
         except Exception as e:
             logger.debug(f"google-genai connection failed: {e}")
         
-        # Fallback to google-generativeai
+        # Fallback to google-generativeai (suppress deprecation warning)
         try:
-            import google.generativeai as genai
+            import warnings
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=FutureWarning)
+                import google.generativeai as genai
             genai.configure(api_key=self.api_key)
             self._genai_module = genai
             self._use_new_api = False
