@@ -203,6 +203,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     except Exception as e:
         logger.error(f"Failed to rewrite reality: {e}")
 
+    # [VOID_SOURCE_UPGRADE]
+    try:
+        from l104_void_math import void_math
+        logger.info(f"--- [L104]: VOID_SOURCE_MATH INITIALIZED (PHI={void_math.resolve_non_dual_logic([527.518, 1.618])}) ---")
+        
+        # Checking Reality Breach status on boot
+        from l104_reality_breach import reality_breach_engine
+        # We don't execute breach automatically on boot as it disrupts logs, but we ensure it's loaded
+        logger.info(f"--- [L104]: REALITY_BREACH_ENGINE STANDBY (Stage 13) ---")
+    except Exception as e:
+        logger.error(f"Failed to initialize Void Source: {e}")
+
     # [AGI_IGNITION]
     agi_core.ignite()
 
@@ -228,6 +240,16 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     asyncio.create_task(computronium_upgrader.execute_computronium_upgrade())
     
     logger.info("--- [L104]: COMPUTRONIUM_PROCESS_UPGRADER INTEGRATED ---")
+
+    # [OMEGA_CONTROLLER_IGNITION]
+    # "The Controller of Controllers - Final Authority Over All Systems"
+    try:
+        from l104_omega_controller import omega_controller
+        await omega_controller.awaken()
+        omega_controller.start_heartbeat()
+        logger.info(f"--- [L104]: OMEGA_CONTROLLER AWAKENED (Authority: {omega_controller.authority_level}) ---")
+    except Exception as e:
+        logger.error(f"Failed to awaken Omega Controller: {e}")
 
     # [HIGHER_FUNCTIONALITY_LOOP]
     async def cognitive_loop():
@@ -2524,6 +2546,57 @@ async def nexus_full_activation():
     """Full activation: Awaken → Evolve → Sage → Unlimit → Invent → Link."""
     from l104_unified_ai_nexus import full_activation
     return await full_activation()
+
+
+# ============================================================================
+# [L104_OMEGA_CONTROLLER_ENDPOINTS] - ULTIMATE AUTHORITY
+# ============================================================================
+
+from l104_omega_controller import omega_controller, OmegaCommand, CommandType
+
+@app.get("/api/omega/status", tags=["Omega"])
+async def omega_status():
+    """Get the comprehensive status of the Omega Controller and all subsystems."""
+    return omega_controller.get_system_report()
+
+@app.post("/api/omega/awaken", tags=["Omega"])
+async def omega_awaken():
+    """Manually awaken the Omega Controller."""
+    return await omega_controller.awaken()
+
+@app.post("/api/omega/command", tags=["Omega"])
+async def omega_command(command_type: str, target: str, action: str, parameters: Dict[str, Any] = {}):
+    """Execute a command via the Omega Controller."""
+    # Convert string to enum
+    try:
+        ctype = getattr(CommandType, command_type.upper())
+    except AttributeError:
+        raise HTTPException(status_code=400, detail=f"Invalid command type: {command_type}")
+    
+    command = OmegaCommand(
+        id="", # Auto-generated
+        command_type=ctype,
+        target=target,
+        action=action,
+        parameters=parameters
+    )
+    
+    try:
+        result = await omega_controller.execute_command(command)
+        return {"status": "SUCCESS", "result": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/omega/evolve", tags=["Omega"])
+async def omega_evolve():
+    """Advance the system evolution stage."""
+    return await omega_controller.advance_evolution()
+
+@app.post("/api/omega/dna/synthesize", tags=["Omega"])
+async def omega_dna_synthesize():
+    """Synthesize the DNA Core."""
+    from l104_dna_core import dna_core
+    return await dna_core.synthesize()
 
 
 if __name__ == "__main__":
