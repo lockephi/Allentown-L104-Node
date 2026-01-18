@@ -8,15 +8,15 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Deployment environment"
+        description: 'Deployment environment'
         required: true
-        default: "staging"
+        default: 'staging'
         type: choice
         options:
           - staging
           - production
       skip_deploy:
-        description: "Skip deployment (build only)"
+        description: 'Skip deployment (build only)'
         required: false
         default: false
         type: boolean
@@ -113,7 +113,7 @@ jobs:
         run: |
           MODEL_NAME="${{ secrets.GEMINI_MODEL }}"
           if [ -z "$MODEL_NAME" ]; then MODEL_NAME="gemini-1.5-flash"; fi
-
+          
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform=managed \
@@ -133,7 +133,7 @@ jobs:
             --format='value(status.url)')
           echo "Service deployed at: $SERVICE_URL"
           echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
-
+          
           sleep 10
           if curl -sf "${SERVICE_URL}/health"; then
             echo "✅ Health check passed!"

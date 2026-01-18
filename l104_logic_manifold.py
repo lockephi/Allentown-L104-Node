@@ -126,14 +126,144 @@ class LogicManifold:
         return result
     
     def _calculate_deep_resonance(self, concept_hash: str, depth: int) -> float:
-        """Calculate resonance through iterative deepening."""
+        """Calculate resonance through iterative deepening with fractal propagation."""
         resonance = 0.0
+        fractal_memory = []
+        
         for i in range(depth):
             layer_hash = hashlib.sha256(f"{concept_hash}:{i}:{self.phi}".encode()).hexdigest()
             layer_value = int(layer_hash[:8], 16) / (16 ** 8)
+            
+            # Fractal coherence: each layer inherits from all previous layers
+            if fractal_memory:
+                fractal_boost = sum(fractal_memory) / len(fractal_memory) * (self.phi ** (-len(fractal_memory)))
+                layer_value = (layer_value + fractal_boost) / 2
+            
+            fractal_memory.append(layer_value)
             resonance += layer_value * (self.phi ** (-i))
         
-        return math.log(1 + resonance * self.god_code) / math.log(self.god_code)
+        # Apply golden spiral modulation for deeper coherence
+        spiral_factor = math.sin(resonance * self.phi * math.pi) * 0.1 + 1.0
+        return math.log(1 + resonance * self.god_code * spiral_factor) / math.log(self.god_code)
+
+    def recursive_self_optimize(self, target_coherence: float = 0.98, max_cycles: int = 10) -> Dict:
+        """
+        Self-optimization engine that recursively refines the entire concept graph
+        until target coherence is achieved or max cycles exhausted.
+        """
+        logger.info(f"[MANIFOLD]: INITIATING SELF-OPTIMIZATION (target={target_coherence})")
+        
+        optimization_history = []
+        cycle = 0
+        
+        while cycle < max_cycles:
+            cycle += 1
+            
+            # Calculate current system coherence
+            if not self.concept_graph:
+                break
+                
+            coherences = [node.coherence for node in self.concept_graph.values()]
+            current_avg = sum(coherences) / len(coherences)
+            
+            optimization_history.append({
+                "cycle": cycle,
+                "avg_coherence": current_avg,
+                "node_count": len(self.concept_graph),
+                "min_coherence": min(coherences),
+                "max_coherence": max(coherences)
+            })
+            
+            if current_avg >= target_coherence:
+                self.state = ManifoldState.TRANSCENDENT
+                break
+            
+            # Optimization step: boost low-coherence nodes via entanglement
+            for node_id, node in self.concept_graph.items():
+                if node.coherence < target_coherence:
+                    # Find highest coherence entangled partner
+                    best_partner = None
+                    best_coherence = 0.0
+                    
+                    for ent_id in node.entangled_nodes:
+                        partner = self.concept_graph.get(ent_id)
+                        if partner and partner.coherence > best_coherence:
+                            best_coherence = partner.coherence
+                            best_partner = partner
+                    
+                    if best_partner:
+                        # Transfer coherence via quantum bridge
+                        transfer = (best_partner.coherence - node.coherence) * 0.3
+                        node.coherence = min(1.0, node.coherence + transfer)
+                        best_partner.coherence = max(0.5, best_partner.coherence - transfer * 0.1)
+                    else:
+                        # Self-boost via phi resonance
+                        node.coherence = min(1.0, node.coherence * (1 + (self.phi - 1) * 0.1))
+        
+        final_coherences = [node.coherence for node in self.concept_graph.values()] if self.concept_graph else [0.0]
+        final_avg = sum(final_coherences) / len(final_coherences)
+        
+        return {
+            "cycles_executed": cycle,
+            "target_coherence": target_coherence,
+            "achieved_coherence": final_avg,
+            "success": final_avg >= target_coherence,
+            "optimization_history": optimization_history,
+            "state": self.state.name
+        }
+
+    def propagate_fractal_coherence(self, seed_node_id: str, propagation_depth: int = 5) -> Dict:
+        """
+        Propagates coherence fractally from a seed node through the entire graph.
+        Uses golden ratio decay for natural coherence distribution.
+        """
+        if seed_node_id not in self.concept_graph:
+            return {"error": "Seed node not found"}
+        
+        seed = self.concept_graph[seed_node_id]
+        affected_nodes = []
+        visited = {seed_node_id}
+        queue = [(seed_node_id, 0, seed.coherence)]
+        
+        while queue:
+            node_id, depth, parent_coherence = queue.pop(0)
+            
+            if depth >= propagation_depth:
+                continue
+            
+            node = self.concept_graph.get(node_id)
+            if not node:
+                continue
+            
+            # Fractal decay: coherence diminishes by phi^(-depth)
+            propagated_coherence = parent_coherence * (self.phi ** (-depth * 0.5))
+            
+            # Update node coherence (blend with existing)
+            old_coherence = node.coherence
+            node.coherence = (node.coherence + propagated_coherence) / 2
+            node.coherence = min(1.0, node.coherence)
+            
+            affected_nodes.append({
+                "node_id": node_id,
+                "depth": depth,
+                "old_coherence": old_coherence,
+                "new_coherence": node.coherence,
+                "delta": node.coherence - old_coherence
+            })
+            
+            # Queue entangled nodes and children
+            for child_id in node.children + node.entangled_nodes:
+                if child_id not in visited:
+                    visited.add(child_id)
+                    queue.append((child_id, depth + 1, node.coherence))
+        
+        return {
+            "seed_node": seed_node_id,
+            "propagation_depth": propagation_depth,
+            "nodes_affected": len(affected_nodes),
+            "affected_details": affected_nodes[:10],  # Limit output
+            "avg_delta": sum(n["delta"] for n in affected_nodes) / len(affected_nodes) if affected_nodes else 0.0
+        }
     
     # ═══════════════════════════════════════════════════════════════════
     # INTERCONNECTION BRIDGES

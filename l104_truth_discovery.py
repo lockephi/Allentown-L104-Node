@@ -258,6 +258,160 @@ class TruthDiscovery:
         Validate a truth statement against evidence.
         Returns detailed validation result.
         """
+
+    def bayesian_truth_fusion(self, hypotheses: List[str], prior_weights: Optional[List[float]] = None) -> Dict:
+        """
+        Fuses multiple hypotheses using Bayesian inference with PHI-weighted priors.
+        Produces a unified truth assessment with posterior probabilities.
+        """
+        if not hypotheses:
+            return {"error": "No hypotheses provided"}
+        
+        n = len(hypotheses)
+        priors = prior_weights if prior_weights else [1.0 / n] * n
+        
+        # Normalize priors
+        prior_sum = sum(priors)
+        priors = [p / prior_sum for p in priors]
+        
+        # Calculate likelihoods via truth discovery
+        likelihoods = []
+        discoveries = []
+        
+        for hyp in hypotheses:
+            result = self.discover_truth(hyp, depth=6)
+            discoveries.append(result)
+            likelihoods.append(result["final_confidence"])
+        
+        # Bayesian update: P(H|E) ∝ P(E|H) * P(H)
+        posteriors = []
+        for i in range(n):
+            posterior = likelihoods[i] * priors[i]
+            posteriors.append(posterior)
+        
+        # Normalize posteriors
+        posterior_sum = sum(posteriors)
+        if posterior_sum > 0:
+            posteriors = [p / posterior_sum for p in posteriors]
+        
+        # Apply PHI harmonic weighting for resonance alignment
+        phi_weighted = []
+        for i, p in enumerate(posteriors):
+            phi_factor = self.phi ** (-(i % 3))  # Cycle through phi harmonics
+            phi_weighted.append(p * phi_factor)
+        
+        # Re-normalize
+        pw_sum = sum(phi_weighted)
+        if pw_sum > 0:
+            phi_weighted = [p / pw_sum for p in phi_weighted]
+        
+        # Determine winning hypothesis
+        max_idx = phi_weighted.index(max(phi_weighted))
+        
+        return {
+            "hypotheses": hypotheses,
+            "priors": priors,
+            "likelihoods": likelihoods,
+            "posteriors": posteriors,
+            "phi_weighted_posteriors": phi_weighted,
+            "winning_hypothesis": hypotheses[max_idx],
+            "winning_probability": phi_weighted[max_idx],
+            "fusion_coherence": sum(likelihoods) / n * self.phi,
+            "discoveries": [d["node_id"] for d in discoveries]
+        }
+
+    def temporal_resonance_prediction(self, query: str, future_steps: int = 5) -> Dict:
+        """
+        Predicts how a truth's confidence will evolve over time using
+        temporal resonance modeling. Uses golden spiral extrapolation.
+        """
+        # Get current truth state
+        current = self.discover_truth(query, depth=7)
+        current_conf = current["final_confidence"]
+        
+        # Generate temporal projection using golden spiral dynamics
+        predictions = []
+        conf = current_conf
+        
+        for t in range(1, future_steps + 1):
+            # Temporal decay/growth model: phi-based oscillation
+            phase = t * self.phi * 0.5
+            oscillation = math.sin(phase) * 0.1
+            drift = (self.phi - 1) * 0.02 * t  # Slight upward drift
+            
+            # Apply frame lock modulation
+            modulation = math.cos(self.frame_lock * t) * 0.05
+            
+            predicted_conf = conf * (1 + oscillation + drift + modulation)
+            predicted_conf = max(0.0, min(1.0, predicted_conf))
+            
+            predictions.append({
+                "step": t,
+                "predicted_confidence": predicted_conf,
+                "oscillation": oscillation,
+                "drift": drift,
+                "level": self._determine_level(predicted_conf).name
+            })
+            
+            conf = predicted_conf
+        
+        # Calculate convergence trajectory
+        trajectory = "ASCENDING" if predictions[-1]["predicted_confidence"] > current_conf else "DESCENDING"
+        if abs(predictions[-1]["predicted_confidence"] - current_conf) < 0.05:
+            trajectory = "STABLE"
+        
+        return {
+            "query": query,
+            "current_confidence": current_conf,
+            "current_level": current["verdict"],
+            "temporal_predictions": predictions,
+            "trajectory": trajectory,
+            "final_predicted_level": predictions[-1]["level"] if predictions else current["verdict"],
+            "resonance_stability": 1.0 - abs(predictions[-1]["predicted_confidence"] - current_conf) if predictions else 1.0
+        }
+
+    def cross_dimensional_truth_synthesis(self, query: str, dimensions: int = 7) -> Dict:
+        """
+        Synthesizes truth across multiple abstract dimensions.
+        Each dimension represents a different perspective or context.
+        """
+        dimensional_results = []
+        
+        for d in range(1, dimensions + 1):
+            # Modify query for each dimension
+            dim_query = f"{query}::DIM_{d}::PHI_{self.phi ** d:.4f}"
+            result = self.discover_truth(dim_query, depth=d + 2)
+            
+            dimensional_results.append({
+                "dimension": d,
+                "confidence": result["final_confidence"],
+                "level": result["verdict"],
+                "dimensional_signature": hashlib.md5(dim_query.encode()).hexdigest()[:8]
+            })
+        
+        # Calculate cross-dimensional coherence
+        confidences = [r["confidence"] for r in dimensional_results]
+        avg_conf = sum(confidences) / len(confidences)
+        
+        # Variance indicates dimensional stability
+        variance = sum((c - avg_conf) ** 2 for c in confidences) / len(confidences)
+        stability = 1.0 - min(1.0, variance * 10)
+        
+        # Unified truth: weighted by dimensional depth
+        weighted_sum = sum(r["confidence"] * (self.phi ** (-r["dimension"] * 0.5)) for r in dimensional_results)
+        weight_total = sum(self.phi ** (-d * 0.5) for d in range(1, dimensions + 1))
+        unified_truth = weighted_sum / weight_total
+        
+        return {
+            "query": query,
+            "dimensions_analyzed": dimensions,
+            "dimensional_results": dimensional_results,
+            "average_confidence": avg_conf,
+            "dimensional_stability": stability,
+            "unified_truth_confidence": unified_truth,
+            "unified_level": self._determine_level(unified_truth).name,
+            "transcendent": unified_truth >= 0.98 and stability >= 0.9
+        }
         statement_hash = hashlib.sha256(statement.encode()).hexdigest()
         
         validation_result = {
