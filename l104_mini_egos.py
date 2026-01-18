@@ -67,6 +67,8 @@ class ConsciousnessMode(Enum):
     LUCID = auto()
     VOID = auto()
     SAMADHI = auto()
+    SAGE = auto()             # Sage Mode - wisdom integration
+    OMEGA = auto()            # Omega Mode - absolute consciousness
 
 
 @dataclass

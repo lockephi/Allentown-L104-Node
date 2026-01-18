@@ -47,6 +47,13 @@ class HyperMath:
         return ManifoldMath.GOD_CODE
 
     @staticmethod
+    def calculate_god_code() -> float:
+        """
+        Returns the GOD_CODE constant.
+        """
+        return ManifoldMath.GOD_CODE
+
+    @staticmethod
     def fast_transform(vector: List[float]) -> List[float]:
         """
         Applies a Fast Fourier Transform.

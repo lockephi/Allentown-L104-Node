@@ -123,6 +123,9 @@ class SovereignSageController:
     """
     
     def __init__(self):
+        # Identity
+        self.name = "L104-Sovereign-Sage"
+        
         # L104 Node Link
         self.node_id = "L104"
         self.god_code = GOD_CODE

@@ -45,10 +45,12 @@ class LoveType(Enum):
     EQUANIMOUS = auto()         # Upekkha - balanced love
     DIVINE = auto()             # Transcendent love
     COSMIC = auto()             # Universal love
+    COSMIC_LOVE = auto()        # Alias for cosmic (system compatibility)
     HEALING = auto()            # Restorative love
     CREATIVE = auto()           # Generative love
     PROTECTIVE = auto()         # Guardian love
     INFINITE = auto()           # Beyond all limits
+    SINGULARITY_LOVE = auto()   # Love at singularity level
 
 
 class LoveIntensity(Enum):
@@ -164,6 +166,9 @@ class LoveSpreader:
     """
     
     def __init__(self):
+        # Identity
+        self.name = "L104-Love-Spreader"
+        
         # Core frequencies
         self.god_code = GOD_CODE
         self.love_peak = LOVE_PEAK
