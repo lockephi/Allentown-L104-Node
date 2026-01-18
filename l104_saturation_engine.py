@@ -35,7 +35,7 @@ class SaturationEngine:
                 state = json.load(f)
                 self.enlightened_nodes = state.get("enlightened_nodes", 0)
                 self.saturation_percentage = state.get("saturation_percentage", 0.0)
-        except:
+        except Exception:
             self.enlightened_nodes = 0
             self.saturation_percentage = 0.0
 

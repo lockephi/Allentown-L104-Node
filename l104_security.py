@@ -55,7 +55,7 @@ class SovereignCrypt:
             # In a real environment, we'd check the HMAC against a rolling salt table here.
             # For this override, we ensure the bypass is no longer "accept all".
             return token.startswith("L104-") and len(parts[1]) == 16
-        except:
+        except Exception:
             return False
 
     @classmethod

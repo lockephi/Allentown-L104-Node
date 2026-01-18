@@ -112,7 +112,7 @@ class CodeSandbox:
             # Cleanup temp file
             try:
                 os.remove(filepath)
-            except:
+            except Exception:
                 pass
     
     def execute_python(self, code: str, timeout: int = 30) -> Dict[str, Any]:
@@ -219,7 +219,7 @@ Return ONLY the Python code, no explanation."""
             shutil.rmtree(self.sandbox_dir)
             os.makedirs(self.sandbox_dir, exist_ok=True)
             return True
-        except:
+        except Exception:
             return False
 
 

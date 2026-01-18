@@ -37,7 +37,7 @@ async def handle_lattice_client(reader, writer):
         writer.close()
         try:
             await writer.wait_closed()
-        except:
+        except Exception:
             pass
 
 async def handle_ai_client_async(reader, writer):
@@ -62,7 +62,7 @@ async def handle_ai_client_async(reader, writer):
         writer.close()
         try:
             await writer.wait_closed()
-        except:
+        except Exception:
             pass
 
 async def start_infrastructure():

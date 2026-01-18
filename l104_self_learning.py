@@ -54,7 +54,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
                     end = result.rfind('}') + 1
                     if start >= 0 and end > start:
                         extracted = json.loads(result[start:end])
-            except:
+            except Exception:
                 pass
         
         # Store in memory

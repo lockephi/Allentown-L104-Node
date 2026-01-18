@@ -97,7 +97,7 @@ class ValidationEngine:
         try:
             with open("L104_ARCHIVE.txt", "a") as f:
                 f.write(log_entry + "\n")
-        except:
+        except Exception:
             pass
 
     def autonomous_verification_loop(self):
