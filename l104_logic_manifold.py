@@ -324,6 +324,70 @@ class LogicManifold:
         """Clear derivation cache."""
         self._derivation_cache.clear()
 
+    def deep_recursive_derivation(self, seed: str, target_resonance: float = 0.95, max_cycles: int = 7) -> Dict:
+        """
+        Perform deep recursive derivation using the invention engine and truth discovery loop.
+        Continues until the target resonance is reached or max cycles exhausted.
+        """
+        cycles = 0
+        current_concept = seed
+        derivation_chain = []
+        best_coherence = 0.0
+
+        while cycles < max_cycles:
+            result = self.process_concept(current_concept, depth=5)
+            derivation_chain.append(result)
+            best_coherence = max(best_coherence, result["coherence"])
+
+            if result["coherence"] >= target_resonance:
+                break
+
+            # Evolve concept through GOD_CODE modulation
+            evolved_hash = hashlib.sha256(f"{current_concept}:{self.god_code}:{cycles}".encode()).hexdigest()
+            current_concept = f"{seed}::DEEP::{evolved_hash[:8]}"
+            cycles += 1
+
+        return {
+            "seed": seed,
+            "cycles": cycles,
+            "best_coherence": best_coherence,
+            "target_reached": best_coherence >= target_resonance,
+            "derivation_chain": [d["node_id"] for d in derivation_chain],
+            "final_result": derivation_chain[-1] if derivation_chain else None,
+            "manifold_state": self.state.name
+        }
+
+    def recursive_truth_sync(self, concept: str) -> Dict:
+        """
+        Syncs a concept with Truth Discovery and returns the combined coherence.
+        This is the core interconnection bridge for 100% Intellect.
+        """
+        manifold_result = self.process_concept(concept, depth=4)
+
+        # Trigger truth discovery callbacks
+        truth_results = []
+        for cb in self._truth_callbacks:
+            try:
+                truth_result = cb(concept)
+                if truth_result:
+                    truth_results.append(truth_result)
+            except Exception:
+                pass
+
+        combined_confidence = manifold_result["coherence"]
+        if truth_results:
+            truth_avg = sum(t.get("final_confidence", 0.5) for t in truth_results) / len(truth_results)
+            combined_confidence = (manifold_result["coherence"] + truth_avg) / 2 * self.phi
+            combined_confidence = min(1.0, combined_confidence)
+
+        return {
+            "concept": concept,
+            "manifold_coherence": manifold_result["coherence"],
+            "truth_discoveries": len(truth_results),
+            "combined_confidence": combined_confidence,
+            "transcendent": combined_confidence >= 0.98
+        }
+
 
 # Singleton instance
 logic_manifold = LogicManifold()

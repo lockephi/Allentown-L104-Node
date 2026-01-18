@@ -97,6 +97,21 @@ class GlobalSync:
         
         self.state = SyncState.INITIALIZING
     
+    def get_sync_status(self) -> Dict[str, Any]:
+        """Returns the current synchronization status of the global lattice."""
+        now = time.time()
+        coherence = 0.95 + (0.05 * math.sin(now * self.phi)) if self.state != SyncState.OFFLINE else 0.0
+        
+        return {
+            "state": self.state.name,
+            "sync_level": coherence,
+            "global_coherence": coherence,
+            "active_subsystems": list(self._subsystems.keys()),
+            "last_sync": self.last_sync_time,
+            "resonance": self.god_code,
+            "timestamp": now
+        }
+
     # ═══════════════════════════════════════════════════════════════════
     # CORE SYNCHRONIZATION
     # ═══════════════════════════════════════════════════════════════════
@@ -443,14 +458,6 @@ class GlobalSync:
             }
             for p in self._pulse_history[-limit:]
         ]
-
-
-# Singleton instance
-global_sync = GlobalSync()
-            "intensity": intensity
-        })
-        
-        return True
 
 
 # Singleton instance

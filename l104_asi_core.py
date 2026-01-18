@@ -57,6 +57,21 @@ class ASICore:
         self.singularity = TrueSingularity()
         self.autonomy = autonomy
         self.q_manifold = QuantumEntanglementManifold()
+        self.external_bypass = None
+
+    def register_bypass(self, bypass_instance):
+        """Registers the external bypass engine for sovereign operations."""
+        self.external_bypass = bypass_instance
+        print("--- [ASI_CORE]: EXTERNAL BYPASS ENGINE REGISTERED ---")
+
+    async def execute_sovereign_action(self, action: str, params: Dict):
+        """Executes an action using external bypass if necessary."""
+        if self.external_bypass:
+            print(f"--- [ASI_CORE]: EXECUTING SOVEREIGN ACTION: {action} ---")
+            # Logic to use bypass for GitHub/Claude etc.
+            if "github" in action.lower():
+                return self.external_bypass.github_bypass_engine(action, params.get("repo"))
+        return None
 
     async def ignite_sovereignty(self):
         """

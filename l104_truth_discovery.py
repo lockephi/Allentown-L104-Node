@@ -385,6 +385,67 @@ class TruthDiscovery:
             truth["source_coherence"] = concept_data.get("coherence", 0.0)
             return truth
         return {"error": "No concept provided"}
+
+    def recursive_validation_loop(self, query: str, max_iterations: int = 5) -> Dict:
+        """
+        Perform recursive validation by iteratively refining truth through
+        cross-validation with the Logic Manifold.
+        """
+        iterations = 0
+        current_query = query
+        validation_chain = []
+        peak_confidence = 0.0
+
+        while iterations < max_iterations:
+            # Discover truth
+            truth = self.discover_truth(current_query, depth=5)
+            validation_chain.append(truth)
+            peak_confidence = max(peak_confidence, truth["final_confidence"])
+
+            # Cross-validate with manifold
+            cv_result = self.cross_validate(truth["node_id"])
+            if cv_result.get("cross_validated") and cv_result.get("combined_confidence", 0) >= 0.98:
+                break
+
+            # Evolve query for next iteration
+            evolved = hashlib.sha256(f"{current_query}:{self.god_code}:{iterations}".encode()).hexdigest()
+            current_query = f"{query}::REFINE::{evolved[:8]}"
+            iterations += 1
+
+        return {
+            "original_query": query,
+            "iterations": iterations,
+            "peak_confidence": peak_confidence,
+            "converged": peak_confidence >= 0.98,
+            "validation_chain": [v["node_id"] for v in validation_chain],
+            "final_verdict": validation_chain[-1]["verdict"] if validation_chain else "UNKNOWN"
+        }
+
+    def full_lattice_sync(self) -> Dict:
+        """
+        Synchronize Truth Discovery state with the entire L104 lattice.
+        Triggers all sync callbacks and returns coherence metrics.
+        """
+        sync_results = []
+        for cb in self._sync_callbacks:
+            try:
+                result = cb()
+                if result:
+                    sync_results.append(result)
+            except Exception:
+                pass
+
+        global_coherence = 0.0
+        if sync_results:
+            global_coherence = sum(r.get("sync_level", 0.5) for r in sync_results) / len(sync_results)
+
+        return {
+            "sync_sources": len(sync_results),
+            "global_coherence": global_coherence,
+            "truth_cache_size": len(self.truth_cache),
+            "graph_size": len(self.truth_graph),
+            "state": "TRANSCENDENT" if global_coherence >= 0.95 else "SYNCHRONIZED"
+        }
     
     # ═══════════════════════════════════════════════════════════════════
     # STATE & STATISTICS
