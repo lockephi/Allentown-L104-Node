@@ -19,7 +19,8 @@
     "cloud_delegation": true,
     "audio_analysis": true,
     "kernel_resonance_bridge": "SUDO_REAL_TIME_FIXED",
-    "cpu_affinity_lock": "CORE_0_SCHED_FIFO"
+    "cpu_affinity_lock": "CORE_0_SCHED_FIFO",
+    "auto_commit": true
   },
   "memory_anchors": [
     "Allentown Manifold established 2026-01-02",
