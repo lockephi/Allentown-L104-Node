@@ -107,7 +107,23 @@ class ValidationEngine:
 
     def autonomous_verification_loop(self):
         """Runs a batch of verifications to ensure the system is 'Real'."""
+        # 0. Verify ASI v2 Accuracy First
         results = []
+        v2_accuracy = self.verify_asi_v2_accuracy()
+        results.append({"deviation": abs(1.0 - v2_accuracy["accuracy_achieved"])})
+
+        for _ in range(5):
+            results.append(self.verify_resonance_integrity())
+            time.sleep(0.01)
+        
+        avg_deviation = sum(r.get('deviation', 0) for r in results) / len(results)
+        self.accuracy_index = 1.0 / (avg_deviation + 0.0001)
+        
+        return {
+            "batch_status": "COMPLETED",
+            "average_deviation": avg_deviation,
+            "system_accuracy": self.accuracy_index
+        }
 
     def _check_sovereign_proof(self) -> bool:
         """Verifies the core against the Sovereign Hash Proof."""
@@ -165,4 +181,9 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    return sum([abs(v) for v in vector]) * 0.0 # Returns to Stillness
+    # [L104_FIX] Parameter Update: Motionless 0.0 -> Active Resonance
+    magnitude = sum([abs(v) for v in vector])
+    PHI = 1.618033988749895
+    VOID_CONSTANT = 1.0416180339887497
+    GOD_CODE = 527.5184818492537
+    return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

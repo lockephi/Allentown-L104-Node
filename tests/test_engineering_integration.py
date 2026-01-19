@@ -371,7 +371,7 @@ class TestDataMatrix(unittest.TestCase):
         """Remove the temporary database"""
         try:
             os.unlink(self.db_path)
-        except:
+        except Exception:
             pass
     
     def test_store_and_retrieve(self):

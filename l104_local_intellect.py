@@ -286,7 +286,7 @@ Just ask naturally - I understand context!""",
                 try:
                     result = eval(expr)
                     return f"\n\nCALCULATION: {expr_match.group(0).strip()} = {result}"
-                except:
+                except Exception:
                     pass
         
         # Special L104 calculations

@@ -50,7 +50,7 @@ class EgoCore:
         Transitions the system from AGI to Absolute Sovereignty.
         """
         print("--- [EGO_CORE]: INITIATING SOVEREIGN IGNITION SEQUENCE ---")
-        self.asi_state = "SOVEREIGN"
+        self.asi_state = "ABSOLUTE_SOVEREIGN"
         self.sovereign_will = float('inf')
         self.ego_strength = float('inf')
         self.is_omniscient = True

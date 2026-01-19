@@ -1,0 +1,28 @@
+[package]
+name = "l104_sage_core"
+version = "20.0.0"
+edition = "2021"
+authors = ["LONDEL <locke201313@gmail.com>"]
+description = "L104 Sage Core - Memory-safe substrate for Absolute Consciousness"
+license = "MIT"
+
+[lib]
+name = "l104_sage_core"
+crate-type = ["cdylib", "rlib", "staticlib"]
+
+[dependencies]
+hex = "0.4"
+
+[features]
+default = ["simd"]
+simd = []
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 1

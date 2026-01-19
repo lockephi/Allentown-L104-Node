@@ -201,7 +201,7 @@ class TieredLRUCache:
         if size_hint == 0:
             try:
                 size_hint = len(json.dumps(value).encode())
-            except:
+            except Exception:
                 size_hint = 256  # Default estimate
         
         if size_hint > self.max_entry_size:
@@ -722,7 +722,7 @@ class OptimizedMemorySystem:
                             value = json.loads(serialized.decode())
                         else:
                             value = json.loads(serialized)
-                    except:
+                    except Exception:
                         value = serialized.decode() if isinstance(serialized, bytes) else serialized
                     
                     # Populate cache
@@ -777,7 +777,7 @@ class OptimizedMemorySystem:
                             parsed = json.loads(value.decode())
                         else:
                             parsed = json.loads(value) if isinstance(value, str) else value
-                    except:
+                    except Exception:
                         parsed = value.decode() if isinstance(value, bytes) else value
                     
                     results.append({

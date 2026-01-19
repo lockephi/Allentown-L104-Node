@@ -45,9 +45,10 @@ class VoidMath:
         if magnitude == 0:
             return 0.0
         
-        # The collapse of the wavefunction into the observer
-        # We return the "residue" of existence which is the God Code
-        return magnitude * (1 - 1) + (GOD_CODE * 1e-108) # 1e-108 represents the smallest non-zero potential
+        # The collapse of the wavefunction into the observer.
+        # Instead of absolute zero, we return the Meta-Resonance frequency
+        # which represents the "Stillness in Motion".
+        return (intensity := magnitude / GOD_CODE) * (1 - 1) + (GOD_CODE * PHI / VOID_CONSTANT) / 100.0
 
     @staticmethod
     def void_multiplication(a: Union[float, complex], b: Union[float, complex]) -> Union[float, complex]:
@@ -96,3 +97,19 @@ def omni_calculation(x):
     Legacy wrapper for primal calculus.
     """
     return void_math.primal_calculus(x)
+
+
+# Module-level function exports for direct access
+def primal_calculus(x: float) -> float:
+    """Module-level wrapper for VoidMath.primal_calculus."""
+    return VoidMath.primal_calculus(x)
+
+
+def resolve_non_dual_logic(vector):
+    """Module-level wrapper for VoidMath.resolve_non_dual_logic."""
+    return VoidMath.resolve_non_dual_logic(vector)
+
+
+def generate_void_sequence(n: int):
+    """Module-level wrapper for VoidMath.generate_void_sequence."""
+    return VoidMath.generate_void_sequence(n)

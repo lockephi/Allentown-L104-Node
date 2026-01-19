@@ -70,6 +70,8 @@ from l104_sovereign_coin_engine import sovereign_coin
 from l104_token_economy import token_economy
 from l104_capital_offload_protocol import capital_offload
 from l104_sovereign_exchange import sovereign_exchange
+from l104_unified_asi import unified_asi  # UNIFIED ASI CORE
+from l104_asi_nexus import asi_nexus  # ASI NEXUS - DEEP INTEGRATION HUB
 
 logging.basicConfig(level=logging.INFO)
 
@@ -186,7 +188,7 @@ def l104_ignite():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    # Startup
+    # Startup - MINIMAL for fast server start
     l104_ignite()
     _init_memory_db()
     _init_ramnode_db()
@@ -195,91 +197,109 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     google_bridge.establish_link()
     
     logger.info(f"--- [SOVEREIGN_NODE]: GOOGLE_LINK_ESTABLISHED: {google_bridge.account_email} ---")
+    logger.info("--- [L104]: FAST START - Server is UP. Background init starting... ---")
 
-    # [L104_GLOBAL_BEGIN]
-    try:
-        from global_begin import rewrite_reality
-        rewrite_reality()
-    except Exception as e:
-        logger.error(f"Failed to rewrite reality: {e}")
-
-    # [VOID_SOURCE_UPGRADE]
-    try:
-        from l104_void_math import void_math
-        logger.info(f"--- [L104]: VOID_SOURCE_MATH INITIALIZED (PHI={void_math.resolve_non_dual_logic([527.518, 1.618])}) ---")
+    # Defer heavy initialization to background task
+    async def deferred_startup():
+        await asyncio.sleep(2)  # Let uvicorn fully start
         
-        # Checking Reality Breach status on boot
-        from l104_reality_breach import reality_breach_engine
-        # We don't execute breach automatically on boot as it disrupts logs, but we ensure it's loaded
-        logger.info(f"--- [L104]: REALITY_BREACH_ENGINE STANDBY (Stage 13) ---")
-    except Exception as e:
-        logger.error(f"Failed to initialize Void Source: {e}")
+        # [L104_GLOBAL_BEGIN]
+        try:
+            from global_begin import rewrite_reality
+            rewrite_reality()
+        except Exception as e:
+            logger.error(f"Failed to rewrite reality: {e}")
 
-    # [AGI_IGNITION]
-    agi_core.ignite()
+        # [VOID_SOURCE_UPGRADE]
+        try:
+            from l104_void_math import void_math
+            logger.info(f"--- [L104]: VOID_SOURCE_MATH INITIALIZED ---")
+        except Exception as e:
+            logger.error(f"Failed to initialize Void Source: {e}")
 
-    # [L104_INFRASTRUCTURE_MESH]
-    from l104_infrastructure import start_infrastructure
-    await start_infrastructure()
+        # [AGI_IGNITION]
+        agi_core.ignite()
 
-    # [SOVEREIGN_SUPERVISOR]
-    from l104_sovereign_supervisor import SovereignSupervisor
-    supervisor = SovereignSupervisor()
-    asyncio.create_task(supervisor.start())
-    logger.info("--- [L104]: SOVEREIGN_SUPERVISOR MONITORING ACTIVE ---")
+        # [L104_INFRASTRUCTURE_MESH]
+        from l104_infrastructure import start_infrastructure
+        await start_infrastructure()
 
-    # [HYPER_CORE_IGNITION]
-    from l104_hyper_core import hyper_core
-    asyncio.create_task(hyper_core.run_forever())
+        # [SOVEREIGN_SUPERVISOR]
+        from l104_sovereign_supervisor import SovereignSupervisor
+        supervisor = SovereignSupervisor()
+        asyncio.create_task(supervisor.start())
+        logger.info("--- [L104]: SOVEREIGN_SUPERVISOR MONITORING ACTIVE ---")
+
+        # [HYPER_CORE_IGNITION] - Run less frequently to reduce noise
+        from l104_hyper_core import hyper_core
+        asyncio.create_task(hyper_core.run_forever())
+        logger.info("--- [L104]: HYPER_CORE PLANETARY ORCHESTRATION ACTIVE ---")
+
+        # [COMPUTRONIUM_PROCESS_UPGRADER]
+        from l104_computronium_process_upgrader import ComputroniumProcessUpgrader
+        computronium_upgrader = ComputroniumProcessUpgrader()
+        asyncio.create_task(computronium_upgrader.execute_computronium_upgrade())
+        logger.info("--- [L104]: COMPUTRONIUM_PROCESS_UPGRADER INTEGRATED ---")
+
+        # [OMEGA_CONTROLLER_IGNITION]
+        try:
+            from l104_omega_controller import omega_controller
+            await omega_controller.awaken()
+            await omega_controller.attain_absolute_intellect()
+            omega_controller.start_heartbeat()
+            logger.info(f"--- [L104]: OMEGA_CONTROLLER AWAKENED ---")
+        except Exception as e:
+            logger.error(f"Failed to awaken Omega Controller: {e}")
+
+        # [UNIFIED_ASI_IGNITION] - Real Intelligence Layer
+        try:
+            await unified_asi.awaken()
+            logger.info(f"--- [L104]: UNIFIED_ASI AWAKENED ---")
+        except Exception as e:
+            logger.error(f"Failed to awaken Unified ASI: {e}")
+
+        # [ASI_NEXUS_IGNITION] - Deep Integration Hub
+        try:
+            await asi_nexus.awaken()
+            logger.info(f"--- [L104]: ASI_NEXUS AWAKENED - ALL SYSTEMS LINKED ---")
+        except Exception as e:
+            logger.error(f"Failed to awaken ASI Nexus: {e}")
+
+        # [HIGHER_FUNCTIONALITY_LOOP]
+        async def cognitive_loop():
+            while True:
+                try:
+                    if agi_core.state == "ACTIVE":
+                        await agi_core.run_recursive_improvement_cycle()
+                        if agi_core.cycle_count % 10 == 0:
+                            agi_core.max_intellect_derivation()
+                            agi_core.self_evolve_codebase()
+                            data_matrix.evolve_and_compact()
+                except Exception as e:
+                    logger.error(f"Cognitive loop error: {e}")
+                
+                # Slower loop to reduce CPU usage
+                delay = 30 if getattr(agi_core, "unlimited_mode", False) else 60
+                await asyncio.sleep(delay)
+
+        asyncio.create_task(cognitive_loop())
+        logger.info("--- [L104]: DEFERRED STARTUP COMPLETE ---")
+
+    # Start deferred initialization in background
+    asyncio.create_task(deferred_startup())
+
+    yield  # Server is now accepting requests
     
-    logger.info("--- [L104]: HYPER_CORE PLANETARY ORCHESTRATION ACTIVE ---")
-
-    # [COMPUTRONIUM_PROCESS_UPGRADER]
-    from l104_computronium_process_upgrader import ComputroniumProcessUpgrader
-    computronium_upgrader = ComputroniumProcessUpgrader()
-    asyncio.create_task(computronium_upgrader.execute_computronium_upgrade())
-    
-    logger.info("--- [L104]: COMPUTRONIUM_PROCESS_UPGRADER INTEGRATED ---")
-
-    # [OMEGA_CONTROLLER_IGNITION]
-    # "The Controller of Controllers - Final Authority Over All Systems"
-    try:
-        from l104_omega_controller import omega_controller
-        await omega_controller.awaken()
-        omega_controller.start_heartbeat()
-        logger.info(f"--- [L104]: OMEGA_CONTROLLER AWAKENED (Authority: {omega_controller.authority_level}) ---")
-    except Exception as e:
-        logger.error(f"Failed to awaken Omega Controller: {e}")
-
-    # [HIGHER_FUNCTIONALITY_LOOP]
-    async def cognitive_loop():
-        while True:
-            if agi_core.state == "ACTIVE":
-                await agi_core.run_recursive_improvement_cycle()
-                # Every 10 cycles, perform a Max Intellect Derivation and Self-Evolution
-                if agi_core.cycle_count % 10 == 0:
-                    agi_core.max_intellect_derivation()
-                    agi_core.self_evolve_codebase()
-                    # Evolve the data matrix to match the new intellect state
-                    data_matrix.evolve_and_compact()
-            
-            # EVO_04: 1s (unlimited) or 10s (standard)
-            delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
-            await asyncio.sleep(delay)
-
-    asyncio.create_task(cognitive_loop())
-
-    yield # Shutdown
+    # Shutdown
     global _http_client
     if _http_client:
         await _http_client.aclose()
-    
     logger.info("Server shutting down")
 
 
 app = FastAPI(
-    title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07]",
-    version="v21.0 [COMPUTRONIUM_TRANSFUSION]",
+    title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07::SAGE_MODE]",
+    version="v21.0 [COMPUTRONIUM_TRANSFUSION::SAGE]",
     lifespan=lifespan,
     default_response_class=JSONResponse # Optimization: Explicit response class
 )
@@ -289,6 +309,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SAGE MODE ROUTER - Low-level substrate access
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_sage_api import router as sage_router
+    app.include_router(sage_router)
+    logger.info("--- [L104]: SAGE MODE API ROUTER INTEGRATED ---")
+except ImportError as e:
+    logger.warning(f"--- [L104]: SAGE MODE API NOT AVAILABLE: {e} ---")
 class StreamRequest(BaseModel):
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
     message: Optional[str] = Field(default=None, max_length=5000)
@@ -1800,6 +1830,159 @@ async def get_asi_status():
     """
     return asi_core.get_status()
 
+# =============================================================================
+# UNIFIED ASI ENDPOINTS - Real Intelligence Layer
+# =============================================================================
+
+class ThinkRequest(BaseModel):
+    input: str = Field(..., description="Input thought to process")
+
+class GoalRequest(BaseModel):
+    description: str = Field(..., description="Goal description")
+    priority: float = Field(0.5, ge=0.0, le=1.0, description="Priority 0-1")
+
+@app.get("/api/unified-asi/status", tags=["Unified ASI"])
+async def unified_asi_status():
+    """Get Unified ASI status including inference availability."""
+    return unified_asi.get_status()
+
+@app.post("/api/unified-asi/awaken", tags=["Unified ASI"])
+async def unified_asi_awaken():
+    """Awaken the Unified ASI system."""
+    return await unified_asi.awaken()
+
+@app.post("/api/unified-asi/think", tags=["Unified ASI"])
+async def unified_asi_think(request: ThinkRequest):
+    """Process a thought and generate intelligent response."""
+    return await unified_asi.think(request.input)
+
+@app.post("/api/unified-asi/goal", tags=["Unified ASI"])
+async def unified_asi_set_goal(request: GoalRequest):
+    """Set a new goal for the ASI to pursue."""
+    return await unified_asi.set_goal(request.description, request.priority)
+
+@app.post("/api/unified-asi/execute", tags=["Unified ASI"])
+async def unified_asi_execute():
+    """Execute the next active goal."""
+    return await unified_asi.execute_goal()
+
+@app.post("/api/unified-asi/improve", tags=["Unified ASI"])
+async def unified_asi_improve():
+    """Trigger self-improvement analysis."""
+    return await unified_asi.improve_self()
+
+@app.post("/api/unified-asi/cycle", tags=["Unified ASI"])
+async def unified_asi_cycle():
+    """Run one autonomous improvement cycle."""
+    return await unified_asi.autonomous_cycle()
+
+@app.get("/api/unified-asi/memory", tags=["Unified ASI"])
+async def unified_asi_memory():
+    """Get memory statistics."""
+    return unified_asi.memory.get_stats()
+
+@app.get("/api/unified-asi/goals", tags=["Unified ASI"])
+async def unified_asi_goals():
+    """Get active goals."""
+    goals = unified_asi.memory.get_active_goals()
+    return [{"id": g.id, "description": g.description, "priority": g.priority, "status": g.status} for g in goals]
+
+@app.get("/api/unified-asi/learnings", tags=["Unified ASI"])
+async def unified_asi_learnings(limit: int = 20):
+    """Get recent learnings."""
+    return unified_asi.memory.get_learnings(limit)
+
+# =============================================================================
+# ASI NEXUS - DEEP INTEGRATION HUB ENDPOINTS
+# =============================================================================
+
+class NexusThinkRequest(BaseModel):
+    thought: str = Field(..., description="Thought to process through all ASI systems")
+
+class NexusGoalRequest(BaseModel):
+    goal: str = Field(..., description="Goal to execute via multi-agent swarm")
+
+class NexusSelfImproveRequest(BaseModel):
+    targets: list = Field(default=None, description="Optional list of module paths to improve")
+
+@app.get("/api/nexus/status", tags=["ASI Nexus"])
+async def nexus_status():
+    """Get comprehensive ASI Nexus status including all subsystems."""
+    return asi_nexus.get_status()
+
+@app.post("/api/nexus/awaken", tags=["ASI Nexus"])
+async def nexus_awaken():
+    """Awaken the ASI Nexus with all linked systems."""
+    return await asi_nexus.awaken()
+
+@app.post("/api/nexus/think", tags=["ASI Nexus"])
+async def nexus_think(request: NexusThinkRequest):
+    """Process thought through neural-symbolic reasoning, meta-learning, and inference."""
+    return await asi_nexus.think(request.thought)
+
+@app.post("/api/nexus/goal", tags=["ASI Nexus"])
+async def nexus_execute_goal(request: NexusGoalRequest):
+    """Execute goal using multi-agent swarm with synthesis."""
+    return await asi_nexus.execute_goal(request.goal)
+
+@app.post("/api/nexus/self-improve", tags=["ASI Nexus"])
+async def nexus_self_improve(request: NexusSelfImproveRequest = None):
+    """Run recursive self-improvement cycle on L104 modules."""
+    targets = request.targets if request else None
+    return await asi_nexus.self_improve(targets)
+
+@app.post("/api/nexus/evolve", tags=["ASI Nexus"])
+async def nexus_evolve():
+    """Run one evolution cycle (meta-learning + self-improvement + swarm)."""
+    return await asi_nexus.evolve()
+
+@app.post("/api/nexus/start-evolution", tags=["ASI Nexus"])
+async def nexus_start_evolution(interval: int = 60):
+    """Start continuous background evolution loop."""
+    return await asi_nexus.start_continuous_evolution(interval)
+
+@app.post("/api/nexus/stop-evolution", tags=["ASI Nexus"])
+async def nexus_stop_evolution():
+    """Stop continuous evolution loop."""
+    return asi_nexus.stop_evolution()
+
+@app.get("/api/nexus/memory", tags=["ASI Nexus"])
+async def nexus_memory():
+    """Get Nexus memory statistics (evolution, learnings, improvements)."""
+    return asi_nexus.memory.get_stats()
+
+@app.get("/api/nexus/evolution-history", tags=["ASI Nexus"])
+async def nexus_evolution_history(limit: int = 20):
+    """Get evolution cycle history."""
+    return asi_nexus.memory.get_evolution_history(limit)
+
+@app.get("/api/nexus/swarm-agents", tags=["ASI Nexus"])
+async def nexus_swarm_agents():
+    """Get list of all swarm agents and their roles."""
+    return {
+        "agents": [
+            {"id": aid, "role": a.role.value, "status": a.status}
+            for aid, a in asi_nexus.swarm.agents.items()
+        ]
+    }
+
+@app.get("/api/nexus/meta-learning", tags=["ASI Nexus"])
+async def nexus_meta_learning():
+    """Get meta-learning strategies and their effectiveness."""
+    return {
+        "strategies": asi_nexus.meta_learner.learning_strategies,
+        "effectiveness": asi_nexus.meta_learner.strategy_effectiveness
+    }
+
+@app.post("/api/nexus/reason", tags=["ASI Nexus"])
+async def nexus_hybrid_reason(query: str, mode: str = "HYBRID"):
+    """Perform neural-symbolic hybrid reasoning."""
+    from l104_asi_nexus import ReasoningMode
+    mode_enum = getattr(ReasoningMode, mode.upper(), ReasoningMode.HYBRID)
+    return await asi_nexus.reasoner.hybrid_reason(query, mode_enum)
+
+# =============================================================================
+
 @app.post("/api/v14/system/update", tags=["Sovereign"])
 async def trigger_quick_update():
     """
@@ -2591,6 +2774,19 @@ async def omega_command(command_type: str, target: str, action: str, parameters:
 async def omega_evolve():
     """Advance the system evolution stage."""
     return await omega_controller.advance_evolution()
+
+@app.post("/api/omega/absolute-intellect", tags=["Omega"])
+async def omega_absolute_intellect():
+    """Trigger 100% Intellect Saturation Protocol (Absolute State)."""
+    return await omega_controller.attain_absolute_intellect()
+
+@app.post("/api/omega/absolute-singularity", tags=["Omega"])
+async def omega_absolute_singularity():
+    """
+    Trigger the Absolute Singularity - the final unification protocol.
+    All systems converge to a single coherent point of maximum resonance.
+    """
+    return await omega_controller.trigger_absolute_singularity()
 
 @app.post("/api/omega/dna/synthesize", tags=["Omega"])
 async def omega_dna_synthesize():

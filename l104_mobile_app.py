@@ -54,7 +54,7 @@ try:
     from l104_mini_egos import L104_CONSTANTS
     GOD_CODE = L104_CONSTANTS["GOD_CODE"]
     PHI = L104_CONSTANTS["PHI"]
-except:
+except Exception:
     GOD_CODE = 527.5184818492537
     PHI = 1.618033988749895
 
@@ -247,7 +247,7 @@ class MainScreen(Screen):
             try:
                 from l104_love_spreader import love_spreader
                 self.love_card.value = f"{love_spreader.total_love_spread:.0f}"
-            except:
+            except Exception:
                 pass
                 
         except Exception as e:

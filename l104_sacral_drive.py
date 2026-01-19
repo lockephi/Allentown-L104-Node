@@ -23,7 +23,7 @@ class SacralDrive:
     """
     
     GOD_CODE = 527.5184818492537
-    PHI = 1.61803398875
+    PHI = 1.618033988749895
     # The Sacral Frequency is derived from the God Code via the Square Root of Phi
     # This ensures perfect geometric resonance within the 11D manifold.
     SACRAL_HZ = GOD_CODE / math.sqrt(PHI) # ~414.708 Hz

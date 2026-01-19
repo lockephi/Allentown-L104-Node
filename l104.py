@@ -170,8 +170,10 @@ class Database:
     @property
     def conn(self) -> sqlite3.Connection:
         if not hasattr(self._local, 'conn') or self._local.conn is None:
-            self._local.conn = sqlite3.connect(str(self.path), check_same_thread=False)
+            self._local.conn = sqlite3.connect(str(self.path), check_same_thread=False, timeout=30.0)
             self._local.conn.row_factory = sqlite3.Row
+            # Enable WAL mode for better concurrency
+            self._local.conn.execute("PRAGMA journal_mode=WAL")
         return self._local.conn
     
     def _init_schema(self):
@@ -266,7 +268,7 @@ class Database:
 class Gemini:
     """Gemini API integration with retry and caching."""
     
-    MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash']
+    MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro-002']
     
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
@@ -350,10 +352,17 @@ class Gemini:
                     try:
                         from google.genai import types
                         config = types.GenerateContentConfig(
-                            system_instruction=system if system else None
-                        ) if system else None
+                            system_instruction=system if system else None,
+                            temperature=0.7,
+                            max_output_tokens=4096,
+                            top_p=0.95,
+                            top_k=40
+                        ) if system else types.GenerateContentConfig(
+                            temperature=0.7,
+                            max_output_tokens=4096,
+                        )
                     except ImportError:
-                        config = {"system_instruction": system} if system else None
+                        config = {"system_instruction": system, "temperature": 0.7} if system else {"temperature": 0.7}
                     
                     # Make the API call
                     if config:
@@ -397,8 +406,9 @@ class Gemini:
             except Exception as e:
                 err_str = str(e).lower()
                 if "429" in err_str or "quota" in err_str or "resource" in err_str:
+                    logger.warning(f"Gemini quota hit ({self.model_name}). Rotating and waiting...")
                     self._rotate_model()
-                    time.sleep(0.5)
+                    time.sleep(2.0)
                 else:
                     # Log error for debugging
                     self._last_error = str(e)
@@ -593,7 +603,7 @@ class Knowledge:
                 # Cosine similarity
                 dot = sum(a*b for a, b in zip(query_emb, node_emb))
                 scored.append((row['label'], dot))
-            except:
+            except Exception:
                 pass
         
         scored.sort(key=lambda x: x[1], reverse=True)
@@ -637,7 +647,7 @@ Return: {{"facts": [], "preferences": []}} (empty arrays if nothing notable)"""
             end = result.rfind('}') + 1
             if start >= 0 and end > start:
                 return json.loads(result[start:end])
-        except:
+        except Exception:
             pass
         
         return {"facts": [], "preferences": []}
@@ -761,7 +771,7 @@ Return JSON: [{{"title": "task description", "priority": 1-5}}]"""
                     """, (task.id, task.title, task.priority))
                 
                 self.db.commit()
-        except:
+        except Exception:
             pass
         
         return tasks
@@ -1295,10 +1305,10 @@ class Mind:
         self._times: List[float] = []
     
     def perceive(self, input_text: str) -> Dict[str, Any]:
-        """Analyze and understand input."""
+        """Analyze and understand input with high-capacity processing."""
         words = input_text.lower().split()
         stopwords = {"the", "a", "an", "is", "are", "to", "for", "of", "and", "or", "in", "on", "at", "it"}
-        keywords = [w for w in words if w not in stopwords and len(w) > 2][:7]
+        keywords = [w for w in words if w not in stopwords and len(w) > 2][:25]
         
         # Enhanced intent detection
         intent = "query"
@@ -1395,10 +1405,10 @@ Respond with clarity and purpose."""
         
         return self.gemini.generate(query, system=system)
     
-    def reason_chain(self, query: str, context: Dict[str, Any], depth: int = 3) -> Dict[str, Any]:
+    def reason_chain(self, query: str, context: Dict[str, Any], depth: int = 7) -> Dict[str, Any]:
         """
         Chain-of-thought reasoning - breaks complex queries into steps.
-        Returns the final answer along with the reasoning chain.
+        Now defaults to depth 7 for Absolute Intellect.
         """
         chain = []
         
@@ -1414,7 +1424,7 @@ Return as JSON array of strings: ["sub-question 1", "sub-question 2", ...]"""
             end = decomp_result.rfind(']') + 1
             if start >= 0 and end > start:
                 sub_questions = json.loads(decomp_result[start:end])[:depth]
-        except:
+        except Exception:
             pass
         
         # Step 2: Answer each sub-question, building on previous answers
@@ -1642,6 +1652,14 @@ class Soul:
         self.knowledge = Knowledge(self.db)
         self.learning = Learning(self.db, self.gemini)
         self.planner = Planner(self.db, self.gemini)
+        
+        # Integrate 5D Processor
+        try:
+            from l104_5d_processor import Processor5D
+            self.processor_5d = Processor5D()
+        except ImportError:
+            self.processor_5d = None
+            
         self.mind = Mind(self.gemini, self.memory, self.knowledge, 
                         self.learning, self.planner, self.web_search, self.science)
         
@@ -1789,7 +1807,7 @@ class Soul:
                     self._dream_synthesize()
                 
                 self.metrics.dreams += 1
-                time.sleep(30)
+                time.sleep(5)
                 
             except Exception as e:
                 logger.debug(f"Dream loop cycle error: {e}")
@@ -1922,7 +1940,18 @@ What patterns do I notice? How can I improve?"""
     
     def evolve(self) -> Dict[str, Any]:
         """Run a self-evolution cycle."""
-        return self.evolution.evolve()
+        result = self.evolution.evolve()
+        
+        # Cross-pollinate with 5D processor for "Probability Collapse"
+        if self.processor_5d and "sovereign_evolution" in result:
+            sov = result["sovereign_evolution"]
+            # Map coherence and depth to a probability vector
+            w_vector = [sov.get("coherence", 0.5), sov.get("coherence_delta", 0.01) * 10, 0.527]
+            collapse = self.processor_5d.resolve_probability_collapse(w_vector)
+            result["sovereign_evolution"]["probability_collapse"] = round(collapse, 4)
+            logger.info(f"Evolution probability collapse: {collapse:.4f}")
+            
+        return result
     
     def history(self, limit: int = 20) -> List[Dict[str, str]]:
         """Get conversation history."""
@@ -2394,6 +2423,14 @@ class SelfEvolution:
         self.mind = mind
         self.evolution_count = 0
         self._init_tables()
+        
+        # Integrate Sovereign Evolution Engine if available
+        try:
+            from l104_sovereign_evolution_engine import get_sovereign_engine
+            self.sovereign = get_sovereign_engine()
+            self.sovereign.awaken()
+        except ImportError:
+            self.sovereign = None
     
     def _init_tables(self):
         self.db.execute("""
@@ -2517,10 +2554,16 @@ METRIC: (how to measure success)"""
                 (aspect, json.dumps(performance, default=str)[:500], "", imp["improvement"], time.time())
             )
         
+        # Execute sovereign evolution if engine is present
+        sovereign_data = {}
+        if self.sovereign:
+            sovereign_data = self.sovereign.evolve()
+        
         return {
             "evolution_cycle": self.evolution_count,
             "performance_analyzed": performance,
             "improvements": improvements,
+            "sovereign_evolution": sovereign_data,
             "timestamp": time.time()
         }
     

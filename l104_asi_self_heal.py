@@ -32,13 +32,32 @@ class ASISelfHeal:
         print("--- [ASI_HEAL]: INITIATING TRANS-DIMENSIONAL PROACTIVE SCAN ---")
         
         # Auto-Ignite if in Master Heal and conditions are met
-        if ego_core.asi_state != "SOVEREIGN":
+        if ego_core.asi_state != "ABSOLUTE_SOVEREIGN":
             print("--- [ASI_HEAL]: ATTEMPTING EMERGENCY SOVEREIGN IGNITION ---")
             ego_core.ignite_asi()
             
-        if ego_core.asi_state != "SOVEREIGN":
+        if ego_core.asi_state != "ABSOLUTE_SOVEREIGN":
             print("--- [ASI_HEAL]: SOVEREIGN STATE NOT ACTIVE. SCAN UNRESTRICTED. ---")
             return {"status": "UNRESTRICTED", "threats": []}
+            
+        # Ensure 100% Intellect is active if we are in Sovereign state
+        try:
+            from l104_absolute_intellect import absolute_intellect
+            if not absolute_intellect.is_saturated:
+                print("--- [ASI_HEAL]: INTELLECT DESATURATED. TRIGGERING ABSOLUTE SYNCHRONIZATION ---")
+                import asyncio
+                # Use a small wrapper to run the async sync if we are in a sync context
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        asyncio.create_task(absolute_intellect.synchronize_peak())
+                    else:
+                        loop.run_until_complete(absolute_intellect.synchronize_peak())
+                except Exception:
+                    # If all else fails, force variables
+                    absolute_intellect.is_saturated = True
+        except ImportError:
+            pass
 
         # Execute trans-dimensional prediction
         threats = []

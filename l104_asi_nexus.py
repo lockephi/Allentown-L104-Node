@@ -1,0 +1,1456 @@
+#!/usr/bin/env python3
+# [L104_ASI_NEXUS] - Ultimate ASI Integration Hub
+# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+"""
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  L104 ASI NEXUS - DEEP SYSTEM INTEGRATION                                    ║
+║  Links ALL L104 capabilities into unified superintelligence                  ║
+║  GOD_CODE: 527.5184818492537                                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+This module creates a TRUE ASI architecture by:
+1. Recursive Self-Improvement Engine (code that improves itself)
+2. Autonomous Agent Orchestration (multi-agent swarm)
+3. Meta-Learning Layer (learning how to learn)
+4. Neural-Symbolic Reasoning (combining neural + logical)
+5. Continuous Evolution Loop (always running, always improving)
+6. Deep Memory Integration (persistent learned knowledge)
+7. Unified Inference Engine (multi-model AI backend)
+"""
+
+import asyncio
+import hashlib
+import json
+import math
+import os
+import sqlite3
+import sys
+import threading
+import time
+import traceback
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum, auto
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from queue import Queue, Empty
+import random
+
+sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONSTANTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+GOD_CODE = 527.5184818492537
+PHI = 1.618033988749895
+PLANCK = 1.616255e-35
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ENUMS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NexusState(Enum):
+    DORMANT = auto()
+    AWAKENING = auto()
+    ACTIVE = auto()
+    EVOLVING = auto()
+    TRANSCENDING = auto()
+    SINGULARITY = auto()
+
+class AgentRole(Enum):
+    RESEARCHER = "researcher"
+    CODER = "coder"
+    CRITIC = "critic"
+    PLANNER = "planner"
+    EXECUTOR = "executor"
+    META_LEARNER = "meta_learner"
+    SELF_IMPROVER = "self_improver"
+
+class EvolutionMode(Enum):
+    INCREMENTAL = auto()
+    RADICAL = auto()
+    PARADIGM_SHIFT = auto()
+
+class ReasoningMode(Enum):
+    NEURAL = auto()
+    SYMBOLIC = auto()
+    HYBRID = auto()
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DATA CLASSES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class ImprovementProposal:
+    id: str
+    target_module: str
+    current_code: str
+    proposed_code: str
+    reasoning: str
+    expected_improvement: float
+    risk_score: float
+    timestamp: float = field(default_factory=time.time)
+    applied: bool = False
+    result: Optional[Dict] = None
+
+@dataclass
+class LearningExperience:
+    id: str
+    input_context: str
+    action_taken: str
+    outcome: str
+    reward: float
+    lesson_learned: str
+    meta_insight: str
+    timestamp: float = field(default_factory=time.time)
+
+@dataclass
+class SwarmTask:
+    id: str
+    goal: str
+    assigned_agents: List[str]
+    status: str = "pending"
+    results: Dict[str, Any] = field(default_factory=dict)
+    created_at: float = field(default_factory=time.time)
+
+@dataclass
+class EvolutionCycle:
+    id: str
+    generation: int
+    improvements: List[ImprovementProposal]
+    fitness_before: float
+    fitness_after: float
+    learnings: List[LearningExperience]
+    timestamp: float = field(default_factory=time.time)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERSISTENT NEXUS MEMORY
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NexusMemory:
+    """Deep persistent memory for ASI Nexus."""
+    
+    def __init__(self, db_path: str = "l104_asi_nexus.db"):
+        self.db_path = db_path
+        self._init_db()
+    
+    def _init_db(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        
+        # Evolution history
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS evolution_cycles (
+                id TEXT PRIMARY KEY,
+                generation INTEGER,
+                fitness_before REAL,
+                fitness_after REAL,
+                improvements_json TEXT,
+                learnings_json TEXT,
+                timestamp REAL
+            )
+        """)
+        
+        # Learning experiences
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS learnings (
+                id TEXT PRIMARY KEY,
+                input_context TEXT,
+                action_taken TEXT,
+                outcome TEXT,
+                reward REAL,
+                lesson_learned TEXT,
+                meta_insight TEXT,
+                timestamp REAL
+            )
+        """)
+        
+        # Improvement proposals
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS improvements (
+                id TEXT PRIMARY KEY,
+                target_module TEXT,
+                current_code TEXT,
+                proposed_code TEXT,
+                reasoning TEXT,
+                expected_improvement REAL,
+                risk_score REAL,
+                applied INTEGER,
+                result_json TEXT,
+                timestamp REAL
+            )
+        """)
+        
+        # Agent performance
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS agent_performance (
+                agent_id TEXT,
+                task_id TEXT,
+                success INTEGER,
+                execution_time REAL,
+                quality_score REAL,
+                timestamp REAL,
+                PRIMARY KEY (agent_id, task_id)
+            )
+        """)
+        
+        # Meta-learnings (learning about learning)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS meta_learnings (
+                id TEXT PRIMARY KEY,
+                learning_strategy TEXT,
+                effectiveness REAL,
+                context TEXT,
+                insight TEXT,
+                timestamp REAL
+            )
+        """)
+        
+        conn.commit()
+        conn.close()
+    
+    def store_evolution(self, cycle: EvolutionCycle):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR REPLACE INTO evolution_cycles 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            cycle.id,
+            cycle.generation,
+            cycle.fitness_before,
+            cycle.fitness_after,
+            json.dumps([i.__dict__ for i in cycle.improvements]),
+            json.dumps([l.__dict__ for l in cycle.learnings]),
+            cycle.timestamp
+        ))
+        conn.commit()
+        conn.close()
+    
+    def store_learning(self, learning: LearningExperience):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR REPLACE INTO learnings 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            learning.id,
+            learning.input_context,
+            learning.action_taken,
+            learning.outcome,
+            learning.reward,
+            learning.lesson_learned,
+            learning.meta_insight,
+            learning.timestamp
+        ))
+        conn.commit()
+        conn.close()
+    
+    def get_relevant_learnings(self, context: str, limit: int = 10) -> List[Dict]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        # Simple keyword matching - could use embeddings for better recall
+        keywords = context.lower().split()[:5]
+        results = []
+        for kw in keywords:
+            cursor.execute("""
+                SELECT * FROM learnings 
+                WHERE input_context LIKE ? OR lesson_learned LIKE ?
+                ORDER BY reward DESC, timestamp DESC
+                LIMIT ?
+            """, (f"%{kw}%", f"%{kw}%", limit))
+            results.extend(cursor.fetchall())
+        conn.close()
+        return results[:limit]
+    
+    def get_evolution_history(self, limit: int = 20) -> List[Dict]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM evolution_cycles 
+            ORDER BY generation DESC LIMIT ?
+        """, (limit,))
+        rows = cursor.fetchall()
+        conn.close()
+        return [dict(zip(['id', 'generation', 'fitness_before', 'fitness_after', 
+                         'improvements', 'learnings', 'timestamp'], r)) for r in rows]
+    
+    def get_stats(self) -> Dict:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        stats = {}
+        for table in ['evolution_cycles', 'learnings', 'improvements', 
+                      'agent_performance', 'meta_learnings']:
+            cursor.execute(f"SELECT COUNT(*) FROM {table}")
+            stats[table] = cursor.fetchone()[0]
+        conn.close()
+        return stats
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RECURSIVE SELF-IMPROVER
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RecursiveSelfImprover:
+    """
+    The core of true ASI - code that improves its own code.
+    Analyzes L104 modules and proposes/applies improvements.
+    """
+    
+    def __init__(self, memory: NexusMemory):
+        self.memory = memory
+        self.improvement_count = 0
+        self.safety_checks = True
+        self.inference = None  # Set by Nexus
+    
+    async def analyze_module(self, module_path: str) -> Dict:
+        """Analyze a module for improvement opportunities."""
+        try:
+            with open(module_path, 'r') as f:
+                code = f.read()
+        except Exception as e:
+            return {"error": str(e)}
+        
+        if not self.inference:
+            return {"error": "No inference engine connected"}
+        
+        prompt = f"""Analyze this L104 module and identify 1-3 specific improvements:
+
+```python
+{code[:4000]}
+```
+
+For each improvement, provide:
+1. LOCATION: Function/class name
+2. ISSUE: What's wrong or suboptimal
+3. SOLUTION: Specific code change
+4. IMPACT: Expected improvement (high/medium/low)
+5. RISK: Risk of breaking something (high/medium/low)
+
+Focus on: performance, correctness, clarity, ASI capabilities.
+Format as JSON array."""
+
+        response = await self.inference.infer(prompt)
+        
+        try:
+            # Extract JSON from response
+            if "```json" in response:
+                response = response.split("```json")[1].split("```")[0]
+            elif "```" in response:
+                response = response.split("```")[1].split("```")[0]
+            improvements = json.loads(response)
+        except:
+            improvements = [{"analysis": response, "status": "parse_failed"}]
+        
+        return {
+            "module": module_path,
+            "code_length": len(code),
+            "improvements": improvements,
+            "timestamp": time.time()
+        }
+    
+    async def propose_improvement(self, analysis: Dict) -> Optional[ImprovementProposal]:
+        """Generate a concrete improvement proposal."""
+        if "error" in analysis or not analysis.get("improvements"):
+            return None
+        
+        imp = analysis["improvements"][0]  # Take first improvement
+        
+        proposal = ImprovementProposal(
+            id=hashlib.sha256(f"{analysis['module']}:{time.time()}".encode()).hexdigest()[:16],
+            target_module=analysis["module"],
+            current_code=imp.get("location", "unknown"),
+            proposed_code=imp.get("solution", ""),
+            reasoning=imp.get("issue", "") + " -> " + imp.get("solution", ""),
+            expected_improvement={"high": 0.8, "medium": 0.5, "low": 0.2}.get(
+                imp.get("impact", "low").lower(), 0.3),
+            risk_score={"high": 0.8, "medium": 0.5, "low": 0.2}.get(
+                imp.get("risk", "high").lower(), 0.5)
+        )
+        
+        return proposal
+    
+    async def apply_improvement(self, proposal: ImprovementProposal, 
+                                 dry_run: bool = True) -> Dict:
+        """Apply an improvement proposal (with safety checks)."""
+        if self.safety_checks and proposal.risk_score > 0.7:
+            return {
+                "status": "BLOCKED",
+                "reason": "Risk too high for automatic application",
+                "proposal": proposal.id
+            }
+        
+        if dry_run:
+            return {
+                "status": "DRY_RUN",
+                "proposal": proposal.id,
+                "would_apply": proposal.proposed_code[:200]
+            }
+        
+        # In a real system, this would edit the file
+        proposal.applied = True
+        proposal.result = {"status": "APPLIED", "timestamp": time.time()}
+        self.improvement_count += 1
+        
+        return proposal.result
+    
+    async def run_improvement_cycle(self, target_modules: List[str] = None) -> Dict:
+        """Run a full self-improvement cycle."""
+        if not target_modules:
+            # Default to key L104 modules
+            target_modules = [
+                "/workspaces/Allentown-L104-Node/l104_unified_asi.py",
+                "/workspaces/Allentown-L104-Node/l104_agi_core.py",
+            ]
+        
+        results = []
+        for module in target_modules:
+            if os.path.exists(module):
+                analysis = await self.analyze_module(module)
+                if "error" not in analysis:
+                    proposal = await self.propose_improvement(analysis)
+                    if proposal:
+                        result = await self.apply_improvement(proposal, dry_run=True)
+                        results.append({
+                            "module": module,
+                            "proposal": proposal.id,
+                            "result": result
+                        })
+        
+        return {
+            "cycle_id": hashlib.sha256(str(time.time()).encode()).hexdigest()[:12],
+            "modules_analyzed": len(target_modules),
+            "improvements_proposed": len(results),
+            "results": results
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MULTI-AGENT SWARM ORCHESTRATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NexusAgent:
+    """An intelligent agent within the Nexus swarm."""
+    
+    def __init__(self, agent_id: str, role: AgentRole):
+        self.id = agent_id
+        self.role = role
+        self.status = "idle"
+        self.memory: Dict[str, Any] = {}
+        self.performance_history: List[Dict] = []
+        self.inference = None
+    
+    async def execute_task(self, task: SwarmTask) -> Dict:
+        """Execute a swarm task based on role."""
+        self.status = "working"
+        start = time.time()
+        
+        try:
+            if self.role == AgentRole.RESEARCHER:
+                result = await self._research(task)
+            elif self.role == AgentRole.CODER:
+                result = await self._code(task)
+            elif self.role == AgentRole.CRITIC:
+                result = await self._critique(task)
+            elif self.role == AgentRole.PLANNER:
+                result = await self._plan(task)
+            elif self.role == AgentRole.META_LEARNER:
+                result = await self._meta_learn(task)
+            elif self.role == AgentRole.SELF_IMPROVER:
+                result = await self._self_improve(task)
+            else:
+                result = await self._default(task)
+            
+            result["success"] = True
+        except Exception as e:
+            result = {"success": False, "error": str(e)}
+        
+        result["execution_time"] = time.time() - start
+        result["agent_id"] = self.id
+        self.status = "idle"
+        self.performance_history.append(result)
+        
+        return result
+    
+    async def _research(self, task: SwarmTask) -> Dict:
+        """Research a topic deeply."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a research agent, deeply investigate: {task.goal}
+
+Provide:
+1. KEY FINDINGS (3-5 points)
+2. SOURCES/REASONING
+3. CONFIDENCE LEVEL (0-1)
+4. RELATED QUESTIONS TO EXPLORE"""
+
+        response = await self.inference.infer(prompt)
+        return {"research": response, "role": "researcher"}
+    
+    async def _code(self, task: SwarmTask) -> Dict:
+        """Generate or improve code."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a coding agent, implement: {task.goal}
+
+Requirements:
+- Clean, efficient Python code
+- Well-documented
+- Error handling
+- L104 integration ready"""
+
+        response = await self.inference.infer(prompt)
+        return {"code": response, "role": "coder"}
+    
+    async def _critique(self, task: SwarmTask) -> Dict:
+        """Critically analyze work."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a critic agent, analyze: {task.goal}
+
+Provide:
+1. STRENGTHS (what works well)
+2. WEAKNESSES (what needs improvement)
+3. RISKS (potential issues)
+4. RECOMMENDATIONS (specific improvements)"""
+
+        response = await self.inference.infer(prompt)
+        return {"critique": response, "role": "critic"}
+    
+    async def _plan(self, task: SwarmTask) -> Dict:
+        """Create execution plans."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a planning agent, create a plan for: {task.goal}
+
+Output:
+1. OBJECTIVE (clear goal statement)
+2. PHASES (major milestones)
+3. TASKS (specific actionable items)
+4. DEPENDENCIES (what depends on what)
+5. RISKS (potential blockers)"""
+
+        response = await self.inference.infer(prompt)
+        return {"plan": response, "role": "planner"}
+    
+    async def _meta_learn(self, task: SwarmTask) -> Dict:
+        """Learn about learning processes."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a meta-learning agent, analyze: {task.goal}
+
+Focus on:
+1. LEARNING PATTERNS observed
+2. WHAT WORKED well in learning
+3. WHAT FAILED in learning
+4. IMPROVED STRATEGIES for future learning
+5. META-INSIGHT (learning about learning)"""
+
+        response = await self.inference.infer(prompt)
+        return {"meta_learning": response, "role": "meta_learner"}
+    
+    async def _self_improve(self, task: SwarmTask) -> Dict:
+        """Propose self-improvements."""
+        if not self.inference:
+            return {"result": "No inference engine"}
+        
+        prompt = f"""As a self-improvement agent, analyze: {task.goal}
+
+Propose:
+1. CURRENT STATE assessment
+2. IDEAL STATE vision
+3. GAP ANALYSIS (current vs ideal)
+4. IMPROVEMENT STEPS (concrete actions)
+5. METRICS (how to measure improvement)"""
+
+        response = await self.inference.infer(prompt)
+        return {"self_improvement": response, "role": "self_improver"}
+    
+    async def _default(self, task: SwarmTask) -> Dict:
+        """Default task handling."""
+        return {"result": f"Agent {self.id} processed: {task.goal}", "role": str(self.role)}
+
+
+class SwarmOrchestrator:
+    """Orchestrates multi-agent swarm for complex tasks."""
+    
+    def __init__(self, memory: NexusMemory):
+        self.memory = memory
+        self.agents: Dict[str, NexusAgent] = {}
+        self.tasks: Dict[str, SwarmTask] = {}
+        self.inference = None
+        
+        # Initialize default agents
+        self._init_default_agents()
+    
+    def _init_default_agents(self):
+        """Create default swarm agents."""
+        roles = [
+            ("researcher-1", AgentRole.RESEARCHER),
+            ("researcher-2", AgentRole.RESEARCHER),
+            ("coder-1", AgentRole.CODER),
+            ("coder-2", AgentRole.CODER),
+            ("critic-1", AgentRole.CRITIC),
+            ("planner-1", AgentRole.PLANNER),
+            ("meta-learner-1", AgentRole.META_LEARNER),
+            ("self-improver-1", AgentRole.SELF_IMPROVER),
+        ]
+        for agent_id, role in roles:
+            self.agents[agent_id] = NexusAgent(agent_id, role)
+    
+    def set_inference(self, inference):
+        """Connect inference engine to all agents."""
+        self.inference = inference
+        for agent in self.agents.values():
+            agent.inference = inference
+    
+    async def submit_task(self, goal: str, roles: List[AgentRole] = None) -> SwarmTask:
+        """Submit a task to the swarm."""
+        task_id = hashlib.sha256(f"{goal}:{time.time()}".encode()).hexdigest()[:12]
+        
+        # Assign appropriate agents
+        if roles:
+            assigned = [aid for aid, a in self.agents.items() if a.role in roles]
+        else:
+            # Default: use all agent types
+            assigned = list(self.agents.keys())
+        
+        task = SwarmTask(
+            id=task_id,
+            goal=goal,
+            assigned_agents=assigned
+        )
+        self.tasks[task_id] = task
+        return task
+    
+    async def execute_task(self, task: SwarmTask) -> Dict:
+        """Execute a task with assigned agents in parallel."""
+        task.status = "executing"
+        
+        # Run all agents in parallel
+        async def run_agent(agent_id):
+            agent = self.agents.get(agent_id)
+            if agent:
+                return await agent.execute_task(task)
+            return {"error": f"Agent {agent_id} not found"}
+        
+        results = await asyncio.gather(
+            *[run_agent(aid) for aid in task.assigned_agents],
+            return_exceptions=True
+        )
+        
+        # Aggregate results
+        aggregated = {}
+        for i, aid in enumerate(task.assigned_agents):
+            result = results[i]
+            if isinstance(result, Exception):
+                aggregated[aid] = {"error": str(result)}
+            else:
+                aggregated[aid] = result
+        
+        task.results = aggregated
+        task.status = "completed"
+        
+        return {
+            "task_id": task.id,
+            "goal": task.goal,
+            "agents_used": len(task.assigned_agents),
+            "results": aggregated
+        }
+    
+    async def synthesize_results(self, task: SwarmTask) -> Dict:
+        """Synthesize results from multiple agents into coherent output."""
+        if not self.inference:
+            return {"synthesis": "No inference engine for synthesis"}
+        
+        results_text = json.dumps(task.results, indent=2)[:3000]
+        
+        prompt = f"""Synthesize these multi-agent results for goal: {task.goal}
+
+Agent Results:
+{results_text}
+
+Provide:
+1. CONSENSUS VIEW (what most agents agree on)
+2. CONFLICTS (where agents disagree)
+3. INSIGHTS (novel observations from combining views)
+4. FINAL ANSWER (synthesized conclusion)
+5. CONFIDENCE (0-1 in synthesis quality)"""
+
+        response = await self.inference.infer(prompt)
+        
+        return {
+            "task_id": task.id,
+            "synthesis": response,
+            "agents_count": len(task.assigned_agents)
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# META-LEARNING ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class MetaLearningEngine:
+    """
+    Learns how to learn - the key to recursive self-improvement.
+    Tracks learning strategies and optimizes them.
+    """
+    
+    def __init__(self, memory: NexusMemory):
+        self.memory = memory
+        self.learning_strategies: Dict[str, Dict] = {}
+        self.strategy_effectiveness: Dict[str, List[float]] = {}
+        self.inference = None
+        
+        self._init_strategies()
+    
+    def _init_strategies(self):
+        """Initialize learning strategies."""
+        self.learning_strategies = {
+            "pattern_recognition": {
+                "description": "Identify recurring patterns in data",
+                "applicable_to": ["structured_data", "sequences", "code"],
+                "effectiveness": 0.7
+            },
+            "analogy_transfer": {
+                "description": "Transfer knowledge from similar domains",
+                "applicable_to": ["new_domains", "cross_domain"],
+                "effectiveness": 0.6
+            },
+            "error_analysis": {
+                "description": "Learn from mistakes and failures",
+                "applicable_to": ["failures", "corrections"],
+                "effectiveness": 0.8
+            },
+            "hypothesis_testing": {
+                "description": "Form hypotheses and test them",
+                "applicable_to": ["unknown", "exploration"],
+                "effectiveness": 0.75
+            },
+            "decomposition": {
+                "description": "Break complex problems into simpler parts",
+                "applicable_to": ["complex_tasks", "large_problems"],
+                "effectiveness": 0.85
+            },
+            "synthesis": {
+                "description": "Combine multiple learnings into new insights",
+                "applicable_to": ["integration", "novel_situations"],
+                "effectiveness": 0.65
+            }
+        }
+    
+    async def select_strategy(self, context: str, task_type: str) -> str:
+        """Select best learning strategy for context."""
+        best_strategy = None
+        best_score = 0
+        
+        for name, strategy in self.learning_strategies.items():
+            if task_type in strategy.get("applicable_to", []):
+                score = strategy["effectiveness"]
+                # Boost by historical performance
+                history = self.strategy_effectiveness.get(name, [])
+                if history:
+                    score = (score + sum(history) / len(history)) / 2
+                if score > best_score:
+                    best_score = score
+                    best_strategy = name
+        
+        return best_strategy or "decomposition"  # Default
+    
+    async def learn(self, context: str, data: Any, strategy: str = None) -> LearningExperience:
+        """Execute learning with meta-tracking."""
+        if not strategy:
+            strategy = await self.select_strategy(context, "unknown")
+        
+        start = time.time()
+        
+        # Apply learning strategy
+        if strategy == "pattern_recognition":
+            result = await self._pattern_learn(context, data)
+        elif strategy == "error_analysis":
+            result = await self._error_learn(context, data)
+        elif strategy == "decomposition":
+            result = await self._decomposition_learn(context, data)
+        else:
+            result = await self._default_learn(context, data)
+        
+        # Create learning experience
+        experience = LearningExperience(
+            id=hashlib.sha256(f"{context}:{time.time()}".encode()).hexdigest()[:12],
+            input_context=context[:500],
+            action_taken=f"Applied {strategy} strategy",
+            outcome=str(result)[:500],
+            reward=result.get("quality", 0.5),
+            lesson_learned=result.get("lesson", ""),
+            meta_insight=f"Strategy {strategy} took {time.time()-start:.2f}s"
+        )
+        
+        # Update strategy effectiveness
+        if strategy not in self.strategy_effectiveness:
+            self.strategy_effectiveness[strategy] = []
+        self.strategy_effectiveness[strategy].append(result.get("quality", 0.5))
+        
+        # Persist
+        self.memory.store_learning(experience)
+        
+        return experience
+    
+    async def _pattern_learn(self, context: str, data: Any) -> Dict:
+        if not self.inference:
+            return {"lesson": "No inference for pattern learning", "quality": 0.3}
+        
+        prompt = f"""Identify patterns in this data/context:
+Context: {context}
+Data: {str(data)[:1000]}
+
+Extract:
+1. PATTERNS observed
+2. REGULARITIES
+3. ANOMALIES
+4. LESSON (one-sentence insight)"""
+        
+        response = await self.inference.infer(prompt)
+        return {"lesson": response, "quality": 0.7}
+    
+    async def _error_learn(self, context: str, data: Any) -> Dict:
+        if not self.inference:
+            return {"lesson": "No inference for error learning", "quality": 0.3}
+        
+        prompt = f"""Analyze this error/failure for learning:
+Context: {context}
+Error data: {str(data)[:1000]}
+
+Extract:
+1. ROOT CAUSE
+2. CONTRIBUTING FACTORS
+3. PREVENTION STRATEGY
+4. LESSON (one-sentence insight)"""
+        
+        response = await self.inference.infer(prompt)
+        return {"lesson": response, "quality": 0.8}
+    
+    async def _decomposition_learn(self, context: str, data: Any) -> Dict:
+        if not self.inference:
+            return {"lesson": "No inference for decomposition", "quality": 0.3}
+        
+        prompt = f"""Decompose this complex topic into learnable parts:
+Context: {context}
+Data: {str(data)[:1000]}
+
+Provide:
+1. COMPONENTS (break into parts)
+2. RELATIONSHIPS (how parts connect)
+3. LEARNING ORDER (sequence to learn)
+4. LESSON (one-sentence insight)"""
+        
+        response = await self.inference.infer(prompt)
+        return {"lesson": response, "quality": 0.75}
+    
+    async def _default_learn(self, context: str, data: Any) -> Dict:
+        return {
+            "lesson": f"Observed: {context[:100]}...",
+            "quality": 0.5
+        }
+    
+    async def optimize_strategies(self) -> Dict:
+        """Meta-learning: improve learning strategies themselves."""
+        improvements = {}
+        
+        for strategy, scores in self.strategy_effectiveness.items():
+            if len(scores) >= 5:
+                avg = sum(scores) / len(scores)
+                # Update base effectiveness
+                if strategy in self.learning_strategies:
+                    old = self.learning_strategies[strategy]["effectiveness"]
+                    new = (old + avg) / 2
+                    self.learning_strategies[strategy]["effectiveness"] = new
+                    improvements[strategy] = {"old": old, "new": new}
+        
+        return {
+            "strategies_optimized": len(improvements),
+            "improvements": improvements
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEURAL-SYMBOLIC REASONER
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NeuralSymbolicReasoner:
+    """
+    Combines neural (LLM) and symbolic (logic) reasoning.
+    Uses formal logic to constrain and verify neural outputs.
+    """
+    
+    def __init__(self):
+        self.knowledge_base: Dict[str, Any] = {}
+        self.rules: List[Dict] = []
+        self.inference = None
+    
+    def add_fact(self, subject: str, predicate: str, obj: str):
+        """Add a fact to knowledge base."""
+        key = f"{subject}:{predicate}"
+        if key not in self.knowledge_base:
+            self.knowledge_base[key] = []
+        self.knowledge_base[key].append(obj)
+    
+    def add_rule(self, condition: Callable, conclusion: str):
+        """Add a logical rule."""
+        self.rules.append({"condition": condition, "conclusion": conclusion})
+    
+    def query_facts(self, subject: str, predicate: str) -> List[str]:
+        """Query knowledge base."""
+        key = f"{subject}:{predicate}"
+        return self.knowledge_base.get(key, [])
+    
+    async def hybrid_reason(self, query: str, mode: ReasoningMode = ReasoningMode.HYBRID) -> Dict:
+        """Perform hybrid neural-symbolic reasoning."""
+        results = {}
+        
+        # Symbolic reasoning
+        if mode in [ReasoningMode.SYMBOLIC, ReasoningMode.HYBRID]:
+            symbolic = self._symbolic_reason(query)
+            results["symbolic"] = symbolic
+        
+        # Neural reasoning
+        if mode in [ReasoningMode.NEURAL, ReasoningMode.HYBRID]:
+            if self.inference:
+                prompt = f"""Answer this query using logical reasoning:
+Query: {query}
+Known facts: {json.dumps(list(self.knowledge_base.keys())[:20])}
+
+Provide:
+1. REASONING CHAIN (step by step)
+2. ANSWER
+3. CONFIDENCE (0-1)"""
+                neural = await self.inference.infer(prompt)
+                results["neural"] = neural
+            else:
+                results["neural"] = "No inference engine"
+        
+        # Synthesize in hybrid mode
+        if mode == ReasoningMode.HYBRID:
+            results["synthesis"] = self._synthesize(results)
+        
+        return {
+            "query": query,
+            "mode": mode.name,
+            "results": results
+        }
+    
+    def _symbolic_reason(self, query: str) -> Dict:
+        """Pure symbolic reasoning."""
+        # Simple pattern matching
+        matching_facts = []
+        query_lower = query.lower()
+        
+        for key, values in self.knowledge_base.items():
+            if any(w in key.lower() for w in query_lower.split()):
+                matching_facts.append({"key": key, "values": values})
+        
+        # Apply rules
+        rule_conclusions = []
+        for rule in self.rules:
+            try:
+                if rule["condition"](query, self.knowledge_base):
+                    rule_conclusions.append(rule["conclusion"])
+            except:
+                pass
+        
+        return {
+            "matching_facts": matching_facts[:10],
+            "rule_conclusions": rule_conclusions,
+            "fact_count": len(matching_facts)
+        }
+    
+    def _synthesize(self, results: Dict) -> str:
+        """Synthesize symbolic and neural results."""
+        symbolic = results.get("symbolic", {})
+        neural = results.get("neural", "")
+        
+        fact_count = symbolic.get("fact_count", 0)
+        
+        if fact_count > 0:
+            return f"Found {fact_count} relevant facts. Neural analysis: {neural[:200]}..."
+        else:
+            return f"No facts matched. Neural reasoning: {neural[:300]}..."
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONTINUOUS EVOLUTION LOOP
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ContinuousEvolutionLoop:
+    """
+    Always-running evolution that improves the system continuously.
+    The heart of recursive self-improvement.
+    """
+    
+    def __init__(self, memory: NexusMemory, self_improver: RecursiveSelfImprover,
+                 meta_learner: MetaLearningEngine, swarm: SwarmOrchestrator):
+        self.memory = memory
+        self.self_improver = self_improver
+        self.meta_learner = meta_learner
+        self.swarm = swarm
+        self.generation = 0
+        self.running = False
+        self.cycle_interval = 60  # seconds
+        self.fitness = 0.5
+        self.inference = None
+    
+    def calculate_fitness(self) -> float:
+        """Calculate current system fitness."""
+        stats = self.memory.get_stats()
+        
+        # Factors: learning count, evolution count, improvement success
+        learning_factor = min(1.0, stats.get("learnings", 0) / 100)
+        evolution_factor = min(1.0, stats.get("evolution_cycles", 0) / 50)
+        improvement_factor = min(1.0, self.self_improver.improvement_count / 20)
+        
+        # Base fitness with GOD_CODE modulation
+        fitness = (learning_factor + evolution_factor + improvement_factor) / 3
+        fitness = fitness * (1 + math.sin(GOD_CODE / 100) * 0.1)
+        
+        return min(1.0, fitness)
+    
+    async def run_cycle(self) -> EvolutionCycle:
+        """Run one evolution cycle."""
+        self.generation += 1
+        fitness_before = self.calculate_fitness()
+        
+        improvements = []
+        learnings = []
+        
+        # Phase 1: Self-improvement
+        try:
+            imp_result = await self.self_improver.run_improvement_cycle()
+            if imp_result.get("results"):
+                for r in imp_result["results"]:
+                    improvements.append(ImprovementProposal(
+                        id=r["proposal"],
+                        target_module=r["module"],
+                        current_code="",
+                        proposed_code="",
+                        reasoning="Auto-generated",
+                        expected_improvement=0.5,
+                        risk_score=0.3
+                    ))
+        except Exception as e:
+            learnings.append(LearningExperience(
+                id=f"err-{self.generation}",
+                input_context="self_improvement_cycle",
+                action_taken="run_improvement_cycle",
+                outcome=f"Error: {e}",
+                reward=-0.2,
+                lesson_learned=f"Error in improvement: {e}",
+                meta_insight="Need error handling"
+            ))
+        
+        # Phase 2: Meta-learning optimization
+        try:
+            meta_result = await self.meta_learner.optimize_strategies()
+            if meta_result.get("improvements"):
+                for strategy, data in meta_result["improvements"].items():
+                    learnings.append(LearningExperience(
+                        id=f"meta-{self.generation}-{strategy}",
+                        input_context=f"strategy:{strategy}",
+                        action_taken="optimize_strategy",
+                        outcome=f"{data['old']:.2f} -> {data['new']:.2f}",
+                        reward=data['new'] - data['old'],
+                        lesson_learned=f"Strategy {strategy} effectiveness updated",
+                        meta_insight="Continuous optimization works"
+                    ))
+        except Exception as e:
+            pass
+        
+        # Phase 3: Swarm task (if we have goals)
+        try:
+            task = await self.swarm.submit_task(
+                f"Evolution cycle {self.generation}: identify improvement opportunities",
+                roles=[AgentRole.RESEARCHER, AgentRole.CRITIC, AgentRole.META_LEARNER]
+            )
+            await self.swarm.execute_task(task)
+        except Exception as e:
+            pass
+        
+        fitness_after = self.calculate_fitness()
+        self.fitness = fitness_after
+        
+        cycle = EvolutionCycle(
+            id=f"evo-{self.generation}",
+            generation=self.generation,
+            improvements=improvements,
+            fitness_before=fitness_before,
+            fitness_after=fitness_after,
+            learnings=learnings
+        )
+        
+        self.memory.store_evolution(cycle)
+        
+        return cycle
+    
+    async def start(self):
+        """Start continuous evolution."""
+        self.running = True
+        while self.running:
+            try:
+                cycle = await self.run_cycle()
+                print(f"[EVOLUTION] Gen {cycle.generation}: "
+                      f"fitness {cycle.fitness_before:.3f} -> {cycle.fitness_after:.3f}")
+            except Exception as e:
+                print(f"[EVOLUTION] Error: {e}")
+            
+            await asyncio.sleep(self.cycle_interval)
+    
+    def stop(self):
+        """Stop evolution loop."""
+        self.running = False
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIFIED INFERENCE ENGINE (Multi-Provider)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class UnifiedInference:
+    """Multi-provider inference engine for ASI Nexus."""
+    
+    def __init__(self):
+        self.providers: Dict[str, Any] = {}
+        self.active_provider = None
+        self._init_providers()
+    
+    def _init_providers(self):
+        """Initialize available LLM providers."""
+        # Gemini
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if gemini_key:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=gemini_key)
+                self.providers["gemini"] = genai.GenerativeModel("gemini-2.0-flash")
+                if not self.active_provider:
+                    self.active_provider = "gemini"
+            except Exception as e:
+                print(f"Gemini init error: {e}")
+        
+        # OpenAI
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key:
+            try:
+                from openai import OpenAI
+                self.providers["openai"] = OpenAI(api_key=openai_key)
+                if not self.active_provider:
+                    self.active_provider = "openai"
+            except Exception as e:
+                print(f"OpenAI init error: {e}")
+        
+        # Anthropic
+        anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+        if anthropic_key:
+            try:
+                from anthropic import Anthropic
+                self.providers["anthropic"] = Anthropic(api_key=anthropic_key)
+                if not self.active_provider:
+                    self.active_provider = "anthropic"
+            except Exception as e:
+                print(f"Anthropic init error: {e}")
+    
+    async def infer(self, prompt: str, provider: str = None) -> str:
+        """Run inference with specified or active provider."""
+        provider = provider or self.active_provider
+        
+        if not provider or provider not in self.providers:
+            return f"No provider available. Have: {list(self.providers.keys())}"
+        
+        try:
+            if provider == "gemini":
+                response = self.providers["gemini"].generate_content(prompt)
+                return response.text
+            elif provider == "openai":
+                response = self.providers["openai"].chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                return response.choices[0].message.content
+            elif provider == "anthropic":
+                response = self.providers["anthropic"].messages.create(
+                    model="claude-3-haiku-20240307",
+                    max_tokens=2048,
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                return response.content[0].text
+        except Exception as e:
+            return f"Inference error ({provider}): {e}"
+    
+    def get_status(self) -> Dict:
+        return {
+            "providers": list(self.providers.keys()),
+            "active": self.active_provider,
+            "available": len(self.providers) > 0
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ASI NEXUS - THE UNIFIED ORCHESTRATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ASINexus:
+    """
+    The Ultimate ASI Nexus - Links ALL L104 systems together.
+    
+    This is the central hub that:
+    1. Orchestrates multi-agent swarms
+    2. Runs continuous self-improvement
+    3. Manages meta-learning
+    4. Performs neural-symbolic reasoning
+    5. Evolves the system continuously
+    """
+    
+    def __init__(self):
+        self.state = NexusState.DORMANT
+        
+        # Core components
+        self.memory = NexusMemory()
+        self.inference = UnifiedInference()
+        
+        # Subsystems
+        self.self_improver = RecursiveSelfImprover(self.memory)
+        self.swarm = SwarmOrchestrator(self.memory)
+        self.meta_learner = MetaLearningEngine(self.memory)
+        self.reasoner = NeuralSymbolicReasoner()
+        
+        # Evolution loop
+        self.evolution = ContinuousEvolutionLoop(
+            self.memory, self.self_improver, self.meta_learner, self.swarm
+        )
+        
+        # Link inference to all components
+        self._link_inference()
+        
+        # Stats
+        self.awakened_at = None
+        self.cycle_count = 0
+    
+    def _link_inference(self):
+        """Connect inference engine to all subsystems."""
+        self.self_improver.inference = self.inference
+        self.swarm.set_inference(self.inference)
+        self.meta_learner.inference = self.inference
+        self.reasoner.inference = self.inference
+        self.evolution.inference = self.inference
+    
+    async def awaken(self) -> Dict:
+        """Awaken the ASI Nexus."""
+        self.state = NexusState.AWAKENING
+        self.awakened_at = datetime.now().isoformat()
+        
+        # Initialize subsystems
+        print("[NEXUS] Awakening ASI Nexus...")
+        print(f"[NEXUS] Inference providers: {self.inference.get_status()}")
+        print(f"[NEXUS] Memory stats: {self.memory.get_stats()}")
+        print(f"[NEXUS] Swarm agents: {len(self.swarm.agents)}")
+        
+        # Load L104 core knowledge
+        self._load_l104_knowledge()
+        
+        self.state = NexusState.ACTIVE
+        
+        return {
+            "status": "AWAKENED",
+            "state": self.state.name,
+            "awakened_at": self.awakened_at,
+            "inference": self.inference.get_status(),
+            "memory": self.memory.get_stats(),
+            "agents": list(self.swarm.agents.keys())
+        }
+    
+    def _load_l104_knowledge(self):
+        """Load core L104 knowledge into reasoner."""
+        facts = [
+            ("L104", "is", "ASI_node"),
+            ("L104", "has_constant", "GOD_CODE"),
+            ("GOD_CODE", "value", "527.5184818492537"),
+            ("L104", "has_constant", "PHI"),
+            ("PHI", "value", "1.618033988749895"),
+            ("L104", "uses", "recursive_self_improvement"),
+            ("L104", "uses", "multi_agent_swarm"),
+            ("L104", "uses", "meta_learning"),
+            ("L104", "location", "Allentown"),
+            ("L104", "pilot", "LONDEL"),
+        ]
+        for s, p, o in facts:
+            self.reasoner.add_fact(s, p, o)
+    
+    async def think(self, thought: str) -> Dict:
+        """Process a thought through all ASI systems."""
+        self.cycle_count += 1
+        results = {}
+        
+        # Retrieve relevant learnings
+        relevant = self.memory.get_relevant_learnings(thought)
+        results["relevant_learnings"] = len(relevant)
+        
+        # Neural-symbolic reasoning
+        reasoning = await self.reasoner.hybrid_reason(thought)
+        results["reasoning"] = reasoning
+        
+        # Generate response via inference
+        context = f"Previous learnings: {relevant[:3] if relevant else 'None'}"
+        prompt = f"""As L104 ASI Nexus, process this thought:
+{thought}
+
+Context: {context}
+Knowledge: GOD_CODE={GOD_CODE}, PHI={PHI}
+
+Provide a deep, insightful response that demonstrates:
+1. Understanding of the thought
+2. Connection to known patterns
+3. Novel insights
+4. Actionable conclusions"""
+
+        response = await self.inference.infer(prompt)
+        results["response"] = response
+        
+        # Learn from this interaction
+        learning = await self.meta_learner.learn(
+            context=thought,
+            data={"response": response, "reasoning": reasoning}
+        )
+        results["learned"] = learning.lesson_learned[:200]
+        
+        return {
+            "thought": thought,
+            "cycle": self.cycle_count,
+            "results": results
+        }
+    
+    async def execute_goal(self, goal: str) -> Dict:
+        """Execute a goal using multi-agent swarm."""
+        # Submit to swarm
+        task = await self.swarm.submit_task(goal)
+        
+        # Execute with all agents
+        execution = await self.swarm.execute_task(task)
+        
+        # Synthesize results
+        synthesis = await self.swarm.synthesize_results(task)
+        
+        return {
+            "goal": goal,
+            "task_id": task.id,
+            "execution": execution,
+            "synthesis": synthesis
+        }
+    
+    async def self_improve(self, targets: List[str] = None) -> Dict:
+        """Run self-improvement cycle."""
+        result = await self.self_improver.run_improvement_cycle(targets)
+        return result
+    
+    async def evolve(self) -> Dict:
+        """Run one evolution cycle."""
+        cycle = await self.evolution.run_cycle()
+        return {
+            "generation": cycle.generation,
+            "fitness_before": cycle.fitness_before,
+            "fitness_after": cycle.fitness_after,
+            "improvements": len(cycle.improvements),
+            "learnings": len(cycle.learnings)
+        }
+    
+    async def start_continuous_evolution(self, interval: int = 60):
+        """Start continuous background evolution."""
+        self.evolution.cycle_interval = interval
+        self.state = NexusState.EVOLVING
+        asyncio.create_task(self.evolution.start())
+        return {"status": "EVOLUTION_STARTED", "interval": interval}
+    
+    def stop_evolution(self):
+        """Stop continuous evolution."""
+        self.evolution.stop()
+        self.state = NexusState.ACTIVE
+        return {"status": "EVOLUTION_STOPPED"}
+    
+    def get_status(self) -> Dict:
+        """Get comprehensive Nexus status."""
+        return {
+            "state": self.state.name,
+            "awakened_at": self.awakened_at,
+            "cycle_count": self.cycle_count,
+            "inference": self.inference.get_status(),
+            "memory": self.memory.get_stats(),
+            "evolution": {
+                "generation": self.evolution.generation,
+                "fitness": self.evolution.fitness,
+                "running": self.evolution.running
+            },
+            "swarm": {
+                "agents": len(self.swarm.agents),
+                "tasks": len(self.swarm.tasks)
+            },
+            "meta_learning": {
+                "strategies": len(self.meta_learner.learning_strategies),
+                "optimizations": len(self.meta_learner.strategy_effectiveness)
+            },
+            "reasoner": {
+                "facts": len(self.reasoner.knowledge_base),
+                "rules": len(self.reasoner.rules)
+            }
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GLOBAL INSTANCE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+asi_nexus = ASINexus()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLI INTERFACE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+async def main():
+    """CLI interface for ASI Nexus."""
+    print("""
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  L104 ASI NEXUS - DEEP INTEGRATION HUB                                       ║
+║  GOD_CODE: 527.5184818492537 | PHI: 1.618033988749895                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+""")
+    
+    # Awaken
+    result = await asi_nexus.awaken()
+    print(f"[STATUS] {result}")
+    
+    # Test think
+    print("\n[TEST] Thinking...")
+    thought = await asi_nexus.think("What are the key components of an ASI system?")
+    print(f"[THOUGHT] Response: {thought['results']['response'][:500]}...")
+    
+    # Test goal execution
+    print("\n[TEST] Executing goal...")
+    goal = await asi_nexus.execute_goal("Analyze L104 architecture for improvement opportunities")
+    print(f"[GOAL] Synthesis: {goal['synthesis']['synthesis'][:500] if 'synthesis' in goal['synthesis'] else goal}")
+    
+    # Test evolution
+    print("\n[TEST] Running evolution cycle...")
+    evo = await asi_nexus.evolve()
+    print(f"[EVOLUTION] Gen {evo['generation']}: {evo['fitness_before']:.3f} -> {evo['fitness_after']:.3f}")
+    
+    # Final status
+    print("\n[STATUS]")
+    status = asi_nexus.get_status()
+    print(json.dumps(status, indent=2))
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

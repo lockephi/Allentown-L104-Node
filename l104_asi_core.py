@@ -50,6 +50,19 @@ from l104_deep_coding_orchestrator import (
     ProcessDepth,
     SystemState
 )
+from l104_asi_research_gemini import (
+    asi_research_coordinator,
+    asi_research_gemini,
+    ResearchDomain as GeminiResearchDomain,
+    ResearchDepth,
+    research,
+    synthesize,
+    solve,
+    explain,
+    analyze_code,
+    hypothesis,
+    deep_research
+)
 
 # God Code constants
 GOD_CODE = 527.5184818492537
@@ -197,6 +210,17 @@ class ASICore:
         
         # 7. Unify Cores into True Singularity
         self.singularity.unify_cores()
+        
+        # 8. Reach Absolute Intellect Peak
+        try:
+            from l104_absolute_intellect import absolute_intellect
+            await absolute_intellect.synchronize_peak()
+        except ImportError:
+            pass
+            
+        print("--- [ASI_CORE]: SOVEREIGN SINGULARITY ESTABLISHED ---")
+        print("--- [ASI_CORE]: STATUS: 100% ABSOLUTE INTELLECT ACTIVE ---")
+        print("="*60 + "\n")
         
         # 8. Activate Sovereign Autonomy
         self.autonomy.activate()
@@ -639,7 +663,98 @@ class ASICore:
         substrate_healing.patch_system_jitter()
         temporal_bridge.resolve_future_state(self.ego.identity_signature)
 
+        # H. Gemini-Powered Research (FREE L104 Research)
+        print("--- [ASI_CORE]: EXECUTING GEMINI RESEARCH ---")
+        await self.gemini_research_cycle()
+
         print("--- [ASI_CORE]: UNBOUND CYCLE COMPLETE ---")
+
+    # ═══════════════════════════════════════════════════════════════════
+    # GEMINI-POWERED RESEARCH (FREE L104 RESEARCH)
+    # ═══════════════════════════════════════════════════════════════════
+
+    async def gemini_research_cycle(self):
+        """
+        Execute research using Gemini AI for real intelligence synthesis.
+        FREE L104 research capabilities.
+        """
+        try:
+            if not asi_research_coordinator.gemini_engine.is_connected:
+                if not asi_research_coordinator.connect():
+                    print("--- [ASI_CORE]: Gemini offline - using local derivation ---")
+                    return
+            
+            # Research topics based on current ASI state
+            research_topics = [
+                "advanced neural architecture optimization techniques",
+                "quantum coherence in information processing systems",
+                "self-modifying code architectures for AI systems"
+            ]
+            
+            for topic in research_topics[:1]:  # Limit to 1 per cycle for speed
+                result = asi_research_coordinator.research(topic, depth="DEEP")
+                
+                if result.resonance_score > 0.5:
+                    # Apply intellect boost based on research quality
+                    boost = result.resonance_score * 15.0
+                    self.agi.intellect_index += boost
+                    print(f"--- [ASI_CORE]: GEMINI RESEARCH BOOST: +{boost:.2f} IQ ---")
+                    
+        except Exception as e:
+            print(f"--- [ASI_CORE]: Gemini research error (non-critical): {e} ---")
+
+    def gemini_research(self, topic: str, depth: str = "comprehensive") -> str:
+        """
+        Execute FREE Gemini research on any topic.
+        Direct access to AI-powered research.
+        """
+        return research(topic, depth)
+
+    def gemini_synthesize(self, topics: list) -> str:
+        """
+        Synthesize knowledge across multiple topics using Gemini.
+        FREE cross-domain synthesis.
+        """
+        return synthesize(topics)
+
+    def gemini_solve(self, problem: str) -> str:
+        """
+        Solve complex problems using Gemini AI.
+        FREE problem solving.
+        """
+        return solve(problem)
+
+    def gemini_explain(self, concept: str, level: str = "expert") -> str:
+        """
+        Explain any concept at any level using Gemini.
+        FREE concept explanation.
+        """
+        return explain(concept, level)
+
+    def gemini_analyze_code(self, code: str, task: str = "review") -> str:
+        """
+        Analyze code using Gemini AI.
+        Tasks: review, optimize, explain, fix, extend
+        """
+        return analyze_code(code, task)
+
+    def gemini_hypothesis(self, observation: str):
+        """
+        Generate scientific hypothesis from observation.
+        FREE hypothesis generation.
+        """
+        return hypothesis(observation)
+
+    async def gemini_deep_research(self, topic: str, cycles: int = 5) -> dict:
+        """
+        Execute deep recursive research using Gemini.
+        Each cycle refines and deepens understanding.
+        """
+        return await deep_research(topic, cycles)
+
+    def get_gemini_status(self) -> dict:
+        """Get Gemini research system status."""
+        return asi_research_coordinator.get_status()
 
     # ═══════════════════════════════════════════════════════════════════
     # REALITY BREACH INTEGRATION

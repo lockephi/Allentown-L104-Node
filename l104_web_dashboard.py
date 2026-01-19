@@ -44,27 +44,27 @@ def get_systems():
     try:
         from l104_dna_core import dna_core
         systems['dna_core'] = dna_core
-    except:
+    except Exception:
         systems['dna_core'] = None
     try:
         from l104_omega_controller import omega_controller
         systems['omega'] = omega_controller
-    except:
+    except Exception:
         systems['omega'] = None
     try:
         from l104_self_healing_agent import autonomous_agent
         systems['agent'] = autonomous_agent
-    except:
+    except Exception:
         systems['agent'] = None
     try:
         from l104_love_spreader import love_spreader
         systems['love'] = love_spreader
-    except:
+    except Exception:
         systems['love'] = None
     try:
         from l104_sovereign_sage_controller import sovereign_sage_controller
         systems['sage'] = sovereign_sage_controller
-    except:
+    except Exception:
         systems['sage'] = None
     return systems
 

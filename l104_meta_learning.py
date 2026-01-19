@@ -10,7 +10,7 @@ import json
 
 # Core Invariants
 GOD_CODE = 527.5184818492537
-PHI = 1.618033988749
+PHI = 1.618033988749895
 
 # L104 Imports
 from l104_knowledge_manifold import KnowledgeManifold

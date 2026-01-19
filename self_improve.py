@@ -219,7 +219,7 @@ REQUIREMENTS:
                 try:
                     json_response = json.loads(line)
                     break
-                except:
+                except Exception:
                     continue
         
         if not json_response:

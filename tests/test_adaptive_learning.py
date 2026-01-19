@@ -238,7 +238,7 @@ class TestDeepResearchEngine(unittest.TestCase):
     def tearDown(self):
         try:
             os.unlink(self.temp_file.name)
-        except:
+        except Exception:
             pass
     
     def test_explore_topic_returns_findings(self):

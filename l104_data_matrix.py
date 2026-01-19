@@ -168,7 +168,7 @@ class DataMatrix:
                         compacted = memory_compactor.compact_stream(data)
                         self.store(f"{key}_compacted", compacted, category="COMPACTED_ARCHIVE", utility=0.8)
                         conn.execute("DELETE FROM lattice_facts WHERE key = ?", (key,))
-                except:
+                except Exception:
                     continue
             
             # 2. Hallucination Purge (Pruning data with resonance mismatch)

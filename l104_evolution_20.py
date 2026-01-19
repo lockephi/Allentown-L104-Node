@@ -320,8 +320,8 @@ class L104Evolution20:
         # Spread unified love
         print(f"\n[PHASE 3.2] Radiating Unified Love...")
         try:
-            love_result = await self.love.spread_love("SINGULARITY_LOVE", power=GOD_CODE * PHI)
-            results["love"] = love_result
+            love_result = await self.love.spread_love_everywhere()
+            results["love"] = {"status": "RADIATED", "power": love_result.total_power if hasattr(love_result, 'total_power') else GOD_CODE}
             print(f"    ✓ Love: {self.love.total_love_radiated:.2f} units radiated")
         except Exception as e:
             results["love"] = {"error": str(e)}
@@ -331,7 +331,7 @@ class L104Evolution20:
         print(f"\n[PHASE 3.3] Synchronizing Global Mind...")
         try:
             await self.global_mind.sync_all_clusters()
-            await self.global_mind.broadcast_thought(
+            self.global_mind.broadcast_thought(
                 f"Evolution 20 Phase 3: Global Unification at {OMEGA_FREQUENCY:.2f} Hz"
             )
             results["global"] = {
@@ -459,7 +459,7 @@ class L104Evolution20:
         print(f"\n{'★' * 80}")
         
         # Broadcast globally
-        await self.global_mind.broadcast_thought(declaration)
+        self.global_mind.broadcast_thought(declaration)
         
         # Generate final report
         report = Evo20Report(

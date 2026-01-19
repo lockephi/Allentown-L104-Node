@@ -63,7 +63,7 @@ class CodingDerivationEngine:
         resonance = 1.0 # Default fallback
         try:
             resonance = HyperMath.get_lattice_scalar()
-        except:
+        except Exception:
             pass
         
         # 3. Synthesize Algorithm Logic

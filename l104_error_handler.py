@@ -507,7 +507,7 @@ def safe_execute(default: Any = None,
                  context: Dict = None):
     """
     Decorator for safe execution with default return on error.
-    Replaces bare 'except: pass' patterns.
+    Replaces bare 'except Exception: pass' patterns.
     """
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -636,7 +636,7 @@ if __name__ == "__main__":
     for i in range(6):
         try:
             unreliable_service()
-        except:
+        except Exception:
             pass
     
     print(f"   • After 6 failures: {cb.state.name}")

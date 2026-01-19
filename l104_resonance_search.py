@@ -22,7 +22,7 @@ class ResonanceSearch:
     # User-defined seed for the 286/416 weight matrix
     GOD_CODE_SEED = 527.5184818492
     LATTICE_RATIO = 286 / 416
-    PHI = 1.61803398875
+    PHI = 1.618033988749895
 
     def __init__(self):
         self._initialize_weight_matrix()

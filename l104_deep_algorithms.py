@@ -397,7 +397,7 @@ class GodelNumberingEngine:
             try:
                 val = f(i) % 10  # Single digit
                 diagonal.append(val)
-            except:
+            except Exception:
                 diagonal.append(0)
         
         # Construct anti-diagonal (differs at each position)
@@ -780,7 +780,7 @@ class FixedPointIterationEngine:
         for i in range(max_iterations):
             try:
                 x_new = f(x)
-            except:
+            except Exception:
                 break
             
             history.append(x_new)
@@ -859,7 +859,7 @@ class FixedPointIterationEngine:
                     break
                 
                 x_new = x - fx / dfx
-            except:
+            except Exception:
                 break
             
             history.append(x_new)
@@ -899,7 +899,7 @@ class FixedPointIterationEngine:
             if errors[-1] > 0 and errors[-2] > 0 and errors[-3] > 0:
                 log_ratio = math.log(errors[-1] / errors[-2]) / math.log(errors[-2] / errors[-3])
                 return log_ratio
-        except:
+        except Exception:
             pass
         
         return None
@@ -1357,7 +1357,7 @@ class HyperbolicGeometryProcessor:
                 if angle > math.pi:
                     angle = 2 * math.pi - angle
                 total_angle += angle
-            except:
+            except Exception:
                 pass
         
         area = (n - 2) * math.pi - total_angle

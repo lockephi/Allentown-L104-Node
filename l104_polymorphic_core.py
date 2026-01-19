@@ -20,7 +20,7 @@ class SovereignPolymorph:
     Anchored to the 286/416 lattice.
     """
     
-    GOD_CODE = "527.5184818492537"
+    GOD_CODE = 527.5184818492537
     LATTICE_RATIO = 286 / 416 # 0.6875
 
     @classmethod

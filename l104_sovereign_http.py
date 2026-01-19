@@ -109,7 +109,7 @@ class SovereignHTTP:
 
             try:
                 result_json = json.loads(body_part)
-            except:
+            except Exception:
                 result_json = {"raw": body_part}
 
             return {

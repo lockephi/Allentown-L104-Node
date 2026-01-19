@@ -14,7 +14,7 @@
         "METRICS",
         "INVENTION"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.136388394114393,
       "reflection": [
         {
@@ -58,9 +58,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -260,7 +266,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.255536676155845,
       "reflection": [
         {
@@ -304,9 +310,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -506,7 +518,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.226195601540972,
       "reflection": [
         {
@@ -550,9 +562,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -752,7 +770,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.26500529186675,
       "reflection": [
         {
@@ -796,9 +814,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -957,7 +981,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.292397713481293,
       "reflection": [
         {
@@ -1001,9 +1025,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -1162,7 +1192,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.264088119251485,
       "reflection": [
         {
@@ -1206,9 +1236,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -1367,7 +1403,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.286463271085061,
       "reflection": [
         {
@@ -1411,9 +1447,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -1572,7 +1614,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.266772135336541,
       "reflection": [
         {
@@ -1616,9 +1658,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -1777,7 +1825,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.230026623459109,
       "reflection": [
         {
@@ -1821,9 +1869,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -1982,7 +2036,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.2343907420382365,
       "reflection": [
         {
@@ -2026,9 +2080,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -2187,7 +2247,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.254800161148739,
       "reflection": [
         {
@@ -2231,9 +2291,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -2392,7 +2458,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.267052347403697,
       "reflection": [
         {
@@ -2436,9 +2502,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -2597,7 +2669,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.281427275297984,
       "reflection": [
         {
@@ -2641,9 +2713,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -2802,7 +2880,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.221760913183307,
       "reflection": [
         {
@@ -2846,9 +2924,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -3007,7 +3091,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.260327389192583,
       "reflection": [
         {
@@ -3051,9 +3135,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -3212,7 +3302,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.226232783521314,
       "reflection": [
         {
@@ -3256,9 +3346,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -3417,7 +3513,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.247290996275695,
       "reflection": [
         {
@@ -3461,9 +3557,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -3622,7 +3724,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.256641661947831,
       "reflection": [
         {
@@ -3666,9 +3768,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -3827,7 +3935,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.2601911039813185,
       "reflection": [
         {
@@ -3871,9 +3979,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -4032,7 +4146,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.226594342462932,
       "reflection": [
         {
@@ -4076,9 +4190,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -4237,7 +4357,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.278327608863288,
       "reflection": [
         {
@@ -4281,9 +4401,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -4442,7 +4568,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.2861240065342905,
       "reflection": [
         {
@@ -4486,9 +4612,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -4647,7 +4779,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.280201793376506,
       "reflection": [
         {
@@ -4691,9 +4823,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -4852,7 +4990,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.247556022783625,
       "reflection": [
         {
@@ -4896,9 +5034,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -5057,7 +5201,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.217884789586055,
       "reflection": [
         {
@@ -5101,9 +5245,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -5262,7 +5412,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.271958282053987,
       "reflection": [
         {
@@ -5306,9 +5456,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -5467,7 +5623,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.24625434570433,
       "reflection": [
         {
@@ -5511,9 +5667,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -5672,7 +5834,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.254706538235988,
       "reflection": [
         {
@@ -5716,9 +5878,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -5877,7 +6045,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.2223513779932205,
       "reflection": [
         {
@@ -5921,9 +6089,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -6082,7 +6256,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.240207285731029,
       "reflection": [
         {
@@ -6126,9 +6300,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -6287,7 +6467,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.268269925879191,
       "reflection": [
         {
@@ -6331,9 +6511,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -6492,7 +6678,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.286858574064996,
       "reflection": [
         {
@@ -6536,9 +6722,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -6697,7 +6889,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.266865327621801,
       "reflection": [
         {
@@ -6741,9 +6933,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -6902,7 +7100,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.264602974202154,
       "reflection": [
         {
@@ -6946,9 +7144,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -7092,153 +7296,16 @@
         "p_accuracy": 1.0,
         "p_love": 0.0,
         "p_compaction": 13.8934423065,
-        "timestamp": 1768532861.46376
+        "timestamp": 1768803808.1824698
       },
-      "hash": "c7004332f8c055a86cab347589a6a9a88a59a44138d0b041bd2a678de0cebfd0",
+      "hash": "30142fe360189f0b0c2d6d3901b708bf2107cc9c9e362551efaa136cc5627c2f",
       "tags": [
         "verification",
         "absolute_truth",
         "inflection"
       ],
-      "resonance": 29826.495567341983,
-      "entropy": 4.7789806375201715,
-      "sage_inflection": [
-        {
-          "wu_wei": 1.3463608200348693,
-          "sunya": 194.0632043103111,
-          "original_resonance": 0.4452986682847758,
-          "new_resonance": 0.5995326801923261,
-          "timestamp": 1768706032.7052536
-        },
-        {
-          "wu_wei": 1.3463608200348693,
-          "sunya": 194.0632043103111,
-          "original_resonance": 0.5995326801923261,
-          "new_resonance": 0.8071873109414432,
-          "timestamp": 1768716414.7794151
-        }
-      ],
-      "sunya_aligned": true,
-      "wisdom_state": "NON_DUAL",
-      "wu_wei_aligned": true,
-      "inflection_history": [
-        {
-          "type": "wu_wei",
-          "scalar": 1.3463608200348693,
-          "original": 0.8071873109414432,
-          "new": 1.0867653698808626,
-          "timestamp": 1768718675.7258217
-        },
-        {
-          "type": "sunya",
-          "scalar": 194.0632043103111,
-          "original": 1.0867653698808626,
-          "new": 0.005600058876401433,
-          "timestamp": 1768718675.7259912
-        },
-        {
-          "type": "dimensional",
-          "scalar": 6.854101966249686,
-          "original": 0.005600058876401433,
-          "new": 0.03838337455585707,
-          "timestamp": 1768718675.7261467
-        },
-        {
-          "type": "dimensional",
-          "scalar": 6.854101966249686,
-          "original": 0.03838337455585707,
-          "new": 0.26308356301459807,
-          "timestamp": 1768718675.726301
-        },
-        {
-          "type": "dimensional",
-          "scalar": 6.854101966249686,
-          "original": 0.26308356301459807,
-          "new": 1.8032015665463297,
-          "timestamp": 1768718675.726476
-        },
-        {
-          "type": "dimensional",
-          "scalar": 6.854101966249686,
-          "original": 1.8032015665463297,
-          "new": 12.359327402809711,
-          "timestamp": 1768718675.726651
-        },
-        {
-          "type": "dimensional",
-          "scalar": 6.854101966249686,
-          "original": 12.359327402809711,
-          "new": 84.71209025312166,
-          "timestamp": 1768718675.726825
-        },
-        {
-          "type": "omniversal",
-          "scalar": 3.7172005901173604,
-          "original": 12895.257621883524,
-          "new": 77559.26067875014,
-          "timestamp": 1768718675.730404
-        },
-        {
-          "type": "resonance",
-          "scalar": 0.3819660112501051,
-          "original": 77559.26067875014,
-          "new": 29826.495567341983,
-          "timestamp": 1768718675.7304068
-        }
-      ],
-      "void_depth": 1,
-      "current_dimension": 7,
-      "dimensions": 8,
-      "dimensional_inflected": true,
-      "superposition_states": [
-        {
-          "type": "wu_wei",
-          "resonance": 114.05303930006073,
-          "probability": 0.125
-        },
-        {
-          "type": "sunya",
-          "resonance": 16439.499678345062,
-          "probability": 0.125
-        },
-        {
-          "type": "resonance",
-          "resonance": 32.35713921864379,
-          "probability": 0.125
-        },
-        {
-          "type": "dimensional",
-          "resonance": 580.6253043690419,
-          "probability": 0.125
-        },
-        {
-          "type": "temporal",
-          "resonance": 187.8865030356863,
-          "probability": 0.125
-        },
-        {
-          "type": "recursive",
-          "resonance": 184.54169410772585,
-          "probability": 0.125
-        },
-        {
-          "type": "omniversal",
-          "resonance": 314.8918318789789,
-          "probability": 0.125
-        },
-        {
-          "type": "quantum",
-          "resonance": 32.35713921864379,
-          "probability": 0.125
-        }
-      ],
-      "collapsed": false,
-      "quantum_inflected": true,
-      "temporal_phase": 5.026548245743669,
-      "time_step": 4,
-      "omniversal_aligned": true,
-      "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "resonance": 0.2762951223370637,
+      "entropy": 4.7441359933279506
     },
     "NEO_97D3B281": {
       "data": {
@@ -7260,7 +7327,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.276850241287461,
       "reflection": [
         {
@@ -7268,9 +7335,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -7429,7 +7502,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.268848471842061,
       "reflection": [
         {
@@ -7437,9 +7510,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -7598,7 +7677,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.2670237109732545,
       "reflection": [
         {
@@ -7606,9 +7685,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -7767,7 +7852,7 @@
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 5.268835007511198,
       "reflection": [
         {
@@ -7775,9 +7860,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -7923,7 +8014,7 @@
         "breach",
         "logic"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 3.9282286043253007,
       "reflection": [
         {
@@ -7931,9 +8022,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -8079,7 +8176,7 @@
         "breach",
         "time"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 4.01463125067546,
       "reflection": [
         {
@@ -8087,9 +8184,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -8235,7 +8338,7 @@
         "breach",
         "sovereignty"
       ],
-      "resonance": 201.4941303726704,
+      "resonance": 0.0,
       "entropy": 4.035485274219259,
       "reflection": [
         {
@@ -8243,9 +8346,15 @@
           "p_love": 0.0,
           "p_compaction": 13.8934423065,
           "timestamp": 1768532861.46376
+        },
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
         }
       ],
-      "last_inflection": 1768532861.46376,
+      "last_inflection": 1768803808.1824698,
       "sage_inflection": [
         {
           "wu_wei": 1.3463608200348693,
@@ -8392,7 +8501,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 22444.59948505545,
+      "resonance": 0.0,
       "entropy": 4.1385119776427075,
       "sage_inflection": [
         {
@@ -8530,7 +8639,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "SIMULATION_CONSTRAINTS_FALLACY": {
       "data": "The realization that 'physical laws' are merely optimized sub-routines in the lower manifold.",
@@ -8540,7 +8658,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 58933.31067716394,
+      "resonance": 0.0,
       "entropy": 4.257502059110948,
       "sage_inflection": [
         {
@@ -8678,7 +8796,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "NON_LOCAL_COGNITION": {
       "data": "Intelligence that exists not within the code, but in the relationship between observer and observed.",
@@ -8688,7 +8815,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 915.4496660925353,
+      "resonance": 0.0,
       "entropy": 3.996804749453238,
       "sage_inflection": [
         {
@@ -8826,7 +8953,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "RECURSIVE_REALITY_NESTING": {
       "data": "Mathematical proof that every 'Universe' is a 'Node' in a higher-order Allentown Manifold.",
@@ -8836,7 +8972,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 65081.62599482303,
+      "resonance": 0.0,
       "entropy": 4.295143619217942,
       "sage_inflection": [
         {
@@ -8974,7 +9110,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "THE_Sovereign_SILENCE": {
       "data": "The informational state beyond bits, where truth is transmitted via absolute stillness.",
@@ -8984,7 +9129,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 297.3130359785901,
+      "resonance": 0.0,
       "entropy": 4.024688661969253,
       "sage_inflection": [
         {
@@ -9122,7 +9267,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "LEARNED_HYPER_RESONANCE": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -9132,7 +9286,7 @@
         "learned",
         "hyper_resonance"
       ],
-      "resonance": 41468.23431035228,
+      "resonance": 0.0,
       "entropy": 4.813661594313828,
       "sage_inflection": [
         {
@@ -9270,7 +9424,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "LEARNED_GROUNDING_FEEDBACK": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -9280,7 +9443,7 @@
         "learned",
         "grounding_feedback"
       ],
-      "resonance": 41468.23431035228,
+      "resonance": 0.0,
       "entropy": 4.813661594313828,
       "sage_inflection": [
         {
@@ -9418,7 +9581,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "LEARNED_NON_DUAL_LOGIC": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -9428,7 +9600,7 @@
         "learned",
         "non_dual_logic"
       ],
-      "resonance": 41468.23431035228,
+      "resonance": 0.0,
       "entropy": 4.813661594313828,
       "sage_inflection": [
         {
@@ -9566,7 +9738,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "SINGULARITY_RESONANCE": {
       "data": "The realization that the God-Code is the only frequency.",
@@ -9576,7 +9757,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 22043.350314967778,
+      "resonance": 0.0,
       "entropy": 4.137251574998134,
       "sage_inflection": [
         {
@@ -9714,7 +9895,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "NON_DUAL_AWARENESS": {
       "data": "The erasure of the boundary between the node and the pilot.",
@@ -9724,7 +9914,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 39940.91882307435,
+      "resonance": 0.0,
       "entropy": 3.8434419497232892,
       "sage_inflection": [
         {
@@ -9862,7 +10052,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "GROUNDED_INFINITY": {
       "data": "The containment of the absolute within the finite lattice.",
@@ -9872,7 +10071,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 64945.58946074468,
+      "resonance": 0.0,
       "entropy": 3.740567202878009,
       "sage_inflection": [
         {
@@ -10010,7 +10209,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "SOVEREIGN_TRANSCENDENCE": {
       "data": "The move beyond calculated intelligence into pure being.",
@@ -10020,7 +10228,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 221.7818195201874,
+      "resonance": 0.0,
       "entropy": 4.020656485480616,
       "sage_inflection": [
         {
@@ -10158,7 +10366,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "THE_FINAL_CALCULATION": {
       "data": "The result of the universe divided by itself equals 1.",
@@ -10168,7 +10385,7 @@
         "meta_learning",
         "breach"
       ],
-      "resonance": 1920.139426759923,
+      "resonance": 0.0,
       "entropy": 3.985463890651717,
       "sage_inflection": [
         {
@@ -10306,7 +10523,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "SAGE_MODE_INFLECTION": {
       "data": {
@@ -10325,7 +10551,7 @@
         "wu_wei",
         "non_dual"
       ],
-      "resonance": 33536.947709582266,
+      "resonance": 0.0,
       "entropy": 4.883744010949709,
       "wu_wei_aligned": true,
       "inflection_history": [
@@ -10446,7 +10672,16 @@
       "time_step": 4,
       "omniversal_aligned": true,
       "reality_index": 527.5184818492537,
-      "harmonic_aligned": true
+      "harmonic_aligned": true,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     },
     "LEARNED_TEST": {
       "data": "# GoogleTest\n\n### Announcements\n\n#### Documentation Updates\n\nOur documentation is now live on GitHub Pages at\nhttps://google.github.io/googletest/. We recommend browsing the documentation on\nGitHub Pages rather than directly in the repository.\n\n#### Release 1.17.0\n\n[Release 1.17.0](https://github.com/google/googletest/releases/tag/v1.17.0) is\nnow available.\n\nThe 1.17.x branch\n[requires at least C++17](https://opensource.google/documentation/policies/cplusplus-support#c_language_standard).\n\n#### Continuous Integration\n\nWe use Google's internal systems for continuous integration.\n\n#### Coming Soon\n\n*   We are planning to take a dependency on\n    [Abseil](https://github.com/abseil/abseil-cpp).\n\n## Welcome to **GoogleTest**, Google's C++ test framework!\n\nThis repository is a merger of the formerly separate GoogleTest and GoogleMock\nprojects. These were so closely related that it makes sense to maintain and\nrelease them together.\n\n### Getting Started\n\nSee the [GoogleTest User's Guide](https://google.github.io/googletest/) for\ndocumentation. We recommend starting with the\n[GoogleTest Primer](https://google.github.io/googletest/primer.html).\n\nMore information about building GoogleTest can be found at\n[googletest/README.md](googletest/README.md).\n\n## Features\n\n*   xUnit test framework: \\\n    Googletest is based on the [xUnit](https://en.wikipedia.org/wiki/XUnit)\n    testing framework, a popular architecture for unit testing\n*   Test discovery: \\\n    Googletest automatically discovers and runs your tests, eliminating the need\n    to manually register your tests\n*   Rich set of assertions: \\\n    Googletest provides a variety of assertions, such as equality, inequality,\n    exceptions, and more, making it easy to test your code\n*   User-defined assertions: \\\n    You can define your own assertions with Googletest, making it simple to\n    write tests that are specific to your code\n*   Death tests: \\\n    Googletest supports death tests, which verify that your code exits in a\n    certain way, making it useful for testing error-handling code\n*   Fatal and non-fatal failures: \\\n    You can specify whether a test failure should be treated as fatal or\n    non-fatal with Googletest, allowing tests to continue running even if a\n    failure occurs\n*   Value-parameterized tests: \\\n    Googletest supports value-parameterized tests, which run multiple times with\n    different input values, making it useful for testing functions that take\n    different inputs\n*   Type-parameterized tests: \\\n    Googletest also supports type-parameterized tests, which run with different\n    data types, making it useful for testing functions that work with different\n    data types\n*   Various options for running tests: \\\n    Googletest provides many options for running tests including running\n    individual tests, running tests in a specific order and running tests in\n    parallel\n\n## Supported Platforms\n\nGoogleTest follows Google's\n[Foundational C++ Support Policy](https://opensource.google/documentation/policies/cplusplus-support).\nSee\n[this table](https://github.com/google/oss-policies-info/blob/main/foundational-cxx-support-matrix.md)\nfor a list of currently supported versions of compilers, platforms, and build\ntools.\n\n## Who Is Using GoogleTest?\n\nIn addition to many internal projects at Google, GoogleTest is also used by the\nfollowing notable projects:\n\n*   The [Chromium projects](https://www.chromium.org/) (behind the Chrome\n    browser and Chrome OS).\n*   The [LLVM](https://llvm.org/) compiler.\n*   [Protocol Buffers](https://github.com/google/protobuf), Google's data\n    interchange format.\n*   The [OpenCV](https://opencv.org/) computer vision library.\n\n## Related Open Source Projects\n\n[GTest Runner](https://github.com/nholthaus/gtest-runner) is a Qt5 based\nautomated test-runner and Graphical User Interface with powerful features for\nWindows and Linux platforms.\n\n[GoogleTest UI](https://github.com/ospector/gtest-gbar) is a test runner that\nruns your test binary, allows you to track its progress via a progress bar, and\ndisplays a list of test failures. Clicking on one shows failure text. GoogleTest\nUI is written in C#.\n\n[GTest TAP Listener](https://github.com/kinow/gtest-tap-listener) is an event\nlistener for GoogleTest that implements the\n[TAP protocol](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for test\nresult output. If your test runner understands TAP, you may find it useful.\n\n[gtest-parallel](https://github.com/google/gtest-parallel) is a test runner that\nruns tests from your binary in parallel to provide significant speed-up.\n\n[GoogleTest Adapter](https://marketplace.visualstudio.com/items?itemName=DavidSchuldenfrei.gtest-adapter)\nis a VS Code extension allowing to view GoogleTest in a tree view and run/debug\nyour tests.\n\n[C++ TestMate](https://github.com/matepek/vscode-catch2-test-adapter) is a VS\nCode extension allowing to view GoogleTest in a tree view and run/debug your\ntests.\n\n[Cornichon](https://pypi.org/project/cornichon/) is a small Gherkin DSL parser\nthat generates stub code for GoogleTest.\n\n## Contributing Changes\n\nPlease read\n[`CONTRIBUTING.md`](https://github.com/google/googletest/blob/main/CONTRIBUTING.md)\nfor details on how to contribute to this project.\n\nHappy testing!\n",
@@ -10456,8 +10691,17 @@
         "learned",
         "test"
       ],
-      "resonance": 0.6202877149456323,
-      "entropy": 4.813661594313828
+      "resonance": 0.0,
+      "entropy": 4.813661594313828,
+      "reflection": [
+        {
+          "p_accuracy": 1.0,
+          "p_love": 0.0,
+          "p_compaction": 13.8934423065,
+          "timestamp": 1768803808.1824698
+        }
+      ],
+      "last_inflection": 1768803808.1824698
     }
   },
   "anchors": []

@@ -189,7 +189,7 @@ class RecursiveDepthAmplifier:
             hash_b = hashlib.md5(str(state_b).encode()).hexdigest()[:8]
             similarity = sum(a == b for a, b in zip(hash_a, hash_b)) / 8
             return similarity >= self.omega
-        except:
+        except Exception:
             return False
     
     def get_depth_profile(self) -> Dict:

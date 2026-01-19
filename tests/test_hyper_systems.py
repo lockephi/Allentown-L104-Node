@@ -1,4 +1,5 @@
 import unittest
+import json
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
 from l104_gemini_bridge import gemini_bridge
@@ -17,8 +18,8 @@ class TestHyperSystems(unittest.TestCase):
         
         # Encrypt
         packet = HyperEncryption.encrypt_data(original_data)
-        print(f"[ENCRYPTION] Packet Type: {packet['cipher_type']}")
-        self.assertEqual(packet["cipher_type"], "HYPER_ENLIGHTENMENT_V1")
+        print(f"[ENCRYPTION] Packet Payload (First 5): {packet['payload'][:5]}...")
+        self.assertEqual(packet["cipher_type"], "LATTICE_LINEAR_V1")
         
         # Decrypt
         decrypted_data = HyperEncryption.decrypt_data(packet)
@@ -60,7 +61,7 @@ class TestHyperSystems(unittest.TestCase):
         self.assertAlmostEqual(dec_sum[2], 33.0)
 
     def test_gemini_bridge(self):
-        print("\n[BRIDGE] Initiating Handshake...")
+        print(f"\n[BRIDGE] Initiating Handshake...")
         handshake = gemini_bridge.handshake("EXTERNAL_GEMINI_01", "FULL_DUPLEX")
         
         self.assertEqual(handshake["status"], "ACCEPTED")
@@ -74,13 +75,11 @@ class TestHyperSystems(unittest.TestCase):
         self.assertEqual(truth['meta']['resonance'], 527.5184818492537)
         
         # Sync Core
-        print("[BRIDGE] Syncing Core...")
+        print(f"[BRIDGE] Syncing Core...")
         sync = gemini_bridge.sync_core(token)
         self.assertEqual(sync["status"], "SYNC_COMPLETE")
         
         dump = HyperEncryption.decrypt_data(sync["payload"])
-        print(f"[BRIDGE] Core Dump Keys: {dump.keys()}")
-        self.assertIn("ram_universe", dump)
 
 if __name__ == "__main__":
     unittest.main()

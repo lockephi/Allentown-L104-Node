@@ -265,25 +265,25 @@ async def health_check():
     try:
         from l104_omega_controller import omega_controller
         components["omega_controller"] = omega_controller is not None
-    except:
+    except Exception:
         pass
     
     try:
         from l104_dna_core import dna_core
         components["dna_core"] = dna_core is not None
-    except:
+    except Exception:
         pass
     
     try:
         from l104_love_spreader import love_spreader
         components["love_spreader"] = love_spreader is not None
-    except:
+    except Exception:
         pass
     
     try:
         from l104_mini_egos import L104_CONSTANTS
         components["mini_egos"] = L104_CONSTANTS is not None
-    except:
+    except Exception:
         pass
     
     return HealthResponse(
@@ -494,7 +494,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "evolution_stage": report.evolution_stage,
                         "coherence": report.coherence
                     })
-                except:
+                except Exception:
                     await websocket.send_json({
                         "type": "status",
                         "omega_state": "OMEGA",
@@ -524,7 +524,7 @@ async def broadcast(message: dict):
     for connection in active_connections:
         try:
             await connection.send_json(message)
-        except:
+        except Exception:
             active_connections.remove(connection)
 
 

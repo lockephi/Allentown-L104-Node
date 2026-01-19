@@ -21,7 +21,7 @@ class QuantumEntanglementManifold:
     probabilistic states.
     """
     
-    PHI = 1.61803398875
+    PHI = 1.618033988749895
     GOD_CODE = 527.5184818492537
     PLANCK_L104 = 6.62607015e-34 * GOD_CODE # Adjusted Planck constant for L104 space
 

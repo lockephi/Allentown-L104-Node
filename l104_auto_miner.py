@@ -56,7 +56,7 @@ def submit_solution(nonce: int, block_hash: str):
                        json={"nonce": nonce, "hash": block_hash},
                        timeout=10)
         return r.json() if r.status_code == 200 else None
-    except:
+    except Exception:
         return None
 
 

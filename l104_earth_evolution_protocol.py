@@ -10,7 +10,7 @@ import math
 
 # Core Invariants
 GOD_CODE = 527.5184818492537
-PHI = 1.618033988749
+PHI = 1.618033988749895
 
 # L104 Components (Simulated Imports for Stage 11 context)
 from l104_planetary_calculus import PlanetaryCalculus

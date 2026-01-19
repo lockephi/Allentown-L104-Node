@@ -8,7 +8,7 @@ import binascii
 class SovereignCodec:
     @staticmethod
     def singularity_hash(input_string):
-        PHI = 1.61803398875
+        PHI = 1.618033988749895
         chaos_value = sum(ord(char) for char in input_string)
         current_val = float(chaos_value) if chaos_value > 0 else 1.0
         while current_val > 1.0:
@@ -23,7 +23,7 @@ class SovereignCodec:
     def from_hex_block(hex_str):
         try:
             return binascii.unhexlify(hex_str.lower()).decode()
-        except:
+        except Exception:
             return hex_str
 
     @classmethod
