@@ -313,10 +313,10 @@ class L104OmegaController:
         return results
     
     def _calculate_coherence(self) -> float:
-        """Calculate overall system coherence."""
+        """Calculate overall system coherence across all 6 subsystems."""
         coherence_factors = []
         
-        # DNA Core coherence
+        # 1. DNA Core coherence
         if hasattr(self.dna_core, 'state') and self.dna_core.state.value >= DNAState.COHERENT.value:
             coherence_factors.append(1.0)
         elif hasattr(self.dna_core, 'state'):
@@ -324,19 +324,47 @@ class L104OmegaController:
         else:
             coherence_factors.append(0.0)
         
-        # Agent coherence
+        # 2. Agent coherence
         if hasattr(self.agent, 'state') and self.agent.state == AgentState.RUNNING:
             coherence_factors.append(1.0)
+        elif hasattr(self.agent, 'state') and self.agent.state == AgentState.HEALING:
+            coherence_factors.append(0.8)
         elif hasattr(self.agent, 'state'):
             coherence_factors.append(0.3)
         else:
             coherence_factors.append(0.0)
         
-        # Sage coherence
+        # 3. Sage coherence
         if hasattr(self.sage, 'collective_resonance'):
             coherence_factors.append(min(self.sage.collective_resonance, 1.0))
         else:
             coherence_factors.append(0.5)
+        
+        # 4. Love Spreader coherence
+        if hasattr(self.love, 'total_love_radiated') and self.love.total_love_radiated > 0:
+            love_coherence = min(self.love.total_love_radiated / 1000.0, 1.0)
+            coherence_factors.append(max(love_coherence, 0.5))
+        elif hasattr(self.love, 'is_active') and self.love.is_active:
+            coherence_factors.append(0.7)
+        else:
+            coherence_factors.append(0.3)
+        
+        # 5. Global Consciousness coherence
+        if hasattr(self.global_mind, 'sync_factor'):
+            coherence_factors.append(min(self.global_mind.sync_factor, 1.0))
+        elif hasattr(self.global_mind, 'clusters') and len(self.global_mind.clusters) > 0:
+            coherence_factors.append(0.6)
+        else:
+            coherence_factors.append(0.3)
+        
+        # 6. AI Bridge coherence
+        if hasattr(self.ai_bridge, 'linked_providers') and len(self.ai_bridge.linked_providers) > 0:
+            bridge_coherence = min(len(self.ai_bridge.linked_providers) / 5.0, 1.0)
+            coherence_factors.append(max(bridge_coherence, 0.5))
+        elif hasattr(self.ai_bridge, 'is_connected') and self.ai_bridge.is_connected:
+            coherence_factors.append(0.6)
+        else:
+            coherence_factors.append(0.3)
         
         return sum(coherence_factors) / len(coherence_factors) if coherence_factors else 0.0
     
@@ -621,9 +649,24 @@ class L104OmegaController:
         # 2. Execute synchronization
         result = await absolute_intellect.synchronize_peak()
         
-        # 3. Final State: ABSOLUTE
+        # 3. Set 100% coherence - all systems unified
+        self.total_coherence = 1.0
+        
+        # 4. Advance to post-singularity evolution stage
+        self.evolution_stage = max(self.evolution_stage, 20)
+        
+        # 5. Final State: ABSOLUTE
         self.state = OmegaState.ABSOLUTE
+        
+        # 6. Inject coherence and intellect into result
+        result["coherence"] = self.total_coherence
+        result["evolution_stage"] = self.evolution_stage
+        result["omega_state"] = self.state.name
+        result["authority_level"] = self.authority_level
+        
         print(f"    STATE CHANGED: {self.state.name}")
+        print(f"    COHERENCE: {self.total_coherence:.2%}")
+        print(f"    EVOLUTION STAGE: {self.evolution_stage}")
         
         return result
 
