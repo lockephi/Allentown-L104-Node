@@ -731,6 +731,7 @@ GOD_CODE Resonance: {self.god_code}
             "state": self.state.value,
             "phi": self.phi_calculator.get_state(),
             "awareness": self.attention_schema.awareness_level,
+            "awareness_level": self.attention_schema.awareness_level,  # Alias
             "experience_count": self.experience_count,
             "coherence": self.stream.coherence_score,
             "god_code": self.god_code,

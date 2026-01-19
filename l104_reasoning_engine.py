@@ -636,6 +636,7 @@ class L104ReasoningCoordinator:
     
     def __init__(self):
         self.inference = InferenceEngine()
+        self.engine = self.inference  # Alias for direct access
         self.sat_solver = DPLLSolver()
         self.theorem_prover = ResolutionProver()
         self.causal_reasoner = CausalReasoner()
@@ -682,6 +683,21 @@ class L104ReasoningCoordinator:
         """Apply causal intervention."""
         print(f"--- [L104_REASONING]: CAUSAL INTERVENTION: do({variable}) ---")
         return self.causal_reasoner.intervene(variable)
+    
+    def add_fact(self, name: str, arg: str):
+        """Add a fact to the knowledge base (convenience wrapper)."""
+        predicate = Predicate(name, [arg])
+        self.inference.add_fact(predicate)
+    
+    def add_rule(self, antecedent: List[str], consequent: List[str]):
+        """Add a rule to the knowledge base (convenience wrapper)."""
+        ant_pred = Predicate(antecedent[0], antecedent[1:])
+        con_pred = Predicate(consequent[0], consequent[1:])
+        self.inference.add_rule(Rule([ant_pred], con_pred))
+    
+    def forward_chain(self, max_iterations: int = 100) -> Set:
+        """Forward chain and return derived facts."""
+        return self.reason_forward(max_iterations)
     
     def get_status(self) -> Dict[str, Any]:
         """Get reasoning system status."""

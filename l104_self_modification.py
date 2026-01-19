@@ -244,6 +244,23 @@ class GeneticProgramming:
         self.evaluate(fitness_fn)
         self.population.sort(key=lambda x: x.fitness, reverse=True)
         return self.population[0]
+    
+    def evolve_population(self, initial_params: np.ndarray, 
+                          fitness_fn: Callable, 
+                          generations: int = 50) -> np.ndarray:
+        """Convenience method: evolve from initial params and return best as numpy array."""
+        # Initialize population from initial params
+        self.population = []
+        for i in range(self.population_size):
+            if i == 0:
+                genes = list(initial_params)
+            else:
+                genes = [g + random.gauss(0, 1) for g in initial_params]
+            self.population.append(Individual(genotype=genes, generation=0))
+        
+        # Evolve
+        best = self.evolve(fitness_fn, generations)
+        return np.array(best.genotype)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # HYPERPARAMETER OPTIMIZER
@@ -482,6 +499,7 @@ class L104SelfModification:
         self.code_analyzer = CodeAnalyzer()
         self.code_transformer = CodeTransformer()
         self.genetic_programmer = GeneticProgramming(gene_length=20, population_size=30)
+        self.genetic = self.genetic_programmer  # Alias for direct access
         self.arch_evolver = ArchitectureEvolver()
         self.meta_learner = MetaLearner()
         

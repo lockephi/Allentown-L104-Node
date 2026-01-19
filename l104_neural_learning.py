@@ -28,8 +28,8 @@ from collections import deque
 GOD_CODE = 527.5184818492537
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
-LEARNING_RATE_BASE = 0.001 * (1 / PHI)  # PHI-modulated learning rate
-MOMENTUM_BASE = 0.9 * (PHI / 2)
+LEARNING_RATE_BASE = 0.01  # Higher learning rate for faster convergence
+MOMENTUM_BASE = 0.9
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ACTIVATION FUNCTIONS

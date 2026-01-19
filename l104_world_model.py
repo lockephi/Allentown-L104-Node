@@ -195,6 +195,11 @@ class RecurrentWorldModel:
             self.Wo -= self.lr * grad
         
         return total_loss / batch_size
+    
+    def predict(self, state: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Convenience method: predict next state (alias for forward)."""
+        next_state, _ = self.forward(state, action)
+        return next_state
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TEMPORAL PREDICTOR
@@ -509,6 +514,11 @@ class L104WorldModel:
                      reward_fn: Callable[[np.ndarray], float]) -> List[np.ndarray]:
         """Plan optimal action sequence."""
         return self.planner.plan_with_refinement(current_state, reward_fn)
+    
+    def predict_next(self, state: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Predict next state given current state and action."""
+        self.predictions_made += 1
+        return self.recurrent_model.predict(state, action)
     
     def temporal_forecast(self, observations: List[np.ndarray],
                           horizon: int) -> List[np.ndarray]:
