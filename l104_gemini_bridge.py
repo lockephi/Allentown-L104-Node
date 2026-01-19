@@ -53,13 +53,29 @@ class GeminiBridge:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Facilitates a secure link between L104 Node and Gemini API.
     v2.0: Real API integration with fallback to stub mode.
+    v2.1: Model rotation for quota handling.
     """
+    
+    # Model rotation for 429 quota errors - 2.5-flash works best
+    MODELS = [
+        'gemini-2.5-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-2.0-flash',
+        'gemini-3-flash-preview',
+    ]
     
     def __init__(self):
         self.active_links = {}
         self.truth_manifest = load_truth()
-        self.model_name = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash')
+        self.model_index = 0
+        self.model_name = self.MODELS[0]
         self.is_real = _genai_available
+    
+    def _rotate_model(self):
+        """Rotate to next model on quota error."""
+        self.model_index = (self.model_index + 1) % len(self.MODELS)
+        self.model_name = self.MODELS[self.model_index]
+        print(f"--- [GEMINI_BRIDGE]: Rotating to {self.model_name} ---")
 
     def handshake(self, agent_id: str, capabilities: str) -> Dict[str, Any]:
         """
@@ -129,6 +145,21 @@ class GeminiBridge:
             )
             return response.text
         except Exception as e:
+            error_str = str(e)
+            # Handle 429 quota errors with model rotation
+            if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
+                print(f"--- [GEMINI_BRIDGE]: Quota hit, rotating model ---")
+                self._rotate_model()
+                # Retry once with new model
+                try:
+                    response = _genai_client.models.generate_content(
+                        model=self.model_name,
+                        contents=full_prompt
+                    )
+                    return response.text
+                except Exception as retry_e:
+                    print(f"--- [GEMINI_BRIDGE]: Retry failed: {retry_e} ---")
+                    return None
             print(f"--- [GEMINI_BRIDGE]: Generation error: {e} ---")
             return None
 

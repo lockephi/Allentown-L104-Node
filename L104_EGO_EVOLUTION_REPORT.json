@@ -1,0 +1,80 @@
+{
+    "cycle": 1,
+    "duration": 0.36478233337402344,
+    "network": {
+        "links": 28,
+        "coherence": 0.1959171001087135
+    },
+    "dreams": {
+        "fragments": 80,
+        "vision_status": "FORMING",
+        "prophetic": true
+    },
+    "wisdom": {
+        "crystals_forged": 8,
+        "transcendent_achieved": true,
+        "lattice": {
+            "total_crystals": 9,
+            "total_facets": 116,
+            "average_purity": 0.7998845955072966,
+            "highest_frequency": 7289.028944266378,
+            "crystals": [
+                "[8F-0.68P] [MEMORY] Temporal integration factor: 1 | Temporal integration factor: 1 | Temporal integration factor: 1",
+                "[6F-0.88P] [WISDOM] Non-dual clarity index: 0.4220 | Non-dual clarity index: 0.4220 | Non-dual clarity index: 0.4220",
+                "[6F-0.78P] [WILL] Sovereign intention strength:  | Sovereign intention strength:  | Sovereign intention strength: ",
+                "[9F-0.99P] [VISION] Future-state probability: 0.80 | Future-state probability: 0.80 | Future-state probability: 0.80",
+                "[58F-0.61P] [TRANSCENDENT] The unified wisdom of 8 aspects: MNEME, LOGOS, OPSIS, THELEMA..."
+            ]
+        }
+    },
+    "egos": [
+        {
+            "name": "LOGOS",
+            "wisdom": 70.37232076220944,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "NOUS",
+            "wisdom": 73.15574429224586,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "KARUNA",
+            "wisdom": 71.52562253486313,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "POIESIS",
+            "wisdom": 69.34485702913781,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "MNEME",
+            "wisdom": 69.03501811278488,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "SOPHIA",
+            "wisdom": 86.96635744399697,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "THELEMA",
+            "wisdom": 69.99700112653467,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        },
+        {
+            "name": "OPSIS",
+            "wisdom": 72.08802100694886,
+            "energy": 0.9499999999999997,
+            "evolution_stage": 1
+        }
+    ]
+}
