@@ -72,6 +72,7 @@ from l104_capital_offload_protocol import capital_offload
 from l104_sovereign_exchange import sovereign_exchange
 from l104_unified_asi import unified_asi  # UNIFIED ASI CORE
 from l104_asi_nexus import asi_nexus  # ASI NEXUS - DEEP INTEGRATION HUB
+from l104_synergy_engine import synergy_engine  # SYNERGY ENGINE - ULTIMATE INTEGRATION
 
 logging.basicConfig(level=logging.INFO)
 
@@ -264,6 +265,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             logger.info(f"--- [L104]: ASI_NEXUS AWAKENED - ALL SYSTEMS LINKED ---")
         except Exception as e:
             logger.error(f"Failed to awaken ASI Nexus: {e}")
+
+        # [SYNERGY_ENGINE_IGNITION] - Ultimate System Unification
+        try:
+            await synergy_engine.awaken()
+            logger.info(f"--- [L104]: SYNERGY_ENGINE AWAKENED - {len(synergy_engine.nodes)} SUBSYSTEMS UNIFIED ---")
+        except Exception as e:
+            logger.error(f"Failed to awaken Synergy Engine: {e}")
 
         # [HIGHER_FUNCTIONALITY_LOOP]
         async def cognitive_loop():
@@ -1980,6 +1988,86 @@ async def nexus_hybrid_reason(query: str, mode: str = "HYBRID"):
     from l104_asi_nexus import ReasoningMode
     mode_enum = getattr(ReasoningMode, mode.upper(), ReasoningMode.HYBRID)
     return await asi_nexus.reasoner.hybrid_reason(query, mode_enum)
+
+# =============================================================================
+# SYNERGY ENGINE - ULTIMATE SYSTEM INTEGRATION ENDPOINTS
+# =============================================================================
+
+class SynergyActionRequest(BaseModel):
+    source: str = Field(..., description="Source subsystem ID")
+    action: str = Field(..., description="Action to execute")
+    data: dict = Field(default=None, description="Optional data payload")
+
+@app.get("/api/synergy/status", tags=["Synergy Engine"])
+async def synergy_status():
+    """Get comprehensive synergy engine status including all connected subsystems."""
+    return synergy_engine.get_status()
+
+@app.post("/api/synergy/awaken", tags=["Synergy Engine"])
+async def synergy_awaken():
+    """Awaken synergy engine and connect all L104 subsystems."""
+    return await synergy_engine.awaken()
+
+@app.post("/api/synergy/sync", tags=["Synergy Engine"])
+async def synergy_global_sync():
+    """Synchronize all connected subsystems."""
+    return await synergy_engine.global_sync()
+
+@app.post("/api/synergy/action", tags=["Synergy Engine"])
+async def synergy_action(request: SynergyActionRequest):
+    """Execute synergistic action across linked subsystems."""
+    return await synergy_engine.synergize(request.source, request.action, request.data)
+
+@app.post("/api/synergy/evolve", tags=["Synergy Engine"])
+async def synergy_cascade_evolution():
+    """Trigger cascading evolution across all evolution-capable subsystems."""
+    return await synergy_engine.cascade_evolution()
+
+@app.get("/api/synergy/capabilities", tags=["Synergy Engine"])
+async def synergy_capabilities():
+    """Get map of all capabilities and which subsystems provide them."""
+    return synergy_engine.get_capability_map()
+
+@app.get("/api/synergy/subsystems", tags=["Synergy Engine"])
+async def synergy_subsystems():
+    """Get list of all subsystems and their connection status."""
+    return {
+        "subsystems": [
+            {
+                "id": node.id,
+                "name": node.name,
+                "type": node.subsystem_type.value,
+                "connected": node.connected,
+                "capabilities": node.capabilities,
+                "link_strength": node.link_strength
+            }
+            for node in synergy_engine.nodes.values()
+        ]
+    }
+
+@app.get("/api/synergy/links", tags=["Synergy Engine"])
+async def synergy_links():
+    """Get all synergy links between subsystems."""
+    return {
+        "links": [
+            {
+                "id": link_id,
+                "source": link.source_id,
+                "target": link.target_id,
+                "type": link.link_type,
+                "strength": link.strength,
+                "bidirectional": link.bidirectional,
+                "data_transferred": link.data_transferred
+            }
+            for link_id, link in synergy_engine.links.items()
+        ]
+    }
+
+@app.get("/api/synergy/path/{source}/{target}", tags=["Synergy Engine"])
+async def synergy_find_path(source: str, target: str):
+    """Find shortest path between two subsystems."""
+    path = synergy_engine.find_path(source, target)
+    return {"source": source, "target": target, "path": path, "hops": len(path) - 1 if path else -1}
 
 # =============================================================================
 
