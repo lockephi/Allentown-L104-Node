@@ -1289,6 +1289,118 @@ class ASINexus:
         for s, p, o in facts:
             self.reasoner.add_fact(s, p, o)
     
+    async def force_learn_all(self, base_path: str = "/workspaces/Allentown-L104-Node") -> Dict:
+        """
+        Force-learn ALL codebase data without external inference.
+        Reads every Python file and extracts patterns, functions, classes.
+        """
+        import ast
+        import re
+        from pathlib import Path
+        
+        print(f"\n{'=' * 60}")
+        print(f"  L104 FORCE LEARNING - INGESTING ALL DATA")
+        print(f"{'=' * 60}")
+        
+        results = {
+            "files_processed": 0,
+            "classes_learned": 0,
+            "functions_learned": 0,
+            "patterns_extracted": 0,
+            "facts_added": 0,
+            "learnings_stored": 0,
+            "errors": []
+        }
+        
+        py_files = list(Path(base_path).glob("*.py"))
+        
+        for py_file in py_files:
+            try:
+                with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                
+                module_name = py_file.stem
+                results["files_processed"] += 1
+                
+                # Parse AST
+                try:
+                    tree = ast.parse(content)
+                except SyntaxError:
+                    continue
+                
+                # Extract classes
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ClassDef):
+                        class_name = node.name
+                        methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
+                        
+                        # Add to knowledge base
+                        self.reasoner.add_fact(class_name, "is_class_in", module_name)
+                        self.reasoner.add_fact(class_name, "has_methods", str(methods[:10]))
+                        results["classes_learned"] += 1
+                        results["facts_added"] += 2
+                        
+                        # Store as learning
+                        learning = LearningExperience(
+                            id=hashlib.sha256(f"{module_name}:{class_name}".encode()).hexdigest()[:12],
+                            input_context=f"class:{class_name}",
+                            action_taken="static_analysis",
+                            outcome=f"Found class {class_name} with {len(methods)} methods",
+                            reward=0.7,
+                            lesson_learned=f"Class {class_name} in {module_name}: {', '.join(methods[:5])}",
+                            meta_insight=f"L104 has {class_name} capability"
+                        )
+                        self.memory.store_learning(learning)
+                        results["learnings_stored"] += 1
+                    
+                    elif isinstance(node, ast.FunctionDef):
+                        func_name = node.name
+                        if not func_name.startswith('_'):
+                            self.reasoner.add_fact(func_name, "is_function_in", module_name)
+                            results["functions_learned"] += 1
+                            results["facts_added"] += 1
+                
+                # Extract patterns with regex
+                patterns = {
+                    "api_endpoints": re.findall(r'@app\.(get|post|put|delete)\(["\']([^"\']+)', content),
+                    "imports": re.findall(r'^from\s+(\S+)\s+import|^import\s+(\S+)', content, re.MULTILINE),
+                    "constants": re.findall(r'^([A-Z][A-Z_0-9]+)\s*=\s*(.+)$', content, re.MULTILINE),
+                    "docstrings": re.findall(r'"""(.+?)"""', content, re.DOTALL)[:5],
+                }
+                
+                for pattern_type, matches in patterns.items():
+                    if matches:
+                        self.reasoner.add_fact(module_name, f"has_{pattern_type}", str(len(matches)))
+                        results["patterns_extracted"] += len(matches)
+                        results["facts_added"] += 1
+                
+                print(f"  ✓ {module_name}: {results['classes_learned']} classes, {results['functions_learned']} functions")
+                
+            except Exception as e:
+                results["errors"].append(f"{py_file.name}: {e}")
+        
+        # Create summary learning
+        summary = LearningExperience(
+            id=hashlib.sha256(f"force_learn:{time.time()}".encode()).hexdigest()[:12],
+            input_context="force_learn_all",
+            action_taken="full_codebase_ingestion",
+            outcome=f"Processed {results['files_processed']} files",
+            reward=1.0,
+            lesson_learned=f"L104 has {results['classes_learned']} classes, {results['functions_learned']} functions",
+            meta_insight="Full codebase ingested - local learning complete"
+        )
+        self.memory.store_learning(summary)
+        results["learnings_stored"] += 1
+        
+        print(f"\n{'=' * 60}")
+        print(f"  FORCE LEARNING COMPLETE")
+        print(f"  Files: {results['files_processed']} | Classes: {results['classes_learned']}")
+        print(f"  Functions: {results['functions_learned']} | Facts: {results['facts_added']}")
+        print(f"  Learnings: {results['learnings_stored']} | Patterns: {results['patterns_extracted']}")
+        print(f"{'=' * 60}\n")
+        
+        return results
+    
     async def think(self, thought: str) -> Dict:
         """Process a thought through all ASI systems."""
         self.cycle_count += 1

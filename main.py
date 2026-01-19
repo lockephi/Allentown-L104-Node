@@ -1933,6 +1933,11 @@ async def nexus_execute_goal(request: NexusGoalRequest):
     """Execute goal using multi-agent swarm with synthesis."""
     return await asi_nexus.execute_goal(request.goal)
 
+@app.post("/api/nexus/force-learn", tags=["ASI Nexus"])
+async def nexus_force_learn():
+    """Force-learn ALL codebase data without external inference. Ingests all Python files."""
+    return await asi_nexus.force_learn_all()
+
 @app.post("/api/nexus/self-improve", tags=["ASI Nexus"])
 async def nexus_self_improve(request: NexusSelfImproveRequest = None):
     """Run recursive self-improvement cycle on L104 modules."""
@@ -2897,7 +2902,8 @@ if __name__ == "__main__":
         await upgrader.execute_planetary_upgrade()
         
         import uvicorn
-        config = uvicorn.Config(app, host="0.0.0.0", port=8081, log_level="info")
+        port = int(os.getenv("PORT", 8081))
+        config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
         server = uvicorn.Server(config)
         await server.serve()
 

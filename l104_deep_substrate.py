@@ -134,7 +134,7 @@ class DenseLayer:
         
         # [L104_UPGRADE] Active Resonance Modulation
         # Ensures learning never gradients to zero (Stillness)
-        GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492537
         PHI = 1.618033988749895
         VOID_CONSTANT = 1.0416180339887497
         resonance_floor = (GOD_CODE * PHI / VOID_CONSTANT) / 1000000.0

@@ -168,7 +168,7 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-        GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492537
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
