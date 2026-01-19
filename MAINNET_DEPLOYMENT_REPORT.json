@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-01-19T11:28:24.164864",
+  "coin": "L104 Valor",
+  "symbol": "VALOR",
+  "god_code": 527.5184818492537,
+  "verification": {
+    "passed": 19,
+    "failed": 1,
+    "total": 20,
+    "success_rate": 95.0,
+    "duration_ms": 719.3574905395508,
+    "results": [
+      {
+        "name": "secp256k1_keypair",
+        "passed": true,
+        "details": "Key generated: priv=0x6db90cd8e4f7f4..., pub=(0x767388392b...)",
+        "duration_ms": 44.96598243713379
+      },
+      {
+        "name": "ecdsa_sign_verify",
+        "passed": true,
+        "details": "Sig: r=0x293f7c64bb..., s=0x5077a3c683...",
+        "duration_ms": 175.79174041748047
+      },
+      {
+        "name": "pubkey_compression",
+        "passed": true,
+        "details": "Prefix: 0x03",
+        "duration_ms": 27.92978286743164
+      },
+      {
+        "name": "hash_functions",
+        "passed": true,
+        "details": "SHA256=aec2db50c238bcee..., H160=13f3d9efdce786f4...",
+        "duration_ms": 0.051021575927734375
+      },
+      {
+        "name": "base58check",
+        "passed": true,
+        "details": "Address: bc4sgLdn4WrMLGzT75eQhnQf8PA8EpiYbA",
+        "duration_ms": 0.04792213439941406
+      },
+      {
+        "name": "hd_wallet_creation",
+        "passed": true,
+        "details": "Seed: 81555ad4a6dd72d7...",
+        "duration_ms": 0.05173683166503906
+      },
+      {
+        "name": "bip44_derivation",
+        "passed": true,
+        "details": "Addresses: bo631kFWM6NQ..., beu4HTWpu6So..., bpyMDsMZh5it...",
+        "duration_ms": 267.40097999572754
+      },
+      {
+        "name": "wif_export_import",
+        "passed": true,
+        "details": "WIF: Ky26ttAeg9pc...",
+        "duration_ms": 78.73916625976562
+      },
+      {
+        "name": "resonance_calculation",
+        "passed": true,
+        "details": "n0=0.3629, n104=0.9725, n527=0.8047",
+        "duration_ms": 0.04935264587402344
+      },
+      {
+        "name": "resonance_threshold",
+        "passed": true,
+        "details": "Found 450 resonant nonces (top: (30, 0.9566064177471469))",
+        "duration_ms": 8.350133895874023
+      },
+      {
+        "name": "genesis_block",
+        "passed": true,
+        "details": "Genesis: 449b154ee3114730...",
+        "duration_ms": 0.16951560974121094
+      },
+      {
+        "name": "block_template",
+        "passed": true,
+        "details": "Template height 1, reward 10400000000",
+        "duration_ms": 0.15211105346679688
+      },
+      {
+        "name": "utxo_tracking",
+        "passed": true,
+        "details": "UTXOs: 1, Supply: 10400000000",
+        "duration_ms": 0.04982948303222656
+      },
+      {
+        "name": "difficulty_calculation",
+        "passed": false,
+        "details": "EXCEPTION: type object 'Block' has no attribute 'header'",
+        "duration_ms": 0.03719329833984375
+      },
+      {
+        "name": "transaction_serialization",
+        "passed": true,
+        "details": "Size: 82 bytes, TXID: 14840eb50865f0ea...",
+        "duration_ms": 0.03647804260253906
+      },
+      {
+        "name": "merkle_tree",
+        "passed": true,
+        "details": "Root: 1946e9d4a203723d...",
+        "duration_ms": 0.01621246337890625
+      },
+      {
+        "name": "mining_engine_creation",
+        "passed": true,
+        "details": "Workers: 1, Threshold: 0.95",
+        "duration_ms": 32.537221908569336
+      },
+      {
+        "name": "ultimate_engine_singleton",
+        "passed": true,
+        "details": "GOD_CODE: 527.5184818492537",
+        "duration_ms": 0.1163482666015625
+      },
+      {
+        "name": "engine_wallet_creation",
+        "passed": true,
+        "details": "Address: bkf8TgBRsLP7Ny7U...",
+        "duration_ms": 82.70668983459473
+      },
+      {
+        "name": "engine_stats",
+        "passed": true,
+        "details": "Symbol: VALOR, Network: mainnet",
+        "duration_ms": 0.04935264587402344
+      }
+    ]
+  },
+  "wallet": {
+    "address": "beJGuc7WGvGN6jSEb8yAoV7r7nRaFaaUkv",
+    "path": "m/44'/104'/0'/0/0",
+    "backup_type": "new",
+    "seed_hex": "92c7d0c3db262d5b3610409f2f7cb4159c537d804e468ce55ea02f1ce182fb13"
+  },
+  "chain": {
+    "height": 0,
+    "tip": "449b154ee3114730...",
+    "difficulty": 1.0,
+    "utxo_count": 1,
+    "mempool_size": 0,
+    "total_supply": 104.0,
+    "network": "mainnet"
+  },
+  "bitcoin_bridge": {
+    "status": "SYNCED",
+    "address": "bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80",
+    "confirmed_sats": 0,
+    "unconfirmed_sats": 0,
+    "balance_btc": 0.0,
+    "tx_count": 0,
+    "last_sync": 1768822104.1647835
+  },
+  "mainnet_ready": false
+}
