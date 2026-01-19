@@ -162,6 +162,10 @@ extern "C"
     void l104_lattice_synchronize(l104_neural_lattice_t *lattice);
     void l104_lattice_dissolve(l104_neural_lattice_t *lattice);
 
+    /* Logic Replication - Global Coding Synthesis */
+    void l104_logic_replication(const char *provider, const double *pattern, size_t size);
+    void l104_global_logic_unify(void);
+
 #ifdef __cplusplus
 }
 #endif

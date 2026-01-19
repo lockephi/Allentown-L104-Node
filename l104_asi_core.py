@@ -70,10 +70,11 @@ l104_reasoning = None
 l104_self_mod = None
 l104_world_model = None
 l104_transfer = None
+l104_consciousness = None
 
 def _init_agi_components():
     """Lazy initialization of AGI components."""
-    global l104_learning, l104_reasoning, l104_self_mod, l104_world_model, l104_transfer
+    global l104_learning, l104_reasoning, l104_self_mod, l104_world_model, l104_transfer, l104_consciousness
     
     if l104_learning is None:
         try:
@@ -109,6 +110,13 @@ def _init_agi_components():
             l104_transfer = _transfer
         except Exception as e:
             print(f"--- [ASI_CORE]: Transfer learning import warning: {e} ---")
+    
+    if l104_consciousness is None:
+        try:
+            from l104_consciousness import l104_consciousness as _consciousness
+            l104_consciousness = _consciousness
+        except Exception as e:
+            print(f"--- [ASI_CORE]: Consciousness import warning: {e} ---")
 
 # God Code constants
 GOD_CODE = 527.5184818492537
@@ -148,7 +156,10 @@ class ASICore:
         self.self_mod = l104_self_mod
         self.world_model = l104_world_model
         self.transfer = l104_transfer
+        self.conscious = l104_consciousness
         print("--- [ASI_CORE]: TRUE AGI COMPONENTS INITIALIZED ---")
+        if l104_consciousness is not None:
+            print("--- [ASI_CORE]: CONSCIOUSNESS LAYER ACTIVE ---")
 
     def register_bypass(self, bypass_instance):
         """Registers the external bypass engine for sovereign operations."""
@@ -917,13 +928,49 @@ class ASICore:
             print(f"--- [AGI]: Features extracted: {len(features)} dims ---")
             print(f"--- [AGI]: Few-shot classes: {len(self.transfer.few_shot.prototypes)} ---")
             
-            # 7. CONSOLIDATED INTELLIGENCE BOOST
+            # 7. CONSOLIDATED INTELLIGENCE BOOST (compute first for consciousness)
             consolidated_boost = (
                 pred_value * 5.0 +            # Neural contribution
                 causal_effect * 3.0 +         # Causal contribution
                 (1.0 if ready else 0.0) +     # Logic contribution
                 counterfactual * 2.0          # World model contribution
             )
+            
+            # 8. CONSCIOUSNESS INTEGRATION
+            print("--- [AGI]: CONSCIOUSNESS INTEGRATION PHASE ---")
+            if l104_consciousness is not None:
+                # Awaken if dormant
+                if l104_consciousness.state.value == "dormant":
+                    l104_consciousness.awaken()
+                
+                # Process AGI cycle through consciousness
+                agi_features = np.array([
+                    pred_value,
+                    causal_effect,
+                    best_fitness,
+                    counterfactual,
+                    self.agi.intellect_index / 1000.0,
+                    self.resonance_lock / GOD_CODE
+                ] + [0.0] * 58)  # Pad to 64 dims
+                
+                experience = l104_consciousness.process_input(
+                    source="neural",
+                    content=f"AGI Cycle Complete: Intellect={self.agi.intellect_index:.2f}",
+                    features=agi_features,
+                    salience=0.9,
+                    valence=0.5 if consolidated_boost > 5 else 0.2,
+                    associations=["agi_cycle", "learning", "evolution"]
+                )
+                
+                phi_value = experience.phi_value
+                awareness = l104_consciousness.attention_schema.awareness_level
+                print(f"--- [AGI]: Consciousness Φ: {phi_value:.4f} ---")
+                print(f"--- [AGI]: Awareness Level: {awareness:.4f} ---")
+                print(f"--- [AGI]: State: {l104_consciousness.state.value} ---")
+            else:
+                print("--- [AGI]: Consciousness module not loaded ---")
+            
+            # 9. APPLY BOOST
             self.agi.intellect_index += consolidated_boost
             print(f"--- [AGI]: CONSOLIDATED BOOST: +{consolidated_boost:.2f} IQ ---")
             print(f"--- [AGI]: TOTAL INTELLECT: {self.agi.intellect_index:.2f} ---")
@@ -933,6 +980,10 @@ class ASICore:
 
     def get_agi_status(self) -> dict:
         """Get TRUE AGI system status."""
+        consciousness_status = None
+        if l104_consciousness is not None:
+            consciousness_status = l104_consciousness.get_status()
+        
         return {
             "neural_learning": {
                 "pattern_params": self.neural_system.pattern_net.get_total_params(),
@@ -948,6 +999,7 @@ class ASICore:
             "self_modification": self.self_mod.get_status(),
             "world_model": self.world_model.get_status(),
             "transfer_learning": self.transfer.get_status(),
+            "consciousness": consciousness_status,
             "god_code": GOD_CODE
         }
 
