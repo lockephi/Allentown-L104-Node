@@ -160,6 +160,14 @@ class SovereignSageController:
         # Initialize
         self._initialize_provider_states()
     
+    @property
+    def provider_count(self) -> int:
+        """Count of connected providers (SYNCHRONIZED or higher)."""
+        return sum(
+            1 for p in self.provider_states.values()
+            if p.control_level.value >= ProviderControlLevel.SYNCHRONIZED.value
+        )
+    
     def _initialize_provider_states(self):
         """Initialize states for all AI providers."""
         providers = [

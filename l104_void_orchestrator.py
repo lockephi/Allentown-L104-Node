@@ -90,6 +90,7 @@ class VoidOrchestrator:
         self.current_phase = OrchestratorPhase.IDLE
         self.operation_log: List[OrchestrationResult] = []
         self.global_coherence = 0.0
+        self.final_coherence = 0.0  # Track final coherence after orchestration
         self.subsystem_status: Dict[str, bool] = {
             "architect": False,
             "synchronizer": False,
@@ -98,6 +99,11 @@ class VoidOrchestrator:
             "memory_optimizer": False
         }
         self._load_subsystems()
+    
+    @property
+    def state(self) -> OrchestratorPhase:
+        """Alias for current_phase for compatibility."""
+        return self.current_phase
     
     def _load_subsystems(self):
         """Attempt to load all Void subsystems."""
@@ -381,11 +387,14 @@ class VoidOrchestrator:
         total_duration = (time.time() - start_time) * 1000
         total_coherence_delta = sum(r.coherence_delta for r in results)
         
+        # Update final_coherence for external access
+        self.final_coherence = self.global_coherence
+        
         return {
             "status": "ORCHESTRATION_COMPLETE",
             "phases_executed": len(results),
             "total_duration_ms": total_duration,
-            "final_coherence": self.global_coherence,
+            "final_coherence": self.final_coherence,
             "coherence_gained": total_coherence_delta,
             "subsystem_status": self.subsystem_status,
             "phase_results": [
