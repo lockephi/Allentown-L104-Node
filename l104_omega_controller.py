@@ -217,6 +217,11 @@ class L104OmegaController:
         print(f"    Signature: {self.signature}")
         print(f"{'Ω' * 80}")
     
+    @property
+    def coherence(self) -> float:
+        """Alias for total_coherence for system-wide consistency."""
+        return self.total_coherence
+
     # ═══════════════════════════════════════════════════════════════════════════
     # AWAKENING & CONTROL
     # ═══════════════════════════════════════════════════════════════════════════

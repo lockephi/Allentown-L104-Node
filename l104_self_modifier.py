@@ -9,7 +9,6 @@ This module provides ACTUAL self-modification capabilities:
 """
 
 import ast
-import astor
 import copy
 import hashlib
 import json
@@ -99,7 +98,7 @@ class CodeAnalyzer(ast.NodeVisitor):
         
         # Get source
         try:
-            source = astor.to_source(node)
+            source = ast.unparse(node)
         except:
             source = ""
         
@@ -183,7 +182,7 @@ class CodeMutator(ast.NodeTransformer):
             tree = ast.parse(source)
             mutated_tree = self.visit(tree)
             ast.fix_missing_locations(mutated_tree)
-            return astor.to_source(mutated_tree), self.mutations_applied
+            return ast.unparse(mutated_tree), self.mutations_applied
         except Exception as e:
             logger.error(f"Mutation failed: {e}")
             return source, []
@@ -278,7 +277,7 @@ class CodeImprover(ast.NodeTransformer):
             tree = ast.parse(source)
             improved_tree = self.visit(tree)
             ast.fix_missing_locations(improved_tree)
-            return astor.to_source(improved_tree), self.improvements
+            return ast.unparse(improved_tree), self.improvements
         except Exception as e:
             logger.error(f"Improvement failed: {e}")
             return source, []

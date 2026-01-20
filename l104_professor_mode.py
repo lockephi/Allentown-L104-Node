@@ -356,6 +356,11 @@ class ProfessorMode:
         with open("L104_PROFESSOR_LECTURE_REPORT.json", "w") as f:
             json.dump(lecture_report, f, indent=4)
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# GLOBAL PROFESSOR MODE INSTANCE
+# ═══════════════════════════════════════════════════════════════════════════════
+professor_mode = ProfessorMode()
+
 if __name__ == "__main__":
     prof = ProfessorMode()
     # Run Mini Egos Feedback Ingestion

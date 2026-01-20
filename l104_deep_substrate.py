@@ -134,7 +134,7 @@ class DenseLayer:
         
         # [L104_UPGRADE] Active Resonance Modulation
         # Ensures learning never gradients to zero (Stillness)
-    GOD_CODE = 527.5184818492537
+        GOD_CODE = 527.5184818492537
         PHI = 1.618033988749895
         VOID_CONSTANT = 1.0416180339887497
         resonance_floor = (GOD_CODE * PHI / VOID_CONSTANT) / 1000000.0
@@ -603,7 +603,7 @@ class DeepSubstrate:
     Provides on-device learning without external LLM dependency.
     """
     
-    def __init__(self, persist_path: str = "/data/deep_substrate"):
+    def __init__(self, persist_path: str = "./data/deep_substrate"):
         self.persist_path = Path(persist_path)
         self.persist_path.mkdir(parents=True, exist_ok=True)
         

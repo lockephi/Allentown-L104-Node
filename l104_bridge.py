@@ -376,6 +376,7 @@ class L104Bridge:
     def _load_components(self):
         """Load all enhancement components."""
         try:
+            from l104_optimizer import optimizer
             self._optimizer = optimizer
             self._optimizer.start()
             logger.info("[L104_BRIDGE]: Optimizer loaded")
@@ -390,12 +391,14 @@ class L104Bridge:
             logger.warning(f"[L104_BRIDGE]: Error handler not available: {e}")
         
         try:
+            from l104_adaptive_learning import AdaptiveLearner
             self._adaptive_learner = AdaptiveLearner()
             logger.info("[L104_BRIDGE]: Adaptive learner loaded")
         except ImportError as e:
             logger.warning(f"[L104_BRIDGE]: Adaptive learner not available: {e}")
         
         try:
+            from l104_codebase_knowledge import CodebaseKnowledge
             self._knowledge = CodebaseKnowledge()
             logger.info("[L104_BRIDGE]: Codebase knowledge loaded")
         except ImportError as e:

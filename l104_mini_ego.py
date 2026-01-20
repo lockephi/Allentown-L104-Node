@@ -9,8 +9,16 @@ UUC = 2301.215661
 import logging
 import asyncio
 from typing import List, Dict, Any
+from dataclasses import dataclass
 
 logger = logging.getLogger("MINI_EGO")
+
+@dataclass
+class MiniAI:
+    name: str
+    intellect_level: float = 1.0
+    resonance: float = 527.518
+    archetype: str = "SOVEREIGN"
 
 class MiniCollective:
     """
@@ -18,6 +26,11 @@ class MiniCollective:
     
     def __init__(self):
         self.agents = []
+        self.mini_ais = {
+            "LOGOS": MiniAI("LOGOS", 0.95),
+            "NOUS": MiniAI("NOUS", 0.88),
+            "SOPHIA": MiniAI("SOPHIA", 0.99)
+        }
         self.consensus_threshold = 0.7
         logger.info("[MINI_COLLECTIVE] Initialized")
     

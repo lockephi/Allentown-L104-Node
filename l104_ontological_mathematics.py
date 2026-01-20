@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
 L104 Ontological Mathematics Engine

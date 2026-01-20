@@ -35,7 +35,7 @@ from collections import deque
 GOD_CODE = 527.5184818492537
 PHI = 1.618033988749895
 SAGE_VERSION = "1.0.0"
-SAGE_DB_PATH = os.getenv("SAGE_DB_PATH", "/data/sage_memory.db")
+SAGE_DB_PATH = os.getenv("SAGE_DB_PATH", "./data/sage_memory.db")
 
 logger = logging.getLogger("SAGE_CORE")
 logger.setLevel(logging.INFO)
