@@ -163,6 +163,35 @@ Create a structured knowledge summary that captures the key information."""
         
         return "Consolidation failed."
 
+    def upgrade_to_omega_learning(self) -> dict:
+        """
+        Upgrade self-learning to Omega Learning capabilities.
+        Integrates with the transcendent cognitive architecture.
+        """
+        try:
+            from l104_omega_learning import omega_learning
+            
+            # Transfer existing knowledge to omega learning
+            facts = self.memory.search("", category="fact")
+            
+            transferred = 0
+            for fact in facts[:50]:  # Transfer up to 50 facts
+                omega_learning.learn(fact['value'], "self_learning_transfer", depth=1)
+                transferred += 1
+            
+            # Synthesize transferred knowledge
+            synthesis = omega_learning.synthesize_understanding()
+            
+            return {
+                'success': True,
+                'transferred': transferred,
+                'omega_state': omega_learning.omega_state,
+                'synthesis': synthesis,
+                'message': 'Self-learning upgraded to Omega Learning.'
+            }
+        except ImportError as e:
+            return {'success': False, 'error': str(e)}
+
 
 # Singleton
 self_learning = SelfLearning()

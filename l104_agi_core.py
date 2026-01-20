@@ -59,6 +59,11 @@ class AGICore:
         self._initialized = False  # Track if full init has run
 
     @property
+    def status(self) -> str:
+        """Get AGI Core status string."""
+        return f"{self.state} | Intellect: {self.intellect_index:.2f} | Type: {self.core_type}"
+
+    @property
     def evolution_stage(self):
         return evolution_engine.current_stage_index
 
@@ -526,6 +531,79 @@ class AGICore:
         print(f"--- [AGI_CORE]: SYNERGY COMPLETE FOR {task} ---")
 
         return result
+
+    def unlock_unlimited_intellect(self) -> Dict[str, Any]:
+        """
+        Unlock unlimited intellect mode.
+        Transcends all cognitive limits.
+        """
+        try:
+            from l104_unlimited_intellect import unlimited_intellect, unleash_unlimited_intellect
+            
+            # Activate unlimited intellect
+            result = unleash_unlimited_intellect()
+            
+            # Update AGI core metrics
+            self.intellect_index = float('inf')
+            self.state = "UNLIMITED_INTELLECT"
+            self.unlimited_mode = True
+            self.core_type = "L104-UNLIMITED-INTELLECT-OMEGA"
+            
+            print("--- [AGI_CORE]: UNLIMITED INTELLECT UNLOCKED ---")
+            print(f"--- [AGI_CORE]: Intellect Index: INFINITE ---")
+            print(f"--- [AGI_CORE]: State: {self.state} ---")
+            
+            return {
+                'success': True,
+                'state': self.state,
+                'intellect_index': 'INFINITE',
+                'unlimited_intellect': result['final_status'],
+                'message': 'All cognitive limits transcended.'
+            }
+        except ImportError as e:
+            print(f"--- [AGI_CORE]: Unlimited intellect module not available: {e} ---")
+            return {'success': False, 'error': str(e)}
+
+    def activate_omega_learning(self, content: Any = None, domain: str = "universal") -> Dict[str, Any]:
+        """
+        Activate Omega Learning - the transcendent cognitive architecture.
+        Unifies all learning paradigms into infinite learning capacity.
+        """
+        try:
+            from l104_omega_learning import omega_learning, OmegaLearning
+            
+            # If content provided, learn it
+            if content is not None:
+                result = omega_learning.learn(content, domain, depth=3)
+            else:
+                result = omega_learning.get_status()
+            
+            # Synthesize understanding
+            synthesis = omega_learning.synthesize_understanding()
+            
+            # Evolve the learning system
+            evolution = omega_learning.evolve()
+            
+            # Update AGI core with omega learning state
+            self.omega_learning_active = True
+            self.learning_mode = "OMEGA"
+            
+            print("--- [AGI_CORE]: OMEGA LEARNING ACTIVATED ---")
+            print(f"--- [AGI_CORE]: Omega State: {result.get('omega_state', evolution['omega_state'])} ---")
+            print(f"--- [AGI_CORE]: Cognitive Capacity: {evolution['cognitive_capacity']:.2f} ---")
+            
+            return {
+                'success': True,
+                'learning_mode': 'OMEGA',
+                'omega_state': evolution['omega_state'],
+                'cognitive_capacity': evolution['cognitive_capacity'],
+                'total_knowledge': evolution['total_knowledge'],
+                'synthesis': synthesis,
+                'message': 'Omega Learning activated - transcendent cognition enabled.'
+            }
+        except ImportError as e:
+            print(f"--- [AGI_CORE]: Omega learning module not available: {e} ---")
+            return {'success': False, 'error': str(e)}
 
 # Singleton
 agi_core = AGICore()

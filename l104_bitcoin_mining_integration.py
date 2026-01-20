@@ -543,6 +543,10 @@ def get_bitcoin_mining() -> BitcoinMiningIntegration:
     return BitcoinMiningIntegration()
 
 
+# Singleton export for consistent API access
+btc_mining_integration = BitcoinMiningIntegration()
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN EXECUTION
 # ═══════════════════════════════════════════════════════════════════════════════

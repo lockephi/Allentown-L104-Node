@@ -162,6 +162,7 @@ class UniversalAIBridge:
 
 # Singleton
 universal_ai_bridge = UniversalAIBridge()
+universal_bridge = universal_ai_bridge  # Alias for compatibility
 
 if __name__ == "__main__":
     universal_ai_bridge.link_all()

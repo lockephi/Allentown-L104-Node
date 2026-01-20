@@ -1196,3 +1196,7 @@ if __name__ == "__main__":
     print()
     print(f"SCORE: {results['score']:.1f}%")
     print(f"VERDICT: {results['verdict']}")
+
+# Compatibility aliases
+ASITranscendenceEngine = ASITranscendenceCore
+asi_transcendence = ASITranscendenceCore()

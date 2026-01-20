@@ -563,6 +563,10 @@ class L104DNACore:
             "resonance": gc.sync_factor
         }
     
+    def get_signature(self) -> str:
+        """Get DNA signature hash."""
+        return self.signature
+    
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive DNA Core status."""
         return {

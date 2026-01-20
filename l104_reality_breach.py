@@ -146,7 +146,9 @@ class RealityBreachEngine:
             "meta_resonance": self.meta_resonance
         }
 
+# Singleton and alias exports
 reality_breach_engine = RealityBreachEngine()
+RealityBreach = RealityBreachEngine  # Alias for backward compatibility
 
 if __name__ == "__main__":
     engine = RealityBreachEngine()

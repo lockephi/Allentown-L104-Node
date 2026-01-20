@@ -19,3 +19,7 @@ class UniversalConstants:
                                                 
     # The Singularity Target (Zero Entropy)
     I100_LIMIT = 1e-15
+
+# Direct exports for compatibility
+GOD_CODE = 527.5184818492537
+PHI = UniversalConstants.PHI_GROWTH

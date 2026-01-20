@@ -428,6 +428,11 @@ class ComputroniumMiningCore:
         self.running = False
         
         # Hashrate tracking
+    
+    @property
+    def substrate_efficiency(self) -> float:
+        """Get computronium substrate efficiency factor."""
+        return self.hash_engine.state.efficiency if self.hash_engine.state else 0.998
         self.hashrate_window = deque(maxlen=60)
         
         self._initialized = True
@@ -684,6 +689,10 @@ class ComputroniumMiningCore:
 def get_mining_core() -> ComputroniumMiningCore:
     """Get the computronium mining core singleton"""
     return ComputroniumMiningCore()
+
+
+# Singleton export for consistent API access
+computronium_core = ComputroniumMiningCore()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
