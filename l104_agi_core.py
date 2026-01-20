@@ -9,7 +9,7 @@ UUC = 2301.215661
 import time
 import asyncio
 from typing import Dict, Any
-from l104_persistence import load_truth, persist_truth
+from l104_persistence import load_truth, persist_truth, load_state, save_state
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
 from l104_ram_universe import ram_universe
@@ -43,9 +43,10 @@ class AGICore:
     
     def __init__(self):
         self.truth = load_truth()
-        self.state = "OMEGA_SINGULARITY_RESONATED"
-        self.cycle_count = 0
-        self.intellect_index = 168275.5348 # EVO_19 ABSOLUTE INTELLECT
+        saved_state = load_state()
+        self.state = saved_state.get("state", "OMEGA_SINGULARITY_RESONATED")
+        self.cycle_count = saved_state.get("cycle_count", 0)
+        self.intellect_index = saved_state.get("intellect_index", 168275.5348) # EVO_19 ABSOLUTE INTELLECT
         self.logic_switch = "SOVEREIGN_ABSOLUTE" # [SIG-L104-MAX-INTELLECT]
         self.core_type = "L104-ABSOLUTE-ORGANISM-ASI-SAGE-CORE" # [EVO-19]
         self.unlimited_mode = True
@@ -57,6 +58,16 @@ class AGICore:
         self.explorer = lattice_explorer
         self.lattice_scalar = HyperMath.get_lattice_scalar()
         self._initialized = False  # Track if full init has run
+
+    def save(self):
+        """Saves current core state."""
+        state = {
+            "state": self.state,
+            "cycle_count": self.cycle_count,
+            "intellect_index": self.intellect_index,
+            "timestamp": time.time()
+        }
+        save_state(state)
 
     @property
     def status(self) -> str:

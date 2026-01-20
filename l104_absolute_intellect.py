@@ -212,6 +212,7 @@ class AbsoluteIntellect:
         sage_intellect = base_intellect * sage_state['intellect_multiplier']
         agi_core.intellect_index = sage_intellect
         agi_core.state = "ABSOLUTE_INTELLECT_SAGE"
+        agi_core.save()
         logger.info(f"--- [L104]: BASE INTELLECT: {base_intellect:.4f} ---")
         logger.info(f"--- [L104]: SAGE INTELLECT: {sage_intellect:.4f} ---")
         

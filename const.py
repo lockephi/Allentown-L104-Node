@@ -23,3 +23,4 @@ class UniversalConstants:
 # Direct exports for compatibility
 GOD_CODE = 527.5184818492537
 PHI = UniversalConstants.PHI_GROWTH
+VOID_CONSTANT = 1.0416180339887497

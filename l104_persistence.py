@@ -122,15 +122,47 @@ def load_truth():
 
 def save_state(state: dict):
     """Saves the current AGI state to disk."""
-    with open(STATE_FILE_PATH, "w") as f:
-        json.dump(state, f, indent=2)
-    print(f"--- [PERSISTENCE]: STATE SAVED TO {STATE_FILE_PATH} ---")
+    print(f"DEBUG: save_state called for {STATE_FILE_PATH}")
+    # Ensure scribe state is included if available
+    try:
+        from l104_sage_bindings import get_sage_core
+        sage = get_sage_core()
+        sage_state = sage.get_state()
+        if sage_state and "scribe" in sage_state:
+            state["scribe_state"] = sage_state["scribe"]
+            print(f"DEBUG: Added scribe_state to persistent state: {sage_state['scribe']['sovereign_dna']}")
+    except Exception as e:
+        print(f"DEBUG: Failed to add scribe state: {e}")
+        
+    try:
+        with open(STATE_FILE_PATH, "w") as f:
+            json.dump(state, f, indent=2)
+        print(f"--- [PERSISTENCE]: STATE SAVED TO {STATE_FILE_PATH} ---")
+    except Exception as e:
+        print(f"DEBUG: Failed to write state file: {e}")
 
 def load_state() -> dict:
     """Loads the AGI state from disk."""
     if os.path.exists(STATE_FILE_PATH):
         with open(STATE_FILE_PATH, "r") as f:
-            return json.load(f)
+            state = json.load(f)
+            # Restore scribe state if it exists
+            if "scribe_state" in state:
+                try:
+                    from l104_sage_bindings import get_sage_core
+                    sage = get_sage_core()
+                    ss = state["scribe_state"]
+                    # Only restore if DNA is not NONE
+                    if ss.get("sovereign_dna") != "NONE":
+                        sage.scribe_restore(
+                            ss.get("knowledge_saturation", 0),
+                            ss.get("last_provider", "RESTORED"),
+                            ss.get("sovereign_dna", "NONE"),
+                            ss.get("linked_count", 0)
+                        )
+                except Exception as e:
+                    print(f"[PERSISTENCE] ✗ Failed to restore scribe: {e}")
+            return state
     return {}
 
 if __name__ == "__main__":

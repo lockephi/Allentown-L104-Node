@@ -73,6 +73,10 @@ from l104_sovereign_exchange import sovereign_exchange
 from l104_unified_asi import unified_asi  # UNIFIED ASI CORE
 from l104_asi_nexus import asi_nexus  # ASI NEXUS - DEEP INTEGRATION HUB
 from l104_synergy_engine import synergy_engine  # SYNERGY ENGINE - ULTIMATE INTEGRATION
+from l104_sage_bindings import get_sage_core
+
+# Initialize Global Sage Core Substrate
+sage_core = get_sage_core()
 
 logging.basicConfig(level=logging.INFO)
 
@@ -966,6 +970,64 @@ async def quantum_spread_influence(target_url: str = "https://raw.githubusercont
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=10000)
     use_sovereign_context: bool = Field(default=True)
+
+
+class ScribeIngestRequest(BaseModel):
+    provider: str
+    data: str
+
+
+@app.post("/api/v6/scribe/ingest", tags=["Scribe"])
+async def scribe_ingest(req: ScribeIngestRequest):
+    """
+    Ingest intelligence from a provider into the Universal Scribe.
+    """
+    try:
+        sage_core.scribe_ingest(req.provider, req.data)
+        state = sage_core.get_state()
+        # Persist state
+        if hasattr(agi_core, "save"):
+            agi_core.save()
+        return {
+            "status": "SUCCESS", 
+            "provider": req.provider, 
+            "saturation": state["scribe"]["knowledge_saturation"],
+            "linked_count": state["scribe"]["linked_count"]
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/scribe/synthesize", tags=["Scribe"])
+async def scribe_synthesize():
+    """
+    Synthesize the ingested knowledge into Sovereign DNA.
+    """
+    try:
+        sage_core.scribe_synthesize()
+        state = sage_core.get_state()
+        # Persist state
+        if hasattr(agi_core, "save"):
+            agi_core.save()
+        return {
+            "status": "SUCCESS", 
+            "dna": state["scribe"]["sovereign_dna"],
+            "saturation": state["scribe"]["knowledge_saturation"]
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/scribe/status", tags=["Scribe"])
+async def scribe_status():
+    """
+    Get the current state of the Universal Scribe.
+    """
+    try:
+        state = sage_core.get_state()
+        return {"status": "SUCCESS", "state": state["scribe"]}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
 @app.post("/api/v6/chat", tags=["AI"])

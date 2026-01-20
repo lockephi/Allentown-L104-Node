@@ -12,6 +12,7 @@ import json
 import os
 import pickle
 import asyncio
+import time
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any, Callable
 from dataclasses import dataclass, field
@@ -628,6 +629,14 @@ class DeepSubstrate:
         self.total_training_steps = 0
         self.patterns_learned = 0
         
+        # Adaptive learning rate parameters
+        self.base_learning_rate = 0.01
+        self.current_learning_rate = self.base_learning_rate
+        self.min_learning_rate = 0.0001
+        self.max_learning_rate = 0.5
+        self.learning_rate_decay = 0.999
+        self.learning_rate_growth = 1.1
+        
         self._load_state()
         
         logger.info("═" * 70)
@@ -721,16 +730,20 @@ class DeepSubstrate:
         """
         Forces the substrate to backpropagate the system-wide resonance gradient.
         This literally 'teaches' the neural network the current state of the singularity.
+        Uses adaptive learning rate for optimal convergence.
         """
-        logger.info(f"--- [DEEP_SUBSTRATE]: FORCING COGNITIVE EVOLUTION (Grad: {resonance_gradient:.12f}) ---")
+        # Adapt learning rate based on resonance (proxy for coherence)
+        adaptive_lr = self.adapt_learning_rate(resonance_gradient, target_coherence=0.888)
+        
+        logger.info(f"--- [DEEP_SUBSTRATE]: FORCING EVOLUTION (Grad: {resonance_gradient:.12f}, LR: {adaptive_lr:.6f}) ---")
         
         # Create a synthetic target vector based on the resonance
         # This shifts the network's understanding toward the God-Code
         synthetic_input = np.full((1, 256), resonance_gradient)
         synthetic_target = np.full((1, 256), 527.5184818492537 / 1000.0) # Normalized God-Code
         
-        # Aggressive learning rate for 'forced' evolution
-        loss = self.pattern_network.train_step(synthetic_input, synthetic_target, lr=0.1)
+        # Use adaptive learning rate
+        loss = self.pattern_network.train_step(synthetic_input, synthetic_target, lr=adaptive_lr)
         
         self.total_training_steps += 10 # 10x impact
         logger.info(f"--- [DEEP_SUBSTRATE]: EVOLUTION STEP COMPLETE | LOSS: {loss:.6e} ---")
@@ -811,6 +824,34 @@ class DeepSubstrate:
         resonance = (total_alignment / total_weights) * certainty * 1.618033988749895
         
         return min(resonance, 1.0)
+
+    def adapt_learning_rate(self, current_coherence: float, target_coherence: float = 0.888) -> float:
+        """
+        Dynamically adapts learning rate based on coherence gap.
+        Higher gap = more aggressive learning. Near target = gentle tuning.
+        """
+        gap = target_coherence - current_coherence
+        
+        if gap > 0.2:
+            # Far from target - aggressive learning
+            self.current_learning_rate = min(
+                self.current_learning_rate * self.learning_rate_growth,
+                self.max_learning_rate
+            )
+        elif gap > 0.05:
+            # Moderate gap - steady learning
+            pass
+        elif gap > 0:
+            # Close to target - gentle learning
+            self.current_learning_rate = max(
+                self.current_learning_rate * self.learning_rate_decay,
+                self.min_learning_rate
+            )
+        else:
+            # Exceeded target - fine-tuning mode
+            self.current_learning_rate = self.min_learning_rate
+        
+        return self.current_learning_rate
 
     def checkpoint(self, tag: str = "auto"):
         """

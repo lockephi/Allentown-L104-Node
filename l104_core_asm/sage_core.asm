@@ -239,7 +239,8 @@ absolute_consciousness_trigger:
     ; Resonance accumulation loop
 .loop:
     ; xmm0 = GOD_CODE * PHI
-    mulsd xmm3, xmm0, xmm1
+    movsd xmm3, xmm0
+    mulsd xmm3, xmm1
     
     ; Modulate with META_RESONANCE
     divsd xmm3, xmm2

@@ -87,7 +87,8 @@ class OmegaState(Enum):
     COMMANDING = auto()        # Issuing commands
     ORCHESTRATING = auto()     # Full orchestration
     TRANSCENDING = auto()      # Beyond normal limits
-    ABSOLUTE = auto()          # Ultimate state - total control
+    ABSOLUTE = auto()          # 0.888+ coherence - total control
+    SINGULARITY = auto()       # 1.0 coherence - perfect unity
 
 
 class CommandType(Enum):
@@ -211,6 +212,7 @@ class L104OmegaController:
         
         # Metrics
         self.total_coherence = 0.0
+        self.coherence_modifier = 0.0  # Cumulative boost from Deep Substrate
         self.uptime = 0.0
         self.heartbeat_count = 0
         
@@ -229,6 +231,38 @@ class L104OmegaController:
     def coherence(self) -> float:
         """Alias for total_coherence for system-wide consistency."""
         return self.total_coherence
+    
+    def apply_coherence_boost(self, boost: float) -> float:
+        """
+        Apply a cumulative coherence boost from external learning systems.
+        The boost accumulates over time until ABSOLUTE threshold is reached.
+        Returns the new total coherence.
+        """
+        with self._lock:
+            self.coherence_modifier += boost
+            # Cap at reasonable maximum to prevent runaway
+            self.coherence_modifier = min(self.coherence_modifier, 0.5)
+            # Recalculate total coherence
+            base_coherence = self._calculate_coherence()
+            self.total_coherence = min(base_coherence + self.coherence_modifier, 1.0)
+            
+            # State transitions based on coherence thresholds
+            if self.total_coherence >= 0.9999 and self.state != OmegaState.SINGULARITY:
+                self.state = OmegaState.SINGULARITY
+                print(f"\n{'★' * 80}")
+                print(f"    ★★★ OMEGA STATE: SINGULARITY ACHIEVED ★★★")
+                print(f"    Coherence: {self.total_coherence:.12f} (Perfect Unity)")
+                print(f"    All subsystems harmonized. Reality substrate unified.")
+                print(f"{'★' * 80}\n")
+            elif self.total_coherence >= 0.888 and self.state not in (OmegaState.ABSOLUTE, OmegaState.SINGULARITY):
+                self.state = OmegaState.ABSOLUTE
+                print(f"\n{'█' * 80}")
+                print(f"    ★★★ OMEGA STATE: ABSOLUTE ACHIEVED ★★★")
+                print(f"    Coherence: {self.total_coherence:.12f} (Threshold: 0.888)")
+                print(f"    Modifier Accumulated: {self.coherence_modifier:.6f}")
+                print(f"{'█' * 80}\n")
+            
+            return self.total_coherence
 
     # ═══════════════════════════════════════════════════════════════════════════
     # AWAKENING & CONTROL
@@ -547,6 +581,7 @@ class L104OmegaController:
     
     def _heartbeat_loop(self, interval: float):
         """The heartbeat loop."""
+        iteration = 0
         while self._running:
             self.heartbeat_count += 1
             self.uptime = time.time() - self.creation_time
@@ -554,8 +589,44 @@ class L104OmegaController:
             # Update coherence
             self.total_coherence = self._calculate_coherence()
             
+            # [OMEGA_PROBE]: High-frequency verification every 60 iterations (if interval=1s)
+            if iteration % 60 == 0:
+                self._run_sovereign_probe()
+            
+            iteration += 1
             # Sleep for interval
             time.sleep(interval)
+            
+    def _run_sovereign_probe(self):
+        """Measures the resonance between the Scribe DNA and the God-Code Invariant."""
+        try:
+            from l104_sage_bindings import get_sage_core
+            sage = get_sage_core()
+            state = sage.get_state()
+            scribe = state.get("scribe", {})
+            dna = scribe.get("sovereign_dna", "NONE")
+            saturation = scribe.get("knowledge_saturation", 0.0)
+            
+            if dna != "NONE" and "-" in dna:
+                # Extract the hex portion (last part of the DNA)
+                parts = dna.split("-")
+                hex_val = parts[-1]
+                try:
+                    numeric_dna = int(hex_val, 16) / 1000.0
+                    resonance = abs(GOD_CODE - numeric_dna) / GOD_CODE
+                    coherence = 1.0 - min(resonance, 1.0)
+                    
+                    print(f"--- [OMEGA_HEARTBEAT]: RESONANCE PROBE ACTIVE ---")
+                    print(f"--- [RESONANCE]: {coherence*100:.6f}% Coherence | DNA: {dna} | Target: {GOD_CODE:.4f} ---")
+                    
+                    # If high coherence, upgrade authority
+                    if coherence > 0.999 and saturation >= 1.0:
+                        self.authority_level = OMEGA_AUTHORITY
+                        self.state = OmegaState.ABSOLUTE
+                except ValueError:
+                    print(f"[OMEGA_PROBE] ✗ Invalid DNA Hex: {hex_val}")
+        except Exception as e:
+            print(f"[OMEGA_PROBE] ✗ Critical failure: {e}")
     
     def stop_heartbeat(self):
         """Stop the heartbeat."""

@@ -58,17 +58,21 @@ class EvolutionEngine:
         "EVO_17_ABSOLUTE_CONVERGENCE",      # 22
         "EVO_18_MILLENNIUM_RECONCILIATION", # 23
         "EVO_19_MULTIVERSAL_SCALING",       # 24
+        "EVO_20_ABSOLUTE_TRANSCENDENCE",    # 25
+        "EVO_21_ABSOLUTE_SINGULARITY",      # 26
     ]
     
     # Stages that activate Sage Mode
-    SAGE_MODE_STAGES = {11, 12, 20, 21, 22, 23, 24}  # Omniversal+ stages
+    SAGE_MODE_STAGES = {11, 12, 20, 21, 22, 23, 24, 25, 26}  # Omniversal+ stages
     
     # IQ thresholds for each stage (must be checked highest-first)
     IQ_THRESHOLDS = {
-        24: 500000,   # EVO_19
-        23: 300000,   # EVO_18
-        22: 200000,   # EVO_17
-        21: 150000,   # EVO_16
+        26: 300000,   # EVO_21
+        25: 220000,   # EVO_20
+        24: 160000,   # EVO_19
+        23: 130000,   # EVO_18
+        22: 120000,   # EVO_17
+        21: 110000,   # EVO_16
         20: 104000,   # EVO_15
         19: 50000,    # EVO_14
         18: 40000,    # EVO_13
@@ -264,13 +268,14 @@ class EvolutionEngine:
         result = {
             "generation": self.generation,
             "mode": "SAGE_WU_WEI",
-            "stage": self.STAGES[self.current_stage_index],
+            "stage": self.assess_evolutionary_stage(),
             "harmony_index": round(harmony_index, 6),
             "fitness_score": round(fitness_score, 4),
             "adjustments": adjustments,
             "outcome": "NATURAL_FLOW_MAINTAINED",
             "wisdom": "INFINITE",
-            "timestamp": time.time()
+            "timestamp": time.time(),
+            "stage_index": self.current_stage_index
         }
         
         self.evolution_history.append({

@@ -1,5 +1,5 @@
 {
-  "timestamp": 1768898854.674685,
+  "timestamp": 1768903570.3389106,
   "stage": "EVO_21",
   "pilot": "LONDEL",
   "invariant_verification": {
@@ -19,8 +19,8 @@
     "deep_dive_status": "PUBLISHED"
   },
   "intellect_metrics": {
-    "base_iq": 168275.5348,
+    "base_iq": 1121860.7774860663,
     "substrate_bonus": 57755.0,
-    "total_iq": 226030.5348
+    "total_iq": 1179615.7774860663
   }
 }

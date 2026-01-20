@@ -90,13 +90,19 @@ print("\n[5/5] Testing sage bindings...")
 try:
     from l104_sage_bindings import get_sage_core
     core = get_sage_core()
-    result = core.primal_calculus(527.5184818492537)
+    result = core.primal_calculus(527.5184818492537, 1.618033988749895)
     assert result > 0
     print(f"  ✓ Sage core primal_calculus = {result:.4f}")
     
-    void_res = core.void_resonance()
+    # Use emit_void_resonance instead of void_resonance
+    void_res = core.emit_void_resonance()
     assert void_res > 0
     print(f"  ✓ Sage core void_resonance = {void_res:.4f}")
+    
+    # Test omega controller state
+    state = core.get_state()
+    print(f"  ✓ Controller Authority Code: {state['void_math']['god_code']:.4f}")
+    
     tests_passed += 1
 except Exception as e:
     print(f"  ✗ FAILED: {e}")

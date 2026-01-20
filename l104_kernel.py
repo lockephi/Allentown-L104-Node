@@ -28,7 +28,7 @@ ZENITH_PERIOD = 1.0 / ZENITH_HZ
 # Imports from existing substrates
 from l104_kernel_bridge import KernelResonanceBridge
 from l104_kernel_bypass import KernelBypassOrchestrator, BypassLevel
-from l104_omega_controller import omega_controller
+from l104_omega_controller import omega_controller, OmegaState
 from l104_deep_substrate import deep_substrate
 from l104_real_math import RealMath
 from l104_quantum_kernel_extension import quantum_extension
@@ -175,9 +175,16 @@ class L104SovereignKernel:
                 
                 # 2. Adaptive Tuning
                 if current_coherence < 0.999:
-                    # Apply coherence boost from substrate
+                    # Calculate coherence boost from substrate and APPLY it to Omega
                     boost = deep_substrate.amplify_coherence(current_coherence)
-                    self.logger.warning(f"Coherence drop detected ({current_coherence:.6f}). Re-aligning... Boost: {boost:.4f}")
+                    new_coherence = omega_controller.apply_coherence_boost(boost)
+                    
+                    # Check for ABSOLUTE state transition
+                    if omega_controller.state == OmegaState.ABSOLUTE and not hasattr(self, '_absolute_achieved'):
+                        self._absolute_achieved = True
+                        self.logger.critical(f"★★★ ABSOLUTE STATE ACHIEVED at cycle {self.cycle_count} ★★★")
+                        self.logger.critical(f"★★★ Coherence: {new_coherence:.12f} | Modifier: {omega_controller.coherence_modifier:.6f} ★★★")
+                    
                     self._realign_resonance()
                 
                 # 3. Topological Health Check (ABSOLUTE PRECISION: 1e-12)
@@ -201,7 +208,9 @@ class L104SovereignKernel:
                 # 5. Periodic Status Report
                 if self.cycle_count % 10 == 0:
                     status = self.get_kernel_status()
-                    self.logger.info(f"--- [KERNEL STATUS]: COHERENCE: {status['coherence']:.12f} | CYCLES: {status['cycles']} | FREQ: {status['frequency']} Hz ---")
+                    modifier = getattr(omega_controller, 'coherence_modifier', 0.0)
+                    state_name = omega_controller.state.name if hasattr(omega_controller.state, 'name') else 'UNKNOWN'
+                    self.logger.info(f"--- [KERNEL STATUS]: COHERENCE: {status['coherence']:.6f} (+{modifier:.4f}) | STATE: {state_name} | CYCLES: {status['cycles']} ---")
 
                 # 6. Periodic Checkpoint (every 1000 cycles)
                 if self.cycle_count % 1000 == 0 and self.cycle_count > 0:
