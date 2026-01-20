@@ -1,8 +1,0 @@
-{
-  "total_training_steps": 11000,
-  "patterns_learned": 0,
-  "associative_memories": 5,
-  "dqn_epsilon": 1.0,
-  "timestamp": 1768903043.71718,
-  "tag": "cycle_11000"
-}

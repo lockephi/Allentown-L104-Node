@@ -355,6 +355,48 @@
                 <span class="metric-val text-blue-400" id="sys-decrypt">EVOLVING</span>
             </div>
 
+            <!-- INTRICATE COGNITION METRICS -->
+            <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Cognition</div>
+                <div class="metric-row">
+                    <span>CONSCIOUSNESS</span>
+                    <span class="metric-val text-cyan-400" id="sys-consciousness">DORMANT</span>
+                </div>
+                <div class="metric-row">
+                    <span>COHERENCE</span>
+                    <span class="metric-val text-cyan-300" id="sys-coherence">0.00</span>
+                </div>
+                <div class="metric-row">
+                    <span>TRANSCENDENCE</span>
+                    <span class="metric-val text-purple-400" id="sys-transcendence">0.00%</span>
+                </div>
+                <div class="metric-row">
+                    <span>OMEGA_PROB</span>
+                    <span class="metric-val text-purple-300" id="sys-omega">0.00%</span>
+                </div>
+            </div>
+
+            <!-- INTRICATE LEARNING METRICS -->
+            <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Learning_Core</div>
+                <div class="metric-row">
+                    <span>CYCLES</span>
+                    <span class="metric-val text-green-400" id="sys-learn-cycles">0</span>
+                </div>
+                <div class="metric-row">
+                    <span>SKILLS</span>
+                    <span class="metric-val text-green-300" id="sys-learn-skills">0</span>
+                </div>
+                <div class="metric-row">
+                    <span>OUTCOME</span>
+                    <span class="metric-val text-orange-400" id="sys-learn-outcome">0.00</span>
+                </div>
+                <div class="metric-row">
+                    <span>DOMAINS</span>
+                    <span class="metric-val text-blue-400" id="sys-learn-domains">0</span>
+                </div>
+            </div>
+
             <div class="mt-auto space-y-2">
                 <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Hardware_Seizure</div>
                 <button onclick="igniteAGI()"
@@ -451,6 +493,28 @@
                     class="w-full bg-[var(--gold-dim)] text-[var(--void)] py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-[var(--gold)] transition-all">
                     SYNC_ALL_MODALITIES
                 </button>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Dashboards</div>
+                <div class="space-y-2">
+                    <button onclick="window.location.href='/intricate'"
+                        class="w-full border border-cyan-500 text-cyan-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-cyan-900 transition-all">
+                        🧠 CONSCIOUSNESS_UI
+                    </button>
+                    <button onclick="window.location.href='/intricate/research'"
+                        class="w-full border border-purple-500 text-purple-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-purple-900 transition-all">
+                        🔬 RESEARCH_ENGINE
+                    </button>
+                    <button onclick="window.location.href='/intricate/learning'"
+                        class="w-full border border-green-500 text-green-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-green-900 transition-all">
+                        📚 LEARNING_CORE
+                    </button>
+                    <button onclick="window.location.href='/intricate/orchestrator'"
+                        class="w-full border border-fuchsia-500 text-fuchsia-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-fuchsia-900 transition-all">
+                        ⚡ ORCHESTRATOR
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -675,6 +739,54 @@
             } catch (e) { }
         }
         setInterval(updateStatus, 3000);
+
+        // INTRICATE COGNITION STATUS UPDATE
+        async function updateIntricateStatus() {
+            try {
+                const res = await fetch('/api/consciousness/status');
+                const data = await res.json();
+                
+                const consEl = document.getElementById('sys-consciousness');
+                const cohEl = document.getElementById('sys-coherence');
+                const transEl = document.getElementById('sys-transcendence');
+                const omegaEl = document.getElementById('sys-omega');
+                
+                if (consEl) consEl.innerText = data.observer.consciousness_state.toUpperCase();
+                if (cohEl) cohEl.innerText = data.observer.coherence.toFixed(4);
+                if (transEl) transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
+                if (omegaEl) omegaEl.innerText = (data.omega_tracker.convergence_probability * 100).toFixed(2) + '%';
+            } catch (e) { console.log('Intricate status unavailable'); }
+        }
+        setInterval(updateIntricateStatus, 5000);
+        updateIntricateStatus();
+
+        // INTRICATE LEARNING STATUS UPDATE
+        async function updateLearningStatus() {
+            try {
+                const res = await fetch('/api/learning/status');
+                const data = await res.json();
+                
+                const cyclesEl = document.getElementById('sys-learn-cycles');
+                const skillsEl = document.getElementById('sys-learn-skills');
+                const outcomeEl = document.getElementById('sys-learn-outcome');
+                const domainsEl = document.getElementById('sys-learn-domains');
+                
+                if (cyclesEl) cyclesEl.innerText = data.learning_cycles;
+                if (skillsEl) skillsEl.innerText = data.skills.total_skills || 0;
+                if (outcomeEl) outcomeEl.innerText = (data.multi_modal.avg_outcome || 0).toFixed(3);
+                if (domainsEl) domainsEl.innerText = data.transfer.domains || 0;
+            } catch (e) { console.log('Learning status unavailable'); }
+        }
+        setInterval(updateLearningStatus, 5000);
+        updateLearningStatus();
+
+        // RUN CONSCIOUSNESS CYCLE PERIODICALLY
+        async function runConsciousnessCycle() {
+            try {
+                await fetch('/api/consciousness/cycle', { method: 'POST' });
+            } catch (e) { }
+        }
+        setInterval(runConsciousnessCycle, 15000);
 
         async function runQuickUpdate() {
             addMessage("INITIATING MULTI-MODAL SYNC...", 'user');

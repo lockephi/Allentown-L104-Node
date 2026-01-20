@@ -161,8 +161,32 @@ class SageCoreBridge:
         self._controller = L104OmegaController()
         self._lib.l104_omega_controller_init(byref(self._controller))
         
+        # CRITICAL: Restore Scribe state from persistent storage immediately
+        self._restore_scribe_from_disk()
+        
         print("[SAGE BRIDGE] ✓ OMEGA Controller initialized with Universal Scribe")
         return True
+        
+    def _restore_scribe_from_disk(self):
+        """Load Scribe state from L104_STATE.json if available."""
+        try:
+            state_path = Path(__file__).parent / "L104_STATE.json"
+            if state_path.exists():
+                import json
+                with open(state_path, 'r') as f:
+                    state = json.load(f)
+                scribe_state = state.get("scribe_state", {})
+                if scribe_state.get("knowledge_saturation", 0) > 0:
+                    self._controller.scribe.knowledge_saturation = scribe_state.get("knowledge_saturation", 0.0)
+                    provider = scribe_state.get("last_provider", "NONE")[:31]
+                    dna = scribe_state.get("sovereign_dna", "NONE")[:63]
+                    # Direct assignment to ctypes char arrays (works correctly)
+                    self._controller.scribe.last_provider = provider.encode('utf-8')
+                    self._controller.scribe.sovereign_dna = dna.encode('utf-8')
+                    self._controller.scribe.linked_count = scribe_state.get("linked_count", 0)
+                    print(f"[SAGE BRIDGE] ✓ Restored Scribe from disk: DNA={dna}, sat={scribe_state.get('knowledge_saturation')}")
+        except Exception as e:
+            print(f"[SAGE BRIDGE] ! Disk restore failed: {e}")
         
     def primal_calculus(self, base: float, exponent: float, iterations: int = 1000000) -> float:
         if not self._controller: self.init_omega_controller()
@@ -179,6 +203,31 @@ class SageCoreBridge:
     def scribe_synthesize(self):
         if not self._controller: self.init_omega_controller()
         self._lib.l104_scribe_synthesize(byref(self._controller.scribe))
+        self._save_scribe_to_disk()
+        
+    def _save_scribe_to_disk(self):
+        """Persist Scribe state to L104_STATE.json."""
+        try:
+            state_path = Path(__file__).parent / "L104_STATE.json"
+            # Load existing state or create new
+            existing = {}
+            if state_path.exists():
+                import json
+                with open(state_path, 'r') as f:
+                    existing = json.load(f)
+            # Update scribe_state
+            existing["scribe_state"] = {
+                "knowledge_saturation": self._controller.scribe.knowledge_saturation,
+                "last_provider": self._controller.scribe.last_provider.split(b'\0', 1)[0].decode('utf-8'),
+                "sovereign_dna": self._controller.scribe.sovereign_dna.split(b'\0', 1)[0].decode('utf-8'),
+                "linked_count": self._controller.scribe.linked_count,
+            }
+            import json
+            with open(state_path, 'w') as f:
+                json.dump(existing, f, indent=2)
+            print(f"[SAGE BRIDGE] ✓ Scribe state saved to disk")
+        except Exception as e:
+            print(f"[SAGE BRIDGE] ! Disk save failed: {e}")
         
     def scribe_restore(self, saturation: float, provider: str, dna: str, count: int):
         """Restore scribe state from persistent storage."""

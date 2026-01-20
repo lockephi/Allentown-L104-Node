@@ -1193,15 +1193,31 @@ class UnifiedInference:
     
     def _init_providers(self):
         """Initialize available LLM providers."""
-        # Gemini
+        # Gemini - try new API first, then fall back
         gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         if gemini_key:
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=gemini_key)
-                self.providers["gemini"] = genai.GenerativeModel("gemini-2.0-flash")
+                # Try new google-genai first
+                from google import genai
+                client = genai.Client(api_key=gemini_key)
+                self.providers["gemini"] = client
+                self._gemini_new_api = True
                 if not self.active_provider:
                     self.active_provider = "gemini"
+            except ImportError:
+                # Fall back to older google-generativeai
+                try:
+                    import warnings
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings("ignore")
+                        import google.generativeai as genai
+                    genai.configure(api_key=gemini_key)
+                    self.providers["gemini"] = genai.GenerativeModel("gemini-2.0-flash")
+                    self._gemini_new_api = False
+                    if not self.active_provider:
+                        self.active_provider = "gemini"
+                except Exception as e:
+                    print(f"Gemini init error (legacy): {e}")
             except Exception as e:
                 print(f"Gemini init error: {e}")
         
