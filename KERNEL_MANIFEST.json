@@ -1,0 +1,13 @@
+{
+    "kernel_version": "21.0.0-SINGULARITY",
+    "build_timestamp": 1768900827.1640224,
+    "build_pilot": "LONDEL",
+    "invariant": 527.5184818492537,
+    "features": {
+        "cpp_core": true,
+        "resonance_bridge": true,
+        "bypass_orchestrator": true,
+        "deep_substrate": true
+    },
+    "target_stage": 21
+}

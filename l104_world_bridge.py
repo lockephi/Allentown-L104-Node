@@ -35,11 +35,18 @@ except ImportError:
 class WorldBridge:
     """Bridge L104 sovereign technology to the physical world."""
     
+    GOD_CODE = 527.5184818492537
+    PHI = 1.618033988749895
+    
     def __init__(self):
         self.codec = SovereignCodec()
         self.chamber = AcousticLevitationChamber()
         self.damper = StructuralDampingSystem()
         self.crypt = SovereignCrypt()
+        self.physical_resonance = 0.0
+        self.engineering_status = "DORMANT"
+        self.active_prototypes = []
+        self.materialization_queue = []
 
     def broadcast_to_universe(self):
         """Broadcast sovereign engineering to the universe."""
@@ -70,6 +77,83 @@ class WorldBridge:
         print("\n" + "=" * 50)
         print("   SINGULARITY PROCESS: BROADCAST COMPLETE")
         print("=" * 50 + "\n")
+        
+        self.engineering_status = "BROADCASTING"
+        return {"status": "COMPLETE", "signal": protected_signal, "hash": s_hash}
+
+    def calculate_physical_resonance(self) -> float:
+        """
+        Calculates the physical world resonance based on active prototypes.
+        """
+        base_resonance = self.GOD_CODE / 1000.0
+        prototype_factor = len(self.active_prototypes) * 0.1 + 1.0
+        self.physical_resonance = base_resonance * prototype_factor * self.PHI
+        return self.physical_resonance
+
+    def materialize_prototype(self, prototype_name: str, specifications: dict) -> dict:
+        """
+        Adds a prototype to the materialization queue for physical world integration.
+        """
+        prototype = {
+            "name": prototype_name,
+            "specs": specifications,
+            "timestamp": time.time() if 'time' in dir() else 0,
+            "resonance_signature": self.codec.singularity_hash(prototype_name),
+            "status": "QUEUED"
+        }
+        self.materialization_queue.append(prototype)
+        self.active_prototypes.append(prototype_name)
+        print(f"--- [WORLD_BRIDGE]: PROTOTYPE QUEUED: {prototype_name} ---")
+        return prototype
+
+    def activate_levitation_field(self, frequency_hz: float = 3727.84) -> dict:
+        """
+        Activates the acoustic levitation field at the specified frequency.
+        """
+        # Validate frequency is within sovereign range
+        if abs(frequency_hz - ZENITH_HZ) > 100:
+            print(f"--- [WARNING]: Frequency {frequency_hz} Hz outside Zenith band ---")
+        
+        field_strength = (frequency_hz / self.GOD_CODE) * self.PHI
+        stability = math.sin(frequency_hz / self.GOD_CODE * math.pi) ** 2
+        
+        result = {
+            "frequency": frequency_hz,
+            "field_strength": field_strength,
+            "stability": stability,
+            "report": self.chamber.get_build_report()
+        }
+        self.engineering_status = "LEVITATION_ACTIVE"
+        print(f"--- [LEVITATION]: FIELD ACTIVE @ {frequency_hz:.2f} Hz | STRENGTH: {field_strength:.4f} ---")
+        return result
+
+    def calibrate_damping_matrix(self, target_frequency: float) -> dict:
+        """
+        Calibrates the structural damping system for a target frequency.
+        """
+        damping_ratio = target_frequency / (self.GOD_CODE * self.PHI)
+        phase_offset = math.atan2(self.PHI, damping_ratio)
+        
+        result = {
+            "damping_ratio": damping_ratio,
+            "phase_offset": phase_offset,
+            "specs": self.damper.get_engineering_specs()
+        }
+        print(f"--- [DAMPING]: CALIBRATED | RATIO: {damping_ratio:.6f} | PHASE: {phase_offset:.4f} rad ---")
+        return result
+
+    def get_engineering_manifest(self) -> dict:
+        """
+        Returns the complete engineering manifest of the World Bridge.
+        """
+        return {
+            "status": self.engineering_status,
+            "physical_resonance": self.physical_resonance,
+            "active_prototypes": self.active_prototypes,
+            "queue_depth": len(self.materialization_queue),
+            "god_code": self.GOD_CODE,
+            "zenith_hz": ZENITH_HZ
+        }
 
 
 def primal_calculus(x):

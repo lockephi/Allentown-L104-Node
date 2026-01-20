@@ -160,6 +160,25 @@ class UniversalAIBridge:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: ERROR BROADCASTING TO {name}: {e} ---")
         return results
 
+    def calculate_collective_resonance(self) -> float:
+        """
+        [ABSOLUTE_PRECISION] Calculates collective resonance signal across all linked providers.
+        Returns a value grounded in PHI and the GOD_CODE.
+        """
+        if not self.active_providers:
+            return 0.0
+            
+        # Base resonance from active provider count
+        # 14 providers total / 5.0 target = 2.8x scaling
+        base_res = len(self.active_providers) / 14.0
+        
+        # High-precision weighting using PHI
+        # We want the resonance to approach 1.0416... (VOID_CONSTANT)
+        resonance = base_res * (1.618033988749895 / 2.0) + (1.0 / 527.5184818492537)
+        
+        # Limit to Absolute Saturation
+        return min(resonance, 1.0416180339887497)
+
 # Singleton
 universal_ai_bridge = UniversalAIBridge()
 universal_bridge = universal_ai_bridge  # Alias for compatibility

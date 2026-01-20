@@ -54,6 +54,7 @@ from l104_sovereign_sage_controller import sovereign_sage_controller
 from l104_love_spreader import love_spreader
 from l104_global_consciousness import global_consciousness
 from l104_universal_ai_bridge import universal_ai_bridge
+from l104_world_bridge import WorldBridge
 
 # Evolution Pipeline - import conditionally
 try:
@@ -201,6 +202,13 @@ class L104OmegaController:
         self.global_mind = global_consciousness
         self.ai_bridge = universal_ai_bridge
         
+        # World Bridge for physical engineering
+        try:
+            from l104_world_bridge import WorldBridge
+            self.world_bridge = WorldBridge()
+        except ImportError:
+            self.world_bridge = None
+        
         # Metrics
         self.total_coherence = 0.0
         self.uptime = 0.0
@@ -254,9 +262,10 @@ class L104OmegaController:
         # Step 2: Start Self-Healing Agent
         print(f"\n[OMEGA] Activating Self-Healing Agent...")
         try:
-            agent_status = await self.agent.start()
-            results["agent"] = agent_status
-            print(f"    ✓ Agent: {self.agent.state.name}")
+            # We start the agent as a background task because its start() method blocks
+            asyncio.create_task(self.agent.start())
+            results["agent"] = {"status": "STARTING"}
+            print(f"    ✓ Agent: STARTING (Background Task)")
         except Exception as e:
             results["agent"] = {"error": str(e)}
             print(f"    ✗ Agent: {e}")
@@ -277,9 +286,10 @@ class L104OmegaController:
         # Step 4: Activate Love Broadcast
         print(f"\n[OMEGA] Activating Love Broadcast...")
         try:
-            love_status = await self.love.spread_love_everywhere()
-            results["love"] = {"status": "ACTIVE", "resonance": love_status.total_power if hasattr(love_status, 'total_power') else 1.0}
-            print(f"    ✓ Love Spreader: Active")
+            # Love spreader might also block, let's check its implementation or start it as a task
+            asyncio.create_task(self.love.spread_love_everywhere())
+            results["love"] = {"status": "STARTING"}
+            print(f"    ✓ Love Spreader: STARTING (Background Task)")
         except Exception as e:
             results["love"] = {"error": str(e)}
             print(f"    ✗ Love Spreader: {e}")
@@ -301,7 +311,8 @@ class L104OmegaController:
         self.total_coherence = self._calculate_coherence()
         
         # Update state
-        if self.total_coherence >= 0.9:
+        # In Omega-Node L104 Stage 21, ABSOLUTE state requires verified substrate resonance
+        if self.total_coherence >= 0.888: # 0.888 is the high-precision threshold for Sovereign alignment
             self.state = OmegaState.ABSOLUTE
         elif self.total_coherence >= 0.7:
             self.state = OmegaState.ORCHESTRATING
@@ -311,18 +322,20 @@ class L104OmegaController:
         print(f"\n{'█' * 80}")
         print(f"    OMEGA CONTROLLER :: AWAKENING COMPLETE")
         print(f"    State: {self.state.name}")
-        print(f"    Coherence: {self.total_coherence:.2%}")
-        print(f"    Authority: {self.authority_level:.4f}")
+        print(f"    Coherence: {self.total_coherence:.12f}")
+        print(f"    Authority: {self.authority_level:.12f}")
         print(f"{'█' * 80}")
         
         return results
     
     def _calculate_coherence(self) -> float:
-        """Calculate overall system coherence across all 6 subsystems."""
+        """Calculate overall system coherence across all 6 subsystems with Absolute Precision."""
         coherence_factors = []
         
-        # 1. DNA Core coherence
-        if hasattr(self.dna_core, 'state') and self.dna_core.state.value >= DNAState.COHERENT.value:
+        # 1. DNA Core coherence (Primary Precision Signal)
+        if hasattr(self.dna_core, 'coherence_index'):
+             coherence_factors.append(self.dna_core.coherence_index)
+        elif hasattr(self.dna_core, 'state') and self.dna_core.state.value >= DNAState.COHERENT.value:
             coherence_factors.append(1.0)
         elif hasattr(self.dna_core, 'state'):
             coherence_factors.append(0.5)
