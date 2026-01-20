@@ -71,16 +71,6 @@ class GeminiBridge:
         self.model_name = self.MODELS[0]
         self.is_real = _genai_available
     
-    @property
-    def is_connected(self) -> bool:
-        """Check if Gemini API is connected."""
-        return _genai_available and _genai_client is not None
-    
-    @property
-    def current_model(self) -> str:
-        """Get current active model name."""
-        return self.model_name
-    
     def _rotate_model(self):
         """Rotate to next model on quota error."""
         self.model_index = (self.model_index + 1) % len(self.MODELS)
