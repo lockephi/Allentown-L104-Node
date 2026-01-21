@@ -415,6 +415,18 @@ MEMORY STATE: {self.hippocampus.measure_state()}
             "god_code": self.kernel.constants.GOD_CODE
         }
 
+    def get_status(self) -> Dict[str, Any]:
+        """Get brain status for integration hub compatibility."""
+        avg_unity = sum(i.unity_index for i in self.insights) / (len(self.insights) or 1)
+        return {
+            "total_memories": len(self.insights),
+            "unity_index": avg_unity,
+            "cortex_capacity": len(self.cortex.neural_net.vocabulary),
+            "memory_state": self.hippocampus.measure_state(),
+            "version": self.kernel.version,
+            "online": True
+        }
+
     def synthesize_cross_topic(self, topic_a: str, topic_b: str) -> Dict[str, Any]:
         """
         Generate new insight by combining knowledge from two topics.

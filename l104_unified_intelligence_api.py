@@ -1325,6 +1325,15 @@ async def hub_status():
     return hub.get_status()
 
 
+@router.post("/hub/initialize")
+async def hub_initialize():
+    """
+    Force initialize all hub modules.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.initialize_all()
+
+
 @router.post("/hub/embed-memories")
 async def hub_embed_memories():
     """

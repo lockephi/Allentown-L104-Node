@@ -405,6 +405,40 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
     # SYSTEM STATUS
     # ═══════════════════════════════════════════════════════════════════
     
+    def initialize_all(self) -> Dict:
+        """Force initialize all modules."""
+        results = {}
+        
+        # Initialize brain
+        try:
+            _ = self.brain
+            results["brain"] = "initialized" if self._brain else "failed"
+        except Exception as e:
+            results["brain"] = f"error: {e}"
+        
+        # Initialize semantic
+        try:
+            _ = self.semantic_engine
+            results["semantic"] = "initialized" if self._semantic_engine else "failed"
+        except Exception as e:
+            results["semantic"] = f"error: {e}"
+        
+        # Initialize quantum
+        try:
+            _ = self.quantum_engine
+            results["quantum"] = "initialized" if self._quantum_engine else "failed"
+        except Exception as e:
+            results["quantum"] = f"error: {e}"
+        
+        # Initialize claude
+        try:
+            _ = self.claude_bridge
+            results["claude"] = "initialized" if self._claude_bridge else "failed"
+        except Exception as e:
+            results["claude"] = f"error: {e}"
+        
+        return results
+    
     def get_status(self) -> Dict:
         """Get comprehensive system status."""
         status = {
@@ -457,10 +491,10 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
         
         if self._claude_bridge:
             try:
-                c_stats = self._claude_bridge.stats()
+                c_stats = self._claude_bridge.get_stats()
                 status["modules"]["claude"] = {
                     "online": True,
-                    "total_queries": c_stats.get('total_queries', 0),
+                    "total_queries": c_stats.get('total_requests', 0),
                     "api_available": c_stats.get('api_available', False)
                 }
             except:
@@ -479,6 +513,29 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
             "history": self._coherence_history[-20:],  # Last 20
             "god_code_alignment": 1.0 if self.metrics.average_coherence > 0.8 else self.metrics.average_coherence
         }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # CONVENIENCE ALIASES (for API compatibility)
+    # ═══════════════════════════════════════════════════════════════════
+
+    def semantic_memory_query(self, query: str, top_k: int = 5) -> Dict:
+        """Alias for semantic_memory_search with dict response."""
+        results = self.semantic_memory_search(query, k=top_k)
+        return {
+            "query": query,
+            "context": results,
+            "count": len(results)
+        }
+    
+    def cross_module_query(self, query: str) -> Dict:
+        """Alias for integrated_query returning dict."""
+        result = self.integrated_query(query)
+        return result.to_dict()
+
+    def unified_query(self, query: str, **kwargs) -> Dict:
+        """Convenience method for full system query."""
+        result = self.integrated_query(query, **kwargs)
+        return result.to_dict()
 
 
 # Singleton instance
