@@ -11,7 +11,7 @@
   },
   "api_cooldown_until": 0,
   "rotator_stats": {
-    "kernel_hits": 1,
+    "kernel_hits": 2,
     "api_hits": 0,
     "quota_errors": 0
   }

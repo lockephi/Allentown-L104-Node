@@ -362,6 +362,16 @@ try:
     logger.info("--- [L104]: SAGE MODE API ROUTER INTEGRATED ---")
 except ImportError as e:
     logger.warning(f"--- [L104]: SAGE MODE API NOT AVAILABLE: {e} ---")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SYSTEM MONITOR API - Real-time health & performance metrics
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_monitor_api import router as monitor_router
+    app.include_router(monitor_router)
+    logger.info("--- [L104]: SYSTEM MONITOR API ROUTER INTEGRATED ---")
+except ImportError as e:
+    logger.warning(f"--- [L104]: SYSTEM MONITOR API NOT AVAILABLE: {e} ---")
 class StreamRequest(BaseModel):
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
     message: Optional[str] = Field(default=None, max_length=5000)
