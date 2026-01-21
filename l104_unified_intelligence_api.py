@@ -50,6 +50,9 @@ from l104_quantum_coherence import QuantumCoherenceEngine
 # EVO_30 - Semantic Embedding Engine
 from l104_semantic_engine import SemanticEngine, get_semantic_engine
 
+# EVO_31 - Cognitive Integration Hub
+from l104_cognitive_hub import CognitiveIntegrationHub, get_cognitive_hub
+
 logger = logging.getLogger("BRAIN_API")
 
 # Create router
@@ -78,6 +81,9 @@ _quantum_engine: Optional[QuantumCoherenceEngine] = None
 
 # EVO_30 - Semantic Embedding Engine instance
 _semantic_engine: Optional[SemanticEngine] = None
+
+# EVO_31 - Cognitive Integration Hub instance
+_cognitive_hub: Optional[CognitiveIntegrationHub] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -170,6 +176,15 @@ def get_semantic_engine_instance() -> SemanticEngine:
         logger.info("[BRAIN_API] Initializing Semantic Embedding Engine...")
         _semantic_engine = get_semantic_engine()
     return _semantic_engine
+
+
+def get_cognitive_hub_instance() -> CognitiveIntegrationHub:
+    """Get or create the cognitive integration hub."""
+    global _cognitive_hub
+    if _cognitive_hub is None:
+        logger.info("[BRAIN_API] Initializing Cognitive Integration Hub...")
+        _cognitive_hub = get_cognitive_hub()
+    return _cognitive_hub
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1280,6 +1295,99 @@ async def semantic_clear():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_31 - COGNITIVE INTEGRATION HUB ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class HubIntegratedQueryRequest(BaseModel):
+    question: str
+    use_semantic: bool = True
+    use_quantum: bool = True
+    use_memory: bool = True
+    use_claude: bool = False
+
+
+class HubSemanticSearchRequest(BaseModel):
+    query: str
+    k: int = 5
+
+
+class HubQuantumSemanticRequest(BaseModel):
+    query: str
+
+
+@router.get("/hub/status")
+async def hub_status():
+    """
+    Get cognitive hub status across all modules.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.get_status()
+
+
+@router.post("/hub/embed-memories")
+async def hub_embed_memories():
+    """
+    Embed all brain memories into semantic space.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.embed_all_memories()
+
+
+@router.post("/hub/semantic-search")
+async def hub_semantic_search(request: HubSemanticSearchRequest):
+    """
+    Search memories using semantic similarity.
+    """
+    hub = get_cognitive_hub_instance()
+    results = hub.semantic_memory_search(request.query, request.k)
+    return {"query": request.query, "results": results}
+
+
+@router.post("/hub/quantum-semantic")
+async def hub_quantum_semantic(request: HubQuantumSemanticRequest):
+    """
+    Execute quantum-enhanced semantic query.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.quantum_semantic_query(request.query)
+
+
+@router.post("/hub/integrated-query")
+async def hub_integrated_query(request: HubIntegratedQueryRequest):
+    """
+    Execute integrated query across all cognitive systems.
+    """
+    hub = get_cognitive_hub_instance()
+    response = hub.integrated_query(
+        question=request.question,
+        use_semantic=request.use_semantic,
+        use_quantum=request.use_quantum,
+        use_memory=request.use_memory,
+        use_claude=request.use_claude
+    )
+    return response.to_dict()
+
+
+@router.get("/hub/coherence")
+async def hub_coherence():
+    """
+    Get coherence tracking report.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.coherence_report()
+
+
+@router.get("/hub/metrics")
+async def hub_metrics():
+    """
+    Get cognitive hub metrics.
+    """
+    hub = get_cognitive_hub_instance()
+    return hub.metrics.to_dict()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1287,8 +1395,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="30.0.0",
-    description="REST API for the Unified Intelligence System - EVO_30 Semantic Embedding Edition"
+    version="31.0.0",
+    description="REST API for the Unified Intelligence System - EVO_31 Cognitive Integration Hub Edition"
 )
 app.include_router(router)
 
