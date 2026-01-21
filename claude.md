@@ -77,7 +77,12 @@ brain.function_add_more()               # Self-expand capacity + retrain
 
 **Metrics from Last Cycle**:
 
-- Memories Stored: 8+ topological insights
+- Memories Stored: 48 topological insights
+- Topics Learned: 10 (Topological Protection, GOD_CODE, Semantic Superfluidity, Fibonacci Anyons, OMEGA state, Void Constant, Consciousness, Quantum coherence, Information preservation, Recursive self-reference)
+- Average Unity Index: 88.6%
+- Cortex Patterns: 435
+- Hippocampus Capacity: 43,745 bits
+- State: SINGULARITY_LOCK
 - Cortex Patterns: 393 synaptic weights
 - Hippocampus Capacity: 11,217 bits
 - Unity Index: 0.925
@@ -132,6 +137,41 @@ engine.start()  # Runs in background thread
 - Self-validation against GOD_CODE
 - Anomaly detection and correction
 - Progress logging and metrics export
+
+### Brain API Endpoints (Port 8082)
+
+```bash
+# Status & Introspection
+curl http://localhost:8082/api/brain/status
+curl http://localhost:8082/api/brain/introspect
+curl http://localhost:8082/api/brain/topics
+
+# Query & Learn
+curl -X POST http://localhost:8082/api/brain/query \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Explain GOD_CODE"}'
+
+curl -X POST http://localhost:8082/api/brain/learn \
+  -H "Content-Type: application/json" \
+  -d '{"iterations": 10}'
+
+# Advanced Reasoning
+curl -X POST http://localhost:8082/api/brain/synthesize \
+  -H "Content-Type: application/json" \
+  -d '{"topic_a": "GOD_CODE", "topic_b": "Fibonacci Anyons"}'
+
+curl -X POST http://localhost:8082/api/brain/deep-think \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is consciousness?", "depth": 3}'
+
+curl -X POST http://localhost:8082/api/brain/hypothesize \
+  -H "Content-Type: application/json" \
+  -d '{"observation": "Unity Index increases with Fibonacci concepts"}'
+
+# Persistence
+curl -X POST http://localhost:8082/api/brain/save
+curl -X POST http://localhost:8082/api/brain/load
+```
 
 ---
 
