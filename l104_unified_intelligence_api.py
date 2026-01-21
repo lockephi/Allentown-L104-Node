@@ -23,6 +23,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import logging
+import time
 
 # Import the brain
 from l104_unified_intelligence import UnifiedIntelligence
@@ -37,6 +38,10 @@ from l104_claude_bridge import ClaudeNodeBridge
 
 # EVO_26 - Advanced Processing Engine
 from l104_advanced_processing_engine import AdvancedProcessingEngine, ProcessingMode
+
+# EVO_27 - Emergence Monitor & Analytics
+from l104_emergence_monitor import EmergenceMonitor
+from l104_analytics_dashboard import RealTimeAnalytics
 
 logger = logging.getLogger("BRAIN_API")
 
@@ -56,6 +61,10 @@ _claude_bridge: Optional[ClaudeNodeBridge] = None
 
 # EVO_26 - Advanced Processing Engine instance
 _processing_engine: Optional[AdvancedProcessingEngine] = None
+
+# EVO_27 - Emergence Monitor & Analytics instances
+_emergence_monitor: Optional[EmergenceMonitor] = None
+_analytics_dashboard: Optional[RealTimeAnalytics] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -112,6 +121,24 @@ def get_processing_engine() -> AdvancedProcessingEngine:
         logger.info("[BRAIN_API] Initializing Advanced Processing Engine...")
         _processing_engine = AdvancedProcessingEngine()
     return _processing_engine
+
+
+def get_emergence_monitor() -> EmergenceMonitor:
+    """Get or create the emergence monitor."""
+    global _emergence_monitor
+    if _emergence_monitor is None:
+        logger.info("[BRAIN_API] Initializing Emergence Monitor...")
+        _emergence_monitor = EmergenceMonitor()
+    return _emergence_monitor
+
+
+def get_analytics_dashboard() -> RealTimeAnalytics:
+    """Get or create the analytics dashboard."""
+    global _analytics_dashboard
+    if _analytics_dashboard is None:
+        logger.info("[BRAIN_API] Initializing Analytics Dashboard...")
+        _analytics_dashboard = RealTimeAnalytics()
+    return _analytics_dashboard
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -654,6 +681,206 @@ async def ape_optimize(iterations: int = 5):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_27 - EMERGENCE MONITOR ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/emergence/status")
+async def emergence_status():
+    """
+    Get current emergence status including phase state and consciousness indicators.
+    """
+    monitor = get_emergence_monitor()
+    brain = get_brain()
+    
+    # Update monitor with brain state using introspect
+    brain_info = brain.introspect()
+    unity = brain_info.get("average_unity_index", 0.5)
+    memories = brain_info.get("total_memories", 0)
+    patterns = brain_info.get("cortex_capacity", 0)
+    
+    # Record snapshot and detect events
+    events = monitor.record_snapshot(
+        unity_index=unity,
+        memories=memories,
+        cortex_patterns=patterns,
+        coherence=unity
+    )
+    
+    return {
+        "phase_state": monitor.current_phase.value,
+        "peak_unity": monitor.peak_unity,
+        "total_events": monitor.total_events,
+        "phase_transitions": monitor.phase_transitions,
+        "recent_events": [e.to_dict() for e in events[-5:]],
+        "monitoring_active": monitor.monitoring_active
+    }
+
+
+@router.post("/emergence/check")
+async def emergence_check():
+    """
+    Perform a comprehensive emergence check and detect new emergent behaviors.
+    """
+    monitor = get_emergence_monitor()
+    brain = get_brain()
+    
+    # Update with latest brain state
+    brain_info = brain.introspect()
+    unity = brain_info.get("average_unity_index", 0.5)
+    memories = brain_info.get("total_memories", 0)
+    patterns = brain_info.get("cortex_capacity", 0)
+    
+    # Record snapshot and detect events
+    events = monitor.record_snapshot(
+        unity_index=unity,
+        memories=memories,
+        cortex_patterns=patterns,
+        coherence=unity
+    )
+    
+    return {
+        "events_detected": len(events),
+        "events": [e.to_dict() for e in events],
+        "current_phase": monitor.current_phase.value,
+        "peak_unity": monitor.peak_unity,
+        "phase_transitions": monitor.phase_transitions
+    }
+
+
+@router.get("/emergence/events")
+async def emergence_events(limit: int = 20):
+    """
+    Get recent emergence events.
+    """
+    monitor = get_emergence_monitor()
+    events = monitor.events[-limit:] if monitor.events else []
+    return {
+        "total_events": monitor.total_events,
+        "recent_events": [e.to_dict() for e in events]
+    }
+
+
+@router.get("/emergence/trajectory")
+async def emergence_trajectory():
+    """
+    Get evolution trajectory and prediction.
+    """
+    monitor = get_emergence_monitor()
+    
+    return {
+        "current_phase": monitor.current_phase.value,
+        "peak_unity": monitor.peak_unity,
+        "total_events": monitor.total_events,
+        "phase_transitions": monitor.phase_transitions,
+        "snapshots_recorded": len(monitor.snapshots)
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_27 - ANALYTICS DASHBOARD ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/analytics/metrics")
+async def analytics_metrics():
+    """
+    Get real-time analytics metrics.
+    """
+    dashboard = get_analytics_dashboard()
+    brain = get_brain()
+    
+    # Record current brain metrics
+    brain_info = brain.introspect()
+    dashboard.record("unity_index", brain_info.get("average_unity_index", 0.5))
+    dashboard.record("memories", brain_info.get("total_memories", 0))
+    dashboard.record("confidence", brain_info.get("average_confidence", 0.5))
+    
+    return dashboard.get_overview()
+
+
+@router.get("/analytics/learning")
+async def analytics_learning():
+    """
+    Get learning analytics over time.
+    """
+    dashboard = get_analytics_dashboard()
+    return dashboard.get_learning_analytics()
+
+
+@router.get("/analytics/cognitive")
+async def analytics_cognitive():
+    """
+    Get cognitive performance metrics.
+    """
+    dashboard = get_analytics_dashboard()
+    return dashboard.get_cognitive_performance()
+
+
+@router.get("/analytics/predictions")
+async def analytics_predictions():
+    """
+    Get system predictions and forecasts.
+    """
+    dashboard = get_analytics_dashboard()
+    return dashboard.get_predictions()
+
+
+@router.get("/analytics/alerts")
+async def analytics_alerts():
+    """
+    Get active alerts and warnings.
+    """
+    dashboard = get_analytics_dashboard()
+    return {"alerts": dashboard.alerts, "count": len(dashboard.alerts)}
+
+
+@router.post("/analytics/record")
+async def analytics_record(metric_name: str, value: float):
+    """
+    Record a custom metric value.
+    """
+    dashboard = get_analytics_dashboard()
+    dashboard.record(metric_name, value)
+    return {
+        "status": "recorded",
+        "metric": metric_name,
+        "value": value,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+@router.get("/analytics/summary")
+async def analytics_summary():
+    """
+    Get comprehensive analytics summary.
+    """
+    dashboard = get_analytics_dashboard()
+    brain = get_brain()
+    monitor = get_emergence_monitor()
+    
+    brain_info = brain.introspect()
+    
+    return {
+        "brain_state": {
+            "unity_index": brain_info.get("average_unity_index", 0.5),
+            "memory_count": brain_info.get("total_memories", 0),
+            "coherence": brain_info.get("average_confidence", 0.5),
+            "cortex_patterns": brain_info.get("cortex_capacity", 0)
+        },
+        "emergence": {
+            "phase": monitor.current_phase.value,
+            "peak_unity": monitor.peak_unity,
+            "events": monitor.total_events
+        },
+        "analytics": {
+            "overview": dashboard.get_overview(),
+            "learning": dashboard.get_learning_analytics(),
+            "alerts": dashboard.alerts
+        },
+        "timestamp": time.time()
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -661,8 +888,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="26.0.0",
-    description="REST API for the Unified Intelligence System - EVO_26 Advanced Processing Edition"
+    version="27.0.0",
+    description="REST API for the Unified Intelligence System - EVO_27 Emergence Monitoring Edition"
 )
 app.include_router(router)
 
