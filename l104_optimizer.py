@@ -148,6 +148,7 @@ class BatchProcessor:
         self._last_flush = time.time()
         self._processor: Optional[Callable] = None
         self._running = False
+        self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
         
         # Metrics
@@ -213,22 +214,25 @@ class BatchProcessor:
     def start(self):
         """Start background batch processing."""
         self._running = True
+        self._stop_event.clear()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
     
     def stop(self):
         """Stop background processing."""
         self._running = False
+        self._stop_event.set()
         if self._thread:
-            self._thread.join(timeout=5)
+            self._thread.join(timeout=1)
         self.flush()  # Final flush
     
     def _run_loop(self):
         """Background processing loop."""
-        while self._running:
+        while self._running and not self._stop_event.is_set():
             if self._should_flush():
                 self.flush()
-            time.sleep(0.1)
+            if self._stop_event.wait(0.1):
+                break
 
 
 # =============================================================================
@@ -250,6 +254,7 @@ class MemoryOptimizer:
         self.check_interval = check_interval
         
         self._running = False
+        self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._gc_threshold_tuned = False
         
@@ -326,6 +331,7 @@ class MemoryOptimizer:
     def start(self):
         """Start background memory monitoring."""
         self._running = True
+        self._stop_event.clear()
         self.tune_gc()
         self._thread = threading.Thread(target=self._monitor_loop, daemon=True)
         self._thread.start()
@@ -333,14 +339,17 @@ class MemoryOptimizer:
     def stop(self):
         """Stop background monitoring."""
         self._running = False
+        self._stop_event.set()
         if self._thread:
-            self._thread.join(timeout=5)
+            self._thread.join(timeout=1)
     
     def _monitor_loop(self):
         """Background monitoring loop."""
-        while self._running:
+        while self._running and not self._stop_event.is_set():
             self.optimize()
-            time.sleep(self.check_interval)
+            # Wait for interval but break early if stop event set
+            if self._stop_event.wait(self.check_interval):
+                break
 
 
 # =============================================================================
@@ -461,6 +470,7 @@ class AsyncScheduler:
         self._tasks: queue.PriorityQueue = queue.PriorityQueue()
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
         self._running = False
+        self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
         
         # Metrics
@@ -519,21 +529,24 @@ class AsyncScheduler:
     def start(self):
         """Start scheduler."""
         self._running = True
+        self._stop_event.clear()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
     
     def stop(self):
         """Stop scheduler."""
         self._running = False
+        self._stop_event.set()
         if self._thread:
-            self._thread.join(timeout=5)
+            self._thread.join(timeout=1)
         self._executor.shutdown(wait=False)
-    
+
     def _run_loop(self):
         """Main scheduler loop."""
-        while self._running:
+        while self._running and not self._stop_event.is_set():
             try:
-                priority, scheduled, task = self._tasks.get(timeout=0.1)
+                # Use a shorter timeout and check flags frequently
+                priority, scheduled, task = self._tasks.get(timeout=0.2)
                 
                 # Check if ready to execute
                 if time.time() >= task.execute_after:
@@ -541,12 +554,14 @@ class AsyncScheduler:
                 else:
                     # Put back if not ready
                     self._tasks.put((priority, scheduled, task))
-                    time.sleep(0.05)
+                    if self._stop_event.wait(0.05):
+                        break
                     
             except queue.Empty:
                 continue
             except Exception as e:
-                logger.error(f"Scheduler error: {e}")
+                if self._running:
+                    logger.error(f"Scheduler error: {e}")
 
 
 # =============================================================================

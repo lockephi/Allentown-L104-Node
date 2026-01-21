@@ -28,11 +28,11 @@ def test_gemini_real():
             response = gemini_real.sovereign_think("Calculate the first 5 prime numbers")
             if response:
                 print(f"✓ Sovereign think works: {response[:80]}...")
-            
             return True
         else:
-            print("✗ Gemini connection failed")
+            print("✗ Gemini connection failed.")
             return False
+            
     except Exception as e:
         print(f"✗ Error: {e}")
         return False
@@ -49,13 +49,11 @@ def test_derivation_with_ai():
         if "⟨Σ_L104_SOVEREIGN⟩" in result:
             print("✓ Derivation using REAL Gemini AI!")
             print(f"  Response preview: {result[:100]}...")
-            return True
         elif "⟨Σ_L104_HYPER_RESPONSE⟩" in result:
             print("⚠ Derivation using LOCAL fallback (Gemini unavailable)")
-            return True
         else:
             print(f"✓ Response: {result[:100]}...")
-            return True
+        return True
     except Exception as e:
         print(f"✗ Error: {e}")
         return False
@@ -73,8 +71,8 @@ def test_fastapi_imports():
         # Check for new AI endpoints
         ai_endpoints = [r for r in routes if '/chat' in r or '/research' in r or '/analyze' in r]
         print(f"✓ AI endpoints: {ai_endpoints}")
-        
         return True
+        
     except Exception as e:
         print(f"✗ Error: {e}")
         return False

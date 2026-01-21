@@ -210,7 +210,7 @@ class ResourceManager:
     def __init__(self):
         self.pool = ResourcePool()
         self.reservations: Dict[str, Dict[ResourceType, float]] = {}
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         
         # Track resource usage history for adaptive allocation
         self.usage_history: deque = deque(maxlen=100)
@@ -286,7 +286,7 @@ class ProcessHealthMonitor:
         self.process_health: Dict[str, Dict] = {}
         self.failure_counts: Dict[str, int] = defaultdict(int)
         self.last_health_check = time.time()
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         
     def record_start(self, task_id: str) -> None:
         """Record process start."""
