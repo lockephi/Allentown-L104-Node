@@ -372,6 +372,17 @@ try:
     logger.info("--- [L104]: SYSTEM MONITOR API ROUTER INTEGRATED ---")
 except ImportError as e:
     logger.warning(f"--- [L104]: SYSTEM MONITOR API NOT AVAILABLE: {e} ---")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIFIED INTELLIGENCE API - Cognitive brain interface (EVO_24)
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_unified_intelligence_api import router as brain_router
+    app.include_router(brain_router)
+    logger.info("--- [L104]: UNIFIED INTELLIGENCE API ROUTER INTEGRATED ---")
+except ImportError as e:
+    logger.warning(f"--- [L104]: UNIFIED INTELLIGENCE API NOT AVAILABLE: {e} ---")
+
 class StreamRequest(BaseModel):
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
     message: Optional[str] = Field(default=None, max_length=5000)

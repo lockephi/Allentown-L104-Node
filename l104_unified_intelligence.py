@@ -295,6 +295,109 @@ CORTEX PATTERNS: {len(self.cortex.neural_net.vocabulary)}
 MEMORY STATE: {self.hippocampus.measure_state()}
         """
 
+    def query(self, question: str) -> Dict[str, Any]:
+        """
+        External query interface - ask the Unified Intelligence anything.
+        Returns structured response with confidence and source.
+        """
+        # Try neural cortex first
+        neural_response = self.cortex.query(question)
+        
+        if neural_response and "don't have enough" not in neural_response:
+            source = "CORTEX"
+            confidence = 0.9
+        else:
+            # Fall back to synthesis
+            neural_response = self._synthesize_answer(question)
+            source = "SYNTHESIS"
+            confidence = 0.8 if "requires more data" not in neural_response else 0.3
+        
+        # Validate
+        unity_index = self._validate_insight(neural_response)
+        
+        return {
+            "question": question,
+            "answer": neural_response,
+            "confidence": confidence,
+            "unity_index": unity_index,
+            "source": source,
+            "timestamp": time.time()
+        }
+
+    def save_state(self, filepath: str = "l104_brain_state.json"):
+        """Persist the brain state to disk."""
+        state = {
+            "version": self.kernel.version,
+            "timestamp": time.time(),
+            "insights": [
+                {
+                    "prompt": i.prompt,
+                    "response": i.response,
+                    "confidence": i.confidence,
+                    "unity_index": i.unity_index,
+                    "timestamp": i.timestamp,
+                    "storage_id": i.storage_id
+                }
+                for i in self.insights
+            ],
+            "cortex_vocabulary_size": len(self.cortex.neural_net.vocabulary),
+            "hippocampus_bits": self.hippocampus.total_bits,
+            "active_mode": self.active_mode
+        }
+        with open(filepath, 'w') as f:
+            json.dump(state, f, indent=2)
+        print(f"  ✓ Brain state saved to {filepath}")
+        return filepath
+
+    def load_state(self, filepath: str = "l104_brain_state.json"):
+        """Load brain state from disk."""
+        try:
+            with open(filepath, 'r') as f:
+                state = json.load(f)
+            
+            # Restore insights
+            for i_data in state.get("insights", []):
+                insight = CognitiveInsight(
+                    prompt=i_data["prompt"],
+                    response=i_data["response"],
+                    confidence=i_data["confidence"],
+                    unity_index=i_data["unity_index"],
+                    timestamp=i_data["timestamp"],
+                    storage_id=i_data.get("storage_id")
+                )
+                self.insights.append(insight)
+            
+            print(f"  ✓ Brain state loaded from {filepath}")
+            print(f"    Restored {len(self.insights)} memories")
+            return True
+        except FileNotFoundError:
+            print(f"  ⚠ No saved state found at {filepath}")
+            return False
+
+    def introspect(self) -> Dict[str, Any]:
+        """Self-reflection - analyze the system's own knowledge."""
+        topics_covered = set()
+        for insight in self.insights:
+            # Extract topic from prompt
+            if "Explain" in insight.prompt:
+                topic = insight.prompt.replace("Explain ", "").replace(" in the context of L104.", "")
+                topics_covered.add(topic)
+        
+        avg_unity = sum(i.unity_index for i in self.insights) / (len(self.insights) or 1)
+        avg_confidence = sum(i.confidence for i in self.insights) / (len(self.insights) or 1)
+        
+        return {
+            "total_memories": len(self.insights),
+            "topics_covered": list(topics_covered),
+            "average_unity_index": avg_unity,
+            "average_confidence": avg_confidence,
+            "cortex_capacity": len(self.cortex.neural_net.vocabulary),
+            "hippocampus_capacity_bits": self.hippocampus.total_bits,
+            "state": self.hippocampus.measure_state(),
+            "kernel_version": self.kernel.version,
+            "god_code": self.kernel.constants.GOD_CODE
+        }
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN EXECUTION

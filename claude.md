@@ -76,6 +76,7 @@ brain.function_add_more()               # Self-expand capacity + retrain
 ```
 
 **Metrics from Last Cycle**:
+
 - Memories Stored: 3 (224 bytes topological)
 - Cortex Patterns: 373 synaptic weights
 - Hippocampus Capacity: 2817 bits
