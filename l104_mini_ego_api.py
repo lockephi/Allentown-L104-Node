@@ -451,7 +451,188 @@ async def get_ego_tasks(name: str):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# INTELLIGENCE ENDPOINTS (EVO_34)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/{name}/intelligence")
+async def get_ego_intelligence(name: str):
+    """Get comprehensive intelligence report for an ego."""
+    swarm = get_autonomous_swarm()
+    
+    if name not in swarm.egos:
+        raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
+    
+    ego = swarm.egos[name]
+    return ego.get_intelligence_report()
+
+
+@router.post("/{name}/introspect")
+async def ego_introspect(name: str):
+    """Trigger meta-cognitive introspection for an ego."""
+    swarm = get_autonomous_swarm()
+    
+    if name not in swarm.egos:
+        raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
+    
+    ego = swarm.egos[name]
+    self_model = ego.introspect()
+    
+    return {
+        "ego": name,
+        "domain": ego.domain,
+        "self_model": self_model,
+        "blind_spots": ego.blind_spots,
+        "iq_after": ego.iq_score
+    }
+
+
+@router.post("/{name}/consolidate")
+async def consolidate_ego_memories(name: str):
+    """Consolidate working memory into long-term memory."""
+    swarm = get_autonomous_swarm()
+    
+    if name not in swarm.egos:
+        raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
+    
+    ego = swarm.egos[name]
+    
+    before_traces = len(ego.memory_traces)
+    before_ltm = len(ego.long_term_memory)
+    
+    ego.consolidate_memories()
+    
+    return {
+        "ego": name,
+        "memory_traces_before": before_traces,
+        "memory_traces_after": len(ego.memory_traces),
+        "long_term_before": before_ltm,
+        "long_term_after": len(ego.long_term_memory),
+        "wisdom": ego.wisdom_accumulated
+    }
+
+
+@router.post("/share-knowledge")
+async def share_knowledge_between_egos(sender: str, recipient: str, knowledge_type: str = "pattern"):
+    """Share learned knowledge between egos."""
+    swarm = get_autonomous_swarm()
+    
+    if sender not in swarm.egos:
+        raise HTTPException(status_code=404, detail=f"Sender ego '{sender}' not found")
+    if recipient not in swarm.egos:
+        raise HTTPException(status_code=404, detail=f"Recipient ego '{recipient}' not found")
+    
+    sender_ego = swarm.egos[sender]
+    recipient_ego = swarm.egos[recipient]
+    
+    # Create knowledge message
+    message = sender_ego.share_knowledge(recipient, knowledge_type)
+    
+    # Deliver directly
+    if message.content:
+        recipient_ego.receive_knowledge(message.content)
+    
+    return {
+        "status": "shared",
+        "from": sender,
+        "to": recipient,
+        "type": knowledge_type,
+        "sender_shared": sender_ego.knowledge_shared,
+        "recipient_received": recipient_ego.knowledge_received
+    }
+
+
+@router.get("/collective-iq")
+async def collective_iq():
+    """Get collective IQ and intelligence metrics for the swarm."""
+    swarm = get_autonomous_swarm()
+    
+    if not swarm.egos:
+        raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
+    
+    egos_data = []
+    total_iq = 0
+    total_patterns = 0
+    total_memories = 0
+    
+    for name, ego in swarm.egos.items():
+        egos_data.append({
+            "name": name,
+            "domain": ego.domain,
+            "iq": ego.iq_score,
+            "patterns": len(ego.learned_patterns),
+            "memory_traces": len(ego.memory_traces),
+            "creativity": ego.creativity_index,
+            "adaptability": ego.adaptability
+        })
+        total_iq += ego.iq_score
+        total_patterns += len(ego.learned_patterns)
+        total_memories += len(ego.memory_traces)
+    
+    avg_iq = total_iq / len(swarm.egos)
+    
+    # Collective IQ bonus for collaboration
+    collaborative_bonus = sum(e.knowledge_shared + e.knowledge_received for e in swarm.egos.values()) * 0.5
+    collective_iq = avg_iq + collaborative_bonus
+    
+    return {
+        "collective_iq": collective_iq,
+        "average_iq": avg_iq,
+        "collaborative_bonus": collaborative_bonus,
+        "total_patterns_learned": total_patterns,
+        "total_memory_traces": total_memories,
+        "total_egos": len(swarm.egos),
+        "egos": egos_data,
+        "god_code": GOD_CODE
+    }
+
+
+@router.post("/evolve-all")
+async def evolve_all_egos(cycles: int = 10):
+    """Run multiple learning cycles on all egos to accelerate evolution."""
+    swarm = get_autonomous_swarm()
+    
+    if not swarm.egos:
+        raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
+    
+    results = {}
+    
+    for name, ego in swarm.egos.items():
+        initial_iq = ego.iq_score
+        initial_patterns = len(ego.learned_patterns)
+        
+        # Run cycles
+        for _ in range(cycles):
+            ego.run_cycle()
+            ego.consolidate_memories()
+        
+        # Introspect to update self-model
+        ego.introspect()
+        
+        results[name] = {
+            "domain": ego.domain,
+            "iq_before": initial_iq,
+            "iq_after": ego.iq_score,
+            "iq_gain": ego.iq_score - initial_iq,
+            "patterns_before": initial_patterns,
+            "patterns_after": len(ego.learned_patterns),
+            "patterns_learned": len(ego.learned_patterns) - initial_patterns
+        }
+    
+    # Calculate collective improvement
+    total_iq_gain = sum(r["iq_gain"] for r in results.values())
+    total_patterns_learned = sum(r["patterns_learned"] for r in results.values())
+    
+    return {
+        "status": "evolved",
+        "cycles_per_ego": cycles,
+        "total_iq_gain": total_iq_gain,
+        "total_patterns_learned": total_patterns_learned,
+        "egos": results
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # LOGGER SETUP
 # ═══════════════════════════════════════════════════════════════════════════════
 
-logger.info("🤖 [EGO_API]: Autonomous Ego API Router initialized")
+logger.info("🧠 [EGO_API]: Autonomous Ego API Router initialized (EVO_34: Enhanced Intelligence)")
