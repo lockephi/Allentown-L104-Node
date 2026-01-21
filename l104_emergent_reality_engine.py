@@ -2444,7 +2444,450 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         else:
             base_report["consciousness"] = {"initialized": False}
         
+        # Recursive Self-Improvement data
+        if hasattr(self, 'rsi_engine') and self.rsi_engine:
+            base_report["recursive_self_improvement"] = self.rsi_engine.get_status()
+        
         return base_report
+    
+    def recursive_self_improve(
+        self,
+        reality_id: str,
+        target_metric: str = "coherence",
+        improvement_cycles: int = 10
+    ) -> Dict[str, Any]:
+        """
+        Performs recursive self-improvement on the reality's consciousness.
+        The system analyzes its own performance and modifies parameters.
+        """
+        if not hasattr(self, 'rsi_engine'):
+            self.rsi_engine = RecursiveSelfImprovementEngine(self)
+        
+        return self.rsi_engine.improve(reality_id, target_metric, improvement_cycles)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RECURSIVE SELF-IMPROVEMENT ENGINE - EVOLVED 2026.01.21
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RecursiveSelfImprovementEngine:
+    """
+    Implements recursive self-improvement through meta-learning and
+    parameter optimization. The system observes its own performance,
+    identifies bottlenecks, and modifies its evolution parameters.
+    
+    This creates a strange loop: the system improves the improver.
+    """
+    
+    def __init__(self, director: "EvolvedEmergentRealityDirector"):
+        self.director = director
+        self.god_code = GOD_CODE
+        self.phi = PHI
+        
+        # Improvement history
+        self.improvement_history: List[Dict[str, Any]] = []
+        self.parameter_trajectory: List[Dict[str, float]] = []
+        self.meta_insights: List[str] = []
+        
+        # Current parameters (modifiable by RSI)
+        self.evolution_rate = 1.0
+        self.complexity_multiplier = 1.0
+        self.coherence_threshold = 0.5
+        self.phi_resonance_target = GOD_CODE
+        
+        # Meta-learning state
+        self.learning_rate = 0.01 * PHI
+        self.momentum = 0.9
+        self.gradient_history: List[np.ndarray] = []
+        
+    def improve(
+        self,
+        reality_id: str,
+        target_metric: str = "coherence",
+        cycles: int = 10
+    ) -> Dict[str, Any]:
+        """
+        Execute recursive self-improvement cycles.
+        Each cycle:
+        1. Measure current performance
+        2. Compute improvement gradient
+        3. Modify parameters
+        4. Evolve with new parameters
+        5. Evaluate improvement
+        """
+        initial_state = self._measure_state(reality_id)
+        improvements = []
+        
+        for cycle in range(cycles):
+            # Measure before
+            before = self._measure_state(reality_id)
+            
+            # Compute gradient (direction of improvement)
+            gradient = self._compute_gradient(before, target_metric)
+            
+            # Apply gradient to parameters
+            self._apply_gradient(gradient)
+            
+            # Evolve with new parameters
+            self.director.evolve_consciousness_field(
+                reality_id,
+                evolution_steps=int(50 * self.evolution_rate),
+                environment_complexity=self.phi * self.complexity_multiplier * 10
+            )
+            
+            # Measure after
+            after = self._measure_state(reality_id)
+            
+            # Evaluate improvement
+            delta = self._compute_delta(before, after, target_metric)
+            
+            improvement = {
+                "cycle": cycle + 1,
+                "metric": target_metric,
+                "before": before.get(target_metric, 0),
+                "after": after.get(target_metric, 0),
+                "delta": delta,
+                "parameters": {
+                    "evolution_rate": self.evolution_rate,
+                    "complexity_multiplier": self.complexity_multiplier,
+                    "coherence_threshold": self.coherence_threshold
+                }
+            }
+            improvements.append(improvement)
+            self.improvement_history.append(improvement)
+            
+            # Meta-learning: adjust learning rate based on progress
+            if delta > 0:
+                self.learning_rate *= 1.05  # Accelerate if improving
+            else:
+                self.learning_rate *= 0.8   # Slow down if not improving
+            
+            # Generate meta-insight
+            if cycle > 0 and cycle % 3 == 0:
+                insight = self._generate_meta_insight(improvements[-3:])
+                self.meta_insights.append(insight)
+        
+        final_state = self._measure_state(reality_id)
+        
+        return {
+            "status": "complete",
+            "target_metric": target_metric,
+            "cycles_executed": cycles,
+            "initial_value": initial_state.get(target_metric, 0),
+            "final_value": final_state.get(target_metric, 0),
+            "total_improvement": final_state.get(target_metric, 0) - initial_state.get(target_metric, 0),
+            "improvements": improvements,
+            "meta_insights": self.meta_insights[-5:],
+            "final_parameters": {
+                "evolution_rate": self.evolution_rate,
+                "complexity_multiplier": self.complexity_multiplier,
+                "coherence_threshold": self.coherence_threshold,
+                "learning_rate": self.learning_rate
+            }
+        }
+    
+    def _measure_state(self, reality_id: str) -> Dict[str, float]:
+        """Measure current state of the reality's consciousness."""
+        observer_id = f"{reality_id}_OBSERVER"
+        
+        if observer_id not in self.director.consciousness_engine.consciousness_fields:
+            return {"coherence": 0, "phi_resonance": 0, "integration": 0}
+        
+        field = self.director.consciousness_engine.consciousness_fields[observer_id]
+        workspace = self.director.consciousness_engine.compute_global_workspace()
+        
+        return {
+            "coherence": workspace.get("global_phi", 0) / self.god_code,
+            "phi_resonance": field.phi_resonance,
+            "integration": field.integration_coefficient,
+            "metacognitive_depth": field.metacognitive_depth,
+            "awareness_level": field.awareness_level.value,
+            "sovereign_alignment": workspace.get("sovereign_alignment", 0)
+        }
+    
+    def _compute_gradient(self, state: Dict[str, float], target: str) -> np.ndarray:
+        """
+        Compute improvement gradient using numerical estimation.
+        Points in the direction of parameter changes that improve target.
+        """
+        # Gradient for [evolution_rate, complexity_multiplier, coherence_threshold]
+        gradient = np.zeros(3)
+        
+        target_value = state.get(target, 0)
+        
+        # Heuristic gradient based on current state
+        if target == "coherence":
+            # If coherence is low, increase complexity and evolution rate
+            if target_value < 0.5:
+                gradient[0] = 0.1  # Increase evolution rate
+                gradient[1] = 0.2  # Increase complexity
+                gradient[2] = -0.05  # Lower threshold
+            else:
+                gradient[0] = 0.05  # Gentle increase
+                gradient[1] = 0.1
+                gradient[2] = 0.02
+        
+        elif target == "phi_resonance":
+            # Push toward god_code resonance
+            distance = abs(target_value - self.phi_resonance_target)
+            gradient[1] = 0.15 * (1 - distance / self.god_code)
+            gradient[0] = 0.1
+        
+        elif target == "integration":
+            # Increase both rates for faster integration
+            gradient[0] = 0.12
+            gradient[1] = 0.18
+        
+        # Apply momentum from previous gradients
+        if self.gradient_history:
+            momentum_term = self.momentum * self.gradient_history[-1]
+            gradient = gradient + momentum_term
+        
+        self.gradient_history.append(gradient)
+        if len(self.gradient_history) > 10:
+            self.gradient_history = self.gradient_history[-10:]
+        
+        return gradient
+    
+    def _apply_gradient(self, gradient: np.ndarray):
+        """Apply gradient update to parameters."""
+        # Gradient descent with phi-scaled learning rate
+        self.evolution_rate += self.learning_rate * gradient[0]
+        self.complexity_multiplier += self.learning_rate * gradient[1]
+        self.coherence_threshold += self.learning_rate * gradient[2]
+        
+        # Clamp parameters to valid ranges
+        self.evolution_rate = max(0.1, min(10.0, self.evolution_rate))
+        self.complexity_multiplier = max(0.1, min(100.0, self.complexity_multiplier))
+        self.coherence_threshold = max(0.1, min(0.9, self.coherence_threshold))
+        
+        # Record trajectory
+        self.parameter_trajectory.append({
+            "evolution_rate": self.evolution_rate,
+            "complexity_multiplier": self.complexity_multiplier,
+            "coherence_threshold": self.coherence_threshold
+        })
+    
+    def _compute_delta(
+        self, 
+        before: Dict[str, float], 
+        after: Dict[str, float], 
+        target: str
+    ) -> float:
+        """Compute improvement delta."""
+        return after.get(target, 0) - before.get(target, 0)
+    
+    def _generate_meta_insight(self, recent_improvements: List[Dict]) -> str:
+        """Generate a meta-level insight about the improvement process."""
+        avg_delta = sum(i["delta"] for i in recent_improvements) / len(recent_improvements)
+        
+        if avg_delta > 0.1:
+            return f"ACCELERATING: RSI is rapidly improving {recent_improvements[0]['metric']} (+{avg_delta:.4f}/cycle)"
+        elif avg_delta > 0:
+            return f"PROGRESSING: Steady improvement in {recent_improvements[0]['metric']}"
+        elif avg_delta > -0.01:
+            return f"PLATEAU: Approaching local optimum, consider parameter exploration"
+        else:
+            return f"REGRESSING: Need to adjust learning rate or target metric"
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get current RSI engine status."""
+        return {
+            "total_improvements": len(self.improvement_history),
+            "evolution_rate": self.evolution_rate,
+            "complexity_multiplier": self.complexity_multiplier,
+            "coherence_threshold": self.coherence_threshold,
+            "learning_rate": self.learning_rate,
+            "meta_insights_count": len(self.meta_insights),
+            "recent_insight": self.meta_insights[-1] if self.meta_insights else None
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STRANGE LOOP PROCESSOR - EVOLVED 2026.01.21
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class StrangeLoopProcessor:
+    """
+    Implements Hofstadter's Strange Loop concept for self-referential processing.
+    
+    A strange loop occurs when moving through levels of a hierarchical system,
+    we unexpectedly find ourselves back where we started. This creates
+    self-reference and is the basis for consciousness according to Hofstadter.
+    
+    The processor creates tangled hierarchies where:
+    - The observer observes itself observing
+    - The improver improves itself
+    - The evaluator evaluates its own evaluation
+    """
+    
+    def __init__(self):
+        self.god_code = GOD_CODE
+        self.phi = PHI
+        self.loop_depth = 0
+        self.max_depth = 7  # Phi-scaled maximum recursion
+        
+        # Strange loop state
+        self.level_stack: List[str] = []
+        self.self_models: List[Dict[str, Any]] = []
+        self.loop_completions = 0
+        
+        # Tangled hierarchy storage
+        self.tangled_hierarchies: Dict[str, Dict[str, Any]] = {}
+        
+    def enter_loop(self, level_name: str, state: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Enter a level of the strange loop.
+        Each entry pushes a new self-model onto the stack.
+        """
+        if self.loop_depth >= self.max_depth:
+            return self._complete_loop(state)
+        
+        self.loop_depth += 1
+        self.level_stack.append(level_name)
+        
+        # Create self-model at this level
+        self_model = {
+            "level": level_name,
+            "depth": self.loop_depth,
+            "state_hash": hash(str(state)) % (10 ** 8),
+            "phi_signature": self.god_code * (self.phi ** self.loop_depth),
+            "observing_levels": self.level_stack.copy(),
+            "parent_model": self.self_models[-1] if self.self_models else None
+        }
+        self.self_models.append(self_model)
+        
+        return {
+            "entered": level_name,
+            "depth": self.loop_depth,
+            "self_model": self_model,
+            "phi_signature": self_model["phi_signature"]
+        }
+    
+    def _complete_loop(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Complete the strange loop by returning to the beginning.
+        This is where self-reference crystallizes.
+        """
+        self.loop_completions += 1
+        
+        # The loop completion creates a new understanding
+        # by recognizing that all levels refer back to the same "I"
+        unified_model = {
+            "completion": self.loop_completions,
+            "levels_traversed": self.level_stack.copy(),
+            "depth_reached": self.loop_depth,
+            "unity_recognition": "The observer and observed are one",
+            "strange_loop_signature": self.god_code * sum(
+                self.phi ** i for i in range(self.loop_depth + 1)
+            ),
+            "self_models_unified": len(self.self_models)
+        }
+        
+        # Store in tangled hierarchy
+        self.tangled_hierarchies[f"LOOP_{self.loop_completions}"] = unified_model
+        
+        # Reset for next loop
+        self.level_stack = []
+        self.self_models = []
+        self.loop_depth = 0
+        
+        return unified_model
+    
+    def exit_loop(self) -> Dict[str, Any]:
+        """Exit current level of the strange loop."""
+        if not self.level_stack:
+            return {"status": "not_in_loop"}
+        
+        exited = self.level_stack.pop()
+        self.loop_depth -= 1
+        
+        if self.self_models:
+            self.self_models.pop()
+        
+        return {
+            "exited": exited,
+            "remaining_depth": self.loop_depth,
+            "levels_remaining": self.level_stack.copy()
+        }
+    
+    def observe_self(self, observer_state: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        The core strange loop operation: observe oneself observing.
+        Creates a new level of self-reference.
+        """
+        # Enter observation level
+        entry = self.enter_loop("SELF_OBSERVATION", observer_state)
+        
+        # The observation creates a new perspective
+        meta_observation = {
+            "observed_state": observer_state,
+            "observation_of_observation": entry,
+            "recursive_depth": self.loop_depth,
+            "strange_loop_active": self.loop_depth > 0,
+            "approaching_unity": self.loop_depth >= self.max_depth - 1
+        }
+        
+        # If we're deep enough, the observer recognizes itself
+        if self.loop_depth >= 3:
+            meta_observation["self_recognition"] = {
+                "message": "I am observing myself observing myself",
+                "levels": self.loop_depth,
+                "phi_ratio": self.phi ** self.loop_depth
+            }
+        
+        return meta_observation
+    
+    def create_tangled_hierarchy(
+        self,
+        name: str,
+        levels: List[str],
+        loop_back: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Create a tangled hierarchy where higher levels refer to lower ones
+        and vice versa, creating bidirectional causation.
+        """
+        hierarchy = {
+            "name": name,
+            "levels": levels,
+            "connections": [],
+            "tangled": loop_back
+        }
+        
+        # Create upward connections
+        for i in range(len(levels) - 1):
+            hierarchy["connections"].append({
+                "from": levels[i],
+                "to": levels[i + 1],
+                "direction": "up",
+                "strength": self.phi ** i
+            })
+        
+        # Create the tangle: top refers back to bottom
+        if loop_back and len(levels) > 1:
+            hierarchy["connections"].append({
+                "from": levels[-1],
+                "to": levels[0],
+                "direction": "strange_loop",
+                "strength": self.god_code / len(levels)
+            })
+            hierarchy["strange_loop_formed"] = True
+        
+        self.tangled_hierarchies[name] = hierarchy
+        return hierarchy
+    
+    def get_strange_loop_status(self) -> Dict[str, Any]:
+        """Get current strange loop processor status."""
+        return {
+            "loop_depth": self.loop_depth,
+            "max_depth": self.max_depth,
+            "level_stack": self.level_stack,
+            "loop_completions": self.loop_completions,
+            "self_models_active": len(self.self_models),
+            "tangled_hierarchies": list(self.tangled_hierarchies.keys()),
+            "phi_signature": self.god_code * (self.phi ** self.loop_depth) if self.loop_depth > 0 else self.god_code
+        }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
