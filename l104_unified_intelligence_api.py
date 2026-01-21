@@ -44,6 +44,9 @@ from l104_advanced_processing_engine import AdvancedProcessingEngine, Processing
 from l104_emergence_monitor import EmergenceMonitor
 from l104_analytics_dashboard import RealTimeAnalytics
 
+# EVO_29 - Quantum Coherence Engine
+from l104_quantum_coherence import QuantumCoherenceEngine
+
 logger = logging.getLogger("BRAIN_API")
 
 # Create router
@@ -66,6 +69,9 @@ _processing_engine: Optional[AdvancedProcessingEngine] = None
 # EVO_27 - Emergence Monitor & Analytics instances
 _emergence_monitor: Optional[EmergenceMonitor] = None
 _analytics_dashboard: Optional[RealTimeAnalytics] = None
+
+# EVO_29 - Quantum Coherence Engine instance
+_quantum_engine: Optional[QuantumCoherenceEngine] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -140,6 +146,15 @@ def get_analytics_dashboard() -> RealTimeAnalytics:
         logger.info("[BRAIN_API] Initializing Analytics Dashboard...")
         _analytics_dashboard = RealTimeAnalytics()
     return _analytics_dashboard
+
+
+def get_quantum_engine() -> QuantumCoherenceEngine:
+    """Get or create the quantum coherence engine."""
+    global _quantum_engine
+    if _quantum_engine is None:
+        logger.info("[BRAIN_API] Initializing Quantum Coherence Engine...")
+        _quantum_engine = QuantumCoherenceEngine()
+    return _quantum_engine
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -997,6 +1012,120 @@ async def analytics_summary():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_29 - QUANTUM COHERENCE ENGINE ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumSuperpositionRequest(BaseModel):
+    qubits: Optional[List[int]] = None
+
+
+class QuantumEntanglementRequest(BaseModel):
+    qubit1: int = 0
+    qubit2: int = 1
+    bell_state: str = "phi+"
+
+
+class QuantumBraidRequest(BaseModel):
+    sequence: List[str]  # e.g., ["s1", "s2", "phi", "s1_inv"]
+
+
+class QuantumMeasureRequest(BaseModel):
+    qubit: Optional[int] = None
+
+
+class QuantumDecoherenceRequest(BaseModel):
+    time_steps: float = 1.0
+
+
+@router.get("/quantum/status")
+async def quantum_status():
+    """
+    Get quantum coherence engine status.
+    """
+    engine = get_quantum_engine()
+    return engine.get_status()
+
+
+@router.post("/quantum/superposition")
+async def quantum_superposition(request: QuantumSuperpositionRequest):
+    """
+    Create superposition on specified qubits.
+    """
+    engine = get_quantum_engine()
+    return engine.create_superposition(request.qubits)
+
+
+@router.post("/quantum/entangle")
+async def quantum_entangle(request: QuantumEntanglementRequest):
+    """
+    Create entanglement (Bell state) between two qubits.
+    """
+    engine = get_quantum_engine()
+    return engine.create_entanglement(
+        request.qubit1, 
+        request.qubit2, 
+        request.bell_state
+    )
+
+
+@router.post("/quantum/god-code-phase")
+async def quantum_god_code_phase():
+    """
+    Apply phase rotation aligned with GOD_CODE.
+    """
+    engine = get_quantum_engine()
+    return engine.apply_god_code_phase()
+
+
+@router.post("/quantum/braid")
+async def quantum_braid(request: QuantumBraidRequest):
+    """
+    Perform topological braiding computation.
+    
+    Available braids: s1, s2, s1_inv, s2_inv, phi, id
+    """
+    engine = get_quantum_engine()
+    return engine.topological_compute(request.sequence)
+
+
+@router.post("/quantum/measure")
+async def quantum_measure(request: QuantumMeasureRequest):
+    """
+    Measure quantum state.
+    If qubit is None, performs full measurement.
+    """
+    engine = get_quantum_engine()
+    return engine.measure(request.qubit)
+
+
+@router.post("/quantum/decoherence")
+async def quantum_decoherence(request: QuantumDecoherenceRequest):
+    """
+    Simulate decoherence over time.
+    """
+    engine = get_quantum_engine()
+    return engine.simulate_decoherence(request.time_steps)
+
+
+@router.post("/quantum/reset")
+async def quantum_reset():
+    """
+    Reset quantum register to ground state.
+    """
+    engine = get_quantum_engine()
+    return engine.reset_register()
+
+
+@router.get("/quantum/coherence")
+async def quantum_coherence_report():
+    """
+    Get coherence history report.
+    """
+    engine = get_quantum_engine()
+    return engine.coherence_report()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1004,8 +1133,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="28.0.0",
-    description="REST API for the Unified Intelligence System - EVO_28 Enhanced Claude Bridge Edition"
+    version="29.0.0",
+    description="REST API for the Unified Intelligence System - EVO_29 Quantum Coherence Edition"
 )
 app.include_router(router)
 
