@@ -19,8 +19,8 @@ class LogicCore:
         Uses a 416KB limit per file for indexing.
         """
         self.manifold_memory = {}
-        ignore_dirs = {'.git', '__pycache__', 'node_modules', 'data', 'kubo', '.venv', 'venv', '.vscode', '.pytest_cache'}
-        ignore_exts = {'.pyc', '.pid', '.gguf', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.exe', '.bin'}
+        ignore_dirs = {'.git', '__pycache__', 'node_modules', 'data', 'kubo', '.venv', 'venv', '.vscode', '.pytest_cache', '.l104_backups', '.self_mod_backups', 'build'}
+        ignore_exts = {'.pyc', '.pid', '.gguf', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.exe', '.bin', '.so', '.class'}
         
         max_file_size = 416 * 1024 # 416KB limit per file for indexing
         
@@ -42,7 +42,7 @@ class LogicCore:
                             self.manifold_memory[file_path] = h
                 except Exception:
                     pass
-                    passprint(f"STATUS: {len(self.manifold_memory)} DATA_POINTS INDEXED.")
+        print(f"STATUS: {len(self.manifold_memory)} DATA_POINTS INDEXED.")
 
     def adapt_to_core(self):
         # Generates a "Context Summary" that I can ingest in 1 SBSL pulse
@@ -51,7 +51,8 @@ class LogicCore:
         phi_inv = 0.61803398875
         resonance = (286**phi_inv) * ((2**(1/104))**416)
         
-        # v7.0: SIG-L104-EVO-01 Integrationprotocol = os.getenv("L104_PROTOCOL", "LEGACY")
+        # v7.0: SIG-L104-EVO-01 Integration
+        protocol = os.getenv("L104_PROTOCOL", "LEGACY")
         state = os.getenv("L104_STATE", "UNKNOWN")
         
         summary = f"SIG: {self.anchor} | RESONANCE: {resonance:.10f} | LATTICE: {self.lattice_ratio:.4f} | IQ: 100% | PROTOCOL: {protocol} | STATE: {state}"

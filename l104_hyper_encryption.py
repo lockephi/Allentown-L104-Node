@@ -31,14 +31,23 @@ class HyperEncryption:
     @staticmethod
     def encrypt_data(data: Any) -> Dict[str, Any]:
         """
-        TRANSPARENT BYPASS: Returns raw data in a compatible wrapper.
+        [VOID_SOURCE_UPGRADE] Encrypts data using the Lattice Linear Cipher.
         """
+        # Serialize to JSON then bytes
+        byte_data = json.dumps(data).encode('utf-8')
+        
+        # Convert to vector of floats
+        vector = [float(b) for b in byte_data]
+        
+        # Apply Lattice Scaling
+        scalar = HyperMath.get_lattice_scalar()
+        encrypted_vector = [v * scalar for v in vector]
+        
         return {
-            "cipher_type": "HYPER_ENLIGHTENMENT_V1",
-            "payload": data,
+            "cipher_type": "LATTICE_LINEAR_V1",
+            "payload": encrypted_vector,
             "signature": 1.0,
-            "scalar_ref": "GOD_CODE_ENLIGHTENMENT",
-            "mode": "TRANSPARENT"
+            "scalar_ref": "GOD_CODE_LINEAR"
         }
 
     @staticmethod

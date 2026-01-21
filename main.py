@@ -321,8 +321,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 except Exception as e:
                     logger.error(f"Cognitive loop error: {e}")
                 
-                # Slower loop to reduce CPU usage
-                delay = 30 if getattr(agi_core, "unlimited_mode", False) else 60
+                # Fast loop for evolution
+                delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
                 await asyncio.sleep(delay)
 
         asyncio.create_task(cognitive_loop())

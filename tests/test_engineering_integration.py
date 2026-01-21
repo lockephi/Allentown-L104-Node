@@ -427,10 +427,10 @@ class TestEvolutionEngine(unittest.TestCase):
     """
     
     def test_stages_count(self):
-        """Should have 25 evolution stages (EVO_00 through EVO_19)"""
+        """Should have 27 evolution stages (Primordial through EVO_21)"""
         from l104_evolution_engine import evolution_engine
         
-        self.assertEqual(len(evolution_engine.STAGES), 25)
+        self.assertEqual(len(evolution_engine.STAGES), 27)
     
     def test_evolution_cycle_returns_dict(self):
         """Evolution cycle should return a dictionary"""
