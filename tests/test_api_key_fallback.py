@@ -10,6 +10,21 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import main as app_main
+from fastapi.testclient import TestClient
+from contextlib import asynccontextmanager
+import pytest
+
+# FIX: Mock lifespan to prevent heavy startup
+@asynccontextmanager
+async def mock_lifespan(app):
+    yield
+
+@pytest.fixture(autouse=True)
+def safe_app_lifespan(monkeypatch):
+    """Prevent heavy background tasks during tests."""
+    monkeypatch.setattr(app_main.app.router, 'lifespan_context', mock_lifespan)
+    monkeypatch.setattr(app_main.app.router, 'on_startup', [])
+
 
 def test_api_key_env_variable_defined():
     """Test that API_KEY_ENV is defined as an environment variable name."""
