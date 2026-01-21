@@ -32,6 +32,12 @@ from l104_meta_learning_engine import MetaLearningEngineV2
 from l104_reasoning_chain import ReasoningChainEngine
 from l104_self_optimization import SelfOptimizationEngine
 
+# EVO_26 - Claude Node Integration
+from l104_claude_bridge import ClaudeNodeBridge
+
+# EVO_26 - Advanced Processing Engine
+from l104_advanced_processing_engine import AdvancedProcessingEngine, ProcessingMode
+
 logger = logging.getLogger("BRAIN_API")
 
 # Create router
@@ -44,6 +50,12 @@ _brain_instance: Optional[UnifiedIntelligence] = None
 _meta_learner: Optional[MetaLearningEngineV2] = None
 _reasoning_engine: Optional[ReasoningChainEngine] = None
 _self_optimizer: Optional[SelfOptimizationEngine] = None
+
+# EVO_26 - Claude Node instance
+_claude_bridge: Optional[ClaudeNodeBridge] = None
+
+# EVO_26 - Advanced Processing Engine instance
+_processing_engine: Optional[AdvancedProcessingEngine] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -82,6 +94,24 @@ def get_self_optimizer() -> SelfOptimizationEngine:
         logger.info("[BRAIN_API] Initializing Self-Optimization Engine...")
         _self_optimizer = SelfOptimizationEngine()
     return _self_optimizer
+
+
+def get_claude_bridge() -> ClaudeNodeBridge:
+    """Get or create the Claude node bridge."""
+    global _claude_bridge
+    if _claude_bridge is None:
+        logger.info("[BRAIN_API] Initializing Claude Node Bridge...")
+        _claude_bridge = ClaudeNodeBridge()
+    return _claude_bridge
+
+
+def get_processing_engine() -> AdvancedProcessingEngine:
+    """Get or create the advanced processing engine."""
+    global _processing_engine
+    if _processing_engine is None:
+        logger.info("[BRAIN_API] Initializing Advanced Processing Engine...")
+        _processing_engine = AdvancedProcessingEngine()
+    return _processing_engine
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -485,6 +515,145 @@ async def set_parameter(request: SetParameterRequest):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_26 - CLAUDE NODE ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ClaudeQueryRequest(BaseModel):
+    prompt: str
+    model: Optional[str] = None
+    system: Optional[str] = None
+    max_tokens: int = 4096
+
+
+class ClaudeAnalyzeRequest(BaseModel):
+    content: str
+    focus: Optional[str] = None
+
+
+class ClaudeSynthesizeRequest(BaseModel):
+    concepts: List[str]
+
+
+class ClaudeReasonRequest(BaseModel):
+    question: str
+    depth: int = 3
+
+
+@router.post("/claude/query")
+async def claude_query(request: ClaudeQueryRequest):
+    """
+    Query Claude for enhanced processing.
+    Falls back to local intelligence if API unavailable.
+    """
+    bridge = get_claude_bridge()
+    response = await bridge.query_async(
+        prompt=request.prompt,
+        model=request.model,
+        system=request.system,
+        max_tokens=request.max_tokens
+    )
+    return response.to_dict()
+
+
+@router.post("/claude/analyze")
+async def claude_analyze(request: ClaudeAnalyzeRequest):
+    """
+    Perform deep analysis using Claude.
+    """
+    bridge = get_claude_bridge()
+    result = await bridge.deep_analyze(request.content, request.focus)
+    return result
+
+
+@router.post("/claude/synthesize")
+async def claude_synthesize(request: ClaudeSynthesizeRequest):
+    """
+    Synthesize understanding from multiple concepts.
+    """
+    bridge = get_claude_bridge()
+    result = await bridge.synthesize(request.concepts)
+    return result
+
+
+@router.post("/claude/reason")
+async def claude_reason(request: ClaudeReasonRequest):
+    """
+    Multi-step reasoning using Claude.
+    """
+    bridge = get_claude_bridge()
+    result = await bridge.reason_chain(request.question, request.depth)
+    return result
+
+
+@router.get("/claude/stats")
+async def claude_stats():
+    """
+    Get Claude bridge statistics.
+    """
+    bridge = get_claude_bridge()
+    return bridge.get_stats()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_26 - ADVANCED PROCESSING ENGINE ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class APEProcessRequest(BaseModel):
+    query: str
+    mode: Optional[str] = None  # quick, deep, ensemble, claude, adaptive
+
+
+@router.post("/ape/process")
+async def ape_process(request: APEProcessRequest):
+    """
+    Advanced Processing Engine - unified query processing.
+    Automatically selects optimal processing mode if not specified.
+    
+    Modes:
+    - quick: Fast local processing
+    - deep: Multi-step reasoning
+    - ensemble: Parallel processing across all modules
+    - claude: Prioritize Claude processing
+    - adaptive: Auto-select based on query
+    """
+    engine = get_processing_engine()
+    
+    # Parse mode
+    mode = None
+    if request.mode:
+        mode_map = {
+            "quick": ProcessingMode.QUICK,
+            "deep": ProcessingMode.DEEP,
+            "ensemble": ProcessingMode.ENSEMBLE,
+            "claude": ProcessingMode.CLAUDE,
+            "adaptive": ProcessingMode.ADAPTIVE
+        }
+        mode = mode_map.get(request.mode.lower())
+    
+    result = await engine.process_async(request.query, mode)
+    return result.to_dict()
+
+
+@router.get("/ape/stats")
+async def ape_stats():
+    """
+    Get Advanced Processing Engine statistics.
+    """
+    engine = get_processing_engine()
+    return engine.get_stats()
+
+
+@router.post("/ape/optimize")
+async def ape_optimize(iterations: int = 5):
+    """
+    Run self-optimization on the processing engine.
+    """
+    engine = get_processing_engine()
+    result = engine.optimize(iterations)
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -492,8 +661,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="25.0.0",
-    description="REST API for the Unified Intelligence System - EVO_25 Edition"
+    version="26.0.0",
+    description="REST API for the Unified Intelligence System - EVO_26 Advanced Processing Edition"
 )
 app.include_router(router)
 
