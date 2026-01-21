@@ -27,6 +27,11 @@ import logging
 # Import the brain
 from l104_unified_intelligence import UnifiedIntelligence
 
+# EVO_25 - Advanced Cognitive Modules
+from l104_meta_learning_engine import MetaLearningEngineV2
+from l104_reasoning_chain import ReasoningChainEngine
+from l104_self_optimization import SelfOptimizationEngine
+
 logger = logging.getLogger("BRAIN_API")
 
 # Create router
@@ -34,6 +39,11 @@ router = APIRouter(prefix="/api/brain", tags=["Unified Intelligence"])
 
 # Global brain instance (singleton pattern)
 _brain_instance: Optional[UnifiedIntelligence] = None
+
+# EVO_25 - Global cognitive module instances
+_meta_learner: Optional[MetaLearningEngineV2] = None
+_reasoning_engine: Optional[ReasoningChainEngine] = None
+_self_optimizer: Optional[SelfOptimizationEngine] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -45,6 +55,33 @@ def get_brain() -> UnifiedIntelligence:
         # Try to load previous state
         _brain_instance.load_state()
     return _brain_instance
+
+
+def get_meta_learner() -> MetaLearningEngineV2:
+    """Get or create the meta-learning engine."""
+    global _meta_learner
+    if _meta_learner is None:
+        logger.info("[BRAIN_API] Initializing Meta-Learning Engine...")
+        _meta_learner = MetaLearningEngineV2()
+    return _meta_learner
+
+
+def get_reasoning_engine() -> ReasoningChainEngine:
+    """Get or create the reasoning chain engine."""
+    global _reasoning_engine
+    if _reasoning_engine is None:
+        logger.info("[BRAIN_API] Initializing Reasoning Chain Engine...")
+        _reasoning_engine = ReasoningChainEngine()
+    return _reasoning_engine
+
+
+def get_self_optimizer() -> SelfOptimizationEngine:
+    """Get or create the self-optimization engine."""
+    global _self_optimizer
+    if _self_optimizer is None:
+        logger.info("[BRAIN_API] Initializing Self-Optimization Engine...")
+        _self_optimizer = SelfOptimizationEngine()
+    return _self_optimizer
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -271,6 +308,183 @@ async def list_topics():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_25 - META-LEARNING ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class MetaLearnRequest(BaseModel):
+    topic: str
+    strategy: str = "synthesis"
+    unity_index: float = 0.85
+    confidence: float = 0.8
+    duration_ms: float = 1000.0
+
+
+@router.post("/meta/record")
+async def record_learning_episode(request: MetaLearnRequest):
+    """
+    Record a learning episode for meta-learning optimization.
+    """
+    meta = get_meta_learner()
+    episode = meta.record_learning(
+        topic=request.topic,
+        strategy=request.strategy,
+        unity_index=request.unity_index,
+        confidence=request.confidence,
+        duration_ms=request.duration_ms
+    )
+    return {
+        "status": "recorded",
+        "topic": request.topic,
+        "strategy": request.strategy,
+        "success": episode.success
+    }
+
+
+@router.get("/meta/strategy")
+async def get_learning_strategy(topic: str = "general"):
+    """
+    Get the recommended learning strategy for a topic.
+    """
+    meta = get_meta_learner()
+    strategy = meta.select_strategy(topic)
+    return {
+        "topic": topic,
+        "recommended_strategy": strategy,
+        "current_stats": meta.get_learning_insights()
+    }
+
+
+@router.get("/meta/insights")
+async def get_meta_insights():
+    """
+    Get meta-learning insights and recommendations.
+    """
+    meta = get_meta_learner()
+    brain = get_brain()
+    
+    # Get available topics from brain
+    topics = set()
+    for insight in brain.insights:
+        if "Explain" in insight.prompt:
+            topic = insight.prompt.replace("Explain ", "").replace(" in the context of L104.", "")
+            topics.add(topic)
+    
+    recommended = meta.recommend_topics(list(topics), count=5) if topics else []
+    
+    return {
+        "learning_insights": meta.get_learning_insights(),
+        "recommended_topics": recommended,
+        "report": meta.generate_learning_report()
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_25 - REASONING CHAIN ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ReasoningRequest(BaseModel):
+    question: str
+    max_steps: int = 10
+    depth: int = 3
+
+
+@router.post("/reason")
+async def reason_chain(request: ReasoningRequest):
+    """
+    Perform multi-step reasoning with validation.
+    Returns a chain of reasoning steps with conclusions.
+    """
+    engine = get_reasoning_engine()
+    chain = engine.reason(
+        question=request.question,
+        max_steps=request.max_steps,
+        depth=request.depth
+    )
+    return {
+        "question": request.question,
+        "conclusion": chain.conclusion,
+        "confidence": chain.total_confidence,
+        "coherence": chain.chain_coherence,
+        "steps": len(chain.steps),
+        "explanation": engine.explain_chain(chain)
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_25 - SELF-OPTIMIZATION ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class OptimizeRequest(BaseModel):
+    metric: str = "unity_index"
+    iterations: int = 5
+
+
+@router.post("/optimize")
+async def run_optimization(request: OptimizeRequest):
+    """
+    Run self-optimization to improve system performance.
+    """
+    optimizer = get_self_optimizer()
+    
+    # Record current brain performance
+    brain = get_brain()
+    unity = sum(i.unity_index for i in brain.insights) / max(len(brain.insights), 1)
+    optimizer.record_metric("unity_index", unity)
+    
+    # Run optimization
+    results = optimizer.auto_optimize(request.metric, request.iterations)
+    
+    return {
+        "metric": request.metric,
+        "iterations": request.iterations,
+        "results": results,
+        "final_parameters": optimizer.current_parameters
+    }
+
+
+@router.get("/optimize/status")
+async def get_optimization_status():
+    """
+    Get current optimization status and parameters.
+    """
+    optimizer = get_self_optimizer()
+    return optimizer.get_optimization_report()
+
+
+@router.get("/optimize/parameters")
+async def get_parameters():
+    """
+    Get all tunable system parameters.
+    """
+    optimizer = get_self_optimizer()
+    return {
+        "current": optimizer.current_parameters,
+        "available": {k: v for k, v in optimizer.TUNABLE_PARAMETERS.items()}
+    }
+
+
+class SetParameterRequest(BaseModel):
+    name: str
+    value: float
+
+
+@router.post("/optimize/set")
+async def set_parameter(request: SetParameterRequest):
+    """
+    Manually set a tunable parameter.
+    """
+    optimizer = get_self_optimizer()
+    success = optimizer.set_parameter(request.name, request.value)
+    if not success:
+        raise HTTPException(status_code=400, detail=f"Unknown parameter: {request.name}")
+    return {
+        "status": "updated",
+        "parameter": request.name,
+        "new_value": optimizer.current_parameters[request.name]
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -278,8 +492,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="24.0.0",
-    description="REST API for the Unified Intelligence System"
+    version="25.0.0",
+    description="REST API for the Unified Intelligence System - EVO_25 Edition"
 )
 app.include_router(router)
 
