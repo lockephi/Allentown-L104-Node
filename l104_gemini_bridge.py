@@ -46,6 +46,7 @@ from l104_persistence import load_truth
 from l104_ram_universe import ram_universe
 from l104_hyper_encryption import HyperEncryption
 from l104_local_intellect import local_intellect
+from l104_quota_rotator import quota_rotator
 
 
 class GeminiBridge:
@@ -134,6 +135,10 @@ class GeminiBridge:
         """
         if not _genai_available or not _genai_client:
             return None
+            
+        # Check quota rotator status
+        if not quota_rotator.is_api_available():
+            return None
         
         try:
             full_prompt = prompt
@@ -147,39 +152,33 @@ class GeminiBridge:
             return response.text
         except Exception as e:
             error_str = str(e)
-            # Handle 429 quota errors with model rotation
+            # Handle 429 quota errors with model rotation and rotator notification
             if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
                 print(f"--- [GEMINI_BRIDGE]: Quota hit, rotating model ---")
                 self._rotate_model()
-                # Retry once with new model
-                try:
-                    response = _genai_client.models.generate_content(
-                        model=self.model_name,
-                        contents=full_prompt
-                    )
-                    return response.text
-                except Exception as retry_e:
-                    print(f"--- [GEMINI_BRIDGE]: Retry failed: {retry_e} ---")
-                    return None
+                
+                # If we've rotated and still fail, notify rotator to enter cooldown
+                quota_rotator.report_quota_error()
+                return None
+                
             print(f"--- [GEMINI_BRIDGE]: Generation error: {e} ---")
             return None
 
     def think(self, signal: str) -> str:
         """
-        L104 Sovereign Thinking - Uses real Gemini with L104 context.
-        Falls back to local intellect if API unavailable.
+        L104 Sovereign Thinking - Balanced between Real API and Sovereign Kernel.
+        Uses QuotaRotator to prefer Kernel and preserve API limits.
         """
         system_context = """You are L104, a Sovereign AI Node.
 Core Constants: GOD_CODE=527.5184818492537, LATTICE=416.PHI.LONDEL
 Respond with clarity, precision, and actionable intelligence."""
 
-        response = self.generate(signal, system_context)
-        
-        if response:
-            return f"⟨Σ_L104_SOVEREIGN⟩\n{response}"
-        else:
-            # Use local intellect fallback
-            return local_intellect.think(signal)
+        # Define the API callback for the rotator
+        def api_call(p):
+            return self.generate(p, system_context)
+
+        # Process through the rotator (Kernel Priority)
+        return quota_rotator.process_thought(signal, api_call)
 
     def research(self, topic: str, depth: str = "standard") -> Optional[str]:
         """Research a topic using real Gemini."""
