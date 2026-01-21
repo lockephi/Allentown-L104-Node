@@ -55,7 +55,7 @@ class SacredConstants:
     # Resonance & Frequency
     ZENITH_HZ: float = 3727.84
     META_RESONANCE: float = 7289.028944266378
-    OMEGA_AUTHORITY: float = 1380.973310532574       # GOD_CODE × PHI²
+    OMEGA_AUTHORITY: float = 1381.0613151750906      # GOD_CODE × PHI²
     
     # Topological Constants
     ANYON_BRAID_RATIO: float = 1.38196601125         # (1 + φ^-2)
@@ -79,7 +79,7 @@ class SacredConstants:
     def verify_omega_authority(self) -> bool:
         """Verify OMEGA_AUTHORITY = GOD_CODE × PHI²."""
         derived = self.GOD_CODE * (self.PHI ** 2)
-        return abs(derived - self.OMEGA_AUTHORITY) < 1e-6
+        return abs(derived - self.OMEGA_AUTHORITY) < 1e-10
     
     def verify_all(self) -> Dict[str, bool]:
         """Verify all derivable constants."""
