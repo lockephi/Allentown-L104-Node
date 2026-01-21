@@ -672,7 +672,7 @@ class ResearchDevelopmentHub:
                 "timestamp": d.timestamp
             }
             for d in self.synthesis_engine.discoveries.values()
-        ]
+                ]
     
     def shutdown(self):
         """Shutdown the research hub."""

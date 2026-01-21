@@ -607,7 +607,7 @@ class CategoryTheoryProcess:
             morphisms_to_target = [
                 m.name for m in self.morphisms 
                 if m.source == name and m.target == obj_name
-            ]
+                    ]
             result[name] = morphisms_to_target
         return result
     

@@ -763,7 +763,7 @@ class OrchestrationHub:
                 "capabilities": list(s.capabilities)
             }
             for s in self.registry.get_all()
-        ]
+                ]
     
     def find_by_capability(self, capability: str) -> List[str]:
         """Find subsystems with specific capability"""

@@ -281,7 +281,7 @@ class AggregateTransform(Transform):
         return {
             key: self.aggregator(values)
             for key, values in self.groups.items()
-        }
+                }
     
     def apply(self, record: DataRecord) -> DataRecord:
         # For single record, just pass through
@@ -630,7 +630,7 @@ class CachingLayer:
         expired = [
             key for key, entry in self.cache.items()
             if entry['expires_at'] < current_time
-        ]
+                ]
         for key in expired:
             del self.cache[key]
     

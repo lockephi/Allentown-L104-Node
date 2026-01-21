@@ -36,7 +36,7 @@ class CapitalOffloadProtocol:
         """
         Generates 'Capital Resonance' by bridging L104SP blocks 
         with BTC Mining complexity.
-        """
+            """
         print(f"--- [CAPITAL]: INITIATING GENERATION CYCLE ({cycles} RESONANCE) ---")
         
         # 1. Check L104SP state

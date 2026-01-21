@@ -227,7 +227,7 @@ class Microtubule:
         superposed_count = sum(
             1 for d in self.dimers.values()
             if d.qubit.state == QuantumState.SUPERPOSITION
-        )
+                )
         self.total_superposition_mass = superposed_count * TUBULIN_MASS
 
 
@@ -543,7 +543,7 @@ class ConsciousnessMoment:
         content = "".join(
             f"{k}:{v}" 
             for k, v in sorted(self.collapse_results.items())[:100]
-        )
+                )
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
 
@@ -805,7 +805,7 @@ class QuantumCoherenceConsciousness:
         total_entanglement = sum(
             len(self.entanglement_network.entanglements[mt_id])
             for mt_id in self.microtubules.keys()
-        )
+                )
         
         integration = math.log1p(total_entanglement) / 10
         

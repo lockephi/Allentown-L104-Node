@@ -538,7 +538,7 @@ class ValorDeployment:
             'transactions': [
                 {'txid': tx.txid()} 
                 for tx in self.mempool.get_transactions_for_block(100)
-            ]
+                    ]
         }
     
     def _get_block_reward(self) -> int:

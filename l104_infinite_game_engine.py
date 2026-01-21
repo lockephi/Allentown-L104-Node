@@ -324,7 +324,7 @@ class Ordinal:
             filtered_self = [
                 (e, c) for e, c in self.terms
                 if self._ordinal_ge(e, exp)
-            ]
+                    ]
             result_terms = filtered_self
         
         result_terms.extend(other.terms)

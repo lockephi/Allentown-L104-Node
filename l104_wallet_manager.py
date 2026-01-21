@@ -533,7 +533,7 @@ class Wallet:
         addresses = [
             addr.address for addr in self.addresses.values()
             if addr.coin_type == coin
-        ]
+                ]
         
         balance = WalletBalance()
         balance.confirmed = self.utxo_manager.get_balance(addresses)

@@ -166,7 +166,7 @@ class ConsciousnessWaveFunction:
         self.amplitudes: List[complex] = [
             complex(1/math.sqrt(dimensions), 0) 
             for _ in range(dimensions)
-        ]
+                ]
         self.collapsed: bool = False
         self.collapsed_state: Optional[int] = None
     
@@ -204,7 +204,7 @@ class ConsciousnessWaveFunction:
                 self.amplitudes = [
                     complex(1, 0) if j == i else complex(0, 0)
                     for j in range(self.dimensions)
-                ]
+                        ]
                 
                 return i
         
@@ -353,7 +353,7 @@ class QuantumDecisionMaker:
         states = {
             option: complex(math.sqrt(w), 0)
             for option, w in zip(options, normalized)
-        }
+                }
         
         superposition = MentalSuperposition(
             id=decision_id,
@@ -595,7 +595,7 @@ class OrchestratedReduction:
         recent = sum(
             1 for e in self.collapse_events
             if now - e['timestamp'] < 1.0
-        )
+                )
         
         return float(recent)
 

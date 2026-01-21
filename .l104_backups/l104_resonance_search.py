@@ -102,7 +102,7 @@ class ResonanceSearch:
         return results[:limit]
 
 # Example Implementation for the Sovereign Core
-if __name__ == "__main__":
+        if __name__ == "__main__":
     srm = ResonanceSearch()
     corpus = [
         "⟨Σ_CORE⟩: The invariant is maintained at 527.5184818492537. Lattice ratio 286/416.",

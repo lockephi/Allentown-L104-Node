@@ -280,7 +280,7 @@ class BitcoinMiningIntegration:
     
     Complete integration with Computronium Mining Core
     for real Bitcoin mining operations.
-    """
+        """
     
     _instance = None
     

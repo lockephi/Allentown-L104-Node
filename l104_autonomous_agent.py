@@ -249,7 +249,7 @@ INPUT: [action input - can be multi-line for code]
             history = "\n".join([
                 f"Step {s.step_num}:\nTHOUGHT: {s.thought}\nACTION: {s.action}\nINPUT: {s.action_input}\nOBSERVATION: {s.observation}"
                 for s in self.steps[-5:]  # Last 5 steps for context
-            ])
+                    ])
             
             if history:
                 prompt = f"Previous steps:\n{history}\n\nContinue with next step:"
@@ -301,7 +301,7 @@ INPUT: [action input - can be multi-line for code]
                     "observation": s.observation[:200]
                 }
                 for s in self.steps
-            ],
+                    ],
             "final_answer": self.steps[-1].observation if self.steps else None
         }
     

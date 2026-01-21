@@ -192,7 +192,7 @@ class RateLimiter:
             keys_to_remove = [
                 key for key, bucket in self.buckets.items()
                 if now - bucket.last_update > max_age
-            ]
+                    ]
             for key in keys_to_remove:
                 del self.buckets[key]
                 removed += 1
@@ -970,47 +970,47 @@ if __name__ == "__main__":
         
         # Health check
         req1 = APIRequest(
-            request_id="test1",
-            method=RequestMethod.GET,
-            path="/health",
-            headers={},
-            client_ip="127.0.0.1"
+    request_id="test1",
+    method=RequestMethod.GET,
+    path="/health",
+    headers={},
+    client_ip="127.0.0.1"
         )
         resp1 = await gateway.handle_request(req1)
         print(f"  /health: {resp1.status_code} - {resp1.body.decode()[:50]}...")
         
         # Echo with API key
         req2 = APIRequest(
-            request_id="test2",
-            method=RequestMethod.GET,
-            path="/api/echo",
-            headers={"X-API-Key": api_key},
-            query_params={"test": "value"},
-            client_ip="127.0.0.1",
-            api_key=api_key
+    request_id="test2",
+    method=RequestMethod.GET,
+    path="/api/echo",
+    headers={"X-API-Key": api_key},
+    query_params={"test": "value"},
+    client_ip="127.0.0.1",
+    api_key=api_key
         )
         resp2 = await gateway.handle_request(req2)
         print(f"  /api/echo: {resp2.status_code}")
         
         # User endpoint with path param
         req3 = APIRequest(
-            request_id="test3",
-            method=RequestMethod.GET,
-            path="/api/users/123",
-            headers={"X-API-Key": api_key},
-            client_ip="127.0.0.1",
-            api_key=api_key
+    request_id="test3",
+    method=RequestMethod.GET,
+    path="/api/users/123",
+    headers={"X-API-Key": api_key},
+    client_ip="127.0.0.1",
+    api_key=api_key
         )
         resp3 = await gateway.handle_request(req3)
         print(f"  /api/users/123: {resp3.status_code}")
         
         # Without API key (should fail)
         req4 = APIRequest(
-            request_id="test4",
-            method=RequestMethod.GET,
-            path="/api/echo",
-            headers={},
-            client_ip="127.0.0.1"
+    request_id="test4",
+    method=RequestMethod.GET,
+    path="/api/echo",
+    headers={},
+    client_ip="127.0.0.1"
         )
         resp4 = await gateway.handle_request(req4)
         print(f"  /api/echo (no key): {resp4.status_code}")

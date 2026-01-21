@@ -462,7 +462,7 @@ class RealityCoherence:
             lambda state: all(
                 cause['time'] < effect['time']
                 for cause, effect in state.get('causal_pairs', [])
-            )
+                    )
         )
         
         # Non-negative probabilities
@@ -650,7 +650,7 @@ class RealityFabric:
         outcome_data = [
             (outcome, amplitude, {'event': event, 'outcome': outcome})
             for outcome in outcomes
-        ]
+                ]
         
         return self.multiverse.quantum_split(event, outcome_data)
     

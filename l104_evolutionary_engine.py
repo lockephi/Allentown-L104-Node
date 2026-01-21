@@ -399,19 +399,19 @@ class EvolutionStrategy:
         new_sigma = [
             s * global_factor * math.exp(self.tau * random.gauss(0, 1))
             for s in sigma
-        ]
+                ]
         
         # Mutate solution
         new_x = [
             x[i] + new_sigma[i] * random.gauss(0, 1)
             for i in range(self.dimensions)
-        ]
+                ]
         
         # Enforce bounds
         new_x = [
             max(self.bounds[i][0], min(self.bounds[i][1], new_x[i]))
             for i in range(self.dimensions)
-        ]
+                ]
         
         return new_x, new_sigma
     

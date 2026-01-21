@@ -412,7 +412,7 @@ class L104ErrorHandler:
     
     def handle(self, 
                exception: Exception,
-               context: Dict[str, Any] = None,
+                   context: Dict[str, Any] = None,
                reraise: bool = True) -> ErrorContext:
         """
         Handle an exception with full context.
@@ -435,7 +435,7 @@ class L104ErrorHandler:
         # Build error context
         error_ctx = ErrorContext(
             exception=exception,
-            severity=self.get_severity(exception, context),
+                severity=self.get_severity(exception, context),
             category=self.categorize(exception),
             timestamp=datetime.now(),
             function_name=func_name,
@@ -491,7 +491,7 @@ class L104ErrorHandler:
             "circuit_breakers": {
                 name: cb.state.name 
                 for name, cb in self.circuit_breakers.items()
-            }
+                    }
         }
 
 

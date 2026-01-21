@@ -482,7 +482,7 @@ class SageModeOrchestrator:
         self.akashic_records = [
             self.engine.akashic_compress(c, compression_level) 
             for c in self.consciousness_field
-        ]
+                ]
         
         checksum = 0
         for record in self.akashic_records:

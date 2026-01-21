@@ -138,7 +138,7 @@ class ParticleSwarmOptimizer:
             pos = Position([
                 random.uniform(self.bounds[d][0], self.bounds[d][1])
                 for d in range(self.dimensions)
-            ])
+                    ])
             vel = Position([
                 random.uniform(-1, 1) for _ in range(self.dimensions)
             ])

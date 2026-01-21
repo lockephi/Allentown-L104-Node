@@ -566,8 +566,8 @@ class BenchmarkEngine:
                     any((lit > 0 and solution.get(lit, False)) or 
                         (lit < 0 and not solution.get(-lit, False))
                         for lit in clause)
-                    for clause in clauses
-                )
+                            for clause in clauses
+                                )
                 results["solution_verified"] = verified
             
             results["status"] = "VERIFIED"
@@ -864,7 +864,7 @@ class L104AGIResearchLab:
                     "score": c.benchmark_score
                 }
                 for c in caps
-            ]
+                    ]
         
         return {
             "total_capabilities": summary["total"],

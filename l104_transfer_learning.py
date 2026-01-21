@@ -350,7 +350,7 @@ class MultiTaskLearner:
         return {
             task: np.mean(losses[-10:]) if losses else 0.0 
             for task, losses in self.task_losses.items()
-        }
+                }
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # KNOWLEDGE DISTILLATION

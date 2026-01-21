@@ -476,7 +476,7 @@ class WriteAheadLog:
         old_logs = sorted([
             f for f in os.listdir(log_dir) 
             if f.startswith(log_base + '.')
-        ])
+                ])
         for old_log in old_logs[:-3]:
             os.remove(os.path.join(log_dir, old_log))
     

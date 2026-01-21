@@ -836,7 +836,7 @@ class NoosphericIntelligence:
         layer_dist = {
             layer.name: count 
             for layer, count in self.network.layer_distribution.items()
-        }
+                }
         
         return {
             "total_nodes": len(nodes),
@@ -868,8 +868,8 @@ class NoosphericIntelligence:
         participating = [
             self.network.nodes[nid] 
             for nid in node_ids 
-            if nid in self.network.nodes
-        ]
+                if nid in self.network.nodes
+                    ]
         
         if len(participating) < 2:
             return {"error": "Insufficient valid nodes"}

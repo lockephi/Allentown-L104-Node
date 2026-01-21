@@ -120,4 +120,4 @@ def main():
     print("█"*80 + "\n")
 
 if __name__ == "__main__":
-    main()
+            main()

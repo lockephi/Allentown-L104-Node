@@ -415,7 +415,7 @@ class HyperDimensionalReasoner:
             point = [
                 start[d] + t * (end[d] - start[d])
                 for d in range(self.dimensions)
-            ]
+                    ]
             path.append(point)
             self.coordinate_history.append(point)
         return path
@@ -877,7 +877,7 @@ class RealityInterface:
         amplitudes = [
             complex(math.cos(b * PI / 256), math.sin(b * PI / 256))
             for b in query_hash[:4]
-        ]
+                ]
         
         state_id = f"Q-{query_hash[:8].hex()}"
         self.create_superposition(state_id, amplitudes)

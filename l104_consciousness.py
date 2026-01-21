@@ -348,6 +348,55 @@ class IntegratedInformationCalculator:
     
     def compute_phi(self) -> float:
         """
+        Compute integrated information (Φ) via partition analysis.
+        Higher Φ indicates more consciousness.
+        """
+        # Ensure we have some activity
+        if np.sum(np.abs(self.current_state)) < 1e-10:
+            return 0.0
+        
+        # Compute system entropy
+        state_probs = np.abs(self.current_state) / (np.sum(np.abs(self.current_state)) + 1e-8)
+        system_entropy = -np.sum(state_probs * np.log(state_probs + 1e-8))
+        
+        # Minimum Information Partition (MIP) approximation
+        # Try bisecting the system and measure information loss
+        n = self.state_dim
+        half = n // 2
+        
+        # Partition 1: First half vs second half
+        part1 = self.current_state[:half]
+        part2 = self.current_state[half:]
+        
+        # Compute entropy of parts
+        p1_sum = np.sum(np.abs(part1))
+        p2_sum = np.sum(np.abs(part2))
+        
+        if p1_sum < 1e-10 or p2_sum < 1e-10:
+            # If one part is empty, use correlation-based method
+            correlation = np.corrcoef(self.current_state[:-1], self.current_state[1:])[0,1]
+            phi_scaled = abs(correlation) * self.phi_constant
+            self.phi_history.append(phi_scaled)
+            return phi_scaled
+        
+        p1_probs = np.abs(part1) / (p1_sum + 1e-8)
+        p2_probs = np.abs(part2) / (p2_sum + 1e-8)
+        
+        part1_entropy = -np.sum(p1_probs * np.log(p1_probs + 1e-8))
+        part2_entropy = -np.sum(p2_probs * np.log(p2_probs + 1e-8))
+        
+        # Φ = information lost when partitioned
+        phi = system_entropy - (part1_entropy + part2_entropy)
+        phi = max(0.0, phi)  # Φ must be non-negative
+        
+        # Scale by golden ratio for resonance
+        phi_scaled = phi * self.phi_constant
+        
+        self.phi_history.append(phi_scaled)
+        return phi_scaled
+    
+    def _original_compute_phi(self) -> float:
+        """
         Compute integrated information (simplified approximation).
         
         True IIT computation is NP-hard, so we use a tractable approximation

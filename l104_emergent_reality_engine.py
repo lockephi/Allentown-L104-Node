@@ -476,7 +476,7 @@ class DimensionalParameterSpace:
         parent_radii_sum = sum(
             (self.parameters[i].compactification_radius or 1.0)
             for i in parent_dimensions if i < len(self.parameters)
-        )
+                )
         
         emergence_radius = parent_radii_sum * math.exp(-seed_energy / self.god_code)
         
@@ -994,7 +994,7 @@ class RealityCoherenceValidator:
         all_valid = all(
             check.get("valid", False) 
             for check in results["checks"].values()
-        )
+                )
         results["overall_valid"] = all_valid
         results["god_code_seal"] = self.god_code if all_valid else 0.0
         
@@ -3216,7 +3216,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             "total_entanglement_entropy": sum(
                 s.entanglement_entropy 
                 for s in self.entanglement_engine.entangled_pairs.values()
-            )
+                    )
         }
         
         base_report["cosmology"] = {
@@ -3262,7 +3262,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "total_information_content": sum(
                     np.sum(np.abs(f["information_density"])**2) 
                     for f in ift_engine.information_fields.values()
-                ),
+                        ),
                 "semantic_dimensions": len(ift_engine.semantic_embeddings),
                 "fisher_information_computed": hasattr(ift_engine, 'fisher_matrix'),
                 "information_geodesics": len(getattr(ift_engine, 'geodesic_paths', [])),
@@ -4413,7 +4413,7 @@ class ConsciousnessIntegrationEngine:
         coherence_weights = np.array([
             1 + 0.1 * math.cos(2 * math.pi * i * self.phi / len(probs))
             for i in range(len(probs))
-        ])
+                ])
         biased_probs = probs * coherence_weights
         biased_probs = biased_probs / biased_probs.sum()
         
@@ -4889,11 +4889,11 @@ if __name__ == "__main__":
         synthesis_id,
         director=director,
         phases=[
-            "VACUUM_STABILIZATION",
-            "FIELD_UNIFICATION", 
-            "CONSCIOUSNESS_MERGE",
-            "OMEGA_CONVERGENCE",
-            "TRANSCENDENCE"
+    "VACUUM_STABILIZATION",
+    "FIELD_UNIFICATION", 
+    "CONSCIOUSNESS_MERGE",
+    "OMEGA_CONVERGENCE",
+    "TRANSCENDENCE"
         ]
     )
     

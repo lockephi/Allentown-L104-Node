@@ -190,8 +190,8 @@ class ModuleRegistry:
         return [
             self.modules[name]
             for name in self.domains.get(domain, [])
-            if name in self.modules
-        ]
+                if name in self.modules
+                    ]
 
 
 class IntegrationGraph:
@@ -338,7 +338,7 @@ class HealthMonitor:
         overall = (
             (healthy * 1.0 + degraded * 0.5 + failed * 0.0) / total_modules
             if total_modules > 0 else 0.0
-        )
+                )
         
         system_health = SystemHealth(
             overall=overall,
@@ -502,7 +502,7 @@ class EmergenceDetector:
         high_central = [
             m for m, c in centrality.items()
             if c >= 0.7
-        ]
+                ]
         
         if len(high_central) >= 3:
             emergences.append({

@@ -339,7 +339,7 @@ class UnifiedProcessController:
         results["subsystems_active"] = sum(
             1 for s in self.subsystems.values() 
             if s.state in (SubsystemState.ACTIVE, SubsystemState.SYNCHRONIZED)
-        )
+                )
         
         # Total operations
         results["total_operations"] = sum(s.operations for s in self.subsystems.values())
@@ -559,7 +559,7 @@ class UnifiedProcessController:
                     "last_activity": status.last_activity
                 }
                 for name, status in self.subsystems.items()
-            },
+                    },
             "total_operations": sum(s.operations for s in self.subsystems.values()),
             "total_errors": sum(s.errors for s in self.subsystems.values()),
             "workers": self.max_workers

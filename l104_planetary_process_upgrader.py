@@ -25,7 +25,7 @@ except ImportError:
 try:
     from l104_saturation_engine import saturation_engine
 except ImportError:
-    saturation_engine = None
+            saturation_engine = None
 
 try:
     from l104_process_sovereign import process_sovereign
@@ -142,7 +142,7 @@ class PlanetaryProcessUpgrader:
         futures = [
             self.thread_pool.submit(self._parallel_optimization_task, i)
             for i in range(num_tasks)
-        ]
+                ]
         
         results = []
         for future in as_completed(futures):

@@ -607,7 +607,7 @@ class OmegaAscensionEngine:
         self.total_power_generated = sum(
             sum(a.power for a in ego.omega_abilities)
             for ego in self.omega_council.omega_egos
-        )
+                )
         
         # Generate final report
         final_report = {

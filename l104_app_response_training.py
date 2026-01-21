@@ -205,7 +205,7 @@ class EntityExtractor:
         self.compiled = {
             name: re.compile(pattern, re.IGNORECASE)
             for name, pattern in self.entity_patterns.items()
-        }
+                }
     
     def extract(self, text: str) -> Dict[str, List[str]]:
         """Extract all entities from text"""
@@ -396,7 +396,7 @@ class TrainingDataManager:
                     "quality": ex.quality_score
                 }
                 for ex in self.examples.values()
-            ],
+                    ],
             "feedback": [
                 {
                     "response_id": fb.response_id,
@@ -406,7 +406,7 @@ class TrainingDataManager:
                     "text": fb.feedback_text
                 }
                 for fb in self.feedback
-            ],
+                    ],
             "god_code": GOD_CODE,
             "exported_at": datetime.now().isoformat()
         }
@@ -623,7 +623,7 @@ class AppResponseTrainer:
         poor_feedback = [
             fb for fb in self.training_data.feedback
             if fb.rating.value <= 2
-        ]
+                ]
         
         for fb in poor_feedback[-10:]:  # Last 10 poor responses
             suggestions.append({
@@ -698,19 +698,19 @@ if __name__ == "__main__":
     
     training_examples = [
         {
-            "input": "what is my hashrate",
-            "response": "Your current hashrate is {hashrate}. Mining efficiency at {efficiency}%.",
-            "intent": "mining"
+    "input": "what is my hashrate",
+    "response": "Your current hashrate is {hashrate}. Mining efficiency at {efficiency}%.",
+    "intent": "mining"
         },
         {
-            "input": "show wallet balance",
-            "response": "Wallet Balance:\n• BTC: {btc_balance}\n• VALOR: {valor_balance}\n• USD Value: ${usd_value}",
-            "intent": "wallet"
+    "input": "show wallet balance",
+    "response": "Wallet Balance:\n• BTC: {btc_balance}\n• VALOR: {valor_balance}\n• USD Value: ${usd_value}",
+    "intent": "wallet"
         },
         {
-            "input": "start computronium mining",
-            "response": "Initializing Computronium Mining Core...\n✓ Substrate synchronized\n✓ Pool connected\n✓ Mining started at {hashrate}",
-            "intent": "mining"
+    "input": "start computronium mining",
+    "response": "Initializing Computronium Mining Core...\n✓ Substrate synchronized\n✓ Pool connected\n✓ Mining started at {hashrate}",
+    "intent": "mining"
         }
     ]
     
@@ -730,12 +730,12 @@ if __name__ == "__main__":
     
     for inp in test_inputs:
         result = trainer.process_input(inp, context_vars={
-            "hashrate": "125 MH/s",
-            "efficiency": 94.5,
-            "btc_balance": "0.00524",
-            "valor_balance": "1,250",
-            "usd_value": "542.80",
-            "pool": "L104 Primary"
+    "hashrate": "125 MH/s",
+    "efficiency": 94.5,
+    "btc_balance": "0.00524",
+    "valor_balance": "1,250",
+    "usd_value": "542.80",
+    "pool": "L104 Primary"
         })
         print(f"\n  User: {inp}")
         print(f"  Intent: {result['intent']} ({result['intent_confidence']:.2f})")

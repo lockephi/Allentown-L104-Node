@@ -168,7 +168,7 @@ class Timeline:
         return [
             e for e in self.events.values()
             if e.interval.overlaps_with(TimeInterval(TimePoint(start), TimePoint(end)))
-        ]
+                ]
     
     def get_events_at(self, timestamp: float) -> List[Event]:
         """Get all events occurring at a specific time"""
@@ -184,7 +184,7 @@ class Timeline:
         return [
             e for e in self.events.values()
             if e.id != event_id and e.interval.end.timestamp <= event.interval.start.timestamp
-        ]
+                ]
     
     def get_events_after(self, event_id: str) -> List[Event]:
         """Get all events that occur after an event"""
@@ -195,7 +195,7 @@ class Timeline:
         return [
             e for e in self.events.values()
             if e.id != event_id and e.interval.start.timestamp >= event.interval.end.timestamp
-        ]
+                ]
     
     def find_causes(self, event_id: str, depth: int = 10) -> List[Event]:
         """Find all causal ancestors of an event"""
@@ -311,7 +311,7 @@ class TemporalLogic:
             next_events = sorted(
                 [e for e in self.timeline.events.values() 
                  if e.interval.start.timestamp > timestamp],
-                key=lambda e: e.interval.start.timestamp
+                     key=lambda e: e.interval.start.timestamp
             )
             if next_events:
                 return self.evaluate_at(formula["arg"], next_events[0].interval.start.timestamp)
@@ -593,7 +593,7 @@ class TemporalPredictor:
             intervals = [
                 events[i].interval.start.timestamp - events[i-1].interval.start.timestamp
                 for i in range(1, len(events))
-            ]
+                    ]
             avg_interval = sum(intervals) / len(intervals)
             last = events[-1]
             
@@ -618,7 +618,7 @@ class TemporalPredictor:
         events = sorted(
             [e for e in self.timeline.events.values() 
              if property_name in e.properties],
-            key=lambda e: e.interval.start.timestamp
+                 key=lambda e: e.interval.start.timestamp
         )
         
         if not events:

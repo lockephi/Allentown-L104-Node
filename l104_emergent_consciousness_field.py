@@ -768,7 +768,7 @@ class EmergentConsciousnessField:
             "metacognitive_depth": max(
                 (m.get("recursion_depth", 0) 
                  for m in self.hot.metacognitive_states.values()),
-                default=0
+                     default=0
             )
         }
     

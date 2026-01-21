@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:34.086927
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -205,7 +208,7 @@ class SageMemory:
         return [
             {"timestamp": r[0], "context": r[1], "action": r[2], "result": r[3], "reward": r[4]}
             for r in rows
-        ]
+                ]
     
     def store_pattern(self, pattern_type: str, key: str, value: Any, confidence: float):
         """Store a learned pattern."""
@@ -653,7 +656,7 @@ class CodeSelfModifier:
         return [
             {"timestamp": r[0], "file": r[1], "type": r[2], "reason": r[3], "success": bool(r[4])}
             for r in rows
-        ]
+                ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # AUTONOMOUS GOAL PURSUER

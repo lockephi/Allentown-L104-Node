@@ -13,7 +13,7 @@ try:
 except ImportError:
     class UniversalConstants:
         PHI_GROWTH = 1.618033988749895
-        FRAME_LOCK = 416 / 286
+    FRAME_LOCK = 416 / 286
 
 
 class StructuralDampingSystem:

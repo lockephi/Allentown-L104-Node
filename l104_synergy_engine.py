@@ -951,7 +951,7 @@ class SynergyEngine:
         evo_nodes = [
             n for n in self.nodes.values() 
             if n.connected and "evolution" in n.capabilities
-        ]
+                ]
         
         for node in evo_nodes:
             if node.instance and hasattr(node.instance, 'trigger_evolution_cycle'):

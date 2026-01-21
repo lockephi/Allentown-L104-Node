@@ -510,7 +510,7 @@ class GraphEncoder:
         edge_vecs = [
             self.encode_edge(src, tgt, etype)
             for src, tgt, etype in edges
-        ]
+                ]
         
         return self.algebra.bundle(edge_vecs)
     

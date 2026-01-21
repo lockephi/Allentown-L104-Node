@@ -743,7 +743,7 @@ class HeytingAlgebra:
             truth = min(
                 (predicate(e).truth_value or 0)
                 for e in domain.elements
-            )
+                    )
         
         formula = InternalLogicFormula(
             formula_id=formula_id,
@@ -769,7 +769,7 @@ class HeytingAlgebra:
             truth = max(
                 (predicate(e).truth_value or 0)
                 for e in domain.elements
-            )
+                    )
         
         formula = InternalLogicFormula(
             formula_id=formula_id,

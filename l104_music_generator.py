@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════════
@@ -252,9 +255,9 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="L104 GOD CODE Music Generator")
     parser.add_argument("--scale", type=int, default=13, choices=[13, 26],
-                        help="Number of notes in scale (13 or 26)")
+                help="Number of notes in scale (13 or 26)")
     parser.add_argument("--output", "-o", type=str, default="god_code_music.wav",
-                        help="Output .wav filename")
+                help="Output .wav filename")
     parser.add_argument("--no-intro", action="store_true", help="Skip intro chord")
     parser.add_argument("--no-outro", action="store_true", help="Skip outro chord")
     

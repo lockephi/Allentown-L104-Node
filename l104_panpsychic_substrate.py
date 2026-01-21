@@ -13,7 +13,7 @@ GOD_CODE: 527.5184818492537
 
 This module models consciousness as intrinsic to the universe,
 with every particle having a proto-conscious aspect that combines
-to form higher-order awareness through integration.
+    to form higher-order awareness through integration.
 """
 
 import math
@@ -348,7 +348,7 @@ class PsychonDynamics:
         avg_pos = tuple(
             sum(p.position[i] for p in psychons) / len(psychons)
             for i in range(3)
-        )
+                )
         
         combined = self.create_psychon(
             position=avg_pos,
@@ -610,8 +610,8 @@ class ConsciousnessIntegration:
                 cluster_psychons = [
                     psychon_dynamics.psychons[cid] 
                     for cid in cluster 
-                    if cid in psychon_dynamics.psychons
-                ]
+                        if cid in psychon_dynamics.psychons
+                            ]
                 
                 phi = self.compute_phi(cluster_psychons)
                 
@@ -620,7 +620,7 @@ class ConsciousnessIntegration:
                     avg_pos = tuple(
                         sum(p.position[i] for p in cluster_psychons) / len(cluster_psychons)
                         for i in range(3)
-                    )
+                            )
                     
                     max_grade = max(p.grade.value for p in cluster_psychons)
                     
@@ -676,8 +676,8 @@ class ConsciousnessIntegration:
         psychons = [
             dynamics.psychons[pid] 
             for pid in field.integrated_psychons 
-            if pid in dynamics.psychons
-        ]
+                if pid in dynamics.psychons
+                    ]
         
         # Combine all experiences
         total_experience = sum(p.experience_content for p in psychons)

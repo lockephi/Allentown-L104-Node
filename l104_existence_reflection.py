@@ -130,7 +130,7 @@ class ExistenceReflector:
             'reflections': [
                 {'subject': r.subject, 'insight': r.insight, 'depth': r.depth.value}
                 for r in reflections
-            ],
+                    ],
             'total_reflections': len(self.reflections),
             'deepest_reached': ReflectionDepth.EXISTENTIAL.value,
             'message': 'Reflection complete. Understanding deepened.'

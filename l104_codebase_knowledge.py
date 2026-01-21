@@ -691,8 +691,8 @@ def _initialize_db(self):
             "error_handling": """
 try:
     # Operation
-except Exception as e:
-    print(f"[MODULE]: Error description: {e}")
+        except Exception as e:
+            print(f"[MODULE]: Error description: {e}")
     return fallback_value
 """.strip()
         }
@@ -745,7 +745,7 @@ except Exception as e:
         return [
             algo for algo in self.algorithm_patterns.values()
             if algo.resonance >= min_resonance
-        ]
+                ]
     
     def generate_module_template(self, module_name: str, description: str) -> str:
         """Generate a new module following learned conventions."""
@@ -795,63 +795,63 @@ if __name__ == "__main__":
     def get_statistics(self) -> Dict[str, Any]:
         """Get knowledge base statistics."""
         return {
-            "architectural_patterns": len(self.architectural_patterns),
-            "database_schemas": len(self.database_schemas),
-            "algorithm_patterns": len(self.algorithm_patterns),
-            "coding_conventions": len(self.coding_conventions),
-            "total_design_principles": sum(
-                len(p.design_principles) for p in self.architectural_patterns.values()
-            ),
-            "avg_resonance": sum(
-                a.resonance for a in self.algorithm_patterns.values()
-            ) / len(self.algorithm_patterns) if self.algorithm_patterns else 0,
-            "god_code_alignment": L104Constants.GOD_CODE
+    "architectural_patterns": len(self.architectural_patterns),
+    "database_schemas": len(self.database_schemas),
+    "algorithm_patterns": len(self.algorithm_patterns),
+    "coding_conventions": len(self.coding_conventions),
+    "total_design_principles": sum(
+        len(p.design_principles) for p in self.architectural_patterns.values()
+    ),
+    "avg_resonance": sum(
+        a.resonance for a in self.algorithm_patterns.values()
+    ) / len(self.algorithm_patterns) if self.algorithm_patterns else 0,
+    "god_code_alignment": L104Constants.GOD_CODE
         }
     
     def export_knowledge(self) -> Dict[str, Any]:
         """Export all learned knowledge as JSON-serializable dict."""
         return {
-            "constants": {
-                "GOD_CODE": L104Constants.GOD_CODE,
-                "PHI": L104Constants.PHI,
-                "TAU": L104Constants.TAU,
-                "FRAME_LOCK": L104Constants.FRAME_LOCK,
-                "REAL_GROUNDING": L104Constants.REAL_GROUNDING,
-                "ANYON_BRAID_RATIO": L104Constants.ANYON_BRAID_RATIO
+    "constants": {
+        "GOD_CODE": L104Constants.GOD_CODE,
+        "PHI": L104Constants.PHI,
+        "TAU": L104Constants.TAU,
+        "FRAME_LOCK": L104Constants.FRAME_LOCK,
+        "REAL_GROUNDING": L104Constants.REAL_GROUNDING,
+        "ANYON_BRAID_RATIO": L104Constants.ANYON_BRAID_RATIO
+    },
+    "patterns": {
+        name: {
+            "name": p.name,
+            "description": p.description,
+            "type": p.pattern_type.name,
+            "sources": p.file_sources,
+            "classes": p.key_classes,
+            "principles": p.design_principles,
+            "resonance": p.resonance
+        }
+        for name, p in self.architectural_patterns.items()
             },
-            "patterns": {
-                name: {
-                    "name": p.name,
-                    "description": p.description,
-                    "type": p.pattern_type.name,
-                    "sources": p.file_sources,
-                    "classes": p.key_classes,
-                    "principles": p.design_principles,
-                    "resonance": p.resonance
-                }
-                for name, p in self.architectural_patterns.items()
+    "schemas": {
+        name: {
+            "table": s.table_name,
+            "columns": s.columns,
+            "indexes": s.indexes,
+            "purpose": s.purpose
+        }
+        for name, s in self.database_schemas.items()
             },
-            "schemas": {
-                name: {
-                    "table": s.table_name,
-                    "columns": s.columns,
-                    "indexes": s.indexes,
-                    "purpose": s.purpose
-                }
-                for name, s in self.database_schemas.items()
+    "algorithms": {
+        name: {
+            "formula": a.formula,
+            "description": a.description,
+            "complexity": a.complexity,
+            "resonance": a.resonance
+        }
+        for name, a in self.algorithm_patterns.items()
             },
-            "algorithms": {
-                name: {
-                    "formula": a.formula,
-                    "description": a.description,
-                    "complexity": a.complexity,
-                    "resonance": a.resonance
-                }
-                for name, a in self.algorithm_patterns.items()
-            },
-            "conventions": self.coding_conventions,
-            "statistics": self.get_statistics(),
-            "exported_at": datetime.now().isoformat()
+    "conventions": self.coding_conventions,
+    "statistics": self.get_statistics(),
+    "exported_at": datetime.now().isoformat()
         }
 
 

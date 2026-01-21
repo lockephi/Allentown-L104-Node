@@ -646,7 +646,7 @@ class UTXOTracker:
         return [
             u for u in self.utxos.values()
             if u['confirmations'] >= min_confirmations
-        ]
+                ]
 
 
 class BitcoinNetworkAdapter:

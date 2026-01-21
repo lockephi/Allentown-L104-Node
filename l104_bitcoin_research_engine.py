@@ -483,8 +483,8 @@ class LightningNetworkModeler:
             total_capacity = sum(
                 self.channels[ch_id].capacity
                 for ch_id in self.nodes[node].get('channels', [])
-                if ch_id in self.channels
-            )
+                    if ch_id in self.channels
+                        )
             
             centrality[node] = channel_count * math.log(total_capacity + 1)
         
@@ -529,7 +529,7 @@ class TaprootAnalyzer:
         leaves = [
             hashlib.sha256(s).hexdigest()
             for s in scripts
-        ]
+                ]
         
         while len(leaves) > 1:
             new_leaves = []
@@ -855,7 +855,7 @@ class BitcoinResearchEngine:
         estimates = {
             blocks: self.fees.estimate_fee(blocks)
             for blocks in [1, 3, 6, 12, 24]
-        }
+                }
         
         self.insights_generated += 1
         

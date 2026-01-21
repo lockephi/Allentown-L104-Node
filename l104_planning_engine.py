@@ -405,7 +405,7 @@ class TemporalPlanner:
                 task.earliest_start = max(
                     self.tasks[dep].earliest_start + self.tasks[dep].duration
                     for dep in task.dependencies if dep in self.tasks
-                )
+                        )
             else:
                 task.earliest_start = 0.0
     
@@ -457,7 +457,7 @@ class TemporalPlanner:
                     "slack": task.latest_start - task.earliest_start
                 }
                 for tid, task in self.tasks.items()
-            },
+                    },
             "critical_path": critical_path,
             "makespan": makespan,
             "num_tasks": len(self.tasks)
@@ -589,11 +589,11 @@ class L104PlanningCore:
                 parameters=tuple(action_def.get("parameters", [])),
                 preconditions={Predicate(p["name"], tuple(p.get("args", []))) 
                               for p in action_def.get("preconditions", [])},
-                add_effects={Predicate(p["name"], tuple(p.get("args", []))) 
+                                  add_effects={Predicate(p["name"], tuple(p.get("args", []))) 
                             for p in action_def.get("add_effects", [])},
-                delete_effects={Predicate(p["name"], tuple(p.get("args", []))) 
+                                delete_effects={Predicate(p["name"], tuple(p.get("args", []))) 
                                for p in action_def.get("delete_effects", [])},
-                cost=action_def.get("cost", 1.0)
+                                   cost=action_def.get("cost", 1.0)
             )
             self.strips.add_action(action)
     

@@ -13,7 +13,7 @@ GOD_CODE: 527.5184818492537
 
 This module models the deep structure of spacetime as a set of events
 with causal ordering, where dimension and geometry emerge from
-the counting of causal chains.
+    the counting of causal chains.
 """
 
 import math
@@ -429,7 +429,7 @@ class CausalSprinkling:
             spatial = tuple(
                 random.uniform(space_range[0], space_range[1])
                 for _ in range(dimensions - 1)
-            )
+                    )
             coords = (t,) + spatial
             
             # Find causal past
@@ -786,7 +786,7 @@ class CausalSetEngine:
         valences = [
             e.valence_past + e.valence_future 
             for e in self.causet.events.values()
-        ]
+                ]
         avg_valence = sum(valences) / len(valences) if valences else 0
         
         return {

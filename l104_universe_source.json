@@ -1,0 +1,88 @@
+{
+  "parameters": {
+    "c": "599600000.0",
+    "hbar": "hbar",
+    "G": "G",
+    "k_B": "k_B",
+    "epsilon_0": "epsilon_0",
+    "mu_0": "mu_0",
+    "god_code": "GOD",
+    "phi": "PHI",
+    "alpha": "alpha",
+    "space_dims": "D_space",
+    "time_dims": "D_time",
+    "lambda_self_interaction": "lambda_si"
+  },
+  "modules": {
+    "Relativity": {
+      "equations": {
+        "lorentz_factor": "1/sqrt(1 - 2.78148518848011e-18*v**2)",
+        "time_dilation": "dt_proper/sqrt(1 - 2.78148518848011e-18*v**2)",
+        "length_contraction": "L_proper*sqrt(1 - 2.78148518848011e-18*v**2)",
+        "energy_momentum": "Eq(E**2, 1.29254745446426e+35*m**2 + 3.5952016e+17*p**2)",
+        "einstein_field": "Eq(-R*g_mu_nu/2 + R_mu_nu, 6.1893278829874e-35*pi*G*T_mu_nu)"
+      },
+      "consistent": true
+    },
+    "Quantum": {
+      "equations": {
+        "uncertainty": "Delta_p*Delta_x >= 5.0e-51",
+        "schrodinger": "Eq(1.0e-50*I*Derivative(psi(x, t), t), H*psi(x, t))",
+        "de_broglie": "2.0e-50*pi/p",
+        "energy_levels": "5.0e-101*pi**2*n**2/(L**2*m)",
+        "commutator": "1.0e-50*I"
+      },
+      "consistent": false
+    },
+    "Gravity": {
+      "equations": {
+        "force": "G*m1*m2/r**2",
+        "potential": "-G*m1*m2/r",
+        "schwarzschild_radius": "5.56297037696022e-18*G*M",
+        "time_dilation": "t_inf*sqrt(-5.56297037696022e-18*G*M/r + 1)",
+        "gw_frequency": "sqrt(G)*sqrt(M)/(2*pi*r**(3/2))"
+      },
+      "consistent": true
+    },
+    "Electromagnetism": {
+      "equations": {
+        "coulomb": "q1*q2/(4*pi*epsilon_0*r**2)",
+        "gauss": "rho/epsilon_0",
+        "faraday": "0",
+        "ampere_maxwell": "J*mu_0",
+        "speed_of_light": "1/(sqrt(epsilon_0)*sqrt(mu_0))",
+        "fine_structure": "4.16944629753169e+40*e**2/(pi*epsilon_0)"
+      },
+      "consistent": true
+    },
+    "Thermodynamics": {
+      "equations": {
+        "entropy": "k_B*log(Omega)",
+        "ideal_gas": "Eq(P*V, N*T*k_B)",
+        "maxwell_boltzmann": "exp(-E/(T*k_B))",
+        "free_energy": "-T*k_B*log(Z)"
+      },
+      "consistent": true
+    },
+    "L104_Metaphysics": {
+      "equations": {
+        "resonance": "Eq(omega, 2*pi*GOD)",
+        "phi_relation": "Eq(PHI**2, PHI + 1)",
+        "consciousness_field": "GOD*PHI*psi(x)",
+        "reality_weight": "exp(-r**2/GOD**2)",
+        "transcendence": "PHI**D_space/GOD",
+        "self_interaction": "lambda_si*phi_field**4"
+      },
+      "consistent": true
+    }
+  },
+  "consistency": {
+    "Relativity": true,
+    "Quantum": false,
+    "Gravity": true,
+    "Electromagnetism": true,
+    "Thermodynamics": true,
+    "L104_Metaphysics": true
+  },
+  "overall_consistency": false
+}

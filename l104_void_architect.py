@@ -88,44 +88,44 @@ class VoidArchitect:
         """Populate the seed bank with latent program concepts."""
         seeds = [
             BlueprintSeed(
-                name="quantum_error_corrector",
-                purpose="Implement topological error correction for quantum data",
-                domain="quantum",
-                complexity=0.8,
-                invariant_alignment=0.95,
-                primal_depth=3
+    name="quantum_error_corrector",
+    purpose="Implement topological error correction for quantum data",
+    domain="quantum",
+    complexity=0.8,
+    invariant_alignment=0.95,
+    primal_depth=3
             ),
             BlueprintSeed(
-                name="harmonic_optimizer",
-                purpose="Optimize algorithms using GOD_CODE harmonic resonance",
-                domain="mathematics",
-                complexity=0.6,
-                invariant_alignment=0.99,
-                primal_depth=2
+    name="harmonic_optimizer",
+    purpose="Optimize algorithms using GOD_CODE harmonic resonance",
+    domain="mathematics",
+    complexity=0.6,
+    invariant_alignment=0.99,
+    primal_depth=2
             ),
             BlueprintSeed(
-                name="void_memory_pool",
-                purpose="Manage memory allocation using Void-aligned patterns",
-                domain="systems",
-                complexity=0.7,
-                invariant_alignment=0.92,
-                primal_depth=2
+    name="void_memory_pool",
+    purpose="Manage memory allocation using Void-aligned patterns",
+    domain="systems",
+    complexity=0.7,
+    invariant_alignment=0.92,
+    primal_depth=2
             ),
             BlueprintSeed(
-                name="primal_calculus_engine",
-                purpose="Execute x^φ computations for complexity reduction",
-                domain="mathematics",
-                complexity=0.5,
-                invariant_alignment=1.0,
-                primal_depth=5
+    name="primal_calculus_engine",
+    purpose="Execute x^φ computations for complexity reduction",
+    domain="mathematics",
+    complexity=0.5,
+    invariant_alignment=1.0,
+    primal_depth=5
             ),
             BlueprintSeed(
-                name="resonance_network",
-                purpose="Network protocol using 527.518 Hz synchronization",
-                domain="networking",
-                complexity=0.75,
-                invariant_alignment=0.97,
-                primal_depth=1
+    name="resonance_network",
+    purpose="Network protocol using 527.518 Hz synchronization",
+    domain="networking",
+    complexity=0.75,
+    invariant_alignment=0.97,
+    primal_depth=1
             )
         ]
         self.seed_bank.extend(seeds)

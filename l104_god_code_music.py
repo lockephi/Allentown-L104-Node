@@ -308,13 +308,13 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="L104 GOD CODE Music Synthesizer")
     parser.add_argument("--notes", type=int, default=13, choices=[13, 26],
-                        help="Number of notes in scale (13=1 octave, 26=2 octaves)")
+                help="Number of notes in scale (13=1 octave, 26=2 octaves)")
     parser.add_argument("--extended", action="store_true",
-                        help="Generate extended lattice composition")
+                help="Generate extended lattice composition")
     parser.add_argument("--output", type=str, default="god_code_music.wav",
-                        help="Output filename")
+                help="Output filename")
     parser.add_argument("--tempo", type=float, default=1.0,
-                        help="Tempo multiplier (0.5=faster, 2.0=slower)")
+                help="Tempo multiplier (0.5=faster, 2.0=slower)")
     
     args = parser.parse_args()
     
@@ -322,8 +322,8 @@ if __name__ == "__main__":
         samples = generate_extended_composition()
     else:
         samples = synthesize_god_code_music(
-            num_notes=args.notes,
-            duration_multiplier=args.tempo
+    num_notes=args.notes,
+    duration_multiplier=args.tempo
         )
     
     save_wav(samples, args.output)

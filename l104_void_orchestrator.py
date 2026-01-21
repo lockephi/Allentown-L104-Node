@@ -406,7 +406,7 @@ class VoidOrchestrator:
                     "coherence_delta": r.coherence_delta
                 }
                 for r in results
-            ]
+                    ]
         }
     
     def get_status(self) -> Dict[str, Any]:
@@ -466,4 +466,4 @@ def demonstrate_orchestrator():
 
 
 if __name__ == "__main__":
-    demonstrate_orchestrator()
+            demonstrate_orchestrator()

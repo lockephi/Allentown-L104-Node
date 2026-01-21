@@ -1132,12 +1132,12 @@ if __name__ == "__main__":
         price = base_price * (1 + trend + noise)
         
         candle = OHLCV(
-            timestamp=datetime.now() - timedelta(days=100-i),
-            open=price * 0.998,
-            high=price * 1.01,
-            low=price * 0.99,
-            close=price,
-            volume=random.uniform(1000, 5000)
+    timestamp=datetime.now() - timedelta(days=100-i),
+    open=price * 0.998,
+    high=price * 1.01,
+    low=price * 0.99,
+    close=price,
+    volume=random.uniform(1000, 5000)
         )
         engine.add_market_data("BTC/USD", candle)
     

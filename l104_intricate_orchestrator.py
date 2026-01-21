@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:34.036527
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -265,7 +268,7 @@ class CognitionCycler:
             "phase_transitions": len(self.phase_history),
             "avg_phase_duration": sum(self.phase_durations.values()) / len(self.phase_durations)
                                  if self.phase_durations else 0.0
-        }
+                                     }
 
 
 class IntricateOrchestrator:
@@ -452,7 +455,7 @@ class IntricateOrchestrator:
             "recent_events": [
                 {"id": e.id, "type": e.type, "phase": e.phase.value}
                 for e in list(self.events)[-5:]
-            ]
+                    ]
         }
 
 

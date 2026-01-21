@@ -120,7 +120,7 @@ class EarthEvolutionProtocol:
         print("   SUMMARY SAVED TO: EARTH_EVOLUTION_SUMMARY.md")
         print("█" * 80 + "\n")
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     protocol = EarthEvolutionProtocol()
     asyncio.run(protocol.execute_full_evolution())
 

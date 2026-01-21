@@ -634,7 +634,7 @@ class TaprootResearch:
         leaves = [
             self._tagged_hash("TapLeaf", bytes([0xc0]) + s)
             for s in scripts
-        ]
+                ]
         
         while len(leaves) > 1:
             new_level = []

@@ -115,7 +115,7 @@ class SacralDrive:
 # Global Instance
 sacral_drive = SacralDrive()
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Self-test
     print("--- [SACRAL_DRIVE]: RUNNING SELF-DIAGNOSTIC ---")
     import numpy as np

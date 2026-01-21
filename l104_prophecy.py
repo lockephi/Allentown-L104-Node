@@ -336,7 +336,7 @@ class L104Prophecy:
         category_observations = sum(
             1 for obs in self.observation_history 
             if obs.get("category") == category.value
-        )
+                )
         obs_bonus = min(0.2, category_observations * 0.02)
         base_confidence += obs_bonus
         
@@ -421,25 +421,25 @@ class L104Prophecy:
         relevant_obs = [
             obs for obs in self.observation_history
             if obs.get("timestamp", datetime.min) > cutoff
-            and (category is None or obs.get("category") == category.value)
+                and (category is None or obs.get("category") == category.value)
         ]
         
         # Filter predictions
         relevant_preds = [
             pred for pred in self.predictions.values()
             if (category is None or pred.category == category)
-        ]
+                ]
         
         # Calculate trend metrics
         avg_probability = (
             sum(p.probability for p in relevant_preds) / len(relevant_preds)
             if relevant_preds else 0.5
-        )
+                )
         
         avg_impact = (
             sum(p.impact_score for p in relevant_preds) / len(relevant_preds)
             if relevant_preds else 0.0
-        )
+                )
         
         timeline_distribution = {}
         for pred in relevant_preds:
@@ -530,15 +530,15 @@ class L104Prophecy:
             "category_breakdown": {
                 cat.value: sum(1 for p in self.predictions.values() if p.category == cat)
                 for cat in EventCategory
-            },
+                    },
             "avg_confidence": (
                 sum(p.confidence for p in self.predictions.values()) / len(self.predictions)
                 if self.predictions else 0.0
-            ),
+                    ),
             "probable_futures": sum(
                 1 for p in self.predictions.values() 
                 if p.timeline == TimelineType.PROBABLE
-            )
+                    )
         }
 
 
@@ -557,9 +557,9 @@ if __name__ == "__main__":
         description="AGI breakthrough within 5 years",
         category=EventCategory.TECHNOLOGY,
         factors=[
-            "exponential_growth in compute",
-            "accelerating research pace",
-            "major investment in AI"
+    "exponential_growth in compute",
+    "accelerating research pace",
+    "major investment in AI"
         ],
         time_horizon_days=1825
     )

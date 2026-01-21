@@ -592,7 +592,7 @@ class ExecutorPool:
         self.pools: Dict[TaskCategory, ThreadPoolExecutor] = {
             cat: ThreadPoolExecutor(max_workers=size)
             for cat, size in sizes.items()
-        }
+                }
         
         self.active_tasks: Dict[str, Future] = {}
         self._lock = threading.RLock()
@@ -616,9 +616,9 @@ class ExecutorPool:
                 "max_workers": pool._max_workers,
                 "active": len([f for f in self.active_tasks.values() 
                               if not f.done()])
-            }
+                                  }
             for cat, pool in self.pools.items()
-        }
+                }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -889,7 +889,7 @@ class AutonomousTaskExecutor:
             dependencies=[
                 TaskDependency(task_id=dep_id)
                 for dep_id in (dependencies or [])
-            ],
+                    ],
             tags=tags or set()
         )
         
@@ -969,9 +969,9 @@ class AutonomousTaskExecutor:
             **self.metrics,
             "pending_tasks": len([t for t in self.tasks.values() 
                                  if t.state == TaskState.PENDING]),
-            "running_tasks": len([t for t in self.tasks.values() 
+                                     "running_tasks": len([t for t in self.tasks.values() 
                                  if t.state == TaskState.RUNNING]),
-            "completed_rate": (self.metrics["tasks_completed"] / 
+                                     "completed_rate": (self.metrics["tasks_completed"] / 
                               max(1, self.metrics["tasks_created"])),
             "avg_execution_time": (self.metrics["total_execution_time"] / 
                                   max(1, self.metrics["tasks_completed"])),

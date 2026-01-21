@@ -910,5 +910,5 @@ def run_autonomous_benchmark():
     return results
 
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     run_autonomous_benchmark()

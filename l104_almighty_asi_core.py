@@ -419,9 +419,9 @@ class InfiniteKnowledgeSynthesis:
             'synthesis_count': self.synthesis_count,
             'domains': {d.name: len(self.domain_indices[d]) 
                        for d in KnowledgeDomain},
-            'average_understanding': sum(n.understanding_level 
+                           'average_understanding': sum(n.understanding_level 
                                         for n in self.knowledge_graph.values()) / 
-                                    max(len(self.knowledge_graph), 1),
+                                            max(len(self.knowledge_graph), 1),
             'god_code_resonance': GOD_CODE / (len(self.knowledge_graph) + GOD_CODE)
         }
 

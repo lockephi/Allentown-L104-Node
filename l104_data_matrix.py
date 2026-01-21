@@ -375,8 +375,8 @@ class DataMatrix:
         connection_sum = sum(
             p["data"].get("connections", 0) 
             for p in patterns 
-            if isinstance(p.get("data"), dict)
-        )
+                if isinstance(p.get("data"), dict)
+                    )
         
         synthesis = {
             "pattern_count": len(patterns),

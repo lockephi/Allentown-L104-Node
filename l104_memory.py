@@ -143,7 +143,7 @@ class L104Memory:
             return [
                 {"key": r[0], "value": r[1], "category": r[2], "importance": r[3]}
                 for r in rows
-            ]
+                    ]
         except Exception as e:
             print(f"[MEMORY]: Search error: {e}")
             return []

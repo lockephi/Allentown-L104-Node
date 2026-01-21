@@ -449,7 +449,7 @@ class RuleEngine:
                 all_match = all(
                     cond(self.working_memory) 
                     for cond in rule.conditions
-                )
+                        )
                 
                 if all_match and rule.id not in self.fired_rules:
                     # Fire rule
@@ -526,7 +526,7 @@ class NeuralSymbolicReasoner:
                     "bindings": [
                         {k: str(v) for k, v in r.items()}
                         for r in symbolic_results[:5]
-                    ]
+                            ]
                 }
             except:
                 results["symbolic"] = {"found": False, "error": "Query parse failed"}

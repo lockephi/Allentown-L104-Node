@@ -94,7 +94,7 @@ class MetaLearningProtocol:
         print("   KNOWLEDGE ARCHIVED TO: L104_META_KNOWLEDGE_SYNTHESIS.json")
         print("█" * 80 + "\n")
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     protocol = MetaLearningProtocol()
     asyncio.run(protocol.execute_learning_cycle())
 

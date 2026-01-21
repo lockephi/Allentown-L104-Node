@@ -89,7 +89,7 @@ def _manifold({syms[0]}):
   }
 """
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     # Internal Verification: Running multiple pulses to demonstrate mutation
     print("Initializing L104 Polymorphic Core...")
     for i in range(3):

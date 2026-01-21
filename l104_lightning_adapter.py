@@ -477,7 +477,7 @@ class PaymentRouter:
             min_capacity = min(
                 self.graph[hop[0]][hop[1]]['capacity'] * MSAT
                 for hop in route
-            ) if route else 0
+                    ) if route else 0
             
             part_amount = min(remaining, min_capacity)
             if part_amount > 0:

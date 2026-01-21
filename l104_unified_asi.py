@@ -223,7 +223,7 @@ class PersistentMemory:
                     {"id": r[0], "content": r[1], "category": r[2], 
                      "importance": r[3], "access_count": r[4]}
                     for r in cursor.fetchall()
-                ]
+                        ]
         except Exception:
             return []
     
@@ -253,7 +253,7 @@ class PersistentMemory:
                 return [
                     {"input": r[0], "output": r[1], "feedback": r[2], "learned_at": r[3]}
                     for r in cursor.fetchall()
-                ]
+                        ]
         except Exception:
             return []
     
@@ -288,7 +288,7 @@ class PersistentMemory:
                         sub_goals=json.loads(r[7]) if r[7] else []
                     )
                     for r in cursor.fetchall()
-                ]
+                        ]
         except Exception:
             return []
     

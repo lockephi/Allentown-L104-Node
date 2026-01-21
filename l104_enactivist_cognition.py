@@ -290,11 +290,11 @@ class SensorimotorSystem:
             cont.motor_pattern = [
                 (1 - alpha) * m + alpha * a
                 for m, a in zip(cont.motor_pattern, action.commands)
-            ]
+                    ]
             cont.sensory_expectation = [
                 (1 - alpha) * s + alpha * v
                 for s, v in zip(cont.sensory_expectation, consequence.values)
-            ]
+                    ]
             cont.reliability = min(1.0, cont.reliability + 0.01)
         else:
             cont = SensorimotorContingency(
@@ -375,7 +375,7 @@ class AutopoieticOrganization:
         self_producing = all(
             any(c in products for products in productions.values())
             for c in components
-        )
+                )
         viability = 0.8 if self_producing else 0.4
         
         process = AutopoieticProcess(
@@ -489,7 +489,7 @@ class CouplingDynamics:
             covariance = sum(
                 (o - org_mean) * (e - env_mean)
                 for o, e in zip(organism_vars[:len(env_vars)], env_vars)
-            ) / min(len(organism_vars), len(env_vars))
+                    ) / min(len(organism_vars), len(env_vars))
             
             strength = abs(covariance) * COUPLING_STRENGTH
         else:
@@ -523,11 +523,11 @@ class CouplingDynamics:
         org_change = sum(
             abs(new_organism_state.get(k, 0) - old_org.get(k, 0))
             for k in set(new_organism_state) | set(old_org)
-        )
+                )
         env_change = sum(
             abs(new_environment_state.get(k, 0) - old_env.get(k, 0))
             for k in set(new_environment_state) | set(old_env)
-        )
+                )
         
         # Co-variation indicates coupling
         if org_change > 0 and env_change > 0:
@@ -565,7 +565,7 @@ class CouplingDynamics:
         crossings = sum(
             1 for i in range(1, len(values))
             if (values[i - 1] - mean_val) * (values[i] - mean_val) < 0
-        )
+                )
         
         # Oscillation indicates mutual influence
         return crossings > len(values) / 5

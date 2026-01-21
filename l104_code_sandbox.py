@@ -167,7 +167,7 @@ def test_assert(condition, message="Assertion failed"):
 
 try:
 {chr(10).join("    " + line for line in test_code.split(chr(10)))}
-except Exception as e:
+        except Exception as e:
     test_results["failed"] += 1
     test_results["errors"].append(str(e))
     traceback.print_exc()

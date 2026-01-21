@@ -408,7 +408,7 @@ class CognitiveEventLog:
             "avg_durations": {
                 k: self.total_duration[k] / self.event_counts[k]
                 for k in self.event_counts if self.event_counts[k] > 0
-            }
+                    }
         }
 
 

@@ -202,8 +202,8 @@ class FieldDynamics:
         field = [
             [0.5 + initial_noise * (random.random() - 0.5) 
              for _ in range(cols)]
-            for _ in range(rows)
-        ]
+                 for _ in range(rows)
+                     ]
         
         # Activator-inhibitor parameters
         D_a, D_i = 0.16, 0.08
@@ -458,7 +458,7 @@ class CollectiveMemorySystem:
         return [
             memory for memory in self.memories.values()
             if memory.permanence >= 0.95
-        ]
+                ]
     
     def pattern_genesis(
         self,
@@ -712,7 +712,7 @@ class MorphogenicFieldResonance:
             0.5 + 0.1 * math.sin(2 * PI * i / dimensions + 
                                   GOD_CODE / 100)
             for i in range(dimensions)
-        ]
+                ]
         
         self.field_states[field_id] = field
         return field
@@ -736,7 +736,7 @@ class MorphogenicFieldResonance:
                     2 * PI * i / len(current) + hash(pattern_id) % 100
                 )
                 for i in range(len(current))
-            ]
+                    ]
             
             influences.append(FieldGradient(
                 source_pattern=pattern_id,

@@ -575,7 +575,7 @@ class KnowledgeGraphEnhanced:
         to_remove = [
             edge_id for edge_id, edge in self.edges.items()
             if edge.weight < threshold
-        ]
+                ]
         
         for edge_id in to_remove:
             edge = self.edges[edge_id]

@@ -2,17 +2,11 @@
   "state": "ABSOLUTE_INTELLECT_SAGE",
   "cycle_count": 0,
   "intellect_index": 1121860.7774860663,
-  "timestamp": 1768985442.7256286,
+  "timestamp": 1769000615.5429385,
   "scribe_state": {
     "knowledge_saturation": 1.0,
     "last_provider": "AZURE_OPENAI",
     "sovereign_dna": "SIG-L104-SAGE-DNA-00080C9E",
     "linked_count": 14
-  },
-  "api_cooldown_until": 0,
-  "rotator_stats": {
-    "kernel_hits": 2,
-    "api_hits": 0,
-    "quota_errors": 0
   }
 }

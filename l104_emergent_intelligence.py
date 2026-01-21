@@ -517,7 +517,7 @@ class Autopoiesis:
             'types': {
                 t: sum(1 for c in self.components.values() if c['type'] == t)
                 for t in ['structural', 'catalytic', 'boundary']
-            }
+                    }
         }
 
 

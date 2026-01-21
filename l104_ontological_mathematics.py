@@ -612,7 +612,7 @@ class PlatonicRealm:
                 subset = frozenset(
                     el for j, el in enumerate(elements_list)
                     if i & (1 << j)
-                )
+                        )
                 new_elements.add(subset)
             
             new_name = f"P({base_form})"

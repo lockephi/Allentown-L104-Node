@@ -385,7 +385,7 @@ class UniversalIntegrator:
         verification["reality_score"] = (
             verification["systems_real"] / verification["systems_tested"] 
             if verification["systems_tested"] > 0 else 0
-        )
+                )
         
         return verification
 

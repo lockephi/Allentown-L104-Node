@@ -761,5 +761,5 @@ def activate_healing_fabric():
     return fabric
 
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     activate_healing_fabric()

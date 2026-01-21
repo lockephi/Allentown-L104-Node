@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:33.996757
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -706,7 +709,7 @@ class MorphicResonanceField:
                                      np.log2(np.abs(data/np.sum(np.abs(data)+1e-10)) + 1e-10))),
             "symmetry": float(np.corrcoef(data.flatten(), data[::-1, ::-1].flatten())[0, 1]) 
                         if data.size > 1 else 0.0,
-            "phi_alignment": float(np.mean(np.abs(data) % PHI) / PHI)
+                            "phi_alignment": float(np.mean(np.abs(data) % PHI) / PHI)
         }
         
     def induce_resonance(self, pattern_id: str, intensity: float = 1.0) -> Dict[str, Any]:

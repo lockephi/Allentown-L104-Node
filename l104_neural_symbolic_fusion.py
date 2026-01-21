@@ -101,7 +101,7 @@ class NeuralLayer:
         self.weights = [
             [random.gauss(0, scale) for _ in range(output_dim)]
             for _ in range(input_dim)
-        ]
+                ]
         self.biases = [0.0] * output_dim
     
     def forward(self, inputs: List[float]) -> List[float]:
@@ -258,7 +258,7 @@ class NeuralSymbolicEncoder:
         distance = math.sqrt(sum(
             (predicted[i] - obj_emb.vector[i])**2
             for i in range(self.embedding_dim)
-        ))
+                ))
         
         # Convert to probability
         return math.exp(-distance)
@@ -303,7 +303,7 @@ class DifferentiableLogic:
         distance = math.sqrt(sum(
             (term1[i] - term2[i])**2
             for i in range(len(term1))
-        ))
+                ))
         
         return math.exp(-distance / self.temperature)
     
@@ -338,11 +338,11 @@ class ConceptLearner:
         pos_embeddings = [
             self.encoder.embed_symbol(str(ex)).vector
             for ex in positive
-        ]
+                ]
         neg_embeddings = [
             self.encoder.embed_symbol(str(ex)).vector
             for ex in negative
-        ]
+                ]
         
         # Compute centroid of positive examples
         if pos_embeddings:
@@ -350,7 +350,7 @@ class ConceptLearner:
             centroid = [
                 sum(emb[i] for emb in pos_embeddings) / len(pos_embeddings)
                 for i in range(dim)
-            ]
+                    ]
             concept.neural_representation = centroid
         
         # Symbolic approach: find discriminating features
@@ -391,7 +391,7 @@ class ConceptLearner:
             distance = math.sqrt(sum(
                 (concept.neural_representation[i] - example_emb[i])**2
                 for i in range(len(concept.neural_representation))
-            ))
+                    ))
             
             is_positive = distance < 1.0
             return is_positive == expected_positive
@@ -411,7 +411,7 @@ class ConceptLearner:
             distance = math.sqrt(sum(
                 (concept.neural_representation[i] - example_emb[i])**2
                 for i in range(len(concept.neural_representation))
-            ))
+                    ))
             
             probability = math.exp(-distance)
             return probability > 0.5, probability

@@ -355,7 +355,7 @@ class CoinResearchAggregator:
                     'loc': m.lines_of_code
                 }
                 for m in self.modules.values()
-            ],
+                    ],
             
             'capability_matrix': {
                 k: len(v) for k, v in matrix.items()

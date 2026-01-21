@@ -767,8 +767,8 @@ class KernelLearningEngine:
             # Remove associated synapses
             to_remove = [sid for sid, s in self.synapses.items() 
                         if s.source_quantum == quantum_id or s.target_quantum == quantum_id]
-            for sid in to_remove:
-                del self.synapses[sid]
+        for sid in to_remove:
+                                del self.synapses[sid]
     
     def consolidate(self) -> int:
         """Consolidate knowledge by strengthening strong synapses and pruning weak ones."""
@@ -988,7 +988,7 @@ class KernelEvolutionEngine:
             domain_quanta = [
                 q for q in self.learning_engine.knowledge_base.values()
                 if q.domain == domain and q.coherence >= 0.7 and q.certainty >= 0.7
-            ]
+                    ]
             
             if len(domain_quanta) >= 3:
                 crystal = self.crystallizer.crystallize(domain_quanta[:5], domain)
@@ -1099,12 +1099,12 @@ class KernelEvolutionEngine:
                 "by_domain": {
                     d.name: len(self.crystallizer.get_domain_crystals(d))
                     for d in KnowledgeDomain
-                }
+                        }
             },
             "scaffolds": {
                 scaffold.scaffold_id: scaffold.get_progress()
                 for scaffold in self.scaffolds.values()
-            },
+                    },
             "learning": self.learning_engine.get_learning_state(),
             "evolution_history_count": len(self.evolution_history),
             "god_code": GOD_CODE,
@@ -1330,4 +1330,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+            main()

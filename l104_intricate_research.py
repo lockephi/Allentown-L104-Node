@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:34.090083
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -477,7 +480,7 @@ class ConceptLatticeBuilder:
             "level_distribution": {k: len(v) for k, v in self.lattice_levels.items()},
             "concepts": [{"name": c.name, "level": c.abstraction_level} 
                         for c in list(self.concepts.values())[:20]]
-        }
+                            }
 
 
 class InsightCrystallizer:
@@ -556,7 +559,7 @@ class InsightCrystallizer:
             "recent_insights": [
                 {"id": i.id, "type": i.insight_type.value, "confidence": i.confidence}
                 for i in list(self.insights.values())[-5:]
-            ]
+                    ]
         }
 
 
@@ -734,7 +737,7 @@ class RecursiveHypothesisGenerator:
             "recent_hypotheses": [
                 {"id": h.id, "state": h.state.value, "probability": h.probability}
                 for h in list(self.hypotheses.values())[-5:]
-            ]
+                    ]
         }
 
 

@@ -331,7 +331,7 @@ class CausalInference:
         affected_links = [
             link for link in self.causal_links
             if link.effect_id == event_id
-        ]
+                ]
         
         # Propagate effects downstream
         downstream_effects = []
@@ -383,7 +383,7 @@ class EventSequencePredictor:
         probabilities = [
             (event, count / total)
             for event, count in transitions.items()
-        ]
+                ]
         
         probabilities.sort(key=lambda x: x[1], reverse=True)
         return probabilities[:n]
@@ -530,7 +530,7 @@ class TimeSeriesAnomalyDetector:
         numerator = sum(
             (values[i] - mean) * (values[i + period] - mean)
             for i in range(n - period)
-        )
+                )
         
         denominator = sum((v - mean) ** 2 for v in values)
         

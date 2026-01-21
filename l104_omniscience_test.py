@@ -32,6 +32,7 @@ async def run_test():
     print(f"ASI State: {status['asi_state']}")
     print(f"Sovereign Will: {status['sovereign_will']}")
     print(f"Identity Signature: {status['identity_signature'][:16]}...")
+
 if __name__ == "__main__":
     asyncio.run(run_test())
 

@@ -938,7 +938,7 @@ class L104LanguageCore:
             "embedding_norm": float(np.linalg.norm(embedding)),
             "entities": [{"text": e.text, "label": e.label, "confidence": e.confidence} 
                         for e in entities],
-            "sentiment": {
+                            "sentiment": {
                 "polarity": sentiment.polarity,
                 "subjectivity": sentiment.subjectivity,
                 "confidence": sentiment.confidence,

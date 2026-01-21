@@ -499,7 +499,7 @@ class L104Swarm:
                     "capabilities": agent.state.capabilities
                 }
                 for aid, agent in self.agents.items()
-            },
+                    },
             "metrics": {
                 "total_messages": self.total_messages,
                 "total_tasks": self.total_tasks,

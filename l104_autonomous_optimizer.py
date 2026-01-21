@@ -7,7 +7,7 @@ L104 Autonomous Optimizer - TRUE_AGI Module
 ============================================
 
 Self-triggered optimization with multi-objective balancing
-for autonomous system improvement.
+        for autonomous system improvement.
 
 Components:
 1. PerformanceMonitor - Detect when optimization is needed
@@ -216,7 +216,7 @@ class MultiObjectiveOptimizer:
             distance = math.sqrt(sum(
                 (1.0 - point.objectives.get(obj, 0)) ** 2 
                 for obj in self.objectives
-            ))
+                    ))
             if distance < best_distance:
                 best_distance = distance
                 best = point

@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:34.124886
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -339,7 +342,7 @@ class StateSynchronizer:
             "integration_levels": {
                 name: state.integration_level.name 
                 for name, state in self.subsystem_states.items()
-            }
+                    }
         }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -449,7 +452,7 @@ class DataBridgeManager:
             "bridges": [
                 {"id": b.id, "active": b.active, "transfers": b.data_transferred}
                 for b in list(self.bridges.values())[:10]
-            ]
+                    ]
         }
 
 # ═══════════════════════════════════════════════════════════════════════════════

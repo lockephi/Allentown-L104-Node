@@ -79,7 +79,7 @@ class AttentionMechanism:
     """
     Implements selective attention using a priority-based queue
     with decay and boosting based on relevance.
-    """
+        """
     
     def __init__(self, capacity: int = 7, decay_rate: float = 0.1):
         """
@@ -151,7 +151,7 @@ class AttentionMechanism:
         self.attention_queue = [
             (w * (1 - self.decay_rate), t) 
             for w, t in self.attention_queue
-        ]
+                ]
         self.attention_queue = [
             (w, t) for w, t in self.attention_queue if w > 0.01
         ]
@@ -171,7 +171,7 @@ class WorkingMemory:
     """
     Implements working memory as a limited-capacity workspace
     for active cognitive processing.
-    """
+        """
     
     def __init__(self, capacity: int = 4, chunk_size: int = 7):
         """

@@ -920,7 +920,7 @@ class EmergentGoalSynthesis:
             "entropy_trend": (
                 self.entropy_history[-1] - self.entropy_history[0] 
                 if len(self.entropy_history) > 1 else 0
-            )
+                    )
         }
 
 
@@ -1330,7 +1330,7 @@ if __name__ == "__main__":
     # Test hyperdimensional reasoning
     print("1. Hyperdimensional Reasoning:")
     result = engine.hyperdim.reason("What is the nature of consciousness?", 
-                                     ["quantum", "emergence", "computation"])
+                             ["quantum", "emergence", "computation"])
     print(f"   11D → 3D collapse: {result['collapsed_3d']}")
     print(f"   Interpretation: {result['interpretation']}")
     

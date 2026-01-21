@@ -434,7 +434,7 @@ class TemporalCompressionEngine:
         hit_rate = (
             self.metrics.cache_hits / self.metrics.total_computations * 100
             if self.metrics.total_computations > 0 else 0
-        )
+                )
         
         return {
             "total_computations": self.metrics.total_computations,

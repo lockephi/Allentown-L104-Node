@@ -306,7 +306,7 @@ class CortexEnhanced:
             futures.append(("knowledge", self._executor.submit(
                 lambda q=query: self.knowledge.semantic_search(q, top_k=3) 
                     if hasattr(self.knowledge, 'semantic_search') else []
-            )))
+                        )))
         
         for name, future in futures:
             try:
@@ -568,7 +568,7 @@ Respond with clarity, insight, and purpose."""
         futures = [
             self._executor.submit(self.process, query, mode)
             for query in queries
-        ]
+                ]
         
         results = []
         for future in as_completed(futures):

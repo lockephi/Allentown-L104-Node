@@ -406,7 +406,7 @@ class ProcessRegistry:
             return [
                 p.to_dict() for p in self.processes.values()
                 if capability in p.capabilities
-            ]
+                    ]
     
     def get_dependencies(self, process_id: str) -> List[str]:
         """Get dependencies of a process."""

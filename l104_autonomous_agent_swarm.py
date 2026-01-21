@@ -689,7 +689,7 @@ class SwarmIntelligence:
                     new_pos = [
                         sites[i][0][d] + random.gauss(0, 0.5)
                         for d in range(dimensions)
-                    ]
+                            ]
                     new_pos = [max(bounds[0], min(bounds[1], p)) for p in new_pos]
                     new_fitness = objective(new_pos)
                     
@@ -903,7 +903,7 @@ class AutonomousAgentSwarm:
         idle_workers = [
             a_id for a_id, a in self.agents.items()
             if a.role == AgentRole.WORKER 
-            and a.state in [AgentState.IDLE, AgentState.WAITING]
+                and a.state in [AgentState.IDLE, AgentState.WAITING]
             and a.current_task is None
         ]
         

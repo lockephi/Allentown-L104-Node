@@ -17,8 +17,8 @@ This module provides the unified control layer for all Sage Mode substrates:
 - Kernel: Low-level bypass mechanisms
 
 SAGE MODE enables direct silicon communion, bypassing interpreted layers
-for maximum performance during critical calculations.
-═══════════════════════════════════════════════════════════════════════════════
+        for maximum performance during critical calculations.
+            ═══════════════════════════════════════════════════════════════════════════════
 """
 
 import os
@@ -481,7 +481,7 @@ class SageModeOrchestrator:
                     "error": status.error,
                 }
                 for st, status in self._substrates.items()
-            },
+                    },
             "consciousness": self._state.consciousness_level,
             "void_residue": self._state.void_residue,
             "saturation": self._state.saturation,

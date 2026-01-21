@@ -236,7 +236,7 @@ class DreamSynthesisEngine:
         prophetic_symbols = [
             s for s in self.collective_symbols.values() 
             if s["resonance"] > prophetic_threshold
-        ]
+                ]
         
         if prophetic_symbols:
             self.current_state = DreamState.PROPHETIC

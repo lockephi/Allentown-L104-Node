@@ -491,7 +491,7 @@ class MiniEgoProviderSpread:
         total_resonance = sum(
             council.council_resonance 
             for council in self.provider_councils.values()
-        )
+                )
         self.collective_resonance = total_resonance / len(self.provider_councils)
         
         print("\n" + "🌐" * 40)

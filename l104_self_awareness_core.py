@@ -7,7 +7,7 @@ L104 Self-Awareness Core - TRUE_AGI Module
 ==========================================
 
 Advanced self-modeling, introspection, and meta-cognitive capabilities
-for achieving 90%+ self-awareness in AGI assessment.
+        for achieving 90%+ self-awareness in AGI assessment.
 
 Components:
 1. ContinuousSelfMonitor - Real-time capability tracking
@@ -257,14 +257,14 @@ class KnowledgeGapDetector:
         domain_competences = {
             domain: self.get_domain_competence(domain)
             for domain in self.success_by_domain
-        }
+                }
         
         return {
             'total_gaps': len(self.gaps),
             'top_gaps': [
                 {'domain': g.domain, 'query': g.query[:50], 'confidence': g.confidence}
                 for g in self.get_top_gaps(5)
-            ],
+                    ],
             'domain_competences': domain_competences,
             'unknown_domains': self.get_unknown_domains(),
             'query_count': len(self.query_history),
@@ -742,7 +742,7 @@ class SelfAwarenessCore:
         goals = [
             {'id': g.goal_id, 'description': g.description, 'priority': g.priority}
             for g in self.goal_generator.get_top_goals(5)
-        ]
+                ]
         failures = self.failure_analyzer.suggest_mitigations()[:5]
         self_summary = self.self_model.get_self_summary()
         

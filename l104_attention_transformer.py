@@ -186,7 +186,7 @@ class MultiHeadAttention:
         self.heads = [
             AttentionHead(d_model, self.d_k, self.d_v)
             for _ in range(n_heads)
-        ]
+                ]
         
         # Output projection
         self.W_o = Matrix.random(n_heads * self.d_v, d_model)
@@ -345,7 +345,7 @@ class TransformerEncoder:
         self.layers = [
             TransformerEncoderLayer(d_model, n_heads, d_ff)
             for _ in range(n_layers)
-        ]
+                ]
         self.pos_encoding = PositionalEncoding(d_model)
     
     def forward(self, x: Matrix, mask: Optional[Matrix] = None) -> Matrix:
@@ -367,7 +367,7 @@ class TransformerDecoder:
         self.layers = [
             TransformerDecoderLayer(d_model, n_heads, d_ff)
             for _ in range(n_layers)
-        ]
+                ]
         self.pos_encoding = PositionalEncoding(d_model)
     
     def forward(self, x: Matrix, encoder_output: Matrix,

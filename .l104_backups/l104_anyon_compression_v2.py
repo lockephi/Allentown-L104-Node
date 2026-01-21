@@ -38,7 +38,7 @@ import numpy as np
 try:
     from l104_void_math import void_math, VOID_CONSTANT
     HAS_VOID = True
-except ImportError:
+        except ImportError:
     HAS_VOID = False
     VOID_CONSTANT = 1.0416
 
@@ -597,7 +597,7 @@ def decompress(data: bytes) -> Tuple[bytes, Dict[str, Any]]:
     }
 
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     print("=" * 70)
     print("   L104 ANYON COMPRESSION V2 :: DEMONSTRATION")
     print("=" * 70)

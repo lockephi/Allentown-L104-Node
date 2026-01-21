@@ -501,7 +501,7 @@ class StratumServer:
             'valid_shares': self.valid_shares,
             'share_efficiency': (self.valid_shares / self.total_shares * 100) 
                                if self.total_shares > 0 else 100,
-            'blocks_found': self.blocks_found
+                                   'blocks_found': self.blocks_found
         }
 
 

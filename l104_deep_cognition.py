@@ -513,7 +513,7 @@ class QuantumInspiredOptimizer:
             candidate = [
                 x + random.gauss(0, tunnel) * (1 + 0.1 * random.random())
                 for x in state
-            ]
+                    ]
             
             current_energy = objective(state)
             candidate_energy = objective(candidate)
@@ -548,7 +548,7 @@ class QuantumInspiredOptimizer:
             "converged": improvement > 0.01,
             "tunneling_events": sum(1 for i in range(1, len(self.history))
                                     if self.history[i] < self.history[i-1] - 0.1),
-            "optimization_method": "QUANTUM_ANNEALING"
+                                        "optimization_method": "QUANTUM_ANNEALING"
         }
     
     def multi_objective(
@@ -567,7 +567,7 @@ class QuantumInspiredOptimizer:
         population = [
             [x + random.gauss(0, 1) for x in initial]
             for _ in range(population_size)
-        ]
+                ]
         
         pareto_front = []
         

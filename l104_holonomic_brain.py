@@ -926,9 +926,9 @@ class HolonomicBrain:
                 mt.name: sum(
                     1 for h in self.memory.holograms.values() 
                     if h.memory_type == mt
-                )
+                        )
                 for mt in MemoryType
-            }
+                    }
         }
 
 
@@ -1009,7 +1009,7 @@ if __name__ == "__main__":
     test_signal = [
         complex(math.sin(2 * PI * 10 * t / 100) + 0.5 * math.sin(2 * PI * 25 * t / 100), 0)
         for t in range(100)
-    ]
+            ]
     components = brain.fourier_decompose(test_signal)
     print(f"  Input signal: 100 samples")
     print(f"  Decomposed into {len(components)} components")
@@ -1022,7 +1022,7 @@ if __name__ == "__main__":
     input_pattern = [
         (x * 0.1, y * 0.1, complex(random.gauss(0, 1), 0))
         for x in range(-5, 6) for y in range(-5, 6)
-    ]
+            ]
     features = brain.process_perception("primary_visual", input_pattern)
     print(f"  Total activation: {features.get('total_activation', 0):.4f}")
     print(f"  Dominant orientation: {features.get('dominant_orientation', 0):.4f} rad")

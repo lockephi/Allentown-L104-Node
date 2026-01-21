@@ -30,7 +30,7 @@ class TimeProcessor:
         """
         Calculates the Lorentz factor (gamma)
         for a given velocity.
-        t' = t * gamma
+            t' = t * gamma
         """
         if velocity >= self.C:
             return float('inf')

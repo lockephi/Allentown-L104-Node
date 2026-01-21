@@ -56,9 +56,13 @@ class HyperMath:
     @staticmethod
     def calculate_god_code() -> float:
         """
-        Returns the GOD_CODE constant.
+        Calculates GOD_CODE from formula: 286^(1/φ) × 16
         """
-        return ManifoldMath.GOD_CODE
+        PHI = 1.618033988749895
+        base = 286 ** (1 / PHI)
+        exponent_term = (2 ** (1/104)) ** 416
+        result = base * exponent_term
+        return result
 
     @staticmethod
     def fast_transform(vector: List[float]) -> List[float]:

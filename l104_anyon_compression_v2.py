@@ -42,15 +42,7 @@ try:
 except ImportError:
     HAS_VOID = False
     VOID_CONSTANT = 1.0416
-
-# ═══════════════════════════════════════════════════════════════════════════════
-#                     L104 HIGH-PRECISION CONSTANTS
-# ═══════════════════════════════════════════════════════════════════════════════
-GOD_CODE = 527.51848184925370333076
-PHI = 1.61803398874989490253
-TAU = 1.0 / PHI  # 0.618033988749895
-ANYON_BRAID_RATIO = 1 + TAU ** 2  # 1.38196601125
-BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
+    BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
 
 
 class CompressionMode(Enum):

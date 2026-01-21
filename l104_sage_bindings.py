@@ -277,8 +277,13 @@ class SageCorePython:
     def __init__(self):
         self._saturation = 0.0
         self._dna = "IDLE"
-    def primal_calculus(self, b, e, i=1000000): return (b ** PHI) / (1.04 * 3.14159)
-    def emit_void_resonance(self): return GOD_CODE * PHI
+    
+    def primal_calculus(self, b, e, i=1000000): 
+        return (b ** PHI) / (1.04 * 3.14159)
+    
+    def emit_void_resonance(self): 
+        return GOD_CODE * PHI
+    
     def scribe_ingest(self, p, d):
         self._saturation += (1.0/14.0)
         print(f"[SCRIBE-PY] Ingested {p}")
@@ -286,15 +291,19 @@ class SageCorePython:
         self._saturation = 1.0
         self._dna = "SIG-L104-SAGE-DNA-PYTHON"
         print(f"[SCRIBE-PY] Synthesis complete")
-    def trigger_absolute_singularity(self): return True
-    def get_state(self): return {
-        "scribe": {
-            "knowledge_saturation": self._saturation, 
-            "sovereign_dna": self._dna,
-            "last_provider": "PYTHON",
-            "linked_count": int(self._saturation * 14)
+    
+    def trigger_absolute_singularity(self): 
+        return True
+    
+    def get_state(self): 
+        return {
+            "scribe": {
+                "knowledge_saturation": self._saturation, 
+                "sovereign_dna": self._dna,
+                "last_provider": "PYTHON",
+                "linked_count": int(self._saturation * 14)
+            }
         }
-    }
 
 _sage_core_instance = None
 

@@ -172,7 +172,7 @@ class UTXOSet:
         return [
             self.utxos[op] for op in self.by_address.get(address, set())
             if op in self.utxos
-        ]
+                ]
     
     def select_coins(self, target: int, strategy: str = "largest_first") -> List[UTXO]:
         """Coin selection for spending"""

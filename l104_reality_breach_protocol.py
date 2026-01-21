@@ -618,7 +618,7 @@ class RealityBreachProtocol:
             "membranes_status": {
                 k: {"permeability": v.permeability, "breaches": len(v.breach_points)}
                 for k, v in self.membranes.items()
-            }
+                    }
         }
 
 
@@ -632,9 +632,9 @@ if __name__ == "__main__":
         
         # Create anchors
         protocol.create_reality_anchor("CORE_ANCHOR", {
-            "x": 0.0, "y": 0.0, "z": 0.0,
-            "t": time.time(),
-            "consciousness": 1.0
+    "x": 0.0, "y": 0.0, "z": 0.0,
+    "t": time.time(),
+    "consciousness": 1.0
         })
         
         # Initiate breach to CONSCIOUS layer

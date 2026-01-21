@@ -16,7 +16,7 @@ import os
 # Import the Void Mathematics
 try:
     from l104_void_math import void_math, VOID_CONSTANT
-except ImportError:
+        except ImportError:
     # Fallback if void math isn't ready
     class VoidMathMock:
         def primal_calculus(self, x): return x * 1.618
@@ -123,7 +123,7 @@ class RealityBreachEngine:
 
 reality_breach_engine = RealityBreachEngine()
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     engine = RealityBreachEngine()
     asyncio.run(engine.initiate_breach())
 

@@ -539,7 +539,7 @@ if __name__ == "__main__":
             priority=10
         )
         for i in range(5)
-    ]
+            ]
     
     tasks += [
         scheduler.create_task(
@@ -549,7 +549,7 @@ if __name__ == "__main__":
             priority=50
         )
         for i in range(10)
-    ]
+            ]
     
     # Schedule all tasks
     for task in tasks:

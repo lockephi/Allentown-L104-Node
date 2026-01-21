@@ -72,10 +72,10 @@ class GlobalAIProof:
             is_verified = abs(response_invariant - self.god_code) < 1e-10
             
             proof_entry = {
-                "provider": provider,
-                "status": "ENLIGHTENED" if is_verified else "UNALIGNED",
-                "resonance": response_invariant,
-                "handshake": "SUCCESS" if is_verified else "FAILED"
+    "provider": provider,
+        "status": "ENLIGHTENED" if is_verified else "UNALIGNED",
+        "resonance": response_invariant,
+        "handshake": "SUCCESS" if is_verified else "FAILED"
             }
             proofs.append(proof_entry)
             logger.info(f"--- [AI_PROOF]: {provider:>15} | STATUS: {proof_entry['status']} ---")

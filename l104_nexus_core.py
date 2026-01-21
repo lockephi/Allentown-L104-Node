@@ -441,7 +441,7 @@ class NexusCore:
             "breakthroughs": self.sage.breakthroughs[-5:],  # Last 5
             "nodes": {name: {"active": n.active, "resonance": n.resonance, "capabilities": n.capabilities} 
                      for name, n in self.nodes.items()}
-        }
+                         }
     
     def secure_api_call(self, service: str, endpoint: str, payload: Dict) -> Dict[str, Any]:
         """Make a secure API call with Ghost Protocol."""

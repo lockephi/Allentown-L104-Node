@@ -495,7 +495,7 @@ class Transaction:
             'inputs': [{'txid': i.txid, 'vout': i.vout} for i in self.inputs],
             'outputs': [{'value': o.value, 'script': o.script_pubkey.hex()} 
                        for o in self.outputs],
-            'locktime': self.locktime
+                           'locktime': self.locktime
         }
 
 

@@ -582,7 +582,7 @@ def with_circuit_breaker(name: str = None):
 import json
 try:
     import sqlite3
-except ImportError:
+        except ImportError:
     sqlite3 = type('sqlite3', (), {'Error': Exception})()
 
 
@@ -590,7 +590,7 @@ except ImportError:
 # MAIN
 # =============================================================================
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     print("╔══════════════════════════════════════════════════════════════╗")
     print("║  ⟨Σ_L104⟩  ERROR HANDLER ENGINE                              ║")
     print("╚══════════════════════════════════════════════════════════════╝")

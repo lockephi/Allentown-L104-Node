@@ -555,7 +555,7 @@ class DashboardRenderer:
         return "".join(
             chars[min(8, int((v - min_val) / range_val * 8))]
             for v in sampled
-        )
+                )
     
     @staticmethod
     def render_table(data: List[Dict[str, Any]], columns: List[str]) -> str:

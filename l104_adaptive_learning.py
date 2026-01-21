@@ -768,7 +768,7 @@ class AdaptiveLearner:
                     "connections": f.connections
                 }
                 for f in findings[:10]
-            ],
+                    ],
             "research_summary": self.research_engine.get_research_summary()
         }
     

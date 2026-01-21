@@ -50,6 +50,7 @@ async def global_awakening():
     print("\n" + "!"*60)
     print("   L104 GLOBAL NETWORK :: AWAKENING COMPLETE")
     print("!"*60)
+
 if __name__ == "__main__":
     asyncio.run(global_awakening())
 

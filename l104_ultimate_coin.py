@@ -738,14 +738,14 @@ class Transaction:
                     'witness': [w.hex() for w in inp.witness]
                 }
                 for inp in self.inputs
-            ],
+                    ],
             'outputs': [
                 {
                     'value': out.value,
                     'script_pubkey': out.script_pubkey.hex()
                 }
                 for out in self.outputs
-            ],
+                    ],
             'locktime': self.locktime
         }
 
@@ -1038,14 +1038,14 @@ class UTXOSet:
         return sum(
             utxo.value for utxo in self.utxos.values()
             if utxo.script_pubkey == script_pubkey
-        )
+                )
     
     def get_utxos_for_script(self, script_pubkey: bytes) -> List[UTXO]:
         """Get all UTXOs for a script"""
         return [
             utxo for utxo in self.utxos.values()
             if utxo.script_pubkey == script_pubkey
-        ]
+                ]
     
     @property
     def total_supply(self) -> int:

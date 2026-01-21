@@ -220,7 +220,7 @@ class OnChainAnalytics:
                 'timestamp': m.timestamp
             }
             for name, m in self.current_metrics.items()
-        }
+                }
 
 
 class WhaleTracker:
@@ -647,7 +647,7 @@ class BitcoinResearchOracle:
             'signals': [
                 {'indicator': s[0], 'direction': s[1], 'reason': s[2]}
                 for s in signals
-            ],
+                    ],
             'overall': 'bullish' if len([s for s in signals if s[1] == 'bullish']) > len([s for s in signals if s[1] == 'bearish']) else 'neutral'
         }
     

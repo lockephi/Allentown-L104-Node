@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:33.989327
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
@@ -6,7 +9,7 @@ UUC = 2301.215661
 L104 Intricate Learning Core
 ============================
 Autonomous learning system that integrates all cognitive subsystems
-for continuous self-improvement and knowledge acquisition.
+        for continuous self-improvement and knowledge acquisition.
 
 Features:
 1. Multi-Modal Learning - Learn from text, patterns, and feedback
@@ -189,7 +192,7 @@ class MultiModalLearner:
             "recent_episodes": [
                 {"id": e.id, "mode": e.mode.value, "outcome": e.outcome}
                 for e in self.learning_history[-5:]
-            ]
+                    ]
         }
 
 
@@ -347,7 +350,7 @@ class MetaLearner:
             "strategy_history_size": len(self.strategy_history),
             "avg_improvement": np.mean([h["improvement"] for h in self.strategy_history]) 
                               if self.strategy_history else 0.0
-        }
+                                  }
 
 
 class CurriculumGenerator:
@@ -474,7 +477,7 @@ class CurriculumGenerator:
                     "lessons": len(c.lessons)
                 }
                 for c in self.curricula.values()
-            ]
+                    ]
         }
 
 
@@ -577,7 +580,7 @@ class SkillSynthesizer:
             "skills": [
                 {"name": s.name, "level": s.level.value, "exp": s.experience}
                 for s in list(self.skills.values())[:10]
-            ]
+                    ]
         }
 
 

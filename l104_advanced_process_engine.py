@@ -810,9 +810,9 @@ if __name__ == "__main__":
     task_ids = []
     for i in range(10):
         tid = engine.submit(
-            compute_phi_power, i,
-            name=f"phi_power_{i}",
-            priority=ProcessPriority.NORMAL
+    compute_phi_power, i,
+    name=f"phi_power_{i}",
+    priority=ProcessPriority.NORMAL
         )
         task_ids.append(tid)
     

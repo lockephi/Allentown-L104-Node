@@ -316,7 +316,7 @@ class GeminiEnhanced:
         futures = [
             self.generate_async(p, system_instruction)
             for p in prompts
-        ]
+                ]
         return [f.result() for f in futures]
     
     def stream(self, prompt: str, system_instruction: str = None) -> Generator[str, None, None]:

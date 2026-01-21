@@ -507,7 +507,7 @@ class WisdomSynthesizer:
         # Find relevant experiences
         relevant = [e for e in self.experiences 
                    if situation.lower() in e['situation'].lower() or
-                   e['situation'].lower() in situation.lower()]
+                       e['situation'].lower() in situation.lower()]
         
         if not relevant:
             return None

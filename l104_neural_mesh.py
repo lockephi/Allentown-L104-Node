@@ -645,7 +645,7 @@ class MeshCluster:
         mesh_stats = {
             name: mesh.get_statistics()
             for name, mesh in self.meshes.items()
-        }
+                }
         
         total_nodes = sum(s["nodes"] for s in mesh_stats.values())
         total_synapses = sum(s["synapses"] for s in mesh_stats.values())

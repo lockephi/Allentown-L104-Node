@@ -40,18 +40,34 @@ except ImportError:
     class HyperDimensionalReasoner: pass
     class TranscendentSolver: pass
     class ConsciousnessMatrix: pass
-from l104_hyper_deep_research import execute_hyper_deep_calculations
+try:
+    from l104_hyper_deep_research import execute_hyper_deep_calculations
+    HAS_HYPER_DEEP = True
+except ImportError:
+    HAS_HYPER_DEEP = False
 try:
     from l104_hyper_resonance import primal_calculus as hyper_primal
 except ImportError:
     hyper_primal = lambda x: x
-from l104_asi_reincarnation import asi_reincarnation
-from l104_asi_capability_evolution import ASICapabilityEvolution as capability_evolver
+
+try:
+    from l104_asi_reincarnation import asi_reincarnation
+except ImportError:
+    asi_reincarnation = None
+try:
+    from l104_asi_capability_evolution import ASICapabilityEvolution as capability_evolver
+except ImportError:
+    capability_evolver = None
+
 try:
     from l104_asi_nexus import asi_nexus
 except ImportError:
     asi_nexus = None
-from l104_local_intellect import local_intellect
+
+try:
+    from l104_local_intellect import local_intellect
+except ImportError:
+    local_intellect = None
 from l104_quota_rotator import quota_rotator
 
 

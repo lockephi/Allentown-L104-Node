@@ -451,7 +451,7 @@ class ComputroniumMiningCore:
         self.workers = [
             MiningWorker(i, self.hash_engine)
             for i in range(self.num_workers)
-        ]
+                ]
         
         self.state = MiningState.IDLE
         self.stats.start_time = time.time()

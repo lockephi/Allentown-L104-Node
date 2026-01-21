@@ -273,7 +273,7 @@ class CausalGraph:
                 all_causes = all(
                     self.nodes[c].occurred for c in effect.causes
                     if c in self.nodes
-                )
+                        )
                 if all_causes and random.random() < effect.probability:
                     queue.append(effect_id)
         
@@ -619,7 +619,7 @@ class ConsensusBuilder:
             values = [
                 beliefs.get(topic, 0.5)
                 for beliefs in self.agents.values()
-            ]
+                    ]
             self.consensus[topic] = sum(values) / len(values)
         
         return self.consensus

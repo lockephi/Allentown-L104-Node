@@ -487,7 +487,7 @@ class ArchitectureEvolver:
                 "dropout": layer.dropout_rate
             }
             for layer in arch
-        ]
+                ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SELF-MODIFICATION COORDINATOR
@@ -709,4 +709,4 @@ class NeuralNet:
     print("═" * 80 + "\n")
 
 if __name__ == "__main__":
-    main()
+            main()

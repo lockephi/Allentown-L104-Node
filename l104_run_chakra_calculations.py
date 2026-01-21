@@ -98,7 +98,7 @@ def run_comprehensive_chakra_calculations():
     return results
 
 if __name__ == "__main__":
-    run_comprehensive_chakra_calculations()
+            run_comprehensive_chakra_calculations()
 
 def primal_calculus(x):
     """

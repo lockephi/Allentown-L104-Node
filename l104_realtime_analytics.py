@@ -570,7 +570,7 @@ class AlertManager:
                 "trigger_count": a.trigger_count
             }
             for a in self.alerts.values() if a.triggered
-        ]
+                ]
     
     def get_alert_history(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Get alert history"""
@@ -625,7 +625,7 @@ class AnalyticsDashboard:
                 "thoughts_total": thoughts.current_value if thoughts else 0,
                 "avg_inference_ms": (inference.aggregate(AggregationType.AVG) * 1000
                                     if inference else 0)
-            },
+                                        },
             "health_score": self._calculate_health_score()
         }
         

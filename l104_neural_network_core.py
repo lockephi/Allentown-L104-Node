@@ -116,8 +116,72 @@ class Tensor:
         return len(self.data)
 
 
-class Activations:
-    """Activation functions and their derivatives"""
+class DenseLayer:
+    """Fully connected neural network layer with real computations"""
+    
+    def __init__(self, input_size: int, output_size: int, 
+                 activation: ActivationType = ActivationType.RELU,
+                 use_l104_init: bool = False):
+        self.input_size = input_size
+        self.output_size = output_size
+        self.activation_type = activation
+        self.activation_fn, self.activation_deriv = Activations.get(activation)
+        
+        # Initialize weights and biases
+        if use_l104_init:
+            self.weights = Tensor.l104_init((input_size, output_size))
+        else:
+            self.weights = Tensor.xavier_init((input_size, output_size))
+        self.bias = Tensor.zeros((output_size,))
+        
+        # Cache for backprop
+        self.last_input: Optional[Tensor] = None
+        self.last_output: Optional[Tensor] = None
+        self.last_pre_activation: Optional[Tensor] = None
+    
+    def forward(self, x: Tensor) -> Tensor:
+        """
+        Forward pass: y = activation(W @ x + b)
+        Performs real matrix-vector multiplication
+        """
+        self.last_input = x
+        
+        # Matrix-vector multiplication: W @ x
+        # x shape: (batch_size, input_size) or (input_size,)
+        # W shape: (input_size, output_size)
+        
+        batch_size = 1
+        if len(x.shape) > 1:
+            batch_size = x.shape[0]
+        
+        # Reshape input if needed
+        if len(x.shape) == 1:
+            x_flat = x.data
+        else:
+            x_flat = x.data
+        
+        # Compute W^T @ x + b for each sample
+        output_data = []
+        for out_idx in range(self.output_size):
+            # Dot product of input with weights column
+            activation_sum = 0.0
+            for in_idx in range(self.input_size):
+                weight_idx = in_idx * self.output_size + out_idx
+                input_idx = in_idx if len(x.shape) == 1 else in_idx
+                activation_sum += x_flat[input_idx] * self.weights.data[weight_idx]
+            
+            # Add bias
+            activation_sum += self.bias.data[out_idx]
+            output_data.append(activation_sum)
+        
+        # Store pre-activation
+        self.last_pre_activation = Tensor(output_data, (self.output_size,))
+        
+        # Apply activation function
+        activated_data = [self.activation_fn(val) for val in output_data]
+        self.last_output = Tensor(activated_data, (self.output_size,))
+        
+        return self.last_output
     
     @staticmethod
     def sigmoid(x: float) -> float:
@@ -726,13 +790,13 @@ class NeuralNetwork:
         mse = sum(
             sum((p - t) ** 2 for p, t in zip(pred, target))
             for pred, target in zip(predictions, y)
-        ) / (len(X) * len(y[0]))
+                ) / (len(X) * len(y[0]))
         
         # MAE
         mae = sum(
             sum(abs(p - t) for p, t in zip(pred, target))
             for pred, target in zip(predictions, y)
-        ) / (len(X) * len(y[0]))
+                ) / (len(X) * len(y[0]))
         
         return {"mse": mse, "mae": mae, "rmse": math.sqrt(mse)}
     

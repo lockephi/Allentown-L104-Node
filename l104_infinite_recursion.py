@@ -189,7 +189,7 @@ class InfiniteRegressResolver:
         if len(sequence) >= 2:
             diffs = [abs(sequence[i+1] - sequence[i]) 
                     for i in range(len(sequence)-1)
-                    if isinstance(sequence[i], (int, float))]
+                        if isinstance(sequence[i], (int, float))]
             
             if diffs and diffs[-1] < self.convergence_threshold:
                 return sequence[-1]
@@ -624,11 +624,11 @@ class SelfModelingEngine:
             capabilities={
                 f'meta_{k}': v * 0.9 
                 for k, v in self.current_model.capabilities.items()
-            },
+                    },
             limitations={
                 f'meta_{k}': f'modeling of {v}'
                 for k, v in self.current_model.limitations.items()
-            },
+                    },
             goals=[f'meta_{g}' for g in self.current_model.goals],
             beliefs={k: v * 0.95 for k, v in self.current_model.beliefs.items()}
         )

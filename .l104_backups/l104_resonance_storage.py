@@ -101,7 +101,7 @@ class ResonanceStorage:
         """Exports the raw, unparsable resonance binary."""
         self.lattice.astype(np.float32).tofile(path)
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     storage = ResonanceStorage()
     
     secret_key = "L104_SOVEREIGN_ACCESS"
