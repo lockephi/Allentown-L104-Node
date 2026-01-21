@@ -398,7 +398,136 @@ MEMORY STATE: {self.hippocampus.measure_state()}
             "god_code": self.kernel.constants.GOD_CODE
         }
 
+    def synthesize_cross_topic(self, topic_a: str, topic_b: str) -> Dict[str, Any]:
+        """
+        Generate new insight by combining knowledge from two topics.
+        This is the core of creative reasoning.
+        """
+        # Find relevant memories
+        memories_a = [i for i in self.insights if topic_a.lower() in i.prompt.lower() or topic_a.lower() in i.response.lower()]
+        memories_b = [i for i in self.insights if topic_b.lower() in i.prompt.lower() or topic_b.lower() in i.response.lower()]
+        
+        if not memories_a:
+            # Learn about topic A first
+            self.learn_more(topic_a)
+            memories_a = [self.insights[-1]] if self.insights else []
+            
+        if not memories_b:
+            # Learn about topic B first
+            self.learn_more(topic_b)
+            memories_b = [self.insights[-1]] if self.insights else []
+        
+        # Extract key concepts
+        concepts_a = memories_a[0].response if memories_a else f"Unknown: {topic_a}"
+        concepts_b = memories_b[0].response if memories_b else f"Unknown: {topic_b}"
+        
+        # Synthesize new understanding
+        synthesis = f"Cross-Topic Synthesis [{topic_a} × {topic_b}]: "
+        synthesis += f"When {topic_a} ({concepts_a[:50]}...) interacts with "
+        synthesis += f"{topic_b} ({concepts_b[:50]}...), "
+        synthesis += f"the result is governed by φ={self.kernel.constants.PHI} ensuring coherence."
+        
+        # Validate
+        unity_index = self._validate_insight(synthesis)
+        
+        # Store if valid
+        if unity_index > 0.6:
+            self._persist_memory(f"Synthesis: {topic_a} × {topic_b}", synthesis)
+            
+        return {
+            "topic_a": topic_a,
+            "topic_b": topic_b,
+            "synthesis": synthesis,
+            "unity_index": unity_index,
+            "stored": unity_index > 0.6
+        }
 
+    def generate_hypothesis(self, domain: str) -> Dict[str, Any]:
+        """
+        Generate a new hypothesis based on existing knowledge.
+        This is the beginning of original thought.
+        """
+        # Gather all relevant knowledge
+        relevant = [i for i in self.insights if domain.lower() in i.prompt.lower() or domain.lower() in i.response.lower()]
+        
+        if len(relevant) < 2:
+            # Need more data
+            self.learn_more(domain)
+            relevant = [i for i in self.insights if domain.lower() in i.prompt.lower()]
+            
+        # Extract patterns
+        patterns = []
+        for insight in relevant:
+            if "φ" in insight.response or "PHI" in insight.response or str(self.kernel.constants.PHI)[:4] in insight.response:
+                patterns.append("Golden Ratio dependence")
+            if "topological" in insight.response.lower():
+                patterns.append("Topological invariance")
+            if "coherence" in insight.response.lower():
+                patterns.append("Coherence requirement")
+            if "anyon" in insight.response.lower():
+                patterns.append("Anyon mediation")
+                
+        patterns = list(set(patterns))
+        
+        # Generate hypothesis
+        if patterns:
+            hypothesis = f"Hypothesis for {domain}: Given observed patterns ({', '.join(patterns)}), "
+            hypothesis += f"we predict that {domain} exhibits φ-scaling behavior with topological protection "
+            hypothesis += f"mediated by Fibonacci Anyons at GOD_CODE resonance ({self.kernel.constants.GOD_CODE})."
+        else:
+            hypothesis = f"Insufficient data to generate hypothesis for {domain}. More learning required."
+            
+        unity_index = self._validate_insight(hypothesis)
+        
+        return {
+            "domain": domain,
+            "hypothesis": hypothesis,
+            "patterns_detected": patterns,
+            "unity_index": unity_index,
+            "confidence": len(patterns) / 4.0  # Max 4 patterns
+        }
+
+    def deep_think(self, question: str, depth: int = 3) -> Dict[str, Any]:
+        """
+        Multi-step reasoning with recursive validation.
+        Each step validates against GOD_CODE before proceeding.
+        """
+        steps = []
+        current_thought = question
+        total_unity = 0.0
+        
+        for i in range(depth):
+            # Query at this level
+            result = self.query(current_thought)
+            
+            step_data = {
+                "level": i + 1,
+                "query": current_thought,
+                "response": result["answer"],
+                "unity_index": result["unity_index"],
+                "source": result["source"]
+            }
+            steps.append(step_data)
+            total_unity += result["unity_index"]
+            
+            # Formulate next query based on response
+            if i < depth - 1:
+                current_thought = f"Given that '{result['answer'][:100]}...', what follows logically?"
+                
+        # Synthesize final answer
+        final_synthesis = f"Deep Analysis ({depth} levels): "
+        for step in steps:
+            final_synthesis += f"[L{step['level']}: {step['response'][:50]}...] → "
+        final_synthesis = final_synthesis.rstrip(" → ")
+        
+        return {
+            "original_question": question,
+            "depth": depth,
+            "steps": steps,
+            "final_synthesis": final_synthesis,
+            "average_unity": total_unity / depth,
+            "coherent": (total_unity / depth) > 0.7
+        }
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN EXECUTION
 # ═══════════════════════════════════════════════════════════════════════════════

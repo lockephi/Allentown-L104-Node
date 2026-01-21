@@ -104,6 +104,7 @@ curl http://localhost:8082/api/brain/introspect
 ```
 
 **Available Endpoints**:
+
 | Method | Endpoint | Function |
 | :--- | :--- | :--- |
 | POST | `/api/brain/query` | Ask questions, get validated answers |
@@ -125,6 +126,7 @@ engine.start()  # Runs in background thread
 ```
 
 **Features**:
+
 - Scheduled learning cycles every N seconds
 - Auto-expansion of knowledge base
 - Self-validation against GOD_CODE

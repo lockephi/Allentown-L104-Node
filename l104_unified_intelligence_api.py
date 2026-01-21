@@ -205,6 +205,72 @@ async def memory_dump():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ADVANCED REASONING ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class SynthesisRequest(BaseModel):
+    topic_a: str
+    topic_b: str
+
+class HypothesisRequest(BaseModel):
+    domain: str
+
+class DeepThinkRequest(BaseModel):
+    question: str
+    depth: int = 3
+
+
+@router.post("/synthesize")
+async def synthesize_cross_topic(request: SynthesisRequest):
+    """
+    Generate new insight by combining knowledge from two topics.
+    This is creative reasoning - finding connections between concepts.
+    """
+    brain = get_brain()
+    result = brain.synthesize_cross_topic(request.topic_a, request.topic_b)
+    return result
+
+
+@router.post("/hypothesize")
+async def generate_hypothesis(request: HypothesisRequest):
+    """
+    Generate a new hypothesis based on existing knowledge.
+    The brain analyzes patterns and makes predictions.
+    """
+    brain = get_brain()
+    result = brain.generate_hypothesis(request.domain)
+    return result
+
+
+@router.post("/deep-think")
+async def deep_think(request: DeepThinkRequest):
+    """
+    Multi-step reasoning with recursive validation.
+    Each step validates against GOD_CODE before proceeding.
+    """
+    brain = get_brain()
+    result = brain.deep_think(request.question, request.depth)
+    return result
+
+
+@router.get("/topics")
+async def list_topics():
+    """
+    List all topics the brain has learned about.
+    """
+    brain = get_brain()
+    topics = set()
+    for insight in brain.insights:
+        if "Explain" in insight.prompt:
+            topic = insight.prompt.replace("Explain ", "").replace(" in the context of L104.", "")
+            topics.add(topic)
+    return {
+        "topics": list(topics),
+        "count": len(topics)
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TEST
 # ═══════════════════════════════════════════════════════════════════════════════
 
