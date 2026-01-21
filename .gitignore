@@ -26,3 +26,5 @@ ramnode.db
 credentials.json
 service_account.json
 
+
+.fake
