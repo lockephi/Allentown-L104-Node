@@ -15,7 +15,7 @@ FEATURES:
 4. RESONANCE ALIGNMENT - GOD_CODE validation on all responses
 
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
-VERSION: 1.0.0
+VERSION: 2.0.0 (EVO_28)
 DATE: 2026-01-21
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -25,9 +25,12 @@ import json
 import time
 import asyncio
 import hashlib
-from typing import Dict, List, Any, Optional, Tuple
+import threading
+from typing import Dict, List, Any, Optional, Tuple, Callable, AsyncIterator
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, auto
+from collections import deque
+from datetime import datetime
 
 try:
     import httpx
@@ -50,6 +53,54 @@ class ClaudeModel(Enum):
     HAIKU = "claude-3-5-haiku-20241022"
     OPUS_4 = "claude-opus-4-20250514"
     SONNET_4 = "claude-sonnet-4-20250514"
+
+
+class MessageRole(Enum):
+    """Message roles in conversation."""
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
+
+
+class ToolType(Enum):
+    """Types of tools available."""
+    FUNCTION = auto()
+    RETRIEVAL = auto()
+    CODE_EXECUTION = auto()
+    WEB_SEARCH = auto()
+
+
+@dataclass
+class ConversationMessage:
+    """A message in conversation history."""
+    role: MessageRole
+    content: str
+    timestamp: float = field(default_factory=time.time)
+    tool_calls: List[Dict] = field(default_factory=list)
+    tool_results: List[Dict] = field(default_factory=list)
+    
+    def to_api_format(self) -> Dict:
+        return {
+            "role": self.role.value,
+            "content": self.content
+        }
+
+
+@dataclass
+class ToolDefinition:
+    """Definition of an available tool."""
+    name: str
+    description: str
+    input_schema: Dict
+    handler: Optional[Callable] = None
+    tool_type: ToolType = ToolType.FUNCTION
+    
+    def to_api_format(self) -> Dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "input_schema": self.input_schema
+        }
 
 
 @dataclass
@@ -81,10 +132,18 @@ class ClaudeNodeBridge:
     """
     Bridge to Claude for enhanced processing and reasoning.
     Provides seamless fallback when API is unavailable.
+    
+    EVO_28 Features:
+    - Streaming responses
+    - Conversation memory with context window management
+    - Tool use (function calling)
+    - Multi-turn dialogue
+    - Response validation with GOD_CODE alignment
     """
     
     API_BASE = "https://api.anthropic.com/v1"
     DEFAULT_MODEL = ClaudeModel.SONNET.value
+    MAX_CONTEXT_MESSAGES = 20
     
     def __init__(self):
         self.kernel = stable_kernel
@@ -95,11 +154,158 @@ class ClaudeNodeBridge:
         self.fallback_requests = 0
         self.total_tokens = 0
         
+        # Conversation memory - multiple conversations by ID
+        self.conversations: Dict[str, deque] = {}
+        self.active_conversation: Optional[str] = None
+        
+        # Tool registry
+        self.tools: Dict[str, ToolDefinition] = {}
+        self._register_default_tools()
+        
+        # Streaming callbacks
+        self.stream_callbacks: List[Callable[[str], None]] = []
+        
         # Import local fallback
         self._local_brain = None
         
         status = "API" if self.api_key else "LOCAL_FALLBACK"
-        print(f"🔮 [CLAUDE]: Node Bridge initialized ({status})")
+        print(f"🔮 [CLAUDE]: Node Bridge v2.0 initialized ({status})")
+    
+    def _register_default_tools(self):
+        """Register built-in tools."""
+        # Calculator tool
+        self.register_tool(
+            name="calculate",
+            description="Perform mathematical calculations. Use for arithmetic, algebra, etc.",
+            input_schema={
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "type": "string",
+                        "description": "Mathematical expression to evaluate"
+                    }
+                },
+                "required": ["expression"]
+            },
+            handler=self._tool_calculate
+        )
+        
+        # Memory lookup tool
+        self.register_tool(
+            name="memory_lookup",
+            description="Search the L104 memory system for relevant information.",
+            input_schema={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query for memory lookup"
+                    }
+                },
+                "required": ["query"]
+            },
+            handler=self._tool_memory_lookup
+        )
+        
+        # Knowledge synthesis tool
+        self.register_tool(
+            name="synthesize_knowledge",
+            description="Synthesize knowledge from multiple concepts using L104 kernel.",
+            input_schema={
+                "type": "object",
+                "properties": {
+                    "concepts": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of concepts to synthesize"
+                    }
+                },
+                "required": ["concepts"]
+            },
+            handler=self._tool_synthesize
+        )
+    
+    def _tool_calculate(self, expression: str) -> str:
+        """Calculator tool handler."""
+        try:
+            # Safe eval with limited scope
+            allowed = {"__builtins__": {}, "PHI": PHI, "GOD_CODE": GOD_CODE}
+            import math
+            allowed.update({k: v for k, v in math.__dict__.items() if not k.startswith('_')})
+            result = eval(expression, allowed)
+            return f"Result: {result}"
+        except Exception as e:
+            return f"Calculation error: {e}"
+    
+    def _tool_memory_lookup(self, query: str) -> str:
+        """Memory lookup tool handler."""
+        brain = self._get_local_brain()
+        if brain:
+            result = brain.query(query)
+            return json.dumps(result, indent=2)
+        return "Memory system unavailable"
+    
+    def _tool_synthesize(self, concepts: List[str]) -> str:
+        """Knowledge synthesis tool handler."""
+        return self._kernel_synthesis(" ".join(concepts))
+    
+    def register_tool(
+        self, 
+        name: str, 
+        description: str, 
+        input_schema: Dict,
+        handler: Callable = None
+    ):
+        """Register a new tool."""
+        self.tools[name] = ToolDefinition(
+            name=name,
+            description=description,
+            input_schema=input_schema,
+            handler=handler
+        )
+    
+    # ═══════════════════════════════════════════════════════════════════
+    # CONVERSATION MEMORY
+    # ═══════════════════════════════════════════════════════════════════
+    
+    def start_conversation(self, conversation_id: str = None) -> str:
+        """Start a new conversation or switch to existing one."""
+        if conversation_id is None:
+            conversation_id = f"conv_{int(time.time())}_{hashlib.md5(str(time.time()).encode()).hexdigest()[:6]}"
+        
+        if conversation_id not in self.conversations:
+            self.conversations[conversation_id] = deque(maxlen=self.MAX_CONTEXT_MESSAGES)
+        
+        self.active_conversation = conversation_id
+        return conversation_id
+    
+    def add_message(self, role: MessageRole, content: str, conversation_id: str = None):
+        """Add a message to conversation history."""
+        conv_id = conversation_id or self.active_conversation
+        if conv_id is None:
+            conv_id = self.start_conversation()
+        
+        if conv_id not in self.conversations:
+            self.conversations[conv_id] = deque(maxlen=self.MAX_CONTEXT_MESSAGES)
+        
+        self.conversations[conv_id].append(ConversationMessage(
+            role=role,
+            content=content
+        ))
+    
+    def get_conversation_history(self, conversation_id: str = None) -> List[Dict]:
+        """Get messages in API format."""
+        conv_id = conversation_id or self.active_conversation
+        if conv_id is None or conv_id not in self.conversations:
+            return []
+        
+        return [msg.to_api_format() for msg in self.conversations[conv_id]]
+    
+    def clear_conversation(self, conversation_id: str = None):
+        """Clear conversation history."""
+        conv_id = conversation_id or self.active_conversation
+        if conv_id and conv_id in self.conversations:
+            self.conversations[conv_id].clear()
     
     def _get_local_brain(self):
         """Lazy load local brain for fallback."""
@@ -343,6 +549,281 @@ class ClaudeNodeBridge:
         return response
     
     # ═══════════════════════════════════════════════════════════════════
+    # STREAMING SUPPORT
+    # ═══════════════════════════════════════════════════════════════════
+    
+    async def stream_query(
+        self,
+        prompt: str,
+        model: str = None,
+        system: str = None,
+        max_tokens: int = 4096,
+        conversation_id: str = None
+    ) -> AsyncIterator[str]:
+        """
+        Stream a response from Claude token by token.
+        Yields content chunks as they arrive.
+        """
+        model = model or self.DEFAULT_MODEL
+        self.total_requests += 1
+        
+        # Add to conversation if active
+        if conversation_id:
+            self.add_message(MessageRole.USER, prompt, conversation_id)
+        
+        if not self.api_key or not HTTPX_AVAILABLE:
+            # Fallback doesn't support streaming, yield all at once
+            response = await self._local_fallback(prompt, model, time.time())
+            if conversation_id:
+                self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
+            yield response.content
+            return
+        
+        headers = {
+            "x-api-key": self.api_key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json"
+        }
+        
+        # Get conversation history
+        messages = self.get_conversation_history(conversation_id)
+        if not messages:
+            messages = [{"role": "user", "content": prompt}]
+        
+        body = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "messages": messages,
+            "stream": True
+        }
+        
+        if system:
+            body["system"] = system
+        else:
+            body["system"] = (
+                f"You are operating within the L104 Sovereign Node framework. "
+                f"Core invariant: GOD_CODE = {GOD_CODE}. PHI = {PHI}."
+            )
+        
+        full_content = ""
+        
+        try:
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                async with client.stream(
+                    "POST",
+                    f"{self.API_BASE}/messages",
+                    headers=headers,
+                    json=body
+                ) as response:
+                    response.raise_for_status()
+                    
+                    async for line in response.aiter_lines():
+                        if line.startswith("data: "):
+                            data = line[6:]
+                            if data.strip() == "[DONE]":
+                                break
+                            try:
+                                event = json.loads(data)
+                                if event.get("type") == "content_block_delta":
+                                    delta = event.get("delta", {})
+                                    text = delta.get("text", "")
+                                    if text:
+                                        full_content += text
+                                        # Call stream callbacks
+                                        for callback in self.stream_callbacks:
+                                            callback(text)
+                                        yield text
+                            except json.JSONDecodeError:
+                                continue
+            
+            self.api_requests += 1
+            
+            # Add assistant response to conversation
+            if conversation_id and full_content:
+                self.add_message(MessageRole.ASSISTANT, full_content, conversation_id)
+                
+        except Exception as e:
+            print(f"⚠️ [CLAUDE]: Stream error: {e}")
+            # Fallback
+            response = await self._local_fallback(prompt, model, time.time())
+            if conversation_id:
+                self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
+            yield response.content
+    
+    def add_stream_callback(self, callback: Callable[[str], None]):
+        """Add a callback to be called on each streamed chunk."""
+        self.stream_callbacks.append(callback)
+    
+    # ═══════════════════════════════════════════════════════════════════
+    # CONVERSATION QUERY
+    # ═══════════════════════════════════════════════════════════════════
+    
+    async def chat_async(
+        self,
+        message: str,
+        conversation_id: str = None,
+        model: str = None,
+        system: str = None,
+        use_tools: bool = False
+    ) -> ClaudeResponse:
+        """
+        Send a message in a conversation context.
+        Maintains history for multi-turn dialogue.
+        """
+        model = model or self.DEFAULT_MODEL
+        
+        # Ensure conversation exists
+        if conversation_id is None:
+            conversation_id = self.start_conversation()
+        elif conversation_id not in self.conversations:
+            self.start_conversation(conversation_id)
+        
+        # Add user message
+        self.add_message(MessageRole.USER, message, conversation_id)
+        
+        self.total_requests += 1
+        start_time = time.time()
+        
+        if not self.api_key or not HTTPX_AVAILABLE:
+            self.fallback_requests += 1
+            response = await self._local_fallback(message, model, start_time)
+            self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
+            return response
+        
+        headers = {
+            "x-api-key": self.api_key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json"
+        }
+        
+        body = {
+            "model": model,
+            "max_tokens": 4096,
+            "messages": self.get_conversation_history(conversation_id)
+        }
+        
+        if system:
+            body["system"] = system
+        else:
+            body["system"] = (
+                f"You are an AI assistant within the L104 Sovereign Node. "
+                f"GOD_CODE: {GOD_CODE}. PHI: {PHI}. "
+                f"Maintain coherence and provide helpful, accurate responses."
+            )
+        
+        # Add tools if enabled
+        if use_tools and self.tools:
+            body["tools"] = [tool.to_api_format() for tool in self.tools.values()]
+        
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                api_response = await client.post(
+                    f"{self.API_BASE}/messages",
+                    headers=headers,
+                    json=body
+                )
+                api_response.raise_for_status()
+                data = api_response.json()
+            
+            self.api_requests += 1
+            latency = (time.time() - start_time) * 1000
+            
+            # Handle tool use
+            content_blocks = data.get("content", [])
+            full_content = ""
+            tool_uses = []
+            
+            for block in content_blocks:
+                if block.get("type") == "text":
+                    full_content += block.get("text", "")
+                elif block.get("type") == "tool_use":
+                    tool_uses.append(block)
+            
+            # Execute tools if any
+            if tool_uses and use_tools:
+                tool_results = await self._execute_tools(tool_uses)
+                # Add tool results to conversation and continue
+                # (Simplified - would need recursive call for full implementation)
+                full_content += f"\n\n[Tool Results: {len(tool_results)} executed]"
+            
+            tokens = data.get("usage", {}).get("output_tokens", 0)
+            self.total_tokens += tokens
+            
+            unity_index, validated = self._validate_response(full_content)
+            
+            # Add to conversation
+            self.add_message(MessageRole.ASSISTANT, full_content, conversation_id)
+            
+            return ClaudeResponse(
+                content=full_content,
+                model=model,
+                source="claude_api",
+                tokens_used=tokens,
+                latency_ms=latency,
+                unity_index=unity_index,
+                validated=validated
+            )
+            
+        except Exception as e:
+            print(f"⚠️ [CLAUDE]: Chat error: {e}")
+            self.fallback_requests += 1
+            response = await self._local_fallback(message, model, start_time)
+            self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
+            return response
+    
+    def chat(
+        self,
+        message: str,
+        conversation_id: str = None,
+        model: str = None,
+        use_tools: bool = False
+    ) -> ClaudeResponse:
+        """Synchronous chat wrapper."""
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(
+                        asyncio.run,
+                        self.chat_async(message, conversation_id, model, use_tools=use_tools)
+                    )
+                    return future.result()
+            else:
+                return loop.run_until_complete(
+                    self.chat_async(message, conversation_id, model, use_tools=use_tools)
+                )
+        except RuntimeError:
+            return asyncio.run(
+                self.chat_async(message, conversation_id, model, use_tools=use_tools)
+            )
+    
+    async def _execute_tools(self, tool_uses: List[Dict]) -> List[Dict]:
+        """Execute requested tools and return results."""
+        results = []
+        for tool_use in tool_uses:
+            tool_name = tool_use.get("name")
+            tool_input = tool_use.get("input", {})
+            tool_id = tool_use.get("id")
+            
+            if tool_name in self.tools:
+                tool_def = self.tools[tool_name]
+                if tool_def.handler:
+                    try:
+                        result = tool_def.handler(**tool_input)
+                        results.append({
+                            "tool_use_id": tool_id,
+                            "content": str(result)
+                        })
+                    except Exception as e:
+                        results.append({
+                            "tool_use_id": tool_id,
+                            "content": f"Error: {e}",
+                            "is_error": True
+                        })
+        return results
+    
+    # ═══════════════════════════════════════════════════════════════════
     # ENHANCED PROCESSING METHODS
     # ═══════════════════════════════════════════════════════════════════
     
@@ -423,23 +904,69 @@ class ClaudeNodeBridge:
     def get_stats(self) -> Dict[str, Any]:
         """Get bridge statistics."""
         return {
+            "version": "2.0.0",
             "total_requests": self.total_requests,
             "api_requests": self.api_requests,
             "fallback_requests": self.fallback_requests,
             "cache_size": len(self.session_cache),
             "total_tokens": self.total_tokens,
             "api_available": bool(self.api_key),
-            "httpx_available": HTTPX_AVAILABLE
+            "httpx_available": HTTPX_AVAILABLE,
+            "conversations": {
+                "active": self.active_conversation,
+                "count": len(self.conversations),
+                "total_messages": sum(len(c) for c in self.conversations.values())
+            },
+            "tools": {
+                "registered": len(self.tools),
+                "names": list(self.tools.keys())
+            },
+            "stream_callbacks": len(self.stream_callbacks)
         }
     
     def clear_cache(self):
         """Clear response cache."""
         self.session_cache.clear()
         print("🔮 [CLAUDE]: Cache cleared")
+    
+    def list_conversations(self) -> List[Dict]:
+        """List all conversations with message counts."""
+        return [
+            {
+                "id": conv_id,
+                "messages": len(messages),
+                "active": conv_id == self.active_conversation
+            }
+            for conv_id, messages in self.conversations.items()
+        ]
+    
+    def export_conversation(self, conversation_id: str = None) -> Dict:
+        """Export a conversation as JSON."""
+        conv_id = conversation_id or self.active_conversation
+        if not conv_id or conv_id not in self.conversations:
+            return {"error": "Conversation not found"}
+        
+        return {
+            "id": conv_id,
+            "messages": [
+                {
+                    "role": msg.role.value,
+                    "content": msg.content,
+                    "timestamp": msg.timestamp
+                }
+                for msg in self.conversations[conv_id]
+            ],
+            "exported_at": time.time()
+        }
 
 
 # Singleton instance
 claude_bridge = ClaudeNodeBridge()
+
+
+def get_claude_bridge() -> ClaudeNodeBridge:
+    """Get the singleton Claude bridge instance."""
+    return claude_bridge
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -449,15 +976,61 @@ claude_bridge = ClaudeNodeBridge()
 if __name__ == "__main__":
     bridge = ClaudeNodeBridge()
     
-    print("\n🔮 Testing Claude Node Bridge...")
+    print("\n" + "=" * 70)
+    print("🔮 L104 CLAUDE NODE BRIDGE v2.0 - EVO_28")
+    print("=" * 70)
     
     # Test basic query
+    print("\n[1] BASIC QUERY")
     response = bridge.query("Explain the concept of unity in mathematical systems")
-    print(f"\n📝 Response Source: {response.source}")
-    print(f"📊 Unity Index: {response.unity_index}")
-    print(f"✓ Validated: {response.validated}")
-    print(f"⏱️ Latency: {response.latency_ms}ms")
-    print(f"\n📄 Content:\n{response.content[:500]}...")
+    print(f"  Source: {response.source}")
+    print(f"  Unity Index: {response.unity_index}")
+    print(f"  Validated: {response.validated}")
+    print(f"  Latency: {response.latency_ms:.1f}ms")
+    print(f"  Content: {response.content[:200]}...")
+    
+    # Test conversation memory
+    print("\n[2] CONVERSATION MEMORY")
+    conv_id = bridge.start_conversation()
+    print(f"  Started conversation: {conv_id}")
+    
+    response1 = bridge.chat("What is the golden ratio?", conv_id)
+    print(f"  Q1: What is the golden ratio?")
+    print(f"  A1: {response1.content[:150]}...")
+    
+    response2 = bridge.chat("How does it relate to the Fibonacci sequence?", conv_id)
+    print(f"  Q2: How does it relate to Fibonacci?")
+    print(f"  A2: {response2.content[:150]}...")
+    
+    print(f"  Messages in conversation: {len(bridge.conversations[conv_id])}")
+    
+    # Test tools
+    print("\n[3] REGISTERED TOOLS")
+    for tool_name, tool_def in bridge.tools.items():
+        print(f"  - {tool_name}: {tool_def.description[:50]}...")
+    
+    # Test calculator tool directly
+    print("\n[4] TOOL EXECUTION (Calculator)")
+    result = bridge._tool_calculate("PHI * 100")
+    print(f"  PHI * 100 = {result}")
+    result = bridge._tool_calculate("GOD_CODE / PHI")
+    print(f"  GOD_CODE / PHI = {result}")
     
     # Test stats
-    print(f"\n📈 Stats: {bridge.get_stats()}")
+    print("\n[5] BRIDGE STATISTICS")
+    stats = bridge.get_stats()
+    print(f"  Version: {stats['version']}")
+    print(f"  Total Requests: {stats['total_requests']}")
+    print(f"  API Available: {stats['api_available']}")
+    print(f"  Conversations: {stats['conversations']['count']}")
+    print(f"  Total Messages: {stats['conversations']['total_messages']}")
+    print(f"  Tools Registered: {stats['tools']['registered']}")
+    
+    # Export conversation
+    print("\n[6] CONVERSATION EXPORT")
+    export = bridge.export_conversation(conv_id)
+    print(f"  Exported {len(export['messages'])} messages")
+    
+    print("\n" + "=" * 70)
+    print("✅ Claude Node Bridge v2.0 - All tests complete")
+    print("=" * 70)

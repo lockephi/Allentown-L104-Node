@@ -14,7 +14,7 @@ ENDPOINTS:
 - POST /api/brain/save      - Persist state
 - POST /api/brain/load      - Load state
 
-VERSION: 1.0.0
+VERSION: 28.0.0 (EVO_28 - Enhanced Claude Bridge)
 DATE: 2026-01-21
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import logging
 import time
+from datetime import datetime
 
 # Import the brain
 from l104_unified_intelligence import UnifiedIntelligence
@@ -622,6 +623,121 @@ async def claude_stats():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_28 - ENHANCED CLAUDE ENDPOINTS (Conversation & Streaming)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ClaudeChatRequest(BaseModel):
+    message: str
+    conversation_id: Optional[str] = None
+    model: Optional[str] = None
+    use_tools: bool = False
+
+
+class ClaudeConversationRequest(BaseModel):
+    conversation_id: Optional[str] = None
+
+
+@router.post("/claude/chat")
+async def claude_chat(request: ClaudeChatRequest):
+    """
+    Chat with Claude in a conversation context.
+    Maintains conversation history for multi-turn dialogue.
+    """
+    bridge = get_claude_bridge()
+    response = await bridge.chat_async(
+        message=request.message,
+        conversation_id=request.conversation_id,
+        model=request.model,
+        use_tools=request.use_tools
+    )
+    return {
+        **response.to_dict(),
+        "conversation_id": bridge.active_conversation
+    }
+
+
+@router.post("/claude/conversation/start")
+async def claude_start_conversation():
+    """
+    Start a new conversation and return its ID.
+    """
+    bridge = get_claude_bridge()
+    conv_id = bridge.start_conversation()
+    return {
+        "conversation_id": conv_id,
+        "status": "created"
+    }
+
+
+@router.get("/claude/conversations")
+async def claude_list_conversations():
+    """
+    List all active conversations.
+    """
+    bridge = get_claude_bridge()
+    return {
+        "conversations": bridge.list_conversations(),
+        "active": bridge.active_conversation
+    }
+
+
+@router.get("/claude/conversation/{conversation_id}")
+async def claude_get_conversation(conversation_id: str):
+    """
+    Get the history of a specific conversation.
+    """
+    bridge = get_claude_bridge()
+    return bridge.export_conversation(conversation_id)
+
+
+@router.delete("/claude/conversation/{conversation_id}")
+async def claude_clear_conversation(conversation_id: str):
+    """
+    Clear a conversation's history.
+    """
+    bridge = get_claude_bridge()
+    bridge.clear_conversation(conversation_id)
+    return {"status": "cleared", "conversation_id": conversation_id}
+
+
+@router.get("/claude/tools")
+async def claude_list_tools():
+    """
+    List all registered tools available for Claude.
+    """
+    bridge = get_claude_bridge()
+    return {
+        "tools": [
+            {
+                "name": tool.name,
+                "description": tool.description,
+                "input_schema": tool.input_schema
+            }
+            for tool in bridge.tools.values()
+        ]
+    }
+
+
+@router.post("/claude/tool/{tool_name}")
+async def claude_execute_tool(tool_name: str, inputs: Dict[str, Any]):
+    """
+    Directly execute a registered tool.
+    """
+    bridge = get_claude_bridge()
+    if tool_name not in bridge.tools:
+        return {"error": f"Tool '{tool_name}' not found"}
+    
+    tool_def = bridge.tools[tool_name]
+    if tool_def.handler:
+        try:
+            result = tool_def.handler(**inputs)
+            return {"result": result, "tool": tool_name}
+        except Exception as e:
+            return {"error": str(e), "tool": tool_name}
+    return {"error": "Tool has no handler", "tool": tool_name}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # EVO_26 - ADVANCED PROCESSING ENGINE ENDPOINTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -888,8 +1004,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="27.0.0",
-    description="REST API for the Unified Intelligence System - EVO_27 Emergence Monitoring Edition"
+    version="28.0.0",
+    description="REST API for the Unified Intelligence System - EVO_28 Enhanced Claude Bridge Edition"
 )
 app.include_router(router)
 
