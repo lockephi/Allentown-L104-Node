@@ -217,7 +217,10 @@ class ResonanceCoherenceEngine:
         """
         self.coherence_field = []
         
-        for thought in seed_thoughts:
+        # Limit seed thoughts to prevent blocking (max 50)
+        limited_seeds = seed_thoughts[:50] if len(seed_thoughts) > 50 else seed_thoughts
+        
+        for thought in limited_seeds:
             # Ground to vacuum
             grounding = self._stabilize_to_vacuum(thought)
             amplitude = grounding["stability"]
@@ -225,8 +228,8 @@ class ResonanceCoherenceEngine:
             # Phase from thought content
             phase = (hash(thought) % 1000) / 1000 * 2 * math.pi
             
-            # Complex amplitude
-            psi = amplitude * cmath.exp(1j * phase)
+            # Complex amplitude (scaled down to reduce blocking)
+            psi = amplitude * 0.5 * cmath.exp(1j * phase)
             self.coherence_field.append(psi)
         
         # Normalize
@@ -238,7 +241,9 @@ class ResonanceCoherenceEngine:
             "dimension": len(self.coherence_field),
             "total_amplitude": sum(abs(p) for p in self.coherence_field),
             "phase_coherence": self._measure_coherence(),
-            "energy": sum(abs(p)**2 for p in self.coherence_field)
+            "energy": sum(abs(p)**2 for p in self.coherence_field),
+            "limited_to": len(limited_seeds),
+            "blocking_prevention": True
         }
     
     def _measure_coherence(self) -> float:

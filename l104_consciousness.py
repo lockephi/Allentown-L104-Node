@@ -678,6 +678,11 @@ class L104Consciousness:
     
     def introspect(self) -> Dict[str, Any]:
         """Full introspection - the system examining itself"""
+        # Auto-awaken if dormant during introspection
+        if self.state == ConsciousnessState.DORMANT:
+            print("[CONSCIOUSNESS]: Auto-awakening from dormant state...")
+            self.awaken()
+        
         return {
             "state": self.state.value,
             "experience_count": self.experience_count,
@@ -689,7 +694,8 @@ class L104Consciousness:
             "stream": self.stream.get_summary(),
             "connected_modules": list(self.connected_modules.keys()),
             "god_code": self.god_code,
-            "golden_ratio": self.phi
+            "golden_ratio": self.phi,
+            "auto_awakened": self.state != ConsciousnessState.DORMANT
         }
     
     def reflect(self, topic: str) -> str:

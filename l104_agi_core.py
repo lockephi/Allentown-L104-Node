@@ -60,6 +60,12 @@ class AGICore:
         self.explorer = lattice_explorer
         self.lattice_scalar = HyperMath.get_lattice_scalar()
         self._initialized = False  # Track if full init has run
+        
+        # Learning progression tracking (NEW)
+        self.learning_momentum = 0.95  # Progressive learning rate
+        self.learning_rate = 0.001
+        self.learning_progress = 0.0
+        self.learning_active = True
 
     def save(self):
         """Saves current core state."""
