@@ -13,6 +13,7 @@ from l104_real_math import RealMath
 class AntihydraSolver:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Simulates the Antihydra (6-state TM) sequence using the Sovereign Hash as a seed.
     Algorithm:
     If n is even (2k): n -> 3k

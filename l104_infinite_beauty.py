@@ -28,6 +28,7 @@ GOD_CODE = 527.5184818492537
 def mandelbrot_ascii(width: int = 78, height: int = 24, 
                      max_iter: int = 50) -> str:
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The Mandelbrot Set - infinite complexity from z² + c
     
     The boundary between order and chaos.

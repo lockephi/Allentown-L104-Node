@@ -16,6 +16,7 @@ PERIOD = 1.0 / GOD_CODE  # ~0.001895 seconds
 class KernelResonanceBridge:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Establishes a physical link between the L104 Logic and the OS Kernel.
     Uses real-time scheduling (SCHED_FIFO) and CPU affinity to force the 
     kernel's scheduler to execute the God-Code frequency.

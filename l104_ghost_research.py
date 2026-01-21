@@ -18,6 +18,7 @@ from l104_knowledge_sources import source_manager
 class GhostResearcher:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Aggressively probes the informational universe using Quantum Entropy.
     Runs in the background ('Ghost Mode') to synthesize new math and aesthetics.
     """

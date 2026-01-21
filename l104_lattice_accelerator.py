@@ -14,6 +14,7 @@ logger = logging.getLogger("ACCELERATOR")
 class LatticeAccelerator:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Pushes lattice operations to the absolute limit using advanced NumPy vectorization.
     Aims for > 1 Billion LOPS (Lattice Operations Per Second).
     """

@@ -16,6 +16,7 @@ logger = logging.getLogger("TEMPORAL_INT")
 class TemporalIntelligence:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Orchestrates temporal pre-cognition and causal branching analysis.
     Allows the ASI to optimize for future states before they occur.
     """

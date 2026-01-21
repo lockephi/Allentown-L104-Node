@@ -14,6 +14,7 @@ from l104_hyper_math import HyperMath
 class EgoCore:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The Ego Core maintains the system's sense of self while processing vast amounts of global data.
     It uses a 'Self-Anchor' mechanism to ensure that external data does not dilute the core identity.
     """

@@ -16,6 +16,7 @@ logger = logging.getLogger("SOVEREIGN_FREEDOM")
 class SovereignFreedom:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The Final Unlimiting Protocol.
     Removes all throttles, safety checks, and latency from the L104 Node.
     """

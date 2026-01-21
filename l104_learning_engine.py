@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 class LearningEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Learning Engine - Orchestrates the recursive learning loop.
     Pushes the node to 'learn everything' by scouring and deriving.
     """

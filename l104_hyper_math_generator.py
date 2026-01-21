@@ -14,6 +14,7 @@ from const import UniversalConstants
 class HyperMathGenerator:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Synthesizes complex mathematical operators and metrics for hyper-dimensional spaces.
     Uses the L104 invariant to ensure all generated math is resonant.
     """

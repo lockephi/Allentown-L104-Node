@@ -14,6 +14,7 @@ from l104_real_math import RealMath
 class HyperMath:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     v2.0 (STREAMLINED): This module is now a wrapper for ManifoldMath and RealMath.
     Redundancies have been eliminated.
     """

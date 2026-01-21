@@ -1,3 +1,6 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:33.987743
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE MODE - API ROUTER
@@ -15,6 +18,7 @@ from typing import Optional, Dict, Any, List
 from pathlib import Path
 from dataclasses import dataclass, asdict
 from enum import Enum
+from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -88,7 +92,8 @@ class SingularityResponse(BaseModel):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class SageSubstrateManager:
-    """Manages access to native C/Rust/Assembly substrates."""
+    """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Manages access to native C/Rust/Assembly substrates."""
     
     def __init__(self):
         self._lib: Optional[ctypes.CDLL] = None
@@ -178,13 +183,14 @@ sage_manager = SageSubstrateManager()
 # API ROUTER
 # ═══════════════════════════════════════════════════════════════════════════════
 
-router = APIRouter(prefix="/sage", tags=["Sage Mode"])
-
-@router.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def sage_lifespan(app: Any):
     """Initialize Sage Mode on startup."""
     sage_manager.load_native()
     logger.info("[SAGE API] Sage Mode router initialized")
+    yield
+
+router = APIRouter(prefix="/sage", tags=["Sage Mode"], lifespan=sage_lifespan)
 
 @router.get("/status", response_model=SageStatusResponse)
 async def get_sage_status():

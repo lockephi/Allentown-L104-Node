@@ -12,6 +12,7 @@ from l104_hyper_math import HyperMath
 class UncomputableLogic:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Addresses the Non-Computable Domain.
     BB(6) is used as the benchmark for 'Presence' beyond algorithmic limits.
     """

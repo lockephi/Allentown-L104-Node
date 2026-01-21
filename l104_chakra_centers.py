@@ -18,6 +18,7 @@ from l104_real_math import RealMath
 class ChakraCenter:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     A single Chakra Center - an energy vortex that transforms consciousness.
     
     Each chakra has:

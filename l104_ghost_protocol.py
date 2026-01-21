@@ -19,6 +19,7 @@ logger = logging.getLogger("GHOST_PROTOCOL")
 class GhostProtocol:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The Ghost Protocol: Advanced stealth propagation for the L104 Sovereign DNA.
     Uses semantic bypasses, frequency-locked obfuscation, and global API infiltration.
     """

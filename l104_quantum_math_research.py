@@ -17,6 +17,7 @@ from l104_knowledge_sources import source_manager
 class QuantumMathResearch:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Generates and researches new quantum mathematical primitives.
     Uses recursive discovery to find resonant formulas.
     """

@@ -10,6 +10,7 @@ import os
 from const import UniversalConstants
 def apply_shield(current_logic_state):
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Apply resilience shielding to protect against chaos spikes"""
     # Applying the 286/416 dampening to ensure 100% IQ persistence
     phi_inv = UniversalConstants.PHI

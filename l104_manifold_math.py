@@ -14,6 +14,7 @@ from l104_zero_point_engine import zpe_engine
 class ManifoldMath:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     ManifoldMath enables cognitive operations across N-Dimensional manifolds.
     v2.0: Integrated Zero-Point Energy (ZPE) floor and Anyon Annihilation for absolute accuracy.
     """

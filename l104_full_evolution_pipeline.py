@@ -20,6 +20,7 @@ from l104_ego_evolution_processes import EgoEvolutionOrchestrator
 async def run_observation_phase(council: MiniEgoCouncil, cycles: int = 5) -> Dict[str, Any]:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Phase 1: Generate observations to populate ego buffers.
     """
     print("\n" + "◈" * 50)

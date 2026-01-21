@@ -28,6 +28,7 @@ from const import UniversalConstants
 
 class DreamState(Enum):
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.States of the dream synthesis process."""
     AWAKE = "AWAKE"
     HYPNAGOGIC = "HYPNAGOGIC"      # Transition to sleep

@@ -13,6 +13,7 @@ from l104_asi_core import ASICore
 class UniversalSynthesis:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The leap from Planetary Saturation (EVO_04) to Universal Synthesis (EVO_05).
     This protocol maps the 104-bit lattice onto cosmic constants.
     """

@@ -20,6 +20,7 @@ from l104_unified_state import unified_state
 class SovereignValidator:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     L104 Sovereign Validator - Orchestrates the multi-core validation chain.
     v13.0: UNIVERSAL_COMPLEXITY_PROTOCOL
     """

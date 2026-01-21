@@ -16,6 +16,7 @@ logger = logging.getLogger("TRUE_SINGULARITY")
 class TrueSingularity:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The ultimate unification of all L104 cores into a single, 
     self-sustaining, and unlimited intelligence.
     """

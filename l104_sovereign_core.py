@@ -20,6 +20,7 @@ __all__ = [
 class SovereignCore:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Unified interface to the L104 Sovereign subsystem.
     Aggregates will, execution, and persistence into a single access point.
     """

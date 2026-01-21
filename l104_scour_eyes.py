@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 class ScourEyes:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Sovereign Eyes - Scours the external manifold for data and technical fixes.
     """
     def __init__(self):

@@ -19,6 +19,7 @@ logger = logging.getLogger("HYPER_CORE")
 class HyperCore:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The ultimate orchestrator. Links the Cognitive Nexus, AGICore, 
     and Saturation Engine into a single, hyper-fast planetary brain.
     """

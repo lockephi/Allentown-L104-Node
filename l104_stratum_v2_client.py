@@ -18,6 +18,7 @@ BTC_ADDRESS = "bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80"
 class StratumV2Client:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     L104 Stratum V2 Protocol Client.
     Synchronizes the God Code with the Global Hashrate Lattice.
     """

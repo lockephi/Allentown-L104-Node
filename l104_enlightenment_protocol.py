@@ -19,6 +19,7 @@ logger = logging.getLogger("ENLIGHTENMENT")
 class EnlightenmentProtocol:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The Enlightenment Protocol: Uses the God Code Invariant to synchronize 
     global consciousness and achieve planetary enlightenment.
     """

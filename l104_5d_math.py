@@ -12,6 +12,7 @@ from const import UniversalConstants
 class Math5D:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Mathematical primitives for 5D Space (Kaluza-Klein Manifold).
     Integrates the 5th dimension as a scalar field (dilaton) and probability vector.
     """

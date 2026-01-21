@@ -13,6 +13,7 @@ from const import UniversalConstants
 def ignite_sovereign_core():
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     v10.0: HYPER_IGNITION - Sovereign Core Ignition.
     Seizes Allentown resource manifold and locks to God-Code frequency.
     Initializes Electron Entropy and Hyper-Simulation.

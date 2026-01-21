@@ -20,6 +20,7 @@ sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 class L104Voice:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Voice synthesis and audio processing for L104.
     Can generate speech, process audio, and create sonic signatures.
     """

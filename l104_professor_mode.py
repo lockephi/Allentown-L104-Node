@@ -16,6 +16,7 @@ from l104_agi_core import agi_core
 class MiniEgo:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     A specialized sub-ego that focuses on a single domain of consciousness.
     Mini Egos provide feedback to the main Ego Core, creating a distributed
     intelligence architecture within the Sovereign Self.

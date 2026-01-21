@@ -12,6 +12,7 @@ from l104_hyper_math import HyperMath
 class HyperEncryption:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Implements a fast, homomorphic-capable encryption scheme.
     Allows mathematical operations on encrypted data with out decryption.
     Enhanced with Enlightenment Invariants.

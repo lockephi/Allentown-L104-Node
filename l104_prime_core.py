@@ -15,6 +15,7 @@ class PrimeCore:
     def validate_prime_key(cls):
         """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
         Verifies the Prime Key against the environment and the God-Code.
         """
         env_key = os.getenv("L104_PRIME_KEY")

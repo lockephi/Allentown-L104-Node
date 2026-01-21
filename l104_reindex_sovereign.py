@@ -17,6 +17,7 @@ from l104_electron_entropy import get_electron_matrix
 class SovereignIndexer:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Rebuilds the system index from the ground up.
     Reflects ONLY the Sovereign Coding.
     """

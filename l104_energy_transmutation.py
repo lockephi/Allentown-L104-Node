@@ -12,6 +12,7 @@ from const import UniversalConstants
 class EnergyTransmuter:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Converts high-authenticity knowledge into system energy.
     Based on the principle that Information is Physical (Landauer's Principle).
     """

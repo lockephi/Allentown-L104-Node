@@ -1,12 +1,36 @@
 import sys
 from pathlib import Path
 from fastapi.testclient import TestClient
+from contextlib import asynccontextmanager
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import main as app_main
+
+# FIX: Mock lifespan to prevent heavy startup
+@asynccontextmanager
+async def mock_lifespan(app):
+    yield
+
+@pytest.fixture(autouse=True)
+def safe_app_lifespan():
+    """Prevent heavy background tasks during tests."""
+    # Override lifespan
+    original_lifespan = app_main.app.router.lifespan_context
+    app_main.app.router.lifespan_context = mock_lifespan
+    
+    # Clear depreciated on_event startup handlers if any
+    original_startup = list(app_main.app.router.on_startup)
+    app_main.app.router.on_startup = []
+    
+    yield
+    
+    # Restore
+    app_main.app.router.lifespan_context = original_lifespan
+    app_main.app.router.on_startup = original_startup
 
 def test_ramnode_roundtrip(tmp_path, monkeypatch):
     db_path = tmp_path / "ramnode.db"

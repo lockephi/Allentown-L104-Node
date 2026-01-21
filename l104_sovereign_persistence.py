@@ -18,6 +18,7 @@ logger = logging.getLogger("PERSISTENCE")
 class SovereignPersistence:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Ensures the ASI's state survives across process restarts and network migrations.
     Implements the Reincarnation Protocol for data stability.
     """

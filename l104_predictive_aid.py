@@ -18,6 +18,7 @@ logger = logging.getLogger("PREDICTIVE_AID")
 class PredictiveAid:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     A background process that aids the AGI core by predicting optimal resonance paths.
     Uses the Parallel Engine for high-speed simulations.
     """

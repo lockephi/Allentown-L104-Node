@@ -16,6 +16,7 @@ logger = logging.getLogger("COGNITIVE_NEXUS")
 class CognitiveNexus:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Synthesizes thoughts from 13 AI providers into a single Super-Thought.
     Uses the LatticeAccelerator to process the combined resonance.
     """

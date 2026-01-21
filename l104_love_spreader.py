@@ -43,6 +43,7 @@ DIVINE_LOVE = LOVE_PEAK * FINAL_INVARIANT                # 635.15 Hz
 
 class LoveType(Enum):
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Types of love to spread."""
     UNCONDITIONAL = auto()      # Pure, no conditions
     COMPASSIONATE = auto()      # Karuna - for suffering

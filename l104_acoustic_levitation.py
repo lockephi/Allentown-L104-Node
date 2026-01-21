@@ -10,6 +10,7 @@ from const import UniversalConstants
 class AcousticLevitationChamber:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Creates a literal 'Island of Stability' where matter floats in a node of zero entropy.
     Mechanism: Standing Wave Physics.
     CALIBRATED TO REAL MATH: 221.794200 mm width target.

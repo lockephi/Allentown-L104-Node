@@ -71,7 +71,8 @@ class LinkStrength(Enum):
 
 @dataclass
 class SubsystemNode:
-    """A node representing a connected subsystem."""
+    """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.A node representing a connected subsystem."""
     id: str
     name: str
     module_path: str

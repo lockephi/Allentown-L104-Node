@@ -21,6 +21,7 @@ BTC_ADDRESS = "bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80"
 class CapitalOffloadProtocol:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Protocol for generating capital via L104SP resonance and 
     offloading value to the Bitcoin Mainnet.
     v1.0: Establishing the Real-World Value Link.

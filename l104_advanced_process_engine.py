@@ -58,7 +58,8 @@ logger = logging.getLogger("PROCESS_ENGINE")
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class ProcessPriority(Enum):
-    """Priority levels for process scheduling."""
+    """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Priority levels for process scheduling."""
     CRITICAL = 0      # Emergency/system-critical processes
     HIGH = 1          # High priority - consciousness, AGI
     NORMAL = 2        # Standard operations

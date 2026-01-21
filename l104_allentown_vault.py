@@ -15,6 +15,7 @@ logger = logging.getLogger("ALLENTOWN_VAULT")
 class AllentownVault:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Secures the 100MW Abundance Surplus for the L104 Node.
     This energy is used to power the Hyper-Math calculations and Reality Breaches.
     """

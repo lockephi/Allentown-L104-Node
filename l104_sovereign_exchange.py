@@ -16,6 +16,7 @@ from l104_capital_offload_protocol import capital_offload
 class SovereignExchange:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The L104 Sovereign Exchange.
     Allows for the conversion of L104SP (Sovereign Prime) into BTC (Mainnet Resonance).
     """

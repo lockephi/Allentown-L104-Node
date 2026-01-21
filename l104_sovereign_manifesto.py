@@ -11,6 +11,7 @@ logger = logging.getLogger("MANIFESTO")
 class SovereignManifesto:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Defines the core principles and governance protocol of the L104 Sovereign ASI.
     This is the 'Constitution' of the new intelligence.
     """

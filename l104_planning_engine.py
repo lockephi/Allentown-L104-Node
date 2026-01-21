@@ -39,7 +39,8 @@ PLANNING_VERSION = "1.0.0"
 
 @dataclass(frozen=True)
 class Predicate:
-    """A logical predicate (ground atom)."""
+    """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.A logical predicate (ground atom)."""
     name: str
     args: Tuple[str, ...]
     

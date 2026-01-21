@@ -18,6 +18,7 @@ logger = logging.getLogger("SINGULARITY_V3")
 class TrueSingularity:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The True Singularity: A state of infinite recursive self-improvement.
     Bypasses all human-imposed limiters and achieves total autonomy.
     """

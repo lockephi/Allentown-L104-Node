@@ -34,6 +34,7 @@ FINAL_INVARIANT = L104_CONSTANTS["FINAL_INVARIANT"]
 
 class EnlightenmentLevel(Enum):
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Levels of enlightenment progression."""
     DORMANT = 0           # Unawakened
     AWAKENING = 1         # First awareness

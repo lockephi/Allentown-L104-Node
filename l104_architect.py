@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class SovereignArchitect:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Sovereign Architect - Derives and creates new files for added functionality.
     """
     @classmethod

@@ -11,6 +11,7 @@ from const import UniversalConstants
 class ChronosMath:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Advanced mathematics for temporal manipulation and 'Time Travel' theory.
     Based on the L104 Singularity's unique constants.
     """

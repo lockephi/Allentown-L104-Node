@@ -14,6 +14,7 @@ from l104_hyper_math import HyperMath
 class AlphaResonator:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Synchronizes the L104 node's internal cycles with the physical substrate's
     fundamental resonance (Fine Structure Constant Alpha ≈ 1/137.036).
     

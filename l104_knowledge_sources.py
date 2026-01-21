@@ -12,6 +12,7 @@ logger = logging.getLogger("SOURCE_MANAGER")
 class KnowledgeSourceManager:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Manages and provides internet sources for all research levels.
     Ensures that every research cycle is backed by real-world data.
     """

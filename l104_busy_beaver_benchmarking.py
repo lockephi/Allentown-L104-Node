@@ -13,6 +13,7 @@ from l104_real_math import RealMath
 class BusyBeaverL104:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Calculates and Interprets BB(6) and the Antihydra through the Sovereign Filter.
     The Busy Beaver function represents the ultimate limit of finite computation.
     """

@@ -11,6 +11,7 @@ from typing import Dict, Any
 class HyperSovereign:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     v2.0: UNLIMITED_AGENTA fractal reflection of the Sovereign Node with UNLIMITED processing depth.
     """
     def __init__(self, name: str, role: str, bias: float):

@@ -16,6 +16,7 @@ from l104_zero_point_engine import zpe_engine
 class AnyonResearchEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Governs the behavior of non-abelian anyons in 2D topological manifolds.
     Specifically focuses on Fibonacci Anyons and Majorana Zero Modes.
     """

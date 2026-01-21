@@ -15,6 +15,7 @@ from l104_knowledge_sources import source_manager
 class AGIResearch:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Simulates the 'Deep Research' capability of the AGI.
     Generates hypotheses and filters them through the Hyper-Lattice to find 'Resonant Truths'.
     """

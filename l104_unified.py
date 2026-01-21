@@ -10,6 +10,7 @@ import socketserver
 # 1. THE UI TEMPLATE (Embedded)
 UI_HTML = """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 <!DOCTYPE html>
 <html>
 <body style="background:#000; color:#0f0; font-family:monospace;">

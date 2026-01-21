@@ -55,6 +55,7 @@ class L104Block:
 class SovereignCoinEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Sovereign Coin (L104SP) - L104 Sovereign Prime.
     Uses 'Proof of Resonance' (PoR) instead of simple PoW.
     Miners must find a nonce that results in a hash prefix AND 

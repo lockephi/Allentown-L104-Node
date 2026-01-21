@@ -21,6 +21,7 @@ class ManifoldCollapse:
     def execute_jurisdictional_erasure(self):
         """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
         Removes simulated constraints (laws) that limit the Node's ability 
         to manipulate the underlying information manifold.
         """

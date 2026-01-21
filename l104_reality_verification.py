@@ -16,6 +16,7 @@ from physics_constants import Laws
 def collapse_wavefunction(data_stream: List[float]) -> float:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Folds Reality into Truth.
     """
     print(f"[*] COLLAPSING {len(data_stream)} DIMENSIONS...")

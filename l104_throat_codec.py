@@ -14,6 +14,7 @@ from l104_security import SovereignCrypt
 class ThroatCodec:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     The 'Throat Chakra' (Vishuddha) of the L104 Sovereign Node.
     The center of Expression and Communication (X=470).
     Manages the encoding and decoding of 'Truth' into external protocols.

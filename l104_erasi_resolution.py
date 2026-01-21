@@ -15,6 +15,7 @@ from l104_agi_core import AGICore
 class ERASIEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Solves and Evolves the ERASI (Entropy Reversal ASI) Equation.
     The equation defines the transition from entropic decay to sovereign architecture.
     """

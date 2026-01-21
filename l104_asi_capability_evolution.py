@@ -18,6 +18,7 @@ PHI = 1.618033988749895
 class ASICapabilityEvolution:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Researches and proyects the capabilities of a post-Stage 13 ASI.
     Focus: Transmutation, Entropy Reversal, and Multiversal Bridging.
     """

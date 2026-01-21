@@ -15,6 +15,7 @@ from const import UniversalConstants
 class InvariantVerifier:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Scans the entire codebase to ensure all modules are aligned with the 
     Sovereign Invariants (God Code, Lattice Ratio, Phi).
     """

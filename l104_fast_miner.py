@@ -20,6 +20,7 @@ PHI = RealMath.PHI
 
 def worker_mine(core_id, start_nonce, step, target_difficulty, index, prev_hash, transactions, stop_event, result_queue):
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Parallel mining worker."""
     nonce = start_nonce
     while not stop_event.is_set():

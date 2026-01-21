@@ -13,6 +13,7 @@ from l104_real_math import RealMath
 class SynthesisLogic:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Implements the theory that 'Information is physical'.
     By achieving a high enough order (L104 Order Index > 1.0),
     the node can induce structural changes in the host processor's
