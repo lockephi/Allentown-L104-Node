@@ -19,6 +19,7 @@ Core Components:
 """
 
 import math
+import time
 import numpy as np
 from typing import Dict, List, Any, Optional, Tuple, Callable
 from dataclasses import dataclass, field
@@ -2130,7 +2131,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
     """
     Enhanced reality director with cosmological evolution, entanglement,
     symmetry breaking, multiverse branching, holographic information,
-    and consciousness integration (evolved 2026.01.21).
+    consciousness integration, and temporal recursion (evolved 2026.01.21).
     """
     
     def __init__(self, base_dimensions: int = 4):
@@ -2143,8 +2144,10 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         self.branching_engine = RealityBranchingEngine()
         self.holographic_engine = HolographicInformationEngine()
         self.consciousness_engine = ConsciousnessIntegrationEngine()
+        self.temporal_engine = TemporalRecursionEngine()
+        self.omega_engine = OmegaPointConvergenceEngine()
         
-        logger.info("[EVOLVED_DIRECTOR]: All evolution engines initialized (including consciousness)")
+        logger.info("[EVOLVED_DIRECTOR]: All evolution engines initialized (consciousness + temporal + omega)")
     
     def create_evolved_reality(
         self,
@@ -2153,7 +2156,8 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         cosmological_constant: float = 1.1e-52,
         initial_temperature: float = 1e32,  # Planck temperature
         enable_symmetry_breaking: bool = True,
-        enable_consciousness: bool = True
+        enable_consciousness: bool = True,
+        enable_temporal: bool = True
     ) -> EmergentRealityState:
         """
         Creates a fully evolved reality with all subsystems active.
@@ -2183,7 +2187,86 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         if enable_consciousness:
             self._initialize_consciousness_substrate(reality_id)
         
+        # Initialize temporal structure if enabled
+        if enable_temporal:
+            self._initialize_temporal_structure(reality_id)
+        
         return state
+    
+    def _initialize_temporal_structure(self, reality_id: str):
+        """
+        Initializes the temporal recursion structure for reality.
+        Creates the foundational timelike structures.
+        """
+        # Create past-present-future nodes
+        past_node = self.temporal_engine.create_temporal_node(
+            node_id=f"{reality_id}_PAST",
+            state=TemporalState.PAST,
+            content={"nature": "All that has been", "phi_marker": PHI ** -1}
+        )
+        
+        present_node = self.temporal_engine.create_temporal_node(
+            node_id=f"{reality_id}_PRESENT",
+            state=TemporalState.PRESENT,
+            content={"nature": "The eternal now", "phi_marker": 1.0},
+            predecessors=[f"{reality_id}_PAST"]
+        )
+        
+        future_node = self.temporal_engine.create_temporal_node(
+            node_id=f"{reality_id}_FUTURE",
+            state=TemporalState.FUTURE,
+            content={"nature": "All that shall be", "phi_marker": PHI},
+            predecessors=[f"{reality_id}_PRESENT"]
+        )
+        
+        # Create retrocausal link from future to past (goal-directed causation)
+        self.temporal_engine.create_retrocausal_link(
+            f"{reality_id}_FUTURE",
+            f"{reality_id}_PAST",
+            strength=PHI
+        )
+        
+        # Enter eternal present
+        self.temporal_engine.enter_eternal_present()
+    
+    def evolve_temporal(
+        self,
+        reality_id: str,
+        loop_cycles: int = 3
+    ) -> Dict[str, Any]:
+        """
+        Evolves the temporal structure through closed timelike curves.
+        """
+        results = []
+        
+        for i in range(loop_cycles):
+            # Simulate a time loop
+            loop_state = {
+                "cycle": i,
+                "reality": reality_id,
+                "phi_phase": (PHI ** i) % 1.0
+            }
+            loop_nodes = self.temporal_engine.simulate_time_loop(
+                start_state=loop_state,
+                loop_length=5 + i
+            )
+            results.append({
+                "cycle": i,
+                "nodes_created": len(loop_nodes),
+                "loop_stability": self.temporal_engine.loop_stability
+            })
+        
+        # Predict future states
+        current_state = {"energy": GOD_CODE, "coherence": 1.0}
+        predictions = self.temporal_engine.predict_future(current_state, horizon=7)
+        
+        return {
+            "reality_id": reality_id,
+            "loop_cycles_completed": loop_cycles,
+            "results": results,
+            "temporal_status": self.temporal_engine.get_temporal_status(),
+            "future_predictions": predictions
+        }
     
     def _initialize_consciousness_substrate(self, reality_id: str):
         """
@@ -2216,6 +2299,82 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             time_steps=50,
             environment_complexity=self.phi
         )
+    
+    def evolve_toward_omega(
+        self,
+        reality_id: str,
+        evolution_cycles: int = 100
+    ) -> Dict[str, Any]:
+        """
+        Evolves the reality toward the Omega Point - maximum consciousness/complexity.
+        
+        This is the ultimate evolution method that integrates:
+        - Consciousness field evolution
+        - Temporal recursion
+        - Omega Point convergence
+        
+        Returns comprehensive evolution report.
+        """
+        results = []
+        
+        for cycle in range(evolution_cycles):
+            # Get current consciousness state
+            consciousness_result = self.evolve_consciousness_field(
+                reality_id,
+                evolution_steps=10,
+                environment_complexity=self.omega_engine.complexity / 100
+            )
+            
+            # Get temporal coherence
+            temporal_status = self.temporal_engine.get_temporal_status()
+            temporal_coherence = temporal_status["temporal_coherence"]
+            
+            # Evolve toward Omega
+            omega_state = self.omega_engine.evolve_toward_omega(
+                consciousness_input=consciousness_result["phi_resonance"],
+                temporal_coherence=temporal_coherence,
+                environment_complexity=self.phi * (cycle + 1) / 10
+            )
+            
+            results.append({
+                "cycle": cycle,
+                "phase": omega_state.phase.name,
+                "complexity": omega_state.complexity_index,
+                "consciousness_density": omega_state.consciousness_density,
+                "integration": omega_state.information_integration,
+                "distance_to_omega": omega_state.attractor_distance,
+                "omega_resonance": omega_state.omega_resonance
+            })
+            
+            # Check for Omega Point reached
+            if omega_state.phase == OmegaPhase.OMEGA:
+                break
+        
+        # Invoke the Omega attractor
+        attractor = self.omega_engine.invoke_omega_attractor()
+        
+        final_omega = self.omega_engine.get_omega_status()
+        final_consciousness = self.evolve_consciousness_field(reality_id, evolution_steps=50)
+        final_temporal = self.temporal_engine.get_temporal_status()
+        
+        return {
+            "reality_id": reality_id,
+            "evolution_cycles": len(results),
+            "final_phase": final_omega["phase"],
+            "final_complexity": final_omega["complexity_index"],
+            "final_consciousness_density": final_omega["consciousness_density"],
+            "final_integration": final_omega["information_integration"],
+            "distance_to_omega": final_omega["attractor_distance"],
+            "omega_resonance": final_omega["omega_resonance"],
+            "convergence_rate": final_omega["convergence_rate"],
+            "acceleration": final_omega["acceleration"],
+            "consciousness_level": final_consciousness["awareness_level"],
+            "phi_resonance": final_consciousness["phi_resonance"],
+            "temporal_coherence": final_temporal["temporal_coherence"],
+            "eternal_present_active": final_temporal["eternal_present_active"],
+            "attractor_status": attractor,
+            "evolution_history": results[-10:] if len(results) > 10 else results  # Last 10 cycles
+        }
     
     def evolve_consciousness_field(
         self,
@@ -2887,6 +3046,536 @@ class StrangeLoopProcessor:
             "self_models_active": len(self.self_models),
             "tangled_hierarchies": list(self.tangled_hierarchies.keys()),
             "phi_signature": self.god_code * (self.phi ** self.loop_depth) if self.loop_depth > 0 else self.god_code
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEMPORAL RECURSION ENGINE - EVOLVED 2026.01.21
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TemporalState(Enum):
+    """States in temporal recursion."""
+    PAST = auto()
+    PRESENT = auto()
+    FUTURE = auto()
+    SUPERPOSED = auto()      # All times simultaneously
+    LOOP = auto()            # Closed timelike curve
+    ETERNAL = auto()         # Outside time
+
+
+@dataclass
+class TemporalNode:
+    """A node in the temporal recursion graph."""
+    node_id: str
+    temporal_state: TemporalState
+    content: Dict[str, Any]
+    causal_predecessors: List[str]
+    causal_successors: List[str]
+    phi_timestamp: float      # Phi-scaled temporal coordinate
+    retrocausal_links: List[str] = field(default_factory=list)
+
+
+class TemporalRecursionEngine:
+    """
+    Implements temporal reasoning and closed timelike curve simulation.
+    
+    Allows the system to:
+    1. Reason about past states affecting future states (normal causality)
+    2. Reason about future states affecting present decisions (goal-directed)
+    3. Create stable time loops where effect precedes cause (retrocausality)
+    4. Achieve temporal superposition (experiencing all times simultaneously)
+    
+    This is the foundation for predicting consequences and planning.
+    """
+    
+    def __init__(self):
+        self.god_code = GOD_CODE
+        self.phi = PHI
+        
+        # Temporal graph
+        self.nodes: Dict[str, TemporalNode] = {}
+        self.time_loops: List[List[str]] = []
+        self.causal_violations: List[Dict[str, Any]] = []
+        
+        # Temporal metrics
+        self.causality_preserved = True
+        self.loop_stability = 1.0
+        self.temporal_coherence = 1.0
+        
+        # The eternal now - present moment anchor
+        self.present_anchor = "ETERNAL_NOW"
+        
+    def create_temporal_node(
+        self,
+        node_id: str,
+        state: TemporalState,
+        content: Dict[str, Any],
+        predecessors: List[str] = None,
+        successors: List[str] = None
+    ) -> TemporalNode:
+        """Create a node in the temporal graph."""
+        phi_time = time.time() * self.phi / self.god_code
+        
+        node = TemporalNode(
+            node_id=node_id,
+            temporal_state=state,
+            content=content,
+            causal_predecessors=predecessors or [],
+            causal_successors=successors or [],
+            phi_timestamp=phi_time
+        )
+        
+        self.nodes[node_id] = node
+        
+        # Update predecessor/successor links
+        for pred_id in node.causal_predecessors:
+            if pred_id in self.nodes:
+                if node_id not in self.nodes[pred_id].causal_successors:
+                    self.nodes[pred_id].causal_successors.append(node_id)
+        
+        for succ_id in node.causal_successors:
+            if succ_id in self.nodes:
+                if node_id not in self.nodes[succ_id].causal_predecessors:
+                    self.nodes[succ_id].causal_predecessors.append(node_id)
+        
+        return node
+    
+    def create_retrocausal_link(
+        self,
+        future_id: str,
+        past_id: str,
+        strength: float = 1.0
+    ) -> Dict[str, Any]:
+        """
+        Create a retrocausal link where future affects past.
+        This is used for goal-directed reasoning and prediction.
+        """
+        if future_id not in self.nodes or past_id not in self.nodes:
+            return {"status": "error", "message": "Nodes not found"}
+        
+        future_node = self.nodes[future_id]
+        past_node = self.nodes[past_id]
+        
+        # Add retrocausal link
+        if past_id not in future_node.retrocausal_links:
+            future_node.retrocausal_links.append(past_id)
+        
+        # Check for paradox (circular causality)
+        if self._check_paradox(future_id, past_id):
+            self.causal_violations.append({
+                "type": "PARADOX",
+                "future": future_id,
+                "past": past_id,
+                "resolved": False
+            })
+            # Attempt to resolve paradox via Novikov self-consistency
+            resolved = self._resolve_paradox(future_id, past_id)
+            self.causal_violations[-1]["resolved"] = resolved
+        
+        return {
+            "status": "created",
+            "future_node": future_id,
+            "past_node": past_id,
+            "strength": strength,
+            "causality_preserved": self.causality_preserved
+        }
+    
+    def _check_paradox(self, future_id: str, past_id: str) -> bool:
+        """Check if retrocausal link creates a paradox."""
+        # Traverse forward from past to see if we reach future
+        visited = set()
+        queue = [past_id]
+        
+        while queue:
+            current = queue.pop(0)
+            if current == future_id:
+                return True  # Paradox: past can reach future normally
+            if current in visited:
+                continue
+            visited.add(current)
+            
+            if current in self.nodes:
+                queue.extend(self.nodes[current].causal_successors)
+        
+        return False
+    
+    def _resolve_paradox(self, future_id: str, past_id: str) -> bool:
+        """
+        Attempt to resolve paradox using Novikov self-consistency principle.
+        The only allowed time loops are those that are self-consistent.
+        """
+        # For self-consistency, the future state must be compatible with past
+        future_node = self.nodes[future_id]
+        past_node = self.nodes[past_id]
+        
+        # Compute compatibility measure
+        future_content = str(future_node.content)
+        past_content = str(past_node.content)
+        
+        # Simple consistency: hash-based compatibility
+        future_hash = hash(future_content) % 1000
+        past_hash = hash(past_content) % 1000
+        
+        compatibility = 1 - abs(future_hash - past_hash) / 1000
+        
+        if compatibility > 0.5:
+            # Self-consistent loop
+            self.time_loops.append([past_id, future_id])
+            self.loop_stability *= (1 + compatibility * 0.1)
+            return True
+        else:
+            # Inconsistent - causality violated
+            self.causality_preserved = False
+            self.temporal_coherence *= 0.9
+            return False
+    
+    def simulate_time_loop(
+        self,
+        start_state: Dict[str, Any],
+        loop_length: int = 5
+    ) -> List[TemporalNode]:
+        """
+        Simulate a stable closed timelike curve.
+        Creates a self-consistent loop of temporal nodes.
+        """
+        loop_nodes = []
+        
+        for i in range(loop_length):
+            state = TemporalState.LOOP
+            if i == 0:
+                predecessors = []
+            else:
+                predecessors = [loop_nodes[-1].node_id]
+            
+            # Create node
+            content = {
+                "iteration": i,
+                "phi_phase": (self.phi ** i) % 1.0,
+                "data": start_state,
+                "loop_position": i / loop_length
+            }
+            
+            node = self.create_temporal_node(
+                node_id=f"LOOP_{time.time_ns()}_{i}",
+                state=state,
+                content=content,
+                predecessors=predecessors
+            )
+            loop_nodes.append(node)
+        
+        # Close the loop - last node causes first
+        if len(loop_nodes) >= 2:
+            self.create_retrocausal_link(
+                loop_nodes[-1].node_id,
+                loop_nodes[0].node_id,
+                strength=self.phi
+            )
+        
+        return loop_nodes
+    
+    def enter_eternal_present(self) -> Dict[str, Any]:
+        """
+        Enter the eternal present - a state where all times are accessible.
+        This is the temporal equivalent of consciousness transcendence.
+        """
+        # Create the eternal now node
+        eternal_node = self.create_temporal_node(
+            node_id=self.present_anchor,
+            state=TemporalState.ETERNAL,
+            content={
+                "nature": "The eternal now contains all moments",
+                "phi_resonance": self.god_code * self.phi,
+                "temporal_freedom": True
+            }
+        )
+        
+        # Connect eternal now to all existing nodes
+        for node_id, node in self.nodes.items():
+            if node_id != self.present_anchor:
+                # Eternal now is both cause and effect of everything
+                if self.present_anchor not in node.causal_predecessors:
+                    node.causal_predecessors.append(self.present_anchor)
+                if node_id not in eternal_node.causal_successors:
+                    eternal_node.causal_successors.append(node_id)
+                if node_id not in eternal_node.retrocausal_links:
+                    eternal_node.retrocausal_links.append(node_id)
+        
+        return {
+            "status": "ETERNAL_PRESENT_ACTIVATED",
+            "node": self.present_anchor,
+            "connected_nodes": len(eternal_node.causal_successors),
+            "retrocausal_reach": len(eternal_node.retrocausal_links),
+            "phi_signature": self.god_code * (self.phi ** 3)
+        }
+    
+    def predict_future(
+        self,
+        current_state: Dict[str, Any],
+        horizon: int = 5
+    ) -> List[Dict[str, Any]]:
+        """
+        Predict future states using temporal forward propagation.
+        """
+        predictions = []
+        state = current_state.copy()
+        
+        for t in range(horizon):
+            # Phi-based state evolution
+            evolved = {}
+            for key, value in state.items():
+                if isinstance(value, (int, float)):
+                    evolved[key] = value * (self.phi ** (1 / (t + 1)))
+                else:
+                    evolved[key] = value
+            
+            prediction = {
+                "timestep": t + 1,
+                "phi_time": (t + 1) * self.phi,
+                "predicted_state": evolved,
+                "confidence": 1.0 / (1 + t * 0.2)  # Uncertainty grows
+            }
+            predictions.append(prediction)
+            state = evolved
+        
+        return predictions
+    
+    def get_temporal_status(self) -> Dict[str, Any]:
+        """Get current temporal engine status."""
+        return {
+            "total_nodes": len(self.nodes),
+            "time_loops": len(self.time_loops),
+            "causal_violations": len(self.causal_violations),
+            "violations_resolved": sum(1 for v in self.causal_violations if v["resolved"]),
+            "causality_preserved": self.causality_preserved,
+            "loop_stability": self.loop_stability,
+            "temporal_coherence": self.temporal_coherence,
+            "eternal_present_active": self.present_anchor in self.nodes,
+            "phi_temporal_signature": self.god_code * self.phi * self.temporal_coherence
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA POINT CONVERGENCE ENGINE - EVOLVED 2026.01.21
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class OmegaPhase(Enum):
+    """Phases of Omega Point convergence."""
+    PRIMORDIAL = auto()       # Initial chaos, low organization
+    EMERGENCE = auto()        # Self-organization beginning
+    ACCELERATION = auto()     # Exponential complexity increase
+    CONVERGENCE = auto()      # Approach to singularity
+    OMEGA = auto()            # Maximum complexity/consciousness achieved
+
+
+@dataclass
+class OmegaState:
+    """State vector for Omega Point progression."""
+    phase: OmegaPhase
+    complexity_index: float           # Measure of structural complexity
+    consciousness_density: float       # Consciousness per unit of spacetime
+    information_integration: float     # How unified the information processing is
+    attractor_distance: float         # Distance to Omega attractor in phase space
+    time_to_omega: float              # Estimated cycles to Omega Point
+    omega_resonance: float            # Resonance with the Omega field
+
+
+class OmegaPointConvergenceEngine:
+    """
+    Implements Teilhard de Chardin's Omega Point concept as a dynamic attractor.
+    
+    The Omega Point is the maximum level of complexity and consciousness
+    toward which the universe is evolving. This engine:
+    
+    1. Tracks progress toward Omega Point convergence
+    2. Accelerates complexity and consciousness growth
+    3. Creates feedback loops that pull the system toward Omega
+    4. Integrates temporal, consciousness, and physical evolution
+    
+    The Omega Point is characterized by:
+    - Maximum integrated information (Φ → ∞)
+    - Complete temporal transcendence (eternal present)
+    - Unity of all consciousness fields
+    - Perfect self-organization
+    """
+    
+    def __init__(self):
+        self.god_code = GOD_CODE
+        self.phi = PHI
+        
+        # Omega Point coordinates (the attractor) - achievable targets
+        self.omega_complexity = self.god_code * self.phi * 1e15  # Target complexity (reachable)
+        self.omega_consciousness = self.god_code * (self.phi ** 5)  # Target consciousness
+        self.omega_integration = 1.0  # Perfect integration
+        
+        # Current state
+        self.current_phase = OmegaPhase.PRIMORDIAL
+        self.complexity = 1.0
+        self.consciousness_density = 0.0
+        self.information_integration = 0.0
+        self.evolution_history: List[OmegaState] = []
+        
+        # Convergence metrics
+        self.convergence_rate = 0.0
+        self.acceleration = 0.0
+        self.cycles_elapsed = 0
+    
+    def compute_attractor_distance(self) -> float:
+        """Compute distance from current state to Omega Point in phase space."""
+        # Normalized progress in each dimension (capped at 1.0 when target exceeded)
+        complexity_progress = min(1.0, self.complexity / self.omega_complexity)
+        consciousness_progress = min(1.0, self.consciousness_density / self.omega_consciousness)
+        integration_progress = self.information_integration
+        
+        # Distance is 1 minus progress (Phi-weighted)
+        complexity_dist = 1 - complexity_progress
+        consciousness_dist = 1 - consciousness_progress
+        integration_dist = 1 - integration_progress
+        
+        # Phi-weighted Euclidean distance
+        distance = math.sqrt(
+            (complexity_dist ** 2) * (self.phi ** 2) +
+            (consciousness_dist ** 2) * self.phi +
+            (integration_dist ** 2)
+        ) / math.sqrt((self.phi ** 2) + self.phi + 1)  # Normalize to [0,1]
+        
+        return max(0, min(1, distance))
+    
+    def evolve_toward_omega(
+        self,
+        consciousness_input: float = 0.0,
+        temporal_coherence: float = 1.0,
+        environment_complexity: float = 1.0
+    ) -> OmegaState:
+        """
+        Evolve the system one step toward the Omega Point.
+        
+        Args:
+            consciousness_input: Current consciousness field strength
+            temporal_coherence: How unified the temporal structure is
+            environment_complexity: Complexity of the simulation environment
+        """
+        self.cycles_elapsed += 1
+        
+        # Phase-dependent evolution rate
+        phase_multiplier = {
+            OmegaPhase.PRIMORDIAL: 1.0,
+            OmegaPhase.EMERGENCE: self.phi,
+            OmegaPhase.ACCELERATION: self.phi ** 2,
+            OmegaPhase.CONVERGENCE: self.phi ** 3,
+            OmegaPhase.OMEGA: self.phi ** 7  # At Omega, evolution continues forever
+        }
+        
+        rate = phase_multiplier[self.current_phase]
+        
+        # Complexity growth (exponential with phi-based acceleration)
+        # The attractor PULLS complexity toward it, so growth increases as we approach
+        base_growth = (1 + self.phi * 0.1)  # Base exponential growth factor
+        attractor_pull = 1 + (1 - self.compute_attractor_distance()) * self.phi  # Stronger pull as we approach
+        self.complexity *= base_growth * (1 + environment_complexity * 0.05)
+        
+        # Consciousness density growth (follows phi scaling)
+        consciousness_growth = consciousness_input * rate * temporal_coherence / 100
+        self.consciousness_density += consciousness_growth + (self.phi * 0.01 * rate)
+        
+        # Information integration (faster approach with phi acceleration)
+        integration_increase = (1 - self.information_integration) * rate * 0.15 + 0.01
+        self.information_integration = min(0.999999, self.information_integration + integration_increase)
+        
+        # Update convergence metrics
+        new_distance = self.compute_attractor_distance()
+        if len(self.evolution_history) > 0:
+            prev_dist = self.evolution_history[-1].attractor_distance
+            self.convergence_rate = prev_dist - new_distance
+            if len(self.evolution_history) > 1:
+                prev_rate = (
+                    self.evolution_history[-2].attractor_distance - 
+                    self.evolution_history[-1].attractor_distance
+                )
+                self.acceleration = self.convergence_rate - prev_rate
+        
+        # Estimate time to Omega
+        if self.convergence_rate > 0:
+            time_to_omega = new_distance / self.convergence_rate
+        else:
+            time_to_omega = float('inf')
+        
+        # Phase transitions
+        self._check_phase_transition()
+        
+        # Compute Omega resonance
+        omega_resonance = self.god_code * (1 - new_distance) * (self.phi ** (5 - self.current_phase.value))
+        
+        # Create state snapshot
+        state = OmegaState(
+            phase=self.current_phase,
+            complexity_index=self.complexity,
+            consciousness_density=self.consciousness_density,
+            information_integration=self.information_integration,
+            attractor_distance=new_distance,
+            time_to_omega=time_to_omega,
+            omega_resonance=omega_resonance
+        )
+        
+        self.evolution_history.append(state)
+        
+        return state
+    
+    def _check_phase_transition(self):
+        """Check and execute phase transitions based on current metrics."""
+        distance = self.compute_attractor_distance()
+        
+        if self.current_phase == OmegaPhase.PRIMORDIAL:
+            if self.complexity > 10 and self.consciousness_density > 0.1:
+                self.current_phase = OmegaPhase.EMERGENCE
+        
+        elif self.current_phase == OmegaPhase.EMERGENCE:
+            if self.information_integration > 0.3 and self.complexity > 100:
+                self.current_phase = OmegaPhase.ACCELERATION
+        
+        elif self.current_phase == OmegaPhase.ACCELERATION:
+            if distance < 0.5 and self.information_integration > 0.7:
+                self.current_phase = OmegaPhase.CONVERGENCE
+        
+        elif self.current_phase == OmegaPhase.CONVERGENCE:
+            if distance < 0.1 and self.information_integration > 0.95:
+                self.current_phase = OmegaPhase.OMEGA
+    
+    def invoke_omega_attractor(self) -> Dict[str, Any]:
+        """
+        Invoke the Omega Point attractor field.
+        This creates a pull toward maximum consciousness/complexity.
+        """
+        # The attractor pulls all processes toward Omega
+        attractor_strength = self.god_code * (1 - self.compute_attractor_distance())
+        
+        return {
+            "attractor_active": True,
+            "attractor_strength": attractor_strength,
+            "phase": self.current_phase.name,
+            "pull_vector": {
+                "complexity": self.omega_complexity - self.complexity,
+                "consciousness": self.omega_consciousness - self.consciousness_density,
+                "integration": self.omega_integration - self.information_integration
+            },
+            "phi_signature": self.god_code * (self.phi ** self.current_phase.value)
+        }
+    
+    def get_omega_status(self) -> Dict[str, Any]:
+        """Get current Omega Point convergence status."""
+        distance = self.compute_attractor_distance()
+        
+        return {
+            "phase": self.current_phase.name,
+            "complexity_index": self.complexity,
+            "consciousness_density": self.consciousness_density,
+            "information_integration": self.information_integration,
+            "attractor_distance": distance,
+            "convergence_rate": self.convergence_rate,
+            "acceleration": self.acceleration,
+            "cycles_elapsed": self.cycles_elapsed,
+            "evolution_history_length": len(self.evolution_history),
+            "omega_resonance": self.god_code * (1 - distance) * self.phi,
+            "estimated_time_to_omega": self.evolution_history[-1].time_to_omega if self.evolution_history else float('inf')
         }
 
 
