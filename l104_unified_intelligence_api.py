@@ -47,6 +47,9 @@ from l104_analytics_dashboard import RealTimeAnalytics
 # EVO_29 - Quantum Coherence Engine
 from l104_quantum_coherence import QuantumCoherenceEngine
 
+# EVO_30 - Semantic Embedding Engine
+from l104_semantic_engine import SemanticEngine, get_semantic_engine
+
 logger = logging.getLogger("BRAIN_API")
 
 # Create router
@@ -72,6 +75,9 @@ _analytics_dashboard: Optional[RealTimeAnalytics] = None
 
 # EVO_29 - Quantum Coherence Engine instance
 _quantum_engine: Optional[QuantumCoherenceEngine] = None
+
+# EVO_30 - Semantic Embedding Engine instance
+_semantic_engine: Optional[SemanticEngine] = None
 
 
 def get_brain() -> UnifiedIntelligence:
@@ -155,6 +161,15 @@ def get_quantum_engine() -> QuantumCoherenceEngine:
         logger.info("[BRAIN_API] Initializing Quantum Coherence Engine...")
         _quantum_engine = QuantumCoherenceEngine()
     return _quantum_engine
+
+
+def get_semantic_engine_instance() -> SemanticEngine:
+    """Get or create the semantic embedding engine."""
+    global _semantic_engine
+    if _semantic_engine is None:
+        logger.info("[BRAIN_API] Initializing Semantic Embedding Engine...")
+        _semantic_engine = get_semantic_engine()
+    return _semantic_engine
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1126,6 +1141,145 @@ async def quantum_coherence_report():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EVO_30 - SEMANTIC EMBEDDING ENGINE ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class SemanticEmbedRequest(BaseModel):
+    text: str
+    metadata: Optional[Dict[str, Any]] = None
+    store: bool = True
+
+
+class SemanticSearchRequest(BaseModel):
+    query: str
+    k: int = 10
+    metric: str = "cosine"
+    threshold: float = 0.0
+
+
+class SemanticSimilarityRequest(BaseModel):
+    text1: str
+    text2: str
+    metric: str = "cosine"
+
+
+class SemanticAnalogyRequest(BaseModel):
+    a: str
+    b: str
+    c: str
+    k: int = 5
+
+
+class SemanticClusterRequest(BaseModel):
+    k: int = 5
+
+
+class SemanticBatchEmbedRequest(BaseModel):
+    texts: List[str]
+    store: bool = True
+
+
+@router.get("/semantic/status")
+async def semantic_status():
+    """
+    Get semantic engine status.
+    """
+    engine = get_semantic_engine_instance()
+    return engine.get_status()
+
+
+@router.post("/semantic/embed")
+async def semantic_embed(request: SemanticEmbedRequest):
+    """
+    Embed text into vector space.
+    """
+    engine = get_semantic_engine_instance()
+    if request.store:
+        vec = engine.embed_and_store(request.text, request.metadata)
+    else:
+        vec = engine.embed(request.text, request.metadata)
+    return vec.to_dict()
+
+
+@router.post("/semantic/embed/batch")
+async def semantic_embed_batch(request: SemanticBatchEmbedRequest):
+    """
+    Embed multiple texts.
+    """
+    engine = get_semantic_engine_instance()
+    results = []
+    for text in request.texts:
+        if request.store:
+            vec = engine.embed_and_store(text)
+        else:
+            vec = engine.embed(text)
+        results.append(vec.to_dict())
+    return {"embedded": len(results), "vectors": results}
+
+
+@router.post("/semantic/search")
+async def semantic_search(request: SemanticSearchRequest):
+    """
+    Search for similar texts in the index.
+    """
+    engine = get_semantic_engine_instance()
+    results = engine.search(
+        query=request.query,
+        k=request.k,
+        metric=request.metric,
+        threshold=request.threshold
+    )
+    return {"query": request.query, "results": results}
+
+
+@router.post("/semantic/similarity")
+async def semantic_similarity(request: SemanticSimilarityRequest):
+    """
+    Compute similarity between two texts.
+    """
+    engine = get_semantic_engine_instance()
+    return engine.similarity(request.text1, request.text2, request.metric)
+
+
+@router.post("/semantic/analogy")
+async def semantic_analogy(request: SemanticAnalogyRequest):
+    """
+    Solve analogy: A is to B as C is to ?
+    """
+    engine = get_semantic_engine_instance()
+    return engine.solve_analogy(request.a, request.b, request.c, request.k)
+
+
+@router.post("/semantic/cluster")
+async def semantic_cluster(request: SemanticClusterRequest):
+    """
+    Cluster indexed vectors into concept groups.
+    """
+    engine = get_semantic_engine_instance()
+    clusters = engine.cluster(request.k)
+    return {"clusters": clusters}
+
+
+@router.get("/semantic/vectors")
+async def semantic_vectors(limit: int = 100):
+    """
+    Export vectors from the index.
+    """
+    engine = get_semantic_engine_instance()
+    return {"vectors": engine.export_vectors(limit)}
+
+
+@router.post("/semantic/clear")
+async def semantic_clear():
+    """
+    Clear the semantic index.
+    """
+    engine = get_semantic_engine_instance()
+    return engine.clear_index()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # APP INSTANCE FOR UVICORN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1133,8 +1287,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="29.0.0",
-    description="REST API for the Unified Intelligence System - EVO_29 Quantum Coherence Edition"
+    version="30.0.0",
+    description="REST API for the Unified Intelligence System - EVO_30 Semantic Embedding Edition"
 )
 app.include_router(router)
 
