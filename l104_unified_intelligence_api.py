@@ -271,15 +271,24 @@ async def list_topics():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEST
+# APP INSTANCE FOR UVICORN
+# ═══════════════════════════════════════════════════════════════════════════════
+
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="L104 Unified Intelligence API",
+    version="24.0.0",
+    description="REST API for the Unified Intelligence System"
+)
+app.include_router(router)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STANDALONE RUN
 # ═══════════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     import uvicorn
-    from fastapi import FastAPI
-    
-    app = FastAPI(title="L104 Unified Intelligence API")
-    app.include_router(router)
-    
     print("Starting Unified Intelligence API on port 8082...")
     uvicorn.run(app, host="0.0.0.0", port=8082)
