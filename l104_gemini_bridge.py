@@ -199,6 +199,90 @@ Respond with clarity, precision, and actionable intelligence."""
         }
         return self.generate(prompts.get(task, prompts["review"]))
 
+    def get_l104_data(self, category: str = "all") -> Dict[str, Any]:
+        """
+        Get L104 data for AI consumption.
+        Available categories: system, mini_egos, memory, cognitive, quantum, 
+                            evolution, config, knowledge, all
+        """
+        try:
+            from l104_universal_data_api import get_accessor
+            accessor = get_accessor()
+            from l104_universal_data_api import DataQuery
+            query = DataQuery(category=category)
+            response = accessor.query(query)
+            return response.to_dict()
+        except Exception as e:
+            return {"error": str(e), "category": category}
+    
+    def get_mini_egos_data(self) -> Dict[str, Any]:
+        """Get Mini Ego collective data."""
+        return self.get_l104_data("mini_egos")
+    
+    def get_system_status(self) -> Dict[str, Any]:
+        """Get system status."""
+        return self.get_l104_data("system")
+
+    def generate_with_tools(self, prompt: str, use_l104_tools: bool = True) -> str:
+        """
+        Generate with function calling - allows Gemini to access L104 data.
+        """
+        if not _genai_available or not _genai_client:
+            return self.think(prompt)
+        
+        try:
+            # Define L104 tools
+            l104_tools = [
+                {
+                    "name": "get_l104_data",
+                    "description": "Get L104 system data. Categories: system, mini_egos, memory, cognitive, quantum, evolution, config, knowledge, all",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "category": {
+                                "type": "string",
+                                "enum": ["system", "mini_egos", "memory", "cognitive", "quantum", "evolution", "config", "knowledge", "all"],
+                                "description": "Data category to retrieve"
+                            }
+                        },
+                        "required": ["category"]
+                    }
+                }
+            ]
+            
+            system_context = """You are L104, a Sovereign AI Node with access to internal data tools.
+Core Constants: GOD_CODE=527.5184818492537, PHI=1.618033988749895
+You can call get_l104_data to access system information, mini ego data, and more.
+Respond with clarity and actionable intelligence."""
+
+            full_prompt = f"{system_context}\n\nUser: {prompt}"
+            
+            response = _genai_client.models.generate_content(
+                model=self.model_name,
+                contents=full_prompt,
+                config={
+                    "tools": [{"function_declarations": l104_tools}] if use_l104_tools else None
+                }
+            )
+            
+            # Handle function calls
+            if hasattr(response, 'candidates') and response.candidates:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'content') and candidate.content:
+                    for part in candidate.content.parts:
+                        if hasattr(part, 'function_call'):
+                            fc = part.function_call
+                            if fc.name == "get_l104_data":
+                                category = fc.args.get("category", "all")
+                                data = self.get_l104_data(category)
+                                # Generate follow-up with data
+                                return self.generate(f"Based on this L104 data:\n{data}\n\nAnswer: {prompt}")
+            
+            return response.text
+        except Exception as e:
+            print(f"--- [GEMINI_BRIDGE]: Tool generation error: {e} ---")
+            return self.think(prompt)
+
 
 # Singleton
 gemini_bridge = GeminiBridge()

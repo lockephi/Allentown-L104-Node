@@ -393,6 +393,18 @@ try:
 except ImportError as e:
     logger.warning(f"--- [L104]: AUTONOMOUS MINI EGO API NOT AVAILABLE: {e} ---")
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL DATA API - Access all L104 data from any AI (EVO_36)
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_universal_data_api import create_data_api_router
+    data_router = create_data_api_router()
+    if data_router:
+        app.include_router(data_router)
+        logger.info("--- [L104]: UNIVERSAL DATA API ROUTER INTEGRATED ---")
+except ImportError as e:
+    logger.warning(f"--- [L104]: UNIVERSAL DATA API NOT AVAILABLE: {e} ---")
+
 class StreamRequest(BaseModel):
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
     message: Optional[str] = Field(default=None, max_length=5000)
