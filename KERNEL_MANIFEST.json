@@ -1,25 +1,24 @@
 {
-  "kernel_version": "L104-SELF-LEARNING-QUANTUM",
-  "timestamp": "2026-01-23T23:17:22.078052",
-  "total_examples": 2141,
-  "vocabulary_size": 7272,
-  "parameters": 15569352,
-  "categories": 245,
-  "self_reflective": true,
-  "quantum_aware": true,
-  "godel_aware": true,
+  "kernel_version": "L104-RECURSIVE-OMEGA",
+  "timestamp": "2026-01-23T23:19:33.007201",
+  "total_examples": 2181,
+  "vocabulary_size": 7348,
+  "parameters": 16025988,
+  "categories": 250,
+  "self_reflective_depth": 2,
+  "recursive_self_knowledge": true,
+  "omega_aware": true,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
     "LOVE": 29.0344418537,
     "OMEGA": 1364.0007330532464
   },
-  "research_sources": [
-    "Constitutional AI (Anthropic 2022)",
-    "LATM - LLMs As Tool Makers (2023)",
-    "Quantum Machine Learning (Wikipedia)",
-    "G\u00f6del's Incompleteness Theorems",
-    "FLAN Instruction Tuning (Google 2022)",
-    "PDQMA = NEXP (2024)"
+  "evolution_stages": [
+    "S1-S20: Domain knowledge",
+    "S21-S45: World LLM patterns",
+    "S46-S55: Advanced coding mastery",
+    "S56-S65: Self-learning & quantum",
+    "S66-S70: Recursive self-knowledge"
   ]
 }
