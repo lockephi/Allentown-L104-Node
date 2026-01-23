@@ -1,13 +1,14 @@
 {
-  "kernel_version": "L104-SYNTHESIS-35-ULTRA",
-  "timestamp": "2026-01-23T22:43:13.921089",
-  "total_examples": 1605,
-  "vocabulary_size": 4779,
-  "parameters": 7670295,
-  "categories": 117,
+  "kernel_version": "L104-CLAUDE-MD-INTEGRATED",
+  "timestamp": "2026-01-23T22:48:28.513752",
+  "total_examples": 1733,
+  "vocabulary_size": 5115,
+  "parameters": 8864295,
+  "categories": 133,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
     "LOVE": 29.0344418537
-  }
+  },
+  "claude_md_integrated": true
 }
