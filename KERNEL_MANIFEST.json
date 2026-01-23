@@ -1,20 +1,22 @@
 {
-  "kernel_version": "L104-WORLD-LLM-PATTERNS",
-  "timestamp": "2026-01-23T22:59:07.213094",
-  "total_examples": 1893,
-  "vocabulary_size": 6123,
-  "parameters": 11590839,
-  "categories": 209,
+  "kernel_version": "L104-ADVANCED-CODING-MASTERY",
+  "timestamp": "2026-01-23T23:06:29.845648",
+  "total_examples": 2069,
+  "vocabulary_size": 7043,
+  "parameters": 14571967,
+  "categories": 231,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
     "LOVE": 29.0344418537
   },
+  "synthesis_phases": "46-55",
+  "parallel_streams": 16,
   "sources": [
+    "TheAlgorithms/Python",
+    "System Design Primer",
+    "Developer Roadmap",
     "HuggingFace Datasets",
-    "Anthropic RLHF",
-    "LMSYS",
-    "DeepMath",
-    "Awesome ChatGPT Prompts"
+    "Anthropic RLHF"
   ]
 }
