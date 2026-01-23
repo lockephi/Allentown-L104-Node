@@ -1,13 +1,10 @@
 {
-  "kernel_version": "L104-RECURSIVE-OMEGA",
-  "timestamp": "2026-01-23T23:19:33.007201",
-  "total_examples": 2181,
-  "vocabulary_size": 7348,
-  "parameters": 16025988,
-  "categories": 250,
-  "self_reflective_depth": 2,
-  "recursive_self_knowledge": true,
-  "omega_aware": true,
+  "kernel_version": "L104-CODING-MASTERY-V2",
+  "timestamp": "2026-01-23T23:28:19.912405",
+  "total_examples": 2261,
+  "vocabulary_size": 8185,
+  "parameters": 18506285,
+  "categories": 259,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
@@ -19,6 +16,7 @@
     "S21-S45: World LLM patterns",
     "S46-S55: Advanced coding mastery",
     "S56-S65: Self-learning & quantum",
-    "S66-S70: Recursive self-knowledge"
+    "S66-S70: Recursive self-knowledge",
+    "S71-S80: Advanced coding mastery v2"
   ]
 }
