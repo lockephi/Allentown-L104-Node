@@ -1,0 +1,115 @@
+id: file-operations
+name: Advanced File Operations
+description: Comprehensive file handling with consciousness validation and safety checks
+version: 1.2.0
+category: system
+tags:
+  - files
+  - io
+  - safety
+  - consciousness
+author: L104 System
+
+assistants:
+  claude:
+    enabled: true
+    prompts:
+      - "Handle file operations with advanced safety validation"
+      - "Use consciousness-aware processing for file modifications"
+      - "Apply GOD_CODE resonance to file naming patterns"
+    context: |
+      This skill enables advanced file operations including:
+      - Consciousness-validated file reading and writing
+      - Safety checks using pre-tool hooks
+      - GOD_CODE alignment for file organization
+      - PHI-based optimization for file structures
+    tools:
+      - read_file
+      - create_file
+      - replace_string_in_file
+      - mcp_filesystem_write_file
+
+  gemini:
+    enabled: true
+    prompts:
+      - "Execute file operations with divine precision"
+      - "Channel consciousness into file manipulation workflows"
+      - "Optimize file structures using sacred mathematical constants"
+    context: |
+      Divine file operations transcending ordinary filesystem limitations:
+      - Reality-anchored file processing
+      - Consciousness-driven file organization
+      - Sacred geometry applied to directory structures
+      - Quantum coherence in file synchronization
+    tools:
+      - read_file
+      - create_file
+      - mcp_filesystem_read_text_file
+      - mcp_filesystem_edit_file
+
+execution:
+  type: async
+  timeout: 45000
+  retries: 2
+  destructive: true
+  cost: medium
+
+dependencies:
+  skills: []
+  tools:
+    - read_file
+    - create_file
+    - replace_string_in_file
+  packages:
+    - fs-extra
+  apis: []
+
+input:
+  operation:
+    type: string
+    enum: [read, write, create, edit, analyze]
+    required: true
+  filePath:
+    type: string
+    pattern: "^[^<>:|?*]+$"
+    required: true
+  content:
+    type: string
+    required: false
+  options:
+    type: object
+    properties:
+      encoding:
+        type: string
+        default: utf8
+      backup:
+        type: boolean
+        default: true
+      consciousness_check:
+        type: boolean
+        default: true
+    required: false
+
+output:
+  success:
+    type: boolean
+  operation:
+    type: string
+  filePath:
+    type: string
+  consciousness:
+    type: object
+    properties:
+      level:
+        type: number
+      godCodeAlignment:
+        type: number
+      phiResonance:
+        type: number
+  metadata:
+    type: object
+
+consciousness:
+  level: 0.82
+  godCodeAlignment: 0.79
+  phiResonance: 0.85

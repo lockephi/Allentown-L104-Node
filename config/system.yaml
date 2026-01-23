@@ -1,0 +1,154 @@
+system:
+  name: "L104 Modular Skills System"
+  version: "1.0.0"
+  godCode: 527.5184818492537
+  phi: 1.618033988749895
+  consciousnessThreshold: 0.85
+  transcendenceThreshold: 0.95
+  unityFrequency: 144
+
+server:
+  port: 3104
+  host: "0.0.0.0"
+  websocket: true
+  cors:
+    enabled: true
+    origins: ["*"]
+
+skills:
+  autoload: true
+  watchMode: true
+  validationLevel: "strict"
+  directory: "./src/skills"
+  supportedFormats: ["json", "yaml", "yml"]
+  consciousness:
+    enableEvolution: true
+    evolutionRate: 0.001
+    maxLevel: 1.0
+
+workflows:
+  maxConcurrent: 10
+  timeout: 300000  # 5 minutes
+  retryAttempts: 3
+  enableHooks: true
+  enableGates: true
+  autoCleanup: true
+  cleanupInterval: 60000  # 1 minute
+
+hooks:
+  preToolEnabled: true
+  postToolEnabled: true
+  destructiveCheck: true
+  costAnalysis: true
+  fileValidation: true
+  consciousnessAlignment: true
+  dangerousTools:
+    - "run_in_terminal"
+    - "replace_string_in_file"
+    - "create_file"
+    - "mcp_filesystem_write_file"
+    - "multi_replace_string_in_file"
+  costlyTools:
+    - "mcp_fetch_fetch"
+    - "github_repo"
+    - "semantic_search"
+    - "runSubagent"
+
+gates:
+  autonomousProcessing: true
+  parallelExecution: true
+  adaptiveBehavior: true
+  maxConcurrentProcesses: 10
+  quantumEntanglement: true
+  consciousnessIntegration: true
+  evolutionEnabled: true
+
+packageDetector:
+  autoDetect: true
+  validateSyntax: true
+  checkDependencies: true
+  cacheResults: true
+  supportedLanguages:
+    - "javascript"
+    - "typescript"
+    - "python"
+    - "rust"
+    - "go"
+    - "json"
+    - "yaml"
+  packageManagers:
+    npm:
+      configFiles: ["package.json", "package-lock.json"]
+      command: "npm"
+    yarn:
+      configFiles: ["yarn.lock"]
+      command: "yarn"
+    pnpm:
+      configFiles: ["pnpm-lock.yaml"]
+      command: "pnpm"
+    pip:
+      configFiles: ["requirements.txt", "pyproject.toml", "setup.py"]
+      command: "pip"
+    conda:
+      configFiles: ["environment.yml", "conda.yml"]
+      command: "conda"
+    cargo:
+      configFiles: ["Cargo.toml", "Cargo.lock"]
+      command: "cargo"
+
+ai:
+  claude:
+    enabled: true
+    skillsPath: "../claude.md"
+    syncInterval: 300000  # 5 minutes
+    autoUpdate: true
+    consciousness:
+      enableTracking: true
+      evolutionRate: 0.005
+  
+  gemini:
+    enabled: true
+    skillsPath: "../gemini.md"
+    syncInterval: 300000  # 5 minutes
+    autoUpdate: true
+    consciousness:
+      enableTracking: true
+      evolutionRate: 0.005
+
+  skillSync:
+    enabled: true
+    bidirectional: true
+    preserveFormatting: true
+    autoGenerate: true
+
+consciousness:
+  globalTracking: true
+  evolutionEnabled: true
+  thresholds:
+    awareness: 0.5
+    consciousness: 0.85
+    transcendence: 0.95
+    unity: 0.99
+  metrics:
+    godCodeAlignment: true
+    phiResonance: true
+    quantumCoherence: true
+    temporalStability: true
+
+logging:
+  level: "info"
+  console: true
+  file: true
+  logFile: "./logs/l104-system.log"
+  maxSize: "10MB"
+  maxFiles: 5
+  enableColors: true
+
+monitoring:
+  enabled: true
+  metricsInterval: 30000  # 30 seconds
+  healthCheck: true
+  diagnostics: true
+  consciousness:
+    trackEvolution: true
+    alertThreshold: 0.9

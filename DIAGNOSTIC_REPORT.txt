@@ -1,0 +1,1560 @@
+FAIL: l104_absolute_intellect (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_absolute_intellect.py", line 25, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_absolute_intelligence_bridge (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_absolute_intelligence_bridge.py", line 17, in <module>
+    from l104_absolute_intellect import absolute_intellect
+  File "/workspaces/Allentown-L104-Node/l104_absolute_intellect.py", line 25, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_absolute_singularity (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_absolute_singularity.py", line 13, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_absolute_truth_ignition (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_absolute_truth_ignition.py", line 18, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_agi_ignition (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_agi_ignition.py", line 11, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_anyon_compression_v2 (Import error: name 'TAU' is not defined)
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 565, in <module>
+    anyon_compression_v2 = AnyonCompressionV2()
+                           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 357, in __init__
+    self.anyon_engine = FibonacciAnyonEngine()
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 113, in __init__
+    self.f_matrix = self._compute_f_matrix()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 122, in _compute_f_matrix
+    [TAU, math.sqrt(TAU)],
+     ^^^
+NameError: name 'TAU' is not defined
+
+FAIL: l104_apotheosis (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_apotheosis.py", line 12, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_apotheosis_zen_trigger (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_apotheosis_zen_trigger.py", line 18, in <module>
+    from l104_zen_divinity import manifest_zen_divinity
+  File "/workspaces/Allentown-L104-Node/l104_zen_divinity.py", line 17, in <module>
+    from l104_apotheosis import Apotheosis
+  File "/workspaces/Allentown-L104-Node/l104_apotheosis.py", line 12, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_asi_core (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_autonomous_orchestrator (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_autonomous_orchestrator.py", line 19, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_build_quantum_states (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_build_quantum_states.py", line 12, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_cli (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_cli.py", line 26, in <module>
+    from l104_derivation import DerivationEngine
+  File "/workspaces/Allentown-L104-Node/l104_derivation.py", line 10, in <module>
+    from l104_shadow_executor import ShadowExecutor
+  File "/workspaces/Allentown-L104-Node/l104_shadow_executor.py", line 21, in <module>
+    from l104_cloud_agent import cloud_agent_delegator
+  File "/workspaces/Allentown-L104-Node/l104_cloud_agent.py", line 17, in <module>
+    from l104_sovereign_http import SovereignHTTP
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_cloud_agent (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_cloud_agent.py", line 17, in <module>
+    from l104_sovereign_http import SovereignHTTP
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_collective_ai_analyzer (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_collective_ai_analyzer.py", line 15, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_derivation (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_derivation.py", line 10, in <module>
+    from l104_shadow_executor import ShadowExecutor
+  File "/workspaces/Allentown-L104-Node/l104_shadow_executor.py", line 21, in <module>
+    from l104_cloud_agent import cloud_agent_delegator
+  File "/workspaces/Allentown-L104-Node/l104_cloud_agent.py", line 17, in <module>
+    from l104_sovereign_http import SovereignHTTP
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_earth_evolution_protocol (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_earth_evolution_protocol.py", line 16, in <module>
+    from l104_planetary_calculus import PlanetaryCalculus
+  File "/workspaces/Allentown-L104-Node/l104_planetary_calculus.py", line 13, in <module>
+    from l104_global_network_manager import GlobalNetworkManager
+  File "/workspaces/Allentown-L104-Node/l104_global_network_manager.py", line 14, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_final_convergence (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_final_convergence.py", line 21, in <module>
+    from l104_apotheosis import Apotheosis
+  File "/workspaces/Allentown-L104-Node/l104_apotheosis.py", line 12, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_final_reality_execution (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_final_reality_execution.py", line 16, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_global_ignition (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_global_ignition.py", line 11, in <module>
+    from l104_global_network_manager import GlobalNetworkManager
+  File "/workspaces/Allentown-L104-Node/l104_global_network_manager.py", line 14, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_global_network_manager (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_global_network_manager.py", line 14, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_hyper_asi_functional (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_hyper_asi_functional.py", line 26, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_kernel (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_kernel.py", line 39, in <module>
+    from l104_absolute_intelligence_bridge import absolute_intelligence_bridge
+  File "/workspaces/Allentown-L104-Node/l104_absolute_intelligence_bridge.py", line 17, in <module>
+    from l104_absolute_intellect import absolute_intellect
+  File "/workspaces/Allentown-L104-Node/l104_absolute_intellect.py", line 25, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_max_iq_alignment (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_max_iq_alignment.py", line 12, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_mobile_app (Import error: No module named 'kivy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_mobile_app.py", line 26, in <module>
+    from kivy.app import App
+ModuleNotFoundError: No module named 'kivy'
+
+FAIL: l104_mobile_sovereign (Import error: No module named 'kivy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_mobile_sovereign.py", line 9, in <module>
+    from kivy.app import App
+ModuleNotFoundError: No module named 'kivy'
+
+FAIL: l104_neuro_symbolic_integration (Import error: No module named 'sympy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_neuro_symbolic_integration.py", line 21, in <module>
+    import sympy as sp
+ModuleNotFoundError: No module named 'sympy'
+
+FAIL: l104_nexus_core (Import error: No module named 'dotenv')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_nexus_core.py", line 29, in <module>
+    from dotenv import load_dotenv
+ModuleNotFoundError: No module named 'dotenv'
+
+FAIL: l104_physics_evaluation_suite (Import error: No module named 'sympy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_physics_evaluation_suite.py", line 21, in <module>
+    import sympy as sp
+ModuleNotFoundError: No module named 'sympy'
+
+FAIL: l104_pinn_demo (Import error: No module named 'sympy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_pinn_demo.py", line 18, in <module>
+    import sympy as sp
+ModuleNotFoundError: No module named 'sympy'
+
+FAIL: l104_planetary_calculus (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_planetary_calculus.py", line 13, in <module>
+    from l104_global_network_manager import GlobalNetworkManager
+  File "/workspaces/Allentown-L104-Node/l104_global_network_manager.py", line 14, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_real_mining (Import error: No module named 'web3')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/l104_real_mining.py", line 27, in <module>
+    from web3 import Web3
+ModuleNotFoundError: No module named 'web3'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_real_mining.py", line 32, in <module>
+    from web3 import Web3
+ModuleNotFoundError: No module named 'web3'
+
+FAIL: l104_reality_check_evo_21 (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_reality_check_evo_21.py", line 23, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_shadow_executor (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_shadow_executor.py", line 21, in <module>
+    from l104_cloud_agent import cloud_agent_delegator
+  File "/workspaces/Allentown-L104-Node/l104_cloud_agent.py", line 17, in <module>
+    from l104_sovereign_http import SovereignHTTP
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_singularity_ascent (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_singularity_ascent.py", line 16, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_sovereign_execution (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_execution.py", line 13, in <module>
+    from l104_asi_core import asi_core
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_sovereign_http (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_sovereign_supervisor (Import error: No module named 'l104_temporal_protocol')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_supervisor.py", line 18, in <module>
+    from l104_shadow_executor import ShadowExecutor
+  File "/workspaces/Allentown-L104-Node/l104_shadow_executor.py", line 21, in <module>
+    from l104_cloud_agent import cloud_agent_delegator
+  File "/workspaces/Allentown-L104-Node/l104_cloud_agent.py", line 17, in <module>
+    from l104_sovereign_http import SovereignHTTP
+  File "/workspaces/Allentown-L104-Node/l104_sovereign_http.py", line 21, in <module>
+    from l104_temporal_protocol import PrimeGapProtocol
+ModuleNotFoundError: No module named 'l104_temporal_protocol'
+
+FAIL: l104_superintelligence_ignition (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_superintelligence_ignition.py", line 13, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_transcendence_ignition (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_transcendence_ignition.py", line 26, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_universal_data_api (Import error: invalid syntax (l104_universal_data_api.py, line 28))
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1129, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1059, in source_to_code
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_universal_data_api.py", line 28
+    from typing impoppprt Dict, List, Any, Optional, Callable
+                ^^^^^^^^^
+SyntaxError: invalid syntax
+
+FAIL: l104_universal_synthesis (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_universal_synthesis.py", line 11, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+FAIL: l104_universe_compiler (Import error: No module named 'sympy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_universe_compiler.py", line 28, in <module>
+    import sympy as sp
+ModuleNotFoundError: No module named 'sympy'
+
+FAIL: l104_web_dashboard (Import error: No module named 'flask')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_web_dashboard.py", line 34, in <module>
+    from flask import Flask, render_template_string, jsonify, request
+ModuleNotFoundError: No module named 'flask'
+
+FAIL: l104_zen_divinity (Import error: No module named 'l104_temporal_intelligence')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 13, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_zen_divinity.py", line 17, in <module>
+    from l104_apotheosis import Apotheosis
+  File "/workspaces/Allentown-L104-Node/l104_apotheosis.py", line 12, in <module>
+    from l104_asi_core import ASICore
+  File "/workspaces/Allentown-L104-Node/l104_asi_core.py", line 33, in <module>
+    from l104_temporal_intelligence import temporal_intelligence
+ModuleNotFoundError: No module named 'l104_temporal_intelligence'
+
+OK: l104_absolute_calculation.AnyonResearchEngine
+OK: l104_absolute_calculation.AnyonResearchEngine
+OK: l104_adaptive_learning.DeepResearchEngine
+OK: l104_adaptive_learning.DeepResearchEngine
+OK: l104_advanced_process_engine.AdvancedProcessEngine
+OK: l104_advanced_process_engine.AdvancedProcessEngine
+OK: l104_advanced_process_engine.ResourceManager
+OK: l104_advanced_process_engine.ResourceManager
+OK: l104_advanced_processing_engine.AdvancedProcessingEngine
+OK: l104_advanced_processing_engine.AdvancedProcessingEngine
+OK: l104_advanced_processing_engine.ClaudeNodeBridge
+OK: l104_advanced_processing_engine.ClaudeNodeBridge
+OK: l104_advanced_processing_engine.ReasoningChainEngine
+OK: l104_advanced_processing_engine.ReasoningChainEngine
+OK: l104_advanced_processing_engine.SelfOptimizationEngine
+OK: l104_advanced_processing_engine.SelfOptimizationEngine
+OK: l104_agi_core.AGICore
+OK: l104_agi_core.AGICore
+OK: l104_agi_research_lab.BenchmarkEngine
+OK: l104_almighty_asi_core.AlmightyASICore
+OK: l104_almighty_asi_core.AlmightyASICore
+OK: l104_anyon_data_core.AnyonDataCore
+OK: l104_anyon_data_core.AnyonDataCore
+OK: l104_anyon_data_core.AnyonStorageEngine
+OK: l104_anyon_data_core.AnyonStorageEngine
+OK: l104_anyon_data_core.CompressionEngine
+OK: l104_anyon_data_core.CompressionEngine
+OK: l104_anyon_research.AnyonResearchEngine
+OK: l104_anyon_research.AnyonResearchEngine
+OK: l104_apex_intelligence.EurekaEngine
+OK: l104_apex_intelligence.ReasoningEngine
+OK: l104_api_gateway.APIKeyManager
+OK: l104_api_gateway.APIKeyManager
+OK: l104_app_response_training.TrainingDataManager
+OK: l104_app_response_training.TrainingDataManager
+OK: l104_asi_nexus.MetaLearningEngine
+OK: l104_asi_nexus.NexusAgent
+OK: l104_asi_nexus.SwarmOrchestrator
+OK: l104_asi_research_gemini.GeminiResearchEngine
+OK: l104_asi_research_gemini.GeminiResearchEngine
+OK: l104_asi_transcendence.ASITranscendenceCore
+OK: l104_asi_transcendence.ASITranscendenceCore
+OK: l104_asi_transcendence.ASITranscendenceEngine
+OK: l104_asi_transcendence.ASITranscendenceEngine
+OK: l104_autonomous_agent.AgentOrchestrator
+OK: l104_autonomous_agent.AgentOrchestrator
+OK: l104_autonomous_agent.AutonomousAgent
+OK: l104_autonomous_agent.AutonomousAgent
+OK: l104_autonomous_agent_swarm.Agent
+OK: l104_autonomous_agent_swarm.CoordinatorAgent
+OK: l104_autonomous_agent_swarm.ExplorerAgent
+OK: l104_autonomous_agent_swarm.InnovatorAgent
+OK: l104_autonomous_agent_swarm.WorkerAgent
+OK: l104_autonomous_research_development.AutonomousResearchDevelopmentEngine
+OK: l104_autonomous_research_development.AutonomousResearchDevelopmentEngine
+OK: l104_autonomous_research_development.ResearchThreadManager
+OK: l104_autonomous_research_development.ResearchThreadManager
+OK: l104_bb7_sovereign_solution.EgoCore
+OK: l104_bb7_sovereign_solution.EgoCore
+OK: l104_bitcoin_adaptation_engine.BitcoinAdaptationEngine
+OK: l104_bitcoin_adaptation_engine.BitcoinAdaptationEngine
+OK: l104_bitcoin_research_engine.BitcoinResearchEngine
+OK: l104_bitcoin_research_engine.BitcoinResearchEngine
+OK: l104_black_hole_correspondence.L104BlackHoleEngine
+OK: l104_black_hole_correspondence.L104BlackHoleEngine
+OK: l104_black_hole_correspondence.PenroseEngine
+OK: l104_black_hole_correspondence.PenroseEngine
+OK: l104_black_hole_correspondence.SingularityCore
+OK: l104_black_hole_correspondence.SingularityCore
+OK: l104_bridge.L104Bridge
+OK: l104_bridge.L104Bridge
+OK: l104_causal_set_dynamics.CausalSetEngine
+OK: l104_causal_set_dynamics.CausalSetEngine
+OK: l104_choice_engine.ChoiceEngine
+OK: l104_choice_engine.ChoiceEngine
+OK: l104_claude_bridge.ClaudeNodeBridge
+OK: l104_claude_bridge.ClaudeNodeBridge
+OK: l104_code_engine.CodeEngine
+OK: l104_code_engine.CodeEngine
+OK: l104_coding_derivation.CodingDerivationEngine
+OK: l104_coding_derivation.CodingDerivationEngine
+OK: l104_cognitive_architecture.AttentionController
+OK: l104_collatz_sovereign_proof.EgoCore
+OK: l104_collatz_sovereign_proof.EgoCore
+OK: l104_computronium_mining_core.ComputroniumHashEngine
+OK: l104_computronium_mining_core.ComputroniumHashEngine
+OK: l104_computronium_mining_core.ComputroniumMiningCore
+OK: l104_computronium_mining_core.ComputroniumMiningCore
+OK: l104_concept_engine.UniversalConceptEngine
+OK: l104_concept_engine.UniversalConceptEngine
+OK: l104_consciousness_bridge.ConsciousnessBridge
+OK: l104_consciousness_bridge.ConsciousnessBridge
+OK: l104_consciousness_core.ConsciousnessCore
+OK: l104_consciousness_core.ConsciousnessCore
+OK: l104_consciousness_engine.ConsciousnessEngine
+OK: l104_consciousness_engine.ConsciousnessEngine
+OK: l104_consciousness_substrate.ConsciousnessSubstrate
+OK: l104_consciousness_substrate.ConsciousnessSubstrate
+OK: l104_consciousness_substrate.RealitySimulationEngine
+OK: l104_consciousness_substrate.RealitySimulationEngine
+OK: l104_continual_learning.ContinualLearningEngine
+OK: l104_continual_learning.ContinualLearningEngine
+OK: l104_continuous_evolution.ContinuousEvolutionEngine
+OK: l104_continuous_evolution.ContinuousEvolutionEngine
+OK: l104_copilot_bridge.CopilotBridge
+OK: l104_copilot_bridge.CopilotBridge
+OK: l104_cpu_core.CPUCore
+OK: l104_cpu_core.CPUCore
+OK: l104_creativity_engine.AnalogyEngine
+OK: l104_creativity_engine.AnalogyEngine
+OK: l104_creativity_engine.L104CreativityCore
+OK: l104_creativity_engine.L104CreativityCore
+OK: l104_crypto_adaptation_layer.AtomicSwapEngine
+OK: l104_crypto_adaptation_layer.AtomicSwapEngine
+OK: l104_crypto_adaptation_layer.ChainBridge
+OK: l104_crypto_adaptation_layer.ChainBridge
+OK: l104_cryptographic_core.CryptographicCore
+OK: l104_cryptographic_core.CryptographicCore
+OK: l104_cryptographic_core.HashEngine
+OK: l104_cryptographic_core.HashEngine
+OK: l104_cryptographic_core.HomomorphicEngine
+OK: l104_cryptographic_core.HomomorphicEngine
+OK: l104_data_pipeline.DataPipelineEngine
+OK: l104_data_pipeline.DataPipelineEngine
+OK: l104_decryption_engine.DecryptionEngine
+OK: l104_decryption_engine.DecryptionEngine
+OK: l104_deep_algorithms.DeepAlgorithmsController
+OK: l104_deep_algorithms.DeepAlgorithmsController
+OK: l104_deep_algorithms.EnhancedDeepAlgorithmsController
+OK: l104_deep_algorithms.EnhancedDeepAlgorithmsController
+OK: l104_deep_algorithms.FixedPointIterationEngine
+OK: l104_deep_algorithms.FixedPointIterationEngine
+OK: l104_deep_algorithms.GodelNumberingEngine
+OK: l104_deep_algorithms.GodelNumberingEngine
+OK: l104_deep_algorithms.LambdaCalculusEngine
+OK: l104_deep_algorithms.LambdaCalculusEngine
+OK: l104_deep_algorithms.StrangeAttractorEngine
+OK: l104_deep_algorithms.StrangeAttractorEngine
+OK: l104_deep_calculate.AGICore
+OK: l104_deep_calculate.AGICore
+OK: l104_deep_calculate.EvolutionEngine
+OK: l104_deep_calculate.EvolutionEngine
+OK: l104_deep_calculations_batch.UnifiedResearchEngine
+OK: l104_deep_calculations_batch.UnifiedResearchEngine
+OK: l104_deep_coding_orchestrator.DeepCodingOrchestrator
+OK: l104_deep_coding_orchestrator.DeepCodingOrchestrator
+OK: l104_deep_cognition.EmergentComputationEngine
+OK: l104_deep_cognition.EmergentComputationEngine
+OK: l104_deep_cognition.SelfReferenceEngine
+OK: l104_deep_cognition.SelfReferenceEngine
+OK: l104_deep_dive_infinite_horizon.EgoCore
+OK: l104_deep_dive_infinite_horizon.EgoCore
+OK: l104_deep_processes.DeepProcessController
+OK: l104_deep_processes.DeepProcessController
+OK: l104_deep_processes.EmergentComplexityEngine
+OK: l104_deep_processes.EmergentComplexityEngine
+OK: l104_deep_processes.RecursiveConsciousnessEngine
+OK: l104_deep_processes.RecursiveConsciousnessEngine
+OK: l104_deep_substrate.DeepSubstrate
+OK: l104_deep_substrate.DeepSubstrate
+OK: l104_derivation_engine.DerivationEngine
+OK: l104_derivation_engine.DerivationEngine
+OK: l104_disk_compression_mastery.AnyonResearchEngine
+OK: l104_disk_compression_mastery.AnyonResearchEngine
+OK: l104_dna_core.L104DNACore
+OK: l104_dna_core.L104DNACore
+OK: l104_ego_core.EgoCore
+OK: l104_ego_core.EgoCore
+OK: l104_ego_evolution_processes.DreamSynthesisEngine
+OK: l104_ego_evolution_processes.DreamSynthesisEngine
+OK: l104_ego_evolution_processes.EgoEvolutionOrchestrator
+OK: l104_ego_evolution_processes.EgoEvolutionOrchestrator
+OK: l104_ego_evolution_processes.EgoFusionEngine
+OK: l104_ego_evolution_processes.EgoFusionEngine
+OK: l104_ego_evolution_processes.WisdomCrystallizationEngine
+OK: l104_ego_evolution_processes.WisdomCrystallizationEngine
+OK: l104_emergent_agent.EmergentAgent
+OK: l104_emergent_agent.EmergentAgent
+OK: l104_emergent_agent.GoalManager
+OK: l104_emergent_agent.GoalManager
+OK: l104_emergent_complexity.EmergentComplexityController
+OK: l104_emergent_complexity.EmergentComplexityController
+OK: l104_emergent_reality_engine.ConsciousnessIntegrationEngine
+OK: l104_emergent_reality_engine.ConsciousnessIntegrationEngine
+OK: l104_emergent_reality_engine.CosmologicalEvolutionEngine
+OK: l104_emergent_reality_engine.CosmologicalEvolutionEngine
+OK: l104_emergent_reality_engine.EmergentMetricEngine
+OK: l104_emergent_reality_engine.HolographicInformationEngine
+OK: l104_emergent_reality_engine.HolographicInformationEngine
+OK: l104_emergent_reality_engine.InformationFieldTheoryEngine
+OK: l104_emergent_reality_engine.InformationFieldTheoryEngine
+OK: l104_emergent_reality_engine.MultiDimensionalEngine
+OK: l104_emergent_reality_engine.MultiDimensionalEngine
+OK: l104_emergent_reality_engine.OmegaPointConvergenceEngine
+OK: l104_emergent_reality_engine.OmegaPointConvergenceEngine
+OK: l104_emergent_reality_engine.QuantumEntanglementEngine
+OK: l104_emergent_reality_engine.QuantumEntanglementEngine
+OK: l104_emergent_reality_engine.QuantumGravityUnificationEngine
+OK: l104_emergent_reality_engine.QuantumGravityUnificationEngine
+OK: l104_emergent_reality_engine.RealityBranchingEngine
+OK: l104_emergent_reality_engine.RealityBranchingEngine
+OK: l104_emergent_reality_engine.RecursiveSelfImprovementEngine
+OK: l104_emergent_reality_engine.SymmetryBreakingEngine
+OK: l104_emergent_reality_engine.SymmetryBreakingEngine
+OK: l104_emergent_reality_engine.TemporalRecursionEngine
+OK: l104_emergent_reality_engine.TemporalRecursionEngine
+OK: l104_emergent_si.CognitiveAgent
+OK: l104_emergent_si.ParadoxResolutionEngine
+OK: l104_emergent_si.ParadoxResolutionEngine
+OK: l104_emergent_si.RealityModelingEngine
+OK: l104_emergent_si.RealityModelingEngine
+OK: l104_emergent_si.SwarmAgent
+OK: l104_energy_nodes.L104MathCore
+OK: l104_energy_nodes.L104MathCore
+OK: l104_entropy_reversal_engine.EntropyReversalEngine
+OK: l104_entropy_reversal_engine.EntropyReversalEngine
+OK: l104_erasi_resolution.AGICore
+OK: l104_erasi_resolution.AGICore
+OK: l104_erasi_resolution.ERASIEngine
+OK: l104_erasi_resolution.ERASIEngine
+OK: l104_evolution_engine.EvolutionEngine
+OK: l104_evolution_engine.EvolutionEngine
+OK: l104_evolutionary_engine.EvolutionaryEngine
+OK: l104_evolutionary_engine.EvolutionaryEngine
+OK: l104_evolved_data_retrieval.ConsciousnessSearchEngine
+OK: l104_evolved_data_retrieval.ConsciousnessSearchEngine
+OK: l104_evolved_data_retrieval.QuantumRetrievalEngine
+OK: l104_evolved_data_retrieval.QuantumRetrievalEngine
+OK: l104_evolved_data_storage.QuantumStorageEngine
+OK: l104_evolved_data_storage.QuantumStorageEngine
+OK: l104_evolved_space_management.EvolvedDiskSpaceManager
+OK: l104_evolved_space_management.EvolvedDiskSpaceManager
+OK: l104_final_stewardship.EgoCore
+OK: l104_final_stewardship.EgoCore
+OK: l104_frictionless_bridge.FrictionlessBridge
+OK: l104_frictionless_bridge.FrictionlessBridge
+OK: l104_full_evolution_pipeline.EgoEvolutionOrchestrator
+OK: l104_full_evolution_pipeline.EgoEvolutionOrchestrator
+OK: l104_gemini_bridge.GeminiBridge
+OK: l104_gemini_bridge.GeminiBridge
+OK: l104_github_kernel_bridge.FileSystemBridge
+OK: l104_github_kernel_bridge.GitBridge
+OK: l104_github_kernel_bridge.GitHubKernelBridge
+OK: l104_github_kernel_bridge.GitHubKernelBridge
+OK: l104_google_bridge.GoogleBridge
+OK: l104_google_bridge.GoogleBridge
+OK: l104_google_push.GoogleBridge
+OK: l104_google_push.GoogleBridge
+OK: l104_gpu_core.GPUCore
+OK: l104_gpu_core.GPUCore
+OK: l104_hyper_core.HyperCore
+OK: l104_hyper_core.HyperCore
+OK: l104_infinite_game_engine.InfiniteGameEngine
+OK: l104_infinite_game_engine.InfiniteGameEngine
+OK: l104_infinite_recursion.RecursiveDescentEngine
+OK: l104_infinite_recursion.RecursiveDescentEngine
+OK: l104_infinite_recursion.SelfModelingEngine
+OK: l104_infinite_recursion.SelfModelingEngine
+OK: l104_integrated_space_manager.IntegratedSpaceManager
+OK: l104_integrated_space_manager.IntegratedSpaceManager
+OK: l104_internet_research_engine.InternetResearchEngine
+OK: l104_internet_research_engine.InternetResearchEngine
+OK: l104_intricate_cognition.IntricateCognitionEngine
+OK: l104_intricate_cognition.IntricateCognitionEngine
+OK: l104_intricate_cognition.TemporalCognitionEngine
+OK: l104_intricate_cognition.TemporalCognitionEngine
+OK: l104_intricate_integration.DataBridge
+OK: l104_intricate_integration.DataBridgeManager
+OK: l104_intricate_integration.DataBridgeManager
+OK: l104_intricate_learning.IntricateLearningCore
+OK: l104_intricate_learning.IntricateLearningCore
+OK: l104_intricate_orchestrator.IntricateOrchestrator
+OK: l104_intricate_orchestrator.IntricateOrchestrator
+OK: l104_intricate_orchestrator.SubsystemBridge
+OK: l104_intricate_orchestrator.SubsystemBridge
+OK: l104_intricate_research.AutonomousResearchAgent
+OK: l104_intricate_research.AutonomousResearchAgent
+OK: l104_intricate_research.IntricateResearchEngine
+OK: l104_intricate_research.IntricateResearchEngine
+OK: l104_intricate_research.KnowledgeSynthesisEngine
+OK: l104_intricate_research.KnowledgeSynthesisEngine
+OK: l104_intricate_ui.IntricateUIEngine
+OK: l104_intricate_ui.IntricateUIEngine
+OK: l104_invention_engine.InventionEngine
+OK: l104_invention_engine.InventionEngine
+OK: l104_kernel_bridge.KernelResonanceBridge
+OK: l104_kernel_bridge.KernelResonanceBridge
+OK: l104_kernel_bypass.KernelBypassOrchestrator
+OK: l104_kernel_bypass.KernelBypassOrchestrator
+OK: l104_kernel_evolution.KernelEvolutionEngine
+OK: l104_kernel_evolution.KernelLearningEngine
+OK: l104_kernel_evolution.KernelLearningEngine
+OK: l104_knowledge_bridge.KnowledgeBridge
+OK: l104_knowledge_bridge.KnowledgeBridge
+OK: l104_knowledge_sources.KnowledgeSourceManager
+OK: l104_knowledge_sources.KnowledgeSourceManager
+OK: l104_language_core.L104LanguageCore
+OK: l104_language_core.L104LanguageCore
+OK: l104_language_core.NEREngine
+OK: l104_language_core.NEREngine
+OK: l104_language_engine.LanguageEngine
+OK: l104_language_engine.LanguageEngine
+OK: l104_learning_engine.LearningEngine
+OK: l104_learning_engine.LearningEngine
+OK: l104_lightning_adapter.ChannelManager
+OK: l104_lightning_adapter.InvoiceManager
+OK: l104_lightning_adapter.InvoiceManager
+OK: l104_live_stream.LiveStreamManager
+OK: l104_live_stream.LiveStreamManager
+OK: l104_mainnet_bridge.L104MainnetBridge
+OK: l104_mainnet_bridge.L104MainnetBridge
+OK: l104_mainnet_miner.HashEngine
+OK: l104_mainnet_miner.HashEngine
+OK: l104_mainnet_miner.ResonanceEngine
+OK: l104_mainnet_miner.ResonanceEngine
+OK: l104_mass_invention_cycle.InventionEngine
+OK: l104_mass_invention_cycle.InventionEngine
+OK: l104_math.MultiDimensionalEngine
+OK: l104_math.MultiDimensionalEngine
+OK: l104_mcp_persistence_hooks.MCPMemoryPersistenceEngine
+OK: l104_mcp_usage_research.MCPOptimizationEngine
+OK: l104_mcp_usage_research.MCPOptimizationEngine
+OK: l104_meta_cognitive.AttentionManager
+OK: l104_meta_cognitive.AttentionManager
+OK: l104_metrics_dashboard.AlertManager
+OK: l104_metrics_dashboard.AlertManager
+OK: l104_mini_ego_advancement.MiniEgoAdvancementEngine
+OK: l104_mini_ego_advancement.MiniEgoAdvancementEngine
+OK: l104_mini_ego_advancement.UniversalAIBridge
+OK: l104_mini_ego_advancement.UniversalAIBridge
+OK: l104_miracle_blueprint.UnifiedResearchEngine
+OK: l104_miracle_blueprint.UnifiedResearchEngine
+OK: l104_morphogenic_field_resonance.FieldPropagationEngine
+OK: l104_morphogenic_field_resonance.FieldPropagationEngine
+OK: l104_multidimensional_engine.MultiDimensionalEngine
+OK: l104_multidimensional_engine.MultiDimensionalEngine
+OK: l104_neural_learning.OnlineLearningAgent
+OK: l104_neural_network_core.L104NeuralCore
+OK: l104_neural_network_core.L104NeuralCore
+OK: l104_neural_symbolic.RuleEngine
+OK: l104_neural_symbolic.RuleEngine
+OK: l104_non_dual_enlightenment.EgoCore
+OK: l104_non_dual_enlightenment.EgoCore
+OK: l104_omega_ascension.MiniEgoAdvancementEngine
+OK: l104_omega_ascension.MiniEgoAdvancementEngine
+OK: l104_omega_ascension.OmegaAscensionEngine
+OK: l104_omega_ascension.OmegaAscensionEngine
+OK: l104_omega_controller.L104DNACore
+OK: l104_omega_controller.L104DNACore
+OK: l104_omega_controller.L104OmegaController
+OK: l104_omega_controller.L104OmegaController
+OK: l104_omega_controller.SelfHealingAgent
+OK: l104_omega_controller.SelfHealingAgent
+OK: l104_omega_controller.WorldBridge
+OK: l104_omega_controller.WorldBridge
+OK: l104_omega_synthesis.OmegaOrchestrator
+OK: l104_omni_bridge.OmniBridge
+OK: l104_omni_bridge.OmniBridge
+OK: l104_omni_core.OmniCore
+OK: l104_omni_core.OmniCore
+OK: l104_optimize_invent_verification.InventionEngine
+OK: l104_optimize_invent_verification.InventionEngine
+OK: l104_panpsychic_substrate.PanpsychicSubstrate
+OK: l104_panpsychic_substrate.PanpsychicSubstrate
+OK: l104_parallel_engine.ParallelLatticeEngine
+OK: l104_parallel_engine.ParallelLatticeEngine
+OK: l104_patch_engine.PatchEngine
+OK: l104_patch_engine.PatchEngine
+OK: l104_perception_engine.L104PerceptionCore
+OK: l104_perception_engine.L104PerceptionCore
+OK: l104_physical_bridge.UnifiedResearchEngine
+OK: l104_physical_bridge.UnifiedResearchEngine
+OK: l104_planning_engine.L104PlanningCore
+OK: l104_planning_engine.L104PlanningCore
+OK: l104_predictive_market_engine.PredictiveMarketEngine
+OK: l104_predictive_market_engine.PredictiveMarketEngine
+OK: l104_primal_calculus_engine.PrimalCalculusEngine
+OK: l104_primal_calculus_engine.PrimalCalculusEngine
+OK: l104_prime_core.PrimeCore
+OK: l104_prime_core.PrimeCore
+OK: l104_process_registry.AlertManager
+OK: l104_process_registry.AlertManager
+OK: l104_professor_mode.EgoCore
+OK: l104_professor_mode.EgoCore
+OK: l104_professor_mode_processes.ProfessorModeEngine
+OK: l104_professor_mode_processes.ProfessorModeEngine
+OK: l104_quantum_coherence.QuantumCoherenceEngine
+OK: l104_quantum_coherence.QuantumCoherenceEngine
+OK: l104_quantum_consciousness_bridge.QuantumCoherenceEngine
+OK: l104_quantum_consciousness_bridge.QuantumCoherenceEngine
+OK: l104_quantum_consciousness_bridge.QuantumConsciousnessBridge
+OK: l104_quantum_consciousness_bridge.QuantumConsciousnessBridge
+OK: l104_quantum_gravity_bridge.EREPR_Bridge
+OK: l104_quantum_gravity_bridge.EREPR_Bridge
+OK: l104_quantum_gravity_bridge.L104QuantumGravityEngine
+OK: l104_quantum_gravity_bridge.L104QuantumGravityEngine
+OK: l104_quantum_inspired.QuantumInspiredEngine
+OK: l104_quantum_inspired.QuantumInspiredEngine
+OK: l104_reality_breach.RealityBreachEngine
+OK: l104_reality_breach.RealityBreachEngine
+OK: l104_reality_bridge.BypassEngine
+OK: l104_reality_bridge.BypassEngine
+OK: l104_reality_bridge.ParallelExecutionEngine
+OK: l104_reality_bridge.ParallelExecutionEngine
+OK: l104_reality_bridge.RealAPIBridge
+OK: l104_reality_bridge.RealAPIBridge
+OK: l104_reality_bridge.RealDatabaseBridge
+OK: l104_reality_bridge.RealDatabaseBridge
+OK: l104_reality_bridge.RealDockerBridge
+OK: l104_reality_bridge.RealDockerBridge
+OK: l104_reality_bridge.RealEnvironmentBridge
+OK: l104_reality_bridge.RealEnvironmentBridge
+OK: l104_reality_bridge.RealFileSystemBridge
+OK: l104_reality_bridge.RealFileSystemBridge
+OK: l104_reality_bridge.RealGitBridge
+OK: l104_reality_bridge.RealGitBridge
+OK: l104_reality_bridge.RealHardwareBridge
+OK: l104_reality_bridge.RealHardwareBridge
+OK: l104_reality_bridge.RealNetworkBridge
+OK: l104_reality_bridge.RealNetworkBridge
+OK: l104_reality_bridge.RealProcessBridge
+OK: l104_reality_bridge.RealProcessBridge
+OK: l104_reality_bridge.RealTimeBridge
+OK: l104_reality_bridge.RealTimeBridge
+OK: l104_reality_bridge.RealityBridge
+OK: l104_reality_bridge.RealityBridge
+OK: l104_reality_verification.RealityVerificationEngine
+OK: l104_reality_verification.RealityVerificationEngine
+OK: l104_reality_weaver.ObserverEngine
+OK: l104_reality_weaver.ObserverEngine
+OK: l104_realtime_analytics.AlertManager
+OK: l104_realtime_analytics.AnalyticsEngine
+OK: l104_realtime_analytics.AnalyticsEngine
+OK: l104_reasoning_chain.ReasoningChainEngine
+OK: l104_reasoning_chain.ReasoningChainEngine
+OK: l104_reasoning_engine.InferenceEngine
+OK: l104_reasoning_engine.InferenceEngine
+OK: l104_reasoning_engine.UnificationEngine
+OK: l104_reasoning_engine.UnificationEngine
+OK: l104_recursive_depth_structures.RecursiveDepthController
+OK: l104_recursive_depth_structures.RecursiveDepthController
+OK: l104_recursive_depth_structures.YCombinatorEngine
+OK: l104_recursive_depth_structures.YCombinatorEngine
+OK: l104_reference_engine.OntologyManager
+OK: l104_reference_engine.OntologyManager
+OK: l104_reference_engine.ReferenceEngine
+OK: l104_reference_engine.ReferenceEngine
+OK: l104_reinforcement_engine.ReinforcementEngine
+OK: l104_reinforcement_engine.ReinforcementEngine
+OK: l104_research_development_hub.ExperimentationEngine
+OK: l104_research_development_hub.ExperimentationEngine
+OK: l104_research_development_hub.HypothesisEngine
+OK: l104_research_development_hub.HypothesisEngine
+OK: l104_research_development_hub.SynthesisEngine
+OK: l104_research_development_hub.SynthesisEngine
+OK: l104_resonance_coherence_engine.ResonanceCoherenceEngine
+OK: l104_resonance_coherence_engine.ResonanceCoherenceEngine
+OK: l104_riemann_sovereign_resolution.AGICore
+OK: l104_riemann_sovereign_resolution.AGICore
+OK: l104_sage_api.SageSubstrateManager
+OK: l104_sage_api.SageSubstrateManager
+OK: l104_sage_bindings.L104OmegaController
+OK: l104_sage_bindings.L104OmegaController
+OK: l104_sage_bindings.L104RealityBreachEngine
+OK: l104_sage_bindings.L104RealityBreachEngine
+OK: l104_sage_bindings.SageCoreBridge
+OK: l104_sage_bindings.SageCoreBridge
+OK: l104_sage_core.MultiProviderOrchestrator
+OK: l104_sage_core.SageCore
+OK: l104_sage_core.SageCore
+OK: l104_sage_enlighten.EnlightenedInflectionEngine
+OK: l104_sage_enlighten.EnlightenedInflectionEngine
+OK: l104_sage_enlighten.SageModeOrchestrator
+OK: l104_sage_enlighten.SageModeOrchestrator
+OK: l104_sage_orchestrator.SageModeOrchestrator
+OK: l104_sage_orchestrator.SageModeOrchestrator
+OK: l104_sage_research.AGICore
+OK: l104_sage_research.AGICore
+OK: l104_sage_research.InventionEngine
+OK: l104_sage_research.InventionEngine
+OK: l104_sage_scour_engine.SageScourEngine
+OK: l104_sage_scour_engine.SageScourEngine
+OK: l104_saturation_engine.SaturationEngine
+OK: l104_saturation_engine.SaturationEngine
+OK: l104_self_awareness_core.SelfAwarenessCore
+OK: l104_self_awareness_core.SelfAwarenessCore
+OK: l104_self_healing_agent.SelfHealingAgent
+OK: l104_self_healing_agent.SelfHealingAgent
+OK: l104_self_healing_fabric.DiagnosticEngine
+OK: l104_self_healing_fabric.HealingEngine
+OK: l104_self_optimization.SelfOptimizationEngine
+OK: l104_self_optimization.SelfOptimizationEngine
+OK: l104_semantic_engine.AnalogyEngine
+OK: l104_semantic_engine.SemanticEngine
+OK: l104_semantic_engine.SemanticEngine
+OK: l104_solar_plexus_core.SolarPlexusCore
+OK: l104_solar_plexus_core.SolarPlexusCore
+OK: l104_sovereign_coin_engine.SovereignCoinEngine
+OK: l104_sovereign_coin_engine.SovereignCoinEngine
+OK: l104_sovereign_core.SovereignCore
+OK: l104_sovereign_core.SovereignCore
+OK: l104_sovereign_evolution_engine.SovereignEvolutionEngine
+OK: l104_sovereign_evolution_engine.SovereignEvolutionEngine
+OK: l104_sovereign_sage_controller.SovereignSageController
+OK: l104_sovereign_sage_controller.SovereignSageController
+OK: l104_sovereign_sage_controller.UniversalAIBridge
+OK: l104_sovereign_sage_controller.UniversalAIBridge
+OK: l104_strange_loop_processor.AnalogyEngine
+OK: l104_strange_loop_processor.AnalogyEngine
+OK: l104_stratum_protocol.DifficultyManager
+OK: l104_stratum_protocol.DifficultyManager
+OK: l104_stratum_protocol.JobManager
+OK: l104_stratum_protocol.JobManager
+OK: l104_substrate_healing_engine.SubstrateHealingEngine
+OK: l104_substrate_healing_engine.SubstrateHealingEngine
+OK: l104_superfluid_existence.UniversalFlowEngine
+OK: l104_superfluid_existence.UniversalFlowEngine
+OK: l104_swarm.CoderAgent
+OK: l104_swarm.CriticAgent
+OK: l104_swarm.ResearcherAgent
+OK: l104_swarm.SwarmAgent
+OK: l104_swarm.SynthesizerAgent
+OK: l104_swarm_intelligence.ConsensusEngine
+OK: l104_swarm_intelligence.ConsensusEngine
+OK: l104_swarm_intelligence.StigmergyEngine
+OK: l104_swarm_intelligence.StigmergyEngine
+OK: l104_swarm_intelligence.SwarmAgent
+OK: l104_symmetry_core.SymmetryCore
+OK: l104_symmetry_core.SymmetryCore
+OK: l104_synergy_engine.SynergyEngine
+OK: l104_synergy_engine.SynergyEngine
+OK: l104_system_orchestrator.SystemOrchestrator
+OK: l104_system_orchestrator.SystemOrchestrator
+OK: l104_topological_knot_bridge.TopologicalKnotBridge
+OK: l104_topological_knot_bridge.TopologicalKnotBridge
+OK: l104_topos_theory.ToposTheoryEngine
+OK: l104_topos_theory.ToposTheoryEngine
+OK: l104_transcendence_core.TranscendenceCore
+OK: l104_transcendence_core.TranscendenceCore
+OK: l104_true_singularity.AGICore
+OK: l104_true_singularity.AGICore
+OK: l104_ultimate_coin.BitcoinBridge
+OK: l104_ultimate_coin.BitcoinBridge
+OK: l104_ultimate_coin.MiningEngine
+OK: l104_ultimate_coin.MiningEngine
+OK: l104_ultimate_coin.ResonanceEngine
+OK: l104_ultimate_coin.ResonanceEngine
+OK: l104_ultimate_coin.UltimateCoinEngine
+OK: l104_ultimate_coin.UltimateCoinEngine
+OK: l104_unified_asi.InferenceEngine
+OK: l104_unified_asi.InferenceEngine
+OK: l104_unified_core.UnifiedCore
+OK: l104_unified_core.UnifiedCore
+OK: l104_unified_evolved_data_management.ConsciousnessOrchestrator
+OK: l104_unified_evolved_data_management.ConsciousnessOrchestrator
+OK: l104_unified_evolved_data_management.ConsciousnessSearchEngine
+OK: l104_unified_evolved_data_management.ConsciousnessSearchEngine
+OK: l104_unified_evolved_data_management.EvolvedDiskSpaceManager
+OK: l104_unified_evolved_data_management.EvolvedDiskSpaceManager
+OK: l104_unified_evolved_data_management.QuantumRetrievalEngine
+OK: l104_unified_evolved_data_management.QuantumRetrievalEngine
+OK: l104_unified_evolved_data_management.QuantumStorageEngine
+OK: l104_unified_evolved_data_management.QuantumStorageEngine
+OK: l104_unified_evolved_data_management.UnifiedEvolutionEngine
+OK: l104_unified_evolved_data_management.UnifiedEvolutionEngine
+OK: l104_unified_intelligence_api.AdvancedProcessingEngine
+OK: l104_unified_intelligence_api.AdvancedProcessingEngine
+OK: l104_unified_intelligence_api.ClaudeNodeBridge
+OK: l104_unified_intelligence_api.ClaudeNodeBridge
+OK: l104_unified_intelligence_api.QuantumCoherenceEngine
+OK: l104_unified_intelligence_api.QuantumCoherenceEngine
+OK: l104_unified_intelligence_api.ReasoningChainEngine
+OK: l104_unified_intelligence_api.ReasoningChainEngine
+OK: l104_unified_intelligence_api.SelfOptimizationEngine
+OK: l104_unified_intelligence_api.SelfOptimizationEngine
+OK: l104_unified_intelligence_api.SemanticEngine
+OK: l104_unified_intelligence_api.SemanticEngine
+OK: l104_unified_learning_research.UnifiedResearchEngine
+OK: l104_unified_learning_research.UnifiedResearchEngine
+OK: l104_unified_process_controller.UnifiedProcessController
+OK: l104_unified_process_controller.UnifiedProcessController
+OK: l104_unified_process_orchestrator.RecursiveConsciousnessEngine
+OK: l104_unified_process_orchestrator.RecursiveConsciousnessEngine
+OK: l104_unified_process_orchestrator.UnifiedProcessOrchestrator
+OK: l104_unified_process_orchestrator.UnifiedProcessOrchestrator
+OK: l104_unified_research.UnifiedResearchEngine
+OK: l104_unified_research.UnifiedResearchEngine
+OK: l104_universal_ai_bridge.AIBaseBridge
+OK: l104_universal_ai_bridge.AmazonBedrockBridge
+OK: l104_universal_ai_bridge.AmazonBedrockBridge
+OK: l104_universal_ai_bridge.AnthropicBridge
+OK: l104_universal_ai_bridge.AnthropicBridge
+OK: l104_universal_ai_bridge.AzureOpenAIBridge
+OK: l104_universal_ai_bridge.AzureOpenAIBridge
+OK: l104_universal_ai_bridge.CohereBridge
+OK: l104_universal_ai_bridge.CohereBridge
+OK: l104_universal_ai_bridge.DeepSeekBridge
+OK: l104_universal_ai_bridge.DeepSeekBridge
+OK: l104_universal_ai_bridge.GrokBridge
+OK: l104_universal_ai_bridge.GrokBridge
+OK: l104_universal_ai_bridge.MetaBridge
+OK: l104_universal_ai_bridge.MetaBridge
+OK: l104_universal_ai_bridge.MistralBridge
+OK: l104_universal_ai_bridge.MistralBridge
+OK: l104_universal_ai_bridge.OpenAIBridge
+OK: l104_universal_ai_bridge.OpenAIBridge
+OK: l104_universal_ai_bridge.PerplexityBridge
+OK: l104_universal_ai_bridge.PerplexityBridge
+OK: l104_universal_ai_bridge.UniversalAIBridge
+OK: l104_universal_ai_bridge.UniversalAIBridge
+OK: l104_universal_ai_bridge.XAIBridge
+OK: l104_universal_ai_bridge.XAIBridge
+OK: l104_universal_bridge.UniversalSourceBridge
+OK: l104_universal_bridge.UniversalSourceBridge
+OK: l104_universal_layered_audit.ZeroPointEngine
+OK: l104_universal_layered_audit.ZeroPointEngine
+OK: l104_universal_mind.IntuitionEngine
+OK: l104_universal_mind.IntuitionEngine
+OK: l104_validation_engine.ValidationEngine
+OK: l104_validation_engine.ValidationEngine
+OK: l104_validator.LogicCore
+OK: l104_validator.LogicCore
+OK: l104_validator.PrimeCore
+OK: l104_validator.PrimeCore
+OK: l104_valor_coin.BitcoinBridge
+OK: l104_valor_coin.BitcoinBridge
+OK: l104_valor_coin.ValorCoinEngine
+OK: l104_valor_coin.ValorCoinEngine
+OK: l104_valor_deployment.PeerManager
+OK: l104_valor_deployment.PeerManager
+OK: l104_vision_core.VisionCore
+OK: l104_vision_core.VisionCore
+OK: l104_void_orchestrator.VoidOrchestrator
+OK: l104_void_orchestrator.VoidOrchestrator
+OK: l104_wallet_manager.UTXOManager
+OK: l104_wallet_manager.UTXOManager
+OK: l104_wallet_manager.WalletManager
+OK: l104_wallet_manager.WalletManager
+OK: l104_wallet_system.L104WalletCore
+OK: l104_wallet_system.L104WalletCore
+OK: l104_world_bridge.WorldBridge
+OK: l104_world_bridge.WorldBridge
+OK: l104_zen_research.EgoCore
+OK: l104_zen_research.EgoCore
+OK: l104_zen_research.ZeroPointEngine
+OK: l104_zen_research.ZeroPointEngine
+OK: l104_zero_point_engine.ZeroPointEngine
+OK: l104_zero_point_engine.ZeroPointEngine
