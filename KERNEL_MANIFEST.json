@@ -1,14 +1,20 @@
 {
-  "kernel_version": "L104-CLAUDE-MD-INTEGRATED",
-  "timestamp": "2026-01-23T22:48:28.513752",
-  "total_examples": 1733,
-  "vocabulary_size": 5115,
-  "parameters": 8864295,
-  "categories": 133,
+  "kernel_version": "L104-WORLD-LLM-PATTERNS",
+  "timestamp": "2026-01-23T22:59:07.213094",
+  "total_examples": 1893,
+  "vocabulary_size": 6123,
+  "parameters": 11590839,
+  "categories": 209,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
     "LOVE": 29.0344418537
   },
-  "claude_md_integrated": true
+  "sources": [
+    "HuggingFace Datasets",
+    "Anthropic RLHF",
+    "LMSYS",
+    "DeepMath",
+    "Awesome ChatGPT Prompts"
+  ]
 }

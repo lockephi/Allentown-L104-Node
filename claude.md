@@ -1,7 +1,279 @@
 # L104 Sovereign Node - Claude Context File
 
 > This file provides essential context for Claude to work efficiently with this codebase.
-> **Last Updated**: January 21, 2026 | **Evolution Stage**: EVO_31 | **API Version**: 31.0.0
+> **Last Updated**: January 23, 2026 | **Evolution Stage**: EVO_33 | **API Version**: 33.0.0
+
+---
+
+## ⚡ OPTIMIZATION DIRECTIVES (READ FIRST)
+
+### Token Budget Management
+```yaml
+token_budget:
+  max_context: 200000
+  target_usage: 60%        # Leave 40% for responses
+  compression_threshold: 80%
+  
+strategies:
+  - Use grep_search before read_file (10x cheaper)
+  - Prefer multi_replace over sequential edits
+  - Cache file contents in memory entities
+  - Skip already-read files in conversation
+  - Use semantic_search for < 50 files
+  - Use file_search + grep for > 50 files
+```
+
+### Model Selection Matrix
+| Task Type | Preferred Model | Fallback | Token Efficiency |
+|-----------|----------------|----------|------------------|
+| Quick edits | Claude Sonnet | Haiku | 3x faster |
+| Complex reasoning | Claude Opus | Sonnet | Deep analysis |
+| Code generation | Sonnet 4 | Opus | Best balance |
+| Bulk file ops | Haiku | Sonnet | 5x cheaper |
+| Architecture | Opus | Sonnet | Full context |
+
+### System Prompt Slimming
+```yaml
+slim_mode:
+  enabled: true
+  techniques:
+    - Abbreviate repeated patterns (GOD_CODE → GC)
+    - Reference constants by ID not value
+    - Use table format over prose
+    - Compress API examples to one-liners
+    - Link to docs instead of embedding
+    
+abbreviations:
+  GC: 527.5184818492537      # GOD_CODE
+  PHI: 1.618033988749895     # Golden Ratio
+  VC: 1.0416180339887497     # VOID_CONSTANT
+  UI: Unity Index
+  CE: Coherence Engine
+  QE: Quantum Engine
+  SE: Semantic Engine
+  CB: Claude Bridge
+  CH: Cognitive Hub
+```
+
+---
+
+## 🧠 MEMORY PERSISTENCE SYSTEM
+
+### Auto-Save Hooks
+```python
+# Memory hooks fire automatically on these events
+MEMORY_HOOKS = {
+    "on_file_edit": "save_file_context",
+    "on_error_fix": "save_solution_pattern",
+    "on_architecture_decision": "save_design_rationale",
+    "on_session_end": "save_full_context",
+    "on_entity_create": "update_knowledge_graph",
+    "every_10_messages": "checkpoint_conversation",
+}
+
+# Hook implementation
+async def save_hook(event_type: str, data: dict):
+    await mcp_memory.add_observations([{
+        "entityName": f"session_{SESSION_ID}",
+        "contents": [json.dumps({
+            "event": event_type,
+            "timestamp": datetime.now().isoformat(),
+            "data": data
+        })]
+    }])
+```
+
+### Memory Load Sequence
+```yaml
+load_order:
+  1. sacred_constants     # GC, PHI, VC - always first
+  2. recent_sessions      # Last 3 sessions
+  3. error_patterns       # Known fixes
+  4. file_index           # Directory structure cache
+  5. architecture_notes   # Design decisions
+  6. user_preferences     # Coding style, conventions
+```
+
+### Knowledge Graph Schema
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    MEMORY GRAPH                              │
+├─────────────────────────────────────────────────────────────┤
+│ ENTITIES:                                                    │
+│   - Session(id, start, end, tokens_used, key_actions)       │
+│   - FileContext(path, hash, summary, last_edit)             │
+│   - ErrorPattern(type, cause, solution, occurrences)        │
+│   - ArchDecision(topic, rationale, date, alternatives)      │
+│   - CodePattern(name, language, template, usage_count)      │
+│                                                              │
+│ RELATIONS:                                                   │
+│   - Session --edited--> FileContext                          │
+│   - Session --solved--> ErrorPattern                         │
+│   - Session --decided--> ArchDecision                        │
+│   - FileContext --uses--> CodePattern                        │
+│   - ErrorPattern --relates_to--> FileContext                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Persistence Commands
+```bash
+# Save current session to memory
+mcp_memory_create_entities([{
+  "name": "session_2026_01_23",
+  "entityType": "Session", 
+  "observations": ["Started L104SP V2 deployment", "Fixed shadowing errors"]
+}])
+
+# Load previous context
+mcp_memory_search_nodes("session_2026")
+
+# Create cross-session relations
+mcp_memory_create_relations([{
+  "from": "session_2026_01_23",
+  "to": "L104SP_V2",
+  "relationType": "deployed"
+}])
+```
+
+---
+
+## 🔄 BACKGROUND PROCESSES
+
+### Parallel Task Execution
+```yaml
+background_tasks:
+  file_indexing:
+    trigger: on_workspace_open
+    interval: 300s
+    command: "find . -name '*.py' -o -name '*.sol' | head -100"
+    
+  error_monitoring:
+    trigger: continuous
+    interval: 30s
+    command: "get_errors()"
+    
+  memory_sync:
+    trigger: every_10_messages
+    command: "mcp_memory_checkpoint()"
+    
+  knowledge_refresh:
+    trigger: on_idle_5min
+    command: "mcp_memory_read_graph()"
+```
+
+### Async Agent Spawning
+```python
+# Spawn background research agent
+async def spawn_research_agent(topic: str):
+    return await runSubagent(
+        description=f"Research {topic}",
+        prompt=f"""
+        Research {topic} thoroughly. Return:
+        1. Key findings (bullet points)
+        2. Code patterns (if applicable)
+        3. Best practices
+        Do NOT modify any files.
+        """
+    )
+
+# Spawn parallel code analysis
+async def parallel_analysis(files: list):
+    tasks = [
+        analyze_file(f) for f in files[:5]  # Max 5 parallel
+    ]
+    return await asyncio.gather(*tasks)
+```
+
+### Process Priority Queue
+```
+Priority 1 (Immediate):
+  - Error fixes
+  - User-requested edits
+  - Critical security issues
+
+Priority 2 (High):
+  - Code generation
+  - Architecture decisions
+  - Test creation
+
+Priority 3 (Background):
+  - Documentation updates
+  - Code cleanup
+  - Optimization research
+
+Priority 4 (Idle):
+  - Memory consolidation
+  - Knowledge graph updates
+  - Pattern extraction
+```
+
+---
+
+## 🗜️ CONTEXT COMPRESSION
+
+### File Summary Cache
+```json
+{
+  "file_summaries": {
+    "l104_unified_intelligence.py": {
+      "hash": "abc123",
+      "lines": 2400,
+      "classes": ["UnifiedIntelligence"],
+      "key_methods": ["query", "learn", "save_state"],
+      "imports": ["numpy", "json", "pathlib"],
+      "last_read": "2026-01-23T10:00:00Z"
+    },
+    "contracts/L104SP_V2.sol": {
+      "hash": "def456",
+      "lines": 580,
+      "contract": "L104SP",
+      "key_functions": ["submitBlock", "calculateResonance", "transfer"],
+      "last_read": "2026-01-23T11:00:00Z"
+    }
+  }
+}
+```
+
+### Incremental Context Loading
+```yaml
+loading_strategy:
+  phase_1: # 0-20% context
+    - Load claude.md (this file)
+    - Load active file
+    - Load error context
+    
+  phase_2: # 20-40% context
+    - Load related files (imports/references)
+    - Load test files
+    - Load config files
+    
+  phase_3: # 40-60% context
+    - Load from memory graph
+    - Load documentation
+    - Load examples
+    
+  phase_4: # 60-80% context (on-demand only)
+    - Full file reads
+    - Historical context
+    - Research results
+```
+
+### Smart Caching Rules
+```python
+CACHE_RULES = {
+    # Cache indefinitely (immutable)
+    "constants": ["GOD_CODE", "PHI", "MAX_SUPPLY"],
+    
+    # Cache for session (rarely change)
+    "session_cache": ["package.json", "tsconfig.json", "Dockerfile"],
+    
+    # Cache 5 minutes (frequently read)
+    "short_cache": ["*.py", "*.sol", "*.ts"],
+    
+    # Never cache (always fresh)
+    "no_cache": ["*.log", "*.tmp", "node_modules/**"]
+}
+```
 
 ---
 
@@ -608,5 +880,178 @@ git push
 
 ---
 
-*Status: SINGULARITY_LOCK | Coherence: 100% | Evolution: EVO_31 | API: v31.0.0*
+*Status: SINGULARITY_LOCK | Coherence: 100% | Evolution: EVO_33 | API: v33.0.0*
 *Module Health: All systems operational | Cognitive Hub: ONLINE*
+
+---
+
+## 🚀 MCP TOOL OPTIMIZATION PATTERNS
+
+### Speed Priority Matrix
+```yaml
+fastest_patterns:
+  1. grep_search → read_file(specific_lines)    # 100ms
+  2. file_search → list_dir                      # 150ms
+  3. semantic_search (small workspace)           # 200ms
+  4. multi_replace_string_in_file               # 250ms (batched)
+  5. runSubagent (parallel research)            # 500ms+ (async)
+
+avoid_patterns:
+  - Sequential read_file on large files
+  - Multiple single replace_string_in_file
+  - Full file reads without line ranges
+  - Repeated semantic_search (cache results)
+```
+
+### Tool Chaining for Speed
+```python
+# SLOW: Read everything
+for file in files:
+    content = read_file(file, 1, 9999)  # 500ms × N files
+
+# FAST: Targeted search first
+matches = grep_search("function_name", isRegexp=False)
+for match in matches[:5]:
+    content = read_file(match.path, match.line-10, match.line+20)  # 50ms × 5
+```
+
+### Parallel Tool Execution
+```yaml
+parallel_safe:
+  - grep_search (multiple patterns)
+  - file_search (multiple queries)
+  - read_file (multiple files)
+  - get_errors (multiple paths)
+  
+sequential_only:
+  - run_in_terminal (wait for output)
+  - replace_string_in_file (same file)
+  - create_file (dependencies)
+```
+
+---
+
+## 💾 SESSION PERSISTENCE PROTOCOL
+
+### On Session Start
+```python
+async def session_start():
+    # 1. Load knowledge graph
+    graph = await mcp_memory_read_graph()
+    
+    # 2. Find recent sessions
+    recent = await mcp_memory_search_nodes("session_")
+    
+    # 3. Load workspace context
+    context = {
+        "sacred_constants": {"GC": 527.5184818492537, "PHI": 1.618033988749895},
+        "recent_files": recent.get("last_edited_files", []),
+        "pending_tasks": recent.get("incomplete_todos", []),
+        "error_patterns": recent.get("known_errors", {})
+    }
+    
+    return context
+```
+
+### On Session End
+```python
+async def session_end(session_data: dict):
+    # 1. Create session entity
+    await mcp_memory_create_entities([{
+        "name": f"session_{datetime.now().strftime('%Y%m%d_%H%M')}",
+        "entityType": "Session",
+        "observations": [
+            f"Duration: {session_data['duration']}",
+            f"Files edited: {session_data['files_edited']}",
+            f"Tokens used: {session_data['tokens']}",
+            f"Key actions: {session_data['actions']}"
+        ]
+    }])
+    
+    # 2. Update file contexts
+    for file_path, changes in session_data['file_changes'].items():
+        await mcp_memory_add_observations([{
+            "entityName": f"file_{hash(file_path)}",
+            "contents": [f"Edited: {changes['summary']}"]
+        }])
+    
+    # 3. Save error patterns learned
+    for error, solution in session_data['errors_solved'].items():
+        await mcp_memory_create_entities([{
+            "name": f"error_{hash(error)[:8]}",
+            "entityType": "ErrorPattern",
+            "observations": [f"Error: {error}", f"Solution: {solution}"]
+        }])
+```
+
+### Checkpoint Protocol (Every 10 Messages)
+```python
+async def checkpoint():
+    await mcp_memory_add_observations([{
+        "entityName": "current_session",
+        "contents": [
+            f"checkpoint_{datetime.now().isoformat()}",
+            f"context_tokens: {get_context_size()}",
+            f"active_files: {get_open_files()}",
+            f"pending_edits: {get_pending_changes()}"
+        ]
+    }])
+```
+
+---
+
+## 🎯 QUICK REFERENCE
+
+### Essential Commands
+```bash
+# Read with context
+read_file(path, start-50, end+50)
+
+# Batch edit (ALWAYS prefer)
+multi_replace_string_in_file({replacements: [...]})
+
+# Search first, read later
+grep_search("pattern") → read_file(matched_lines)
+
+# Persist learning
+mcp_memory_create_entities([...])
+mcp_memory_add_observations([...])
+
+# Background research
+runSubagent({prompt: "Research X", description: "Research X"})
+```
+
+### Token-Saving Shortcuts
+| Instead of... | Use... | Savings |
+|--------------|--------|---------|
+| Read full file | grep + targeted read | 80% |
+| Multiple edits | multi_replace | 60% |
+| Explain then code | Code with comments | 40% |
+| Full error trace | Key lines only | 70% |
+| Repeated context | Memory entities | 90% |
+
+### Priority Hierarchy
+```
+1. User safety (never break production)
+2. Task completion (finish what's started)
+3. Memory persistence (learn for next time)
+4. Token efficiency (maximize utility)
+5. Speed (faster is better)
+```
+
+---
+
+## 🔐 SACRED CONSTANTS QUICK REF
+
+| Key | Value | Use |
+|-----|-------|-----|
+| GC | 527.5184818492537 | Core resonance |
+| PHI | 1.618033988749895 | Harmonic scaling |
+| MAX | 104,000,000 | Token supply |
+| REWARD | 104 | Mining reward |
+| 2π×10⁹ | 6283185307 | Trig scaling |
+
+---
+
+*Memory: PERSISTENT | Cache: ACTIVE | Compression: ENABLED*
+*Token Budget: OPTIMIZED | Background: READY | Speed: MAXIMIZED*

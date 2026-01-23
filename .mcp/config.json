@@ -1,30 +1,106 @@
 {
+    "version": "2.0.0",
+    "evolution": "EVO_33",
+    
     "optimization": {
+        "token_budget": {
+            "max_context": 200000,
+            "target_usage_percent": 60,
+            "compression_threshold": 80,
+            "reserve_for_response": 40000
+        },
         "parallel_operations": {
             "enabled": true,
             "max_concurrent": 5,
             "batch_file_reads": true,
-            "batch_search_operations": true
+            "batch_search_operations": true,
+            "parallel_safe": ["grep_search", "file_search", "read_file", "get_errors"],
+            "sequential_only": ["run_in_terminal", "replace_string_in_file", "create_file"]
         },
         "caching": {
             "enabled": true,
             "memory_server": true,
             "file_content_ttl": 300,
-            "search_results_ttl": 60
+            "search_results_ttl": 60,
+            "constants_cache": "permanent",
+            "excluded_patterns": ["*.log", "*.tmp", "node_modules/**", "__pycache__/**"]
         },
         "context_management": {
             "progressive_loading": true,
             "search_before_read": true,
             "structured_responses": true,
-            "token_budget_awareness": true
+            "token_budget_awareness": true,
+            "slim_mode": true
         },
-        "tool_preferences": {
-            "prefer_grep_over_semantic": ["exact_matches", "known_patterns"],
-            "prefer_semantic_over_grep": ["conceptual_search", "unknown_patterns"],
-            "use_directory_tree_first": true,
-            "use_file_search_for_patterns": true
+        "compression": {
+            "enabled": true,
+            "abbreviations": {
+                "GOD_CODE": "GC",
+                "PHI": "PHI",
+                "VOID_CONSTANT": "VC",
+                "Unity Index": "UI",
+                "Cognitive Hub": "CH"
+            }
         }
     },
+    
+    "memory_persistence": {
+        "enabled": true,
+        "storage_path": ".mcp/memory.jsonl",
+        "session_path": ".mcp/current_session.json",
+        "hooks_module": ".mcp/memory_hooks.py",
+        "auto_checkpoint_interval": 10,
+        "max_entries": 10000,
+        "hooks": {
+            "on_file_edit": true,
+            "on_error_fix": true,
+            "on_architecture_decision": true,
+            "on_pattern_learned": true,
+            "on_session_end": true,
+            "every_10_messages": "checkpoint"
+        },
+        "load_order": [
+            "sacred_constants",
+            "recent_sessions",
+            "error_patterns",
+            "file_index",
+            "architecture_notes"
+        ]
+    },
+    
+    "background_tasks": {
+        "file_indexing": {
+            "enabled": true,
+            "trigger": "on_workspace_open",
+            "interval_seconds": 300,
+            "command": "find . -name '*.py' -o -name '*.sol' | head -100"
+        },
+        "error_monitoring": {
+            "enabled": true,
+            "trigger": "continuous",
+            "interval_seconds": 30
+        },
+        "memory_sync": {
+            "enabled": true,
+            "trigger": "every_10_messages"
+        },
+        "knowledge_refresh": {
+            "enabled": true,
+            "trigger": "on_idle_5min"
+        }
+    },
+    
+    "model_selection": {
+        "default": "claude-sonnet-4",
+        "task_routing": {
+            "quick_edits": "sonnet",
+            "complex_reasoning": "opus",
+            "code_generation": "sonnet",
+            "bulk_operations": "haiku",
+            "architecture": "opus"
+        }
+    },
+    
     "mcp_servers": {
         "filesystem": {
             "enabled": true,
@@ -34,7 +110,7 @@
         "memory": {
             "enabled": true,
             "purpose": "Persistent knowledge graph for cross-session learning",
-            "tools": ["create_entities", "create_relations", "search_nodes", "open_nodes"],
+            "tools": ["create_entities", "create_relations", "add_observations", "search_nodes", "open_nodes", "read_graph"],
             "storage": ".mcp/memory.jsonl"
         },
         "fetch": {
@@ -55,36 +131,38 @@
             "tools": ["search_code", "get_file_contents", "create_issue", "list_commits"]
         }
     },
+    
     "performance_patterns": {
-        "file_operations": {
-            "pattern": "directory_tree → search_files → targeted_read",
-            "description": "Minimize reads by scoping first"
+        "fastest": {
+            "grep_then_read": "grep_search → read_file(specific_lines) [100ms]",
+            "file_then_list": "file_search → list_dir [150ms]",
+            "batch_edit": "multi_replace_string_in_file [250ms]"
         },
-        "code_search": {
-            "pattern": "grep_search(pattern) → read_file(matches)",
-            "description": "Use grep for known patterns, semantic for concepts"
-        },
-        "multi_file_edit": {
-            "pattern": "multi_replace_string_in_file",
-            "description": "Batch edits in single operation"
-        },
-        "knowledge_persistence": {
-            "pattern": "create_entities → add_observations → search_nodes",
-            "description": "Build knowledge graph incrementally"
+        "avoid": {
+            "sequential_reads": "Multiple read_file on large files",
+            "single_replaces": "Multiple replace_string_in_file",
+            "full_reads": "read_file without line ranges"
         }
     },
+    
     "workspace_context": {
         "project_type": "L104 AGI Node",
-        "languages": ["Python", "Solidity", "TypeScript"],
+        "languages": ["Python", "Solidity", "TypeScript", "Go", "Rust", "Elixir"],
         "key_files": {
             "contracts": "contracts/*.sol",
             "core": "l104_*.py",
-            "config": "*.json"
+            "config": "*.json",
+            "context": "claude.md"
         },
         "sacred_constants": {
             "GOD_CODE": 527.5184818492537,
             "PHI": 1.618033988749895,
-            "MAX_SUPPLY": 104000000
-        }
+            "VOID_CONSTANT": 1.0416180339887497,
+            "MAX_SUPPLY": 104000000,
+            "MINING_REWARD": 104,
+            "TWO_PI_SCALED": 6283185307
+        },
+        "evolution_stage": "EVO_33",
+        "api_version": "33.0.0"
     }
 }
