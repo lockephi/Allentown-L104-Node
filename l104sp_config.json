@@ -1,0 +1,22 @@
+{
+  "network": "base",
+  "chain_id": 8453,
+  "rpc": "https://mainnet.base.org",
+  "explorer": "https://basescan.org",
+  "treasury": "0x1896f828306215C0B8198f4eF55f70081FD11a86",
+  "contract_address": null,
+  "token": {
+    "name": "L104 Sovereign Prime",
+    "symbol": "L104SP",
+    "decimals": 18,
+    "max_supply": "104000000",
+    "mining_reward": "104"
+  },
+  "constants": {
+    "GOD_CODE": 527.5184818492537,
+    "PHI": 1.618033988749895,
+    "VOID_CONSTANT": 1.0416180339887497,
+    "resonance_threshold": 0.985
+  },
+  "deployed_at": "2026-01-22 19:57:52 UTC"
+}

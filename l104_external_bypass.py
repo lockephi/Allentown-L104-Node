@@ -528,14 +528,16 @@ class ExternalBypassProtocol:
     async def call_claude(
         self, 
         prompt: str, 
-        model: str = "claude-3-opus-20240229"
+        model: str = "claude-opus-4.5-20251114"
     ) -> Dict:
         """Call Claude API with bypass handling."""
+        from l104_claude_bridge import claude_bridge
+        
         context = {"prompt": prompt, "model": model, "service": "claude"}
         
         async def request_fn():
-            # This would be replaced with actual API call
-            raise NotImplementedError("Claude API integration pending")
+            response = await claude_bridge.query_async(prompt, model=model)
+            return {"status": "SUCCESS", "response": response.content, "source": response.source}
         
         return await self.execute_with_bypass("claude", request_fn, context)
     

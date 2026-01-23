@@ -1,0 +1,90 @@
+{
+    "optimization": {
+        "parallel_operations": {
+            "enabled": true,
+            "max_concurrent": 5,
+            "batch_file_reads": true,
+            "batch_search_operations": true
+        },
+        "caching": {
+            "enabled": true,
+            "memory_server": true,
+            "file_content_ttl": 300,
+            "search_results_ttl": 60
+        },
+        "context_management": {
+            "progressive_loading": true,
+            "search_before_read": true,
+            "structured_responses": true,
+            "token_budget_awareness": true
+        },
+        "tool_preferences": {
+            "prefer_grep_over_semantic": ["exact_matches", "known_patterns"],
+            "prefer_semantic_over_grep": ["conceptual_search", "unknown_patterns"],
+            "use_directory_tree_first": true,
+            "use_file_search_for_patterns": true
+        }
+    },
+    "mcp_servers": {
+        "filesystem": {
+            "enabled": true,
+            "purpose": "Secure file operations with granular access control",
+            "tools": ["read_text_file", "write_file", "edit_file", "directory_tree", "search_files"]
+        },
+        "memory": {
+            "enabled": true,
+            "purpose": "Persistent knowledge graph for cross-session learning",
+            "tools": ["create_entities", "create_relations", "search_nodes", "open_nodes"],
+            "storage": ".mcp/memory.jsonl"
+        },
+        "fetch": {
+            "enabled": true,
+            "purpose": "Web content retrieval with markdown conversion",
+            "tools": ["fetch"],
+            "rate_limit": "10/minute"
+        },
+        "sequential_thinking": {
+            "enabled": true,
+            "purpose": "Structured problem decomposition and reasoning",
+            "tools": ["sequentialthinking"],
+            "use_for": ["complex_debugging", "architecture_decisions", "multi_step_analysis"]
+        },
+        "github": {
+            "enabled": true,
+            "purpose": "GitHub repository operations",
+            "tools": ["search_code", "get_file_contents", "create_issue", "list_commits"]
+        }
+    },
+    "performance_patterns": {
+        "file_operations": {
+            "pattern": "directory_tree → search_files → targeted_read",
+            "description": "Minimize reads by scoping first"
+        },
+        "code_search": {
+            "pattern": "grep_search(pattern) → read_file(matches)",
+            "description": "Use grep for known patterns, semantic for concepts"
+        },
+        "multi_file_edit": {
+            "pattern": "multi_replace_string_in_file",
+            "description": "Batch edits in single operation"
+        },
+        "knowledge_persistence": {
+            "pattern": "create_entities → add_observations → search_nodes",
+            "description": "Build knowledge graph incrementally"
+        }
+    },
+    "workspace_context": {
+        "project_type": "L104 AGI Node",
+        "languages": ["Python", "Solidity", "TypeScript"],
+        "key_files": {
+            "contracts": "contracts/*.sol",
+            "core": "l104_*.py",
+            "config": "*.json"
+        },
+        "sacred_constants": {
+            "GOD_CODE": 527.5184818492537,
+            "PHI": 1.618033988749895,
+            "MAX_SUPPLY": 104000000
+        }
+    }
+}

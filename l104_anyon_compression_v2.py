@@ -37,11 +37,14 @@ import numpy as np
 
 # Import Void Math for optimization
 try:
-    from l104_void_math import void_math, VOID_CONSTANT
+    from l104_void_math import void_math, VOID_CONSTANT, GOD_CODE, PHI
     HAS_VOID = True
+    BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
 except ImportError:
     HAS_VOID = False
     VOID_CONSTANT = 1.0416
+    GOD_CODE = 527.5184818492537
+    PHI = 1.618033988749895
     BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
 
 

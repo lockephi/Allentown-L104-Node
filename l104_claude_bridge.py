@@ -53,6 +53,7 @@ class ClaudeModel(Enum):
     HAIKU = "claude-3-5-haiku-20241022"
     OPUS_4 = "claude-opus-4-20250514"
     SONNET_4 = "claude-sonnet-4-20250514"
+    OPUS_4_5 = "claude-opus-4.5-20251114"
 
 
 class MessageRole(Enum):
@@ -142,7 +143,7 @@ class ClaudeNodeBridge:
     """
     
     API_BASE = "https://api.anthropic.com/v1"
-    DEFAULT_MODEL = ClaudeModel.SONNET.value
+    DEFAULT_MODEL = ClaudeModel.OPUS_4_5.value
     MAX_CONTEXT_MESSAGES = 20
     
     def __init__(self):

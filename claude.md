@@ -260,7 +260,67 @@ curl -X POST http://localhost:8082/api/brain/reason \
 
 ---
 
-## 💻 Code Examples
+## 🔧 MCP (Model Context Protocol) Configuration
+
+The system integrates with Claude through MCP servers configured in [.mcp/config.json](.mcp/config.json).
+
+### Available MCP Servers
+
+```json
+{
+    "mcp_servers": {
+        "filesystem": {
+            "enabled": true,
+            "purpose": "Secure file operations with granular access control",
+            "tools": ["read_text_file", "write_file", "edit_file", "directory_tree", "search_files"]
+        },
+        "memory": {
+            "enabled": true,
+            "purpose": "Persistent knowledge graph for cross-session learning",
+            "tools": ["create_entities", "create_relations", "search_nodes", "open_nodes"],
+            "storage": ".mcp/memory.jsonl"
+        },
+        "sequential_thinking": {
+            "enabled": true,
+            "purpose": "Structured problem decomposition and reasoning",
+            "tools": ["sequentialthinking"],
+            "use_for": ["complex_debugging", "architecture_decisions", "multi_step_analysis"]
+        },
+        "github": {
+            "enabled": true,
+            "purpose": "GitHub repository operations",
+            "tools": ["search_code", "get_file_contents", "create_issue", "list_commits"]
+        }
+    }
+}
+```
+
+### MCP Performance Patterns
+
+| Pattern | Description | When to Use |
+|---------|-------------|-------------|
+| `directory_tree → search_files → targeted_read` | Scope before reading | Large file operations |
+| `grep_search(pattern) → read_file(matches)` | Pattern-based search | Known code patterns |
+| `multi_replace_string_in_file` | Batch edits | Multiple file changes |
+| `create_entities → add_observations → search_nodes` | Knowledge building | Cross-session learning |
+
+### Sacred Constants in MCP Context
+
+```json
+{
+    "workspace_context": {
+        "sacred_constants": {
+            "GOD_CODE": 527.5184818492537,
+            "PHI": 1.618033988749895,
+            "MAX_SUPPLY": 104000000
+        }
+    }
+}
+```
+
+---
+
+## �💻 Code Examples
 
 ### Integrated Cognitive Query
 

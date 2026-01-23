@@ -28,3 +28,18 @@ service_account.json
 
 
 .fake
+# Space optimization patterns
+*.pyc
+*.pyo
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.pytest_cache/
+node_modules/
+.venv-*/
+*.gz

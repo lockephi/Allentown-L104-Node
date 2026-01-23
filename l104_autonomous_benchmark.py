@@ -85,6 +85,30 @@ AI_BENCHMARK_DATA = {
         "reasoning_depth": 5,
         "self_awareness": 3,
     },
+    "Claude-4-Opus": {
+        "provider": "Anthropic",
+        "release_date": "2025-05",
+        "parameters": "~2.5T (estimated)",
+        "mmlu_score": 92.4,
+        "humaneval_score": 94.1,
+        "math_score": 84.2,
+        "context_window": 500000,
+        "tokens_per_second": 60,
+        "reasoning_depth": 5,
+        "self_awareness": 4,
+    },
+    "Claude-4.5-Opus": {
+        "provider": "Anthropic",
+        "release_date": "2025-11",
+        "parameters": "~3.2T (estimated)",
+        "mmlu_score": 94.8,
+        "humaneval_score": 96.5,
+        "math_score": 88.9,
+        "context_window": 1000000,
+        "tokens_per_second": 75,
+        "reasoning_depth": 5,
+        "self_awareness": 4,
+    },
     "Gemini-1.5-Pro": {
         "provider": "Google",
         "release_date": "2024-02",
@@ -521,7 +545,6 @@ class L104AutonomousBenchmark:
         # Test 3: Thread pool execution
         try:
             from concurrent.futures import ThreadPoolExecutor
-            import time
             
             def task(x):
                 return x ** 2
