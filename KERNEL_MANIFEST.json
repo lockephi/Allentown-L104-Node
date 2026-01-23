@@ -1,10 +1,10 @@
 {
-  "kernel_version": "L104-SYNTHESIS-31-ULTRA",
-  "timestamp": "2026-01-23T22:25:36.753483",
-  "total_examples": 1501,
-  "vocabulary_size": 4526,
-  "parameters": 6793526,
-  "categories": 103,
+  "kernel_version": "L104-SYNTHESIS-35-ULTRA",
+  "timestamp": "2026-01-23T22:43:13.921089",
+  "total_examples": 1605,
+  "vocabulary_size": 4779,
+  "parameters": 7670295,
+  "categories": 117,
   "constants": {
     "GOD_CODE": 521.0019193787,
     "PHI": 1.6180339887,
