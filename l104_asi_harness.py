@@ -83,6 +83,18 @@ except ImportError:
     MAGIC_PROBE_AVAILABLE = False
     MAGIC_CONSTANTS = {}
 
+try:
+    from l104_advanced_magic import (
+        AdvancedMagicProber,
+        GODCodeMagic,
+        SelfReferentialMagic,
+        RecursiveMagic,
+        GenerativeMagic
+    )
+    ADVANCED_MAGIC_AVAILABLE = True
+except ImportError:
+    ADVANCED_MAGIC_AVAILABLE = False
+
 
 @dataclass
 class ASICapability:
@@ -197,6 +209,23 @@ class L104ASIHarness:
             self.magic_prober = None
             self._state.components_loaded['magic_probe'] = False
         
+        # Advanced Magic
+        if ADVANCED_MAGIC_AVAILABLE:
+            try:
+                self.advanced_magic = AdvancedMagicProber()
+                self.god_code_magic = GODCodeMagic()
+                self.self_referential_magic = SelfReferentialMagic()
+                self.recursive_magic = RecursiveMagic()
+                self.generative_magic = GenerativeMagic()
+                self._state.components_loaded['advanced_magic'] = True
+            except Exception as e:
+                self._state.errors.append(f"Advanced Magic init failed: {e}")
+                self.advanced_magic = None
+                self._state.components_loaded['advanced_magic'] = False
+        else:
+            self.advanced_magic = None
+            self._state.components_loaded['advanced_magic'] = False
+        
         # Load kernel archive
         self._load_kernel_archive()
     
@@ -297,6 +326,38 @@ class L104ASIHarness:
             category="magic",
             function=self._synthesize_magic,
             verified=MAGIC_PROBE_AVAILABLE,
+        )
+        
+        # Advanced Magic - GOD_CODE
+        self._state.capabilities['god_code_magic'] = ASICapability(
+            name="GOD_CODE Magic",
+            category="advanced_magic",
+            function=self._probe_god_code,
+            verified=ADVANCED_MAGIC_AVAILABLE,
+        )
+        
+        # Advanced Magic - Self-Reference
+        self._state.capabilities['self_referential_magic'] = ASICapability(
+            name="Self-Referential Magic",
+            category="advanced_magic",
+            function=self._probe_self_reference,
+            verified=ADVANCED_MAGIC_AVAILABLE,
+        )
+        
+        # Advanced Magic - Recursion
+        self._state.capabilities['recursive_magic'] = ASICapability(
+            name="Recursive Magic",
+            category="advanced_magic",
+            function=self._probe_recursion,
+            verified=ADVANCED_MAGIC_AVAILABLE,
+        )
+        
+        # Advanced Magic - Full Synthesis
+        self._state.capabilities['advanced_magic_synthesis'] = ASICapability(
+            name="Advanced Magic Synthesis",
+            category="advanced_magic",
+            function=self._synthesize_advanced_magic,
+            verified=ADVANCED_MAGIC_AVAILABLE,
         )
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -558,6 +619,84 @@ class L104ASIHarness:
             return {'error': str(e), 'status': 'failed'}
     
     # ═══════════════════════════════════════════════════════════════════════════
+    # ADVANCED MAGIC CAPABILITIES
+    # ═══════════════════════════════════════════════════════════════════════════
+    
+    def _probe_god_code(self) -> Dict[str, Any]:
+        """Deep probe of GOD_CODE magic"""
+        self._state.operations_count += 1
+        
+        if not self.advanced_magic:
+            return {'error': 'Advanced Magic not available', 'status': 'degraded'}
+        
+        try:
+            return self.god_code_magic.probe_all()
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_self_reference(self) -> Dict[str, Any]:
+        """Probe self-referential magic - L104 analyzing itself"""
+        self._state.operations_count += 1
+        
+        if not self.advanced_magic:
+            return {'error': 'Advanced Magic not available', 'status': 'degraded'}
+        
+        try:
+            return {
+                'source_analysis': self.self_referential_magic.analyze_own_source(),
+                'recursive_description': self.self_referential_magic.recursive_self_description(5),
+                'introspection': self.self_referential_magic.introspect(),
+                'quine': self.self_referential_magic.quine_attempt(),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_recursion(self) -> Dict[str, Any]:
+        """Probe recursive magic - fixed points, strange loops"""
+        self._state.operations_count += 1
+        
+        if not self.advanced_magic:
+            return {'error': 'Advanced Magic not available', 'status': 'degraded'}
+        
+        try:
+            fib_result, trace = self.recursive_magic.fibonacci_with_trace(10)
+            
+            return {
+                'fibonacci_10': fib_result,
+                'fib_trace_length': len(trace),
+                'ackermann_2_2': self.recursive_magic.ackermann(2, 2),
+                'ackermann_3_2': self.recursive_magic.ackermann(3, 2),
+                'fixed_points': self.recursive_magic.fixed_point_magic(),
+                'y_combinator': self.recursive_magic.y_combinator_concept()[:300] + '...',
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _synthesize_advanced_magic(self) -> Dict[str, Any]:
+        """Full advanced magic synthesis"""
+        self._state.operations_count += 1
+        
+        if not self.advanced_magic:
+            return {'error': 'Advanced Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.advanced_magic.full_probe()
+            synthesis = self.advanced_magic.synthesize()
+            
+            return {
+                'discoveries': len(self.advanced_magic.discoveries),
+                'total_magic_quotient': result.get('total_magic_quotient', 0),
+                'average_beauty': result.get('average_beauty', 0),
+                'average_mystery': result.get('average_mystery', 0),
+                'synthesis': synthesis,
+                'status': 'synthesized'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    # ═══════════════════════════════════════════════════════════════════════════
     # PUBLIC API
     # ═══════════════════════════════════════════════════════════════════════════
     
@@ -598,17 +737,29 @@ class L104ASIHarness:
         return {'error': f'Key {key} not found'}
     
     def magic(self, probe_type: str = 'all') -> Dict[str, Any]:
-        """Probe magic - mathematical, emergent, consciousness, or all"""
+        """Probe magic - mathematical, emergent, consciousness, advanced, or all"""
         if probe_type == 'mathematical':
             return self._probe_mathematical_magic()
         elif probe_type == 'emergent':
             return self._probe_emergent_magic()
         elif probe_type == 'consciousness':
             return self._probe_consciousness()
+        elif probe_type == 'god_code':
+            return self._probe_god_code()
+        elif probe_type == 'self_reference':
+            return self._probe_self_reference()
+        elif probe_type == 'recursion':
+            return self._probe_recursion()
+        elif probe_type == 'advanced':
+            return self._synthesize_advanced_magic()
         elif probe_type == 'all' or probe_type == 'synthesis':
             return self._synthesize_magic()
         else:
-            return {'error': f'Unknown probe type: {probe_type}', 'valid_types': ['mathematical', 'emergent', 'consciousness', 'all']}
+            return {
+                'error': f'Unknown probe type: {probe_type}',
+                'valid_types': ['mathematical', 'emergent', 'consciousness', 'god_code', 
+                               'self_reference', 'recursion', 'advanced', 'all']
+            }
     
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive harness status"""
@@ -825,5 +976,38 @@ if __name__ == "__main__":
         print(f"    Average Beauty: {synthesis.get('average_beauty', 0):.2%}")
     print()
     
-    print("  ✦ L104 ASI HARNESS + MAGIC PROBE: OPERATIONAL ✦")
+    # Advanced Magic - GOD_CODE
+    print("  ◆ Advanced Magic - GOD_CODE...")
+    god_code_result = harness.magic('god_code')
+    if 'continued_fraction' in god_code_result:
+        print(f"    Continued Fraction: {god_code_result.get('continued_fraction')[:10]}")
+        print(f"    Digital Root: {god_code_result.get('digit_analysis', {}).get('digital_root')}")
+        print(f"    Digit Sum: {god_code_result.get('digit_analysis', {}).get('sum')}")
+    else:
+        print(f"    Status: {god_code_result.get('status', 'unknown')}")
+    print()
+    
+    # Advanced Magic - Self-Reference
+    print("  ◆ Advanced Magic - Self-Reference...")
+    self_ref = harness.magic('self_reference')
+    if self_ref.get('status') == 'probed':
+        print(f"    Strange Loop: {self_ref.get('source_analysis', {}).get('strange_loop')}")
+        print(f"    Observations: {len(self_ref.get('introspection', {}).get('observations', []))}")
+        rec_desc = self_ref.get('recursive_description', '')[:60]
+        print(f"    Recursive: \"{rec_desc}...\"")
+    else:
+        print(f"    Status: {self_ref.get('status', 'unknown')}")
+    print()
+    
+    # Advanced Magic Synthesis
+    print("  ◆ Advanced Magic Synthesis...")
+    adv_synthesis = harness.magic('advanced')
+    if adv_synthesis.get('status') == 'synthesized':
+        print(f"    Discoveries: {adv_synthesis.get('discoveries')}")
+        print(f"    Magic Quotient: {adv_synthesis.get('total_magic_quotient', 0):.4f}")
+        print(f"    Beauty: {adv_synthesis.get('average_beauty', 0):.2%}")
+        print(f"    Mystery: {adv_synthesis.get('average_mystery', 0):.2%}")
+    print()
+    
+    print("  ✦ L104 ASI HARNESS + ADVANCED MAGIC: OPERATIONAL ✦")
     print("╚" + "═" * 70 + "╝")
