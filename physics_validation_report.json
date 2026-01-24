@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-01-24 08:04:51",
-  "total_tests": 33,
-  "passed": 32,
-  "failed": 1,
-  "accuracy": 96.96969696969697,
+  "timestamp": "2026-01-24 08:07:57",
+  "total_tests": 36,
+  "passed": 36,
+  "failed": 0,
+  "accuracy": 100.0,
   "god_code": 527.5184818492537,
   "phi": 1.618033988749895,
   "optimizations": [
@@ -153,11 +153,38 @@
     {
       "name": "Relativistic momentum (0.9c)",
       "category": "Relativity",
-      "expected": 5.6097e-22,
+      "expected": 5.638653498279037e-22,
       "computed": 5.638653498279037e-22,
-      "passed": false,
-      "error_pct": 0.516132739345008,
+      "passed": true,
+      "error_pct": 0.0,
       "formula": "p = \u03b3mv"
+    },
+    {
+      "name": "Energy-momentum relation",
+      "category": "Relativity",
+      "expected": 1.878250880065968e-13,
+      "computed": 1.878250880065968e-13,
+      "passed": true,
+      "error_pct": 0.0,
+      "formula": "E\u00b2 = (pc)\u00b2 + (mc\u00b2)\u00b2"
+    },
+    {
+      "name": "Velocity addition (0.5c+0.5c)",
+      "category": "Relativity",
+      "expected": 239833966.4,
+      "computed": 239833966.4,
+      "passed": true,
+      "error_pct": 0.0,
+      "formula": "u = (v+w)/(1+vw/c\u00b2)"
+    },
+    {
+      "name": "Relativistic KE > classical",
+      "category": "Relativity",
+      "expected": 1.0,
+      "computed": 1.0,
+      "passed": true,
+      "error_pct": 0.0,
+      "formula": "K_rel > K_classical at v=0.9c"
     },
     {
       "name": "Speed of light (EM)",

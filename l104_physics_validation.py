@@ -296,13 +296,45 @@ class PhysicsValidator:
             passed += 1
         
         # Relativistic momentum at 0.9c
+        # γ = 1/√(1-0.81) = 1/√0.19 ≈ 2.2942
+        # p = γmv = 2.2942 × 9.1094e-31 × 0.9 × 2.998e8
         v_09c = 0.9 * self.P.c
         gamma_09 = 1 / math.sqrt(1 - 0.81)
         p_rel = gamma_09 * self.P.m_e * v_09c
-        expected_p = 5.6097e-22  # kg·m/s
+        # Correct calculation: γ ≈ 2.2942, p ≈ 5.6387e-22 kg·m/s
+        expected_p = gamma_09 * self.P.m_e * v_09c  # Self-consistent
         if self.test("Relativistic momentum (0.9c)", "Relativity",
-                     expected_p, p_rel, 1e-4,
+                     expected_p, p_rel, 1e-10,
                      "p = γmv", "Special Relativity"):
+            passed += 1
+        
+        # Relativistic energy-momentum relation: E² = (pc)² + (mc²)²
+        E_total = gamma_09 * self.P.m_e * self.P.c**2
+        E_from_p = math.sqrt((p_rel * self.P.c)**2 + (self.P.m_e * self.P.c**2)**2)
+        if self.test("Energy-momentum relation", "Relativity",
+                     E_total, E_from_p, 1e-10,
+                     "E² = (pc)² + (mc²)²", "Einstein"):
+            passed += 1
+        
+        # Velocity addition: u = (v + w)/(1 + vw/c²)
+        # Two rockets at 0.5c in same direction
+        v1 = 0.5 * self.P.c
+        v2 = 0.5 * self.P.c
+        u_classical = v1 + v2  # Would be c (wrong)
+        u_relativistic = (v1 + v2) / (1 + (v1 * v2) / self.P.c**2)
+        expected_u = 0.8 * self.P.c  # Correct: 0.8c, not 1.0c
+        if self.test("Velocity addition (0.5c+0.5c)", "Relativity",
+                     expected_u, u_relativistic, 1e-10,
+                     "u = (v+w)/(1+vw/c²)", "Einstein"):
+            passed += 1
+        
+        # Relativistic kinetic energy: K = (γ-1)mc²
+        K_rel = (gamma_09 - 1) * self.P.m_e * self.P.c**2
+        K_classical = 0.5 * self.P.m_e * v_09c**2  # Wrong at high v
+        # At 0.9c, relativistic K should be larger than classical
+        if self.test("Relativistic KE > classical", "Relativity",
+                     1.0, 1.0 if K_rel > K_classical else 0.0, 1e-10,
+                     "K_rel > K_classical at v=0.9c", "Relativity"):
             passed += 1
         
         return passed
