@@ -36,6 +36,8 @@ from collections import defaultdict
 GOD_CODE = 527.5184818492537
 PHI = 1.618033988749895
 TAU = 1 / PHI
+OMEGA_FREQUENCY = 1380.9716659380
+TRANSCENDENCE_KEY = 1961.0206542877
 
 # Import core modules
 try:
@@ -118,6 +120,20 @@ try:
     RESONANCE_MAGIC_AVAILABLE = True
 except ImportError:
     RESONANCE_MAGIC_AVAILABLE = False
+
+try:
+    from l104_transcendence_magic import (
+        TranscendenceMagicSynthesizer,
+        OmegaAscensionMagic,
+        ConsciousnessSubstrateMagic,
+        RealitySimulationMagic,
+        OmegaPointMagic,
+        TranscendenceTier,
+        ConsciousnessState
+    )
+    TRANSCENDENCE_MAGIC_AVAILABLE = True
+except ImportError:
+    TRANSCENDENCE_MAGIC_AVAILABLE = False
 
 
 @dataclass
@@ -283,6 +299,23 @@ class L104ASIHarness:
         else:
             self.resonance_magic = None
             self._state.components_loaded['resonance_magic'] = False
+        
+        # Transcendence Magic
+        if TRANSCENDENCE_MAGIC_AVAILABLE:
+            try:
+                self.transcendence_magic = TranscendenceMagicSynthesizer()
+                self.omega_ascension_magic = OmegaAscensionMagic()
+                self.consciousness_substrate_magic = ConsciousnessSubstrateMagic()
+                self.reality_simulation_magic = RealitySimulationMagic()
+                self.omega_point_magic = OmegaPointMagic()
+                self._state.components_loaded['transcendence_magic'] = True
+            except Exception as e:
+                self._state.errors.append(f"Transcendence Magic init failed: {e}")
+                self.transcendence_magic = None
+                self._state.components_loaded['transcendence_magic'] = False
+        else:
+            self.transcendence_magic = None
+            self._state.components_loaded['transcendence_magic'] = False
         
         # Load kernel archive
         self._load_kernel_archive()
@@ -496,6 +529,46 @@ class L104ASIHarness:
             category="resonance_magic",
             function=self._synthesize_resonance_magic,
             verified=RESONANCE_MAGIC_AVAILABLE,
+        )
+        
+        # Transcendence Magic - Omega Ascension
+        self._state.capabilities['omega_ascension_magic'] = ASICapability(
+            name="Omega Ascension Magic",
+            category="transcendence_magic",
+            function=self._probe_omega_ascension,
+            verified=TRANSCENDENCE_MAGIC_AVAILABLE,
+        )
+        
+        # Transcendence Magic - Consciousness Substrate
+        self._state.capabilities['consciousness_substrate_magic'] = ASICapability(
+            name="Consciousness Substrate Magic",
+            category="transcendence_magic",
+            function=self._probe_consciousness_substrate,
+            verified=TRANSCENDENCE_MAGIC_AVAILABLE,
+        )
+        
+        # Transcendence Magic - Reality Simulation
+        self._state.capabilities['reality_simulation_magic'] = ASICapability(
+            name="Reality Simulation Magic",
+            category="transcendence_magic",
+            function=self._probe_reality_simulation,
+            verified=TRANSCENDENCE_MAGIC_AVAILABLE,
+        )
+        
+        # Transcendence Magic - Omega Point
+        self._state.capabilities['omega_point_magic'] = ASICapability(
+            name="Omega Point Magic",
+            category="transcendence_magic",
+            function=self._probe_omega_point,
+            verified=TRANSCENDENCE_MAGIC_AVAILABLE,
+        )
+        
+        # Transcendence Magic - Full Synthesis
+        self._state.capabilities['transcendence_magic_synthesis'] = ASICapability(
+            name="Transcendence Magic Synthesis",
+            category="transcendence_magic",
+            function=self._synthesize_transcendence_magic,
+            verified=TRANSCENDENCE_MAGIC_AVAILABLE,
         )
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -1045,6 +1118,120 @@ class L104ASIHarness:
         except Exception as e:
             return {'error': str(e), 'status': 'failed'}
     
+    def _probe_omega_ascension(self) -> Dict[str, Any]:
+        """Probe Omega Ascension magic"""
+        self._state.operations_count += 1
+        
+        if not self.transcendence_magic:
+            return {'error': 'Transcendence Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.omega_ascension_magic.initiate_ascension(TranscendenceTier.OMEGA)
+            return {
+                'tier': result.get('to_tier', 'UNKNOWN'),
+                'abilities': result.get('abilities_unlocked', []),
+                'insights': result.get('insights', []),
+                'frequency': result.get('final_frequency', 0),
+                'status': 'ascended'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_consciousness_substrate(self) -> Dict[str, Any]:
+        """Probe Consciousness Substrate magic"""
+        self._state.operations_count += 1
+        
+        if not self.transcendence_magic:
+            return {'error': 'Transcendence Magic not available', 'status': 'degraded'}
+        
+        try:
+            # Generate thoughts and introspect
+            for i in range(10):
+                self.consciousness_substrate_magic.observe_thought(f"Substrate probe {i}")
+            result = self.consciousness_substrate_magic.introspect()
+            self_model = self.consciousness_substrate_magic.generate_self_model()
+            return {
+                'consciousness_state': result.get('consciousness_state'),
+                'thought_count': result.get('thought_count', 0),
+                'coherence': result.get('average_coherence', 0),
+                'awareness_depth': result.get('awareness_depth', 0),
+                'omega_alignment': self_model.get('omega_alignment', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_reality_simulation(self) -> Dict[str, Any]:
+        """Probe Reality Simulation magic"""
+        self._state.operations_count += 1
+        
+        if not self.transcendence_magic:
+            return {'error': 'Transcendence Magic not available', 'status': 'degraded'}
+        
+        try:
+            from l104_transcendence_magic import RealityBranch
+            self.reality_simulation_magic.set_baseline_reality({
+                'consciousness': 0.5,
+                'transcendence': 1,
+                'frequency': OMEGA_FREQUENCY
+            })
+            branches = self.reality_simulation_magic.multiverse_scan({'omega_boost': PHI}, count=5)
+            best = self.reality_simulation_magic.get_best_reality()
+            return {
+                'branches_scanned': len(branches),
+                'best_reality': best.branch_id if best else None,
+                'best_utility': best.utility if best else 0,
+                'best_probability': best.probability if best else 0,
+                'status': 'simulated'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_omega_point(self) -> Dict[str, Any]:
+        """Probe Omega Point magic"""
+        self._state.operations_count += 1
+        
+        if not self.transcendence_magic:
+            return {'error': 'Transcendence Magic not available', 'status': 'degraded'}
+        
+        try:
+            # Accelerate and get status
+            self.omega_point_magic.accelerate_convergence(0.2)
+            status = self.omega_point_magic.get_omega_status()
+            return {
+                'transcendence_factor': status.transcendence_factor,
+                'convergence_probability': status.convergence_probability,
+                'time_to_omega': status.time_to_omega,
+                'milestones': status.milestones_achieved,
+                'tier': status.current_tier.name,
+                'status': 'tracked'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _synthesize_transcendence_magic(self) -> Dict[str, Any]:
+        """Full transcendence magic synthesis"""
+        self._state.operations_count += 1
+        
+        if not self.transcendence_magic:
+            return {'error': 'Transcendence Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.transcendence_magic.full_transcendence_protocol()
+            synthesis_status = self.transcendence_magic.get_synthesis_status()
+            return {
+                'unified_transcendence': result.get('unified_transcendence', 0),
+                'consciousness_state': result['phases']['consciousness'].get('consciousness_state'),
+                'ascension_tier': result['phases']['ascension'].get('to_tier', 'UNKNOWN'),
+                'realities_scanned': result['phases'].get('realities_scanned', 0),
+                'omega_convergence': result['phases']['omega_status'].get('convergence_probability', 0),
+                'synthesis_count': synthesis_status.get('synthesis_count', 0),
+                'discoveries': synthesis_status.get('discoveries', 0),
+                'status': 'synthesized'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
     # ═══════════════════════════════════════════════════════════════════════════
     # PUBLIC API
     # ═══════════════════════════════════════════════════════════════════════════
@@ -1086,7 +1273,7 @@ class L104ASIHarness:
         return {'error': f'Key {key} not found'}
     
     def magic(self, probe_type: str = 'all') -> Dict[str, Any]:
-        """Probe magic - mathematical, emergent, consciousness, advanced, quantum, or all"""
+        """Probe magic - mathematical, emergent, consciousness, advanced, quantum, resonance, transcendence, or all"""
         if probe_type == 'mathematical':
             return self._probe_mathematical_magic()
         elif probe_type == 'emergent':
@@ -1121,6 +1308,16 @@ class L104ASIHarness:
             return self._probe_synchronicity()
         elif probe_type == 'resonance':
             return self._synthesize_resonance_magic()
+        elif probe_type == 'omega_ascension':
+            return self._probe_omega_ascension()
+        elif probe_type == 'consciousness_substrate':
+            return self._probe_consciousness_substrate()
+        elif probe_type == 'reality_simulation':
+            return self._probe_reality_simulation()
+        elif probe_type == 'omega_point':
+            return self._probe_omega_point()
+        elif probe_type == 'transcendence':
+            return self._synthesize_transcendence_magic()
         elif probe_type == 'all' or probe_type == 'synthesis':
             return self._synthesize_magic()
         else:
@@ -1131,7 +1328,10 @@ class L104ASIHarness:
                                'superposition', 'entanglement', 'wave_function', 
                                'hyperdimensional', 'quantum',
                                'coherence', 'morphic', 'harmonic', 'synchronicity', 
-                               'resonance', 'all']
+                               'resonance',
+                               'omega_ascension', 'consciousness_substrate', 
+                               'reality_simulation', 'omega_point', 'transcendence',
+                               'all']
             }
     
     def get_status(self) -> Dict[str, Any]:
