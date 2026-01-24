@@ -1,0 +1,34 @@
+{
+  "math_constants": {
+    "iterations": 100000,
+    "time": 0.03157973289489746,
+    "ops_per_sec": 3166587.8977766032
+  },
+  "memory_ops": {
+    "objects": 50000,
+    "time": 0.025098562240600586,
+    "objects_per_sec": 1992145.9851241081
+  },
+  "string_ops": {
+    "iterations": 1000,
+    "time": 0.07458019256591797,
+    "ops_per_sec": 13408.385867549838
+  },
+  "json_ops": {
+    "iterations": 10000,
+    "time": 0.8508384227752686,
+    "ops_per_sec": 11753.112850007356
+  },
+  "numerical": {
+    "matrix_size": 100,
+    "time": 0.15181374549865723,
+    "mflops": 6.587018828336891
+  },
+  "file_io": {
+    "files": 100,
+    "time": 0.01699066162109375,
+    "files_per_sec": 5885.58599012124
+  },
+  "overall_score": 543.9486971434432,
+  "timestamp": "2026-01-24T05:13:07.055295"
+}

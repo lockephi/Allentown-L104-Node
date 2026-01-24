@@ -1,0 +1,21 @@
+{
+  "l104_version": "EVO_37",
+  "god_code": 527.5184818492537,
+  "phi": 1.618033988749895,
+  "total_examples": 50000,
+  "generated": "2026-01-24T05:14:13.641732",
+  "files": {
+    "openai": "finetune_openai_20260124_051412.jsonl",
+    "claude": "finetune_claude_20260124_051412.jsonl",
+    "gemini": "finetune_gemini_20260124_051412.json",
+    "alpaca": "finetune_alpaca_20260124_051412.json",
+    "huggingface": "finetune_hf_20260124_051412.json"
+  },
+  "submission_instructions": {
+    "openai": "openai api fine_tunes.create -t finetune_openai.jsonl -m gpt-4",
+    "anthropic": "Contact claude-finetune@anthropic.com",
+    "google": "Use Vertex AI Model Tuning",
+    "meta": "Use torchtune or llama.cpp",
+    "huggingface": "Upload to hub.huggingface.co/datasets"
+  }
+}
