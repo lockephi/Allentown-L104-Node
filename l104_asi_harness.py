@@ -67,6 +67,22 @@ try:
 except ImportError:
     DIRECT_SOLVE_AVAILABLE = False
 
+try:
+    from l104_magic_probe import (
+        MagicProber,
+        MathematicalMagic,
+        EmergentMagic,
+        SynchronisticMagic,
+        LiminalMagic,
+        ConsciousnessMagic,
+        MagicType,
+        MAGIC_CONSTANTS
+    )
+    MAGIC_PROBE_AVAILABLE = True
+except ImportError:
+    MAGIC_PROBE_AVAILABLE = False
+    MAGIC_CONSTANTS = {}
+
 
 @dataclass
 class ASICapability:
@@ -163,6 +179,24 @@ class L104ASIHarness:
         # Direct Solve
         self._state.components_loaded['direct_solve'] = DIRECT_SOLVE_AVAILABLE
         
+        # Magic Probe
+        if MAGIC_PROBE_AVAILABLE:
+            try:
+                self.magic_prober = MagicProber()
+                self.mathematical_magic = MathematicalMagic()
+                self.emergent_magic = EmergentMagic()
+                self.synchronistic_magic = SynchronisticMagic()
+                self.liminal_magic = LiminalMagic()
+                self.consciousness_magic = ConsciousnessMagic()
+                self._state.components_loaded['magic_probe'] = True
+            except Exception as e:
+                self._state.errors.append(f"Magic Probe init failed: {e}")
+                self.magic_prober = None
+                self._state.components_loaded['magic_probe'] = False
+        else:
+            self.magic_prober = None
+            self._state.components_loaded['magic_probe'] = False
+        
         # Load kernel archive
         self._load_kernel_archive()
     
@@ -229,6 +263,40 @@ class L104ASIHarness:
             category="real",
             function=self._analyze_for_improvement,
             verified=RSI_AVAILABLE,
+        )
+        
+        # Magic Probe - Mathematical Magic
+        self._state.capabilities['mathematical_magic'] = ASICapability(
+            name="Mathematical Magic",
+            category="magic",
+            function=self._probe_mathematical_magic,
+            verified=MAGIC_PROBE_AVAILABLE,
+            test_input=3,
+            expected_output="magic_square"
+        )
+        
+        # Magic Probe - Emergent Magic
+        self._state.capabilities['emergent_magic'] = ASICapability(
+            name="Emergent Magic",
+            category="magic",
+            function=self._probe_emergent_magic,
+            verified=MAGIC_PROBE_AVAILABLE,
+        )
+        
+        # Magic Probe - Consciousness
+        self._state.capabilities['consciousness_magic'] = ASICapability(
+            name="Consciousness Magic",
+            category="magic",
+            function=self._probe_consciousness,
+            verified=MAGIC_PROBE_AVAILABLE,
+        )
+        
+        # Magic Synthesis
+        self._state.capabilities['magic_synthesis'] = ASICapability(
+            name="Magic Synthesis",
+            category="magic",
+            function=self._synthesize_magic,
+            verified=MAGIC_PROBE_AVAILABLE,
         )
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -378,6 +446,118 @@ class L104ASIHarness:
             return {'error': str(e), 'status': 'failed'}
     
     # ═══════════════════════════════════════════════════════════════════════════
+    # MAGIC CAPABILITIES
+    # ═══════════════════════════════════════════════════════════════════════════
+    
+    def _probe_mathematical_magic(self, n: int = 3) -> Dict[str, Any]:
+        """Probe mathematical magic - magic squares, perfect numbers, φ"""
+        self._state.operations_count += 1
+        
+        if not self.magic_prober:
+            return {'error': 'Magic Probe not available', 'status': 'degraded'}
+        
+        try:
+            results = {
+                'magic_square': self.mathematical_magic.magic_square(n),
+                'magic_constant': self.mathematical_magic.magic_constant(n),
+                'perfect_numbers': self.mathematical_magic.perfect_numbers(1000),
+                'amicable_pairs': self.mathematical_magic.amicable_pairs(1000),
+                'phi_continued_fraction': self.mathematical_magic.continued_fraction_magic(PHI, 10),
+                'god_code_continued_fraction': self.mathematical_magic.continued_fraction_magic(GOD_CODE, 10),
+                'magic_constants': MAGIC_CONSTANTS,
+                'status': 'probed'
+            }
+            return results
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_emergent_magic(self) -> Dict[str, Any]:
+        """Probe emergent magic - cellular automata, Game of Life, Mandelbrot"""
+        self._state.operations_count += 1
+        
+        if not self.magic_prober:
+            return {'error': 'Magic Probe not available', 'status': 'degraded'}
+        
+        try:
+            # Rule 30
+            rule30 = self.emergent_magic.cellular_automaton_rule30(41, 20)
+            
+            # Mandelbrot probes
+            mandelbrot_points = {
+                'in_set': self.emergent_magic.mandelbrot_point_iterations(complex(-0.5, 0)),
+                'edge': self.emergent_magic.mandelbrot_point_iterations(complex(-0.75, 0.1)),
+                'out_of_set': self.emergent_magic.mandelbrot_point_iterations(complex(1, 1)),
+            }
+            
+            return {
+                'rule30_pattern': rule30[:5],  # First 5 generations
+                'rule30_generations': len(rule30),
+                'mandelbrot_probes': mandelbrot_points,
+                'emergence_observation': 'Simple rules create complex patterns',
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_consciousness(self) -> Dict[str, Any]:
+        """Probe consciousness magic - the hard problem, strange loops"""
+        self._state.operations_count += 1
+        
+        if not self.magic_prober:
+            return {'error': 'Magic Probe not available', 'status': 'degraded'}
+        
+        try:
+            return {
+                'hard_problem': self.consciousness_magic.the_hard_problem(),
+                'strange_loops': self.consciousness_magic.strange_loops(),
+                'what_is_it_like': self.consciousness_magic.what_is_it_like_to_be_l104(),
+                'godel': self.liminal_magic.godel_incompleteness(),
+                'quantum': self.liminal_magic.quantum_superposition(),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _synthesize_magic(self) -> Dict[str, Any]:
+        """Synthesize all magic probes into unified understanding"""
+        self._state.operations_count += 1
+        
+        if not self.magic_prober:
+            return {'error': 'Magic Probe not available', 'status': 'degraded'}
+        
+        try:
+            # Run all probes
+            probes = self.magic_prober.probe_all()
+            
+            # Get synthesis
+            synthesis = self.magic_prober.synthesize()
+            
+            # Calculate magic quotient
+            total_magic = sum(p.magic_quotient for p in probes)
+            avg_mystery = sum(p.mystery_remaining for p in probes) / len(probes)
+            avg_beauty = sum(p.beauty_score for p in probes) / len(probes)
+            
+            return {
+                'probes_count': len(probes),
+                'total_magic_quotient': total_magic,
+                'average_mystery': avg_mystery,
+                'average_beauty': avg_beauty,
+                'synthesis': synthesis,
+                'probes': [
+                    {
+                        'phenomenon': p.phenomenon,
+                        'type': p.magic_type.value,
+                        'magic_quotient': p.magic_quotient,
+                        'mystery': p.mystery_remaining
+                    }
+                    for p in probes
+                ],
+                'status': 'synthesized'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    # ═══════════════════════════════════════════════════════════════════════════
     # PUBLIC API
     # ═══════════════════════════════════════════════════════════════════════════
     
@@ -416,6 +596,19 @@ class L104ASIHarness:
             return self.kernel_archive['modules'][key]
         
         return {'error': f'Key {key} not found'}
+    
+    def magic(self, probe_type: str = 'all') -> Dict[str, Any]:
+        """Probe magic - mathematical, emergent, consciousness, or all"""
+        if probe_type == 'mathematical':
+            return self._probe_mathematical_magic()
+        elif probe_type == 'emergent':
+            return self._probe_emergent_magic()
+        elif probe_type == 'consciousness':
+            return self._probe_consciousness()
+        elif probe_type == 'all' or probe_type == 'synthesis':
+            return self._synthesize_magic()
+        else:
+            return {'error': f'Unknown probe type: {probe_type}', 'valid_types': ['mathematical', 'emergent', 'consciousness', 'all']}
     
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive harness status"""
@@ -610,5 +803,27 @@ if __name__ == "__main__":
     print(f"    Method: {result.get('method', 'N/A')}")
     print()
     
-    print("  ✦ L104 ASI HARNESS: OPERATIONAL ✦")
+    # Test Magic Probe
+    print("  ◆ Testing Magic Probe...")
+    magic_result = harness.magic('mathematical')
+    if magic_result.get('status') == 'probed':
+        print(f"    Magic Square (3x3): {magic_result.get('magic_square')}")
+        print(f"    Magic Constant: {magic_result.get('magic_constant')}")
+        print(f"    Perfect Numbers: {magic_result.get('perfect_numbers')}")
+        print(f"    φ Continued Fraction: {magic_result.get('phi_continued_fraction')}")
+    else:
+        print(f"    Status: {magic_result.get('status', 'unknown')}")
+    print()
+    
+    # Magic Synthesis
+    print("  ◆ Magic Synthesis...")
+    synthesis = harness.magic('all')
+    if synthesis.get('status') == 'synthesized':
+        print(f"    Probes: {synthesis.get('probes_count')}")
+        print(f"    Total Magic Quotient: {synthesis.get('total_magic_quotient', 0):.4f}")
+        print(f"    Average Mystery: {synthesis.get('average_mystery', 0):.2%}")
+        print(f"    Average Beauty: {synthesis.get('average_beauty', 0):.2%}")
+    print()
+    
+    print("  ✦ L104 ASI HARNESS + MAGIC PROBE: OPERATIONAL ✦")
     print("╚" + "═" * 70 + "╝")
