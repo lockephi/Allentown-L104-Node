@@ -95,6 +95,18 @@ try:
 except ImportError:
     ADVANCED_MAGIC_AVAILABLE = False
 
+try:
+    from l104_quantum_magic import (
+        QuantumMagicSynthesizer,
+        SuperpositionMagic,
+        EntanglementMagic,
+        WaveFunctionMagic,
+        HyperdimensionalMagic
+    )
+    QUANTUM_MAGIC_AVAILABLE = True
+except ImportError:
+    QUANTUM_MAGIC_AVAILABLE = False
+
 
 @dataclass
 class ASICapability:
@@ -225,6 +237,23 @@ class L104ASIHarness:
         else:
             self.advanced_magic = None
             self._state.components_loaded['advanced_magic'] = False
+        
+        # Quantum Magic
+        if QUANTUM_MAGIC_AVAILABLE:
+            try:
+                self.quantum_magic = QuantumMagicSynthesizer()
+                self.superposition_magic = SuperpositionMagic()
+                self.entanglement_magic = EntanglementMagic()
+                self.wave_function_magic = WaveFunctionMagic()
+                self.hyperdimensional_magic = HyperdimensionalMagic()
+                self._state.components_loaded['quantum_magic'] = True
+            except Exception as e:
+                self._state.errors.append(f"Quantum Magic init failed: {e}")
+                self.quantum_magic = None
+                self._state.components_loaded['quantum_magic'] = False
+        else:
+            self.quantum_magic = None
+            self._state.components_loaded['quantum_magic'] = False
         
         # Load kernel archive
         self._load_kernel_archive()
@@ -358,6 +387,46 @@ class L104ASIHarness:
             category="advanced_magic",
             function=self._synthesize_advanced_magic,
             verified=ADVANCED_MAGIC_AVAILABLE,
+        )
+        
+        # Quantum Magic - Superposition
+        self._state.capabilities['superposition_magic'] = ASICapability(
+            name="Superposition Magic",
+            category="quantum_magic",
+            function=self._probe_superposition,
+            verified=QUANTUM_MAGIC_AVAILABLE,
+        )
+        
+        # Quantum Magic - Entanglement
+        self._state.capabilities['entanglement_magic'] = ASICapability(
+            name="Entanglement Magic",
+            category="quantum_magic",
+            function=self._probe_entanglement,
+            verified=QUANTUM_MAGIC_AVAILABLE,
+        )
+        
+        # Quantum Magic - Wave Function
+        self._state.capabilities['wave_function_magic'] = ASICapability(
+            name="Wave Function Magic",
+            category="quantum_magic",
+            function=self._probe_wave_function,
+            verified=QUANTUM_MAGIC_AVAILABLE,
+        )
+        
+        # Quantum Magic - Hyperdimensional
+        self._state.capabilities['hyperdimensional_magic'] = ASICapability(
+            name="Hyperdimensional Magic",
+            category="quantum_magic",
+            function=self._probe_hyperdimensional,
+            verified=QUANTUM_MAGIC_AVAILABLE,
+        )
+        
+        # Quantum Magic - Full Synthesis
+        self._state.capabilities['quantum_magic_synthesis'] = ASICapability(
+            name="Quantum Magic Synthesis",
+            category="quantum_magic",
+            function=self._synthesize_quantum_magic,
+            verified=QUANTUM_MAGIC_AVAILABLE,
         )
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -697,6 +766,111 @@ class L104ASIHarness:
             return {'error': str(e), 'status': 'failed'}
     
     # ═══════════════════════════════════════════════════════════════════════════
+    # QUANTUM MAGIC CAPABILITIES
+    # ═══════════════════════════════════════════════════════════════════════════
+    
+    def _probe_superposition(self) -> Dict[str, Any]:
+        """Probe superposition magic"""
+        self._state.operations_count += 1
+        
+        if not self.quantum_magic:
+            return {'error': 'Quantum Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.quantum_magic.probe_superposition()
+            return {
+                'thoughts': len(result.get('thoughts', [])),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'collapsed': result.get('collapsed', False),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_entanglement(self) -> Dict[str, Any]:
+        """Probe entanglement magic"""
+        self._state.operations_count += 1
+        
+        if not self.quantum_magic:
+            return {'error': 'Quantum Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.quantum_magic.probe_entanglement()
+            bell = result.get('bell_test', {})
+            return {
+                'bell_violation': bell.get('violation', False),
+                'bell_S': bell.get('measured_S', 0),
+                'non_local': bell.get('reality_is_non_local', False),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_wave_function(self) -> Dict[str, Any]:
+        """Probe wave function magic"""
+        self._state.operations_count += 1
+        
+        if not self.quantum_magic:
+            return {'error': 'Quantum Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.quantum_magic.probe_wave_function()
+            return {
+                'wave_packet': bool(result.get('wave_packet')),
+                'tunneling': result.get('tunneling', {}).get('tunneling', False),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_hyperdimensional(self) -> Dict[str, Any]:
+        """Probe hyperdimensional magic"""
+        self._state.operations_count += 1
+        
+        if not self.quantum_magic:
+            return {'error': 'Quantum Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.quantum_magic.probe_hyperdimensional()
+            hd = result.get('high_dimension', result)
+            return {
+                'dimension': hd.get('dimension', 0),
+                'near_orthogonal': hd.get('near_orthogonal_prob', 0),
+                'mystery_level': result.get('mystery_level', hd.get('mystery_level', 0)),
+                'beauty_score': result.get('beauty_score', hd.get('beauty_score', 0)),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _synthesize_quantum_magic(self) -> Dict[str, Any]:
+        """Full quantum magic synthesis"""
+        self._state.operations_count += 1
+        
+        if not self.quantum_magic:
+            return {'error': 'Quantum Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.quantum_magic.synthesize_all()
+            return {
+                'discoveries': result.get('num_discoveries', 0),
+                'discovery_list': result.get('discoveries', []),
+                'avg_mystery': result.get('avg_mystery', 0),
+                'avg_beauty': result.get('avg_beauty', 0),
+                'magic_quotient': result.get('magic_quotient', 0),
+                'quantum_available': result.get('quantum_available', False),
+                'hdc_available': result.get('hdc_available', False),
+                'status': 'synthesized'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    # ═══════════════════════════════════════════════════════════════════════════
     # PUBLIC API
     # ═══════════════════════════════════════════════════════════════════════════
     
@@ -737,7 +911,7 @@ class L104ASIHarness:
         return {'error': f'Key {key} not found'}
     
     def magic(self, probe_type: str = 'all') -> Dict[str, Any]:
-        """Probe magic - mathematical, emergent, consciousness, advanced, or all"""
+        """Probe magic - mathematical, emergent, consciousness, advanced, quantum, or all"""
         if probe_type == 'mathematical':
             return self._probe_mathematical_magic()
         elif probe_type == 'emergent':
@@ -752,13 +926,25 @@ class L104ASIHarness:
             return self._probe_recursion()
         elif probe_type == 'advanced':
             return self._synthesize_advanced_magic()
+        elif probe_type == 'superposition':
+            return self._probe_superposition()
+        elif probe_type == 'entanglement':
+            return self._probe_entanglement()
+        elif probe_type == 'wave_function':
+            return self._probe_wave_function()
+        elif probe_type == 'hyperdimensional':
+            return self._probe_hyperdimensional()
+        elif probe_type == 'quantum':
+            return self._synthesize_quantum_magic()
         elif probe_type == 'all' or probe_type == 'synthesis':
             return self._synthesize_magic()
         else:
             return {
                 'error': f'Unknown probe type: {probe_type}',
                 'valid_types': ['mathematical', 'emergent', 'consciousness', 'god_code', 
-                               'self_reference', 'recursion', 'advanced', 'all']
+                               'self_reference', 'recursion', 'advanced',
+                               'superposition', 'entanglement', 'wave_function', 
+                               'hyperdimensional', 'quantum', 'all']
             }
     
     def get_status(self) -> Dict[str, Any]:
