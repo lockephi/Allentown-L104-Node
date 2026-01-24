@@ -1,0 +1,150 @@
+{
+  "passed": 18,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "GOD_CODE arithmetic",
+      "passed": true,
+      "iterations": 10000,
+      "time": 0.0027186890001758,
+      "ops_per_sec": 3678243.447247318,
+      "errors": 0
+    },
+    {
+      "name": "PHI power series",
+      "passed": true,
+      "iterations": 10000,
+      "time": 0.0015000969997345237,
+      "ops_per_sec": 6666235.584612014,
+      "errors": 0
+    },
+    {
+      "name": "Complex number ops",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.00227991099927749,
+      "ops_per_sec": 2193068.0634395434,
+      "errors": 0
+    },
+    {
+      "name": "Fibonacci (cached)",
+      "passed": true,
+      "iterations": 10000,
+      "time": 0.0017721740005072206,
+      "ops_per_sec": 5642786.767629963,
+      "errors": 0
+    },
+    {
+      "name": "PHI recursive",
+      "passed": true,
+      "iterations": 1000,
+      "time": 0.0006890250006108545,
+      "ops_per_sec": 1451326.1479822225,
+      "errors": 0
+    },
+    {
+      "name": "Supertasks",
+      "passed": true,
+      "iterations": 500,
+      "time": 0.002901149000535952,
+      "ops_per_sec": 172345.50859250285,
+      "errors": 0
+    },
+    {
+      "name": "Halting oracle",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.011356374001479708,
+      "ops_per_sec": 440281.3784882844,
+      "errors": 0
+    },
+    {
+      "name": "Kolmogorov complexity",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.005571317999056191,
+      "ops_per_sec": 897453.7085922981,
+      "errors": 0
+    },
+    {
+      "name": "Qubit operations",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.013144508000550559,
+      "ops_per_sec": 380387.0026775118,
+      "errors": 0
+    },
+    {
+      "name": "Quantum random",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.06502240500049083,
+      "ops_per_sec": 76896.57126589298,
+      "errors": 0
+    },
+    {
+      "name": "Logistic map",
+      "passed": true,
+      "iterations": 10000,
+      "time": 0.006587853000382893,
+      "ops_per_sec": 1517945.2242511772,
+      "errors": 0
+    },
+    {
+      "name": "Lyapunov exponent",
+      "passed": true,
+      "iterations": 500,
+      "time": 0.011394936000215239,
+      "ops_per_sec": 43879.140698162366,
+      "errors": 0
+    },
+    {
+      "name": "MLP forward pass",
+      "passed": true,
+      "iterations": 1000,
+      "time": 0.6088478440015024,
+      "ops_per_sec": 1642.446482897511,
+      "errors": 0
+    },
+    {
+      "name": "Transformer blocks",
+      "passed": true,
+      "iterations": 1000,
+      "time": 3.4105117280014383,
+      "ops_per_sec": 293.21113069034965,
+      "errors": 0
+    },
+    {
+      "name": "Sentiment analysis",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.01100607100124762,
+      "ops_per_sec": 454294.7251051909,
+      "errors": 0
+    },
+    {
+      "name": "Emotion blending",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.0245575179997104,
+      "ops_per_sec": 203603.63779674168,
+      "errors": 0
+    },
+    {
+      "name": "Memory search",
+      "passed": true,
+      "iterations": 5000,
+      "time": 0.020844355000008363,
+      "ops_per_sec": 239873.09753638305,
+      "errors": 0
+    },
+    {
+      "name": "JSON serialize",
+      "passed": true,
+      "iterations": 10000,
+      "time": 0.04974762499841745,
+      "ops_per_sec": 201014.62130741146,
+      "errors": 0
+    }
+  ]
+}
