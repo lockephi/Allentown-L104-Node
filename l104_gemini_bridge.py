@@ -222,6 +222,25 @@ Respond with clarity, precision, and actionable intelligence."""
     def get_system_status(self) -> Dict[str, Any]:
         """Get system status."""
         return self.get_l104_data("system")
+    
+    def persist_session_token(self, token: str):
+        """Persist session token for Gemini Link (GL)."""
+        try:
+            with open(".gemini_link_token", "w") as f:
+                f.write(token)
+            print(f"--- [GEMINI_BRIDGE]: Session token persisted: {token[:8]}... ---")
+        except Exception as e:
+            print(f"--- [GEMINI_BRIDGE]: Persistence error: {e} ---")
+
+    def update_local_manifest(self, data: Dict[str, Any]):
+        """Update local manifest with Core Sync (LCS) data."""
+        try:
+            import json
+            with open(".l104_local_manifest.json", "w") as f:
+                json.dump(data, f, indent=2)
+            print("--- [GEMINI_BRIDGE]: Local manifest updated via LCS ---")
+        except Exception as e:
+            print(f"--- [GEMINI_BRIDGE]: Manifest update error: {e} ---")
 
     def generate_with_tools(self, prompt: str, use_l104_tools: bool = True) -> str:
         """
@@ -304,3 +323,29 @@ def resolve_non_dual_logic(vector):
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+if __name__ == "__main__":
+    # CLI for Gemini Link (GL) Testing
+    print("Welcome to L104 Gemini Bridge (GL)")
+    print(f"Status: {'REAL_API' if gemini_bridge.is_real else 'STUB_MODE'}")
+    print(f"Active Model: {gemini_bridge.model_name}")
+    
+    # Simple handshake test
+    print("\n--- Testing Handshake ---")
+    link = gemini_bridge.handshake("CLI-User", "testing,analysis")
+    print(f"Link Status: {link['status']}")
+    print(f"Session Token: {link['session_token']}")
+    
+    # Save token
+    gemini_bridge.persist_session_token(link['session_token'])
+    
+    # Core Sync test
+    print("\n--- Testing Core Sync (LCS) ---")
+    sync = gemini_bridge.sync_core(link['session_token'])
+    print(f"Sync Status: {sync['status']}")
+    
+    # Thinking test
+    print("\n--- Testing Sovereign Thinking ---")
+    thought = gemini_bridge.think("Summarize the current system state.")
+    print(f"Response: {thought[:100]}...")

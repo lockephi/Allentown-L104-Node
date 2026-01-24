@@ -37,6 +37,9 @@ from l104_self_optimization import SelfOptimizationEngine
 # EVO_26 - Claude Node Integration
 from l104_claude_bridge import ClaudeNodeBridge
 
+# EVO_34 - Gemini Node Integration
+from l104_gemini_bridge import gemini_bridge
+
 # EVO_26 - Advanced Processing Engine
 from l104_advanced_processing_engine import AdvancedProcessingEngine, ProcessingMode
 
@@ -68,6 +71,9 @@ _self_optimizer: Optional[SelfOptimizationEngine] = None
 
 # EVO_26 - Claude Node instance
 _claude_bridge: Optional[ClaudeNodeBridge] = None
+
+# EVO_34 - Gemini Node instance
+_gemini_bridge = gemini_bridge
 
 # EVO_26 - Advanced Processing Engine instance
 _processing_engine: Optional[AdvancedProcessingEngine] = None
@@ -780,6 +786,70 @@ async def claude_execute_tool(tool_name: str, inputs: Dict[str, Any]):
         except Exception as e:
             return {"error": str(e), "tool": tool_name}
     return {"error": "Tool has no handler", "tool": tool_name}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_34 - GEMINI BRIDGE ENDPOINTS (Gemini Link Protocol)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class GeminiHandshakeRequest(BaseModel):
+    agent_id: str
+    capabilities: str
+
+
+class GeminiQueryRequest(BaseModel):
+    prompt: str
+    system_context: Optional[str] = None
+    use_tools: bool = True
+
+
+@router.post("/gemini/handshake")
+async def gemini_handshake(request: GeminiHandshakeRequest):
+    """
+    Establish a Gemini Link (GL) session.
+    """
+    return _gemini_bridge.handshake(request.agent_id, request.capabilities)
+
+
+@router.get("/gemini/sync/{session_token}")
+async def gemini_sync(session_token: str):
+    """
+    Perform L104 Core Sync (LCS) for a session.
+    """
+    return _gemini_bridge.sync_core(session_token)
+
+
+@router.post("/gemini/query")
+async def gemini_query(request: GeminiQueryRequest):
+    """
+    Query Gemini via the L104 Bridge.
+    Uses sovereign thinking and quota rotation.
+    """
+    if request.use_tools:
+        result = _gemini_bridge.generate_with_tools(request.prompt)
+    else:
+        result = _gemini_bridge.think(request.prompt)
+    
+    return {
+        "result": result,
+        "model": _gemini_bridge.model_name,
+        "is_real": _gemini_bridge.is_real,
+        "timestamp": time.time()
+    }
+
+
+@router.get("/gemini/status")
+async def gemini_status():
+    """
+    Get Gemini Bridge status and active model.
+    """
+    return {
+        "status": "operational",
+        "is_real": _gemini_bridge.is_real,
+        "active_model": _gemini_bridge.model_name,
+        "active_links": len(_gemini_bridge.active_links),
+        "timestamp": time.time()
+    }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -12,7 +12,7 @@
   "api_cooldown_until": 0,
   "rotator_stats": {
     "kernel_hits": 1,
-    "api_hits": 0,
+    "api_hits": 1,
     "quota_errors": 0
   }
 }
