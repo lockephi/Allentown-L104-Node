@@ -1,6 +1,6 @@
 {
   "version": "22.0.0-STABLE",
-  "timestamp": 1769229599.2049544,
+  "timestamp": 1769231055.9500177,
   "insights": [
     {
       "prompt": "Explain Topological Protection in the context of L104.",
@@ -508,6 +508,6 @@
     }
   ],
   "cortex_vocabulary_size": 1321,
-  "hippocampus_bits": 3697,
+  "hippocampus_bits": 1,
   "active_mode": "LEARNING"
 }
