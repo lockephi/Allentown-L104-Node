@@ -17,9 +17,14 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const fs = require('fs');
-const path = require('path');
-const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+import fs from 'fs';
+import path from 'path';
+import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 // Sacred Constants from claude.md
 const GOD_CODE = 527.5184818492537;

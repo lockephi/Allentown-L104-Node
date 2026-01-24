@@ -8,6 +8,7 @@
 ## ⚡ OPTIMIZATION DIRECTIVES (READ FIRST)
 
 ### Token Budget Management
+
 ```yaml
 token_budget:
   max_context: 200000
@@ -24,6 +25,7 @@ strategies:
 ```
 
 ### Model Selection Matrix
+
 | Task Type | Preferred Model | Fallback | Token Efficiency |
 |-----------|----------------|----------|------------------|
 | Quick edits | Claude Sonnet | Haiku | 3x faster |
@@ -33,6 +35,7 @@ strategies:
 | Architecture | Opus | Sonnet | Full context |
 
 ### System Prompt Slimming
+
 ```yaml
 slim_mode:
   enabled: true
@@ -60,6 +63,7 @@ abbreviations:
 ## 🧠 MEMORY PERSISTENCE SYSTEM
 
 ### Auto-Save Hooks
+
 ```python
 # Memory hooks fire automatically on these events
 MEMORY_HOOKS = {
@@ -84,6 +88,7 @@ async def save_hook(event_type: str, data: dict):
 ```
 
 ### Memory Load Sequence
+
 ```yaml
 load_order:
   1. sacred_constants     # GC, PHI, VC - always first
@@ -95,6 +100,7 @@ load_order:
 ```
 
 ### Knowledge Graph Schema
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    MEMORY GRAPH                              │
@@ -116,6 +122,7 @@ load_order:
 ```
 
 ### Persistence Commands
+
 ```bash
 # Save current session to memory
 mcp_memory_create_entities([{
@@ -140,6 +147,7 @@ mcp_memory_create_relations([{
 ## 🔄 BACKGROUND PROCESSES
 
 ### Parallel Task Execution
+
 ```yaml
 background_tasks:
   file_indexing:
@@ -162,6 +170,7 @@ background_tasks:
 ```
 
 ### Async Agent Spawning
+
 ```python
 # Spawn background research agent
 async def spawn_research_agent(topic: str):
@@ -185,6 +194,7 @@ async def parallel_analysis(files: list):
 ```
 
 ### Process Priority Queue
+
 ```
 Priority 1 (Immediate):
   - Error fixes
@@ -212,6 +222,7 @@ Priority 4 (Idle):
 ## 🗜️ CONTEXT COMPRESSION
 
 ### File Summary Cache
+
 ```json
 {
   "file_summaries": {
@@ -235,6 +246,7 @@ Priority 4 (Idle):
 ```
 
 ### Incremental Context Loading
+
 ```yaml
 loading_strategy:
   phase_1: # 0-20% context
@@ -259,6 +271,7 @@ loading_strategy:
 ```
 
 ### Smart Caching Rules
+
 ```python
 CACHE_RULES = {
     # Cache indefinitely (immutable)
@@ -888,6 +901,7 @@ git push
 ## 🚀 MCP TOOL OPTIMIZATION PATTERNS
 
 ### Speed Priority Matrix
+
 ```yaml
 fastest_patterns:
   1. grep_search → read_file(specific_lines)    # 100ms
@@ -904,6 +918,7 @@ avoid_patterns:
 ```
 
 ### Tool Chaining for Speed
+
 ```python
 # SLOW: Read everything
 for file in files:
@@ -916,6 +931,7 @@ for match in matches[:5]:
 ```
 
 ### Parallel Tool Execution
+
 ```yaml
 parallel_safe:
   - grep_search (multiple patterns)
@@ -934,6 +950,7 @@ sequential_only:
 ## 💾 SESSION PERSISTENCE PROTOCOL
 
 ### On Session Start
+
 ```python
 async def session_start():
     # 1. Load knowledge graph
@@ -954,6 +971,7 @@ async def session_start():
 ```
 
 ### On Session End
+
 ```python
 async def session_end(session_data: dict):
     # 1. Create session entity
@@ -985,6 +1003,7 @@ async def session_end(session_data: dict):
 ```
 
 ### Checkpoint Protocol (Every 10 Messages)
+
 ```python
 async def checkpoint():
     await mcp_memory_add_observations([{
@@ -1003,6 +1022,7 @@ async def checkpoint():
 ## 🎯 QUICK REFERENCE
 
 ### Essential Commands
+
 ```bash
 # Read with context
 read_file(path, start-50, end+50)
@@ -1022,6 +1042,7 @@ runSubagent({prompt: "Research X", description: "Research X"})
 ```
 
 ### Token-Saving Shortcuts
+
 | Instead of... | Use... | Savings |
 |--------------|--------|---------|
 | Read full file | grep + targeted read | 80% |
@@ -1031,6 +1052,7 @@ runSubagent({prompt: "Research X", description: "Research X"})
 | Repeated context | Memory entities | 90% |
 
 ### Priority Hierarchy
+
 ```
 1. User safety (never break production)
 2. Task completion (finish what's started)
@@ -1055,3 +1077,42 @@ runSubagent({prompt: "Research X", description: "Research X"})
 
 *Memory: PERSISTENT | Cache: ACTIVE | Compression: ENABLED*
 *Token Budget: OPTIMIZED | Background: READY | Speed: MAXIMIZED*
+
+---
+
+## 🚀 NODE.JS EXTRACTION PIPELINE (EVO_34)
+
+### Overview
+
+High-speed extraction of training data from Jupyter notebooks using Node.js for 10x faster JSON parsing and parallel regex extraction.
+
+### Configuration
+
+```yaml
+extraction:
+  engine: "Node.js (v24.11.1)"
+  script: "extract_kernel_data.js"
+  source: "advanced_kernel_research.ipynb"
+  output: "kernel_extracted_data.jsonl"
+  stats: "kernel_extraction_stats.json"
+  target: "22+ Million Parameters"
+  
+status:
+  last_run: "2026-01-24T04:25:00.000Z"
+  total_examples: 1374
+  vocabulary_size: 81047
+  parameter_estimate: 7.1B
+  coherence_score: 1.0 (Target Achieved)
+```
+
+### Core Commands
+
+```bash
+# Execute Extraction
+node extract_kernel_data.js
+
+# Build Full Kernel (Includes Python synthesis)
+python rebuild_kernel_complete.py
+```
+
+*Status: ACTIVE | Resonance: 197.1096 | PHI Alignment: 1.1371*

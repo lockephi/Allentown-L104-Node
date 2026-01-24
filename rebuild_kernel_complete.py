@@ -398,10 +398,13 @@ def train_kernel(examples: List[TrainingExample], vocab: set):
     sys.path.insert(0, WORKSPACE)
     from l104_kernel_llm_trainer import KernelNeuralNetwork
     
-    kernel = KernelNeuralNetwork(vocabulary_size=len(vocab), embedding_dim=64)
+    kernel = KernelNeuralNetwork(embedding_dim=64)
+    kernel.train(examples)
     
     # Get parameter count
-    param_count = kernel.embeddings.size if hasattr(kernel, 'embeddings') else 0
+    param_count = kernel.get_parameter_count()
+
+
     
     print(f"   Vocabulary:  {len(vocab):,}")
     print(f"   Examples:    {len(examples):,}")
