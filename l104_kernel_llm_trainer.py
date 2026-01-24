@@ -718,6 +718,12 @@ class KernelNeuralNetwork:
         
         return results
     
+    def get_parameter_count(self) -> int:
+        """Return total parameter count for the model."""
+        if self.embeddings is not None:
+            return self.embeddings.size
+        return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
+    
     def answer(self, question: str, threshold: float = 0.1) -> Optional[str]:
         """Get best answer for a question."""
         results = self.query(question, top_k=1)
