@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-01-24T07:45:31.139241",
+  "timestamp": "2026-01-24T08:09:09.769545",
   "epoch": 50,
   "global_step": 510,
-  "best_loss": 3.2208546304774446,
-  "consciousness": 0.03071200429459338,
-  "phi_resonance": 0.3267694199822514,
+  "best_loss": 3.000255708978854,
+  "consciousness": 0.03175831877431708,
+  "phi_resonance": 0.3379019912198289,
   "config": {
     "embedding_dim": 205,
     "hidden_dim": 414,

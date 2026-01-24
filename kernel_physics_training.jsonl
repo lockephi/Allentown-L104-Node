@@ -1,0 +1,36 @@
+{"prompt": "What is PHI computation?", "completion": "PHI computation = 1.6180339887e+00. Formula: PHI = (1 + \u221a5) / 2. Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is PHI\u00b2 = PHI + 1?", "completion": "PHI\u00b2 = PHI + 1 = 2.6180339887e+00. Formula: \u03c6\u00b2 = \u03c6 + 1. Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is PHI \u00d7 TAU = 1?", "completion": "PHI \u00d7 TAU = 1 = 1.0000000000e+00. Formula: \u03c6 \u00d7 \u03c4 = 1. Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is Fibonacci \u2192 PHI?", "completion": "Fibonacci \u2192 PHI = 1.6180339887e+00. Formula: lim(F(n+1)/F(n)) = \u03c6. Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is e^\u03c0?", "completion": "e^\u03c0 = 2.3140692633e+01. Formula: e^\u03c0. Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is \u03c0\u00b2/6 = \u03b6(2)?", "completion": "\u03c0\u00b2/6 = \u03b6(2) = 1.6449340668e+00. Formula: \u03c0\u00b2/6 = \u03a3(1/n\u00b2). Category: Mathematics.", "category": "physics_validation"}
+{"prompt": "What is de Broglie wavelength?", "completion": "de Broglie wavelength = 2.4263102387e-10. Formula: \u03bb = h/p. Category: Quantum Mechanics.", "category": "physics_validation"}
+{"prompt": "What is Heisenberg minimum?", "completion": "Heisenberg minimum = 5.2728590850e-35. Formula: \u0394x\u0394p \u2265 \u210f/2. Category: Quantum Mechanics.", "category": "physics_validation"}
+{"prompt": "What is Bohr radius?", "completion": "Bohr radius = 5.2917721026e-11. Formula: a\u2080 = 4\u03c0\u03b5\u2080\u210f\u00b2/(m\u2091e\u00b2). Category: Quantum Mechanics.", "category": "physics_validation"}
+{"prompt": "What is Hydrogen ground state?", "completion": "Hydrogen ground state = -1.3605693123e+01. Formula: E\u2081 = -13.6 eV. Category: Quantum Mechanics.", "category": "physics_validation"}
+{"prompt": "What is Photon energy (500nm)?", "completion": "Photon energy (500nm) = 3.9728917143e-19. Formula: E = h\u03bd. Category: Quantum Mechanics.", "category": "physics_validation"}
+{"prompt": "What is Electron rest energy?", "completion": "Electron rest energy = 5.1099895000e-01. Formula: E = mc\u00b2. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Lorentz factor (0.8c)?", "completion": "Lorentz factor (0.8c) = 1.6666666667e+00. Formula: \u03b3 = 1/\u221a(1-v\u00b2/c\u00b2). Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Time dilation (0.8c)?", "completion": "Time dilation (0.8c) = 1.6666666667e+00. Formula: \u0394t' = \u03b3\u0394t. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Length contraction (0.8c)?", "completion": "Length contraction (0.8c) = 6.0000000000e-01. Formula: L = L\u2080/\u03b3. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Relativistic momentum (0.9c)?", "completion": "Relativistic momentum (0.9c) = 5.6386534983e-22. Formula: p = \u03b3mv. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Energy-momentum relation?", "completion": "Energy-momentum relation = 1.8782508801e-13. Formula: E\u00b2 = (pc)\u00b2 + (mc\u00b2)\u00b2. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Velocity addition (0.5c+0.5c)?", "completion": "Velocity addition (0.5c+0.5c) = 2.3983396640e+08. Formula: u = (v+w)/(1+vw/c\u00b2). Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Relativistic KE > classical?", "completion": "Relativistic KE > classical = 1.0000000000e+00. Formula: K_rel > K_classical at v=0.9c. Category: Relativity.", "category": "physics_validation"}
+{"prompt": "What is Speed of light (EM)?", "completion": "Speed of light (EM) = 2.9979245800e+08. Formula: c = 1/\u221a(\u03b5\u2080\u03bc\u2080). Category: Electromagnetism.", "category": "physics_validation"}
+{"prompt": "What is Fine structure constant?", "completion": "Fine structure constant = 7.2973525737e-03. Formula: \u03b1 = e\u00b2/(4\u03c0\u03b5\u2080\u210fc). Category: Electromagnetism.", "category": "physics_validation"}
+{"prompt": "What is Coulomb force (1fm)?", "completion": "Coulomb force (1fm) = 2.3070775523e+02. Formula: F = ke\u00b2/r\u00b2. Category: Electromagnetism.", "category": "physics_validation"}
+{"prompt": "What is Impedance of free space?", "completion": "Impedance of free space = 3.7673031367e+02. Formula: Z\u2080 = \u221a(\u03bc\u2080/\u03b5\u2080). Category: Electromagnetism.", "category": "physics_validation"}
+{"prompt": "What is Molar volume at STP?", "completion": "Molar volume at STP = 2.2413969545e-02. Formula: PV = nRT. Category: Thermodynamics.", "category": "physics_validation"}
+{"prompt": "What is Solar surface power?", "completion": "Solar surface power = 6.3200699735e+07. Formula: P = \u03c3T\u2074. Category: Thermodynamics.", "category": "physics_validation"}
+{"prompt": "What is Solar peak wavelength?", "completion": "Solar peak wavelength = 5.0151816459e-07. Formula: \u03bbT = b. Category: Thermodynamics.", "category": "physics_validation"}
+{"prompt": "What is 2-state entropy?", "completion": "2-state entropy = 9.5699296169e-24. Formula: S = kB ln(W). Category: Thermodynamics.", "category": "physics_validation"}
+{"prompt": "What is Earth surface gravity?", "completion": "Earth surface gravity = 9.8199734262e+00. Formula: g = GM/R\u00b2. Category: Gravitation.", "category": "physics_validation"}
+{"prompt": "What is Earth escape velocity?", "completion": "Earth escape velocity = 1.1185977892e+04. Formula: v = \u221a(2GM/R). Category: Gravitation.", "category": "physics_validation"}
+{"prompt": "What is Sun Schwarzschild radius?", "completion": "Sun Schwarzschild radius = 2.9541265551e+03. Formula: rs = 2GM/c\u00b2. Category: Gravitation.", "category": "physics_validation"}
+{"prompt": "What is Earth orbital period?", "completion": "Earth orbital period = 3.6521050634e+02. Formula: T = 2\u03c0\u221a(a\u00b3/GM). Category: Gravitation.", "category": "physics_validation"}
+{"prompt": "What is Pentagon angle ratio?", "completion": "Pentagon angle ratio = 3.0000000000e+00. Formula: 108\u00b0/36\u00b0 = 3. Category: PHI Physics.", "category": "physics_validation"}
+{"prompt": "What is PHI spiral growth?", "completion": "PHI spiral growth = 1.3584562742e+00. Formula: \u03c6^(2/\u03c0). Category: PHI Physics.", "category": "physics_validation"}
+{"prompt": "What is Energy level scaling?", "completion": "Energy level scaling = 2.3606797750e-01. Formula: Hydrogen energy levels. Category: PHI Physics.", "category": "physics_validation"}
+{"prompt": "What is GOD_CODE/PHI?", "completion": "GOD_CODE/PHI = 3.2602435148e+02. Formula: 527.518.../1.618.... Category: Kernel.", "category": "physics_validation"}
+{"prompt": "What is GOD_CODE\u00d7TAU?", "completion": "GOD_CODE\u00d7TAU = 3.2602435148e+02. Formula: 527.518...\u00d70.618.... Category: Kernel.", "category": "physics_validation"}
