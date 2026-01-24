@@ -695,6 +695,12 @@ class KernelNeuralNetwork:
         print(f"  - Embedding dimension: {len(self.vocabulary)}")
         print(f"  - Total parameters: {self.embeddings.size}")
     
+    def get_parameter_count(self) -> int:
+        """Return total parameter count for the neural network."""
+        if self.embeddings is not None:
+            return self.embeddings.size
+        return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
+    
     def query(self, question: str, top_k: int = 3) -> List[Tuple[str, float]]:
         """Query the network with a question."""
         if self.embeddings is None:
