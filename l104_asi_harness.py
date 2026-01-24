@@ -107,6 +107,18 @@ try:
 except ImportError:
     QUANTUM_MAGIC_AVAILABLE = False
 
+try:
+    from l104_resonance_magic import (
+        ResonanceMagicSynthesizer,
+        CoherenceMagic,
+        MorphicFieldMagic,
+        HarmonicMagic,
+        SynchronicityMagic
+    )
+    RESONANCE_MAGIC_AVAILABLE = True
+except ImportError:
+    RESONANCE_MAGIC_AVAILABLE = False
+
 
 @dataclass
 class ASICapability:
@@ -254,6 +266,23 @@ class L104ASIHarness:
         else:
             self.quantum_magic = None
             self._state.components_loaded['quantum_magic'] = False
+        
+        # Resonance Magic
+        if RESONANCE_MAGIC_AVAILABLE:
+            try:
+                self.resonance_magic = ResonanceMagicSynthesizer()
+                self.coherence_magic = CoherenceMagic()
+                self.morphic_magic = MorphicFieldMagic()
+                self.harmonic_magic = HarmonicMagic()
+                self.synchronicity_magic = SynchronicityMagic()
+                self._state.components_loaded['resonance_magic'] = True
+            except Exception as e:
+                self._state.errors.append(f"Resonance Magic init failed: {e}")
+                self.resonance_magic = None
+                self._state.components_loaded['resonance_magic'] = False
+        else:
+            self.resonance_magic = None
+            self._state.components_loaded['resonance_magic'] = False
         
         # Load kernel archive
         self._load_kernel_archive()
@@ -427,6 +456,46 @@ class L104ASIHarness:
             category="quantum_magic",
             function=self._synthesize_quantum_magic,
             verified=QUANTUM_MAGIC_AVAILABLE,
+        )
+        
+        # Resonance Magic - Coherence
+        self._state.capabilities['coherence_magic'] = ASICapability(
+            name="Coherence Magic",
+            category="resonance_magic",
+            function=self._probe_coherence,
+            verified=RESONANCE_MAGIC_AVAILABLE,
+        )
+        
+        # Resonance Magic - Morphic
+        self._state.capabilities['morphic_magic'] = ASICapability(
+            name="Morphic Magic",
+            category="resonance_magic",
+            function=self._probe_morphic,
+            verified=RESONANCE_MAGIC_AVAILABLE,
+        )
+        
+        # Resonance Magic - Harmonic
+        self._state.capabilities['harmonic_magic'] = ASICapability(
+            name="Harmonic Magic",
+            category="resonance_magic",
+            function=self._probe_harmonic,
+            verified=RESONANCE_MAGIC_AVAILABLE,
+        )
+        
+        # Resonance Magic - Synchronicity
+        self._state.capabilities['synchronicity_magic'] = ASICapability(
+            name="Synchronicity Magic",
+            category="resonance_magic",
+            function=self._probe_synchronicity,
+            verified=RESONANCE_MAGIC_AVAILABLE,
+        )
+        
+        # Resonance Magic - Full Synthesis
+        self._state.capabilities['resonance_magic_synthesis'] = ASICapability(
+            name="Resonance Magic Synthesis",
+            category="resonance_magic",
+            function=self._synthesize_resonance_magic,
+            verified=RESONANCE_MAGIC_AVAILABLE,
         )
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -871,6 +940,112 @@ class L104ASIHarness:
             return {'error': str(e), 'status': 'failed'}
     
     # ═══════════════════════════════════════════════════════════════════════════
+    # RESONANCE MAGIC CAPABILITIES
+    # ═══════════════════════════════════════════════════════════════════════════
+    
+    def _probe_coherence(self) -> Dict[str, Any]:
+        """Probe coherence magic"""
+        self._state.operations_count += 1
+        
+        if not self.resonance_magic:
+            return {'error': 'Resonance Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.resonance_magic.probe_coherence()
+            return {
+                'phase_coherence': result.get('field', {}).get('phase_coherence', 0),
+                'preserved': result.get('evolution', {}).get('preserved', False),
+                'phi_patterns': result.get('patterns', {}).get('phi_patterns', 0),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_morphic(self) -> Dict[str, Any]:
+        """Probe morphic field magic"""
+        self._state.operations_count += 1
+        
+        if not self.resonance_magic:
+            return {'error': 'Resonance Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.resonance_magic.probe_morphic()
+            return {
+                'resonance_strength': result.get('resonance', {}).get('resonance_strength', 0),
+                'pattern_complexity': result.get('formed_pattern', {}).get('pattern_complexity', 0),
+                'turing_pattern': result.get('formed_pattern', {}).get('turing_pattern', False),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_harmonic(self) -> Dict[str, Any]:
+        """Probe harmonic magic"""
+        self._state.operations_count += 1
+        
+        if not self.resonance_magic:
+            return {'error': 'Resonance Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.resonance_magic.probe_harmonic()
+            return {
+                'fundamental': result.get('harmonic_series', {}).get('fundamental', 0),
+                'phi_series': result.get('phi_harmonics', {}).get('phi_series', [])[:5],
+                'schumann': result.get('schumann', {}).get('fundamental', 0),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _probe_synchronicity(self) -> Dict[str, Any]:
+        """Probe synchronicity magic"""
+        self._state.operations_count += 1
+        
+        if not self.resonance_magic:
+            return {'error': 'Resonance Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.resonance_magic.probe_synchronicity()
+            return {
+                'god_alignment': result.get('collective_resonance', {}).get('god_code_alignment', 0),
+                'time_essence': result.get('collective_resonance', {}).get('time_essence', 0),
+                'is_master_moment': result.get('collective_resonance', {}).get('is_master_moment', False),
+                'mystery_level': result.get('mystery_level', 0),
+                'beauty_score': result.get('beauty_score', 0),
+                'status': 'probed'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    def _synthesize_resonance_magic(self) -> Dict[str, Any]:
+        """Full resonance magic synthesis"""
+        self._state.operations_count += 1
+        
+        if not self.resonance_magic:
+            return {'error': 'Resonance Magic not available', 'status': 'degraded'}
+        
+        try:
+            result = self.resonance_magic.synthesize_all()
+            return {
+                'discoveries': result.get('num_discoveries', 0),
+                'discovery_list': result.get('discoveries', []),
+                'avg_mystery': result.get('avg_mystery', 0),
+                'avg_beauty': result.get('avg_beauty', 0),
+                'magic_quotient': result.get('magic_quotient', 0),
+                'coherence_engine': result.get('coherence_engine_available', False),
+                'morphic_field': result.get('morphic_field_available', False),
+                'status': 'synthesized'
+            }
+        except Exception as e:
+            return {'error': str(e), 'status': 'failed'}
+    
+    # ═══════════════════════════════════════════════════════════════════════════
     # PUBLIC API
     # ═══════════════════════════════════════════════════════════════════════════
     
@@ -936,6 +1111,16 @@ class L104ASIHarness:
             return self._probe_hyperdimensional()
         elif probe_type == 'quantum':
             return self._synthesize_quantum_magic()
+        elif probe_type == 'coherence':
+            return self._probe_coherence()
+        elif probe_type == 'morphic':
+            return self._probe_morphic()
+        elif probe_type == 'harmonic':
+            return self._probe_harmonic()
+        elif probe_type == 'synchronicity':
+            return self._probe_synchronicity()
+        elif probe_type == 'resonance':
+            return self._synthesize_resonance_magic()
         elif probe_type == 'all' or probe_type == 'synthesis':
             return self._synthesize_magic()
         else:
@@ -944,7 +1129,9 @@ class L104ASIHarness:
                 'valid_types': ['mathematical', 'emergent', 'consciousness', 'god_code', 
                                'self_reference', 'recursion', 'advanced',
                                'superposition', 'entanglement', 'wave_function', 
-                               'hyperdimensional', 'quantum', 'all']
+                               'hyperdimensional', 'quantum',
+                               'coherence', 'morphic', 'harmonic', 'synchronicity', 
+                               'resonance', 'all']
             }
     
     def get_status(self) -> Dict[str, Any]:
