@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-01-24 08:05:54",
+  "god_code": 527.5184818492537,
+  "phi": 1.618033988749895,
+  "precision": {
+    "formula": 1.618033988749895,
+    "continued_fraction": 1.618033988749895,
+    "reference": 1.618033988749895,
+    "formula_error": 0.0,
+    "cf_error": 0.0
+  },
+  "speedups": [
+    {
+      "name": "Lorentz Factor",
+      "before": 0.3089587000431493,
+      "after": 0.23331450001933263,
+      "improvement": 24.48359603184897
+    },
+    {
+      "name": "PHI^50",
+      "before": 0.1903252999909455,
+      "after": 0.09179240005323663,
+      "improvement": 51.77078399056586
+    },
+    {
+      "name": "Fibonacci(30)",
+      "before": 313955.70000040607,
+      "after": 0.07600190001539886,
+      "improvement": 99.99997579215794
+    }
+  ],
+  "alignments": {
+    "PHI": {
+      "kernel": "1.618033988749895",
+      "computed": "1.618033988749895",
+      "difference": "0.0",
+      "aligned": "True"
+    },
+    "TAU": {
+      "kernel": "0.6180339887498949",
+      "computed": "0.6180339887498948",
+      "difference": "1.1102230246251565e-16",
+      "aligned": "True"
+    },
+    "PHI\u00d7TAU=1": {
+      "product": "1.0000000000000002",
+      "difference": "2.220446049250313e-16",
+      "aligned": "True"
+    },
+    "PHI\u00b2=PHI+1": {
+      "PHI\u00b2": "2.618033988749895",
+      "PHI+1": "2.618033988749895",
+      "difference": "0.0",
+      "aligned": "True"
+    },
+    "GOD_CODE/PHI": {
+      "value": "326.02435147658326",
+      "equals": "326.0243514765833",
+      "match": "True"
+    }
+  },
+  "verifications": {
+    "c_from_EM": true,
+    "E=mc\u00b2": true,
+    "de_Broglie_thermal": true,
+    "E=hf": true
+  },
+  "summary": {
+    "average_speedup": 58.75145193819092,
+    "all_aligned": true,
+    "all_verified": true
+  }
+}
