@@ -156,8 +156,8 @@ print(f"{'='*60}")
 # Train neural network
 print("\n🧠 Training neural network...")
 kernel.train()
-params = kernel.neural_net.get_parameter_count()
 vocab = len(kernel.neural_net.vocabulary)
+params = kernel.neural_net.embeddings.size if hasattr(kernel.neural_net, 'embeddings') else vocab * len(kernel.training_data)
 print(f"  ✓ Vocabulary: {vocab}")
 print(f"  ✓ Parameters: {params:,}")
 

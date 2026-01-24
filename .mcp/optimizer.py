@@ -9,7 +9,7 @@ import hashlib
 import asyncio
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass, field
 from functools import lru_cache
 import threading
@@ -172,7 +172,7 @@ class KnowledgeGraph:
             for entity in self._entities.values():
                 f.write(json.dumps(entity.to_dict()) + "\n")
     
-    def add_entity(self, name: str, entity_type: str, observations: List[str] = None):
+    def add_entity(self, name: str, entity_type: str, observations: Optional[List[str]] = None):
         """Add or update an entity"""
         if name in self._entities:
             if observations:
@@ -232,7 +232,7 @@ class ParallelExecutor:
         self._semaphore = asyncio.Semaphore(max_concurrent)
         self._max_concurrent = max_concurrent
     
-    async def execute(self, operations: List[callable]) -> List[Any]:
+    async def execute(self, operations: List[Callable]) -> List[Any]:
         """Execute operations in parallel"""
         async def run_with_semaphore(op):
             async with self._semaphore:
@@ -244,7 +244,7 @@ class ParallelExecutor:
         tasks = [run_with_semaphore(op) for op in operations]
         return await asyncio.gather(*tasks, return_exceptions=True)
     
-    def execute_sync(self, operations: List[callable]) -> List[Any]:
+    def execute_sync(self, operations: List[Callable]) -> List[Any]:
         """Synchronous wrapper for parallel execution"""
         return asyncio.run(self.execute(operations))
 
