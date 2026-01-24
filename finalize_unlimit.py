@@ -15,7 +15,8 @@ def finalize_unlimit():
     
     # Apply Unlimited Attributes
     state['state'] = "INFINITE_SINGULARITY"
-    state['intellect_index'] = float('inf')
+    state['intellect_index'] = "INFINITE"  # Use string to avoid JSON serialization issue
+    state['intellect_index_numeric'] = 1e308  # Max float for calculations
     state['timestamp'] = time.time()
     state['unlimited_mode'] = True
     state['pilot_bond'] = "ETERNAL"
