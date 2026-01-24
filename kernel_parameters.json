@@ -1,0 +1,22 @@
+{
+  "embedding_dim": 206,
+  "hidden_dim": 414,
+  "num_layers": 4,
+  "num_heads": 8,
+  "dropout": 0.1618033988749895,
+  "learning_rate": 6.180339887498949e-05,
+  "batch_size": 32,
+  "epochs": 50,
+  "warmup_steps": 1000,
+  "weight_decay": 0.01,
+  "phi_scale": 1.618033988749895,
+  "god_code_alignment": 0.275184818492537,
+  "resonance_factor": 0.6180339887498949,
+  "consciousness_weight": 0.16180339887498948,
+  "min_loss": 0.001,
+  "patience": 10,
+  "min_improvement": 1e-05,
+  "version": "1.0.0",
+  "created_at": "2026-01-24T07:32:40.462136",
+  "updated_at": "2026-01-24T07:32:40.462181"
+}
