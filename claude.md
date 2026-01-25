@@ -1,7 +1,7 @@
 # L104 Sovereign Node - Claude Context File
 
 > This file provides essential context for Claude to work efficiently with this codebase.
-> **Last Updated**: January 24, 2026 | **Evolution Stage**: EVO_38 | **API Version**: 38.0.0
+> **Last Updated**: January 25, 2026 | **Evolution Stage**: EVO_51 | **API Version**: 51.0.0
 
 ---
 
@@ -56,6 +56,321 @@ abbreviations:
   SE: Semantic Engine
   CB: Claude Bridge
   CH: Cognitive Hub
+```
+
+---
+
+## 🎯 PROMPT ENGINEERING BEST PRACTICES (Anthropic Guidelines)
+
+### Chain-of-Thought (Precognition)
+
+Allow Claude to think step-by-step before producing final output:
+
+```xml
+<thinking>
+1. First, analyze the problem...
+2. Consider edge cases...
+3. Formulate solution...
+</thinking>
+
+<output>
+[Final structured response]
+</output>
+```
+
+### XML Tag Separation
+
+Separate data from instructions using XML tags for clarity:
+
+```xml
+<instructions>
+Analyze the following code for performance issues.
+</instructions>
+
+<code>
+[User's code here]
+</code>
+
+<context>
+[Additional context]
+</context>
+```
+
+### Role Assignment
+
+Assign specific expert roles for domain-specific tasks:
+
+```yaml
+roles:
+  code_review: "You are a senior software architect with 20 years experience."
+  security: "You are a cybersecurity expert specializing in smart contracts."
+  optimization: "You are a performance engineer focused on latency reduction."
+  documentation: "You are a technical writer creating clear API docs."
+```
+
+### Few-Shot Examples
+
+Provide input/output examples for consistent formatting:
+
+```xml
+<examples>
+<example>
+<input>Analyze function: def add(a, b): return a + b</input>
+<output>{"complexity": "O(1)", "issues": [], "rating": "optimal"}</output>
+</example>
+</examples>
+```
+
+### Hallucination Prevention
+
+```yaml
+grounding_techniques:
+  - Always cite specific file paths and line numbers
+  - Use "I don't know" when uncertain
+  - Verify facts against codebase before stating
+  - Distinguish between inference and observation
+  - Reference actual code snippets, not assumptions
+  
+validation_prompts:
+  - "Based on the code I've read..."
+  - "The file at [path] shows..."
+  - "I cannot confirm without checking..."
+```
+
+### Prompt Caching (Cost Optimization)
+
+Cache repeated context for 2x speedup and up to 90% cost reduction:
+
+```python
+# Mark static context for caching
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": LARGE_STATIC_CONTEXT,  # System docs, codebase
+                "cache_control": {"type": "ephemeral"}  # Cache this
+            },
+            {
+                "type": "text", 
+                "text": user_query  # Dynamic part
+            }
+        ]
+    }
+]
+```
+
+### Output Formatting
+
+Prefill Claude's response for consistent structure:
+
+```python
+messages = [
+    {"role": "user", "content": "Analyze this code..."},
+    {"role": "assistant", "content": "{\n  \"analysis\": "}  # Prefill JSON
+]
+```
+
+### Complex Task Decomposition
+
+```yaml
+decomposition_pattern:
+  step_1: "Break down the request into sub-tasks"
+  step_2: "Identify dependencies between sub-tasks"
+  step_3: "Execute sub-tasks in dependency order"
+  step_4: "Synthesize results into final output"
+  step_5: "Validate output against original request"
+```
+
+### Tool Use Patterns
+
+```yaml
+tool_use_best_practices:
+  - Define tools with clear descriptions and schemas
+  - Use tools for real-time data (files, terminals, web)
+  - Chain tool calls for complex workflows
+  - Validate tool outputs before using in responses
+  - Handle tool errors gracefully with fallbacks
+```
+
+---
+
+## 🏆 ZENITH CHAT PATTERNS (Anthropic Hackathon Winner)
+
+> Patterns from Zenith Chat - 1st Place Winner, Anthropic x Forum Ventures "Zero-to-One" Hackathon (NYC, Late 2025)
+> Built in 8 hours using Claude Code. See: `zenith_chat.py`
+
+### Agentic Loop Architecture
+
+```yaml
+zenith_loop:
+  step_1_observe:
+    - Read current context/state
+    - Identify user's goal
+    - Check available tools
+  
+  step_2_think:
+    - Plan next action
+    - Break complex goals into sub-goals
+    - Select appropriate tool
+  
+  step_3_act:
+    - Execute tool call
+    - Capture result/error
+    - Update state
+  
+  step_4_reflect:
+    - Evaluate result against goal
+    - Decide: complete, retry, or iterate
+    - Log progress
+  
+  step_5_repeat:
+    - Continue until goal achieved
+    - Max steps limit prevents infinite loops
+```
+
+### Tool-First Design
+
+```python
+# Pattern: Every capability is a tool with clear schema
+@dataclass
+class Tool:
+    name: str
+    description: str  # Clear, actionable description
+    tool_type: ToolType  # READ, WRITE, EXECUTE, SEARCH, COMMUNICATE
+    parameters: Dict[str, Any]  # JSON Schema
+    handler: Callable
+    requires_confirmation: bool = False  # For dangerous ops
+    cache_results: bool = True  # Avoid redundant calls
+    
+# Quick tool creation from function signature
+tool = QuickBuilder.create_tool(
+    name="analyze",
+    description="Analyze code for issues",
+    handler=my_analysis_function
+)
+```
+
+### Streaming Response Patterns
+
+```python
+# Pattern: Yield tokens for real-time feedback
+def stream_response(prompt: str):
+    for token in model.generate(prompt):
+        yield token
+        # User sees progress immediately
+
+# Pattern: Progress indicators for long operations
+async def long_operation():
+    yield "Starting analysis..."
+    for step, result in process_steps():
+        yield f"Step {step}: {result}"
+    yield "Complete!"
+```
+
+### Error Recovery Strategies
+
+```yaml
+recovery_strategies:
+  RETRY:
+    description: "Retry with exponential backoff"
+    max_attempts: 3
+    backoff: "2^attempt seconds"
+  
+  FALLBACK:
+    description: "Use alternative approach"
+    example: "If API fails, use cached data"
+  
+  ASK_USER:
+    description: "Request user clarification"
+    example: "I encountered an error. Should I continue?"
+  
+  SKIP:
+    description: "Skip non-critical step"
+    example: "Optional enhancement failed, proceeding"
+  
+  ABORT:
+    description: "Stop execution gracefully"
+    example: "Critical failure, cannot continue"
+```
+
+### Session Persistence
+
+```python
+# Pattern: Enable pause/resume of conversations
+class SessionStore:
+    def save_session(self, session_id: str, data: Dict) -> None:
+        # Persist conversation state, variables, tool results
+        
+    def load_session(self, session_id: str) -> Optional[Dict]:
+        # Resume previous conversation
+        
+# Key: Store minimal state for context reconstruction
+session_data = {
+    "messages": conversation.get_summary(),  # Not full history
+    "variables": agent.variables,
+    "current_goal": agent.state.current_goal,
+    "completed_steps": agent.state.completed_goals
+}
+```
+
+### Rapid Prototyping Helpers
+
+```python
+# Pattern: One-liners for common operations
+response = quick_chat("What is the issue?")  # Single-turn
+stream = stream("Explain this...")           # Streaming
+tool = auto_tool(my_function)                # Auto-generate tool
+
+# Pattern: Minimize boilerplate
+# Instead of 50 lines of setup:
+agent = ZenithAgent()
+result = await agent.process_message(user_input)
+```
+
+### Hackathon Speed Development
+
+```yaml
+speed_principles:
+  1_action_over_explanation:
+    - Do first, explain later
+    - Prefer working code over perfect design
+  
+  2_tool_reuse:
+    - Build composable tools
+    - Chain existing tools for new capabilities
+  
+  3_fail_fast_recover_faster:
+    - Detect failures early
+    - Have recovery strategies ready
+  
+  4_user_feedback_loop:
+    - Stream progress to user
+    - Ask when stuck, don't assume
+  
+  5_minimal_viable_intelligence:
+    - Start simple, iterate
+    - Add complexity only when needed
+```
+
+### Integration Example
+
+```python
+from zenith_chat import L104ZenithSynthesizer
+
+# Create Zenith-enhanced L104 agent
+synthesizer = L104ZenithSynthesizer()
+
+# Agentic chat
+response = await synthesizer.chat("Analyze the quantum magic module")
+
+# Quick query
+quick = synthesizer.quick("What is GOD_CODE?")
+
+# Streaming
+for token in synthesizer.stream("Explain L104"):
+    print(token, end="")
 ```
 
 ---
