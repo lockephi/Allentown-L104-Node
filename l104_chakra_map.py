@@ -16,6 +16,12 @@ import math
 import time
 from l104_sage_bindings import get_sage_core
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 CHAKRAS = [
     ("MULADHARA", 1.0, "Root"),
     ("SVADHISTHANA", 2.0, "Sacral"),

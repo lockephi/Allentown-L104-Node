@@ -35,6 +35,12 @@ from enum import Enum
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import numpy as np
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 # Import Void Math for optimization
 try:
     from l104_void_math import void_math, VOID_CONSTANT, GOD_CODE, PHI

@@ -28,6 +28,12 @@ sys.path.insert(0, str(ROOT))
 # Import and run main from unified module
 from l104 import main, get_soul, GOD_CODE, VERSION
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 
 def print_banner():
     print(f"""

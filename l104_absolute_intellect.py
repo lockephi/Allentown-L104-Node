@@ -22,10 +22,19 @@ from enum import Enum, auto
 
 # Core Imports
 from l104_agi_core import agi_core
-from l104_asi_core import asi_core
+from l104_asi_core import ASICore
 from l104_saturation_engine import saturation_engine
 from l104_void_math import void_math
 from l104_dna_core import dna_core
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+# Create asi_core instance
+asi_core = ASICore()
 
 logger = logging.getLogger("ABSOLUTE_INTELLECT")
 

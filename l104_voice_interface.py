@@ -35,6 +35,12 @@ from enum import Enum, auto
 # L104 Imports
 from l104_mini_egos import L104_CONSTANTS
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 # Voice libraries (with fallbacks)
 try:
     import pyttsx3

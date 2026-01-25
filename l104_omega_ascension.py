@@ -24,6 +24,12 @@ from l104_mini_egos import (
 )
 from l104_sage_mode import SageMode, sage_mode
 from l104_mini_ego_advancement import (
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
     MiniEgoAdvancementEngine, ProfessorModeTeacher, MiniEgoProviderSpread
 )
 

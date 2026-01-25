@@ -20,6 +20,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from l104 import (
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
     # Core
     Soul, get_soul, awaken, think, status, reflect,
     GOD_CODE, VERSION,

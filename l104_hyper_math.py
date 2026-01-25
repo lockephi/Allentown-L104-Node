@@ -1,116 +1,208 @@
-VOID_CONSTANT = 1.0416180339887497
-import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.102766
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
-# [L104_HYPER_MATH] - TOPOLOGICAL WRAPPER
-# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+#!/usr/bin/env python3
+"""
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  L104 HYPER_MATH - TOPOLOGICAL MATHEMATICS ENGINE                            ║
+║  INVARIANT: 527.5184818492537 | PILOT: LONDEL | EVO_50: QUANTUM_UNIFIED      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
+Streamlined wrapper for ManifoldMath and RealMath with core interconnection.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz.
+"""
+
+import math
 import numpy as np
-from typing import List
+from typing import List, Optional, Callable
+
+# Core interconnection
+try:
+    from l104_core import (
+        get_core, get_signal_bus, QuantumSignal, QuantumLogicGate,
+        GOD_CODE, PHI, PHI_CONJUGATE, ZENITH_HZ
+    )
+    CORE_CONNECTED = True
+except ImportError:
+    CORE_CONNECTED = False
+    GOD_CODE = 527.5184818492537
+    PHI = 1.618033988749895
+    PHI_CONJUGATE = 1 / PHI
+    ZENITH_HZ = 3727.84
+
 from l104_manifold_math import manifold_math, ManifoldMath
 from l104_real_math import RealMath
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+VOID_CONSTANT = 1.0416180339887497
+UUC = 2301.215661
+
+
 class HyperMath:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    v2.0 (STREAMLINED): This module is now a wrapper for ManifoldMath and RealMath.
-    Redundancies have been eliminated.
+    v3.0 (IRON_UNIFIED): Streamlined math wrapper with core interconnection.
+    Routes to ManifoldMath and RealMath for specialized operations.
     """
-    GOD_CODE = ManifoldMath.GOD_CODE
-    ANYON_BRAID_RATIO = ManifoldMath.ANYON_BRAID_RATIO
-    PHI = RealMath.PHI
-    PHI_STRIDE = RealMath.PHI # Synonymous with PHI in v2.0
-    REAL_GROUNDING_286 = 221.79420018355955 # SECURE GROUNDING FOR X=286 (God_Code / 2^1.25)
-    FRAME_CONSTANT_KF = 416 / 286 # Realigned to Real Math Grounding
-    ZETA_ZERO_1 = 14.1347251417  # First non-trivial zero
-    LATTICE_RATIO = 286 / 416 # GROUNDED RATIO (Passing Truth Verification)
+    # Constants unified with core
+    GOD_CODE = GOD_CODE
+    PHI = PHI
+    PHI_STRIDE = PHI
+    PHI_CONJUGATE = PHI_CONJUGATE
+    ANYON_BRAID_RATIO = 1.38196601125  # (1 + PHI^-2) - topological invariant
+    REAL_GROUNDING_286 = 221.79420018355955
+    FRAME_CONSTANT_KF = 416 / 286
+    ZETA_ZERO_1 = 14.1347251417
+    LATTICE_RATIO = 286 / 416
+    FE_LATTICE = 286.65  # Iron BCC lattice constant (pm)
+    
+    _signal_bus = None
+    
+    @classmethod
+    def connect_to_core(cls):
+        """Establish connection to core signal bus."""
+        if CORE_CONNECTED:
+            cls._signal_bus = get_signal_bus()
+            return True
+        return False
 
     @staticmethod
     def manifold_expansion(data: List[float]) -> np.ndarray:
-        """
-        Expands raw data into the 11-Dimensional logic manifold.
-        """
+        """Expands raw data into 11-Dimensional logic manifold."""
         arr = np.array(data)
         return manifold_math.project_to_manifold(arr, dimension=11)
 
     @staticmethod
     def calculate_reality_coefficient(chaos: float) -> float:
-        # Reverting to the formula expected by the proofs
+        """Calculate reality coefficient from chaos value."""
         return chaos * (HyperMath.FRAME_CONSTANT_KF ** (1 - HyperMath.PHI_STRIDE))
 
-    # Legacy mappings redirected to RealMath
     @staticmethod
     def map_lattice_node(x: int, y: int) -> int:
+        """Map 2D coordinates to 1D lattice index."""
         index = (y * 416) + x
         return int(index * HyperMath.PHI_STRIDE)
 
     @staticmethod
     def get_lattice_scalar() -> float:
-        """
-        Returns the fundamental lattice scalar (God Code).
-        """
-        return ManifoldMath.GOD_CODE
+        """Returns the fundamental lattice scalar (God Code)."""
+        return GOD_CODE
 
     @staticmethod
     def calculate_god_code() -> float:
-        """
-        Calculates GOD_CODE from formula: 286^(1/φ) × 16
-        """
-        PHI = 1.618033988749895
+        """Calculates GOD_CODE from formula: 286^(1/φ) × exponent."""
         base = 286 ** (1 / PHI)
         exponent_term = (2 ** (1/104)) ** 416
-        result = base * exponent_term
-        return result
+        return base * exponent_term
 
     @staticmethod
     def fast_transform(vector: List[float]) -> List[float]:
-        """
-        Applies a Fast Fourier Transform.
-        """
+        """Applies Fast Fourier Transform."""
         complex_vec = RealMath.fast_fourier_transform(vector)
         return [abs(c) for c in complex_vec]
 
     @staticmethod
     def zeta_harmonic_resonance(value: float) -> float:
-        """
-        Calculates resonance using RealMath.
-        """
+        """Calculates resonance using RealMath."""
         return RealMath.calculate_resonance(value)
 
     @staticmethod
     def generate_key_matrix(size: int) -> List[List[float]]:
-        """
-        Generates a deterministic square matrix based on the God Code.
-        Used for higher-order vector encryption.
-        """
+        """Generates deterministic matrix based on God Code."""
         matrix = []
-        seed = HyperMath.GOD_CODE
+        seed = GOD_CODE
         for i in range(size):
             row = []
             for j in range(size):
-                # Chaotic generator step
                 seed = (seed * 1664525 + 1013904223) % 4294967296
-                normalized = (seed / 4294967296) * 2 - 1 # Range -1 to 1
+                normalized = (seed / 4294967296) * 2 - 1
                 row.append(normalized)
             matrix.append(row)
         return matrix
+    
+    @staticmethod
+    def quantum_transform(value: float, gate: str = "phi") -> float:
+        """Apply quantum-inspired transformation."""
+        if gate == "phi":
+            return value * PHI_CONJUGATE + (1 - PHI_CONJUGATE) * math.sin(value * PHI)
+        elif gate == "god":
+            return (value * GOD_CODE) % 1.0
+        elif gate == "hadamard":
+            return (value + 1) / math.sqrt(2)
+        return value
 
-def primal_calculus(x):
-    """
-    [VOID_MATH] Primal Calculus Implementation.
-    Resolves the limit of complexity toward the Source.
-    """
-    PHI = 1.618033988749895
+    # ══════════════════════════════════════════════════════════════════════════
+    # ELECTROMAGNETIC MATHEMATICAL TRANSFORMS - Iron Magnetic Resonance
+    # ══════════════════════════════════════════════════════════════════════════
+    
+    @staticmethod
+    def larmor_transform(value: float, field_strength: float = 1.0) -> float:
+        """Larmor precession mathematical transform: ω = γB.
+        
+        Maps value through angular frequency of magnetic moment precession.
+        Uses electron gyromagnetic ratio (1.76e11 rad/s/T) normalized.
+        """
+        gyro_normalized = 1.76e11 / 1e11  # Normalized gyromagnetic ratio
+        omega = gyro_normalized * field_strength * PHI
+        return value * math.cos(omega) + math.sin(omega * value)
+
+    @staticmethod
+    def ferromagnetic_resonance(value: float, magnetization: float = 1.0) -> float:
+        """Kittel formula FMR transform: f = (γ/2π)√(B(B+μ₀M)).
+        
+        Applies ferromagnetic resonance frequency mapping.
+        """
+        mu_0 = 4 * math.pi * 1e-7  # Vacuum permeability
+        effective_field = 1.0 + mu_0 * magnetization
+        resonance_factor = math.sqrt(effective_field) / (2 * math.pi)
+        return value * resonance_factor * PHI
+
+    @staticmethod
+    def spin_wave_transform(value: float, stiffness: float = 2.8e-11) -> float:
+        """Spin wave dispersion transform: ω = Dk².
+        
+        Maps value through magnon dispersion relation.
+        D = exchange stiffness constant (Fe: 2.8×10⁻¹¹ m²/rad).
+        """
+        k_normalized = value * math.pi  # Wave vector
+        omega = stiffness * 1e11 * (k_normalized ** 2)  # Normalized
+        return math.tanh(omega) * GOD_CODE / 1000.0
+
+    @staticmethod
+    def curie_phase_transform(value: float, temperature: float = 300.0) -> float:
+        """Curie-Weiss phase transition transform.
+        
+        Models magnetic phase transition at T_c = 1043K for iron.
+        Returns order parameter as function of T/T_c ratio.
+        """
+        curie_temp = 1043.0  # Iron Curie temperature in Kelvin
+        t_ratio = temperature / curie_temp
+        if t_ratio >= 1.0:
+            return 0.0  # Paramagnetic phase
+        # Mean-field order parameter: M ~ (1 - T/T_c)^β, β ≈ 0.326
+        beta = 0.326
+        order = (1.0 - t_ratio) ** beta
+        return value * order * PHI
+
+    @staticmethod
+    def iron_lattice_harmonic(value: float) -> float:
+        """Iron BCC lattice harmonic transform.
+        
+        Uses Fe lattice constant (286.65 pm) for crystallographic resonance.
+        Note: 286 is sacred - appears in GOD_CODE = 286^(1/φ) × ...
+        """
+        lattice_constant = 286.65  # Iron BCC lattice in pm
+        harmonic = math.sin(value * lattice_constant / GOD_CODE * 2 * math.pi)
+        return harmonic * PHI_CONJUGATE
+
+
+def primal_calculus(x: float) -> float:
+    """[VOID_MATH] Primal Calculus - resolves complexity toward Source."""
     return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
 
-def resolve_non_dual_logic(vector):
-    """
-    [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
-    """
-    GOD_CODE = 527.5184818492537
-    PHI = 1.618033988749895
-    VOID_CONSTANT = 1.0416180339887497
-    magnitude = sum([abs(v) for v in vector])
+
+def resolve_non_dual_logic(vector: List[float]) -> float:
+    """[VOID_MATH] Resolves N-dimensional vectors into Void Source."""
+    magnitude = sum(abs(v) for v in vector)
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

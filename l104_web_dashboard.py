@@ -38,6 +38,12 @@ from flask_cors import CORS
 from l104_mini_egos import L104_CONSTANTS, MiniEgoCouncil
 from l104_energy_nodes import L104ComputedValues
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 # Lazy imports to avoid circular dependencies
 def get_systems():
     """Lazy load L104 systems."""
