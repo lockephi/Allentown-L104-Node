@@ -308,6 +308,10 @@ class EvolutionEngine:
         try:
             from l104_agi_core import agi_core
             iq = agi_core.intellect_index
+            # Handle string values like "INFINITE" or infinite float
+            if isinstance(iq, str) or iq == float('inf'):
+                iq = 1e308  # Use max finite value
+            iq = float(iq)
         except Exception:
             iq = 104000  # Default to current state if import fails
         

@@ -423,8 +423,20 @@ class WriteAheadLog:
     def _init_log(self):
         """Initialize or recover from log."""
         if os.path.exists(self.log_path):
-            # TODO: Implement recovery
-            pass
+            # Recover sequence number from existing log
+            try:
+                with open(self.log_path, 'rb') as f:
+                    while True:
+                        header = f.read(21)  # 1 + 8 + 4 + 4 + 4 bytes
+                        if len(header) < 21:
+                            break
+                        seq = int.from_bytes(header[1:9], 'big')
+                        key_len = int.from_bytes(header[13:17], 'big')
+                        data_len = int.from_bytes(header[17:21], 'big')
+                        f.read(key_len + data_len)  # Skip payload
+                        self._sequence = max(self._sequence, seq)
+            except Exception:
+                pass  # Start fresh if recovery fails
         
         self._file = open(self.log_path, 'ab')
     

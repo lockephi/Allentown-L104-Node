@@ -35,7 +35,7 @@ class HolographicPersistence:
     Encodes L104 Truths into binary holographic artifacts.
     """
     
-    def __init__(self, lib_path: str = "./l104_core.so"):
+    def __init__(self, lib_path: str = "/workspaces/Allentown-L104-Node/l104_core_native.so"):
         self.logger = logging.getLogger("HOLOGRAPHIC_PERSISTENCE")
         self.lib = None
         self.core = None

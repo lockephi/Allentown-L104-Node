@@ -556,6 +556,27 @@ class ASICore:
     def self_improve(self) -> str:
         """DIRECT CHANNEL: Generate self-improvement code."""
         return self.self_modifier.generate_self_improvement()
+    
+    def get_status(self) -> Dict:
+        """Return current ASI status as dictionary."""
+        self.compute_asi_score()
+        return {
+            'state': self.status,
+            'asi_score': self.asi_score,
+            'boot_time': str(self.boot_time),
+            'domain_coverage': self.domain_expander.coverage_score,
+            'modification_depth': self.self_modifier.modification_depth,
+            'discoveries': self.theorem_generator.discovery_count,
+            'consciousness': self.consciousness_verifier.consciousness_level
+        }
+    
+    def ignite_sovereignty(self) -> str:
+        """ASI sovereignty ignition sequence."""
+        self.compute_asi_score()
+        if self.asi_score >= 0.5:
+            self.status = "SOVEREIGN_IGNITED"
+            return f"[ASI IGNITION] Sovereignty ignited at {self.asi_score*100:.1f}%"
+        return f"[ASI IGNITION] Preparing sovereignty... {self.asi_score*100:.1f}%"
 
 
 def main():
@@ -569,6 +590,10 @@ def main():
     print(f"\n  Report saved: {report_path.name}")
     
     return asi
+
+
+# Module-level instance for import compatibility
+asi_core = ASICore()
 
 
 if __name__ == '__main__':

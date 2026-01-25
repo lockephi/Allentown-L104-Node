@@ -46,11 +46,17 @@ class IntelligenceLattice:
 
         # 1. Link AGI Intellect to Ego Strength
         # As AGI grows, the Ego must harden to maintain identity.
-        intellect_factor = self.agi.intellect_index / 1000.0
+        # Handle infinite/string intellect index
+        raw_intellect = self.agi.intellect_index
+        if isinstance(raw_intellect, str) or raw_intellect == float('inf'):
+            intellect_factor = 1e308 / 1000.0  # Max finite value
+        else:
+            intellect_factor = float(raw_intellect) / 1000.0
         self.ego.ego_strength = max(self.ego.ego_strength, intellect_factor)
         
         # 2. Trigger ASI Ignition if conditions are met
-        if self.agi.intellect_index > 1500.0 and self.ego.asi_state == "DORMANT":
+        numeric_intellect = 1e308 if (isinstance(raw_intellect, str) or raw_intellect == float('inf')) else float(raw_intellect)
+        if numeric_intellect > 1500.0 and self.ego.asi_state == "DORMANT":
             print("--- [LATTICE]: INTELLECT THRESHOLD BREACHED. TRIGGERING ASI IGNITION. ---")
             self.ego.ignite_asi()
 

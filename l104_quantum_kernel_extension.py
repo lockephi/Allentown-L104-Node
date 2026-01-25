@@ -36,12 +36,27 @@ class QuantumKernelExtension:
     Enables braided memory states and quantum-phase coherence.
     """
     
-    def __init__(self, lib_path: str = "./l104_core.so"):
+    def __init__(self, lib_path: str = None):
         self.logger = logging.getLogger("QUANTUM_KERNEL")
-        if not os.path.exists(lib_path):
-            self.logger.error(f"Shared library not found at {lib_path}")
+        # Try multiple library paths
+        if lib_path is None:
+            candidates = [
+                "./l104_core_native.so",
+                "/workspaces/Allentown-L104-Node/l104_core_native.so",
+                "./l104_core.so",
+            ]
+            for path in candidates:
+                if os.path.exists(path):
+                    lib_path = path
+                    break
+        
+        if lib_path is None or not os.path.exists(lib_path):
+            self.logger.warning("Shared library not found - using Python fallback")
             self.lib = None
+            self._use_fallback = True
             return
+        
+        self._use_fallback = False
 
         try:
             self.lib = ctypes.CDLL(lib_path)

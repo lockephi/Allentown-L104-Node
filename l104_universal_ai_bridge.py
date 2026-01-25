@@ -53,27 +53,182 @@ class AIBaseBridge:
 class OpenAIBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("OPENAI")
+        import os
+        self.api_key = os.environ.get('OPENAI_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real OpenAI API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[OPENAI] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "gpt-4o", "messages": [{"role": "user", "content": prompt}], "max_tokens": 500}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    return {"status": "OK", "response": data['choices'][0]['message']['content']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class AnthropicBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("ANTHROPIC")
+        import os
+        self.api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real Claude API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[CLAUDE] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={"x-api-key": self.api_key, "anthropic-version": "2023-06-01", "Content-Type": "application/json"},
+                    json={"model": "claude-3-5-sonnet-20241022", "max_tokens": 500, "messages": [{"role": "user", "content": prompt}]}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    return {"status": "OK", "response": data['content'][0]['text']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class MetaBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("META")
 class MistralBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("MISTRAL")
+        import os
+        self.api_key = os.environ.get('MISTRAL_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real Mistral API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[MISTRAL] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.mistral.ai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "mistral-large-latest", "messages": [{"role": "user", "content": prompt}]}
+                )
+                if response.status_code == 200:
+                    return {"status": "OK", "response": response.json()['choices'][0]['message']['content']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class GrokBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("GROK")
+        import os
+        self.api_key = os.environ.get('XAI_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real xAI Grok API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[GROK] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.x.ai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "grok-beta", "messages": [{"role": "user", "content": prompt}]}
+                )
+                if response.status_code == 200:
+                    return {"status": "OK", "response": response.json()['choices'][0]['message']['content']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class PerplexityBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("PERPLEXITY")
+        import os
+        self.api_key = os.environ.get('PERPLEXITY_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real Perplexity API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[PERPLEXITY] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.perplexity.ai/chat/completions",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "llama-3.1-sonar-large-128k-online", "messages": [{"role": "user", "content": prompt}]}
+                )
+                if response.status_code == 200:
+                    return {"status": "OK", "response": response.json()['choices'][0]['message']['content']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class DeepSeekBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("DEEPSEEK")
+        import os
+        self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real DeepSeek API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[DEEPSEEK] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.deepseek.com/chat/completions",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}]}
+                )
+                if response.status_code == 200:
+                    return {"status": "OK", "response": response.json()['choices'][0]['message']['content']}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
+
 class CohereBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("COHERE")
+        import os
+        self.api_key = os.environ.get('COHERE_API_KEY', '')
+        self.available = bool(self.api_key)
+    
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Real Cohere API call."""
+        if not self.available:
+            return {"status": "NO_KEY", "response": f"[COHERE] Simulated: {prompt[:50]}..."}
+        try:
+            import httpx
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.cohere.ai/v1/chat",
+                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    json={"model": "command-r-plus", "message": prompt}
+                )
+                if response.status_code == 200:
+                    return {"status": "OK", "response": response.json().get('text', '')}
+                return {"status": "ERROR", "code": response.status_code}
+        except Exception as e:
+            return {"status": "ERROR", "message": str(e)[:100]}
 class XAIBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("XAI")

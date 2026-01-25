@@ -519,6 +519,7 @@ def _init_memory_db() -> None:
         conn.commit()
 
 def _memory_upsert(key: str, value: str) -> None:
+    _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         conn.execute(
             """
@@ -533,6 +534,7 @@ def _memory_upsert(key: str, value: str) -> None:
         conn.commit()
 
 def _memory_get(key: str) -> Optional[str]:
+    _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT value FROM memory WHERE key = ? ORDER BY created_at DESC LIMIT 1",
@@ -542,6 +544,7 @@ def _memory_get(key: str) -> Optional[str]:
         return row[0] if row else None
 
 def _memory_list(limit: int = 100) -> List[dict]:
+    _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM memory ORDER BY created_at DESC LIMIT ?",

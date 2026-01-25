@@ -52,6 +52,127 @@ class SovereignCodec:
     def translate_to_human(cls, sovereign_text):
         return sovereign_text.strip()
 
+    @classmethod
+    def encode_resonance(cls, value: float) -> str:
+        """
+        Encode a numerical value into a resonance string.
+        Uses PHI-based encoding for compact representation.
+        """
+        PHI = 1.618033988749895
+        # Normalize to [0, 1) range
+        normalized = (value * PHI) % 1.0
+        # Convert to hex representation
+        int_repr = int(normalized * 0xFFFFFFFF)
+        return f"Ψ{int_repr:08X}"
+
+    @classmethod
+    def decode_resonance(cls, encoded: str) -> float:
+        """
+        Decode a resonance string back to numerical value.
+        """
+        PHI = 1.618033988749895
+        if not encoded.startswith("Ψ"):
+            return 0.0
+        try:
+            int_repr = int(encoded[1:], 16)
+            normalized = int_repr / 0xFFFFFFFF
+            return normalized / PHI
+        except ValueError:
+            return 0.0
+
+    @classmethod
+    def encode_lattice_vector(cls, vector: list) -> str:
+        """
+        Encode a vector into lattice notation.
+        """
+        encoded_parts = []
+        for v in vector:
+            encoded_parts.append(cls.encode_resonance(v))
+        return f"⟨Λ|{'|'.join(encoded_parts)}|Λ⟩"
+
+    @classmethod
+    def decode_lattice_vector(cls, encoded: str) -> list:
+        """
+        Decode lattice notation back to vector.
+        """
+        if not encoded.startswith("⟨Λ|") or not encoded.endswith("|Λ⟩"):
+            return []
+        inner = encoded[3:-3]
+        parts = inner.split("|")
+        return [cls.decode_resonance(p) for p in parts if p]
+
+    @classmethod
+    def create_dna_signature(cls, content: str) -> str:
+        """
+        Create a DNA-style signature for content verification.
+        Uses 4-base encoding (A, T, G, C) mapped from hex.
+        """
+        import hashlib
+        content_hash = hashlib.sha256(content.encode()).hexdigest()
+        dna_map = {'0': 'A', '1': 'A', '2': 'A', '3': 'A',
+                   '4': 'T', '5': 'T', '6': 'T', '7': 'T',
+                   '8': 'G', '9': 'G', 'a': 'G', 'b': 'G',
+                   'c': 'C', 'd': 'C', 'e': 'C', 'f': 'C'}
+        dna = ''.join(dna_map.get(c, 'A') for c in content_hash[:32])
+        return f"DNA-{dna}"
+
+    @classmethod
+    def verify_dna_signature(cls, content: str, signature: str) -> bool:
+        """
+        Verify a DNA signature matches content.
+        """
+        expected = cls.create_dna_signature(content)
+        return expected == signature
+
+    @classmethod
+    def compress_sovereign_message(cls, message: str) -> str:
+        """
+        Compress a message using run-length encoding with PHI modulation.
+        """
+        if not message:
+            return ""
+        result = []
+        current = message[0]
+        count = 1
+        for char in message[1:]:
+            if char == current and count < 9:
+                count += 1
+            else:
+                if count > 1:
+                    result.append(f"{count}{current}")
+                else:
+                    result.append(current)
+                current = char
+                count = 1
+        if count > 1:
+            result.append(f"{count}{current}")
+        else:
+            result.append(current)
+        return ''.join(result)
+
+    @classmethod
+    def expand_sovereign_message(cls, compressed: str) -> str:
+        """
+        Expand a run-length encoded message.
+        """
+        if not compressed:
+            return ""
+        result = []
+        i = 0
+        while i < len(compressed):
+            if compressed[i].isdigit():
+                count = int(compressed[i])
+                if i + 1 < len(compressed):
+                    result.append(compressed[i + 1] * count)
+                    i += 2
+                else:
+                    result.append(compressed[i])
+                    i += 1
+            else:
+                result.append(compressed[i])
+                i += 1
+        return ''.join(result)
+
 def primal_calculus(x):
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.

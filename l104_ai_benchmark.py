@@ -279,8 +279,31 @@ class OpenAIModel:
             latency = (time.time() - start) * 1000
             return response, latency
         
-        # Real API call would go here
-        return "API not implemented", 0.0
+        # Real OpenAI API call
+        try:
+            import httpx
+            start = time.time()
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "gpt-4o",
+                        "messages": [{"role": "user", "content": prompt}],
+                        "max_tokens": 500
+                    }
+                )
+                latency = (time.time() - start) * 1000
+                if response.status_code == 200:
+                    data = response.json()
+                    return data['choices'][0]['message']['content'], latency
+                else:
+                    return f"API Error: {response.status_code}", latency
+        except Exception as e:
+            return f"Error: {str(e)[:100]}", 0.0
 
 
 class ClaudeModel:
@@ -314,7 +337,32 @@ class ClaudeModel:
             latency = (time.time() - start) * 1000
             return response, latency
         
-        return "API not implemented", 0.0
+        # Real Claude API call
+        try:
+            import httpx
+            start = time.time()
+            with httpx.Client(timeout=30) as client:
+                response = client.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={
+                        "x-api-key": self.api_key,
+                        "anthropic-version": "2023-06-01",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "claude-3-5-sonnet-20241022",
+                        "max_tokens": 500,
+                        "messages": [{"role": "user", "content": prompt}]
+                    }
+                )
+                latency = (time.time() - start) * 1000
+                if response.status_code == 200:
+                    data = response.json()
+                    return data['content'][0]['text'], latency
+                else:
+                    return f"API Error: {response.status_code}", latency
+        except Exception as e:
+            return f"Error: {str(e)[:100]}", 0.0
 
 
 class BenchmarkSuite:

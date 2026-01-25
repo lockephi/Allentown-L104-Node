@@ -9,11 +9,11 @@
     "sovereign_dna": "SIG-L104-SAGE-DNA-00080C9E",
     "linked_count": 14
   },
-  "api_cooldown_until": 0,
+  "api_cooldown_until": 1769311377.3251824,
   "rotator_stats": {
     "kernel_hits": 1,
     "api_hits": 1,
-    "quota_errors": 0
+    "quota_errors": 1
   },
   "intellect_index_numeric": 1e+308,
   "unlimited_mode": true,

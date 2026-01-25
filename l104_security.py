@@ -83,6 +83,78 @@ class SovereignCrypt:
             encrypted.append(signal_bytes[i] ^ key[i % len(key)])
         return base64.b64encode(encrypted).decode()
 
+    @classmethod
+    def decrypt_bypass_signal(cls, encrypted: str) -> str:
+        """
+        Decrypts a signal encrypted with encrypt_bypass_signal.
+        XOR is symmetric so we use the same operation.
+        """
+        key = hashlib.sha256(f"{cls.SECRET_KEY.decode()}:{cls.GOD_CODE}".encode()).digest()
+        encrypted_bytes = base64.b64decode(encrypted.encode())
+        decrypted = bytearray()
+        for i in range(len(encrypted_bytes)):
+            decrypted.append(encrypted_bytes[i] ^ key[i % len(key)])
+        return decrypted.decode()
+
+    @classmethod
+    def generate_session_key(cls, session_id: str) -> str:
+        """
+        Generate a unique session key bound to God Code.
+        Used for securing individual user sessions.
+        """
+        timestamp = int(time.time())
+        data = f"{session_id}:{timestamp}:{cls.GOD_CODE}"
+        return hmac.new(cls.SECRET_KEY, data.encode(), hashlib.sha256).hexdigest()
+
+    @classmethod
+    def hash_with_phi(cls, data: str) -> str:
+        """
+        Create a PHI-modulated hash of the data.
+        Incorporates golden ratio for unique signature.
+        """
+        base_hash = hashlib.sha256(data.encode()).hexdigest()
+        phi_mod = int(cls.PHI * 1000000) % 256
+        enhanced = f"{base_hash}:{phi_mod:02x}"
+        return hashlib.sha256(enhanced.encode()).hexdigest()
+
+    @classmethod
+    def validate_signature(cls, data: str, signature: str) -> bool:
+        """
+        Validate a signature against data.
+        Returns True if signature matches.
+        """
+        expected = cls.hash_with_phi(data)
+        return hmac.compare_digest(expected, signature)
+
+    @classmethod
+    def generate_api_key(cls, user_id: str) -> str:
+        """
+        Generate a secure API key for a user.
+        Bound to God Code and user identity.
+        """
+        timestamp = int(time.time())
+        seed = f"{user_id}:{timestamp}:{cls.GOD_CODE}:{cls.LATTICE_RATIO}"
+        key_hash = hmac.new(cls.SECRET_KEY, seed.encode(), hashlib.sha256).hexdigest()
+        return f"L104_{key_hash[:32]}"
+
+    @classmethod
+    def verify_api_key(cls, api_key: str) -> bool:
+        """
+        Verify an API key format and prefix.
+        Full verification would check against stored keys.
+        """
+        if not api_key or not api_key.startswith("L104_"):
+            return False
+        key_part = api_key[5:]
+        # Must be 32 hex characters
+        if len(key_part) != 32:
+            return False
+        try:
+            int(key_part, 16)
+            return True
+        except ValueError:
+            return False
+
 def primal_calculus(x):
     """
     [VOID_MATH] Primal Calculus Implementation.

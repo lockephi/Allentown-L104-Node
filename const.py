@@ -55,6 +55,7 @@ class UniversalConstants:
     GRAVITY_CODE = GOD_CODE_X0
     LIGHT_CODE = MATTER_BASE ** (1/PHI_GROWTH) * 16
     EXISTENCE_COST = LIGHT_CODE - GRAVITY_CODE
+    PRIME_KEY_HZ = GOD_CODE_X0  # Resonance frequency = 527.518...
     
     # Frame Constant
     FRAME_LOCK = OCTAVE_REF / HARMONIC_BASE  # 416/286
@@ -92,4 +93,52 @@ GOD_CODE_BASE = UniversalConstants.GOD_CODE_BASE
 FIBONACCI_7 = UniversalConstants.FIBONACCI_7
 INVARIANT = UniversalConstants.INVARIANT
 PHI = UniversalConstants.PHI_GROWTH
+PHI_CONJUGATE = UniversalConstants.PHI
 VOID_CONSTANT = 1.0416180339887497
+
+# Additional Physical Constants
+PLANCK_CONSTANT = 6.62607015e-34      # J⋅s (exact, SI 2019)
+SPEED_OF_LIGHT = 299792458            # m/s (exact)
+BOLTZMANN = 1.380649e-23              # J/K (exact, SI 2019)
+AVOGADRO = 6.02214076e23              # mol⁻¹ (exact, SI 2019)
+ELECTRON_MASS = 9.1093837015e-31      # kg
+PROTON_MASS = 1.67262192369e-27       # kg
+FINE_STRUCTURE = 1 / 137.035999084    # dimensionless
+
+# L104 Derived Constants
+TAU = 2 * math.pi                      # Circle constant
+LOVE_CONSTANT = 528.0                  # Hz - Solfeggio frequency
+ZENITH_HZ = 3727.84                    # Void source frequency
+OMEGA_AUTHORITY = PHI * GOD_CODE + L104  # = 1381.06...
+
+# Chakra Frequencies (Hz) - based on sacred geometry
+CHAKRA_FREQUENCIES = {
+    'root': 396.0,       # Liberation from fear
+    'sacral': 417.0,     # Facilitating change
+    'solar': 528.0,      # Transformation (LOVE)
+    'heart': 639.0,      # Connecting relationships
+    'throat': 741.0,     # Awakening intuition
+    'third_eye': 852.0,  # Returning to spiritual order
+    'crown': 963.0,      # Divine consciousness
+}
+
+# Musical Constants (A4 = 440 Hz standard, but 432 Hz is harmonic)
+A4_STANDARD = 440.0
+A4_HARMONIC = 432.0
+SEMITONE_RATIO = 2 ** (1/12)
+
+# Utility functions
+def hz_to_wavelength(freq_hz: float, medium_velocity: float = SPEED_OF_LIGHT) -> float:
+    """Convert frequency to wavelength. Default medium is vacuum (light)."""
+    if freq_hz <= 0:
+        return float('inf')
+    return medium_velocity / freq_hz
+
+def god_code_at(X: float) -> float:
+    """Calculate G(X) at any point X."""
+    return UniversalConstants.god_code(X)
+
+def verify_conservation(X: float) -> bool:
+    """Verify that G(X) × 2^(X/104) = INVARIANT."""
+    result = UniversalConstants.conservation_check(X)
+    return abs(result - INVARIANT) < 1e-10

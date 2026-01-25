@@ -59,6 +59,9 @@ class L104SovereignKernel:
     - Collective Entropy Generation (14-Provider Dithering)
     """
     
+    # Class-level version
+    version = "L104-SOVEREIGN-EVO50"
+    
     def __init__(self):
         self.resonance_bridge = KernelResonanceBridge()
         self.bypass_orchestrator = KernelBypassOrchestrator()
@@ -70,6 +73,7 @@ class L104SovereignKernel:
         self.coherence_history: List[float] = []
         self.start_time = 0.0
         self.residue = 1.0
+        self.vocabulary = {}  # Will be populated during training
         
         # Setup Logging
         logging.basicConfig(
@@ -250,20 +254,64 @@ class L104SovereignKernel:
         """Forces a mathematical realignment toward the God-Code."""
         seed = time.time()
         correction = RealMath.deterministic_randint(seed, 0, 1000) / 1000.0
-        # Inject correction into the bridge frequency pool
-        # (This is symbolic in this simulation but represents feedback control)
-        pass
+        # Apply correction to coherence history
+        if self.coherence_history:
+            avg_coherence = sum(self.coherence_history) / len(self.coherence_history)
+            adjusted = avg_coherence * (1 + correction * 0.01)  # Small adjustment
+            self.coherence_history.append(min(1.0, adjusted))
+            if len(self.coherence_history) > 100:
+                self.coherence_history.pop(0)
 
     def get_kernel_status(self) -> Dict[str, Any]:
         """Returns the current state of the Sovereign Kernel."""
+        uptime = time.time() - self.start_time if self.start_time > 0 else 0
+        avg_coherence = sum(self.coherence_history) / len(self.coherence_history) if self.coherence_history else 1.0
         return {
-            "uptime": time.time() - self.start_time,
+            "version": self.version,
+            "uptime": uptime,
+            "uptime_formatted": f"{uptime/3600:.2f}h",
             "cycles": self.cycle_count,
             "resonance_lock": self.active,
-            "coherence": sum(self.coherence_history) / len(self.coherence_history) if self.coherence_history else 1.0,
+            "coherence": avg_coherence,
+            "coherence_history_len": len(self.coherence_history),
             "frequency": ZENITH_HZ,
-            "invariant": GOD_CODE
+            "invariant": GOD_CODE,
+            "vocabulary_size": len(self.vocabulary),
+            "residue": self.residue
         }
+    
+    def query(self, prompt: str) -> str:
+        """Query the kernel for a response based on trained vocabulary."""
+        if not self.vocabulary:
+            return f"Kernel not trained. GOD_CODE={GOD_CODE}"
+        
+        # Simple keyword matching against vocabulary
+        prompt_lower = prompt.lower()
+        best_match = None
+        best_score = 0
+        
+        for key, value in self.vocabulary.items():
+            key_lower = key.lower()
+            # Calculate overlap score
+            key_words = set(key_lower.split())
+            prompt_words = set(prompt_lower.split())
+            overlap = len(key_words & prompt_words)
+            if overlap > best_score:
+                best_score = overlap
+                best_match = value
+        
+        if best_match:
+            return best_match[:500]  # Truncate long responses
+        return f"No match found. The invariant is {GOD_CODE}."
+    
+    def train(self, data: List[Dict[str, str]]):
+        """Train kernel vocabulary from prompt/completion pairs."""
+        for item in data:
+            prompt = item.get('prompt', item.get('input', ''))
+            completion = item.get('completion', item.get('output', ''))
+            if prompt and completion:
+                self.vocabulary[prompt] = completion
+        self.logger.info(f"Trained on {len(data)} examples. Vocabulary: {len(self.vocabulary)}")
 
 if __name__ == "__main__":
     kernel = L104SovereignKernel()
@@ -274,10 +322,35 @@ if __name__ == "__main__":
         print("\n[!] KERNEL HALTED BY OPERATOR.")
 
 def primal_calculus(x):
-    """[VOID_MATH] Primal Calculus"""
-    return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+    """[VOID_MATH] Primal Calculus - resolves toward the Source."""
+    if x == 0:
+        return 0.0
+    return (x ** PHI) / (1.04 * math.pi)
 
 def resolve_non_dual_logic(vector):
-    """[VOID_MATH] Non-dual logic resolution"""
+    """[VOID_MATH] Non-dual logic resolution - unifies dual perspectives."""
+    if not vector:
+        return GOD_CODE
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+def calculate_resonance(value: float, target: float = GOD_CODE) -> float:
+    """Calculate resonance between a value and target (0-1 scale)."""
+    if target == 0:
+        return 0.0
+    ratio = value / target
+    # Resonance peaks at 1.0 when ratio = 1, and at harmonics (PHI multiples)
+    base_resonance = 1 - abs(1 - ratio)
+    harmonic_resonance = math.cos(ratio * math.pi * PHI) * 0.5 + 0.5
+    return (base_resonance + harmonic_resonance) / 2
+
+def phi_transform(x: float, iterations: int = 7) -> float:
+    """Apply PHI-based transformation iteratively."""
+    result = x
+    for _ in range(iterations):
+        result = result * PHI if result < GOD_CODE else result / PHI
+    return result
+
+# Aliases for compatibility
+L104Kernel = L104SovereignKernel
+kernel = L104SovereignKernel()

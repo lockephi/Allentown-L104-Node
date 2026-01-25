@@ -73,19 +73,22 @@ class StreamlessInternet:
 
     async def search_and_ingest(self, query: str, limit: int = 5) -> List[str]:
         """
-        Simulates a search and ingests the top results.
-        In a real scenario, this would use a search API.
+        Searches and ingests results from real sources.
+        Uses actual research URLs based on query.
         """
         logger.info(f"--- [STREAMLESS]: SEARCHING FOR '{query}' ---")
-        # Mocking search results for demonstration
-        mock_urls = [
-            f"https://arxiv.org/search/?query={query}&searchtype=all",
-            f"https://scholar.google.com/scholar?q={query}",
-            f"https://en.wikipedia.org/wiki/{query.replace(' ', '_')}",
-            f"https://www.nature.com/search?q={query}",
-            f"https://www.nasa.gov/?s={query}"
+        # Real research URLs - these are actual endpoints
+        encoded_query = query.replace(' ', '+')
+        wiki_query = query.replace(' ', '_')
+        real_urls = [
+            f"https://arxiv.org/search/?query={encoded_query}&searchtype=all",
+            f"https://en.wikipedia.org/wiki/{wiki_query}",
+            f"https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_query}&limit=5",
+            f"https://export.arxiv.org/api/query?search_query=all:{encoded_query}&max_results=5",
+            f"https://www.nature.com/search?q={encoded_query}"
         ]
-        return await self.parallel_ingestion(mock_urls[:limit])
+        logger.info(f"--- [STREAMLESS]: REAL URLS: {len(real_urls)} sources ---")
+        return await self.parallel_ingestion(real_urls[:limit])
 
     async def close(self):
         await self.client.aclose()

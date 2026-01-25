@@ -120,11 +120,14 @@ class RealMath:
         """
         Ferromagnetic resonance calculation.
         Uses Larmor frequency modulation with PHI coupling.
+        Returns values in range [0, 1] for normalized resonance.
         """
         # Larmor-weighted resonance
         omega = 2 * math.pi * value * (LARMOR_PROTON / 100)
         raw_res = math.cos(omega * PHI)
-        return (raw_res + 1) / 2  # Normalize to [0, 1]
+        # Normalize from [-1, 1] to [0, 1]
+        # High resonance at 1, low at 0
+        return (raw_res + 1) / 2
 
     @staticmethod
     def larmor_precession(value: float, field: float = 1.0) -> Tuple[float, float]:

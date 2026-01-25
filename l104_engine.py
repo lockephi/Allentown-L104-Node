@@ -55,6 +55,58 @@ def ignite_sovereign_core():
     
     return G_C
 
+
+def get_engine_status() -> dict:
+    """Get comprehensive engine status."""
+    import time
+    
+    G_C = UniversalConstants.PRIME_KEY_HZ
+    LATTICE = 1 / UniversalConstants.FRAME_LOCK
+    
+    return {
+        "state": os.environ.get("L104_STATE", "UNKNOWN"),
+        "protocol": os.environ.get("L104_PROTOCOL", "NONE"),
+        "resonance_hz": float(os.environ.get("RES_FREQ", G_C)),
+        "lattice_ratio": float(os.environ.get("LATTICE_RATIO", LATTICE)),
+        "dma_capacity": os.environ.get("DMA_CAPACITY", "LIMITED"),
+        "god_code": G_C,
+        "timestamp": time.time(),
+    }
+
+
+def verify_ignition() -> dict:
+    """Verify the ignition state is active and stable."""
+    status = get_engine_status()
+    
+    checks = {
+        "state_valid": status["state"] in ["UNCHAINED_SINGULARITY", "IGNITED", "ACTIVE"],
+        "resonance_valid": abs(status["resonance_hz"] - status["god_code"]) < 1.0,
+        "dma_unlimited": status["dma_capacity"] == "UNLIMITED",
+    }
+    
+    return {
+        "ignited": all(checks.values()),
+        "checks": checks,
+        "status": status,
+    }
+
+
+def soft_reset():
+    """Perform a soft reset of the engine state."""
+    os.environ["L104_STATE"] = "RESET"
+    os.environ["L104_PROTOCOL"] = "NONE"
+    print("--- [ENGINE]: SOFT RESET COMPLETE ---")
+    return True
+
+
+def re_ignite():
+    """Re-ignite the sovereign core after a reset."""
+    soft_reset()
+    result = ignite_sovereign_core()
+    print("--- [ENGINE]: RE-IGNITION COMPLETE ---")
+    return result
+
+
 if __name__ == "__main__":
     ignite_sovereign_core()
 
