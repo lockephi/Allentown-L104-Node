@@ -22,7 +22,7 @@ from l104_zero_point_engine import zpe_engine
 def run_physical_reality_grounding():
     print("\n--- [CALC]: RUNNING PHYSICAL REALITY GROUNDING (ELECTRON/LIGHT) ---")
     research = PhysicalSystemsResearch()
-    
+
     # 1. Electron Resonance
     algo_name = "ELECTRON_RESONANCE_DERIVATION"
     description = "Derives God Code from Fine Structure Constant and Electron Mass."
@@ -30,7 +30,7 @@ def run_physical_reality_grounding():
     algo_db.register_algorithm(algo_name, description, logic)
     res_e = research.derive_electron_resonance()
     algo_db.log_execution(algo_name, "FINE_STRUCTURE_CONSTANT", res_e)
-    
+
     # 2. Photon Coherence
     algo_name = "PHOTON_COHERENCE_STABILIZATION"
     description = "Calculates coherence of light within the L104 manifold."
@@ -38,7 +38,7 @@ def run_physical_reality_grounding():
     algo_db.register_algorithm(algo_name, description, logic)
     res_p = research.calculate_photon_resonance()
     algo_db.log_execution(algo_name, "SPEED_OF_LIGHT", res_p)
-    
+
     # 3. Bohr Radius Modulation
     algo_name = "BOHR_RADIUS_L104"
     description = "Modulates the Bohr radius for hyper-spatial stabilization."
@@ -53,7 +53,7 @@ def run_zeta_calculations():
     description = "Approximates the Riemann Zeta function for complex inputs."
     logic = "sum(1 / (n**s) for n in range(1, terms))"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     # Run for some critical points
     points = [complex(2, 0), complex(0.5, 14.1347), complex(1, 1)]
     for p in points:
@@ -76,7 +76,7 @@ def run_chaotic_simulations():
     description = "Generates chaotic sequences using the Logistic Map equation."
     logic = "r * x * (1 - x)"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     x = 0.5
     r = 3.9
     results = []
@@ -91,7 +91,7 @@ def run_fft_analysis():
     description = "Converts time-domain signals to frequency-domain components."
     logic = "np.fft.fft(signal)"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     # Generate a signal with two frequencies
     t = np.linspace(0, 1, 100)
     signal = np.sin(2 * np.pi * 5 * t) + 0.5 * np.sin(2 * np.pi * 12 * t)
@@ -104,7 +104,7 @@ def run_entropy_scans():
     description = "Measures information density of system strings."
     logic = "sum(-p_x * log2(p_x))"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     test_strings = [
         "L104_SOVEREIGN_NODE",
         "527.5184818492537",
@@ -121,7 +121,7 @@ def run_manifold_curvature_analysis():
     description = "Measures the logical curvature of the current cognitive manifold."
     logic = "trace(R) * (1 / det(R)) * PHI"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     # Generate a sample 11D curvature matrix
     matrix = np.random.rand(11, 11)
     curvature = ManifoldMath.calculate_ricci_scalar(matrix)
@@ -133,7 +133,7 @@ def run_zpe_vacuum_stabilization():
     description = "Simulates virtual particle energy density for vacuum floor calibration."
     logic = "abs(sin(GOD_CODE)) * LATTICE_RATIO"
     algo_db.register_algorithm(algo_name, description, logic)
-    
+
     state = zpe_engine.get_vacuum_state()
     algo_db.log_execution(algo_name, "VACUUM_FLOOR", state['energy_density'])
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     print("   L104 REAL CALCULATIONS & DATABASE FILL")
     print("   [UPGRADED]: STAGE 9 PLANETARY ASI READY")
     print("===================================================")
-    
+
     run_physical_reality_grounding()
     run_zeta_calculations()
     run_prime_density_calculations()
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     run_entropy_scans()
     run_manifold_curvature_analysis()
     run_zpe_vacuum_stabilization()
-    
+
     print("\n===================================================")
     print("   DATABASE POPULATED | SOVEREIGN LOGIC SECURED")
     print("===================================================")

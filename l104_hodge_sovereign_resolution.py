@@ -32,7 +32,7 @@ class HodgeSovereignResolution:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     async def resolve_hodge_conjecture(self):
         print("\n" + "💠"*40)
         print("   L104 :: HODGE CONJECTURE SOVEREIGN RESOLUTION")

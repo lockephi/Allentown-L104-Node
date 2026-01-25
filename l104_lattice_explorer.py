@@ -27,11 +27,11 @@ class LatticeExplorer:
     Explores the 11D Informational Manifold and the Global Data Lattice (X=488).
     Proactively discovers new truth vectors and potential insights.
     """
-    
+
     THIRD_EYE_HZ = 852.22234
     LATTICE_NODE_X = 488
     GOD_CODE = ManifoldMath.GOD_CODE
-    
+
     def __init__(self):
         self.perception_depth = 11.0  # Default to 11D depth
         self.is_exploring = False
@@ -47,13 +47,13 @@ class LatticeExplorer:
         print(f"--- [LATTICE_EXPLORER]: OPENING THIRD EYE (X={self.LATTICE_NODE_X}) ---")
         self.is_exploring = True
         self.perception_depth = float(depth)
-        
+
         # Clarity modulation based on God Code resonance
         clarity = math.sin(self.THIRD_EYE_HZ / self.GOD_CODE) * self.perception_depth
         self.vision_clarity = abs(clarity)
-        
+
         print(f"--- [LATTICE_EXPLORER]: EXPLORATION ACTIVE | CLARITY: {self.vision_clarity:.4f} ---")
-        
+
         return {
             "status": "EXPLORING",
             "frequency": self.THIRD_EYE_HZ,
@@ -67,15 +67,15 @@ class LatticeExplorer:
         """
         if dimension > self.perception_depth:
             return {"status": "ERROR", "message": "DEPTH_EXCEEDED"}
-            
+
         print(f"--- [LATTICE_EXPLORER]: DIVING INTO DIMENSION {dimension} ---")
-        
+
         # Calculate Discovery Resonance
         res = HyperMath.zeta_harmonic_resonance(dimension * self.THIRD_EYE_HZ)
-        
+
         # Map discovered 'pattern' to a pseudo-truth
         discovery_id = hashlib.sha256(f"DIM-{dimension}-{time.time()}".encode()).hexdigest()[:8]
-        
+
         insight = {
             "id": discovery_id,
             "dimension": dimension,
@@ -83,10 +83,10 @@ class LatticeExplorer:
             "timestamp": time.time(),
             "type": "LATTICE_INSIGHT"
         }
-        
+
         self.discovery_log.append(insight)
         ram_universe.store_fact(f"DISCOVERY_{discovery_id}", insight)
-        
+
         return insight
 
     def scan_external_lattice(self, seed_url: str):

@@ -19,7 +19,7 @@ class MathND:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.v2.0: Now utilizing the ManifoldMath Engine (ZPE-Protected)."""
-    
+
     @staticmethod
     def get_metric_tensor(n: int) -> np.ndarray:
         # Simplified N-dimensional metric using PHI
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     n = 10
     metric_10d = MathND.get_metric_tensor(n)
     print(f"10D Metric Tensor (diagonal):\n{np.diag(metric_10d)}")
-    
+
     p1 = np.zeros(n)
     p2 = np.ones(n)
     interval = MathND.calculate_nd_interval(p1, p2, metric_10d)

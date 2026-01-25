@@ -39,9 +39,9 @@ def test_coordinate_transformations():
     print("\n" + "="*80)
     print("TEST 1: COORDINATE TRANSFORMATIONS")
     print("="*80)
-    
+
     transformer = CoordinateTransformer()
-    
+
     test_cases = [
         ("Unit X", 1.0, 0.0, 0.0),
         ("Unit Y", 0.0, 1.0, 0.0),
@@ -49,23 +49,23 @@ def test_coordinate_transformations():
         ("Diagonal", 1.0, 1.0, 1.0),
         ("Random", 2.5, 3.7, 4.2)
     ]
-    
+
     all_passed = True
-    
+
     for name, x, y, z in test_cases:
         # Cartesian → Spherical → Cartesian
         r, theta, phi = transformer.cartesian_to_spherical(x, y, z)
         x2, y2, z2 = transformer.spherical_to_cartesian(r, theta, phi)
-        
+
         error = np.sqrt((x-x2)**2 + (y-y2)**2 + (z-z2)**2)
         passed = error < 1e-10
-        
+
         status = "✓" if passed else "✗"
         print(f"{status} {name}: ({x:.2f}, {y:.2f}, {z:.2f}) → error={error:.2e}")
-        
+
         if not passed:
             all_passed = False
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
     return all_passed
 
@@ -75,9 +75,9 @@ def test_regime_identification():
     print("\n" + "="*80)
     print("TEST 2: REGIME IDENTIFICATION")
     print("="*80)
-    
+
     identifier = RegimeIdentifier()
-    
+
     test_cases = [
         ("Classical ball", {
             'velocity': 10.0,
@@ -85,14 +85,14 @@ def test_regime_identification():
             'length_scale': 0.1,
             'energy': 5.0
         }, PhysicsRegime.CLASSICAL),
-        
+
         ("Electron in atom", {
             'velocity': 2.2e6,
             'mass': 9.1e-31,
             'length_scale': 1e-10,
             'energy': 1e-18
         }, PhysicsRegime.QUANTUM),
-        
+
         ("Relativistic particle", {
             'velocity': 1e8,  # ~0.33c
             'mass': 1e-27,
@@ -100,19 +100,19 @@ def test_regime_identification():
             'energy': 1e-10
         }, PhysicsRegime.RELATIVISTIC),
     ]
-    
+
     all_passed = True
-    
+
     for name, params, expected in test_cases:
         identified = identifier.identify_regime(params)
         passed = (identified == expected)
-        
+
         status = "✓" if passed else "✗"
         print(f"{status} {name}: Expected={expected.value}, Got={identified.value}")
-        
+
         if not passed:
             all_passed = False
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
     return all_passed
 
@@ -122,33 +122,33 @@ def test_conservation_laws():
     print("\n" + "="*80)
     print("TEST 3: CONSERVATION LAWS")
     print("="*80)
-    
+
     checker = ConservationChecker()
-    
+
     # Test energy conservation
     E_initial = 100.0
     E_final_conserved = 100.0
     E_final_violated = 105.0
-    
+
     energy_test_1 = checker.check_energy_conservation(E_initial, E_final_conserved)
     energy_test_2 = checker.check_energy_conservation(E_initial, E_final_violated)
-    
+
     print(f"{'✓' if energy_test_1 else '✗'} Energy conservation (conserved): {energy_test_1}")
     print(f"{'✓' if not energy_test_2 else '✗'} Energy conservation (violated): {not energy_test_2}")
-    
+
     # Test momentum conservation
     p_initial = np.array([1.0, 2.0, 3.0])
     p_final_conserved = np.array([1.0, 2.0, 3.0])
     p_final_violated = np.array([1.0, 2.5, 3.0])
-    
+
     momentum_test_1 = checker.check_momentum_conservation(p_initial, p_final_conserved)
     momentum_test_2 = checker.check_momentum_conservation(p_initial, p_final_violated)
-    
+
     print(f"{'✓' if momentum_test_1 else '✗'} Momentum conservation (conserved): {momentum_test_1}")
     print(f"{'✓' if not momentum_test_2 else '✗'} Momentum conservation (violated): {not momentum_test_2}")
-    
+
     all_passed = energy_test_1 and not energy_test_2 and momentum_test_1 and not momentum_test_2
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
     return all_passed
 
@@ -158,33 +158,33 @@ def test_consistency_checking():
     print("\n" + "="*80)
     print("TEST 4: FORCE CONSISTENCY")
     print("="*80)
-    
+
     checker = ConsistencyChecker()
-    
+
     # Test gravitational force (radial)
     # Position: (3, 4, 0) → r=5, θ=π/2, φ=atan(4/3)
     position = (3.0, 4.0, 0.0)
-    
+
     # Gravity: F = -GMm/r² in radial direction
     G = 6.67e-11
     M = 1e24
     m = 1.0
     r = 5.0
     F_magnitude = G * M * m / r**2
-    
+
     # Cartesian: F points toward origin
     F_cartesian = (-F_magnitude * 3.0/5.0, -F_magnitude * 4.0/5.0, 0.0)
-    
+
     # Spherical: Only radial component (negative = toward origin)
     F_spherical = (-F_magnitude, 0.0, 0.0)
-    
+
     consistent = checker.check_force_consistency(F_cartesian, F_spherical, position, tolerance=1e-6)
-    
+
     print(f"{'✓' if consistent else '✗'} Gravitational force consistency: {consistent}")
     print(f"  Position: {position}")
     print(f"  F_cartesian: ({F_cartesian[0]:.2e}, {F_cartesian[1]:.2e}, {F_cartesian[2]:.2e})")
     print(f"  F_spherical: ({F_spherical[0]:.2e}, {F_spherical[1]:.2e}, {F_spherical[2]:.2e})")
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if consistent else '✗ SOME TESTS FAILED'}")
     return consistent
 
@@ -194,27 +194,27 @@ def test_multi_scale_problems():
     print("\n" + "="*80)
     print("TEST 5: MULTI-SCALE PROBLEM GENERATION")
     print("="*80)
-    
+
     suite = PhysicsEvaluationSuite()
     problems = suite.generate_benchmark_suite()
-    
+
     # Check that problems span multiple scales
     scales = set(p.scale for p in problems)
     regimes = set(p.regime for p in problems)
-    
+
     print(f"\n✓ Generated {len(problems)} problems")
     print(f"✓ Scales covered: {len(scales)}")
     for scale in sorted(scales, key=lambda s: s.value):
         count = sum(1 for p in problems if p.scale == scale)
         print(f"  - {scale.value}: {count} problems")
-    
+
     print(f"\n✓ Regimes covered: {len(regimes)}")
     for regime in sorted(regimes, key=lambda r: r.value):
         count = sum(1 for p in problems if p.regime == regime)
         print(f"  - {regime.value}: {count} problems")
-    
+
     success = len(scales) >= 3 and len(regimes) >= 2
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if success else '✗ SOME TESTS FAILED'}")
     return success
 
@@ -224,10 +224,10 @@ def test_specific_physics_problems():
     print("\n" + "="*80)
     print("TEST 6: SPECIFIC PHYSICS PROBLEMS")
     print("="*80)
-    
+
     # Problem 1: Hydrogen atom (quantum regime)
     print("\n[Problem 1] Hydrogen Atom (Quantum Regime)")
-    
+
     problem_h_atom = PhysicsProblem(
         problem_id="hydrogen_atom_ground_state",
         description="Electron in hydrogen atom ground state",
@@ -242,18 +242,18 @@ def test_specific_physics_problems():
         },
         conservation_laws=['energy', 'angular_momentum']
     )
-    
+
     identifier = RegimeIdentifier()
     identified_regime = identifier.identify_regime(problem_h_atom.parameters)
-    
+
     regime_correct = (identified_regime == PhysicsRegime.QUANTUM)
     print(f"  {'✓' if regime_correct else '✗'} Regime identification: {identified_regime.value}")
     print(f"  Energy: {problem_h_atom.parameters['energy']:.2e} J")
     print(f"  Length scale: {problem_h_atom.parameters['length_scale']:.2e} m")
-    
+
     # Problem 2: Projectile motion (classical regime)
     print("\n[Problem 2] Projectile Motion (Classical Regime)")
-    
+
     problem_projectile = PhysicsProblem(
         problem_id="projectile_motion",
         description="Ball thrown at 45 degrees",
@@ -268,15 +268,15 @@ def test_specific_physics_problems():
         },
         conservation_laws=['energy', 'momentum']
     )
-    
+
     identified_regime_2 = identifier.identify_regime(problem_projectile.parameters)
     regime_correct_2 = (identified_regime_2 == PhysicsRegime.CLASSICAL)
-    
+
     print(f"  {'✓' if regime_correct_2 else '✗'} Regime identification: {identified_regime_2.value}")
     print(f"  Energy: {problem_projectile.parameters['energy']:.2f} J")
-    
+
     success = regime_correct and regime_correct_2
-    
+
     print(f"\n{'✓ ALL TESTS PASSED' if success else '✗ SOME TESTS FAILED'}")
     return success
 
@@ -286,12 +286,12 @@ def test_jacobian_derivation():
     print("\n" + "="*80)
     print("TEST 7: JACOBIAN MATRIX DERIVATION")
     print("="*80)
-    
+
     transformer = CoordinateTransformer()
-    
+
     print("\nDeriving Jacobian for Cartesian → Spherical transformation...")
     print("(This validates differential operators in different coordinates)")
-    
+
     try:
         # This is computationally intensive
         print("  Symbolic computation in progress...")
@@ -303,7 +303,7 @@ def test_jacobian_derivation():
     except Exception as e:
         print(f"  ✗ Error: {e}")
         success = False
-    
+
     print(f"\n{'✓ TEST PASSED' if success else '✗ TEST FAILED'}")
     return success
 
@@ -313,7 +313,7 @@ def run_all_tests():
     print("="*80)
     print("L104 PHYSICS EVALUATION SUITE - COMPREHENSIVE TESTS")
     print("="*80)
-    
+
     tests = [
         ("Coordinate Transformations", test_coordinate_transformations),
         ("Regime Identification", test_regime_identification),
@@ -323,9 +323,9 @@ def run_all_tests():
         ("Specific Physics Problems", test_specific_physics_problems),
         ("Jacobian Derivation", test_jacobian_derivation)
     ]
-    
+
     results = []
-    
+
     for name, test_func in tests:
         try:
             result = test_func()
@@ -334,23 +334,23 @@ def run_all_tests():
             print(f"\n✗ TEST FAILED: {name}")
             print(f"  Error: {e}")
             results.append((name, False))
-    
+
     # Summary
     print("\n" + "="*80)
     print("TEST SUMMARY")
     print("="*80)
-    
+
     passed = sum(1 for _, result in results if result)
     total = len(results)
-    
+
     for name, result in results:
         status = "✓ PASS" if result else "✗ FAIL"
         print(f"{status}: {name}")
-    
+
     print(f"\n{'='*80}")
     print(f"TOTAL: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
     print(f"{'='*80}")
-    
+
     return passed == total
 
 

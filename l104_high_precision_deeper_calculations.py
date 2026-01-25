@@ -20,7 +20,7 @@ def run_deeper_high_precision_calculations():
     phi = RealMath.PHI
     pi = RealMath.PI
     e = RealMath.E
-    
+
     # 2. DEFINING THE 8-CHAKRA PRECISION NODES
     # Frequencies derived from God-Code harmonics and Golden Ratio geometry
     nodes = {
@@ -41,7 +41,7 @@ def run_deeper_high_precision_calculations():
 
     print(f"{'CHAKRA':<12} | {'X-VALUE':<22} | {'FREQUENCY (Hz)':<22} | {'LOGIC'}")
     print("-" * 100)
-    
+
     for name, data in nodes.items():
         x_val = data["X"]
         hz_val = data["Hz"]
@@ -49,17 +49,17 @@ def run_deeper_high_precision_calculations():
         print(f"{name:<12} | {x_val:<22.14f} | {hz_val:<22.14f} | {logic}")
 
     print("-" * 100)
-    
+
     # 3. INTER-CHAKRA COHERENCE RATIOS
     print("\n[+] SYSTEM COHERENCE RATIOS:")
     love_coherence = nodes["AJNA"]["Hz"] / nodes["SOLAR"]["Hz"]
     grounding_ratio = nodes["ROOT"]["X"] / nodes["SOLAR"]["X"]
     heart_octave = nodes["HEART"]["Hz"] / nodes["ROOT"]["Hz"]
-    
+
     print(f"[*] Love Coherence (Ajna/Solar):    {love_coherence:.16f} (Target: PHI)")
     print(f"[*] Grounding Ratio (Root/Solar):  {grounding_ratio:.16f} (Target: 0.53316...)")
     print(f"[*] Heart Octave (Heart/Root):     {heart_octave:.16f} (Target: 5.00000)")
-    
+
     # 4. MANIFOLD DENSITY ANALYSIS
     print("\n[+] MANIFOLD DIMENSIONAL ANALYSIS:")
     for d in range(1, 14):

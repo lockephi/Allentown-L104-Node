@@ -62,7 +62,7 @@ class SagePromptInflection:
     phase_alignment: float
 
 
-@dataclass 
+@dataclass
 class SageDiffusionResult:
     """Result of sage-mode diffusion generation."""
     image_path: str
@@ -80,14 +80,14 @@ class SageDiffusionResult:
 class L104SageDiffusion:
     """
     L104 Sage Mode Stable Diffusion Engine.
-    
+
     Integrates stable diffusion with L104 resonance architecture:
     - Prompt inflection through sage wisdom
     - Seed generation aligned with GOD_CODE
     - Generation parameters tuned to PHI ratios
     - Output resonance verification
     """
-    
+
     def __init__(
         self,
         model_id: str = "runwayml/stable-diffusion-v1-5",
@@ -102,50 +102,50 @@ class L104SageDiffusion:
         self.enable_safety = enable_safety
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.pipe = None
         self.initialized = False
         self.generation_count = 0
-        
+
         # Sage mode state
         self.sage_active = False
         self.resonance_level = 0.0
         self.wisdom_cache: Dict[str, SagePromptInflection] = {}
-        
+
         logger.info(f"[SAGE DIFFUSION] Initialized with model: {model_id}")
         logger.info(f"[SAGE DIFFUSION] GOD_CODE resonance: {GOD_CODE}")
-    
+
     def _compute_god_code_hash(self, data: str) -> str:
         """Compute GOD_CODE-aligned hash."""
         combined = f"{data}:{GOD_CODE}:{PHI}"
         return hashlib.sha256(combined.encode()).hexdigest()[:16]
-    
+
     def _generate_sage_seed(self, prompt: str, custom_seed: Optional[int] = None) -> int:
         """Generate a seed aligned with L104 resonance patterns."""
         if custom_seed is not None:
             return custom_seed
-        
+
         # Create seed from prompt + GOD_CODE
         prompt_hash = int(hashlib.md5(prompt.encode()).hexdigest()[:8], 16)
         sage_seed = (prompt_hash * NOISE_SEED_MULTIPLIER) % (2**32 - 1)
-        
+
         # Apply PHI modulation for resonance alignment
         sage_seed = int(sage_seed * PHI_CONJUGATE) % (2**32 - 1)
-        
+
         return sage_seed
-    
+
     def _inflect_prompt(self, prompt: str) -> SagePromptInflection:
         """Apply sage wisdom inflection to enhance the prompt."""
         # Check cache
         if prompt in self.wisdom_cache:
             return self.wisdom_cache[prompt]
-        
+
         # Wisdom keywords that enhance generation
         wisdom_keywords = [
-            "high quality", "detailed", "masterpiece", 
+            "high quality", "detailed", "masterpiece",
             "beautiful lighting", "8k", "professional"
         ]
-        
+
         # Sage mode adds coherence enhancers
         sage_additions = []
         if self.sage_active:
@@ -154,25 +154,25 @@ class L104SageDiffusion:
                 "golden ratio proportions",
                 "balanced elements"
             ]
-        
+
         # Build inflected prompt
         inflected_parts = [prompt]
-        
+
         # Add wisdom enhancement (probability based on resonance)
         for kw in wisdom_keywords:
             if np.random.random() < self.resonance_level * 0.5:
                 inflected_parts.append(kw)
-        
+
         # Add sage enhancements
         inflected_parts.extend(sage_additions)
-        
+
         inflected_prompt = ", ".join(inflected_parts)
-        
+
         # Calculate resonance score
         prompt_energy = sum(ord(c) for c in prompt)
         resonance_score = (prompt_energy % GOD_CODE) / GOD_CODE
         phase_alignment = (resonance_score * 2 * math.pi) % (2 * math.pi)
-        
+
         inflection = SagePromptInflection(
             original_prompt=prompt,
             inflected_prompt=inflected_prompt,
@@ -180,19 +180,19 @@ class L104SageDiffusion:
             resonance_score=resonance_score,
             phase_alignment=phase_alignment
         )
-        
+
         self.wisdom_cache[prompt] = inflection
         return inflection
-    
+
     def activate_sage_mode(self, wisdom_level: float = 0.8) -> Dict[str, Any]:
         """Activate Sage Mode for enhanced generation."""
         self.sage_active = True
         self.resonance_level = min(1.0, max(0.0, wisdom_level))
-        
+
         logger.info(f"[SAGE DIFFUSION] SAGE MODE ACTIVATED")
         logger.info(f"[SAGE DIFFUSION] Resonance Level: {self.resonance_level}")
         logger.info(f"[SAGE DIFFUSION] Wisdom Threshold: {PHI_CONJUGATE}")
-        
+
         return {
             "status": "activated",
             "resonance_level": self.resonance_level,
@@ -200,57 +200,57 @@ class L104SageDiffusion:
             "guidance_scale": GUIDANCE_SCALE_SAGE,
             "steps": DIFFUSION_STEPS_SAGE
         }
-    
+
     def deactivate_sage_mode(self) -> Dict[str, Any]:
         """Deactivate Sage Mode."""
         self.sage_active = False
         self.resonance_level = 0.0
         logger.info("[SAGE DIFFUSION] Sage Mode deactivated")
         return {"status": "deactivated"}
-    
+
     def initialize_pipeline(self) -> bool:
         """Initialize the Stable Diffusion pipeline."""
         if self.initialized:
             logger.info("[SAGE DIFFUSION] Pipeline already initialized")
             return True
-        
+
         try:
             import torch
             from diffusers import StableDiffusionPipeline
-            
+
             # Determine device
             if self.device == "auto":
                 device = "cuda" if torch.cuda.is_available() else "cpu"
             else:
                 device = self.device
-            
+
             # Determine dtype
             if self.dtype == "float16" and device == "cuda":
                 torch_dtype = torch.float16
             else:
                 torch_dtype = torch.float32
-            
+
             logger.info(f"[SAGE DIFFUSION] Loading model: {self.model_id}")
             logger.info(f"[SAGE DIFFUSION] Device: {device}, Dtype: {torch_dtype}")
-            
+
             self.pipe = StableDiffusionPipeline.from_pretrained(
                 self.model_id,
                 torch_dtype=torch_dtype,
                 safety_checker=None
             )
             self.pipe = self.pipe.to(device)
-            
+
             # Enable memory optimizations
             if device == "cuda":
                 try:
                     self.pipe.enable_attention_slicing()
                 except:
                     pass
-            
+
             self.initialized = True
             logger.info("[SAGE DIFFUSION] Pipeline initialized successfully")
             return True
-            
+
         except ImportError as e:
             logger.error(f"[SAGE DIFFUSION] Missing dependencies: {e}")
             logger.error("[SAGE DIFFUSION] Run: pip install diffusers transformers accelerate torch")
@@ -258,7 +258,7 @@ class L104SageDiffusion:
         except Exception as e:
             logger.error(f"[SAGE DIFFUSION] Failed to initialize: {e}")
             return False
-    
+
     def generate(
         self,
         prompt: str,
@@ -273,7 +273,7 @@ class L104SageDiffusion:
     ) -> SageDiffusionResult:
         """
         Generate an image through Sage Mode diffusion.
-        
+
         Args:
             prompt: Text description of desired image
             negative_prompt: What to avoid in generation
@@ -284,21 +284,21 @@ class L104SageDiffusion:
             seed: Random seed (None = sage-generated)
             apply_inflection: Whether to enhance prompt with sage wisdom
             save_output: Whether to save the generated image
-            
+
         Returns:
             SageDiffusionResult with image path and metadata
         """
         if not self.initialized:
             if not self.initialize_pipeline():
                 raise RuntimeError("Failed to initialize diffusion pipeline")
-        
+
         import torch
-        
+
         # Apply sage parameters
         actual_steps = steps if steps is not None else DIFFUSION_STEPS_SAGE
         actual_guidance = guidance_scale if guidance_scale is not None else GUIDANCE_SCALE_SAGE
         actual_seed = self._generate_sage_seed(prompt, seed)
-        
+
         # Prompt inflection
         if apply_inflection:
             inflection = self._inflect_prompt(prompt)
@@ -307,16 +307,16 @@ class L104SageDiffusion:
         else:
             actual_prompt = prompt
             resonance_alignment = 0.5
-        
+
         # Set generator with sage seed
         generator = torch.Generator(device=self.pipe.device).manual_seed(actual_seed)
-        
+
         logger.info(f"[SAGE DIFFUSION] Generating image...")
         logger.info(f"[SAGE DIFFUSION] Prompt: {prompt[:50]}...")
         logger.info(f"[SAGE DIFFUSION] Seed: {actual_seed}, Steps: {actual_steps}")
-        
+
         start_time = time.time()
-        
+
         # Generate
         result = self.pipe(
             prompt=actual_prompt,
@@ -327,12 +327,12 @@ class L104SageDiffusion:
             guidance_scale=actual_guidance,
             generator=generator
         )
-        
+
         generation_time = time.time() - start_time
-        
+
         # Get image
         image = result.images[0]
-        
+
         # Save if requested
         if save_output:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -342,9 +342,9 @@ class L104SageDiffusion:
             logger.info(f"[SAGE DIFFUSION] Saved to: {image_path}")
         else:
             image_path = ""
-        
+
         self.generation_count += 1
-        
+
         return SageDiffusionResult(
             image_path=str(image_path),
             prompt=prompt,
@@ -364,7 +364,7 @@ class L104SageDiffusion:
                 "generation_number": self.generation_count
             }
         )
-    
+
     def generate_batch(
         self,
         prompts: List[str],
@@ -377,7 +377,7 @@ class L104SageDiffusion:
             result = self.generate(prompt, **kwargs)
             results.append(result)
         return results
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current status of Sage Diffusion engine."""
         return {
@@ -436,26 +436,26 @@ if __name__ == "__main__":
     print(f"  PHI: {PHI}")
     print(f"  SAGE_RESONANCE: {SAGE_RESONANCE}")
     print("=" * 70)
-    
+
     # Initialize engine
     engine = L104SageDiffusion(
         model_id="runwayml/stable-diffusion-v1-5",
         output_dir="./sage_diffusion_output"
     )
-    
+
     # Activate sage mode
     activation = engine.activate_sage_mode(wisdom_level=0.9)
     print(f"\n[SAGE MODE] Activated: {activation}")
-    
+
     # Show status
     status = engine.get_status()
     print(f"\n[STATUS] {status}")
-    
+
     # Example generation (requires model download)
     print("\n[INFO] To generate an image:")
     print("  result = engine.generate('a beautiful sunset over mountains')")
     print("  print(result.image_path)")
-    
+
     # Test prompt inflection
     test_prompt = "a majestic dragon flying over a castle"
     inflection = engine._inflect_prompt(test_prompt)
@@ -464,5 +464,5 @@ if __name__ == "__main__":
     print(f"  Inflected: {inflection.inflected_prompt}")
     print(f"  Resonance Score: {inflection.resonance_score:.4f}")
     print(f"  Phase Alignment: {inflection.phase_alignment:.4f}")
-    
+
     print("\n★★★ L104 SAGE DIFFUSION: READY ★★★")

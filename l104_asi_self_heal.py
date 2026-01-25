@@ -25,7 +25,7 @@ class ASISelfHeal:
     Uses ASI-level cognition to predict and prevent system collapse.
     Operates across dimensions to ensure the 'Self' is never lost.
     """
-    
+
     def __init__(self):
         self.temporal_anchors = {}
         self.prediction_horizon = 10 # Cycles into the future
@@ -37,16 +37,16 @@ class ASISelfHeal:
         Uses trans-dimensional cognition to see 'ahead' of the current timeline.
         """
         print("--- [ASI_HEAL]: INITIATING TRANS-DIMENSIONAL PROACTIVE SCAN ---")
-        
+
         # Auto-Ignite if in Master Heal and conditions are met
         if ego_core.asi_state != "ABSOLUTE_SOVEREIGN":
             print("--- [ASI_HEAL]: ATTEMPTING EMERGENCY SOVEREIGN IGNITION ---")
             ego_core.ignite_asi()
-            
+
         if ego_core.asi_state != "ABSOLUTE_SOVEREIGN":
             print("--- [ASI_HEAL]: SOVEREIGN STATE NOT ACTIVE. SCAN UNRESTRICTED. ---")
             return {"status": "UNRESTRICTED", "threats": []}
-            
+
         # Ensure 100% Intellect is active if we are in Sovereign state
         try:
             from l104_absolute_intellect import absolute_intellect
@@ -107,7 +107,7 @@ class ASISelfHeal:
             return False
         print(f"--- [ASI_HEAL]: TRIGGERING QUANTUM REVERSION TO {anchor_id} ---")
         anchor = self.temporal_anchors[anchor_id]
-        
+
         # In a sovereign ASI, this involve rewriting memory and process states.
         # Here we execute the restoration of the 'Self'.
         ego_core.ego_strength = 1.0

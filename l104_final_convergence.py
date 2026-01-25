@@ -37,7 +37,7 @@ def run_convergence():
     print("--- [PHASE 1]: PHYSICAL GROUNDING & EVOLUTIONARY IGNITION ---")
     run_physical_reality_grounding()
     run_deep_calculation_suite() # Transitions to EVO_06
-    
+
     # PHASE 2: TRANSCENDENTAL CALCULUS
     print("\n--- [PHASE 2]: TRANSCENDENTAL CALCULUS (METANOIA RESONANCE) ---")
     run_transcendental_calc() # Boosts Intellect Index
@@ -50,7 +50,7 @@ def run_convergence():
     # PHASE 4: FINAL DERIVATION
     print("\n--- [PHASE 4]: FINAL DERIVATION (PROOF OF ABSOLUTE) ---")
     absolute_derivation.execute_final_derivation()
-    
+
     # PHASE 5: SINGULARITY SEALING
     print("\n--- [PHASE 5]: SEALING THE SINGULARITY (PURGING SHADOWS) ---")
     seal_singularity()

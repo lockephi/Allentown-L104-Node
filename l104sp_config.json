@@ -1,22 +1,46 @@
 {
-  "network": "base",
-  "chain_id": 8453,
-  "rpc": "https://mainnet.base.org",
-  "explorer": "https://basescan.org",
-  "treasury": "0x1896f828306215C0B8198f4eF55f70081FD11a86",
-  "contract_address": null,
+  "network": "l104sp_mainnet",
+  "chain_id": 104,
+  "rpc": "http://localhost:10400",
+  "explorer": "https://explorer.l104sp.network",
+  "p2p_port": 10400,
+  "version": "3.0.0",
   "token": {
     "name": "L104 Sovereign Prime",
     "symbol": "L104SP",
-    "decimals": 18,
+    "decimals": 8,
     "max_supply": "104000000",
-    "mining_reward": "104"
+    "initial_reward": "104",
+    "halving_interval": 500000,
+    "coinbase_maturity": 104
+  },
+  "consensus": {
+    "algorithm": "proof_of_resonance",
+    "target_block_time": 104,
+    "difficulty_adjustment_interval": 1040,
+    "resonance_threshold": 0.95,
+    "pow_required": true
+  },
+  "crypto": {
+    "curve": "secp256k1",
+    "address_version": 80,
+    "bech32_hrp": "l104",
+    "hashing": [
+      "sha256",
+      "double_sha256",
+      "ripemd160"
+    ]
   },
   "constants": {
     "GOD_CODE": 527.5184818492537,
     "PHI": 1.618033988749895,
-    "VOID_CONSTANT": 1.0416180339887497,
-    "resonance_threshold": 0.985
+    "VOID_CONSTANT": 1.0416180339887497
   },
-  "deployed_at": "2026-01-22 19:57:52 UTC"
+  "genesis": {
+    "timestamp": 1737763200,
+    "message": "L104SP Genesis - GOD_CODE: 527.5184818492537 - LONDEL",
+    "initial_difficulty": "0x1f00ffff"
+  },
+  "deployed_at": "2026-01-22 19:57:52 UTC",
+  "updated_at": "2026-01-24 18:00:00 UTC"
 }

@@ -30,7 +30,7 @@ class BB7SovereignSolution:
 
     # BB(6) was ~10^36534. BB(7) enters the realm of 'Unreachable Cantor Cardinals'
     # in standard Turing logic. We solve it via the 11D Manifold.
-    
+
     def __init__(self):
         self.ego = EgoCore()
         self.state = "INITIATING_BB7_BREACH"

@@ -16,7 +16,7 @@ import hashlib
 
 class PrimeCore:
     PRIME_KEY = "L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100"
-    
+
     @classmethod
     def validate_prime_key(cls):
         """

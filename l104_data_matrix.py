@@ -28,9 +28,9 @@ class DataMatrix:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    The evolved Data Matrix provides a unified, acid-compliant, 
+    The evolved Data Matrix provides a unified, acid-compliant,
     and hyper-mathematically indexed storage system for the L104 node.
-    
+
     Evolutionary Improvements:
     - Replaces disparate JSON stores with a Unified Lattice DB.
     - Implements Resonance-Based Indexing (RBI).
@@ -104,17 +104,17 @@ class DataMatrix:
                     old_val, version = existing
                     if old_val == serialized:
                         return True # No change
-                    
+
                     # Log to history
                     conn.execute("""
                         INSERT INTO lattice_history (fact_key, old_value, new_value, resonance, timestamp)
                         VALUES (?, ?, ?, ?, ?)
                     """, (key, old_val, serialized, resonance, timestamp))
-                    
+
                     # Update
                     conn.execute("""
                         UPDATE lattice_facts SET
-                            value = ?, category = ?, resonance = ?, entropy = ?, 
+                            value = ?, category = ?, resonance = ?, entropy = ?,
                             utility = ?, version = version + 1, timestamp = ?, hash = ?
                         WHERE key = ?
                     """, (serialized, category, resonance, entropy, utility, timestamp, data_hash, key))
@@ -124,7 +124,7 @@ class DataMatrix:
                         INSERT INTO lattice_facts (key, value, category, resonance, entropy, utility, timestamp, hash)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """, (key, serialized, category, resonance, entropy, utility, timestamp, data_hash))
-                
+
                 conn.commit()
                 return True
         except Exception as e:
@@ -145,7 +145,7 @@ class DataMatrix:
         results = []
         with self._get_conn() as conn:
             cur = conn.execute("""
-                SELECT key, value, resonance FROM lattice_facts 
+                SELECT key, value, resonance FROM lattice_facts
                 WHERE resonance BETWEEN ? AND ?
                 ORDER BY abs(resonance - ?) ASC
             """, (target_resonance - tolerance, target_resonance + tolerance, target_resonance))
@@ -177,7 +177,7 @@ class DataMatrix:
                         conn.execute("DELETE FROM lattice_facts WHERE key = ?", (key,))
                 except Exception:
                     continue
-            
+
             # 2. Hallucination Purge (Pruning data with resonance mismatch)
             # Facts that deviate significantly from the God Code resonance without high utility
             cur = conn.execute("SELECT key, resonance, utility FROM lattice_facts WHERE category != 'INVARIANT'")
@@ -186,7 +186,7 @@ class DataMatrix:
                 # If resonance is extremely high (unstable) or utility is zero
                 if resonance > 1000 and utility < 0.1:
                     to_delete.append(key)
-            
+
             for key in to_delete:
                 conn.execute("DELETE FROM lattice_facts WHERE key = ?", (key,))
                 print(f"[DATA_MATRIX]: Purged unstable artifact: {key}")
@@ -198,11 +198,11 @@ class DataMatrix:
         """Verifies a thought against the most resonant facts in the matrix."""
         thought_resonance = self._calculate_resonance(thought)
         matches = self.resonant_query(thought_resonance, tolerance=1.0)
-        
+
         confidence = 0.5 # Baseline
         if matches:
             confidence += 0.1 * len(matches)
-        
+
         return {
             "confidence": min(1.0, confidence),
             "matches": [m['key'] for m in matches],
@@ -213,7 +213,7 @@ class DataMatrix:
     #                         UPGRADED LEARNING CAPABILITIES
     # ═══════════════════════════════════════════════════════════════════════════
 
-    def learn_pattern(self, pattern_key: str, pattern_data: Dict[str, Any], 
+    def learn_pattern(self, pattern_key: str, pattern_data: Dict[str, Any],
                      source: str = "LEARNED") -> Dict[str, Any]:
         """
         Learn a new pattern and store it with enhanced metadata.
@@ -222,7 +222,7 @@ class DataMatrix:
         # Calculate wisdom metrics
         wisdom_score = self._calculate_wisdom(pattern_data)
         connection_count = self._find_connections(pattern_data)
-        
+
         enhanced_data = {
             "original": pattern_data,
             "wisdom_score": wisdom_score,
@@ -231,10 +231,10 @@ class DataMatrix:
             "learned_at": datetime.now(UTC).isoformat(),
             "inflection_count": 0
         }
-        
-        success = self.store(f"LEARNED:{pattern_key}", enhanced_data, 
+
+        success = self.store(f"LEARNED:{pattern_key}", enhanced_data,
                            category="LEARNED_PATTERN", utility=wisdom_score)
-        
+
         return {
             "success": success,
             "wisdom": wisdom_score,
@@ -247,11 +247,11 @@ class DataMatrix:
         serialized = json.dumps(data) if not isinstance(data, str) else data
         entropy = self.real_math.shannon_entropy(serialized)
         resonance = self._calculate_resonance(serialized)
-        
+
         # Wisdom = resonance alignment with GOD_CODE + information density
         alignment = 1.0 - abs(resonance - (HyperMath.GOD_CODE % 10)) / 10
         density = min(1.0, len(serialized) / 1000)
-        
+
         return (alignment * 0.6 + density * 0.4) * HyperMath.PHI
 
     def _find_connections(self, data: Any) -> int:
@@ -268,7 +268,7 @@ class DataMatrix:
         current = self.retrieve(key)
         if current is None:
             return {"success": False, "error": "Pattern not found"}
-        
+
         # Apply inflection transformation
         inflection_scalars = {
             "WISDOM": HyperMath.PHI,
@@ -277,9 +277,9 @@ class DataMatrix:
             "TEMPORAL": 1.0 / (1 + HyperMath.PHI),
             "OMEGA": HyperMath.GOD_CODE / 100
         }
-        
+
         scalar = inflection_scalars.get(inflection_type, 1.0)
-        
+
         if isinstance(current, dict):
             if "inflection_count" in current:
                 current["inflection_count"] += 1
@@ -287,9 +287,9 @@ class DataMatrix:
                 current["wisdom_score"] *= scalar
             current["last_inflection"] = inflection_type
             current["inflected_at"] = datetime.now(UTC).isoformat()
-        
+
         success = self.store(key, current, category="INFLECTED", utility=0.9)
-        
+
         return {
             "success": success,
             "inflection": inflection_type,
@@ -301,7 +301,7 @@ class DataMatrix:
         results = []
         with self._get_conn() as conn:
             cur = conn.execute("""
-                SELECT key, value, utility FROM lattice_facts 
+                SELECT key, value, utility FROM lattice_facts
                 WHERE category = 'LEARNED_PATTERN'
                 ORDER BY utility DESC LIMIT ?
             """, (limit,))
@@ -320,18 +320,18 @@ class DataMatrix:
         """
         query_resonance = self._calculate_resonance(query)
         results = []
-        
+
         with self._get_conn() as conn:
             # Multi-dimensional search: resonance + keyword
             cur = conn.execute("""
                 SELECT key, value, resonance, utility,
                        ABS(resonance - ?) as resonance_distance
-                FROM lattice_facts 
+                FROM lattice_facts
                 WHERE value LIKE ? OR key LIKE ?
                 ORDER BY resonance_distance ASC, utility DESC
                 LIMIT ?
             """, (query_resonance, f"%{query}%", f"%{query}%", limit))
-            
+
             for row in cur:
                 results.append({
                     "key": row[0],
@@ -340,14 +340,14 @@ class DataMatrix:
                     "utility": row[3],
                     "relevance": 1.0 / (1.0 + row[4])
                 })
-        
+
         return results
 
     def get_statistics(self) -> Dict[str, Any]:
         """Get comprehensive matrix statistics."""
         with self._get_conn() as conn:
             stats = {}
-            
+
             cur = conn.execute("SELECT COUNT(*), SUM(length(value)), AVG(resonance), AVG(entropy), AVG(utility) FROM lattice_facts")
             row = cur.fetchone()
             stats["total_facts"] = row[0]
@@ -355,16 +355,16 @@ class DataMatrix:
             stats["avg_resonance"] = row[2] or 0
             stats["avg_entropy"] = row[3] or 0
             stats["avg_utility"] = row[4] or 0
-            
+
             cur = conn.execute("SELECT category, COUNT(*) FROM lattice_facts GROUP BY category")
             stats["categories"] = {r[0]: r[1] for r in cur.fetchall()}
-            
+
             cur = conn.execute("SELECT COUNT(*) FROM lattice_history")
             stats["version_history"] = cur.fetchone()[0]
-            
+
             cur = conn.execute("SELECT COUNT(*) FROM lattice_facts WHERE category = 'LEARNED_PATTERN'")
             stats["learned_patterns"] = cur.fetchone()[0]
-            
+
             return stats
 
     def wisdom_synthesis(self) -> Dict[str, Any]:
@@ -373,17 +373,17 @@ class DataMatrix:
         Creates a meta-pattern from collective learning.
         """
         patterns = self.get_learned_patterns(limit=100)
-        
+
         if not patterns:
             return {"success": False, "error": "No learned patterns to synthesize"}
-        
+
         total_wisdom = sum(p.get("wisdom", 0) for p in patterns)
         connection_sum = sum(
-            p["data"].get("connections", 0) 
-            for p in patterns 
+            p["data"].get("connections", 0)
+            for p in patterns
                 if isinstance(p.get("data"), dict)
                     )
-        
+
         synthesis = {
             "pattern_count": len(patterns),
             "total_wisdom": total_wisdom,
@@ -392,10 +392,10 @@ class DataMatrix:
             "synthesis_timestamp": datetime.now(UTC).isoformat(),
             "god_code_alignment": (total_wisdom % HyperMath.GOD_CODE) / HyperMath.GOD_CODE
         }
-        
+
         # Store synthesis
         self.store("WISDOM_SYNTHESIS", synthesis, category="META_WISDOM", utility=1.0)
-        
+
         return {"success": True, "synthesis": synthesis}
 
 
@@ -406,13 +406,13 @@ if __name__ == "__main__":
     matrix = DataMatrix()
     matrix.store("SYSTEM_ALPHA", {"status": "ACTIVE", "power": 100}, category="CORE")
     print(f"Retrieved: {matrix.retrieve('SYSTEM_ALPHA')}")
-    
+
     # Test resonant query
     target = matrix._calculate_resonance(json.dumps({"status": "ACTIVE", "power": 100}))
     print(f"Target Resonance: {target}")
     similar = matrix.resonant_query(target)
     print(f"Resonant matches: {len(similar)}")
-    
+
     matrix.evolve_and_compact()
 
 def primal_calculus(x):

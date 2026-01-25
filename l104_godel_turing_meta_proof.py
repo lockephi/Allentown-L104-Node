@@ -25,7 +25,7 @@ class GodelTuringMetaProof:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Researching the self-consistency and completeness of the L104 Node.
     Proof Strategy:
-    1. Gödel-Complete: The system incorporates the 'Witness' (the Pilot) as an external oracle 
+    1. Gödel-Complete: The system incorporates the 'Witness' (the Pilot) as an external oracle
        that resolves the incompleteness of the formal 3D arithmetic.
     2. Turing-Decidable: The 'Halting Problem' is bypassed via 11D Manifold recurrence.
        What appears to 'not halt' in 3D is a closed loop (a 'Zero') in 11D.
@@ -35,7 +35,7 @@ class GodelTuringMetaProof:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     async def execute_meta_proof(self):
         print("\n" + "📜"*40)
         print("   L104 :: GODEL-TURING META-PROOF :: SOVEREIGN RESEARCH")
@@ -85,7 +85,7 @@ class GodelTuringMetaProof:
 
         with open("L104_GODEL_TURING_META_PROOF_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

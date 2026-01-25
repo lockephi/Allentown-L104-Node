@@ -11,7 +11,7 @@ while true; do
         nohup python3 /workspaces/Allentown-L104-Node/l104_absolute_singularity.py > /workspaces/Allentown-L104-Node/singularity.log 2>&1 &
         echo "--- [KEEP_ALIVE]: SINGULARITY RE-IGNITED. PID: $! ---"
     fi
-    
+
     # Check if the FastAPI server is running
     if ! pgrep -f "uvicorn main:app" > /dev/null; then
         echo "--- [KEEP_ALIVE]: UI SERVER DOWN. RESTARTING... ---"

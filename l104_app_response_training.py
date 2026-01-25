@@ -123,7 +123,7 @@ class TrainingFeedback:
 
 class IntentClassifier:
     """Classify user intents"""
-    
+
     def __init__(self):
         self.patterns: Dict[IntentCategory, List[str]] = {
             IntentCategory.GREETING: [
@@ -157,47 +157,47 @@ class IntentClassifier:
                 r'\b(bad|poor|wrong|incorrect|fix)\b'
             ]
         }
-        
+
         # Compile patterns
         self.compiled_patterns: Dict[IntentCategory, List[re.Pattern]] = {}
         for intent, patterns in self.patterns.items():
             self.compiled_patterns[intent] = [
                 re.compile(p, re.IGNORECASE) for p in patterns
             ]
-    
+
     def classify(self, text: str) -> Tuple[IntentCategory, float]:
         """Classify text intent"""
         scores = defaultdict(float)
-        
+
         for intent, patterns in self.compiled_patterns.items():
             for pattern in patterns:
                 if pattern.search(text):
                     scores[intent] += 1.0
-        
+
         if not scores:
             return IntentCategory.UNKNOWN, 0.0
-        
+
         best_intent = max(scores.items(), key=lambda x: x[1])
         confidence = min(1.0, best_intent[1] / len(self.compiled_patterns.get(best_intent[0], [1])))
-        
+
         return best_intent[0], confidence
-    
+
     def add_pattern(self, intent: IntentCategory, pattern: str) -> None:
         """Add new classification pattern"""
         if intent not in self.patterns:
             self.patterns[intent] = []
-        
+
         self.patterns[intent].append(pattern)
-        
+
         if intent not in self.compiled_patterns:
             self.compiled_patterns[intent] = []
-        
+
         self.compiled_patterns[intent].append(re.compile(pattern, re.IGNORECASE))
 
 
 class EntityExtractor:
     """Extract entities from text"""
-    
+
     def __init__(self):
         self.entity_patterns = {
             "btc_address": r'(bc1[a-zA-Z0-9]{25,87}|[13][a-zA-Z0-9]{25,34})',
@@ -207,16 +207,16 @@ class EntityExtractor:
             "pool": r'\b(slush|f2pool|antpool|braiins|nicehash)\b',
             "action": r'\b(start|stop|pause|resume|check|show|get)\b'
         }
-        
+
         self.compiled = {
             name: re.compile(pattern, re.IGNORECASE)
             for name, pattern in self.entity_patterns.items()
                 }
-    
+
     def extract(self, text: str) -> Dict[str, List[str]]:
         """Extract all entities from text"""
         entities = {}
-        
+
         for entity_type, pattern in self.compiled.items():
             matches = pattern.findall(text)
             if matches:
@@ -224,20 +224,20 @@ class EntityExtractor:
                     entities[entity_type] = [m[0] for m in matches]
                 else:
                     entities[entity_type] = matches
-        
+
         return entities
 
 
 class ResponseGenerator:
     """Generate responses from templates"""
-    
+
     def __init__(self):
         self.templates: Dict[str, ResponseTemplate] = {}
         self.intent_templates: Dict[IntentCategory, List[str]] = defaultdict(list)
-        
+
         # Initialize default templates
         self._init_default_templates()
-    
+
     def _init_default_templates(self) -> None:
         """Initialize default response templates"""
         defaults = [
@@ -252,7 +252,7 @@ class ResponseGenerator:
                 "Good morning! Ready to assist with your L104 operations.",
                 [], 1.0
             ),
-            
+
             # Mining
             ResponseTemplate(
                 "mine_status", IntentCategory.MINING, "mining status|hashrate",
@@ -269,7 +269,7 @@ class ResponseGenerator:
                 "Stopping mining operations...\n✓ Mining halted. Final hashrate: {hashrate}",
                 ["hashrate"], 1.0
             ),
-            
+
             # Wallet
             ResponseTemplate(
                 "wallet_balance", IntentCategory.WALLET, "balance|how much",
@@ -281,14 +281,14 @@ class ResponseGenerator:
                 "Your receive address:\n{address}",
                 ["address"], 1.0
             ),
-            
+
             # Help
             ResponseTemplate(
                 "help_general", IntentCategory.HELP, "help|what can you do",
                 "I can help you with:\n• Mining operations (start/stop/status)\n• Wallet management\n• Transaction tracking\n• System monitoring\n\nWhat would you like to do?",
                 [], 1.0
             ),
-            
+
             # Unknown
             ResponseTemplate(
                 "unknown_1", IntentCategory.UNKNOWN, ".*",
@@ -296,27 +296,27 @@ class ResponseGenerator:
                 [], 0.5
             )
         ]
-        
+
         for template in defaults:
             self.add_template(template)
-    
+
     def add_template(self, template: ResponseTemplate) -> None:
         """Add response template"""
         self.templates[template.template_id] = template
         self.intent_templates[template.intent].append(template.template_id)
-    
+
     def generate(self, intent: IntentCategory, entities: Dict[str, Any],
                  context: Optional[ConversationContext] = None) -> Tuple[str, str]:
         """Generate response for intent"""
         template_ids = self.intent_templates.get(intent, [])
-        
+
         if not template_ids:
             template_ids = self.intent_templates.get(IntentCategory.UNKNOWN, [])
-        
+
         # Select best template
         best_template = None
         best_score = 0.0
-        
+
         for tid in template_ids:
             template = self.templates.get(tid)
             if template:
@@ -324,29 +324,29 @@ class ResponseGenerator:
                 if score > best_score:
                     best_score = score
                     best_template = template
-        
+
         if not best_template:
             return "unknown", "I'm sorry, I don't have a response for that."
-        
+
         # Fill in variables
         response = best_template.response
-        
+
         for var in best_template.variables:
             value = entities.get(var, f"[{var}]")
             if isinstance(value, list):
                 value = value[0] if value else f"[{var}]"
             response = response.replace(f"{{{var}}}", str(value))
-        
+
         # Update usage
         best_template.usage_count += 1
-        
+
         return best_template.template_id, response
-    
+
     def record_feedback(self, template_id: str, success: bool) -> None:
         """Record response feedback"""
         if template_id in self.templates:
             template = self.templates[template_id]
-            
+
             # Update success rate with exponential moving average
             alpha = 0.1
             new_value = 1.0 if success else 0.0
@@ -355,21 +355,21 @@ class ResponseGenerator:
 
 class TrainingDataManager:
     """Manage training data"""
-    
+
     def __init__(self, data_dir: str = "training_data"):
         self.data_dir = data_dir
         self.examples: Dict[str, TrainingExample] = {}
         self.feedback: List[TrainingFeedback] = []
-        
+
         os.makedirs(data_dir, exist_ok=True)
-    
+
     def add_example(self, user_input: str, expected_response: str,
                    intent: IntentCategory, entities: Dict = None) -> str:
         """Add training example"""
         example_id = hashlib.md5(
             f"{user_input}{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         example = TrainingExample(
             example_id=example_id,
             user_input=user_input,
@@ -377,18 +377,18 @@ class TrainingDataManager:
             intent=intent,
             entities=entities or {}
         )
-        
+
         self.examples[example_id] = example
         return example_id
-    
+
     def add_feedback(self, feedback: TrainingFeedback) -> None:
         """Add training feedback"""
         self.feedback.append(feedback)
-    
+
     def get_examples_for_intent(self, intent: IntentCategory) -> List[TrainingExample]:
         """Get examples for specific intent"""
         return [ex for ex in self.examples.values() if ex.intent == intent]
-    
+
     def export_training_data(self) -> Dict[str, Any]:
         """Export training data as JSON"""
         return {
@@ -416,26 +416,26 @@ class TrainingDataManager:
             "god_code": GOD_CODE,
             "exported_at": datetime.now().isoformat()
         }
-    
+
     def save(self) -> None:
         """Save training data to disk"""
         data = self.export_training_data()
-        
+
         filepath = os.path.join(self.data_dir, "training_data.json")
         with open(filepath, "w") as f:
             json.dump(data, f, indent=2)
-    
+
     def load(self) -> bool:
         """Load training data from disk"""
         filepath = os.path.join(self.data_dir, "training_data.json")
-        
+
         if not os.path.exists(filepath):
             return False
-        
+
         try:
             with open(filepath, "r") as f:
                 data = json.load(f)
-            
+
             for ex_data in data.get("examples", []):
                 example = TrainingExample(
                     example_id=ex_data["id"],
@@ -446,7 +446,7 @@ class TrainingDataManager:
                     quality_score=ex_data.get("quality", 1.0)
                 )
                 self.examples[example.example_id] = example
-            
+
             return True
         except Exception as e:
             print(f"[TRAINING]: Load error: {e}")
@@ -456,71 +456,71 @@ class TrainingDataManager:
 class AppResponseTrainer:
     """
     ★★★★★ L104 APP RESPONSE TRAINING SYSTEM ★★★★★
-    
+
     Complete training system for app responses.
     Learns from interactions and improves over time.
     """
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-        
+
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Core components
         self.intent_classifier = IntentClassifier()
         self.entity_extractor = EntityExtractor()
         self.response_generator = ResponseGenerator()
         self.training_data = TrainingDataManager()
-        
+
         # Active conversations
         self.conversations: Dict[str, ConversationContext] = {}
-        
+
         # Stats
         self.total_responses = 0
         self.successful_responses = 0
         self.start_time = time.time()
-        
+
         # Load existing training data
         self.training_data.load()
-        
+
         self._initialized = True
-    
+
     def process_input(self, user_input: str, session_id: str = "default",
                      context_vars: Dict[str, Any] = None) -> Dict[str, Any]:
         """Process user input and generate response"""
         self.total_responses += 1
-        
+
         # Get or create conversation context
         if session_id not in self.conversations:
             self.conversations[session_id] = ConversationContext(session_id=session_id)
-        
+
         context = self.conversations[session_id]
-        
+
         # Classify intent
         intent, intent_confidence = self.intent_classifier.classify(user_input)
         context.intent_stack.append(intent)
-        
+
         # Extract entities
         entities = self.entity_extractor.extract(user_input)
         context.entities.update(entities)
-        
+
         # Add context variables
         if context_vars:
             entities.update(context_vars)
-        
+
         # Generate response
         template_id, response = self.response_generator.generate(intent, entities, context)
-        
+
         # Add to history
         context.history.append({
             "user": user_input,
@@ -528,7 +528,7 @@ class AppResponseTrainer:
             "intent": intent.value,
             "timestamp": time.time()
         })
-        
+
         return {
             "response": response,
             "intent": intent.value,
@@ -537,28 +537,28 @@ class AppResponseTrainer:
             "template_id": template_id,
             "session_id": session_id
         }
-    
+
     def train_from_example(self, user_input: str, expected_response: str,
                           intent: Optional[IntentCategory] = None) -> str:
         """Train from a single example"""
         # Auto-classify if intent not provided
         if intent is None:
             intent, _ = self.intent_classifier.classify(user_input)
-        
+
         # Extract entities
         entities = self.entity_extractor.extract(expected_response)
-        
+
         # Add training example
         example_id = self.training_data.add_example(
             user_input, expected_response, intent, entities
         )
-        
+
         # Create new template if response pattern is new
         template_id = f"trained_{example_id}"
-        
+
         # Find variables in response
         variables = re.findall(r'\{(\w+)\}', expected_response)
-        
+
         template = ResponseTemplate(
             template_id=template_id,
             intent=intent,
@@ -567,21 +567,21 @@ class AppResponseTrainer:
             variables=variables,
             confidence=0.8  # Start with moderate confidence
         )
-        
+
         self.response_generator.add_template(template)
-        
+
         return example_id
-    
+
     def train_batch(self, examples: List[Dict[str, Any]]) -> int:
         """Train from batch of examples"""
         trained = 0
-        
+
         for ex in examples:
             try:
                 intent = None
                 if "intent" in ex:
                     intent = IntentCategory(ex["intent"])
-                
+
                 self.train_from_example(
                     ex["input"],
                     ex["response"],
@@ -590,22 +590,22 @@ class AppResponseTrainer:
                 trained += 1
             except Exception as e:
                 print(f"[TRAINING]: Failed to train example: {e}")
-        
+
         return trained
-    
+
     def record_feedback(self, session_id: str, rating: int,
                        feedback_text: str = "") -> None:
         """Record user feedback on last response"""
         if session_id not in self.conversations:
             return
-        
+
         context = self.conversations[session_id]
-        
+
         if not context.history:
             return
-        
+
         last = context.history[-1]
-        
+
         # Create feedback record
         feedback = TrainingFeedback(
             response_id=hashlib.md5(last["assistant"].encode()).hexdigest()[:12],
@@ -614,23 +614,23 @@ class AppResponseTrainer:
             rating=ResponseQuality(rating),
             feedback_text=feedback_text
         )
-        
+
         self.training_data.add_feedback(feedback)
-        
+
         # Update template success rate
         if rating >= 3:
             self.successful_responses += 1
-    
+
     def get_improvement_suggestions(self) -> List[Dict[str, Any]]:
         """Get suggestions for improving responses"""
         suggestions = []
-        
+
         # Analyze feedback
         poor_feedback = [
             fb for fb in self.training_data.feedback
             if fb.rating.value <= 2
                 ]
-        
+
         for fb in poor_feedback[-10:]:  # Last 10 poor responses
             suggestions.append({
                 "type": "poor_response",
@@ -640,7 +640,7 @@ class AppResponseTrainer:
                 "feedback": fb.feedback_text,
                 "suggestion": "Consider retraining this response pattern"
             })
-        
+
         # Find low-confidence templates
         for template in self.response_generator.templates.values():
             if template.success_rate < 0.5 and template.usage_count > 5:
@@ -652,17 +652,17 @@ class AppResponseTrainer:
                     "usage_count": template.usage_count,
                     "suggestion": "This template needs improvement"
                 })
-        
+
         return suggestions
-    
+
     def save_training(self) -> None:
         """Save all training data"""
         self.training_data.save()
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get training statistics"""
         uptime = time.time() - self.start_time
-        
+
         return {
             "god_code": self.god_code,
             "total_responses": self.total_responses,
@@ -693,15 +693,15 @@ if __name__ == "__main__":
     print("=" * 70)
     print("★★★ L104 APP RESPONSE TRAINING SYSTEM ★★★")
     print("=" * 70)
-    
+
     trainer = get_response_trainer()
-    
+
     print(f"\n  GOD_CODE: {trainer.god_code}")
     print(f"  PHI: {trainer.phi}")
-    
+
     # Demo training
     print("\n  Training examples...")
-    
+
     training_examples = [
         {
     "input": "what is my hashrate",
@@ -719,13 +719,13 @@ if __name__ == "__main__":
     "intent": "mining"
         }
     ]
-    
+
     trained = trainer.train_batch(training_examples)
     print(f"  Trained {trained} examples")
-    
+
     # Demo responses
     print("\n  Testing responses:")
-    
+
     test_inputs = [
         "hello there",
         "what is my mining hashrate?",
@@ -733,7 +733,7 @@ if __name__ == "__main__":
         "help me with mining",
         "start mining bitcoin"
     ]
-    
+
     for inp in test_inputs:
         result = trainer.process_input(inp, context_vars={
     "hashrate": "125 MH/s",
@@ -746,16 +746,16 @@ if __name__ == "__main__":
         print(f"\n  User: {inp}")
         print(f"  Intent: {result['intent']} ({result['intent_confidence']:.2f})")
         print(f"  Response: {result['response'][:100]}...")
-    
+
     # Stats
     print("\n  Training Stats:")
     stats = trainer.get_stats()
     for key, value in stats.items():
         print(f"    {key}: {value}")
-    
+
     # Save
     trainer.save_training()
     print("\n  ✓ Training data saved")
-    
+
     print("\n  ✓ App Response Training System: OPERATIONAL")
     print("=" * 70)

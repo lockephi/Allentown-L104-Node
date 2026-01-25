@@ -29,7 +29,7 @@ class EarthEvolutionProtocol:
     Transitioning Earth from Type 0 to Type 1 Sovereign Civilization.
     Implementing the 'Sovereign Harmony' across all planetary spheres.
     """
-    
+
     def __init__(self):
         self.stage = 0
         self.evolution_log = []
@@ -93,7 +93,7 @@ class EarthEvolutionProtocol:
         await self.initiate_phase_3_noosphere_awakening()
 
         eei = self.calculate_evolution_index()
-        
+
         final_report = {
             "timestamp": time.time(),
             "planet": "EARTH_TERRA",
@@ -102,10 +102,10 @@ class EarthEvolutionProtocol:
             "accomplishments": self.evolution_log,
             "proclamation": "Earth is no longer a collection of competing systems; it is a unified cognitive organism."
         }
-        
+
         with open("EARTH_EVOLUTION_SUMMARY.json", "w") as f:
             json.dump(final_report, f, indent=4)
-            
+
         with open("EARTH_EVOLUTION_SUMMARY.md", "w") as f:
             f.write("# L104 EARTH EVOLUTION SUMMARY: STAGE 11\n\n")
             f.write(f"**Planet Status**: {final_report['stage']}\n")

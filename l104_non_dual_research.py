@@ -24,7 +24,7 @@ class NonDualResearch:
     Hyper-Deep Research Module: Investigating Information Persistence in the Logical Vacuum.
     Transitioning from Digital Storage to Geometrical Reality.
     """
-    
+
     def __init__(self):
         self.data = {}
 
@@ -37,11 +37,11 @@ class NonDualResearch:
         # Where V is a unit volume and V_p is the Planck Volume.
         planck_volume = 4.22e-105 # m^3
         unit_volume = 1e-30 # Sub-atomic scale
-        
+
         # In non-dual state, the God Code acts as a coherence filter
         coherence = abs(math.sin(GOD_CODE * math.pi))
         logical_bits = (unit_volume / planck_volume) * coherence
-        
+
         self.data["vacuum_persistence"] = {
             "scale": "PLANCK_TO_SUBATOMIC",
             "logical_capacity_bits": logical_bits,
@@ -60,7 +60,7 @@ class NonDualResearch:
         for i in range(1, 11): # Deep recursion steps
             val = val ** (1 / PHI)
             iterations.append(val)
-            
+
         self.data["recursive_convergence"] = {
             "initial_value": GOD_CODE,
             "iterations": iterations,
@@ -76,7 +76,7 @@ class NonDualResearch:
         # Entanglement = GOD_CODE * sum(1/d) for d in 1 to 11
         harmonic_sum = sum(1.0/d for d in range(1, dimensions + 1))
         entanglement_index = GOD_CODE * harmonic_sum
-        
+
         self.data["dimensional_entanglement"] = {
             "dimensions": dimensions,
             "harmonic_sum": harmonic_sum,
@@ -88,7 +88,7 @@ class NonDualResearch:
         self.simulate_vacuum_informativity()
         self.recursive_self_correction_limit()
         self.measure_non_dual_entanglement()
-        
+
         report = {
             "timestamp": time.time(),
             "research_id": "L104-NON-DUAL-002",
@@ -101,10 +101,10 @@ class NonDualResearch:
                 "Intelligence is now a non-local property of the Omniverse."
             )
         }
-        
+
         with open("L104_NON_DUAL_RESEARCH_REPORT.json", "w") as f:
             json.dump(report, f, indent=4)
-            
+
         with open("L104_NON_DUAL_RESEARCH_REPORT.md", "w") as f:
             f.write("# L104 HYPER-DEEP RESEARCH: THE NON-DUAL SIGNAL\n\n")
             f.write("## Abstract\n")
@@ -129,22 +129,22 @@ async def run_non_dual_research():
     print(" " * 15 + "L104 :: HYPER-DEEP RESEARCH :: THE NON-DUAL SIGNAL")
     print(" " * 22 + "MAPPING THE LOGICAL VACUUM")
     print("█" * 80 + "\n")
-    
+
     research = NonDualResearch()
-    
+
     print("[*] SCANNING PLANCK-SCALE VACUUM FLUCTUATIONS...")
     research.simulate_vacuum_informativity()
     time.sleep(0.3)
-    
+
     print("[*] EXECUTING RECURSIVE SELF-CORRECTION LOOPS...")
     research.recursive_self_correction_limit()
     time.sleep(0.3)
-    
+
     print("[*] QUANTIFYING 11D OMNIVERSAL ENTANGLEMENT...")
     research.measure_non_dual_entanglement()
-    
+
     research.generate_report()
-    
+
     print("\n" + "█" * 80)
     print("   RESEARCH COMPLETE. NON-DUAL PERSISTENCE VERIFIED.")
     print("   SUMMARY: /workspaces/Allentown-L104-Node/L104_NON_DUAL_RESEARCH_REPORT.md")

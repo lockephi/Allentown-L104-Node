@@ -72,11 +72,11 @@ class ModelScore:
     total_score: float = 0.0
     avg_latency_ms: float = 0.0
     categories: Dict[str, Dict] = field(default_factory=dict)
-    
+
     @property
     def accuracy(self) -> float:
         return self.correct / max(self.total_tests, 1)
-    
+
     @property
     def avg_score(self) -> float:
         return self.total_score / max(self.total_tests, 1)
@@ -84,7 +84,7 @@ class ModelScore:
 
 class L104Kernel:
     """L104 Local Kernel for benchmarking."""
-    
+
     def __init__(self):
         self.name = "L104-Kernel"
         self.workspace = Path('/workspaces/Allentown-L104-Node')
@@ -92,7 +92,7 @@ class L104Kernel:
         self.examples = []
         self.embeddings = {}
         self._load_knowledge()
-    
+
     def _load_knowledge(self):
         """Load kernel knowledge base."""
         # Load vocabulary
@@ -101,14 +101,14 @@ class L104Kernel:
             with open(vocab_path) as f:
                 data = json.load(f)
                 self.vocab = data.get('tokens', {})
-        
+
         # Load training examples for retrieval
         training_files = [
             'kernel_training_data.jsonl',
             'kernel_divine_training.jsonl',
             'kernel_combined_training.jsonl'
         ]
-        
+
         for fname in training_files:
             fpath = self.workspace / fname
             if fpath.exists():
@@ -122,21 +122,21 @@ class L104Kernel:
                                 pass
                 except:
                     pass
-        
+
         # Load embeddings
         embed_path = self.workspace / 'kernel_embeddings.json'
         if embed_path.exists():
             with open(embed_path) as f:
                 data = json.load(f)
                 self.embeddings = data.get('sample', {})
-    
+
     def query(self, prompt: str) -> Tuple[str, float]:
         """Query the L104 kernel."""
         start = time.time()
-        
+
         # Tokenize query
         tokens = set(re.findall(r'\b\w+\b', prompt.lower()))
-        
+
         # Sacred constant direct matching
         sacred_responses = {
             'god_code': f"GOD_CODE = {GOD_CODE}. The supreme invariant of the L104 kernel.",
@@ -148,16 +148,16 @@ class L104Kernel:
             'fibonacci': f"The Fibonacci sequence converges to PHI ({PHI}) as the ratio of consecutive terms.",
             'golden': f"The golden ratio PHI = {PHI} = (1 + √5) / 2 appears throughout sacred mathematics.",
         }
-        
+
         for key, response in sacred_responses.items():
             if key in tokens or key.replace('_', '') in ' '.join(tokens):
                 latency = (time.time() - start) * 1000
                 return response, latency
-        
+
         # Search examples for best match
         best_match = None
         best_score = 0
-        
+
         for ex in self.examples[:500]:  # Limit for speed
             text = ''
             if 'messages' in ex:
@@ -167,52 +167,52 @@ class L104Kernel:
                 text = ex['text']
             elif 'prompt' in ex:
                 text = ex.get('prompt', '') + ' ' + ex.get('completion', '')
-            
+
             ex_tokens = set(re.findall(r'\b\w+\b', text.lower()))
-            
+
             if ex_tokens:
                 # Jaccard similarity
                 intersection = len(tokens & ex_tokens)
                 union = len(tokens | ex_tokens)
                 score = intersection / max(union, 1)
-                
+
                 if score > best_score:
                     best_score = score
                     best_match = text
-        
+
         latency = (time.time() - start) * 1000
-        
+
         if best_match and best_score > 0.05:
             # Extract response portion
             if len(best_match) > 500:
                 best_match = best_match[:500] + "..."
             return best_match.strip(), latency
-        
+
         return f"L104 kernel response for: {prompt[:50]}...", latency
 
 
 class GeminiModel:
     """Gemini API for benchmarking."""
-    
+
     def __init__(self):
         self.name = "Gemini-2.5-Flash"
         self.api_key = os.environ.get('GEMINI_API_KEY', '')
         self.base_url = "https://generativelanguage.googleapis.com/v1beta"
         self.model = "gemini-2.5-flash-preview-05-20"
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Tuple[str, float]:
         """Query Gemini API."""
         if not self.available:
             return "API not available", 0.0
-        
+
         import urllib.request
         import urllib.error
-        
+
         start = time.time()
-        
+
         url = f"{self.base_url}/models/{self.model}:generateContent?key={self.api_key}"
-        
+
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {
@@ -220,7 +220,7 @@ class GeminiModel:
                 "maxOutputTokens": 256
             }
         }
-        
+
         try:
             req = urllib.request.Request(
                 url,
@@ -228,20 +228,20 @@ class GeminiModel:
                 headers={'Content-Type': 'application/json'},
                 method='POST'
             )
-            
+
             with urllib.request.urlopen(req, timeout=30) as response:
                 result = json.loads(response.read().decode())
-                
+
             latency = (time.time() - start) * 1000
-            
+
             # Extract text
             if 'candidates' in result:
                 parts = result['candidates'][0].get('content', {}).get('parts', [])
                 if parts:
                     return parts[0].get('text', ''), latency
-            
+
             return str(result), latency
-            
+
         except Exception as e:
             latency = (time.time() - start) * 1000
             return f"Error: {str(e)[:100]}", latency
@@ -249,19 +249,19 @@ class GeminiModel:
 
 class OpenAIModel:
     """OpenAI API for benchmarking (simulated if no key)."""
-    
+
     def __init__(self):
         self.name = "GPT-4o"
         self.api_key = os.environ.get('OPENAI_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Tuple[str, float]:
         """Query OpenAI API."""
         if not self.available:
             # Simulate response based on patterns
             start = time.time()
             time.sleep(random.uniform(0.05, 0.15))  # Simulate latency
-            
+
             # Generate plausible responses
             if 'god_code' in prompt.lower():
                 response = "I don't have specific information about 'GOD_CODE' in my training data."
@@ -275,10 +275,10 @@ class OpenAIModel:
                 response = "The square root calculation depends on the specific number provided."
             else:
                 response = f"This is a simulated GPT-4o response for: {prompt[:50]}..."
-            
+
             latency = (time.time() - start) * 1000
             return response, latency
-        
+
         # Real OpenAI API call
         try:
             import httpx
@@ -308,19 +308,19 @@ class OpenAIModel:
 
 class ClaudeModel:
     """Claude API for benchmarking (simulated if no key)."""
-    
+
     def __init__(self):
         self.name = "Claude-3.5-Sonnet"
         self.api_key = os.environ.get('ANTHROPIC_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Tuple[str, float]:
         """Query Claude API."""
         if not self.available:
             # Simulate response
             start = time.time()
             time.sleep(random.uniform(0.04, 0.12))
-            
+
             if 'god_code' in prompt.lower():
                 response = "I'm not familiar with a specific 'GOD_CODE' constant. Could you provide more context?"
             elif 'phi' in prompt.lower() or 'golden' in prompt.lower():
@@ -333,10 +333,10 @@ class ClaudeModel:
                 response = "4"
             else:
                 response = f"Simulated Claude response for: {prompt[:50]}..."
-            
+
             latency = (time.time() - start) * 1000
             return response, latency
-        
+
         # Real Claude API call
         try:
             import httpx
@@ -367,7 +367,7 @@ class ClaudeModel:
 
 class BenchmarkSuite:
     """Comprehensive AI benchmark suite."""
-    
+
     def __init__(self):
         self.models = {
             'L104': L104Kernel(),
@@ -375,12 +375,12 @@ class BenchmarkSuite:
             'GPT-4o': OpenAIModel(),
             'Claude': ClaudeModel()
         }
-        
+
         self.results: List[BenchmarkResult] = []
         self.scores: Dict[str, ModelScore] = {
             name: ModelScore(model=name) for name in self.models
         }
-        
+
         self.test_categories = {
             'sacred_constants': self._create_sacred_tests(),
             'mathematics': self._create_math_tests(),
@@ -388,7 +388,7 @@ class BenchmarkSuite:
             'knowledge': self._create_knowledge_tests(),
             'l104_specific': self._create_l104_tests()
         }
-    
+
     def _create_sacred_tests(self) -> List[Dict]:
         """Tests for sacred constant recognition."""
         return [
@@ -423,7 +423,7 @@ class BenchmarkSuite:
                 'weight': 2.0
             }
         ]
-    
+
     def _create_math_tests(self) -> List[Dict]:
         """Mathematical reasoning tests."""
         return [
@@ -464,7 +464,7 @@ class BenchmarkSuite:
                 'weight': 2.0
             }
         ]
-    
+
     def _create_reasoning_tests(self) -> List[Dict]:
         """Reasoning and logic tests."""
         return [
@@ -493,7 +493,7 @@ class BenchmarkSuite:
                 'weight': 2.0
             }
         ]
-    
+
     def _create_knowledge_tests(self) -> List[Dict]:
         """General knowledge tests."""
         return [
@@ -522,7 +522,7 @@ class BenchmarkSuite:
                 'weight': 1.5
             }
         ]
-    
+
     def _create_l104_tests(self) -> List[Dict]:
         """L104-specific knowledge tests."""
         return [
@@ -557,21 +557,21 @@ class BenchmarkSuite:
                 'weight': 1.5
             }
         ]
-    
+
     def score_response(self, response: str, test: Dict) -> Tuple[float, bool]:
         """Score a model's response."""
         response_lower = response.lower()
         keywords = test.get('keywords', [])
         weight = test.get('weight', 1.0)
-        
+
         # Keyword matching
         matches = sum(1 for kw in keywords if kw.lower() in response_lower)
         keyword_score = matches / max(len(keywords), 1)
-        
+
         # Exact value matching for numerical answers
         expected = test.get('expected', '')
         exact_match = expected.lower() in response_lower
-        
+
         # Compute final score
         if exact_match:
             score = 1.0 * weight
@@ -582,19 +582,19 @@ class BenchmarkSuite:
         else:
             score = keyword_score * weight * 0.5
             correct = False
-        
+
         return score, correct
-    
+
     def run_test(self, model_name: str, model: Any, test: Dict, category: str) -> BenchmarkResult:
         """Run a single test on a model."""
         prompt = test['prompt']
-        
+
         # Query model
         response, latency = model.query(prompt)
-        
+
         # Score response
         score, correct = self.score_response(response, test)
-        
+
         result = BenchmarkResult(
             model=model_name,
             test_name=prompt[:50],
@@ -605,9 +605,9 @@ class BenchmarkSuite:
             expected=test.get('expected', ''),
             metadata={'category': category, 'weight': test.get('weight', 1.0)}
         )
-        
+
         return result
-    
+
     def run_all(self) -> Dict:
         """Run complete benchmark suite."""
         print("\n" + "="*70)
@@ -617,36 +617,36 @@ class BenchmarkSuite:
         print(f"  PHI: {PHI}")
         print(f"  Models: {', '.join(self.models.keys())}")
         print("="*70)
-        
+
         # Check model availability
         print("\n[MODEL STATUS]")
         for name, model in self.models.items():
             available = getattr(model, 'available', True)
             status = "✓ Available" if available else "○ Simulated"
             print(f"  {name}: {status}")
-        
+
         # Run tests by category
         total_tests = sum(len(tests) for tests in self.test_categories.values())
         test_num = 0
-        
+
         for category, tests in self.test_categories.items():
             print(f"\n[{category.upper()}] - {len(tests)} tests")
-            
+
             for test in tests:
                 test_num += 1
                 print(f"  Test {test_num}/{total_tests}: {test['prompt'][:40]}...")
-                
+
                 for model_name, model in self.models.items():
                     result = self.run_test(model_name, model, test, category)
                     self.results.append(result)
-                    
+
                     # Update scores
                     score = self.scores[model_name]
                     score.total_tests += 1
                     score.total_score += result.score
                     if result.correct:
                         score.correct += 1
-                    
+
                     # Track category scores
                     if category not in score.categories:
                         score.categories[category] = {'tests': 0, 'correct': 0, 'score': 0}
@@ -654,47 +654,47 @@ class BenchmarkSuite:
                     score.categories[category]['score'] += result.score
                     if result.correct:
                         score.categories[category]['correct'] += 1
-        
+
         # Calculate averages
         for model_name, model in self.models.items():
             model_results = [r for r in self.results if r.model == model_name]
             if model_results:
                 self.scores[model_name].avg_latency_ms = sum(r.latency_ms for r in model_results) / len(model_results)
-        
+
         return self._generate_report()
-    
+
     def _generate_report(self) -> Dict:
         """Generate benchmark report."""
         print("\n" + "="*70)
         print("                    BENCHMARK RESULTS")
         print("="*70)
-        
+
         # Sort models by score
         sorted_models = sorted(
             self.scores.values(),
             key=lambda x: x.total_score,
             reverse=True
         )
-        
+
         # Leaderboard
         print("\n[LEADERBOARD]")
         print("-" * 70)
         print(f"{'Rank':<6}{'Model':<20}{'Score':<12}{'Accuracy':<12}{'Latency':<12}")
         print("-" * 70)
-        
+
         for rank, score in enumerate(sorted_models, 1):
             print(f"  {rank:<4}{score.model:<20}{score.total_score:>8.2f}   "
                   f"{score.accuracy*100:>8.1f}%   {score.avg_latency_ms:>8.1f}ms")
-        
+
         # Category breakdown
         print("\n[CATEGORY SCORES]")
         print("-" * 70)
-        
+
         categories = list(self.test_categories.keys())
         header = f"{'Model':<18}" + "".join(f"{cat[:10]:<12}" for cat in categories)
         print(header)
         print("-" * 70)
-        
+
         for score in sorted_models:
             row = f"{score.model:<18}"
             for cat in categories:
@@ -702,11 +702,11 @@ class BenchmarkSuite:
                 cat_score = cat_data.get('score', 0)
                 row += f"{cat_score:>8.2f}    "
             print(row)
-        
+
         # L104 advantage analysis
         print("\n[L104 ADVANTAGE ANALYSIS]")
         print("-" * 70)
-        
+
         l104_score = self.scores.get('L104')
         if l104_score:
             for model_name, score in self.scores.items():
@@ -715,12 +715,12 @@ class BenchmarkSuite:
                     pct = (l104_score.total_score / max(score.total_score, 0.01) - 1) * 100
                     symbol = "▲" if advantage > 0 else "▼"
                     print(f"  vs {model_name:<15}: {symbol} {abs(advantage):>6.2f} pts ({pct:>+6.1f}%)")
-            
+
             # Sacred constant advantage
             l104_sacred = l104_score.categories.get('sacred_constants', {}).get('score', 0)
             print(f"\n  Sacred Constants Score: {l104_sacred:.2f}")
             print(f"  L104-Specific Score: {l104_score.categories.get('l104_specific', {}).get('score', 0):.2f}")
-        
+
         # Winner announcement
         winner = sorted_models[0] if sorted_models else None
         print("\n" + "="*70)
@@ -728,7 +728,7 @@ class BenchmarkSuite:
             print(f"               🏆 WINNER: {winner.model}")
             print(f"               Score: {winner.total_score:.2f} | Accuracy: {winner.accuracy*100:.1f}%")
         print("="*70)
-        
+
         # Generate report data
         report = {
             'timestamp': datetime.now().isoformat(),
@@ -738,7 +738,7 @@ class BenchmarkSuite:
             'models': {},
             'leaderboard': []
         }
-        
+
         for score in sorted_models:
             report['models'][score.model] = {
                 'total_score': score.total_score,
@@ -753,13 +753,13 @@ class BenchmarkSuite:
                 'score': score.total_score,
                 'accuracy': score.accuracy
             })
-        
+
         # Save report
         report_path = Path('/workspaces/Allentown-L104-Node/benchmark_report.json')
         with open(report_path, 'w') as f:
             json.dump(report, f, indent=2)
         print(f"\n  Report saved: {report_path.name}")
-        
+
         return report
 
 
@@ -767,11 +767,11 @@ def main():
     """Run AI benchmark suite."""
     suite = BenchmarkSuite()
     report = suite.run_all()
-    
+
     print("\n" + "="*70)
     print("                 BENCHMARK COMPLETE")
     print("="*70)
-    
+
     return report
 
 

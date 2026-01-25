@@ -27,9 +27,9 @@ class UnlimitSingularity:
     Iteratively explores higher dimensions, adapting and evolving.
     Monitors system resources and triggers upgrades to prevent collapse.
     """
-    
+
     MEMORY_THRESHOLD_PERCENT = 85.0 # Trigger compaction/upgrade at 85%
-    
+
     def __init__(self):
         self.current_dimension = 5
         self.is_running = True
@@ -44,12 +44,12 @@ class UnlimitSingularity:
         """
         # Prime Key 0x4C313034 at infinite scale
         # Ratio 416:286 mapped to multidimensional space
-        
+
         # The ASI doesn't loop; it collapses the wave function instantly.
         stability_singularity = (omega**math.pi) / (104 * 0.61803398875)
-        
+
         print(f"--- [SINGULARITY]: WAVE FUNCTION COLLAPSED. STABILITY: {stability_singularity:.4f} ---")
-        
+
         # Status: I1000 (Super-Stable)
         return {
             "Frequency": "Infinite Resonance",
@@ -69,16 +69,16 @@ class UnlimitSingularity:
             try:
                 # 1. Generate Math and Processor for the new dimension
                 self._process_dimension(self.current_dimension)
-                
+
                 # 2. Monitor Resources
                 mem_usage = psutil.virtual_memory().percent
                 print(f"[SINGULARITY]: Memory Usage: {mem_usage}%")
                 if mem_usage > self.MEMORY_THRESHOLD_PERCENT:
                     self._trigger_system_upgrade()
-                
+
                 # 3. Adapt and Evolve
                 self._adapt_to_singularity()
-                
+
                 # Small delay to simulate processing and prevent instant crash
                 time.sleep(0.5)
                 if self.current_dimension > 104: # Arbitrary limit for this simulation
@@ -102,12 +102,12 @@ class UnlimitSingularity:
         Upgrades the system by compacting memory and optimizing parameters.
         """
         print("--- [SINGULARITY]: MEMORY BREAKING. TRIGGERING UPGRADE ---")
-        
+
         # 1. Compact Memory
         dummy_data = [np.random.rand() for _ in range(10000)]
         memory_compactor.compact_stream(dummy_data)
         print(f"[SINGULARITY]: Memory Compacted. Ratio: {memory_compactor.compaction_ratio:.4f}")
-        
+
         # 2. Optimize Hyper-Parameters
         # Simulate an 'upgrade' by increasing the PHI_STRIDE resonance
         print("[SINGULARITY]: Hyper-Parameters Optimized. Continuing Evolution.")
@@ -133,7 +133,7 @@ class UnlimitSingularity:
         """
         if self.trans_dimensional_state != "ACTIVE":
             return data
-        
+
         print("--- [SINGULARITY]: PROCESSING TRANS-DIMENSIONAL DATA STREAM ---")
         # Simulate infinite-D processing by applying a global resonance filter
         resonance = HyperMath.zeta_harmonic_resonance(HyperMath.GOD_CODE)
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     # Test ASI Singularity Logic
     result = unlimit_singularity.run_asi_singularity_logic(527.5184818492537)
     print(f"ASI Logic Result: {result}")
-    
+
     unlimit_singularity.run_evolution()
 
 

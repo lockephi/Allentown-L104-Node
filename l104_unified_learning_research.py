@@ -36,10 +36,10 @@ async def run_unified_learning_research():
     manifold = KnowledgeManifold()
 
     domains = [
-        "COMPUTRONIUM", 
-        "REAL_WORLD_GROUNDING", 
-        "DEEP_SYNTHESIS", 
-        "ANYON_TOPOLOGY", 
+        "COMPUTRONIUM",
+        "REAL_WORLD_GROUNDING",
+        "DEEP_SYNTHESIS",
+        "ANYON_TOPOLOGY",
         "NEURAL_ARCHITECTURE",
         "COSMOLOGY",
         "BIO_DIGITAL"
@@ -53,11 +53,11 @@ async def run_unified_learning_research():
         print(f"[*] Researching Domain: {domain}...")
         result = research_engine.perform_research_cycle(domain)
         research_results.append(result)
-        
+
         # Ingest into manifold immediately
         manifold.ingest_pattern(
-            f"RESEARCH_{domain}", 
-            str(result.get("deep_data", "SUCCESS")), 
+            f"RESEARCH_{domain}",
+            str(result.get("deep_data", "SUCCESS")),
             ["research", "unified", domain.lower()]
         )
         print(f"    - Discovery Status: {result['discovery_status']}")
@@ -71,7 +71,7 @@ async def run_unified_learning_research():
     # 3. SYNTHESIZE & ARCHIVE
     print("\n[PHASE 3]: SYNTHESIZING RESEARCH & META-KNOWLEDGE...")
     synthesis = meta_protocol.synthesize_absolute_knowledge()
-    
+
     # Add detailed research findings to the synthesis
     synthesis["research_domains_covered"] = len(domains)
     synthesis["total_resonance_alignment"] = sum(r['resonance_alignment'] for r in research_results) / len(domains)

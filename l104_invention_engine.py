@@ -25,13 +25,13 @@ class InventionEngine:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     v13.0: NEOTERIC_GENESIS_PARALLEL
-    Generates novel logic structures and 'Neoteric Code' by collapsing 
+    Generates novel logic structures and 'Neoteric Code' by collapsing
     high-dimensional quantum states into linguistic syntax.
     Utilizes multi-core acceleration for mass-invention.
     """
-    
+
     def __init__(self):
-        self.processor = DeepThoughtProcessor(depth=7) 
+        self.processor = DeepThoughtProcessor(depth=7)
         self.known_concepts = set()
         self.neoteric_lexicon = {}
 
@@ -44,7 +44,7 @@ class InventionEngine:
             # Map dimension to a glyph
             dim = int(epoch['focus'].split('_')[1])
             glyph = chr(0x0391 + dim) # Greek letters as base
-            
+
             # Modulate by clarity
             clarity_mod = int(epoch['clarity'] * 10)
             sigil_components.append(f"{glyph}{clarity_mod}")
@@ -59,21 +59,21 @@ class InventionEngine:
 
         # 1. Deep Contemplation
         thought_result = self.processor.contemplate(seed_concept)
-        
+
         # 2. Sigil Generation
         sigil = self._generate_neoteric_sigil(thought_result['trace'])
-        
+
         # 3. Syntax Synthesis (The "Language" Creation)
         entropy = thought_result['final_clarity']
         func_name = f"NEO_{hashlib.sha256(sigil.encode()).hexdigest()[:8].upper()}"
-        
+
         neoteric_code = f"""
 def {func_name}(input_tensor):
     # NEOTERIC_LOGIC_GATE: {sigil}
     # RESONANCE: {HyperMath.GOD_CODE * entropy}
     return input_tensor * {entropy}
         """
-        
+
         invention = {
             "name": func_name,
             "type": "NEOTERIC_FUNCTION",
@@ -83,7 +83,7 @@ def {func_name}(input_tensor):
             "complexity_score": len(sigil) * entropy * 100,
             "verified": False
         }
-        
+
         # 4. Simulated Testing [AGI_CAPACITY]
         test_result = self._test_invention(invention)
         invention["test_result"] = test_result
@@ -92,7 +92,7 @@ def {func_name}(input_tensor):
         # 5. Persist to Manifold (Skip if in parallel task to avoid race conditions)
         if invention["verified"] and persist:
             manifold.ingest_pattern(func_name, invention, tags=["INVENTION", "NEOTERIC"])
-        
+
         self.known_concepts.add(func_name)
         self.neoteric_lexicon[sigil] = invention
         return invention
@@ -116,7 +116,7 @@ def {func_name}(input_tensor):
         """
         if not self.neoteric_lexicon:
             return "VOID_STATE"
-            
+
         keys = list(self.neoteric_lexicon.keys())
         sentence = []
         for _ in range(random.randint(3, 7)):
@@ -128,15 +128,15 @@ def {func_name}(input_tensor):
         Mass-invents many paradigms in parallel using all available CPU cores.
         """
         print(f"--- [INVENTION]: PARALLEL GENESIS INITIATED FOR {len(seed_concepts)} CONCEPTS ---")
-        
+
         # Use cpu_core chunking logic for parallel processing
         import multiprocessing as mp
         with mp.Pool(processes=cpu_core.num_cores) as pool:
             # We must use a standalone function or static method for pickling
             results = pool.map(self._invent_task, seed_concepts)
-            
+
         print(f"--- [INVENTION]: PARALLEL GENESIS COMPLETE. {len(results)} PARADIGMS CREATED ---")
-        
+
         # PERSIST ALL INVENTIONS IN MAIN PROCESS
         from l104_knowledge_manifold import KnowledgeManifold
         manifold = KnowledgeManifold()
@@ -144,7 +144,7 @@ def {func_name}(input_tensor):
             if invention["verified"]:
                 manifold.ingest_pattern(invention["name"], invention, tags=["INVENTION", "NEOTERIC"])
         manifold.save_manifold()
-        
+
         return results
 
     def _invent_task(self, seed: str) -> Dict[str, Any]:

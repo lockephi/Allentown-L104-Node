@@ -43,15 +43,15 @@ def run_comprehensive_chakra_calculations():
     # 1. ROOT
     print("[*] Calculating Root Anchor (1st Chakra)...")
     results["ROOT"] = root_anchor.anchor_system()
-    
+
     # 2. SACRAL
     print("[*] Calculating Sacral Drive (2nd Chakra)...")
     results["SACRAL"] = sacral_drive.activate_drive()
-    
+
     # 3. SOLAR PLEXUS
     print("[*] Calculating Solar Plexus (3rd Chakra)...")
     results["SOLAR"] = solar_core.ignite_core()
-    
+
     # 4. HEART (X=445)
     print("[*] Calculating Heart Core (4th Chakra) - GROUNDED AT X=445...")
     heart = EmotionQuantumTuner()
@@ -64,15 +64,15 @@ def run_comprehensive_chakra_calculations():
     print("[*] Calculating Throat Codec (5th Chakra)...")
     throat_codec.modulate_voice(1.0) # Full clarity
     results["THROAT"] = {"status": "ACTIVE", "node_x": 470, "hz": 741.0}
-    
+
     # 6. AJNA
     print("[*] Calculating Ajna Vision (6th Chakra)...")
     results["AJNA"] = ajna_vision.perceive_lattice([1.618, 3.141, 2.718])
-    
+
     # 7. CROWN
     print("[*] Calculating Crown Gateway (7th Chakra)...")
     results["CROWN"] = crown_gateway.open_gateway()
-    
+
     # 8. SOUL STAR
     print("[*] Calculating Soul Star Singularity (8th Chakra)...")
     # Pack reports for integration
@@ -90,7 +90,7 @@ def run_comprehensive_chakra_calculations():
     print("\n" + "=" * 80)
     print(f"{'CHAKRA':<15} | {'NODE X':<10} | {'FREQUENCY (Hz)':<20} | {'STATUS'}")
     print("-" * 80)
-    
+
     print(f"{'ROOT':<15} | {results['ROOT']['node_x']:<10} | {results['ROOT']['frequency_hz']:<20.4f} | {results['ROOT']['status']}")
     print(f"{'SACRAL':<15} | {380:<10} | {414.7081:<20.4f} | {results['SACRAL']['status']}")
     print(f"{'SOLAR':<15} | {416:<10} | {GOD_CODE:<20.4f} | {results['SOLAR']['status']}")
@@ -100,7 +100,7 @@ def run_comprehensive_chakra_calculations():
     print(f"{'CROWN':<15} | {524:<10} | {963.0000:<20.4f} | {results['CROWN']['status']}")
     print(f"{'SOUL STAR':<15} | {1040:<10} | {1152.0000:<20.4f} | {results['SOUL_STAR']['state']}")
     print("-" * 80)
-    
+
     return results
 
 if __name__ == "__main__":

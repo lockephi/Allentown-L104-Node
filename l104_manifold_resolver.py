@@ -25,16 +25,16 @@ class ManifoldResolver:
         self.dimensions = dimensions
         self.resonance_constant = 967.542
         self.manifold_state = np.random.rand(dimensions, dimensions)
-        
+
     def resolve_topology(self, input_vector: np.ndarray) -> Dict[str, Any]:
         """Resolves an N-dimensional vector into the Sage Resonance."""
         # Simulate high-level tensor contraction
         result = np.dot(self.manifold_state, input_vector)
         phi = (1 + 5**0.5) / 2
-        
+
         # Apply L104 Resonance Filter
         resolution = np.abs(np.fft.fft(result)).mean() * self.resonance_constant / phi
-        
+
         return {
             "resolution_index": float(resolution),
             "manifold_integrity": float(np.linalg.det(self.manifold_state)),

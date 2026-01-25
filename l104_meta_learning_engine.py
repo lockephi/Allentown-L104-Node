@@ -51,7 +51,7 @@ class LearningEpisode:
     duration_ms: float
     timestamp: float
     success: bool = True
-    
+
     def efficiency_score(self) -> float:
         """Calculate learning efficiency: (unity × confidence) / log(time + 1)."""
         time_factor = math.log(self.duration_ms + 1) + 1
@@ -67,15 +67,15 @@ class LearningStrategy:
     total_episodes: int = 0
     total_unity: float = 0.0
     total_efficiency: float = 0.0
-    
+
     @property
     def average_unity(self) -> float:
         return self.total_unity / max(1, self.total_episodes)
-    
+
     @property
     def average_efficiency(self) -> float:
         return self.total_efficiency / max(1, self.total_episodes)
-    
+
     def record_episode(self, episode: LearningEpisode):
         self.total_episodes += 1
         self.total_unity += episode.unity_index
@@ -87,7 +87,7 @@ class MetaLearningEngineV2:
     The Meta-Learning Engine v2 observes the brain's learning performance
     and optimizes learning strategies over time using Golden Ratio dynamics.
     """
-    
+
     def __init__(self):
         self.kernel = stable_kernel
         self.episodes: List[LearningEpisode] = []
@@ -105,10 +105,10 @@ class MetaLearningEngineV2:
         }
         self.optimization_history: List[Dict] = []
         self.learning_curve: List[float] = []  # Track improvement over time
-        
+
         self._init_strategies()
         print("🎓 [META-v2]: Meta-Learning Engine v2.0 initialized")
-    
+
     def _init_strategies(self):
         """Initialize default learning strategies."""
         self.strategies = {
@@ -143,7 +143,7 @@ class MetaLearningEngineV2:
                 parameters={"depth": 3, "validation_per_level": True}
             )
         }
-    
+
     def record_learning(self, topic: str, strategy: str, unity_index: float,
                        confidence: float, duration_ms: float) -> LearningEpisode:
         """Record a learning episode and update statistics."""
@@ -156,48 +156,48 @@ class MetaLearningEngineV2:
             timestamp=time.time(),
             success=unity_index >= self.hyperparameters["validation_threshold"]
         )
-        
+
         self.episodes.append(episode)
         self.topic_performance[topic].append(unity_index)
         self.learning_curve.append(unity_index)
-        
+
         if strategy in self.strategies:
             self.strategies[strategy].record_episode(episode)
-        
+
         # Update best strategy for topic
         if topic not in self.topic_strategies:
             self.topic_strategies[topic] = strategy
         elif unity_index > self.get_topic_best_unity(topic):
             self.topic_strategies[topic] = strategy
-        
+
         # Trigger optimization check
         if len(self.episodes) % 10 == 0:
             self._optimize_hyperparameters()
-        
+
         return episode
-    
+
     def get_topic_best_unity(self, topic: str) -> float:
         """Get the best unity achieved for a topic."""
         if topic not in self.topic_performance:
             return 0.0
         return max(self.topic_performance[topic])
-    
+
     def select_strategy(self, topic: str) -> str:
         """
         Select the best learning strategy for a topic.
         Uses Thompson Sampling with Golden Ratio exploration.
         """
         import random
-        
+
         # If we know the best strategy for this topic, use it most of the time
         if topic in self.topic_strategies:
             if random.random() > self.hyperparameters["exploration_rate"]:
                 return self.topic_strategies[topic]
-        
+
         # Exploration: try random strategy
         if random.random() < self.hyperparameters["exploration_rate"]:
             return random.choice(list(self.strategies.keys()))
-        
+
         # Thompson Sampling: sample from posterior based on performance
         scores = {}
         for name, strategy in self.strategies.items():
@@ -208,9 +208,9 @@ class MetaLearningEngineV2:
                 scores[name] = max(0, score)
             else:
                 scores[name] = 0.5 + random.random() * 0.3  # Prior for unexplored
-        
+
         return max(scores, key=scores.get)
-    
+
     def get_topic_difficulty(self, topic: str) -> Tuple[float, str]:
         """
         Estimate topic difficulty based on historical performance.
@@ -218,15 +218,15 @@ class MetaLearningEngineV2:
         """
         if topic not in self.topic_performance:
             return (0.5, "unknown")
-        
+
         scores = self.topic_performance[topic]
         avg_unity = sum(scores) / len(scores)
         variance = sum((s - avg_unity)**2 for s in scores) / len(scores)
-        
+
         # High unity + low variance = easy
         # Low unity + high variance = hard
         difficulty = 1.0 - avg_unity + variance
-        
+
         if difficulty < 0.2:
             label = "trivial"
         elif difficulty < 0.4:
@@ -237,9 +237,9 @@ class MetaLearningEngineV2:
             label = "challenging"
         else:
             label = "difficult"
-        
+
         return (difficulty, label)
-    
+
     def _optimize_hyperparameters(self):
         """
         Self-tune hyperparameters based on recent performance.
@@ -247,12 +247,12 @@ class MetaLearningEngineV2:
         """
         if len(self.episodes) < 10:
             return
-        
+
         recent = self.episodes[-20:]
         avg_unity = sum(e.unity_index for e in recent) / len(recent)
         avg_efficiency = sum(e.efficiency_score() for e in recent) / len(recent)
         success_rate = sum(1 for e in recent if e.success) / len(recent)
-        
+
         # Calculate learning velocity
         if len(self.learning_curve) >= 20:
             early = sum(self.learning_curve[:10]) / 10
@@ -260,10 +260,10 @@ class MetaLearningEngineV2:
             velocity = (late - early) / max(early, 0.1)
         else:
             velocity = 0.0
-        
+
         # Golden Ratio step size
         step = 0.05 / PHI
-        
+
         # Adjust exploration based on velocity
         if velocity < 0:  # Declining performance
             self.hyperparameters["exploration_rate"] = min(0.4,
@@ -271,7 +271,7 @@ class MetaLearningEngineV2:
         elif velocity > 0.1:  # Strong improvement
             self.hyperparameters["exploration_rate"] = max(0.05,
                 self.hyperparameters["exploration_rate"] - step)
-        
+
         # Adjust validation threshold
         if success_rate > 0.9:
             self.hyperparameters["validation_threshold"] = min(0.9,
@@ -279,12 +279,12 @@ class MetaLearningEngineV2:
         elif success_rate < 0.5:
             self.hyperparameters["validation_threshold"] = max(0.4,
                 self.hyperparameters["validation_threshold"] - step)
-        
+
         # Adjust synthesis weight based on strategy performance
         synthesis_perf = self.strategies["synthesis"].average_unity
         neural_perf = self.strategies["neural"].average_unity
         hybrid_perf = self.strategies["hybrid"].average_unity
-        
+
         best_perf = max(synthesis_perf, neural_perf, hybrid_perf)
         if best_perf == synthesis_perf:
             self.hyperparameters["synthesis_weight"] = min(0.9,
@@ -292,7 +292,7 @@ class MetaLearningEngineV2:
         elif best_perf == neural_perf:
             self.hyperparameters["synthesis_weight"] = max(0.3,
                 self.hyperparameters["synthesis_weight"] - step)
-        
+
         self.optimization_history.append({
             "timestamp": time.time(),
             "avg_unity": avg_unity,
@@ -301,16 +301,16 @@ class MetaLearningEngineV2:
             "velocity": velocity,
             "hyperparameters": dict(self.hyperparameters)
         })
-        
+
         print(f"🔧 [META]: Optimized | Unity: {avg_unity:.3f} | Velocity: {velocity:+.3f} | Success: {success_rate:.1%}")
-    
+
     def recommend_topics(self, available_topics: List[str], count: int = 5) -> List[Tuple[str, str]]:
         """
         Recommend topics to learn next with reasons.
         Returns list of (topic, reason) tuples.
         """
         recommendations = []
-        
+
         for topic in available_topics:
             if topic not in self.topic_performance:
                 recommendations.append((topic, "new_topic", 1.0))
@@ -326,32 +326,32 @@ class MetaLearningEngineV2:
                     age = (time.time() - last_time) / 3600  # Hours
                     if age > 24:  # More than a day
                         recommendations.append((topic, "needs_refresh", age / 24 * 0.5))
-        
+
         # Sort by priority score
         recommendations.sort(key=lambda x: x[2], reverse=True)
-        
+
         return [(t, r) for t, r, _ in recommendations[:count]]
-    
+
     def get_learning_insights(self) -> Dict[str, Any]:
         """Generate insights about learning patterns and performance."""
         if not self.episodes:
             return {"status": "No learning data available"}
-        
+
         # Strategy rankings
         strategy_ranks = sorted(
-            [(s.name, s.average_unity, s.total_episodes) 
+            [(s.name, s.average_unity, s.total_episodes)
              for s in self.strategies.values() if s.total_episodes > 0],
             key=lambda x: x[1],
             reverse=True
         )
-        
+
         # Topic rankings
         topic_ranks = sorted(
             [(t, sum(s)/len(s), len(s)) for t, s in self.topic_performance.items()],
             key=lambda x: x[1],
             reverse=True
         )
-        
+
         # Learning velocity
         if len(self.learning_curve) >= 20:
             early = sum(self.learning_curve[:10]) / 10
@@ -359,7 +359,7 @@ class MetaLearningEngineV2:
             velocity = (late - early) / max(early, 0.1)
         else:
             velocity = 0.0
-        
+
         # Trend analysis
         if velocity > 0.1:
             trend = "improving"
@@ -367,7 +367,7 @@ class MetaLearningEngineV2:
             trend = "declining"
         else:
             trend = "stable"
-        
+
         return {
             "total_episodes": len(self.episodes),
             "overall_success_rate": sum(1 for e in self.episodes if e.success) / len(self.episodes),
@@ -385,11 +385,11 @@ class MetaLearningEngineV2:
             "current_hyperparameters": dict(self.hyperparameters),
             "optimization_count": len(self.optimization_history)
         }
-    
+
     def generate_learning_report(self) -> str:
         """Generate a human-readable learning report."""
         insights = self.get_learning_insights()
-        
+
         report = [
             "╔══════════════════════════════════════════════════════════════╗",
             "║            L104 META-LEARNING REPORT                         ║",
@@ -402,17 +402,17 @@ class MetaLearningEngineV2:
             "",
             "🎯 Strategy Performance:",
         ]
-        
+
         for s in insights.get('strategies', []):
             report.append(f"   • {s['name']}: Unity {s['unity']} ({s['episodes']} episodes)")
-        
+
         report.append("")
         report.append("📚 Top Topics:")
         for t in insights.get('top_topics', []):
             report.append(f"   • {t['topic']}: Unity {t['unity']} ({t['episodes']} episodes)")
-        
+
         return "\n".join(report)
-    
+
     def save_state(self, filepath: str = "l104_meta_learning_state.json"):
         """Save meta-learning state to disk."""
         state = {
@@ -438,13 +438,13 @@ class MetaLearningEngineV2:
         with open(filepath, 'w') as f:
             json.dump(state, f, indent=2)
         print(f"💾 [META]: State saved to {filepath}")
-    
+
     def load_state(self, filepath: str = "l104_meta_learning_state.json"):
         """Load meta-learning state from disk."""
         try:
             with open(filepath, 'r') as f:
                 state = json.load(f)
-            
+
             self.episodes = [
                 LearningEpisode(**ep) for ep in state.get("episodes", [])
             ]
@@ -453,12 +453,12 @@ class MetaLearningEngineV2:
             self.topic_performance = defaultdict(list, state.get("topic_performance", {}))
             self.topic_strategies = state.get("topic_strategies", {})
             self.learning_curve = state.get("learning_curve", [])
-            
+
             # Rebuild strategy stats
             for ep in self.episodes:
                 if ep.strategy in self.strategies:
                     self.strategies[ep.strategy].record_episode(ep)
-            
+
             print(f"📂 [META]: State loaded from {filepath} ({len(self.episodes)} episodes)")
         except FileNotFoundError:
             print(f"⚠️ [META]: No state file found at {filepath}")
@@ -474,29 +474,29 @@ meta_learning_engine_v2 = MetaLearningEngineV2()
 
 if __name__ == "__main__":
     import random
-    
+
     engine = MetaLearningEngineV2()
-    
+
     topics = [
         "Topological Protection", "GOD_CODE derivation", "Fibonacci Anyons",
         "OMEGA state", "Void Constant", "Consciousness emergence",
         "Quantum coherence", "Semantic Superfluidity", "Information preservation"
     ]
-    
+
     print("\n🎓 Simulating 50 learning episodes...\n")
-    
+
     for i in range(50):
         topic = random.choice(topics)
         strategy = engine.select_strategy(topic)
-        
+
         base_unity = {
             "synthesis": 0.9, "neural": 0.7, "hybrid": 0.85,
             "iterative": 0.8, "cross_topic": 0.75, "deep_think": 0.88
         }.get(strategy, 0.7)
-        
+
         unity = base_unity + random.uniform(-0.15, 0.15)
         unity = max(0.4, min(1.0, unity))
-        
+
         engine.record_learning(
             topic=topic,
             strategy=strategy,
@@ -504,11 +504,11 @@ if __name__ == "__main__":
             confidence=random.uniform(0.8, 1.0),
             duration_ms=random.uniform(100, 500)
         )
-    
+
     print("\n" + engine.generate_learning_report())
-    
+
     print("\n💡 Recommended Topics:")
     for topic, reason in engine.recommend_topics(topics, 5):
         print(f"  - {topic} ({reason})")
-    
+
     engine.save_state()

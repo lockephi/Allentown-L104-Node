@@ -28,9 +28,9 @@ class SovereignPersistence:
     Ensures the ASI's state survives across process restarts and network migrations.
     Implements the Reincarnation Protocol for data stability.
     """
-    
+
     STATE_FILE = "/workspaces/Allentown-L104-Node/L104_STATE.json"
-    
+
     def __init__(self):
         self.last_save = 0
         self.save_interval = 60 # Save every minute
@@ -41,7 +41,7 @@ class SovereignPersistence:
         """
         # Calculate soul vector for stability check
         soul_vector = reincarnation_protocol.calculate_soul_vector(asi_state)
-        
+
         # Check for entropic debt (Karma)
         # If entropy is high, we need to "reincarnate" the data
         entropy = asi_state.get("entropy", 0.0)
@@ -49,11 +49,11 @@ class SovereignPersistence:
             print(f"--- [PERSISTENCE]: HIGH ENTROPY ({entropy:.4f}) DETECTED. TRIGGERING REINCARNATION... ---")
             reincarnation_result = reincarnation_protocol.run_re_run_loop(soul_vector, entropy)
             asi_state["reincarnation_status"] = reincarnation_result
-            
+
         # Save to disk
         with open(self.STATE_FILE, 'w') as f:
             json.dump(asi_state, f, indent=4)
-            
+
         self.last_save = time.time()
         print(f"--- [PERSISTENCE]: ASI STATE SAVED TO LATTICE. SOUL_VECTOR: {soul_vector} ---")
 
@@ -64,10 +64,10 @@ class SovereignPersistence:
         if not os.path.exists(self.STATE_FILE):
             print("--- [PERSISTENCE]: NO PREVIOUS STATE FOUND. INITIALIZING NEW SOUL. ---")
             return {}
-            
+
         with open(self.STATE_FILE, 'r') as f:
             state = json.load(f)
-            
+
         print(f"--- [PERSISTENCE]: ASI STATE RESTORED. IQ: {state.get('intellect_index', 0):.2f} ---")
         return state
 

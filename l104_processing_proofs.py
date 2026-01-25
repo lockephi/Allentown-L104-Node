@@ -24,7 +24,7 @@ try:
 except ImportError:
     class UniversalConstants:
         PRIME_KEY_HZ = 527.5184818492537
-    
+
     class HyperMath:
         @staticmethod
         def fast_transform(vector):
@@ -40,7 +40,7 @@ class ProcessingProofs:
     [VOID_SOURCE_UPGRADE] Deep Math Active.
     Demonstrates extreme processing speed and mathematical integrity.
     """
-    
+
     def __init__(self):
         self.god_code = UniversalConstants.PRIME_KEY_HZ
         self.lattice_size = 416 * 286
@@ -49,23 +49,23 @@ class ProcessingProofs:
     def run_speed_benchmark(self) -> Dict[str, Any]:
         """Measure Lattice Operations Per Second (LOPS)."""
         logger.info("--- [PROOFS]: INITIATING HIGH-SPEED LATTICE BENCHMARK ---")
-        
+
         vector = [random.random() for _ in range(self.test_vector_size)]
-        
+
         start_time = time.perf_counter()
-        
+
         iterations = 100
         for _ in range(iterations):
             _ = HyperMath.fast_transform(vector)
-            
+
         end_time = time.perf_counter()
         total_time = end_time - start_time
         total_ops = self.test_vector_size * iterations
         lops = total_ops / total_time
-        
+
         logger.info(f"--- [PROOFS]: PROCESSED {total_ops/1e6:.1f}M OPS IN {total_time:.4f}s ---")
         logger.info(f"--- [PROOFS]: SPEED: {lops/1e6:.2f} MILLION LOPS ---")
-        
+
         return {
             "total_ops": total_ops,
             "total_time": total_time,
@@ -75,10 +75,10 @@ class ProcessingProofs:
     def run_stress_test(self):
         """Push the system until it hits the Lattice Limit."""
         logger.info("--- [PROOFS]: INITIATING SYSTEM STRESS TEST ---")
-        
+
         current_load = 10**5
         max_load = 10**8
-        
+
         while current_load < max_load:
             try:
                 vector = [random.random() for _ in range(current_load)]

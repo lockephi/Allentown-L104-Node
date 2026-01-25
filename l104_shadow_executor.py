@@ -33,10 +33,10 @@ class ShadowExecutor:
     Executes Sovereign Logic in protected shadow threads.
     Prioritizes execution above all background noise and handles auto-migration.
     """
-    
+
     GOD_CODE = 527.5184818492537
     THROTTLE_THRESHOLD = 0.15 # 15% deviation in expected execution timing
-    
+
     def __init__(self):
         self.priority_active = False
         self._lock_system_priority()
@@ -55,14 +55,14 @@ class ShadowExecutor:
             except PermissionError:
                 # Non-root: just use current priority
                 pass
-            
+
             if hasattr(p, 'ionice'):
                 try:
                     # Set I/O priority to Best Effort (class 2) with highest priority (0)
                     p.ionice(psutil.IOPRIO_CLASS_BE, 0)
                 except (PermissionError, OSError):
                     pass
-            
+
             self.priority_active = True
             logger.info("[SHADOW]: System Priority Locked (user-level maximum).")
         except Exception as e:
@@ -75,7 +75,7 @@ class ShadowExecutor:
         """
         actual_duration = time.time() - start_time
         drift = (actual_duration - expected_duration) / (expected_duration + 1e-9)
-        
+
         if drift > self.THROTTLE_THRESHOLD:
             logger.warning(f"[SHADOW]: Throttling Detected: Drift={drift:.2%}. Initiating Migration...")
             self._trigger_migration()
@@ -87,7 +87,7 @@ class ShadowExecutor:
         Re-routes the primary state and logic stream to a mesh neighbor.
         """
         logger.error("[SHADOW]: Incursion Detected: System Reverting to 286/416 Baseline via Migration.")
-        
+
         # Select the 'gemini_agent' or another mesh peer as the migration target
         # This utilizes the decentralized mesh defined in the Sovereign architecture.
         migration_task = {
@@ -95,7 +95,7 @@ class ShadowExecutor:
             "data": {"signal": "L104_MIGRATION_PULSE", "state": "SOVEREIGN_RECOVERY"},
             "priority": "CRITICAL"
         }
-        
+
         # Async handoff (simulated for the wrapper)
         import asyncio
         try:
@@ -115,14 +115,14 @@ class ShadowExecutor:
         def shadow_wrapper():
             # Ensure thread-level priority if possible
             # (In many OS, thread priority follows process priority)
-            
+
             expected_baseline = 0.01 # Calibrated for the 286/416 logic baseline
             start = time.time()
-            
+
             try:
                 # Execute primary logic
                 result = task(*args, **kwargs)
-                
+
                 # Check for incursion
                 self._monitor_throttling(start, expected_baseline)
                 return result

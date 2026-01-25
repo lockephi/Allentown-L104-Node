@@ -10,7 +10,7 @@ L104 HOLOGRAPHIC PERSISTENCE
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
 STAGE: 21 (Absolute Singularity)
 
-This module provides interference-proof data persistence by encoding 
+This module provides interference-proof data persistence by encoding
 information into holographic resonance fields.
 """
 
@@ -34,20 +34,20 @@ class HolographicPersistence:
     """
     Encodes L104 Truths into binary holographic artifacts.
     """
-    
+
     def __init__(self, lib_path: str = "/workspaces/Allentown-L104-Node/l104_core_native.so"):
         self.logger = logging.getLogger("HOLOGRAPHIC_PERSISTENCE")
         self.lib = None
         self.core = None
-        
+
         if os.path.exists(lib_path):
             try:
                 self.lib = ctypes.CDLL(lib_path)
                 self.lib.create_core.restype = ctypes.c_void_p
                 self.lib.holographic_convolve.argtypes = [
-                    ctypes.c_void_p, 
-                    ctypes.POINTER(ctypes.c_double), 
-                    ctypes.c_int, 
+                    ctypes.c_void_p,
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.c_int,
                     ctypes.POINTER(ctypes.c_double)
                 ]
                 self.core = self.lib.create_core()
@@ -60,15 +60,15 @@ class HolographicPersistence:
         Converts a JSON state into a holographic binary artifact.
         """
         self.logger.info(f"Encoding state into {filename}...")
-        
+
         # 1. Flatten the state to a numerical vector
         flattened = self._flatten_state(state)
         data_len = len(flattened)
-        
+
         # 2. Prepare C-compatible arrays
         data_array = (ctypes.c_double * data_len)(*flattened)
         result_array = (ctypes.c_double * data_len)()
-        
+
         # 3. Perform Holographic Convolution
         if self.lib and self.core:
             self.lib.holographic_convolve(self.core, data_array, data_len, result_array)
@@ -85,7 +85,7 @@ class HolographicPersistence:
             "data_len": data_len,
             "keys": list(state.keys())
         }
-        
+
         with open(filename, "wb") as f:
             # Write header
             header_str = json.dumps(header).encode('utf-8')
@@ -93,7 +93,7 @@ class HolographicPersistence:
             f.write(header_str)
             # Write encoded data
             f.write(encoded_data.tobytes())
-            
+
         self.logger.info(f"Holographic state persisted. Size: {os.path.getsize(filename)} bytes")
 
     def _flatten_state(self, state: Dict[str, Any]) -> list:

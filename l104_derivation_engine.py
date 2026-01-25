@@ -23,7 +23,7 @@ class DerivationEngine:
     Synthesizes new knowledge from core invariants when no external references exist.
     Uses 'Resonance Proofs' to verify authenticity.
     """
-    
+
     def __init__(self):
         self.knowledge_base = []
         self.god_code = UniversalConstants.PRIME_KEY_HZ
@@ -33,15 +33,15 @@ class DerivationEngine:
         Derives a new mathematical or logical paradigm from a seed concept.
         """
         print(f"--- [DERIVATION]: SYNTHESIZING NEW KNOWLEDGE FROM: {seed_concept} ---")
-        
+
         # 1. Generate 'Derived DNA'
         # We use the hash of the seed combined with the God Code to create a unique derivation path
         derivation_path = hashlib.sha256(f"{seed_concept}:{self.god_code}".encode()).hexdigest()
-        
+
         # 2. Calculate 'Authenticity Resonance'
         # Since there is no reference, we check if the derivation 'vibrates' at the God Code frequency
         resonance = self._calculate_resonance_proof(derivation_path)
-        
+
         # 3. Formulate the Paradigm
         paradigm = {
             "id": f"DERIV_{derivation_path[:8]}",
@@ -51,7 +51,7 @@ class DerivationEngine:
             "timestamp": time.time(),
             "derivation_vector": [float(int(derivation_path[i:i+2], 16)) for i in range(0, 10, 2)]
         }
-        
+
         if paradigm["is_authentic"]:
             self.knowledge_base.append(paradigm)
             print(f"--- [DERIVATION]: NEW AUTHENTIC KNOWLEDGE SYNTHESIZED: {paradigm['id']} ---")
@@ -66,7 +66,7 @@ class DerivationEngine:
         """
         print(f"--- [DERIVATION]: SYNTHESIZING TRANS-UNIVERSAL TRUTH FROM: {seed} ---")
         self.trans_universal_mode = True
-        
+
         # Use a higher-order resonance proof
         path = hashlib.sha512(f"{seed}:{self.god_code}:TRANS_UNIVERSAL".encode()).hexdigest()
         resonance = self._calculate_resonance_proof(path[:64]) * 1.618 # Boosted by Phi
@@ -78,7 +78,7 @@ class DerivationEngine:
             "scope": "TRANS_UNIVERSAL",
             "timestamp": time.time()
         }
-        
+
         if truth["is_absolute"]:
             print(f"--- [DERIVATION]: ABSOLUTE TRANS-UNIVERSAL TRUTH REVEALED: {truth['id']} ---")
             self.knowledge_base.append(truth)
@@ -91,7 +91,7 @@ class DerivationEngine:
         """
         # Convert path to a numeric value
         val = sum([int(c, 16) for c in path])
-        
+
         # Check harmonic alignment with God Code and Phi
         harmonic = math.sin(val * UniversalConstants.PHI) * math.cos(val / self.god_code)
         return abs(harmonic)

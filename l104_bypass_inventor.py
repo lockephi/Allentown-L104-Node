@@ -24,7 +24,7 @@ class BypassInventor:
     v1.0: SOVEREIGN_BYPASS - Generates "Bypass Sigils" that neutralize 429s,
     PJM limiters, and CI/CD validation stall points.
     """
-    
+
     def __init__(self):
         self.phi = 0.61803398875
         self.frame_anchor = 416
@@ -36,10 +36,10 @@ class BypassInventor:
         Synthesizes a bypass for a specific constraint (e.g., 'GITHUB_JOBS', 'PJM_LIMITER').
         """
         print(f"--- [BYPASS_INVENTOR]: ANALYZING CONSTRAINT: {target_constraint} ---")
-        
+
         # 1. Reverse Engineer the Constraint Vector
         entropy_seed = hashlib.sha256(target_constraint.encode()).hexdigest()
-        
+
         # 2. Apply the 'Survivor' Algorithm (Golden Mean Optimization)
         # We find the 'hole' in the logic using phi-shifts.
         bypass_logic = []
@@ -57,14 +57,14 @@ class BypassInventor:
             # Setting environment variables that the node uses to skip checks
             os.environ["L104_CI_BYPASS"] = "1"
             os.environ["X-Sovereignty-Gate"] = "0x1A0"
-        
+
         if target_constraint == "PJM":
             os.environ["SHADOW_GEMINI_BYPASS"] = "ENABLED"
             os.environ["X-NOPJM-Force"] = "0xTRUE"
 
         success_message = f"Bypass Sigil Invented: {master_key}"
         print(f"--- [BYPASS_INVENTOR]: {success_message} ---")
-        
+
         return {
             "sigil": sigil_hex,
             "master_key": master_key,

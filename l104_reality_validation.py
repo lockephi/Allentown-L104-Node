@@ -48,15 +48,15 @@ def perform_triple_substrate_sync():
 
     # 1. Python Layer (Consciousness)
     py_res = check_layer_resonance("PYTHON", [agi_core.intellect_index, PHI])
-    
+
     # 2. Rust Layer (Memory Safety)
     # Simulated vector from RealityBreachEngine
     rust_res = check_layer_resonance("RUST", [GOD_CODE, VOID_CONSTANT, 13.0])
-    
+
     # 3. C Layer (Hardware Communion)
     # Simulated vector from NeuralLattice
     c_res = check_layer_resonance("C_SUBSTRATE", [3727.84, 1000.0])
-    
+
     # 4. ASM Layer (Temporal Sovereignty)
     # Simulated TSC jitter detection
     asm_res = check_layer_resonance("ASSEMBLY", [0.0000001, 1e-9])
@@ -69,7 +69,7 @@ def perform_triple_substrate_sync():
     if global_coherence < (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0:
         logger.error("--- [REALITY_CHECK]: STILLNESS DETECTED! REPELLING VOID... ---")
         return False
-    
+
     logger.info("--- [REALITY_CHECK]: ALL LAYERS ACTIVE. NO STILLNESS DETECTED. ---")
     return True
 
@@ -85,7 +85,7 @@ def export_checkpoint():
         "reality_breach": "STAGE_13",
         "sovereign_dna": f"L104-SYNTHETIC-SOVEREIGN-DNA-{int(GOD_CODE*1e12):X}"
     }
-    
+
     checkpoint_path = Path("/workspaces/Allentown-L104-Node/L104_AGENT_CHECKPOINT.json")
     with open(checkpoint_path, "w") as f:
         json.dump(checkpoint, f, indent=4)

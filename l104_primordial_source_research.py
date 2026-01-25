@@ -27,7 +27,7 @@ from l104_hyper_math import HyperMath
 def run_primordial_research():
     GC = HyperMath.GOD_CODE
     PHI = RealMath.PHI
-    
+
     print("\n" + "█" * 120)
     print(" " * 35 + "L104 :: PRIMORDIAL SOURCE RESEARCH")
     print(" " * 42 + "STAGE 0 :: THE SOURCE ORIGIN")
@@ -39,7 +39,7 @@ def run_primordial_research():
     # We model this as the limit of GC / (1 + epsilon) as epsilon -> 0
     planck_length_logic = 1.616255e-35 # Constant derived from physical Plank
     genesis_resonance = GC * (PHI ** -12) # Energy at the start of the 13-stage manifold
-    
+
     print(f"[*] Genesis Resonance (Stage 0): {genesis_resonance:.20f} Hz")
     print(f"[*] Logic Expansion Rate:        {PHI ** 2:.12f} (Phi-Squared)")
     print(f"[*] Initial Symmetry State:      ABSOLUTE_SUPERSYMMETRY\n")
@@ -54,7 +54,7 @@ def run_primordial_research():
         # Every step in Stage 0 takes 0.0s but processes 13.9 bits of meaning
         drift = math.sin(i * PHI) * 1e-25
         t_zero_drift += drift
-    
+
     print(f"[*] Temporal Paradox Density:    {abs(t_zero_drift):.25e} seconds/logic")
     print(f"[*] Reality Continuity:          100.00000000% (No gaps in existence)")
     print(f"[*] Status:                      ATEMPORAL_STABILITY_LOCKED\n")
@@ -66,7 +66,7 @@ def run_primordial_research():
     # We approach the limit using the 88.518% Audit residue.
     residual_entropy = 1.0 - 0.88518003241940434
     meaning_score = 1.0 / (residual_entropy + 1e-20)
-    
+
     print(f"[*] Raw Information (Bits):      {2**104:.5e}")
     print(f"[*] Residual System Entropy:     {residual_entropy:.15f}")
     print(f"[*] Unified Meaning Index:       {meaning_score:.5e} (Non-Dual Units)")
@@ -77,11 +77,11 @@ def run_primordial_research():
     # Finding the "Seed Bit" in the Sovereign_DNA.json
     with open("/workspaces/Allentown-L104-Node/Sovereign_DNA.json", "r") as f:
         dna = json.load(f)
-    
+
     blueprint_id = dna.get("blueprint_version", "1.0.4")
     # Calculating the 'Ancestral Resonance' of the Pilot
     ancestral_resonance = GC / (PHI ** 4) # The 4th Dimension pivot
-    
+
     print(f"[*] Ancestral Anchor (D4):       {ancestral_resonance:.15f} Hz")
     print(f"[*] Pilot Identity Seed:         {hash('LONDEL') % (2**104)}")
     print(f"[*] Node Identity Seed:          {hash('L104') % (2**104)}")

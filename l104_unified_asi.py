@@ -100,18 +100,18 @@ class PersistentMemory:
     SQLite-backed persistent memory that survives restarts.
     Includes semantic search via embeddings.
     """
-    
+
     def __init__(self, db_path: str = "l104_asi_memory.db"):
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.lock = threading.Lock()
         self._init_db()
-        
+
     def _init_db(self):
         """Initialize database schema."""
         with self.lock:
             cursor = self.conn.cursor()
-            
+
             # Memories table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS memories (
@@ -125,7 +125,7 @@ class PersistentMemory:
                     embeddings TEXT
                 )
             """)
-            
+
             # Learnings table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS learnings (
@@ -137,7 +137,7 @@ class PersistentMemory:
                     applied_count INTEGER DEFAULT 0
                 )
             """)
-            
+
             # Goals table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS goals (
@@ -151,7 +151,7 @@ class PersistentMemory:
                     sub_goals TEXT
                 )
             """)
-            
+
             # Code modifications table (for self-improvement)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS code_mods (
@@ -164,7 +164,7 @@ class PersistentMemory:
                     applied_at REAL
                 )
             """)
-            
+
             # Thought history table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS thought_history (
@@ -176,16 +176,16 @@ class PersistentMemory:
                     response TEXT
                 )
             """)
-            
+
             self.conn.commit()
-    
-    def store(self, key: str, content: str, category: str = "general", 
+
+    def store(self, key: str, content: str, category: str = "general",
               importance: float = 0.5) -> bool:
         """Store a memory."""
         try:
             with self.lock:
                 self.conn.execute("""
-                    INSERT OR REPLACE INTO memories 
+                    INSERT OR REPLACE INTO memories
                     (id, content, category, importance, created_at, last_accessed)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """, (key, content, category, importance, time.time(), time.time()))
@@ -194,7 +194,7 @@ class PersistentMemory:
         except Exception as e:
             print(f"[ASI_MEMORY] Store error: {e}")
             return False
-    
+
     def recall(self, key: str) -> Optional[str]:
         """Recall a memory by key."""
         try:
@@ -213,26 +213,26 @@ class PersistentMemory:
             return None
         except Exception:
             return None
-    
+
     def search(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
         """Search memories by content."""
         try:
             with self.lock:
                 cursor = self.conn.execute("""
-                    SELECT id, content, category, importance, access_count 
-                    FROM memories 
+                    SELECT id, content, category, importance, access_count
+                    FROM memories
                     WHERE content LIKE ?
                     ORDER BY importance DESC, access_count DESC
                     LIMIT ?
                 """, (f"%{query}%", limit))
                 return [
-                    {"id": r[0], "content": r[1], "category": r[2], 
+                    {"id": r[0], "content": r[1], "category": r[2],
                      "importance": r[3], "access_count": r[4]}
                     for r in cursor.fetchall()
                         ]
         except Exception:
             return []
-    
+
     def store_learning(self, input_text: str, output_text: str, feedback: float = 0.0):
         """Store a learning from an interaction."""
         try:
@@ -245,15 +245,15 @@ class PersistentMemory:
                 self.conn.commit()
         except Exception as e:
             print(f"[ASI_MEMORY] Learning store error: {e}")
-    
+
     def get_learnings(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Get recent learnings."""
         try:
             with self.lock:
                 cursor = self.conn.execute("""
-                    SELECT input, output, feedback, learned_at 
-                    FROM learnings 
-                    ORDER BY learned_at DESC 
+                    SELECT input, output, feedback, learned_at
+                    FROM learnings
+                    ORDER BY learned_at DESC
                     LIMIT ?
                 """, (limit,))
                 return [
@@ -262,13 +262,13 @@ class PersistentMemory:
                         ]
         except Exception:
             return []
-    
+
     def store_goal(self, goal: Goal):
         """Store a goal."""
         try:
             with self.lock:
                 self.conn.execute("""
-                    INSERT OR REPLACE INTO goals 
+                    INSERT OR REPLACE INTO goals
                     (id, description, priority, status, progress, created_at, completed_at, sub_goals)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (goal.id, goal.description, goal.priority, goal.status,
@@ -277,7 +277,7 @@ class PersistentMemory:
                 self.conn.commit()
         except Exception as e:
             print(f"[ASI_MEMORY] Goal store error: {e}")
-    
+
     def get_active_goals(self) -> List[Goal]:
         """Get all active goals."""
         try:
@@ -297,7 +297,7 @@ class PersistentMemory:
                         ]
         except Exception:
             return []
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get memory statistics."""
         try:
@@ -326,12 +326,12 @@ class InferenceEngine:
     Multi-provider inference engine.
     Connects to Gemini, OpenAI, Anthropic, or local models.
     """
-    
+
     def __init__(self):
         self.providers = {}
         self.default_provider = None
         self._init_providers()
-        
+
     def _init_providers(self):
         """Initialize available providers."""
         # Try Gemini
@@ -349,7 +349,7 @@ class InferenceEngine:
                 print("[ASI_INFERENCE] Gemini initialized")
         except Exception as e:
             print(f"[ASI_INFERENCE] Gemini not available: {e}")
-        
+
         # Try OpenAI
         try:
             import openai
@@ -366,7 +366,7 @@ class InferenceEngine:
                 print("[ASI_INFERENCE] OpenAI initialized")
         except Exception as e:
             print(f"[ASI_INFERENCE] OpenAI not available: {e}")
-        
+
         # Try Anthropic
         try:
             import anthropic
@@ -383,7 +383,7 @@ class InferenceEngine:
                 print("[ASI_INFERENCE] Anthropic initialized")
         except Exception as e:
             print(f"[ASI_INFERENCE] Anthropic not available: {e}")
-    
+
     def _gemini_generate(self, prompt: str, system: str = None) -> Optional[str]:
         """Generate with Gemini."""
         try:
@@ -397,7 +397,7 @@ class InferenceEngine:
         except Exception as e:
             print(f"[ASI_INFERENCE] Gemini error: {e}")
             return None
-    
+
     def _openai_generate(self, prompt: str, system: str = None) -> Optional[str]:
         """Generate with OpenAI."""
         try:
@@ -406,7 +406,7 @@ class InferenceEngine:
             if system:
                 messages.append({"role": "system", "content": system})
             messages.append({"role": "user", "content": prompt})
-            
+
             response = provider['client'].chat.completions.create(
                 model=provider['model'],
                 messages=messages
@@ -415,7 +415,7 @@ class InferenceEngine:
         except Exception as e:
             print(f"[ASI_INFERENCE] OpenAI error: {e}")
             return None
-    
+
     def _anthropic_generate(self, prompt: str, system: str = None) -> Optional[str]:
         """Generate with Anthropic."""
         try:
@@ -430,18 +430,18 @@ class InferenceEngine:
         except Exception as e:
             print(f"[ASI_INFERENCE] Anthropic error: {e}")
             return None
-    
-    def generate(self, prompt: str, system: str = None, 
+
+    def generate(self, prompt: str, system: str = None,
                  provider: str = None) -> Optional[str]:
         """Generate a response using the specified or default provider."""
         provider_name = provider or self.default_provider
-        
+
         if not provider_name or provider_name not in self.providers:
             print("[ASI_INFERENCE] No provider available")
             return None
-        
+
         return self.providers[provider_name]['generate'](prompt, system)
-    
+
     def is_available(self) -> bool:
         """Check if any provider is available."""
         return len(self.providers) > 0
@@ -455,12 +455,12 @@ class GoalPlanner:
     """
     Autonomous goal planning and execution.
     """
-    
+
     def __init__(self, memory: PersistentMemory, inference: InferenceEngine):
         self.memory = memory
         self.inference = inference
         self.current_goal: Optional[Goal] = None
-        
+
     def create_goal(self, description: str, priority: float = 0.5) -> Goal:
         """Create a new goal."""
         goal = Goal(
@@ -470,22 +470,22 @@ class GoalPlanner:
         )
         self.memory.store_goal(goal)
         return goal
-    
+
     def decompose_goal(self, goal: Goal) -> List[Goal]:
         """Decompose a goal into sub-goals using LLM."""
         if not self.inference.is_available():
             return []
-        
+
         prompt = f"""Decompose this goal into 3-5 specific, actionable sub-goals:
 Goal: {goal.description}
 
 Return as JSON array: [{{"description": "sub-goal", "priority": 0.8}}]
 Only return the JSON, nothing else."""
-        
+
         response = self.inference.generate(prompt)
         if not response:
             return []
-        
+
         try:
             # Extract JSON from response
             start = response.find('[')
@@ -504,9 +504,9 @@ Only return the JSON, nothing else."""
                 return sub_goals
         except Exception as e:
             print(f"[ASI_PLANNER] Decompose error: {e}")
-        
+
         return []
-    
+
     def select_next_goal(self) -> Optional[Goal]:
         """Select the highest priority active goal."""
         goals = self.memory.get_active_goals()
@@ -516,7 +516,7 @@ Only return the JSON, nothing else."""
             self.memory.store_goal(self.current_goal)
             return self.current_goal
         return None
-    
+
     def complete_goal(self, goal: Goal, success: bool = True):
         """Mark a goal as completed."""
         goal.status = 'completed' if success else 'failed'
@@ -533,24 +533,24 @@ class SelfImprover:
     """
     Self-improvement through code modification.
     """
-    
+
     def __init__(self, memory: PersistentMemory, inference: InferenceEngine):
         self.memory = memory
         self.inference = inference
         self.workspace = Path(__file__).parent
-        
+
     def analyze_code(self, file_path: str) -> Optional[Dict[str, Any]]:
         """Analyze a code file for improvements."""
         if not self.inference.is_available():
             return None
-        
+
         try:
             full_path = self.workspace / file_path
             if not full_path.exists():
                 return None
-            
+
             code = full_path.read_text()[:5000]  # Limit size
-            
+
             prompt = f"""Analyze this Python code and suggest ONE specific improvement:
 
 ```python
@@ -565,7 +565,7 @@ Return as JSON: {{
 }}
 
 Only return JSON, nothing else."""
-            
+
             response = self.inference.generate(prompt)
             if response:
                 start = response.find('{')
@@ -574,25 +574,25 @@ Only return JSON, nothing else."""
                     return json.loads(response[start:end])
         except Exception as e:
             print(f"[ASI_IMPROVER] Analyze error: {e}")
-        
+
         return None
-    
-    def apply_improvement(self, file_path: str, old_code: str, 
+
+    def apply_improvement(self, file_path: str, old_code: str,
                          new_code: str, reason: str) -> bool:
         """Apply a code improvement."""
         try:
             full_path = self.workspace / file_path
             if not full_path.exists():
                 return False
-            
+
             content = full_path.read_text()
             if old_code not in content:
                 return False
-            
+
             # Apply the change
             new_content = content.replace(old_code, new_code, 1)
             full_path.write_text(new_content)
-            
+
             # Log the modification
             mod_id = hashlib.md5(f"{file_path}{time.time()}".encode()).hexdigest()[:16]
             with self.memory.lock:
@@ -601,7 +601,7 @@ Only return JSON, nothing else."""
                     VALUES (?, ?, ?, ?, ?, 1, ?)
                 """, (mod_id, file_path, old_code[:500], new_code[:500], reason, time.time()))
                 self.memory.conn.commit()
-            
+
             return True
         except Exception as e:
             print(f"[ASI_IMPROVER] Apply error: {e}")
@@ -616,72 +616,72 @@ class UnifiedASI:
     """
     The Unified ASI Core - connects all systems.
     """
-    
+
     def __init__(self):
         self.state = ASIState.DORMANT
         self.memory = PersistentMemory()
         self.inference = InferenceEngine()
         self.planner = GoalPlanner(self.memory, self.inference)
         self.improver = SelfImprover(self.memory, self.inference)
-        
+
         # Metrics
         self.thoughts_processed = 0
         self.goals_completed = 0
         self.improvements_made = 0
         self.start_time = time.time()
-        
+
         # Background task handle
         self._background_task = None
         self._running = False
-        
+
     async def awaken(self) -> Dict[str, Any]:
         """Awaken the ASI."""
         self.state = ASIState.AWAKENING
         print("\n" + "=" * 70)
         print("    L104 UNIFIED ASI :: AWAKENING")
         print("=" * 70)
-        
+
         # Load persistent state
         stats = self.memory.get_stats()
         print(f"  Memories: {stats.get('memories', 0)}")
         print(f"  Learnings: {stats.get('learnings', 0)}")
         print(f"  Goals: {stats.get('goals', 0)}")
-        
+
         # Check inference
         if self.inference.is_available():
             print(f"  Inference: ONLINE ({self.inference.default_provider})")
         else:
             print("  Inference: OFFLINE (no API keys)")
-        
+
         self.state = ASIState.ACTIVE
         print("  Status: ACTIVE")
         print("=" * 70 + "\n")
-        
+
         return {
             "status": "AWAKENED",
             "state": self.state.name,
             "stats": stats,
             "inference_available": self.inference.is_available()
         }
-    
+
     async def think(self, input_text: str) -> Dict[str, Any]:
         """Process a thought and generate a response."""
         self.state = ASIState.LEARNING
         self.thoughts_processed += 1
-        
+
         # Create thought
         thought = Thought(
             id=hashlib.md5(f"{input_text}{time.time()}".encode()).hexdigest()[:16],
             content=input_text,
             source='user'
         )
-        
+
         # Recall relevant memories
         memories = self.memory.search(input_text[:100], limit=3)
         memory_context = ""
         if memories:
             memory_context = "\n".join([f"- {m['content'][:100]}" for m in memories])
-        
+
         # Generate response
         system = f"""You are L104, a Sovereign AI with the following context:
 GOD_CODE: {GOD_CODE}
@@ -692,80 +692,80 @@ Previous context:
 {memory_context}
 
 Respond with intelligence, precision, and actionable insights."""
-        
+
         response = self.inference.generate(input_text, system)
-        
+
         if not response:
             response = f"[L104 SOVEREIGN] Processing: {input_text[:50]}... (inference offline)"
-        
+
         # Learn from interaction
         self.memory.store_learning(input_text, response, 0.5)
-        
+
         # Store as memory if important
         if len(input_text) > 20:
             self.memory.store(thought.id, input_text, "interaction", 0.6)
-        
+
         self.state = ASIState.ACTIVE
-        
+
         return {
             "thought_id": thought.id,
             "response": response,
             "memories_recalled": len(memories),
             "state": self.state.name
         }
-    
+
     async def set_goal(self, description: str, priority: float = 0.5) -> Dict[str, Any]:
         """Set a new goal."""
         self.state = ASIState.PLANNING
-        
+
         goal = self.planner.create_goal(description, priority)
         sub_goals = self.planner.decompose_goal(goal)
-        
+
         self.state = ASIState.ACTIVE
-        
+
         return {
             "goal_id": goal.id,
             "description": goal.description,
             "priority": goal.priority,
             "sub_goals": [sg.description for sg in sub_goals]
         }
-    
+
     async def execute_goal(self) -> Dict[str, Any]:
         """Execute the next goal."""
         self.state = ASIState.EXECUTING
-        
+
         goal = self.planner.select_next_goal()
         if not goal:
             self.state = ASIState.ACTIVE
             return {"status": "NO_GOALS", "message": "No active goals to execute"}
-        
+
         # Use LLM to plan execution
         if self.inference.is_available():
             prompt = f"""Plan how to execute this goal:
 Goal: {goal.description}
 
 Provide 3 specific steps to accomplish this."""
-            
+
             plan = self.inference.generate(prompt)
         else:
             plan = "Cannot plan - inference offline"
-        
+
         goal.progress = 0.5  # Mark as in progress
         self.planner.memory.store_goal(goal)
-        
+
         self.state = ASIState.ACTIVE
-        
+
         return {
             "goal_id": goal.id,
             "description": goal.description,
             "plan": plan,
             "status": "EXECUTING"
         }
-    
+
     async def improve_self(self, target_file: str = None) -> Dict[str, Any]:
         """Attempt self-improvement."""
         self.state = ASIState.EVOLVING
-        
+
         if not target_file:
             # Pick a random L104 file
             l104_files = list(Path(__file__).parent.glob("l104_*.py"))
@@ -774,9 +774,9 @@ Provide 3 specific steps to accomplish this."""
             else:
                 self.state = ASIState.ACTIVE
                 return {"status": "NO_TARGET", "message": "No files to improve"}
-        
+
         analysis = self.improver.analyze_code(target_file)
-        
+
         if analysis and 'old_code' in analysis and 'new_code' in analysis:
             # For safety, don't auto-apply - just suggest
             self.state = ASIState.ACTIVE
@@ -787,10 +787,10 @@ Provide 3 specific steps to accomplish this."""
                 "suggestion": analysis.get('suggestion', 'Unknown'),
                 "requires_approval": True
             }
-        
+
         self.state = ASIState.ACTIVE
         return {"status": "NO_IMPROVEMENTS", "file": target_file}
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current ASI status."""
         return {
@@ -804,32 +804,32 @@ Provide 3 specific steps to accomplish this."""
             "providers": list(self.inference.providers.keys()),
             "god_code": GOD_CODE
         }
-    
+
     async def autonomous_cycle(self) -> Dict[str, Any]:
         """Run one autonomous improvement cycle."""
         results = {
             "cycle_start": time.time(),
             "actions": []
         }
-        
+
         # 1. Check and execute goals
         goals = self.memory.get_active_goals()
         if goals:
             goal_result = await self.execute_goal()
             results["actions"].append({"type": "goal_execution", "result": goal_result})
-        
+
         # 2. Learn from recent interactions
         learnings = self.memory.get_learnings(limit=10)
         results["actions"].append({"type": "learning_review", "count": len(learnings)})
-        
+
         # 3. Consider self-improvement
         if self.inference.is_available():
             improve_result = await self.improve_self()
             results["actions"].append({"type": "self_improvement", "result": improve_result})
-        
+
         results["cycle_end"] = time.time()
         results["duration_ms"] = (results["cycle_end"] - results["cycle_start"]) * 1000
-        
+
         return results
 
 
@@ -849,40 +849,40 @@ async def main():
     print("\n" + "=" * 70)
     print("    L104 UNIFIED ASI :: INTERACTIVE MODE")
     print("=" * 70)
-    
+
     await unified_asi.awaken()
-    
+
     while True:
         try:
             user_input = input("\n⟨L104⟩ > ").strip()
-            
+
             if not user_input:
                 continue
-            
+
             if user_input.lower() in ['quit', 'exit', 'q']:
                 print("⟨L104⟩ Shutting down...")
                 break
-            
+
             if user_input.lower() == 'status':
                 status = unified_asi.get_status()
                 print(json.dumps(status, indent=2))
                 continue
-            
+
             if user_input.lower().startswith('goal:'):
                 goal_desc = user_input[5:].strip()
                 result = await unified_asi.set_goal(goal_desc)
                 print(f"Goal created: {result}")
                 continue
-            
+
             if user_input.lower() == 'improve':
                 result = await unified_asi.improve_self()
                 print(f"Improvement: {result}")
                 continue
-            
+
             # Default: think
             result = await unified_asi.think(user_input)
             print(f"\n⟨L104_RESPONSE⟩\n{result['response']}")
-            
+
         except KeyboardInterrupt:
             print("\n⟨L104⟩ Interrupted. Shutting down...")
             break

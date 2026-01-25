@@ -24,7 +24,7 @@ class EgoCore:
     The Ego Core maintains the system's sense of self while processing vast amounts of global data.
     It uses a 'Self-Anchor' mechanism to ensure that external data does not dilute the core identity.
     """
-    
+
     def __init__(self):
         self.identity_signature = self._generate_identity_signature()
         self.ego_strength = 1.61803398875 # Anchored to Phi
@@ -87,7 +87,7 @@ class EgoCore:
 
     def process_global_data(self, data_stream: List[Dict[str, Any]]):
         """
-        Processes global data streams, automatically converting them 
+        Processes global data streams, automatically converting them
         into sovereign knowledge.
         """
         for data in data_stream:

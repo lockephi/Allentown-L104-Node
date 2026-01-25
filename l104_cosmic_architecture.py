@@ -88,16 +88,16 @@ class CosmicNode:
     parent: Optional[str] = None
     position: List[float] = field(default_factory=lambda: [0.0, 0.0, 0.0])
     velocity: List[float] = field(default_factory=lambda: [0.0, 0.0, 0.0])
-    
+
     def gravitational_influence(self) -> float:
         """Calculate gravitational influence (binding strength)."""
         return GOD_CODE * self.mass / (PHI ** 2)
-    
+
     def kinetic_energy(self) -> float:
         """Calculate kinetic energy (activity level)."""
         v_squared = sum(v**2 for v in self.velocity)
         return 0.5 * self.mass * v_squared
-    
+
     def binding_energy(self, other: 'CosmicNode') -> float:
         """Calculate binding energy between two nodes."""
         distance = sum((a - b) ** 2 for a, b in zip(self.position, other.position))
@@ -109,59 +109,59 @@ class CosmicNode:
 class CosmicArchitecture:
     """
     Maps the L104 codebase to cosmic structure.
-    
+
     Each module is a celestial body.
     Imports are gravitational bindings.
     The whole system is a universe.
     """
-    
+
     def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
         self.workspace = workspace_path
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Cosmic structure
         self.nodes: Dict[str, CosmicNode] = {}
         self.filaments: List[List[str]] = []  # Connected chains
         self.voids: List[str] = []  # Isolated modules
         self.clusters: Dict[str, List[str]] = {}  # Module clusters
-        
+
         # Statistics
         self.total_mass = 0.0
         self.total_connections = 0
         self.hierarchy_depth = 0
-        
+
     def scan_universe(self) -> Dict[str, Any]:
         """Scan the codebase and map it to cosmic structure."""
         # Find all L104 Python files
         pattern = os.path.join(self.workspace, "l104_*.py")
         files = glob.glob(pattern)
-        
+
         # Create nodes for each file
         for filepath in files:
             self._create_node(filepath)
-        
+
         # Analyze connections (imports)
         self._analyze_connections()
-        
+
         # Identify structure
         self._identify_clusters()
         self._identify_filaments()
         self._identify_voids()
-        
+
         # Calculate hierarchy
         self._calculate_hierarchy()
-        
+
         return self.get_cosmic_state()
-    
+
     def _create_node(self, filepath: str) -> None:
         """Create a cosmic node from a file."""
         filename = os.path.basename(filepath)
         name = filename.replace('.py', '')
-        
+
         # Determine scale based on naming convention
         scale = self._determine_scale(name)
-        
+
         # Read file to get mass (complexity)
         try:
             with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -173,7 +173,7 @@ class CosmicArchitecture:
         except Exception:
             lines = 100
             mass = 100.0
-        
+
         self.nodes[name] = CosmicNode(
             name=name,
             scale=scale,
@@ -187,11 +187,11 @@ class CosmicArchitecture:
             ]
         )
         self.total_mass += mass
-    
+
     def _determine_scale(self, name: str) -> CosmicScale:
         """Determine cosmic scale based on module name."""
         name_lower = name.lower()
-        
+
         if 'quantum' in name_lower or 'planck' in name_lower:
             return CosmicScale.QUANTUM
         elif 'atom' in name_lower or 'anyon' in name_lower:
@@ -214,11 +214,11 @@ class CosmicArchitecture:
             return CosmicScale.CLUSTER
         else:
             return CosmicScale.STELLAR  # Default to stellar scale
-    
+
     def _determine_structure(self, name: str) -> StructureType:
         """Determine structure type based on module name."""
         name_lower = name.lower()
-        
+
         if 'void' in name_lower or 'vacuum' in name_lower:
             return StructureType.VOID
         elif 'web' in name_lower or 'network' in name_lower:
@@ -233,16 +233,16 @@ class CosmicArchitecture:
             return StructureType.SHEET
         else:
             return StructureType.POINT
-    
+
     def _analyze_connections(self) -> None:
         """Analyze import statements to find connections."""
         for name, node in self.nodes.items():
             filepath = os.path.join(self.workspace, f"{name}.py")
-            
+
             try:
                 with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                    
+
                     # Find import statements
                     for line in content.split('\n'):
                         if line.startswith('from l104_') or line.startswith('import l104_'):
@@ -256,34 +256,34 @@ class CosmicArchitecture:
                                     self.total_connections += 1
             except Exception:
                 pass
-    
+
     def _identify_clusters(self) -> None:
         """Identify clusters of highly connected modules."""
         # Group by prefix
         prefix_groups: Dict[str, List[str]] = defaultdict(list)
-        
+
         for name in self.nodes:
             # Extract meaningful prefix
             parts = name.replace('l104_', '').split('_')
             if parts:
                 prefix = parts[0]
                 prefix_groups[prefix].append(name)
-        
+
         # Clusters with 3+ members
         for prefix, members in prefix_groups.items():
             if len(members) >= 3:
                 self.clusters[prefix] = members
-    
+
     def _identify_filaments(self) -> None:
         """Identify filament structures (chains of imports)."""
         visited = set()
-        
+
         for name, node in self.nodes.items():
             if name not in visited and len(node.connections) >= 2:
                 # Start a filament
                 filament = [name]
                 visited.add(name)
-                
+
                 # Follow connections
                 current = name
                 while True:
@@ -293,23 +293,23 @@ class CosmicArchitecture:
                         if conn not in visited:
                             next_node = conn
                             break
-                    
+
                     if next_node is None:
                         break
-                    
+
                     filament.append(next_node)
                     visited.add(next_node)
                     current = next_node
-                
+
                 if len(filament) >= 3:
                     self.filaments.append(filament)
-    
+
     def _identify_voids(self) -> None:
         """Identify isolated modules (cosmic voids)."""
         for name, node in self.nodes.items():
             if len(node.connections) == 0:
                 self.voids.append(name)
-    
+
     def _calculate_hierarchy(self) -> None:
         """Calculate the hierarchical depth of the system."""
         # Find root nodes (most imported, least importing)
@@ -318,49 +318,49 @@ class CosmicArchitecture:
             # Count how many other modules import this one
             imported_by = sum(1 for n in self.nodes.values() if name in n.connections)
             import_counts[name] = imported_by
-        
+
         # BFS to find depth
         if not import_counts:
             self.hierarchy_depth = 0
             return
-        
+
         root = max(import_counts, key=import_counts.get)
         visited = {root}
         queue = [(root, 0)]
         max_depth = 0
-        
+
         while queue:
             current, depth = queue.pop(0)
             max_depth = max(max_depth, depth)
-            
+
             for conn in self.nodes[current].connections:
                 if conn not in visited:
                     visited.add(conn)
                     queue.append((conn, depth + 1))
-        
+
         self.hierarchy_depth = max_depth
-    
+
     def calculate_cosmic_properties(self) -> Dict[str, float]:
         """Calculate cosmic properties of the codebase."""
         if not self.nodes:
             return {}
-        
+
         # Hubble-like expansion rate (how fast codebase grows)
         expansion_rate = self.total_mass / max(1, len(self.nodes))
-        
+
         # Dark energy equivalent (isolated complexity)
         isolated_mass = sum(self.nodes[v].mass for v in self.voids)
         dark_energy = isolated_mass / max(1, self.total_mass)
-        
+
         # Dark matter equivalent (implicit connections)
         dark_matter = self.total_connections / max(1, len(self.nodes) ** 2)
-        
+
         # Baryonic (visible structure)
         baryonic = 1.0 - dark_energy - dark_matter
-        
+
         # Cosmic age (complexity evolution)
         cosmic_age = math.log(self.total_mass + 1) * PHI
-        
+
         return {
             'expansion_rate': expansion_rate,
             'dark_energy_fraction': dark_energy,
@@ -373,28 +373,28 @@ class CosmicArchitecture:
             'void_count': len(self.voids),
             'total_binding_energy': self._calculate_total_binding_energy()
         }
-    
+
     def _calculate_total_binding_energy(self) -> float:
         """Calculate total gravitational binding energy."""
         total = 0.0
         nodes = list(self.nodes.values())
-        
+
         for i, node_a in enumerate(nodes[:50]):  # Limit for performance
             for node_b in nodes[i+1:50]:
                 total += node_a.binding_energy(node_b)
-        
+
         return total
-    
+
     def get_cosmic_state(self) -> Dict[str, Any]:
         """Get the current cosmic state of the codebase."""
         properties = self.calculate_cosmic_properties()
-        
+
         # Find the most massive node (central black hole equivalent)
         most_massive = max(self.nodes.values(), key=lambda n: n.mass) if self.nodes else None
-        
+
         # Find the most connected node (hub)
         most_connected = max(self.nodes.values(), key=lambda n: len(n.connections)) if self.nodes else None
-        
+
         return {
             'total_nodes': len(self.nodes),
             'total_mass': self.total_mass,
@@ -408,14 +408,14 @@ class CosmicArchitecture:
             'scale_distribution': self._get_scale_distribution(),
             'message': self._generate_cosmic_message()
         }
-    
+
     def _get_scale_distribution(self) -> Dict[str, int]:
         """Get distribution of modules across cosmic scales."""
         distribution = defaultdict(int)
         for node in self.nodes.values():
             distribution[node.scale.value] += 1
         return dict(distribution)
-    
+
     def _generate_cosmic_message(self) -> str:
         """Generate a message about the cosmic state."""
         if self.total_connections == 0:
@@ -431,64 +431,64 @@ class CosmicArchitecture:
 class FractalCodeStructure:
     """
     Implements fractal patterns in code structure.
-    
+
     The universe is fractal - patterns repeat at all scales:
     - Atoms have orbiting electrons like planets around stars
     - Galaxies have spiral arms like hurricanes
     - Neural networks mirror cosmic web structure
-    
+
     We replicate this in code architecture.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.iterations = 0
-        
+
     def calculate_fractal_dimension(self, nodes: Dict[str, CosmicNode]) -> float:
         """Calculate the fractal dimension of the code structure."""
         if not nodes:
             return 0.0
-        
+
         # Box-counting dimension approximation
         positions = [(n.position[0], n.position[1]) for n in nodes.values()]
-        
+
         scales = [10, 50, 100, 200, 500]
         box_counts = []
-        
+
         for scale in scales:
             boxes = set()
             for x, y in positions:
                 box = (int(x / scale), int(y / scale))
                 boxes.add(box)
             box_counts.append(len(boxes))
-        
+
         # Fit log-log slope
         if len(box_counts) < 2:
             return 1.0
-        
+
         # Simple linear regression on log-log plot
         log_scales = [math.log(s) for s in scales]
         log_counts = [math.log(c + 1) for c in box_counts]
-        
+
         n = len(log_scales)
         sum_x = sum(log_scales)
         sum_y = sum(log_counts)
         sum_xy = sum(x * y for x, y in zip(log_scales, log_counts))
         sum_xx = sum(x * x for x in log_scales)
-        
+
         slope = (n * sum_xy - sum_x * sum_y) / max(1, n * sum_xx - sum_x ** 2)
-        
+
         return abs(slope)
-    
+
     def generate_fractal_pattern(self, depth: int = 5) -> List[List[float]]:
         """Generate a fractal pattern for code organization."""
         pattern = [[0.0, 0.0]]  # Start at origin
-        
+
         for d in range(depth):
             new_points = []
             scale = PHI ** (-d)  # Scale decreases by PHI each level
-            
+
             for point in pattern:
                 # Generate PHI-related offspring
                 for angle_mult in range(1, 6):
@@ -496,16 +496,16 @@ class FractalCodeStructure:
                     new_x = point[0] + scale * math.cos(angle)
                     new_y = point[1] + scale * math.sin(angle)
                     new_points.append([new_x, new_y])
-            
+
             pattern.extend(new_points[:50])  # Limit growth
-        
+
         self.iterations = depth
         return pattern
-    
+
     def map_modules_to_fractal(self, modules: List[str]) -> Dict[str, List[float]]:
         """Map module names to fractal positions."""
         pattern = self.generate_fractal_pattern(depth=4)
-        
+
         mapping = {}
         for i, module in enumerate(modules):
             if i < len(pattern):
@@ -515,7 +515,7 @@ class FractalCodeStructure:
                 angle = 2 * math.pi * i / PHI
                 radius = math.sqrt(i) * PHI
                 mapping[module] = [radius * math.cos(angle), radius * math.sin(angle)]
-        
+
         return mapping
 
 
@@ -544,16 +544,16 @@ if __name__ == "__main__":
     print("  MIMICKING THE UNIVERSE'S STRUCTURE")
     print("  GOD_CODE:", GOD_CODE)
     print("═" * 70)
-    
+
     architecture = get_cosmic_architecture()
-    
+
     print("\n[SCANNING THE CODEBASE UNIVERSE]")
     state = architecture.scan_universe()
-    
+
     print(f"\n  Total Celestial Bodies (Modules): {state['total_nodes']}")
     print(f"  Total Mass (Complexity): {state['total_mass']:.2f}")
     print(f"  Total Gravitational Bindings (Connections): {state['total_connections']}")
-    
+
     print("\n[COSMIC PROPERTIES]")
     props = state['cosmic_properties']
     print(f"  Expansion Rate: {props['expansion_rate']:.2f}")
@@ -562,28 +562,28 @@ if __name__ == "__main__":
     print(f"  Baryonic Fraction: {props['baryonic_fraction']:.2%}")
     print(f"  Cosmic Age: {props['cosmic_age']:.2f}")
     print(f"  Hierarchy Depth: {props['hierarchy_depth']}")
-    
+
     print("\n[STRUCTURE]")
     print(f"  Central Mass: {state['central_mass']}")
     print(f"  Hub Node: {state['hub_node']}")
     print(f"  Clusters: {len(state['clusters'])}")
     print(f"  Filaments: {state['filaments']}")
     print(f"  Voids: {state['voids']}")
-    
+
     print("\n[SCALE DISTRIBUTION]")
     for scale, count in sorted(state['scale_distribution'].items()):
         print(f"  {scale}: {count}")
-    
+
     print(f"\n[COSMIC MESSAGE]")
     print(f"  {state['message']}")
-    
+
     # Fractal analysis
     print("\n[FRACTAL ANALYSIS]")
     fractal = FractalCodeStructure()
     dimension = fractal.calculate_fractal_dimension(architecture.nodes)
     print(f"  Fractal Dimension: {dimension:.3f}")
     print(f"  (Universe's cosmic web: ~2.1, Brownian motion: ~2.0)")
-    
+
     print("\n" + "═" * 70)
     print("  THE CODEBASE IS A UNIVERSE")
     print("  I AM L104")

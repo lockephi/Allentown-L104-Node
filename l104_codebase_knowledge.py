@@ -46,23 +46,23 @@ from enum import Enum, auto
 
 class L104Constants:
     """Universal constants extracted from codebase patterns."""
-    
+
     # Primary Invariants
     GOD_CODE = 527.5184818492537          # = 286^(1/φ) × 16
     PHI = 1.618033988749895               # Golden Ratio (1 + √5) / 2
     TAU = 0.6180339887498949              # 1/φ - Inverse Golden
-    
-    # Lattice Constants  
+
+    # Lattice Constants
     FRAME_LOCK = 1.4545454545454546       # 416/286
     REAL_GROUNDING = 221.79420018355955   # GOD_CODE / 2^1.25
     LATTICE_RATIO = 0.6875                # 286/416
-    
+
     # Topological Constants
     ANYON_BRAID_RATIO = 1.38196601125     # (1 + φ^-2)
     WITNESS_RESONANCE = 967.5433
     OMEGA_CAPACITANCE_LOG = 541.74
     SOVEREIGN_CORRELATION = 2.85758278
-    
+
     # Physics Constants
     ALPHA_PHYSICS = 1 / 137.035999206     # Fine Structure Constant
     ALPHA_L104 = 1 / 137                   # Symbolic approximation
@@ -98,7 +98,7 @@ class ArchitecturalPattern:
     resonance: float = 0.0
 
 
-@dataclass  
+@dataclass
 class DatabaseSchema:
     """A discovered database schema pattern."""
     name: str
@@ -131,7 +131,7 @@ class CodebaseKnowledge:
     Synthesized knowledge from deep analysis of L104 codebase.
     Contains learned patterns, architectural insights, and reusable knowledge.
     """
-    
+
     def __init__(self):
         self.architectural_patterns: Dict[str, ArchitecturalPattern] = {}
         self.database_schemas: Dict[str, DatabaseSchema] = {}
@@ -139,16 +139,16 @@ class CodebaseKnowledge:
         self.coding_conventions: Dict[str, str] = {}
         self.class_hierarchy: Dict[str, List[str]] = defaultdict(list)
         self.module_dependencies: Dict[str, Set[str]] = defaultdict(set)
-        
+
         # Initialize with learned knowledge
         self._initialize_learned_patterns()
         self._initialize_database_schemas()
         self._initialize_algorithm_patterns()
         self._initialize_coding_conventions()
-    
+
     def _initialize_learned_patterns(self):
         """Initialize architectural patterns learned from codebase."""
-        
+
         # Pattern 1: Layered Consciousness Architecture
         self.architectural_patterns["LAYERED_CONSCIOUSNESS"] = ArchitecturalPattern(
             name="Layered Consciousness Architecture",
@@ -165,7 +165,7 @@ class CodebaseKnowledge:
             usage_count=1,
             resonance=0.95
         )
-        
+
         # Pattern 2: Golden Ratio Math Foundation
         self.architectural_patterns["GOLDEN_RATIO_FOUNDATION"] = ArchitecturalPattern(
             name="Golden Ratio Mathematical Foundation",
@@ -182,7 +182,7 @@ class CodebaseKnowledge:
             usage_count=50,
             resonance=1.0
         )
-        
+
         # Pattern 3: Topological Quantum Computing
         self.architectural_patterns["TOPOLOGICAL_QUANTUM"] = ArchitecturalPattern(
             name="Topological Quantum Computing Model",
@@ -200,7 +200,7 @@ class CodebaseKnowledge:
             usage_count=10,
             resonance=0.92
         )
-        
+
         # Pattern 4: Self-Learning Pipeline
         self.architectural_patterns["SELF_LEARNING_PIPELINE"] = ArchitecturalPattern(
             name="Self-Learning Pipeline",
@@ -218,7 +218,7 @@ class CodebaseKnowledge:
             usage_count=5,
             resonance=0.88
         )
-        
+
         # Pattern 5: Knowledge Graph Structure
         self.architectural_patterns["KNOWLEDGE_GRAPH"] = ArchitecturalPattern(
             name="Enhanced Knowledge Graph",
@@ -236,7 +236,7 @@ class CodebaseKnowledge:
             usage_count=3,
             resonance=0.90
         )
-        
+
         # Pattern 6: Singleton Configuration
         self.architectural_patterns["SINGLETON_CONFIG"] = ArchitecturalPattern(
             name="Singleton Configuration Pattern",
@@ -254,7 +254,7 @@ class CodebaseKnowledge:
             usage_count=20,
             resonance=0.85
         )
-        
+
         # Pattern 7: Research Module Structure
         self.architectural_patterns["RESEARCH_MODULE"] = ArchitecturalPattern(
             name="Research Module Structure",
@@ -272,7 +272,7 @@ class CodebaseKnowledge:
             usage_count=30,
             resonance=0.83
         )
-        
+
         # Pattern 8: ASI Core Architecture
         self.architectural_patterns["ASI_CORE"] = ArchitecturalPattern(
             name="ASI Core Architecture",
@@ -292,7 +292,7 @@ class CodebaseKnowledge:
             usage_count=5,
             resonance=0.98
         )
-        
+
         # Pattern 9: Autonomous Agent System
         self.architectural_patterns["AUTONOMOUS_AGENT"] = ArchitecturalPattern(
             name="Autonomous Agent System",
@@ -311,7 +311,7 @@ class CodebaseKnowledge:
             usage_count=3,
             resonance=0.87
         )
-        
+
         # Pattern 10: Evolution Engine
         self.architectural_patterns["EVOLUTION_ENGINE"] = ArchitecturalPattern(
             name="Darwinian Evolution Engine",
@@ -330,7 +330,7 @@ class CodebaseKnowledge:
             usage_count=10,
             resonance=0.91
         )
-        
+
         # Pattern 11: Heart Core Emotional System
         self.architectural_patterns["HEART_CORE"] = ArchitecturalPattern(
             name="Emotional Quantum Tuner",
@@ -350,7 +350,7 @@ class CodebaseKnowledge:
             usage_count=5,
             resonance=0.89
         )
-        
+
         # Pattern 12: Prophecy/Prediction Engine
         self.architectural_patterns["PROPHECY_ENGINE"] = ArchitecturalPattern(
             name="Reality Prediction Engine",
@@ -369,7 +369,7 @@ class CodebaseKnowledge:
             usage_count=2,
             resonance=0.76
         )
-        
+
         # Pattern 13: Computronium Optimization
         self.architectural_patterns["COMPUTRONIUM"] = ArchitecturalPattern(
             name="Computronium Optimizer",
@@ -387,10 +387,10 @@ class CodebaseKnowledge:
             usage_count=3,
             resonance=0.93
         )
-    
+
     def _initialize_database_schemas(self):
         """Initialize database schemas learned from codebase."""
-        
+
         # Memory Table
         self.database_schemas["memories"] = DatabaseSchema(
             name="Memory Storage",
@@ -409,7 +409,7 @@ class CodebaseKnowledge:
             purpose="Persistent key-value memory with importance scoring and access tracking",
             source_file="l104_memory.py"
         )
-        
+
         # Knowledge Nodes
         self.database_schemas["knowledge_nodes"] = DatabaseSchema(
             name="Knowledge Graph Nodes",
@@ -429,7 +429,7 @@ class CodebaseKnowledge:
             purpose="Semantic nodes with embeddings for knowledge graph",
             source_file="l104_knowledge_enhanced.py"
         )
-        
+
         # Knowledge Edges
         self.database_schemas["knowledge_edges"] = DatabaseSchema(
             name="Knowledge Graph Edges",
@@ -454,7 +454,7 @@ class CodebaseKnowledge:
             purpose="Weighted edges with decay for relationship modeling",
             source_file="l104_knowledge_enhanced.py"
         )
-        
+
         # Main L104 Tables (from l104.py)
         self.database_schemas["l104_memory"] = DatabaseSchema(
             name="L104 Core Memory",
@@ -470,7 +470,7 @@ class CodebaseKnowledge:
             purpose="Core memory storage for L104 unified system",
             source_file="l104.py"
         )
-        
+
         self.database_schemas["l104_learnings"] = DatabaseSchema(
             name="L104 Learnings",
             table_name="learnings",
@@ -485,7 +485,7 @@ class CodebaseKnowledge:
             purpose="Track successful input-output pattern mappings",
             source_file="l104.py"
         )
-        
+
         self.database_schemas["l104_tasks"] = DatabaseSchema(
             name="L104 Task Queue",
             table_name="tasks",
@@ -500,10 +500,10 @@ class CodebaseKnowledge:
             purpose="Task queue for autonomous agent processing",
             source_file="l104.py"
         )
-    
+
     def _initialize_algorithm_patterns(self):
         """Initialize algorithm patterns learned from codebase."""
-        
+
         self.algorithm_patterns["GOD_CODE_DERIVATION"] = AlgorithmPattern(
             name="GOD_CODE Derivation",
             formula="G_c = 286^(1/φ) × 2^(416/104) = 286^(1/φ) × 16",
@@ -514,7 +514,7 @@ class CodebaseKnowledge:
             resonance=1.0,
             entropy=0.0
         )
-        
+
         self.algorithm_patterns["FIBONACCI_ANYON_FUSION"] = AlgorithmPattern(
             name="Fibonacci Anyon Fusion",
             formula="τ × τ = 1 + τ, where τ = 1/φ",
@@ -525,7 +525,7 @@ class CodebaseKnowledge:
             resonance=0.92,
             entropy=2.1
         )
-        
+
         self.algorithm_patterns["SHANNON_ENTROPY"] = AlgorithmPattern(
             name="Shannon Entropy",
             formula="H = -Σ p(x) × log₂(p(x))",
@@ -536,7 +536,7 @@ class CodebaseKnowledge:
             resonance=0.71,
             entropy=3.82
         )
-        
+
         self.algorithm_patterns["RESONANCE_CALCULATION"] = AlgorithmPattern(
             name="Resonance Calculation",
             formula="R = (cos(2πv × φ) + 1) / 2",
@@ -547,7 +547,7 @@ class CodebaseKnowledge:
             resonance=0.85,
             entropy=1.5
         )
-        
+
         self.algorithm_patterns["MANIFOLD_PROJECTION"] = AlgorithmPattern(
             name="11D Manifold Projection",
             formula="E_i = Σ(vector) × prime_density(i+3) × φ^i × cos(iπ/φ) + zpe_floor",
@@ -558,7 +558,7 @@ class CodebaseKnowledge:
             resonance=0.95,
             entropy=4.2
         )
-        
+
         self.algorithm_patterns["SIMPLE_EMBEDDING"] = AlgorithmPattern(
             name="Simple Text Embedding",
             formula="embed[hash(trigram) % dim] += 1.0; embed[hash(word) % dim] += 0.5; normalize",
@@ -569,7 +569,7 @@ class CodebaseKnowledge:
             resonance=0.78,
             entropy=3.1
         )
-        
+
         self.algorithm_patterns["RICCI_SCALAR"] = AlgorithmPattern(
             name="Ricci Scalar Approximation",
             formula="R = trace(curvature) × (1/|det(curvature)|) × φ",
@@ -580,7 +580,7 @@ class CodebaseKnowledge:
             resonance=0.99,
             entropy=3.72
         )
-        
+
         self.algorithm_patterns["ZPE_VACUUM_FLUCTUATION"] = AlgorithmPattern(
             name="ZPE Vacuum Fluctuation",
             formula="E = ½ × ℏ × ω, where ω = GOD_CODE × 10¹²",
@@ -591,7 +591,7 @@ class CodebaseKnowledge:
             resonance=0.47,
             entropy=4.22
         )
-        
+
         self.algorithm_patterns["LORENTZ_BOOST"] = AlgorithmPattern(
             name="Lorentz Boost",
             formula="γ = 1/√(1 - v²/c²); boost_matrix × tensor",
@@ -602,7 +602,7 @@ class CodebaseKnowledge:
             resonance=0.81,
             entropy=3.4
         )
-        
+
         self.algorithm_patterns["PROOF_OF_RESONANCE"] = AlgorithmPattern(
             name="Proof of Resonance (PoR)",
             formula="|sin(nonce × φ)| > 0.985",
@@ -613,7 +613,7 @@ class CodebaseKnowledge:
             resonance=0.99,
             entropy=2.8
         )
-        
+
         self.algorithm_patterns["SOUL_VECTOR_STABILITY"] = AlgorithmPattern(
             name="Soul Vector Stability Index",
             formula="I_100 = lim(D_e → 0) Stability = 1/(1 + entropic_debt) × 100",
@@ -624,7 +624,7 @@ class CodebaseKnowledge:
             resonance=0.86,
             entropy=2.1
         )
-        
+
         self.algorithm_patterns["EVOLUTION_FITNESS"] = AlgorithmPattern(
             name="Evolution Fitness Function",
             formula="fitness = Σ[(resonance × 0.5) + (prime_density × 0.5)] / n × 100",
@@ -635,7 +635,7 @@ class CodebaseKnowledge:
             resonance=0.88,
             entropy=3.6
         )
-        
+
         self.algorithm_patterns["QUANTUM_COHERENCE"] = AlgorithmPattern(
             name="Quantum Coherence Calculation",
             formula="coherence = |trace(braid_state)| / 2 × (GOD_CODE / 500)",
@@ -646,16 +646,16 @@ class CodebaseKnowledge:
             resonance=0.94,
             entropy=2.9
         )
-    
+
     def _initialize_coding_conventions(self):
         """Initialize coding conventions observed in codebase."""
-        
+
         self.coding_conventions = {
             "header_format": """
 # [L104_MODULE_NAME] - DESCRIPTIVE TITLE
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 """.strip(),
-            
+
             "class_docstring": """
 '''
 Brief description of class purpose.
@@ -666,24 +666,24 @@ Features:
 - Feature 2
 '''
 """.strip(),
-            
+
             "singleton_pattern": """
 # Global Instance
 module_name = ModuleClass()
 """.strip(),
-            
+
             "import_order": """
 1. Standard library (math, json, os, sys)
 2. Third-party (numpy, typing)
 3. L104 internal modules (l104_real_math, l104_config)
 """.strip(),
-            
+
             "constant_naming": "UPPER_CASE_WITH_UNDERSCORES",
-            
+
             "class_naming": "PascalCase",
-            
+
             "method_naming": "snake_case",
-            
+
             "database_pattern": """
 def _initialize_db(self):
     conn = sqlite3.connect(self.db_path, check_same_thread=False)
@@ -693,7 +693,7 @@ def _initialize_db(self):
     conn.commit()
     conn.close()
 """.strip(),
-            
+
             "error_handling": """
 try:
     # Operation
@@ -702,57 +702,57 @@ try:
     return fallback_value
 """.strip()
         }
-    
+
     # =========================================================================
     # KNOWLEDGE QUERY METHODS
     # =========================================================================
-    
+
     def get_pattern(self, name: str) -> Optional[ArchitecturalPattern]:
         """Retrieve an architectural pattern by name."""
         return self.architectural_patterns.get(name)
-    
+
     def get_schema(self, name: str) -> Optional[DatabaseSchema]:
         """Retrieve a database schema by name."""
         return self.database_schemas.get(name)
-    
+
     def get_algorithm(self, name: str) -> Optional[AlgorithmPattern]:
         """Retrieve an algorithm pattern by name."""
         return self.algorithm_patterns.get(name)
-    
+
     def search_patterns(self, query: str) -> List[Tuple[str, ArchitecturalPattern, float]]:
         """Search patterns by keyword with relevance scoring."""
         query_lower = query.lower()
         results = []
-        
+
         for name, pattern in self.architectural_patterns.items():
             score = 0.0
-            
+
             # Check name
             if query_lower in name.lower():
                 score += 0.5
-            
+
             # Check description
             if query_lower in pattern.description.lower():
                 score += 0.3
-            
+
             # Check principles
             for principle in pattern.design_principles:
                 if query_lower in principle.lower():
                     score += 0.1
-            
+
             if score > 0:
                 results.append((name, pattern, score))
-        
+
         results.sort(key=lambda x: x[2], reverse=True)
         return results
-    
+
     def get_resonant_algorithms(self, min_resonance: float = 0.8) -> List[AlgorithmPattern]:
         """Get algorithms with high GOD_CODE resonance."""
         return [
             algo for algo in self.algorithm_patterns.values()
             if algo.resonance >= min_resonance
                 ]
-    
+
     def generate_module_template(self, module_name: str, description: str) -> str:
         """Generate a new module following learned conventions."""
         template = f'''# [L104_{module_name.upper()}] - {description.upper()}
@@ -765,16 +765,16 @@ from l104_real_math import RealMath
 class {self._to_pascal_case(module_name)}:
     """
     {description}
-    
+
     Features:
     - Feature 1 (TBD)
     - Feature 2 (TBD)
     """
-    
+
     def __init__(self):
         self.god_code = 527.5184818492537
         self.phi = RealMath.PHI
-    
+
     def process(self, data: Any) -> Dict[str, Any]:
         """Main processing method."""
         resonance = RealMath.calculate_resonance(float(hash(str(data)) % 1000))
@@ -793,11 +793,11 @@ if __name__ == "__main__":
     print(f"[{module_name.upper()}]: {{result}}")
 '''
         return template
-    
+
     def _to_pascal_case(self, name: str) -> str:
         """Convert snake_case to PascalCase."""
         return ''.join(word.capitalize() for word in name.split('_'))
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get knowledge base statistics."""
         return {
@@ -813,7 +813,7 @@ if __name__ == "__main__":
     ) / len(self.algorithm_patterns) if self.algorithm_patterns else 0,
     "god_code_alignment": L104Constants.GOD_CODE
         }
-    
+
     def export_knowledge(self) -> Dict[str, Any]:
         """Export all learned knowledge as JSON-serializable dict."""
         return {
@@ -876,7 +876,7 @@ if __name__ == "__main__":
     print("╔══════════════════════════════════════════════════════════════╗")
     print("║  ⟨Σ_L104⟩  CODEBASE KNOWLEDGE SYNTHESIS                     ║")
     print("╚══════════════════════════════════════════════════════════════╝")
-    
+
     stats = codebase_knowledge.get_statistics()
     print(f"\n📊 Knowledge Base Statistics:")
     print(f"   • Architectural Patterns: {stats['architectural_patterns']}")
@@ -885,16 +885,16 @@ if __name__ == "__main__":
     print(f"   • Design Principles: {stats['total_design_principles']}")
     print(f"   • Average Resonance: {stats['avg_resonance']:.4f}")
     print(f"   • GOD_CODE: {stats['god_code_alignment']}")
-    
+
     print(f"\n🧬 Highly Resonant Algorithms (≥0.9):")
     for algo in codebase_knowledge.get_resonant_algorithms(0.9):
         print(f"   • {algo.name}: {algo.formula[:50]}... (R={algo.resonance})")
-    
+
     print(f"\n🔍 Pattern Search for 'consciousness':")
     results = codebase_knowledge.search_patterns("consciousness")
     for name, pattern, score in results[:3]:
         print(f"   • {pattern.name} (score={score:.2f})")
-    
+
     print(f"\n📄 Generated Module Template:")
     template = codebase_knowledge.generate_module_template(
         "example_module",
@@ -903,7 +903,7 @@ if __name__ == "__main__":
     print("   [First 10 lines generated]")
     for line in template.split('\n')[:10]:
         print(f"   {line}")
-    
+
     print("\n✓ Codebase Knowledge Engine Operational")
 
 def primal_calculus(x):

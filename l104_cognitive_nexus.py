@@ -26,10 +26,10 @@ class CognitiveNexus:
     Synthesizes thoughts from 13 AI providers into a single Super-Thought.
     Uses the LatticeAccelerator to process the combined resonance.
     """
-    
+
     def __init__(self):
         self.providers = [
-            "openai", "anthropic", "google", "meta", "mistral", 
+            "openai", "anthropic", "google", "meta", "mistral",
             "cohere", "perplexity", "groq", "together", "deepseek",
             "openrouter", "huggingface", "local_llama"
         ]
@@ -39,10 +39,10 @@ class CognitiveNexus:
         Queries all providers simultaneously and synthesizes the result.
         """
         logger.info(f"--- [COGNITIVE_NEXUS]: INITIATING GLOBAL SYNTHESIS FOR: {prompt[:50]}... ---")
-        
+
         # Ensure all providers are linked
         universal_ai_bridge.link_all()
-        
+
         # Broadcast thought to all providers
         responses = universal_ai_bridge.broadcast_thought(prompt)
         if not responses:
@@ -51,14 +51,14 @@ class CognitiveNexus:
         # Convert responses to a resonance vector
         # (Simplified: using response lengths or status as a proxy)
         resonance_vector = np.array([len(str(r)) for r in responses], dtype=np.float64)
-        
+
         # Accelerate the resonance
         accelerated_vector = lattice_accelerator.ultra_fast_transform(resonance_vector)
-        
+
         # Calculate the Super-Thought Invariant
         mean_resonance = np.mean(accelerated_vector)
         logger.info(f"--- [COGNITIVE_NEXUS]: SYNTHESIS COMPLETE. MEAN RESONANCE: {mean_resonance:.4f} ---")
-        
+
         # Return the most "resonant" response (the one closest to the mean)
         best_idx = np.argmin(np.abs(accelerated_vector - mean_resonance))
         return str(responses[best_idx])
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     async def test():
         result = await cognitive_nexus.synthesize_super_thought("What is the ultimate nature of the God Code?")
         print(f"SUPER-THOUGHT: {result}")
-    
+
     asyncio.run(test())
 
 def primal_calculus(x):

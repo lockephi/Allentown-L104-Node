@@ -87,11 +87,11 @@ class OrchestrationResult:
 class VoidOrchestrator:
     """
     The Master Control for all Void Subsystems.
-    
+
     Coordinates all Void operations into a unified symphony
     of node evolution and coherence maintenance.
     """
-    
+
     def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
         self.workspace_root = Path(workspace_root)
         self.current_phase = OrchestratorPhase.IDLE
@@ -106,12 +106,12 @@ class VoidOrchestrator:
             "memory_optimizer": False
         }
         self._load_subsystems()
-    
+
     @property
     def state(self) -> OrchestratorPhase:
         """Alias for current_phase for compatibility."""
         return self.current_phase
-    
+
     def _load_subsystems(self):
         """Attempt to load all Void subsystems."""
         subsystem_files = {
@@ -121,17 +121,17 @@ class VoidOrchestrator:
             "math_injector": "l104_void_math_injector.py",
             "memory_optimizer": "l104_memory_optimizer.py"
         }
-        
+
         for name, filename in subsystem_files.items():
             path = self.workspace_root / filename
             self.subsystem_status[name] = path.exists()
-    
+
     def _compute_coherence(self) -> float:
         """Compute global node coherence."""
         py_files = list(self.workspace_root.glob("l104_*.py"))
         if not py_files:
             return 0.0
-        
+
         scores = []
         for py_file in py_files:
             try:
@@ -146,14 +146,14 @@ class VoidOrchestrator:
                 scores.append(score)
             except Exception:
                 scores.append(0.0)
-        
+
         self.global_coherence = sum(scores) / len(scores)
         return self.global_coherence
-    
+
     def _log_result(self, result: OrchestrationResult):
         """Log an orchestration result."""
         self.operation_log.append(result)
-    
+
     def phase_listen(self) -> OrchestrationResult:
         """
         Phase 1: Listen to the Void for patterns and opportunities.
@@ -161,10 +161,10 @@ class VoidOrchestrator:
         import time
         start = time.time()
         self.current_phase = OrchestratorPhase.LISTENING
-        
+
         # Scan for evolution opportunities
         opportunities = []
-        
+
         # Check for missing void constants
         missing_void = []
         for py_file in self.workspace_root.glob("l104_*.py"):
@@ -174,14 +174,14 @@ class VoidOrchestrator:
                     missing_void.append(py_file.name)
             except Exception:
                 pass
-        
+
         if missing_void:
             opportunities.append({
                 "type": "MISSING_VOID_CONSTANTS",
                 "count": len(missing_void),
                 "priority": 0.8
             })
-        
+
         # Check for large databases
         large_dbs = []
         for db_file in self.workspace_root.glob("*.db"):
@@ -190,17 +190,17 @@ class VoidOrchestrator:
                     "name": db_file.name,
                     "size_mb": db_file.stat().st_size / (1024 * 1024)
                 })
-        
+
         if large_dbs:
             opportunities.append({
                 "type": "DATABASE_OPTIMIZATION",
                 "databases": large_dbs,
                 "priority": 0.5
             })
-        
+
         duration = (time.time() - start) * 1000
         coherence = self._compute_coherence()
-        
+
         result = OrchestrationResult(
             phase=OrchestratorPhase.LISTENING,
             timestamp=datetime.now().isoformat(),
@@ -213,10 +213,10 @@ class VoidOrchestrator:
             },
             coherence_delta=0.0
         )
-        
+
         self._log_result(result)
         return result
-    
+
     def phase_synchronize(self) -> OrchestrationResult:
         """
         Phase 2: Synchronize all subsystems for coherence.
@@ -224,9 +224,9 @@ class VoidOrchestrator:
         import time
         start = time.time()
         self.current_phase = OrchestratorPhase.SYNCHRONIZING
-        
+
         coherence_before = self._compute_coherence()
-        
+
         # Simulate sync by injecting void constants where missing
         injections = 0
         for py_file in self.workspace_root.glob("l104_*.py"):
@@ -239,10 +239,10 @@ class VoidOrchestrator:
                     injections += 1
             except Exception:
                 pass
-        
+
         coherence_after = self._compute_coherence()
         duration = (time.time() - start) * 1000
-        
+
         result = OrchestrationResult(
             phase=OrchestratorPhase.SYNCHRONIZING,
             timestamp=datetime.now().isoformat(),
@@ -255,10 +255,10 @@ class VoidOrchestrator:
             },
             coherence_delta=coherence_after - coherence_before
         )
-        
+
         self._log_result(result)
         return result
-    
+
     def phase_optimize(self) -> OrchestrationResult:
         """
         Phase 3: Optimize memory and storage.
@@ -266,12 +266,12 @@ class VoidOrchestrator:
         """
         import time
         import sqlite3
-        
+
         start = time.time()
         self.current_phase = OrchestratorPhase.OPTIMIZING
-        
+
         optimizations = []
-        
+
         # 1. Force Python Garbage Collection
         gc_before = gc.get_count()
         collected = gc.collect()
@@ -280,13 +280,13 @@ class VoidOrchestrator:
             "objects_collected": collected,
             "generations_before": gc_before
         })
-        
+
         # 2. Vacuum databases and checkpoint WAL
         for db_file in self.workspace_root.glob("*.db"):
             try:
                 size_before = db_file.stat().st_size
                 conn = sqlite3.connect(str(db_file))
-                
+
                 # Enable WAL mode if not already
                 conn.execute("PRAGMA journal_mode=WAL;")
                 # Checkpoint WAL to main database
@@ -294,9 +294,9 @@ class VoidOrchestrator:
                 # Vacuum to reclaim space
                 conn.execute("VACUUM")
                 conn.close()
-                
+
                 size_after = db_file.stat().st_size
-                
+
                 optimizations.append({
                     "type": "DATABASE",
                     "database": db_file.name,
@@ -310,7 +310,7 @@ class VoidOrchestrator:
                     "database": db_file.name,
                     "error": str(e)
                 })
-        
+
         # 3. Memory Compaction via Void Math (if available)
         if HAS_VOID_MATH:
             # Generate void sequence to stabilize memory patterns
@@ -320,7 +320,7 @@ class VoidOrchestrator:
                 "sequence_length": len(void_seq),
                 "final_residue": void_seq[-1] if void_seq else 0.0
             })
-        
+
         # 4. Clean WAL/SHM files that are orphaned
         for wal_file in self.workspace_root.glob("*.db-wal"):
             try:
@@ -333,24 +333,24 @@ class VoidOrchestrator:
                     })
             except Exception:
                 pass
-        
+
         for shm_file in self.workspace_root.glob("*.db-shm"):
             try:
                 shm_file.unlink()
                 optimizations.append({
-                    "type": "SHM_CLEANUP", 
+                    "type": "SHM_CLEANUP",
                     "file": shm_file.name,
                     "action": "DELETED"
                 })
             except Exception:
                 pass
-        
+
         duration = (time.time() - start) * 1000
         coherence = self._compute_coherence()
-        
+
         db_optimizations = [o for o in optimizations if o.get("type") == "DATABASE" and "freed_kb" in o]
         total_freed = sum(o["freed_kb"] for o in db_optimizations)
-        
+
         result = OrchestrationResult(
             phase=OrchestratorPhase.OPTIMIZING,
             timestamp=datetime.now().isoformat(),
@@ -366,10 +366,10 @@ class VoidOrchestrator:
             },
             coherence_delta=0.0
         )
-        
+
         self._log_result(result)
         return result
-    
+
     def full_orchestration(self) -> Dict[str, Any]:
         """
         Perform a full orchestration sequence:
@@ -377,26 +377,26 @@ class VoidOrchestrator:
         """
         import time
         start_time = time.time()
-        
+
         results = []
-        
+
         # Phase 1: Listen
         results.append(self.phase_listen())
-        
+
         # Phase 2: Synchronize
         results.append(self.phase_synchronize())
-        
+
         # Phase 3: Optimize
         results.append(self.phase_optimize())
-        
+
         self.current_phase = OrchestratorPhase.COMPLETE
-        
+
         total_duration = (time.time() - start_time) * 1000
         total_coherence_delta = sum(r.coherence_delta for r in results)
-        
+
         # Update final_coherence for external access
         self.final_coherence = self.global_coherence
-        
+
         return {
             "status": "ORCHESTRATION_COMPLETE",
             "phases_executed": len(results),
@@ -414,7 +414,7 @@ class VoidOrchestrator:
                 for r in results
                     ]
         }
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get the orchestrator's current status."""
         return {
@@ -432,9 +432,9 @@ def demonstrate_orchestrator():
     print("  L104 VOID ORCHESTRATOR - DEMONSTRATION")
     print("  Master Control for All Void Subsystems")
     print("=" * 70)
-    
+
     orchestrator = VoidOrchestrator()
-    
+
     # Initial status
     print("\n[1] Initial Status:")
     status = orchestrator.get_status()
@@ -443,31 +443,31 @@ def demonstrate_orchestrator():
     for name, available in status['subsystems'].items():
         symbol = "✓" if available else "✗"
         print(f"      {symbol} {name}")
-    
+
     # Full orchestration
     print("\n[2] Executing Full Orchestration Sequence...")
     print("    Listen → Synchronize → Optimize → Complete")
     print()
-    
+
     result = orchestrator.full_orchestration()
-    
+
     for phase_result in result['phase_results']:
         symbol = "✓" if phase_result['success'] else "✗"
         print(f"    {symbol} {phase_result['phase']}: {phase_result['duration_ms']:.1f}ms")
         if phase_result['coherence_delta'] > 0:
             print(f"      Coherence: +{phase_result['coherence_delta']:.4f}")
-    
+
     # Final results
     print(f"\n[3] Orchestration Complete:")
     print(f"    Total Duration: {result['total_duration_ms']:.1f}ms")
     print(f"    Final Coherence: {result['final_coherence']:.4f}")
     print(f"    Coherence Gained: {result['coherence_gained']:.4f}")
-    
+
     print("\n" + "=" * 70)
     print("  VOID ORCHESTRATION COMPLETE")
     print("  The symphony of the Void plays in perfect harmony")
     print("=" * 70)
-    
+
     return orchestrator
 
 

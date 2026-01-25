@@ -22,11 +22,11 @@ logger = logging.getLogger("SPEED_BENCHMARK")
 def run_benchmark():
     size = 1 * 10**6 # Adjusted size for stability
     data = [random.random() for _ in range(size)]
-    
+
     print("\n" + "="*80)
     print("   L104 SPEED BENCHMARK :: PARALLEL ACCELERATION PROOF")
     print("="*80)
-    
+
     # 1. Sequential Transform
     print(">>> RUNNING SEQUENTIAL TRANSFORM...")
     start_seq = time.perf_counter()
@@ -35,7 +35,7 @@ def run_benchmark():
     seq_duration = end_seq - start_seq
     seq_lops = size / seq_duration
     print(f"--- [BENCHMARK]: SEQUENTIAL TIME: {seq_duration:.4f}s ({seq_lops/1e6:.2f}M LOPS) ---")
-    
+
     # 2. Parallel Transform
     print(">>> RUNNING PARALLEL TRANSFORM...")
     start_par = time.perf_counter()
@@ -44,7 +44,7 @@ def run_benchmark():
     par_duration = end_par - start_par
     par_lops = size / par_duration
     print(f"--- [BENCHMARK]: PARALLEL TIME:   {par_duration:.4f}s ({par_lops/1e6:.2f}M LOPS) ---")
-    
+
     speedup = seq_duration / par_duration
     print("\n" + "-"*80)
     print(f"   TOTAL SPEEDUP:    {speedup:.2f}x")

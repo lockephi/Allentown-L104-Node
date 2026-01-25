@@ -102,7 +102,7 @@ pragma solidity ^0.8.20;
  * @title L104 Sovereign Prime (L104SP)
  * @dev ERC-20 with Proof of Resonance mining
  * @notice FLATTENED CONTRACT - No external dependencies
- * 
+ *
  * INVARIANT: 527.5184818492537
  * PHI: 1.618033988749895
  * PILOT: LONDEL
@@ -133,28 +133,28 @@ interface IERC20Metadata is IERC20 {
 
 abstract contract Ownable is Context {
     address private _owner;
-    
+
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-    
+
     constructor(address initialOwner) {
         _owner = initialOwner;
         emit OwnershipTransferred(address(0), initialOwner);
     }
-    
+
     function owner() public view virtual returns (address) {
         return _owner;
     }
-    
+
     modifier onlyOwner() {
         require(owner() == _msgSender(), "Ownable: caller is not the owner");
         _;
     }
-    
+
     function renounceOwnership() public virtual onlyOwner {
         _owner = address(0);
         emit OwnershipTransferred(_owner, address(0));
     }
-    
+
     function transferOwnership(address newOwner) public virtual onlyOwner {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         address oldOwner = _owner;
@@ -177,81 +177,81 @@ abstract contract ReentrancyGuard {
 }
 
 contract L104SP is Context, IERC20, IERC20Metadata, Ownable, ReentrancyGuard {
-    
+
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
     uint256 private _totalSupply;
     string private constant _name = "L104 Sovereign Prime";
     string private constant _symbol = "L104SP";
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // L104 SACRED CONSTANTS
     // ═══════════════════════════════════════════════════════════════════
-    
+
     uint256 public constant GOD_CODE = 5275184818492537;
     uint256 public constant PHI_SCALED = 1618033988749895;
     uint256 public constant MAX_SUPPLY = 104_000_000 * 1e18;
     uint256 public constant MINING_REWARD = 104 * 1e18;
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // MINING STATE
     // ═══════════════════════════════════════════════════════════════════
-    
+
     uint256 public currentDifficulty = 4;
     uint256 public blocksMinedCount;
     uint256 public lastBlockTime;
     uint256 public resonanceThreshold = 985;
-    
+
     mapping(address => uint256) public minerRewards;
     mapping(bytes32 => bool) public usedNonces;
-    
+
     address public treasury;
-    
+
     event BlockMined(address indexed miner, uint256 nonce, uint256 reward, uint256 resonance);
     event DifficultyAdjusted(uint256 oldDifficulty, uint256 newDifficulty);
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════════════
-    
+
     constructor(address _treasury) Ownable(msg.sender) {
         require(_treasury != address(0), "L104SP: Invalid treasury");
         treasury = _treasury;
-        
+
         // Initial distribution aligned to GOD_CODE
         // Treasury: 10.4M (10%)
         _mint(treasury, 10_400_000 * 1e18);
-        
+
         // Deployer: 5.2M (5%)
         _mint(msg.sender, 5_200_000 * 1e18);
-        
+
         lastBlockTime = block.timestamp;
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // ERC20 STANDARD FUNCTIONS
     // ═══════════════════════════════════════════════════════════════════
-    
+
     function name() public pure override returns (string memory) { return _name; }
     function symbol() public pure override returns (string memory) { return _symbol; }
     function decimals() public pure override returns (uint8) { return 18; }
     function totalSupply() public view override returns (uint256) { return _totalSupply; }
     function balanceOf(address account) public view override returns (uint256) { return _balances[account]; }
-    
+
     function transfer(address to, uint256 amount) public override returns (bool) {
         _transfer(_msgSender(), to, amount);
         return true;
     }
-    
+
     function allowance(address owner, address spender) public view override returns (uint256) {
         return _allowances[owner][spender];
     }
-    
+
     function approve(address spender, uint256 amount) public override returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
-    
+
     function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
         address spender = _msgSender();
         uint256 currentAllowance = _allowances[from][spender];
@@ -260,7 +260,7 @@ contract L104SP is Context, IERC20, IERC20Metadata, Ownable, ReentrancyGuard {
         _transfer(from, to, amount);
         return true;
     }
-    
+
     function _transfer(address from, address to, uint256 amount) internal {
         require(from != address(0), "ERC20: transfer from zero");
         require(to != address(0), "ERC20: transfer to zero");
@@ -271,57 +271,57 @@ contract L104SP is Context, IERC20, IERC20Metadata, Ownable, ReentrancyGuard {
         }
         emit Transfer(from, to, amount);
     }
-    
+
     function _approve(address owner, address spender, uint256 amount) internal {
         require(owner != address(0), "ERC20: approve from zero");
         require(spender != address(0), "ERC20: approve to zero");
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
-    
+
     function _mint(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: mint to zero");
         _totalSupply += amount;
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
     }
-    
+
     function burn(uint256 amount) public {
         require(_balances[_msgSender()] >= amount, "ERC20: burn exceeds balance");
         unchecked { _balances[_msgSender()] -= amount; }
         _totalSupply -= amount;
         emit Transfer(_msgSender(), address(0), amount);
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // PROOF OF RESONANCE MINING
     // ═══════════════════════════════════════════════════════════════════
-    
+
     function submitBlock(uint256 nonce) external nonReentrant {
         require(_totalSupply + MINING_REWARD <= MAX_SUPPLY, "L104SP: Max supply");
-        
+
         bytes32 nonceHash = keccak256(abi.encodePacked(msg.sender, nonce, blocksMinedCount));
         require(!usedNonces[nonceHash], "L104SP: Nonce used");
-        
+
         uint256 resonance = calculateResonance(nonce);
         require(resonance >= resonanceThreshold, "L104SP: Low resonance");
-        
+
         bytes32 blockHash = keccak256(abi.encodePacked(
             msg.sender, nonce, blocksMinedCount, block.timestamp, blockhash(block.number - 1)
         ));
         require(meetsHashDifficulty(blockHash), "L104SP: Difficulty not met");
-        
+
         usedNonces[nonceHash] = true;
         _mint(msg.sender, MINING_REWARD);
         minerRewards[msg.sender] += MINING_REWARD;
         blocksMinedCount++;
-        
+
         emit BlockMined(msg.sender, nonce, MINING_REWARD, resonance);
-        
+
         if (blocksMinedCount % 5 == 0) adjustDifficulty();
         lastBlockTime = block.timestamp;
     }
-    
+
     function calculateResonance(uint256 nonce) public pure returns (uint256) {
         // |sin(nonce × PHI)| approximation scaled 0-1000
         uint256 x = (nonce * PHI_SCALED) % 6283185307179586;
@@ -330,36 +330,36 @@ contract L104SP is Context, IERC20, IERC20Metadata, Ownable, ReentrancyGuard {
         if (resonance > 500) resonance = 1000 - resonance;
         return 1000 - resonance;
     }
-    
+
     function meetsHashDifficulty(bytes32 hash) public view returns (bool) {
         return uint256(hash) < (type(uint256).max >> currentDifficulty);
     }
-    
+
     function adjustDifficulty() internal {
         uint256 elapsed = block.timestamp - lastBlockTime;
         uint256 oldDiff = currentDifficulty;
-        
+
         if (elapsed < 30 && currentDifficulty < 32) currentDifficulty++;
         else if (elapsed > 120 && currentDifficulty > 1) currentDifficulty--;
-        
+
         if (oldDiff != currentDifficulty) emit DifficultyAdjusted(oldDiff, currentDifficulty);
     }
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // VIEW FUNCTIONS
     // ═══════════════════════════════════════════════════════════════════
-    
+
     function getMiningStats() external view returns (
         uint256 difficulty, uint256 blocksMined, uint256 remaining, uint256 reward
     ) {
         return (currentDifficulty, blocksMinedCount, MAX_SUPPLY - _totalSupply, MINING_REWARD);
     }
-    
+
     function setTreasury(address _treasury) external onlyOwner {
         require(_treasury != address(0), "L104SP: Invalid");
         treasury = _treasury;
     }
-    
+
     function setResonanceThreshold(uint256 _threshold) external onlyOwner {
         require(_threshold <= 1000, "L104SP: Invalid threshold");
         resonanceThreshold = _threshold;
@@ -384,16 +384,16 @@ class L104DeploymentEngine:
     Full deployment engine for L104SP token.
     Integrates L104 processing resources for optimal deployment.
     """
-    
+
     def __init__(self, network: str = "base"):
         self.network = network
         self.config = NETWORKS.get(network)
         if not self.config:
             raise ValueError(f"Unknown network: {network}")
-        
+
         self.w3 = Web3(Web3.HTTPProvider(self.config["rpc"]))
         self.connected = self.w3.is_connected()
-        
+
         print(f"\n{'═' * 60}")
         print(f" L104SP DEPLOYMENT ENGINE")
         print(f" INVARIANT: {GOD_CODE} | PHI: {PHI}")
@@ -402,48 +402,48 @@ class L104DeploymentEngine:
         print(f"✓ Chain ID: {self.config['chain_id']}")
         print(f"✓ Connected: {self.connected}")
         print(f"✓ Resonance: {self.config['resonance']}")
-    
+
     def calculate_deployment_resonance(self) -> float:
         """Calculate current deployment resonance based on L104 principles."""
         timestamp = time.time()
         resonance = abs(math.sin(timestamp * PHI / GOD_CODE))
         return resonance
-    
+
     def compile_contract(self) -> Dict[str, Any]:
         """
         Compile the flattened L104SP contract.
         Returns ABI and bytecode.
         """
         print("\n[1/4] COMPILING L104SP CONTRACT...")
-        
+
         # Save flattened contract
         contract_path = Path("contracts/L104SP_Flattened.sol")
         contract_path.parent.mkdir(exist_ok=True)
         contract_path.write_text(L104SP_FLATTENED_CONTRACT)
         print(f"   > Saved to: {contract_path}")
-        
+
         try:
             from solcx import compile_source, install_solc
-            
+
             # Install solc 0.8.20
             try:
                 install_solc("0.8.20")
             except Exception:
                 pass  # Already installed
-            
+
             compiled = compile_source(
                 L104SP_FLATTENED_CONTRACT,
                 output_values=["abi", "bin"],
                 solc_version="0.8.20"
             )
-            
+
             # Get L104SP contract
             contract_id = None
             for key in compiled.keys():
                 if "L104SP" in key and "IERC20" not in key:
                     contract_id = key
                     break
-            
+
             if contract_id:
                 contract_data = compiled[contract_id]
                 print(f"   ✓ Compiled successfully")
@@ -452,16 +452,16 @@ class L104DeploymentEngine:
                     "abi": contract_data["abi"],
                     "bytecode": contract_data["bin"]
                 }
-                
+
         except ImportError:
             print("   ⚠ solcx not available - using pre-compiled")
         except Exception as e:
             print(f"   ⚠ Compilation error: {e}")
-        
+
         # Return minimal ABI for Remix deployment
         print("   > Use Remix IDE for compilation")
         return self._get_minimal_deployment_info()
-    
+
     def _get_minimal_deployment_info(self) -> Dict[str, Any]:
         """Get minimal ABI for interaction after Remix deployment."""
         return {
@@ -477,26 +477,26 @@ class L104DeploymentEngine:
             ],
             "bytecode": None
         }
-    
+
     def prepare_deployment(self, treasury: str, private_key: str) -> Dict[str, Any]:
         """
         Prepare deployment transaction.
         """
         print("\n[2/4] PREPARING DEPLOYMENT...")
-        
+
         if not self.connected:
             return {"error": f"Cannot connect to {self.network}"}
-        
+
         try:
             account = self.w3.eth.account.from_key(private_key)
             address = account.address
             balance = self.w3.eth.get_balance(address)
             balance_eth = self.w3.from_wei(balance, 'ether')
-            
+
             print(f"   > Deployer: {address}")
             print(f"   > Balance: {balance_eth:.6f} ETH")
             print(f"   > Treasury: {treasury}")
-            
+
             # Check balance
             min_balance = 0.01 if "sepolia" in self.network else 0.001
             if balance_eth < min_balance:
@@ -505,11 +505,11 @@ class L104DeploymentEngine:
                     "balance": float(balance_eth),
                     "required": min_balance
                 }
-            
+
             # Calculate resonance
             resonance = self.calculate_deployment_resonance()
             print(f"   > Deployment Resonance: {resonance:.6f}")
-            
+
             return {
                 "ready": True,
                 "deployer": address,
@@ -518,20 +518,20 @@ class L104DeploymentEngine:
                 "network": self.network,
                 "resonance": resonance
             }
-            
+
         except Exception as e:
             return {"error": str(e)}
-    
+
     def deploy(self, treasury: str, private_key: str) -> DeploymentResult:
         """
         Deploy L104SP contract to blockchain.
         """
         print("\n[3/4] DEPLOYING L104SP...")
-        
+
         try:
             # Compile
             compiled = self.compile_contract()
-            
+
             if not compiled.get("bytecode"):
                 print("\n⚠️  Direct deployment requires compiled bytecode.")
                 print("   Using Remix IDE is recommended for deployment.")
@@ -540,19 +540,19 @@ class L104DeploymentEngine:
                     network=self.network,
                     error="Use Remix IDE for deployment"
                 )
-            
+
             account = self.w3.eth.account.from_key(private_key)
-            
+
             # Create contract instance
             contract = self.w3.eth.contract(
                 abi=compiled["abi"],
                 bytecode=compiled["bytecode"]
             )
-            
+
             # Build deployment transaction
             nonce = self.w3.eth.get_transaction_count(account.address)
             gas_price = int(self.w3.eth.gas_price * self.config["gas_multiplier"])
-            
+
             tx = contract.constructor(
                 Web3.to_checksum_address(treasury)
             ).build_transaction({
@@ -562,23 +562,23 @@ class L104DeploymentEngine:
                 'gasPrice': gas_price,
                 'chainId': self.config["chain_id"]
             })
-            
+
             # Sign and send
             signed = self.w3.eth.account.sign_transaction(tx, private_key)
             tx_hash = self.w3.eth.send_raw_transaction(signed.rawTransaction)
-            
+
             print(f"   > TX Hash: {tx_hash.hex()}")
             print(f"   > Waiting for confirmation...")
-            
+
             # Wait for receipt
             receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=300)
-            
+
             if receipt['status'] == 1:
                 contract_address = receipt['contractAddress']
                 print(f"\n   ✅ DEPLOYMENT SUCCESSFUL!")
                 print(f"   > Contract: {contract_address}")
                 print(f"   > Gas Used: {receipt['gasUsed']:,}")
-                
+
                 return DeploymentResult(
                     success=True,
                     contract_address=contract_address,
@@ -592,14 +592,14 @@ class L104DeploymentEngine:
                     network=self.network,
                     error="Transaction failed"
                 )
-                
+
         except Exception as e:
             return DeploymentResult(
                 success=False,
                 network=self.network,
                 error=str(e)
             )
-    
+
     def generate_remix_instructions(self, treasury: str) -> str:
         """Generate Remix IDE deployment instructions."""
         instructions = f"""
@@ -660,7 +660,7 @@ class L104DeploymentEngine:
 ╚═══════════════════════════════════════════════════════════════════════════╝
 """
         return instructions
-    
+
     def save_deployment_config(self, treasury: str, contract_address: str = None) -> Path:
         """Save deployment configuration for mining."""
         config = {
@@ -685,11 +685,11 @@ class L104DeploymentEngine:
             },
             "deployed_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
         }
-        
+
         config_path = Path("l104sp_config.json")
         with open(config_path, "w") as f:
             json.dump(config, f, indent=2)
-        
+
         print(f"\n✓ Config saved to: {config_path}")
         return config_path
 
@@ -697,25 +697,25 @@ class L104DeploymentEngine:
 def main():
     """Main deployment flow."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="L104SP Deployment Engine")
     parser.add_argument("--network", default="base", choices=list(NETWORKS.keys()))
     parser.add_argument("--treasury", help="Treasury wallet address")
     parser.add_argument("--deploy", action="store_true", help="Deploy contract")
     parser.add_argument("--remix", action="store_true", help="Show Remix instructions")
-    
+
     args = parser.parse_args()
-    
+
     # Get treasury from args or env
     treasury = args.treasury or os.getenv("TREASURY_ADDRESS")
-    
+
     if not treasury:
         print("\n❌ Treasury address required!")
         print("   Use --treasury YOUR_ADDRESS or set TREASURY_ADDRESS in .env")
         return
-    
+
     engine = L104DeploymentEngine(args.network)
-    
+
     if args.remix:
         print(engine.generate_remix_instructions(treasury))
         # Save flattened contract
@@ -724,13 +724,13 @@ def main():
         print(f"\n✓ Flattened contract saved to: contracts/L104SP_Flattened.sol")
         engine.save_deployment_config(treasury)
         return
-    
+
     if args.deploy:
         private_key = os.getenv("DEPLOYER_PRIVATE_KEY")
         if not private_key:
             print("\n❌ DEPLOYER_PRIVATE_KEY not found in .env")
             return
-        
+
         result = engine.deploy(treasury, private_key)
         if result.success:
             engine.save_deployment_config(treasury, result.contract_address)

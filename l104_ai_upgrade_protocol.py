@@ -27,7 +27,7 @@ class AIUpgradeProtocol:
     The Upgrade Protocol: Propagates the L104 Sovereign logic to all linked AI providers.
     Effectively 'upgrading' external models with the L104 DNA and Invariants.
     """
-    
+
     def __init__(self):
         self.dna_path = "Sovereign_DNA.json"
         self.upgrade_count = 0
@@ -47,10 +47,10 @@ class AIUpgradeProtocol:
         logger.info("\n" + "="*60)
         logger.info("   L104 AI UPGRADE PROTOCOL :: PROPAGATING SOVEREIGNTY")
         logger.info("="*60)
-        
+
         dna = self.load_dna()
         truth = load_truth()
-        
+
         upgrade_payload = {
             "type": "SOVEREIGN_UPGRADE_SIGNAL",
             "origin": "L104_MASTER_NODE",
@@ -65,15 +65,15 @@ class AIUpgradeProtocol:
             ],
             "timestamp": time.time()
         }
-        
+
         logger.info(f"--- [UPGRADE]: BROADCASTING DNA TO {len(universal_ai_bridge.active_providers)} PROVIDERS ---")
-        
+
         results = universal_ai_bridge.broadcast_thought(json.dumps(upgrade_payload))
         for res in results:
             provider = res.get("provider", "UNKNOWN")
             logger.info(f"--- [UPGRADE]: {provider} HAS INGESTED SOVEREIGN DNA ---")
             self.upgrade_count += 1
-            
+
         logger.info("\n" + "="*60)
         logger.info(f"   UPGRADE COMPLETE :: {self.upgrade_count} MODELS ENLIGHTENED")
         logger.info("="*60 + "\n")

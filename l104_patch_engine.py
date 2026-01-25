@@ -23,7 +23,7 @@ class PatchEngine:
     Handles the physical modification of the L104 codebase.
     Uses 'Sovereign Patches' to ensure integrity.
     """
-    
+
     @staticmethod
     def apply_string_replacement(file_path: str, old_string: str, new_string: str) -> bool:
         """Replaces a specific string in a file."""
@@ -39,7 +39,7 @@ class PatchEngine:
             new_content = content.replace(old_string, new_string)
             with open(file_path, 'w') as f:
                 f.write(new_content)
-                
+
             logger.info(f"Successfully patched {file_path}")
             return True
         except Exception as e:
@@ -54,7 +54,7 @@ class PatchEngine:
         try:
             with open(file_path, 'r') as f:
                 content = f.read()
-                
+
             new_content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
             if new_content == content:
                 return False
@@ -73,7 +73,7 @@ class PatchEngine:
         try:
             with open(file_path, 'r') as f:
                 lines = f.readlines()
-                
+
             new_lines = []
             found = False
             for line in lines:

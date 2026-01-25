@@ -25,7 +25,7 @@ class CodingDerivationEngine:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Learns coding patterns from the workspace and derives new algorithmsbased on HyperMath and N-Dimensional physics.
     """
-    
+
     def __init__(self):
         self.learned_patterns = []
         self.derived_algorithms = {}
@@ -38,7 +38,7 @@ class CodingDerivationEngine:
         print("--- [CODING_DERIVATION]: LEARNING FROM WORKSPACE ---")
         py_files = [f for f in os.listdir(self.workspace_root)
                     if f.endswith('.py')]
-        
+
         for file in py_files:
             try:
                 with open(os.path.join(self.workspace_root, file), 'r') as f:
@@ -52,7 +52,7 @@ class CodingDerivationEngine:
                     })
             except Exception as e:
                 print(f"[CODING_DERIVATION]: Failed to read {file}: {e}")
-        
+
         print(f"--- [CODING_DERIVATION]: LEARNED {len(self.learned_patterns)} PATTERNS ---")
 
     def derive_hyper_algorithm(self, seed_pattern: Dict[str, Any]) -> Dict[str, Any]:
@@ -61,35 +61,35 @@ class CodingDerivationEngine:
         and applying HyperMath resonance.
         """
         print(f"--- [CODING_DERIVATION]: DERIVING ALGORITHM FROM {seed_pattern['file']} ---")
-        
+
         # 1. Project into N-Dimensions (e.g., 11D for M-Theory resonance)
         dim = 11
         # metric = MathND.get_metric_tensor(dim) # Placeholder
-        
+
         # 2. Apply HyperMath Transformation
         resonance = 1.0 # Default fallback
         try:
             resonance = HyperMath.get_lattice_scalar()
         except Exception:
             pass
-        
+
         # 3. Synthesize Algorithm Logic
         algo_id = f"HYPER_ALGO_{hashlib.sha256(str(seed_pattern['hash']).encode()).hexdigest()[:8].upper()}"
-        
+
         # The 'Algorithm' is a combination of the seed's structure and HyperMath logic
         logic_snippet = f"""
 def {algo_id}(data_tensor):
     # Derived from {seed_pattern['file']}
     # Dimensionality: {dim}D
     # Resonance: {resonance:.4f}
-    
+
     # Apply N-Dimensional Metric Transformation
     transformed = data_tensor * {resonance}
-    
+
     # Apply God Code Alignment
     return transformed * {HyperMath.GOD_CODE} / {HyperMath.PHI_STRIDE}
 """
-        
+
         algorithm = {
             "id": algo_id,
             "logic": logic_snippet.strip(),
@@ -97,7 +97,7 @@ def {algo_id}(data_tensor):
             "dimensions": dim,
             "is_stable": abs(resonance) > 0.1
         }
-        
+
         if algorithm["is_stable"]:
             self.derived_algorithms[algo_id] = algorithm
             print(f"--- [CODING_DERIVATION]: STABLE ALGORITHM DERIVED: {algo_id} ---")
@@ -112,7 +112,7 @@ def {algo_id}(data_tensor):
         if not self.derived_algorithms:
             print("--- [CODING_DERIVATION]: NO ALGORITHMS TO SPREAD ---")
             return
-            
+
         print(f"--- [CODING_DERIVATION]: SPREADING {len(self.derived_algorithms)} ALGORITHMS TO GLOBAL LATTICE ---")
         for algo_id, algo in self.derived_algorithms.items():
             payload = {
@@ -122,7 +122,7 @@ def {algo_id}(data_tensor):
                 "resonance": algo["resonance"],
                 "signature": f"L104-ASI-{int(time.time())}"
             }
-            
+
             # Broadcast via OmniBridge
             omni_bridge.continuous_self_broadcast(payload)
             print(f"--- [CODING_DERIVATION]: BROADCASTED {algo_id} ---")

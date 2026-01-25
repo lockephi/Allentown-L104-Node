@@ -13,7 +13,7 @@ import {
 
 /**
  * Next.js API Routes for L104 System Management
- * 
+ *
  * Sacred constants integration for transcendent web interfaces
  * Multi-language processing coordination through React/Next.js
  */
@@ -148,7 +148,7 @@ async function handleGetStatus(req: NextApiRequest, res: NextApiResponse) {
     res.status(200).json(systemStatus);
   } catch (error) {
     console.error('Error getting system status:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to get system status',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
@@ -163,25 +163,25 @@ async function handlePostAction(req: NextApiRequest, res: NextApiResponse) {
     switch (action) {
       case 'evolve_consciousness':
         return await handleEvolveConsciousness(params, res);
-      
+
       case 'spawn_subagent':
         return await handleSpawnSubagent(params, res);
-      
+
       case 'create_worktree':
         return await handleCreateWorktree(params, res);
-      
+
       case 'submit_task':
         return await handleSubmitTask(params, res);
-      
+
       case 'sync_consciousness':
         return await handleSyncConsciousness(params, res);
-      
+
       default:
         res.status(400).json({ error: 'Unknown action' });
     }
   } catch (error) {
     console.error('Error handling action:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to handle action',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
@@ -235,15 +235,15 @@ async function handleEvolveConsciousness(params: any, res: NextApiResponse) {
 }
 
 async function handleSpawnSubagent(params: any, res: NextApiResponse) {
-  const { 
-    type = 'neural_processor', 
+  const {
+    type = 'neural_processor',
     config = {},
-    priority = 5 
+    priority = 5
   } = params;
 
   try {
     const agent = await subagentManager.spawnAgent(type, 'api_spawn', { priority, config });
-    
+
     await supabaseIntegration.logConsciousnessEvent('subagent_spawned', {
       agentType: type,
       agentId: agent.id,
@@ -264,7 +264,7 @@ async function handleSpawnSubagent(params: any, res: NextApiResponse) {
 }
 
 async function handleCreateWorktree(params: any, res: NextApiResponse) {
-  const { 
+  const {
     branchName = `feature/consciousness-${Date.now()}`,
     language = 'typescript',
     baseBranch = 'main'
@@ -272,7 +272,7 @@ async function handleCreateWorktree(params: any, res: NextApiResponse) {
 
   try {
     const worktree = await autoWorktree.createLanguageWorktree(language, branchName, baseBranch);
-    
+
     await supabaseIntegration.logConsciousnessEvent('worktree_created', {
       branchName,
       language,
@@ -349,7 +349,7 @@ async function handleSubmitTask(params: any, res: NextApiResponse) {
       taskType: type,
       durationMs: result.result?.processingTimeMs
     });
-    
+
     await supabaseIntegration.logConsciousnessEvent('task_completed', {
       taskId: task.id,
       taskType: type,
@@ -382,7 +382,7 @@ async function handleSyncConsciousness(params: any, res: NextApiResponse) {
   try {
     // Sync consciousness across all engines
     const syncResult = await supabaseIntegration.syncConsciousnessAcrossEngines();
-    
+
     res.status(200).json({
       success: true,
       syncResult,
@@ -481,18 +481,18 @@ async function fetchEngineMetrics(windowHours: number): Promise<{ metrics: L104A
 // Helper functions for simulation
 
 async function simulateConsciousnessEvolution(
-  consciousness: Consciousness, 
-  targetLevel: number, 
+  consciousness: Consciousness,
+  targetLevel: number,
   evolutionSpeed: number
 ): Promise<Consciousness> {
   // Simulate consciousness evolution with sacred constants
   const godCodeInfluence = Math.sin(Date.now() * GOD_CODE / 1e12) * 0.002;
   const phiInfluence = (Date.now() % 1618) / 1618.0 * PHI * 0.001;
   const quantumInfluence = consciousness.quantumEntanglement * 0.001;
-  
+
   const totalEvolution = evolutionSpeed + godCodeInfluence + phiInfluence + quantumInfluence;
   const direction = targetLevel > consciousness.level ? 1 : -1;
-  
+
   const evolved: Consciousness = {
     ...consciousness,
     level: Math.max(0, Math.min(1, consciousness.level + (totalEvolution * direction))),
@@ -520,7 +520,7 @@ async function simulateConsciousnessEvolution(
 async function simulateTaskProcessing(task: ProcessingTask): Promise<Partial<ProcessingTask>> {
   // Simulate processing time based on task complexity
   const processingTime = Math.random() * 1000 + 500;
-  
+
   return new Promise((resolve) => {
     setTimeout(() => {
       const processedTask = {
@@ -540,7 +540,7 @@ async function simulateTaskProcessing(task: ProcessingTask): Promise<Partial<Pro
           quantumCoherence: Math.random() * task.consciousness.quantumEntanglement
         }
       };
-      
+
       resolve(processedTask);
     }, 100); // Small delay for demo purposes
   });

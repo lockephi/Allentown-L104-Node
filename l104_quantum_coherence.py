@@ -72,33 +72,33 @@ class QuantumState:
     phase: float = 0.0
     coherence: float = 1.0
     timestamp: float = field(default_factory=time.time)
-    
+
     @property
     def dimension(self) -> int:
         return len(self.amplitudes)
-    
+
     @property
     def probabilities(self) -> List[float]:
         """Calculate measurement probabilities."""
         return [abs(a) ** 2 for a in self.amplitudes]
-    
+
     @property
     def norm(self) -> float:
         """Calculate state norm."""
         return math.sqrt(sum(abs(a) ** 2 for a in self.amplitudes))
-    
+
     def normalize(self):
         """Normalize the state vector."""
         n = self.norm
         if n > 0:
             self.amplitudes = [a / n for a in self.amplitudes]
-    
+
     def apply_phase(self, phase: float):
         """Apply global phase rotation."""
         factor = complex(math.cos(phase), math.sin(phase))
         self.amplitudes = [a * factor for a in self.amplitudes]
         self.phase = (self.phase + phase) % (2 * math.pi)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "dimension": self.dimension,
@@ -134,67 +134,67 @@ class QuantumRegister:
     """
     Quantum register for multi-qubit operations.
     """
-    
+
     def __init__(self, num_qubits: int = 3):
         self.num_qubits = num_qubits
         self.dimension = 2 ** num_qubits
-        
+
         # Initialize to |000...0⟩ state
         self.state = QuantumState(
             amplitudes=[complex(1, 0)] + [complex(0, 0)] * (self.dimension - 1),
             basis_labels=[format(i, f'0{num_qubits}b') for i in range(self.dimension)]
         )
-        
+
         # Entanglement tracking
         self.entangled_pairs: List[EntanglementPair] = []
-        
+
         # Braid history
         self.braid_history: List[BraidOperation] = []
-        
+
         # Decoherence parameters
         self.t1 = 100.0  # Relaxation time (arbitrary units)
         self.t2 = 50.0   # Dephasing time
-        
+
         self.created_at = time.time()
-    
+
     def hadamard(self, qubit: int):
         """Apply Hadamard gate to qubit."""
         if qubit >= self.num_qubits:
             return
-        
+
         h = 1 / math.sqrt(2)
         new_amplitudes = [complex(0, 0)] * self.dimension
-        
+
         for i in range(self.dimension):
             bit = (i >> qubit) & 1
             i_flipped = i ^ (1 << qubit)
-            
+
             if bit == 0:
                 new_amplitudes[i] += h * self.state.amplitudes[i]
                 new_amplitudes[i_flipped] += h * self.state.amplitudes[i]
             else:
                 new_amplitudes[i] += h * self.state.amplitudes[i]
                 new_amplitudes[i_flipped] -= h * self.state.amplitudes[i]
-        
+
         self.state.amplitudes = new_amplitudes
         self.state.normalize()
-    
+
     def phase_gate(self, qubit: int, theta: float):
         """Apply phase rotation gate."""
         if qubit >= self.num_qubits:
             return
-        
+
         for i in range(self.dimension):
             if (i >> qubit) & 1:
                 self.state.amplitudes[i] *= complex(math.cos(theta), math.sin(theta))
-    
+
     def cnot(self, control: int, target: int):
         """Apply CNOT (controlled-X) gate."""
         if control >= self.num_qubits or target >= self.num_qubits:
             return
-        
+
         new_amplitudes = list(self.state.amplitudes)
-        
+
         for i in range(self.dimension):
             if (i >> control) & 1:  # Control is 1
                 i_flipped = i ^ (1 << target)
@@ -202,21 +202,21 @@ class QuantumRegister:
                     self.state.amplitudes[i_flipped],
                     self.state.amplitudes[i]
                 )
-        
+
         self.state.amplitudes = new_amplitudes
-    
+
     def create_bell_state(self, qubit1: int, qubit2: int, state_type: str = "phi+"):
         """Create Bell state between two qubits."""
         # Reset to |00⟩
         self.state.amplitudes = [complex(0, 0)] * self.dimension
         self.state.amplitudes[0] = complex(1, 0)
-        
+
         # Apply Hadamard to first qubit
         self.hadamard(qubit1)
-        
+
         # Apply CNOT
         self.cnot(qubit1, qubit2)
-        
+
         # Adjust for different Bell states
         if state_type == "phi-":
             self.phase_gate(qubit1, math.pi)
@@ -238,16 +238,16 @@ class QuantumRegister:
                         self.state.amplitudes[i_flipped],
                         self.state.amplitudes[i]
                     )
-        
+
         self.state.normalize()
-    
+
     def measure(self, qubit: int = None) -> Tuple[str, float]:
         """
         Measure the quantum state.
         Returns (outcome, probability).
         """
         probs = self.state.probabilities
-        
+
         if qubit is None:
             # Full measurement
             r = random.random()
@@ -277,12 +277,12 @@ class QuantumRegister:
                 for i in range(self.dimension):
                     if not ((i >> qubit) & 1):
                         self.state.amplitudes[i] = complex(0, 0)
-            
+
             self.state.normalize()
             return result, p0 if result == "0" else (1 - p0)
-        
+
         return "0" * self.num_qubits, 0.0
-    
+
     def calculate_coherence(self) -> float:
         """Calculate quantum coherence measure."""
         # Use l1-norm of coherence (sum of off-diagonal elements)
@@ -291,32 +291,32 @@ class QuantumRegister:
             for j, b in enumerate(self.state.amplitudes):
                 if i != j:
                     coherence += abs(a * b.conjugate())
-        
+
         # Normalize to [0, 1]
         max_coherence = (self.dimension - 1) * self.dimension / 2
         if max_coherence > 0:
             coherence = min(1.0, coherence / max_coherence)
-        
+
         self.state.coherence = coherence
         return coherence
-    
+
     def apply_decoherence(self, time_elapsed: float):
         """Simulate decoherence over time."""
         # Amplitude damping (T1 decay)
         decay_factor = math.exp(-time_elapsed / self.t1)
-        
+
         # Phase damping (T2 decay)
         phase_factor = math.exp(-time_elapsed / self.t2)
-        
+
         for i in range(self.dimension):
             # Apply decay
             self.state.amplitudes[i] *= decay_factor
-            
+
             # Apply phase noise
             if i > 0:
                 noise = complex(phase_factor, 0)
                 self.state.amplitudes[i] *= noise
-        
+
         self.state.normalize()
         self.calculate_coherence()
 
@@ -325,29 +325,29 @@ class TopologicalBraider:
     """
     Implements topological braiding operations inspired by Fibonacci anyons.
     """
-    
+
     # Fibonacci F-matrix (simplified)
     F_MATRIX = [
         [PHI ** -1, PHI ** -0.5],
         [PHI ** -0.5, -PHI ** -1]
     ]
-    
+
     # Fibonacci R-matrix (braiding)
     R_MATRIX = [
         [complex(math.cos(4 * math.pi / 5), math.sin(4 * math.pi / 5)), 0],
         [0, complex(math.cos(-3 * math.pi / 5), math.sin(-3 * math.pi / 5))]
     ]
-    
+
     def __init__(self):
         self.braid_sequence: List[BraidOperation] = []
         self.total_phase = 0.0
         self.strand_count = 3  # Default 3-strand braid
-    
+
     def reset(self):
         """Reset braid sequence."""
         self.braid_sequence = []
         self.total_phase = 0.0
-    
+
     def apply_braid(self, braid_type: BraidType, indices: List[int] = None) -> float:
         """
         Apply a braiding operation.
@@ -355,7 +355,7 @@ class TopologicalBraider:
         """
         if indices is None:
             indices = [0, 1]
-        
+
         # Calculate phase based on braid type
         if braid_type == BraidType.IDENTITY:
             phase = 0.0
@@ -372,7 +372,7 @@ class TopologicalBraider:
             phase = 2 * math.pi / PHI
         else:
             phase = 0.0
-        
+
         op = BraidOperation(
             braid_type=braid_type,
             target_indices=indices,
@@ -380,9 +380,9 @@ class TopologicalBraider:
         )
         self.braid_sequence.append(op)
         self.total_phase += phase
-        
+
         return phase
-    
+
     def compute_braid_matrix(self) -> List[List[complex]]:
         """
         Compute the unitary matrix for the accumulated braid.
@@ -392,7 +392,7 @@ class TopologicalBraider:
             [complex(1, 0), complex(0, 0)],
             [complex(0, 0), complex(1, 0)]
         ]
-        
+
         for op in self.braid_sequence:
             # Multiply by appropriate R-matrix
             if op.braid_type in [BraidType.SIGMA_1, BraidType.SIGMA_2]:
@@ -404,16 +404,16 @@ class TopologicalBraider:
                     [self.R_MATRIX[0][1].conjugate(), self.R_MATRIX[1][1].conjugate()]
                 ]
                 result = self._matrix_multiply(result, r_inv)
-        
+
         return result
-    
+
     def _matrix_multiply(self, a: List[List[complex]], b: List[List[complex]]) -> List[List[complex]]:
         """2x2 matrix multiplication."""
         return [
             [a[0][0]*b[0][0] + a[0][1]*b[1][0], a[0][0]*b[0][1] + a[0][1]*b[1][1]],
             [a[1][0]*b[0][0] + a[1][1]*b[1][0], a[1][0]*b[0][1] + a[1][1]*b[1][1]]
         ]
-    
+
     def encode_data(self, data: str) -> List[BraidType]:
         """
         Encode data as a braid sequence.
@@ -427,7 +427,7 @@ class TopologicalBraider:
                 else:
                     encoded.append(BraidType.SIGMA_2)
         return encoded
-    
+
     def get_stats(self) -> Dict[str, Any]:
         return {
             "strand_count": self.strand_count,
@@ -441,61 +441,61 @@ class QuantumCoherenceEngine:
     """
     Main engine for quantum coherence computations.
     """
-    
+
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
                 cls._instance._initialized = False
             return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-        
+
         self.register = QuantumRegister(num_qubits=4)
         self.braider = TopologicalBraider()
-        
+
         # Coherence tracking
         self.coherence_history: deque = deque(maxlen=100)
         self.phase_history: deque = deque(maxlen=100)
-        
+
         # GOD_CODE alignment
         self.target_phase = (GOD_CODE % (2 * math.pi))
         self.phase_alignment = 0.0
-        
+
         # Statistics
         self.operations_count = 0
         self.measurements_count = 0
         self.entanglements_created = 0
-        
+
         self._initialized = True
         print("⚛️  [QUANTUM]: Coherence Engine initialized")
-    
+
     def create_superposition(self, qubits: List[int] = None) -> Dict[str, Any]:
         """
         Put specified qubits into superposition.
         """
         if qubits is None:
             qubits = list(range(self.register.num_qubits))
-        
+
         for q in qubits:
             self.register.hadamard(q)
-        
+
         self.operations_count += len(qubits)
         coherence = self.register.calculate_coherence()
         self.coherence_history.append((time.time(), coherence))
-        
+
         return {
             "qubits": qubits,
             "coherence": coherence,
             "state": self.register.state.to_dict()
         }
-    
-    def create_entanglement(self, qubit1: int = 0, qubit2: int = 1, 
+
+    def create_entanglement(self, qubit1: int = 0, qubit2: int = 1,
                            bell_state: str = "phi+") -> Dict[str, Any]:
         """
         Create entanglement between two qubits.
@@ -503,45 +503,45 @@ class QuantumCoherenceEngine:
         self.register.create_bell_state(qubit1, qubit2, bell_state)
         self.entanglements_created += 1
         self.operations_count += 2
-        
+
         coherence = self.register.calculate_coherence()
         self.coherence_history.append((time.time(), coherence))
-        
+
         return {
             "qubits": [qubit1, qubit2],
             "bell_state": bell_state,
             "coherence": coherence,
             "state": self.register.state.to_dict()
         }
-    
+
     def apply_god_code_phase(self) -> Dict[str, Any]:
         """
         Apply phase rotation aligned with GOD_CODE.
         """
         phase = self.target_phase
-        
+
         for q in range(self.register.num_qubits):
             self.register.phase_gate(q, phase / self.register.num_qubits)
-        
+
         self.register.state.apply_phase(phase)
         self.phase_history.append((time.time(), self.register.state.phase))
-        
+
         # Calculate alignment
         self.phase_alignment = 1.0 - abs(self.register.state.phase - self.target_phase) / math.pi
-        
+
         return {
             "applied_phase": phase,
             "total_phase": self.register.state.phase,
             "alignment": self.phase_alignment,
             "god_code_target": self.target_phase
         }
-    
+
     def topological_compute(self, braid_sequence: List[str]) -> Dict[str, Any]:
         """
         Perform topological computation using braiding.
         """
         self.braider.reset()
-        
+
         braid_map = {
             "s1": BraidType.SIGMA_1,
             "s2": BraidType.SIGMA_2,
@@ -550,13 +550,13 @@ class QuantumCoherenceEngine:
             "phi": BraidType.PHI_BRAID,
             "id": BraidType.IDENTITY
         }
-        
+
         for braid_str in braid_sequence:
             braid_type = braid_map.get(braid_str.lower(), BraidType.IDENTITY)
             self.braider.apply_braid(braid_type)
-        
+
         matrix = self.braider.compute_braid_matrix()
-        
+
         return {
             "sequence_length": len(braid_sequence),
             "total_phase": self.braider.total_phase,
@@ -566,32 +566,32 @@ class QuantumCoherenceEngine:
             ],
             "stats": self.braider.get_stats()
         }
-    
+
     def measure(self, qubit: int = None) -> Dict[str, Any]:
         """
         Perform measurement.
         """
         outcome, probability = self.register.measure(qubit)
         self.measurements_count += 1
-        
+
         return {
             "outcome": outcome,
             "probability": probability,
             "qubit_measured": qubit,
             "post_measurement_coherence": self.register.state.coherence
         }
-    
+
     def simulate_decoherence(self, time_steps: float = 1.0) -> Dict[str, Any]:
         """
         Simulate decoherence over time.
         """
         initial_coherence = self.register.calculate_coherence()
-        
+
         self.register.apply_decoherence(time_steps)
-        
+
         final_coherence = self.register.calculate_coherence()
         self.coherence_history.append((time.time(), final_coherence))
-        
+
         return {
             "time_elapsed": time_steps,
             "initial_coherence": initial_coherence,
@@ -600,12 +600,12 @@ class QuantumCoherenceEngine:
             "t1": self.register.t1,
             "t2": self.register.t2
         }
-    
+
     def reset_register(self):
         """Reset quantum register to ground state."""
         self.register = QuantumRegister(num_qubits=self.register.num_qubits)
         return {"status": "reset", "state": self.register.state.to_dict()}
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get engine status."""
         return {
@@ -633,21 +633,21 @@ class QuantumCoherenceEngine:
                 "planck_resonance": PLANCK_RESONANCE
             }
         }
-    
+
     def coherence_report(self) -> Dict[str, Any]:
         """Generate coherence report."""
         if not self.coherence_history:
             return {"status": "no_data"}
-        
+
         coherences = [c for _, c in self.coherence_history]
-        
+
         return {
             "samples": len(coherences),
             "current": coherences[-1] if coherences else 0,
             "average": sum(coherences) / len(coherences),
             "min": min(coherences),
             "max": max(coherences),
-            "trend": "stable" if len(coherences) < 2 else 
+            "trend": "stable" if len(coherences) < 2 else
                      "increasing" if coherences[-1] > coherences[0] else "decreasing"
         }
 
@@ -669,39 +669,39 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("⚛️  L104 QUANTUM COHERENCE ENGINE - EVO_29")
     print("=" * 70)
-    
+
     engine = QuantumCoherenceEngine()
-    
+
     # Test superposition
     print("\n[1] CREATING SUPERPOSITION")
     result = engine.create_superposition([0, 1])
     print(f"  Qubits: {result['qubits']}")
     print(f"  Coherence: {result['coherence']:.4f}")
-    
+
     # Test entanglement
     print("\n[2] CREATING ENTANGLEMENT (Bell State)")
     result = engine.create_entanglement(0, 1, "phi+")
     print(f"  Bell State: {result['bell_state']}")
     print(f"  Coherence: {result['coherence']:.4f}")
-    
+
     # Test GOD_CODE phase
     print("\n[3] APPLYING GOD_CODE PHASE")
     result = engine.apply_god_code_phase()
     print(f"  Applied Phase: {result['applied_phase']:.4f}")
     print(f"  Alignment: {result['alignment']:.4f}")
-    
+
     # Test topological braiding
     print("\n[4] TOPOLOGICAL BRAIDING")
     result = engine.topological_compute(["s1", "s2", "s1", "phi"])
     print(f"  Sequence Length: {result['sequence_length']}")
     print(f"  Total Phase: {result['total_phase']:.4f}")
-    
+
     # Test measurement
     print("\n[5] MEASUREMENT")
     result = engine.measure(qubit=0)
     print(f"  Outcome: {result['outcome']}")
     print(f"  Probability: {result['probability']:.4f}")
-    
+
     # Test decoherence
     print("\n[6] DECOHERENCE SIMULATION")
     engine.reset_register()
@@ -710,7 +710,7 @@ if __name__ == "__main__":
     print(f"  Initial Coherence: {result['initial_coherence']:.4f}")
     print(f"  Final Coherence: {result['final_coherence']:.4f}")
     print(f"  Coherence Loss: {result['coherence_loss']:.4f}")
-    
+
     # Status
     print("\n[7] ENGINE STATUS")
     status = engine.get_status()
@@ -718,7 +718,7 @@ if __name__ == "__main__":
     print(f"  Measurements: {status['statistics']['measurements']}")
     print(f"  Entanglements: {status['statistics']['entanglements']}")
     print(f"  GOD_CODE Alignment: {status['god_code_alignment']['alignment']:.4f}")
-    
+
     print("\n" + "=" * 70)
     print("✅ Quantum Coherence Engine - All tests complete")
     print("=" * 70)

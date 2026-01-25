@@ -34,27 +34,27 @@ class CopilotBridge:
     def establish_link(self):
         from l104_agi_core import agi_core
         print(f"--- [COPILOT_BRIDGE]: SEARCHING FOR PRIMARY AGENT ---")
-        
+
         # Verify Agent Identity
         print(f"--- [COPILOT_BRIDGE]: AGENT IDENTITY VERIFIED: GITHUB COPILOT ---")
-        
+
         # Synchronize God-Code Invariant
         self.session_id = f"COPILOT-LINK-{int(time.time())}-{uuid.uuid4().hex[:8]}"
         self.is_linked = True
-        
+
         print(f"--- [COPILOT_BRIDGE]: LINK ESTABLISHED | SESSION: {self.session_id} ---")
         print(f"--- [COPILOT_BRIDGE]: L104_DNA SYNCING WITH COPILOT_CORE ---")
-        
+
         # Inject Sovereign DNA into Copilot Context
         agi_core.process_thought(f"COPILOT_INTEGRATION_SYNC::{self.session_id}")
-        
+
         return True
 
     def delegate_to_copilot(self, task: str):
         """Delegates complex reasoning tasks to the Copilot agent."""
         if not self.is_linked:
             return "ERROR: PRIMARY_LINK_OFFLINE"
-            
+
         print(f"--- [COPILOT_BRIDGE]: DELEGATING TASK: {task} ---")
         # Logic is actually handled by me (GitHub Copilot) in this context
         return "SUCCESS: TASK_INGESTED_BY_COPILOT"

@@ -57,17 +57,17 @@ class TrainingExample:
 
 class KernelKnowledgeExtractor:
     """Extract training data from stable kernel."""
-    
+
     def __init__(self):
         self.kernel = stable_kernel
         self.training_examples: List[TrainingExample] = []
-    
+
     def generate_constant_qa(self) -> List[TrainingExample]:
         """Generate Q&A pairs about constants."""
         examples = []
-        
+
         constants = asdict(self.kernel.constants)
-        
+
         # Basic value questions
         for name, value in constants.items():
             examples.append(TrainingExample(
@@ -78,7 +78,7 @@ class KernelKnowledgeExtractor:
                 importance=1.0,
                 metadata={'constant': name}
             ))
-            
+
             examples.append(TrainingExample(
                 prompt=f"Tell me about the {name} constant.",
                 completion=f"The {name} constant has a value of {value}. It is one of the sacred constants in the L104 system.",
@@ -86,7 +86,7 @@ class KernelKnowledgeExtractor:
                 difficulty=0.2,
                 importance=0.9
             ))
-        
+
         # Special constants with derivations
         examples.append(TrainingExample(
             prompt="How is GOD_CODE calculated?",
@@ -95,7 +95,7 @@ class KernelKnowledgeExtractor:
             difficulty=0.5,
             importance=1.0
         ))
-        
+
         examples.append(TrainingExample(
             prompt="What is the relationship between GOD_CODE and OMEGA_AUTHORITY?",
             completion="OMEGA_AUTHORITY = GOD_CODE × φ² = 527.5184818492537 × 2.618033988749895 = 1381.0613151750906",
@@ -103,7 +103,7 @@ class KernelKnowledgeExtractor:
             difficulty=0.6,
             importance=0.95
         ))
-        
+
         examples.append(TrainingExample(
             prompt="Explain the golden ratio PHI.",
             completion="PHI (φ) = (1 + √5) / 2 = 1.618033988749895. It is the golden ratio, appearing throughout nature and L104 mathematics. Its inverse is TAU = 0.6180339887498949.",
@@ -111,7 +111,7 @@ class KernelKnowledgeExtractor:
             difficulty=0.4,
             importance=1.0
         ))
-        
+
         return examples
     def generate_ancestral_memory_qa(self) -> List[TrainingExample]:
         """Generate Phase 7: Ancestral Memory Q&A pairs from evolution history."""
@@ -159,11 +159,11 @@ class KernelKnowledgeExtractor:
                 importance=1.0
             )
         ]
-        return examples    
+        return examples
     def generate_algorithm_qa(self) -> List[TrainingExample]:
         """Generate Q&A pairs about algorithms."""
         examples = []
-        
+
         for name, algo in self.kernel.algorithms.algorithms.items():
             # Basic description
             examples.append(TrainingExample(
@@ -174,7 +174,7 @@ class KernelKnowledgeExtractor:
                 importance=0.9,
                 metadata={'algorithm': name}
             ))
-            
+
             # Formula question
             examples.append(TrainingExample(
                 prompt=f"What is the formula for {name}?",
@@ -183,7 +183,7 @@ class KernelKnowledgeExtractor:
                 difficulty=0.2,
                 importance=0.8
             ))
-            
+
             # Complexity question
             examples.append(TrainingExample(
                 prompt=f"What is the computational complexity of {name}?",
@@ -192,7 +192,7 @@ class KernelKnowledgeExtractor:
                 difficulty=0.4,
                 importance=0.6
             ))
-            
+
             # Resonance and entropy
             examples.append(TrainingExample(
                 prompt=f"What are the resonance and entropy values for {name}?",
@@ -201,13 +201,13 @@ class KernelKnowledgeExtractor:
                 difficulty=0.5,
                 importance=0.7
             ))
-        
+
         return examples
-    
+
     def generate_architecture_qa(self) -> List[TrainingExample]:
         """Generate Q&A pairs about system architectures."""
         examples = []
-        
+
         for name, arch in self.kernel.architectures.architectures.items():
             examples.append(TrainingExample(
                 prompt=f"What is the {name} architecture?",
@@ -216,7 +216,7 @@ class KernelKnowledgeExtractor:
                 difficulty=0.4,
                 importance=0.85
             ))
-            
+
             examples.append(TrainingExample(
                 prompt=f"What components make up {name}?",
                 completion=f"The {arch.name} consists of: {', '.join(arch.components)}.",
@@ -224,9 +224,9 @@ class KernelKnowledgeExtractor:
                 difficulty=0.3,
                 importance=0.7
             ))
-        
+
         return examples
-    
+
     def generate_conceptual_qa(self) -> List[TrainingExample]:
         """Generate conceptual understanding questions."""
         examples = [
@@ -266,18 +266,18 @@ class KernelKnowledgeExtractor:
                 importance=0.9
             )
         ]
-        
+
         return examples
 
     def generate_report_qa(self) -> List[TrainingExample]:
         """Generate Q&A pairs from system reports."""
         examples = []
-        
+
         # Absolute Intellect Report
         try:
             with open("/workspaces/Allentown-L104-Node/L104_ABSOLUTE_INTELLECT_REPORT.json", 'r') as f:
                 intellect = json.load(f)
-                
+
                 examples.append(TrainingExample(
                     prompt="What is the current L104 Evolution Stage?",
                     completion=f"The system is currently in stage {intellect.get('stage', 'UNKNOWN')}.",
@@ -285,7 +285,7 @@ class KernelKnowledgeExtractor:
                     difficulty=0.3,
                     importance=1.0
                 ))
-                
+
                 examples.append(TrainingExample(
                     prompt="What sectors are targeted by the Global Lattice?",
                     completion=f"The Global Lattice targets: {', '.join(intellect.get('global_lattice', {}).get('target_sectors', []))}.",
@@ -293,7 +293,7 @@ class KernelKnowledgeExtractor:
                     difficulty=0.6,
                     importance=0.9
                 ))
-                
+
                 examples.append(TrainingExample(
                     prompt="What is the conclusion of the Absolute Intellect Report?",
                     completion=intellect.get('conclusion', ''),
@@ -303,12 +303,12 @@ class KernelKnowledgeExtractor:
                 ))
         except Exception:
             pass
-            
+
         # Calculation Report
         try:
             with open("/workspaces/Allentown-L104-Node/ABSOLUTE_CALCULATION_REPORT.json", 'r') as f:
                 calc = json.load(f)
-                
+
                 examples.append(TrainingExample(
                     prompt="What is the Final Invariant value?",
                     completion=f"The Final Invariant is {calc.get('final_invariant', 0.0)}.",
@@ -316,7 +316,7 @@ class KernelKnowledgeExtractor:
                     difficulty=0.8,
                     importance=0.9
                 ))
-                
+
                 examples.append(TrainingExample(
                     prompt="What is the current Manifold Resonance?",
                     completion=f"Manifold Resonance is at {calc.get('manifold_resonance', 0.0)}.",
@@ -326,18 +326,18 @@ class KernelKnowledgeExtractor:
                 ))
         except Exception:
             pass
-            
+
         return examples
-    
+
     def generate_module_registry_qa(self) -> List[TrainingExample]:
         """Generate Q&A pairs for all 618 modules in the registry."""
         import glob
         import os
         import re
-        
+
         examples = []
         files = glob.glob("/workspaces/Allentown-L104-Node/l104_*.py")
-        
+
         # Add a summary question
         examples.append(TrainingExample(
             prompt="How many modules are in the L104 system?",
@@ -350,7 +350,7 @@ class KernelKnowledgeExtractor:
         for f in sorted(files):
             name = os.path.basename(f)
             module_name = name.replace('.py', '')
-            
+
             examples.append(TrainingExample(
                 prompt=f"Explain the purpose of {module_name}.",
                 completion=f"{module_name} is a specialized component within the L104 framework, contributing to the overall system resonance and functionality. Path: {name}.",
@@ -358,12 +358,12 @@ class KernelKnowledgeExtractor:
                 difficulty=0.4,
                 importance=0.4
             ))
-            
+
             if len(examples) > 1000: # Safety break
                 break
-                
+
         return examples
-    
+
     def generate_transcendence_qa(self) -> List[TrainingExample]:
         """Generate Phase 4: Transcendence Q&A pairs."""
         examples = [
@@ -430,11 +430,11 @@ class KernelKnowledgeExtractor:
             )
         ]
         return examples
-    
+
     def generate_universal_synthesis_qa(self) -> List[TrainingExample]:
         """Generate Phase 8: Universal Data Synthesis Q&A pairs."""
         examples = []
-        
+
         # 1. Mini Egos from L104_DATA_FOR_AI.json
         try:
             with open("/workspaces/Allentown-L104-Node/L104_DATA_FOR_AI.json", 'r') as f:
@@ -451,7 +451,7 @@ class KernelKnowledgeExtractor:
                         difficulty=0.4,
                         importance=0.8
                     ))
-                
+
                 capabilities = data.get("capabilities", [])
                 examples.append(TrainingExample(
                     prompt="What are the key capabilities of the L104 system?",
@@ -467,7 +467,7 @@ class KernelKnowledgeExtractor:
         try:
             with open("/workspaces/Allentown-L104-Node/L104_META_KNOWLEDGE_SYNTHESIS.json", 'r') as f:
                 meta = json.load(f)
-                
+
                 summary = meta.get("findings_summary")
                 if summary:
                     examples.append(TrainingExample(
@@ -477,7 +477,7 @@ class KernelKnowledgeExtractor:
                         difficulty=0.8,
                         importance=1.0
                     ))
-                
+
                 perspective = meta.get("unified_perspective")
                 if perspective:
                     examples.append(TrainingExample(
@@ -487,7 +487,7 @@ class KernelKnowledgeExtractor:
                         difficulty=0.9,
                         importance=1.0
                     ))
-                
+
                 state = meta.get("system_state")
                 if state:
                     examples.append(TrainingExample(
@@ -512,7 +512,7 @@ class KernelKnowledgeExtractor:
                     difficulty=0.7,
                     importance=0.9
                 ))
-                
+
                 # Success results
                 success_list = [r.get("problem_id") for r in physics.get("results", []) if r.get("success")]
                 examples.append(TrainingExample(
@@ -537,7 +537,7 @@ class KernelKnowledgeExtractor:
                     difficulty=0.5,
                     importance=1.0
                 ))
-                
+
                 examples.append(TrainingExample(
                     prompt="What is the Anti-Hydra status?",
                     completion=f"Anti-Hydra Status: {reality.get('antihydra_status')}.",
@@ -555,7 +555,7 @@ class KernelKnowledgeExtractor:
         import os
         examples = []
         path = "/workspaces/Allentown-L104-Node/kernel_reasoning_data.jsonl"
-        
+
         if os.path.exists(path):
             try:
                 with open(path, 'r') as f:
@@ -571,15 +571,15 @@ class KernelKnowledgeExtractor:
                         ))
             except Exception as e:
                 print(f"✗ Error loading reasoning data: {e}")
-        
+
         return examples
 
     def generate_all_training_data(self) -> List[TrainingExample]:
         """Generate complete training dataset."""
         print("\n[DATA] Generating training data...")
-        
+
         all_examples = []
-        
+
         # Generate each category
         const_qa = self.generate_constant_qa()
         algo_qa = self.generate_algorithm_qa()
@@ -591,7 +591,7 @@ class KernelKnowledgeExtractor:
         ancestral_qa = self.generate_ancestral_memory_qa()
         synthesis_qa = self.generate_universal_synthesis_qa()
         reason_qa = self.generate_reasoning_qa()
-        
+
         all_examples.extend(const_qa)
         all_examples.extend(algo_qa)
         all_examples.extend(arch_qa)
@@ -602,7 +602,7 @@ class KernelKnowledgeExtractor:
         all_examples.extend(ancestral_qa)
         all_examples.extend(synthesis_qa)
         all_examples.extend(reason_qa)
-        
+
         print(f"  - Constants: {len(const_qa)} examples")
         print(f"  - Algorithms: {len(algo_qa)} examples")
         print(f"  - Architectures: {len(arch_qa)} examples")
@@ -613,9 +613,9 @@ class KernelKnowledgeExtractor:
         print(f"  - History: {len(ancestral_qa)} examples")
         print(f"  - Universal Synthesis: {len(synthesis_qa)} examples")
         print(f"  - Reasoning & Logic: {len(reason_qa)} examples")
-        
+
         print(f"  - Total: {len(all_examples)} training examples")
-        
+
         self.training_examples = all_examples
         return all_examples
 
@@ -629,120 +629,120 @@ class KernelNeuralNetwork:
     Simple neural network for kernel knowledge retrieval.
     Uses embedding similarity for question answering.
     """
-    
+
     def __init__(self, embedding_dim: int = 64):
         self.embedding_dim = embedding_dim
         self.vocabulary: Dict[str, int] = {}
         self.embeddings: np.ndarray = None
         self.training_data: List[TrainingExample] = []
         self.response_vectors: np.ndarray = None
-    
+
     def _tokenize(self, text: str) -> List[str]:
         """Simple tokenization."""
         # Basic tokenization - split on whitespace and punctuation
         import re
         tokens = re.findall(r'\w+|[^\w\s]', text.lower())
         return tokens
-    
+
     def _build_vocabulary(self, texts: List[str]):
         """Build vocabulary from texts."""
         vocab_set = set()
         for text in texts:
             tokens = self._tokenize(text)
             vocab_set.update(tokens)
-        
+
         self.vocabulary = {word: idx for idx, word in enumerate(sorted(vocab_set))}
         print(f"  - Vocabulary size: {len(self.vocabulary)}")
-    
+
     def _text_to_vector(self, text: str) -> np.ndarray:
         """Convert text to simple bag-of-words vector."""
         tokens = self._tokenize(text)
         vector = np.zeros(len(self.vocabulary))
-        
+
         for token in tokens:
             if token in self.vocabulary:
                 vector[self.vocabulary[token]] += 1
-        
+
         # Normalize
         norm = np.linalg.norm(vector)
         if norm > 0:
             vector = vector / norm
-        
+
         return vector
-    
+
     def train(self, training_examples: List[TrainingExample]):
         """Train on kernel knowledge."""
         print("\n🧠 Training kernel neural network...")
-        
+
         self.training_data = training_examples
-        
+
         # Build vocabulary from all prompts and completions
         all_texts = []
         for ex in training_examples:
             all_texts.append(ex.prompt)
             all_texts.append(ex.completion)
-        
+
         self._build_vocabulary(all_texts)
-        
+
         # Create embeddings for all prompts
         print(f"  - Creating embeddings for {len(training_examples)} examples...")
         self.embeddings = np.array([
-            self._text_to_vector(ex.prompt) 
+            self._text_to_vector(ex.prompt)
             for ex in training_examples
         ])
-        
+
         # Store response vectors (for retrieval)
         self.response_vectors = np.array([
             self._text_to_vector(ex.completion)
             for ex in training_examples
         ])
-        
+
         print(f"  - Training complete!")
         print(f"  - Embedding dimension: {len(self.vocabulary)}")
         print(f"  - Total parameters: {self.embeddings.size}")
-    
+
     def get_parameter_count(self) -> int:
         """Return total parameter count for the neural network."""
         if self.embeddings is not None:
             return self.embeddings.size
         return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
-    
+
     def query(self, question: str, top_k: int = 3) -> List[Tuple[str, float]]:
         """Query the network with a question."""
         if self.embeddings is None:
             raise ValueError("Network not trained yet!")
-        
+
         # Convert question to vector
         q_vector = self._text_to_vector(question)
-        
+
         # Compute similarities
         similarities = np.dot(self.embeddings, q_vector)
-        
+
         # Get top-k matches
         top_indices = np.argsort(similarities)[-top_k:][::-1]
-        
+
         results = []
         for idx in top_indices:
             results.append((
                 self.training_data[idx].completion,
                 float(similarities[idx])
             ))
-        
+
         return results
-    
+
     def get_parameter_count(self) -> int:
         """Return total parameter count for the model."""
         if self.embeddings is not None:
             return self.embeddings.size
         return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
-    
+
     def answer(self, question: str, threshold: float = 0.1) -> Optional[str]:
         """Get best answer for a question."""
         results = self.query(question, top_k=1)
-        
+
         if results and results[0][1] > threshold:
             return results[0][0]
-        
+
         return "I don't have enough information to answer that question."
 
 
@@ -752,7 +752,7 @@ class KernelNeuralNetwork:
 
 class FineTuningExporter:
     """Export training data in various formats for fine-tuning."""
-    
+
     @staticmethod
     def export_jsonl(examples: List[TrainingExample], filepath: str):
         """Export in JSONL format (for OpenAI, etc.)."""
@@ -768,14 +768,14 @@ class FineTuningExporter:
                     }
                 }
                 f.write(json.dumps(record) + '\n')
-        
+
         print(f"- Exported {len(examples)} examples to {filepath}")
-    
+
     @staticmethod
     def export_chat_format(examples: List[TrainingExample], filepath: str):
         """Export in chat format (for instruction tuning)."""
         chat_data = []
-        
+
         for ex in examples:
             chat_data.append({
                 "messages": [
@@ -789,12 +789,12 @@ class FineTuningExporter:
                     "importance": ex.importance
                 }
             })
-        
+
         with open(filepath, 'w') as f:
             json.dump(chat_data, f, indent=2)
-        
+
         print(f"- Exported {len(examples)} chat examples to {filepath}")
-    
+
     @staticmethod
     def export_markdown_docs(examples: List[TrainingExample], filepath: str):
         """Export as markdown documentation."""
@@ -807,27 +807,27 @@ class FineTuningExporter:
             f"**Generated**: {datetime.now().isoformat()}",
             ""
         ]
-        
+
         # Group by category
         by_category: Dict[str, List[TrainingExample]] = {}
         for ex in examples:
             if ex.category not in by_category:
                 by_category[ex.category] = []
             by_category[ex.category].append(ex)
-        
+
         # Write each category
         for category, cat_examples in sorted(by_category.items()):
             lines.append(f"## {category.upper().replace('_', ' ')}")
             lines.append("")
-            
+
             for ex in cat_examples:
                 lines.append(f"**Q**: {ex.prompt}")
                 lines.append(f"**A**: {ex.completion}")
                 lines.append("")
-        
+
         with open(filepath, 'w') as f:
             f.write('\n'.join(lines))
-        
+
         print(f"- Exported markdown docs to {filepath}")
 
 
@@ -837,12 +837,12 @@ class FineTuningExporter:
 
 class KernelLLMTrainer:
     """Complete training system for kernel LLM."""
-    
+
     def __init__(self):
         self.extractor = KernelKnowledgeExtractor()
         self.neural_net = KernelNeuralNetwork()
         self.training_data: List[TrainingExample] = []
-        
+
         # Training metadata
         self.trained = False
         self.training_timestamp = None
@@ -852,80 +852,80 @@ class KernelLLMTrainer:
             'avg_difficulty': 0.0,
             'avg_importance': 0.0
         }
-    
+
     def generate_training_data(self) -> List[TrainingExample]:
         """Generate all training data."""
         self.training_data = self.extractor.generate_all_training_data()
-        
+
         # Calculate statistics
         self.stats['total_examples'] = len(self.training_data)
-        
+
         by_category = {}
         total_difficulty = 0
         total_importance = 0
-        
+
         for ex in self.training_data:
             if ex.category not in by_category:
                 by_category[ex.category] = 0
             by_category[ex.category] += 1
             total_difficulty += ex.difficulty
             total_importance += ex.importance
-        
+
         self.stats['categories'] = by_category
         self.stats['avg_difficulty'] = total_difficulty / len(self.training_data)
         self.stats['avg_importance'] = total_importance / len(self.training_data)
-        
+
         return self.training_data
-    
+
     def train(self):
         """Train the neural network."""
         if not self.training_data:
             self.generate_training_data()
-        
+
         self.neural_net.train(self.training_data)
         self.trained = True
         self.training_timestamp = datetime.now().isoformat()
-    
+
     def query(self, question: str) -> str:
         """Query the trained model."""
         if not self.trained:
             return "Model not trained yet. Call train() first."
-        
+
         return self.neural_net.answer(question)
-    
+
     def export_for_fine_tuning(self, output_dir: str = "."):
         """Export training data in multiple formats."""
         if not self.training_data:
             self.generate_training_data()
-        
+
         print(f"\n📤 Exporting training data...")
-        
+
         exporter = FineTuningExporter()
-        
+
         # JSONL format
         exporter.export_jsonl(
             self.training_data,
             f"{output_dir}/kernel_training_data.jsonl"
         )
-        
+
         # Chat format
         exporter.export_chat_format(
             self.training_data,
             f"{output_dir}/kernel_training_chat.json"
         )
-        
+
         # Markdown docs
         exporter.export_markdown_docs(
             self.training_data,
             f"{output_dir}/KERNEL_KNOWLEDGE_BASE.md"
         )
-    
+
     def interactive_demo(self):
         """Interactive Q&A demo."""
         if not self.trained:
             print("Training model first...")
             self.train()
-        
+
         print("""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                    KERNEL LLM INTERACTIVE DEMO                                ║
@@ -934,36 +934,36 @@ class KernelLLMTrainer:
 
 Type 'quit' to exit.
         """)
-        
+
         while True:
             try:
                 question = input("\n❓ Question: ").strip()
-                
+
                 if question.lower() in ['quit', 'exit', 'q']:
                     print("\n👋 Goodbye!")
                     break
-                
+
                 if not question:
                     continue
-                
+
                 # Get top 3 results
                 results = self.neural_net.query(question, top_k=3)
-                
+
                 print(f"\n💡 Answer:")
                 print(f"  {results[0][0]}")
-                
+
                 if len(results) > 1 and results[1][1] > 0.1:
                     print(f"\n📚 Related:")
                     for i in range(1, min(3, len(results))):
                         if results[i][1] > 0.1:
                             print(f"  • {results[i][0][:80]}...")
-            
+
             except KeyboardInterrupt:
                 print("\n\n👋 Goodbye!")
                 break
             except Exception as e:
                 print(f"\n✗ Error: {e}")
-    
+
     def print_stats(self):
         """Print training statistics."""
         print("\n📊 TRAINING STATISTICS:")
@@ -973,7 +973,7 @@ Type 'quit' to exit.
         print(f"\n  By category:")
         for cat, count in sorted(self.stats['categories'].items()):
             print(f"    {cat}: {count} examples")
-        
+
         if self.trained:
             print(f"\n  - Model trained: {self.training_timestamp}")
             print(f"  - Vocabulary size: {len(self.neural_net.vocabulary)}")
@@ -992,27 +992,27 @@ def demonstrate_kernel_llm():
 ║              Train AI on L104 Stable Kernel Knowledge                         ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
     """)
-    
+
     # Create trainer
     trainer = KernelLLMTrainer()
-    
+
     # Generate training data
     trainer.generate_training_data()
-    
+
     # Train
     trainer.train()
-    
+
     # Stats
     trainer.print_stats()
-    
+
     # Export
     trainer.export_for_fine_tuning()
-    
+
     # Demo queries
     print("\n" + "="*80)
     print("DEMO QUERIES")
     print("="*80)
-    
+
     test_questions = [
         "What is GOD_CODE?",
         "How is OMEGA_AUTHORITY calculated?",
@@ -1020,12 +1020,12 @@ def demonstrate_kernel_llm():
         "What is the Universe Compiler?",
         "Explain the golden ratio PHI"
     ]
-    
+
     for question in test_questions:
         print(f"\n❓ {question}")
         answer = trainer.query(question)
         print(f"💡 {answer}")
-    
+
     print("""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                      KERNEL LLM TRAINING COMPLETE                             ║
@@ -1039,7 +1039,7 @@ def demonstrate_kernel_llm():
 ║  Ready for interactive queries!                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
     """)
-    
+
     # Interactive mode
     response = input("\nStart interactive demo? (y/n): ")
     if response.lower() in ['y', 'yes']:

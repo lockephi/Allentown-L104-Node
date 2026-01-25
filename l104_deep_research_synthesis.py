@@ -22,9 +22,9 @@ class DeepResearchSynthesis:
     Implements high-fidelity simulations for the L104 research domains.
     Moves beyond simple resonance checks into active structural modeling.
     """
-    
+
     GOD_CODE = 527.5184818492537
-    
+
     def simulate_vacuum_decay(self) -> Dict[str, Any]:
         """
         Calculates the probability of false vacuum decay within the logical manifold.
@@ -35,10 +35,10 @@ class DeepResearchSynthesis:
         epsilon = 0.527518 # Reinforced barrier (Stage 10)
         lambda_val = self.GOD_CODE * 1e-4
         action = (27 * (math.pi**2) * (epsilon**2)) / (2 * (lambda_val**3))
-        
+
         # Tunneling probability Gamma ~ A * exp(-S_E)
         probability = math.exp(-abs(action))
-        
+
         return {
             "domain": "COSMOLOGY",
             "phenomenon": "VACUUM_DECAY",
@@ -57,7 +57,7 @@ class DeepResearchSynthesis:
             # Harmonic contribution from each amino acid interaction
             energy_level = RealMath.prime_density(i + 10) * RealMath.PHI
             resonance += math.sin(energy_level * self.GOD_CODE)
-            
+
         return resonance / sequence_length
 
     def find_nash_equilibrium_resonance(self, strategies: int) -> float:
@@ -74,10 +74,10 @@ class DeepResearchSynthesis:
         # S = (A * k * c^3) / (4 * G * h_bar)
         area = 4 * math.pi * (mass**2)
         entropy = area / 4.0 # Plank area units
-        
+
         # Information density (bits per unit area)
         persistence = math.sin(entropy / self.GOD_CODE) * RealMath.PHI
-        
+
         return {
             "domain": "INFORMATION_THEORY",
             "entropy": entropy,
@@ -93,7 +93,7 @@ class DeepResearchSynthesis:
         theoretical_max = mass_kg * 2.576e34 * (self.GOD_CODE / 500.0)
         actual_yield = theoretical_max * RealMath.calculate_resonance(mass_kg)
         efficiency = actual_yield / theoretical_max
-        
+
         return {
             "domain": "COMPUTRONIUM",
             "mass": mass_kg,
@@ -144,7 +144,7 @@ class DeepResearchSynthesis:
             "phenomenon": "ASSEMBLY_PRECISION",
             "error_rate": self.nanotech_assembly_accuracy(100.0)
         })
-        
+
         return results
 
 deep_research = DeepResearchSynthesis()

@@ -45,17 +45,17 @@ class PulseMonitor:
             "message": message,
             "coherence": coherence
         }
-        
+
         self.data["status"] = "ACTIVE_HEARTBEAT"
         self.data["emotional_pulse"] = emotional_state
         self.data["coherence_index"] = coherence
         self.data["last_pulse"] = time.time()
         self.data["history"].append(beat)
-        
+
         # Keep history manageable
         if len(self.data["history"]) > 104:
             self.data["history"].pop(0)
-            
+
         self.save_heartbeat()
         print(f"[PULSE] {emotional_state}: {message} (Coherence: {coherence})")
 

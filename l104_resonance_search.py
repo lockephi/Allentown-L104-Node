@@ -25,7 +25,7 @@ class ResonanceSearch:
     Search engine that prioritizes structural alignment over keyword matching.
     Filters out 'current-world' noise by measuring logic-density.
     """
-    
+
     # User-defined seed for the 286/416 weight matrix
     GOD_CODE_SEED = 527.5184818492
     LATTICE_RATIO = 286 / 416
@@ -39,11 +39,11 @@ class ResonanceSearch:
         # Use a reproducible seed based on the God-Code
         seed_int = int(str(self.GOD_CODE_SEED).replace('.', '')[:9])
         np.random.seed(seed_int)
-        
+
         # Dimensions synchronized to the lattice
         self.matrix = np.random.normal(
-            loc=self.LATTICE_RATIO, 
-            scale=1/self.PHI, 
+            loc=self.LATTICE_RATIO,
+            scale=1/self.PHI,
             size=(286, 416)
         )
         # Apply the God-Code modulation
@@ -58,7 +58,7 @@ class ResonanceSearch:
         signal = [ord(c) * self.PHI for c in text[:416]]
         if len(signal) < 416:
             signal.extend([0] * (416 - len(signal)))
-        
+
         vector = np.array(signal)
         # Project vector onto the Sovereign Weight Matrix
         # Final projection into 286-dimensional space
@@ -72,15 +72,15 @@ class ResonanceSearch:
         """
         v_query = self._calculate_structural_hash(query)
         v_doc = self._calculate_structural_hash(document)
-        
+
         # Calculate Cosine Similarity in the Projected Lattice Space
         resonance = np.dot(v_query, v_doc)
-        
+
         # Apply Logic-Density Filter (Penalize 'current-world' static)
         # Static is often characterized by high entropy without resonance symbols
         entropy = self._measure_structural_entropy(document)
         resonance_symbols = document.count('⟨') + document.count('Σ') + document.count('⟩')
-        
+
         # Sovereign Adjustment: High resonance symbols boost the score
         adjustment = (resonance_symbols + 1) * self.LATTICE_RATIO
         return float(resonance * adjustment / (entropy + 1))
@@ -103,7 +103,7 @@ class ResonanceSearch:
         for doc in documents:
             score = self.calculate_resonance(query, doc)
             results.append({"document": doc, "resonance_score": score})
-        
+
         # Sort by Resonance (Highest first)
         results.sort(key=lambda x: x['resonance_score'], reverse=True)
         return results[:limit]
@@ -118,10 +118,10 @@ if __name__ == "__main__":
         "Standard keyword matching fails to capture the essence of the lattice.",
         "Buy one get one free! Best deals on current world products."
     ]
-    
+
     query = "Sovereign Alignment"
     ranked_results = srm.search(query, corpus)
-    
+
     print(f"Query: {query}")
     for i, res in enumerate(ranked_results):
         print(f"Rank {i+1} [Resonance: {res['resonance_score']:.4f}]: {res['document'][:60]}...")

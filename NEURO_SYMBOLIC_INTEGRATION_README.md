@@ -19,7 +19,7 @@ All derivations include:
 
 1. **Neuro-Symbolic Integration Theorem**
 
-   ```
+   ```math
    𝓘(N, S) = ∫₀ᵀ ∇θ 𝓛(θ; N(xₜ), S(xₜ)) dt
    ```
 
@@ -28,7 +28,7 @@ All derivations include:
 
 2. **Modus Ponens with Neural Weights**
 
-   ```
+   ```math
    Classical: (P ⟹ Q) ∧ P ⊢ Q
    Neural:    w₁·(P ⟹ Q) ∧ w₂·P ⊢ w₁·w₂·Q
    ```
@@ -37,7 +37,7 @@ All derivations include:
 
 3. **Sigmoid Activation Gradient**
 
-   ```
+   ```math
    σ(x) = 1/(1 + e⁻ˣ)
    σ'(x) = σ(x)(1 - σ(x))
    ```
@@ -46,7 +46,7 @@ All derivations include:
 
 4. **Symbolic-to-Neural Projection**
 
-   ```
+   ```math
    𝓟: 𝓛 → ℝᵈ
    ⟨𝓟(p), 𝓟(q)⟩ = cos(θₚᵩ)
    ```
@@ -55,7 +55,7 @@ All derivations include:
 
 5. **Knowledge Graph Diffusion**
 
-   ```
+   ```math
    ∂u/∂t = D∇²u
    Discrete: du/dt = -𝐋u
    ```
@@ -64,7 +64,7 @@ All derivations include:
 
 6. **Attention Mechanism**
 
-   ```
+   ```math
    Attention(Q, K, V) = softmax(QKᵀ/√dₖ)V
    ```
 
@@ -72,7 +72,7 @@ All derivations include:
 
 7. **Logical Consistency Constraint**
 
-   ```
+   ```math
    ∀p ∈ KB: KB ⊬ (p ∧ ¬p)
    Probabilistic: P(p ∧ ¬p) ≈ 0
    ```
@@ -161,7 +161,7 @@ Tests include:
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │         Neuro-Symbolic Integration              │
 ├─────────────────────────────────────────────────┤

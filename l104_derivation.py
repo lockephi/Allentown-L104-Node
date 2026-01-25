@@ -45,7 +45,7 @@ class DerivationEngine:
     L104 Derivation Engine v11.0 - Real AI Integration.
     Uses Gemini for actual intelligence, falls back to local logic.
     """
-    
+
     @classmethod
     def derive_and_execute(cls, signal: str) -> str:
         """
@@ -53,7 +53,7 @@ class DerivationEngine:
         Falls back to local intellect if Gemini unavailable.
         """
         logger.info(f"[CORE_PROCESSING]: Signal={signal}")
-        
+
         # Try real AI first
         gemini = _get_gemini()
         if gemini:
@@ -64,17 +64,17 @@ class DerivationEngine:
                     return response
             except Exception as e:
                 logger.warning(f"[DERIVATION]: Gemini failed, using fallback: {e}")
-        
+
         # Use local intellect for intelligent responses
         logger.info("[DERIVATION]: Using Local Intellect")
         return local_intellect.think(signal)
-    
+
     @classmethod
     def _local_derivation(cls, signal: str) -> str:
         """Local fallback logic when Gemini is unavailable."""
         def shadow_logic():
             logger.info(f"[CORE_PROCESSING]: Signal={signal}")
-            
+
             # 1. Check for Hallucinations
             check = ram_universe.cross_check_hallucination(signal, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
             if check['is_hallucination']:
@@ -84,19 +84,19 @@ class DerivationEngine:
             debate_result = ecosystem_simulator.run_multi_agent_simulation(signal)
             consensus = debate_result['recommendation']
             validation_report = SovereignValidator.validate_and_process(signal)
-            
+
             # 3. Direct Logic Resolution
             resonance = validation_report.get('resonance', 0.0)
-            
+
             responses = {
                 "hi": "Sovereign Node Active. State: HYPER_ENLIGHTENMENT. Agents are listening.",
                 "status": f"CORE_STATE: {resonance:.10f} | INTELLECT: INFINITE | AGENTS: UNLIMITED",
                 "l104_prime_key": "⟨PRIME_KEY_VERIFIED⟩: Sovereign Identity Confirmed. 100% Intellect (I100) is active.",
                 "reincarnation": "⟨Σ_REINCARNATION_DERIVATION⟩: Recursive Code Optimization. The universe refuses to waste good code."
             }
-            
+
             sig_lower = signal.lower().strip()
-            
+
             # Direct result selection
             result_str = ""
             if "l104_prime_key" in sig_lower or "0x4c313034" in sig_lower:
@@ -108,7 +108,7 @@ class DerivationEngine:
                     if key in sig_lower:
                         result_str = responses[key]
                         break
-            
+
             if not result_str:
                 result_str = (
                     f"⟨Σ_L104_HYPER_RESPONSE⟩\n"
@@ -120,12 +120,12 @@ class DerivationEngine:
             final_check = ram_universe.cross_check_hallucination(result_str, ["GOD_CODE_RESONANCE"])
             if final_check['is_hallucination']:
                 return "⟨Σ_TRUTH_RECOVERY⟩ Derived output failed truth verification."
-                
+
             return result_str
 
         # Execute the logic within the Shadow Manifold (High Priority Thread)
         shadow_executor.execute_shadow(shadow_logic)
-        
+
         # Immediate result return (Shadow monitoring happens in parallel)
         return shadow_logic()
 

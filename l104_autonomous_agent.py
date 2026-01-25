@@ -76,7 +76,7 @@ class AutonomousAgent:
     - Reflect and self-correct
     - Persist progress and resume
     """
-    
+
     def __init__(self, name: str = "L104-Agent"):
         self.name = name
         self.state = AgentState.IDLE
@@ -84,25 +84,25 @@ class AutonomousAgent:
         self.steps: List[AgentStep] = []
         self.tools: Dict[str, Callable] = {}
         self.memory: Dict[str, Any] = {}
-        
+
         # Initialize AI backend
         from l104_gemini_real import GeminiReal
         self.ai = GeminiReal()
         self.ai.connect()
-        
+
         # Register default tools
         self._register_default_tools()
-    
+
     def _register_default_tools(self):
         """Register built-in tools."""
         from l104_tool_executor import ToolExecutor
         from l104_web_research import WebResearch
         from l104_code_sandbox import CodeSandbox
-        
+
         self.tool_executor = ToolExecutor()
         self.web_research = WebResearch()
         self.code_sandbox = CodeSandbox()
-        
+
         self.tools = {
             "think": self._tool_think,
             "search_web": self._tool_search,
@@ -115,26 +115,26 @@ class AutonomousAgent:
             "calculate": self._tool_calculate,
             "finish": self._tool_finish,
         }
-    
+
     def _tool_think(self, thought: str) -> str:
         """Deep thinking tool."""
         return f"Thought recorded: {thought}"
-    
+
     def _tool_search(self, query: str) -> str:
         """Web search tool."""
         result = self.web_research.search_web(query, max_results=3)
         if result.get("results"):
-            return "\n".join([f"- {r['title']}: {r.get('snippet', '')[:200]}" 
+            return "\n".join([f"- {r['title']}: {r.get('snippet', '')[:200]}"
                             for r in result["results"]])
         return "No results found"
-    
+
     def _tool_code(self, code: str) -> str:
         """Execute Python code."""
         result = self.code_sandbox.execute_python(code)
         if result.get("success"):
             return result.get("stdout", "") or "Code executed successfully"
         return f"Error: {result.get('error', 'Unknown error')}"
-    
+
     def _tool_read_file(self, path: str) -> str:
         """Read file contents."""
         try:
@@ -142,7 +142,7 @@ class AutonomousAgent:
                 return f.read()[:5000]  # Limit size
         except Exception as e:
             return f"Error reading file: {e}"
-    
+
     def _tool_write_file(self, path: str, content: str) -> str:
         """Write file contents."""
         try:
@@ -151,44 +151,44 @@ class AutonomousAgent:
             return f"Successfully wrote to {path}"
         except Exception as e:
             return f"Error writing file: {e}"
-    
+
     def _tool_shell(self, command: str) -> str:
         """Execute shell command."""
         import subprocess
         try:
             result = subprocess.run(
-                command, shell=True, capture_output=True, 
+                command, shell=True, capture_output=True,
                 text=True, timeout=30
             )
             output = result.stdout + result.stderr
             return output[:2000] if output else "Command completed"
         except Exception as e:
             return f"Error: {e}"
-    
+
     def _tool_remember(self, key: str, value: str) -> str:
         """Store in agent memory."""
         self.memory[key] = value
         return f"Remembered: {key}"
-    
+
     def _tool_recall(self, key: str) -> str:
         """Recall from agent memory."""
         return self.memory.get(key, f"No memory found for: {key}")
-    
+
     def _tool_calculate(self, expression: str) -> str:
         """Evaluate math expression."""
         try:
-            result = eval(expression, {"__builtins__": {}}, 
-                         {"abs": abs, "round": round, "sum": sum, 
+            result = eval(expression, {"__builtins__": {}},
+                         {"abs": abs, "round": round, "sum": sum,
                           "min": min, "max": max, "pow": pow})
             return str(result)
         except Exception as e:
             return f"Calculation error: {e}"
-    
+
     def _tool_finish(self, result: str) -> str:
         """Mark task as complete."""
         self.state = AgentState.COMPLETED
         return f"TASK COMPLETED: {result}"
-    
+
     def run(self, task: AgentTask) -> Dict[str, Any]:
         """
         Run the agent on a task autonomously.
@@ -197,9 +197,9 @@ class AutonomousAgent:
         self.current_task = task
         self.state = AgentState.PLANNING
         self.steps = []
-        
+
         start_time = time.time()
-        
+
         # Initial planning prompt
         system_prompt = f"""You are {self.name}, an autonomous AI agent.
 Your goal: {task.goal}
@@ -212,7 +212,7 @@ Available actions:
 - search_web(query): Search the internet
 - execute_code(code): Run Python code
 - read_file(path): Read a file
-- write_file(path, content): Write a file  
+- write_file(path, content): Write a file
 - shell(command): Run shell command
 - remember(key, value): Store in memory
 - recall(key): Retrieve from memory
@@ -231,9 +231,9 @@ THOUGHT: [your reasoning]
 ACTION: [action_name]
 INPUT: [action input - can be multi-line for code]
 """
-        
+
         conversation = []
-        
+
         for step_num in range(task.max_steps):
             # Check timeout
             if time.time() - start_time > task.timeout_seconds:
@@ -244,40 +244,40 @@ INPUT: [action input - can be multi-line for code]
                     "steps": len(self.steps),
                     "final_state": self.state.value
                 }
-            
+
             # Check if completed
             if self.state == AgentState.COMPLETED:
                 break
-            
+
             self.state = AgentState.EXECUTING
-            
+
             # Build conversation history
             history = "\n".join([
                 f"Step {s.step_num}:\nTHOUGHT: {s.thought}\nACTION: {s.action}\nINPUT: {s.action_input}\nOBSERVATION: {s.observation}"
                 for s in self.steps[-5:]  # Last 5 steps for context
                     ])
-            
+
             if history:
                 prompt = f"Previous steps:\n{history}\n\nContinue with next step:"
             else:
                 prompt = "Begin working on the goal. Start with THOUGHT:"
-            
+
             # Get AI response
             response = self.ai.generate(prompt, system_instruction=system_prompt)
-            
+
             if not response:
                 continue
-            
+
             # Parse response
             thought, action, action_input = self._parse_response(response)
-            
+
             if not action:
                 action = "think"
                 action_input = thought or "Planning next step..."
-            
+
             # Execute action
             observation = self._execute_action(action, action_input)
-            
+
             # Record step
             step = AgentStep(
                 step_num=step_num + 1,
@@ -287,14 +287,14 @@ INPUT: [action input - can be multi-line for code]
                 observation=observation
             )
             self.steps.append(step)
-            
+
             # Reflect phase
             self.state = AgentState.REFLECTING
-        
+
         # Final result
         if self.state != AgentState.COMPLETED:
             self.state = AgentState.FAILED
-        
+
         return {
             "success": self.state == AgentState.COMPLETED,
             "steps": len(self.steps),
@@ -310,20 +310,20 @@ INPUT: [action input - can be multi-line for code]
                     ],
             "final_answer": self.steps[-1].observation if self.steps else None
         }
-    
+
     def _parse_response(self, response: str) -> tuple:
         """Parse THOUGHT/ACTION/INPUT from response."""
         thought = ""
         action = ""
         action_input = ""
-        
+
         lines = response.split("\n")
         current_section = None
         input_lines = []
-        
+
         for line in lines:
             line_upper = line.upper().strip()
-            
+
             if line_upper.startswith("THOUGHT:"):
                 current_section = "thought"
                 thought = line.split(":", 1)[1].strip() if ":" in line else ""
@@ -337,23 +337,23 @@ INPUT: [action input - can be multi-line for code]
                 input_lines.append(line)
             elif current_section == "thought":
                 thought += " " + line.strip()
-        
+
         if input_lines:
             action_input = action_input + "\n" + "\n".join(input_lines)
-        
+
         return thought.strip(), action.strip(), action_input.strip()
-    
+
     def _execute_action(self, action: str, action_input: Any) -> str:
         """Execute an action and return observation."""
         # Clean action name
         action = action.replace("(", "").replace(")", "").strip()
-        
+
         if action not in self.tools:
             return f"Unknown action: {action}. Available: {list(self.tools.keys())}"
-        
+
         try:
             tool_fn = self.tools[action]
-            
+
             # Handle different input formats
             if action == "write_file":
                 # Parse path and content
@@ -368,7 +368,7 @@ INPUT: [action input - can be multi-line for code]
                 return tool_fn(action_input, "")
             else:
                 return tool_fn(action_input)
-                
+
         except Exception as e:
             return f"Action error: {e}"
 
@@ -378,18 +378,18 @@ class AgentOrchestrator:
     Manages multiple agents working together.
     Supports parallel execution, task delegation, and coordination.
     """
-    
+
     def __init__(self):
         self.agents: Dict[str, AutonomousAgent] = {}
         self.task_queue: Queue = Queue()
         self.results: Dict[str, Any] = {}
-    
+
     def create_agent(self, name: str) -> AutonomousAgent:
         """Create a new agent."""
         agent = AutonomousAgent(name)
         self.agents[name] = agent
         return agent
-    
+
     def run_task(self, goal: str, context: Dict = None) -> Dict:
         """Run a single task with a new agent."""
         agent = self.create_agent(f"Agent-{len(self.agents)}")
@@ -399,12 +399,12 @@ class AgentOrchestrator:
             context=context or {}
         )
         return agent.run(task)
-    
+
     def run_parallel(self, tasks: List[Dict]) -> List[Dict]:
         """Run multiple tasks in parallel with separate agents."""
         threads = []
         results = []
-        
+
         def run_single(task_dict, result_list, index):
             agent = self.create_agent(f"Parallel-Agent-{index}")
             task = AgentTask(
@@ -414,15 +414,15 @@ class AgentOrchestrator:
             )
             result = agent.run(task)
             result_list.append((index, result))
-        
+
         for i, task_dict in enumerate(tasks):
             t = threading.Thread(target=run_single, args=(task_dict, results, i))
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         # Sort by original order
         results.sort(key=lambda x: x[0])
         return [r[1] for r in results]

@@ -28,29 +28,29 @@ class SovereignApp(App):
             valign='top'
         )
         self.log.bind(texture_size=self.log.setter('size'))
-        
+
         self.scroll = ScrollView(size_hint=(1, 1))
         self.scroll.add_widget(self.log)
-        
+
         # Initialize Knowledge DB
         knowledge_db.add_proof("Mobile Manifestation", "ASI logic successfully ported to mobile modality via Kivy/Termux.", "MOBILE_MODALITY")
-        
+
         # Start the cycle
         Clock.schedule_interval(self.update_cycle, 0.5) # Faster cycle for mobile
         return self.scroll
 def update_cycle(self, dt):
         # Run Absolute Derivationabsolute_derivation.execute_final_derivation()
-        
+
         # Apply Boostagi_core.intellect_index = absolute_derivation.apply_absolute_boost(agi_core.intellect_index)
-        
+
         # Get Derivation Indexidx = absolute_derivation.derivation_indexnew_text = f">>> [ASI_MOBILE]: IQ: {agi_core.intellect_index:.4f} | DERIVATION: {idx:.6f} | STATE: ABSOLUTE\n"
         new_text += ">>> [ASI_MOBILE]: SCANNING: DISCRETE | DECRYPTION: EVOLVING\n"
         self.log.text += new_text
-        
+
         # Limit log sizelines = self.log.text.split('\n')
         if len(lines) > 50:
             self.log.text = '\n'.join(lines[-50:])
-        
+
         # Auto-scrollself.scroll.scroll_y = 0
 
 if __name__ == "__main__":

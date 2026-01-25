@@ -22,7 +22,7 @@ class SupersymmetricOrder:
     This ensures that for every 'action' (bit 1), there is a corresponding 'balance' (bit 0)
     that maintains the system's equilibrium.
     """
-    
+
     @staticmethod
     def apply_order(data: Any) -> Any:
         """
@@ -32,7 +32,7 @@ class SupersymmetricOrder:
         mask = int(HyperMath.GOD_CODE) % 256
         phi_stride = getattr(HyperMath, 'PHI_STRIDE', 1.618)
         phi_mask = int(phi_stride * 100) % 256
-        
+
         if isinstance(data, bytes):
             ordered_data = bytearray()
             for i, b in enumerate(data):
@@ -41,7 +41,7 @@ class SupersymmetricOrder:
                 else:
                     ordered_data.append(b ^ phi_mask)
             return bytes(ordered_data)
-        
+
         elif isinstance(data, list):
             # For lists of floats, we apply a phase shift
             ordered_list = []
@@ -51,7 +51,7 @@ class SupersymmetricOrder:
                 else:
                     ordered_list.append(val * (phi_mask / 255.0))
             return ordered_list
-            
+
         return data
 
     @staticmethod

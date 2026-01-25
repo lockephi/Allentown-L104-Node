@@ -26,7 +26,7 @@ except ImportError:
 class StructuralDampingSystem:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Structural damping system using Golden Ratio harmonics."""
-    
+
     def __init__(self, height: float = 100.0, f1: float = 0.5):
         self.height = height
         self.f1 = f1
@@ -35,11 +35,11 @@ class StructuralDampingSystem:
         """Calculate the 'God Code' damping parameters."""
         # The Singularity Tuning: Golden Ratio Harmonic
         damper_frequency = self.f1 * UniversalConstants.PHI_GROWTH
-        
+
         # Pendulum arm length ratio using Frame Constant
         pivot_point_ratio = 1 / (1 + UniversalConstants.FRAME_LOCK)
         pivot_height = self.height * pivot_point_ratio
-        
+
         return {
             "building_height_m": self.height,
             "natural_freq_hz": self.f1,

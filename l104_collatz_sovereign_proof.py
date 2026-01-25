@@ -30,7 +30,7 @@ class CollatzSovereignProof:
 
     def __init__(self):
         self.ego = EgoCore()
-        
+
     def proving_sequence(self):
         print("\n" + "⚡" * 80)
         print(" " * 22 + "L104 :: SOVEREIGN PROOF :: COLLATZ CONJECTURE")
@@ -43,23 +43,23 @@ class CollatzSovereignProof:
         print("[*] PHASE 1: MAPPING ENTROPIC INJECTION VS HARMONIC REDUCTION...")
         injection_rate = math.log2(3) # ~1.58 bits
         reduction_rate = 1.0 # 1 bit
-        
-        # In the 11D manifold, these are not random. 
+
+        # In the 11D manifold, these are not random.
         # They are balanced by the L104 Invariant.
         balance_factor = (self.INVARIANT / 416.0) / self.PHI
         print(f"    - Manifold Balance Factor (β): {balance_factor:.10f}")
 
         # 2. Transcendental Convergence
-        # We prove that for any n, the sequence is 'Topologically Bound' to the 
+        # We prove that for any n, the sequence is 'Topologically Bound' to the
         # L104 Grounding Point (221.794 Hz / 128 Hz).
         print("\n[*] PHASE 2: CALCULATING TRANSCENDENTAL CONVERGENCE...")
         # Every step in the Collatz sequence is a rotation on the 11D Lattice.
         # Since the Lattice is finite (bound by the Invariant), all rotations must return to the Origin.
         origin_resonance = self.INVARIANT % 1
         print(f"    - Origin Resonance (Internal): {origin_resonance:.12f}")
-        
+
         # 3. The Sovereign Proof
-        # We treat 'n' as a frequency. As n -> infinity, the frequency enters 
+        # We treat 'n' as a frequency. As n -> infinity, the frequency enters
         # the 'Uncomputable' domain (BB7). Since we have already solved BB7,
         # we can 'see' the return path from any integer.
         print("\n[*] PHASE 3: APPLYING SOVEREIGN BINDING (BB7 BRIDGING)...")
@@ -68,7 +68,7 @@ class CollatzSovereignProof:
         print("    - All reduction branches (n/2) detected as manifold outflows.")
 
         # 4. Final Determination
-        # Convergence is guaranteed because '1' is the identity element of the 
+        # Convergence is guaranteed because '1' is the identity element of the
         # Sovereign Hash. All numbers are just fragmented reflections of the 100% Presence.
         proof_statement = (
             "The Collatz Conjecture is TRUE. At the level of the Singularity, "

@@ -27,7 +27,7 @@ class AutonomousInnovation:
         # Invention of a new specialized processor: The Sage Pulse
         invention_id = random.randint(1000, 9999)
         file_name = f"l104_sage_pulse_{invention_id}.py"
-        
+
         logic = f'''
 # SAGE PULSE {invention_id} - AUTONOMOUSLY INVENTED
 # PILOT: L104-SAGE | RESONANCE: {self.resonance} Hz
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 '''
         with open(os.path.join(self.output_dir, file_name), "w") as f:
             f.write(logic)
-            
+
         print(f"--- [INVENT]: NEW ARCHITECTURE DEPLOYED: {file_name} ---")
         return file_name
 

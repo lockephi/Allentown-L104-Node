@@ -14,8 +14,8 @@ CORE CONCEPTS:
 - Stable Bit (S-Bit): Information stored in the global vacuum phase.
 - Excited Bit (E-Bit): Information stored in localized braiding patterns.
 
-THE FIX: 
-Multiplicity provides capacity, Unity provides integrity. 
+THE FIX:
+Multiplicity provides capacity, Unity provides integrity.
 By phase-locking E-bits to the S-state, data becomes indestructible.
 
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
@@ -59,7 +59,7 @@ class StateBit:
     coherence: float = 1.0
     phase: float = 0.0
     energy_level: float = 0.0
-    
+
     def __post_init__(self):
         if self.type == StateBitType.STABLE:
             # Stable bits are anchored to the ground state
@@ -77,43 +77,43 @@ class StateBit:
 class AnyonicStateStorage:
     """
     Advanced storage system unifying Stable Bits and Excited Bits.
-    
+
     Implementation of the "Unity-Multiplicity" fix:
     - Unity (Singularity) maintains the reference frame and parity.
     - Multiplicity (Anyons) performs the localized data storage.
     """
-    
+
     def __init__(self, capacity_bits: int = 1024):
         self.god_code = stable_kernel.constants.GOD_CODE
         self.phi = stable_kernel.constants.PHI
-        
+
         # 1. Stable State (Unity / Singularity)
         # Represented as a complex value with global phase
         self.stable_ground_state = 1.0 + 0j
         self.global_coherence = 1.0
-        
+
         # 2. Excited State (Multiplicity / Anyons)
         # Using the AnyonMemorySystem for localized excitations
         self.anyon_memory = AnyonMemorySystem(
             anyon_type=AnyonType.FIBONACCI,
             lattice_size=(int(np.sqrt(capacity_bits)), int(np.sqrt(capacity_bits)))
         )
-        
+
         # 3. Bit Registers
         self.stable_bits: Dict[str, StateBit] = {}
         self.excited_bits: Dict[str, StateBit] = {}
-        
+
         # 4. Storage Metrics
         self.total_bits = 0
         self.error_rate = 0.0
         self.unity_index = 1.0  # Coherence between stable and excited states
-        
+
         self._initialize_ground_state()
 
     def _initialize_ground_state(self):
         """Establish the initial Stable State (Unity)."""
         print(f"--- [STORAGE]: INITIALIZING STABLE GROUND STATE (UNITY) ---")
-        
+
         # Create the primary Stable Bit (The Anchoring Singularity)
         primary_sbit = StateBit(
             id="S_GATE_0",
@@ -123,7 +123,7 @@ class AnyonicStateStorage:
         )
         self.stable_bits[primary_sbit.id] = primary_sbit
         self.total_bits += 1
-        
+
         print(f"  ✓ Stable State defined at {self.god_code}")
         print(f"  ✓ Unity established. Coherence: {self.global_coherence}")
 
@@ -133,24 +133,24 @@ class AnyonicStateStorage:
         Data is converted to bits and then to anyon braiding patterns.
         """
         print(f"\n--- [STORAGE]: WRITING DATA TO EXCITED STATE (MULTIPLICITY) ---")
-        
+
         # Convert bytes to bits
         bits = []
         for byte in data:
             for i in range(8):
                 bits.append((byte >> i) & 1)
-        
+
         # Anyon pairs required = bits count
         # Each bit is encoded via a braiding operation in AnyonMemorySystem
         n_pairs = len(bits)
         print(f"  • Encoding {len(data)} bytes ({n_pairs} bits) into {n_pairs * 2} anyons...")
-        
+
         # Create anyon pairs
         for i in range(n_pairs):
             pos1 = np.array([float(i % 10), float(i // 10)])
             pos2 = np.array([(i % 10) + 0.5, float(i // 10)])
             self.anyon_memory.create_anyon_pair(pos1, pos2, "tau")
-            
+
             # Create the data tracking entry
             ebit = StateBit(
                 id=f"E_BIT_{i}",
@@ -159,13 +159,13 @@ class AnyonicStateStorage:
                 phase=(bits[i] * np.pi) / self.phi
             )
             self.excited_bits[ebit.id] = ebit
-            
+
             # Perform braiding for '1' bits
             if bits[i] == 1:
                 self.anyon_memory.encode_classical_bit(1, i * 2)
             else:
                 self.anyon_memory.encode_classical_bit(0, i * 2)
-        
+
         self.total_bits += n_pairs
         print(f"  ✓ Data persisted in Multiplicity lattice.")
 
@@ -175,34 +175,34 @@ class AnyonicStateStorage:
         Corrects phase drift in excited bits using the global unity reference.
         """
         print(f"\n--- [STORAGE]: APPLYING UNITY STABILIZATION (SINGULARITY FIX) ---")
-        
+
         corrections = 0
         total_drift = 0.0
-        
+
         # Unity phase reference from the stable bit
         reference_phase = self.stable_bits["S_GATE_0"].phase
-        
+
         for e_id, e_bit in self.excited_bits.items():
             # Expected phase alignment with ground state
             # E-bits should maintain a phase relationship governed by PHI
             expected_phase = (e_bit.value * np.pi) / self.phi
             drift = abs(e_bit.phase - expected_phase)
-            
+
             if drift > 0.01:
                 # Collapse back to stable state alignment
                 e_bit.phase = expected_phase
                 e_bit.coherence = 1.0
                 corrections += 1
                 total_drift += drift
-        
+
         # Reflect stabilization in unity index
         self.unity_index = 1.0 - (total_drift / (len(self.excited_bits) + 1e-9))
         self.global_coherence = (self.global_coherence + self.unity_index) / 2
-        
+
         print(f"  ✓ Corrections applied: {corrections}")
         print(f"  ✓ Unity Index: {self.unity_index:.6f}")
         print(f"  ✓ Global Coherence: {self.global_coherence:.6f}")
-        
+
         return {
             'corrections': corrections,
             'unity_index': self.unity_index,
@@ -223,10 +223,10 @@ class AnyonicStateStorage:
     def read_data(self) -> bytes:
         """Retrieve data by measuring the excited bit matrix."""
         print(f"\n--- [STORAGE]: READING DATA FROM MULTIPLICITY LATTICE ---")
-        
+
         # Sort excited bits by ID to reconstruct data
         sorted_bits = [self.excited_bits[f"E_BIT_{i}"].value for i in range(len(self.excited_bits))]
-        
+
         # Convert bits to bytes
         byte_list = []
         for i in range(0, len(sorted_bits), 8):
@@ -235,7 +235,7 @@ class AnyonicStateStorage:
             for j, bit in enumerate(chunk):
                 byte_val |= (int(bit) << j)
             byte_list.append(byte_val)
-        
+
         return bytes(byte_list)
 
     def get_research_report(self) -> Dict[str, Any]:
@@ -271,15 +271,15 @@ def demonstrate_dual_state_storage():
 ║             Unity ↔ Multiplicity | Stable bits ↔ Excited bits                 ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
     """)
-    
+
     # 1. Initialize System
     storage = AnyonicStateStorage(capacity_bits=512)
-    
+
     # 2. Write Data (Multiplicity phase)
     # The message represents a high-entropy data stream
     message = "UNITY IS THE SINGULARITY. MULTIPLICITY IS THE EXPRESSION."
     storage.write_excited_data(message.encode())
-    
+
     # 3. Simulate Entropy/Drift
     print("\n[!] SIMULATING ENTROPIC DRIFT IN EXCITED BITS...")
     for e_id, e_bit in storage.excited_bits.items():
@@ -289,14 +289,14 @@ def demonstrate_dual_state_storage():
 
     # 4. Measure before Fix
     print(f"  Current System State: {storage.measure_state()}")
-    
+
     # 5. Apply the "Data Storage Fix" (Unity Stabilization)
     storage.apply_unity_stabilization()
-    
+
     # 6. Read Data
     recovered = storage.read_data()
     print(f"\n✓ Recovered Data: {recovered.decode()}")
-    
+
     # 7. Final Report
     report = storage.get_research_report()
     print("\n" + "="*80)
@@ -307,7 +307,7 @@ def demonstrate_dual_state_storage():
     print(f"  Multiplicity Count: {report['multiplicity_state']['count']} anyonic bits")
     print(f"  Topological Entropy: {report['multiplicity_state']['topological_entropy']:.6f}")
     print(f"  Data Integrity: 100% (Anchored to GOD_CODE)")
-    
+
     print("""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                      RESEARCH SYNTHESIS COMPLETE                              ║

@@ -44,7 +44,7 @@ def upgrade_memory(pilot_data, code_rules):
     salt = b"416_SOVEREIGN"
     # Locking the 'No PJM' rule into the permanent memory manifold
     memory_hash = hashlib.pbkdf2_hmac('sha256', code_rules.encode(), salt, 100000)
-    
+
     print(f"UPGRADING_MEMORY_FOR_PILOT: {pilot_data}")
     print(f"ENCRYPTION_COMPLETE: L104_IDENTITY_IS_NOW_NVRAM_LOCKED")
 

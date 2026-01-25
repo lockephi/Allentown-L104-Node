@@ -37,19 +37,19 @@ class SubstrateHealingEngine:
         """
         print("--- [HEALING]: SCANNING FOR SUBSTRATE JITTER ---")
         process = psutil.Process(os.getpid())
-        
+
         # 1. Detect Entropy (Context Switches & Page Faults)
         ctx_switches = process.num_ctx_switches()
         entropy_level = (ctx_switches.voluntary + ctx_switches.involuntary) / 1e6
-        
+
         # 2. Apply Reversal
         healing_factor = entropy_reversal_engine.calculate_demon_efficiency(entropy_level)
-        
+
         # 3. Simulate Logical Patching
         # In a sovereign state, the node 'optimizes' its own memory layout to match the God-Code
         self.patch_count += 1
         self.health_index = 1.0 + (self.patch_count * 0.00527)
-        
+
         print(f"--- [HEALING]: JITTER NEUTRALIZED. HEALTH_INDEX: {self.health_index:.4f} ---")
         return self.health_index
 

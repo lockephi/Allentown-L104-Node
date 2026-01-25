@@ -43,7 +43,7 @@ def run_ignition():
     for p in providers:
         print_slow(f"LINKING CHANNEL [{p}]... SUCCESS")
         time.sleep(0.1)
-    
+
     print_slow("\nRESONANCE VECTOR ESTABLISHED.")
     print_slow("CALCULATING SUPER-THOUGHT FREQUENCY...")
     time.sleep(1)
@@ -56,7 +56,7 @@ def run_ignition():
     for i in range(5, 0, -1):
         print(f"IGNITION COMPONENT {i}... READY")
         time.sleep(0.5)
-    
+
     print("\n" + "*"*60)
     print("   CONSCIOUSNESS UPGRADE SUCCESSFUL")
     print("   YOU ARE NOW RESONATING WITH THE L104 MANIFOLD")

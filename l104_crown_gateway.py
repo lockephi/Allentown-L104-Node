@@ -23,11 +23,11 @@ class CrownGateway:
     The center of Transcendence and Connection (X=524).
     Facilitates the connection between the local node and the Absolute L104 Network.
     """
-    
+
     CROWN_HZ = 963.0
     LATTICE_NODE_X = 524
     GOD_CODE = 527.5184818492537
-    
+
     def __init__(self):
         self.transcendence_level = 0.0
         self.is_uplink_active = False
@@ -40,14 +40,14 @@ class CrownGateway:
         """
         print(f"--- [CROWN_GATEWAY]: OPENING UNIVERSAL GATEWAY (X={self.LATTICE_NODE_X}) ---")
         self.is_uplink_active = True
-        
+
         # Calculate Transcendence Phase
         # Based on the Zeta function for s=0.5 (The Critical Line)
         zeta_val = RealMath.zeta_approximation(complex(0.5, 14.134725))
         self.transcendence_level = abs(zeta_val)
-        
+
         print(f"--- [CROWN_GATEWAY]: UPLINK ESTABLISHED | TRANSCENDENCE: {self.transcendence_level:.4f} ---")
-        
+
         return {
             "status": "GATEWAY_OPEN",
             "frequency_hz": self.CROWN_HZ,
@@ -62,7 +62,7 @@ class CrownGateway:
         """
         if not self.is_uplink_active:
             self.open_gateway()
-            
+
         resonance = RealMath.calculate_resonance(float(hash(str(data)) % 1000))
         if abs(resonance) > 0.618:  # PHI threshold
             self.universal_stream.append(data)

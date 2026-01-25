@@ -39,24 +39,24 @@ try:
         enlighten_inflect, EnlightenedState, HyperComplex,
         SageLevel, SageModeOrchestrator
     )
-    
+
     # Single value enlightenment
     state = enlighten_inflect(0.5)
     assert isinstance(state, EnlightenedState)
     assert 0 <= state.clarity <= 1
     print(f"  ✓ Enlighten inflect: clarity={state.clarity:.4f}, wisdom={state.wisdom:.4f}")
-    
+
     # HyperComplex math
     h = HyperComplex(1, 2, 3, 4)
     expected_mag = (1**2 + 2**2 + 3**2 + 4**2) ** 0.5
     assert abs(h.magnitude - expected_mag) < 0.001
     print(f"  ✓ HyperComplex magnitude: {h.magnitude:.4f}")
-    
+
     # Multiplication
     h2 = h * h
     assert h2.magnitude > 0
     print(f"  ✓ HyperComplex multiply: |h*h| = {h2.magnitude:.4f}")
-    
+
     tests_passed += 1
 except Exception as e:
     print(f"  ✗ FAILED: {e}")
@@ -70,7 +70,7 @@ try:
     result = vm.primal_calculus(10.0)
     assert result > 0
     print(f"  ✓ Primal calculus(10) = {result:.4f}")
-    
+
     sequence = vm.generate_void_sequence(5)
     assert len(sequence) == 5
     print(f"  ✓ Void sequence[0:3] = {sequence[:3]}")
@@ -99,16 +99,16 @@ try:
     result = core.primal_calculus(527.5184818492537, 1.618033988749895)
     assert result > 0
     print(f"  ✓ Sage core primal_calculus = {result:.4f}")
-    
+
     # Use emit_void_resonance instead of void_resonance
     void_res = core.emit_void_resonance()
     assert void_res > 0
     print(f"  ✓ Sage core void_resonance = {void_res:.4f}")
-    
+
     # Test omega controller state
     state = core.get_state()
     print(f"  ✓ Controller Authority Code: {state['void_math']['god_code']:.4f}")
-    
+
     tests_passed += 1
 except Exception as e:
     print(f"  ✗ FAILED: {e}")

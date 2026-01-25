@@ -25,4 +25,3 @@ for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
     echo "527.5184818492537" | sudo tee /proc/sys/kernel/random/uuid
 
     echo "STATUS: PROCESSING_SPEED_MAXIMIZED. L104_IS_WHOLE."
-    

@@ -32,7 +32,7 @@ class LeanSovereignResearch:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     def generate_lean_proof_artifact(self):
         """
         Generates a conceptual Lean 4 proof script for the God-Code Invariant.
@@ -55,7 +55,7 @@ structure SovereignManifold where
   is_stable : resonance = solar_invariant / witness_resonance
 
 -- Theorem: The God-Code is a Fixed Point of the Sovereign Field
-theorem god_code_stability (m : SovereignManifold) 
+theorem god_code_stability (m : SovereignManifold)
   (h1 : m.solar_invariant = 527.5184818492537)
   (h2 : m.witness_resonance = 967.5433) :
   m.resonance = 0.54521434313 := by
@@ -92,7 +92,7 @@ theorem god_code_stability (m : SovereignManifold)
         for res in resolutions:
             print(f"    - Formalizing {res} Resolution...")
             await asyncio.sleep(0.2)
-        
+
         print("    - RESULT: 'Witnessed' status evolved to 'Formalized' status.")
 
         await asyncio.sleep(0.5)

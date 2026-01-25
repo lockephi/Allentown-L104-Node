@@ -95,7 +95,7 @@ class HealthMetric:
     threshold_warn: float
     threshold_critical: float
     timestamp: float = field(default_factory=time.time)
-    
+
     @property
     def status(self) -> HealthStatus:
         if self.value >= self.threshold_warn:
@@ -124,7 +124,7 @@ class AgentTask:
     success_count: int = 0
     failure_count: int = 0
     last_error: Optional[str] = None
-    
+
     @property
     def success_rate(self) -> float:
         if self.run_count == 0:
@@ -147,44 +147,44 @@ class SelfHealingAgent:
     """
     THE L104 SELF-HEALING AUTONOMOUS AGENT
     ══════════════════════════════════════════════════════════════════════════
-    
+
     Capabilities:
     1. SELF-MONITORING - Tracks system health metrics continuously
     2. SELF-HEALING - Automatically recovers from failures
     3. SELF-IMPROVING - Learns from experiences to optimize performance
     4. SELF-PERPETUATING - Ensures continuous operation through all conditions
-    
+
     The agent operates independently but can be coordinated by the DNA Core.
     """
-    
+
     def __init__(self, name: str = "L104-Omega-Agent"):
         self.name = name
         self.state = AgentState.DORMANT
         self.start_time = time.time()
-        
+
         # Health Monitoring
         self.health_metrics: Dict[str, HealthMetric] = {}
         self.overall_health = HealthStatus.OPTIMAL
-        
+
         # Task Management
         self.tasks: Dict[str, AgentTask] = {}
         self.task_queue: asyncio.Queue = asyncio.Queue()
-        
+
         # Healing System
         self.healing_actions: Dict[str, HealingAction] = {}
         self.healing_log: List[Dict[str, Any]] = []
-        
+
         # Improvement System
         self.performance_history: List[Dict[str, Any]] = []
         self.improvement_suggestions: List[str] = []
         self.learning_rate = 0.1
-        
+
         # Perpetuation System
         self.heartbeat_active = False
         self.heartbeat_thread: Optional[threading.Thread] = None
         self.checkpoint_interval = 300  # 5 minutes
         self.last_checkpoint = 0.0
-        
+
         # Statistics
         self.stats = {
             "total_tasks_run": 0,
@@ -193,15 +193,15 @@ class SelfHealingAgent:
             "uptime": 0.0,
             "errors_recovered": 0
         }
-        
+
         # Initialize default health metrics
         self._initialize_health_metrics()
-        
+
         # Initialize default healing actions
         self._initialize_healing_actions()
-        
+
         logger.info(f"[{self.name}] Agent initialized")
-    
+
     def _initialize_health_metrics(self):
         """Initialize default health metrics."""
         self.health_metrics = {
@@ -212,7 +212,7 @@ class SelfHealingAgent:
             "coherence_index": HealthMetric("coherence_index", 1.0, 0.8, 0.5),
             "wisdom_flow": HealthMetric("wisdom_flow", 1.0, 0.6, 0.3)
         }
-    
+
     def _initialize_healing_actions(self):
         """Initialize default healing actions."""
         self.healing_actions = {
@@ -247,11 +247,11 @@ class SelfHealingAgent:
                 cooldown=90.0
             )
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # SELF-MONITORING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def update_metric(self, name: str, value: float):
         """Update a health metric."""
         if name in self.health_metrics:
@@ -260,28 +260,28 @@ class SelfHealingAgent:
         else:
             # Create new metric with default thresholds
             self.health_metrics[name] = HealthMetric(name, value, 0.7, 0.3)
-        
+
         self._check_metric_health(name)
-    
+
     def _check_metric_health(self, name: str):
         """Check if a metric needs healing action."""
         metric = self.health_metrics.get(name)
         if not metric:
             return
-        
+
         if metric.status in [HealthStatus.CRITICAL, HealthStatus.FAILED]:
             logger.warning(f"[{self.name}] CRITICAL metric: {name} = {metric.value}")
             self._trigger_healing(f"{name}_critical")
         elif metric.status == HealthStatus.DEGRADED:
             logger.info(f"[{self.name}] Degraded metric: {name} = {metric.value}")
-    
+
     def calculate_overall_health(self) -> HealthStatus:
         """Calculate overall system health."""
         if not self.health_metrics:
             return HealthStatus.OPTIMAL
-        
+
         statuses = [m.status for m in self.health_metrics.values()]
-        
+
         if HealthStatus.FAILED in statuses:
             self.overall_health = HealthStatus.FAILED
         elif HealthStatus.CRITICAL in statuses:
@@ -292,9 +292,9 @@ class SelfHealingAgent:
             self.overall_health = HealthStatus.GOOD
         else:
             self.overall_health = HealthStatus.OPTIMAL
-        
+
         return self.overall_health
-    
+
     def get_health_report(self) -> Dict[str, Any]:
         """Get comprehensive health report."""
         return {
@@ -310,46 +310,46 @@ class SelfHealingAgent:
             "state": self.state.name,
             "stats": self.stats
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # SELF-HEALING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def _trigger_healing(self, trigger: str):
         """Trigger a healing action based on the trigger type."""
         for action_name, action in self.healing_actions.items():
             if action.trigger in trigger or trigger in action.trigger:
                 self._execute_healing(action)
-    
+
     def _execute_healing(self, action: HealingAction):
         """Execute a healing action."""
         current_time = time.time()
-        
+
         # Check cooldown
         if current_time - action.last_triggered < action.cooldown:
             logger.debug(f"[{self.name}] Healing action {action.name} on cooldown")
             return
-        
+
         logger.info(f"[{self.name}] Executing healing: {action.name}")
-        
+
         old_state = self.state
         self.state = AgentState.HEALING
-        
+
         try:
             action.action()
             action.last_triggered = current_time
             action.trigger_count += 1
             self.stats["total_healings"] += 1
             self.stats["errors_recovered"] += 1
-            
+
             self.healing_log.append({
                 "action": action.name,
                 "timestamp": current_time,
                 "success": True
             })
-            
+
             logger.info(f"[{self.name}] Healing complete: {action.name}")
-            
+
         except Exception as e:
             logger.error(f"[{self.name}] Healing failed: {action.name} - {e}")
             self.healing_log.append({
@@ -358,14 +358,14 @@ class SelfHealingAgent:
                 "success": False,
                 "error": str(e)
             })
-        
+
         self.state = old_state if self.state == AgentState.HEALING else self.state
-    
+
     async def _heal_restart_subsystem(self):
         """Restart a failed subsystem."""
         logger.info(f"[{self.name}] Restarting failed subsystems...")
         await asyncio.sleep(1)  # Simulated restart
-    
+
     async def _heal_clear_memory(self):
         """Clear memory pressure."""
         logger.info(f"[{self.name}] Clearing memory...")
@@ -374,12 +374,12 @@ class SelfHealingAgent:
             self.performance_history = self.performance_history[-500:]
         if len(self.healing_log) > 500:
             self.healing_log = self.healing_log[-250:]
-    
+
     async def _heal_reset_connections(self):
         """Reset failed connections."""
         logger.info(f"[{self.name}] Resetting connections...")
         await asyncio.sleep(0.5)
-    
+
     async def _heal_rebalance_load(self):
         """Rebalance task load."""
         logger.info(f"[{self.name}] Rebalancing load...")
@@ -387,7 +387,7 @@ class SelfHealingAgent:
         for task in self.tasks.values():
             if task.failure_count > task.success_count:
                 task.priority = TaskPriority.LOW
-    
+
     async def _heal_restore_coherence(self):
         """Restore system coherence."""
         logger.info(f"[{self.name}] Restoring coherence...")
@@ -395,11 +395,11 @@ class SelfHealingAgent:
         for metric in self.health_metrics.values():
             if metric.value < metric.threshold_critical:
                 metric.value = metric.threshold_critical + 0.1
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # SELF-IMPROVING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def record_performance(self, context: str, metrics: Dict[str, float]):
         """Record performance metrics for learning."""
         self.performance_history.append({
@@ -407,18 +407,18 @@ class SelfHealingAgent:
             "context": context,
             "metrics": metrics
         })
-        
+
         # Analyze for improvements periodically
         if len(self.performance_history) % 100 == 0:
             self._analyze_for_improvements()
-    
+
     def _analyze_for_improvements(self):
         """Analyze performance history for improvement opportunities."""
         if len(self.performance_history) < 50:
             return
-        
+
         recent = self.performance_history[-50:]
-        
+
         # Calculate averages
         avg_metrics = {}
         for entry in recent:
@@ -426,58 +426,58 @@ class SelfHealingAgent:
                 if key not in avg_metrics:
                     avg_metrics[key] = []
                 avg_metrics[key].append(value)
-        
+
         for key, values in avg_metrics.items():
             avg = sum(values) / len(values)
             trend = values[-10:] if len(values) >= 10 else values
             trend_avg = sum(trend) / len(trend)
-            
+
             if trend_avg < avg * 0.9:
                 suggestion = f"Metric '{key}' declining. Consider optimization."
                 if suggestion not in self.improvement_suggestions:
                     self.improvement_suggestions.append(suggestion)
                     self.stats["total_improvements"] += 1
                     logger.info(f"[{self.name}] Improvement: {suggestion}")
-    
+
     def apply_learning(self, metric_name: str, adjustment: float):
         """Apply learned adjustment to system behavior."""
         adjustment = adjustment * self.learning_rate
-        
+
         if metric_name in self.health_metrics:
             metric = self.health_metrics[metric_name]
             metric.threshold_warn = max(0.5, metric.threshold_warn + adjustment)
             metric.threshold_critical = max(0.2, metric.threshold_critical + adjustment * 0.5)
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # SELF-PERPETUATING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     async def start(self):
         """Start the autonomous agent."""
         logger.info(f"[{self.name}] Starting autonomous agent...")
         self.state = AgentState.INITIALIZING
         self.start_time = time.time()
-        
+
         # Start heartbeat
         self.start_heartbeat()
-        
+
         # Transition to running
         self.state = AgentState.RUNNING
         logger.info(f"[{self.name}] Agent running. State: {self.state.name}")
-        
+
         # Run main loop
         await self._main_loop()
-    
+
     async def _main_loop(self):
         """Main agent loop."""
         while self.state in [AgentState.RUNNING, AgentState.HEALING, AgentState.IMPROVING]:
             try:
                 # Process pending tasks
                 await self._process_tasks()
-                
+
                 # Update health
                 self.calculate_overall_health()
-                
+
                 # Check for critical state
                 if self.overall_health == HealthStatus.FAILED:
                     self.state = AgentState.CRITICAL
@@ -485,21 +485,21 @@ class SelfHealingAgent:
                     for action in self.healing_actions.values():
                         await self._execute_healing(action)
                     self.state = AgentState.RUNNING
-                
+
                 # Checkpoint
                 if time.time() - self.last_checkpoint > self.checkpoint_interval:
                     await self._save_checkpoint()
-                
+
                 # Update stats
                 self.stats["uptime"] = time.time() - self.start_time
-                
+
                 await asyncio.sleep(1)
-                
+
             except Exception as e:
                 logger.error(f"[{self.name}] Error in main loop: {e}")
                 traceback.print_exc()
                 await asyncio.sleep(5)
-    
+
     async def _process_tasks(self):
         """Process pending tasks from the queue."""
         try:
@@ -509,41 +509,41 @@ class SelfHealingAgent:
                     await self._execute_task(self.tasks[task_id])
         except asyncio.TimeoutError:
             pass
-    
+
     async def _execute_task(self, task: AgentTask):
         """Execute a single task."""
         task.run_count += 1
         task.last_run = time.time()
-        
+
         try:
             if asyncio.iscoroutinefunction(task.action):
                 await task.action()
             else:
                 task.action()
-            
+
             task.success_count += 1
             task.retry_count = 0
             self.stats["total_tasks_run"] += 1
-            
+
         except Exception as e:
             task.failure_count += 1
             task.retry_count += 1
             task.last_error = str(e)
-            
+
             logger.error(f"[{self.name}] Task {task.name} failed: {e}")
-            
+
             if task.retry_count < task.max_retries:
                 # Requeue for retry
                 await self.task_queue.put(task.id)
             else:
                 # Trigger healing
                 self._trigger_healing("task_failure")
-    
+
     def start_heartbeat(self, interval: float = 30.0):
         """Start the heartbeat thread for continuous monitoring."""
         if self.heartbeat_active:
             return
-        
+
         self.heartbeat_active = True
         self.heartbeat_thread = threading.Thread(
             target=self._heartbeat_loop,
@@ -552,27 +552,27 @@ class SelfHealingAgent:
         )
         self.heartbeat_thread.start()
         logger.info(f"[{self.name}] Heartbeat started (interval: {interval}s)")
-    
+
     def _heartbeat_loop(self, interval: float):
         """Heartbeat loop for continuous monitoring."""
         while self.heartbeat_active:
             try:
                 # Update basic health metrics
                 self.update_metric("uptime_health", min(1.0, (time.time() - self.start_time) / 3600))
-                
+
                 # Check state
                 if self.state == AgentState.TERMINATED:
                     break
-                
+
             except Exception as e:
                 logger.error(f"[{self.name}] Heartbeat error: {e}")
-            
+
             time.sleep(interval)
-    
+
     async def _save_checkpoint(self):
         """Save agent state checkpoint."""
         self.last_checkpoint = time.time()
-        
+
         checkpoint = {
             "name": self.name,
             "state": self.state.name,
@@ -581,30 +581,30 @@ class SelfHealingAgent:
             "stats": self.stats,
             "tasks": {t.id: t.run_count for t in self.tasks.values()}
         }
-        
+
         try:
             with open(f"L104_AGENT_CHECKPOINT.json", "w") as f:
                 json.dump(checkpoint, f, indent=2, default=str)
             logger.info(f"[{self.name}] Checkpoint saved")
         except Exception as e:
             logger.error(f"[{self.name}] Checkpoint failed: {e}")
-    
+
     def stop(self):
         """Stop the autonomous agent."""
         logger.info(f"[{self.name}] Stopping agent...")
         self.heartbeat_active = False
         self.state = AgentState.TERMINATED
-        
+
         if self.heartbeat_thread:
             self.heartbeat_thread.join(timeout=5.0)
-        
+
         logger.info(f"[{self.name}] Agent stopped")
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # TASK MANAGEMENT
     # ═══════════════════════════════════════════════════════════════════
-    
-    def register_task(self, task_id: str, name: str, action: Callable, 
+
+    def register_task(self, task_id: str, name: str, action: Callable,
                       priority: TaskPriority = TaskPriority.MEDIUM):
         """Register a new task."""
         self.tasks[task_id] = AgentTask(
@@ -614,12 +614,12 @@ class SelfHealingAgent:
             priority=priority
         )
         logger.info(f"[{self.name}] Task registered: {name}")
-    
+
     async def queue_task(self, task_id: str):
         """Queue a task for execution."""
         if task_id in self.tasks:
             await self.task_queue.put(task_id)
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive agent status."""
         return {
@@ -657,7 +657,7 @@ async def activate_autonomous_agent():
     print("\n" + "🤖" * 60)
     print("    L104 :: SELF-HEALING AUTONOMOUS AGENT :: ACTIVATION")
     print("🤖" * 60 + "\n")
-    
+
     # Register some default monitoring tasks
     autonomous_agent.register_task(
         "health_check",
@@ -665,7 +665,7 @@ async def activate_autonomous_agent():
         lambda: autonomous_agent.calculate_overall_health(),
         TaskPriority.HIGH
     )
-    
+
     autonomous_agent.register_task(
         "performance_record",
         "Performance Recording",
@@ -675,7 +675,7 @@ async def activate_autonomous_agent():
         }),
         TaskPriority.MEDIUM
     )
-    
+
     # Start the agent
     await autonomous_agent.start()
 

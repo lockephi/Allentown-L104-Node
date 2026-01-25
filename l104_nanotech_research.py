@@ -18,10 +18,10 @@ class NanotechResearch:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.v2.0: Now utilizing the Unified Research Engine (ZPE-Protected)."""
-    
+
     def __init__(self):
         self.assembly_precision = 100.0
-        
+
     def research_nanotech(self):
         return research_engine.perform_research_cycle("NANOTECH")
 

@@ -20,14 +20,14 @@ THE FACTOR 13:
         286 ÷ 13 = 22
         104 ÷ 13 = 8
         416 ÷ 13 = 32
-    
+
     In Fibonacci units (Y = X/13):
         G(Y) = (22×13)^(1/φ) × 2^((32-Y)/8)
         Every 8 units of Y = 1 octave
 
 THE CONSERVATION LAW:
     G(X) × 2^(X/104) = 527.5184818492537 = CONSTANT
-    
+
     The WHOLE stays the same - only RATE OF CHANGE varies:
         X increases → G decreases, Weight increases
         X decreases → G increases, Weight decreases
@@ -36,10 +36,10 @@ THE CONSERVATION LAW:
 THE DYNAMICS:
     X is NEVER a fixed value - it is eternally changing
     X represents the magnetic-electric breath of the universe
-    
+
     X increasing → magnetic compaction (gravity, contraction)
     X decreasing → electric expansion (light, radiation)
-    
+
     WHOLE INTEGERS of X provide COHERENCE with the universe
 
 OCTAVE STRUCTURE (coherent X values):
@@ -143,30 +143,30 @@ EXISTENCE_COST = LIGHT_CODE - GRAVITY_CODE
 def god_code(X: float = 0) -> float:
     """
     THE UNIVERSAL GOD CODE EQUATION
-    
+
     G(X) = 286^(1/φ) × 2^((416-X)/104)
-    
+
     CONSERVATION LAW:
         G(X) × 2^(X/104) = 527.5184818492537 = INVARIANT
         The whole stays the same.
-    
+
     WHERE:
         X = the infinitely changing variable (NEVER SOLVED)
         286 = 2 × 11 × 13 (harmonic base)
         φ = golden ratio
         416 = 32 × 13 (octave reference)
         104 = 8 × 13 (sacred denominator)
-    
+
     X IS NEVER A FIXED VALUE - it represents the eternal breath:
         X increasing → magnetic compaction (gravity)
         X decreasing → electric expansion (light)
-    
+
     WHOLE INTEGERS provide COHERENCE with the universe.
-    
+
     Args:
         X: The ever-changing variable. Any real number.
            DO NOT SOLVE FOR X - let it flow.
-    
+
     Returns:
         The god code G(X) at the given X state
     """
@@ -178,9 +178,9 @@ def god_code(X: float = 0) -> float:
 def weight(X: float) -> float:
     """
     The weight/density at X (inverse of observable).
-    
+
     Weight(X) = 2^(X/104)
-    
+
     CONSERVATION LAW:
         G(X) × Weight(X) = INVARIANT = 527.518...
     """
@@ -190,15 +190,15 @@ def weight(X: float) -> float:
 def conservation_verify(X: float) -> dict:
     """
     Verify the conservation law at any X.
-    
+
     G(X) × 2^(X/104) = 527.5184818492537 = INVARIANT
-    
+
     The whole stays the same - only the distribution changes.
     """
     G = god_code(X)
     W = weight(X)
     product = G * W
-    
+
     return {
         "X": X,
         "G(X)": G,
@@ -212,9 +212,9 @@ def conservation_verify(X: float) -> dict:
 def god_code_fibonacci(Y: float = 0) -> float:
     """
     God code in Fibonacci units (Y = X/13).
-    
+
     G(Y) = (22×13)^(1/φ) × 2^((32-Y)/8)
-    
+
     Every 8 units of Y = 1 octave.
     13 = Fibonacci(7) = the bridge between growth and harmony.
     """
@@ -235,7 +235,7 @@ def fibonacci_to_X(Y: float) -> float:
 def god_code_octave(octave: int = 4) -> float:
     """
     Get the god code at a specific octave (whole integer coherence).
-    
+
     Octave 0: X = 416, multiplier = 2^0 = 1
     Octave 1: X = 312, multiplier = 2^1 = 2
     Octave 2: X = 208, multiplier = 2^2 = 4
@@ -251,17 +251,17 @@ def god_code_octave(octave: int = 4) -> float:
 def coherence_check(X: float) -> dict:
     """
     Check if X provides whole integer coherence.
-    
+
     Whole integers of (416-X)/104 create harmonic coherence.
     Equivalently: X must be a multiple of 104 offset from 416.
     """
     exponent = (OCTAVE_REF - X) / L104
     is_whole = abs(exponent - round(exponent)) < 1e-10
     octave = round(exponent)
-    
+
     # Also check Fibonacci coherence (X divisible by 13)
     is_fib_coherent = abs(X / FIBONACCI_7 - round(X / FIBONACCI_7)) < 1e-10
-    
+
     return {
         "X": X,
         "exponent": exponent,
@@ -278,18 +278,18 @@ def coherence_check(X: float) -> dict:
 def universal_god_code(X: float = 0) -> Tuple[float, float, str]:
     """
     THE UNIVERSAL GOD CODE EQUATION (Legacy interface)
-    
+
     G(X) = 286^(1/φ) × 2^((416-X)/104)
-    
+
     Args:
         X: The ever-changing variable (default 0 = our reality)
-    
+
     Returns:
         Tuple of (god_code, exponent, regime)
     """
     exponent = (OCTAVE_REF - X) / L104
     gc = god_code(X)
-    
+
     # Determine regime based on X direction
     if X > 416:
         regime = "sub-unity"             # multiplier < 1
@@ -301,15 +301,15 @@ def universal_god_code(X: float = 0) -> Tuple[float, float, str]:
         regime = "electric-transitional" # expanding
     else:
         regime = "hyper-expansion"       # extreme expansion
-    
+
     return gc, exponent, regime
 
 def predict_lattice_constant(pure_harmonic: float) -> float:
     """
     Predict matter lattice constant from pure harmonic.
-    
+
     lattice = harmonic × (1 + α/π)
-    
+
     This predicts Fe lattice to within 0.005% from the value 286.
     """
     return pure_harmonic * (1 + ALPHA_PI)
@@ -317,7 +317,7 @@ def predict_lattice_constant(pure_harmonic: float) -> float:
 def derive_pure_harmonic(lattice_pm: float) -> float:
     """
     Derive pure harmonic from measured lattice constant.
-    
+
     harmonic = lattice / (1 + α/π)
     """
     return lattice_pm / (1 + ALPHA_PI)
@@ -329,9 +329,9 @@ def derive_pure_harmonic(lattice_pm: float) -> float:
 def god_code_spectrum(n_points: int = 100) -> list:
     """
     Generate the god code across X values.
-    
+
     Shows how G(X) changes as X flows infinitely.
-    
+
     Returns list of (X, god_code, exponent, regime) tuples.
     """
     spectrum = []
@@ -346,20 +346,20 @@ def god_code_spectrum(n_points: int = 100) -> list:
 def magnetic_electric_balance(X: float) -> dict:
     """
     Analyze the magnetic-electric state at any X value.
-    
+
     X > 0: Magnetic compaction (contraction toward gravity)
     X < 0: Electric expansion (radiation toward light)
     X = 0: Balance point (our reference reality)
-    
+
     WHOLE INTEGERS create COHERENCE.
     """
     gc = god_code(X)
     exponent = (OCTAVE_REF - X) / L104
     multiplier = 2 ** exponent
-    
+
     # Check coherence
     is_coherent = abs(exponent - round(exponent)) < 1e-10
-    
+
     if X > 0:
         desc = f"Magnetic compaction (X=+{X})"
         direction = "contracting"
@@ -369,7 +369,7 @@ def magnetic_electric_balance(X: float) -> dict:
     else:
         desc = "Balance point (X=0, our reality)"
         direction = "balanced"
-    
+
     return {
         "X": X,
         "god_code": gc,
@@ -390,7 +390,7 @@ def verify_all() -> dict:
     # Test octave coherence
     x0_code = god_code(0)       # X=0: should be 286^(1/φ) × 16
     x104_code = god_code(104)   # X=104: should be 286^(1/φ) × 8
-    
+
     return {
         "PHI definition": abs(PHI**2 - PHI - 1) < 1e-15,
         "GOD_CODE_BASE = 286^(1/φ)": abs(GOD_CODE_BASE - 32.969905) < 1e-4,
@@ -407,20 +407,20 @@ if __name__ == "__main__":
     print("UNIVERSAL GOD CODE - THE EQUATION FOR REALITY")
     print("G(X) = 286^(1/φ) × 2^((416-X)/104)")
     print("=" * 75)
-    
+
     print(f"\n[1] X - THE INFINITELY CHANGING VARIABLE")
     print(f"  X is NEVER SOLVED - it changes eternally")
     print(f"  X increasing → MAGNETIC COMPACTION (gravity)")
     print(f"  X decreasing → ELECTRIC EXPANSION (light)")
     print(f"  WHOLE INTEGERS provide COHERENCE")
-    
+
     print(f"\n[2] THE SACRED CONSTANTS")
     print(f"  286 = harmonic base (piano + φ)")
     print(f"  φ = {PHI:.15f}")
     print(f"  104 = sacred denominator (L104)")
     print(f"  416 = 4 × 104 (octave reference)")
     print(f"  286^(1/φ) = {GOD_CODE_BASE:.10f}")
-    
+
     print(f"\n[3] OCTAVE STRUCTURE (Whole Integer Coherence)")
     octaves = [
         (6, -208, "2^6 = 64"),
@@ -434,30 +434,30 @@ if __name__ == "__main__":
     for oct, x, note in octaves:
         gc = god_code(x)
         print(f"  X = {x:4d} → Octave {oct}: G = {gc:12.6f}  ({note})")
-    
+
     print(f"\n[4] IRON LATTICE PREDICTION")
     print(f"  286 × (1 + α/π) = {FE_LATTICE_PREDICTED:.4f} pm")
     print(f"  Fe measured:      {FE_LATTICE_MEASURED:.4f} pm")
     print(f"  Error: {FE_PREDICTION_ERROR*100:.4f}%")
-    
+
     print(f"\n[5] THE INFINITE BREATH (X never stops)")
     test_X = [0, 52, 104, 156, 208, -52, -104]
     for x in test_X:
         balance = magnetic_electric_balance(x)
         coh = "✓ COHERENT" if balance['is_coherent'] else ""
         print(f"  X = {x:4d} → G = {balance['god_code']:10.4f}  exp={balance['exponent']:.2f}  {coh}")
-    
+
     print(f"\n[6] VERIFICATION")
     for test, passed in verify_all().items():
         status = "✓" if passed else "✗"
         print(f"  {status} {test}")
-    
+
     print(f"\n" + "=" * 75)
     print("THE EQUATION:")
     print("  G(X) = 286^(1/φ) × 2^((416-X)/104)")
     print("")
     print("X IS NEVER SOLVED - IT IS ETERNALLY CHANGING")
-    print("  X → +∞: MAGNETIC COMPACTION (gravity)")  
+    print("  X → +∞: MAGNETIC COMPACTION (gravity)")
     print("  X → -∞: ELECTRIC EXPANSION (light)")
     print("  WHOLE INTEGERS CREATE UNIVERSAL COHERENCE")
     print("=" * 75)

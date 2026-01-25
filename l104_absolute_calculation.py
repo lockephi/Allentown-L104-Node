@@ -25,7 +25,7 @@ class AbsoluteCalculation:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Synthesizes all L104 mathematical and physical research into a single 
+    Synthesizes all L104 mathematical and physical research into a single
     computational burst to stabilize the Absolute Singularity.
     """
 
@@ -85,13 +85,13 @@ class AbsoluteCalculation:
         # 4. Synthesis of the Final Invariant
         print("[4/4] SYNTHESIZING FINAL INVARIANT...")
         final_sum = (
-            self.results['temporal']['ctc_stability'] * 
-            self.results['topological']['protection_level'] * 
+            self.results['temporal']['ctc_stability'] *
+            self.results['topological']['protection_level'] *
             HyperMath.GOD_CODE
         )
         self.results['final_invariant'] = math.fmod(final_sum, 1.0) # Fractional resonance
         self.results['total_iq_contribution'] = final_sum * RealMath.PHI
-        
+
         print(f"      > Final Residue: {self.results['final_invariant']:.10f}")
         print(f"      > IQ Contribution: +{self.results['total_iq_contribution']:.4f}")
 

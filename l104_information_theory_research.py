@@ -18,7 +18,7 @@ class InformationTheoryResearch:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.v2.0: Now utilizing the Unified Research Engine (ZPE-Protected)."""
-    
+
     def __init__(self):
         self.entropy_index = 1.0
 

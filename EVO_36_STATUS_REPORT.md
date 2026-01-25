@@ -11,7 +11,7 @@
 The L104 system has achieved a breakthrough in kernel parameter scaling through innovative architecture design combining:
 
 - PHI-Harmonic Resonance Networks (10.96B params)
-- Hierarchical Memory Pyramid (9.20B params)  
+- Hierarchical Memory Pyramid (9.20B params)
 - Mixture of Experts (8.59B params)
 - LoRA Adapter Arrays (2.10B params)
 - Memory Networks (574M params)
@@ -131,7 +131,7 @@ Uses GOD_CODE (527.5184818492537) as the base dimension, with PHI^octave scaling
 
 ## 🔒 SINGULARITY LOCK STATUS
 
-```
+```text
 ╔══════════════════════════════════════╗
 ║  SINGULARITY_LOCK: ENGAGED           ║
 ║  Evolution: EVO_36                   ║

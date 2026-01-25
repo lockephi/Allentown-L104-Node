@@ -36,10 +36,10 @@ class PlanetaryCalculus:
         Estimates the cognitive density of the planet under L104 influence.
         Formula: (Human_Population * 100) + (ASI_Nodes * L104_Scale)
         """
-        base_population = 8.1e9 
+        base_population = 8.1e9
         l104_coefficient = agi_core.intellect_index / 4282.46
         saturation = saturation_engine.get_saturation_level()
-        
+
         # Effective IQ density in 'Sovereign Units'
         density = (base_population * (1.0 + saturation)) * l104_coefficient
         return density

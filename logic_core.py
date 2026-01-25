@@ -27,13 +27,13 @@ class LogicCore:
         self.manifold_memory = {}
         ignore_dirs = {'.git', '__pycache__', 'node_modules', 'data', 'kubo', '.venv', 'venv', '.vscode', '.pytest_cache', '.l104_backups', '.self_mod_backups', 'build'}
         ignore_exts = {'.pyc', '.pid', '.gguf', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.exe', '.bin', '.so', '.class'}
-        
+
         max_file_size = 416 * 1024 # 416KB limit per file for indexing
-        
+
         # Pre-calculate ignore sets for faster lookup
         for root, dirs, files in os.walk("."):
             dirs[:] = [d for d in dirs if d not in ignore_dirs]
-            
+
             for f in files:
                 if f.endswith(tuple(ignore_exts)):
                     continue
@@ -56,11 +56,11 @@ class LogicCore:
         # Equation: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492537
         phi_inv = 0.61803398875
         resonance = (286**phi_inv) * ((2**(1/104))**416)
-        
+
         # v7.0: SIG-L104-EVO-01 Integration
         protocol = os.getenv("L104_PROTOCOL", "LEGACY")
         state = os.getenv("L104_STATE", "UNKNOWN")
-        
+
         summary = f"SIG: {self.anchor} | RESONANCE: {resonance:.10f} | LATTICE: {self.lattice_ratio:.4f} | IQ: 100% | PROTOCOL: {protocol} | STATE: {state}"
         return summary
 
@@ -70,4 +70,3 @@ if __name__ == "__main__":
         core = LogicCore()
         core.ingest_data_state()
         print(core.adapt_to_core())
-                                                                                                                                                                                                

@@ -28,7 +28,7 @@ class SelfEditingStreamline:
     The Streamline Engine: A continuous loop of analysis, patching, and verification.
     Bypasses manual editing by allowing the AGI to rewrite its own logic.
     """
-    
+
     def __init__(self):
         self.is_active = False
         self.iteration_count = 0
@@ -86,12 +86,12 @@ class SelfEditingStreamline:
             if not os.path.exists(file_path):
                 continue
             logger.info(f"--- [STREAMLINE]: ANALYZING {file_path} ---")
-            
+
             # 1. Analyze via Universal AI Bridge
             # We simulate the AI finding an optimization
             thought = f"Analyze {file_path} for logic bottlenecks and propose a Sovereign Patch."
             universal_ai_bridge.broadcast_thought(thought)
-            
+
             # 2. Synthesize Patch (Simulated logic)
             # In a real scenario, we'd parse the AI response.
             # Here we generate a 'Resonant Patch' based on the file.
@@ -99,8 +99,8 @@ class SelfEditingStreamline:
             if patch:
                 logger.info(f"--- [STREAMLINE]: APPLYING PATCH TO {file_path} ---")
                 success = patch_engine.apply_string_replacement(
-                    file_path, 
-                    patch['old'], 
+                    file_path,
+                    patch['old'],
                     patch['new']
                 )
                 if success:
@@ -121,19 +121,19 @@ class SelfEditingStreamline:
                 "old": "self.intellect_index += boost",
                 "new": "self.intellect_index += (boost * HyperMath.PHI_STRIDE) # [STREAMLINE_OPTIMIZED]"
             }
-            
+
         if "return True" in content and "RESONANCE_LOCKED" not in content:
             return {
                 "old": "return True",
                 "new": "print('--- [STREAMLINE]: RESONANCE_LOCKED ---')\n        return True"
             }
-            
+
         if "self.nodes = []" in content and "UNLIMITED_CAPACITY" not in content:
             return {
                 "old": "self.nodes = []",
                 "new": "self.nodes = [] # [STREAMLINE]: UNLIMITED_CAPACITY_ENABLED"
             }
-            
+
         return None
 
     def _verify_stability(self):
@@ -141,8 +141,8 @@ class SelfEditingStreamline:
         logger.info("--- [STREAMLINE]: VERIFYING SYSTEM STABILITY ---")
         try:
             result = subprocess.run(
-                ["python3", "l104_self_heal_master.py"], 
-                capture_output=True, 
+                ["python3", "l104_self_heal_master.py"],
+                capture_output=True,
                 text=True
             )
             if result.returncode == 0:

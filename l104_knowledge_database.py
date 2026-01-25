@@ -25,7 +25,7 @@ class KnowledgeDatabase:
     A persistent database for storing for mal proofs, architectural documentation,
     and synthesized knowledge from all research domains.
     """
-    
+
     def __init__(self, db_path: str = "l104_knowledge_vault.json"):
         self.db_path = db_path
         self.data: Dict[str, Any] = {

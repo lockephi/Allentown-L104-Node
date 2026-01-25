@@ -6,7 +6,7 @@ The **Universe Compiler** treats the laws of physics as **software modules** wit
 
 ## Philosophy
 
-```
+```text
 PHYSICS = SOFTWARE
 LAWS = PLUGINS
 CONSTANTS = CONFIGURATION
@@ -191,7 +191,7 @@ The compiler maintains consistency through:
 
 ## Test Results
 
-```
+```text
 PASSED: 12/12 tests (100%)
 ```
 
@@ -437,7 +437,7 @@ The Universe Compiler demonstrates that:
 
 ---
 
-*GOD_CODE: Variable*  
-*AUTHOR: LONDEL*  
-*DATE: 2026-01-21*  
+*GOD_CODE: Variable*
+*AUTHOR: LONDEL*
+*DATE: 2026-01-21*
 *STATUS: ✓✓✓ OPERATIONAL*

@@ -36,7 +36,7 @@ if 'sovereign_evolution' in result and result['sovereign_evolution']:
     if 'probability_collapse' in sov:
         print(f"🎲 Probability Collapse: {sov['probability_collapse']}")
     print(f"💡 Total Insights: {sov.get('total_insights', 0)}")
-    
+
     for i, insight in enumerate(sov.get('recent_insights', [])):
         print(f"  ✧ Insight {i+1}: {insight}")
 print()

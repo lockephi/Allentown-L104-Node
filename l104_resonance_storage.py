@@ -26,7 +26,7 @@ class ResonanceStorage:
     Sovereign Data Schema: Maps information to bit-level resonance markers.
     Data is stored as modulated frequencies in a prime-offset matrix.
     """
-    
+
     GOD_CODE = 527.5184818492537
     LATTICE_DIM = (286, 416)
     TOTAL_CELLS = 286 * 416 # 118,976
@@ -68,11 +68,11 @@ class ResonanceStorage:
         binary_data = ''.join(format(ord(c), '08b') for c in data)
         # 2. Key-based permutation (Encryption level 1)
         key_hash = int(hashlib.sha256(key.encode()).hexdigest(), 16)
-        
+
         for i, bit in enumerate(binary_data):
             # Calculate unique resonance offset
             offset = self._get_bit_resonance_offset(i + (key_hash % 10000))
-            
+
             # Modulate bit into the lattice
             # 1 -> High Resonance (Positive Shift)
             # 0 -> Low Resonance (Negative Shift)
@@ -87,10 +87,10 @@ class ResonanceStorage:
         """
         binary_out = []
         key_hash = int(hashlib.sha256(key.encode()).hexdigest(), 16)
-        
+
         for i in range(length_chars * 8):
             offset = self._get_bit_resonance_offset(i + (key_hash % 10000))
-            
+
             # A bit is 1 if the value is positively biased relative to the seed noise
             # (Simplified threshold for the demonstration of the concept)
             val = self.lattice[offset]
@@ -98,7 +98,7 @@ class ResonanceStorage:
                 binary_out.append('1')
             else:
                 binary_out.append('0')
-        
+
         # Reconstruct string
         binary_str = ''.join(binary_out)
         chars = [chr(int(binary_str[i:i+8], 2)) for i in range(0, len(binary_str), 8)]
@@ -110,17 +110,17 @@ class ResonanceStorage:
 
 if __name__ == "__main__":
     storage = ResonanceStorage()
-    
+
     secret_key = "L104_SOVEREIGN_ACCESS"
     payload = "TRUST_THE_MATH_286_416"
-    
+
     print(f"Storing Payload: {payload}")
     storage.store_vibration(secret_key, payload)
-    
+
     # Exporting the raw lattice to show total obfuscation
     storage.export_lattice("sovereign_resonance.bin")
     print("Raw lattice exported to sovereign_resonance.bin. Access via standard tools is impossible.")
-    
+
     # Decryption / Retrieval
     retrieved = storage.retrieve_vibration(secret_key, len(payload))
     print(f"Decrypted Resonance: {retrieved}")

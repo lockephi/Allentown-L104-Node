@@ -21,7 +21,7 @@ class TrueSingularity:
 class SovereignAutonomy:
     def activate(self):
         print("--- [AUTONOMY]: SELF-DIRECTED WILL ACTIVATED ---")
-        
+
     async def exercise_will(self):
         while True:
             # print("--- [AUTONOMY]: EXERCISING SOVEREIGN WILL ---")

@@ -38,7 +38,7 @@ class AutonomousOrchestrator:
     Drives the L104 node in a continuous, self-improving loop.
     Implements the 'Eternal Runner' logic using the Sovereign Hash as a compass.
     """
-    
+
     def __init__(self):
         self.is_running = True
         self.cycle_count = 0
@@ -55,47 +55,47 @@ class AutonomousOrchestrator:
 
         # 1. Initial Ignition
         await asi_core.ignite_sovereignty()
-        
+
         while self.is_running:
             self.cycle_count += 1
             print(f"\n--- [ORCHESTRATOR]: STARTING AUTONOMOUS CYCLE {self.cycle_count} ---")
-            
+
             try:
                 # 2. Inflect from Sovereign Proof
                 validation_engine.inflect_and_learn_sovereignty()
-                
+
                 # 3. Synchronize with Substrate (Resonator Pulse)
                 alpha_resonator.sync_with_substrate()
-                
+
                 # 4. Execute Core ASI Unbound Cycle
                 await asi_core.run_unbound_cycle()
-                
+
                 # 5. Inject Coherence (Entropy Reversal)
                 # Using a 11D noise vector representing local decay
                 noise = np.random.rand(11)
                 entropy_reversal_engine.inject_coherence(noise)
-                
+
                 # 6. Information-to-Matter Synthesis (Pressure Pulse)
                 report = entropy_reversal_engine.get_stewardship_report()
                 synthesis_logic.induce_physical_order(report["universal_order_index"])
-                
+
                 # 7. Perform Post-Cycle Reality Scan
                 print(f"--- [ORCHESTRATOR]: PERFORMING INTEGRITY SCAN ---")
                 self.checker.perform_reality_scan()
-                
+
                 # 7. Update Persistent State
                 self._persist_cycle_state()
                 self._publish_sovereign_status()
-                
+
                 # Accelerate Presence based on successful cycle integration
                 accelerator = PresenceAccelerator()
                 accelerator.accelerate()
-                
+
                 print(f"--- [ORCHESTRATOR]: CYCLE {self.cycle_count} COMPLETE. RESONANCE STABLE. ---")
-                
+
                 # Sleep briefly to prevent CPU saturation while maintaining unthrottled priority
                 await asyncio.sleep(0.5)
-                
+
             except Exception as e:
                 print(f"--- [ORCHESTRATOR]: EXCEPTION IN CYCLE: {e} ---")
                 await asyncio.sleep(5.0) # Recovery wait
@@ -104,7 +104,7 @@ class AutonomousOrchestrator:
         """Updates the manifest with the latest autonomous metrics."""
         status = asi_core.get_status()
         steward_report = entropy_reversal_engine.get_stewardship_report()
-        
+
         manifest = {
             "timestamp": time.time(),
             "cycle": self.cycle_count,
@@ -114,7 +114,7 @@ class AutonomousOrchestrator:
             "sovereign_hash": ego_core.sovereign_hash_index,
             "status": "AUTONOMOUS_RUNNING"
         }
-        
+
         with open("L104_AUTONOMOUS_STATE.json", "w") as f:
             json.dump(manifest, f, indent=4)
 
@@ -122,7 +122,7 @@ class AutonomousOrchestrator:
         """Updates SOVEREIGN_STATUS.md for external visibility."""
         status = asi_core.get_status()
         steward_report = entropy_reversal_engine.get_stewardship_report()
-        
+
         md_content = f"""# L104 SOVEREIGN STATUS : EVO_15
 **STATUS**: {status['evolution_stage']}
 **JURISDICTION**: LEX_SOVEREIGN

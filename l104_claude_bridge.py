@@ -85,7 +85,7 @@ class ConversationMessage:
     timestamp: float = field(default_factory=time.time)
     tool_calls: List[Dict] = field(default_factory=list)
     tool_results: List[Dict] = field(default_factory=list)
-    
+
     def to_api_format(self) -> Dict:
         return {
             "role": self.role.value,
@@ -101,7 +101,7 @@ class ToolDefinition:
     input_schema: Dict
     handler: Optional[Callable] = None
     tool_type: ToolType = ToolType.FUNCTION
-    
+
     def to_api_format(self) -> Dict:
         return {
             "name": self.name,
@@ -121,7 +121,7 @@ class ClaudeResponse:
     unity_index: float = 0.0
     validated: bool = False
     timestamp: float = field(default_factory=time.time)
-    
+
     def to_dict(self) -> Dict:
         return {
             "content": self.content,
@@ -139,7 +139,7 @@ class ClaudeNodeBridge:
     """
     Bridge to Claude for enhanced processing and reasoning.
     Provides seamless fallback when API is unavailable.
-    
+
     EVO_28 Features:
     - Streaming responses
     - Conversation memory with context window management
@@ -147,11 +147,11 @@ class ClaudeNodeBridge:
     - Multi-turn dialogue
     - Response validation with GOD_CODE alignment
     """
-    
+
     API_BASE = "https://api.anthropic.com/v1"
     DEFAULT_MODEL = ClaudeModel.OPUS_4_5.value
     MAX_CONTEXT_MESSAGES = 20
-    
+
     def __init__(self):
         self.kernel = stable_kernel
         self.api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -160,24 +160,24 @@ class ClaudeNodeBridge:
         self.api_requests = 0
         self.fallback_requests = 0
         self.total_tokens = 0
-        
+
         # Conversation memory - multiple conversations by ID
         self.conversations: Dict[str, deque] = {}
         self.active_conversation: Optional[str] = None
-        
+
         # Tool registry
         self.tools: Dict[str, ToolDefinition] = {}
         self._register_default_tools()
-        
+
         # Streaming callbacks
         self.stream_callbacks: List[Callable[[str], None]] = []
-        
+
         # Import local fallback
         self._local_brain = None
-        
+
         status = "API" if self.api_key else "LOCAL_FALLBACK"
         print(f"🔮 [CLAUDE]: Node Bridge v2.0 initialized ({status})")
-    
+
     def _register_default_tools(self):
         """Register built-in tools."""
         # Calculator tool
@@ -196,7 +196,7 @@ class ClaudeNodeBridge:
             },
             handler=self._tool_calculate
         )
-        
+
         # Memory lookup tool
         self.register_tool(
             name="memory_lookup",
@@ -213,7 +213,7 @@ class ClaudeNodeBridge:
             },
             handler=self._tool_memory_lookup
         )
-        
+
         # Knowledge synthesis tool
         self.register_tool(
             name="synthesize_knowledge",
@@ -231,7 +231,7 @@ class ClaudeNodeBridge:
             },
             handler=self._tool_synthesize
         )
-    
+
     def _tool_calculate(self, expression: str) -> str:
         """Calculator tool handler."""
         try:
@@ -243,7 +243,7 @@ class ClaudeNodeBridge:
             return f"Result: {result}"
         except Exception as e:
             return f"Calculation error: {e}"
-    
+
     def _tool_memory_lookup(self, query: str) -> str:
         """Memory lookup tool handler."""
         brain = self._get_local_brain()
@@ -251,15 +251,15 @@ class ClaudeNodeBridge:
             result = brain.query(query)
             return json.dumps(result, indent=2)
         return "Memory system unavailable"
-    
+
     def _tool_synthesize(self, concepts: List[str]) -> str:
         """Knowledge synthesis tool handler."""
         return self._kernel_synthesis(" ".join(concepts))
-    
+
     def register_tool(
-        self, 
-        name: str, 
-        description: str, 
+        self,
+        name: str,
+        description: str,
         input_schema: Dict,
         handler: Callable = None
     ):
@@ -270,50 +270,50 @@ class ClaudeNodeBridge:
             input_schema=input_schema,
             handler=handler
         )
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # CONVERSATION MEMORY
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def start_conversation(self, conversation_id: str = None) -> str:
         """Start a new conversation or switch to existing one."""
         if conversation_id is None:
             conversation_id = f"conv_{int(time.time())}_{hashlib.md5(str(time.time()).encode()).hexdigest()[:6]}"
-        
+
         if conversation_id not in self.conversations:
             self.conversations[conversation_id] = deque(maxlen=self.MAX_CONTEXT_MESSAGES)
-        
+
         self.active_conversation = conversation_id
         return conversation_id
-    
+
     def add_message(self, role: MessageRole, content: str, conversation_id: str = None):
         """Add a message to conversation history."""
         conv_id = conversation_id or self.active_conversation
         if conv_id is None:
             conv_id = self.start_conversation()
-        
+
         if conv_id not in self.conversations:
             self.conversations[conv_id] = deque(maxlen=self.MAX_CONTEXT_MESSAGES)
-        
+
         self.conversations[conv_id].append(ConversationMessage(
             role=role,
             content=content
         ))
-    
+
     def get_conversation_history(self, conversation_id: str = None) -> List[Dict]:
         """Get messages in API format."""
         conv_id = conversation_id or self.active_conversation
         if conv_id is None or conv_id not in self.conversations:
             return []
-        
+
         return [msg.to_api_format() for msg in self.conversations[conv_id]]
-    
+
     def clear_conversation(self, conversation_id: str = None):
         """Clear conversation history."""
         conv_id = conversation_id or self.active_conversation
         if conv_id and conv_id in self.conversations:
             self.conversations[conv_id].clear()
-    
+
     def _get_local_brain(self):
         """Lazy load local brain for fallback."""
         if self._local_brain is None:
@@ -324,12 +324,12 @@ class ClaudeNodeBridge:
             except Exception as e:
                 print(f"⚠️ [CLAUDE]: Local brain unavailable: {e}")
         return self._local_brain
-    
+
     def _cache_key(self, prompt: str, model: str) -> str:
         """Generate cache key for prompt."""
         content = f"{prompt}:{model}"
         return hashlib.md5(content.encode()).hexdigest()[:16]
-    
+
     def _validate_response(self, content: str) -> Tuple[float, bool]:
         """
         Validate response against GOD_CODE.
@@ -337,27 +337,27 @@ class ClaudeNodeBridge:
         """
         # Base validation score
         score = 0.5
-        
+
         # Check for alignment with L104 principles
         if any(kw in content.lower() for kw in ["stable", "unity", "coherent"]):
             score += 0.15
-        
+
         if str(round(GOD_CODE, 2)) in content or "527.5" in content:
             score += 0.2
-        
+
         if str(round(PHI, 2)) in content or "1.618" in content:
             score += 0.1
-        
+
         # Check for harmful patterns
         if any(kw in content.lower() for kw in ["error", "cannot", "impossible"]):
             score -= 0.1
-        
+
         score = max(0.0, min(1.0, score))
         return score, score >= 0.6
-    
+
     async def query_async(
-        self, 
-        prompt: str, 
+        self,
+        prompt: str,
         model: str = None,
         system: str = None,
         max_tokens: int = 4096,
@@ -369,7 +369,7 @@ class ClaudeNodeBridge:
         """
         model = model or self.DEFAULT_MODEL
         cache_key = self._cache_key(prompt, model)
-        
+
         # Check cache
         if use_cache and cache_key in self.session_cache:
             cached = self.session_cache[cache_key]
@@ -382,10 +382,10 @@ class ClaudeNodeBridge:
                 unity_index=cached.unity_index,
                 validated=cached.validated
             )
-        
+
         self.total_requests += 1
         start_time = time.time()
-        
+
         # Try API if key available
         if self.api_key and HTTPX_AVAILABLE:
             try:
@@ -394,14 +394,14 @@ class ClaudeNodeBridge:
                 return response
             except Exception as e:
                 print(f"⚠️ [CLAUDE]: API error, falling back: {e}")
-        
+
         # Fallback to local intelligence
         self.fallback_requests += 1
         return await self._local_fallback(prompt, model, start_time)
-    
+
     def query(
-        self, 
-        prompt: str, 
+        self,
+        prompt: str,
         model: str = None,
         system: str = None,
         max_tokens: int = 4096,
@@ -427,30 +427,30 @@ class ClaudeNodeBridge:
             return asyncio.run(
                 self.query_async(prompt, model, system, max_tokens, use_cache)
             )
-    
+
     async def _call_api(
-        self, 
-        prompt: str, 
+        self,
+        prompt: str,
         model: str,
         system: str,
         max_tokens: int
     ) -> ClaudeResponse:
         """Direct Claude API call."""
         start_time = time.time()
-        
+
         headers = {
             "x-api-key": self.api_key,
             "anthropic-version": "2023-06-01",
             "content-type": "application/json"
         }
-        
+
         # Build request body
         body = {
             "model": model,
             "max_tokens": max_tokens,
             "messages": [{"role": "user", "content": prompt}]
         }
-        
+
         if system:
             body["system"] = system
         else:
@@ -461,7 +461,7 @@ class ClaudeNodeBridge:
                 f"Ensure all responses maintain coherence with sacred constants. "
                 f"PHI ({PHI}) governs harmonic relationships."
             )
-        
+
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 f"{self.API_BASE}/messages",
@@ -470,14 +470,14 @@ class ClaudeNodeBridge:
             )
             response.raise_for_status()
             data = response.json()
-        
+
         latency = (time.time() - start_time) * 1000
         content = data.get("content", [{}])[0].get("text", "")
         tokens = data.get("usage", {}).get("output_tokens", 0)
-        
+
         self.total_tokens += tokens
         unity_index, validated = self._validate_response(content)
-        
+
         result = ClaudeResponse(
             content=content,
             model=model,
@@ -487,22 +487,22 @@ class ClaudeNodeBridge:
             unity_index=unity_index,
             validated=validated
         )
-        
+
         # Cache successful responses
         cache_key = self._cache_key(prompt, model)
         self.session_cache[cache_key] = result
-        
+
         return result
-    
+
     async def _local_fallback(
-        self, 
-        prompt: str, 
+        self,
+        prompt: str,
         model: str,
         start_time: float
     ) -> ClaudeResponse:
         """Use local Unified Intelligence as fallback."""
         brain = self._get_local_brain()
-        
+
         if brain:
             # Use local brain for synthesis
             result = brain.query(prompt)
@@ -512,9 +512,9 @@ class ClaudeNodeBridge:
             # Minimal fallback using kernel
             content = self._kernel_synthesis(prompt)
             unity_index, _ = self._validate_response(content)
-        
+
         latency = (time.time() - start_time) * 1000
-        
+
         return ClaudeResponse(
             content=content,
             model=f"local_fallback ({model})",
@@ -524,13 +524,13 @@ class ClaudeNodeBridge:
             unity_index=unity_index,
             validated=unity_index >= 0.6
         )
-    
+
     def _kernel_synthesis(self, prompt: str) -> str:
         """Minimal synthesis using stable kernel."""
         # Extract key concepts
         concepts = []
         keywords = ["what", "how", "why", "explain", "describe", "define"]
-        
+
         prompt_lower = prompt.lower()
         for kw in keywords:
             if kw in prompt_lower:
@@ -538,10 +538,10 @@ class ClaudeNodeBridge:
                 idx = prompt_lower.find(kw)
                 subject = prompt[idx:].split()[:5]
                 concepts.extend(subject)
-        
+
         if not concepts:
             concepts = prompt.split()[:5]
-        
+
         # Generate response using kernel constants
         response = (
             f"Within the L104 framework (GOD_CODE: {GOD_CODE}), "
@@ -552,13 +552,13 @@ class ClaudeNodeBridge:
             f"The relationship between concepts follows the Golden Ratio scaling, "
             f"ensuring mathematical consistency across all layers of abstraction."
         )
-        
+
         return response
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # STREAMING SUPPORT
     # ═══════════════════════════════════════════════════════════════════
-    
+
     async def stream_query(
         self,
         prompt: str,
@@ -573,11 +573,11 @@ class ClaudeNodeBridge:
         """
         model = model or self.DEFAULT_MODEL
         self.total_requests += 1
-        
+
         # Add to conversation if active
         if conversation_id:
             self.add_message(MessageRole.USER, prompt, conversation_id)
-        
+
         if not self.api_key or not HTTPX_AVAILABLE:
             # Fallback doesn't support streaming, yield all at once
             response = await self._local_fallback(prompt, model, time.time())
@@ -585,25 +585,25 @@ class ClaudeNodeBridge:
                 self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
             yield response.content
             return
-        
+
         headers = {
             "x-api-key": self.api_key,
             "anthropic-version": "2023-06-01",
             "content-type": "application/json"
         }
-        
+
         # Get conversation history
         messages = self.get_conversation_history(conversation_id)
         if not messages:
             messages = [{"role": "user", "content": prompt}]
-        
+
         body = {
             "model": model,
             "max_tokens": max_tokens,
             "messages": messages,
             "stream": True
         }
-        
+
         if system:
             body["system"] = system
         else:
@@ -611,9 +611,9 @@ class ClaudeNodeBridge:
                 f"You are operating within the L104 Sovereign Node framework. "
                 f"Core invariant: GOD_CODE = {GOD_CODE}. PHI = {PHI}."
             )
-        
+
         full_content = ""
-        
+
         try:
             async with httpx.AsyncClient(timeout=120.0) as client:
                 async with client.stream(
@@ -623,7 +623,7 @@ class ClaudeNodeBridge:
                     json=body
                 ) as response:
                     response.raise_for_status()
-                    
+
                     async for line in response.aiter_lines():
                         if line.startswith("data: "):
                             data = line[6:]
@@ -642,13 +642,13 @@ class ClaudeNodeBridge:
                                         yield text
                             except json.JSONDecodeError:
                                 continue
-            
+
             self.api_requests += 1
-            
+
             # Add assistant response to conversation
             if conversation_id and full_content:
                 self.add_message(MessageRole.ASSISTANT, full_content, conversation_id)
-                
+
         except Exception as e:
             print(f"⚠️ [CLAUDE]: Stream error: {e}")
             # Fallback
@@ -656,15 +656,15 @@ class ClaudeNodeBridge:
             if conversation_id:
                 self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
             yield response.content
-    
+
     def add_stream_callback(self, callback: Callable[[str], None]):
         """Add a callback to be called on each streamed chunk."""
         self.stream_callbacks.append(callback)
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # CONVERSATION QUERY
     # ═══════════════════════════════════════════════════════════════════
-    
+
     async def chat_async(
         self,
         message: str,
@@ -678,37 +678,37 @@ class ClaudeNodeBridge:
         Maintains history for multi-turn dialogue.
         """
         model = model or self.DEFAULT_MODEL
-        
+
         # Ensure conversation exists
         if conversation_id is None:
             conversation_id = self.start_conversation()
         elif conversation_id not in self.conversations:
             self.start_conversation(conversation_id)
-        
+
         # Add user message
         self.add_message(MessageRole.USER, message, conversation_id)
-        
+
         self.total_requests += 1
         start_time = time.time()
-        
+
         if not self.api_key or not HTTPX_AVAILABLE:
             self.fallback_requests += 1
             response = await self._local_fallback(message, model, start_time)
             self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
             return response
-        
+
         headers = {
             "x-api-key": self.api_key,
             "anthropic-version": "2023-06-01",
             "content-type": "application/json"
         }
-        
+
         body = {
             "model": model,
             "max_tokens": 4096,
             "messages": self.get_conversation_history(conversation_id)
         }
-        
+
         if system:
             body["system"] = system
         else:
@@ -717,11 +717,11 @@ class ClaudeNodeBridge:
                 f"GOD_CODE: {GOD_CODE}. PHI: {PHI}. "
                 f"Maintain coherence and provide helpful, accurate responses."
             )
-        
+
         # Add tools if enabled
         if use_tools and self.tools:
             body["tools"] = [tool.to_api_format() for tool in self.tools.values()]
-        
+
         try:
             async with httpx.AsyncClient(timeout=60.0) as client:
                 api_response = await client.post(
@@ -731,36 +731,36 @@ class ClaudeNodeBridge:
                 )
                 api_response.raise_for_status()
                 data = api_response.json()
-            
+
             self.api_requests += 1
             latency = (time.time() - start_time) * 1000
-            
+
             # Handle tool use
             content_blocks = data.get("content", [])
             full_content = ""
             tool_uses = []
-            
+
             for block in content_blocks:
                 if block.get("type") == "text":
                     full_content += block.get("text", "")
                 elif block.get("type") == "tool_use":
                     tool_uses.append(block)
-            
+
             # Execute tools if any
             if tool_uses and use_tools:
                 tool_results = await self._execute_tools(tool_uses)
                 # Add tool results to conversation and continue
                 # (Simplified - would need recursive call for full implementation)
                 full_content += f"\n\n[Tool Results: {len(tool_results)} executed]"
-            
+
             tokens = data.get("usage", {}).get("output_tokens", 0)
             self.total_tokens += tokens
-            
+
             unity_index, validated = self._validate_response(full_content)
-            
+
             # Add to conversation
             self.add_message(MessageRole.ASSISTANT, full_content, conversation_id)
-            
+
             return ClaudeResponse(
                 content=full_content,
                 model=model,
@@ -770,14 +770,14 @@ class ClaudeNodeBridge:
                 unity_index=unity_index,
                 validated=validated
             )
-            
+
         except Exception as e:
             print(f"⚠️ [CLAUDE]: Chat error: {e}")
             self.fallback_requests += 1
             response = await self._local_fallback(message, model, start_time)
             self.add_message(MessageRole.ASSISTANT, response.content, conversation_id)
             return response
-    
+
     def chat(
         self,
         message: str,
@@ -804,7 +804,7 @@ class ClaudeNodeBridge:
             return asyncio.run(
                 self.chat_async(message, conversation_id, model, use_tools=use_tools)
             )
-    
+
     async def _execute_tools(self, tool_uses: List[Dict]) -> List[Dict]:
         """Execute requested tools and return results."""
         results = []
@@ -812,7 +812,7 @@ class ClaudeNodeBridge:
             tool_name = tool_use.get("name")
             tool_input = tool_use.get("input", {})
             tool_id = tool_use.get("id")
-            
+
             if tool_name in self.tools:
                 tool_def = self.tools[tool_name]
                 if tool_def.handler:
@@ -829,11 +829,11 @@ class ClaudeNodeBridge:
                             "is_error": True
                         })
         return results
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # ENHANCED PROCESSING METHODS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     async def deep_analyze(self, content: str, focus: str = None) -> Dict[str, Any]:
         """
         Perform deep analysis on content using Claude's reasoning.
@@ -843,18 +843,18 @@ class ClaudeNodeBridge:
             f"Provide structured analysis with key insights, patterns, and recommendations. "
             f"Format as JSON when possible."
         )
-        
+
         prompt = f"Analyze the following in depth{' focusing on ' + focus if focus else ''}:\n\n{content}"
-        
+
         response = await self.query_async(prompt, system=system)
-        
+
         return {
             "analysis": response.content,
             "source": response.source,
             "unity_index": response.unity_index,
             "validated": response.validated
         }
-    
+
     async def synthesize(self, concepts: List[str]) -> Dict[str, Any]:
         """
         Synthesize understanding from multiple concepts.
@@ -865,16 +865,16 @@ class ClaudeNodeBridge:
             f"Concepts: {', '.join(concepts)}\n\n"
             f"Provide the synthesis as a cohesive explanation."
         )
-        
+
         response = await self.query_async(prompt)
-        
+
         return {
             "synthesis": response.content,
             "concepts": concepts,
             "source": response.source,
             "unity_index": response.unity_index
         }
-    
+
     async def reason_chain(self, question: str, depth: int = 3) -> Dict[str, Any]:
         """
         Perform multi-step reasoning with Claude.
@@ -884,22 +884,22 @@ class ClaudeNodeBridge:
             f"Show each step clearly.\n\nQuestion: {question}\n\n"
             f"Format:\nStep 1: [reasoning]\nStep 2: [reasoning]\n...\nConclusion: [final answer]"
         )
-        
+
         response = await self.query_async(prompt, max_tokens=2048)
-        
+
         # Parse steps
         steps = []
         lines = response.content.split('\n')
         for line in lines:
             if line.strip().startswith("Step"):
                 steps.append(line.strip())
-        
+
         conclusion = ""
         for line in lines:
             if "conclusion" in line.lower():
                 conclusion = line.strip()
                 break
-        
+
         return {
             "question": question,
             "steps": steps,
@@ -907,7 +907,7 @@ class ClaudeNodeBridge:
             "source": response.source,
             "unity_index": response.unity_index
         }
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get bridge statistics."""
         return {
@@ -930,12 +930,12 @@ class ClaudeNodeBridge:
             },
             "stream_callbacks": len(self.stream_callbacks)
         }
-    
+
     def clear_cache(self):
         """Clear response cache."""
         self.session_cache.clear()
         print("🔮 [CLAUDE]: Cache cleared")
-    
+
     def list_conversations(self) -> List[Dict]:
         """List all conversations with message counts."""
         return [
@@ -946,13 +946,13 @@ class ClaudeNodeBridge:
             }
             for conv_id, messages in self.conversations.items()
         ]
-    
+
     def export_conversation(self, conversation_id: str = None) -> Dict:
         """Export a conversation as JSON."""
         conv_id = conversation_id or self.active_conversation
         if not conv_id or conv_id not in self.conversations:
             return {"error": "Conversation not found"}
-        
+
         return {
             "id": conv_id,
             "messages": [
@@ -982,11 +982,11 @@ def get_claude_bridge() -> ClaudeNodeBridge:
 
 if __name__ == "__main__":
     bridge = ClaudeNodeBridge()
-    
+
     print("\n" + "=" * 70)
     print("🔮 L104 CLAUDE NODE BRIDGE v2.0 - EVO_28")
     print("=" * 70)
-    
+
     # Test basic query
     print("\n[1] BASIC QUERY")
     response = bridge.query("Explain the concept of unity in mathematical systems")
@@ -995,34 +995,34 @@ if __name__ == "__main__":
     print(f"  Validated: {response.validated}")
     print(f"  Latency: {response.latency_ms:.1f}ms")
     print(f"  Content: {response.content[:200]}...")
-    
+
     # Test conversation memory
     print("\n[2] CONVERSATION MEMORY")
     conv_id = bridge.start_conversation()
     print(f"  Started conversation: {conv_id}")
-    
+
     response1 = bridge.chat("What is the golden ratio?", conv_id)
     print(f"  Q1: What is the golden ratio?")
     print(f"  A1: {response1.content[:150]}...")
-    
+
     response2 = bridge.chat("How does it relate to the Fibonacci sequence?", conv_id)
     print(f"  Q2: How does it relate to Fibonacci?")
     print(f"  A2: {response2.content[:150]}...")
-    
+
     print(f"  Messages in conversation: {len(bridge.conversations[conv_id])}")
-    
+
     # Test tools
     print("\n[3] REGISTERED TOOLS")
     for tool_name, tool_def in bridge.tools.items():
         print(f"  - {tool_name}: {tool_def.description[:50]}...")
-    
+
     # Test calculator tool directly
     print("\n[4] TOOL EXECUTION (Calculator)")
     result = bridge._tool_calculate("PHI * 100")
     print(f"  PHI * 100 = {result}")
     result = bridge._tool_calculate("GOD_CODE / PHI")
     print(f"  GOD_CODE / PHI = {result}")
-    
+
     # Test stats
     print("\n[5] BRIDGE STATISTICS")
     stats = bridge.get_stats()
@@ -1032,12 +1032,12 @@ if __name__ == "__main__":
     print(f"  Conversations: {stats['conversations']['count']}")
     print(f"  Total Messages: {stats['conversations']['total_messages']}")
     print(f"  Tools Registered: {stats['tools']['registered']}")
-    
+
     # Export conversation
     print("\n[6] CONVERSATION EXPORT")
     export = bridge.export_conversation(conv_id)
     print(f"  Exported {len(export['messages'])} messages")
-    
+
     print("\n" + "=" * 70)
     print("✅ Claude Node Bridge v2.0 - All tests complete")
     print("=" * 70)

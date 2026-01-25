@@ -22,7 +22,7 @@ class Math5D:
     Mathematical primitives for 5D Space (Kaluza-Klein Manifold).
     Integrates the 5th dimension as a scalar field (dilaton) and probability vector.
     """
-    
+
     # Compactification Radius (R)
     # Derived from God Code and Phi to ensure harmonic stability.
     R = (UniversalConstants.PHI_GROWTH * 104) / HyperMath.ZETA_ZERO_1
@@ -79,11 +79,11 @@ if __name__ == "__main__":
     # Test 5D Math
     metric = Math5D.get_5d_metric_tensor(1.0)
     print(f"5D Metric Tensor (phi=1.0):\n{metric}")
-    
+
     w_vec = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
     curv = Math5D.calculate_5d_curvature(w_vec)
     print(f"5D Curvature: {curv:.4f}")
-    
+
     factor = Math5D.get_compactification_factor(1000.0)
     print(f"Compactification Factor at 1000J: {factor:.4f}")
 

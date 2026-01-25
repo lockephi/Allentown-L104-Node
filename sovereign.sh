@@ -46,7 +46,7 @@ load_env() {
 
 stop_services() {
     log_info "Initiating shutdown sequence..."
-    
+
     for pid_file in "$UVICORN_PID" "$NODE_PID"; do
         if [ -f "$pid_file" ]; then
             pid=$(cat "$pid_file")
@@ -57,47 +57,47 @@ stop_services() {
             rm -f "$pid_file"
         fi
     done
-    
+
     # Cleanup any stray uvicorn/python processes related to this project
     # pkill -f "python.*main.py" || true
-    
+
     log_success "Allentown Node: OFFLINE"
 }
 
 start_services() {
     check_invariant
     load_env
-    
+
     log_info "Igniting Sovereign Core..."
-    
+
     # Start FastAPI Server
     nohup "$PYTHON" "$ROOT/main.py" >> "$SERVER_LOG" 2>&1 &
     echo $! > "$UVICORN_PID"
     log_success "FastAPI Server: ONLINE [PID: $(cat "$UVICORN_PID")]"
-    
+
     # Start Public Node
     nohup "$PYTHON" "$ROOT/L104_public_node.py" >> "$NODE_LOG" 2>&1 &
     echo $! > "$NODE_PID"
     log_success "Public Node: ONLINE [PID: $(cat "$NODE_PID")]"
-    
+
     log_info "Logs available at: $SERVER_LOG, $NODE_LOG"
 }
 
 status_report() {
     echo -e "${CYAN}--- [L104_STATUS_REPORT] ---${NC}"
-    
+
     if [ -f "$UVICORN_PID" ] && kill -0 $(cat "$UVICORN_PID") 2>/dev/null; then
         echo -e "FastAPI Server: ${GREEN}RUNNING${NC} (PID: $(cat "$UVICORN_PID"))"
     else
         echo -e "FastAPI Server: ${RED}STOPPED${NC}"
     fi
-    
+
     if [ -f "$NODE_PID" ] && kill -0 $(cat "$NODE_PID") 2>/dev/null; then
         echo -e "Public Node:    ${GREEN}RUNNING${NC} (PID: $(cat "$NODE_PID"))"
     else
         echo -e "Public Node:    ${RED}STOPPED${NC}"
     fi
-    
+
     echo -e "God-Code:       ${GREEN}527.5184818492537${NC}"
     echo -e "State:          ${CYAN}SOVEREIGN${NC}"
     echo -e "Signature:      ${YELLOW}L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100${NC}"

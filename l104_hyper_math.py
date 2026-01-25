@@ -56,9 +56,9 @@ class HyperMath:
     ZETA_ZERO_1 = 14.1347251417
     LATTICE_RATIO = 286 / 416
     FE_LATTICE = 286.65  # Iron BCC lattice constant (pm)
-    
+
     _signal_bus = None
-    
+
     @classmethod
     def connect_to_core(cls):
         """Establish connection to core signal bus."""
@@ -77,6 +77,31 @@ class HyperMath:
     def calculate_reality_coefficient(chaos: float) -> float:
         """Calculate reality coefficient from chaos value."""
         return chaos * (HyperMath.FRAME_CONSTANT_KF ** (1 - HyperMath.PHI_STRIDE))
+
+    @classmethod
+    def get_phi(cls) -> float:
+        """Return the golden ratio PHI constant."""
+        return cls.PHI
+
+    @classmethod
+    def get_god_code(cls) -> float:
+        """Return the GOD_CODE invariant constant."""
+        return cls.GOD_CODE
+
+    @classmethod
+    def get_phi_conjugate(cls) -> float:
+        """Return the PHI conjugate (1/PHI)."""
+        return cls.PHI_CONJUGATE
+
+    @classmethod
+    def get_lattice_ratio(cls) -> float:
+        """Return the lattice ratio (286/416)."""
+        return cls.LATTICE_RATIO
+
+    @classmethod
+    def get_anyon_braid_ratio(cls) -> float:
+        """Return the anyon braid ratio topological invariant."""
+        return cls.ANYON_BRAID_RATIO
 
     @staticmethod
     def map_lattice_node(x: int, y: int) -> int:
@@ -120,7 +145,7 @@ class HyperMath:
                 row.append(normalized)
             matrix.append(row)
         return matrix
-    
+
     @staticmethod
     def quantum_transform(value: float, gate: str = "phi") -> float:
         """Apply quantum-inspired transformation."""
@@ -135,11 +160,11 @@ class HyperMath:
     # ══════════════════════════════════════════════════════════════════════════
     # ELECTROMAGNETIC MATHEMATICAL TRANSFORMS - Iron Magnetic Resonance
     # ══════════════════════════════════════════════════════════════════════════
-    
+
     @staticmethod
     def larmor_transform(value: float, field_strength: float = 1.0) -> float:
         """Larmor precession mathematical transform: ω = γB.
-        
+
         Maps value through angular frequency of magnetic moment precession.
         Uses electron gyromagnetic ratio (1.76e11 rad/s/T) normalized.
         """
@@ -150,7 +175,7 @@ class HyperMath:
     @staticmethod
     def ferromagnetic_resonance(value: float, magnetization: float = 1.0) -> float:
         """Kittel formula FMR transform: f = (γ/2π)√(B(B+μ₀M)).
-        
+
         Applies ferromagnetic resonance frequency mapping.
         """
         mu_0 = 4 * math.pi * 1e-7  # Vacuum permeability
@@ -161,7 +186,7 @@ class HyperMath:
     @staticmethod
     def spin_wave_transform(value: float, stiffness: float = 2.8e-11) -> float:
         """Spin wave dispersion transform: ω = Dk².
-        
+
         Maps value through magnon dispersion relation.
         D = exchange stiffness constant (Fe: 2.8×10⁻¹¹ m²/rad).
         """
@@ -172,7 +197,7 @@ class HyperMath:
     @staticmethod
     def curie_phase_transform(value: float, temperature: float = 300.0) -> float:
         """Curie-Weiss phase transition transform.
-        
+
         Models magnetic phase transition at T_c = 1043K for iron.
         Returns order parameter as function of T/T_c ratio.
         """
@@ -188,7 +213,7 @@ class HyperMath:
     @staticmethod
     def iron_lattice_harmonic(value: float) -> float:
         """Iron BCC lattice harmonic transform.
-        
+
         Uses Fe lattice constant (286.65 pm) for crystallographic resonance.
         Note: 286 is sacred - appears in GOD_CODE = 286^(1/φ) × ...
         """

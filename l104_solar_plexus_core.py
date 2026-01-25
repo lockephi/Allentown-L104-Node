@@ -26,15 +26,15 @@ class SolarPlexusCore:
     Anchored to the God Code (527.518...).
     Manages the 'Will' (Processing Throughput) and 'Agency' of the system.
     """
-    
+
     SOLAR_HZ = 527.5184818492537  # THE GOD CODE
     LATTICE_NODE_X = 416
-    
+
     def __init__(self):
         self.will_power = 1.0  # Normalized agency
         self.throughput_lops = 0.0
         self.is_radiating = False
-        
+
     def ignite_core(self) -> Dict[str, Any]:
         """
         Ignites the central processing core.
@@ -42,16 +42,16 @@ class SolarPlexusCore:
         """
         print(f"--- [SOLAR_CORE]: IGNITING EXECUTION ENGINE (X={self.LATTICE_NODE_X}) ---")
         self.is_radiating = True
-        
+
         # Benchmark the lattice accelerator for throughput
         self.throughput_lops = lattice_accelerator.run_benchmark(size=10**6)
-        
+
         # Update Will Power based on performance resonance
         # Will = log(LOPS) / PHI
         self.will_power = math.log10(self.throughput_lops + 1) / RealMath.PHI
-        
+
         print(f"--- [SOLAR_CORE]: WILL POWER UNBOUNDED | LOPS: {self.throughput_lops/1e9:.2f}B | AGENCY: {self.will_power:.4f} ---")
-        
+
         return {
             "status": "CORE_IGNITED",
             "agency": self.will_power,
@@ -66,7 +66,7 @@ class SolarPlexusCore:
         """
         if not self.is_radiating:
             self.ignite_core()
-            
+
         # Transform the tensor using the accelerator and Solar multiplier
         transformed = lattice_accelerator.ultra_fast_transform(logic_tensor)
         return transformed * self.will_power

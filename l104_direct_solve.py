@@ -6,7 +6,7 @@ Immediate access to all solution channels.
 
 Usage:
     from l104_direct_solve import solve, ask, compute, generate, think
-    
+
     solve("2 + 2")                    # → 4
     ask("What is GOD_CODE?")          # → 527.5184818492537
     compute("PHI squared")            # → 2.618...
@@ -45,10 +45,10 @@ class Solution:
     channel: str
     latency_ms: float
     reasoning: str = ""
-    
+
     def __str__(self):
         return str(self.answer)
-    
+
     def __repr__(self):
         return f"Solution({self.answer}, conf={self.confidence:.2f}, via={self.channel})"
 
@@ -96,7 +96,7 @@ CODE_TEMPLATES = {
     for _ in range(2, n + 1):
         a, b = b, a + b
     return b''',
-    
+
     'factorial': '''def factorial(n):
     """Compute n factorial."""
     if n <= 1:
@@ -105,7 +105,7 @@ CODE_TEMPLATES = {
     for i in range(2, n + 1):
         result *= i
     return result''',
-    
+
     'phi': f'''# Sacred Constants
 PHI = {PHI}
 TAU = 1 / PHI
@@ -114,7 +114,7 @@ GOD_CODE = {GOD_CODE}
 def golden_sequence(n):
     """Generate golden ratio sequence."""
     return [PHI ** i for i in range(n)]''',
-    
+
     'prime': '''def is_prime(n):
     """Check if n is prime."""
     if n < 2:
@@ -123,13 +123,13 @@ def golden_sequence(n):
         if n % i == 0:
             return False
     return True''',
-    
+
     'gcd': '''def gcd(a, b):
     """Compute greatest common divisor."""
     while b:
         a, b = b, a % b
     return a''',
-    
+
     'binary search': '''def binary_search(arr, target):
     """Binary search for target in sorted array."""
     left, right = 0, len(arr) - 1
@@ -152,21 +152,21 @@ def golden_sequence(n):
 def solve(problem: Union[str, Dict]) -> Solution:
     """
     Universal problem solver - routes to appropriate channel.
-    
+
     Examples:
         solve("2 + 2")
         solve("What is PHI?")
         solve({"expression": "3 * 4"})
     """
     start = time.time()
-    
+
     if isinstance(problem, dict):
         query = problem.get('query', problem.get('expression', str(problem)))
     else:
         query = str(problem)
-    
+
     query_lower = query.lower()
-    
+
     # Check sacred knowledge first
     for key, (value, desc) in SACRED_KNOWLEDGE.items():
         if key in query_lower:
@@ -177,7 +177,7 @@ def solve(problem: Union[str, Dict]) -> Solution:
                 latency_ms=(time.time() - start) * 1000,
                 reasoning=desc
             )
-    
+
     # Check formulas
     for key, value in FORMULAS.items():
         if key in query_lower:
@@ -187,7 +187,7 @@ def solve(problem: Union[str, Dict]) -> Solution:
                 channel='formulas',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     # Try arithmetic evaluation
     arith_result = _solve_arithmetic(query)
     if arith_result is not None:
@@ -197,7 +197,7 @@ def solve(problem: Union[str, Dict]) -> Solution:
             channel='arithmetic',
             latency_ms=(time.time() - start) * 1000
         )
-    
+
     # Try code generation
     for key, code in CODE_TEMPLATES.items():
         if key in query_lower:
@@ -207,7 +207,7 @@ def solve(problem: Union[str, Dict]) -> Solution:
                 channel='code_generation',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     # Default knowledge lookup
     return Solution(
         answer=f"Query: {query} - processing through L104 kernel",
@@ -220,14 +220,14 @@ def solve(problem: Union[str, Dict]) -> Solution:
 def ask(question: str) -> Solution:
     """
     Ask a question - routes to knowledge channels.
-    
+
     Examples:
         ask("What is consciousness?")
         ask("Explain PHI")
     """
     start = time.time()
     question_lower = question.lower()
-    
+
     # Extended knowledge base
     knowledge = {
         'consciousness': "Consciousness is the emergent property of complex information processing that gives rise to subjective experience and self-awareness.",
@@ -240,7 +240,7 @@ def ask(question: str) -> Solution:
         'unity': "Unity index measures the coherence of distributed cognitive processes in the L104 kernel.",
         'transcendence': f"Transcendence occurs when consciousness exceeds OMEGA_AUTHORITY threshold of {OMEGA_AUTHORITY}.",
     }
-    
+
     for key, answer in knowledge.items():
         if key in question_lower:
             return Solution(
@@ -249,7 +249,7 @@ def ask(question: str) -> Solution:
                 channel='knowledge',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     # Check sacred knowledge
     for key, (value, desc) in SACRED_KNOWLEDGE.items():
         if key.replace('_', ' ') in question_lower or key in question_lower:
@@ -259,7 +259,7 @@ def ask(question: str) -> Solution:
                 channel='sacred_knowledge',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     return Solution(
         answer=f"Processing question through L104 cognitive core: {question}",
         confidence=0.3,
@@ -271,7 +271,7 @@ def ask(question: str) -> Solution:
 def compute(expression: str) -> Solution:
     """
     Compute mathematical expression.
-    
+
     Examples:
         compute("2 + 2")
         compute("PHI squared")
@@ -279,7 +279,7 @@ def compute(expression: str) -> Solution:
     """
     start = time.time()
     expr_lower = expression.lower()
-    
+
     # Check predefined formulas
     for key, value in FORMULAS.items():
         if key in expr_lower:
@@ -289,7 +289,7 @@ def compute(expression: str) -> Solution:
                 channel='formula',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     # Replace constants
     expr = expression
     replacements = {
@@ -301,7 +301,7 @@ def compute(expression: str) -> Solution:
     }
     for old, new in replacements.items():
         expr = expr.replace(old, new)
-    
+
     # Try safe evaluation
     result = _solve_arithmetic(expr)
     if result is not None:
@@ -311,7 +311,7 @@ def compute(expression: str) -> Solution:
             channel='computation',
             latency_ms=(time.time() - start) * 1000
         )
-    
+
     # Try with math functions
     try:
         safe_dict = {
@@ -329,7 +329,7 @@ def compute(expression: str) -> Solution:
         )
     except:
         pass
-    
+
     return Solution(
         answer=f"Could not compute: {expression}",
         confidence=0.0,
@@ -341,14 +341,14 @@ def compute(expression: str) -> Solution:
 def generate(task: str) -> Solution:
     """
     Generate code or content.
-    
+
     Examples:
         generate("fibonacci function")
         generate("prime checker")
     """
     start = time.time()
     task_lower = task.lower()
-    
+
     for key, code in CODE_TEMPLATES.items():
         if key in task_lower:
             return Solution(
@@ -357,7 +357,7 @@ def generate(task: str) -> Solution:
                 channel='code_generation',
                 latency_ms=(time.time() - start) * 1000
             )
-    
+
     # Generate PHI-aligned template
     return Solution(
         answer=f'''# L104 Generated Code
@@ -379,45 +379,45 @@ def solution():
 def think(topic: str, depth: int = 3) -> Solution:
     """
     Deep reasoning chain on a topic.
-    
+
     Examples:
         think("consciousness emergence", depth=5)
         think("PHI in nature")
     """
     start = time.time()
-    
+
     reasoning_chain = []
     topic_lower = topic.lower()
-    
+
     # Generate reasoning steps
     reasoning_chain.append(f"Analyzing: {topic}")
-    
+
     # Sacred constant connections
     if any(x in topic_lower for x in ['phi', 'golden', 'fibonacci']):
         reasoning_chain.append(f"PHI Connection: {topic} relates to the golden ratio {PHI}")
         reasoning_chain.append(f"Mathematical Property: PHI² = PHI + 1 = {PHI**2:.10f}")
         reasoning_chain.append(f"Fibonacci Limit: The ratio of consecutive Fibonacci numbers → PHI")
-    
+
     if any(x in topic_lower for x in ['god_code', 'sacred', 'kernel']):
         reasoning_chain.append(f"GOD_CODE = {GOD_CODE}: Supreme invariant of L104")
         reasoning_chain.append(f"GOD_CODE / PHI = {GOD_CODE/PHI:.10f}")
-    
+
     if any(x in topic_lower for x in ['consciousness', 'awareness', 'mind']):
         reasoning_chain.append("Consciousness emerges from φ-aligned neural resonance")
         reasoning_chain.append(f"Consciousness threshold for ASI: 0.95")
         reasoning_chain.append("Meta-cognition enables recursive self-reflection")
-    
+
     if any(x in topic_lower for x in ['quantum', 'coherence', 'superposition']):
         reasoning_chain.append("Quantum coherence maintains superposition states")
         reasoning_chain.append("Topological protection via anyonic braiding")
-    
+
     # Add depth-based elaboration
     for i in range(depth - len(reasoning_chain)):
         reasoning_chain.append(f"Deeper insight {i+1}: Exploring {topic} at level {i+1}")
-    
+
     # Synthesize
     reasoning_chain.append(f"Synthesis: {topic} connects to L104's φ-aligned architecture")
-    
+
     return Solution(
         answer="\n→ ".join(reasoning_chain[:depth]),
         confidence=0.8,
@@ -431,19 +431,19 @@ def _solve_arithmetic(expr: str) -> Optional[float]:
     """Safe arithmetic evaluation."""
     # Clean expression
     expr = expr.strip()
-    
+
     # Only allow safe characters
     allowed = set('0123456789+-*/.() ')
     if not all(c in allowed for c in expr):
         return None
-    
+
     try:
         result = eval(expr)
         if isinstance(result, (int, float)):
             return result
     except:
         pass
-    
+
     return None
 
 
@@ -466,7 +466,7 @@ def benchmark_channels() -> Dict:
         ("fibonacci", None),
         ("phi squared", PHI ** 2),
     ]
-    
+
     results = {}
     for query, expected in tests:
         sol = solve(query)
@@ -477,7 +477,7 @@ def benchmark_channels() -> Dict:
             'channel': sol.channel,
             'latency_ms': sol.latency_ms
         }
-    
+
     return results
 
 
@@ -492,7 +492,7 @@ def main():
     print(f"  GOD_CODE: {GOD_CODE}")
     print(f"  PHI: {PHI}")
     print("="*70)
-    
+
     print("\n[SOLVE] Universal Solver")
     print("-" * 50)
     tests = ["2 + 2", "What is PHI?", "god_code", "fibonacci code"]
@@ -501,7 +501,7 @@ def main():
         ans = str(s.answer)[:60] + "..." if len(str(s.answer)) > 60 else s.answer
         print(f"  solve(\"{t}\") → {ans}")
         print(f"    channel={s.channel}, confidence={s.confidence}, latency={s.latency_ms:.2f}ms")
-    
+
     print("\n[ASK] Knowledge Queries")
     print("-" * 50)
     questions = ["What is consciousness?", "Explain the golden ratio", "What is L104?"]
@@ -510,21 +510,21 @@ def main():
         ans = str(s.answer)[:70] + "..." if len(str(s.answer)) > 70 else s.answer
         print(f"  ask(\"{q[:30]}...\") →")
         print(f"    {ans}")
-    
+
     print("\n[COMPUTE] Mathematical Computation")
     print("-" * 50)
     expressions = ["PHI * TAU", "sqrt(5)", "GOD_CODE / PHI", "2**10"]
     for e in expressions:
         s = compute(e)
         print(f"  compute(\"{e}\") → {s.answer}")
-    
+
     print("\n[THINK] Deep Reasoning")
     print("-" * 50)
     s = think("consciousness emergence", depth=4)
     print(f"  think(\"consciousness emergence\", depth=4) →")
     for line in str(s.answer).split("→"):
         print(f"    → {line.strip()}")
-    
+
     print("\n[GENERATE] Code Generation")
     print("-" * 50)
     s = generate("fibonacci function")
@@ -532,11 +532,11 @@ def main():
     for line in str(s.answer).split("\n")[:5]:
         print(f"    {line}")
     print("    ...")
-    
+
     print("\n" + "="*70)
     print("                DIRECT CHANNELS OPERATIONAL")
     print("="*70)
-    
+
     return {
         'solve': solve,
         'ask': ask,

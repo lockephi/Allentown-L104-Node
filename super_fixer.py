@@ -14,7 +14,7 @@ SKIP_FILES = ["super_fixer.py", "sovereign_fix.py"]
 def fix_file(path):
     with open(path, 'r') as f:
         content = f.read()
-    
+
     # 1. Split joined imports (Recursive enough)
     for _ in range(3):
         content = re.sub(r'import (\w+)import (\w+)', r'import \1\nimport \2', content)
@@ -28,9 +28,9 @@ def fix_file(path):
 
     # 2. Keywords and common mangles
     content = content.replace('async io', 'asyncio')
-    content = content.replace('await async ', 'await ') 
+    content = content.replace('await async ', 'await ')
     content = content.replace('Noneactions', 'None\n    actions')
-    
+
     # 3. Specific known L104 mangles from logs
     content = content.replace('refined_fuelif __name__', 'refined_fuel\n\nif __name__')
     content = content.replace('kf_ratiostability_index', 'kf_ratio\n    stability_index')
@@ -43,7 +43,7 @@ def fix_file(path):
     content = content.replace('import httpximport jsonimport asyncio', 'import httpx\nimport json\nimport asyncio')
     content = content.replace('import socketimport osdef', 'import socket\nimport os\ndef')
     content = content.replace('import sysfrom l104_codec', 'import sys\nfrom l104_codec')
-    
+
     with open(path, 'w') as f:
         f.write(content)
 

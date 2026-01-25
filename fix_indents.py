@@ -12,7 +12,7 @@ def fix_indentation(filepath):
         return
     with open(filepath, 'r') as f:
         lines = f.readlines()
-    
+
     new_lines = []
     for line in lines:
         stripped = line.lstrip()
@@ -23,7 +23,7 @@ def fix_indentation(filepath):
                 new_lines.append('        ' + line)
                 continue
         new_lines.append(line)
-        
+
     with open(filepath, 'w') as f:
         f.writelines(new_lines)
     print(f"Fixed indentation for {filepath}")

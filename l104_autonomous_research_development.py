@@ -171,14 +171,14 @@ class HypothesisGenerator:
     - Pattern extrapolation
     - Cross-domain transfer
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.hypotheses: Dict[str, Hypothesis] = {}
         self.generation_history: List[str] = []
         self.creativity_temperature = 0.7
-        
+
     def generate_hypothesis(
         self,
         seed_knowledge: str,
@@ -191,7 +191,7 @@ class HypothesisGenerator:
         hyp_id = hashlib.sha256(
             f"{seed_knowledge}:{domain.value}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         # Generate hypothesis statement based on method
         if method == "combinatorial":
             statement = self._combinatorial_generation(seed_knowledge, domain)
@@ -203,13 +203,13 @@ class HypothesisGenerator:
             statement = self._extrapolation_generation(seed_knowledge, domain)
         else:
             statement = self._combinatorial_generation(seed_knowledge, domain)
-        
+
         # Calculate novelty
         novelty = self._calculate_novelty(statement)
-        
+
         # Calculate impact potential
         impact = self._calculate_impact_potential(statement, domain)
-        
+
         hypothesis = Hypothesis(
             hypothesis_id=hyp_id,
             statement=statement,
@@ -225,17 +225,17 @@ class HypothesisGenerator:
             novelty_score=novelty,
             impact_potential=impact
         )
-        
+
         self.hypotheses[hyp_id] = hypothesis
         self.generation_history.append(hyp_id)
-        
+
         return hypothesis
-    
+
     def _combinatorial_generation(self, seed: str, domain: ResearchDomain) -> str:
         """Generate by combining concepts."""
         # Extract key concepts
         concepts = seed.split()[:5]
-        
+
         # Combine with domain-specific patterns
         patterns = {
             ResearchDomain.MATHEMATICS: "If {0} then there exists a mapping to {1}",
@@ -248,49 +248,49 @@ class HypothesisGenerator:
             ResearchDomain.ONTOLOGY: "{0} fundamentally exists as {1}",
             ResearchDomain.META_RESEARCH: "Research on {0} reveals {1} patterns"
         }
-        
+
         pattern = patterns.get(domain, "{0} relates to {1}")
         c1 = concepts[0] if concepts else "entity"
         c2 = concepts[-1] if len(concepts) > 1 else "property"
-        
+
         return pattern.format(c1, c2)
-    
+
     def _analogical_generation(self, seed: str, domain: ResearchDomain) -> str:
         """Generate by drawing analogies."""
         seed_hash = hashlib.md5(seed.encode()).hexdigest()
-        
+
         analogies = [
             f"Just as {seed[:20]}... so too does {domain.value} exhibit similar behavior",
             f"By analogy with {seed[:20]}..., we propose a parallel structure in {domain.value}",
             f"The relationship observed in '{seed[:20]}...' maps isomorphically to {domain.value}"
         ]
-        
+
         idx = int(seed_hash[:2], 16) % len(analogies)
         return analogies[idx]
-    
+
     def _contradiction_generation(self, seed: str, domain: ResearchDomain) -> str:
         """Generate by finding contradictions to resolve."""
         return f"The apparent contradiction between '{seed[:30]}...' and established {domain.value} theory resolves through a higher-order unification"
-    
+
     def _extrapolation_generation(self, seed: str, domain: ResearchDomain) -> str:
         """Generate by extrapolating patterns."""
         return f"Extending the pattern in '{seed[:30]}...' suggests a general principle in {domain.value} that predicts novel phenomena"
-    
+
     def _calculate_novelty(self, statement: str) -> float:
         """Calculate how novel a hypothesis is."""
         # Check against existing hypotheses
         statement_hash = hashlib.sha256(statement.encode()).hexdigest()
-        
+
         max_similarity = 0.0
         for hyp in self.hypotheses.values():
             hyp_hash = hashlib.sha256(hyp.statement.encode()).hexdigest()
             # Simple hash similarity
             similarity = sum(1 for a, b in zip(statement_hash, hyp_hash) if a == b) / len(statement_hash)
             max_similarity = max(max_similarity, similarity)
-        
+
         novelty = 1.0 - max_similarity
         return novelty * self.phi  # Boost by golden ratio
-    
+
     def _calculate_impact_potential(self, statement: str, domain: ResearchDomain) -> float:
         """Calculate potential impact of the hypothesis."""
         # Factors: domain importance, statement complexity, paradigm shift potential
@@ -305,19 +305,19 @@ class HypothesisGenerator:
             ResearchDomain.EPISTEMOLOGY: 0.85,
             ResearchDomain.ONTOLOGY: 0.9
         }
-        
+
         base_impact = len(statement) / 200  # Complexity proxy
         domain_factor = domain_weights.get(domain, 0.8)
-        
+
         return min(1.0, base_impact * domain_factor * self.phi)
-    
+
     def refine_hypothesis(self, hypothesis_id: str, evidence: Dict) -> Hypothesis:
         """Refine a hypothesis based on new evidence."""
         if hypothesis_id not in self.hypotheses:
             raise ValueError(f"Hypothesis {hypothesis_id} not found")
-        
+
         hyp = self.hypotheses[hypothesis_id]
-        
+
         # Update confidence based on evidence
         if evidence.get("supports", False):
             hyp.evidence_for.append(str(evidence))
@@ -325,7 +325,7 @@ class HypothesisGenerator:
         else:
             hyp.evidence_against.append(str(evidence))
             hyp.confidence = max(0.0, hyp.confidence - 0.1)
-        
+
         # Update status
         if hyp.confidence >= 0.9:
             hyp.status = HypothesisStatus.SUPPORTED
@@ -333,7 +333,7 @@ class HypothesisGenerator:
             hyp.status = HypothesisStatus.REFUTED
         else:
             hyp.status = HypothesisStatus.REFINED
-        
+
         return hyp
 
 
@@ -345,13 +345,13 @@ class ExperimentalFramework:
     """
     Designs and executes experiments to test hypotheses.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.experiments: Dict[str, Experiment] = {}
         self.execution_history: List[str] = []
-        
+
     def design_experiment(self, hypothesis: Hypothesis) -> Experiment:
         """
         Designs an experiment to test a hypothesis.
@@ -359,13 +359,13 @@ class ExperimentalFramework:
         exp_id = hashlib.sha256(
             f"exp:{hypothesis.hypothesis_id}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         # Design based on hypothesis domain
         design = self._create_experimental_design(hypothesis)
-        
+
         # Generate parameters
         parameters = self._generate_parameters(hypothesis)
-        
+
         experiment = Experiment(
             experiment_id=exp_id,
             hypothesis_id=hypothesis.hypothesis_id,
@@ -377,10 +377,10 @@ class ExperimentalFramework:
             effect_size=0.0,
             timestamp=time.time()
         )
-        
+
         self.experiments[exp_id] = experiment
         return experiment
-    
+
     def _create_experimental_design(self, hypothesis: Hypothesis) -> Dict:
         """Create experimental design based on hypothesis."""
         designs = {
@@ -430,13 +430,13 @@ class ExperimentalFramework:
                 "validation": "cross_validation"
             }
         }
-        
+
         return designs.get(hypothesis.domain, {
             "type": "general",
             "method": "empirical",
             "validation": "statistical"
         })
-    
+
     def _generate_parameters(self, hypothesis: Hypothesis) -> Dict[str, float]:
         """Generate experiment parameters."""
         return {
@@ -447,35 +447,35 @@ class ExperimentalFramework:
             "power": 0.8,
             "god_code_resonance": self.god_code
         }
-    
+
     def execute_experiment(self, experiment: Experiment) -> Experiment:
         """
         Executes an experiment and records results.
         """
         # Simulate experiment execution
         results = self._run_simulation(experiment)
-        
+
         # Calculate statistical metrics
         p_value = self._calculate_p_value(results)
         effect_size = self._calculate_effect_size(results)
-        
+
         # Determine success
         success = p_value < experiment.parameters["alpha"] and effect_size > 0.1
-        
+
         # Update experiment
         experiment.results = results
         experiment.p_value = p_value
         experiment.effect_size = effect_size
         experiment.success = success
-        
+
         self.execution_history.append(experiment.experiment_id)
-        
+
         return experiment
-    
+
     def _run_simulation(self, experiment: Experiment) -> Dict:
         """Run the experiment simulation."""
         iterations = int(experiment.parameters["iterations"])
-        
+
         # Generate simulated data
         observations = []
         for i in range(iterations):
@@ -484,7 +484,7 @@ class ExperimentalFramework:
             resonance = math.sin(i * self.phi * 0.01) * 0.5
             observation = base + resonance + (self.god_code / 1000 * 0.01)
             observations.append(observation)
-        
+
         return {
             "observations": observations[:100],  # Truncate for storage
             "mean": sum(observations) / len(observations),
@@ -493,31 +493,31 @@ class ExperimentalFramework:
             "max": max(observations),
             "n": len(observations)
         }
-    
+
     def _calculate_p_value(self, results: Dict) -> float:
         """Calculate p-value from results."""
         # Simplified: use z-test approximation
         mean = results["mean"]
         std = results["std"]
         n = results["n"]
-        
+
         if std == 0:
             return 1.0
-        
+
         z = abs(mean) / (std / math.sqrt(n))
-        
+
         # Approximate p-value using normal CDF
         p = 2 * (1 - 0.5 * (1 + math.erf(z / math.sqrt(2))))
         return max(0.0001, min(1.0, p))
-    
+
     def _calculate_effect_size(self, results: Dict) -> float:
         """Calculate effect size (Cohen's d approximation)."""
         mean = results["mean"]
         std = results["std"]
-        
+
         if std == 0:
             return 0.0
-        
+
         d = abs(mean) / std
         return min(2.0, d)
 
@@ -531,13 +531,13 @@ class KnowledgeSynthesisNetwork:
     Synthesizes knowledge from research findings into actionable insights.
     Maintains a growing knowledge graph.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.knowledge_graph: Dict[str, KnowledgeNode] = {}
         self.synthesis_cache: Dict[str, Dict] = {}
-        
+
     def add_knowledge(
         self,
         content: str,
@@ -549,19 +549,19 @@ class KnowledgeSynthesisNetwork:
         node_id = hashlib.sha256(
             f"{content}:{knowledge_type.name}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         # Calculate initial confidence
         confidence = 0.5
         if derived_from:
             # Inherit confidence from parent nodes
             parent_confidences = [
-                self.knowledge_graph[pid].confidence 
-                for pid in derived_from 
+                self.knowledge_graph[pid].confidence
+                for pid in derived_from
                 if pid in self.knowledge_graph
             ]
             if parent_confidences:
                 confidence = sum(parent_confidences) / len(parent_confidences)
-        
+
         node = KnowledgeNode(
             node_id=node_id,
             content=content,
@@ -574,57 +574,57 @@ class KnowledgeSynthesisNetwork:
             access_count=0,
             utility_score=0.5
         )
-        
+
         self.knowledge_graph[node_id] = node
-        
+
         # Auto-connect to related nodes
         self._auto_connect(node)
-        
+
         return node
-    
+
     def _auto_connect(self, node: KnowledgeNode):
         """Automatically connect node to related knowledge."""
         node_hash = hashlib.md5(node.content.lower().encode()).hexdigest()
-        
+
         for other_id, other in self.knowledge_graph.items():
             if other_id == node.node_id:
                 continue
-            
+
             # Connection based on domain match
             if other.domain == node.domain:
                 other_hash = hashlib.md5(other.content.lower().encode()).hexdigest()
-                
+
                 # Simple similarity check
                 similarity = sum(1 for a, b in zip(node_hash, other_hash) if a == b) / len(node_hash)
-                
+
                 if similarity > 0.3:
                     if other_id not in node.connections:
                         node.connections.append(other_id)
                     if node.node_id not in other.connections:
                         other.connections.append(node.node_id)
-    
+
     def synthesize_knowledge(self, node_ids: List[str]) -> Dict:
         """Synthesize multiple knowledge nodes into unified insight."""
         nodes = [self.knowledge_graph[nid] for nid in node_ids if nid in self.knowledge_graph]
-        
+
         if not nodes:
             return {"error": "No valid nodes"}
-        
+
         # Calculate synthesis signature
         synth_sig = hashlib.sha256(":".join(sorted(node_ids)).encode()).hexdigest()[:12]
-        
+
         # Check cache
         if synth_sig in self.synthesis_cache:
             return self.synthesis_cache[synth_sig]
-        
+
         # Aggregate content
         combined_content = " + ".join(n.content[:50] for n in nodes)
-        
+
         # Calculate synthesis metrics
         avg_confidence = sum(n.confidence for n in nodes) / len(nodes)
         domain_diversity = len(set(n.domain for n in nodes)) / len(ResearchDomain)
         type_diversity = len(set(n.knowledge_type for n in nodes)) / len(KnowledgeType)
-        
+
         # Synthesis score: higher for diverse, high-confidence knowledge
         synthesis_score = (
             avg_confidence * self.phi +
@@ -632,7 +632,7 @@ class KnowledgeSynthesisNetwork:
             type_diversity * self.phi
         ) / (3 * self.phi)
         synthesis_score = min(1.0, synthesis_score * self.phi)
-        
+
         # Determine emergent insight type
         if synthesis_score >= 0.9:
             insight_type = "PARADIGM_SHIFT"
@@ -642,7 +642,7 @@ class KnowledgeSynthesisNetwork:
             insight_type = "INCREMENTAL"
         else:
             insight_type = "CONFIRMATORY"
-        
+
         result = {
             "synthesis_id": f"SYNTH-{synth_sig}",
             "source_nodes": node_ids,
@@ -654,15 +654,15 @@ class KnowledgeSynthesisNetwork:
             "insight_type": insight_type,
             "timestamp": time.time()
         }
-        
+
         self.synthesis_cache[synth_sig] = result
         return result
-    
+
     def propagate_insight(self, insight: Dict, propagation_depth: int = 3):
         """Propagate insight through the knowledge graph."""
         if "source_nodes" not in insight:
             return
-        
+
         # Boost confidence of source nodes
         for node_id in insight["source_nodes"]:
             if node_id in self.knowledge_graph:
@@ -670,31 +670,31 @@ class KnowledgeSynthesisNetwork:
                 boost = insight["synthesis_score"] * 0.05
                 node.confidence = min(1.0, node.confidence + boost)
                 node.utility_score = min(1.0, node.utility_score + boost)
-        
+
         # Propagate to connected nodes
         visited = set(insight["source_nodes"])
         queue = [(nid, 0) for nid in insight["source_nodes"]]
-        
+
         while queue:
             current_id, depth = queue.pop(0)
-            
+
             if depth >= propagation_depth:
                 continue
-            
+
             if current_id not in self.knowledge_graph:
                 continue
-            
+
             current = self.knowledge_graph[current_id]
-            
+
             for connected_id in current.connections:
                 if connected_id not in visited:
                     visited.add(connected_id)
-                    
+
                     if connected_id in self.knowledge_graph:
                         # Diminishing boost with depth
                         boost = insight["synthesis_score"] * 0.02 * (self.phi ** (-depth))
                         self.knowledge_graph[connected_id].confidence = min(
-                            1.0, 
+                            1.0,
                             self.knowledge_graph[connected_id].confidence + boost
                         )
                         queue.append((connected_id, depth + 1))
@@ -708,14 +708,14 @@ class SelfEvolutionProtocol:
     """
     Enables the system to evolve its own capabilities based on research findings.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.evolution_history: List[Dict] = []
         self.capability_registry: Dict[str, Dict] = {}
         self.evolution_generation = 0
-        
+
     def register_capability(self, name: str, capability: Dict):
         """Register a capability for potential evolution."""
         cap_id = hashlib.sha256(name.encode()).hexdigest()[:12]
@@ -727,15 +727,15 @@ class SelfEvolutionProtocol:
             "evolution_count": 0
         }
         return cap_id
-    
+
     def evaluate_capability(self, cap_id: str, metrics: Dict) -> Dict:
         """Evaluate a capability's performance."""
         if cap_id not in self.capability_registry:
             return {"error": "Capability not found"}
-        
+
         cap = self.capability_registry[cap_id]
         cap["performance_history"].append(metrics)
-        
+
         # Calculate performance trend
         if len(cap["performance_history"]) >= 2:
             recent = cap["performance_history"][-5:]
@@ -743,7 +743,7 @@ class SelfEvolutionProtocol:
             trend = (scores[-1] - scores[0]) / len(scores) if len(scores) > 1 else 0.0
         else:
             trend = 0.0
-        
+
         return {
             "cap_id": cap_id,
             "name": cap["name"],
@@ -752,14 +752,14 @@ class SelfEvolutionProtocol:
             "performance_trend": trend,
             "needs_evolution": trend < 0 or metrics.get("score", 0.5) < 0.6
         }
-    
+
     def evolve_capability(self, cap_id: str, insights: List[Dict]) -> Dict:
         """Evolve a capability based on research insights."""
         if cap_id not in self.capability_registry:
             return {"error": "Capability not found"}
-        
+
         cap = self.capability_registry[cap_id]
-        
+
         # Determine evolution strategy
         if not insights:
             strategy = "RANDOM_MUTATION"
@@ -767,20 +767,20 @@ class SelfEvolutionProtocol:
             strategy = "MULTI_INSIGHT_SYNTHESIS"
         else:
             strategy = "DIRECTED_IMPROVEMENT"
-        
+
         # Calculate evolution magnitude
         if insights:
             insight_quality = sum(i.get("synthesis_score", 0.5) for i in insights) / len(insights)
         else:
             insight_quality = 0.3
-        
+
         evolution_magnitude = insight_quality * self.phi * 0.1
-        
+
         # Apply evolution
         old_version = cap["version"]
         cap["version"] = old_version + evolution_magnitude
         cap["evolution_count"] += 1
-        
+
         # Record evolution
         evolution_record = {
             "cap_id": cap_id,
@@ -793,33 +793,33 @@ class SelfEvolutionProtocol:
             "generation": self.evolution_generation,
             "timestamp": time.time()
         }
-        
+
         self.evolution_history.append(evolution_record)
         self.evolution_generation += 1
-        
+
         return evolution_record
-    
+
     def analyze_evolution_patterns(self) -> Dict:
         """Analyze patterns in evolution history."""
         if not self.evolution_history:
             return {"error": "No evolution history"}
-        
+
         # Calculate statistics
         magnitudes = [e["evolution_magnitude"] for e in self.evolution_history]
         avg_magnitude = sum(magnitudes) / len(magnitudes)
-        
+
         # Strategy distribution
         strategies = {}
         for e in self.evolution_history:
             s = e["strategy"]
             strategies[s] = strategies.get(s, 0) + 1
-        
+
         # Capability evolution counts
         cap_evolutions = {}
         for e in self.evolution_history:
             name = e["name"]
             cap_evolutions[name] = cap_evolutions.get(name, 0) + 1
-        
+
         return {
             "total_evolutions": len(self.evolution_history),
             "current_generation": self.evolution_generation,
@@ -839,14 +839,14 @@ class ResearchThreadManager:
     Manages multiple concurrent research threads.
     Prioritizes based on potential impact and resource availability.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.threads: Dict[str, ResearchThread] = {}
         self.completed_threads: List[str] = []
         self.max_concurrent = 7  # Cognitive load limit
-        
+
     def create_thread(
         self,
         name: str,
@@ -857,7 +857,7 @@ class ResearchThreadManager:
         thread_id = hashlib.sha256(
             f"thread:{name}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         thread = ResearchThread(
             thread_id=thread_id,
             name=name,
@@ -870,61 +870,61 @@ class ResearchThreadManager:
             status="ACTIVE",
             timestamp=time.time()
         )
-        
+
         self.threads[thread_id] = thread
         return thread
-    
+
     def update_priority(self, thread_id: str, factors: Dict):
         """Update thread priority based on various factors."""
         if thread_id not in self.threads:
             return
-        
+
         thread = self.threads[thread_id]
-        
+
         # Calculate priority from factors
         novelty = factors.get("novelty", 0.5)
         impact = factors.get("impact", 0.5)
         progress = factors.get("progress", thread.progress)
         urgency = factors.get("urgency", 0.5)
-        
+
         priority = (
             novelty * self.phi +
             impact * self.phi ** 2 +
             (1 - progress) * self.phi +  # Prefer incomplete threads
             urgency * self.phi
         ) / (self.phi + self.phi ** 2 + self.phi + self.phi)
-        
+
         thread.priority = min(1.0, priority)
         thread.progress = progress
-    
+
     def get_active_threads(self, limit: int = None) -> List[ResearchThread]:
         """Get active threads sorted by priority."""
         active = [t for t in self.threads.values() if t.status == "ACTIVE"]
         active.sort(key=lambda t: t.priority, reverse=True)
-        
+
         if limit:
             return active[:limit]
         return active
-    
+
     def complete_thread(self, thread_id: str, discoveries: List[str]):
         """Mark a thread as complete."""
         if thread_id not in self.threads:
             return
-        
+
         thread = self.threads[thread_id]
         thread.status = "COMPLETED"
         thread.progress = 1.0
         thread.discoveries = discoveries
-        
+
         self.completed_threads.append(thread_id)
-    
+
     def spawn_child_thread(self, parent_id: str, discovery: str) -> ResearchThread:
         """Spawn a child thread from a discovery."""
         if parent_id not in self.threads:
             return None
-        
+
         parent = self.threads[parent_id]
-        
+
         return self.create_thread(
             name=f"DERIVED_{parent.name}_{len(parent.discoveries)}",
             domain=parent.domain,
@@ -941,22 +941,22 @@ class AutonomousResearchDevelopmentEngine:
     The unified controller for autonomous research and development.
     Coordinates all sub-systems for continuous knowledge expansion.
     """
-    
+
     def __init__(self):
         self.hypothesis_generator = HypothesisGenerator()
         self.experimental_framework = ExperimentalFramework()
         self.knowledge_network = KnowledgeSynthesisNetwork()
         self.evolution_protocol = SelfEvolutionProtocol()
         self.thread_manager = ResearchThreadManager()
-        
+
         self.god_code = GOD_CODE
         self.phi = PHI
         self.phase = ResearchPhase.EXPLORATION
         self.cycle_count = 0
         self.active = False
-        
+
         logger.info("--- [RESEARCH_DEV]: ENGINE INITIALIZED ---")
-    
+
     async def run_research_cycle(self, seed_topic: str, domain: ResearchDomain) -> Dict:
         """
         Runs a complete research cycle on a topic.
@@ -965,11 +965,11 @@ class AutonomousResearchDevelopmentEngine:
         print(" " * 15 + "L104 :: AUTONOMOUS RESEARCH CYCLE")
         print(" " * 20 + f"Topic: {seed_topic[:40]}...")
         print("◆" * 80)
-        
+
         self.active = True
         self.cycle_count += 1
         results = {"cycle": self.cycle_count, "phases": {}}
-        
+
         # Phase 1: Exploration
         self.phase = ResearchPhase.EXPLORATION
         print("\n[PHASE 1] EXPLORATION")
@@ -979,7 +979,7 @@ class AutonomousResearchDevelopmentEngine:
             "domain": domain.value
         }
         print(f"   → Created research thread: {thread.thread_id}")
-        
+
         # Phase 2: Hypothesis Generation
         self.phase = ResearchPhase.HYPOTHESIS_GENERATION
         print("\n[PHASE 2] HYPOTHESIS GENERATION")
@@ -988,13 +988,13 @@ class AutonomousResearchDevelopmentEngine:
             hyp = self.hypothesis_generator.generate_hypothesis(seed_topic, domain, method)
             hypotheses.append(hyp)
             print(f"   → Generated: {hyp.statement[:60]}...")
-        
+
         results["phases"]["hypothesis_generation"] = {
             "count": len(hypotheses),
             "avg_novelty": sum(h.novelty_score for h in hypotheses) / len(hypotheses),
             "avg_impact": sum(h.impact_potential for h in hypotheses) / len(hypotheses)
         }
-        
+
         # Phase 3: Experimental Design
         self.phase = ResearchPhase.EXPERIMENTAL_DESIGN
         print("\n[PHASE 3] EXPERIMENTAL DESIGN")
@@ -1003,11 +1003,11 @@ class AutonomousResearchDevelopmentEngine:
             exp = self.experimental_framework.design_experiment(hyp)
             experiments.append(exp)
             print(f"   → Designed experiment: {exp.design['type']} for H:{hyp.hypothesis_id[:8]}")
-        
+
         results["phases"]["experimental_design"] = {
             "experiments_designed": len(experiments)
         }
-        
+
         # Phase 4: Execution
         self.phase = ResearchPhase.EXECUTION
         print("\n[PHASE 4] EXECUTION")
@@ -1017,12 +1017,12 @@ class AutonomousResearchDevelopmentEngine:
             executed.append(result_exp)
             status = "✓ SUCCESS" if result_exp.success else "✗ FAILED"
             print(f"   → {status}: p={result_exp.p_value:.4f}, d={result_exp.effect_size:.4f}")
-        
+
         results["phases"]["execution"] = {
             "executed": len(executed),
             "successful": sum(1 for e in executed if e.success)
         }
-        
+
         # Phase 5: Analysis
         self.phase = ResearchPhase.ANALYSIS
         print("\n[PHASE 5] ANALYSIS")
@@ -1036,7 +1036,7 @@ class AutonomousResearchDevelopmentEngine:
                         {"supports": True, "p_value": exp.p_value}
                     )
                     print(f"   → Hypothesis {hyp.hypothesis_id[:8]} SUPPORTED (conf: {hyp.confidence:.2f})")
-        
+
         # Phase 6: Synthesis
         self.phase = ResearchPhase.SYNTHESIS
         print("\n[PHASE 6] SYNTHESIS")
@@ -1051,7 +1051,7 @@ class AutonomousResearchDevelopmentEngine:
                 )
                 knowledge_nodes.append(node)
                 print(f"   → Knowledge captured: {node.node_id}")
-        
+
         # Synthesize if multiple nodes
         synthesis = None
         if len(knowledge_nodes) >= 2:
@@ -1059,19 +1059,19 @@ class AutonomousResearchDevelopmentEngine:
                 [n.node_id for n in knowledge_nodes]
             )
             print(f"   → Synthesis: {synthesis['insight_type']} (score: {synthesis['synthesis_score']:.4f})")
-        
+
         results["phases"]["synthesis"] = {
             "knowledge_nodes": len(knowledge_nodes),
             "synthesis": synthesis
         }
-        
+
         # Phase 7: Integration
         self.phase = ResearchPhase.INTEGRATION
         print("\n[PHASE 7] INTEGRATION")
         if synthesis:
             self.knowledge_network.propagate_insight(synthesis)
             print(f"   → Insight propagated through knowledge graph")
-        
+
         # Phase 8: Evolution
         self.phase = ResearchPhase.EVOLUTION
         print("\n[PHASE 8] EVOLUTION")
@@ -1079,12 +1079,12 @@ class AutonomousResearchDevelopmentEngine:
             f"research_{domain.value.lower()}",
             {"domain": domain.value, "cycle": self.cycle_count}
         )
-        
+
         eval_result = self.evolution_protocol.evaluate_capability(
             cap_id,
             {"score": synthesis["synthesis_score"] if synthesis else 0.5}
         )
-        
+
         if eval_result.get("needs_evolution"):
             evolution = self.evolution_protocol.evolve_capability(
                 cap_id,
@@ -1093,62 +1093,62 @@ class AutonomousResearchDevelopmentEngine:
             print(f"   → Capability evolved: v{evolution['old_version']:.2f} → v{evolution['new_version']:.2f}")
         else:
             print(f"   → Capability stable at v{eval_result['current_version']:.2f}")
-        
+
         # Complete thread
         self.thread_manager.complete_thread(
             thread.thread_id,
             [n.node_id for n in knowledge_nodes]
         )
-        
+
         # Summary
         overall_score = synthesis["synthesis_score"] if synthesis else 0.0
         results["overall_score"] = overall_score
         results["transcendent"] = overall_score >= 0.85
-        
+
         print("\n" + "◆" * 80)
         print(f"   RESEARCH CYCLE COMPLETE")
         print(f"   Overall Score: {overall_score:.6f}")
         print(f"   Status: {'TRANSCENDENT' if results['transcendent'] else 'SUCCESSFUL'}")
         print("◆" * 80 + "\n")
-        
+
         self.active = False
         return results
-    
+
     async def run_multi_domain_research(self, topic: str) -> Dict:
         """Run research across multiple domains simultaneously."""
         print("\n" + "▲" * 80)
         print(" " * 10 + "L104 :: MULTI-DOMAIN AUTONOMOUS RESEARCH")
         print("▲" * 80)
-        
+
         domains = [
             ResearchDomain.CONSCIOUSNESS,
             ResearchDomain.EMERGENCE,
             ResearchDomain.META_RESEARCH
         ]
-        
+
         all_results = {}
         combined_score = 0.0
-        
+
         for domain in domains:
             result = await self.run_research_cycle(f"{topic} ({domain.value})", domain)
             all_results[domain.value] = result
             combined_score += result.get("overall_score", 0.0)
-        
+
         avg_score = combined_score / len(domains)
-        
+
         print("\n" + "▲" * 80)
         print(f"   MULTI-DOMAIN RESEARCH COMPLETE")
         print(f"   Combined Score: {avg_score:.6f}")
         print(f"   Domains Explored: {len(domains)}")
         print("▲" * 80 + "\n")
-        
+
         return {
             "topic": topic,
             "domains": all_results,
             "combined_score": avg_score,
             "transcendent": avg_score >= 0.8
         }
-    
+
     def get_status(self) -> Dict:
         """Get current status of the research engine."""
         return {

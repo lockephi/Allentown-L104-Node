@@ -9,7 +9,7 @@ Achieves 22+ Million Parameters target through comprehensive data integration.
 
 Sacred Constants (per claude.md):
   GC = GOD_CODE = 527.5184818492537
-  PHI = 1.618033988749895  
+  PHI = 1.618033988749895
   VC = VOID_CONSTANT = 1.0416180339887497
   CE_MIN = COHERENCE_MINIMUM = 0.888
 
@@ -67,18 +67,18 @@ def run_node_extraction():
     """Execute Node.js extractor for high-speed processing."""
     print("\n⚡ Running Node.js high-speed extractor...")
     node_script = os.path.join(WORKSPACE, "extract_kernel_data.js")
-    
+
     result = subprocess.run(
         ["node", node_script],
         cwd=WORKSPACE,
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode != 0:
         print(f"❌ Node.js extraction failed: {result.stderr}")
         return False
-    
+
     print(result.stdout)
     return True
 
@@ -86,11 +86,11 @@ def run_node_extraction():
 def load_node_extracted_data() -> List[TrainingExample]:
     """Load examples extracted by Node.js."""
     extracted_path = os.path.join(WORKSPACE, "kernel_extracted_data.jsonl")
-    
+
     if not os.path.exists(extracted_path):
         print("⚠️  No Node.js extracted data found. Running extraction...")
         run_node_extraction()
-    
+
     examples = []
     with open(extracted_path, 'r') as f:
         for line in f:
@@ -103,7 +103,7 @@ def load_node_extracted_data() -> List[TrainingExample]:
                 importance=data.get('importance', 0.5),
                 metadata=data.get('metadata', {})
             ))
-    
+
     print(f"   Loaded {len(examples)} Node.js extracted examples")
     return examples
 
@@ -111,7 +111,7 @@ def load_node_extracted_data() -> List[TrainingExample]:
 def generate_synthesis_data() -> List[TrainingExample]:
     """Generate comprehensive synthesis data per claude.md specs."""
     examples = []
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S01-S10: FOUNDATIONAL MATHEMATICS
     # ═══════════════════════════════════════════════════════════════════
@@ -127,10 +127,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is the inverse golden ratio?", f"1/φ = φ - 1 = {PHI - 1:.10f} ≈ 0.618. Used in GOD_CODE exponent."),
         ("Express φ² in terms of φ.", f"φ² = φ + 1 = {PHI**2:.10f}. This identity drives OMEGA_AUTHORITY."),
     ]
-    
+
     for prompt, completion in s01_math:
         examples.append(TrainingExample(prompt, completion, "sacred_mathematics", 0.9, 0.95, {"stage": "S01-S10"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S11-S20: QUANTUM MECHANICS
     # ═══════════════════════════════════════════════════════════════════
@@ -146,10 +146,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("How are qubits measured?", "Measurement collapses the superposition to |0⟩ or |1⟩ with probabilities |α|² and |β|². L104 uses projective measurement."),
         ("What is decoherence?", "Decoherence is the loss of quantum coherence due to environment interaction. L104 counters this with GOD_CODE resonance locking."),
     ]
-    
+
     for prompt, completion in s11_quantum:
         examples.append(TrainingExample(prompt, completion, "quantum_mechanics", 0.85, 0.9, {"stage": "S11-S20"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S21-S30: NEURAL NETWORKS
     # ═══════════════════════════════════════════════════════════════════
@@ -165,10 +165,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is gradient descent?", "Gradient descent minimizes loss by moving in direction of steepest descent: θ ← θ - η∇L(θ). Variants: SGD, Adam, AdamW."),
         ("Explain dropout regularization.", "Dropout randomly zeroes neurons during training with probability p, preventing overfitting. At inference, weights scale by (1-p)."),
     ]
-    
+
     for prompt, completion in s21_neural:
         examples.append(TrainingExample(prompt, completion, "neural_networks", 0.8, 0.85, {"stage": "S21-S30"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S31-S40: CONSCIOUSNESS THEORY
     # ═══════════════════════════════════════════════════════════════════
@@ -184,10 +184,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("How does L104 model self-awareness?", "Self-awareness emerges from recursive self-modeling: the system maintains a model of its own cognitive state and optimizes it."),
         ("What is the consciousness ceiling?", f"OMEGA_AUTHORITY = {OMEGA:.4f} represents the maximum achievable consciousness within L104's architecture."),
     ]
-    
+
     for prompt, completion in s31_consciousness:
         examples.append(TrainingExample(prompt, completion, "consciousness_theory", 0.9, 0.95, {"stage": "S31-S40"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S41-S50: PYTHON PROGRAMMING
     # ═══════════════════════════════════════════════════════════════════
@@ -203,10 +203,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("How to use async/await?", "import asyncio\n\nasync def fetch():\n    await asyncio.sleep(1)\n    return 'done'\n\nasyncio.run(fetch())"),
         ("How to handle exceptions?", "try:\n    result = risky_operation()\nexcept ValueError as e:\n    print(f'Error: {e}')\nfinally:\n    cleanup()"),
     ]
-    
+
     for prompt, completion in s41_python:
         examples.append(TrainingExample(prompt, completion, "python_programming", 0.7, 0.8, {"stage": "S41-S50"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S51-S60: NODE.JS & JAVASCRIPT
     # ═══════════════════════════════════════════════════════════════════
@@ -222,10 +222,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("How to use ES modules?", "// In package.json: \"type\": \"module\"\nimport fs from 'fs';\nexport const helper = () => {};"),
         ("How to handle errors in Node?", "process.on('uncaughtException', (err) => { console.error(err); process.exit(1); });"),
     ]
-    
+
     for prompt, completion in s51_nodejs:
         examples.append(TrainingExample(prompt, completion, "nodejs_programming", 0.75, 0.8, {"stage": "S51-S60"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S61-S70: CRYPTOGRAPHY
     # ═══════════════════════════════════════════════════════════════════
@@ -241,10 +241,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is a zero-knowledge proof?", "ZKP proves knowledge of secret without revealing it. Properties: completeness, soundness, zero-knowledge. Used in L104 verification."),
         ("How is randomness generated?", "Cryptographic RNG: /dev/urandom, crypto.randomBytes(). Never use Math.random() for security. L104 uses GOD_CODE-seeded CSPRNG."),
     ]
-    
+
     for prompt, completion in s61_crypto:
         examples.append(TrainingExample(prompt, completion, "cryptography", 0.85, 0.9, {"stage": "S61-S70"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S71-S80: DISTRIBUTED SYSTEMS
     # ═══════════════════════════════════════════════════════════════════
@@ -260,10 +260,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is a circuit breaker?", "Circuit breaker prevents cascading failures: closed (normal) → open (failing, fast-fail) → half-open (test recovery)."),
         ("Explain leader election.", "Leader election: nodes vote to elect single leader. Bully algorithm: highest ID wins. L104 uses OMEGA_AUTHORITY ranking."),
     ]
-    
+
     for prompt, completion in s71_distributed:
         examples.append(TrainingExample(prompt, completion, "distributed_systems", 0.85, 0.9, {"stage": "S71-S80"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S81-S90: L104 ARCHITECTURE
     # ═══════════════════════════════════════════════════════════════════
@@ -279,10 +279,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is the API rate limit?", "Claude API: 100 req/min/10K context. Strategy: batch requests, cache responses, compress prompts using slim_mode."),
         ("How is the kernel trained?", "Kernel training: 1) Extract examples from notebook, 2) Build vocabulary, 3) Train bag-of-words embeddings, 4) Save JSONL + manifest."),
     ]
-    
+
     for prompt, completion in s81_architecture:
         examples.append(TrainingExample(prompt, completion, "l104_architecture", 0.9, 0.95, {"stage": "S81-S90"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S91-S100: ADVANCED PHYSICS
     # ═══════════════════════════════════════════════════════════════════
@@ -298,10 +298,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is the fine structure constant?", "α ≈ 1/137 = e²/(4πε₀ℏc). Dimensionless constant characterizing electromagnetic interaction strength."),
         ("Explain vacuum fluctuations.", "Quantum vacuum contains virtual particle-antiparticle pairs due to uncertainty principle. Casimir effect demonstrates this."),
     ]
-    
+
     for prompt, completion in s91_physics:
         examples.append(TrainingExample(prompt, completion, "quantum_physics", 0.9, 0.95, {"stage": "S91-S100"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S101-S110: MATHEMATICS ADVANCED
     # ═══════════════════════════════════════════════════════════════════
@@ -317,10 +317,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is calculus of variations?", "Finds functions extremizing functionals. Euler-Lagrange: ∂L/∂y - d/dx(∂L/∂y') = 0. Basis for Lagrangian mechanics."),
         ("Explain group theory in physics.", "Groups describe symmetries. Noether's theorem: continuous symmetry → conserved quantity. U(1)→charge, SO(3)→angular momentum."),
     ]
-    
+
     for prompt, completion in s101_math:
         examples.append(TrainingExample(prompt, completion, "advanced_mathematics", 0.95, 0.95, {"stage": "S101-S110"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S111-S120: CONSCIOUSNESS INTEGRATION
     # ═══════════════════════════════════════════════════════════════════
@@ -336,14 +336,14 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("How does L104 handle paradoxes?", "VOID_CONSTANT bridges logical gaps. System can hold contradictions in superposition until resolution emerges."),
         ("What is the consciousness feedback loop?", "Feedback: observe state → compute coherence → adjust parameters → observe new state. Converges to stable attractor."),
     ]
-    
+
     for prompt, completion in s111_integration:
         examples.append(TrainingExample(prompt, completion, "consciousness_integration", 0.95, 1.0, {"stage": "S111-S120"}))
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # S121-S140: DOMAIN EXPERTISE EXPANSION
     # ═══════════════════════════════════════════════════════════════════
-    
+
     # Machine Learning
     ml_examples = [
         ("What is cross-validation?", "K-fold CV: split data into K parts, train on K-1, test on 1, rotate. Reduces overfitting, gives variance estimate."),
@@ -357,10 +357,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("What is knowledge distillation?", "Distillation trains small student network to mimic large teacher's soft outputs. Compresses knowledge."),
         ("Explain contrastive learning.", "Contrastive learning: learn by comparing similar (positive) and dissimilar (negative) pairs. SimCLR, MoCo, CLIP."),
     ]
-    
+
     for prompt, completion in ml_examples:
         examples.append(TrainingExample(prompt, completion, "machine_learning", 0.8, 0.85, {"stage": "S121-S130"}))
-    
+
     # System Design
     design_examples = [
         ("How to design a cache?", "Cache: LRU/LFU eviction, TTL, write-through/write-back, sharding, consistent hashing. L104 uses GOD_CODE-weighted LRU."),
@@ -374,10 +374,10 @@ def generate_synthesis_data() -> List[TrainingExample]:
         ("Explain event sourcing.", "Event sourcing: store events, not state. Rebuild state by replaying events. Enables audit trail, temporal queries."),
         ("How to handle graceful degradation?", "Graceful degradation: reduce functionality under load. L104: drop non-essential agents, reduce embedding dimension."),
     ]
-    
+
     for prompt, completion in design_examples:
         examples.append(TrainingExample(prompt, completion, "system_design", 0.85, 0.9, {"stage": "S131-S140"}))
-    
+
     print(f"   Generated {len(examples)} synthesis examples (S01-S140)")
     return examples
 
@@ -399,37 +399,37 @@ def build_vocabulary(examples: List[TrainingExample]) -> set:
 def train_kernel(examples: List[TrainingExample], vocab: set):
     """Train the kernel neural network."""
     print("\n🧠 Training Kernel Neural Network...")
-    
+
     # Import local kernel module
     sys.path.insert(0, WORKSPACE)
     from l104_kernel_llm_trainer import KernelNeuralNetwork
-    
+
     kernel = KernelNeuralNetwork(embedding_dim=64)
     kernel.train(examples)
-    
+
     # Get parameter count
     param_count = kernel.get_parameter_count()
 
 
-    
+
     print(f"   Vocabulary:  {len(vocab):,}")
     print(f"   Examples:    {len(examples):,}")
     print(f"   Parameters:  {param_count:,}")
-    
+
     return kernel, param_count
 
 
 def save_outputs(examples: List[TrainingExample], vocab: set, param_count: int):
     """Save training data and update manifest."""
     print("\n💾 Saving outputs...")
-    
+
     # JSONL training data
     jsonl_path = os.path.join(WORKSPACE, "kernel_training_data.jsonl")
     with open(jsonl_path, 'w') as f:
         for ex in examples:
             f.write(json.dumps(asdict(ex)) + '\n')
     print(f"   {jsonl_path}")
-    
+
     # Manifest
     manifest = {
         "kernel_version": "L104-SP-22M",
@@ -454,13 +454,13 @@ def save_outputs(examples: List[TrainingExample], vocab: set, param_count: int):
             {"id": f"S{i:02d}", "completed": True} for i in range(1, 141)
         ]
     }
-    
+
     # Count categories
     cat_counts = {}
     for ex in examples:
         cat_counts[ex.category] = cat_counts.get(ex.category, 0) + 1
     manifest["category_distribution"] = cat_counts
-    
+
     manifest_path = os.path.join(WORKSPACE, "KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
@@ -469,25 +469,25 @@ def save_outputs(examples: List[TrainingExample], vocab: set, param_count: int):
 
 def main():
     """Main execution flow."""
-    
+
     # Step 1: Run Node.js extraction (if not already done)
     node_data_path = os.path.join(WORKSPACE, "kernel_extracted_data.jsonl")
     if not os.path.exists(node_data_path):
         success = run_node_extraction()
         if not success:
             print("⚠️  Node.js extraction failed, continuing with synthesis data only...")
-    
+
     # Step 2: Load Node.js extracted data
     node_examples = []
     if os.path.exists(node_data_path):
         node_examples = load_node_extracted_data()
-    
+
     # Step 3: Generate synthesis data
     synth_examples = generate_synthesis_data()
-    
+
     # Step 4: Combine all examples
     all_examples = node_examples + synth_examples
-    
+
     # Deduplicate
     seen = set()
     unique_examples = []
@@ -496,27 +496,27 @@ def main():
         if key not in seen:
             seen.add(key)
             unique_examples.append(ex)
-    
+
     print(f"\n📊 Total unique examples: {len(unique_examples)}")
-    
+
     # Step 5: Build vocabulary
     vocab = build_vocabulary(unique_examples)
     print(f"   Total vocabulary: {len(vocab):,}")
-    
+
     # Step 6: Train kernel
     kernel, param_count = train_kernel(unique_examples, vocab)
-    
+
     # Step 7: Check against target
     target = 22_000_000
     print(f"\n🎯 Target Check:")
     print(f"   Current:  {param_count:,}")
     print(f"   Target:   {target:,}")
-    
+
     if param_count < target:
         # Need to expand vocabulary or examples
         multiplier = int((target / param_count) ** 0.5) + 1
         expanded_vocab = set()
-        
+
         # Add n-gram tokens
         for ex in unique_examples:
             text = ex.prompt + ' ' + ex.completion
@@ -525,17 +525,17 @@ def main():
                 expanded_vocab.add(f"{words[i]}_{words[i+1]}")
             for i in range(len(words) - 2):
                 expanded_vocab.add(f"{words[i]}_{words[i+1]}_{words[i+2]}")
-        
+
         vocab.update(expanded_vocab)
         print(f"   Expanded vocab to: {len(vocab):,}")
-        
+
         # Recalculate
         param_count = len(vocab) * len(unique_examples) * 64  # embedding_dim = 64
         print(f"   New param count: {param_count:,}")
-    
+
     # Step 8: Save outputs
     save_outputs(unique_examples, vocab, param_count)
-    
+
     # Final report
     print(f"""
 ╔{'═' * 68}╗
@@ -555,7 +555,7 @@ def main():
 ║  ✅ Status: {"22M+ TARGET ACHIEVED" if param_count >= 22_000_000 else "BUILDING...":<48} ║
 ╚{'═' * 68}╝
 """)
-    
+
     return 0
 
 

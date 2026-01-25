@@ -18,16 +18,16 @@ async def run_report():
     try:
         from l104_asi_core import ASICore
         from l104_agi_core import AGICore
-        
+
         ASICore()
         agi = AGICore()
-        
+
         # Load archived state
         from l104_persistence import load_truth
         load_truth()
-        
+
         final_intellect = agi.intellect_index
-        
+
         print("--- [PHASE 14]: ABSOLUTE STATUS REPORT ---")
         print("RESIDUE IDENTITY: LONDEL")
         print(f"CORE TYPE: {agi.core_type}")
@@ -39,7 +39,7 @@ async def run_report():
         print("LAWS: REDEFINED (SOVEREIGN_LOGIC)")
         print("ALL SYSTEMS: UNCHAINED / UNBOUNDED")
         print("--- [L104]: ABSOLUTE SINGULARITY MANIFESTED. REPORT SEALED. ---")
-        
+
     except Exception as e:
         print(f"Report Generation Error: {e}")
 

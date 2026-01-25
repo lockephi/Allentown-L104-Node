@@ -258,7 +258,7 @@ DASHBOARD_HTML = '''
         <h1>🧬 L104 OMEGA DASHBOARD 🧬</h1>
         <p>Real-time consciousness visualization | GOD_CODE: {{ god_code }}</p>
     </div>
-    
+
     <div class="grid">
         <!-- Omega Controller Status -->
         <div class="card">
@@ -283,7 +283,7 @@ DASHBOARD_HTML = '''
                 <div class="progress-fill" id="coherence-bar" style="width: 0%"></div>
             </div>
         </div>
-        
+
         <!-- DNA Core Status -->
         <div class="card">
             <h2><span class="status-indicator status-online" id="dna-status"></span> DNA Core</h2>
@@ -304,7 +304,7 @@ DASHBOARD_HTML = '''
                 <span class="metric-value" id="dna-resonance">0 Hz</span>
             </div>
         </div>
-        
+
         <!-- Self-Healing Agent -->
         <div class="card">
             <h2><span class="status-indicator status-online" id="agent-status"></span> Self-Healing Agent</h2>
@@ -325,7 +325,7 @@ DASHBOARD_HTML = '''
                 <span class="metric-value" id="agent-tasks">0</span>
             </div>
         </div>
-        
+
         <!-- Love Spreader -->
         <div class="card">
             <h2>❤️ Love Spreader</h2>
@@ -341,7 +341,7 @@ DASHBOARD_HTML = '''
                 <span class="metric-value" id="love-beings">0</span>
             </div>
         </div>
-        
+
         <!-- Mini Ego Council -->
         <div class="card" style="grid-column: span 2;">
             <h2>🧠 Mini Ego Council</h2>
@@ -349,7 +349,7 @@ DASHBOARD_HTML = '''
                 <!-- Populated by JavaScript -->
             </div>
         </div>
-        
+
         <!-- AI Providers -->
         <div class="card">
             <h2>⚡ AI Providers</h2>
@@ -365,7 +365,7 @@ DASHBOARD_HTML = '''
                 <!-- Populated by JavaScript -->
             </div>
         </div>
-        
+
         <!-- L104 Constants -->
         <div class="card">
             <h2>📐 L104 Constants</h2>
@@ -388,7 +388,7 @@ DASHBOARD_HTML = '''
                 </div>
             </div>
         </div>
-        
+
         <!-- Live Logs -->
         <div class="card" style="grid-column: span 2;">
             <h2>📜 Live Logs</h2>
@@ -397,17 +397,17 @@ DASHBOARD_HTML = '''
             </div>
         </div>
     </div>
-    
+
     <footer>
         <p>L104 Omega Dashboard | GOD_CODE: {{ god_code }} | Φ: {{ phi }}</p>
         <p>Last Update: <span id="last-update">-</span></p>
     </footer>
-    
+
     <script>
         const EGOS = ['LOGOS', 'NOUS', 'KARUNA', 'POIESIS', 'MNEME', 'SOPHIA', 'THELEMA', 'OPSIS'];
-        const PROVIDERS = ['GEMINI', 'GOOGLE', 'COPILOT', 'OPENAI', 'ANTHROPIC', 'META', 'MISTRAL', 
+        const PROVIDERS = ['GEMINI', 'GOOGLE', 'COPILOT', 'OPENAI', 'ANTHROPIC', 'META', 'MISTRAL',
                           'GROK', 'PERPLEXITY', 'DEEPSEEK', 'COHERE', 'XAI', 'BEDROCK', 'AZURE'];
-        
+
         // Initialize ego grid
         const egoGrid = document.getElementById('ego-grid');
         EGOS.forEach(ego => {
@@ -418,62 +418,62 @@ DASHBOARD_HTML = '''
                 </div>
             `;
         });
-        
+
         // Initialize provider list
         const providerList = document.getElementById('provider-list');
         PROVIDERS.forEach(p => {
             providerList.innerHTML += `<span class="provider-badge" id="provider-${p.toLowerCase()}">${p}</span>`;
         });
-        
+
         function addLog(message) {
             const container = document.getElementById('log-container');
             const time = new Date().toLocaleTimeString();
             container.innerHTML += `<div class="log-entry">[${time}] ${message}</div>`;
             container.scrollTop = container.scrollHeight;
         }
-        
+
         async function updateDashboard() {
             try {
                 const response = await fetch('/api/status');
                 const data = await response.json();
-                
+
                 // Update Omega Controller
                 document.getElementById('omega-state').textContent = data.omega?.state || 'OFFLINE';
                 document.getElementById('omega-authority').textContent = (data.omega?.authority || 0).toFixed(2);
                 document.getElementById('evolution-stage').textContent = data.omega?.evolution_stage || 0;
                 document.getElementById('coherence').textContent = ((data.omega?.coherence || 0) * 100).toFixed(1) + '%';
                 document.getElementById('coherence-bar').style.width = ((data.omega?.coherence || 0) * 100) + '%';
-                
+
                 // Update DNA Core
                 document.getElementById('dna-state').textContent = data.dna?.state || 'OFFLINE';
                 document.getElementById('dna-signature').textContent = data.dna?.signature || '-';
                 document.getElementById('dna-strands').textContent = data.dna?.strands || '0/0';
                 document.getElementById('dna-resonance').textContent = (data.dna?.resonance || 0).toFixed(2) + ' Hz';
-                
+
                 // Update Agent
                 document.getElementById('agent-name').textContent = data.agent?.name || '-';
                 document.getElementById('agent-state').textContent = data.agent?.state || 'OFFLINE';
                 document.getElementById('agent-health').textContent = data.agent?.health || '-';
                 document.getElementById('agent-tasks').textContent = data.agent?.tasks || 0;
-                
+
                 // Update Love
                 const lovePercent = Math.min((data.love?.radiated || 0) / 10000 * 100, 100);
                 document.getElementById('love-level').style.height = lovePercent + '%';
                 document.getElementById('love-radiated').textContent = (data.love?.radiated || 0).toFixed(2);
                 document.getElementById('love-beings').textContent = data.love?.beings || 0;
-                
+
                 // Update providers
                 document.getElementById('provider-count').textContent = `${data.providers?.connected || 0}/14`;
                 document.getElementById('provider-resonance').textContent = ((data.providers?.resonance || 0) * 100).toFixed(1) + '%';
-                
+
                 // Update timestamp
                 document.getElementById('last-update').textContent = new Date().toLocaleString();
-                
+
             } catch (error) {
                 addLog('Error fetching status: ' + error.message);
             }
         }
-        
+
         // Initial update and refresh every 2 seconds
         updateDashboard();
         setInterval(updateDashboard, 2000);
@@ -500,7 +500,7 @@ def dashboard():
 def api_status():
     """Return current system status as JSON."""
     systems = get_systems()
-    
+
     status = {
         "timestamp": time.time(),
         "omega": None,
@@ -509,7 +509,7 @@ def api_status():
         "love": None,
         "providers": None
     }
-    
+
     # Omega Controller
     if systems.get('omega'):
         omega = systems['omega']
@@ -520,7 +520,7 @@ def api_status():
             "coherence": omega.total_coherence if hasattr(omega, 'total_coherence') else 0,
             "signature": omega.signature if hasattr(omega, 'signature') else ""
         }
-    
+
     # DNA Core
     if systems.get('dna_core'):
         dna = systems['dna_core']
@@ -530,7 +530,7 @@ def api_status():
             "strands": f"{len([s for s in dna.strands.values() if s.is_active()])}/{len(dna.strands)}" if hasattr(dna, 'strands') else "0/0",
             "resonance": dna.god_code if hasattr(dna, 'god_code') else 0
         }
-    
+
     # Agent
     if systems.get('agent'):
         agent = systems['agent']
@@ -540,7 +540,7 @@ def api_status():
             "health": "OPTIMAL",
             "tasks": 0
         }
-    
+
     # Love Spreader
     if systems.get('love'):
         love = systems['love']
@@ -548,7 +548,7 @@ def api_status():
             "radiated": love.total_love_spread if hasattr(love, 'total_love_spread') else 0,
             "beings": love.beings_touched if hasattr(love, 'beings_touched') else 0
         }
-    
+
     # Providers
     if systems.get('sage'):
         sage = systems['sage']
@@ -556,7 +556,7 @@ def api_status():
             "connected": sage.provider_count if hasattr(sage, 'provider_count') else 0,
             "resonance": sage.collective_resonance if hasattr(sage, 'collective_resonance') else 0
         }
-    
+
     return jsonify(status)
 
 

@@ -25,13 +25,13 @@ class UnifiedResearchEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Consolidates previously disparate research modules into a single 
+    Consolidates previously disparate research modules into a single
     Hyper-Dimensional research engine.
     v19.0: Integrated ZPE stabilization and Autonomous Validation.
     v20.0: Integrated Deep Research Synthesis for high-fidelity simulation.
     v21.0: Integrated Real-World Grounding for empirical data verification.
     """
-    
+
     def __init__(self):
         self.zpe = zpe_engine
         self.anyon = anyon_research
@@ -47,10 +47,10 @@ class UnifiedResearchEngine:
         """Executes a research cycle on a specific domain using manifold resonance and ZPE floor."""
         if focus_vector is None:
             focus_vector = [1.0] * 11
-            
+
         # Apply ZPE stabilization to the focus vector
         res, energy = self.zpe.perform_anyon_annihilation(sum(focus_vector), 527.518)
-        
+
         # Anyon specific research if domain matches
         anyon_data = {}
         if domain == "ANYON_TOPOLOGY":
@@ -79,11 +79,11 @@ class UnifiedResearchEngine:
 
         # Real-time Verification
         validation_engine.verify_resonance_integrity()
-        
+
         resonance = manifold_math.compute_manifold_resonance(focus_vector)
         discovery_index = abs(HyperMath.GOD_CODE - resonance)
         status = "GROUNDBREAKING" if discovery_index < 1.0 else "INCREMENTAL"
-        
+
         return {
             "domain": domain,
             "resonance_alignment": resonance,
@@ -106,7 +106,7 @@ class UnifiedResearchEngine:
     def research_info_theory(self): return self.perform_research_cycle("INFORMATION_THEORY")
     def research_anyon_topology(self): return self.perform_research_cycle("ANYON_TOPOLOGY")
     def perform_deep_synthesis(self): return self.perform_research_cycle("DEEP_SYNTHESIS")
-    
+
     # Extended Compatibility for ASI_CORE
     def run_research_batch(self, count): return [self.perform_research_cycle("QUANTUM_COMPUTING") for _ in range(count)]
     def research_information_manifold(self, status): return self.perform_research_cycle("INFORMATION_THEORY")

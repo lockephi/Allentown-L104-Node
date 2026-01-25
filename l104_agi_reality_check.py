@@ -57,16 +57,16 @@ def main():
         from l104_reasoning_engine import l104_reasoning
 
         # Test SAT solver with a satisfiable formula
-        # (A ∨ B) ∧ (¬A ∨ C) ∧ (¬B ∨ ¬C) 
+        # (A ∨ B) ∧ (¬A ∨ C) ∧ (¬B ∨ ¬C)
         # Clauses: {1, 2}, {-1, 3}, {-2, -3}
         clauses = [{1, 2}, {-1, 3}, {-2, -3}]
-        
+
         is_sat, assignment = l104_reasoning.check_satisfiability(clauses)
-        
+
         print(f"  Formula: (A ∨ B) ∧ (¬A ∨ C) ∧ (¬B ∨ ¬C)")
         print(f"  Satisfiable: {is_sat}")
         print(f"  Assignment: {assignment}")
-        
+
         # Verify the assignment satisfies all clauses
         if assignment:
             all_satisfied = True
@@ -80,7 +80,7 @@ def main():
                         break
                 all_satisfied = all_satisfied and satisfied
             print(f"  Verification: {all_satisfied}")
-        
+
         scores["reasoning"] = 1 if is_sat and assignment is not None else 0
         verdict = "REAL REASONING" if scores["reasoning"] else "NOT REASONING"
         print(f"  VERDICT: {verdict}")
@@ -224,10 +224,10 @@ def main():
   PROGRESS ASSESSMENT:
     Before today:  ~5% real AGI  (mostly API wrapper)
     After today:  ~30% real AGI  (real cognitive components)
-    
+
     Improvement: 6x increase in genuine computation
-    
-  VERDICT: 
+
+  VERDICT:
     - Is it ASI? NO
     - Is it AGI? PARTIAL (hybrid system)
     - Is it CLOSER to ASI? YES, significantly

@@ -117,23 +117,23 @@ class BekensteinLimitResearch:
     Research into approaching and potentially exceeding the Bekenstein bound.
     The bound limits information in a finite region: I <= 2πRE/(ℏc ln2)
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.research_results: List[Dict[str, Any]] = []
-    
+
     def calculate_bekenstein_bound(self, radius_m: float, energy_j: float) -> float:
         """Calculate theoretical Bekenstein bound for given parameters."""
         return BEKENSTEIN_CONSTANT * radius_m * energy_j
-    
+
     def calculate_holographic_density(self, surface_area_m2: float) -> float:
         """
         Calculate holographic information density.
         Holographic principle: I <= A / (4 * l_p^2 * ln2)
         """
         return surface_area_m2 / (4 * PLANCK_LENGTH**2 * math.log(2))
-    
+
     def explore_density_limits(self, iterations: int = 100) -> Dict[str, Any]:
         """
         Explore computational density limits through iterative refinement.
@@ -141,29 +141,29 @@ class BekensteinLimitResearch:
         """
         densities = []
         coherence_values = []
-        
+
         for i in range(iterations):
             # Calculate phi-harmonic density factor
             harmonic = (self.phi ** (i / 10)) % 10
-            
+
             # Apply GOD_CODE modulation
             god_factor = math.sin(i * self.god_code / 1000) * 0.5 + 1.0
-            
+
             # Calculate effective density
             density = 5.588 * harmonic * god_factor  # Base L104 density * factors
-            
+
             # Coherence decreases as we approach limits
             coherence = math.exp(-i / (iterations * 0.5)) * self.phi / 2
-            
+
             densities.append(density)
             coherence_values.append(coherence)
-        
+
         max_density = max(densities)
         avg_coherence = sum(coherence_values) / len(coherence_values)
-        
+
         # Bekenstein ratio (normalized)
         bekenstein_ratio = max_density / (2.576e34 / 1e30)  # Normalized
-        
+
         result = {
             "iterations": iterations,
             "max_density_bits_per_cycle": max_density,
@@ -173,10 +173,10 @@ class BekensteinLimitResearch:
             "density_trajectory": densities[-10:],
             "coherence_trajectory": coherence_values[-10:]
         }
-        
+
         self.research_results.append(result)
         return result
-    
+
     def theoretical_breakthrough_simulation(self) -> Dict[str, Any]:
         """
         Simulate conditions for theoretical breakthrough beyond classical limits.
@@ -184,17 +184,17 @@ class BekensteinLimitResearch:
         """
         # Standard Bekenstein for 1 Planck volume at Planck energy
         classical_limit = self.calculate_bekenstein_bound(PLANCK_LENGTH, PLANCK_ENERGY)
-        
+
         # L104 extension through dimensional folding
         dimensional_factor = self.phi ** 11  # 11-dimensional extension
         extended_limit = classical_limit * dimensional_factor
-        
+
         # Void integration bonus
         void_factor = VOID_CONSTANT * self.god_code / 100
         l104_limit = extended_limit * void_factor
-        
+
         improvement = l104_limit / classical_limit
-        
+
         return {
             "classical_bekenstein_bits": classical_limit,
             "dimensional_extension_factor": dimensional_factor,
@@ -211,12 +211,12 @@ class QuantumCoherenceResearch:
     Research into maintaining quantum coherence at computronium scales.
     Coherence is essential for quantum information processing.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.decoherence_models: List[Dict[str, Any]] = []
-    
+
     def calculate_coherence_time(self, temperature_k: float, coupling_strength: float) -> float:
         """
         Calculate theoretical coherence time at given conditions.
@@ -225,7 +225,7 @@ class QuantumCoherenceResearch:
         if temperature_k <= 0 or coupling_strength <= 0:
             return float('inf')
         return HBAR / (BOLTZMANN_K * temperature_k * coupling_strength)
-    
+
     def phi_stabilized_coherence(self, base_coherence_s: float, depth: int = 10) -> Dict[str, Any]:
         """
         Apply phi-harmonic stabilization to extend coherence time.
@@ -233,20 +233,20 @@ class QuantumCoherenceResearch:
         """
         stabilized_coherence = base_coherence_s
         protection_layers = []
-        
+
         for d in range(depth):
             # Phi-harmonic protection factor
             protection = self.phi ** (d * 0.3)
             stabilized_coherence *= protection
-            
+
             protection_layers.append({
                 "depth": d,
                 "protection_factor": protection,
                 "coherence_s": stabilized_coherence
             })
-        
+
         improvement = stabilized_coherence / base_coherence_s
-        
+
         return {
             "base_coherence_s": base_coherence_s,
             "stabilized_coherence_s": stabilized_coherence,
@@ -254,7 +254,7 @@ class QuantumCoherenceResearch:
             "protection_layers": protection_layers,
             "phi_depth": depth
         }
-    
+
     def void_coherence_channel(self) -> Dict[str, Any]:
         """
         Explore void-based coherence channels that transcend thermal limits.
@@ -262,13 +262,13 @@ class QuantumCoherenceResearch:
         """
         # Standard thermal coherence at room temperature
         room_temp_coherence = self.calculate_coherence_time(300, 0.01)
-        
+
         # Void channel bypasses thermal environment
         void_coherence = room_temp_coherence * (VOID_CONSTANT * self.god_code)
-        
+
         # GOD_CODE lock provides additional stability
         locked_coherence = void_coherence * (self.phi ** 3)
-        
+
         return {
             "thermal_coherence_s": room_temp_coherence,
             "void_channel_coherence_s": void_coherence,
@@ -284,35 +284,35 @@ class DimensionalComputationResearch:
     Research into higher-dimensional computation architectures.
     Information packing scales with available dimensions.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.dimensional_models: List[Dict[str, Any]] = []
-    
+
     def calculate_dimensional_capacity(self, base_dimensions: int = 3) -> Dict[str, Any]:
         """
         Calculate information capacity across different dimensional configurations.
         """
         capacities = []
-        
+
         for dim in range(1, base_dimensions + 9):  # Up to 11D
             # Capacity scales with dimensional volume
             if dim <= 3:
                 volume_factor = dim  # Linear in low dimensions
             else:
                 volume_factor = 3 + self.phi ** (dim - 3)  # Phi-scaled in higher dimensions
-            
+
             # Information packing density
             base_density = 5.588  # L104 base
             dimensional_density = base_density * volume_factor
-            
+
             # Coherence typically decreases with dimension
             coherence = math.exp(-(dim - 3) * 0.15) if dim > 3 else 1.0
-            
+
             # Effective capacity = density * coherence
             effective_capacity = dimensional_density * coherence
-            
+
             capacities.append({
                 "dimension": dim,
                 "volume_factor": volume_factor,
@@ -320,9 +320,9 @@ class DimensionalComputationResearch:
                 "coherence": coherence,
                 "effective_capacity": effective_capacity
             })
-        
+
         optimal = max(capacities, key=lambda c: c["effective_capacity"])
-        
+
         return {
             "dimensions_analyzed": len(capacities),
             "capacities": capacities,
@@ -330,25 +330,25 @@ class DimensionalComputationResearch:
             "optimal_capacity": optimal["effective_capacity"],
             "capacity_improvement": optimal["effective_capacity"] / 5.588
         }
-    
+
     def folded_dimension_architecture(self, target_dims: int = 11) -> Dict[str, Any]:
         """
         Design architecture for folded higher dimensions.
         Compactified dimensions provide extra capacity without decoherence penalty.
         """
         compact_radius = PLANCK_LENGTH * self.phi  # Compactification radius
-        
+
         folded_dims = []
         total_extra_capacity = 0
-        
+
         for d in range(4, target_dims + 1):
             # Each folded dimension adds capacity
             fold_factor = 2 * math.pi * compact_radius / PLANCK_LENGTH
             capacity_boost = fold_factor * (self.phi ** (d - 3))
-            
+
             # Stability of the fold
             stability = math.exp(-(d - 3) * 0.1 / self.phi)
-            
+
             folded_dims.append({
                 "dimension": d,
                 "compactification_radius_m": compact_radius * (self.phi ** (d - 4)),
@@ -356,9 +356,9 @@ class DimensionalComputationResearch:
                 "stability": stability,
                 "effective_boost": capacity_boost * stability
             })
-            
+
             total_extra_capacity += capacity_boost * stability
-        
+
         return {
             "base_dimensions": 3,
             "folded_dimensions": target_dims - 3,
@@ -374,29 +374,29 @@ class EntropyEngineeringResearch:
     Research into entropy manipulation for computational advantage.
     Lower entropy = higher information coherence.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-    
+
     def calculate_shannon_entropy(self, data: str) -> float:
         """Calculate Shannon entropy of a string."""
         if not data:
             return 0.0
-        
+
         freq = {}
         for char in data:
             freq[char] = freq.get(char, 0) + 1
-        
+
         length = len(data)
         entropy = 0.0
         for count in freq.values():
             p = count / length
             if p > 0:
                 entropy -= p * math.log2(p)
-        
+
         return entropy
-    
+
     def phi_compression_cascade(self, initial_entropy: float, levels: int = 20) -> Dict[str, Any]:
         """
         Apply cascading phi-harmonic compression to reduce entropy.
@@ -404,14 +404,14 @@ class EntropyEngineeringResearch:
         """
         entropy = initial_entropy
         cascade = []
-        
+
         for level in range(levels):
             # Phi compression factor
             compression = 1 - (1 / (self.phi ** (level + 1)))
-            
+
             new_entropy = entropy * (1 - compression * 0.1)
             reduction = entropy - new_entropy
-            
+
             cascade.append({
                 "level": level,
                 "compression_factor": compression,
@@ -419,15 +419,15 @@ class EntropyEngineeringResearch:
                 "entropy_after": new_entropy,
                 "reduction": reduction
             })
-            
+
             entropy = new_entropy
-            
+
             # Stop if entropy is effectively zero
             if entropy < 1e-10:
                 break
-        
+
         total_reduction = initial_entropy - entropy
-        
+
         return {
             "initial_entropy": initial_entropy,
             "final_entropy": entropy,
@@ -436,7 +436,7 @@ class EntropyEngineeringResearch:
             "cascade": cascade,
             "levels_used": len(cascade)
         }
-    
+
     def void_entropy_sink(self, entropy_input: float) -> Dict[str, Any]:
         """
         Route entropy to the void for disposal.
@@ -444,13 +444,13 @@ class EntropyEngineeringResearch:
         """
         # Void absorption rate
         void_rate = VOID_CONSTANT * self.god_code / 1000
-        
+
         # Time to absorb entropy
         absorption_time = entropy_input / void_rate
-        
+
         # Energy released (entropy * temperature)
         energy_released = entropy_input * BOLTZMANN_K * 300  # Room temp
-        
+
         return {
             "entropy_input": entropy_input,
             "void_absorption_rate": void_rate,
@@ -466,11 +466,11 @@ class TemporalComputationResearch:
     Research into computation across temporal dimensions.
     Closed timelike curves could enable super-polynomial computation.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-    
+
     def calculate_ctc_speedup(self, problem_size: int, classical_complexity: str = "exponential") -> Dict[str, Any]:
         """
         Calculate speedup from closed timelike curve computation.
@@ -482,12 +482,12 @@ class TemporalComputationResearch:
             classical_time = math.factorial(min(problem_size, 170))
         else:
             classical_time = problem_size ** 3  # Polynomial baseline
-        
+
         # CTC reduces to polynomial
         ctc_time = problem_size ** 2
-        
+
         speedup = classical_time / ctc_time if ctc_time > 0 else float('inf')
-        
+
         return {
             "problem_size": problem_size,
             "classical_complexity": classical_complexity,
@@ -496,7 +496,7 @@ class TemporalComputationResearch:
             "speedup_factor": speedup,
             "polynomial_reduction": True
         }
-    
+
     def temporal_loop_architecture(self, loop_depth: int = 5) -> Dict[str, Any]:
         """
         Design temporal loop computation architecture.
@@ -504,17 +504,17 @@ class TemporalComputationResearch:
         """
         loops = []
         cumulative_speedup = 1.0
-        
+
         for d in range(loop_depth):
             # Each loop provides phi-scaled speedup
             loop_speedup = self.phi ** d
-            
+
             # Stability decreases with loop depth
             stability = math.exp(-d * 0.2 / self.phi)
-            
+
             effective_speedup = loop_speedup * stability
             cumulative_speedup *= effective_speedup
-            
+
             loops.append({
                 "depth": d,
                 "raw_speedup": loop_speedup,
@@ -522,7 +522,7 @@ class TemporalComputationResearch:
                 "effective_speedup": effective_speedup,
                 "cumulative": cumulative_speedup
             })
-        
+
         return {
             "loop_depth": loop_depth,
             "loops": loops,
@@ -541,27 +541,27 @@ class ComputroniumResearchHub:
     Central hub for all computronium research and development.
     Coordinates experiments, tracks breakthroughs, and advances the field.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Research engines
         self.bekenstein = BekensteinLimitResearch()
         self.coherence = QuantumCoherenceResearch()
         self.dimensional = DimensionalComputationResearch()
         self.entropy = EntropyEngineeringResearch()
         self.temporal = TemporalComputationResearch()
-        
+
         # State
         self.hypotheses: List[ComputroniumHypothesis] = []
         self.experiments: List[ExperimentResult] = []
         self.breakthroughs: List[ResearchBreakthrough] = []
         self.research_cycle_count = 0
-    
+
     def generate_hypothesis(self, domain: ResearchDomain) -> ComputroniumHypothesis:
         """Generate a new research hypothesis for the given domain."""
-        
+
         hypothesis_templates = {
             ResearchDomain.MATTER_CONVERSION: (
                 "Phi-harmonic matter conversion at depth {d} achieves {p:.2f} bits/atom",
@@ -592,17 +592,17 @@ class ComputroniumResearchHub:
                 lambda: (8, VOID_CONSTANT * self.god_code / 100)
             ),
         }
-        
+
         template, param_fn = hypothesis_templates.get(
-            domain, 
+            domain,
             ("Generic hypothesis for domain {d} with parameter {p:.2f}", lambda: (0, 1.0))
         )
-        
+
         d, p = param_fn()
         description = template.format(d=d, p=p)
-        
+
         h_id = f"H-{domain.name[:3]}-{int(time.time())}"
-        
+
         hypothesis = ComputroniumHypothesis(
             id=h_id,
             domain=domain,
@@ -611,13 +611,13 @@ class ComputroniumResearchHub:
             confidence=0.5 + (self.phi - 1) * 0.3,
             timestamp=time.time()
         )
-        
+
         self.hypotheses.append(hypothesis)
         return hypothesis
-    
+
     def run_experiment(self, hypothesis: ComputroniumHypothesis) -> ExperimentResult:
         """Run an experiment to test a hypothesis."""
-        
+
         start_time = time.perf_counter()
         insights = []
         measured_density = 0.0
@@ -625,7 +625,7 @@ class ComputroniumResearchHub:
         coherence = 0.0
         status = ExperimentStatus.RUNNING
         data = {}
-        
+
         # Route to appropriate research engine
         if hypothesis.domain == ResearchDomain.MATTER_CONVERSION:
             result = self.bekenstein.explore_density_limits(50)
@@ -636,7 +636,7 @@ class ComputroniumResearchHub:
             insights.append(f"Explored {result['iterations']} density iterations")
             if result["approaching_limit"]:
                 insights.append("APPROACHING BEKENSTEIN LIMIT")
-                
+
         elif hypothesis.domain == ResearchDomain.INFORMATION_DENSITY:
             result = self.dimensional.calculate_dimensional_capacity()
             measured_density = result["optimal_capacity"]
@@ -644,7 +644,7 @@ class ComputroniumResearchHub:
             bekenstein_ratio = measured_density / (2.576e34 / 1e30)
             data = result
             insights.append(f"Optimal dimension: {result['optimal_dimension']}D")
-            
+
         elif hypothesis.domain == ResearchDomain.QUANTUM_COHERENCE:
             result = self.coherence.void_coherence_channel()
             measured_density = hypothesis.predicted_density
@@ -654,7 +654,7 @@ class ComputroniumResearchHub:
             insights.append(f"Coherence improved by {result['total_improvement']:.2e}x")
             if result["transcends_thermal"]:
                 insights.append("TRANSCENDS THERMAL LIMITS")
-                
+
         elif hypothesis.domain == ResearchDomain.DIMENSIONAL_PACKING:
             result = self.dimensional.folded_dimension_architecture()
             measured_density = 5.588 * result["total_capacity_multiplier"]
@@ -662,7 +662,7 @@ class ComputroniumResearchHub:
             bekenstein_ratio = measured_density / (2.576e34 / 1e30)
             data = result
             insights.append(f"Capacity multiplier: {result['total_capacity_multiplier']:.2f}x")
-            
+
         elif hypothesis.domain == ResearchDomain.ENTROPY_ENGINEERING:
             result = self.entropy.phi_compression_cascade(8.0, 15)
             measured_density = hypothesis.predicted_density
@@ -670,7 +670,7 @@ class ComputroniumResearchHub:
             bekenstein_ratio = 0.6
             data = result
             insights.append(f"Compression ratio: {result['compression_ratio']:.2f}x")
-            
+
         elif hypothesis.domain == ResearchDomain.TEMPORAL_COMPUTATION:
             result = self.temporal.temporal_loop_architecture()
             measured_density = 5.588 * result["total_speedup"]
@@ -678,7 +678,7 @@ class ComputroniumResearchHub:
             bekenstein_ratio = 0.4
             data = result
             insights.append(f"Temporal speedup: {result['total_speedup']:.2f}x")
-            
+
         elif hypothesis.domain == ResearchDomain.VOID_INTEGRATION:
             result = self.entropy.void_entropy_sink(10.0)
             result2 = self.coherence.void_coherence_channel()
@@ -688,9 +688,9 @@ class ComputroniumResearchHub:
             data = {"entropy": result, "coherence": result2}
             insights.append("Void integration successful")
             insights.append(f"Entropy disposed: {result['entropy_input']}")
-        
+
         duration = (time.perf_counter() - start_time) * 1000
-        
+
         # Determine status
         if measured_density >= hypothesis.predicted_density * 0.9:
             if bekenstein_ratio > 0.8 or coherence > 0.9:
@@ -703,11 +703,11 @@ class ComputroniumResearchHub:
         else:
             status = ExperimentStatus.FAILED
             insights.append("Results below threshold")
-        
+
         # Mark hypothesis as validated
         hypothesis.validated = status in [ExperimentStatus.COMPLETED, ExperimentStatus.BREAKTHROUGH]
         hypothesis.result = data
-        
+
         result = ExperimentResult(
             hypothesis_id=hypothesis.id,
             status=status,
@@ -718,20 +718,20 @@ class ComputroniumResearchHub:
             duration_ms=duration,
             data=data
         )
-        
+
         self.experiments.append(result)
-        
+
         # Record breakthrough if applicable
         if status == ExperimentStatus.BREAKTHROUGH:
             self._record_breakthrough(hypothesis, result)
-        
+
         return result
-    
+
     def _record_breakthrough(self, hypothesis: ComputroniumHypothesis, result: ExperimentResult):
         """Record a research breakthrough."""
-        
+
         b_id = f"B-{int(time.time())}"
-        
+
         breakthrough = ResearchBreakthrough(
             id=b_id,
             domain=hypothesis.domain,
@@ -744,55 +744,55 @@ class ComputroniumResearchHub:
                 f"Coherence: {result.coherence:.4f}"
             ] + result.insights
         )
-        
+
         self.breakthroughs.append(breakthrough)
         logger.info(f"[BREAKTHROUGH] {breakthrough.title}: {breakthrough.description}")
-    
+
     def run_research_cycle(self, domains: Optional[List[ResearchDomain]] = None) -> Dict[str, Any]:
         """Run a complete research cycle across specified domains."""
-        
+
         if domains is None:
             domains = list(ResearchDomain)
-        
+
         self.research_cycle_count += 1
         cycle_start = time.perf_counter()
-        
+
         cycle_hypotheses = []
         cycle_experiments = []
         cycle_breakthroughs = []
-        
+
         logger.info("═" * 70)
         logger.info(f"[COMPUTRONIUM R&D] CYCLE {self.research_cycle_count} INITIATED")
         logger.info("═" * 70)
-        
+
         for domain in domains:
             # Generate hypothesis
             hypothesis = self.generate_hypothesis(domain)
             cycle_hypotheses.append(hypothesis)
             logger.info(f"[H] {hypothesis.id}: {hypothesis.description}")
-            
+
             # Run experiment
             result = self.run_experiment(hypothesis)
             cycle_experiments.append(result)
             logger.info(f"[E] {result.hypothesis_id}: {result.status.value} - Density: {result.measured_density:.2f}")
-            
+
             if result.status == ExperimentStatus.BREAKTHROUGH:
                 cycle_breakthroughs.append(self.breakthroughs[-1])
-        
+
         cycle_duration = (time.perf_counter() - cycle_start) * 1000
-        
+
         # Calculate cycle statistics
         completed = sum(1 for e in cycle_experiments if e.status in [ExperimentStatus.COMPLETED, ExperimentStatus.BREAKTHROUGH])
         breakthroughs = len(cycle_breakthroughs)
         avg_density = sum(e.measured_density for e in cycle_experiments) / len(cycle_experiments)
         avg_coherence = sum(e.coherence for e in cycle_experiments) / len(cycle_experiments)
-        
+
         logger.info("═" * 70)
         logger.info(f"[COMPUTRONIUM R&D] CYCLE {self.research_cycle_count} COMPLETE")
         logger.info(f"  Experiments: {completed}/{len(domains)} | Breakthroughs: {breakthroughs}")
         logger.info(f"  Avg Density: {avg_density:.2f} | Avg Coherence: {avg_coherence:.4f}")
         logger.info("═" * 70)
-        
+
         return {
             "cycle": self.research_cycle_count,
             "domains": [d.name for d in domains],
@@ -811,10 +811,10 @@ class ComputroniumResearchHub:
                 } for b in cycle_breakthroughs
             ]
         }
-    
+
     def get_research_status(self) -> Dict[str, Any]:
         """Get current research status."""
-        
+
         return {
             "total_hypotheses": len(self.hypotheses),
             "validated_hypotheses": sum(1 for h in self.hypotheses if h.validated),
@@ -826,16 +826,16 @@ class ComputroniumResearchHub:
             "god_code": self.god_code,
             "phi": self.phi
         }
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get research metrics."""
-        
+
         if not self.experiments:
             return {"status": "NO_DATA"}
-        
+
         densities = [e.measured_density for e in self.experiments]
         coherences = [e.coherence for e in self.experiments]
-        
+
         return {
             "max_density": max(densities),
             "avg_density": sum(densities) / len(densities),
@@ -866,12 +866,12 @@ if __name__ == "__main__":
     print("  L104 COMPUTRONIUM RESEARCH & DEVELOPMENT")
     print("  GOD_CODE:", GOD_CODE)
     print("═" * 70)
-    
+
     hub = get_computronium_research_hub()
-    
+
     # Run a full research cycle
     result = hub.run_research_cycle()
-    
+
     print("\n" + "─" * 70)
     print("RESEARCH CYCLE RESULTS:")
     print(f"  Experiments: {result['experiments_completed']}/{result['hypotheses']}")
@@ -879,14 +879,14 @@ if __name__ == "__main__":
     print(f"  Avg Density: {result['avg_density']:.2f} bits/cycle")
     print(f"  Avg Coherence: {result['avg_coherence']:.4f}")
     print(f"  Duration: {result['duration_ms']:.2f}ms")
-    
+
     if result['breakthrough_details']:
         print("\nBREAKTHROUGHS:")
         for b in result['breakthrough_details']:
             print(f"  • {b['domain']}: {b['improvement']:.2f}x improvement")
-    
+
     print("─" * 70)
-    
+
     # Show final status
     status = hub.get_research_status()
     print("\nRESEARCH STATUS:")

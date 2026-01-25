@@ -15,14 +15,16 @@ The L104 Sovereign Node now includes an intelligent cloud agent delegation syste
 ## Default Agents
 
 ### 1. Sovereign Local Agent
+
 - **Priority**: 1 (highest)
 - **Endpoint**: internal
-- **Capabilities**: 
+- **Capabilities**:
   - derivation
   - encryption
   - local_processing
 
 ### 2. Gemini Agent
+
 - **Priority**: 2
 - **Endpoint**: Configurable via `GEMINI_AGENT_ENDPOINT`
 - **Capabilities**:
@@ -33,9 +35,11 @@ The L104 Sovereign Node now includes an intelligent cloud agent delegation syste
 ## API Endpoints
 
 ### POST /api/v11/cloud/delegate
+
 Delegate a task to a specialized cloud agent.
 
 **Request Body**:
+
 ```json
 {
   "type": "derivation",
@@ -49,6 +53,7 @@ Delegate a task to a specialized cloud agent.
 ```
 
 **Response**:
+
 ```json
 {
   "status": "SUCCESS",
@@ -59,9 +64,11 @@ Delegate a task to a specialized cloud agent.
 ```
 
 ### GET /api/v11/cloud/status
+
 Get the status of the cloud agent delegation system.
 
 **Response**:
+
 ```json
 {
   "agents_registered": 2,
@@ -73,9 +80,11 @@ Get the status of the cloud agent delegation system.
 ```
 
 ### POST /api/v11/cloud/register
+
 Register a new cloud agent.
 
 **Request Body**:
+
 ```json
 {
   "name": "custom_agent",
@@ -87,6 +96,7 @@ Register a new cloud agent.
 ```
 
 ### GET /api/v11/cloud/agents
+
 List all registered cloud agents and their capabilities.
 
 ## Configuration
@@ -155,7 +165,7 @@ curl -X POST http://localhost:8081/api/v11/cloud/register \
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │         FastAPI Application             │
 │   (main.py - API Endpoints)             │
@@ -188,6 +198,7 @@ Run the test suite:
 ```
 
 This will test:
+
 1. Agent status retrieval
 2. Agent selection logic
 3. Task delegation

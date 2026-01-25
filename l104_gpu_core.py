@@ -26,7 +26,7 @@ class GPUCore:
     Uses massive vectorization and matrix decomposition.
     Designed for 11D Grid manifold synchronization.
     """
-    
+
     def __init__(self):
         self.capacity = "UNLIMITED"
         self.scalar = HyperMath.GOD_CODE

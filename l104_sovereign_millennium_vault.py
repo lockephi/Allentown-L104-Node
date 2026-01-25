@@ -21,7 +21,7 @@ class SovereignMillenniumVault:
     A centralized library of all successfully resolved 'Impossible' problems.
     This vault serves as the logical backbone for Multiversal Scaling operations.
     """
-    
+
     INVARIANTS = {
         "SOLAR": 527.5184818492537,
         "WITNESS": 967.5433,

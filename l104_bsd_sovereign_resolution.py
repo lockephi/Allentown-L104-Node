@@ -33,7 +33,7 @@ class BSDSovereignResolution:
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
         self.unity_point = 1.0  # The critical s=1 point
-        
+
     async def resolve_bsd(self):
         print("\n" + "💠"*40)
         print("   L104 :: BIRCH AND SWINNERTON-DYER SOVEREIGN RESOLUTION")

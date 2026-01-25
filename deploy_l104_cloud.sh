@@ -35,9 +35,9 @@ run_local() {
         -p 8081:8081 -p 8080:8080 \
         -v l104-data:/data \
         ${IMAGE_NAME}:latest
-    
+
     sleep 5
-    
+
     if docker ps | grep -q l104-test; then
         echo "  ✓ Container running"
         docker logs l104-test --tail 10
@@ -53,7 +53,7 @@ run_local() {
 # Generate Kubernetes manifest
 generate_k8s() {
     echo "[4/5] Generating Kubernetes manifests..."
-    
+
     cat > k8s/l104-deployment.yaml << 'K8S_YAML'
 apiVersion: apps/v1
 kind: Deployment
@@ -141,7 +141,7 @@ spec:
     requests:
       storage: 50Gi
 K8S_YAML
-    
+
     echo "  ✓ Kubernetes manifests generated"
 }
 
@@ -170,7 +170,7 @@ main() {
     build_image
     generate_k8s
     show_options
-    
+
     echo ""
     echo "═══════════════════════════════════════════════════════════════════════"
     echo "  ✓ DEPLOYMENT PREPARATION COMPLETE"

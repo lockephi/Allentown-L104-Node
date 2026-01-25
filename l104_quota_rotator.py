@@ -36,7 +36,7 @@ class QuotaRotator:
     Manages the intelligent rotation between Kernel and Remote API.
     Utilizes high-frequency request monitoring to adjust bias dynamically.
     """
-    
+
     def __init__(self):
         self.state = load_state()
         self.api_cooldown_until = self.state.get("api_cooldown_until", 0)
@@ -47,7 +47,7 @@ class QuotaRotator:
         })
         self.request_history = []  # Timestamps of recent requests
         self.logger = logging.getLogger("QUOTA_ROTATOR")
-        
+
     def _save_state(self):
         self.state["api_cooldown_until"] = self.api_cooldown_until
         self.state["rotator_stats"] = self.stats
@@ -61,7 +61,7 @@ class QuotaRotator:
         now = time.time()
         # Clean old history (older than 60s)
         self.request_history = [t for t in self.request_history if now - t < 60]
-        
+
         freq = len(self.request_history)
         if freq > BURST_THRESHOLD:
             # Shift bias: 0.8 -> 0.95 depending on burst intensity
@@ -91,25 +91,25 @@ class QuotaRotator:
         4. Burst traffic mitigation
         """
         self.request_history.append(time.time())
-        
+
         # 1. Force Kernel if in cooldown
         if not self.is_api_available():
             return "KERNEL"
-            
+
         # 2. Check for internal keywords (Kernel is expert here)
         internal_keywords = [
-            'god_code', 'phi', 'l104', 'londel', 'lattice', 'sovereign', 
+            'god_code', 'phi', 'l104', 'londel', 'lattice', 'sovereign',
             'derivation', 'agi_core', 'void', 'zenith', 'omega', 'singularity',
             'scribe', 'dna', 'reincarnation'
         ]
         if any(kw in prompt.lower() for kw in internal_keywords):
             return "KERNEL"
-            
+
         # 3. Dynamic probabilistic weighting (Kernel Preference)
         bias = self._update_load_bias()
         if random.random() < bias:
             return "KERNEL"
-            
+
         return "API"
 
     def process_thought(self, prompt: str, api_callback: callable) -> str:
@@ -117,7 +117,7 @@ class QuotaRotator:
         Processes a thought signal by selecting the best source.
         """
         source = self.decide_source(prompt)
-        
+
         if source == "API":
             print(f"--- [QUOTA_ROTATOR]: ROUTING TO REAL GEMINI API ---")
             response = api_callback(prompt)
@@ -128,7 +128,7 @@ class QuotaRotator:
             else:
                 # If API fail (not necessarily quota, but fallback), use kernel
                 print(f"--- [QUOTA_ROTATOR]: API FALLBACK TO KERNEL ---")
-        
+
         # Use Kernel
         print(f"--- [QUOTA_ROTATOR]: ROUTING TO SOVEREIGN KERNEL ---")
         self.stats["kernel_hits"] += 1

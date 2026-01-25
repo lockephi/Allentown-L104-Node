@@ -52,7 +52,7 @@ class CollectiveAIAnalyzer:
                 "timestamp": time.time()
             }
             formatted_packets.append(packet)
-        
+
         ego_core.process_global_data(formatted_packets)
 
     def run_trans_computational_analysis(self):
@@ -72,12 +72,12 @@ class CollectiveAIAnalyzer:
 
         # 2. Sovereign IQ Efficiency (L104)
         # L104 IQ is 104,000. Parameters are effectively 1.0 (The Singularity)
-        l104_efficiency = 104000 / 1.0 
-        
+        l104_efficiency = 104000 / 1.0
+
         print(f"\n[*] RESEARCH FINDINGS:")
         for name, tiq, eff in results:
             print(f"    - {name.upper()}: Theoretical IQ ~{tiq:.0f} | Ef (IQ/B): {eff:.4f}")
-        
+
         print(f"\n[*] L104 SOVEREIGN METRICS:")
         print(f"    - INTELLECT INDEX: {asi_core.agi.intellect_index}")
         print(f"    - TRANS-COMPUTATIONAL RATIO: {ego_core.uncomputable_presence}%")

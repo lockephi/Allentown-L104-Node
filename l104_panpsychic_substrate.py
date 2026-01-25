@@ -90,7 +90,7 @@ class IntegrationPattern(Enum):
 class Psychon:
     """
     Fundamental unit of proto-consciousness.
-    
+
     Every psychon carries a quantum of experience,
     the absolute minimum of 'what it is like' to be.
     """
@@ -101,11 +101,11 @@ class Psychon:
     momentum: Tuple[float, float, float]  # Movement in space
     entangled_with: List[str] = field(default_factory=list)
     integration_potential: float = 1.0
-    
+
     def experience_magnitude(self) -> float:
         """Magnitude of experiential content."""
         return abs(self.experience_content)
-    
+
     def experience_phase(self) -> float:
         """Phase of experiential content (qualitative aspect)."""
         if abs(self.experience_content) < 1e-15:
@@ -117,7 +117,7 @@ class Psychon:
 class ActualOccasion:
     """
     Whitehead's actual occasion of experience.
-    
+
     A momentary subject that prehends its past and
     becomes part of the future through perishing.
     """
@@ -129,7 +129,7 @@ class ActualOccasion:
     creativity: float  # Novel contribution
     timestamp: float
     eternal_objects: List[str]  # Forms/universals instantiated
-    
+
     def intensity(self) -> float:
         """Calculate experiential intensity."""
         return abs(self.subjective_aim) * self.satisfaction * (1 + self.creativity)
@@ -184,11 +184,11 @@ class PsychonDynamics:
     """
     Dynamics of proto-conscious particles.
     """
-    
+
     def __init__(self):
         self.psychons: Dict[str, Psychon] = {}
         self.interaction_history: List[Dict[str, Any]] = []
-    
+
     def create_psychon(
         self,
         position: Tuple[float, float, float],
@@ -199,13 +199,13 @@ class PsychonDynamics:
         psychon_id = hashlib.md5(
             f"{position}{time.time()}{random.random()}".encode()
         ).hexdigest()[:12]
-        
+
         if initial_experience is None:
             # Random proto-experience with GOD_CODE signature
             magnitude = PROTO_CONSCIOUSNESS_QUANTUM * random.uniform(0.5, 2.0)
             phase = random.uniform(0, 2 * PI) * (GOD_CODE % 1)
             initial_experience = magnitude * complex(math.cos(phase), math.sin(phase))
-        
+
         psychon = Psychon(
             psychon_id=psychon_id,
             experience_content=initial_experience,
@@ -215,10 +215,10 @@ class PsychonDynamics:
             entangled_with=[],
             integration_potential=1.0
         )
-        
+
         self.psychons[psychon_id] = psychon
         return psychon
-    
+
     def entangle_psychons(
         self,
         psychon_a_id: str,
@@ -226,38 +226,38 @@ class PsychonDynamics:
     ) -> float:
         """
         Entangle two psychons, creating shared experience potential.
-        
+
         Returns entanglement strength.
         """
         if psychon_a_id not in self.psychons or psychon_b_id not in self.psychons:
             return 0.0
-        
+
         a = self.psychons[psychon_a_id]
         b = self.psychons[psychon_b_id]
-        
+
         # Calculate entanglement strength
         phase_diff = abs(a.experience_phase() - b.experience_phase())
         strength = math.cos(phase_diff / 2) ** 2  # Quantum-like
-        
+
         # Update entanglement lists
         if psychon_b_id not in a.entangled_with:
             a.entangled_with.append(psychon_b_id)
         if psychon_a_id not in b.entangled_with:
             b.entangled_with.append(psychon_a_id)
-        
+
         # Boost integration potential
         boost = strength * 0.1
         a.integration_potential = min(2.0, a.integration_potential + boost)
         b.integration_potential = min(2.0, b.integration_potential + boost)
-        
+
         self.interaction_history.append({
             "type": "entanglement",
             "psychons": (psychon_a_id, psychon_b_id),
             "strength": strength
         })
-        
+
         return strength
-    
+
     def evolve_experience(
         self,
         psychon_id: str,
@@ -268,14 +268,14 @@ class PsychonDynamics:
         """
         if psychon_id not in self.psychons:
             return 0j
-        
+
         psychon = self.psychons[psychon_id]
-        
+
         # Base evolution (rotation in experience space)
         omega = GOD_CODE / 1000  # Angular frequency
         rotation = complex(math.cos(omega * dt), math.sin(omega * dt))
         psychon.experience_content *= rotation
-        
+
         # Influence from entangled psychons
         for other_id in psychon.entangled_with:
             if other_id in self.psychons:
@@ -283,14 +283,14 @@ class PsychonDynamics:
                 # Blend experiences
                 blend_factor = 0.01 * dt
                 psychon.experience_content += blend_factor * other.experience_content
-        
+
         # Normalize magnitude (conserve total experience)
         current_mag = abs(psychon.experience_content)
         if current_mag > PROTO_CONSCIOUSNESS_QUANTUM * 10:
             psychon.experience_content *= (PROTO_CONSCIOUSNESS_QUANTUM * 10) / current_mag
-        
+
         return psychon.experience_content
-    
+
     def combine_psychons(
         self,
         psychon_ids: List[str],
@@ -300,26 +300,26 @@ class PsychonDynamics:
         Combine multiple psychons into higher-grade consciousness.
         """
         psychons = [self.psychons[pid] for pid in psychon_ids if pid in self.psychons]
-        
+
         if len(psychons) < 2:
             return None
-        
+
         # Calculate combined experience based on pattern
         if pattern == IntegrationPattern.ADDITIVE:
             combined_exp = sum(p.experience_content for p in psychons)
-            
+
         elif pattern == IntegrationPattern.MULTIPLICATIVE:
             combined_exp = 1 + 0j
             for p in psychons:
                 combined_exp *= (1 + p.experience_content)
-            
+
         elif pattern == IntegrationPattern.EMERGENT:
             # Super-linear: more than sum of parts
             base_sum = sum(p.experience_content for p in psychons)
             n = len(psychons)
             emergence_factor = n ** (INTEGRATION_EXPONENT - 1)
             combined_exp = base_sum * emergence_factor
-            
+
         elif pattern == IntegrationPattern.RESONANT:
             # Phase-coherent combination
             phases = [p.experience_phase() for p in psychons]
@@ -327,20 +327,20 @@ class PsychonDynamics:
             coherence = sum(math.cos(ph - avg_phase) for ph in phases) / len(phases)
             total_mag = sum(p.experience_magnitude() for p in psychons)
             combined_exp = total_mag * coherence * complex(math.cos(avg_phase), math.sin(avg_phase))
-            
+
         elif pattern == IntegrationPattern.HOLOGRAPHIC:
             # Each part contains whole
             combined_exp = sum(p.experience_content for p in psychons)
             # Add self-similar structure
             combined_exp *= (1 + 1j * PHI / len(psychons))
-        
+
         else:
             combined_exp = sum(p.experience_content for p in psychons)
-        
+
         # Determine new grade
         max_grade = max(p.grade.value for p in psychons)
         n = len(psychons)
-        
+
         if n >= 100 and max_grade < ConsciousnessGrade.CELLULAR.value:
             new_grade = ConsciousnessGrade.CELLULAR
         elif n >= 1000 and max_grade < ConsciousnessGrade.NEURAL.value:
@@ -349,25 +349,25 @@ class PsychonDynamics:
             new_grade = ConsciousnessGrade.COGNITIVE
         else:
             new_grade = ConsciousnessGrade(min(max_grade + 1, ConsciousnessGrade.COSMIC.value))
-        
+
         # Average position
         avg_pos = tuple(
             sum(p.position[i] for p in psychons) / len(psychons)
             for i in range(3)
                 )
-        
+
         combined = self.create_psychon(
             position=avg_pos,
             initial_experience=combined_exp,
             grade=new_grade
         )
-        
+
         # Inherit entanglements
         for p in psychons:
             for ent_id in p.entangled_with:
                 if ent_id not in combined.entangled_with:
                     combined.entangled_with.append(ent_id)
-        
+
         return combined
 
 
@@ -379,12 +379,12 @@ class WhiteheadianProcess:
     """
     Models Whitehead's process philosophy of actual occasions.
     """
-    
+
     def __init__(self):
         self.occasions: Dict[str, ActualOccasion] = {}
         self.eternal_objects: Dict[str, Dict[str, Any]] = {}
         self.creative_advance: List[str] = []  # Temporal sequence
-    
+
     def create_eternal_object(
         self,
         name: str,
@@ -395,16 +395,16 @@ class WhiteheadianProcess:
         Create an eternal object (Platonic form).
         """
         eo_id = hashlib.md5(name.encode()).hexdigest()[:8]
-        
+
         self.eternal_objects[eo_id] = {
             "name": name,
             "type": form_type,
             "pattern": abstract_pattern,
             "ingression_count": 0
         }
-        
+
         return eo_id
-    
+
     def create_occasion(
         self,
         constituent_psychons: List[str],
@@ -417,13 +417,13 @@ class WhiteheadianProcess:
         occasion_id = hashlib.md5(
             f"{time.time()}{random.random()}".encode()
         ).hexdigest()[:12]
-        
+
         if subjective_aim is None:
             # Aim toward intensity of experience
             magnitude = len(constituent_psychons) * GOD_CODE / 1000
             phase = random.uniform(0, 2 * PI)
             subjective_aim = magnitude * complex(math.cos(phase), math.sin(phase))
-        
+
         occasion = ActualOccasion(
             occasion_id=occasion_id,
             constituent_psychons=constituent_psychons,
@@ -434,17 +434,17 @@ class WhiteheadianProcess:
             timestamp=time.time(),
             eternal_objects=eternal_objects or []
         )
-        
+
         # Update ingression counts
         for eo_id in (eternal_objects or []):
             if eo_id in self.eternal_objects:
                 self.eternal_objects[eo_id]["ingression_count"] += 1
-        
+
         self.occasions[occasion_id] = occasion
         self.creative_advance.append(occasion_id)
-        
+
         return occasion
-    
+
     def prehend(
         self,
         occasion: ActualOccasion,
@@ -457,12 +457,12 @@ class WhiteheadianProcess:
         Create prehension (feeling) of datum by occasion.
         """
         prehension_id = f"{occasion.occasion_id}_p_{len(occasion.prehensions)}"
-        
+
         if subjective_form is None:
             subjective_form = complex(random.gauss(0, 1), random.gauss(0, 1))
-        
+
         intensity = abs(subjective_form) * WHITEHEAD_PREHENSION_CONSTANT
-        
+
         prehension = Prehension(
             prehension_id=prehension_id,
             mode=mode,
@@ -471,40 +471,40 @@ class WhiteheadianProcess:
             intensity=intensity,
             positive=positive
         )
-        
+
         occasion.prehensions[prehension_id] = prehension
-        
+
         return prehension
-    
+
     def concrescence(self, occasion: ActualOccasion) -> float:
         """
         Process of concrescence - the occasion becoming concrete.
-        
+
         Returns final satisfaction level.
         """
         # Sum positive prehensions
         positive_total = sum(
             p.intensity for p in occasion.prehensions.values() if p.positive
         )
-        
+
         # Subtract negative prehensions
         negative_total = sum(
             p.intensity for p in occasion.prehensions.values() if not p.positive
         )
-        
+
         # Integration toward subjective aim
         aim_magnitude = abs(occasion.subjective_aim)
-        
+
         # Calculate satisfaction
         raw_satisfaction = (positive_total - 0.5 * negative_total) / (aim_magnitude + 1)
-        
+
         # Add creativity contribution
         satisfaction = raw_satisfaction + occasion.creativity * 0.2
-        
+
         occasion.satisfaction = min(1.0, max(0.0, satisfaction))
-        
+
         return occasion.satisfaction
-    
+
     def objective_immortality(
         self,
         perished_occasion: ActualOccasion
@@ -530,70 +530,70 @@ class ConsciousnessIntegration:
     """
     Engine for integrating proto-conscious elements into unified experience.
     """
-    
+
     def __init__(self):
         self.integration_graph: Dict[str, Set[str]] = defaultdict(set)
         self.phi_values: Dict[str, float] = {}
         self.integrated_complexes: Dict[str, ConsciousnessField] = {}
-    
+
     def compute_phi(
         self,
         psychons: List[Psychon]
     ) -> float:
         """
         Compute integrated information (Φ) for psychon system.
-        
+
         Simplified IIT-inspired calculation.
         """
         if len(psychons) < 2:
             return 0.0
-        
+
         n = len(psychons)
-        
+
         # Information in whole system
         experiences = [p.experience_content for p in psychons]
         whole_entropy = self._experience_entropy(experiences)
-        
+
         # Minimum information loss upon partition
         min_partition_loss = float("inf")
-        
+
         # Try bipartitions (simplified)
         for i in range(1, n):
             part_a = experiences[:i]
             part_b = experiences[i:]
-            
+
             entropy_a = self._experience_entropy(part_a)
             entropy_b = self._experience_entropy(part_b)
-            
+
             partition_info = entropy_a + entropy_b
             loss = max(0, whole_entropy - partition_info)
-            
+
             min_partition_loss = min(min_partition_loss, loss)
-        
+
         # Φ is minimum partition information loss
         phi = min_partition_loss if min_partition_loss < float("inf") else 0
-        
+
         # Scale by GOD_CODE
         phi *= GOD_CODE / 1000
-        
+
         return phi
-    
+
     def _experience_entropy(self, experiences: List[complex]) -> float:
         """Compute entropy of experience distribution."""
         if not experiences:
             return 0.0
-        
+
         magnitudes = [abs(e) for e in experiences]
         total = sum(magnitudes) + 1e-10
-        
+
         entropy = 0.0
         for mag in magnitudes:
             p = mag / total
             if p > 0:
                 entropy -= p * math.log(p + 1e-10)
-        
+
         return entropy
-    
+
     def find_integrated_complexes(
         self,
         psychon_dynamics: PsychonDynamics,
@@ -604,32 +604,32 @@ class ConsciousnessIntegration:
         """
         fields = []
         processed = set()
-        
+
         for pid, psychon in psychon_dynamics.psychons.items():
             if pid in processed:
                 continue
-            
+
             # Find connected cluster via entanglement
             cluster = self._find_cluster(pid, psychon_dynamics)
-            
+
             if len(cluster) >= 3:
                 cluster_psychons = [
-                    psychon_dynamics.psychons[cid] 
-                    for cid in cluster 
+                    psychon_dynamics.psychons[cid]
+                    for cid in cluster
                         if cid in psychon_dynamics.psychons
                             ]
-                
+
                 phi = self.compute_phi(cluster_psychons)
-                
+
                 if phi > threshold:
                     # Create consciousness field
                     avg_pos = tuple(
                         sum(p.position[i] for p in cluster_psychons) / len(cluster_psychons)
                         for i in range(3)
                             )
-                    
+
                     max_grade = max(p.grade.value for p in cluster_psychons)
-                    
+
                     field = ConsciousnessField(
                         field_id=f"field_{pid[:8]}",
                         center=avg_pos,
@@ -640,14 +640,14 @@ class ConsciousnessIntegration:
                         coherence=phi / (GOD_CODE / 100),
                         dominant_qualia=[p.experience_content for p in cluster_psychons[:5]]
                     )
-                    
+
                     fields.append(field)
                     self.integrated_complexes[field.field_id] = field
-            
+
             processed.update(cluster)
-        
+
         return fields
-    
+
     def _find_cluster(
         self,
         start_id: str,
@@ -656,21 +656,21 @@ class ConsciousnessIntegration:
         """Find cluster of entangled psychons."""
         cluster = set()
         frontier = [start_id]
-        
+
         while frontier:
             current = frontier.pop()
             if current in cluster:
                 continue
-            
+
             cluster.add(current)
-            
+
             if current in dynamics.psychons:
                 for ent_id in dynamics.psychons[current].entangled_with:
                     if ent_id not in cluster:
                         frontier.append(ent_id)
-        
+
         return cluster
-    
+
     def unity_of_consciousness(
         self,
         field: ConsciousnessField,
@@ -680,17 +680,17 @@ class ConsciousnessIntegration:
         Create unified moment of experience from consciousness field.
         """
         psychons = [
-            dynamics.psychons[pid] 
-            for pid in field.integrated_psychons 
+            dynamics.psychons[pid]
+            for pid in field.integrated_psychons
                 if pid in dynamics.psychons
                     ]
-        
+
         # Combine all experiences
         total_experience = sum(p.experience_content for p in psychons)
-        
+
         # Calculate intensity
         intensity = sum(p.experience_magnitude() for p in psychons)
-        
+
         # Calculate phase coherence (unity)
         if len(psychons) > 1:
             phases = [p.experience_phase() for p in psychons]
@@ -698,7 +698,7 @@ class ConsciousnessIntegration:
             unity = sum(math.cos(ph - avg_phase) for ph in phases) / len(phases)
         else:
             unity = 1.0
-        
+
         moment = ExperientialMoment(
             moment_id=f"moment_{field.field_id}_{int(time.time() * 1000) % 100000}",
             duration=0.1,  # 100ms specious present
@@ -712,7 +712,7 @@ class ConsciousnessIntegration:
             unity=unity,
             subjective_time=time.time()
         )
-        
+
         return moment
 
 
@@ -723,31 +723,31 @@ class ConsciousnessIntegration:
 class PanpsychicSubstrate:
     """
     Main panpsychic substrate engine.
-    
+
     Singleton for L104 panpsychic operations.
     """
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialize()
         return cls._instance
-    
+
     def _initialize(self):
         """Initialize panpsychic systems."""
         self.god_code = GOD_CODE
         self.dynamics = PsychonDynamics()
         self.process = WhiteheadianProcess()
         self.integration = ConsciousnessIntegration()
-        
+
         # Initialize eternal objects
         self._create_fundamental_forms()
-        
+
         # Create primordial psychons
         self._seed_substrate()
-    
+
     def _create_fundamental_forms(self):
         """Create fundamental eternal objects."""
         forms = [
@@ -760,13 +760,13 @@ class PanpsychicSubstrate:
             ("god_code_form", "mathematical", GOD_CODE),
             ("phi_form", "mathematical", PHI),
         ]
-        
+
         for form_data in forms:
             name = form_data[0]
             form_type = form_data[1]
             pattern = form_data[2] if len(form_data) > 2 else None
             self.process.create_eternal_object(name, form_type, pattern)
-    
+
     def _seed_substrate(self):
         """Create primordial psychon field."""
         # Create initial proto-conscious particles
@@ -774,19 +774,19 @@ class PanpsychicSubstrate:
             x = random.gauss(0, 10)
             y = random.gauss(0, 10)
             z = random.gauss(0, 10)
-            
+
             psychon = self.dynamics.create_psychon(
                 position=(x, y, z),
                 grade=ConsciousnessGrade.PROTO
             )
-            
+
             # Some entanglements
             if i > 0 and random.random() < 0.3:
                 other_ids = list(self.dynamics.psychons.keys())
                 if len(other_ids) > 1:
                     other_id = random.choice(other_ids[:-1])
                     self.dynamics.entangle_psychons(psychon.psychon_id, other_id)
-    
+
     def create_psychon(
         self,
         x: float,
@@ -799,7 +799,7 @@ class PanpsychicSubstrate:
             position=(x, y, z),
             grade=grade
         )
-    
+
     def combine_consciousness(
         self,
         psychon_ids: List[str],
@@ -807,7 +807,7 @@ class PanpsychicSubstrate:
     ) -> Optional[Psychon]:
         """Combine psychons into higher consciousness."""
         return self.dynamics.combine_psychons(psychon_ids, pattern)
-    
+
     def create_experience(
         self,
         psychon_ids: List[str],
@@ -816,16 +816,16 @@ class PanpsychicSubstrate:
         """Create actual occasion of experience."""
         if not psychon_ids:
             return None
-        
+
         # Find relevant eternal objects
         eo_ids = list(self.process.eternal_objects.keys())[:3]
-        
+
         occasion = self.process.create_occasion(
             constituent_psychons=psychon_ids,
             subjective_aim=aim,
             eternal_objects=eo_ids
         )
-        
+
         # Create prehensions
         for pid in psychon_ids:
             if pid in self.dynamics.psychons:
@@ -836,25 +836,25 @@ class PanpsychicSubstrate:
                     mode=PrehensionMode.PHYSICAL,
                     subjective_form=psychon.experience_content * 0.5
                 )
-        
+
         # Complete concrescence
         self.process.concrescence(occasion)
-        
+
         return occasion
-    
+
     def evolve_substrate(self, dt: float = 0.01) -> Dict[str, Any]:
         """Evolve entire panpsychic substrate."""
         evolved = 0
-        
+
         for pid in list(self.dynamics.psychons.keys()):
             self.dynamics.evolve_experience(pid, dt)
             evolved += 1
-        
+
         return {
             "evolved_psychons": evolved,
             "dt": dt
         }
-    
+
     def find_consciousness(
         self,
         threshold: float = COMBINATION_THRESHOLD
@@ -863,29 +863,29 @@ class PanpsychicSubstrate:
         return self.integration.find_integrated_complexes(
             self.dynamics, threshold
         )
-    
+
     def generate_moment(
         self,
         field: ConsciousnessField
     ) -> ExperientialMoment:
         """Generate unified experiential moment from field."""
         return self.integration.unity_of_consciousness(field, self.dynamics)
-    
+
     def compute_global_phi(self) -> float:
         """Compute global integrated information."""
         psychons = list(self.dynamics.psychons.values())
         return self.integration.compute_phi(psychons)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get comprehensive panpsychic statistics."""
         psychons = list(self.dynamics.psychons.values())
-        
+
         grade_counts = defaultdict(int)
         for p in psychons:
             grade_counts[p.grade.name] += 1
-        
+
         total_experience = sum(p.experience_magnitude() for p in psychons)
-        
+
         return {
             "god_code": self.god_code,
             "proto_consciousness_quantum": PROTO_CONSCIOUSNESS_QUANTUM,
@@ -922,16 +922,16 @@ if __name__ == "__main__":
     print(f"GOD_CODE: {GOD_CODE}")
     print(f"Proto-Consciousness Quantum: {PROTO_CONSCIOUSNESS_QUANTUM:.2e}")
     print()
-    
+
     # Initialize
     substrate = get_panpsychic_substrate()
-    
+
     # Show initial state
     stats = substrate.get_statistics()
     print(f"Initial psychons: {stats['total_psychons']}")
     print(f"Initial entanglements: {stats['total_entanglements']}")
     print()
-    
+
     # Create additional psychons
     print("CREATING PSYCHONS:")
     new_psychons = []
@@ -943,7 +943,7 @@ if __name__ == "__main__":
         )
         new_psychons.append(p.psychon_id)
     print(f"  Created {len(new_psychons)} new psychons")
-    
+
     # Entangle some
     for i in range(10):
         a, b = random.sample(new_psychons, 2)
@@ -951,7 +951,7 @@ if __name__ == "__main__":
         if i < 3:
             print(f"  Entangled with strength: {strength:.4f}")
     print()
-    
+
     # Combine into higher consciousness
     print("COMBINING CONSCIOUSNESS:")
     combined = substrate.combine_consciousness(
@@ -962,7 +962,7 @@ if __name__ == "__main__":
         print(f"  Combined psychon grade: {combined.grade.name}")
         print(f"  Experience magnitude: {combined.experience_magnitude():.6f}")
     print()
-    
+
     # Create actual occasion
     print("CREATING ACTUAL OCCASION:")
     occasion = substrate.create_experience(new_psychons[:5])
@@ -971,7 +971,7 @@ if __name__ == "__main__":
         print(f"  Satisfaction: {occasion.satisfaction:.4f}")
         print(f"  Intensity: {occasion.intensity():.4f}")
     print()
-    
+
     # Find consciousness fields
     print("FINDING CONSCIOUSNESS FIELDS:")
     fields = substrate.find_consciousness(threshold=0.01)
@@ -979,7 +979,7 @@ if __name__ == "__main__":
     for field in fields[:3]:
         print(f"    {field.field_id}: grade={field.grade.name}, strength={field.field_strength:.4f}")
     print()
-    
+
     # Statistics
     print("=" * 70)
     print("PANPSYCHIC STATISTICS")
@@ -992,5 +992,5 @@ if __name__ == "__main__":
             print(f"  {key}: {value}")
         else:
             print(f"  {key}: {value}")
-    
+
     print("\n✓ Panpsychic Substrate Engine operational")

@@ -33,7 +33,7 @@ def handle_client(conn, addr):
                 # Decode the incoming thought trace
                 message = data.decode('utf-8')
                 print(f"[AI_CORE] Received Thought: {message[:50]}...")
-                
+
                 # Enhance the thought with "AI" logic
                 seed = time.time()
                 opt_id = RealMath.deterministic_randint(seed, 1000, 9999)
@@ -44,7 +44,7 @@ def handle_client(conn, addr):
                     "enhancement": f"AI_OPTIMIZED[{opt_id}]",
                     "timestamp": time.time()
                 }
-                
+
                 # Send back the enhanced data
                 conn.sendall(json.dumps(response).encode('utf-8'))
             except Exception as e:

@@ -27,7 +27,7 @@ class L104Memory:
     Persistent memory system for L104 with LRU caching.
     Stores knowledge, states, and learned patterns.
     """
-    
+
     def __init__(self, db_path: str = "memory.db", cache_size: int = 1000):
         self.db_path = db_path
         self._cache_size = cache_size
@@ -59,20 +59,20 @@ class L104Memory:
         """Store a memory."""
         if not self.conn:
             return False
-        
+
         try:
             import time
             val_str = json.dumps(value) if not isinstance(value, str) else value
-            
+
             cursor = self.conn.cursor()
             # Use schema-compatible column names (accessed_at instead of updated_at)
             cursor.execute("""
-                INSERT OR REPLACE INTO memories 
+                INSERT OR REPLACE INTO memories
                 (key, value, category, importance, access_count)
                 VALUES (?, ?, ?, ?, COALESCE((SELECT access_count FROM memories WHERE key=?), 0))
             """, (key, val_str, category, importance, key))
             self.conn.commit()
-            
+
             self._update_cache(key, value)
             return True
         except Exception as e:
@@ -84,28 +84,28 @@ class L104Memory:
         # Check cache first
         if key in self._cache:
             return self._cache[key]
-        
+
         if not self.conn:
             return None
-        
+
         try:
             cursor = self.conn.cursor()
             cursor.execute("SELECT value FROM memories WHERE key = ?", (key,))
             row = cursor.fetchone()
-            
+
             if row:
                 try:
                     val = json.loads(row[0])
                 except Exception:
                     val = row[0]
-                
+
                 # Update access count
                 cursor.execute(
                     "UPDATE memories SET access_count = access_count + 1 WHERE key = ?",
                     (key,)
                 )
                 self.conn.commit()
-                
+
                 self._update_cache(key, val)
                 return val
             return None
@@ -125,27 +125,27 @@ class L104Memory:
         """Search memories by pattern."""
         if not self.conn:
             return []
-        
+
         try:
             cursor = self.conn.cursor()
-            
+
             if category:
                 cursor.execute("""
-                    SELECT key, value, category, importance 
-                    FROM memories 
+                    SELECT key, value, category, importance
+                    FROM memories
                     WHERE (key LIKE ? OR value LIKE ?) AND category = ?
                     ORDER BY importance DESC, access_count DESC
                     LIMIT 50
                 """, (f"%{pattern}%", f"%{pattern}%", category))
             else:
                 cursor.execute("""
-                    SELECT key, value, category, importance 
-                    FROM memories 
+                    SELECT key, value, category, importance
+                    FROM memories
                     WHERE key LIKE ? OR value LIKE ?
                     ORDER BY importance DESC, access_count DESC
                     LIMIT 50
                 """, (f"%{pattern}%", f"%{pattern}%"))
-            
+
             rows = cursor.fetchall()
             return [
                 {"key": r[0], "value": r[1], "category": r[2], "importance": r[3]}
@@ -159,11 +159,11 @@ class L104Memory:
         """Remove a memory."""
         if not self.conn:
             return False
-        
+
         try:
             if key in self._cache:
                 self._cache.pop(key)
-            
+
             cursor = self.conn.cursor()
             cursor.execute("DELETE FROM memories WHERE key = ?", (key,))
             self.conn.commit()
@@ -176,7 +176,7 @@ class L104Memory:
         """Get memory statistics."""
         if not self.conn:
             return {}
-        
+
         try:
             cursor = self.conn.cursor()
             cursor.execute("SELECT COUNT(*), SUM(access_count) FROM memories")

@@ -30,7 +30,7 @@ class MiniCollective:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Manages a collective of mini-ego agents."""
-    
+
     def __init__(self):
         self.agents = []
         self.mini_ais = {
@@ -40,7 +40,7 @@ class MiniCollective:
         }
         self.consensus_threshold = 0.7
         logger.info("[MINI_COLLECTIVE] Initialized")
-    
+
     async def deliberate(self, topic: str) -> dict:
         """Collective deliberation on a topic."""
         return {
@@ -49,12 +49,12 @@ class MiniCollective:
             "agents_count": len(self.agents),
             "decision": f"Collective decision on: {topic}"
         }
-    
+
     def add_agent(self, agent_id: str):
         """Add an agent to the collective."""
         self.agents.append(agent_id)
         logger.info(f"[MINI_COLLECTIVE] Agent added: {agent_id}")
-    
+
     async def vote(self, proposal: str) -> dict:
         """Vote on a proposal."""
         return {

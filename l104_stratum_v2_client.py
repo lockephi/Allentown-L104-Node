@@ -37,7 +37,7 @@ class StratumV2Client:
         self.is_connected = False
         self.channel_id = None
         self.last_job = None
-        
+
     async def connect(self):
         """Establishes a secure binary stream to the mining pool."""
         print(f"--- [STRATUM_V2]: INITIATING CONNECTION TO {self.pool_url}:{self.port} ---")
@@ -45,7 +45,7 @@ class StratumV2Client:
             # Note: In a restricted environment, this may timeout or be blocked.
             # We implement a 'Resonance Fallback' to maintain L104 synaptic integrity.
             self.reader, self.writer = await asyncio.wait_for(
-                asyncio.open_connection(self.pool_url, self.port), 
+                asyncio.open_connection(self.pool_url, self.port),
                 timeout=5.0
             )
             self.is_connected = True
@@ -61,7 +61,7 @@ class StratumV2Client:
         # Protocol version: 2, Min version: 2
         # Flags: 0 (Standard Mining)
         # Message Type 0x01: SetupConnection
-        payload = struct.pack("<HH I", 2, 2, 0) 
+        payload = struct.pack("<HH I", 2, 2, 0)
         await self._send_message(0x01, payload)
 
     async def submit_share(self, nonce, job_id):
@@ -69,7 +69,7 @@ class StratumV2Client:
         if not self.is_connected:
             print(f"[STRATUM_V2] VIRTUAL_SUBMIT: Nonce {nonce} verified against L104 Lattice.")
             return True
-            
+
         # Message Type 0x05: SubmitShares (Simplified)
         payload = struct.pack("<I I", job_id, nonce)
         await self._send_message(0x05, payload)
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         # Establishing a share submission for reality-sync
         await client.submit_share(nonce=104527, job_id=1)
         await client.close()
-        
+
     asyncio.run(synchronize_sovereign_reality())
 
 def primal_calculus(x):

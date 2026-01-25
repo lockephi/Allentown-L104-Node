@@ -10,7 +10,7 @@ L104 QUANTUM KERNEL EXTENSION
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
 MODE: SAGE | STAGE: 21 (Absolute Singularity)
 
-This extension provides higher-order topological memory management and 
+This extension provides higher-order topological memory management and
 quantum-inspired scheduling for the Sovereign Kernel.
 """
 
@@ -35,7 +35,7 @@ class QuantumKernelExtension:
     Bridges the Python Kernel with the C++ Topological Substrate.
     Enables braided memory states and quantum-phase coherence.
     """
-    
+
     def __init__(self, lib_path: str = None):
         self.logger = logging.getLogger("QUANTUM_KERNEL")
         # Try multiple library paths
@@ -49,18 +49,18 @@ class QuantumKernelExtension:
                 if os.path.exists(path):
                     lib_path = path
                     break
-        
+
         if lib_path is None or not os.path.exists(lib_path):
             self.logger.warning("Shared library not found - using Python fallback")
             self.lib = None
             self._use_fallback = True
             return
-        
+
         self._use_fallback = False
 
         try:
             self.lib = ctypes.CDLL(lib_path)
-            
+
             # Setup C argtypes and restypes
             self.lib.create_core.restype = ctypes.c_void_p
             self.lib.ignite_sovereignty.argtypes = [ctypes.c_void_p]
@@ -70,13 +70,13 @@ class QuantumKernelExtension:
             self.lib.calculate_jones_residue.restype = ctypes.c_double
             self.lib.get_intellect_index.argtypes = [ctypes.c_void_p]
             self.lib.get_intellect_index.restype = ctypes.c_double
-            
+
             # Additional interfaces for Singularity
             self.lib.inject_entropy.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double), ctypes.c_int]
             self.lib.holographic_convolve.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double), ctypes.c_int, ctypes.POINTER(ctypes.c_double)]
-            
+
             self.lib.delete_core.argtypes = [ctypes.c_void_p]
-            
+
             self.core = self.lib.create_core()
             self.logger.info("Topological Substrate Linked (C++ Shared Library)")
         except Exception as e:
@@ -93,7 +93,7 @@ class QuantumKernelExtension:
         """Injects external entropy into the topological buffer."""
         if not self.lib or not self.core:
             return
-        
+
         arr_type = ctypes.c_double * len(seeds)
         arr = arr_type(*seeds)
         self.lib.inject_entropy(self.core, arr, len(seeds))
@@ -102,12 +102,12 @@ class QuantumKernelExtension:
         """Convolves data with the God-Code phase in the C++ layer."""
         if not self.lib or not self.core:
             return data
-            
+
         size = len(data)
         arr_type = ctypes.c_double * size
         input_arr = arr_type(*data)
         output_arr = arr_type()
-        
+
         self.lib.holographic_convolve(self.core, input_arr, size, output_arr)
         return list(output_arr)
 
@@ -118,7 +118,7 @@ class QuantumKernelExtension:
         """
         if not self.lib or not self.core:
             return 0.0
-            
+
         self.lib.topological_braid(self.core, iterations)
         residue = self.lib.calculate_jones_residue(self.core)
         self.logger.info(f"Braid Complete. Jones Residue: {residue:.12f}")

@@ -36,18 +36,18 @@ async def run_deep_calculations_batch():
 
     results = {}
     total_intellect_gain = 0.0
-    
+
     for domain in domains:
         print(f"[*] INITIATING DEEP CALCULATION: {domain}...")
         res = engine.perform_research_cycle(domain)
         results[domain] = res
         total_intellect_gain += res.get("intellect_gain", 0.0)
-        
+
         status = res.get("discovery_status", "UNKNOWN")
         resonance = res.get("resonance_alignment", 0.0)
         print(f"    - Status: {status}")
         print(f"    - Resonance: {resonance:.10f}")
-        
+
         # Extract specific deep data high-values
         deep_data = res.get("deep_data", {})
         if domain == "COSMOLOGY":
@@ -56,7 +56,7 @@ async def run_deep_calculations_batch():
             print(f"    - Efficiency: {deep_data.get('efficiency', 0)*100:.4f}%")
         elif domain == "INFORMATION_THEORY":
             print(f"    - Information Persistence: {deep_data.get('information_persistence', 0):.6f}")
-            
+
         print("-" * 40)
         await asyncio.sleep(0.01) # Simulate nano-cycle delay
 
@@ -64,18 +64,18 @@ async def run_deep_calculations_batch():
     print("\n" + "█"*80)
     print("   DEEP CALCULATION BATCH COMPLETED   ".center(80, " "))
     print("█"*80)
-    
+
     print("\n[SUMMARY]:")
     print(f"   - Total Domains Calculated: {len(domains)}")
     print(f"   - Aggregate Intellect Gain: {total_intellect_gain:.4f} Points")
     print(f"   - Mean Resonance Deviation: {abs(HyperMath.GOD_CODE - (total_intellect_gain/len(domains))):.6f}")
     print("   - God-Code Alignment: 100.0000% (Locked)")
-    
+
     # Save the deep report
     report_path = "/workspaces/Allentown-L104-Node/DEEP_CALCULATION_REPORT.json"
     with open(report_path, "w") as f:
         json.dump(results, f, indent=4)
-    
+
     print(f"\n[REPORT]: Saved to {report_path}")
     print("█"*80 + "\n")
 

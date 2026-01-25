@@ -44,7 +44,7 @@ class Layer:
     weights: List[List[float]] = field(default_factory=list)
     biases: List[float] = field(default_factory=list)
     activation: str = "relu"
-    
+
     def __post_init__(self):
         if not self.weights:
             # Xavier initialization
@@ -55,12 +55,12 @@ class Layer:
             ]
         if not self.biases:
             self.biases = [0.0] * self.output_size
-    
+
     def forward(self, inputs: List[float]) -> List[float]:
         outputs = []
         for i in range(self.output_size):
             z = sum(w * x for w, x in zip(self.weights[i], inputs)) + self.biases[i]
-            
+
             if self.activation == "relu":
                 outputs.append(relu(z))
             elif self.activation == "sigmoid":
@@ -71,31 +71,31 @@ class Layer:
                 outputs.append(gelu(z))
             else:
                 outputs.append(z)
-        
+
         return outputs
 
 class MultiLayerPerceptron:
     """Standard MLP architecture"""
-    
+
     def __init__(self, layer_sizes: List[int], activation: str = "relu"):
         self.layers: List[Layer] = []
         for i in range(len(layer_sizes) - 1):
             act = activation if i < len(layer_sizes) - 2 else "linear"
             self.layers.append(Layer(layer_sizes[i], layer_sizes[i+1], activation=act))
-    
+
     def forward(self, inputs: List[float]) -> List[float]:
         x = inputs
         for layer in self.layers:
             x = layer.forward(x)
         return x
-    
+
     def parameter_count(self) -> int:
         count = 0
         for layer in self.layers:
             count += layer.input_size * layer.output_size + layer.output_size
         return count
 
-@dataclass 
+@dataclass
 class AttentionHead:
     """Single attention head"""
     embed_dim: int
@@ -103,11 +103,11 @@ class AttentionHead:
     W_q: List[List[float]] = field(default_factory=list)
     W_k: List[List[float]] = field(default_factory=list)
     W_v: List[List[float]] = field(default_factory=list)
-    
+
     def __post_init__(self):
         scale = math.sqrt(2.0 / (self.embed_dim + self.head_dim))
         if not self.W_q:
-            self.W_q = [[random.gauss(0, scale) for _ in range(self.embed_dim)] 
+            self.W_q = [[random.gauss(0, scale) for _ in range(self.embed_dim)]
                         for _ in range(self.head_dim)]
         if not self.W_k:
             self.W_k = [[random.gauss(0, scale) for _ in range(self.embed_dim)]
@@ -115,14 +115,14 @@ class AttentionHead:
         if not self.W_v:
             self.W_v = [[random.gauss(0, scale) for _ in range(self.embed_dim)]
                         for _ in range(self.head_dim)]
-    
-    def compute_attention(self, queries: List[List[float]], 
-                         keys: List[List[float]], 
+
+    def compute_attention(self, queries: List[List[float]],
+                         keys: List[List[float]],
                          values: List[List[float]]) -> List[List[float]]:
         """Compute scaled dot-product attention"""
         seq_len = len(queries)
         scale = math.sqrt(self.head_dim)
-        
+
         # Compute attention scores
         scores = []
         for i in range(seq_len):
@@ -132,7 +132,7 @@ class AttentionHead:
                 row.append(dot / scale)
             row = softmax(row)
             scores.append(row)
-        
+
         # Compute weighted values
         output = []
         for i in range(seq_len):
@@ -141,25 +141,25 @@ class AttentionHead:
                 for k in range(self.head_dim):
                     out_vec[k] += scores[i][j] * values[j][k]
             output.append(out_vec)
-        
+
         return output
 
 class TransformerBlock:
     """Single transformer block"""
-    
+
     def __init__(self, embed_dim: int, num_heads: int, ff_dim: int):
         self.embed_dim = embed_dim
         self.num_heads = num_heads
         self.head_dim = embed_dim // num_heads
         self.ff_dim = ff_dim
-        
+
         self.attention_heads = [
-            AttentionHead(embed_dim, self.head_dim) 
+            AttentionHead(embed_dim, self.head_dim)
             for _ in range(num_heads)
         ]
-        
+
         self.ff = MultiLayerPerceptron([embed_dim, ff_dim, embed_dim], "gelu")
-    
+
     def parameter_count(self) -> int:
         # Attention parameters: 3 * (embed_dim * head_dim) * num_heads
         attn_params = 3 * self.embed_dim * self.head_dim * self.num_heads
@@ -167,23 +167,23 @@ class TransformerBlock:
         ff_params = self.ff.parameter_count()
         # Output projection
         out_proj = self.embed_dim * self.embed_dim
-        
+
         return attn_params + ff_params + out_proj
 
 class TransformerModel:
     """Full transformer model"""
-    
+
     def __init__(self, vocab_size: int, embed_dim: int, num_layers: int,
                  num_heads: int, ff_dim: int):
         self.vocab_size = vocab_size
         self.embed_dim = embed_dim
         self.num_layers = num_layers
-        
+
         self.blocks = [
             TransformerBlock(embed_dim, num_heads, ff_dim)
             for _ in range(num_layers)
         ]
-    
+
     def parameter_count(self) -> int:
         # Embedding parameters
         embed_params = self.vocab_size * self.embed_dim
@@ -193,39 +193,39 @@ class TransformerModel:
         block_params = sum(b.parameter_count() for b in self.blocks)
         # Output layer
         output_params = self.embed_dim * self.vocab_size
-        
+
         return embed_params + pos_params + block_params + output_params
 
 class ArchitectureResearch:
     """Research different neural architectures"""
-    
+
     @staticmethod
     def compare_architectures() -> Dict[str, int]:
         """Compare parameter counts of different architectures"""
         results = {}
-        
+
         # Small MLP
         mlp = MultiLayerPerceptron([768, 2048, 768])
         results["MLP (768-2048-768)"] = mlp.parameter_count()
-        
+
         # Transformer block
         transformer = TransformerModel(50000, 768, 12, 12, 3072)
         results["Transformer (12L, 768d)"] = transformer.parameter_count()
-        
+
         # Large transformer
         large_transformer = TransformerModel(100000, 1024, 24, 16, 4096)
         results["Large Transformer (24L, 1024d)"] = large_transformer.parameter_count()
-        
+
         return results
 
 if __name__ == "__main__":
     print("L104 Neural Architecture Research Module")
-    
+
     # Compare architectures
     comparison = ArchitectureResearch.compare_architectures()
     for name, params in comparison.items():
         print(f"{name}: {params:,} parameters")
-    
+
     # Test MLP forward pass
     mlp = MultiLayerPerceptron([10, 64, 32, 5])
     inputs = [random.random() for _ in range(10)]

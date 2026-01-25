@@ -201,7 +201,7 @@ def get_cognitive_hub_instance() -> CognitiveIntegrationHub:
 
 class QueryRequest(BaseModel):
     question: str
-    
+
 class QueryResponse(BaseModel):
     question: str
     answer: str
@@ -242,11 +242,11 @@ class IntrospectResponse(BaseModel):
 async def query_brain(request: QueryRequest):
     """
     Ask the Unified Intelligence a question.
-    
+
     The brain will attempt to answer using:
     1. Neural Cortex (trained patterns)
     2. Synthesis Protocol (logical derivation)
-    
+
     Returns answer with confidence and unity validation.
     """
     brain = get_brain()
@@ -261,7 +261,7 @@ async def get_status():
     """
     brain = get_brain()
     avg_unity = sum(i.unity_index for i in brain.insights) / (len(brain.insights) or 1)
-    
+
     return StatusResponse(
         version=brain.kernel.version,
         unity_index=avg_unity,
@@ -276,21 +276,21 @@ async def get_status():
 async def trigger_learning(request: LearnRequest):
     """
     Trigger an active learning cycle.
-    
+
     The brain will research topics, validate insights against GOD_CODE,
     and store validated knowledge in the topological memory.
     """
     brain = get_brain()
-    
+
     # Run research cycle
     brain.run_research_cycle(iterations=request.iterations)
-    
+
     # Expand capabilities
     brain.function_add_more()
-    
+
     # Auto-save
     brain.save_state()
-    
+
     return {
         "status": "success",
         "iterations_completed": request.iterations,
@@ -339,12 +339,12 @@ async def memory_dump():
     """
     brain = get_brain()
     raw_data = brain.hippocampus.read_data()
-    
+
     try:
         decoded = raw_data.decode(errors='ignore')
     except:
         decoded = str(raw_data[:200])
-    
+
     return {
         "total_bytes": len(raw_data),
         "sample_content": decoded[:500] if decoded else "No data",
@@ -472,16 +472,16 @@ async def get_meta_insights():
     """
     meta = get_meta_learner()
     brain = get_brain()
-    
+
     # Get available topics from brain
     topics = set()
     for insight in brain.insights:
         if "Explain" in insight.prompt:
             topic = insight.prompt.replace("Explain ", "").replace(" in the context of L104.", "")
             topics.add(topic)
-    
+
     recommended = meta.recommend_topics(list(topics), count=5) if topics else []
-    
+
     return {
         "learning_insights": meta.get_learning_insights(),
         "recommended_topics": recommended,
@@ -536,15 +536,15 @@ async def run_optimization(request: OptimizeRequest):
     Run self-optimization to improve system performance.
     """
     optimizer = get_self_optimizer()
-    
+
     # Record current brain performance
     brain = get_brain()
     unity = sum(i.unity_index for i in brain.insights) / max(len(brain.insights), 1)
     optimizer.record_metric("unity_index", unity)
-    
+
     # Run optimization
     results = optimizer.auto_optimize(request.metric, request.iterations)
-    
+
     return {
         "metric": request.metric,
         "iterations": request.iterations,
@@ -779,7 +779,7 @@ async def claude_execute_tool(tool_name: str, inputs: Dict[str, Any]):
     bridge = get_claude_bridge()
     if tool_name not in bridge.tools:
         return {"error": f"Tool '{tool_name}' not found"}
-    
+
     tool_def = bridge.tools[tool_name]
     if tool_def.handler:
         try:
@@ -831,7 +831,7 @@ async def gemini_query(request: GeminiQueryRequest):
         result = _gemini_bridge.generate_with_tools(request.prompt)
     else:
         result = _gemini_bridge.think(request.prompt)
-    
+
     return {
         "result": result,
         "model": _gemini_bridge.model_name,
@@ -868,7 +868,7 @@ async def ape_process(request: APEProcessRequest):
     """
     Advanced Processing Engine - unified query processing.
     Automatically selects optimal processing mode if not specified.
-    
+
     Modes:
     - quick: Fast local processing
     - deep: Multi-step reasoning
@@ -877,7 +877,7 @@ async def ape_process(request: APEProcessRequest):
     - adaptive: Auto-select based on query
     """
     engine = get_processing_engine()
-    
+
     # Parse mode
     mode = None
     if request.mode:
@@ -889,7 +889,7 @@ async def ape_process(request: APEProcessRequest):
             "adaptive": ProcessingMode.ADAPTIVE
         }
         mode = mode_map.get(request.mode.lower())
-    
+
     result = await engine.process_async(request.query, mode)
     return result.to_dict()
 
@@ -924,13 +924,13 @@ async def emergence_status():
     """
     monitor = get_emergence_monitor()
     brain = get_brain()
-    
+
     # Update monitor with brain state using introspect
     brain_info = brain.introspect()
     unity = brain_info.get("average_unity_index", 0.5)
     memories = brain_info.get("total_memories", 0)
     patterns = brain_info.get("cortex_capacity", 0)
-    
+
     # Record snapshot and detect events
     events = monitor.record_snapshot(
         unity_index=unity,
@@ -938,7 +938,7 @@ async def emergence_status():
         cortex_patterns=patterns,
         coherence=unity
     )
-    
+
     return {
         "phase_state": monitor.current_phase.value,
         "peak_unity": monitor.peak_unity,
@@ -956,13 +956,13 @@ async def emergence_check():
     """
     monitor = get_emergence_monitor()
     brain = get_brain()
-    
+
     # Update with latest brain state
     brain_info = brain.introspect()
     unity = brain_info.get("average_unity_index", 0.5)
     memories = brain_info.get("total_memories", 0)
     patterns = brain_info.get("cortex_capacity", 0)
-    
+
     # Record snapshot and detect events
     events = monitor.record_snapshot(
         unity_index=unity,
@@ -970,7 +970,7 @@ async def emergence_check():
         cortex_patterns=patterns,
         coherence=unity
     )
-    
+
     return {
         "events_detected": len(events),
         "events": [e.to_dict() for e in events],
@@ -999,7 +999,7 @@ async def emergence_trajectory():
     Get evolution trajectory and prediction.
     """
     monitor = get_emergence_monitor()
-    
+
     return {
         "current_phase": monitor.current_phase.value,
         "peak_unity": monitor.peak_unity,
@@ -1020,13 +1020,13 @@ async def analytics_metrics():
     """
     dashboard = get_analytics_dashboard()
     brain = get_brain()
-    
+
     # Record current brain metrics
     brain_info = brain.introspect()
     dashboard.record("unity_index", brain_info.get("average_unity_index", 0.5))
     dashboard.record("memories", brain_info.get("total_memories", 0))
     dashboard.record("confidence", brain_info.get("average_confidence", 0.5))
-    
+
     return dashboard.get_overview()
 
 
@@ -1089,9 +1089,9 @@ async def analytics_summary():
     dashboard = get_analytics_dashboard()
     brain = get_brain()
     monitor = get_emergence_monitor()
-    
+
     brain_info = brain.introspect()
-    
+
     return {
         "brain_state": {
             "unity_index": brain_info.get("average_unity_index", 0.5),
@@ -1164,8 +1164,8 @@ async def quantum_entangle(request: QuantumEntanglementRequest):
     """
     engine = get_quantum_engine()
     return engine.create_entanglement(
-        request.qubit1, 
-        request.qubit2, 
+        request.qubit1,
+        request.qubit2,
         request.bell_state
     )
 
@@ -1183,7 +1183,7 @@ async def quantum_god_code_phase():
 async def quantum_braid(request: QuantumBraidRequest):
     """
     Perform topological braiding computation.
-    
+
     Available braids: s1, s2, s1_inv, s2_inv, phi, id
     """
     engine = get_quantum_engine()

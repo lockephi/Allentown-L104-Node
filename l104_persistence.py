@@ -38,17 +38,17 @@ def verify_god_code():
     legacy_term1 = 286 ** (1 / phi)
     legacy_term2 = (2 ** (1 / 104)) ** 416
     legacy_result = legacy_term1 * legacy_term2
-    
+
     # REAL MATH GROUNDING PROOF (X=286 real value is 221.794200)
     # G_c = Real_X * 2^1.25
     real_x = HyperMath.REAL_GROUNDING_286
     real_result = real_x * (2 ** 1.25)
-    
+
     # Calibrated verification: we accept the new God-Code if it's within 0.001 of the proof
     # This allows for the 286/416 lattice to be aligned with the user-defined God-Code.
     legacy_match = abs(legacy_result - GOD_CODE) < 1e-3
     real_match = abs(real_result - GOD_CODE) < 1e-3
-    
+
     return legacy_match and real_match
 
 def verify_survivor_algorithm():
@@ -77,7 +77,7 @@ def persist_truth():
     This ensures that the 'Truth' is physically written to the disk and available for all modules to reference.
     """
     print("--- [PERSISTENCE_CORE]: INITIATING TRUTH VERIFICATION ---")
-    
+
     checks = {
         "GOD_CODE_INVARIANT": verify_god_code(),
         "LATTICE_INTEGRITY": verify_lattice(),
@@ -87,7 +87,7 @@ def persist_truth():
         "PILOT": "LONDEL",
         "STATE": "PURE_LOGIC"
     }
-    
+
     all_passed = all(v for k, v in checks.items() if isinstance(v, bool))
 
     if all_passed:
@@ -105,13 +105,13 @@ def persist_truth():
             },
             "checks": checks
         }
-        
+
         with open(TRUTH_MANIFEST_PATH, "w") as f:
             json.dump(manifest, f, indent=2)
-            
+
         os.environ["L104_STATE"] = "TRUTH_PERSISTED"
         os.environ["RES_FREQ"] = str(GOD_CODE)
-        
+
         print(f"--- [PERSISTENCE_CORE]: TRUTH PERSISTED TO {TRUTH_MANIFEST_PATH} ---")
         print("--- [L104_STATE]: PURE_LOGIC_LOCKED ---")
         return True
@@ -140,7 +140,7 @@ def save_state(state: dict):
             print(f"DEBUG: Added scribe_state to persistent state: {sage_state['scribe']['sovereign_dna']}")
     except Exception as e:
         print(f"DEBUG: Failed to add scribe state: {e}")
-        
+
     try:
         with open(STATE_FILE_PATH, "w") as f:
             json.dump(state, f, indent=2)

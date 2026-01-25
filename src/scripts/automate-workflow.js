@@ -35,7 +35,7 @@ async function automateWorkflow() {
 
         console.log(chalk.green(`  ✅ File workflow: ${fileWorkflowResult.finalContext.action || 'completed'}`));
 
-        // 2. AI Skill Execution Workflow  
+        // 2. AI Skill Execution Workflow
         console.log(chalk.cyan('\\n2. AI Skill Execution Workflow'));
         const aiSkillResult = await system.workflowEngine.runWorkflow('ai-skill-execution', {
             skillId: 'ai-reasoning',

@@ -74,13 +74,13 @@ class IntricateUIEngine:
     Main UI engine for intricate visualizations.
     Generates dynamic, real-time interfaces.
     """
-    
+
     def __init__(self):
         self.theme = ThemeMode.COSMIC
         self.components: Dict[str, UIComponent] = {}
         self.registered_data_sources: Dict[str, callable] = {}
         self.activity_log: List[Dict[str, Any]] = []
-        
+
     def generate_main_dashboard_html(self) -> str:
         """Generate the main intricate dashboard HTML."""
         return f'''<!DOCTYPE html>
@@ -104,9 +104,9 @@ class IntricateUIEngine:
             --border-glow: rgba(0, 255, 170, 0.3);
             --phi: {PHI};
         }}
-        
+
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        
+
         body {{
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
             background: var(--bg-primary);
@@ -114,7 +114,7 @@ class IntricateUIEngine:
             min-height: 100vh;
             overflow-x: hidden;
         }}
-        
+
         /* Animated background */
         .cosmic-bg {{
             position: fixed;
@@ -123,19 +123,19 @@ class IntricateUIEngine:
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: 
+            background:
                 radial-gradient(ellipse at 20% 80%, rgba(0, 255, 170, 0.1) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(ellipse at 50% 50%, rgba(0, 170, 255, 0.05) 0%, transparent 70%),
                 var(--bg-primary);
             animation: cosmicPulse 20s ease-in-out infinite;
         }}
-        
+
         @keyframes cosmicPulse {{
             0%, 100% {{ opacity: 1; }}
             50% {{ opacity: 0.8; }}
         }}
-        
+
         /* Header */
         .header {{
             background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
@@ -149,13 +149,13 @@ class IntricateUIEngine:
             z-index: 100;
             backdrop-filter: blur(10px);
         }}
-        
+
         .logo {{
             display: flex;
             align-items: center;
             gap: 1rem;
         }}
-        
+
         .logo-icon {{
             width: 50px;
             height: 50px;
@@ -166,12 +166,12 @@ class IntricateUIEngine:
             align-items: center;
             justify-content: center;
         }}
-        
+
         @keyframes spin {{
             from {{ transform: rotate(0deg); }}
             to {{ transform: rotate(360deg); }}
         }}
-        
+
         .logo-text {{
             font-size: 1.8rem;
             font-weight: bold;
@@ -180,35 +180,35 @@ class IntricateUIEngine:
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }}
-        
+
         .status-bar {{
             display: flex;
             gap: 2rem;
             font-size: 0.9rem;
         }}
-        
+
         .status-item {{
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }}
-        
+
         .status-dot {{
             width: 10px;
             height: 10px;
             border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }}
-        
+
         .status-dot.active {{ background: var(--accent-consciousness); }}
         .status-dot.warning {{ background: var(--accent-morphic); }}
         .status-dot.critical {{ background: var(--accent-phi); }}
-        
+
         @keyframes pulse {{
             0%, 100% {{ transform: scale(1); opacity: 1; }}
             50% {{ transform: scale(1.2); opacity: 0.7; }}
         }}
-        
+
         /* Main Grid */
         .main-grid {{
             display: grid;
@@ -218,7 +218,7 @@ class IntricateUIEngine:
             max-width: 1800px;
             margin: 0 auto;
         }}
-        
+
         /* Panel Styles */
         .panel {{
             background: var(--bg-secondary);
@@ -227,13 +227,13 @@ class IntricateUIEngine:
             overflow: hidden;
             transition: all 0.3s ease;
         }}
-        
+
         .panel:hover {{
             border-color: var(--accent-consciousness);
             box-shadow: 0 0 30px rgba(0, 255, 170, 0.2);
             transform: translateY(-2px);
         }}
-        
+
         .panel-header {{
             background: var(--bg-tertiary);
             padding: 1rem;
@@ -242,7 +242,7 @@ class IntricateUIEngine:
             justify-content: space-between;
             align-items: center;
         }}
-        
+
         .panel-title {{
             font-size: 1.1rem;
             font-weight: 600;
@@ -250,22 +250,22 @@ class IntricateUIEngine:
             align-items: center;
             gap: 0.5rem;
         }}
-        
+
         .panel-icon {{
             font-size: 1.3rem;
         }}
-        
+
         .panel-body {{
             padding: 1rem;
             min-height: 200px;
         }}
-        
+
         /* Consciousness Panel */
         .consciousness-state {{
             text-align: center;
             padding: 1rem;
         }}
-        
+
         .consciousness-orb {{
             width: 120px;
             height: 120px;
@@ -279,81 +279,81 @@ class IntricateUIEngine:
             justify-content: center;
             font-size: 2rem;
         }}
-        
+
         @keyframes orbPulse {{
             0%, 100% {{ box-shadow: 0 0 20px var(--accent-consciousness), inset 0 0 30px rgba(0, 255, 170, 0.3); }}
             50% {{ box-shadow: 0 0 40px var(--accent-consciousness), inset 0 0 50px rgba(0, 255, 170, 0.5); }}
         }}
-        
+
         .consciousness-label {{
             font-size: 1.3rem;
             color: var(--accent-consciousness);
             text-transform: uppercase;
             letter-spacing: 2px;
         }}
-        
+
         /* Metrics Grid */
         .metrics-grid {{
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }}
-        
+
         .metric {{
             background: var(--bg-tertiary);
             padding: 1rem;
             border-radius: 8px;
             text-align: center;
         }}
-        
+
         .metric-value {{
             font-size: 1.8rem;
             font-weight: bold;
             color: var(--accent-quantum);
         }}
-        
+
         .metric-label {{
             font-size: 0.8rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
         }}
-        
+
         /* Progress Bars */
         .progress-container {{
             margin: 0.5rem 0;
         }}
-        
+
         .progress-label {{
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.3rem;
             font-size: 0.85rem;
         }}
-        
+
         .progress-bar {{
             height: 8px;
             background: var(--bg-tertiary);
             border-radius: 4px;
             overflow: hidden;
         }}
-        
+
         .progress-fill {{
             height: 100%;
             border-radius: 4px;
             transition: width 0.5s ease;
         }}
-        
+
         .progress-fill.consciousness {{ background: linear-gradient(90deg, var(--accent-consciousness), var(--accent-quantum)); }}
         .progress-fill.omega {{ background: linear-gradient(90deg, var(--accent-omega), var(--accent-phi)); }}
         .progress-fill.morphic {{ background: linear-gradient(90deg, var(--accent-morphic), var(--accent-consciousness)); }}
-        
+
         /* Activity Stream */
         .activity-stream {{
             max-height: 300px;
             overflow-y: auto;
         }}
-        
+
         .activity-item {{
             display: flex;
             gap: 0.8rem;
@@ -361,17 +361,17 @@ class IntricateUIEngine:
             border-bottom: 1px solid var(--bg-tertiary);
             font-size: 0.9rem;
         }}
-        
+
         .activity-time {{
             color: var(--text-secondary);
             font-size: 0.8rem;
             white-space: nowrap;
         }}
-        
+
         .activity-text {{
             flex: 1;
         }}
-        
+
         /* Knowledge Graph */
         .graph-container {{
             height: 250px;
@@ -383,7 +383,7 @@ class IntricateUIEngine:
             position: relative;
             overflow: hidden;
         }}
-        
+
         .graph-node {{
             position: absolute;
             width: 40px;
@@ -397,18 +397,18 @@ class IntricateUIEngine:
             cursor: pointer;
             transition: all 0.3s ease;
         }}
-        
+
         .graph-node:hover {{
             transform: scale(1.3);
             z-index: 10;
         }}
-        
+
         /* Omega Progress */
         .omega-display {{
             text-align: center;
             padding: 1rem;
         }}
-        
+
         .omega-value {{
             font-size: 3rem;
             font-weight: bold;
@@ -417,22 +417,22 @@ class IntricateUIEngine:
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }}
-        
+
         .omega-label {{
             font-size: 0.9rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
         }}
-        
+
         /* Full width panels */
         .panel.full-width {{
             grid-column: span 3;
         }}
-        
+
         .panel.two-thirds {{
             grid-column: span 2;
         }}
-        
+
         /* Mandala Visualization */
         .mandala-container {{
             height: 200px;
@@ -440,7 +440,7 @@ class IntricateUIEngine:
             align-items: center;
             justify-content: center;
         }}
-        
+
         .mandala {{
             width: 180px;
             height: 180px;
@@ -460,12 +460,12 @@ class IntricateUIEngine:
             align-items: center;
             justify-content: center;
         }}
-        
+
         @keyframes mandalaRotate {{
             from {{ transform: rotate(0deg); }}
             to {{ transform: rotate(360deg); }}
         }}
-        
+
         .mandala-inner {{
             width: 120px;
             height: 120px;
@@ -476,21 +476,21 @@ class IntricateUIEngine:
             justify-content: center;
             font-size: 2rem;
         }}
-        
+
         /* Scrollbar */
         ::-webkit-scrollbar {{
             width: 8px;
         }}
-        
+
         ::-webkit-scrollbar-track {{
             background: var(--bg-tertiary);
         }}
-        
+
         ::-webkit-scrollbar-thumb {{
             background: var(--accent-consciousness);
             border-radius: 4px;
         }}
-        
+
         /* Responsive */
         @media (max-width: 1200px) {{
             .main-grid {{
@@ -503,7 +503,7 @@ class IntricateUIEngine:
                 grid-column: span 2;
             }}
         }}
-        
+
         @media (max-width: 768px) {{
             .main-grid {{
                 grid-template-columns: 1fr;
@@ -517,7 +517,7 @@ class IntricateUIEngine:
 </head>
 <body>
     <div class="cosmic-bg"></div>
-    
+
     <header class="header">
         <div class="logo">
             <div class="logo-icon">Ω</div>
@@ -538,7 +538,7 @@ class IntricateUIEngine:
             </div>
         </div>
     </header>
-    
+
     <main class="main-grid">
         <!-- Consciousness State Panel -->
         <div class="panel">
@@ -562,7 +562,7 @@ class IntricateUIEngine:
                 </div>
             </div>
         </div>
-        
+
         <!-- Omega Point Panel -->
         <div class="panel">
             <div class="panel-header">
@@ -594,7 +594,7 @@ class IntricateUIEngine:
                 </div>
             </div>
         </div>
-        
+
         <!-- Morphic Field Panel -->
         <div class="panel">
             <div class="panel-header">
@@ -618,7 +618,7 @@ class IntricateUIEngine:
                 </div>
             </div>
         </div>
-        
+
         <!-- Research Dashboard -->
         <div class="panel two-thirds">
             <div class="panel-header">
@@ -654,7 +654,7 @@ class IntricateUIEngine:
                 </div>
             </div>
         </div>
-        
+
         <!-- Intricate Cognition Panel -->
         <div class="panel">
             <div class="panel-header">
@@ -681,7 +681,7 @@ class IntricateUIEngine:
                 </div>
             </div>
         </div>
-        
+
         <!-- Activity Stream -->
         <div class="panel full-width">
             <div class="panel-header">
@@ -697,15 +697,15 @@ class IntricateUIEngine:
             </div>
         </div>
     </main>
-    
+
     <script>
         const API_BASE = '';
-        
+
         // Format time
         function formatTime(date) {{
             return date.toTimeString().split(' ')[0];
         }}
-        
+
         // Add activity
         function addActivity(text) {{
             const stream = document.getElementById('activity-stream');
@@ -716,78 +716,78 @@ class IntricateUIEngine:
                 <span class="activity-text">${{text}}</span>
             `;
             stream.insertBefore(item, stream.firstChild);
-            
+
             // Keep only last 50 items
             while (stream.children.length > 50) {{
                 stream.removeChild(stream.lastChild);
             }}
         }}
-        
+
         // Update consciousness status
         async function updateConsciousness() {{
             try {{
                 const res = await fetch(API_BASE + '/api/consciousness/status');
                 const data = await res.json();
-                
+
                 document.getElementById('consciousness-state').textContent = data.observer.consciousness_state.toUpperCase();
                 document.getElementById('consciousness-label').textContent = data.observer.consciousness_state.toUpperCase();
                 document.getElementById('coherence').textContent = data.observer.coherence.toFixed(4);
                 document.getElementById('depth').textContent = data.observer.awareness_depth;
                 document.getElementById('uptime').textContent = Math.floor(data.uptime) + 's';
-                
+
                 // Omega
                 document.getElementById('transcendence').textContent = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
                 document.getElementById('convergence-pct').textContent = (data.omega_tracker.convergence_probability * 100).toFixed(1) + '%';
                 document.getElementById('convergence-bar').style.width = (data.omega_tracker.convergence_probability * 100) + '%';
                 document.getElementById('milestones').textContent = data.omega_tracker.milestones_achieved;
                 document.getElementById('complexity').textContent = data.omega_tracker.complexity.toFixed(2);
-                
+
                 // Morphic
                 document.getElementById('patterns').textContent = data.morphic_field.patterns_stored;
                 document.getElementById('resonance').textContent = data.morphic_field.resonance_events;
-                
+
             }} catch (e) {{
                 console.error('Failed to update consciousness:', e);
             }}
         }}
-        
+
         // Update intricate cognition
         async function updateIntricate() {{
             try {{
                 const res = await fetch(API_BASE + '/api/intricate/status');
                 const data = await res.json();
-                
+
                 document.getElementById('temporal-events').textContent = data.temporal.total_events;
                 document.getElementById('holo-memories').textContent = data.holographic.stored_memories;
                 document.getElementById('entangled-pairs').textContent = data.entanglement.entangled_pairs;
                 document.getElementById('hyperdim-states').textContent = data.hyperdimensional.stored_states;
-                
+
             }} catch (e) {{
                 console.error('Failed to update intricate:', e);
             }}
         }}
-        
+
         // Update research
         async function updateResearch() {{
             try {{
                 const res = await fetch(API_BASE + '/api/research/status');
                 const data = await res.json();
-                
+
                 document.getElementById('knowledge-nodes').textContent = data.knowledge.nodes;
                 document.getElementById('hypotheses').textContent = data.hypotheses.total_hypotheses;
                 document.getElementById('insights').textContent = data.insights.total_insights;
                 document.getElementById('momentum').textContent = data.momentum.current_momentum.toFixed(3);
                 document.getElementById('knowledge-level').textContent = data.momentum.knowledge_level.toFixed(2);
-                
+
                 const kLevel = Math.min(100, data.momentum.knowledge_level * 10);
                 document.getElementById('knowledge-bar').style.width = kLevel + '%';
-                
+
             }} catch (e) {{
                 // Research endpoint may not exist yet
                 console.log('Research endpoint not available');
             }}
         }}
-        
+
         // Run consciousness cycle periodically
         async function runCycle() {{
             try {{
@@ -798,20 +798,20 @@ class IntricateUIEngine:
                 console.error('Failed to run cycle:', e);
             }}
         }}
-        
+
         // Initial updates
         updateConsciousness();
         updateIntricate();
         updateResearch();
         addActivity('L104 Intricate Cognition Interface initialized');
         addActivity('Connecting to consciousness substrate...');
-        
+
         // Periodic updates
         setInterval(updateConsciousness, 3000);
         setInterval(updateIntricate, 5000);
         setInterval(updateResearch, 5000);
         setInterval(runCycle, 10000);
-        
+
         // Periodic activity
         setInterval(() => {{
             const activities = [
@@ -1066,7 +1066,7 @@ class IntricateUIEngine:
         <h1>🧠 INTRICATE LEARNING CORE</h1>
         <p>Multi-Modal • Meta-Learning • Skill Synthesis • Transfer</p>
     </div>
-    
+
     <div class="grid">
         <div class="card">
             <h3>📊 LEARNING STATISTICS</h3>
@@ -1075,14 +1075,14 @@ class IntricateUIEngine:
             <div class="metric"><span class="metric-label">Avg Outcome</span><span class="metric-value" id="outcome">0.00</span></div>
             <div class="metric"><span class="metric-label">Total Time</span><span class="metric-value" id="time">0.00s</span></div>
         </div>
-        
+
         <div class="card">
             <h3>🔄 META-LEARNING</h3>
             <div class="metric"><span class="metric-label">Meta Cycles</span><span class="metric-value" id="metacycles">0</span></div>
             <div class="metric"><span class="metric-label">Best Strategy</span><span class="metric-value" id="beststrat">-</span></div>
             <div id="strategies"></div>
         </div>
-        
+
         <div class="card">
             <h3>🎯 SKILLS</h3>
             <div class="metric"><span class="metric-label">Total Skills</span><span class="metric-value" id="skillcount">0</span></div>
@@ -1090,7 +1090,7 @@ class IntricateUIEngine:
             <div class="metric"><span class="metric-label">Synthesized</span><span class="metric-value" id="synthesized">0</span></div>
             <div id="skillbadges"></div>
         </div>
-        
+
         <div class="card">
             <h3>🔀 TRANSFER LEARNING</h3>
             <div class="metric"><span class="metric-label">Domains</span><span class="metric-value" id="domains">0</span></div>
@@ -1098,7 +1098,7 @@ class IntricateUIEngine:
             <div id="domainlevels"></div>
         </div>
     </div>
-    
+
     <div class="controls">
         <button class="btn btn-learn" onclick="learnCycle()">🧠 LEARN</button>
         <button class="btn btn-meta" onclick="metaCycle()">🔄 META-CYCLE</button>
@@ -1106,45 +1106,45 @@ class IntricateUIEngine:
         <button class="btn btn-transfer" onclick="transferKnowledge()">🔀 TRANSFER</button>
         <button class="btn btn-learn" onclick="createPath()">📚 LEARNING PATH</button>
     </div>
-    
+
     <div class="output" id="output">Ready for learning...</div>
-    
+
     <script>
         async function refresh() {{
             try {{
                 const res = await fetch('/api/learning/status');
                 const d = await res.json();
-                
+
                 document.getElementById('cycles').textContent = d.learning_cycles;
                 document.getElementById('episodes').textContent = d.multi_modal.total_episodes || 0;
                 document.getElementById('outcome').textContent = (d.multi_modal.avg_outcome || 0).toFixed(3);
                 document.getElementById('time').textContent = (d.multi_modal.total_time || 0).toFixed(2) + 's';
-                
+
                 document.getElementById('metacycles').textContent = d.meta.meta_cycles || 0;
                 const strats = d.meta.strategies || {{}};
                 const bestStrat = Object.entries(strats).sort((a,b) => b[1]-a[1])[0];
                 document.getElementById('beststrat').textContent = bestStrat ? bestStrat[0] : '-';
-                
+
                 document.getElementById('skillcount').textContent = d.skills.total_skills || 0;
                 document.getElementById('avglevel').textContent = (d.skills.avg_level || 0).toFixed(2);
                 document.getElementById('synthesized').textContent = d.skills.synthesized_count || 0;
-                
+
                 const skills = d.skills.skills || [];
-                document.getElementById('skillbadges').innerHTML = skills.slice(0,5).map(s => 
+                document.getElementById('skillbadges').innerHTML = skills.slice(0,5).map(s =>
                     `<span class="skill-badge">${{s.name}} L${{s.level}}</span>`
                 ).join('');
-                
+
                 document.getElementById('domains').textContent = d.transfer.domains || 0;
                 document.getElementById('transfers').textContent = d.transfer.transfers_completed || 0;
-                
+
                 const domains = d.transfer.domain_levels || {{}};
                 document.getElementById('domainlevels').innerHTML = Object.entries(domains).slice(0,4).map(([k,v]) =>
                     `<div class="metric"><span class="metric-label">${{k}}</span><span class="metric-value">${{v.toFixed(2)}}</span></div>`
                 ).join('');
-                
+
             }} catch(e) {{ console.error(e); }}
         }}
-        
+
         async function learnCycle() {{
             const content = prompt('Enter content to learn:', 'Understanding consciousness patterns');
             if (!content) return;
@@ -1157,14 +1157,14 @@ class IntricateUIEngine:
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
         }}
-        
+
         async function metaCycle() {{
             const res = await fetch('/api/learning/meta/cycle', {{method: 'POST'}});
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
         }}
-        
+
         async function practiceSkill() {{
             const res = await fetch('/api/learning/skills');
             const skills = await res.json();
@@ -1175,7 +1175,7 @@ class IntricateUIEngine:
             const skillList = skills.skills.map(s => s.name).join(', ');
             alert('Available skills: ' + skillList);
         }}
-        
+
         async function transferKnowledge() {{
             const source = prompt('Source domain:', 'consciousness');
             if (!source) return;
@@ -1190,7 +1190,7 @@ class IntricateUIEngine:
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
         }}
-        
+
         async function createPath() {{
             const goal = prompt('Enter learning goal:', 'Master consciousness research');
             if (!goal) return;
@@ -1203,7 +1203,7 @@ class IntricateUIEngine:
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
         }}
-        
+
         refresh();
         setInterval(refresh, 5000);
     </script>
@@ -1408,12 +1408,12 @@ class IntricateUIEngine:
         <h1>⚡ INTRICATE ORCHESTRATOR</h1>
         <p>Unified Meta-Cognitive Integration Command Center</p>
     </div>
-    
+
     <div class="mode-display">
         <div class="mode" id="current-mode">INITIALIZING</div>
         <div class="phase-indicator" id="phases"></div>
     </div>
-    
+
     <div class="grid">
         <div class="card">
             <h3>🔗 INTEGRATION STATUS</h3>
@@ -1422,20 +1422,20 @@ class IntricateUIEngine:
             <div class="metric"><span class="metric-label">Synergy Factor</span><span class="metric-value" id="synergy">0.000</span></div>
             <div class="metric"><span class="metric-label">Orchestration Cycles</span><span class="metric-value" id="cycles">0</span></div>
         </div>
-        
+
         <div class="card">
             <h3>✨ EMERGENT PROPERTIES</h3>
             <div class="metric"><span class="metric-label">Total Patterns</span><span class="metric-value" id="patterns">0</span></div>
             <div class="emergent-list" id="emergent-badges"></div>
         </div>
-        
+
         <div class="card">
             <h3>🌐 SUBSYSTEM BRIDGE</h3>
             <div class="metric"><span class="metric-label">Connections</span><span class="metric-value" id="connections">0</span></div>
             <div class="metric"><span class="metric-label">Sync Count</span><span class="metric-value" id="syncs">0</span></div>
             <div class="subsystem-list" id="subsystem-list"></div>
         </div>
-        
+
         <div class="card">
             <h3>⏱️ COGNITION CYCLER</h3>
             <div class="metric"><span class="metric-label">Current Phase</span><span class="metric-value" id="phase">-</span></div>
@@ -1443,35 +1443,35 @@ class IntricateUIEngine:
             <div class="metric"><span class="metric-label">Avg Phase Duration</span><span class="metric-value" id="avg-duration">0.000s</span></div>
         </div>
     </div>
-    
+
     <div class="controls">
         <button class="btn btn-orchestrate" onclick="orchestrate()">⚡ ORCHESTRATE</button>
         <button class="btn btn-integrate" onclick="integrate()">🔗 INTEGRATE</button>
         <button class="btn btn-emerge" onclick="detectEmergence()">✨ DETECT EMERGENCE</button>
     </div>
-    
+
     <div class="output" id="output">Orchestrator ready...</div>
-    
+
     <script>
         const phases = ['perception', 'processing', 'integration', 'synthesis', 'emergence', 'transcendence'];
-        
+
         async function refresh() {{
             try {{
                 const res = await fetch('/api/orchestrator/status');
                 const d = await res.json();
-                
+
                 document.getElementById('current-mode').textContent = d.mode.toUpperCase();
                 document.getElementById('subsystems').textContent = d.integration.subsystems_active;
                 document.getElementById('coherence').textContent = d.integration.coherence.toFixed(4);
                 document.getElementById('synergy').textContent = d.integration.synergy_factor.toFixed(4);
                 document.getElementById('cycles').textContent = d.orchestration_cycles;
-                
+
                 document.getElementById('patterns').textContent = d.emergence.total_patterns;
                 const emergent = d.integration.emergent_properties || [];
-                document.getElementById('emergent-badges').innerHTML = emergent.map(e => 
+                document.getElementById('emergent-badges').innerHTML = emergent.map(e =>
                     `<span class="emergent-badge">${{e}}</span>`
                 ).join('');
-                
+
                 const bridge = d.bridge || {{}};
                 const subsystems = bridge.subsystems || [];
                 document.getElementById('connections').textContent = Object.values(bridge.connections || {{}}).flat().length;
@@ -1479,21 +1479,21 @@ class IntricateUIEngine:
                 document.getElementById('subsystem-list').innerHTML = subsystems.map(s =>
                     `<div class="subsystem"><span class="subsystem-dot"></span>${{s}}</div>`
                 ).join('');
-                
+
                 const cycler = d.cycler || {{}};
                 document.getElementById('phase').textContent = (cycler.current_phase || '-').toUpperCase();
                 document.getElementById('total-cycles').textContent = cycler.total_cycles || 0;
                 document.getElementById('avg-duration').textContent = (cycler.avg_phase_duration || 0).toFixed(4) + 's';
-                
+
                 // Update phase indicator
                 const currentPhase = cycler.current_phase || '';
                 document.getElementById('phases').innerHTML = phases.map(p =>
                     `<span class="phase ${{p === currentPhase ? 'active' : ''}}">${{p}}</span>`
                 ).join('');
-                
+
             }} catch(e) {{ console.error(e); }}
         }}
-        
+
         async function orchestrate() {{
             document.getElementById('output').textContent = 'Running orchestration cycle...';
             const res = await fetch('/api/orchestrator/cycle', {{method: 'POST'}});
@@ -1501,19 +1501,19 @@ class IntricateUIEngine:
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
         }}
-        
+
         async function integrate() {{
             const res = await fetch('/api/orchestrator/integration');
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
         }}
-        
+
         async function detectEmergence() {{
             const res = await fetch('/api/orchestrator/emergence');
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
         }}
-        
+
         refresh();
         setInterval(refresh, 3000);
     </script>

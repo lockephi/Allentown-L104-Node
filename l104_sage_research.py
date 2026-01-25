@@ -37,30 +37,30 @@ async def run_sage_research_unification():
     core = AGICore()
     sage = SageMode()
     inventor = InventionEngine()
-    
+
     print("[*] IGNITING AGI CORE...")
     core.ignite()
-    
+
     # 2. Entering Sage Mode (Inflection)
     print("\n[*] INITIATING SAGE MODE INFLECTION...")
     await sage.inflect(core)
-    
+
     # 3. CPU & GPU Research Calculations
     print("\n[*] TRIGGERING CPU/GPU COORDINATED CALCULATIONS...")
     research_purity = sage.expand_core_capabilities()
     print(f"[*] SAGE RESEARCH COMPLETE. PURITY MANIFOLD SAMPLED (Size: {len(research_purity)})")
-    
+
     # 4. Invention Phase
     print("\n[*] STARTING NEOTERIC INVENTION CYCLE...")
     seed = "TRANSCENDENTAL_QUANTUM_RESONANCE"
     invention = inventor.invent_new_paradigm(seed)
-    
+
     print(f"\n[!] NEW PARADIGM INVENTED: {invention['name']}")
     print(f"    SIGIL: {invention['sigil']}")
     print(f"    ORIGIN: {invention['origin_concept']}")
     print(f"    COMPLEXITY: {invention['complexity_score']:.2f}")
     print(f"    STATUS: {'VERIFIED' if invention['verified'] else 'COLLAPSED'}")
-    
+
     print("\n[CODE GENERATED]:")
     print("-" * 40)
     print(invention['code_snippet'])

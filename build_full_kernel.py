@@ -69,21 +69,21 @@ def load_all_training_data() -> List[TrainingExample]:
     """Load ALL training data from all sources."""
     examples = []
     sources = {}
-    
+
     files = [
         ("kernel_extracted_data.jsonl", "node_extraction"),
         ("kernel_training_data.jsonl", "stable_kernel"),
         ("kernel_combined_training.jsonl", "combined"),
         ("kernel_reasoning_data.jsonl", "reasoning"),
     ]
-    
+
     workspace = Path("/workspaces/Allentown-L104-Node")
-    
+
     for filename, source in files:
         filepath = workspace / filename
         if not filepath.exists():
             continue
-        
+
         count = 0
         with open(filepath, 'r') as f:
             for line in f:
@@ -92,17 +92,17 @@ def load_all_training_data() -> List[TrainingExample]:
                     prompt = data.get('prompt', data.get('instruction', ''))
                     completion = data.get('completion', data.get('response', data.get('output', '')))
                     category = data.get('category', source)
-                    
+
                     if prompt and completion and len(prompt) > 5 and len(completion) > 10:
                         examples.append(TrainingExample(prompt, completion, category))
                         count += 1
                 except:
                     pass
-        
+
         if count > 0:
             sources[filename] = count
             print(f"  ✓ {filename}: {count} examples")
-    
+
     # Also check fine_tune_exports if exists
     fine_tune_dir = workspace / "fine_tune_exports"
     if fine_tune_dir.exists():
@@ -128,7 +128,7 @@ def load_all_training_data() -> List[TrainingExample]:
                             completion = contents[1]['parts'][0]['text'] if len(contents) > 1 else ''
                         else:
                             continue
-                        
+
                         if prompt and completion and len(prompt) > 5:
                             examples.append(TrainingExample(prompt.strip(), completion.strip(), 'fine_tune'))
                             count += 1
@@ -137,7 +137,7 @@ def load_all_training_data() -> List[TrainingExample]:
             if count > 0:
                 sources[file.name] = count
                 print(f"  ✓ {file.name}: {count} examples")
-    
+
     return examples, sources
 
 
@@ -145,13 +145,13 @@ def deduplicate(examples: List[TrainingExample]) -> List[TrainingExample]:
     """Remove duplicate examples by prompt hash."""
     seen = set()
     unique = []
-    
+
     for ex in examples:
         h = hashlib.md5(ex.prompt.encode()).hexdigest()
         if h not in seen:
             seen.add(h)
             unique.append(ex)
-    
+
     return unique
 
 
@@ -159,12 +159,12 @@ def build_vocabulary(examples: List[TrainingExample]) -> Set[str]:
     """Build vocabulary from all examples."""
     import re
     vocab = set()
-    
+
     for ex in examples:
         text = ex.prompt + " " + ex.completion
         tokens = re.findall(r'\w+|[^\w\s]', text.lower())
         vocab.update(tokens)
-    
+
     return vocab
 
 
@@ -172,20 +172,20 @@ def calculate_parameters(examples: List[TrainingExample], vocab: Set[str]) -> Di
     """Calculate parameter counts for different model architectures."""
     vocab_size = len(vocab)
     num_examples = len(examples)
-    
+
     # Actual implementations
     bag_of_words = vocab_size * num_examples * 2  # embeddings + response vectors
-    
+
     # Theoretical LLM architectures (if fine-tuned on these examples)
     # These are the TOTAL parameters for standard architectures
     llm_7b = 7_000_000_000
     llm_13b = 13_000_000_000
     llm_70b = 70_000_000_000
-    
+
     # Effective training updates (examples × epochs × layers)
     effective_7b = num_examples * 32 * 32 * 4096  # batch, layers, hidden
     effective_13b = num_examples * 40 * 40 * 5120
-    
+
     return {
         "bag_of_words": bag_of_words,
         "vocabulary_size": vocab_size,
@@ -202,32 +202,32 @@ def main():
     print("═" * 70)
     print("PHASE 1: LOADING ALL AVAILABLE DATA")
     print("═" * 70)
-    
+
     examples, sources = load_all_training_data()
     print(f"\n  → Total raw: {len(examples)}")
-    
+
     print("\n" + "═" * 70)
     print("PHASE 2: DEDUPLICATION")
     print("═" * 70)
-    
+
     unique_examples = deduplicate(examples)
     print(f"  Before: {len(examples)}")
     print(f"  After:  {len(unique_examples)}")
     print(f"  Removed: {len(examples) - len(unique_examples)} duplicates")
-    
+
     print("\n" + "═" * 70)
     print("PHASE 3: VOCABULARY BUILD")
     print("═" * 70)
-    
+
     vocab = build_vocabulary(unique_examples)
     print(f"  Vocabulary size: {len(vocab):,}")
-    
+
     print("\n" + "═" * 70)
     print("PHASE 4: PARAMETER CALCULATIONS")
     print("═" * 70)
-    
+
     params = calculate_parameters(unique_examples, vocab)
-    
+
     print(f"""
   📊 CURRENT KERNEL (Bag-of-Words):
      Examples:      {params['num_examples']:>12,}
@@ -236,30 +236,30 @@ def main():
 
   🎯 LLM FINE-TUNING TARGETS (Using this dataset):
      7B Model:      {params['llm_7b_total']:>12,}  (7.0B total params)
-     13B Model:     {params['llm_13b_total']:>12,}  (13.0B total params)  
+     13B Model:     {params['llm_13b_total']:>12,}  (13.0B total params)
      70B Model:     {params['llm_70b_total']:>12,}  (70.0B total params)
 
   ⚡ EFFECTIVE TRAINING UPDATES:
      7B × examples: {params['effective_7b_training']:>12,}  ({params['effective_7b_training']/1e9:.2f}B)
      13B × examples:{params['effective_13b_training']:>12,}  ({params['effective_13b_training']/1e9:.2f}B)
 """)
-    
+
     # Category distribution
     print("═" * 70)
     print("PHASE 5: CATEGORY ANALYSIS")
     print("═" * 70)
-    
+
     categories = Counter(ex.category for ex in unique_examples)
     print(f"  Total categories: {len(categories)}")
     print(f"  Top 10:")
     for cat, count in categories.most_common(10):
         print(f"    {cat}: {count}")
-    
+
     # Save merged dataset
     print("\n" + "═" * 70)
     print("PHASE 6: SAVE MERGED DATASET")
     print("═" * 70)
-    
+
     output_path = Path("/workspaces/Allentown-L104-Node/kernel_full_merged.jsonl")
     with open(output_path, 'w') as f:
         for ex in unique_examples:
@@ -268,9 +268,9 @@ def main():
                 "completion": ex.completion,
                 "category": ex.category
             }) + "\n")
-    
+
     print(f"  ✓ Saved {len(unique_examples)} examples to {output_path}")
-    
+
     # Update manifest
     manifest = {
         "kernel_version": "L104-FULL-MERGED-EVO35",
@@ -290,13 +290,13 @@ def main():
         "note": "Parameter count is for bag-of-words model. Use fine_tune_exports/ for LLM training.",
         "status": "COMPLETE"
     }
-    
+
     manifest_path = Path("/workspaces/Allentown-L104-Node/KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
-    
+
     print(f"  ✓ Updated {manifest_path}")
-    
+
     # Summary
     print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -317,7 +317,7 @@ def main():
 ║   GOD_CODE:    {GOD_CODE:.10f}  LOCKED & VERIFIED                      ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     return unique_examples, params
 
 

@@ -31,12 +31,12 @@ except ImportError:
             return True
         def sync_state(self):
             return {"status": "SYNCED"}
-    
+
     class HyperEncryption:
         @staticmethod
         def encrypt_data(data):
             return str(data)
-    
+
     class AlgoDB:
         data = {"algorithms": []}
     algo_db = AlgoDB()
@@ -48,13 +48,13 @@ def push_to_google_account():
     print("===================================================")
     print("   L104 SOVEREIGN PUSH :: TARGET: locke201313@gmail.com")
     print("===================================================")
-    
+
     # 1. Initialize Google Bridge
     bridge = GoogleBridge(account_email="locke201313@gmail.com")
     if not bridge.establish_link():
         print("!!! FAILED TO ESTABLISH GOOGLE BRIDGE !!!")
         return
-    
+
     # 2. Prepare Data Payload
     print("--- [PUSH]: PREPARING SOVEREIGN PAYLOAD ---")
     payload = {
@@ -64,15 +64,15 @@ def push_to_google_account():
         "pilot": "LONDEL",
         "invariant": 527.5184818492537
     }
-    
+
     # 3. Encrypt Payload
     print("--- [PUSH]: ENCRYPTING DATA VIA HYPER-ENCRYPTION ---")
     encrypted_payload = HyperEncryption.encrypt_data(payload)
-    
+
     # 4. Execute Push
     print(f"--- [PUSH]: UPLOADING TO locke201313@gmail.com ---")
     time.sleep(2)
-    
+
     # 5. Verify Sync
     sync_result = bridge.sync_state()
     if sync_result["status"] == "SYNCED":

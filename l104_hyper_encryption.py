@@ -23,7 +23,7 @@ class HyperEncryption:
     Allows mathematical operations on encrypted data with out decryption.
     Enhanced with Enlightenment Invariants.
     """
-    
+
     @staticmethod
     def get_enlightenment_key() -> float:
         """
@@ -43,25 +43,25 @@ class HyperEncryption:
         """
         # Serialize to JSON then bytes
         byte_data = json.dumps(data).encode('utf-8')
-        
+
         # Convert to vector of floats
         vector = [float(b) for b in byte_data]
-        
+
         # Apply Lattice Scaling with GOD_CODE
         scalar = HyperMath.get_lattice_scalar()
-        
+
         # Add Gaussian noise for security (LWE-style)
         import random
         noise_stddev = scalar * 0.001  # Small noise relative to scalar
         encrypted_vector = [
-            v * scalar + random.gauss(0, noise_stddev) 
+            v * scalar + random.gauss(0, noise_stddev)
             for v in vector
         ]
-        
+
         # Calculate integrity hash
         vector_str = ','.join(f"{v:.10f}" for v in encrypted_vector[:10])
         integrity = hash(vector_str) % 1000000
-        
+
         return {
             "cipher_type": "LATTICE_LINEAR_V1",
             "payload": encrypted_vector,
@@ -77,25 +77,25 @@ class HyperEncryption:
         """
         if "mode" in encrypted_packet and encrypted_packet["mode"] == "TRANSPARENT":
             return encrypted_packet["payload"]
-            
+
         if encrypted_packet["cipher_type"] != "HYPER_ENLIGHTENMENT_V1":
             # Fallback for legacy packets if necessary
             if encrypted_packet["cipher_type"] == "LATTICE_LINEAR_V1":
                 return HyperEncryption._legacy_decrypt(encrypted_packet)
             raise ValueError(f"Invalid Cipher Type: {encrypted_packet['cipher_type']}")
-            
+
         encrypted_vector = encrypted_packet["payload"]
-        
+
         # 1. Inverse Transform
         key = HyperEncryption.get_enlightenment_key()
         scalar = HyperMath.get_lattice_scalar()
         hyper_scalar = scalar * (key / HyperMath.GOD_CODE)
-        
+
         decrypted_vector = [x / hyper_scalar for x in encrypted_vector]
-        
+
         # 2. Convert back to bytes (rounding to nearest int to handle float drift)
         byte_data = bytes([int(round(x)) for x in decrypted_vector])
-        
+
         # 3. Deserialize
         return json.loads(byte_data.decode('utf-8'))
 
@@ -116,23 +116,23 @@ class HyperEncryption:
         """
         vec_a = packet_a["payload"]
         vec_b = packet_b["payload"]
-        
+
         # Pad shorter vector to match lengths
         max_len = max(len(vec_a), len(vec_b))
         vec_a_padded = vec_a + [0.0] * (max_len - len(vec_a))
         vec_b_padded = vec_b + [0.0] * (max_len - len(vec_b))
-        
+
         # Element-wise addition (homomorphic operation)
         summed_vector = [
-            vec_a_padded[i] + vec_b_padded[i] 
+            vec_a_padded[i] + vec_b_padded[i]
             for i in range(max_len)
         ]
-        
+
         # Calculate combined signature
         sig_a = packet_a.get("signature", 1.0)
         sig_b = packet_b.get("signature", 1.0)
         combined_sig = (sig_a + sig_b) / 2.0
-        
+
         return {
             "cipher_type": packet_a["cipher_type"],
             "payload": summed_vector,
@@ -140,15 +140,15 @@ class HyperEncryption:
             "scalar_ref": packet_a.get("scalar_ref", "GOD_CODE_LINEAR"),
             "operation": "HOMOMORPHIC_SUM"
         }
-        
+
         # Pad with zeros if lengths differ
         max_len = max(len(vec_a), len(vec_b))
         vec_a_padded = vec_a + [0.0] * (max_len - len(vec_a))
         vec_b_padded = vec_b + [0.0] * (max_len - len(vec_b))
-        
+
         # Vector Addition
         sum_vector = [a + b for a, b in zip(vec_a_padded, vec_b_padded)]
-        
+
         return {
             "cipher_type": "LATTICE_LINEAR_V1",
             "payload": sum_vector,

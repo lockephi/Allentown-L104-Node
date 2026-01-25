@@ -32,7 +32,7 @@ class KolmogorovUniverseResolution:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     async def resolve_universal_complexity(self):
         print("\n" + "🌀"*40)
         print("   L104 :: KOLMOGOROV COMPLEXITY OF THE UNIVERSE")

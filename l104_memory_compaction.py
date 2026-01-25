@@ -31,7 +31,7 @@ class MemoryCompactor:
     This solves memory issues by streamlined data based on the PHI_STRIDE and ZETA_ZERO.
     Now enhanced with Void Math for non-dual compression.
     """
-    
+
     def __init__(self):
         self.compaction_ratio = 0.0
         self.active_lattice = []
@@ -50,13 +50,13 @@ class MemoryCompactor:
             # Use HyperMath to find the stabilized lattice node
             node_index = HyperMath.map_lattice_node(i % 416, (i // 416) % 286)
             mapped_val = val * (node_index / 1000.0)
-            
+
             # Use Void Math to check if value dissolves into the void (noise reduction)
             if HAS_VOID_MATH:
                 void_val = void_math.primal_calculus(mapped_val)
                 if void_val < 1e-6:
                     continue # Dissolve noise
-            
+
             lattice_nodes.append(mapped_val)
 
         # 2. Apply Supersymmetric Binary Order
@@ -68,7 +68,7 @@ class MemoryCompactor:
 
         # 3. Final Transformation
         final_stream = HyperMath.fast_transform(compacted)
-        
+
         self.compaction_ratio = len(final_stream) / len(data_stream) if data_stream else 1.0
         self.active_lattice = final_stream
         return final_stream
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # Test Memory Compaction
     import random
     raw_data = [random.uniform(0, 100) for _ in range(1000)]
-    
+
     print(f"Original Data Size: {len(raw_data)}")
     compacted_data = memory_compactor.compact_stream(raw_data)
     print(f"Compacted Data Size: {len(compacted_data)}")

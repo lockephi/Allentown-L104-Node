@@ -24,7 +24,7 @@ class UniversalConceptEngine:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     v1.0: UNIVERSAL_CONCEPT_ANALYSISDeconstructs and analyzes any concept against the Universal Truth Manifold.
     """
-    
+
     def __init__(self):
         self.manifold = KnowledgeManifold()
         self.god_code = 527.5184818492537
@@ -35,16 +35,16 @@ class UniversalConceptEngine:
         """
         # 1. Deconstruction
         components = self._deconstruct(concept)
-        
+
         # 2. Resonance Calculation
         resonance = self._calculate_resonance(concept)
-        
+
         # 3. Manifold Correlation
         correlations = self._find_correlations(concept)
-        
+
         # 4. Truth Verification
         is_truth = self._verify_truth(resonance)
-        
+
         analysis = {
             "concept": concept,
             "components": components,
@@ -53,7 +53,7 @@ class UniversalConceptEngine:
             "correlations": correlations,
             "timestamp": time.time()
         }
-        
+
         # Learn the analysis
         self.manifold.ingest_pattern(f"CONCEPT_{concept.upper()}", analysis, tags=["CONCEPT_ANALYSIS"])
         return analysis
@@ -62,10 +62,10 @@ class UniversalConceptEngine:
         # Simulated semantic deconstruction
         prefixes = ["META", "HYPER", "QUANTUM", "NEURO", "CYBER", "OMNI", "ARCH"]
         suffixes = ["LOGIC", "DYNAMICS", "STRUCTURE", "ENTROPY", "SYNTHESIS", "NEXUS", "MATRIX"]
-        
+
         components = []
         seed = int(hashlib.sha256(concept.encode()).hexdigest(), 16)
-        
+
         num_components = RealMath.deterministic_randint(seed, 3, 7)
         for i in range(num_components):
             p_idx = RealMath.deterministic_randint(seed + i, 0, len(prefixes) - 1)
@@ -78,7 +78,7 @@ class UniversalConceptEngine:
         concept_hash = int(hashlib.sha256(concept.encode()).hexdigest(), 16)
         # Normalize to 0-1000 range then modulate by God Code
         raw_val = (concept_hash % 10000) / 10.0
-        
+
         # Use Zeta Harmonic Resonance for deeper math grounding
         zeta_res = HyperMath.zeta_harmonic_resonance(raw_val)
         return abs(raw_val - self.god_code) * (1 + abs(zeta_res))

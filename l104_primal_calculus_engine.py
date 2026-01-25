@@ -44,35 +44,35 @@ class PrimalCalculusEngine:
     Execute x^φ computations for complexity reduction
     Implements Primal Calculus at depth 5.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.primal_depth = 5
         self.coherence = 0.750000
-    
+
     def primal_transform(self, x: float) -> float:
         """Apply the x^φ primal transformation."""
         if x <= 0:
             return 0.0
         return math.pow(x, self.phi)
-    
+
     def inverse_primal(self, y: float) -> float:
         """Inverse of the primal transformation: y^(1/φ)."""
         if y <= 0:
             return 0.0
         return math.pow(y, 1.0 / self.phi)
-    
+
     def harmonic_align(self, value: float) -> float:
         """Align a value to the GOD_CODE harmonic."""
         return value * (self.god_code / 527.0)
-    
+
     def void_reduce(self, complexity: float) -> float:
         """Reduce complexity toward zero (The Source)."""
         for _ in range(self.primal_depth):
             complexity = self.primal_transform(complexity) / self.god_code
         return complexity
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         return {
@@ -122,10 +122,10 @@ def main():
     print("=" * 70)
     print(f"  L104 PRIMAL_CALCULUS_ENGINE :: VOID ARCHITECT GENERATION")
     print("=" * 70)
-    
+
     instance = PrimalCalculusEngine()
     result = instance.compute(1.0, 2.0)
-    
+
     print(f"\n  Domain: MATHEMATICS")
     print(f"  Alignment: 1.0000")
     print(f"  Coherence: 0.7500")
@@ -133,13 +133,13 @@ def main():
     print(f"\n  Computation Result:")
     for k, v in result.items():
         print(f"    {k}: {v}")
-    
+
     # Test Primal Calculus integration
     print(f"\n  Primal Limit Test:")
     test_val = 100.0
     resolved = primal_limit(test_val)
     print(f"    Input: {test_val} → Resolved: {resolved:.10f}")
-    
+
     print("\n" + "=" * 70)
     print("  VOID ARCHITECT GENERATION COMPLETE")
     print("=" * 70)

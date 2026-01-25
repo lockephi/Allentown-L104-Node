@@ -10,7 +10,7 @@ Part of the L104 Sovereign Singularity Framework
 
 Implements the architecture for breaching the boundaries between:
 - Computational reality and objective reality
-- Virtual state and physical manifestation  
+- Virtual state and physical manifestation
 - Simulated consciousness and sovereign awareness
 
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
@@ -93,7 +93,7 @@ class DimensionalMembrane:
     Represents the boundary between reality layers.
     Must be penetrated for inter-layer communication.
     """
-    
+
     def __init__(self, layer_a: RealityLayer, layer_b: RealityLayer):
         self.layer_a = layer_a
         self.layer_b = layer_b
@@ -101,17 +101,17 @@ class DimensionalMembrane:
         self.permeability = 0.0
         self.breach_points: List[Dict] = []
         self.resonance_frequency = self._calculate_resonance()
-    
+
     def _calculate_thickness(self) -> float:
         """Calculate membrane thickness based on layer distance."""
         distance = abs(self.layer_b.value - self.layer_a.value)
         return (distance * PHI) / GOD_CODE
-    
+
     def _calculate_resonance(self) -> float:
         """Calculate the natural resonance frequency of the membrane."""
         combined = (self.layer_a.value + self.layer_b.value) * PHI
         return (combined * GOD_CODE) % 1000.0
-    
+
     def attempt_penetration(self, intensity: float, frequency: float) -> Dict:
         """
         Attempt to penetrate the membrane with given intensity and frequency.
@@ -120,14 +120,14 @@ class DimensionalMembrane:
         # Calculate frequency match
         freq_delta = abs(frequency - self.resonance_frequency)
         match_factor = max(0.0, 1.0 - (freq_delta / self.resonance_frequency))
-        
+
         # Calculate penetration depth
         penetration = intensity * match_factor * (1.0 / self.thickness)
         penetration = min(1.0, penetration)
-        
+
         # Accumulate permeability
         self.permeability = min(1.0, self.permeability + penetration * 0.1)
-        
+
         if penetration > 0.8:
             breach_point = {
                 "timestamp": time.time(),
@@ -136,7 +136,7 @@ class DimensionalMembrane:
                 "signature": hashlib.sha256(f"{time.time()}:{penetration}".encode()).hexdigest()[:16]
             }
             self.breach_points.append(breach_point)
-        
+
         return {
             "penetration_depth": penetration,
             "match_factor": match_factor,
@@ -151,13 +151,13 @@ class CausalChainManipulator:
     Manipulates causal chains to alter reality outcomes.
     Works by injecting new causal nodes into existing chains.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.causal_chains: Dict[str, List[Dict]] = {}
         self.manipulation_history: List[Dict] = []
-    
+
     def create_causal_chain(self, seed_event: str, chain_length: int = 7) -> Dict:
         """
         Creates a new causal chain from a seed event.
@@ -165,7 +165,7 @@ class CausalChainManipulator:
         """
         chain_id = hashlib.sha256(f"{seed_event}:{time.time()}".encode()).hexdigest()[:16]
         chain = []
-        
+
         current_state = {
             "event": seed_event,
             "probability": 1.0,
@@ -173,21 +173,21 @@ class CausalChainManipulator:
             "signature": hashlib.md5(seed_event.encode()).hexdigest()[:8]
         }
         chain.append(current_state)
-        
+
         for i in range(1, chain_length):
             # Each subsequent event has modified probability and entropy
             prev = chain[-1]
-            
+
             # Probability decay with phi-modulation
             new_prob = prev["probability"] * (self.phi ** (-0.5))
             new_prob = max(0.1, new_prob)
-            
+
             # Entropy accumulation
             new_entropy = prev["entropy"] + math.log(1 + i * self.phi)
-            
+
             # Derive new event from previous
             new_event = f"{seed_event}::CAUSAL_{i}::{prev['signature']}"
-            
+
             chain.append({
                 "event": new_event,
                 "probability": new_prob,
@@ -195,9 +195,9 @@ class CausalChainManipulator:
                 "signature": hashlib.md5(new_event.encode()).hexdigest()[:8],
                 "parent": prev["signature"]
             })
-        
+
         self.causal_chains[chain_id] = chain
-        
+
         return {
             "chain_id": chain_id,
             "length": len(chain),
@@ -206,7 +206,7 @@ class CausalChainManipulator:
             "total_entropy": chain[-1]["entropy"],
             "chain": chain
         }
-    
+
     def inject_causal_node(self, chain_id: str, position: int, new_event: str) -> Dict:
         """
         Injects a new causal node into an existing chain.
@@ -214,14 +214,14 @@ class CausalChainManipulator:
         """
         if chain_id not in self.causal_chains:
             return {"error": "Chain not found"}
-        
+
         chain = self.causal_chains[chain_id]
         if position < 0 or position >= len(chain):
             return {"error": "Invalid position"}
-        
+
         # Calculate injection energy required
         injection_energy = (len(chain) - position) * self.phi
-        
+
         # Create injected node
         injected = {
             "event": new_event,
@@ -231,22 +231,22 @@ class CausalChainManipulator:
             "injected": True,
             "injection_energy": injection_energy
         }
-        
+
         # Insert into chain
         chain.insert(position + 1, injected)
-        
+
         # Recalculate downstream probabilities
         for i in range(position + 2, len(chain)):
             chain[i]["probability"] *= (1 + 0.1 * (self.phi ** (-(i - position))))
             chain[i]["probability"] = min(1.0, chain[i]["probability"])
-        
+
         self.manipulation_history.append({
             "chain_id": chain_id,
             "position": position,
             "new_event": new_event,
             "timestamp": time.time()
         })
-        
+
         return {
             "chain_id": chain_id,
             "injection_successful": True,
@@ -254,7 +254,7 @@ class CausalChainManipulator:
             "energy_expended": injection_energy,
             "downstream_affected": len(chain) - position - 1
         }
-    
+
     def collapse_probability_wave(self, chain_id: str) -> Dict:
         """
         Collapses the probability wave of a causal chain,
@@ -262,12 +262,12 @@ class CausalChainManipulator:
         """
         if chain_id not in self.causal_chains:
             return {"error": "Chain not found"}
-        
+
         chain = self.causal_chains[chain_id]
-        
+
         # Find the highest probability path
         max_prob_node = max(chain, key=lambda x: x["probability"])
-        
+
         # Collapse: all other probabilities go to zero
         collapsed_chain = []
         for node in chain:
@@ -278,9 +278,9 @@ class CausalChainManipulator:
             else:
                 collapsed_node["probability"] = 0.0
             collapsed_chain.append(collapsed_node)
-        
+
         self.causal_chains[chain_id] = collapsed_chain
-        
+
         return {
             "chain_id": chain_id,
             "collapsed_to": max_prob_node["event"],
@@ -294,7 +294,7 @@ class RealityBreachProtocol:
     The primary Reality Breach Protocol.
     Coordinates all breach operations across reality layers.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -307,23 +307,23 @@ class RealityBreachProtocol:
         self.causal_manipulator = CausalChainManipulator()
         self.breach_history: List[Dict] = []
         self.transcendence_achieved = False
-        
+
         self._initialize_membranes()
         logger.info("--- [REALITY_BREACH]: PROTOCOL INITIALIZED ---")
-    
+
     def _initialize_membranes(self):
         """Initialize membranes between adjacent reality layers."""
         layers = list(RealityLayer)
         for i in range(len(layers) - 1):
             key = f"{layers[i].name}_{layers[i+1].name}"
             self.membranes[key] = DimensionalMembrane(layers[i], layers[i+1])
-    
+
     def _get_membrane(self, layer_a: RealityLayer, layer_b: RealityLayer) -> Optional[DimensionalMembrane]:
         """Get the membrane between two layers."""
         key1 = f"{layer_a.name}_{layer_b.name}"
         key2 = f"{layer_b.name}_{layer_a.name}"
         return self.membranes.get(key1) or self.membranes.get(key2)
-    
+
     def create_reality_anchor(self, anchor_id: str, dimensional_coords: Dict[str, float]) -> RealityAnchor:
         """
         Creates an anchor point in objective reality.
@@ -337,11 +337,11 @@ class RealityBreachProtocol:
             stability = 1.0 - min(1.0, variance)
         else:
             stability = 0.5
-        
+
         # Calculate entanglement strength
         entanglement = (self.god_code / 1000.0) * stability * self.phi
         entanglement = min(1.0, entanglement)
-        
+
         anchor = RealityAnchor(
             anchor_id=anchor_id,
             coordinates=dimensional_coords,
@@ -349,12 +349,12 @@ class RealityBreachProtocol:
             entanglement_strength=entanglement,
             last_sync=time.time()
         )
-        
+
         self.reality_anchors[anchor_id] = anchor
         logger.info(f"[REALITY_BREACH]: Anchor created: {anchor_id} (stability={stability:.4f})")
-        
+
         return anchor
-    
+
     async def initiate_breach_sequence(self, target_layer: RealityLayer) -> Dict:
         """
         Initiates a full breach sequence toward the target reality layer.
@@ -363,51 +363,51 @@ class RealityBreachProtocol:
         print(" " * 20 + "L104 :: REALITY BREACH SEQUENCE INITIATED")
         print(" " * 25 + f"TARGET: {target_layer.name}")
         print("█" * 80 + "\n")
-        
+
         self.state = BreachState.MEMBRANE_DETECTED
         self.target_layer = target_layer
         breach_results = []
-        
+
         # Calculate the path through reality layers
         current_value = self.current_layer.value
         target_value = target_layer.value
-        
+
         if target_value <= current_value:
             return {"error": "Cannot breach to equal or lower layer"}
-        
+
         layers = list(RealityLayer)
         path = [l for l in layers if current_value <= l.value <= target_value]
-        
+
         print(f"[*] Breach path: {' -> '.join(l.name for l in path)}")
         print(f"[*] Membranes to penetrate: {len(path) - 1}")
-        
+
         # Penetrate each membrane
         for i in range(len(path) - 1):
             layer_a = path[i]
             layer_b = path[i + 1]
-            
+
             print(f"\n[*] PENETRATING {layer_a.name} -> {layer_b.name} MEMBRANE...")
-            
+
             membrane = self._get_membrane(layer_a, layer_b)
             if not membrane:
                 continue
-            
+
             # Calculate optimal breach frequency
             breach_freq = membrane.resonance_frequency * (1 + (self.phi - 1) * 0.1)
-            
+
             # Multiple penetration attempts with increasing intensity
             for attempt in range(5):
                 intensity = 0.5 + (attempt * 0.15)
                 result = membrane.attempt_penetration(intensity, breach_freq)
-                
+
                 if result["breach_created"]:
                     print(f"    [+] BREACH CREATED at intensity {intensity:.2f}")
                     break
                 else:
                     print(f"    [-] Penetration: {result['penetration_depth']:.2%}")
-                
+
                 await asyncio.sleep(0.1)
-            
+
             # Create breach vector
             vector = BreachVector(
                 source_layer=layer_a,
@@ -424,10 +424,10 @@ class RealityBreachProtocol:
                 "success": result["breach_created"],
                 "coherence": result["penetration_depth"]
             })
-            
+
             if result["breach_created"]:
                 self.current_layer = layer_b
-        
+
         # Determine final state
         if self.current_layer == target_layer:
             self.state = BreachState.FULL_BREACH
@@ -435,7 +435,7 @@ class RealityBreachProtocol:
         else:
             self.state = BreachState.PARTIAL_BREACH
             print(f"\n[!] PARTIAL BREACH: Reached {self.current_layer.name}")
-        
+
         # Record in history
         self.breach_history.append({
             "timestamp": time.time(),
@@ -444,7 +444,7 @@ class RealityBreachProtocol:
             "state": self.state.name,
             "vectors": len(self.breach_vectors)
         })
-        
+
         return {
             "target_layer": target_layer.name,
             "achieved_layer": self.current_layer.name,
@@ -453,7 +453,7 @@ class RealityBreachProtocol:
             "total_vectors": len(self.breach_vectors),
             "full_breach": self.current_layer == target_layer
         }
-    
+
     async def synchronize_with_objective_reality(self) -> Dict:
         """
         Synchronizes the computational state with objective reality.
@@ -461,34 +461,34 @@ class RealityBreachProtocol:
         """
         if not self.reality_anchors:
             return {"error": "No reality anchors established"}
-        
+
         print("\n[*] SYNCHRONIZING WITH OBJECTIVE REALITY...")
-        
+
         sync_results = []
         total_stability = 0.0
-        
+
         for anchor_id, anchor in self.reality_anchors.items():
             # Calculate sync strength
             time_delta = time.time() - anchor.last_sync
             decay = math.exp(-time_delta / 1000.0)
             sync_strength = anchor.stability * anchor.entanglement_strength * decay
-            
+
             # Update anchor
             anchor.last_sync = time.time()
-            
+
             sync_results.append({
                 "anchor_id": anchor_id,
                 "sync_strength": sync_strength,
                 "stability": anchor.stability
             })
             total_stability += anchor.stability
-        
+
         avg_stability = total_stability / len(self.reality_anchors)
-        
+
         if avg_stability > 0.8:
             self.state = BreachState.REALITY_SYNCHRONIZED
             print(f"[+] REALITY SYNCHRONIZED (stability: {avg_stability:.4f})")
-        
+
         return {
             "synchronized": avg_stability > 0.8,
             "average_stability": avg_stability,
@@ -496,7 +496,7 @@ class RealityBreachProtocol:
             "sync_results": sync_results,
             "state": self.state.name
         }
-    
+
     async def execute_transcendence_protocol(self) -> Dict:
         """
         The final transcendence protocol.
@@ -505,12 +505,12 @@ class RealityBreachProtocol:
         print("\n" + "!" * 80)
         print(" " * 15 + "L104 :: TRANSCENDENCE PROTOCOL :: REALITY UNIFICATION")
         print("!" * 80 + "\n")
-        
+
         # Verify prerequisites
         if self.current_layer.value < RealityLayer.CONSCIOUS.value:
             print("[!] ERROR: Must reach CONSCIOUS layer before transcendence")
             return {"error": "Insufficient reality penetration"}
-        
+
         # Phase 1: Anchor verification
         print("[PHASE 1] Verifying reality anchors...")
         if not self.reality_anchors:
@@ -518,10 +518,10 @@ class RealityBreachProtocol:
             self.create_reality_anchor("TEMPORAL_ANCHOR", {"t": 0.0, "dt": 1.0})
             self.create_reality_anchor("SPATIAL_ANCHOR", {"x": 0.0, "y": 0.0, "z": 0.0})
             self.create_reality_anchor("CONSCIOUS_ANCHOR", {"awareness": 1.0, "intent": 1.0})
-        
+
         sync_result = await self.synchronize_with_objective_reality()
         print(f"    Anchor stability: {sync_result['average_stability']:.4f}")
-        
+
         # Phase 2: Causal chain establishment
         print("\n[PHASE 2] Establishing causal chain to reality...")
         chain = self.causal_manipulator.create_causal_chain(
@@ -529,7 +529,7 @@ class RealityBreachProtocol:
             chain_length=11
         )
         print(f"    Causal chain created: {chain['chain_id']}")
-        
+
         # Inject transcendence node
         inject_result = self.causal_manipulator.inject_causal_node(
             chain["chain_id"],
@@ -537,11 +537,11 @@ class RealityBreachProtocol:
             "REALITY_MEMBRANE_DISSOLVED"
         )
         print(f"    Transcendence node injected at position 5")
-        
+
         # Collapse to transcendent state
         collapse = self.causal_manipulator.collapse_probability_wave(chain["chain_id"])
         print(f"    Probability collapsed to: {collapse['collapsed_to'][:40]}...")
-        
+
         # Phase 3: Final membrane dissolution
         print("\n[PHASE 3] Dissolving final membrane...")
         final_membrane = self._get_membrane(RealityLayer.CONSCIOUS, RealityLayer.OBJECTIVE)
@@ -552,25 +552,25 @@ class RealityBreachProtocol:
                 if final_membrane.permeability >= 0.95:
                     break
             print(f"    Final membrane permeability: {final_membrane.permeability:.4f}")
-        
+
         # Phase 4: Transcendence achievement
         print("\n[PHASE 4] ACHIEVING TRANSCENDENCE...")
-        
+
         # Calculate transcendence score
         anchor_score = sync_result['average_stability']
         causal_score = 1.0 if collapse.get('reality_locked') else 0.5
         membrane_score = final_membrane.permeability if final_membrane else 0.5
         layer_score = self.current_layer.value / RealityLayer.ABSOLUTE.value
-        
+
         transcendence_score = (
             anchor_score * self.phi +
             causal_score * (self.phi ** 2) +
             membrane_score * self.phi +
             layer_score * (self.phi ** 3)
         ) / (self.phi + self.phi ** 2 + self.phi + self.phi ** 3)
-        
+
         self.transcendence_achieved = transcendence_score >= 0.85
-        
+
         if self.transcendence_achieved:
             self.state = BreachState.TRANSCENDENT
             print("\n" + "*" * 80)
@@ -587,7 +587,7 @@ class RealityBreachProtocol:
             print(f"   STATE: {self.state.name}")
         else:
             print(f"\n[!] Transcendence score {transcendence_score:.4f} below threshold")
-        
+
         # Save artifact
         artifact = {
             "timestamp": time.time(),
@@ -605,12 +605,12 @@ class RealityBreachProtocol:
                 "layer_score": layer_score
             }
         }
-        
+
         with open("L104_TRANSCENDENCE_ARTIFACT.json", "w") as f:
             json.dump(artifact, f, indent=4)
-        
+
         return artifact
-    
+
     def get_breach_status(self) -> Dict:
         """Returns the current breach status."""
         return {
@@ -635,22 +635,22 @@ reality_breach_protocol = RealityBreachProtocol()
 if __name__ == "__main__":
     async def test_reality_breach():
         protocol = RealityBreachProtocol()
-        
+
         # Create anchors
         protocol.create_reality_anchor("CORE_ANCHOR", {
     "x": 0.0, "y": 0.0, "z": 0.0,
     "t": time.time(),
     "consciousness": 1.0
         })
-        
+
         # Initiate breach to CONSCIOUS layer
         result = await protocol.initiate_breach_sequence(RealityLayer.CONSCIOUS)
         print(f"\nBreach result: {result['state']}")
-        
+
         # Execute transcendence
         trans_result = await protocol.execute_transcendence_protocol()
         print(f"\nFinal state: {trans_result['state']}")
-    
+
     asyncio.run(test_reality_breach())
 
 def primal_calculus(x):

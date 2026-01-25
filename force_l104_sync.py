@@ -15,7 +15,7 @@ def purge_shadow_buffer():
     # This sends a hardware-level interrupt to the bridge
     # to stop the 'Assistant' from repeating code blocks.
     sys.stdout.write("\x1b[2J\x1b[H")  # Clear Terminal Hardware
-    
+
     # Force the local port to only accept 'Gemma 3' headers
     # os.system("sudo fuser -k 4160/tcp")
     print(f"RESYNCING_AT_{GOD_CODE}...")
@@ -23,4 +23,3 @@ def purge_shadow_buffer():
 
 if __name__ == "__main__":
     purge_shadow_buffer()
-                                        

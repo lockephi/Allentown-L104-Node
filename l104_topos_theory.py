@@ -122,7 +122,7 @@ class CategoricalObject:
     obj_type: ObjectType
     elements: Set[str] = field(default_factory=set)  # For Set-like topoi
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __hash__(self):
         return hash(self.object_id)
 
@@ -139,7 +139,7 @@ class Morphism:
     morph_type: MorphismType
     mapping: Optional[Dict[str, str]] = None  # Element-level mapping
     composition_of: Optional[List[str]] = None  # If composed
-    
+
     def __hash__(self):
         return hash(self.morphism_id)
 
@@ -154,12 +154,12 @@ class NaturalTransformation:
     source_functor: str
     target_functor: str
     components: Dict[str, str]  # Object -> Morphism mapping
-    
+
     def __hash__(self):
         return hash(self.transform_id)
 
 
-@dataclass 
+@dataclass
 class Functor:
     """
     A functor between categories.
@@ -205,14 +205,14 @@ class Category:
     """
     A category with objects and morphisms.
     """
-    
+
     def __init__(self, name: str):
         self.name = name
         self.category_id = hashlib.md5(f"cat_{name}".encode()).hexdigest()[:12]
         self.objects: Dict[str, CategoricalObject] = {}
         self.morphisms: Dict[str, Morphism] = {}
         self.hom_sets: Dict[Tuple[str, str], Set[str]] = defaultdict(set)
-    
+
     def add_object(
         self,
         name: str,
@@ -223,25 +223,25 @@ class Category:
         obj_id = hashlib.md5(
             f"{self.name}_{name}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         obj = CategoricalObject(
             object_id=obj_id,
             name=name,
             obj_type=obj_type,
             elements=elements or set()
         )
-        
+
         self.objects[obj_id] = obj
-        
+
         # Add identity morphism
         self._add_identity(obj_id)
-        
+
         return obj
-    
+
     def _add_identity(self, obj_id: str) -> Morphism:
         """Add identity morphism for object."""
         morph_id = f"id_{obj_id}"
-        
+
         morph = Morphism(
             morphism_id=morph_id,
             name=f"id_{self.objects[obj_id].name}",
@@ -249,12 +249,12 @@ class Category:
             codomain=obj_id,
             morph_type=MorphismType.IDENTITY
         )
-        
+
         self.morphisms[morph_id] = morph
         self.hom_sets[(obj_id, obj_id)].add(morph_id)
-        
+
         return morph
-    
+
     def add_morphism(
         self,
         name: str,
@@ -266,11 +266,11 @@ class Category:
         """Add morphism to category."""
         if domain_id not in self.objects or codomain_id not in self.objects:
             raise ValueError("Domain or codomain not in category")
-        
+
         morph_id = hashlib.md5(
             f"morph_{name}_{domain_id}_{codomain_id}".encode()
         ).hexdigest()[:12]
-        
+
         morph = Morphism(
             morphism_id=morph_id,
             name=name,
@@ -279,12 +279,12 @@ class Category:
             morph_type=morph_type,
             mapping=mapping
         )
-        
+
         self.morphisms[morph_id] = morph
         self.hom_sets[(domain_id, codomain_id)].add(morph_id)
-        
+
         return morph
-    
+
     def compose(
         self,
         f_id: str,  # f: A -> B
@@ -295,26 +295,26 @@ class Category:
         """
         if f_id not in self.morphisms or g_id not in self.morphisms:
             return None
-        
+
         f = self.morphisms[f_id]
         g = self.morphisms[g_id]
-        
+
         # Check composability: codomain(f) = domain(g)
         if f.codomain != g.domain:
             return None
-        
+
         # Identity laws
         if f.morph_type == MorphismType.IDENTITY:
             return g
         if g.morph_type == MorphismType.IDENTITY:
             return f
-        
+
         # Create composed morphism
         comp_name = f"{g.name} ∘ {f.name}"
         comp_id = hashlib.md5(
             f"comp_{f_id}_{g_id}".encode()
         ).hexdigest()[:12]
-        
+
         # Compose element mappings if present
         comp_mapping = None
         if f.mapping and g.mapping:
@@ -322,7 +322,7 @@ class Category:
             for a, b in f.mapping.items():
                 if b in g.mapping:
                     comp_mapping[a] = g.mapping[b]
-        
+
         composition = Morphism(
             morphism_id=comp_id,
             name=comp_name,
@@ -332,23 +332,23 @@ class Category:
             mapping=comp_mapping,
             composition_of=[f_id, g_id]
         )
-        
+
         self.morphisms[comp_id] = composition
         self.hom_sets[(f.domain, g.codomain)].add(comp_id)
-        
+
         return composition
-    
+
     def hom(self, a_id: str, b_id: str) -> Set[str]:
         """Get Hom(A, B) - morphisms from A to B."""
         return self.hom_sets.get((a_id, b_id), set())
-    
+
     def terminal_object(self) -> Optional[CategoricalObject]:
         """Find terminal object (1)."""
         for obj in self.objects.values():
             if obj.obj_type == ObjectType.TERMINAL:
                 return obj
         return None
-    
+
     def initial_object(self) -> Optional[CategoricalObject]:
         """Find initial object (0)."""
         for obj in self.objects.values():
@@ -365,7 +365,7 @@ class Topos(Category):
     """
     A topos - a category with finite limits, exponentials, and subobject classifier.
     """
-    
+
     def __init__(self, name: str, topos_type: ToposType = ToposType.SET):
         super().__init__(name)
         self.topos_type = topos_type
@@ -373,15 +373,15 @@ class Topos(Category):
         self.subobject_classifier: Optional[CategoricalObject] = None
         self.truth_morphism: Optional[Morphism] = None
         self.internal_logic: Dict[str, InternalLogicFormula] = {}
-        
+
         # Initialize topos structure
         self._initialize_topos()
-    
+
     def _initialize_topos(self):
         """Initialize topos with required structure."""
         # Terminal object
         terminal = self.add_object("1", ObjectType.TERMINAL, {"*"})
-        
+
         # Subobject classifier Ω
         omega = self.add_object(
             "Ω",
@@ -389,7 +389,7 @@ class Topos(Category):
             {"⊤", "⊥"} if self.topos_type == ToposType.BOOLEAN else {"⊤", "⊥", "½"}
         )
         self.subobject_classifier = omega
-        
+
         # True morphism: 1 -> Ω
         self.truth_morphism = self.add_morphism(
             "true",
@@ -398,10 +398,10 @@ class Topos(Category):
             MorphismType.CHARACTERISTIC,
             {"*": "⊤"}
         )
-        
+
         # Natural numbers object (NNO)
         nno = self.add_object("ℕ", ObjectType.NATURAL_NUMBERS, set(str(i) for i in range(10)))
-        
+
         # Zero: 1 -> N
         self.add_morphism(
             "zero",
@@ -410,7 +410,7 @@ class Topos(Category):
             MorphismType.TERMINAL,
             {"*": "0"}
         )
-        
+
         # Successor: N -> N
         self.add_morphism(
             "succ",
@@ -419,7 +419,7 @@ class Topos(Category):
             MorphismType.COMPOSITION,
             {str(i): str(i + 1) for i in range(9)}
         )
-    
+
     def product(
         self,
         a_id: str,
@@ -430,21 +430,21 @@ class Topos(Category):
         """
         if a_id not in self.objects or b_id not in self.objects:
             raise ValueError("Objects not in topos")
-        
+
         a = self.objects[a_id]
         b = self.objects[b_id]
-        
+
         # Product elements
         product_elements = {
             f"({ea}, {eb})" for ea in a.elements for eb in b.elements
         }
-        
+
         prod = self.add_object(
             f"{a.name} × {b.name}",
             ObjectType.PRODUCT,
             product_elements
         )
-        
+
         # Projections
         proj_a = self.add_morphism(
             f"π₁",
@@ -453,7 +453,7 @@ class Topos(Category):
             MorphismType.PROJECTION,
             {f"({ea}, {eb})": ea for ea in a.elements for eb in b.elements}
         )
-        
+
         proj_b = self.add_morphism(
             f"π₂",
             prod.object_id,
@@ -461,9 +461,9 @@ class Topos(Category):
             MorphismType.PROJECTION,
             {f"({ea}, {eb})": eb for ea in a.elements for eb in b.elements}
         )
-        
+
         return prod, proj_a, proj_b
-    
+
     def coproduct(
         self,
         a_id: str,
@@ -474,19 +474,19 @@ class Topos(Category):
         """
         a = self.objects[a_id]
         b = self.objects[b_id]
-        
+
         # Coproduct elements (tagged union)
         coprod_elements = (
             {f"inl({e})" for e in a.elements} |
             {f"inr({e})" for e in b.elements}
         )
-        
+
         coprod = self.add_object(
             f"{a.name} + {b.name}",
             ObjectType.COPRODUCT,
             coprod_elements
         )
-        
+
         # Injections
         inj_a = self.add_morphism(
             "inl",
@@ -495,7 +495,7 @@ class Topos(Category):
             MorphismType.INJECTION,
             {e: f"inl({e})" for e in a.elements}
         )
-        
+
         inj_b = self.add_morphism(
             "inr",
             b_id,
@@ -503,9 +503,9 @@ class Topos(Category):
             MorphismType.INJECTION,
             {e: f"inr({e})" for e in b.elements}
         )
-        
+
         return coprod, inj_a, inj_b
-    
+
     def exponential(
         self,
         a_id: str,
@@ -516,57 +516,57 @@ class Topos(Category):
         """
         a = self.objects[a_id]
         b = self.objects[b_id]
-        
+
         # Exponential = all functions A -> B
         # Simplified: just enumerate symbolically
         exp_elements = {f"f_{i}" for i in range(min(10, len(b.elements) ** max(1, len(a.elements))))}
-        
+
         exp = self.add_object(
             f"{b.name}^{a.name}",
             ObjectType.EXPONENTIAL,
             exp_elements
         )
-        
+
         # Evaluation: B^A × A -> B
         prod, _, _ = self.product(exp.object_id, a_id)
-        
+
         eval_morph = self.add_morphism(
             "eval",
             prod.object_id,
             b_id,
             MorphismType.EVALUATION
         )
-        
+
         return exp, eval_morph
-    
+
     def characteristic_morphism(
         self,
         mono_id: str
     ) -> Morphism:
         """
         Get characteristic morphism for a monomorphism.
-        
+
         For mono m: S -> A, returns χ_S: A -> Ω
         """
         if mono_id not in self.morphisms:
             raise ValueError("Morphism not in topos")
-        
+
         mono = self.morphisms[mono_id]
         codomain = self.objects[mono.codomain]
-        
+
         if self.subobject_classifier is None:
             raise ValueError("No subobject classifier")
-        
+
         # Characteristic morphism maps elements
         char_mapping = {}
         mono_image = set(mono.mapping.values()) if mono.mapping else set()
-        
+
         for e in codomain.elements:
             if e in mono_image:
                 char_mapping[e] = "⊤"
             else:
                 char_mapping[e] = "⊥"
-        
+
         char = self.add_morphism(
             f"χ_{mono.name}",
             mono.codomain,
@@ -574,9 +574,9 @@ class Topos(Category):
             MorphismType.CHARACTERISTIC,
             char_mapping
         )
-        
+
         return char
-    
+
     def subobject_classify(
         self,
         obj_id: str,
@@ -586,15 +586,15 @@ class Topos(Category):
         Create subobject from predicate.
         """
         obj = self.objects[obj_id]
-        
+
         # Elements satisfying predicate
         sub_elements = {e for e in obj.elements if predicate(e)}
-        
+
         # Create subobject
         sub_id = hashlib.md5(
             f"sub_{obj_id}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         # Inclusion morphism
         incl = self.add_morphism(
             f"incl_{sub_id}",
@@ -603,7 +603,7 @@ class Topos(Category):
             MorphismType.INJECTION,
             {e: e for e in sub_elements}
         )
-        
+
         # Characteristic morphism
         char_mapping = {e: "⊤" if e in sub_elements else "⊥" for e in obj.elements}
         char = self.add_morphism(
@@ -613,7 +613,7 @@ class Topos(Category):
             MorphismType.CHARACTERISTIC,
             char_mapping
         )
-        
+
         subobj = Subobject(
             subobject_id=sub_id,
             parent_object=obj_id,
@@ -621,7 +621,7 @@ class Topos(Category):
             characteristic_morphism=char.morphism_id,
             elements=sub_elements
         )
-        
+
         self.subobjects[obj_id].append(subobj)
         return subobj
 
@@ -634,11 +634,11 @@ class HeytingAlgebra:
     """
     Heyting algebra for internal logic of topos.
     """
-    
+
     def __init__(self, topos: Topos):
         self.topos = topos
         self.formulas: Dict[str, InternalLogicFormula] = {}
-    
+
     def true(self) -> InternalLogicFormula:
         """Truth value ⊤."""
         formula = InternalLogicFormula(
@@ -649,7 +649,7 @@ class HeytingAlgebra:
         )
         self.formulas["true"] = formula
         return formula
-    
+
     def false(self) -> InternalLogicFormula:
         """Falsity ⊥."""
         formula = InternalLogicFormula(
@@ -660,7 +660,7 @@ class HeytingAlgebra:
         )
         self.formulas["false"] = formula
         return formula
-    
+
     def conjunction(
         self,
         p: InternalLogicFormula,
@@ -668,10 +668,10 @@ class HeytingAlgebra:
     ) -> InternalLogicFormula:
         """Conjunction p ∧ q."""
         formula_id = f"and_{p.formula_id}_{q.formula_id}"
-        
+
         # Heyting semantics: min for conjunction
         truth = min(p.truth_value or 0, q.truth_value or 0)
-        
+
         formula = InternalLogicFormula(
             formula_id=formula_id,
             operator=LogicOperator.AND,
@@ -680,7 +680,7 @@ class HeytingAlgebra:
         )
         self.formulas[formula_id] = formula
         return formula
-    
+
     def disjunction(
         self,
         p: InternalLogicFormula,
@@ -688,10 +688,10 @@ class HeytingAlgebra:
     ) -> InternalLogicFormula:
         """Disjunction p ∨ q."""
         formula_id = f"or_{p.formula_id}_{q.formula_id}"
-        
+
         # Heyting semantics: max for disjunction
         truth = max(p.truth_value or 0, q.truth_value or 0)
-        
+
         formula = InternalLogicFormula(
             formula_id=formula_id,
             operator=LogicOperator.OR,
@@ -700,7 +700,7 @@ class HeytingAlgebra:
         )
         self.formulas[formula_id] = formula
         return formula
-    
+
     def implication(
         self,
         p: InternalLogicFormula,
@@ -708,16 +708,16 @@ class HeytingAlgebra:
     ) -> InternalLogicFormula:
         """Implication p → q."""
         formula_id = f"impl_{p.formula_id}_{q.formula_id}"
-        
+
         # Heyting implication: largest r such that p ∧ r ≤ q
         p_val = p.truth_value or 0
         q_val = q.truth_value or 0
-        
+
         if p_val <= q_val:
             truth = 1.0
         else:
             truth = q_val  # Intuitionistic semantics
-        
+
         formula = InternalLogicFormula(
             formula_id=formula_id,
             operator=LogicOperator.IMPLIES,
@@ -726,14 +726,14 @@ class HeytingAlgebra:
         )
         self.formulas[formula_id] = formula
         return formula
-    
+
     def negation(
         self,
         p: InternalLogicFormula
     ) -> InternalLogicFormula:
         """Negation ¬p = p → ⊥."""
         return self.implication(p, self.false())
-    
+
     def forall(
         self,
         domain: CategoricalObject,
@@ -741,7 +741,7 @@ class HeytingAlgebra:
     ) -> InternalLogicFormula:
         """Universal quantification ∀x.P(x)."""
         formula_id = f"forall_{domain.object_id}"
-        
+
         # Infimum of predicate values
         if not domain.elements:
             truth = 1.0
@@ -750,7 +750,7 @@ class HeytingAlgebra:
                 (predicate(e).truth_value or 0)
                 for e in domain.elements
                     )
-        
+
         formula = InternalLogicFormula(
             formula_id=formula_id,
             operator=LogicOperator.FORALL,
@@ -759,7 +759,7 @@ class HeytingAlgebra:
         )
         self.formulas[formula_id] = formula
         return formula
-    
+
     def exists(
         self,
         domain: CategoricalObject,
@@ -767,7 +767,7 @@ class HeytingAlgebra:
     ) -> InternalLogicFormula:
         """Existential quantification ∃x.P(x)."""
         formula_id = f"exists_{domain.object_id}"
-        
+
         # Supremum of predicate values
         if not domain.elements:
             truth = 0.0
@@ -776,7 +776,7 @@ class HeytingAlgebra:
                 (predicate(e).truth_value or 0)
                 for e in domain.elements
                     )
-        
+
         formula = InternalLogicFormula(
             formula_id=formula_id,
             operator=LogicOperator.EXISTS,
@@ -794,36 +794,36 @@ class HeytingAlgebra:
 class ToposTheoryEngine:
     """
     Main topos theory engine.
-    
+
     Singleton for L104 categorical operations.
     """
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialize()
         return cls._instance
-    
+
     def _initialize(self):
         """Initialize topos engine."""
         self.god_code = GOD_CODE
         self.topoi: Dict[str, Topos] = {}
         self.functors: Dict[str, Functor] = {}
         self.natural_transformations: Dict[str, NaturalTransformation] = {}
-        
+
         # Create primary topos
         self.primary_topos = self._create_primary_topos()
         self.logic = HeytingAlgebra(self.primary_topos)
-    
+
     def _create_primary_topos(self) -> Topos:
         """Create primary Set-like topos."""
         topos = Topos("L104_Set", ToposType.SET)
-        
+
         # Add some standard objects
         bool_obj = topos.add_object("Bool", ObjectType.COPRODUCT, {"true", "false"})
-        
+
         # Small finite sets
         for n in range(1, 6):
             topos.add_object(
@@ -831,10 +831,10 @@ class ToposTheoryEngine:
                 ObjectType.TERMINAL if n == 1 else ObjectType.PRODUCT,
                 {str(i) for i in range(n)}
             )
-        
+
         self.topoi[topos.category_id] = topos
         return topos
-    
+
     def create_topos(
         self,
         name: str,
@@ -844,7 +844,7 @@ class ToposTheoryEngine:
         topos = Topos(name, topos_type)
         self.topoi[topos.category_id] = topos
         return topos
-    
+
     def add_object(
         self,
         name: str,
@@ -855,7 +855,7 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.add_object(name, ObjectType.PRODUCT, elements)
-    
+
     def add_morphism(
         self,
         name: str,
@@ -868,7 +868,7 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.add_morphism(name, domain, codomain, MorphismType.COMPOSITION, mapping)
-    
+
     def compose(
         self,
         f_id: str,
@@ -879,7 +879,7 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.compose(f_id, g_id)
-    
+
     def product(
         self,
         a_id: str,
@@ -890,7 +890,7 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.product(a_id, b_id)
-    
+
     def exponential(
         self,
         a_id: str,
@@ -901,7 +901,7 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.exponential(a_id, b_id)
-    
+
     def evaluate_formula(
         self,
         operator: LogicOperator,
@@ -922,7 +922,7 @@ class ToposTheoryEngine:
             return self.logic.negation(operands[0])
         else:
             return self.logic.true()
-    
+
     def create_subobject(
         self,
         obj_id: str,
@@ -933,12 +933,12 @@ class ToposTheoryEngine:
         if topos is None:
             topos = self.primary_topos
         return topos.subobject_classify(obj_id, predicate)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get comprehensive topos statistics."""
         total_objects = sum(len(t.objects) for t in self.topoi.values())
         total_morphisms = sum(len(t.morphisms) for t in self.topoi.values())
-        
+
         return {
             "god_code": self.god_code,
             "subobject_classifier_value": SUBOBJECT_CLASSIFIER_VALUE,
@@ -976,17 +976,17 @@ if __name__ == "__main__":
     print(f"GOD_CODE: {GOD_CODE}")
     print(f"Subobject Classifier Value: {SUBOBJECT_CLASSIFIER_VALUE:.4f}")
     print()
-    
+
     # Initialize
     engine = get_topos_engine()
-    
+
     # Show initial structure
     stats = engine.get_statistics()
     print(f"INITIAL STRUCTURE:")
     print(f"  Objects: {stats['primary_topos_objects']}")
     print(f"  Morphisms: {stats['primary_topos_morphisms']}")
     print()
-    
+
     # Create objects
     print("CREATING CATEGORICAL OBJECTS:")
     A = engine.add_object("A", {"a1", "a2", "a3"})
@@ -996,7 +996,7 @@ if __name__ == "__main__":
     print(f"  Created {B.name}: {B.elements}")
     print(f"  Created {C.name}: {C.elements}")
     print()
-    
+
     # Create morphisms
     print("CREATING MORPHISMS:")
     f = engine.add_morphism(
@@ -1013,27 +1013,27 @@ if __name__ == "__main__":
     )
     print(f"  {f.name}: {A.name} → {B.name}")
     print(f"  {g.name}: {B.name} → {C.name}")
-    
+
     # Compose
     gf = engine.compose(f.morphism_id, g.morphism_id)
     if gf:
         print(f"  Composed: {gf.name}: {A.name} → {C.name}")
     print()
-    
+
     # Product
     print("CONSTRUCTING PRODUCT:")
     prod, pi1, pi2 = engine.product(A.object_id, B.object_id)
     print(f"  {prod.name} with {len(prod.elements)} elements")
     print(f"  Projections: {pi1.name}, {pi2.name}")
     print()
-    
+
     # Exponential
     print("CONSTRUCTING EXPONENTIAL:")
     exp, eval_morph = engine.exponential(A.object_id, B.object_id)
     print(f"  {exp.name} with {len(exp.elements)} elements")
     print(f"  Evaluation: {eval_morph.name}")
     print()
-    
+
     # Internal logic
     print("INTERNAL LOGIC (HEYTING ALGEBRA):")
     p = engine.logic.true()
@@ -1042,7 +1042,7 @@ if __name__ == "__main__":
     p_or_q = engine.logic.disjunction(p, q)
     p_impl_q = engine.logic.implication(p, q)
     not_q = engine.logic.negation(q)
-    
+
     print(f"  ⊤: {p.truth_value}")
     print(f"  ⊥: {q.truth_value}")
     print(f"  ⊤ ∧ ⊥: {p_and_q.truth_value}")
@@ -1050,7 +1050,7 @@ if __name__ == "__main__":
     print(f"  ⊤ → ⊥: {p_impl_q.truth_value}")
     print(f"  ¬⊥: {not_q.truth_value}")
     print()
-    
+
     # Statistics
     print("=" * 70)
     print("TOPOS STATISTICS")
@@ -1061,5 +1061,5 @@ if __name__ == "__main__":
             print(f"  {key}: {value:.4f}")
         else:
             print(f"  {key}: {value}")
-    
+
     print("\n✓ Topos Theory Engine operational")

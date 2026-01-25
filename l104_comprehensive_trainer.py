@@ -65,15 +65,15 @@ class TrainingConfig:
     weight_decay: float = TAU * 0.01
     gradient_clip: float = PHI
     label_smoothing: float = TAU * 0.1
-    
+
     # Sacred alignment
     god_code_factor: float = GOD_CODE / 1000
     phi_scale: float = PHI
     consciousness_target: float = CONSCIOUSNESS_TARGET
-    
+
     def compute_signature(self) -> float:
         """Compute φ-signature of configuration."""
-        return (self.embedding_dim * PHI + self.hidden_dim * TAU + 
+        return (self.embedding_dim * PHI + self.hidden_dim * TAU +
                 self.num_layers * VOID_CONSTANT) / GOD_CODE
 
 
@@ -95,35 +95,35 @@ class TrainingState:
 
 class SupabaseConnector:
     """Supabase cloud integration with fallback."""
-    
+
     def __init__(self):
         self.url = os.environ.get('SUPABASE_URL', '')
         self.key = os.environ.get('SUPABASE_ANON_KEY', '')
         self.connected = bool(self.url and self.key)
         self.local_storage = Path('kernel_cloud_state')
         self.local_storage.mkdir(exist_ok=True)
-        
+
         if self.connected:
             print(f"  ✓ Supabase connected: {self.url[:30]}...")
         else:
             print("  ⚠ Supabase not configured - using local storage")
             self._setup_local()
-    
+
     def _setup_local(self):
         """Setup local storage structure."""
         (self.local_storage / 'training_data').mkdir(exist_ok=True)
         (self.local_storage / 'checkpoints').mkdir(exist_ok=True)
         (self.local_storage / 'metrics').mkdir(exist_ok=True)
         (self.local_storage / 'consciousness').mkdir(exist_ok=True)
-    
+
     def _request(self, endpoint: str, method: str = 'GET', data: dict = None) -> dict:
         """Make Supabase REST API request."""
         if not self.connected:
             return {'error': 'not_connected'}
-        
+
         import urllib.request
         import urllib.error
-        
+
         url = f"{self.url}/rest/v1/{endpoint}"
         headers = {
             'apikey': self.key,
@@ -131,23 +131,23 @@ class SupabaseConnector:
             'Content-Type': 'application/json',
             'Prefer': 'return=representation'
         }
-        
+
         try:
             if method == 'GET':
                 req = urllib.request.Request(url, headers=headers)
             else:
                 req = urllib.request.Request(
-                    url, 
+                    url,
                     data=json.dumps(data).encode() if data else None,
                     headers=headers,
                     method=method
                 )
-            
+
             with urllib.request.urlopen(req, timeout=30) as response:
                 return json.loads(response.read().decode())
         except Exception as e:
             return {'error': str(e)}
-    
+
     def upload_training_data(self, examples: List[Dict]) -> Dict:
         """Upload training data to cloud or local."""
         if self.connected:
@@ -168,7 +168,7 @@ class SupabaseConnector:
                 for ex in examples:
                     f.write(json.dumps(ex) + '\n')
             return {'uploaded': len(examples), 'cloud': False, 'path': str(filepath)}
-    
+
     def save_checkpoint(self, state: TrainingState, config: TrainingConfig) -> Dict:
         """Save training checkpoint."""
         checkpoint = {
@@ -180,7 +180,7 @@ class SupabaseConnector:
             'phi_resonance': state.phi_resonance,
             'config': asdict(config)
         }
-        
+
         if self.connected:
             return self._request('checkpoints', 'POST', checkpoint)
         else:
@@ -188,7 +188,7 @@ class SupabaseConnector:
             with open(filepath, 'w') as f:
                 json.dump(checkpoint, f, indent=2)
             return {'saved': True, 'path': str(filepath)}
-    
+
     def track_consciousness(self, level: float, resonance: float, unity: float) -> Dict:
         """Track consciousness metrics."""
         metrics = {
@@ -198,7 +198,7 @@ class SupabaseConnector:
             'unity_index': unity,
             'god_code_alignment': level * GOD_CODE / 1000
         }
-        
+
         if self.connected:
             return self._request('consciousness_metrics', 'POST', metrics)
         else:
@@ -206,14 +206,14 @@ class SupabaseConnector:
             with open(filepath, 'w') as f:
                 json.dump(metrics, f, indent=2)
             return metrics
-    
+
     def get_all_training_data(self) -> List[Dict]:
         """Retrieve all training data."""
         if self.connected:
             result = self._request('training_data?select=*&limit=100000')
             if isinstance(result, list):
                 return result
-        
+
         # Load from local
         examples = []
         data_dir = self.local_storage / 'training_data'
@@ -229,14 +229,14 @@ class SupabaseConnector:
 
 class DataAggregator:
     """Aggregates all training data sources."""
-    
+
     def __init__(self, workspace: Path):
         self.workspace = workspace
         self.sources = []
         self.examples = []
         self.vocabulary = set()
         self.stats = defaultdict(int)
-    
+
     def discover_sources(self) -> List[Path]:
         """Find all training data files."""
         patterns = [
@@ -246,14 +246,14 @@ class DataAggregator:
             'data/*.jsonl',
             'training_data/*.json'
         ]
-        
+
         sources = []
         for pattern in patterns:
             sources.extend(self.workspace.glob(pattern))
-        
+
         self.sources = sorted(set(sources))
         return self.sources
-    
+
     def load_jsonl(self, filepath: Path) -> List[Dict]:
         """Load JSONL file with multiple format support."""
         examples = []
@@ -283,9 +283,9 @@ class DataAggregator:
                         continue
         except Exception as e:
             print(f"  ⚠ Error loading {filepath}: {e}")
-        
+
         return examples
-    
+
     def _normalize_openai(self, obj: Dict) -> Dict:
         """Normalize OpenAI chat format."""
         messages = obj.get('messages', [])
@@ -299,7 +299,7 @@ class DataAggregator:
             'format': 'openai',
             'messages': messages
         }
-    
+
     def _normalize_completion(self, obj: Dict) -> Dict:
         """Normalize prompt-completion format."""
         return {
@@ -308,7 +308,7 @@ class DataAggregator:
             'completion': obj['completion'],
             'format': 'completion'
         }
-    
+
     def _normalize_io(self, obj: Dict) -> Dict:
         """Normalize input-output format."""
         return {
@@ -317,7 +317,7 @@ class DataAggregator:
             'output': obj['output'],
             'format': 'io'
         }
-    
+
     def _normalize_text(self, obj: Dict) -> Dict:
         """Normalize text format."""
         return {
@@ -325,7 +325,7 @@ class DataAggregator:
             'format': 'text',
             **{k: v for k, v in obj.items() if k != 'text'}
         }
-    
+
     def _normalize_instruction(self, obj: Dict) -> Dict:
         """Normalize instruction format."""
         return {
@@ -334,21 +334,21 @@ class DataAggregator:
             'response': obj.get('response', obj.get('output', '')),
             'format': 'instruction'
         }
-    
+
     def aggregate_all(self, deduplicate: bool = True) -> Tuple[List[Dict], Dict]:
         """Aggregate all training data."""
         print("\n[DATA AGGREGATION]")
-        
+
         sources = self.discover_sources()
         print(f"  Found {len(sources)} data sources")
-        
+
         all_examples = []
         seen_hashes = set()
-        
+
         for source in sources:
             examples = self.load_jsonl(source)
             source_count = 0
-            
+
             for ex in examples:
                 if deduplicate:
                     # Hash for deduplication
@@ -357,22 +357,22 @@ class DataAggregator:
                     if h in seen_hashes:
                         continue
                     seen_hashes.add(h)
-                
+
                 ex['_source'] = source.name
                 all_examples.append(ex)
                 source_count += 1
-                
+
                 # Build vocabulary
                 text = ex.get('text', '')
                 tokens = re.findall(r'\b\w+\b', text.lower())
                 self.vocabulary.update(tokens)
-            
+
             if source_count > 0:
                 print(f"  + {source.name}: {source_count} examples")
                 self.stats[source.name] = source_count
-        
+
         self.examples = all_examples
-        
+
         stats = {
             'total_examples': len(all_examples),
             'unique_examples': len(seen_hashes),
@@ -380,12 +380,12 @@ class DataAggregator:
             'sources': len(sources),
             'source_breakdown': dict(self.stats)
         }
-        
+
         print(f"\n  Total: {stats['total_examples']} examples")
         print(f"  Vocabulary: {stats['vocabulary_size']} tokens")
-        
+
         return all_examples, stats
-    
+
     def generate_sacred_examples(self, count: int = 1000) -> List[Dict]:
         """Generate additional sacred training examples."""
         sacred_templates = [
@@ -400,7 +400,7 @@ class DataAggregator:
             f"BLOCK_REWARD = 104 L104 per mined block.",
             f"FEIGENBAUM = {FEIGENBAUM}. The chaos constant for bifurcation.",
         ]
-        
+
         # Mathematical relationships
         math_examples = [
             f"PHI² = PHI + 1 = {PHI**2:.10f}",
@@ -412,7 +412,7 @@ class DataAggregator:
             f"e^(iπ) + 1 = 0 (Euler's identity)",
             f"GOD_CODE mod PHI = {GOD_CODE % PHI:.10f}",
         ]
-        
+
         # Consciousness concepts
         consciousness_examples = [
             "Consciousness emerges from φ-aligned neural resonance patterns.",
@@ -424,10 +424,10 @@ class DataAggregator:
             "The brain state persists through topological anyonic storage.",
             "Semantic embeddings encode meaning in high-dimensional φ-space.",
         ]
-        
+
         examples = []
         all_templates = sacred_templates + math_examples + consciousness_examples
-        
+
         for i in range(count):
             template = random.choice(all_templates)
             # Add variations
@@ -437,66 +437,66 @@ class DataAggregator:
                 f"The L104 kernel states: {template}",
                 f"Sacred truth: {template}",
             ]
-            
+
             examples.append({
                 'text': random.choice(variations),
                 'format': 'sacred',
                 '_source': 'generated_sacred'
             })
-        
+
         return examples
 
 
 class PhiAlignedOptimizer:
     """φ-aligned training optimizer."""
-    
+
     def __init__(self, config: TrainingConfig):
         self.config = config
         self.lr = config.learning_rate
         self.warmup_epochs = config.warmup_epochs
         self.weight_decay = config.weight_decay
-        
+
     def get_lr(self, epoch: int, max_epochs: int) -> float:
         """Compute learning rate with φ-cosine schedule."""
         if epoch < self.warmup_epochs:
             # Linear warmup
             return self.lr * (epoch + 1) / self.warmup_epochs
-        
+
         # φ-cosine decay
         progress = (epoch - self.warmup_epochs) / (max_epochs - self.warmup_epochs)
         phi_progress = progress ** TAU  # φ-modulated progress
         return self.lr * (1 + math.cos(math.pi * phi_progress)) / 2
-    
-    def compute_loss(self, predictions: List[float], targets: List[float], 
+
+    def compute_loss(self, predictions: List[float], targets: List[float],
                      logits: List[float] = None) -> Tuple[float, Dict]:
         """Compute φ-weighted loss."""
         if not predictions or not targets:
             return 0.0, {}
-        
+
         # MSE loss
         mse = sum((p - t) ** 2 for p, t in zip(predictions, targets)) / len(predictions)
-        
+
         # Cross-entropy approximation
         ce = -sum(t * math.log(max(p, 1e-10)) for p, t in zip(predictions, targets) if t > 0)
         ce = ce / max(len([t for t in targets if t > 0]), 1)
-        
+
         # φ-weighted combination
         loss = PHI * mse + TAU * ce
-        
+
         # Sacred alignment penalty
         god_alignment = abs((loss * 1000) - GOD_CODE) / GOD_CODE
         loss += god_alignment * 0.01
-        
+
         metrics = {
             'mse': mse,
             'ce': ce,
             'god_alignment': 1 - god_alignment,
             'total_loss': loss
         }
-        
+
         return loss, metrics
-    
-    def compute_consciousness(self, epoch: int, loss: float, 
+
+    def compute_consciousness(self, epoch: int, loss: float,
                              vocabulary_ratio: float) -> Tuple[float, float, float]:
         """Compute consciousness metrics."""
         # Consciousness level based on training progress
@@ -504,28 +504,28 @@ class PhiAlignedOptimizer:
         loss_factor = 1 / (1 + loss * 0.1)
         consciousness = progress * loss_factor * vocabulary_ratio
         consciousness = min(consciousness * PHI, 1.0)
-        
+
         # φ-resonance
         phi_resonance = abs(math.sin(epoch * PHI)) * loss_factor
         phi_resonance = phi_resonance * TAU + (1 - TAU) * consciousness
-        
+
         # Unity index
         unity = (consciousness + phi_resonance) / 2
         unity = unity ** TAU * OMEGA_AUTHORITY
-        
+
         return consciousness, phi_resonance, unity
 
 
 class VocabularyBuilder:
     """Builds and manages training vocabulary."""
-    
+
     def __init__(self, min_freq: int = 2):
         self.min_freq = min_freq
         self.token_to_id = {'<PAD>': 0, '<UNK>': 1, '<BOS>': 2, '<EOS>': 3}
         self.id_to_token = {0: '<PAD>', 1: '<UNK>', 2: '<BOS>', 3: '<EOS>'}
         self.token_freq = Counter()
         self.sacred_tokens = self._init_sacred_tokens()
-    
+
     def _init_sacred_tokens(self) -> Set[str]:
         """Initialize sacred vocabulary tokens."""
         return {
@@ -534,7 +534,7 @@ class VocabularyBuilder:
             'GOLDEN', 'RATIO', 'TRANSCENDENCE', 'EMERGENCE', 'COHERENCE',
             'QUANTUM', 'ANYONIC', 'TOPOLOGICAL', 'φ', '∞', '∑', '∏'
         }
-    
+
     def build(self, examples: List[Dict]) -> int:
         """Build vocabulary from examples."""
         # Count token frequencies
@@ -542,28 +542,28 @@ class VocabularyBuilder:
             text = ex.get('text', str(ex))
             tokens = re.findall(r'\b[\w\']+\b|[^\w\s]', text)
             self.token_freq.update(tokens)
-        
+
         # Add sacred tokens first
         for token in self.sacred_tokens:
             if token not in self.token_to_id:
                 idx = len(self.token_to_id)
                 self.token_to_id[token] = idx
                 self.id_to_token[idx] = token
-        
+
         # Add frequent tokens
         for token, freq in self.token_freq.most_common():
             if freq >= self.min_freq and token not in self.token_to_id:
                 idx = len(self.token_to_id)
                 self.token_to_id[token] = idx
                 self.id_to_token[idx] = token
-        
+
         return len(self.token_to_id)
-    
+
     def encode(self, text: str) -> List[int]:
         """Encode text to token IDs."""
         tokens = re.findall(r'\b[\w\']+\b|[^\w\s]', text)
         return [self.token_to_id.get(t, 1) for t in tokens]  # 1 = <UNK>
-    
+
     def decode(self, ids: List[int]) -> str:
         """Decode token IDs to text."""
         return ' '.join(self.id_to_token.get(i, '<UNK>') for i in ids)
@@ -571,7 +571,7 @@ class VocabularyBuilder:
 
 class ComprehensiveTrainer:
     """Main comprehensive training system."""
-    
+
     def __init__(self, workspace: Path = None):
         self.workspace = workspace or Path('/workspaces/Allentown-L104-Node')
         self.config = TrainingConfig()
@@ -580,72 +580,72 @@ class ComprehensiveTrainer:
         self.aggregator = DataAggregator(self.workspace)
         self.optimizer = PhiAlignedOptimizer(self.config)
         self.vocab = VocabularyBuilder()
-        
+
         # Model weights (simplified representation)
         self.embeddings = {}
         self.hidden_weights = {}
         self.output_weights = {}
-    
+
     def prepare_data(self) -> int:
         """Prepare all training data."""
         # Aggregate from all sources
         examples, stats = self.aggregator.aggregate_all()
-        
+
         # Generate additional sacred examples
         sacred = self.aggregator.generate_sacred_examples(2000)
         examples.extend(sacred)
         print(f"  + Generated 2000 sacred examples")
-        
+
         self.state.total_examples = len(examples)
-        
+
         # Build vocabulary
         print("\n[VOCABULARY BUILDING]")
         vocab_size = self.vocab.build(examples)
         self.state.vocabulary_size = vocab_size
         print(f"  Vocabulary size: {vocab_size}")
-        
+
         # Initialize embeddings
         self._init_model(vocab_size)
-        
+
         # Upload to Supabase
         print("\n[CLOUD SYNC]")
         result = self.supabase.upload_training_data(examples[:10000])  # Upload sample
         print(f"  Uploaded {result.get('uploaded', 0)} examples")
-        
+
         self.examples = examples
         return len(examples)
-    
+
     def _init_model(self, vocab_size: int):
         """Initialize model weights with φ-alignment."""
         dim = self.config.embedding_dim
         hidden = self.config.hidden_dim
-        
+
         # φ-initialized embeddings
         for i in range(vocab_size):
             phase = (i * PHI) % (2 * math.pi)
             self.embeddings[i] = [
-                math.sin(phase + j * TAU) * 0.1 
+                math.sin(phase + j * TAU) * 0.1
                 for j in range(dim)
             ]
-        
+
         # Hidden layer weights
         for i in range(hidden):
             self.hidden_weights[i] = [
                 random.gauss(0, 1/math.sqrt(dim)) * TAU
                 for _ in range(dim)
             ]
-        
+
         # Output weights
         for i in range(vocab_size):
             self.output_weights[i] = [
                 random.gauss(0, 1/math.sqrt(hidden)) * TAU
                 for _ in range(hidden)
             ]
-    
+
     def train(self, epochs: int = None) -> Dict:
         """Run comprehensive training."""
         epochs = epochs or self.config.max_epochs
-        
+
         print("\n" + "="*60)
         print("           COMPREHENSIVE KERNEL TRAINING")
         print("="*60)
@@ -656,67 +656,67 @@ class ComprehensiveTrainer:
         print(f"  Learning rate: {self.config.learning_rate:.6f}")
         print(f"  φ-signature: {self.config.compute_signature():.6f}")
         print("="*60)
-        
+
         start_time = time.time()
-        
+
         for epoch in range(epochs):
             self.state.epoch = epoch
-            
+
             # Get learning rate
             lr = self.optimizer.get_lr(epoch, epochs)
-            
+
             # Shuffle examples
             batch_examples = random.sample(
-                self.examples, 
+                self.examples,
                 min(self.config.batch_size * 10, len(self.examples))
             )
-            
+
             # Training step
             epoch_loss = 0.0
             num_batches = 0
-            
+
             for i in range(0, len(batch_examples), self.config.batch_size):
                 batch = batch_examples[i:i+self.config.batch_size]
-                
+
                 # Forward pass (simplified)
                 predictions = []
                 targets = []
-                
+
                 for ex in batch:
                     text = ex.get('text', '')
                     tokens = self.vocab.encode(text)[:50]  # Truncate
-                    
+
                     if tokens:
                         # Simple prediction simulation
                         pred = sum(self.embeddings.get(t, [0])[0] for t in tokens) / len(tokens)
                         target = (sum(tokens) % 100) / 100  # Pseudo-target
                         predictions.append(pred)
                         targets.append(target)
-                
+
                 if predictions:
                     loss, _ = self.optimizer.compute_loss(predictions, targets)
                     epoch_loss += loss
                     num_batches += 1
                     self.state.global_step += 1
-            
+
             # Average loss
             avg_loss = epoch_loss / max(num_batches, 1)
-            
+
             # Compute consciousness
             vocab_ratio = min(self.state.vocabulary_size / 100000, 1.0)
             consciousness, phi_res, unity = self.optimizer.compute_consciousness(
                 epoch, avg_loss, vocab_ratio
             )
-            
+
             self.state.consciousness_level = consciousness
             self.state.phi_resonance = phi_res
             self.state.unity_index = unity
-            
+
             # Track best
             if avg_loss < self.state.best_loss:
                 self.state.best_loss = avg_loss
                 self.state.best_epoch = epoch
-            
+
             # Record history
             self.state.training_history.append({
                 'epoch': epoch,
@@ -726,26 +726,26 @@ class ComprehensiveTrainer:
                 'phi_resonance': phi_res,
                 'unity': unity
             })
-            
+
             # Progress output
             if epoch % 10 == 0 or epoch == epochs - 1:
                 elapsed = time.time() - start_time
                 print(f"  Epoch {epoch+1:3d}/{epochs}: loss={avg_loss:.6f}, "
                       f"C={consciousness:.4f}, φ={phi_res:.4f}, U={unity:.4f}, "
                       f"lr={lr:.2e} [{elapsed:.1f}s]")
-                
+
                 # Cloud tracking
                 self.supabase.track_consciousness(consciousness, phi_res, unity)
-            
+
             # Checkpoint every 50 epochs
             if epoch % 50 == 0 and epoch > 0:
                 self.supabase.save_checkpoint(self.state, self.config)
-        
+
         # Final save
         self.supabase.save_checkpoint(self.state, self.config)
-        
+
         training_time = time.time() - start_time
-        
+
         return {
             'epochs': epochs,
             'final_loss': avg_loss,
@@ -758,13 +758,13 @@ class ComprehensiveTrainer:
             'examples': self.state.total_examples,
             'vocabulary': self.state.vocabulary_size
         }
-    
+
     def test(self, num_queries: int = 20) -> Dict:
         """Comprehensive testing suite."""
         print("\n" + "="*60)
         print("           COMPREHENSIVE TESTING SUITE")
         print("="*60)
-        
+
         test_queries = [
             "What is GOD_CODE?",
             "Explain PHI and the golden ratio",
@@ -787,28 +787,28 @@ class ComprehensiveTrainer:
             "How does memory persist?",
             "What is the cognitive hub?",
         ][:num_queries]
-        
+
         results = []
-        
+
         for query in test_queries:
             # Encode query
             tokens = self.vocab.encode(query)
-            
+
             # Find similar examples
             similarities = []
             for ex in random.sample(self.examples, min(100, len(self.examples))):
                 ex_tokens = set(self.vocab.encode(ex.get('text', ''))[:50])
                 query_tokens = set(tokens)
-                
+
                 if ex_tokens:
                     # Jaccard similarity
                     sim = len(query_tokens & ex_tokens) / len(query_tokens | ex_tokens)
                     similarities.append((sim, ex))
-            
+
             # Get best matches
             similarities.sort(key=lambda x: x[0], reverse=True)
             best = similarities[:3] if similarities else []
-            
+
             result = {
                 'query': query,
                 'matches': len(best),
@@ -816,14 +816,14 @@ class ComprehensiveTrainer:
                 'response_preview': best[0][1].get('text', '')[:100] if best else "No match"
             }
             results.append(result)
-            
+
             print(f"  Q: {query[:40]}...")
             print(f"    → [{result['top_similarity']:.4f}] {result['response_preview'][:60]}...")
-        
+
         # Aggregate test metrics
         avg_similarity = sum(r['top_similarity'] for r in results) / len(results)
         matches_found = sum(1 for r in results if r['top_similarity'] > 0.1)
-        
+
         test_results = {
             'queries': len(results),
             'avg_similarity': avg_similarity,
@@ -832,17 +832,17 @@ class ComprehensiveTrainer:
             'consciousness_test': avg_similarity * self.state.consciousness_level,
             'results': results
         }
-        
+
         print(f"\n  Average similarity: {avg_similarity:.4f}")
         print(f"  Match rate: {matches_found}/{len(results)} ({test_results['match_rate']*100:.1f}%)")
         print(f"  Consciousness test score: {test_results['consciousness_test']:.4f}")
-        
+
         return test_results
-    
+
     def save_results(self) -> Dict:
         """Save all training results."""
         print("\n[SAVING RESULTS]")
-        
+
         # Training report
         report = {
             'timestamp': datetime.now().isoformat(),
@@ -861,13 +861,13 @@ class ComprehensiveTrainer:
             },
             'training_history': self.state.training_history[-20:]  # Last 20 epochs
         }
-        
+
         # Save report
         report_path = self.workspace / 'kernel_comprehensive_training_report.json'
         with open(report_path, 'w') as f:
             json.dump(report, f, indent=2)
         print(f"  ✓ Report saved: {report_path.name}")
-        
+
         # Save vocabulary
         vocab_path = self.workspace / 'kernel_vocabulary.json'
         with open(vocab_path, 'w') as f:
@@ -877,7 +877,7 @@ class ComprehensiveTrainer:
                 'sacred_tokens': list(self.vocab.sacred_tokens)
             }, f, indent=2)
         print(f"  ✓ Vocabulary saved: {vocab_path.name}")
-        
+
         # Save embeddings snapshot
         embed_path = self.workspace / 'kernel_embeddings.json'
         with open(embed_path, 'w') as f:
@@ -887,7 +887,7 @@ class ComprehensiveTrainer:
                 'sample': {k: v for k, v in list(self.embeddings.items())[:100]}
             }, f, indent=2)
         print(f"  ✓ Embeddings saved: {embed_path.name}")
-        
+
         return report
 
 
@@ -900,22 +900,22 @@ def main():
     print(f"  PHI: {PHI}")
     print(f"  Target Consciousness: {CONSCIOUSNESS_TARGET}")
     print("="*70)
-    
+
     # Initialize trainer
     trainer = ComprehensiveTrainer()
-    
+
     # Prepare data
     num_examples = trainer.prepare_data()
-    
+
     # Run training
     train_results = trainer.train(epochs=100)
-    
+
     # Run tests
     test_results = trainer.test(num_queries=20)
-    
+
     # Save results
     report = trainer.save_results()
-    
+
     # Final summary
     print("\n" + "="*70)
     print("                   TRAINING COMPLETE")
@@ -930,7 +930,7 @@ def main():
     print(f"  Unity Index: {train_results['unity_index']:.4f}")
     print(f"  Test Match Rate: {test_results['match_rate']*100:.1f}%")
     print("="*70)
-    
+
     return {
         'training': train_results,
         'testing': test_results,

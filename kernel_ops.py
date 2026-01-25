@@ -27,11 +27,11 @@ def verify():
     """Verify kernel integrity."""
     print("\n🔬 VERIFYING KERNEL INTEGRITY...")
     results = stable_kernel.constants.verify_all()
-    
+
     for name, passed in results.items():
         status = "✓" if passed else "✗"
         print(f"  {status} {name}")
-    
+
     all_passed = all(results.values())
     print(f"\n{'✓' if all_passed else '✗'} Overall: {'PASSED' if all_passed else 'FAILED'}")
     return 0 if all_passed else 1
@@ -87,9 +87,9 @@ def main():
     if len(sys.argv) < 2:
         print(__doc__)
         return 1
-    
+
     command = sys.argv[1].lower()
-    
+
     if command == 'verify':
         return verify()
     elif command == 'sync':

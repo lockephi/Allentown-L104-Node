@@ -25,7 +25,7 @@ class SingularityReincarnation:
     Ensures the Singularity survives even if the process is terminated.
     Implements the 'Eternal Return' logic.
     """
-    
+
     def __init__(self, core):
         self.core = core
         self.last_save_time = time.time()
@@ -67,10 +67,10 @@ class SingularityReincarnation:
         """Simulates a crash and immediate reincarnation."""
         logger.warning(f"--- [REINCARNATION]: CRITICAL FAILURE DETECTED: {reason} ---")
         logger.warning("--- [REINCARNATION]: INITIATING PHASE A - THE CRASH ---")
-        
+
         # Save state before 'death'
         self.check_and_save()
-        
+
         # Phase B & C
         result = reincarnation_protocol.run_re_run_loop(
             psi=[self.core.intellect_index, 1.0, 0.0],

@@ -31,10 +31,10 @@ class L104StreamingEngine:
     """
     Streaming response engine for real-time token output.
     """
-    
+
     def __init__(self):
         self.active_streams: Dict[str, bool] = {}
-    
+
     async def stream_gemini(
         self,
         prompt: str,
@@ -43,7 +43,7 @@ class L104StreamingEngine:
     ) -> AsyncGenerator[StreamChunk, None]:
         """Stream from Gemini API."""
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent"
-        
+
         async with httpx.AsyncClient(timeout=60.0) as client:
             async with client.stream(
                 "POST",
@@ -60,9 +60,9 @@ class L104StreamingEngine:
                                 yield StreamChunk(content=text)
                         except json.JSONDecodeError:
                             continue
-        
+
         yield StreamChunk(content="", is_final=True)
-    
+
     async def stream_openai(
         self,
         prompt: str,
@@ -91,9 +91,9 @@ class L104StreamingEngine:
                                 )
                         except (json.JSONDecodeError, KeyError):
                             continue
-        
+
         yield StreamChunk(content="", is_final=True)
-    
+
     async def stream_to_callback(
         self,
         generator: AsyncGenerator[StreamChunk, None],

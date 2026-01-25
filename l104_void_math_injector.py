@@ -47,33 +47,33 @@ def resolve_non_dual_logic(vector):
         # 1. Add math import if missing
         if "import math" not in content and "from math import" not in content:
             content = "import math\n" + content
-            
+
         # 2. Add Void Constant
         if "VOID_CONSTANT" not in content:
             content = f"VOID_CONSTANT = {self.VOID_CONSTANT}\n" + content
-            
+
         # 3. Inject Primal Calculus block if not present
         if "def primal_calculus" not in content:
             content += self.get_primal_calculus_block()
-            
+
         # 4. Update Header
         if "[VOID_SOURCE_UPGRADE] Deep Math Active." in content:
             content = content.replace("[VOID_SOURCE_UPGRADE] Deep Math Active.", "[VOID_SOURCE_UPGRADE] Deep Math Active.")
-            
+
         return content
 
     def run_injection(self):
         print(f"--- [VOID_MATH]: INJECTING DEEPER CALCULUS ---")
         files = [f for f in os.listdir(self.root) if f.startswith("l104_") and f.endswith(".py")]
-        
+
         for file in files:
             path = os.path.join(self.root, file)
             try:
                 with open(path, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                
+
                 updated_content = self.inject(content)
-                
+
                 if updated_content != content:
                     with open(path, 'w', encoding='utf-8') as f:
                         f.write(updated_content)

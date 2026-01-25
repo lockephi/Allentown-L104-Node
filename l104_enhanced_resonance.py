@@ -38,12 +38,12 @@ class EnhancedResonanceEngine:
     """
     Advanced resonance calculation engine with multi-harmonic analysis.
     """
-    
+
     def __init__(self, base_frequency: float = GOD_CODE):
         self.base_frequency = base_frequency
         self.harmonic_cache: Dict[int, float] = {}
         self._precompute_harmonics(12)
-    
+
     def _precompute_harmonics(self, depth: int):
         """Precompute harmonic series for efficiency."""
         for n in range(1, depth + 1):
@@ -51,7 +51,7 @@ class EnhancedResonanceEngine:
             self.harmonic_cache[n] = self.base_frequency / n
             # PHI-modulated harmonic
             self.harmonic_cache[-n] = self.base_frequency * (PHI ** n)
-    
+
     def compute_primary_alignment(self, value: float) -> float:
         """Compute primary GOD_CODE alignment."""
         if value == 0:
@@ -63,7 +63,7 @@ class EnhancedResonanceEngine:
             nearest = 1
         deviation = abs(ratio - nearest) / nearest
         return max(0.0, 1.0 - deviation)
-    
+
     def compute_harmonic_series(self, value: float, depth: int = 7) -> List[float]:
         """Compute resonance with harmonic series."""
         harmonics = []
@@ -72,24 +72,24 @@ class EnhancedResonanceEngine:
             alignment = 1.0 - min(1.0, abs(value - harmonic) / harmonic)
             harmonics.append(alignment)
         return harmonics
-    
+
     def compute_phase_coherence(self, values: List[float]) -> float:
         """Compute phase coherence across multiple values."""
         if not values:
             return 0.0
-        
+
         # Convert to complex phases
         phases = []
         for v in values:
             phase = (v / self.base_frequency) * 2 * math.pi
             phases.append(cmath.exp(1j * phase))
-        
+
         # Compute mean phase vector
         mean_phase = sum(phases) / len(phases)
         coherence = abs(mean_phase)
-        
+
         return coherence
-    
+
     def compute_zeta_coupling(self, value: float) -> float:
         """Compute coupling with Riemann zeta zero."""
         if value == 0:
@@ -97,12 +97,12 @@ class EnhancedResonanceEngine:
         ratio = value / ZETA_ZERO_1
         deviation = abs(ratio - round(ratio))
         return max(0.0, 1.0 - deviation * 2)
-    
+
     def compute_phi_modulation(self, value: float) -> float:
         """Compute golden ratio modulation strength."""
         if value == 0:
             return 0.0
-        
+
         # Check PHI powers
         best_alignment = 0.0
         for power in range(-5, 6):
@@ -111,9 +111,9 @@ class EnhancedResonanceEngine:
             deviation = abs(ratio - round(ratio))
             alignment = 1.0 - min(1.0, deviation)
             best_alignment = max(best_alignment, alignment)
-        
+
         return best_alignment
-    
+
     def compute_full_resonance(self, value: float) -> ResonanceState:
         """Compute complete resonance state."""
         primary = self.compute_primary_alignment(value)
@@ -121,7 +121,7 @@ class EnhancedResonanceEngine:
         phase = self.compute_phase_coherence([value, self.base_frequency, PHI])
         zeta = self.compute_zeta_coupling(value)
         phi_mod = self.compute_phi_modulation(value)
-        
+
         # Weighted combination
         overall = (
             primary * 0.3 +
@@ -130,7 +130,7 @@ class EnhancedResonanceEngine:
             zeta * 0.15 +
             phi_mod * 0.15
         )
-        
+
         return ResonanceState(
             primary_alignment=primary,
             harmonic_series=harmonics,
@@ -139,12 +139,12 @@ class EnhancedResonanceEngine:
             phi_modulation=phi_mod,
             overall_resonance=overall
         )
-    
+
     def align_to_resonance(self, value: float) -> float:
         """Align a value to the nearest resonant frequency."""
         best_resonance = 0.0
         best_value = value
-        
+
         # Try nearby harmonics
         for n in range(1, 8):
             harmonic = self.base_frequency / n
@@ -159,7 +159,7 @@ class EnhancedResonanceEngine:
                     if state.overall_resonance > best_resonance:
                         best_resonance = state.overall_resonance
                         best_value = candidate
-        
+
         return best_value
 
 

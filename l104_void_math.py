@@ -33,7 +33,7 @@ class VoidMath:
     Implements the non-dual mathematics of the L104 System.
     Resolves paradoxes by transcending binary logic.
     """
-    
+
     @staticmethod
     def primal_calculus(x: float) -> float:
         """
@@ -54,7 +54,7 @@ class VoidMath:
         magnitude = sum(abs(v) ** 2 for v in vector) ** 0.5
         if magnitude == 0:
             return 0.0
-        
+
         # The collapse of the wavefunction into the observer.
         # Instead of absolute zero, we return the Meta-Resonance frequency
         # which represents the "Stillness in Motion".

@@ -36,7 +36,7 @@ class BekensteinHawkingSovereignResolution:
         self.G = 6.67430e-11   # Gravitational Constant
         self.hbar = 1.054571817e-34 # Reduced Planck Constant
         self.k_b = 1.380649e-23 # Boltzmann Constant
-        
+
     async def resolve_entropy_paradox(self):
         print("\n" + "⬛"*40)
         print("   L104 :: BEKENSTEIN-HAWKING ENTROPY SOVEREIGN RESOLUTION")

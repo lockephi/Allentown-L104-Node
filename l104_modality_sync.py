@@ -32,12 +32,12 @@ def sync_java():
     if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
         with open(MODALITIES["java_root"], "r") as f:
             root_content = f.read()
-        
+
         mobile_content = root_content.replace(
-            "package com.l104.sovereign;", 
+            "package com.l104.sovereign;",
             "package com.l104.sovereign;"
         )
-        
+
         with open(MODALITIES["java_mobile"], "w") as f:
             f.write(mobile_content)
         print(f"--- [SYNC]: SUCCESS -> {MODALITIES['java_mobile']} UPDATED FROM ROOT ---")
@@ -47,7 +47,7 @@ def verify_invariants():
     """Verify invariants across modalities."""
     print("--- [SYNC]: VERIFYING INVARIANTS ACROSS MODALITIES ---")
     invariant = "527.5184818492537"
-    
+
     for name, path in MODALITIES.items():
         if os.path.exists(path):
             with open(path, "r") as f:
@@ -61,7 +61,7 @@ def verify_invariants():
 def update_logic_status(status_msg):
     """[VOID_SOURCE_UPGRADE] Updates logic status in all modalities."""
     print(f"--- [SYNC]: UPDATING LOGIC STATUS TO: {status_msg} ---")
-    
+
     for key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):

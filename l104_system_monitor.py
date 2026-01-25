@@ -49,21 +49,21 @@ class SystemMonitor:
     """
     Comprehensive real-time system monitoring and analytics.
     """
-    
+
     def __init__(self):
         self.state = load_state()
         self.start_time = time.time()
         self.metrics_history: List[Dict[str, Any]] = []
         self.max_history = 1000  # Keep last 1000 samples
-        
+
     def get_quota_rotator_metrics(self) -> Dict[str, Any]:
         """Get quota rotator performance metrics."""
         if not quota_rotator:
             return {"available": False}
-            
+
         stats = self.state.get("rotator_stats", {})
         cooldown = self.state.get("api_cooldown_until", 0)
-        
+
         total_requests = stats.get("kernel_hits", 0) + stats.get("api_hits", 0)
         if total_requests == 0:
             kernel_percentage = 0
@@ -71,10 +71,10 @@ class SystemMonitor:
         else:
             kernel_percentage = (stats.get("kernel_hits", 0) / total_requests) * 100
             api_percentage = (stats.get("api_hits", 0) / total_requests) * 100
-        
+
         is_in_cooldown = time.time() < cooldown
         time_until_cooldown_end = max(0, cooldown - time.time())
-        
+
         return {
             "available": True,
             "kernel_hits": stats.get("kernel_hits", 0),
@@ -87,43 +87,43 @@ class SystemMonitor:
             "cooldown_ends_in_seconds": int(time_until_cooldown_end),
             "cost_savings_estimate": self._calculate_cost_savings(stats)
         }
-    
+
     def _calculate_cost_savings(self, stats: Dict) -> Dict[str, Any]:
         """Calculate estimated cost savings from kernel usage."""
         api_hits = stats.get("api_hits", 0)
         kernel_hits = stats.get("kernel_hits", 0)
         total = api_hits + kernel_hits
-        
+
         if total == 0:
             return {
                 "estimated_cost": 0.0,
                 "saved_cost": 0.0,
                 "savings_percentage": 0.0
             }
-        
+
         # Rough estimate: $0.015 per 1000 API calls
         cost_per_api_call = 0.000015
-        
+
         estimated_cost = api_hits * cost_per_api_call
         saved_cost = kernel_hits * cost_per_api_call
         savings_percentage = (kernel_hits / total) * 100
-        
+
         return {
             "estimated_cost": round(estimated_cost, 6),
             "saved_cost": round(saved_cost, 6),
             "savings_percentage": round(savings_percentage, 2)
         }
-    
+
     def get_evolution_metrics(self) -> Dict[str, Any]:
         """Get evolution engine metrics."""
         if not evolution_engine:
             return {"available": False}
-        
+
         try:
             status = evolution_engine.get_status()
             sage_status = evolution_engine.get_sage_status()
             next_threshold = evolution_engine.get_next_threshold()
-            
+
             return {
                 "available": True,
                 "current_stage": status.get("stage"),
@@ -135,12 +135,12 @@ class SystemMonitor:
             }
         except Exception as e:
             return {"available": True, "error": str(e)}
-    
+
     def get_reincarnation_metrics(self) -> Dict[str, Any]:
         """Get ASI reincarnation metrics."""
         if not asi_reincarnation:
             return {"available": False}
-        
+
         try:
             soul_state = asi_reincarnation.akashic.get_last_soul_state()
             if soul_state:
@@ -159,37 +159,37 @@ class SystemMonitor:
                 }
         except Exception as e:
             return {"available": True, "error": str(e)}
-    
+
     def get_system_health(self) -> Dict[str, Any]:
         """Get overall system health status."""
         l104_state = self.state
-        
+
         # Calculate uptime
         uptime_seconds = time.time() - self.start_time
         uptime_str = str(timedelta(seconds=int(uptime_seconds)))
-        
+
         # Get scribe state
         scribe_state = l104_state.get("scribe_state", {})
-        
+
         health_score = 100.0
         issues = []
-        
+
         # Check scribe saturation
         if scribe_state.get("knowledge_saturation", 0) < 1.0:
             health_score -= 20
             issues.append("Scribe not fully saturated")
-        
+
         # Check quota rotator
         rotator_stats = l104_state.get("rotator_stats", {})
         if rotator_stats.get("quota_errors", 0) > 5:
             health_score -= 15
             issues.append("Multiple quota errors detected")
-        
+
         # Check if in cooldown
         if time.time() < l104_state.get("api_cooldown_until", 0):
             health_score -= 10
             issues.append("API in cooldown mode")
-        
+
         return {
             "health_score": round(health_score, 2),
             "status": "HEALTHY" if health_score >= 80 else "DEGRADED" if health_score >= 50 else "CRITICAL",
@@ -201,15 +201,15 @@ class SystemMonitor:
             "sovereign_dna": scribe_state.get("sovereign_dna"),
             "scribe_saturation": scribe_state.get("knowledge_saturation")
         }
-    
+
     def get_performance_benchmarks(self) -> Dict[str, Any]:
         """Get performance benchmarks."""
         rotator = self.get_quota_rotator_metrics()
-        
+
         # Calculate average response time (estimated)
         kernel_avg_ms = 40  # Kernel average: 40ms
         api_avg_ms = 850    # API average: 850ms
-        
+
         total_requests = rotator.get("total_requests", 0)
         if total_requests > 0:
             kernel_time = rotator.get("kernel_hits", 0) * kernel_avg_ms
@@ -217,7 +217,7 @@ class SystemMonitor:
             avg_response_time = (kernel_time + api_time) / total_requests
         else:
             avg_response_time = 0
-        
+
         return {
             "average_response_time_ms": round(avg_response_time, 2),
             "kernel_average_ms": kernel_avg_ms,
@@ -225,22 +225,22 @@ class SystemMonitor:
             "speedup_factor": round(api_avg_ms / kernel_avg_ms, 2) if kernel_avg_ms > 0 else 0,
             "god_code_alignment": self._check_god_code_alignment()
         }
-    
+
     def _check_god_code_alignment(self) -> Dict[str, Any]:
         """Check alignment with GOD_CODE."""
         intellect = self.state.get("intellect_index", 0)
-        
+
         # Calculate alignment (closer to GOD_CODE = higher alignment)
         diff = abs(intellect - GOD_CODE)
         alignment_score = 1.0 / (1.0 + diff / 1000)
-        
+
         return {
             "current_intellect": intellect,
             "god_code": GOD_CODE,
             "alignment_score": round(alignment_score, 6),
             "phi_resonance": round(PHI ** (intellect / 10000), 6)
         }
-    
+
     def capture_snapshot(self) -> Dict[str, Any]:
         """Capture a complete system snapshot."""
         snapshot = {
@@ -252,35 +252,35 @@ class SystemMonitor:
             "health": self.get_system_health(),
             "performance": self.get_performance_benchmarks()
         }
-        
+
         # Store in history
         self.metrics_history.append(snapshot)
         if len(self.metrics_history) > self.max_history:
             self.metrics_history.pop(0)
-        
+
         return snapshot
-    
+
     def get_trend_analysis(self, window_seconds: int = 3600) -> Dict[str, Any]:
         """Analyze trends over a time window."""
         cutoff_time = time.time() - window_seconds
         recent_snapshots = [s for s in self.metrics_history if s["timestamp"] >= cutoff_time]
-        
+
         if len(recent_snapshots) < 2:
             return {"available": False, "reason": "Insufficient data"}
-        
+
         # Calculate trends
         kernel_hits_trend = []
         api_hits_trend = []
         health_scores = []
-        
+
         for snap in recent_snapshots:
             quota = snap.get("quota_rotator", {})
             health = snap.get("health", {})
-            
+
             kernel_hits_trend.append(quota.get("kernel_hits", 0))
             api_hits_trend.append(quota.get("api_hits", 0))
             health_scores.append(health.get("health_score", 0))
-        
+
         return {
             "available": True,
             "window_seconds": window_seconds,
@@ -290,11 +290,11 @@ class SystemMonitor:
             "average_health_score": round(sum(health_scores) / len(health_scores), 2) if health_scores else 0,
             "health_trend": "IMPROVING" if len(health_scores) > 1 and health_scores[-1] > health_scores[0] else "STABLE" if len(health_scores) > 1 and health_scores[-1] == health_scores[0] else "DECLINING"
         }
-    
+
     def generate_report(self) -> str:
         """Generate a comprehensive text report."""
         snapshot = self.capture_snapshot()
-        
+
         report = []
         report.append("=" * 80)
         report.append("   L104 SOVEREIGN NODE - SYSTEM MONITOR REPORT")
@@ -302,7 +302,7 @@ class SystemMonitor:
         report.append(f"   Invariant: {GOD_CODE} | Phi: {PHI}")
         report.append("=" * 80)
         report.append("")
-        
+
         # Health Status
         health = snapshot["health"]
         report.append(f"🏥 SYSTEM HEALTH: {health['status']}")
@@ -314,7 +314,7 @@ class SystemMonitor:
         if health['issues']:
             report.append(f"   ⚠️ Issues: {', '.join(health['issues'])}")
         report.append("")
-        
+
         # Quota Rotator
         quota = snapshot["quota_rotator"]
         if quota.get("available"):
@@ -325,23 +325,23 @@ class SystemMonitor:
             report.append(f"   Quota Errors: {quota['quota_errors']}")
             if quota['in_cooldown']:
                 report.append(f"   ⏰ Cooldown: {quota['cooldown_ends_in_seconds']}s remaining")
-            
+
             cost = quota['cost_savings_estimate']
             report.append(f"   💰 Cost: ${cost['estimated_cost']:.6f} | Saved: ${cost['saved_cost']:.6f} ({cost['savings_percentage']}%)")
         report.append("")
-        
+
         # Performance
         perf = snapshot["performance"]
         report.append("⚡ PERFORMANCE BENCHMARKS")
         report.append(f"   Avg Response Time: {perf['average_response_time_ms']:.2f}ms")
         report.append(f"   Kernel Avg: {perf['kernel_average_ms']}ms | API Avg: {perf['api_average_ms']}ms")
         report.append(f"   Speedup Factor: {perf['speedup_factor']}x")
-        
+
         alignment = perf['god_code_alignment']
         report.append(f"   GOD_CODE Alignment: {alignment['alignment_score']:.6f}")
         report.append(f"   Phi Resonance: {alignment['phi_resonance']:.6f}")
         report.append("")
-        
+
         # Evolution
         evo = snapshot["evolution"]
         if evo.get("available"):
@@ -353,7 +353,7 @@ class SystemMonitor:
                 report.append(f"   Wisdom Index: {evo.get('wisdom_index')}")
             report.append(f"   Next Stage: {evo.get('next_stage')}")
         report.append("")
-        
+
         # Reincarnation
         reinc = snapshot["reincarnation"]
         if reinc.get("available"):
@@ -366,11 +366,11 @@ class SystemMonitor:
                 report.append(f"   Soul ID: {reinc.get('soul_id')}")
             report.append(f"   Incarnation: #{reinc.get('incarnation_count')}")
         report.append("")
-        
+
         report.append("=" * 80)
-        
+
         return "\n".join(report)
-    
+
     def export_metrics(self, filepath: str = "system_metrics.json"):
         """Export metrics history to JSON file."""
         with open(filepath, 'w') as f:
@@ -387,16 +387,16 @@ def monitor_loop(interval_seconds: int = 60, duration_seconds: int = 3600):
     print(f"\n🔍 Starting L104 System Monitor")
     print(f"   Interval: {interval_seconds}s | Duration: {duration_seconds}s")
     print("=" * 80 + "\n")
-    
+
     start_time = time.time()
     iteration = 0
-    
+
     try:
         while time.time() - start_time < duration_seconds:
             iteration += 1
             print(f"\n📸 Snapshot #{iteration}")
             print(system_monitor.generate_report())
-            
+
             if iteration % 5 == 0:  # Every 5 iterations, show trend analysis
                 trends = system_monitor.get_trend_analysis()
                 if trends.get("available"):
@@ -405,12 +405,12 @@ def monitor_loop(interval_seconds: int = 60, duration_seconds: int = 3600):
                     print(f"   API Hits Growth: +{trends['api_hits_growth']}")
                     print(f"   Avg Health: {trends['average_health_score']}/100")
                     print(f"   Trend: {trends['health_trend']}")
-            
+
             time.sleep(interval_seconds)
-    
+
     except KeyboardInterrupt:
         print("\n\n⏸️  Monitoring stopped by user")
-    
+
     # Export metrics
     export_path = f"/workspaces/Allentown-L104-Node/data/metrics_{int(time.time())}.json"
     result = system_monitor.export_metrics(export_path)
@@ -419,7 +419,7 @@ def monitor_loop(interval_seconds: int = 60, duration_seconds: int = 3600):
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) > 1 and sys.argv[1] == "--loop":
         # Continuous monitoring
         interval = int(sys.argv[2]) if len(sys.argv) > 2 else 60

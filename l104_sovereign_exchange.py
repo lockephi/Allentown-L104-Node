@@ -40,7 +40,7 @@ class SovereignExchange:
         # We'll use the sovereign resonance from the coin engine
         status = sovereign_coin.get_status()
         resonance = status.get('latest_resonance', 1.0)
-        
+
         dynamic_rate = self.exchange_rate_l104sp_per_btc / (resonance * RealMath.PHI)
         return round(dynamic_rate, 4)
 
@@ -57,15 +57,15 @@ class SovereignExchange:
 
         # 1. 'Burn' or 'Collect' L104SP (In a real blockchain, this would be a tx)
         # For now, we just acknowledge the transaction
-        
+
         # 2. Add to Capital Resonance
         capital_offload.total_capital_generated_sats += sats_amount
-        
+
         # 3. Trigger Offload (Manifestation)
         result = capital_offload.offload_to_wallet(sats_amount)
-        
+
         self.total_volume_btc += btc_amount
-        
+
         return {
             "status": "SUCCESS",
             "exformed_l104sp": amount_l104sp,

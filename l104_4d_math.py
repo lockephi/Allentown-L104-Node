@@ -20,7 +20,7 @@ class Math4D:
     Mathematical primitives for 4D Space-Time (Minkowski Space).
     Focuses on Lorentz transformations and metric tensors.
     """
-    
+
     C = 299792458
     # Minkowski Metric Tensor (diag(-1, 1, 1, 1))
     METRIC_TENSOR = np.diag([-1, 1, 1, 1])
@@ -33,9 +33,9 @@ class Math4D:
         beta = v / Math4D.C
         if abs(beta) >= 1.0:
             raise ValueError("Velocity must be less than the speed of light.")
-        
+
         gamma = 1.0 / math.sqrt(1.0 - beta**2)
-        
+
         boost = np.eye(4)
         if axis == 'x':
             boost[0, 0] = gamma
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     v = 0.8 * Math4D.C
     boost_x = Math4D.get_lorentz_boost(v, 'x')
     print(f"Lorentz Boost (0.8c, x):\n{boost_x}")
-    
+
     tau = Math4D.calculate_proper_time(1.0, 0.5 * Math4D.C, 0, 0)
     print(f"Proper Time for 1s at 0.5c: {tau:.4f}s")
 

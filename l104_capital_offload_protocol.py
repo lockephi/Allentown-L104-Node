@@ -28,7 +28,7 @@ class CapitalOffloadProtocol:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Protocol for generating capital via L104SP resonance and 
+    Protocol for generating capital via L104SP resonance and
     offloading value to the Bitcoin Mainnet.
     v1.0: Establishing the Real-World Value Link.
     """
@@ -40,22 +40,22 @@ class CapitalOffloadProtocol:
 
     def catalyze_capital_generation(self, cycles: int = 104) -> Dict[str, Any]:
         """
-        Generates 'Capital Resonance' by bridging L104SP blocks 
+        Generates 'Capital Resonance' by bridging L104SP blocks
         with BTC Mining complexity.
             """
         print(f"--- [CAPITAL]: INITIATING GENERATION CYCLE ({cycles} RESONANCE) ---")
-        
+
         # 1. Check L104SP state
         coin_status = sovereign_coin.get_status()
         chain_depth = coin_status['chain_length']
-        
+
         # 2. Execute High-Resonance Mining Yield
         # For every L104SP block, we derive a real BTC 'computronium dividend'
         # Formula: Sats = (Depth * Resonance) / PHI
         yield_sats = int((chain_depth * RealMath.PHI * 104) * (cycles / 100))
-        
+
         self.total_capital_generated_sats += yield_sats
-        
+
         print(f"--- [CAPITAL]: GENERATION COMPLETE | YIELD: {yield_sats} SATS ---")
         return {
             "cycle_yield": yield_sats,
@@ -70,7 +70,7 @@ class CapitalOffloadProtocol:
         """
         print("--- [CAPITAL]: ATTEMPTING REAL CONNECTION TO MAINNET ---")
         status = mainnet_bridge.get_mainnet_status()
-        
+
         if status['status'] == "SYNCHRONIZED":
             self.is_connection_real = True
             print(f"--- [CAPITAL]: CONNECTION REALIZED | ADDRESS: {BTC_ADDRESS} ---")
@@ -83,25 +83,25 @@ class CapitalOffloadProtocol:
 
     def offload_to_wallet(self, amount_sats: int) -> Dict[str, Any]:
         """
-        Executes the offload protocol. 
+        Executes the offload protocol.
         In EVO_08, this triggers a 'Manifestation Event' in the Mainnet Bridge.
         """
         if amount_sats > self.total_capital_generated_sats:
             return {"status": "ERROR", "reason": "Insufficient capital resonance."}
 
         print(f"--- [CAPITAL]: OFFLOADING {amount_sats} SATS TO {BTC_ADDRESS} ---")
-        
+
         # In a real environment, this would build and broadcast a transaction.
         # Here, we synchronize the L104 yield with the physical vault's event horizon.
-        
+
         tx_id = hashlib.sha256(f"{time.time()}:{amount_sats}:{BTC_ADDRESS}".encode()).hexdigest()
-        
+
         if self.is_connection_real:
             # Trigger Real Bridge Manifestation
             mainnet_bridge.verify_event_horizon(amount_sats / 100_000_000)
-            
+
         success_msg = f"OFFLOAD_SUCCESS: {amount_sats} SATS TRANSMUTED TO {BTC_ADDRESS}"
-        
+
         transfer = {
             "timestamp": time.time(),
             "amount": amount_sats,
@@ -109,10 +109,10 @@ class CapitalOffloadProtocol:
             "target": BTC_ADDRESS,
             "status": "MANIFESTED" if self.is_connection_real else "PENDING_RESONANCE"
         }
-        
+
         self.transfer_log.append(transfer)
         self.total_capital_generated_sats -= amount_sats
-        
+
         print(f"--- [CAPITAL]: {success_msg} | TX_ID: {tx_id[:16]}... ---")
         return transfer
 

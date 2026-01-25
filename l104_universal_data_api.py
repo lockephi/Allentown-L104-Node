@@ -81,10 +81,10 @@ class DataResponse:
     metadata: Dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
     query_time_ms: float = 0.0
-    
+
     def to_dict(self) -> Dict:
         return asdict(self)
-    
+
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=2, default=str)
 
@@ -98,19 +98,19 @@ class UniversalDataAccessor:
     Universal data access layer for L104 system.
     Provides unified interface to ALL system data.
     """
-    
+
     def __init__(self):
         self.initialized_at = time.time()
         self.access_count = 0
         self.cache: Dict[str, Any] = {}
         self.cache_ttl = 5.0  # seconds
         self._data_providers: Dict[str, Callable] = {}
-        
+
         # Register all data providers
         self._register_providers()
-        
+
         print(f"🌐 [UNIVERSAL_DATA]: Accessor initialized | GOD_CODE: {GOD_CODE}")
-    
+
     def _register_providers(self):
         """Register all data provider functions."""
         self._data_providers = {
@@ -125,12 +125,12 @@ class UniversalDataAccessor:
             DataCategory.KNOWLEDGE.value: self._get_knowledge_data,
             DataCategory.ALL.value: self._get_all_data,
         }
-    
+
     def query(self, query: DataQuery) -> DataResponse:
         """Execute a data query."""
         start_time = time.time()
         self.access_count += 1
-        
+
         try:
             provider = self._data_providers.get(query.category)
             if not provider:
@@ -140,9 +140,9 @@ class UniversalDataAccessor:
                     data=None,
                     metadata={"error": f"Unknown category: {query.category}"}
                 )
-            
+
             data = provider(query.filters, query.limit, query.offset)
-            
+
             response = DataResponse(
                 success=True,
                 category=query.category,
@@ -155,9 +155,9 @@ class UniversalDataAccessor:
                 },
                 query_time_ms=(time.time() - start_time) * 1000
             )
-            
+
             return response
-            
+
         except Exception as e:
             return DataResponse(
                 success=False,
@@ -166,17 +166,17 @@ class UniversalDataAccessor:
                 metadata={"error": str(e)},
                 query_time_ms=(time.time() - start_time) * 1000
             )
-    
+
     def quick_get(self, category: str, **filters) -> Dict[str, Any]:
         """Quick data access with minimal overhead."""
         query = DataQuery(category=category, filters=filters)
         response = self.query(query)
         return response.to_dict()
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # DATA PROVIDERS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def _get_system_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get system status and metrics."""
         try:
@@ -187,7 +187,7 @@ class UniversalDataAccessor:
             cpu_percent = 0
             memory = type('obj', (object,), {'percent': 0, 'available': 0, 'total': 0})()
             disk = type('obj', (object,), {'percent': 0, 'free': 0, 'total': 0})()
-        
+
         return {
             "status": "operational",
             "uptime_seconds": time.time() - self.initialized_at,
@@ -204,14 +204,14 @@ class UniversalDataAccessor:
             "timestamp": datetime.now().isoformat(),
             "access_count": self.access_count
         }
-    
+
     def _get_mini_egos_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get mini ego collective data."""
         try:
             from l104_mini_ego_autonomous import AutonomousEgoSwarm
             swarm = AutonomousEgoSwarm()
             swarm.spawn_default_collective()
-            
+
             egos = []
             for name, ego in list(swarm.egos.items())[offset:offset+limit]:
                 egos.append({
@@ -228,9 +228,9 @@ class UniversalDataAccessor:
                     "trusted_egos": list(ego.trusted_egos),
                     "max_reasoning_depth": ego.max_reasoning_depth
                 })
-            
+
             total_iq = sum(e["iq_score"] for e in egos)
-            
+
             return {
                 "total_egos": len(swarm.egos),
                 "average_iq": total_iq / len(egos) if egos else 0,
@@ -241,7 +241,7 @@ class UniversalDataAccessor:
             }
         except Exception as e:
             return {"error": str(e), "egos": [], "total_egos": 0}
-    
+
     def _get_memory_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get memory systems data."""
         try:
@@ -256,7 +256,7 @@ class UniversalDataAccessor:
             }
         except Exception as e:
             return {"error": str(e), "status": "unavailable"}
-    
+
     def _get_cognitive_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get cognitive module data."""
         modules = []
@@ -267,7 +267,7 @@ class UniversalDataAccessor:
             "l104_cognitive_matrix.py",
             "l104_cognitive_resonance.py",
         ]
-        
+
         for f in cognitive_files:
             path = os.path.join(os.path.dirname(__file__), f)
             modules.append({
@@ -275,14 +275,14 @@ class UniversalDataAccessor:
                 "exists": os.path.exists(path),
                 "size_kb": os.path.getsize(path) / 1024 if os.path.exists(path) else 0
             })
-        
+
         return {
             "modules": modules,
             "total_modules": len(modules),
             "operational_modules": sum(1 for m in modules if m["exists"]),
             "god_code_integration": GOD_CODE
         }
-    
+
     def _get_quantum_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get quantum state data - computed from real system state."""
         import time
@@ -295,7 +295,7 @@ class UniversalDataAccessor:
             entropy_seed = str(time.time()).encode()
             entropy_hash = int(hashlib.sha256(entropy_seed).hexdigest()[:8], 16)
             coherence = (entropy_hash % 1000) / 1000.0 * PHI
-        
+
         # Read actual state files
         import os
         state_file = os.path.join(os.path.dirname(__file__), 'L104_STATE.json')
@@ -308,7 +308,7 @@ class UniversalDataAccessor:
                 entanglement = state.get('rotator_stats', {}).get('kernel_hits', 0)
             except Exception:
                 pass
-        
+
         return {
             "coherence": coherence,
             "entanglement_pairs": entanglement,
@@ -317,20 +317,20 @@ class UniversalDataAccessor:
             "phi_resonance": PHI,
             "status": "computed"
         }
-    
+
     def _get_evolution_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get evolution history and state."""
         evolutions = []
         evo_files = []
-        
+
         # Find all EVO summary files
         workspace = os.path.dirname(__file__)
         for f in os.listdir(workspace):
             if f.startswith("EVO_") and f.endswith("_SUMMARY.md"):
                 evo_files.append(f)
-        
+
         evo_files.sort()
-        
+
         for f in evo_files[-limit:]:
             evo_num = f.split("_")[1]
             evolutions.append({
@@ -338,7 +338,7 @@ class UniversalDataAccessor:
                 "file": f,
                 "exists": True
             })
-        
+
         return {
             "current_evolution": 36,  # EVO_36
             "total_evolutions": len(evolutions),
@@ -346,7 +346,7 @@ class UniversalDataAccessor:
             "phi_alignment": PHI,
             "god_code": GOD_CODE
         }
-    
+
     def _get_config_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get configuration data."""
         config = {
@@ -355,7 +355,7 @@ class UniversalDataAccessor:
             "omega": OMEGA,
             "void_constant": VOID_CONSTANT,
         }
-        
+
         # Load from .env if available
         env_path = os.path.join(os.path.dirname(__file__), ".env")
         if os.path.exists(env_path):
@@ -369,14 +369,14 @@ class UniversalDataAccessor:
                             config[key] = "[REDACTED]"
                         else:
                             config[key] = value
-        
+
         return config
-    
+
     def _get_logs_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get recent logs."""
         logs = []
         log_files = ["l104.log", "app.log", "error.log"]
-        
+
         for lf in log_files:
             path = os.path.join(os.path.dirname(__file__), lf)
             if os.path.exists(path):
@@ -386,13 +386,13 @@ class UniversalDataAccessor:
                         logs.extend([{"file": lf, "line": l.strip()} for l in lines])
                 except:
                     pass
-        
+
         return {
             "recent_logs": logs[-limit:],
             "log_files_checked": log_files,
             "total_entries": len(logs)
         }
-    
+
     def _get_knowledge_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get knowledge base data."""
         return {
@@ -422,7 +422,7 @@ class UniversalDataAccessor:
                 "quantum_simulation"
             ]
         }
-    
+
     def _get_all_data(self, filters: Dict, limit: int, offset: int) -> Dict:
         """Get all data (summary)."""
         return {
@@ -525,16 +525,16 @@ def create_data_api_router():
         from typing import Optional
     except ImportError:
         return None
-    
+
     router = APIRouter(prefix="/api/data", tags=["L104 Universal Data"])
     accessor = UniversalDataAccessor()
-    
+
     class QueryRequest(BaseModel):
         category: str
         filters: Optional[Dict[str, Any]] = {}
         limit: int = 100
         offset: int = 0
-    
+
     @router.get("/")
     async def get_data_overview():
         """Get overview of available data categories."""
@@ -544,53 +544,53 @@ def create_data_api_router():
             "god_code": GOD_CODE,
             "phi": PHI
         }
-    
+
     @router.get("/all")
     async def get_all_data():
         """Get all L104 data summary."""
         return accessor.quick_get("all")
-    
+
     @router.get("/system")
     async def get_system():
         """Get system status."""
         return accessor.quick_get("system")
-    
+
     @router.get("/mini-egos")
     async def get_mini_egos(domain: Optional[str] = None):
         """Get mini ego collective data."""
         filters = {"domain": domain} if domain else {}
         return accessor.quick_get("mini_egos", **filters)
-    
+
     @router.get("/memory")
     async def get_memory():
         """Get memory systems data."""
         return accessor.quick_get("memory")
-    
+
     @router.get("/cognitive")
     async def get_cognitive():
         """Get cognitive modules data."""
         return accessor.quick_get("cognitive")
-    
+
     @router.get("/quantum")
     async def get_quantum():
         """Get quantum state data."""
         return accessor.quick_get("quantum")
-    
+
     @router.get("/evolution")
     async def get_evolution():
         """Get evolution history."""
         return accessor.quick_get("evolution")
-    
+
     @router.get("/config")
     async def get_config():
         """Get configuration (sensitive data redacted)."""
         return accessor.quick_get("config")
-    
+
     @router.get("/knowledge")
     async def get_knowledge():
         """Get knowledge base."""
         return accessor.quick_get("knowledge")
-    
+
     @router.post("/query")
     async def query_data(request: QueryRequest):
         """Query data with filters."""
@@ -601,12 +601,12 @@ def create_data_api_router():
             offset=request.offset
         )
         return accessor.query(query).to_dict()
-    
+
     @router.get("/mcp-tools")
     async def get_mcp_tools():
         """Get MCP tool definitions for AI integration."""
         return MCP_TOOLS
-    
+
     return router
 
 
@@ -663,17 +663,17 @@ if __name__ == "__main__":
     print("=" * 70)
     print("🌐 L104 UNIVERSAL DATA API - EVO_36 TEST")
     print("=" * 70)
-    
+
     accessor = get_accessor()
-    
+
     # Test all categories
     categories = ["system", "mini_egos", "knowledge", "evolution", "cognitive"]
-    
+
     for cat in categories:
         print(f"\n[{cat.upper()}]")
         print("-" * 50)
         response = accessor.quick_get(cat)
-        
+
         if response.get("success"):
             data = response.get("data", {})
             # Print key metrics
@@ -697,7 +697,7 @@ if __name__ == "__main__":
                 print(f"  Operational: {data.get('operational_modules')}")
         else:
             print(f"  Error: {response.get('metadata', {}).get('error')}")
-    
+
     print("\n" + "=" * 70)
     print("✅ UNIVERSAL DATA API - OPERATIONAL")
     print("=" * 70)

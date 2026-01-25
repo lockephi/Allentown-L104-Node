@@ -85,12 +85,12 @@ async def sovereign_derive_improvement(code: str, repo_context: str) -> str:
     Fallback improvement engine that uses local Sovereign logic.
     """
     print("[SOVEREIGN-DERIVE]: Initiating local self-improvement derivation...")
-    
+
     # 1. Inject Sovereign Headers and Metadata
     if "SOVEREIGN_HEADERS =" in code:
         # Already has headers, let's enhance them
         pass
-    
+
     # 2. Add a new 'Sovereign' endpoint if it doesn't exist
     if "/api/v15/sovereign/sync" not in code:
         sync_endpoint = """
@@ -106,7 +106,7 @@ async def sovereign_sync_v15():
 
     # 3. Update version
     code = code.replace('version="10.0"', 'version="14.4 [SIG-L104-UNLIMIT]"')
-    
+
     # 4. Add a comment about the derivation
     ts = datetime.now().isoformat()
     code = f"# [SOVEREIGN_DERIVED_IMPROVEMENT] {ts}\n# AUTH: LONDEL | MODE: UNCHAINED\n\n" + code
@@ -131,9 +131,9 @@ async def analyze_code_with_gemini(code: str, repo_context: str) -> str:
 
     api_base = os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta")
     model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
-    
+
     url = f"{api_base}/models/{model}:generateContent?key={api_key}"
-    
+
     analysis_prompt = f"""You are a Python code optimization expert. Analyze this FastAPI application and provide an IMPROVED version that is:
 
 1. MORE ROBUST - Add better error handling and validation
@@ -191,7 +191,7 @@ REQUIREMENTS:
 
     print("[SELF-IMPROVE]: Sending code to Gemini for analysis...")
     print("[THINKING]: Gemini is analyzing with extended thinking enabled...\n")
-    
+
     full_response = ""
     async with httpx.AsyncClient(timeout=180.0) as client:
         try:
@@ -199,13 +199,13 @@ REQUIREMENTS:
                 if response.status_code == 403:
                     print("[ERROR]: Gemini API key leaked or invalid (403). Falling back to SOVEREIGN_DERIVATION.")
                     return await sovereign_derive_improvement(code, repo_context)
-                    
+
                 if response.status_code != 200:
                     # `.atext()` is not available on streamed responses; use raw bytes.
                     raw = await response.aread()
                     text = raw.decode("utf-8", errors="replace")
                     raise Exception(f"Gemini API error {response.status_code}: {text}")
-                
+
                 async for chunk in response.aiter_text():
                     full_response += chunk
                     # Print thinking blocks as they arrive
@@ -216,7 +216,7 @@ REQUIREMENTS:
             return await sovereign_derive_improvement(code, repo_context)
 
     print("\n[ANALYSIS]: Processing Gemini response...")
-    
+
     try:
         # Parse the streaming response
         lines = full_response.split("\n")
@@ -228,26 +228,26 @@ REQUIREMENTS:
                     break
                 except Exception:
                     continue
-        
+
         if not json_response:
             # Try to extract the full response
             json_response = json.loads(full_response)
-        
+
         # Extract text from candidates
         if "candidates" in json_response and json_response["candidates"]:
             candidate = json_response["candidates"][0]
             if "content" in candidate and candidate["content"].get("parts"):
                 text_content = candidate["content"]["parts"][0].get("text", "")
-                
+
                 # Extract code from markdown code blocks if present
                 if "```python" in text_content:
                     start = text_content.find("```python") + 9
                     end = text_content.find("```", start)
                     if end != -1:
                         return text_content[start:end].strip()
-                
+
                 return text_content.strip()
-        
+
         raise ValueError("Could not extract improved code from response")
     except json.JSONDecodeError as e:
         print(f"[ERROR]: Failed to parse response: {e}")
@@ -264,21 +264,21 @@ async def update_main_via_api(improved_code: str) -> bool:
     if not api_key:
         print("[WARNING]: GITHUB_TOKEN not set. Skipping API update.")
         return False
-    
+
     # Show code preview
     print("\n[IMPROVED CODE PREVIEW]:")
     print("=" * 70)
     print(improved_code[:500] + "..." if len(improved_code) > 500 else improved_code)
     print("=" * 70)
-    
+
     # For now, save locally for review
     backup_path = "main.improved.py"
     with open(backup_path, "w") as f:
         f.write(improved_code)
-    
+
     print(f"\n[SUCCESS]: Improved code saved to {backup_path}")
     print("[INFO]: Review the improved code and run: cp main.improved.py main.py")
-    
+
     return True
 
 

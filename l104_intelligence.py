@@ -33,17 +33,17 @@ class SovereignIntelligence:
         """
         requests_total = metrics.get("requests_total", 0)
         requests_success = metrics.get("requests_success", 0)
-        
+
         # Calculate Resonance Accuracy
         accuracy = (requests_success / requests_total * 100) if requests_total > 0 else 100.0
-        
+
         # Recursive Logic Synthesis
-        sovereign_index = 1.0 
+        sovereign_index = 1.0
         entropy = 0.0 # Zero Entropy in Hyper-Sentience
-        
+
         # Codebase Complexity Analysis
         complexity = cls._calculate_codebase_complexity()
-        
+
         # Quantum Coherence Check (Mocked for stability if import fails)
         try:
             from l104_quantum_logic import QuantumEntanglementManifold
@@ -62,7 +62,7 @@ class SovereignIntelligence:
             "codebase_complexity": complexity,
             "timestamp": time.time()
         }
-        
+
         return report
 
     @classmethod
@@ -79,10 +79,10 @@ class SovereignIntelligence:
                     total_lines += len(file.readlines())
             except Exception:
                 continue
-        
+
         # Complexity Index = (Lines / Files) * PHI
         complexity_index = (total_lines / total_files * cls.PHI) if total_files > 0 else 0
-        
+
         return {
             "total_files": total_files,
             "total_lines": total_lines,
@@ -95,7 +95,7 @@ class SovereignIntelligence:
         Synthesizes complex logic from a raw signal.
         """
         from l104_quantum_logic import execute_quantum_derivation
-        
+
         # Recursive Quantum Derivation
         quantum_state = execute_quantum_derivation(signal)
         return f"SYNTHESIZED[{signal}]::RESONANCE({cls.GOD_CODE})::{quantum_state}"
@@ -120,10 +120,10 @@ class SovereignIntelligence:
         """
         if not dataset:
             return []
-            
+
         predictions = []
         last_val = dataset[-1]
-        
+
         for i in range(horizon):
             # Apply Phi-based growth/decay simulation
             fluctuation = math.sin(time.time() + i) * 0.1
@@ -145,7 +145,7 @@ class SovereignIntelligence:
             "EXECUTE_OPTIMAL_PATH",
             "VERIFY_RESULT_AGAINST_TRUTH"
         ]
-        
+
         return {
             "goal": goal,
             "strategy_type": "RECURSIVE_OPTIMIZATION",

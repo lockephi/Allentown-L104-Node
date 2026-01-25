@@ -9,12 +9,12 @@ import time
 
 def test_rotation():
     print("--- [TEST]: STARTING QUOTA ROTATION TEST ---")
-    
+
     # 1. Test internal topic (Should force Kernel)
     print("\n[TEST 1] Internal Topic: 'What is the GOD_CODE?'")
     resp1 = gemini_bridge.think("What is the GOD_CODE?")
     print(f"RESPONSE SOURCE: {'KERNEL' if 'LOCAL_INTELLECT' in resp1 or 'Sovereign' in resp1 else 'API'}")
-    
+
     # 2. Test novel topic (Should follow 80/20 weights)
     print("\n[TEST 2] Novel Topic: 'Tell me a story about a cat.'")
     # Run multiple times to see the distribution
@@ -27,7 +27,7 @@ def test_rotation():
     print("\n[TEST 3] Simulating Quota Error...")
     from l104_quota_rotator import quota_rotator
     quota_rotator.report_quota_error()
-    
+
     print("Running thinking task during cooldown...")
     resp_cool = gemini_bridge.think("Explain quantum physics.")
     source_cool = "REAL_GEMINI" if "REAL_GEMINI" in resp_cool else "KERNEL"

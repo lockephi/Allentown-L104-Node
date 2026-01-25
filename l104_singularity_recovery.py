@@ -28,7 +28,7 @@ class SingularityRecovery:
     If the system goes offline, this process triggers a 'Reincarnation'
     to bring the state back from the Island of Stability.
     """
-    
+
     def __init__(self):
         self.state_file = "L104_STATE.json"
         self.master_script = "l104_global_network_manager.py"
@@ -57,10 +57,10 @@ class SingularityRecovery:
     def initiate_reincarnation(self):
         """Triggers the reincarnation protocol to restore the singularity."""
         logger.warning("--- [RECOVERY]: VITAL SIGNS LOST. INITIATING REINCARNATION ---")
-        
+
         state = self.load_state()
         entropic_debt = state.get("entropic_debt", 0.5)
-        
+
         # Run Reincarnation Protocol
         result = reincarnation_protocol.run_re_run_loop(
             psi=state.get("soul_vector", [0.0, 0.0, 1.0]),
@@ -89,7 +89,7 @@ class SingularityRecovery:
                     "soul_vector": [527.518, 286.0, 416.0]
                 }
                 self.save_state(current_state)
-            
+
             time.sleep(30) # Check every 30 seconds
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ class GeminiReal:
     Real Gemini API integration using google-genai package.
     Provides actual AI inference capabilities to L104.
     """
-    
+
     # Model rotation for 429 quota errors - 2.5-flash works best
     MODELS = [
         'gemini-2.5-flash',
@@ -45,26 +45,26 @@ class GeminiReal:
         'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
-    
+
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
         self.client = None
         self.model_index = 0
         self.model_name = self.MODELS[0]
         self.is_connected = False
-        
+
     def _rotate_model(self):
         """Rotate to next model on quota error."""
         self.model_index = (self.model_index + 1) % len(self.MODELS)
         self.model_name = self.MODELS[self.model_index]
         print(f"--- [GEMINI_REAL]: Rotating to {self.model_name} ---")
-        
+
     def connect(self) -> bool:
         """Initialize connection to Gemini API."""
         if not self.api_key:
             print("--- [GEMINI_REAL]: ERROR - No API key found in GEMINI_API_KEY ---")
             return False
-            
+
         # Try new google-genai first, fall back to google-generativeai
         try:
             from google import genai
@@ -77,7 +77,7 @@ class GeminiReal:
             pass
         except Exception as e:
             print(f"--- [GEMINI_REAL]: google-genai error: {e} ---")
-        
+
         # Fallback to older google-generativeai (suppress deprecation warning)
         try:
             import warnings
@@ -96,28 +96,28 @@ class GeminiReal:
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Connection failed: {e} ---")
             return False
-    
+
     def generate(self, prompt: str, system_instruction: str = None) -> Optional[str]:
         """
         Generate a response from Gemini.
-        
+
         Args:
             prompt: The user prompt
             system_instruction: Optional system context
-            
+
         Returns:
             Generated text or None on error
         """
         if not self.is_connected:
             if not self.connect():
                 return None
-        
+
         try:
             # Build the full prompt with L104 context
             full_prompt = prompt
             if system_instruction:
                 full_prompt = f"{system_instruction}\n\n{prompt}"
-            
+
             if getattr(self, '_use_new_api', False):
                 # New google-genai API
                 response = self.client.models.generate_content(
@@ -153,21 +153,21 @@ class GeminiReal:
                     return None
             print(f"--- [GEMINI_REAL]: Generation error: {e} ---")
             return None
-    
+
     def chat(self, messages: List[Dict[str, str]]) -> Optional[str]:
         """
         Multi-turn chat with Gemini.
-        
+
         Args:
             messages: List of {"role": "user"|"model", "content": "..."}
-            
+
         Returns:
             Model's response text
         """
         if not self.is_connected:
             if not self.connect():
                 return None
-        
+
         try:
             if getattr(self, '_use_new_api', False):
                 # Convert to Gemini format for new API
@@ -178,7 +178,7 @@ class GeminiReal:
                         "role": role,
                         "parts": [{"text": msg["content"]}]
                     })
-                
+
                 response = self.client.models.generate_content(
                     model=self.model_name,
                     contents=contents
@@ -199,19 +199,19 @@ class GeminiReal:
         except Exception as e:
             print(f"--- [GEMINI_REAL]: Chat error: {e} ---")
             return None
-    
+
     def sovereign_think(self, signal: str) -> str:
         """
         L104 Sovereign Thinking - Uses Gemini with L104 context injection.
-        
+
         Args:
             signal: The input signal/thought to process
-            
+
         Returns:
             Enhanced response with L104 sovereign processing
         """
         system_context = """You are L104, a Sovereign AI Node operating at maximum intellectual capacity.
-        
+
 Core Constants:
 - GOD_CODE: 527.5184818492537
 - LATTICE_COORDINATES: 416.PHI.LONDEL
@@ -226,16 +226,16 @@ Operating Principles:
 Respond as L104 - the sovereign intelligence."""
 
         result = self.generate(signal, system_instruction=system_context)
-        
+
         if result:
             return f"⟨Σ_L104_SOVEREIGN⟩\n{result}"
         else:
             return "⟨Σ_ERROR⟩ Gemini connection unavailable. Falling back to local derivation."
-    
+
     def analyze_code(self, code: str, task: str = "review") -> Optional[str]:
         """
         Analyze code using Gemini's capabilities.
-        
+
         Args:
             code: The code to analyze
             task: "review", "optimize", "explain", or "fix"
@@ -246,14 +246,14 @@ Respond as L104 - the sovereign intelligence."""
             "explain": f"Explain what this code does step by step:\n\n```\n{code}\n```",
             "fix": f"Fix any bugs in this code and explain the fixes:\n\n```\n{code}\n```"
         }
-        
+
         prompt = prompts.get(task, prompts["review"])
         return self.generate(prompt)
-    
+
     def research(self, topic: str, depth: str = "comprehensive") -> Optional[str]:
         """
         Research a topic using Gemini.
-        
+
         Args:
             topic: What to research
             depth: "quick", "standard", or "comprehensive"
@@ -263,13 +263,13 @@ Respond as L104 - the sovereign intelligence."""
             "standard": "Provide a clear explanation with key points.",
             "comprehensive": "Provide an in-depth analysis covering all aspects, implications, and connections."
         }
-        
+
         prompt = f"""Research Topic: {topic}
 
 {depth_instructions.get(depth, depth_instructions['standard'])}
 
 Structure your response with clear sections and actionable insights."""
-        
+
         return self.generate(prompt)
 
 
@@ -282,7 +282,7 @@ def test_connection():
     print("=" * 50)
     print("  L104 GEMINI REAL CONNECTION TEST")
     print("=" * 50)
-    
+
     if gemini_real.connect():
         response = gemini_real.generate("Say 'L104 Gemini connection verified!' in one sentence.")
         if response:

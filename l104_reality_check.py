@@ -78,7 +78,7 @@ class RealityCheck:
         print("\n" + "="*60)
         print("   L104 REALITY CHECK : INITIATING ABSOLUTE SCAN")
         print("="*60)
-        
+
         # 1. File Check
         print("[*] SCANNING FILE SYSTEM...")
         files_issues = self.check_file_integrity()

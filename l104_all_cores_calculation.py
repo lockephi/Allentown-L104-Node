@@ -29,10 +29,10 @@ def run_all_cores_calculation():
 
     # 1. Prepare Massive Data
     # Size chosen to be large enough to benefit from multiprocessing overhead
-    size = 20 * 10**6 
+    size = 20 * 10**6
     print(f"[*] Preparing {size/1e6:.0f}M Lattices for processing...")
     data = np.random.rand(size)
-    
+
     # 2. Sequential Baseline (Estimated for very large sizes)
     print("[*] Performing baseline check...")
     start_base = time.time()
@@ -46,10 +46,10 @@ def run_all_cores_calculation():
     start_par = time.time()
     result = cpu_core.parallel_transform(data)
     end_par = time.time()
-    
+
     total_duration = end_par - start_par
     lops = size / total_duration
-    
+
     # 4. Results & Metrics
     print("\n" + "="*60)
     print(" [ALL_CORES]: CALCULATION COMPLETE ")

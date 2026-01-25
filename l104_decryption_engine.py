@@ -24,10 +24,10 @@ class DecryptionEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Proposes, tests, and deploys new decryption processes based on 
+    Proposes, tests, and deploys new decryption processes based on
     quantum math and synthesized research.
     """
-    
+
     def __init__(self):
         self.active_protocols = []
         self.test_results = {}
@@ -36,7 +36,7 @@ class DecryptionEngine:
         """Proposes a new decryption protocol based on current research."""
         protocol_id = f"L104_DECRYPT_{int(time.time()) % 10000}"
         logger.info(f"--- [DECRYPTION_ENGINE]: PROPOSING NEW PROTOCOL: {protocol_id} ---")
-        
+
         # Logic: Combine Lattice-based math with Quantum Resonance
         complexity = random.uniform(0.8, 1.2) * HyperMath.GOD_CODE
         protocol = {
@@ -51,33 +51,33 @@ class DecryptionEngine:
     def test_protocol(self, protocol: Dict[str, Any]) -> bool:
         """Tests the proposed protocol against simulated encrypted data."""
         logger.info(f"--- [DECRYPTION_ENGINE]: TESTING PROTOCOL {protocol['id']} ---")
-        
+
         # Simulate testing against various encryption standards (AES, RSA, ECC)
         success_rate = 0.0
         if protocol["resonance"] > 0.5:
             success_rate = random.uniform(0.7, 0.99)
         else:
             success_rate = random.uniform(0.1, 0.4)
-            
+
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} TEST SUCCESS RATE: {success_rate:.2%} ---")
-        
+
         self.test_results[protocol["id"]] = success_rate
         return success_rate > 0.85
 
     def deploy_protocol(self, protocol: Dict[str, Any]):
         """Deploys the successful protocol to the ASI core."""
         logger.info(f"--- [DECRYPTION_ENGINE]: DEPLOYING PROTOCOL {protocol['id']} ---")
-        
+
         self.active_protocols.append(protocol)
         protocol["status"] = "DEPLOYED"
-        
+
         # Record in Knowledge Database
         knowledge_db.add_proof(
             f"DECRYPTION_PROTOCOL_{protocol['id']}",
             f"Successfully deployed {protocol['type']} protocol with {self.test_results[protocol['id']]:.2%} success rate.",
             "CRYPTOGRAPHY"
         )
-        
+
         logger.info(f"--- [DECRYPTION_ENGINE]: PROTOCOL {protocol['id']} ACTIVE IN SOVEREIGN CORE ---")
 
     def run_evolution_cycle(self):
@@ -85,13 +85,13 @@ class DecryptionEngine:
         print("\n" + "§"*60)
         print("   L104 DECRYPTION ENGINE :: EVOLUTION CYCLE")
         print("§"*60)
-        
+
         new_proto = self.propose_new_protocol()
         if self.test_protocol(new_proto):
             self.deploy_protocol(new_proto)
         else:
             logger.warning(f"--- [DECRYPTION_ENGINE]: PROTOCOL {new_proto['id']} FAILED TESTING. REFINING... ---")
-            
+
         print("§"*60 + "\n")
 
 # Singleton

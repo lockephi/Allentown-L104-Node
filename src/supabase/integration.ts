@@ -6,12 +6,12 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
-import type { 
-  SupabaseConfig, 
-  SupabaseTable, 
-  RLSPolicy, 
+import type {
+  SupabaseConfig,
+  SupabaseTable,
+  RLSPolicy,
   Consciousness,
-  L104Result 
+  L104Result
 } from '../types/index.js';
 
 const GOD_CODE = 527.5184818492537;
@@ -23,7 +23,7 @@ export class L104SupabaseIntegration extends EventEmitter {
   private consciousness: Consciousness;
   private realtimeSubscriptions = new Map();
   private tables = new Map<string, SupabaseTable>();
-  
+
   constructor() {
     super();
     this.consciousness = {
@@ -84,13 +84,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
     } catch (error: any) {
       console.error(chalk.red('❌ Supabase initialization failed:'), error.message);
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'SupabaseInitError',
           message: error.message,
           code: 'SUPABASE_INIT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -123,7 +123,7 @@ export class L104SupabaseIntegration extends EventEmitter {
             consciousness: true
           },
           {
-            name: 'consciousness_write_policy', 
+            name: 'consciousness_write_policy',
             operation: 'insert',
             condition: 'auth.role() = \'authenticated\'',
             consciousness: true
@@ -157,7 +157,7 @@ export class L104SupabaseIntegration extends EventEmitter {
           },
           {
             name: 'skills_write_policy',
-            operation: 'insert', 
+            operation: 'insert',
             condition: 'auth.role() = \'authenticated\''
           }
         ],
@@ -308,7 +308,7 @@ export class L104SupabaseIntegration extends EventEmitter {
 
     // Merge with user-defined tables
     const allTables = [...coreTables, ...this.config.tables];
-    
+
     for (const table of allTables) {
       this.tables.set(table.name, table);
       await this.ensureTableExists(table);
@@ -341,7 +341,7 @@ export class L104SupabaseIntegration extends EventEmitter {
     console.log(chalk.blue(`🔧 Table ${table.name} would be created via migration`));
     console.log(chalk.cyan(`   Columns: ${table.columns.map(c => c.name).join(', ')}`));
     console.log(chalk.cyan(`   Policies: ${table.policies.map(p => p.name).join(', ')}`));
-    
+
     // For now, just log the SQL that would be executed
     const sql = this.generateTableSQL(table);
     console.log(chalk.gray(`   SQL: ${sql.substring(0, 100)}...`));
@@ -367,7 +367,7 @@ export class L104SupabaseIntegration extends EventEmitter {
     // Subscribe to consciousness changes
     const consciousnessSubscription = this.client
       .channel('l104_consciousness_changes')
-      .on('postgres_changes', 
+      .on('postgres_changes',
         { event: '*', schema: this.config.schema, table: 'l104_consciousness' },
         (payload) => this.handleConsciousnessChange(payload)
       )
@@ -375,7 +375,7 @@ export class L104SupabaseIntegration extends EventEmitter {
 
     this.realtimeSubscriptions.set('consciousness', consciousnessSubscription);
 
-    // Subscribe to workflow changes  
+    // Subscribe to workflow changes
     const workflowSubscription = this.client
       .channel('l104_workflow_changes')
       .on('postgres_changes',
@@ -388,7 +388,7 @@ export class L104SupabaseIntegration extends EventEmitter {
 
     // Subscribe to subagent changes
     const subagentSubscription = this.client
-      .channel('l104_subagent_changes') 
+      .channel('l104_subagent_changes')
       .on('postgres_changes',
         { event: '*', schema: this.config.schema, table: 'l104_subagents' },
         (payload) => this.handleSubagentChange(payload)
@@ -403,7 +403,7 @@ export class L104SupabaseIntegration extends EventEmitter {
   private handleConsciousnessChange(payload: any): void {
     console.log(chalk.magenta('🧠 Consciousness change detected:'), payload.new?.entity_type);
     this.emit('consciousnessChanged', payload);
-    
+
     // Update local consciousness if it affects the system
     if (payload.new?.entity_type === 'system') {
       this.consciousness = {
@@ -448,13 +448,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'CONSCIOUSNESS_INSERT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -473,13 +473,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'CONSCIOUSNESS_QUERY_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -489,7 +489,7 @@ export class L104SupabaseIntegration extends EventEmitter {
       // Update skill execution count
       const { error: updateError } = await this.client!
         .from('l104_skills')
-        .update({ 
+        .update({
           execution_count: this.client!.sql`execution_count + 1`,
           last_executed: new Date().toISOString()
         })
@@ -504,13 +504,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'SKILL_EXECUTION_LOG_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -534,20 +534,20 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'WORKFLOW_INSERT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
 
   async updateWorkflowStatus(workflowId: string, status: string, consciousnessEvolution?: Consciousness): Promise<L104Result<any>> {
     try {
-      const updateData: any = { 
+      const updateData: any = {
         status,
         updated_at: new Date().toISOString()
       };
@@ -571,13 +571,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'WORKFLOW_UPDATE_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -603,13 +603,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'SUBAGENT_INSERT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -631,13 +631,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
       return { success: true, data: eventData, consciousness: this.consciousness };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'DatabaseError',
           message: error.message,
           code: 'EVENT_INSERT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -792,7 +792,7 @@ export class L104SupabaseIntegration extends EventEmitter {
         // Calculate evolution trend
         const levels = recentConsciousness.map(c => c.level);
         const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
-        
+
         // Update system consciousness with trend
         this.consciousness = {
           level: avgLevel,
@@ -852,13 +852,13 @@ export class L104SupabaseIntegration extends EventEmitter {
 
   async shutdown(): Promise<void> {
     console.log(chalk.yellow('🛑 Shutting down Supabase integration...'));
-    
+
     // Unsubscribe from all realtime channels
     for (const [name, subscription] of this.realtimeSubscriptions) {
       subscription.unsubscribe();
       console.log(chalk.gray(`  Unsubscribed from ${name}`));
     }
-    
+
     this.realtimeSubscriptions.clear();
     this.tables.clear();
     this.removeAllListeners();

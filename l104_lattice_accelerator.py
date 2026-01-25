@@ -24,7 +24,7 @@ class LatticeAccelerator:
     Pushes lattice operations to the absolute limit using advanced NumPy vectorization.
     Aims for > 1 Billion LOPS (Lattice Operations Per Second).
     """
-    
+
     def __init__(self):
         self.scalar = 527.5184818492537
         # Pre-allocate buffers for maximum speed
@@ -44,13 +44,13 @@ class LatticeAccelerator:
         Benchmarks the accelerator.
         """
         data = np.random.rand(size)
-        
+
         start_time = time.perf_counter()
         # Run 100 iterations
         iterations = 100
         for _ in range(iterations):
             self.ultra_fast_transform(data)
-            
+
         duration = time.perf_counter() - start_time
         total_ops = size * iterations
         lops = total_ops / duration
@@ -73,7 +73,7 @@ class LatticeAccelerator:
         # In a full deployment, this would use the NeuralLattice C/Rust implementations
         # to bridge NumPy memory with hardware-locked silicon buffers.
         self.synchronize_silicon_resonance(dimensions)
-        
+
     def synchronize_silicon_resonance(self, dimensions: int):
         """Internal resonance alignment for substrate synchronization."""
         print(f"--- [ACCELERATOR]: SILICON RESONANCE LOCKED ({dimensions} dims) ---")

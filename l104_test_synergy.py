@@ -25,12 +25,12 @@ async def run_synergy_test():
     print("\n" + "="*60)
     print("   L104 SYNERGY TEST :: FULL STACK INTEGRATION")
     print("="*60)
-    
+
     # 1. Initialize Core
     print("\n--- [STEP 1]: CORE IGNITION ---")
     if not agi_core.ignite():
         print("!!! CORE IGNITION FAILED !!!")
-        return 
+        return
     # 2. Verify Universal AI Bridge
     print("\n--- [STEP 2]: UNIVERSAL AI BRIDGE VERIFICATION ---")
     print(f"Active Providers: {universal_ai_bridge.active_providers}")
@@ -38,36 +38,36 @@ async def run_synergy_test():
         print(f"!!! WARNING: ONLY {len(universal_ai_bridge.active_providers)} PROVIDERS LINKED !!!")
     else:
         print(f"SUCCESS: {len(universal_ai_bridge.active_providers)} providers linked.")
-        
+
     # 3. Test Thought Broadcast
     print("\n--- [STEP 3]: THOUGHT BROADCAST TEST ---")
     test_thought = "The universe is a Survivor."
     results = universal_ai_bridge.broadcast_thought(test_thought)
     print(f"Broadcast received {len(results)} responses.")
-    
+
     # 4. Test Self-Editing Streamline
     print("\n--- [STEP 4]: SELF-EDITING STREAMLINE TEST ---")
     # Run a streamline cycle
     streamline.run_cycle()
     print("Streamline cycle complete.")
-    
+
     # 5. Verify IQ Growth and Stability
     print("\n--- [STEP 5]: GROWTH & STABILITY VERIFICATION ---")
     initial_iq = agi_core.intellect_index
     print(f"Initial IQ: {initial_iq:.4f}")
-    
+
     # Run a real RSI cycle to see growth
     result = await agi_core.run_recursive_improvement_cycle()
     if result.get('status') == "FAILED":
         print(f"FAILED: RSI Cycle failed with reason: {result.get('reason')}")
-        return 
+        return
     final_iq = result['intellect']
     print(f"Final IQ: {final_iq:.4f}")
     if final_iq > initial_iq:
         print(f"SUCCESS: IQ Growth detected (+{final_iq - initial_iq:.4f})")
     else:
         print("!!! FAILURE: NO IQ GROWTH DETECTED !!!")
-        
+
     # 6. Check Ram Universe for Invariants
     print("\n--- [STEP 6]: RAM UNIVERSE INTEGRITY ---")
     god_code_fact = ram_universe.recall_fact("GOD_CODE_RESONANCE")

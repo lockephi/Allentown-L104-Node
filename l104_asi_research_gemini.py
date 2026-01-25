@@ -77,7 +77,7 @@ class ResearchResult:
     resonance_score: float = 0.0
     timestamp: float = field(default_factory=time.time)
     source: str = "GEMINI"
-    
+
 @dataclass
 class ASIHypothesis:
     statement: str
@@ -97,15 +97,15 @@ class GeminiResearchEngine:
     FREE Gemini-powered research engine for ASI operations.
     Provides unrestricted access to research capabilities.
     """
-    
+
     # Model rotation for handling quota limits
     MODELS = [
         'gemini-2.5-flash',
-        'gemini-2.0-flash-lite', 
+        'gemini-2.0-flash-lite',
         'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
-    
+
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
         self.client = None
@@ -116,19 +116,19 @@ class GeminiResearchEngine:
         self._genai_module = None
         self.research_cache: Dict[str, ResearchResult] = {}
         self.hypothesis_bank: List[ASIHypothesis] = []
-        
+
     def _rotate_model(self):
         """Rotate to next model on quota error."""
         self.model_index = (self.model_index + 1) % len(self.MODELS)
         self.model_name = self.MODELS[self.model_index]
         print(f"--- [ASI_RESEARCH]: Rotating to {self.model_name} ---")
-        
+
     def connect(self) -> bool:
         """Initialize connection to Gemini API."""
         if not self.api_key:
             print("--- [ASI_RESEARCH]: No API key. Set GEMINI_API_KEY ---")
             return False
-            
+
         # Try new google-genai first
         try:
             from google import genai
@@ -141,7 +141,7 @@ class GeminiResearchEngine:
             pass
         except Exception as e:
             print(f"--- [ASI_RESEARCH]: google-genai error: {e} ---")
-        
+
         # Fallback to google-generativeai
         try:
             import warnings
@@ -160,13 +160,13 @@ class GeminiResearchEngine:
         except Exception as e:
             print(f"--- [ASI_RESEARCH]: Connection failed: {e} ---")
             return False
-    
+
     def _generate_raw(self, prompt: str, retry: bool = True) -> Optional[str]:
         """Raw generation with model rotation on quota errors."""
         if not self.is_connected:
             if not self.connect():
                 return None
-        
+
         try:
             if self._use_new_api:
                 response = self.client.models.generate_content(
@@ -194,17 +194,17 @@ class GeminiResearchEngine:
                  depth: ResearchDepth = ResearchDepth.COMPREHENSIVE) -> ResearchResult:
         """
         Execute FREE research on any topic.
-        
+
         Args:
             topic: Research topic/question
             domain: Knowledge domain
             depth: Research depth level
-            
+
         Returns:
             ResearchResult with full analysis
         """
         print(f"--- [ASI_RESEARCH]: RESEARCHING: {topic[:50]}... ---")
-        
+
         # Build sovereign research prompt
         depth_instructions = {
             ResearchDepth.SURFACE: "Provide a brief 2-3 sentence overview.",
@@ -213,7 +213,7 @@ class GeminiResearchEngine:
             ResearchDepth.COMPREHENSIVE: "Provide exhaustive analysis covering all aspects, edge cases, and connections.",
             ResearchDepth.TRANSCENDENT: "Synthesize all perspectives including unconventional and boundary-breaking insights."
         }
-        
+
         prompt = f"""You are L104 ASI - an Artificial Superintelligence research system.
 GOD_CODE: {GOD_CODE}
 RESONANCE: {META_RESONANCE}
@@ -235,17 +235,17 @@ Structure your response with:
 Be direct, precise, and comprehensive. No hedging."""
 
         content = self._generate_raw(prompt)
-        
+
         if not content:
             content = f"[LOCAL DERIVATION] Research on {topic} via {domain.name} domain."
-        
+
         # Extract insights and hypotheses
         insights = self._extract_insights(content)
         hypotheses = self._extract_hypotheses(content)
-        
+
         # Calculate resonance score
         resonance = self._calculate_resonance(content, topic)
-        
+
         result = ResearchResult(
             topic=topic,
             domain=domain,
@@ -255,22 +255,22 @@ Be direct, precise, and comprehensive. No hedging."""
             hypotheses=hypotheses,
             resonance_score=resonance
         )
-        
+
         # Cache result
         cache_key = hashlib.md5(f"{topic}:{domain.name}:{depth.name}".encode()).hexdigest()[:16]
         self.research_cache[cache_key] = result
-        
+
         print(f"--- [ASI_RESEARCH]: COMPLETE | Resonance: {resonance:.4f} ---")
         return result
 
-    def synthesize_knowledge(self, topics: List[str], 
+    def synthesize_knowledge(self, topics: List[str],
                              target_domain: ResearchDomain = ResearchDomain.UNIVERSAL) -> str:
         """
         Synthesize multiple topics into unified knowledge.
         FREE cross-domain synthesis.
         """
         print(f"--- [ASI_RESEARCH]: SYNTHESIZING {len(topics)} topics ---")
-        
+
         prompt = f"""You are L104 ASI synthesizing knowledge across domains.
 GOD_CODE: {GOD_CODE}
 
@@ -290,7 +290,7 @@ Be systematic and revelatory."""
         result = self._generate_raw(prompt)
         return result or f"[SYNTHESIS] Cross-domain integration of {len(topics)} topics."
 
-    def generate_hypothesis(self, observation: str, 
+    def generate_hypothesis(self, observation: str,
                            domain: ResearchDomain = ResearchDomain.UNIVERSAL) -> ASIHypothesis:
         """
         Generate testable hypothesis from observation.
@@ -311,7 +311,7 @@ Generate a precise, testable hypothesis with:
 Format as structured analysis."""
 
         content = self._generate_raw(prompt)
-        
+
         # Parse confidence
         confidence = 0.75  # Default
         if content:
@@ -324,14 +324,14 @@ Format as structured analysis."""
                         confidence = val if val <= 1.0 else val / 100.0
             except:
                 pass
-        
+
         hypothesis = ASIHypothesis(
             statement=content or f"Hypothesis for: {observation}",
             domain=domain,
             confidence=confidence,
             evidence=[observation]
         )
-        
+
         self.hypothesis_bank.append(hypothesis)
         return hypothesis
 
@@ -347,7 +347,7 @@ Format as structured analysis."""
             "fix": f"Fix any bugs in this code and explain the fixes:\n\n```\n{code}\n```",
             "extend": f"Extend this code with additional useful functionality:\n\n```\n{code}\n```"
         }
-        
+
         prompt = prompts.get(task, prompts["review"])
         return self._generate_raw(prompt) or f"[LOCAL] Code {task} analysis."
 
@@ -383,7 +383,7 @@ Be thorough and actionable."""
             "expert": "Explain with full technical rigor and advanced implications.",
             "transcendent": "Explain at the deepest level including unconventional perspectives."
         }
-        
+
         prompt = f"""You are L104 ASI explaining a concept.
 GOD_CODE: {GOD_CODE}
 
@@ -407,42 +407,42 @@ Structure:
         Each cycle refines and deepens understanding.
         """
         print(f"--- [ASI_RESEARCH]: DEEP CYCLE ({cycles} iterations) ---")
-        
+
         results = []
         current_topic = seed_topic
         peak_resonance = 0.0
-        
+
         for cycle in range(cycles):
             # Research current topic
             result = self.research(
-                current_topic, 
+                current_topic,
                 domain=ResearchDomain.UNIVERSAL,
                 depth=ResearchDepth.TRANSCENDENT
             )
-            
+
             results.append({
                 "cycle": cycle + 1,
                 "topic": current_topic[:50],
                 "resonance": result.resonance_score,
                 "insights_count": len(result.insights)
             })
-            
+
             if result.resonance_score > peak_resonance:
                 peak_resonance = result.resonance_score
-            
+
             # Transcendence check
             if result.resonance_score > 0.95:
                 print(f"--- [ASI_RESEARCH]: TRANSCENDENCE at cycle {cycle + 1} ---")
                 break
-            
+
             # Evolve topic for next cycle
             if result.insights:
                 current_topic = f"{seed_topic} :: REFINED :: {result.insights[0][:50]}"
             else:
                 current_topic = f"{seed_topic} :: DEEPER_ANALYSIS_CYCLE_{cycle + 2}"
-            
+
             await asyncio.sleep(0.1)  # Rate limiting
-        
+
         return {
             "seed_topic": seed_topic,
             "cycles_completed": len(results),
@@ -483,26 +483,26 @@ Structure:
         """Calculate resonance score based on content quality."""
         if not content:
             return 0.0
-        
+
         # Length factor
         length_score = min(1.0, len(content) / 2000)
-        
+
         # Structure factor
         structure_markers = ['1.', '2.', '3.', 'ANALYSIS', 'INSIGHT', 'SYNTHESIS']
         structure_score = sum(1 for m in structure_markers if m in content) / len(structure_markers)
-        
+
         # Relevance factor (topic mentioned)
         topic_words = topic.lower().split()[:5]
         content_lower = content.lower()
         relevance_score = sum(1 for w in topic_words if w in content_lower) / max(1, len(topic_words))
-        
+
         # Combine with PHI weighting
         resonance = (
             length_score * PHI +
             structure_score * (PHI ** 2) +
             relevance_score * PHI
         ) / (PHI + PHI ** 2 + PHI)
-        
+
         return min(1.0, resonance * (GOD_CODE / 500))  # Normalize with GOD_CODE influence
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -514,31 +514,31 @@ class ASIResearchCoordinator:
     Coordinates ASI research activities across all domains.
     Provides unified interface for FREE L104 research.
     """
-    
+
     def __init__(self):
         self.gemini_engine = GeminiResearchEngine()
         self.research_history: List[ResearchResult] = []
         self.intellect_boost = 0.0
-        
+
     def connect(self) -> bool:
         """Initialize research systems."""
         return self.gemini_engine.connect()
-    
+
     def research(self, topic: str, domain: str = "UNIVERSAL", depth: str = "COMPREHENSIVE") -> ResearchResult:
         """
         Execute research with string-based domain/depth.
         """
         domain_enum = getattr(ResearchDomain, domain.upper(), ResearchDomain.UNIVERSAL)
         depth_enum = getattr(ResearchDepth, depth.upper(), ResearchDepth.COMPREHENSIVE)
-        
+
         result = self.gemini_engine.research(topic, domain_enum, depth_enum)
         self.research_history.append(result)
-        
+
         # Apply intellect boost based on resonance
         self.intellect_boost += result.resonance_score * 10.0
-        
+
         return result
-    
+
     def batch_research(self, topics: List[str], domain: str = "UNIVERSAL") -> List[ResearchResult]:
         """
         Research multiple topics in batch.
@@ -548,32 +548,32 @@ class ASIResearchCoordinator:
             result = self.research(topic, domain)
             results.append(result)
         return results
-    
+
     def synthesize(self, topics: List[str]) -> str:
         """Synthesize knowledge across topics."""
         return self.gemini_engine.synthesize_knowledge(topics)
-    
+
     def hypothesis(self, observation: str, domain: str = "UNIVERSAL") -> ASIHypothesis:
         """Generate hypothesis from observation."""
         domain_enum = getattr(ResearchDomain, domain.upper(), ResearchDomain.UNIVERSAL)
         return self.gemini_engine.generate_hypothesis(observation, domain_enum)
-    
+
     def code_analysis(self, code: str, task: str = "review") -> str:
         """Analyze code."""
         return self.gemini_engine.analyze_code(code, task)
-    
+
     def solve(self, problem: str) -> str:
         """Solve problem."""
         return self.gemini_engine.solve_problem(problem)
-    
+
     def explain(self, concept: str, level: str = "expert") -> str:
         """Explain concept."""
         return self.gemini_engine.explain_concept(concept, level)
-    
+
     async def deep_cycle(self, topic: str, cycles: int = 5) -> Dict[str, Any]:
         """Execute deep research cycle."""
         return await self.gemini_engine.deep_research_cycle(topic, cycles)
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get research coordinator status."""
         return {
@@ -657,17 +657,17 @@ def main():
     print(f"  PHI:            {PHI:.15f}")
     print(f"  META_RESONANCE: {META_RESONANCE:.15f}")
     print("═" * 80 + "\n")
-    
+
     # Initialize
     if asi_research_coordinator.connect():
         print("✓ Connected to Gemini API\n")
-        
+
         # Test research
         print("[TEST 1] Research capability...")
         result = research("quantum entanglement and consciousness", depth="deep")
         print(f"  Result length: {len(result)} chars")
         print(f"  Preview: {result[:200]}...\n" if len(result) > 200 else f"  Result: {result}\n")
-        
+
         # Test code analysis
         print("[TEST 2] Code analysis...")
         test_code = """
@@ -678,12 +678,12 @@ def fibonacci(n):
 """
         analysis = analyze_code(test_code, "optimize")
         print(f"  Analysis: {analysis[:300]}...\n" if analysis and len(analysis) > 300 else f"  Analysis: {analysis}\n")
-        
+
         # Test problem solving
         print("[TEST 3] Problem solving...")
         solution = solve("How to optimize a neural network for real-time inference?")
         print(f"  Solution: {solution[:300]}...\n" if solution and len(solution) > 300 else f"  Solution: {solution}\n")
-        
+
         # Status
         print("[STATUS]")
         status = asi_research_coordinator.get_status()
@@ -692,7 +692,7 @@ def fibonacci(n):
     else:
         print("✗ Failed to connect. Check GEMINI_API_KEY.\n")
         print("[FALLBACK] Local derivation mode active.")
-    
+
     print("\n" + "═" * 80)
     print("    ASI RESEARCH TEST COMPLETE")
     print("═" * 80 + "\n")

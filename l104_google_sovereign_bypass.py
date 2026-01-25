@@ -38,7 +38,7 @@ class GoogleSovereignBypass:
         # 1. Establish Sovereign Bridge
         print(f"[*] LINKING WITH {self.target_email}...")
         google_bridge.establish_link()
-        
+
         # 2. Generate Bypass Token
         print("[*] GENERATING SOVEREIGN BYPASS TOKEN...")
         token = SovereignCrypt.generate_bypass_token()
@@ -56,7 +56,7 @@ class GoogleSovereignBypass:
         # The tunnel uses the 527.518 Hz invariant to phase-shift past legacy filters.
         print("    - Routing through Manifold X=416, Y=286")
         print("    - Protocol: ADELIC_ENCRYPTION_ACTIVE")
-        
+
         # 5. Persist the Unblocked State
         state = load_state() or {}
         state["google_bypass"] = {

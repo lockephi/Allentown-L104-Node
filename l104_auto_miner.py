@@ -59,7 +59,7 @@ def get_mining_job():
 def submit_solution(nonce: int, block_hash: str):
     """Submit mining solution."""
     try:
-        r = httpx.post(f"{BASE_URL}/coin/submit", 
+        r = httpx.post(f"{BASE_URL}/coin/submit",
                        json={"nonce": nonce, "hash": block_hash},
                        timeout=10)
         return r.json() if r.status_code == 200 else None
@@ -80,12 +80,12 @@ def mine_block(job: dict, max_attempts: int = 100000):
     """
     difficulty = job.get('difficulty', 4)
     target_prefix = '0' * difficulty
-    
+
     nonce = random.randint(0, 10_000_000)
-    
+
     for attempt in range(max_attempts):
         resonance = calculate_resonance(nonce)
-        
+
         # Only valid if resonance is high enough
         if resonance >= 0.985:
             block_data = json.dumps({
@@ -94,16 +94,16 @@ def mine_block(job: dict, max_attempts: int = 100000):
                 "nonce": nonce,
                 "resonance": resonance
             }, sort_keys=True).encode()
-            
+
             # L104 Multi-Algo: SHA-256 + Blake2b
             sha = hashlib.sha256(block_data).digest()
             block_hash = hashlib.blake2b(sha).hexdigest()
-            
+
             if block_hash.startswith(target_prefix):
                 return nonce, block_hash, resonance, attempt + 1
-        
+
         nonce += 1
-    
+
     return None, None, 0, max_attempts
 
 
@@ -116,7 +116,7 @@ def calculate_interval(cycle: int) -> float:
 
 def main():
     global blocks_mined, total_reward, running
-    
+
     print("=" * 60)
     print("⟨Σ_L104⟩ AUTO MINER v1.0")
     print("=" * 60)
@@ -125,35 +125,35 @@ def main():
     print(f"  Reward: 104.0 L104SP per block")
     print(f"  Press Ctrl+C to stop")
     print("=" * 60)
-    
+
     cycle = 0
-    
+
     while running:
         cycle += 1
         interval = calculate_interval(cycle)
-        
+
         print(f"\n[CYCLE {cycle}] {time.strftime('%H:%M:%S')}")
-        
+
         # Get job
         job = get_mining_job()
         if not job:
             print("  ⚠️ No job available")
             time.sleep(10)
             continue
-        
+
         difficulty = job.get('difficulty', 4)
         print(f"  Difficulty: {difficulty} | Target: {'0' * difficulty}...")
-        
+
         # Mine
         start = time.time()
         nonce, block_hash, resonance, attempts = mine_block(job)
         elapsed = time.time() - start
-        
+
         if nonce:
             print(f"  ✓ Found in {elapsed:.2f}s ({attempts} attempts)")
             print(f"  Nonce: {nonce} | Resonance: {resonance:.4f}")
             print(f"  Hash: {block_hash[:40]}...")
-            
+
             # Submit
             result = submit_solution(nonce, block_hash)
             if result:
@@ -164,7 +164,7 @@ def main():
                 print(f"  ⚠️ Submitted (awaiting confirmation)")
         else:
             print(f"  ✗ No solution found in {elapsed:.2f}s")
-        
+
         # Wait for next cycle
         if running:
             print(f"  Next cycle in {interval:.1f}s...")
@@ -173,7 +173,7 @@ def main():
                 if not running:
                     break
                 time.sleep(1)
-    
+
     # Final summary
     print("\n" + "=" * 60)
     print("MINING SESSION COMPLETE")

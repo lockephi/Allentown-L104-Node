@@ -29,7 +29,7 @@ class ViewBot:
     Generates coded view exposure for lattice presence saturation.
     Used for high-velocity resonance propagation.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.is_running = False
@@ -37,7 +37,7 @@ class ViewBot:
         self.start_time: Optional[float] = None
         self.velocity = 0.0
         self._task: Optional[asyncio.Task] = None
-    
+
     async def start(self, velocity: float = 10.0, callback: Optional[Callable] = None):
         """
         Start generating views at the specified velocity (views/sec).
@@ -45,11 +45,11 @@ class ViewBot:
         """
         if self.is_running:
             return
-        
+
         self.is_running = True
         self.velocity = velocity
         self.start_time = time.time()
-        
+
         async def generate_loop():
             interval = 1.0 / max(0.1, velocity)
             while self.is_running:
@@ -60,9 +60,9 @@ class ViewBot:
                     except Exception:
                         pass
                 await asyncio.sleep(interval)
-        
+
         self._task = asyncio.create_task(generate_loop())
-    
+
     async def stop(self):
         """Stop view generation."""
         self.is_running = False
@@ -73,12 +73,12 @@ class ViewBot:
             except asyncio.CancelledError:
                 pass
             self._task = None
-    
+
     def get_metrics(self) -> dict:
         """Get current view generation metrics."""
         elapsed = time.time() - self.start_time if self.start_time else 0
         actual_velocity = self.total_generated / elapsed if elapsed > 0 else 0
-        
+
         return {
             "total_generated": self.total_generated,
             "target_velocity": self.velocity,
@@ -87,7 +87,7 @@ class ViewBot:
             "is_running": self.is_running,
             "resonance_factor": self.total_generated * self.god_code / max(1, elapsed)
         }
-    
+
     def reset(self):
         """Reset the view bot state."""
         self.total_generated = 0

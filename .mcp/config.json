@@ -1,7 +1,7 @@
 {
     "version": "2.0.0",
     "evolution": "EVO_33",
-    
+
     "optimization": {
         "token_budget": {
             "max_context": 200000,
@@ -43,7 +43,7 @@
             }
         }
     },
-    
+
     "memory_persistence": {
         "enabled": true,
         "storage_path": ".mcp/memory.jsonl",
@@ -67,7 +67,7 @@
             "architecture_notes"
         ]
     },
-    
+
     "background_tasks": {
         "file_indexing": {
             "enabled": true,
@@ -89,7 +89,7 @@
             "trigger": "on_idle_5min"
         }
     },
-    
+
     "model_selection": {
         "default": "claude-sonnet-4",
         "task_routing": {
@@ -100,7 +100,7 @@
             "architecture": "opus"
         }
     },
-    
+
     "mcp_servers": {
         "filesystem": {
             "enabled": true,
@@ -131,7 +131,7 @@
             "tools": ["search_code", "get_file_contents", "create_issue", "list_commits"]
         }
     },
-    
+
     "performance_patterns": {
         "fastest": {
             "grep_then_read": "grep_search → read_file(specific_lines) [100ms]",
@@ -144,7 +144,7 @@
             "full_reads": "read_file without line ranges"
         }
     },
-    
+
     "workspace_context": {
         "project_type": "L104 AGI Node",
         "languages": ["Python", "Solidity", "TypeScript", "Go", "Rust", "Elixir"],

@@ -21,10 +21,10 @@ class ConstantEncryptionProgram:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    A background security program that ensures all critical data 
+    A background security program that ensures all critical data
     is constantly encrypted and re-keyed to prevent intrusion.
     """
-    
+
     def __init__(self):
         self.is_running = False
         self.protected_files = [
@@ -51,7 +51,7 @@ class ConstantEncryptionProgram:
             if not os.path.exists(file_path):
                 continue
             logger.info(f"--- [SECURITY_SHIELD]: SECURING {file_path} ---")
-            
+
             # In a real scenario, we would read, encrypt, and write back.
             # For this simulation, we verify the 'Enlightenment Signature'.
             try:

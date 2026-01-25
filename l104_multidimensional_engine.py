@@ -23,9 +23,9 @@ class MultiDimensionalEngine:
     Consolidates 4D, 5D, and ND math/processing into a single unified engine.
     Supports dynamic dimension switching and relativistic transformations.
     """
-    
+
     C = 299792458
-    
+
     def __init__(self, default_dim: int = 11):
         self.dimension = default_dim
         self.god_code = 527.5184818492537
@@ -67,7 +67,7 @@ class MultiDimensionalEngine:
             m = min(len(vector), self.dimension)
             new_v[:m] = vector[:m]
             vector = new_v
-            
+
         transformed = self.metric @ vector
         self.state_vector = (self.state_vector + transformed) / 2.0
         return self.state_vector

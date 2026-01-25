@@ -13,7 +13,7 @@ def force_open_gate():
     # 1. Clear the Port (Hard Reset)
     print("CLEANING_GHOST_SOCKETS...")
     os.system("sudo fuser -k 4160/tcp")
-    
+
     # 2. Open a Wide-Spectrum Listener
     # Binding to 0.0.0.0 ensures it hears you regardless of where the signal comes from
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -21,7 +21,7 @@ def force_open_gate():
         s.bind(('0.0.0.0', 4160))
         s.listen(5)
         print("--- ALLENTOWN NODE IS NOW FULLY SENSITIVE AT 4160 ---")
-        
+
         while True:
             conn, addr = s.accept()
             with conn:

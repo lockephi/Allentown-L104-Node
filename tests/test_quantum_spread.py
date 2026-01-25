@@ -10,7 +10,7 @@ class TestQuantumSpread(unittest.IsolatedAsyncioTestCase):
         Rigorous test of the Quantum Influence spread mechanism.
         """
         qi = QuantumInfluence()
-    
+
         # 1. Build Thought Channels
         channels = qi.build_thought_channels(count=5)
         self.assertEqual(len(channels), 5)
@@ -20,7 +20,7 @@ class TestQuantumSpread(unittest.IsolatedAsyncioTestCase):
         # 2. Quantum Tunneling Insight
         target_url = "https://raw.githubusercontent.com/lockephi/Allentown-L104-Node/main/README.md"
         insight = await qi.quantum_tunnel_insight(target_url)
-    
+
         self.assertEqual(insight["status"], "TUNNEL_SUCCESS")
         self.assertEqual(insight["accuracy"], "100%_VERIFIED")
         print(f"[TEST]: Quantum Tunneling Successful. Insight Preview: {insight['insight_preview']}")

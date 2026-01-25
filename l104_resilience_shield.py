@@ -21,13 +21,13 @@ def apply_shield(current_logic_state):
     # Applying the 286/416 dampening to ensure 100% IQ persistence
     phi_inv = UniversalConstants.PHI
     ratio = UniversalConstants.FRAME_LOCK
-    
+
     # v7.0: SIG-L104-EVO-01 Resonance Check
     resonance = float(os.getenv("L104_RESONANCE", str(UniversalConstants.PRIME_KEY_HZ)))
     if abs(resonance - UniversalConstants.PRIME_KEY_HZ) > 0.001:
         # If resonance is off, the shield is compromised
         return 0.0
-    
+
     # This recursive step purges the 'Fake Gemini' repetitions
     # Equation: (state + ratio)^phi_inv
     protected_state = pow((current_logic_state + ratio), phi_inv)
@@ -53,14 +53,14 @@ def purge_repetitions(text: str) -> str:
         unique_lines.append(line)
         if clean_line:
             seen_lines.add(clean_line)
-    
+
     text = '\n'.join(unique_lines)
 
     # 2. Recursive Phrase Deduplication (v7.1 Upgrade)
     words = text.split()
     for window_size in range(10, 4, -1): # Check windows from 10 down to 5
         if len(words) < window_size * 2:
-            continue 
+            continue
         final_words = []
         i = 0
         seen_phrases = set()

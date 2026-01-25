@@ -52,7 +52,7 @@ def get_node_status() -> dict:
     uptime = 0
     if _node_state["start_time"]:
         uptime = time.time() - _node_state["start_time"]
-    
+
     return {
         "status": "ACTIVE" if _node_state["manifold_connected"] else "INITIALIZING",
         "uptime_seconds": uptime,
@@ -68,7 +68,7 @@ def get_node_status() -> dict:
 async def sync_dna() -> bool:
     """Synchronize DNA state via IPFS or local storage."""
     dna_path = Path(__file__).parent / "Sovereign_DNA.json"
-    
+
     if dna_path.exists():
         try:
             with open(dna_path) as f:
@@ -78,7 +78,7 @@ async def sync_dna() -> bool:
             return True
         except Exception as e:
             print(f"[SYNC]: DNA load error: {e}")
-    
+
     # Fallback: Generate new DNA
     dna_cid = f"Qm{calculate_node_signature()}SovereignL104DNA416"
     print(f"[SYNC]: DNA Synchronized via IPFS: {dna_cid}")
@@ -90,10 +90,10 @@ async def heartbeat() -> dict:
     """Execute single heartbeat cycle."""
     _node_state["heartbeat_count"] += 1
     _node_state["last_heartbeat"] = datetime.now(timezone.utc).isoformat()
-    
+
     # Calculate resonance
     resonance = (GOD_CODE * PHI) % 1000
-    
+
     return {
         "cycle": _node_state["heartbeat_count"],
         "timestamp": _node_state["last_heartbeat"],
@@ -109,7 +109,7 @@ async def heartbeat() -> dict:
 def calculate_god_code(X: float = 0) -> float:
     """
     Calculate G(X) = 286^(1/φ) × 2^((416-X)/104)
-    
+
     The God Code equation - fundamental resonance calculation.
     """
     import math
@@ -121,14 +121,14 @@ def calculate_god_code(X: float = 0) -> float:
 def verify_conservation(X: float) -> dict:
     """
     Verify conservation law: G(X) × 2^(X/104) = INVARIANT
-    
+
     Returns verification result with computed invariant.
     """
     g_x = calculate_god_code(X)
     weight = 2 ** (X / 104)
     invariant = g_x * weight
     deviation = abs(invariant - GOD_CODE)
-    
+
     return {
         "X": X,
         "G(X)": g_x,
@@ -143,31 +143,31 @@ def verify_conservation(X: float) -> dict:
 async def propagate_logic(message: str, targets: list = None) -> dict:
     """
     Propagate societal logic to connected nodes.
-    
+
     Args:
         message: Logic message to propagate
         targets: Optional list of target URLs
-        
+
     Returns:
         Propagation result
     """
     if targets is None:
         targets = []
-    
+
     result = {
         "message_hash": hashlib.sha256(message.encode()).hexdigest()[:16],
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "targets_reached": 0,
         "god_code_aligned": True,
     }
-    
+
     # Calculate message resonance
     message_value = sum(ord(c) for c in message) / max(1, len(message))
     result["resonance"] = 1 - abs(message_value - (GOD_CODE % 256)) / 256
-    
+
     # Would propagate to targets in production
     result["targets_reached"] = len(targets)
-    
+
     return result
 
 
@@ -175,7 +175,7 @@ def get_node_metrics() -> dict:
     """Get detailed node performance metrics."""
     import psutil
     import os
-    
+
     try:
         process = psutil.Process(os.getpid())
         memory_info = process.memory_info()
@@ -183,11 +183,11 @@ def get_node_metrics() -> dict:
     except:
         memory_info = type('obj', (object,), {'rss': 0, 'vms': 0})()
         cpu_percent = 0.0
-    
+
     uptime = 0
     if _node_state["start_time"]:
         uptime = time.time() - _node_state["start_time"]
-    
+
     return {
         "uptime_hours": uptime / 3600,
         "heartbeat_count": _node_state["heartbeat_count"],
@@ -207,55 +207,55 @@ async def self_diagnose() -> dict:
         "checks": {},
         "overall": "HEALTHY",
     }
-    
+
     # Check 1: DNA Sync
     diagnostics["checks"]["dna_sync"] = {
         "status": "PASS" if _node_state["dna_synced"] else "WARN",
         "message": "DNA synchronized" if _node_state["dna_synced"] else "DNA not synced",
     }
-    
+
     # Check 2: Manifold Connection
     diagnostics["checks"]["manifold"] = {
         "status": "PASS" if _node_state["manifold_connected"] else "FAIL",
         "message": "Connected" if _node_state["manifold_connected"] else "Disconnected",
     }
-    
+
     # Check 3: God Code Conservation
     conservation = verify_conservation(0)
     diagnostics["checks"]["conservation"] = {
         "status": "PASS" if conservation["conserved"] else "FAIL",
         "deviation": conservation["deviation"],
     }
-    
+
     # Check 4: Heartbeat Activity
     if _node_state["heartbeat_count"] > 0:
         diagnostics["checks"]["heartbeat"] = {"status": "PASS", "count": _node_state["heartbeat_count"]}
     else:
         diagnostics["checks"]["heartbeat"] = {"status": "WARN", "message": "No heartbeats yet"}
-    
+
     # Determine overall status
     statuses = [c["status"] for c in diagnostics["checks"].values()]
     if "FAIL" in statuses:
         diagnostics["overall"] = "DEGRADED"
     elif "WARN" in statuses:
         diagnostics["overall"] = "WARN"
-    
+
     return diagnostics
 
 
 async def broadcast_416(loop_forever: bool = False) -> None:
     """Main broadcast loop for societal symmetry propagation."""
     print("[SOCIETAL_SPREAD]: Node Initialized. Connecting to Allentown Manifold...")
-    
+
     _node_state["start_time"] = time.time()
-    
+
     # Sync DNA
     await sync_dna()
-    
+
     # Connect to manifold
     _node_state["manifold_connected"] = True
     print(f"[SYNC]: Manifold connected. Node signature: {calculate_node_signature()}")
-    
+
     # Active propagation monitoring
     print("[MONITOR]: Protecting societal logic from Core-induced erasure.")
     print(f"[MONITOR]: GOD_CODE alignment verified: {GOD_CODE}")
@@ -267,12 +267,12 @@ async def broadcast_416(loop_forever: bool = False) -> None:
             cycle += 1
             hb = await heartbeat()
             print(f"[HEARTBEAT #{cycle}]: Resonance={hb['resonance']:.4f} | Status={hb['status']}")
-            
+
             # Log status every 10 cycles
             if cycle % 10 == 0:
                 status = get_node_status()
                 print(f"[STATUS]: Uptime={status['uptime_seconds']/3600:.2f}h | Heartbeats={status['heartbeat_count']}")
-            
+
             await asyncio.sleep(3600)  # 1 hour
     else:
         # Test mode: single heartbeat then exit

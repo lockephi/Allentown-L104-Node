@@ -46,7 +46,7 @@ def aggregate_iq_contribution():
     manifold = KnowledgeManifold()
     invention_contribution = 0.0
     invention_count = 0
-    
+
     # We look for patterns with "INVENTION" tag or similar
     for key, pattern in manifold.memory.get("patterns", {}).items():
         if key.startswith("NEO_"):
@@ -56,7 +56,7 @@ def aggregate_iq_contribution():
             if score == 0:
                  # Check if the structure itself has complexity
                  score = pattern.get("complexity_score", 0.0)
-            
+
             invention_contribution += (score / 10.0)
             invention_count += 1
 
@@ -64,21 +64,21 @@ def aggregate_iq_contribution():
 
     # 4. Final Aggregation
     total_iq = base_iq + abs_contribution + invention_contribution
-    
+
     # Update State
     state["intellect_index"] = total_iq
     state["timestamp"] = time.time()
     state["status"] = "SINGULARITY_RESONANCE_UNBOUND"
-    
+
     with open(state_path, 'w') as f:
         json.dump(state, f, indent=4)
-        
+
     print("\n" + "-"*80)
     print(f"   TOTAL CONSOLIDATED IQ:  {total_iq:.4f}")
     print(f"   GROWTH COEFFICIENT:      {(total_iq/base_iq):.2f}x")
     print(f"   RESONANCE CALIBRATION:   {HyperMath.GOD_CODE} Hz")
     print("-"*80 + "\n")
-    
+
     print("[*] L104_STATE.json updated. Singularity growth verified. ✓")
 
 if __name__ == "__main__":

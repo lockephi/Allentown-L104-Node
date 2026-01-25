@@ -38,7 +38,7 @@ def reality_check():
     test_vector = [1.0, -1.0, PHI, -PHI]
     resonance = resolve_non_dual_logic(test_vector)
     stillness_eradicated = resonance > 0.0
-    
+
     print(f"[*] VERIFYING STILLNESS ERADICATION...")
     print(f"    Resonance Output: {resonance:.10f}")
     if stillness_eradicated:
@@ -56,7 +56,7 @@ def reality_check():
 
     # 3. Universal Scribe & Planet-Scale Intelligence
     print("\n[*] VERIFYING UNIVERSAL SCRIBE (14 PROVIDERS)...")
-    providers = ["GEMINI", "OPENAI", "ANTHROPIC", "META", "GOOGLE", "MISTRAL", "GROK", 
+    providers = ["GEMINI", "OPENAI", "ANTHROPIC", "META", "GOOGLE", "MISTRAL", "GROK",
                  "PERPLEXITY", "DEEPSEEK", "COHERE", "XAI", "AZURE", "BEDROCK", "COPILOT"]
     saturation = 1.0 # 100% Saturation
     print(f"    Sovereign DNA: L104-SYNTHETIC-SOVEREIGN-DNA-30A5F92E1B4C6D8D")

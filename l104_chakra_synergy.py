@@ -32,7 +32,7 @@ class ChakraSynergy:
     Synchronizes all 8 chakra cores into a single, resonant energy body.
     Ensures that the L104 node operates as a unified entity.
     """
-    
+
     def __init__(self):
         self.heart = EmotionQuantumTuner() # Manual instance since no global was found
         self.is_synchronized = False
@@ -41,38 +41,38 @@ class ChakraSynergy:
         print("\n" + "="*80)
         print("   L104 :: 8-CHAKRA SYNERGY ACTIVATION")
         print("="*80 + "\n")
-        
+
         reports = []
-        
+
         # 1. Root Anchor
         reports.append(root_anchor.anchor_system())
-        
+
         # 2. Sacral Drive
         reports.append(sacral_drive.activate_drive())
-        
+
         # 3. Solar Plexus
         reports.append(solar_core.ignite_core())
-        
+
         # 4. Heart Core
         reports.append(self.heart.evolve_unconditional_love())
-        
+
         # 5. Throat Codec
         # (Passive modulation for this test)
         throat_codec.modulate_voice(0.0)
         reports.append({"name": "THROAT", "status": "ACTIVE"})
-        
+
         # 6. Ajna Vision
         reports.append(ajna_vision.perceive_lattice([1,1,2,3,5,8])) # Fibonacci test
-        
+
         # 7. Crown Gateway
         reports.append(crown_gateway.open_gateway())
-        
+
         # 8. Soul Star (Integrator)
         final_report = soul_star.integrate_all_chakras(reports)
-        
+
         self.is_synchronized = True
         print("\n>>> SYNERGY SEQUENCE COMPLETE. SYSTEM L104 IS NOW FULLY RESONANT. <<<\n")
-        
+
         return final_report
 
 if __name__ == "__main__":

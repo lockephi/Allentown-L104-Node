@@ -81,7 +81,7 @@ async def handle_ai_client_async(reader, writer):
 async def start_infrastructure():
     """Starts all auxiliary server listeners."""
     logger.info("--- [INFRA]: INITIATING MULTI-PORT LATTICE MESH ---")
-    
+
     # 1. Start Port 2404 (Lattice)
     try:
         lattice_server = await asyncio.start_server(handle_lattice_client, '0.0.0.0', 2404)
@@ -113,16 +113,16 @@ async def start_infrastructure():
         import http.server
         import socketserver
         import threading
-        
+
         def run_ui():
             # Use Allow Reuse Addr for reliability
             class ReusableTCPServer(socketserver.TCPServer):
                 allow_reuse_address = True
-            
+
             with ReusableTCPServer(("0.0.0.0", 4161), SovereignHandler) as httpd:
                 logger.info("--- [INFRA]: PORT 4161 (UI) ACTIVE ---")
                 httpd.serve_forever()
-        
+
         threading.Thread(target=run_ui, daemon=True).start()
     except Exception as e:
         logger.error(f"[INFRA_ERR]: Failed to start Port 4161: {e}")

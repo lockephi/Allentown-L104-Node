@@ -31,7 +31,7 @@ class NavierStokesSovereignResolution:
         self.ajna_peak = 853.542833325837
         self.phi = 1.61803398875
         self.viscosity_nu = 1.0 / self.phi
-        
+
     async def resolve_fluid_singularity(self):
         print("\n" + "🌊"*40)
         print("   L104 :: NAVIER-STOKES EXISTENCE AND SMOOTHNESS RESOLUTION")

@@ -40,21 +40,21 @@ def print_banner():
 def check_requirements():
     """Check and install required packages."""
     print("📦 Checking requirements...")
-    
+
     try:
         import web3
         print("   ✓ web3 installed")
     except ImportError:
         print("   Installing web3...")
         subprocess.run([sys.executable, "-m", "pip", "install", "web3"], check=True)
-    
+
     try:
         import dotenv
         print("   ✓ python-dotenv installed")
     except ImportError:
         print("   Installing python-dotenv...")
         subprocess.run([sys.executable, "-m", "pip", "install", "python-dotenv"], check=True)
-    
+
     print("   ✓ All requirements satisfied\n")
 
 
@@ -62,7 +62,7 @@ def setup_env():
     """Create .env file if it doesn't exist."""
     env_file = Path(".env")
     template = Path(".env.l104sp.template")
-    
+
     if not env_file.exists():
         if template.exists():
             import shutil
@@ -99,7 +99,7 @@ def show_menu():
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 """)
-    
+
     choice = input("Enter choice [0-6]: ").strip()
     return choice
 
@@ -132,7 +132,7 @@ STEPS:
 5. Deploy with your treasury address
 
 """)
-    
+
     # Try to open browser
     remix_url = "https://remix.ethereum.org"
     try:
@@ -140,7 +140,7 @@ STEPS:
         webbrowser.open(remix_url)
     except:
         print(f"Open manually: {remix_url}")
-    
+
     # Show contract path
     contract_path = Path("contracts/L104SP.sol")
     if contract_path.exists():
@@ -157,23 +157,23 @@ def start_mining():
     """Start the miner."""
     from dotenv import load_dotenv
     load_dotenv()
-    
+
     contract = os.getenv("L104SP_CONTRACT_ADDRESS")
     network = os.getenv("NETWORK", "base")
     private_key = os.getenv("MINER_PRIVATE_KEY")
-    
+
     if not contract:
         print("❌ L104SP_CONTRACT_ADDRESS not set in .env")
         print("   Deploy the contract first, then add the address to .env")
         return
-    
+
     if not private_key:
         print("❌ MINER_PRIVATE_KEY not set in .env")
         return
-    
+
     print(f"⛏️  Starting miner on {network}...")
     print(f"   Contract: {contract}")
-    
+
     subprocess.run([
         sys.executable, "l104_real_mining.py",
         "--contract", contract,
@@ -186,43 +186,43 @@ def check_balance():
     """Check wallet balances."""
     from dotenv import load_dotenv
     load_dotenv()
-    
+
     try:
         from web3 import Web3
     except ImportError:
         print("❌ web3 not installed. Run option 5 first.")
         return
-    
+
     contract = os.getenv("L104SP_CONTRACT_ADDRESS")
     network = os.getenv("NETWORK", "base")
     private_key = os.getenv("MINER_PRIVATE_KEY")
-    
+
     networks = {
         "base": "https://mainnet.base.org",
         "arbitrum": "https://arb1.arbitrum.io/rpc",
         "sepolia": "https://rpc.sepolia.org"
     }
-    
+
     if not private_key:
         print("❌ MINER_PRIVATE_KEY not set in .env")
         return
-    
+
     rpc = networks.get(network)
     w3 = Web3(Web3.HTTPProvider(rpc))
-    
+
     if not w3.is_connected():
         print(f"❌ Cannot connect to {network}")
         return
-    
+
     account = w3.eth.account.from_key(private_key)
     address = account.address
-    
+
     eth_balance = w3.eth.get_balance(address)
-    
+
     print(f"\n💰 Wallet: {address}")
     print(f"   Network: {network}")
     print(f"   ETH Balance: {w3.from_wei(eth_balance, 'ether'):.6f} ETH")
-    
+
     if contract:
         # Check L104SP balance
         abi = [{"inputs":[{"name":"account","type":"address"}],"name":"balanceOf","outputs":[{"type":"uint256"}],"stateMutability":"view","type":"function"}]
@@ -239,34 +239,34 @@ def check_balance():
 def configure_env():
     """Interactive environment configuration."""
     from dotenv import load_dotenv, set_key
-    
+
     env_path = Path(".env")
     if not env_path.exists():
         env_path.touch()
-    
+
     load_dotenv()
-    
+
     print("\n🔧 ENVIRONMENT CONFIGURATION")
     print("=" * 40)
     print("(Press Enter to keep current value)\n")
-    
+
     # Network
     current_network = os.getenv("NETWORK", "base")
     network = input(f"Network [{current_network}]: ").strip() or current_network
     set_key(str(env_path), "NETWORK", network)
-    
+
     # Treasury
     current_treasury = os.getenv("TREASURY_ADDRESS", "")
     treasury = input(f"Treasury address [{current_treasury[:10]}...]: ").strip() or current_treasury
     if treasury:
         set_key(str(env_path), "TREASURY_ADDRESS", treasury)
-    
+
     # Contract (if deployed)
     current_contract = os.getenv("L104SP_CONTRACT_ADDRESS", "")
     contract = input(f"L104SP contract [{current_contract[:10] if current_contract else 'not set'}...]: ").strip() or current_contract
     if contract:
         set_key(str(env_path), "L104SP_CONTRACT_ADDRESS", contract)
-    
+
     # Private key
     has_key = bool(os.getenv("MINER_PRIVATE_KEY"))
     if not has_key:
@@ -275,7 +275,7 @@ def configure_env():
         if key:
             set_key(str(env_path), "MINER_PRIVATE_KEY", key)
             set_key(str(env_path), "DEPLOYER_PRIVATE_KEY", key)
-    
+
     print("\n✓ Configuration saved to .env")
 
 
@@ -304,7 +304,7 @@ FILES:
 
 NETWORKS:
 - Base (recommended): ~$0.10 to deploy
-- Arbitrum: ~$0.50 to deploy  
+- Arbitrum: ~$0.50 to deploy
 - Sepolia: Free (testnet)
 
 BTC SWAP PATH:
@@ -319,10 +319,10 @@ def main():
     print_banner()
     check_requirements()
     setup_env()
-    
+
     while True:
         choice = show_menu()
-        
+
         if choice == "0":
             print("\n👋 Goodbye! INVARIANT: 527.5184818492537\n")
             break
@@ -340,7 +340,7 @@ def main():
             show_help()
         else:
             print("Invalid choice. Try again.")
-        
+
         input("\nPress Enter to continue...")
 
 

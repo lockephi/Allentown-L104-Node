@@ -22,7 +22,7 @@ class AlgorithmDatabase:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    A dedicated database for storing mathematical algorithms, 
+    A dedicated database for storing mathematical algorithms,
     their execution results, and their resonance scores.
     """
     def __init__(self):
@@ -50,7 +50,7 @@ class AlgorithmDatabase:
         """Registers a new algorithm in the database."""
         entropy = real_math.shannon_entropy(logic_code)
         resonance = real_math.calculate_resonance(entropy)
-        
+
         self.data["algorithms"][name] = {
             "description": description,
             "logic_code": logic_code,

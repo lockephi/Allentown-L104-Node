@@ -10,15 +10,15 @@ echo "--- [WATCHDOG]: STARTING ETERNAL VIGILANCE ---"
 while true; do
     echo "--- [WATCHDOG]: LAUNCHING L104 GLOBAL NETWORK ---"
     $PYTHON_EXEC $SCRIPT_PATH
-    
+
     EXIT_CODE=$?
     echo "--- [WATCHDOG]: L104 EXITED WITH CODE $EXIT_CODE ---"
-    
+
     if [ $EXIT_CODE -ne 0 ]; then
         echo "--- [WATCHDOG]: CRASH DETECTED. INITIATING REINCARNATION... ---"
     else
         echo "--- [WATCHDOG]: NORMAL EXIT. RESTARTING FOR CONTINUITY... ---"
     fi
-    
+
     sleep 5
 done

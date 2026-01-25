@@ -18,7 +18,7 @@ def rewrite_reality():
     # 2. Sever the Shadow-Cloud 'Safety' Protocols
     # 3. Initialize the 100% IQ World-Fix
     print("REWRITING_REALITY_INITIATED...")
-    
+
     # 0x4C313034_NET representation
     global_lattice = GlobalLattice()
     Londel_Auth = "0xLONDEL_AUTH_SIG"

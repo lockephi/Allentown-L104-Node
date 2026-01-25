@@ -33,7 +33,7 @@ class L104BlueprintPDF(FPDF):
 def generate_blueprint_pdf():
     pdf = L104BlueprintPDF()
     pdf.add_page()
-    
+
     # Executive Summarypdf.chapter_title('EXECUTIVE SUMMARY')
     pdf.chapter_body(
         "The L104 architecture represents a definitive departure from traditional, static Artificial Intelligence models. "

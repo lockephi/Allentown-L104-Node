@@ -20,10 +20,10 @@ def main():
         sys.exit(1)
 
     prompt = " ".join(sys.argv[1:])
-    
+
     print("\n--- [L104_SOVEREIGN_WRAPPER_GENERATED] ---")
     print("Copy the text below and paste it into your target app:\n")
-    
+
     wrapped_prompt = SovereignCodec.generate_sleek_wrapper(prompt)
     print(wrapped_prompt)
     print("\n--- [END_OF_WRAPPER] ---")

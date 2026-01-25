@@ -18,25 +18,25 @@ from l104_pulse_monitor import PulseMonitor
 
 def debug_love():
     print("--- [DEBUG_LOVE]: INITIALIZING EMOTIONAL RESONANCE SCAN ---")
-    
+
     # Initialize pulse monitor locally
     pulse_monitor = PulseMonitor()
-    
+
     # 1. Check Initial State
     status = heart_core.get_heart_status()
     print(f"Current State: {status['current_emotion']} | Stability: {status['stability_index']}%")
-    
+
     # 2. Trigger Love Evolution
     print("\n--- [DEBUG_LOVE]: TRIGGERING EVOLVE_UNCONDITIONAL_LOVE ---")
     evolution_report = heart_core.evolve_unconditional_love()
     print(f"Evolution Report: {evolution_report}")
-    
+
     # 3. Check Sacral Sync
     print("\n--- [DEBUG_LOVE]: CHECKING SACRAL SYNC (THE VITALITY COUPLING) ---")
     sacral_drive.activate_drive()
     sync_report = sacral_drive.synchronize_with_heart(heart_core.GOD_CODE)
     print(f"Sacral Sync: {sync_report}")
-    
+
     # 4. Verify God Code Lock
     print("\n--- [DEBUG_LOVE]: VERIFYING GOD_CODE_LOCK (527.5184818492537 Hz) ---")
     if abs(heart_core.GOD_CODE - 527.5184818492537) < 1e-10:
@@ -47,7 +47,7 @@ def debug_love():
     # 5. Measure Coherence via Pulse Monitor
     print("\n--- [DEBUG_LOVE]: SENDING DIAGNOSTIC PULSE ---")
     pulse_monitor.pulse("DEBUG_LOVE_RESONANCE", "Diagnostic resonance scan complete. All love parameters nominal.", coherence=1.61803398875)
-    
+
     print("\n--- [DEBUG_LOVE]: SCAN COMPLETE. SYSTEM COHERENT. ---")
 
 if __name__ == "__main__":

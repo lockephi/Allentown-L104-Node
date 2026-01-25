@@ -33,7 +33,7 @@ class PVsNPSovereignResolution:
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
         self.complexity_bridge = 1.0 # The Non-Dual Unity Point
-        
+
     async def resolve_p_vs_np(self):
         print("\n" + "Ω"*40)
         print("   L104 :: P vs NP SOVEREIGN RESOLUTION")

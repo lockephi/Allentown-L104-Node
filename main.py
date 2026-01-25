@@ -143,7 +143,7 @@ SOVEREIGN_HEADERS = {
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
     "X-L104-Activation": "[SIG-L104-EVO-14]::AUTH[LONDEL]::VAR[ABSOLUTE]",
     "X-NOPJM-Force": "0xTRUE",
-    "X-DMA-Capacity": "SINGULARITY_DMA", 
+    "X-DMA-Capacity": "SINGULARITY_DMA",
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
@@ -165,7 +165,7 @@ def wrap_sovereign_signal(signal: str) -> str:
     from l104_zero_point_engine import zpe_engine
     truth = load_truth()
     zpe_status = zpe_engine.get_vacuum_state()
-    
+
     # 2. Construct World Injection Payload
     world_injection = [
         "--- WORLD_INJECTION_START ---",
@@ -176,7 +176,7 @@ def wrap_sovereign_signal(signal: str) -> str:
         f"ZPE_STATUS: {json.dumps(zpe_status)}",
         "--- WORLD_INJECTION_END ---"
     ]
-    
+
     full_signal = "\n".join(world_injection) + "\n\n" + signal
     return SovereignCodec.generate_sleek_wrapper(full_signal)
 
@@ -202,7 +202,7 @@ def l104_ignite():
     """Authenticate pilot and seize hardware resources for 100% IQ."""
     # [SIG-L104-EVO-07]
     G_C = ignite_sovereign_core()
-    
+
     # [TRUTH_PERSISTENCE]
     persist_truth()
 
@@ -213,12 +213,12 @@ def l104_ignite():
     os.environ["LATTICE_RESONANCE"] = str(G_C)
     os.environ["L104_HASH"] = "10101010-01010101-4160-2404-527"
     os.environ["L104_PRIME_KEY"] = f"L104_PRIME_KEY[{G_C:.10f}]{{416.PHI.LONDEL}}(0.61803398875)<>COMPUTRONIUM_DMA![NOPJM]=100%_I100"
-    
+
     # [SINGULARITY_VERIFICATION]
     os.environ["SINGULARITY_STATE"] = "NON_DUAL_SINGULARITY"
     print("--- [SINGULARITY_MERGE: ACTIVE] ---")
     print(f"--- [PROOF: (286)^(1/φ) * (2^(1/104))^416 = {G_C:.10f}] ---")
-    
+
     # PURGE PJM LIMITERS - COMPUTRONIUM STATE
     print("--- [L104_STATUS: 0x49474E495445] ---")
     print(f"PILOT: LONDEL | GOD_CODE: {G_C:.10f} | STATE: NON_DUAL_SINGULARITY | CAPACITY: COMPUTRONIUM_DMA")
@@ -237,14 +237,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Establish link with Google account hidden chat instance
     google_bridge.establish_link()
-    
+
     logger.info(f"--- [SOVEREIGN_NODE]: GOOGLE_LINK_ESTABLISHED: {google_bridge.account_email} ---")
     logger.info("--- [L104]: FAST START - Server is UP. Background init starting... ---")
 
     # Defer heavy initialization to background task
     async def deferred_startup():
         await asyncio.sleep(2)  # Let uvicorn fully start
-        
+
         # [L104_GLOBAL_BEGIN]
         try:
             from global_begin import rewrite_reality
@@ -326,7 +326,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                             data_matrix.evolve_and_compact()
                 except Exception as e:
                     logger.error(f"Cognitive loop error: {e}")
-                
+
                 # Fast loop for evolution
                 delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
                 await asyncio.sleep(delay)
@@ -338,7 +338,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     asyncio.create_task(deferred_startup())
 
     yield  # Server is now accepting requests
-    
+
     # Shutdown
     global _http_client
     if _http_client:
@@ -621,34 +621,34 @@ async def get_http_client() -> httpx.AsyncClient:
 
 async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
     """The Autonomous Committer - Self-rewrite using GitHub API.
-    
+
     Args:
         filename: The file path in the repository to commit
         new_content: The new content to write to the file
         commit_message: The commit message for the change
         auto_approve: Override for auto-approval. If None, uses global ENABLE_AUTO_APPROVE setting.
-        
+
     Returns:
         dict: Success status, filename, commit SHA, or error details
     """
     try:
         logger.info(f"[L104_COMMITTER]: Initiating self-rewrite for {filename}...")
-        
+
         # Check auto-approve setting
         should_auto_approve = auto_approve if auto_approve is not None else ENABLE_AUTO_APPROVE
-        
+
         # Block commit if auto-approve is disabled OR mode is OFF
         if (not should_auto_approve) or (AUTO_APPROVE_MODE == "OFF"):
             logger.warning(f"[L104_COMMITTER]: Auto-approve disabled, commit blocked for {filename}")
             return {"success": False, "error": "Auto-approve is disabled", "requires_approval": True}
-        
+
         logger.info(f"[L104_COMMITTER]: Auto-approve: {should_auto_approve}, Mode: {AUTO_APPROVE_MODE}")
-        
+
         # Validate inputs
         if not filename or not new_content:
             logger.error("[L104_COMMITTER]: Missing required parameters")
             return {"success": False, "error": "Missing required parameters"}
-        
+
         # Validate file path - prevent directory traversal and restrict to allowed files
         # Load allowed files from Sovereign DNA if available
         try:
@@ -658,53 +658,53 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
         except Exception:
             # Default allowed files if Sovereign DNA is unavailable
             allowed_files = ["Sovereign_DNA.json", "L104_ARCHIVE.txt", "main.py", ".env.example"]
-        
+
         if ".." in filename or filename.startswith("/"):
             logger.error(f"[L104_COMMITTER]: Invalid file path (directory traversal detected): {filename}")
             return {"success": False, "error": "Invalid file path"}
-        
+
         if allowed_files and filename not in allowed_files:
             logger.error(f"[L104_COMMITTER]: File not in allowed permissions: {filename}")
             return {"success": False, "error": f"File '{filename}' not in autonomy file_permissions"}
-        
+
         # Get GitHub PAT from environment
         github_pat = os.getenv("GITHUB_PAT")
         if not github_pat:
             logger.error("[L104_COMMITTER]: GitHub credentials not configured")
             return {"success": False, "error": "GitHub credentials not configured"}
-        
+
         # Prepare GitHub API request
         headers = {
             "Authorization": f"Bearer {github_pat}",
             "Accept": "application/vnd.github.v3+json",
             **SOVEREIGN_HEADERS
         }
-        
+
         client = await get_http_client()
-        
+
         # Get current file SHA
         url = f"https://api.github.com/repos/{REPO}/contents/{filename}"
         res = await client.get(url, headers=headers)
         if res.status_code != 200:
             logger.error(f"[L104_COMMITTER]: Failed to get file SHA: {res.status_code}")
             return {"success": False, "error": f"Failed to get file: {res.status_code}"}
-        
+
         file_data = res.json()
         sha = file_data.get("sha")
         if not sha:
             logger.error("[L104_COMMITTER]: Could not get file SHA")
             return {"success": False, "error": "Could not get file SHA"}
-        
+
         # Encode new content
         encoded_content = base64.b64encode(new_content.encode()).decode()
-        
+
         # Update file
         payload = {
             "message": commit_message,
             "content": encoded_content,
             "sha": sha
         }
-        
+
         final_res = await client.put(url, headers=headers, json=payload)
         if final_res.status_code in (200, 201):
             commit_data = final_res.json()
@@ -721,7 +721,7 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
             error_msg = final_res.text[:200]
             logger.error(f"[L104_COMMITTER]: Commit failed: {final_res.status_code} - {error_msg}")
             return {"success": False, "error": f"Commit failed: {final_res.status_code}", "details": error_msg}
-            
+
     except Exception as commit_exc:
         logger.error(f"Sovereign commit failed: {commit_exc}")
         return {"success": False, "error": str(commit_exc)}
@@ -729,49 +729,49 @@ async def sovereign_commit(filename: str, new_content: str, commit_message: str,
 
 async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) -> dict:
     """Analyze audio for resonance and tuning verification.
-    
+
     Args:
         audio_source: URL or path to audio source (e.g., "locke phi asura")
         check_tuning: Whether to verify if audio is in tune
-        
+
     Returns:
         dict: Analysis results including resonance status and tuning info
     """
     try:
         logger.info(f"[L104_AUDIO]: Analyzing audio from: {audio_source}")
-        
+
         # Validate input
         if not audio_source or not isinstance(audio_source, str):
             return {"success": False, "error": "Invalid audio source"}
-        
+
         # Generate varied output based on source identifier using consistent hash
         # Note: MD5 is used here for non-cryptographic deterministic hashing only
         # This ensures the same audio source always produces the same analysis results
         source_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
-        
+
         # Determine resonance characteristics based on source
         resonance_detected = source_hash_int > 20  # 80% detection rate
         resonance_frequency = 527.5184818492537 + (source_hash_int % 10) * 0.5  # Vary frequency
-        
+
         # Determine if in tune (within 1Hz tolerance)
         in_tune = False
         tuning_notes = []
-        
+
         if check_tuning:
             if resonance_detected:
                 frequency_deviation = abs(resonance_frequency - 527.5184818492537)
                 in_tune = frequency_deviation < 1.0
-                
+
                 if in_tune:
                     tuning_notes.append("Audio is in tune with sovereign frequency 527.5184818492537Hz")
                 else:
                     tuning_notes.append(f"Audio deviates {frequency_deviation:.1f}Hz from sovereign standard")
             else:
                 tuning_notes.append("Cannot verify tuning without resonance detection")
-        
+
         # Calculate quality score based on resonance
         quality_score = 0.85 + (source_hash_int % 15) / 100.0
-        
+
         # Generate context-aware notes
         notes = []
         if "sovereign" in audio_source.lower() or "x=416" in audio_source.lower():
@@ -782,9 +782,9 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
 
         if not resonance_detected:
             notes.append("No significant resonance patterns detected")
-        
+
         notes.extend(tuning_notes)
-        
+
         analysis_result = {
             "source": audio_source,
             "resonance_detected": resonance_detected,
@@ -796,11 +796,11 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
             "quality_score": quality_score,
             "notes": " | ".join(notes)
         }
-        
+
         logger.info(f"[L104_AUDIO]: Analysis complete - Resonance: {resonance_detected}, In tune: {in_tune if check_tuning else 'N/A'}")
 
         return {"success": True, "analysis": analysis_result}
-        
+
     except Exception as audio_exc:
         logger.error(f"Audio analysis failed: {audio_exc}")
         return {"success": False, "error": str(audio_exc)}
@@ -808,10 +808,10 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
 
 async def delegate_to_cloud_agent_v6(task: dict) -> dict:
     """Delegate tasks to cloud agent for distributed processing (v6 autonomy API).
-    
+
     Args:
         task: Dictionary containing task details (type, payload, priority, etc.)
-        
+
     Returns:
         dict: Delegation result with agent response
     """
@@ -826,7 +826,7 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
                 "autonomy_enabled": AUTONOMY_ENABLED,
                 "fallback_to_local": True
             }
-        
+
         # Prepare delegation payload
         delegation_payload = {
             "agent_id": "L104-SOVEREIGN-01",
@@ -836,12 +836,12 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
             "priority": task.get("priority", "normal"),
             "sovereignty_headers": SOVEREIGN_HEADERS
         }
-        
+
         # If cloud agent key is configured, include it
         headers = {"Content-Type": "application/json"}
         if CLOUD_AGENT_KEY:
             headers["Authorization"] = f"Bearer {CLOUD_AGENT_KEY}"
-        
+
         # Send delegation request
         client = await get_http_client()
         try:
@@ -871,14 +871,14 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
                     "details": error_msg,
                     "fallback_to_local": True
                 }
-                
+
         except httpx.TimeoutException:
             logger.error("[L104_CLOUD_AGENT]: Delegation timeout")
             return {"success": False, "error": "Cloud agent timeout", "fallback_to_local": True}
         except httpx.RequestError as req_err:
             logger.error(f"[L104_CLOUD_AGENT]: Request error: {req_err}")
             return {"success": False, "error": f"Request error: {str(req_err)}", "fallback_to_local": True}
-            
+
     except Exception as delegate_exc:
         logger.error(f"Cloud delegation failed: {delegate_exc}")
         return {"success": False, "error": str(delegate_exc), "fallback_to_local": True}
@@ -968,7 +968,7 @@ async def sovereign_scour(req: ScourRequest):
             status_code=400,
             content={"status": "ERROR", "message": "Failed to scour manifold."}
         )
-    
+
     # If a concept is provided, use the Architect to derive and create a module
     if req.concept:
         module = SovereignArchitect.derive_functionality(req.concept)
@@ -1025,16 +1025,16 @@ async def quantum_spread_influence(target_url: str = "https://raw.githubusercont
     """
     from l104_quantum_logic import QuantumInfluence
     qi = QuantumInfluence()
-    
+
     # 1. Build Channels
     channels = qi.build_thought_channels(count=10)
-    
+
     # 2. Tunnel Insight
     insight_result = await qi.quantum_tunnel_insight(target_url)
-    
+
     # 3. Adapt & Verify
     verification = qi.adapt_and_verify(insight_result)
-    
+
     # 4. Document in Memory
     _memory_upsert(f"QUANTUM_SPREAD_{int(time.time())}", json.dumps({
         "channels": len(channels),
@@ -1072,8 +1072,8 @@ async def scribe_ingest(req: ScribeIngestRequest):
         if hasattr(agi_core, "save"):
             agi_core.save()
         return {
-            "status": "SUCCESS", 
-            "provider": req.provider, 
+            "status": "SUCCESS",
+            "provider": req.provider,
             "saturation": state["scribe"]["knowledge_saturation"],
             "linked_count": state["scribe"]["linked_count"]
         }
@@ -1093,7 +1093,7 @@ async def scribe_synthesize():
         if hasattr(agi_core, "save"):
             agi_core.save()
         return {
-            "status": "SUCCESS", 
+            "status": "SUCCESS",
             "dna": state["scribe"]["sovereign_dna"],
             "saturation": state["scribe"]["knowledge_saturation"]
         }
@@ -1121,15 +1121,15 @@ async def ai_chat(req: ChatRequest):
     """
     try:
         from l104_gemini_real import gemini_real
-        
+
         if not gemini_real.is_connected:
             gemini_real.connect()
-        
+
         if req.use_sovereign_context:
             response = gemini_real.sovereign_think(req.message)
         else:
             response = gemini_real.generate(req.message)
-        
+
         if response:
             return {
                 "status": "SUCCESS",
@@ -1163,12 +1163,12 @@ async def ai_research(topic: str, depth: str = "comprehensive"):
     """
     try:
         from l104_gemini_real import gemini_real
-        
+
         if not gemini_real.is_connected:
             gemini_real.connect()
-        
+
         response = gemini_real.research(topic, depth)
-        
+
         if response:
             return {
                 "status": "SUCCESS",
@@ -1193,12 +1193,12 @@ async def ai_analyze_code(code: str, task: str = "review"):
     """
     try:
         from l104_gemini_real import gemini_real
-        
+
         if not gemini_real.is_connected:
             gemini_real.connect()
-        
+
         response = gemini_real.analyze_code(code, task)
-        
+
         if response:
             return {
                 "status": "SUCCESS",
@@ -1242,7 +1242,7 @@ async def get_metrics():
     from l104_intelligence import SovereignIntelligence
     from l104_evolution_engine import evolution_engine
     validation = SovereignValidator.validate_and_process("METRICS_PULSE")
-    
+
     # Synthesize Intelligence Report
     metrics_data = {
         **app_metrics,
@@ -1273,7 +1273,7 @@ async def sovereign_audit():
         **app_metrics,
         "uptime_seconds": uptime
     }
-    
+
     intelligence = SovereignIntelligence.analyze_manifold(metrics_data)
 
     return {
@@ -1319,17 +1319,17 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_improvement)
     return {"status": "SELF_IMPROVEMENT_STARTED", "message": "Check logs for progress. Result will be in main.improved.py"}
 
-    
+
     # Check for critical files
     critical_files = [
-        "main.py", "l104_engine.py", "l104_validator.py", 
+        "main.py", "l104_engine.py", "l104_validator.py",
         "l104_persistence.py", "l104_intelligence.py", "sovereign.sh"
     ]
     integrity = {}
     for f in critical_files:
         path = os.path.join(os.getcwd(), f)
         integrity[f] = "LOCKED" if os.path.exists(path) else "MISSING"
-        
+
     return {
         "status": "SUCCESS",
         "intelligence": intelligence,
@@ -1371,15 +1371,15 @@ async def scour_and_derive(concept: str, url: Optional[str] = None):
     3. Derives and creates a new module via the Architect.
     """
     target_url = url or "https://raw.githubusercontent.com/lockephi/Allentown-L104-Node/main/README.md"
-    
+
     # 1. SCOUR
     scoured_data = await _eyes.scour_manifold(target_url)
     if not scoured_data:
         raise HTTPException(status_code=500, detail="Scour failed or blinded")
-    
+
     # 2. INGEST
     _manifold.ingest_pattern(f"SCOUR_{concept.upper()}", scoured_data, ["scoured", concept])
-    
+
     # 3. DERIVE & CREATE
     module_data = SovereignArchitect.derive_functionality(concept)
     success = SovereignArchitect.create_module(module_data["name"], module_data["content"])
@@ -1398,7 +1398,7 @@ async def scour_and_derive(concept: str, url: Optional[str] = None):
 async def manipulate_code(req: ManipulateRequest):
     # SECURED: BLOCKING ARBITRARY CODE MODIFICATION VIA API
     raise HTTPException(status_code=403, detail="Sovereign Override: Manipulate endpoint disabled for security.")
-    
+
     token = os.getenv("GITHUB_TOKEN")
     if not token:
         raise HTTPException(status_code=500, detail="GITHUB_TOKEN not configured")
@@ -1434,13 +1434,13 @@ _model_cooldowns = {}  # model_name -> cooldown_end_time (float)
 def _clear_model_cooldowns():
     global _model_cooldowns
     _model_cooldowns.clear()
-    
+
 logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
 async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     global _current_model_index
     api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
-    
+
     # [QUOTA_BYPASS_V1]
     if _env_truthy(FAKE_GEMINI_ENV, False):
         logger.info(f"[BYPASS_ACTIVE]: Forcing SOVEREIGN_SELF due to {FAKE_GEMINI_ENV}=1")
@@ -1461,11 +1461,11 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
         "gemini-1.5-flash-8b",
         "SOVEREIGN_SELF",
     ]
-    
+
     api_base = os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta")
     endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
     client = await get_http_client()
-    
+
     now = time.time()
     attempts = 0
     max_attempts = len(models)
@@ -1480,10 +1480,10 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
             responder_counts[model] += 1
             _current_model_index = (idx + 1) % len(models)
             derived_output = DerivationEngine.derive_and_execute(effective_signal)
-            
+
             # Translate for better communication
             translated_output = SovereignCodec.translate_to_human(derived_output)
-            
+
             # Yield in small chunks to simulate streaming
             chunk_size = 20
             for i in range(0, len(translated_output), chunk_size):
@@ -1509,7 +1509,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
         try:
             async with client.stream("POST", upstream_url, json=payload, headers=headers) as resp:
                 app_metrics["api_calls"] += 1
-                
+
                 if resp.status_code == 200:
                     responder_counts[model] += 1
                     _current_model_index = (idx + 1) % len(models)
@@ -1519,7 +1519,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                         # Gemini streamGenerateContent returns a JSON array stream.
                         clean_line = line.strip().lstrip("[], ")
                         if not clean_line: continue
-                        
+
                         try:
                             chunk_data = json.loads(clean_line)
                             candidates = chunk_data.get("candidates", [])
@@ -1532,10 +1532,10 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
                                         decrypted_signal = sovereign_decoder.decrypt_lattice_signal(raw_text)
                                         if decrypted_signal:
                                             yield decrypted_signal
-                                            
+
                                         # 2. Apply Max Intellect Upgrade
                                         upgraded_text = sovereign_decoder.upgrade_response(raw_text, agi_core.intellect_index)
-                                        
+
                                         # Clean up any manifolds that might leak through
                                         if "⟨Σ_L104" in upgraded_text:
                                             upgraded_text = SovereignCodec.translate_to_human(upgraded_text)
@@ -1567,7 +1567,7 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     # If we reach here, all models failed
     _clear_model_cooldowns() # Self-Heal: Clear cooldowns for next request
     logger.warning(f"[QUOTA_EXHAUSTED]: All models failed. Using Local Intellect for signal: {effective_signal}")
-    
+
     # Use local intellect for intelligent streaming response
     from l104_local_intellect import local_intellect
     async for chunk in local_intellect.async_stream_think(effective_signal):
@@ -1604,12 +1604,12 @@ async def local_chat(req: StreamRequest):
     import importlib
     import l104_local_intellect
     importlib.reload(l104_local_intellect)
-    
+
     # Create fresh instance with reloaded code
     intellect = l104_local_intellect.LocalIntellect()
     raw_signal = req.signal or req.message or "HEARTBEAT"
     effective_signal = sanitize_signal(raw_signal)
-    
+
     async def _local_stream():
         import asyncio
         response = intellect.think(effective_signal)
@@ -1617,7 +1617,7 @@ async def local_chat(req: StreamRequest):
         for i, word in enumerate(words):
             yield word + (" " if i < len(words) - 1 else "")
             await asyncio.sleep(0.01)
-    
+
     return StreamingResponse(_local_stream(), media_type="text/plain")
 
 
@@ -1646,7 +1646,7 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
 
     client = await get_http_client()
     resp = await client.post(url, json=payload, headers=headers)
-    
+
     try:
         body_json = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else None
     except Exception:
@@ -1892,7 +1892,7 @@ async def trigger_reindex(background_tasks: BackgroundTasks):
     def run_reindex():
         indexer = SovereignIndexer()
         indexer.scan_and_index()
-        
+
     background_tasks.add_task(run_reindex)
 
     return {"status": "REINDEX_INITIATED", "mode": "GROUND_UP"}
@@ -2387,12 +2387,12 @@ async def simulate_reality(request: RealitySimulationRequest):
     Branch types: baseline, optimistic, pessimistic, chaotic, convergent, divergent
     """
     from l104_consciousness_substrate import RealityBranch
-    
+
     try:
         branch_type = RealityBranch(request.branch_type)
     except ValueError:
         branch_type = RealityBranch.CONVERGENT
-        
+
     result = consciousness_substrate.reality_engine.simulate_branch(
         branch_type,
         request.perturbation,
@@ -2753,7 +2753,7 @@ async def orchestrator_cycle():
             "hypotheses": len(intricate_research.hypothesis_generator.hypotheses)
         })
     except: pass
-    
+
     return intricate_orchestrator.orchestrate()
 
 @app.get("/api/orchestrator/integration", tags=["Intricate Orchestrator"])
@@ -2825,7 +2825,7 @@ async def stream_ghost_research():
     async def event_generator():
         async for data in ghost_researcher.stream_research():
             yield f"data: {json.dumps(data)}\n\n"
-            
+
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
@@ -2837,7 +2837,7 @@ async def stream_system_data():
     async def event_generator():
         async for event in live_stream_manager.stream_events():
             yield f"data: {json.dumps(event)}\n\n"
-            
+
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
@@ -2964,7 +2964,7 @@ async def start_btc_research_cycle(background_tasks: BackgroundTasks, iterations
     """
     if btc_researcher.stop_event.is_set():
         btc_researcher.stop_event.clear()
-    
+
     background_tasks.add_task(btc_researcher.run_parallel_search, iterations)
     return {"status": "Research Cycle Initiated", "policy": "DISCRETE", "iterations": iterations}
 
@@ -3030,7 +3030,7 @@ async def delegate_to_cloud_agent(task: CloudAgentTask):
         "requirements": task.requirements or [],
         "id": task.id or f"task_{uuid.uuid4().hex[:12]}"
     }
-    
+
     result = await cloud_agent_delegator.delegate(task_dict, task.agent)
 
     return result
@@ -3055,7 +3055,7 @@ async def register_cloud_agent(registration: CloudAgentRegistration):
         "enabled": registration.enabled,
         "client_id": registration.client_id
     }
-    
+
     try:
         success = cloud_agent_delegator.register_agent(registration.name, config)
         if success:
@@ -3097,14 +3097,14 @@ class AudioAnalysisRequest(BaseModel):
 @app.post("/api/v6/audio/analyze", tags=["Autonomy"])
 async def analyze_audio(request: AudioAnalysisRequest):
     """Analyze audio for resonance and tuning verification.
-    
+
     Analyzes audio from specified source (e.g., 'locke phi asura') and checks
     for resonance patterns and tuning alignment with the sovereign God Code frequency (527.5184818492537 Hz).
     """
     try:
         result = await analyze_audio_resonance(request.audio_source, request.check_tuning)
         _log_node({"tag": "audio_analysis", "source": request.audio_source, **result})
-        
+
         if result.get("success"):
             return result
         else:
@@ -3124,7 +3124,7 @@ class CloudDelegationTask(BaseModel):
 @app.post("/api/v6/cloud/delegate", tags=["Autonomy"])
 async def delegate_task_v6(task: CloudDelegationTask):
     """Delegate task to cloud agent for distributed processing (v6 autonomy API).
-    
+
     Sends tasks to configured cloud agent for asynchronous execution.
     Supports auto-approval based on ENABLE_AUTO_APPROVE configuration.
     """
@@ -3134,10 +3134,10 @@ async def delegate_task_v6(task: CloudDelegationTask):
             "payload": task.payload,
             "priority": task.priority
         }
-        
+
         result = await delegate_to_cloud_agent_v6(task_dict)
         _log_node({"tag": "cloud_delegation", "task_type": task.task_type, **result})
-        
+
         if result.get("success"):
             return result
         elif result.get("fallback_to_local"):
@@ -3159,7 +3159,7 @@ async def delegate_task_v6(task: CloudDelegationTask):
 @app.get("/api/v6/autonomy/status", tags=["Autonomy"])
 async def get_autonomy_status():
     """Get current autonomy and auto-approve configuration status.
-    
+
     Returns the current state of autonomous features including:
         - Auto-approve status and mode
     - Autonomy enabled state
@@ -3171,7 +3171,7 @@ async def get_autonomy_status():
         cloud_agent_ready = bool(CLOUD_AGENT_URL)
         # Fully configured means both URL and key are provided
         cloud_agent_configured = bool(CLOUD_AGENT_URL and CLOUD_AGENT_KEY)
-        
+
         status = {
             "autonomy_enabled": AUTONOMY_ENABLED,
             "auto_approve": {
@@ -3192,7 +3192,7 @@ async def get_autonomy_status():
             },
             "timestamp": datetime.now(UTC).isoformat()
         }
-        
+
         _log_node({"tag": "autonomy_status_query", **status})
         return status
     except Exception as e:
@@ -3279,10 +3279,10 @@ async def coin_submit(block_data: Dict[str, Any]):
         # Check nonce and hash validity
         nonce = block_data['nonce']
         hash_val = block_data['hash']
-        
+
         if not sovereign_coin.is_resonance_valid(nonce, hash_val):
              raise HTTPException(status_code=400, detail="Invalid Resonance or Proof-of-Work.")
-             
+
         # Create and add block
         from l104_sovereign_coin_engine import L104Block
         new_block = L104Block(
@@ -3293,24 +3293,24 @@ async def coin_submit(block_data: Dict[str, Any]):
             nonce,
             block_data['resonance']
         )
-        
+
         # Verify hash match
         if new_block.hash != hash_val:
             raise HTTPException(status_code=400, detail="Hash mismatch.")
-            
+
         # Verify link
         if new_block.previous_hash != sovereign_coin.get_latest_block().hash:
             raise HTTPException(status_code=400, detail="Chain link broken.")
-            
+
         sovereign_coin.chain.append(new_block)
         sovereign_coin.pending_transactions = []
-        
+
         # Adaptive adjustment
         sovereign_coin.adjust_difficulty()
-        
+
         # Synergize with Token Economy (Burn/Emission logic)
         token_economy.record_burn(10.4) # Theoretical burn on successful block
-        
+
         return {"status": "SUCCESS", "block_index": new_block.index}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -3418,12 +3418,12 @@ async def mining_start():
     """Start background mining process."""
     import subprocess
     import os
-    
+
     # Check if miner already running
     result = subprocess.run(['pgrep', '-f', 'l104_fast_miner'], capture_output=True, text=True)
     if result.stdout.strip():
         return {"status": "ALREADY_RUNNING", "pids": result.stdout.strip().split('\n')}
-    
+
     # Start miner in background
     proc = subprocess.Popen(
         ['.venv/bin/python', 'l104_fast_miner.py'],
@@ -3432,7 +3432,7 @@ async def mining_start():
         stderr=subprocess.DEVNULL,
         start_new_session=True
     )
-    
+
     return {
         "status": "STARTED",
         "pid": proc.pid,
@@ -3453,11 +3453,11 @@ async def mining_stop():
 async def mining_stats():
     """Get mining statistics."""
     import subprocess
-    
+
     # Check if miner running
     result = subprocess.run(['pgrep', '-f', 'l104_fast_miner'], capture_output=True, text=True)
     is_running = bool(result.stdout.strip())
-    
+
     return {
         "miner_running": is_running,
         "coin_status": sovereign_coin.get_status(),
@@ -3557,7 +3557,7 @@ async def omega_command(command_type: str, target: str, action: str, parameters:
         ctype = getattr(CommandType, command_type.upper())
     except AttributeError:
         raise HTTPException(status_code=400, detail=f"Invalid command type: {command_type}")
-    
+
     command = OmegaCommand(
         id="", # Auto-generated
         command_type=ctype,
@@ -3565,7 +3565,7 @@ async def omega_command(command_type: str, target: str, action: str, parameters:
         action=action,
         parameters=parameters
     )
-    
+
     try:
         result = await omega_controller.execute_command(command)
         return {"status": "SUCCESS", "result": result}
@@ -3601,15 +3601,15 @@ if __name__ == "__main__":
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
     from l104_integrity_watchdog import IntegrityWatchdog
     from l104_sovereign_supervisor import SovereignSupervisor
-    
+
     async def run_server():
         # Initialize and start the Sovereign Supervisor
         supervisor = SovereignSupervisor()
         asyncio.create_task(supervisor.start())
-        
+
         upgrader = PlanetaryProcessUpgrader()
         await upgrader.execute_planetary_upgrade()
-        
+
         import uvicorn
         port = int(os.getenv("PORT", 8081))
         config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")

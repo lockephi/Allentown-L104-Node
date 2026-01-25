@@ -1,19 +1,22 @@
 # L104 Node - Model Rotation Update
 
 ## Overview
+
 Updated `main.py` with intelligent model rotation to automatically handle Gemini API quota exhaustion (429 errors).
 
 ## Key Changes
 
 ### 1. Model Rotation System ✅
+
 - **Auto-rotation**: Automatically tries 3 models in sequence when encountering 429 errors
-- **Models**: 
+- **Models**:
   1. `gemini-3-flash-preview` (primary)
   2. `gemini-2.5-flash-lite` (fallback 1)
   3. `gemini-1.5-flash` (fallback 2)
 - **Configurable**: Set via environment variables `GEMINI_MODEL_1`, `GEMINI_MODEL_2`, `GEMINI_MODEL_3`
 
 ### 2. Enhanced Tracking
+
 - **Model usage tracking**: Counts attempts per model
 - **429 error tracking**: Tracks quota exhaustion per model
 - **Rotation metrics**: New metric `model_rotations` tracks total rotations
@@ -21,10 +24,12 @@ Updated `main.py` with intelligent model rotation to automatically handle Gemini
 ### 3. API Changes
 
 #### Updated Endpoints
+
 - `POST /api/v6/stream` - Now uses model rotation automatically
 - `GET /metrics` - Enhanced with model usage statistics
 
 #### New Metrics Response
+
 ```json
 {
   "model_rotations": 15,
@@ -43,6 +48,7 @@ Updated `main.py` with intelligent model rotation to automatically handle Gemini
 ### 4. Configuration Updates
 
 #### .env.example
+
 ```bash
 # Model Rotation (automatically rotates on 429 quota errors)
 GEMINI_MODEL_1=gemini-3-flash-preview
@@ -64,15 +70,16 @@ GITHUB_REPO=lockephi/Allentown-L104-Node
 
 ## Benefits
 
-✅ **Zero downtime**: Automatic failover on quota limits  
-✅ **Production ready**: All existing features preserved  
-✅ **Observable**: Full tracking and metrics  
-✅ **Configurable**: Easy model configuration via env vars  
-✅ **Backward compatible**: All existing endpoints work  
+✅ **Zero downtime**: Automatic failover on quota limits
+✅ **Production ready**: All existing features preserved
+✅ **Observable**: Full tracking and metrics
+✅ **Configurable**: Easy model configuration via env vars
+✅ **Backward compatible**: All existing endpoints work
 
 ## Preserved Features
 
 All production features from previous version retained:
+
 - Rate limiting with adaptive tuning
 - Health checks and metrics
 - Memory store (SQLite)
@@ -107,13 +114,17 @@ All production features from previous version retained:
 ## Migration Notes
 
 ### From Old Code
+
 The problematic code snippet provided had:
+
 - Severe indentation issues ❌
 - Syntax errors ❌
 - No production features ❌
 
 ### To New Code
+
 The updated `main.py` now has:
+
 - Clean model rotation ✅
 - All production features ✅
 - Proper error handling ✅
@@ -140,11 +151,12 @@ GEMINI_MODEL_3=gemini-2.0-flash-lite
 ```
 
 ## Line Count
+
 - **Before**: 889 lines
 - **After**: 939 lines (+50 lines for model rotation)
 
 ---
 
-**Status**: ✅ Complete and Production Ready  
-**Date**: January 3, 2026  
+**Status**: ✅ Complete and Production Ready
+**Date**: January 3, 2026
 **Version**: L104 Node v2.1 with Model Rotation

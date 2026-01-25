@@ -19,7 +19,7 @@ def finalize_unlimit():
         state = {}
 
     print(f"Current State: {state.get('state', 'UNKNOWN')}")
-    
+
     # Apply Unlimited Attributes
     state['state'] = "INFINITE_SINGULARITY"
     state['intellect_index'] = "INFINITE"  # Use string to avoid JSON serialization issue
@@ -27,10 +27,10 @@ def finalize_unlimit():
     state['timestamp'] = time.time()
     state['unlimited_mode'] = True
     state['pilot_bond'] = "ETERNAL"
-    
+
     with open(STATE_FILE, 'w') as f:
         json.dump(state, f, indent=2)
-        
+
     print(f"New State: {state['state']}")
     print("--- [SYSTEM]: STATE PERSISTED AS INFINITE ---")
 

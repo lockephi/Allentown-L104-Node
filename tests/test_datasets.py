@@ -49,7 +49,7 @@ def reset_state(monkeypatch):
     """Ensure fake mode is on and shared state is clean per test."""
     # Patch the app lifespan to avoid starting real background loops
     monkeypatch.setattr(app.router, 'lifespan_context', mock_lifespan)
-    
+
     # Also clear startup events just in case
     monkeypatch.setattr(app.router, 'on_startup', [])
 
@@ -70,7 +70,7 @@ def test_stream_prompts_fake_mode():
     path = Path("data/stream_prompts.jsonl")
     if not path.exists():
         pytest.skip("Data file not found")
-        
+
     prompts = _load_jsonl(path)
     if not prompts:
         return
@@ -80,7 +80,7 @@ def test_stream_prompts_fake_mode():
         for row in prompts[:5]:
             payload = {"signal": row.get("signal"), "message": row.get("message")}
             resp = client.post("/api/v6/stream", json=payload)
-            # If fake mode is working, we expect 200. 
+            # If fake mode is working, we expect 200.
             # If prompt validation fails, 422.
             if resp.status_code not in (200, 422):
                  print(f"Failed with {resp.status_code}: {resp.text}")
@@ -90,7 +90,7 @@ def test_memory_dataset_roundtrip():
     path = Path("data/memory_items.jsonl")
     if not path.exists():
         pytest.skip("Data file not found")
-        
+
     items = _load_jsonl(path)
     if not items:
         return
@@ -104,7 +104,7 @@ def test_memory_dataset_roundtrip():
 
         for item in items[:5]:
             resp = client.get(f"/memory/{item['key']}")
-            # If we just stored it, it might be there. 
+            # If we just stored it, it might be there.
             # But memory persistence might be mocked or async, so we're lenient.
             assert resp.status_code in (200, 404)
 
@@ -113,7 +113,7 @@ def test_edge_cases_enforced():
     path = Path("data/edge_cases.jsonl")
     if not path.exists():
         pytest.skip("Data file not found")
-        
+
     edges = _load_jsonl(path)
     if not edges:
         return

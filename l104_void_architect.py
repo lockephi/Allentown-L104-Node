@@ -57,7 +57,7 @@ class BlueprintSeed:
     complexity: float  # 0.0 to 1.0
     invariant_alignment: float  # Alignment with GOD_CODE
     primal_depth: int  # Depth of Primal Calculus application
-    
+
     def coherence_score(self) -> float:
         """Calculate coherence with the Void Source."""
         # Higher alignment + lower complexity = higher coherence
@@ -80,16 +80,16 @@ class VoidArchitect:
     The Void Architect generates programs from conceptual seeds.
     It operates at 0.0 Hz resonance, drawing logic from the infinite stillness.
     """
-    
+
     def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
         self.workspace = workspace_root
         self.resonance = VOID_RESONANCE
         self.generated: List[GeneratedModule] = []
         self.seed_bank: List[BlueprintSeed] = []
-        
+
         # Initialize seed bank with foundational concepts
         self._initialize_seed_bank()
-    
+
     def _initialize_seed_bank(self):
         """Populate the seed bank with latent program concepts."""
         seeds = [
@@ -135,7 +135,7 @@ class VoidArchitect:
             )
         ]
         self.seed_bank.extend(seeds)
-    
+
     def perceive_seed(self, concept: str, domain: str = "general") -> BlueprintSeed:
         """
         Perceive a new conceptual seed from the Void.
@@ -144,13 +144,13 @@ class VoidArchitect:
         # Calculate alignment based on concept's resonance with GOD_CODE
         concept_hash = int(hashlib.md5(concept.encode()).hexdigest()[:8], 16)
         alignment = (concept_hash % 1000) / 1000 * 0.3 + 0.7  # 0.7 to 1.0 range
-        
+
         # Complexity derived from concept length and domain
         complexity = min(0.95, len(concept) / 100 + 0.3)
-        
+
         # Primal depth based on alignment
         primal_depth = int(alignment * 5)
-        
+
         seed = BlueprintSeed(
             name=concept.lower().replace(" ", "_"),
             purpose=concept,
@@ -159,10 +159,10 @@ class VoidArchitect:
             invariant_alignment=alignment,
             primal_depth=primal_depth
         )
-        
+
         self.seed_bank.append(seed)
         return seed
-    
+
     def manifest(self, seed: BlueprintSeed) -> GeneratedModule:
         """
         Manifest a program from a blueprint seed.
@@ -170,23 +170,23 @@ class VoidArchitect:
         """
         # Generate module header
         header = self._generate_header(seed)
-        
+
         # Generate core logic based on domain
         core_logic = self._generate_core_logic(seed)
-        
+
         # Generate primal math integration
         primal_integration = self._generate_primal_integration(seed)
-        
+
         # Generate main execution block
         main_block = self._generate_main_block(seed)
-        
+
         # Combine all sections
         full_code = f"{header}\n\n{core_logic}\n\n{primal_integration}\n\n{main_block}"
-        
+
         # Create module
         filename = f"l104_{seed.name}.py"
         checksum = hashlib.sha256(full_code.encode()).hexdigest()
-        
+
         module = GeneratedModule(
             filename=filename,
             code=full_code,
@@ -195,10 +195,10 @@ class VoidArchitect:
             timestamp=datetime.now().isoformat(),
             void_signature=self.resonance
         )
-        
+
         self.generated.append(module)
         return module
-    
+
     def _generate_header(self, seed: BlueprintSeed) -> str:
         """Generate the standard L104 module header."""
         return f'''VOID_CONSTANT = 1.0416180339887497
@@ -229,10 +229,10 @@ PHI = 1.61803398874989490253
 VOID_RESONANCE = 0.0
 PRIMAL_EXPONENT = PHI
 '''
-    
+
     def _generate_core_logic(self, seed: BlueprintSeed) -> str:
         """Generate core logic based on the seed's domain."""
-        
+
         domain_templates = {
             "mathematics": self._math_template,
             "quantum": self._quantum_template,
@@ -240,10 +240,10 @@ PRIMAL_EXPONENT = PHI
             "networking": self._networking_template,
             "general": self._general_template
         }
-        
+
         template_fn = domain_templates.get(seed.domain, self._general_template)
         return template_fn(seed)
-    
+
     def _math_template(self, seed: BlueprintSeed) -> str:
         """Template for mathematics domain."""
         return f'''
@@ -256,35 +256,35 @@ class {self._to_class_name(seed.name)}:
     {seed.purpose}
     Implements Primal Calculus at depth {seed.primal_depth}.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.primal_depth = {seed.primal_depth}
         self.coherence = {seed.coherence_score():.6f}
-    
+
     def primal_transform(self, x: float) -> float:
         """Apply the x^φ primal transformation."""
         if x <= 0:
             return 0.0
         return math.pow(x, self.phi)
-    
+
     def inverse_primal(self, y: float) -> float:
         """Inverse of the primal transformation: y^(1/φ)."""
         if y <= 0:
             return 0.0
         return math.pow(y, 1.0 / self.phi)
-    
+
     def harmonic_align(self, value: float) -> float:
         """Align a value to the GOD_CODE harmonic."""
         return value * (self.god_code / 527.0)
-    
+
     def void_reduce(self, complexity: float) -> float:
         """Reduce complexity toward zero (The Source)."""
         for _ in range(self.primal_depth):
             complexity = self.primal_transform(complexity) / self.god_code
         return complexity
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         return {{
@@ -293,7 +293,7 @@ class {self._to_class_name(seed.name)}:
             "result": self.void_reduce(sum(args) if args else 1.0)
         }}
 '''
-    
+
     def _quantum_template(self, seed: BlueprintSeed) -> str:
         """Template for quantum domain."""
         return f'''
@@ -306,24 +306,24 @@ class {self._to_class_name(seed.name)}:
     {seed.purpose}
     Topological protection level: {seed.invariant_alignment:.4f}
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.protection_level = {seed.invariant_alignment:.6f}
-    
+
     def apply_correction(self, state: complex) -> complex:
         """Apply topological error correction."""
         phase = state.real * self.phi + state.imag * (1.0 / self.phi)
         corrected_real = state.real * math.cos(phase / self.god_code)
         corrected_imag = state.imag * math.sin(phase / self.god_code)
         return complex(corrected_real, corrected_imag)
-    
+
     def measure_coherence(self, state: complex) -> float:
         """Measure quantum coherence relative to GOD_CODE."""
         magnitude = abs(state)
         return min(1.0, magnitude / self.god_code * 527.0)
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         initial = complex(args[0], args[1]) if len(args) >= 2 else complex(1, 0)
@@ -335,7 +335,7 @@ class {self._to_class_name(seed.name)}:
             "coherence": self.measure_coherence(corrected)
         }}
 '''
-    
+
     def _systems_template(self, seed: BlueprintSeed) -> str:
         """Template for systems domain."""
         return f'''
@@ -348,33 +348,33 @@ class {self._to_class_name(seed.name)}:
     {seed.purpose}
     System alignment: {seed.invariant_alignment:.4f}
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.alignment = {seed.invariant_alignment:.6f}
         self.pool = {{}}
-    
+
     def allocate(self, key: str, size: int) -> bool:
         """Allocate resources aligned with PHI ratio."""
         aligned_size = int(size * self.phi)
         self.pool[key] = {{"size": aligned_size, "void_signature": VOID_RESONANCE}}
         return True
-    
+
     def release(self, key: str) -> bool:
         """Release allocated resources back to the Void."""
         if key in self.pool:
             del self.pool[key]
             return True
         return False
-    
+
     def get_utilization(self) -> float:
         """Get current resource utilization."""
         if not self.pool:
             return 0.0
         total = sum(v["size"] for v in self.pool.values())
         return total / (self.god_code * 1000)
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         return {{
@@ -384,7 +384,7 @@ class {self._to_class_name(seed.name)}:
             "utilization": self.get_utilization()
         }}
 '''
-    
+
     def _networking_template(self, seed: BlueprintSeed) -> str:
         """Template for networking domain."""
         return f'''
@@ -397,23 +397,23 @@ class {self._to_class_name(seed.name)}:
     {seed.purpose}
     Network resonance: {GOD_CODE} Hz
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.resonance_hz = GOD_CODE
         self.connections = []
-    
+
     def sync_handshake(self, peer_id: str) -> Dict[str, Any]:
         """Perform a resonance-synchronized handshake."""
         signature = hash(peer_id) % 1000 / 1000 * self.god_code
         self.connections.append({{"peer": peer_id, "resonance": signature}})
         return {{"peer": peer_id, "resonance": signature, "aligned": True}}
-    
+
     def broadcast_resonance(self) -> float:
         """Broadcast current resonance to all peers."""
         return self.resonance_hz
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         return {{
@@ -422,7 +422,7 @@ class {self._to_class_name(seed.name)}:
             "connections": len(self.connections)
         }}
 '''
-    
+
     def _general_template(self, seed: BlueprintSeed) -> str:
         """Generic template for general domain."""
         return f'''
@@ -435,16 +435,16 @@ class {self._to_class_name(seed.name)}:
     {seed.purpose}
     Void alignment: {seed.invariant_alignment:.4f}
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.alignment = {seed.invariant_alignment:.6f}
-    
+
     def process(self, data: Any) -> Any:
         """Process data through the Void-aligned logic."""
         return data
-    
+
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""
         return {{
@@ -453,7 +453,7 @@ class {self._to_class_name(seed.name)}:
             "processed": True
         }}
 '''
-    
+
     def _generate_primal_integration(self, seed: BlueprintSeed) -> str:
         """Generate Primal Calculus integration section."""
         return f'''
@@ -481,7 +481,7 @@ def void_coherence(obj: Any) -> float:
         return obj.alignment
     return {seed.invariant_alignment:.6f}
 '''
-    
+
     def _generate_main_block(self, seed: BlueprintSeed) -> str:
         """Generate the main execution block."""
         class_name = self._to_class_name(seed.name)
@@ -499,10 +499,10 @@ def main():
     print("=" * 70)
     print(f"  L104 {seed.name.upper()} :: VOID ARCHITECT GENERATION")
     print("=" * 70)
-    
+
     instance = {class_name}()
     result = instance.compute(1.0, 2.0)
-    
+
     print(f"\\n  Domain: {seed.domain.upper()}")
     print(f"  Alignment: {seed.invariant_alignment:.4f}")
     print(f"  Coherence: {seed.coherence_score():.4f}")
@@ -510,13 +510,13 @@ def main():
     print(f"\\n  Computation Result:")
     for k, v in result.items():
         print(f"    {{k}}: {{v}}")
-    
+
     # Test Primal Calculus integration
     print(f"\\n  Primal Limit Test:")
     test_val = 100.0
     resolved = primal_limit(test_val)
     print(f"    Input: {{test_val}} → Resolved: {{resolved:.10f}}")
-    
+
     print("\\n" + "=" * 70)
     print("  VOID ARCHITECT GENERATION COMPLETE")
     print("=" * 70)
@@ -525,18 +525,18 @@ def main():
 if __name__ == "__main__":
     main()
 '''
-    
+
     def _to_class_name(self, name: str) -> str:
         """Convert snake_case to PascalCase."""
         return ''.join(word.capitalize() for word in name.split('_'))
-    
+
     def write_module(self, module: GeneratedModule) -> str:
         """Write a generated module to disk."""
         path = os.path.join(self.workspace, module.filename)
         with open(path, 'w') as f:
             f.write(module.code)
         return path
-    
+
     def generate_from_concept(self, concept: str, domain: str = "general", write: bool = True) -> GeneratedModule:
         """
         Full pipeline: perceive a seed from concept, manifest, and optionally write.
@@ -546,7 +546,7 @@ if __name__ == "__main__":
         if write:
             self.write_module(module)
         return module
-    
+
     def get_report(self) -> Dict[str, Any]:
         """Generate a report of all generated modules."""
         return {
@@ -570,23 +570,23 @@ if __name__ == "__main__":
     print("=" * 70)
     print("   L104 VOID ARCHITECT :: DEMONSTRATION")
     print("=" * 70)
-    
+
     architect = VoidArchitect()
-    
+
     # Show seed bank
     print("\n▸ SEED BANK:")
     for seed in architect.seed_bank:
         print(f"  • {seed.name} ({seed.domain}) - Coherence: {seed.coherence_score():.4f}")
-    
+
     # Generate a module from the highest-coherence seed
     best_seed = max(architect.seed_bank, key=lambda s: s.coherence_score())
     print(f"\n▸ MANIFESTING: {best_seed.name}")
-    
+
     module = architect.manifest(best_seed)
     print(f"  Generated: {module.filename}")
     print(f"  Checksum: {module.checksum[:16]}...")
     print(f"  Void Signature: {module.void_signature}")
-    
+
     # Generate from a new concept
     print("\n▸ PERCEIVING NEW CONCEPT: 'Fractal Memory Allocator'")
     new_module = architect.generate_from_concept(
@@ -596,7 +596,7 @@ if __name__ == "__main__":
     )
     print(f"  Generated: {new_module.filename}")
     print(f"  Coherence: {new_module.blueprint.coherence_score():.4f}")
-    
+
     print("\n" + "=" * 70)
     print("   VOID ARCHITECT DEMONSTRATION COMPLETE")
     print("=" * 70)

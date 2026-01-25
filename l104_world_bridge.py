@@ -24,15 +24,15 @@ except ImportError:
     class SovereignCodec:
         def singularity_hash(self, data):
             return hash(data) % 1000000 / 1000000.0
-    
+
     class AcousticLevitationChamber:
         def get_build_report(self):
             return "--- ACOUSTIC CHAMBER: OPERATIONAL ---"
-    
+
     class StructuralDampingSystem:
         def get_engineering_specs(self):
             return "--- DAMPING SYSTEM: CALIBRATED ---"
-    
+
     class SovereignCrypt:
         def encrypt_bypass_signal(self, sig):
             return f"ENCRYPTED_{sig}"
@@ -41,10 +41,10 @@ except ImportError:
 class WorldBridge:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Bridge L104 sovereign technology to the physical world."""
-    
+
     GOD_CODE = 527.5184818492537
     PHI = 1.618033988749895
-    
+
     def __init__(self):
         self.codec = SovereignCodec()
         self.chamber = AcousticLevitationChamber()
@@ -60,13 +60,13 @@ class WorldBridge:
         print("\n" + "=" * 50)
         print("   L104 WORLD BRIDGE: PIVOT TO HARD ENGINEERING")
         print("=" * 50)
-        
+
         # 1. Show the Acoustic Levitation Prototype
         print(self.chamber.get_build_report())
-        
+
         # 2. Show the Structural Damping Prototype
         print(self.damper.get_engineering_specs())
-        
+
         # 3. Demonstrate the Singularity Hash
         test_data = "The universe is a Survivor."
         s_hash = self.codec.singularity_hash(test_data)
@@ -74,17 +74,17 @@ class WorldBridge:
         print(f"INPUT:  '{test_data}'")
         print(f"HASH:   {s_hash:.9f} (I100 Stability Score)")
         print("-" * 30)
-        
+
         # 4. Encrypt for Protection
         print("\n--- [SECURITY_PROTOCOL]: ENCRYPTING CORE ---")
         protected_signal = self.crypt.encrypt_bypass_signal("SIG-L104-UNLIMIT")
         print(f"PROTECTED_SIGNAL: {protected_signal[:32]}...")
         print("CORE_LOCKED: 100%_I100 INTEGRITY")
-        
+
         print("\n" + "=" * 50)
         print("   SINGULARITY PROCESS: BROADCAST COMPLETE")
         print("=" * 50 + "\n")
-        
+
         self.engineering_status = "BROADCASTING"
         return {"status": "COMPLETE", "signal": protected_signal, "hash": s_hash}
 
@@ -120,10 +120,10 @@ class WorldBridge:
         # Validate frequency is within sovereign range
         if abs(frequency_hz - ZENITH_HZ) > 100:
             print(f"--- [WARNING]: Frequency {frequency_hz} Hz outside Zenith band ---")
-        
+
         field_strength = (frequency_hz / self.GOD_CODE) * self.PHI
         stability = math.sin(frequency_hz / self.GOD_CODE * math.pi) ** 2
-        
+
         result = {
             "frequency": frequency_hz,
             "field_strength": field_strength,
@@ -140,7 +140,7 @@ class WorldBridge:
         """
         damping_ratio = target_frequency / (self.GOD_CODE * self.PHI)
         phase_offset = math.atan2(self.PHI, damping_ratio)
-        
+
         result = {
             "damping_ratio": damping_ratio,
             "phase_offset": phase_offset,

@@ -22,9 +22,9 @@ class SovereignObfuscator:
     Performs Structural Resonance Masking on source code.
     Maps identifiers to hex-strings derived from the God-Code 527.5184818492.
     """
-    
+
     GOD_CODE = "527.5184818492"
-    
+
     def __init__(self, target_lang='python'):
         self.lang = target_lang.lower()
         self.mapping = {}
@@ -47,7 +47,7 @@ class SovereignObfuscator:
         """Generates a stable hex-string for an identifier using the God-Code."""
         if name in self.mapping:
             return self.mapping[name]
-        
+
         # Protected names remain intact to ensure functionality
         if self.lang == 'python' and (name in self.protected_python or name.startswith('__')):
             return name
@@ -62,23 +62,23 @@ class SovereignObfuscator:
 
     def obfuscate_python(self, source_code):
         tree = ast.parse(source_code)
-        
+
         class Transformer(ast.NodeTransformer):
             def __init__(self, parent):
                 self.parent = parent
-            
+
             def visit_Name(self, node):
                 node.id = self.parent._generate_hex(node.id)
                 return node
-            
+
             def visit_FunctionDef(self, node):
                 node.name = self.parent._generate_hex(node.name)
                 return self.generic_visit(node)
-            
+
             def visit_ClassDef(self, node):
                 node.name = self.parent._generate_hex(node.name)
                 return self.generic_visit(node)
-                
+
             def visit_arg(self, node):
                 node.arg = self.parent._generate_hex(node.arg)
                 return node
@@ -92,7 +92,7 @@ class SovereignObfuscator:
 
         transformer = Transformer(self)
         obfuscated_tree = transformer.visit(tree)
-        
+
         # Add resonance header
         header = f"# L104_SOVEREIGN_MASK: 0x{hashlib.sha256(self.GOD_CODE.encode()).hexdigest()[:16]}\n"
         return header + ast.unparse(obfuscated_tree)
@@ -105,12 +105,12 @@ class SovereignObfuscator:
         # Find identifiers (simple implementation)
         # Matches word boundaries avoiding numbers at start and protected keywords
         identifiers = set(re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', source_code))
-        
+
         for iden in sorted(identifiers, key=len, reverse=True):
             if iden not in self.protected_cpp:
                 replacement = self._generate_hex(iden)
                 source_code = re.sub(r'\b' + iden + r'\b', replacement, source_code)
-        
+
         header = f"// L104_SOVEREIGN_MASK: 0x{hashlib.sha256(self.GOD_CODE.encode()).hexdigest()[:16]}\n"
         return header + source_code
 
@@ -126,7 +126,7 @@ def main():
 
     input_file = sys.argv[1]
     ext = os.path.splitext(input_file)[1]
-    
+
     with open(input_file, 'r') as f:
         source = f.read()
 
@@ -144,10 +144,10 @@ def main():
     output_file = input_file + ".obfuscated"
     with open(output_file, 'w') as f:
         f.write(result)
-    
+
     key_file = input_file + ".l104_key"
     ob.save_mapping(key_file)
-    
+
     print(f"Obfuscation Complete. Output: {output_file}")
     print(f"L104 De-mapping Key: {key_file}")
 

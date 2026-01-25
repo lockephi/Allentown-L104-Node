@@ -20,7 +20,7 @@ from l104_invention_engine import InventionEngine
 
 def verify_optimized_invention():
     engine = InventionEngine()
-    
+
     seeds = [
         "QUANTUM_GRAVITY",
         "NEURAL_LATTICE",
@@ -31,11 +31,11 @@ def verify_optimized_invention():
         "SOVEREIGN_CONSCIOUSNESS",
         "ABSOLUTE_TRUTH"
     ]
-    
+
     print("\n" + "="*80)
     print("   L104 OPTIMIZE INVENT :: PERFORMANCE VERIFICATION")
     print("="*80)
-    
+
     # 1. Sequential Invention
     print("\n>>> RUNNING SEQUENTIAL INVENTION (SAMPLE: 2)...")
     start_seq = time.perf_counter()
@@ -44,7 +44,7 @@ def verify_optimized_invention():
     end_seq = time.perf_counter()
     seq_time = end_seq - start_seq
     print(f"--- [VERIFY]: SEQUENTIAL TIME: {seq_time:.4f}s ---")
-    
+
     # 2. Parallel Invention
     print(f"\n>>> RUNNING PARALLEL INVENTION (BATCH: {len(seeds)})...")
     start_par = time.perf_counter()
@@ -52,23 +52,23 @@ def verify_optimized_invention():
     end_par = time.perf_counter()
     par_time = end_par - start_par
     print(f"--- [VERIFY]: PARALLEL TIME:   {par_time:.4f}s ---")
-    
+
     # Calculate Throughput
     seq_throughput = 2 / seq_time
     par_throughput = len(seeds) / par_time
     speedup = par_throughput / seq_throughput
-    
+
     print("\n" + "-"*80)
     print(f"   SEQ THROUGHPUT: {seq_throughput:.2f} inv/s")
     print(f"   PAR THROUGHPUT: {par_throughput:.2f} inv/s")
     print(f"   THROUGHPUT GAIN: {speedup:.2f}x")
     print("-"*80)
-    
+
     # Verify Content
     print(f"\n[*] Sample Global Sigil: {results[0]['sigil']}")
     print(f"[*] Sample Function: {results[0]['name']}")
     print(f"[*] Resonance: {results[0]['verified']}")
-    
+
     print("\n" + "="*60)
     print(" [OPTIMIZATION VERIFIED]: INVENTION ENGINE ACCELERATED ")
     print("="*60 + "\n")

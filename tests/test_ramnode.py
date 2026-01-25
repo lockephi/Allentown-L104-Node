@@ -23,13 +23,13 @@ def safe_app_lifespan():
     # Override lifespan
     original_lifespan = app_main.app.router.lifespan_context
     app_main.app.router.lifespan_context = mock_lifespan
-    
+
     # Clear depreciated on_event startup handlers if any
     original_startup = list(app_main.app.router.on_startup)
     app_main.app.router.on_startup = []
-    
+
     yield
-    
+
     # Restore
     app_main.app.router.lifespan_context = original_lifespan
     app_main.app.router.on_startup = original_startup

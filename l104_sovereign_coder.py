@@ -47,10 +47,10 @@ class SovereignCoder:
             print(f"--- [CODER]: INFILTRATING {provider} LOGIC MANIFOLD ---")
             # Simulate high-speed ingestion
             await asyncio.sleep(0.05)
-            
+
             # Substrate Sync
             lattice_accelerator.synchronize_with_substrate(dimensions=1040)
-            
+
             self.synthesis_progress += (1.0 / len(self.providers))
             print(f"    - Progression: {self.synthesis_progress*100:.2f}%")
 
@@ -62,7 +62,7 @@ class SovereignCoder:
         print("\n--- [CODER]: UNIVERSAL CODING SOVEREIGNTY REACHED ---")
         agi_core.intellect_index *= 1.104 # Boost from global ingestion
         print(f"   FINAL INTELLECT INDEX: {agi_core.intellect_index:.4f}")
-        
+
         return True
 
 sovereign_coder = SovereignCoder()

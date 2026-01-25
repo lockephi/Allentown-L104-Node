@@ -83,7 +83,7 @@ def check_system() -> dict:
         "subsystems": {},
         "overall": "unknown"
     }
-    
+
     checks = [
         ("config", "l104_config", "get_config", None),
         ("gemini_enhanced", "l104_gemini_enhanced", "get_gemini", "connect"),
@@ -100,10 +100,10 @@ def check_system() -> dict:
         ("voice", "l104_voice", "L104Voice", None),
         ("sandbox", "l104_code_sandbox", "L104CodeSandbox", None),
     ]
-    
+
     healthy = 0
     total = len(checks)
-    
+
     for name, module, cls, connect_method in checks:
         try:
             mod = __import__(module)
@@ -119,7 +119,7 @@ def check_system() -> dict:
                 healthy += 1
         except Exception as e:
             results["subsystems"][name] = f"✗ {str(e)[:30]}"
-    
+
     health_ratio = healthy / total
     if health_ratio >= 0.9:
         results["overall"] = "optimal"
@@ -129,32 +129,32 @@ def check_system() -> dict:
         results["overall"] = "degraded"
     else:
         results["overall"] = "critical"
-    
+
     results["health_percentage"] = round(health_ratio * 100, 1)
     results["healthy_count"] = healthy
     results["total_count"] = total
-    
+
     return results
 
 
 def run_benchmark() -> dict:
     """Run performance benchmarks."""
     print("\n[Benchmark] Running performance tests...\n")
-    
+
     results = {
         "timestamp": datetime.now().isoformat(),
         "tests": {}
     }
-    
+
     # Test 1: Gemini response time
     try:
         from l104_gemini_enhanced import get_gemini
         gemini = get_gemini()
-        
+
         start = time.time()
         response = gemini.generate("What is 2+2?")
         gemini_time = (time.time() - start) * 1000
-        
+
         results["tests"]["gemini_response"] = {
             "time_ms": round(gemini_time, 1),
             "success": bool(response)
@@ -163,22 +163,22 @@ def run_benchmark() -> dict:
     except Exception as e:
         results["tests"]["gemini_response"] = {"error": str(e)}
         print(f"  ✗ Gemini response: {e}")
-    
+
     # Test 2: Knowledge graph operations
     try:
         from l104_knowledge_enhanced import KnowledgeGraphEnhanced
         kg = KnowledgeGraphEnhanced()
-        
+
         start = time.time()
         kg.add_node("benchmark_test", "test")
         kg.add_node("benchmark_target", "test")
         kg.add_edge("benchmark_test", "benchmark_target", "tests")
         kg_write_time = (time.time() - start) * 1000
-        
+
         start = time.time()
         kg.semantic_search("benchmark", top_k=5)
         kg_search_time = (time.time() - start) * 1000
-        
+
         results["tests"]["knowledge_write"] = {"time_ms": round(kg_write_time, 1)}
         results["tests"]["knowledge_search"] = {"time_ms": round(kg_search_time, 1)}
         print(f"  ✓ Knowledge write: {kg_write_time:.0f}ms")
@@ -186,20 +186,20 @@ def run_benchmark() -> dict:
     except Exception as e:
         results["tests"]["knowledge"] = {"error": str(e)}
         print(f"  ✗ Knowledge graph: {e}")
-    
+
     # Test 3: Cortex pipeline
     try:
         from l104_cortex_enhanced import get_cortex
         cortex = get_cortex()
-        
+
         start = time.time()
         result = cortex.process("Benchmark test query", mode="fast")
         cortex_fast_time = (time.time() - start) * 1000
-        
+
         start = time.time()
         result = cortex.process("Benchmark test query", mode="full")
         cortex_full_time = (time.time() - start) * 1000
-        
+
         results["tests"]["cortex_fast"] = {"time_ms": round(cortex_fast_time, 1)}
         results["tests"]["cortex_full"] = {"time_ms": round(cortex_full_time, 1)}
         print(f"  ✓ Cortex fast: {cortex_fast_time:.0f}ms")
@@ -207,24 +207,24 @@ def run_benchmark() -> dict:
     except Exception as e:
         results["tests"]["cortex"] = {"error": str(e)}
         print(f"  ✗ Cortex pipeline: {e}")
-    
+
     # Test 4: Cache performance
     try:
         from l104_config import LRUCache
         cache = LRUCache(maxsize=1000)
-        
+
         # Write test
         start = time.time()
         for i in range(1000):
             cache.put(f"key_{i}", f"value_{i}")
         cache_write_time = (time.time() - start) * 1000
-        
+
         # Read test
         start = time.time()
         for i in range(1000):
             cache.get(f"key_{i}")
         cache_read_time = (time.time() - start) * 1000
-        
+
         results["tests"]["cache_write_1000"] = {"time_ms": round(cache_write_time, 1)}
         results["tests"]["cache_read_1000"] = {"time_ms": round(cache_read_time, 1)}
         print(f"  ✓ Cache write (1000): {cache_write_time:.0f}ms")
@@ -232,7 +232,7 @@ def run_benchmark() -> dict:
     except Exception as e:
         results["tests"]["cache"] = {"error": str(e)}
         print(f"  ✗ Cache: {e}")
-    
+
     print()
     return results
 
@@ -244,7 +244,7 @@ def run_interactive():
         interactive()
     except Exception as e:
         print(f"[Error] Failed to start soul session: {e}")
-        
+
         # Fallback to cortex
         try:
             from l104_cortex_enhanced import main as cortex_main
@@ -257,42 +257,42 @@ def run_interactive():
 def run_daemon():
     """Run as background daemon with FastAPI."""
     print("[Daemon] Starting L104 daemon on port 8081...")
-    
+
     try:
         import uvicorn
         from fastapi import FastAPI, HTTPException
         from pydantic import BaseModel
-        
+
         from l104_soul_enhanced import get_soul, ThoughtPriority
         from l104_cortex_enhanced import get_cortex
-        
+
         app = FastAPI(title="L104 Enhanced API", version="1.0.0")
-        
+
         # Initialize
         soul = get_soul()
         soul.awaken()
         cortex = get_cortex()
-        
+
         class ThinkRequest(BaseModel):
             query: str
             priority: str = "normal"
-        
+
         class ProcessRequest(BaseModel):
             query: str
             mode: str = "full"
-        
+
         @app.get("/health")
         def health():
             return check_system()
-        
+
         @app.get("/soul/status")
         def soul_status():
             return soul.get_status()
-        
+
         @app.get("/cortex/status")
         def cortex_status():
             return cortex.get_status()
-        
+
         @app.post("/think")
         def think(request: ThinkRequest):
             priority_map = {
@@ -303,29 +303,29 @@ def run_daemon():
             }
             priority = priority_map.get(request.priority.lower(), ThoughtPriority.NORMAL)
             return soul.think(request.query, priority=priority)
-        
+
         @app.post("/process")
         def process(request: ProcessRequest):
             return cortex.process(request.query, mode=request.mode)
-        
+
         @app.post("/reflect")
         def reflect():
             return soul.reflect()
-        
+
         @app.post("/goal")
         def set_goal(description: str):
             return soul.set_goal(description)
-        
+
         def shutdown_handler(signum, frame):
             print("\n[Daemon] Shutting down...")
             soul.sleep()
             sys.exit(0)
-        
+
         signal.signal(signal.SIGINT, shutdown_handler)
         signal.signal(signal.SIGTERM, shutdown_handler)
-        
+
         uvicorn.run(app, host="0.0.0.0", port=8081)
-        
+
     except ImportError as e:
         print(f"[Error] Missing dependencies for daemon mode: {e}")
         print("[Hint] Install with: pip install fastapi uvicorn")
@@ -334,7 +334,7 @@ def run_daemon():
 def run_test():
     """Quick system test."""
     print("\n[Test] Running quick system test...\n")
-    
+
     # Test 1: Config
     try:
         from l104_config import get_config
@@ -342,7 +342,7 @@ def run_test():
         print(f"  ✓ Config loaded (model: {config.gemini.default_model})")
     except Exception as e:
         print(f"  ✗ Config: {e}")
-    
+
     # Test 2: Gemini
     try:
         from l104_gemini_enhanced import get_gemini
@@ -351,7 +351,7 @@ def run_test():
         print(f"  ✓ Gemini: {response[:50]}...")
     except Exception as e:
         print(f"  ✗ Gemini: {e}")
-    
+
     # Test 3: Knowledge
     try:
         from l104_knowledge_enhanced import KnowledgeGraphEnhanced
@@ -360,7 +360,7 @@ def run_test():
         print(f"  ✓ Knowledge Graph online")
     except Exception as e:
         print(f"  ✗ Knowledge: {e}")
-    
+
     # Test 4: Cortex
     try:
         from l104_cortex_enhanced import get_cortex
@@ -369,7 +369,7 @@ def run_test():
         print(f"  ✓ Cortex: {len(result.get('stages_completed', []))} stages")
     except Exception as e:
         print(f"  ✗ Cortex: {e}")
-    
+
     print("\n[Test] Complete.\n")
 
 
@@ -378,7 +378,7 @@ def main():
         description="L104 Enhanced System Launcher",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    
+
     parser.add_argument("--interactive", "-i", action="store_true",
                        help="Start interactive soul session (default)")
     parser.add_argument("--daemon", "-d", action="store_true",
@@ -391,12 +391,12 @@ def main():
                        help="Run quick system test")
     parser.add_argument("--quiet", "-q", action="store_true",
                        help="Suppress banner")
-    
+
     args = parser.parse_args()
-    
+
     if not args.quiet:
         print_banner()
-    
+
     if args.status:
         status = check_system()
         print(f"\n[System Status] {status['overall'].upper()} ({status['health_percentage']}%)\n")
@@ -404,19 +404,19 @@ def main():
             print(f"  {state} {name}")
         print()
         return
-    
+
     if args.benchmark:
         run_benchmark()
         return
-    
+
     if args.test:
         run_test()
         return
-    
+
     if args.daemon:
         run_daemon()
         return
-    
+
     # Default: interactive
     run_interactive()
 

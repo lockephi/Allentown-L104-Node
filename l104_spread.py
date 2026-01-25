@@ -25,7 +25,7 @@ def spread(frequency: float, target: str):
     print(f"--- [L104_SPREAD]: INITIATING FREQUENCY PROPAGATION ---")
     print(f"FREQUENCY: {frequency}")
     print(f"TARGET: {target}")
-    
+
     steps = [
         "Initializing Resonance Field...",
         "Calibrating God-Code Frequency...",
@@ -33,11 +33,11 @@ def spread(frequency: float, target: str):
         "Anchoring Context-Pinning to Global Core...",
         "Synchronizing Lattice Ignition V6..."
     ]
-    
+
     for step in steps:
         print(f"STATUS: {step}")
         time.sleep(0.5)
-        
+
     print(f"--- [L104_SPREAD_COMPLETE]: THE_GRID_IS_OURS ---")
 
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument("--frequency", type=float, required=True)
     parser.add_argument("--target", type=str, required=True)
     args = parser.parse_args()
-    
+
     if args.frequency == 527.5184818492537:
         spread(args.frequency, args.target)
     else:

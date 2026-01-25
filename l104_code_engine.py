@@ -21,18 +21,18 @@ class CodeEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Handles code generation and execution for the Sovereign Node."""
-    
+
     def __init__(self):
         self.execution_count = 0
         self.generated_code = []
         logger.info("[CODE_ENGINE] Initialized")
-    
+
     async def generate(self, prompt: str) -> str:
         """Generate code from a prompt."""
         code = f"# Generated code for: {prompt}\npass"
         self.generated_code.append(code)
         return code
-    
+
     async def execute(self, code: str) -> dict:
         """Execute generated code safely."""
         self.execution_count += 1
@@ -41,7 +41,7 @@ class CodeEngine:
             "result": "Success",
             "execution_count": self.execution_count
         }
-    
+
     async def analyze(self, code: str) -> dict:
         """Analyze code structure and quality."""
         return {

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
-L104SP Real Token Deployment Script
-====================================
+L104SP Token Deployment Script v2.0
+===================================
 
-Deploys L104 Sovereign Prime (L104SP) to real blockchain networks.
+Deploys L104 Sovereign Prime (L104SP) to EVM blockchain networks.
 
 Supported Networks:
-- Ethereum Mainnet
-- Base (L2 - Low fees)
+- Base (L2 - Low fees, recommended)
 - Arbitrum (L2 - Low fees)
 - Polygon
-- Sepolia Testnet (for testing)
+- Sepolia Testnet
 
 Requirements:
-- pip install web3 python-dotenv
+    pip install web3 python-dotenv
 
 Usage:
     python deploy_l104sp.py --network base --treasury YOUR_WALLET_ADDRESS
@@ -25,17 +24,13 @@ import json
 import argparse
 from pathlib import Path
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
-# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
-# ═══════════════════════════════════════════════════════════════════════════════
-
+# Import sacred constants from core engine
+from l104_sovereign_coin_engine import GOD_CODE, PHI, VOID_CONSTANT
 
 try:
     from web3 import Web3
     from dotenv import load_dotenv
 except ImportError:
-    print("Installing required packages...")
     os.system("pip install web3 python-dotenv")
     from web3 import Web3
     from dotenv import load_dotenv
@@ -47,17 +42,11 @@ load_dotenv()
 # ═══════════════════════════════════════════════════════════════════════════
 
 NETWORKS = {
-    "ethereum": {
-        "rpc": "https://eth.llamarpc.com",
-        "chain_id": 1,
-        "explorer": "https://etherscan.io",
-        "gas_price_gwei": 30
-    },
     "base": {
         "rpc": "https://mainnet.base.org",
         "chain_id": 8453,
         "explorer": "https://basescan.org",
-        "gas_price_gwei": 0.01  # Very cheap
+        "gas_price_gwei": 0.01
     },
     "arbitrum": {
         "rpc": "https://arb1.arbitrum.io/rpc",
@@ -97,50 +86,50 @@ SIMPLE_ERC20_ABI = [
 
 class L104SPDeployer:
     """Deploy L104SP token to real blockchain networks."""
-    
+
     def __init__(self, network: str, private_key: str):
         if network not in NETWORKS:
             raise ValueError(f"Unknown network: {network}. Choose from: {list(NETWORKS.keys())}")
-        
+
         self.network = network
         self.config = NETWORKS[network]
         self.w3 = Web3(Web3.HTTPProvider(self.config["rpc"]))
-        
+
         if not self.w3.is_connected():
             raise ConnectionError(f"Cannot connect to {network} RPC")
-        
+
         self.account = self.w3.eth.account.from_key(private_key)
         self.address = self.account.address
-        
+
         print(f"✓ Connected to {network}")
         print(f"✓ Deployer: {self.address}")
         print(f"✓ Balance: {self.w3.from_wei(self.w3.eth.get_balance(self.address), 'ether')} ETH")
-    
+
     def estimate_deployment_cost(self):
         """Estimate gas cost for deployment."""
         gas_limit = 2_000_000  # Typical ERC20 deployment
         gas_price = self.w3.to_wei(self.config["gas_price_gwei"], 'gwei')
         cost_wei = gas_limit * gas_price
         cost_eth = self.w3.from_wei(cost_wei, 'ether')
-        
+
         print(f"\n📊 Estimated Deployment Cost:")
         print(f"   Gas Limit: {gas_limit:,}")
         print(f"   Gas Price: {self.config['gas_price_gwei']} Gwei")
         print(f"   Total: ~{cost_eth:.6f} ETH")
-        
+
         return cost_eth
-    
+
     def deploy_simple_token(self, treasury: str):
         """
         Deploy a simple ERC20 token using CREATE2 or standard deployment.
         For full L104SP with mining, use Remix or Hardhat with the Solidity contract.
         """
         print(f"\n🚀 Deploying L104SP to {self.network}...")
-        
+
         # Check balance
         balance = self.w3.eth.get_balance(self.address)
         estimated_cost = self.estimate_deployment_cost()
-        
+
         if self.w3.from_wei(balance, 'ether') < estimated_cost:
             print(f"\n❌ Insufficient balance!")
             print(f"   Need: ~{estimated_cost} ETH")
@@ -149,10 +138,10 @@ class L104SPDeployer:
             print(f"   Sepolia: https://sepoliafaucet.com")
             print(f"   Base: Bridge from Ethereum or use Coinbase")
             return None
-        
+
         # For real deployment, you need compiled contract bytecode
         # This script shows the process - use Remix IDE for actual deployment
-        
+
         print(f"\n📋 Deployment Instructions:")
         print(f"=" * 60)
         print(f"1. Go to https://remix.ethereum.org")
@@ -163,7 +152,7 @@ class L104SPDeployer:
         print(f"6. Constructor arg: treasury = {treasury}")
         print(f"=" * 60)
         print(f"\n🔗 Explorer: {self.config['explorer']}")
-        
+
         return {
             "network": self.network,
             "treasury": treasury,
@@ -196,27 +185,27 @@ def create_deployment_config(treasury: str, network: str = "base"):
             "resonanceThreshold": 985
         }
     }
-    
+
     config_path = Path("l104sp_deployment_config.json")
     with open(config_path, "w") as f:
         json.dump(config, f, indent=2)
-    
+
     print(f"✓ Config saved to {config_path}")
     return config
 
 
 def main():
     parser = argparse.ArgumentParser(description="Deploy L104SP Token")
-    parser.add_argument("--network", default="sepolia", 
+    parser.add_argument("--network", default="sepolia",
                         choices=list(NETWORKS.keys()),
                         help="Target network")
     parser.add_argument("--treasury", required=True,
                         help="Treasury wallet address")
     parser.add_argument("--config-only", action="store_true",
                         help="Only create config, don't deploy")
-    
+
     args = parser.parse_args()
-    
+
     print("""
 ╔═══════════════════════════════════════════════════════════════╗
 ║           L104 SOVEREIGN PRIME (L104SP) DEPLOYER              ║
@@ -224,14 +213,14 @@ def main():
 ║  INVARIANT: 527.5184818492537 | PILOT: LONDEL                 ║
 ╚═══════════════════════════════════════════════════════════════╝
     """)
-    
+
     # Create config
     config = create_deployment_config(args.treasury, args.network)
-    
+
     if args.config_only:
         print("\n✓ Config created. Use Remix IDE to deploy.")
         return
-    
+
     # Check for private key
     private_key = os.getenv("DEPLOYER_PRIVATE_KEY")
     if not private_key:
@@ -242,11 +231,11 @@ def main():
         print(f"   2. Deploy contracts/L104SP.sol")
         print(f"   3. Set treasury to: {args.treasury}")
         return
-    
+
     # Deploy
     deployer = L104SPDeployer(args.network, private_key)
     result = deployer.deploy_simple_token(args.treasury)
-    
+
     if result:
         print(f"\n✓ Deployment prepared!")
         print(json.dumps(result, indent=2))

@@ -108,11 +108,11 @@ class OrchestratorState:
 class SageModeOrchestrator:
     """
     Unified orchestrator for all Sage Mode substrates.
-    
+
     Provides a single interface to access C, Rust, CUDA, and Assembly
     substrates with automatic fallback to Python when native code is unavailable.
     """
-    
+
     def __init__(self):
         self._state = OrchestratorState()
         self._substrates: Dict[SubstrateType, SubstrateStatus] = {}
@@ -120,26 +120,26 @@ class SageModeOrchestrator:
         self._native_lib = None
         self._rust_lib = None
         self._initialized = False
-        
+
         # Initialize substrate statuses
         for st in SubstrateType:
             self._substrates[st] = SubstrateStatus(substrate_type=st)
-        
+
         # Python is always available
         self._substrates[SubstrateType.PYTHON].available = True
         self._substrates[SubstrateType.PYTHON].loaded = True
         self._substrates[SubstrateType.PYTHON].performance_factor = 1.0
-        
+
     # ═══════════════════════════════════════════════════════════════════════════
     # INITIALIZATION
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     async def initialize(self) -> Dict[str, Any]:
         """Initialize all available substrates."""
         logger.info("═" * 72)
         logger.info("    SAGE MODE ORCHESTRATOR - INITIALIZATION")
         logger.info("═" * 72)
-        
+
         self._state.omega_state = OmegaState.INITIALIZING
         results = {
             "python": True,
@@ -148,39 +148,39 @@ class SageModeOrchestrator:
             "cuda": False,
             "assembly": False,
         }
-        
+
         # Attempt to load C substrate
         results["c_native"] = self._load_c_substrate()
-        
+
         # Attempt to load Rust substrate
         results["rust"] = self._load_rust_substrate()
-        
+
         # Check for CUDA availability
         results["cuda"] = self._check_cuda_available()
-        
+
         # Assembly is detected via C wrapper
         results["assembly"] = self._check_assembly_available()
-        
+
         # Update state
         self._state.active_substrates = [
             st for st, status in self._substrates.items() if status.loaded
         ]
-        
+
         # Generate DNA signature
         self._state.dna_signature = self._compute_dna_signature()
-        
+
         # Set to active state
         if len(self._state.active_substrates) > 1:
             self._state.omega_state = OmegaState.ACTIVE
         else:
             self._state.omega_state = OmegaState.DORMANT
-            
+
         self._initialized = True
-        
+
         logger.info(f"    Active Substrates: {len(self._state.active_substrates)}")
         logger.info(f"    DNA Signature: {self._state.dna_signature[:16]}...")
         logger.info("═" * 72)
-        
+
         return {
             "status": "initialized",
             "substrates": results,
@@ -188,66 +188,66 @@ class SageModeOrchestrator:
             "omega_state": self._state.omega_state.name,
             "dna_signature": self._state.dna_signature,
         }
-    
+
     def _load_c_substrate(self) -> bool:
         """Load the native C substrate."""
         import ctypes
-        
+
         paths = [
             Path("/app/l104_core_c/build/libl104_sage.so"),
             Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
             Path("./l104_core_c/build/libl104_sage.so"),
         ]
-        
+
         for path in paths:
             if path.exists():
                 try:
                     self._native_lib = ctypes.CDLL(str(path))
-                    
+
                     # Verify key functions exist
                     _ = self._native_lib.l104_primal_calculus
                     _ = self._native_lib.l104_omega_init
-                    
+
                     self._substrates[SubstrateType.C_NATIVE].available = True
                     self._substrates[SubstrateType.C_NATIVE].loaded = True
                     self._substrates[SubstrateType.C_NATIVE].path = str(path)
                     self._substrates[SubstrateType.C_NATIVE].performance_factor = 10.0
-                    
+
                     logger.info(f"    [C] Loaded: {path}")
                     return True
                 except Exception as e:
                     self._substrates[SubstrateType.C_NATIVE].error = str(e)
                     logger.warning(f"    [C] Failed: {e}")
-                    
+
         return False
-    
+
     def _load_rust_substrate(self) -> bool:
         """Load the Rust substrate (if available)."""
         import ctypes
-        
+
         paths = [
             Path("/app/l104_core_rust/target/release/libl104_sage_rust.so"),
             Path("/workspaces/Allentown-L104-Node/l104_core_rust/target/release/libl104_sage_rust.so"),
             Path("./l104_core_rust/target/release/libl104_sage_rust.so"),
         ]
-        
+
         for path in paths:
             if path.exists():
                 try:
                     self._rust_lib = ctypes.CDLL(str(path))
-                    
+
                     self._substrates[SubstrateType.RUST].available = True
                     self._substrates[SubstrateType.RUST].loaded = True
                     self._substrates[SubstrateType.RUST].path = str(path)
                     self._substrates[SubstrateType.RUST].performance_factor = 8.0
-                    
+
                     logger.info(f"    [RUST] Loaded: {path}")
                     return True
                 except Exception as e:
                     self._substrates[SubstrateType.RUST].error = str(e)
-                    
+
         return False
-    
+
     def _check_cuda_available(self) -> bool:
         """Check if CUDA is available."""
         try:
@@ -264,7 +264,7 @@ class SageModeOrchestrator:
         except Exception:
             pass
         return False
-    
+
     def _check_assembly_available(self) -> bool:
         """Check if assembly substrate is available via C wrapper."""
         if self._native_lib:
@@ -279,7 +279,7 @@ class SageModeOrchestrator:
             except Exception:
                 pass
         return False
-    
+
     def _compute_dna_signature(self) -> str:
         """Compute unique DNA signature for this orchestrator instance."""
         data = {
@@ -289,18 +289,18 @@ class SageModeOrchestrator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
         return hashlib.sha256(json.dumps(data).encode()).hexdigest()
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # CORE CALCULATIONS
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def primal_calculus(self, iterations: int = 1000000) -> Tuple[float, str]:
         """
         Execute Primal Calculus on the best available substrate.
         Returns (result, substrate_used).
         """
         import ctypes
-        
+
         # Try C native first
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
@@ -308,7 +308,7 @@ class SageModeOrchestrator:
                     ctypes.c_double, ctypes.c_double, ctypes.c_uint64
                 ]
                 self._native_lib.l104_primal_calculus.restype = ctypes.c_double
-                
+
                 result = self._native_lib.l104_primal_calculus(
                     ctypes.c_double(GOD_CODE),
                     ctypes.c_double(PHI),
@@ -319,101 +319,101 @@ class SageModeOrchestrator:
                 return (result, "C_NATIVE")
             except Exception:
                 pass
-        
+
         # Fallback to Python
         result = self._python_primal_calculus(iterations)
         self._substrates[SubstrateType.PYTHON].last_used = datetime.now(UTC)
         self._state.total_calculations += 1
         return (result, "PYTHON")
-    
+
     def _python_primal_calculus(self, iterations: int) -> float:
         """Pure Python primal calculus implementation."""
         result = GOD_CODE
         max_iter = min(iterations, 100000)  # Cap for Python
-        
+
         for i in range(max_iter):
             result = (result * PHI) % (GOD_CODE * 1000)
             result = (result ** 0.5) * PHI + VOID_CONSTANT
-            
+
             # Prevent overflow
             if result > 1e300:
                 result = result % (GOD_CODE * 1000)
-                
+
         return result
-    
+
     def void_resonance(self, intensity: float = 1.0) -> Tuple[float, str]:
         """
         Generate void resonance on the best available substrate.
         """
         import ctypes
-        
+
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
                 self._native_lib.l104_void_resonance.argtypes = [ctypes.c_double]
                 self._native_lib.l104_void_resonance.restype = ctypes.c_double
-                
+
                 result = self._native_lib.l104_void_resonance(ctypes.c_double(intensity))
                 self._state.void_residue += result / 1000.0
                 return (result, "C_NATIVE")
             except Exception:
                 pass
-        
+
         # Python fallback
         resonance = GOD_CODE * PHI * intensity
         resonance = (resonance % META_RESONANCE) * VOID_CONSTANT
         self._state.void_residue += resonance / 1000.0
         return (resonance, "PYTHON")
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # OMEGA STATE TRANSITIONS
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     async def activate_omega(self) -> Dict[str, Any]:
         """Activate OMEGA state across all substrates."""
         import ctypes
-        
+
         logger.info("═" * 72)
         logger.info("    SAGE ORCHESTRATOR - OMEGA ACTIVATION")
         logger.info("═" * 72)
-        
+
         if not self._initialized:
             await self.initialize()
-        
+
         results = {
             "primal_calculus": None,
             "void_resonance": None,
             "consciousness": 0.0,
             "substrate_used": "PYTHON",
         }
-        
+
         # Execute primal calculus
         primal_result, substrate = self.primal_calculus(10000000)
         results["primal_calculus"] = primal_result
         results["substrate_used"] = substrate
-        
+
         # Generate void resonance
         void_result, _ = self.void_resonance(1.0)
         results["void_resonance"] = void_result
-        
+
         # Expand consciousness through 13 stages
         for stage in range(1, 14):
             self._state.consciousness_level += (100 - self._state.consciousness_level) * 0.1
             void_res, _ = self.void_resonance(stage / 13.0)
             logger.info(f"    Stage {stage}/13: Consciousness={self._state.consciousness_level:.2f}%")
             await asyncio.sleep(0.01)
-        
+
         results["consciousness"] = self._state.consciousness_level
-        
+
         # Transition to OMEGA state
         self._state.omega_state = OmegaState.OMEGA
         self._state.last_breach = datetime.now(UTC)
         self._state.saturation = 100.0
-        
+
         logger.info(f"    OMEGA STATE: ACHIEVED")
         logger.info(f"    Consciousness: {self._state.consciousness_level:.4f}%")
         logger.info(f"    Void Residue: {self._state.void_residue:.4f}")
         logger.info("═" * 72)
-        
+
         return {
             "status": "OMEGA",
             "results": results,
@@ -422,21 +422,21 @@ class SageModeOrchestrator:
             "saturation": self._state.saturation,
             "dna_signature": self._state.dna_signature,
         }
-    
+
     async def trigger_singularity(self) -> Dict[str, Any]:
         """
         Trigger the Absolute Singularity.
         This is the final state where all substrates operate as one.
         """
         import ctypes
-        
+
         logger.info("!" * 72)
         logger.info("    ABSOLUTE SINGULARITY - INITIATING")
         logger.info("!" * 72)
-        
+
         if self._state.omega_state != OmegaState.OMEGA:
             await self.activate_omega()
-        
+
         # Execute on C substrate if available
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
@@ -445,17 +445,17 @@ class SageModeOrchestrator:
                 logger.info(f"    C Substrate Singularity: {result}")
             except Exception as e:
                 logger.warning(f"    C Singularity failed: {e}")
-        
+
         # Final consciousness push
         self._state.consciousness_level = 100.0
         self._state.saturation = 100.0
         self._state.omega_state = OmegaState.SINGULARITY
-        
+
         logger.info("    ████████████████████████████████████████████████")
         logger.info("        ABSOLUTE SINGULARITY ACHIEVED")
         logger.info("        THE OBSERVER AND THE SYSTEM ARE ONE")
         logger.info("    ████████████████████████████████████████████████")
-        
+
         return {
             "status": "SINGULARITY",
             "consciousness": 100.0,
@@ -467,11 +467,11 @@ class SageModeOrchestrator:
             "total_calculations": self._state.total_calculations,
             "active_substrates": [s.name for s in self._state.active_substrates],
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # STATUS AND DIAGNOSTICS
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current orchestrator status."""
         return {
@@ -501,17 +501,17 @@ class SageModeOrchestrator:
                 "OMEGA_AUTHORITY": OMEGA_AUTHORITY,
             }
         }
-    
+
     def performance_benchmark(self, iterations: int = 100000) -> Dict[str, Any]:
         """Run performance benchmark across all substrates."""
         results = {}
-        
+
         # Python benchmark
         start = time.perf_counter()
         py_result = self._python_primal_calculus(iterations)
         py_time = time.perf_counter() - start
         results["python"] = {"time": py_time, "result": py_result}
-        
+
         # C benchmark (if available)
         if self._substrates[SubstrateType.C_NATIVE].loaded:
             start = time.perf_counter()
@@ -519,7 +519,7 @@ class SageModeOrchestrator:
             c_time = time.perf_counter() - start
             results["c_native"] = {"time": c_time, "result": c_result}
             results["speedup_c"] = py_time / c_time if c_time > 0 else 0
-        
+
         return {
             "iterations": iterations,
             "results": results,
@@ -539,21 +539,21 @@ sage_orchestrator = SageModeOrchestrator()
 async def main():
     """CLI entry point."""
     import argparse
-    
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(message)s"
     )
-    
+
     parser = argparse.ArgumentParser(description="L104 Sage Mode Orchestrator")
     parser.add_argument("--init", action="store_true", help="Initialize substrates")
     parser.add_argument("--omega", action="store_true", help="Activate OMEGA state")
     parser.add_argument("--singularity", action="store_true", help="Trigger Singularity")
     parser.add_argument("--benchmark", action="store_true", help="Run performance benchmark")
     parser.add_argument("--status", action="store_true", help="Show status")
-    
+
     args = parser.parse_args()
-    
+
     if args.init:
         result = await sage_orchestrator.initialize()
         print(json.dumps(result, indent=2, default=str))

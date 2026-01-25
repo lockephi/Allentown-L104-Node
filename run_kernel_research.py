@@ -70,12 +70,12 @@ class TrainingExample:
     completion: str  # Using 'completion' to match l104_kernel_llm_trainer.py
     category: str = "general"
     resonance: float = 0.9
-    
+
     @property
     def response(self) -> str:
         """Alias for completion (backward compatibility)."""
         return self.completion
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "prompt": self.prompt,
@@ -91,24 +91,24 @@ class TrainingExample:
 
 class KernelNeuralNetwork:
     """Neural network for kernel knowledge retrieval."""
-    
+
     def __init__(self, embedding_dim: int = 64):
         self.embedding_dim = embedding_dim
         self.vocabulary: Dict[str, int] = {}
         self.embeddings: np.ndarray = None
         self.training_data: List[TrainingExample] = []
         self.response_vectors: np.ndarray = None
-    
+
     def _tokenize(self, text: str) -> List[str]:
         import re
         return re.findall(r'\w+|[^\w\s]', text.lower())
-    
+
     def _build_vocabulary(self, texts: List[str]):
         vocab_set = set()
         for text in texts:
             vocab_set.update(self._tokenize(text))
         self.vocabulary = {word: idx for idx, word in enumerate(sorted(vocab_set))}
-    
+
     def _text_to_vector(self, text: str) -> np.ndarray:
         tokens = self._tokenize(text)
         vector = np.zeros(len(self.vocabulary))
@@ -117,13 +117,13 @@ class KernelNeuralNetwork:
                 vector[self.vocabulary[token]] += 1
         norm = np.linalg.norm(vector)
         return vector / norm if norm > 0 else vector
-    
+
     def train(self, training_examples: List[TrainingExample]):
         """Train on kernel knowledge."""
         self.training_data = training_examples
         all_texts = [ex.prompt + " " + ex.completion for ex in training_examples]
         self._build_vocabulary(all_texts)
-        
+
         self.embeddings = np.array([
             self._text_to_vector(ex.prompt) for ex in training_examples
         ])
@@ -133,12 +133,12 @@ class KernelNeuralNetwork:
         print(f"  ✓ Trained on {len(training_examples)} examples")
         print(f"  ✓ Vocabulary: {len(self.vocabulary)}")
         print(f"  ✓ Parameters: {self.get_parameter_count():,}")
-    
+
     def get_parameter_count(self) -> int:
         if self.embeddings is not None:
             return self.embeddings.size + (self.response_vectors.size if self.response_vectors is not None else 0)
         return 0
-    
+
     def query(self, question: str, top_k: int = 3) -> List[Tuple[str, float]]:
         if self.embeddings is None:
             raise ValueError("Network not trained!")
@@ -290,7 +290,7 @@ def generate_l104_synthesis_examples() -> List[TrainingExample]:
 def load_existing_training_data() -> List[TrainingExample]:
     """Load existing training data from files."""
     examples = []
-    
+
     # Load from kernel_training_data.jsonl
     jsonl_path = Path("/workspaces/Allentown-L104-Node/kernel_training_data.jsonl")
     if jsonl_path.exists():
@@ -306,7 +306,7 @@ def load_existing_training_data() -> List[TrainingExample]:
                 except:
                     pass
         print(f"  ✓ Loaded {len(examples)} from kernel_training_data.jsonl")
-    
+
     # Load from kernel_combined_training.jsonl
     combined_path = Path("/workspaces/Allentown-L104-Node/kernel_combined_training.jsonl")
     if combined_path.exists():
@@ -324,7 +324,7 @@ def load_existing_training_data() -> List[TrainingExample]:
                 except:
                     pass
         print(f"  ✓ Loaded {count} from kernel_combined_training.jsonl")
-    
+
     return examples
 
 
@@ -332,7 +332,7 @@ def run_parallel_synthesis() -> List[TrainingExample]:
     """Run parallel creative synthesis streams."""
     print("\n🌌 PARALLEL CREATIVE SYNTHESIS")
     print("─" * 60)
-    
+
     streams = [
         ("Sacred Geometry", generate_sacred_geometry_examples),
         ("Chaos & Fractals", generate_chaos_fractals_examples),
@@ -341,13 +341,13 @@ def run_parallel_synthesis() -> List[TrainingExample]:
         ("Emergence", generate_emergence_examples),
         ("L104 Synthesis", generate_l104_synthesis_examples),
     ]
-    
+
     all_examples = []
     for name, generator in streams:
         examples = generator()
         all_examples.extend(examples)
         print(f"  ✓ {name}: {len(examples)} examples")
-    
+
     print(f"  → Total creative examples: {len(all_examples)}")
     return all_examples
 
@@ -357,21 +357,21 @@ def main():
     print("═" * 70)
     print("PHASE 1: LOADING EXISTING DATA")
     print("═" * 70)
-    
+
     # Load existing data
     existing_examples = load_existing_training_data()
     print(f"\n  → Total existing: {len(existing_examples)}")
-    
+
     # Generate creative synthesis
     print("\n" + "═" * 70)
     print("PHASE 2: CREATIVE SYNTHESIS")
     print("═" * 70)
-    
+
     creative_examples = run_parallel_synthesis()
-    
+
     # Combine all examples
     all_examples = existing_examples + creative_examples
-    
+
     # Deduplicate by prompt hash
     seen = set()
     unique_examples = []
@@ -380,29 +380,29 @@ def main():
         if h not in seen:
             seen.add(h)
             unique_examples.append(ex)
-    
+
     print(f"\n  → Total unique examples: {len(unique_examples)}")
-    
+
     # Train kernel
     print("\n" + "═" * 70)
     print("PHASE 3: NEURAL NETWORK TRAINING")
     print("═" * 70)
-    
+
     kernel = KernelNeuralNetwork(embedding_dim=64)
     kernel.train(unique_examples)
-    
+
     # Test queries
     print("\n" + "═" * 70)
     print("PHASE 4: QUERY TESTING")
     print("═" * 70)
-    
+
     test_questions = [
         "What is GOD_CODE?",
         "Explain the golden ratio PHI",
         "What are anyons?",
         "How does topological protection work?",
     ]
-    
+
     for q in test_questions:
         results = kernel.query(q, top_k=1)
         if results:
@@ -410,12 +410,12 @@ def main():
             print(f"\n  Q: {q}")
             print(f"  A: {answer[:150]}...")
             print(f"  Score: {score:.4f}")
-    
+
     # Save updated manifest
     print("\n" + "═" * 70)
     print("PHASE 5: MANIFEST UPDATE")
     print("═" * 70)
-    
+
     manifest = {
         "kernel_version": "L104-RESEARCH-EVO35",
         "build_date": datetime.now().isoformat(),
@@ -431,12 +431,12 @@ def main():
         "evolution_stages": ["EVO_35 Kernel Research"],
         "status": "COMPLETE"
     }
-    
+
     manifest_path = Path("/workspaces/Allentown-L104-Node/KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
     print(f"  ✓ Updated {manifest_path}")
-    
+
     # Summary
     print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -451,7 +451,7 @@ def main():
 ║   STATUS:      LOCKED & VERIFIED                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     return kernel
 
 

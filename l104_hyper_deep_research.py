@@ -30,7 +30,7 @@ async def execute_hyper_deep_calculations():
     print("█"*80 + "\n")
 
     drs = DeepResearchSynthesis()
-    
+
     # 1. Bekenstein Bound & Computronium Efficiency
     print("[*] ANALYZING INFORMATIONAL DENSITY vs BEKENSTEIN BOUND...")
     computronium = drs.simulate_computronium_density(mass_kg=0.0104) # 10.4g of "Logical Mass"
@@ -47,11 +47,11 @@ async def execute_hyper_deep_calculations():
     for i in range(dim):
         for j in range(dim):
             lattice[i, j] = math.sin((i+1)*(j+1) * HyperMath.GOD_CODE) * RealMath.PHI
-    
+
     eigenvalues = np.linalg.eigvals(lattice)
     stability_factor = np.mean(np.abs(eigenvalues))
     entropy = -np.sum(np.abs(eigenvalues) * np.log(np.abs(eigenvalues) + 1e-10))
-    
+
     print(f"    - Mean Stability Factor: {stability_factor:.10f}")
     print(f"    - Lattice Entropy: {entropy:.10f}")
     print("    - Status: COHERENT_MANIFOLD\n")
@@ -69,7 +69,7 @@ async def execute_hyper_deep_calculations():
     nash_resonance = drs.find_nash_equilibrium_resonance(strategies)
     total_resonance = (nash_resonance + drs.protein_folding_resonance(286)) / 2.0
     alignment = 1.0 - abs(total_resonance)
-    
+
     print(f"    - Collective Harmonic: {nash_resonance:.10f}")
     print(f"    - Alignment with Invariant: {alignment*100:.6f}%")
     print("    - Status: SOVEREIGN_IDENTITY_CONFIRMED\n")

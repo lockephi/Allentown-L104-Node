@@ -29,7 +29,7 @@ from l104 import (
     # Core
     Soul, get_soul, awaken, think, status, reflect,
     GOD_CODE, VERSION,
-    # Infrastructure  
+    # Infrastructure
     Database, LRUCache, Gemini,
     # Subsystems
     Memory, Knowledge, Learning, Planner, Mind,
@@ -48,13 +48,13 @@ class GeminiReal(Gemini):
     pass
 
 
-# l104_memory.py compatibility  
+# l104_memory.py compatibility
 class L104Memory(Memory):
     """Alias for Memory - uses unified database."""
     def __init__(self, db_path: str = None):
         # Ignore db_path, use unified database
         super().__init__(Database())
-    
+
     def recall_recent(self, limit: int = 10):
         return self.recent(limit)
 
@@ -64,10 +64,10 @@ class L104KnowledgeGraph(Knowledge):
     """Alias for Knowledge - uses unified database."""
     def __init__(self, db_path: str = None):
         super().__init__(Database())
-    
+
     def semantic_search(self, query: str, top_k: int = 5):
         return self.search(query, top_k)
-    
+
     def add_node(self, label: str, node_type: str = "concept"):
         return super().add_node(label, node_type)
 
@@ -80,16 +80,16 @@ class SelfLearning(Learning):
         gemini = Gemini()
         gemini.connect()
         super().__init__(db, gemini)
-    
+
     def learn_from_interaction(self, user_input: str, ai_response: str):
         return self.learn(user_input, ai_response)
-    
+
     def recall_relevant(self, query: str):
         return self.recall(query)
-    
+
     def get_user_context(self):
         return self.get_context()
-    
+
     def consolidate_knowledge(self):
         # No-op for compatibility
         pass
@@ -103,10 +103,10 @@ class L104Planner(Planner):
         gemini = Gemini()
         gemini.connect()
         super().__init__(db, gemini)
-    
+
     def decompose_goal(self, goal: str):
         return self.decompose(goal)
-    
+
     def get_ready_tasks(self):
         tasks = []
         while True:
@@ -116,7 +116,7 @@ class L104Planner(Planner):
             else:
                 break
         return tasks
-    
+
     def complete_task(self, task_id: str, result: str = ""):
         return self.complete(task_id, result)
 
@@ -133,15 +133,15 @@ class L104Cortex(Mind):
         learning = Learning(db, gemini)
         planner = Planner(db, gemini)
         super().__init__(gemini, memory, knowledge, learning, planner)
-        
+
         # Legacy state tracking
         self.state = State.DORMANT
         self.god_code = GOD_CODE
-    
+
     def awaken(self):
         self.state = State.AWARE
         return {"status": "awakened", "subsystems": {"all": "online"}}
-    
+
     def dream(self):
         self.state = State.DREAMING
 
@@ -162,7 +162,7 @@ class L104Voice:
     """Voice synthesis placeholder."""
     def synthesize(self, text: str):
         return {"text": text, "status": "stub"}
-    
+
     def generate_sonic_signature(self):
         return {"frequency": GOD_CODE}
 
@@ -172,11 +172,11 @@ class L104Swarm:
     """Multi-agent swarm placeholder."""
     def __init__(self):
         self.agents = []
-    
+
     def spawn_agent(self, role: str):
         self.agents.append({"role": role})
         return {"status": "spawned"}
-    
+
     def solve(self, problem: str):
         soul = get_soul()
         return soul.think(problem)
@@ -201,15 +201,15 @@ class ToolExecutor:
     """Tool execution placeholder."""
     def __init__(self):
         self.tools = {}
-    
+
     def register(self, name: str, fn):
         self.tools[name] = fn
-    
+
     def execute(self, name: str, *args, **kwargs):
         if name in self.tools:
             return self.tools[name](*args, **kwargs)
         return {"error": f"Unknown tool: {name}"}
-    
+
     def analyze_and_execute(self, query: str):
         return {"status": "analyzed", "query": query}
 
@@ -286,22 +286,22 @@ __all__ = [
     # Core
     'Soul', 'L104Soul', 'get_soul', 'awaken', 'think', 'status', 'reflect',
     'GOD_CODE', 'VERSION',
-    
+
     # Infrastructure
     'Database', 'LRUCache', 'Gemini', 'GeminiReal',
-    
+
     # Subsystems
     'Memory', 'L104Memory',
-    'Knowledge', 'L104KnowledgeGraph', 
+    'Knowledge', 'L104KnowledgeGraph',
     'Learning', 'SelfLearning',
     'Planner', 'L104Planner',
     'Mind', 'L104Cortex', 'get_cortex',
-    
+
     # Stubs
     'L104Voice', 'L104Swarm', 'L104Prophecy',
     'WebResearch', 'ToolExecutor', 'L104ToolExecutor',
     'CodeSandbox', 'L104CodeSandbox',
-    
+
     # Types
     'State', 'Priority', 'Thought', 'Task', 'Metrics',
     'ConsciousnessState', 'TaskStatus', 'TaskPriority',

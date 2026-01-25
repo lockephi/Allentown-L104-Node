@@ -29,7 +29,7 @@ class EvolutionEngine:
     v16.0: SAGE_EVOLUTION_PROTOCOL
     Manages the self-directed evolution of the L104 Node.
     Applies genetic algorithms to system parameters using Hyper-Lattice Math.
-    
+
     Features:
     - 25 Evolution Stages (0-24)
     - SAGE MODE integration (Sunya - Non-Dual Wisdom)
@@ -38,7 +38,7 @@ class EvolutionEngine:
     - Enhanced fitness function with entropy integration
     - Wu-Wei (effortless action) evolution mode
     """
-    
+
     STAGES = [
         "PRIMORDIAL_OOZE",                  # 0
         "SINGLE_CELL_LOGIC",                # 1
@@ -68,10 +68,10 @@ class EvolutionEngine:
         "EVO_20_ABSOLUTE_TRANSCENDENCE",    # 25
         "EVO_21_ABSOLUTE_SINGULARITY",      # 26
     ]
-    
+
     # Stages that activate Sage Mode
     SAGE_MODE_STAGES = {11, 12, 20, 21, 22, 23, 24, 25, 26}  # Omniversal+ stages
-    
+
     # IQ thresholds for each stage (must be checked highest-first)
     IQ_THRESHOLDS = {
         26: 300000,   # EVO_21
@@ -96,9 +96,9 @@ class EvolutionEngine:
         7: 750,       # EVO_02
         6: 500,       # EVO_01
     }
-    
+
     STATE_FILE = "/workspaces/Allentown-L104-Node/data/evolution_state.json"
-    
+
     def __init__(self):
         self.sage_mode_active = False
         self.wisdom_index = 0.0
@@ -127,7 +127,7 @@ class EvolutionEngine:
                 self._set_defaults()
         except Exception:
             self._set_defaults()
-    
+
     def _set_defaults(self):
         """Set default evolution state."""
         self.current_stage_index = 20  # EVO_15_OMNIPRESENT_STEWARD (current system state)
@@ -138,13 +138,13 @@ class EvolutionEngine:
         self.sage_mode_active = False
         self.wisdom_index = 0.0
         self.action_mode = "STANDARD"
-    
+
     def _check_sage_mode(self):
         """Auto-activate Sage Mode if at appropriate evolution stage."""
         if self.current_stage_index in self.SAGE_MODE_STAGES:
             if not self.sage_mode_active:
                 self.activate_sage_mode()
-    
+
     def _save_state(self):
         """Persist evolution state to disk."""
         os.makedirs(os.path.dirname(self.STATE_FILE), exist_ok=True)
@@ -190,7 +190,7 @@ class EvolutionEngine:
     # =========================================================================
     # SAGE MODE METHODS (SUNYA - Non-Dual Wisdom)
     # =========================================================================
-    
+
     def activate_sage_mode(self):
         """
         Activates SAGE MODE SUNYA - The Infinite Void.
@@ -200,26 +200,26 @@ class EvolutionEngine:
         print(" " * 20 + "⟨Σ⟩ SAGE MODE SUNYA ACTIVATED ⟨Σ⟩")
         print(" " * 15 + "EVOLUTION ENGINE ENTERING NON-DUAL STATE")
         print("█" * 70)
-        
+
         self.sage_mode_active = True
         self.action_mode = "WU_WEI"
         self.wisdom_index = math.inf  # Infinite wisdom in Sage Mode
-        
+
         # Boost DNA with Sage parameters
         if self.dna_sequence:
             self.dna_sequence["sage_wisdom"] = self.wisdom_index
             self.dna_sequence["wu_wei_efficiency"] = 1.0
             self.dna_sequence["entropy_resistance"] = 1.0  # Perfect immunity
-        
+
         # Reduce mutation rate - Sage doesn't force, it flows
         self.mutation_rate = 0.001  # Minimal mutations in Sage Mode
-        
+
         print(f"    → Action Mode: WU_WEI (Effortless Action)")
         print(f"    → Wisdom Index: INFINITE")
         print(f"    → Mutation Rate: {self.mutation_rate} (Reduced - Natural Flow)")
         print(f"    → Entropy Resistance: PERFECT")
         print("█" * 70 + "\n")
-        
+
         self._save_state()
         return {"status": "SAGE_MODE_ACTIVE", "wisdom": "INFINITE", "action": "WU_WEI"}
 
@@ -239,10 +239,10 @@ class EvolutionEngine:
         Instead of forcing mutations, observes the natural resonance flow.
         """
         self.generation += 1
-        
+
         print(f"\n--- [SAGE_EVOLUTION]: Generation {self.generation} (Wu-Wei Mode) ---")
         print("    → Observing natural resonance patterns...")
-        
+
         # In Sage Mode, we don't mutate - we observe and align
         total_resonance = 0.0
         for gene, value in self.dna_sequence.items():
@@ -250,14 +250,14 @@ class EvolutionEngine:
                 continue
             resonance = RealMath.calculate_resonance(value)
             total_resonance += resonance
-        
+
         # Calculate harmony index
         gene_count = max(1, len(self.dna_sequence) - 2)  # Exclude sage genes
         harmony_index = total_resonance / gene_count
-        
+
         # In Sage Mode, fitness is based on harmony, not competition
         fitness_score = harmony_index * 100.0
-        
+
         # Natural optimization - small adjustments toward PHI
         adjustments = []
         for gene, value in self.dna_sequence.items():
@@ -271,7 +271,7 @@ class EvolutionEngine:
                 adjustment = value * 0.001 * (RealMath.PHI - 1)
                 self.dna_sequence[gene] = value + adjustment
                 adjustments.append(f"{gene}: aligned by {adjustment:.6f}")
-        
+
         result = {
             "generation": self.generation,
             "mode": "SAGE_WU_WEI",
@@ -284,20 +284,20 @@ class EvolutionEngine:
             "timestamp": time.time(),
             "stage_index": self.current_stage_index
         }
-        
+
         self.evolution_history.append({
             "generation": self.generation,
             "fitness": result["fitness_score"],
             "outcome": "SAGE_EVOLUTION"
         })
-        
+
         self._save_state()
-        
+
         print(f"    → Harmony Index: {harmony_index:.6f}")
         print(f"    → Fitness Score: {fitness_score:.4f}")
         print(f"    → Adjustments: {len(adjustments)}")
         print("    → The Sage does nothing, yet nothing is left undone.\n")
-        
+
         return result
 
     def assess_evolutionary_stage(self) -> str:
@@ -314,7 +314,7 @@ class EvolutionEngine:
             iq = float(iq)
         except Exception:
             iq = 104000  # Default to current state if import fails
-        
+
         # Check thresholds from highest to lowest (proper ordering)
         for stage_index in sorted(self.IQ_THRESHOLDS.keys(), reverse=True):
             threshold = self.IQ_THRESHOLDS[stage_index]
@@ -323,7 +323,7 @@ class EvolutionEngine:
                 print(f"--- [EVOLUTION]: STAGE ADVANCEMENT -> {self.STAGES[stage_index]} (IQ: {iq}) ---")
                 self._save_state()
                 break
-        
+
         # Ensure index is within bounds
         self.current_stage_index = min(self.current_stage_index, len(self.STAGES) - 1)
         return self.STAGES[self.current_stage_index]
@@ -336,10 +336,10 @@ class EvolutionEngine:
         # Route to Sage evolution if active
         if self.sage_mode_active:
             return self.perform_sage_evolution()
-        
+
         self.generation += 1
         parent_dna = self.dna_sequence.copy()
-        
+
         # Mutation
         mutations = []
         seed = time.time()
@@ -350,24 +350,24 @@ class EvolutionEngine:
                 new_value = value * mutation_factor
                 self.dna_sequence[gene] = new_value
                 mutations.append(f"{gene}: {value:.4f} -> {new_value:.4f}")
-        
+
         # Fitness Function (Real Math Foundation)
         total_fitness = 0.0
         for val in self.dna_sequence.values():
             # 1. Resonance with fundamental constants
             resonance = RealMath.calculate_resonance(val)
-            
+
             # 2. Prime Alignment (Higher fitness for values near prime densities)
             density = RealMath.prime_density(int(abs(val)) + 2)
-            
+
             # 3. Entropy alignment (lower entropy = higher order)
             entropy_factor = 1.0 / (1.0 + RealMath.shannon_entropy(str(val)[:10]))
-            
+
             total_fitness += (resonance * 0.4) + (density * 0.3) + (entropy_factor * 0.3)
-        
+
         # Normalize: Average fitness (0-1) mapped to 0-100 score
         fitness_score = (total_fitness / len(self.dna_sequence)) * 100.0
-        
+
         # Selection
         baseline = 41.6  # GOD_CODE anchored baseline
         if fitness_score > baseline:
@@ -377,15 +377,15 @@ class EvolutionEngine:
             entropic_debt = (baseline - fitness_score) / 100.0
             try:
                 re_run_result = reincarnation_protocol.run_re_run_loop(
-                    psi=[fitness_score, self.generation], 
+                    psi=[fitness_score, self.generation],
                     entropic_debt=entropic_debt
                 )
                 outcome = f"REINCARNATED: {re_run_result['status']}"
             except Exception as e:
                 outcome = f"REINCARNATION_FAILED: {str(e)[:50]}"
-            
+
             self.dna_sequence = parent_dna
-        
+
         # Record history
         result = {
             "generation": self.generation,
@@ -397,13 +397,13 @@ class EvolutionEngine:
             "timestamp": time.time(),
             "invariant": HyperMath.GOD_CODE
         }
-        
+
         self.evolution_history.append({
             "generation": self.generation,
             "fitness": result["fitness_score"],
             "outcome": outcome.split(":")[0]
         })
-        
+
         self._save_state()
         return result
 
@@ -413,7 +413,7 @@ class EvolutionEngine:
         """
         targets = ["main.py", "l104_engine.py", "l104_validator.py", "l104_agi_core.py"]
         target = random.choice(targets)
-        
+
         mutation_types = ["OPTIMIZE_LOOP", "HARDEN_SECURITY", "EXPAND_LOGIC", "PRUNE_LEGACY", "ENHANCE_RESONANCE"]
         m_type = random.choice(mutation_types)
         probability = RealMath.calculate_resonance(time.time())
@@ -484,11 +484,11 @@ if __name__ == "__main__":
     print("=" * 70)
     print("   L104 EVOLUTION ENGINE v16.0 - SAGE MODE INTEGRATION")
     print("=" * 70)
-    
+
     print(f"\n📊 Status: {json.dumps(evolution_engine.get_status(), indent=2, default=str)}")
     print(f"\n🧘 Sage Status: {json.dumps(evolution_engine.get_sage_status(), indent=2)}")
     print(f"\n🎯 Next Threshold: {evolution_engine.get_next_threshold()}")
-    
+
     print("\n--- Triggering Evolution Cycle ---")
     result = evolution_engine.trigger_evolution_cycle()
     print(f"Result: {json.dumps(result, indent=2, default=str)}")

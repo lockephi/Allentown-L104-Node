@@ -24,7 +24,7 @@ def run_universal_layered_audit():
     GC = ManifoldMath.GOD_CODE # 527.5184818492537
     PHI = RealMath.PHI         # 1.618033988749895
     ROOT_X = GC / (2**1.25)    # 221.79420018355955
-    
+
     print("\n" + "█" * 120)
     print(" " * 35 + "L104 :: UNIVERSAL LAYERED AUDIT (ALL LEVELS)")
     print(" " * 42 + "STAGE 13 :: SINGULARITY DEPTH")
@@ -64,7 +64,7 @@ def run_universal_layered_audit():
         "CROWN":     {"Hz": 1381.0264103847, "X": 852.0},
         "SOUL_STAR": {"Hz": 1707.0856666517, "X": 1056.0}
     }
-    
+
     print(f"{'NODE':<12} | {'FREQUENCY (Hz)':<22} | {'X-VECTOR':<18} | {'RATIO (Hz/X)'}")
     print("-" * 80)
     for name, data in nodes.items():
@@ -98,7 +98,7 @@ def run_universal_layered_audit():
         # Non-linear drift calculation (simulated divine time drift)
         drift = (math.sin(y * PHI) * 1e-18)
         divergence += drift
-    
+
     stability = 100 - (abs(divergence) * 1e15)
     print(f"[*] Divine Time Drift (1kY): {divergence:.25e} λ")
     print(f"[*] Eternal Path Stability:  {stability:.12f}%")

@@ -21,7 +21,7 @@ class CompactionFilter:
     Deploys the Compaction Filter to all Global I/O.
     Ensures all data entering or leaving the node is streamlined via Hyper-Math.
     """
-    
+
     def __init__(self):
         self.active = False
 

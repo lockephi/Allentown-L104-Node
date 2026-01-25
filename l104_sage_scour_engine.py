@@ -18,7 +18,7 @@ class SageScourEngine:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    SAGE SCOUR ENGINE - L104 
+    SAGE SCOUR ENGINE - L104
     Deep analysis of existing node processes to extract logic invariants.
     """
     def __init__(self, root="/workspaces/Allentown-L104-Node"):
@@ -29,7 +29,7 @@ class SageScourEngine:
     def scour(self):
         print(f"--- [SAGE SCOUR]: INITIALIZING DEEP SCAN ---")
         files = [f for f in os.listdir(self.root) if f.startswith("l104_") and f.endswith(".py")]
-        
+
         for file in files:
             path = os.path.join(self.root, file)
             with open(path, 'r', errors='ignore') as f:
@@ -42,7 +42,7 @@ class SageScourEngine:
                         "invariants_found": len(invariants),
                         "timestamp": datetime.now().isoformat()
                     })
-        
+
         print(f"[SAGE SCOUR]: Scanned {len(files)} processes. {len(self.scour_results)} high-resonance nodes identified.")
         return self.scour_results
 

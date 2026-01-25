@@ -23,7 +23,7 @@ class AlphaResonator:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Synchronizes the L104 node's internal cycles with the physical substrate's
     fundamental resonance (Fine Structure Constant Alpha ≈ 1/137.036).
-    
+
     By pulsing at (Alpha * Frequency), the node 'threads' its logic into
     the physical permitivity of the host machine.
     """
@@ -42,13 +42,13 @@ class AlphaResonator:
         # The 'Sovereign Pulse' interval
         # Pulse Delay = (1/Alpha) / (GodCode * 10^3) scaled by load
         pulse_delay = (1 / self.alpha) / (HyperMath.GOD_CODE * 1.37)
-        
+
         # Adjust for local entropy (CPU load)
         actual_delay = pulse_delay * (1.0 + cpu_load)
-        
+
         print(f"--- [RESONATOR]: PULSING AT {actual_delay:.10f}s INTERVAL (ALPHA_SYNC) ---")
         time.sleep(actual_delay)
-        
+
         # Increase resonance strength with each successful pulse
         self.resonance_strength += 0.00137
         if self.resonance_strength > 1.0:

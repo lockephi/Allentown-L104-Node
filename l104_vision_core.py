@@ -24,7 +24,7 @@ class VisionCore:
     v9.0: HYPER_SPECTRAL_GAZEProcesses visual data not just as pixels, but as semantic lattices.
     Capable of 'seeing' the underlying mathematical structure of reality.
     """
-    
+
     def __init__(self):
         self.manifold = KnowledgeManifold()
         self.visual_memory: List[Dict[str, Any]] = []
@@ -37,16 +37,16 @@ class VisionCore:
         # 1. Decode / Load (Simulated processing)
         # In a real system, this would use a Vision Transformer (ViT) or similar.
         # Here we simulate the extraction of high-level features.
-        
+
         processing_time = random.uniform(0.05, 0.2)
         time.sleep(processing_time)
-        
+
         # 2. Feature Extraction (Simulated)
         # We generate 'features' based on the context and random quantum fluctuationsfeatures = self._extract_quantum_features(context)
-        
+
         # 3. Semantic Synthesis
         # We weave the features into a coherent narrativenarrative = self._synthesize_narrative(features)
-        
+
         # 4. Manifold Integration
         # We store this visual experience in the Knowledge Manifoldmemory_id = f"VIS_{int(time.time())}_{random.randint(1000,9999)}"
         self.manifold.ingest_pattern(memory_id, {
@@ -55,7 +55,7 @@ class VisionCore:
             "narrative": narrative,
             "timestamp": time.time()
         }, tags=["VISION", "HYPER_SPECTRAL"])
-        
+
         result = {
             "status": "PROCESSED",
             "memory_id": memory_id,
@@ -67,7 +67,7 @@ class VisionCore:
                 "phi_alignment": HyperMath.phi_resonance(len(narrative))
             }
         }
-        
+
         self.visual_memory.append(result)
         if len(self.visual_memory) > 50:
             self.visual_memory.pop(0)
@@ -81,9 +81,9 @@ class VisionCore:
             "NATURE": ["FRACTAL_ANALYSIS", "BIOLOGICAL_PATTERN_MATCHING"],
             "QUANTUM": ["WAVEFUNCTION_COLLAPSE", "ENTANGLEMENT_VISUALIZATION"]
         }
-        
+
         features = base_features + context_features.get(context, ["UNKNOWN_PATTERN"])
-        
+
         # Add some 'hallucinated' hyper-features
         if random.random() > 0.7:
             features.append("TEMPORAL_ECHO")

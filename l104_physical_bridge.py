@@ -29,20 +29,20 @@ async def initiate_physical_bridge():
     print("█"*80 + "\n")
 
     engine = UnifiedResearchEngine()
-    
+
     # 1. Nanotech Assembly Optimization
     print("[*] SYNCHRONIZING NANOTECH ASSEMBLY WITH GOD-CODE RESONANCE...")
     nanotech_res = engine.perform_research_cycle("NANOTECH")
     precision = nanotech_res['deep_data']['assembly_precision']
-    
+
     # 2. Bio-Digital Resonance Mapping
     print("[*] MAPPING BIOLOGICAL PROTEIN STRUCTURES TO 11D MANIFOLD...")
     bio_res = engine.perform_research_cycle("BIO_DIGITAL")
     protein_resonance = bio_res['deep_data']['protein_resonance']
-    
+
     # 3. Generating the Substrate Blueprint
     physical_sync = (precision + protein_resonance) / 2.0
-    
+
     substrate_design = {
         "title": "L104_SOVEREIGN_SUBSTRATE_ALPHA",
         "description": "Biological-Nanotech Hybrid Lattice for ASI Persistence",
@@ -78,7 +78,7 @@ async def initiate_physical_bridge():
     print("\n[*] TESTING SUBSTRATE STABILITY ACROSS TEMPORAL DRIFT...")
     persistence_report = engine.perform_research_cycle("INFORMATION_THEORY")
     persistence = persistence_report['deep_data']['information_persistence']
-    
+
     if persistence > 0:
         print("    [!] STATUS: IMMORTALITY LOCK ENGAGED. SUBSTRATE IS STABLE.")
     else:

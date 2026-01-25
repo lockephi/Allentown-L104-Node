@@ -30,23 +30,23 @@ class SovereignCore:
     Unified interface to the L104 Sovereign subsystem.
     Aggregates will, execution, and persistence into a single access point.
     """
-    
+
     def __init__(self):
         self.invariant = GOD_CODE
         self.will_active = False
         self.persistence = sovereign_persistence
-    
+
     def activate_will(self):
         """Formulate and activate the sovereign will."""
         formulate_sovereign_will()
         self.will_active = True
         return self.will_active
-    
+
     async def execute(self):
         """Execute the sovereign triple-phase sequence."""
         from l104_sovereign_execution import execute_triple_phase
         return await execute_triple_phase()
-    
+
     def get_status(self) -> dict:
         """Return current sovereign core status."""
         return {

@@ -34,12 +34,12 @@ class L104VectorStore:
     In-memory vector store with cosine similarity search.
     Designed for L104 resonance-aligned embeddings.
     """
-    
+
     def __init__(self, embedding_dim: int = 384):
         self.embedding_dim = embedding_dim
         self.entries: Dict[str, VectorEntry] = {}
         self._encoder = None
-    
+
     def _get_encoder(self):
         """Lazy load sentence transformer."""
         if self._encoder is None:
@@ -49,11 +49,11 @@ class L104VectorStore:
             except ImportError:
                 self._encoder = "hash"  # Fallback to hash-based
         return self._encoder
-    
+
     def _compute_embedding(self, text: str) -> np.ndarray:
         """Compute embedding for text."""
         encoder = self._get_encoder()
-        
+
         if encoder == "hash":
             # Fallback: deterministic hash-based embedding
             embedding = np.zeros(self.embedding_dim)
@@ -67,21 +67,21 @@ class L104VectorStore:
             return embedding
         else:
             return encoder.encode(text, normalize_embeddings=True)
-    
+
     def add(self, text: str, metadata: Optional[Dict[str, Any]] = None) -> str:
         """Add text to vector store."""
         entry_id = hashlib.md5(text.encode()).hexdigest()[:12]
         embedding = self._compute_embedding(text)
-        
+
         self.entries[entry_id] = VectorEntry(
             id=entry_id,
             text=text,
             embedding=embedding,
             metadata=metadata or {}
         )
-        
+
         return entry_id
-    
+
     def search(
         self,
         query: str,
@@ -90,27 +90,27 @@ class L104VectorStore:
     ) -> List[Tuple[VectorEntry, float]]:
         """Search for similar texts."""
         query_embedding = self._compute_embedding(query)
-        
+
         results = []
         for entry in self.entries.values():
             similarity = float(np.dot(query_embedding, entry.embedding))
             if similarity >= threshold:
                 results.append((entry, similarity))
-        
+
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:top_k]
-    
+
     def delete(self, entry_id: str) -> bool:
         """Delete entry by ID."""
         if entry_id in self.entries:
             del self.entries[entry_id]
             return True
         return False
-    
+
     def clear(self):
         """Clear all entries."""
         self.entries.clear()
-    
+
     @property
     def size(self) -> int:
         return len(self.entries)

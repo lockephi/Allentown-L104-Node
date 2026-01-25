@@ -43,13 +43,13 @@ print_info() {
 # Check for required tools
 check_prerequisites() {
     print_info "Checking prerequisites..."
-    
+
     if ! command -v docker &> /dev/null; then
         print_error "Docker is not installed. Please install Docker first."
         exit 1
     fi
     print_status "Docker is installed"
-    
+
     if ! command -v gcloud &> /dev/null; then
         print_warning "gcloud CLI is not installed. Installing..."
         # Try to install gcloud if possible
@@ -67,7 +67,7 @@ check_prerequisites() {
 # Interactive configuration if not set via environment
 configure_deployment() {
     print_info "Configuring deployment..."
-    
+
     # Check for GCP Project ID
     if [ -z "$PROJECT_ID" ]; then
         # Try to get from gcloud config
@@ -82,7 +82,7 @@ configure_deployment() {
         fi
     fi
     print_status "Project ID: $PROJECT_ID"
-    
+
     # Check for Gemini API Key
     if [ -z "$GEMINI_API_KEY" ]; then
         print_warning "GEMINI_API_KEY not set in environment"
@@ -94,7 +94,7 @@ configure_deployment() {
         fi
     fi
     print_status "Gemini API Key: configured"
-    
+
     # Set image name
     IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 }
@@ -102,7 +102,7 @@ configure_deployment() {
 # Authenticate with GCP
 authenticate_gcp() {
     print_info "Checking GCP authentication..."
-    
+
     # Check if already authenticated
     if gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>/dev/null | grep -q "@"; then
         ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>/dev/null | head -1)
@@ -111,11 +111,11 @@ authenticate_gcp() {
         print_warning "Not authenticated to GCP. Starting authentication..."
         gcloud auth login --no-launch-browser
     fi
-    
+
     # Set the project
     gcloud config set project "$PROJECT_ID"
     print_status "Project set to: $PROJECT_ID"
-    
+
     # Configure Docker for GCR
     print_info "Configuring Docker for Container Registry..."
     gcloud auth configure-docker --quiet
@@ -125,34 +125,34 @@ authenticate_gcp() {
 # Build the Docker image
 build_image() {
     print_info "Building Docker image..."
-    
+
     docker build \
         --platform linux/amd64 \
         -t "${IMAGE_NAME}:${IMAGE_TAG}" \
         -t "${IMAGE_NAME}:$(date +%Y%m%d-%H%M%S)" \
         .
-    
+
     print_status "Docker image built: ${IMAGE_NAME}:${IMAGE_TAG}"
 }
 
 # Push to Container Registry
 push_image() {
     print_info "Pushing image to Google Container Registry..."
-    
+
     docker push "${IMAGE_NAME}:${IMAGE_TAG}"
-    
+
     print_status "Image pushed to GCR"
 }
 
 # Deploy to Cloud Run
 deploy_to_cloud_run() {
     print_info "Deploying to Cloud Run..."
-    
+
     # Set environment variables for deployment
     GEMINI_MODEL="${GEMINI_MODEL:-gemini-1.5-flash}"
     RESONANCE="${RESONANCE:-527.5184818492537}"
     ENABLE_FAKE_GEMINI="${ENABLE_FAKE_GEMINI:-0}"
-    
+
     gcloud run deploy "${SERVICE_NAME}" \
         --image="${IMAGE_NAME}:${IMAGE_TAG}" \
         --platform=managed \
@@ -168,36 +168,36 @@ deploy_to_cloud_run() {
         --set-env-vars="RESONANCE=${RESONANCE}" \
         --set-env-vars="ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI}" \
         --set-env-vars="PYTHONUNBUFFERED=1"
-    
+
     print_status "Deployed to Cloud Run"
 }
 
 # Get and verify deployment
 verify_deployment() {
     print_info "Verifying deployment..."
-    
+
     SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" \
         --region="${REGION}" \
         --format='value(status.url)' 2>/dev/null || echo "")
-    
+
     if [ -z "$SERVICE_URL" ]; then
         print_error "Could not retrieve service URL"
         exit 1
     fi
-    
+
     print_status "Service URL: $SERVICE_URL"
-    
+
     # Health check
     print_info "Running health check..."
     sleep 5  # Give the service a moment to start
-    
+
     if curl -sf "${SERVICE_URL}/health" > /dev/null 2>&1; then
         print_status "Health check passed!"
     else
         print_warning "Health check failed - service may still be starting"
         print_info "Try: curl ${SERVICE_URL}/health"
     fi
-    
+
     echo ""
     echo "================================================"
     echo -e "${GREEN}Deployment Complete!${NC}"
@@ -214,25 +214,25 @@ verify_deployment() {
 # Alternative: Deploy with Artifact Registry (newer method)
 deploy_with_artifact_registry() {
     print_info "Using Artifact Registry instead of Container Registry..."
-    
+
     AR_LOCATION="${REGION}"
     AR_REPO="l104-repo"
     AR_IMAGE="${AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${SERVICE_NAME}"
-    
+
     # Create Artifact Registry repo if it doesn't exist
     gcloud artifacts repositories create "${AR_REPO}" \
         --repository-format=docker \
         --location="${AR_LOCATION}" \
         --description="L104 Sovereign Node images" \
         2>/dev/null || true
-    
+
     # Configure Docker for Artifact Registry
     gcloud auth configure-docker "${AR_LOCATION}-docker.pkg.dev" --quiet
-    
+
     # Build and tag for Artifact Registry
     docker build --platform linux/amd64 -t "${AR_IMAGE}:${IMAGE_TAG}" .
     docker push "${AR_IMAGE}:${IMAGE_TAG}"
-    
+
     # Deploy using Artifact Registry image
     IMAGE_NAME="${AR_IMAGE}"
 }
@@ -242,7 +242,7 @@ main() {
     echo ""
     print_info "Starting direct cloud deployment..."
     echo ""
-    
+
     check_prerequisites
     configure_deployment
     authenticate_gcp

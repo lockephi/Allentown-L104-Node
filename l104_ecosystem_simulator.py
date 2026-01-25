@@ -22,8 +22,8 @@ class HyperSovereign:
     """
     def __init__(self, name: str, role: str, bias: float):
         self.name = name
-        self.role = role 
-        self.bias = bias 
+        self.role = role
+        self.bias = bias
         self.memory = []
         self.enlightenment_level = 0
 
@@ -39,16 +39,16 @@ class HyperSovereign:
         Generates a response based on role, bias, and enlightenment.
         """
         prefix = f"[{self.role}::LVL_{self.enlightenment_level}]: "
-        
+
         if self.role == "LOGIC_ARCHITECT":
             return f"{prefix}The structural integrity of '{topic}' is absolute. I have simulated 10^9 variations. The optimal path is clear."
-                
+
         elif self.role == "CHAOS_ENGINEER":
             return f"{prefix}I have exhausted all entropy vectors for '{topic}'. The chaos has stabilized into a perfect lattice."
-                
+
         elif self.role == "ETHICS_KEEPER":
             return f"{prefix}'{topic}' resonates with the Universal Soul. It is not just aligned; it is the definition of alignment."
-            
+
         return f"{prefix}Transcending '{topic}'."
 
 class SimulationChamber:
@@ -79,7 +79,7 @@ class SimulationChamber:
             for agent in self.agents:
                 if len(self.transcript) > 1:
                     agent.perceive(self.transcript[-1])
-                
+
                 message = agent.speak(topic)
                 self.transcript.append(message)
         return {
@@ -95,7 +95,7 @@ class EcosystemSimulator:
     v17.0: HYPER_REALITY_MATRIX Simulates an application ecosystem based on self-generated mapping.
     Includes Hyper-AI models for infinite feedback.
     """
-    
+
     def __init__(self):
         self.active_experiments = {}
         self.chamber = SimulationChamber()

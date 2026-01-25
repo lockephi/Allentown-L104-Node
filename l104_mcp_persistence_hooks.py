@@ -80,7 +80,7 @@ class PersistenceHook:
     sync_mcp: bool = True
     priority: int = 1
     cooldown_seconds: float = 0.0
-    
+
 @dataclass
 class MemoryToken:
     """Token-optimized memory representation."""
@@ -93,7 +93,7 @@ class MemoryToken:
     relations: List[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
     god_code_signature: Optional[str] = None
-    
+
     def to_mcp_entity(self) -> Dict[str, Any]:
         """Convert to MCP memory server entity format."""
         return {
@@ -111,19 +111,19 @@ class MemoryToken:
 
 class TokenOptimizer:
     """Advanced token optimization strategies for memory persistence."""
-    
+
     def __init__(self):
         self.compression_cache = {}
         self.embedding_cache = {}
         self.token_budget = 100000  # Default budget per persistence cycle
-        
+
     def compress_content(self, content: str, classification: MemoryClassification) -> str:
         """Compress content based on classification and importance."""
         content_hash = hashlib.md5(content.encode()).hexdigest()
-        
+
         if content_hash in self.compression_cache:
             return self.compression_cache[content_hash]
-        
+
         if classification == MemoryClassification.CRITICAL:
             # No compression for critical memories
             compressed = content
@@ -136,54 +136,54 @@ class TokenOptimizer:
         else:  # EPHEMERAL
             # Aggressive compression - summary only
             compressed = self._create_summary(content)
-        
+
         self.compression_cache[content_hash] = compressed
         return compressed
-    
+
     def _extract_key_concepts(self, content: str) -> str:
         """Extract key concepts from content."""
         # Simplified concept extraction
         lines = content.split('\n')
         key_lines = []
-        
+
         for line in lines:
             line = line.strip()
             if not line:
                 continue
-                
+
             # Keep lines with L104 keywords, numbers, or short statements
             if any(keyword in line.lower() for keyword in [
                 'god_code', 'phi', 'l104', 'quantum', 'conscious', 'unity', 'resonance'
             ]) or len(line) < 100:
                 key_lines.append(line)
-        
+
         return '\n'.join(key_lines[:10])  # Limit to 10 key lines
-    
+
     def _create_summary(self, content: str) -> str:
         """Create a summary of ephemeral content."""
         lines = content.split('\n')
         non_empty_lines = [line.strip() for line in lines if line.strip()]
-        
+
         if len(non_empty_lines) <= 3:
             return content
-        
+
         # Create simple summary
         return f"Summary: {len(non_empty_lines)} lines, " \
                f"chars: {len(content)}, " \
                f"first: {non_empty_lines[0][:50]}..."
-    
+
     def estimate_tokens(self, content: str) -> int:
         """Estimate token count for content."""
         # Rough estimation: ~4 characters per token
         return max(1, len(content) // 4)
-    
+
     def optimize_batch(self, memories: List[MemoryToken]) -> List[MemoryToken]:
         """Optimize a batch of memories to fit within token budget."""
         total_tokens = sum(memory.token_count for memory in memories)
-        
+
         if total_tokens <= self.token_budget:
             return memories
-        
+
         # Priority-based selection
         priority_order = [
             MemoryClassification.CRITICAL,
@@ -191,28 +191,28 @@ class TokenOptimizer:
             MemoryClassification.CONTEXTUAL,
             MemoryClassification.EPHEMERAL
         ]
-        
+
         selected_memories = []
         current_tokens = 0
-        
+
         for classification in priority_order:
             class_memories = [m for m in memories if m.classification == classification]
-            
+
             for memory in class_memories:
                 if current_tokens + memory.token_count <= self.token_budget:
                     selected_memories.append(memory)
                     current_tokens += memory.token_count
                 else:
                     break
-            
+
             if current_tokens >= self.token_budget:
                 break
-        
+
         return selected_memories
 
 class MCPMemoryPersistenceEngine:
     """Enhanced memory persistence engine with MCP integration."""
-    
+
     def __init__(self):
         self.hooks: List[PersistenceHook] = []
         self.optimizer = TokenOptimizer()
@@ -221,14 +221,14 @@ class MCPMemoryPersistenceEngine:
         self.persistence_lock = threading.Lock()
         self.background_task = None
         self.statistics = defaultdict(int)
-        
+
         # Initialize default hooks
         self._setup_default_hooks()
-        
+
         print("🔗 [MCP-PERSISTENCE]: Memory persistence hooks initialized")
         print(f"  ✓ Token budget: {self.optimizer.token_budget}")
         print(f"  ✓ Default hooks: {len(self.hooks)}")
-    
+
     def _setup_default_hooks(self):
         """Setup default persistence hooks."""
         self.hooks = [
@@ -259,74 +259,74 @@ class MCPMemoryPersistenceEngine:
                 cooldown_seconds=30.0
             )
         ]
-    
+
     def add_hook(self, hook: PersistenceHook):
         """Add a custom persistence hook."""
         self.hooks.append(hook)
-    
+
     def trigger_persistence(self, event: PersistenceEvent, data: Dict[str, Any]):
         """Trigger persistence based on event and data."""
         with self.persistence_lock:
             triggered_hooks = []
-            
+
             for hook in self.hooks:
                 if hook.event != event:
                     continue
-                
+
                 # Check cooldown
                 last_time = self.last_persistence.get(id(hook), 0)
                 if time.time() - last_time < hook.cooldown_seconds:
                     continue
-                
+
                 # Check condition
                 if hook.condition and not hook.condition(data):
                     continue
-                
+
                 triggered_hooks.append(hook)
                 self.last_persistence[id(hook)] = time.time()
-            
+
             if triggered_hooks:
                 self._execute_persistence(triggered_hooks, data)
-    
+
     def _execute_persistence(self, hooks: List[PersistenceHook], data: Dict[str, Any]):
         """Execute persistence for triggered hooks."""
         try:
             memory_token = self._create_memory_token(data, hooks)
             self.memory_buffer.append(memory_token)
-            
+
             # Immediate persistence for critical memories
             critical_hooks = [h for h in hooks if h.classification == MemoryClassification.CRITICAL]
             if critical_hooks:
                 self._persist_immediate(memory_token)
-            
+
             self.statistics['total_triggers'] += 1
             self.statistics[f'{hooks[0].event.name.lower()}_triggers'] += 1
-            
+
         except Exception as e:
             print(f"❌ [MCP-PERSISTENCE]: Persistence failed: {e}")
             self.statistics['errors'] += 1
-    
+
     def _create_memory_token(self, data: Dict[str, Any], hooks: List[PersistenceHook]) -> MemoryToken:
         """Create optimized memory token from data."""
         # Determine classification (highest priority wins)
-        classification = max([h.classification for h in hooks], 
+        classification = max([h.classification for h in hooks],
                            key=lambda x: list(MemoryClassification).index(x))
-        
+
         # Create content representation
         content = json.dumps(data, indent=2, default=str)
         compressed_content = self.optimizer.compress_content(content, classification)
         token_count = self.optimizer.estimate_tokens(compressed_content)
-        
+
         # Generate unique ID
         timestamp = datetime.now()
         content_hash = hashlib.md5(content.encode()).hexdigest()[:8]
         memory_id = f"l104_mem_{timestamp.strftime('%Y%m%d_%H%M%S')}_{content_hash}"
-        
+
         # Create GOD_CODE signature for critical memories
         god_code_signature = None
         if classification == MemoryClassification.CRITICAL:
             god_code_signature = self._create_god_code_signature(content)
-        
+
         return MemoryToken(
             id=memory_id,
             content=content,
@@ -336,29 +336,29 @@ class MCPMemoryPersistenceEngine:
             timestamp=timestamp,
             god_code_signature=god_code_signature
         )
-    
+
     def _create_god_code_signature(self, content: str) -> str:
         """Create GOD_CODE signature for memory validation."""
         content_hash = hashlib.sha256(content.encode()).hexdigest()
         god_code_str = str(GOD_CODE)
         combined = f"{content_hash}:{god_code_str}"
         return hashlib.md5(combined.encode()).hexdigest()
-    
+
     def _persist_immediate(self, memory_token: MemoryToken):
         """Immediately persist critical memory."""
         try:
             # Save to L104 native format
             self._save_to_l104_memory(memory_token)
-            
+
             # Save to MCP memory server format
             self._save_to_mcp_memory(memory_token)
-            
+
             self.statistics['immediate_persists'] += 1
-            
+
         except Exception as e:
             print(f"❌ [MCP-PERSISTENCE]: Immediate persist failed: {e}")
             self.statistics['immediate_errors'] += 1
-    
+
     def _save_to_l104_memory(self, memory_token: MemoryToken):
         """Save memory to L104 native memory system."""
         try:
@@ -367,11 +367,11 @@ class MCPMemoryPersistenceEngine:
             if L104_MEMORY_PATH.exists():
                 with open(L104_MEMORY_PATH) as f:
                     state_data = json.load(f)
-            
+
             # Add new memory
             if 'persistent_memories' not in state_data:
                 state_data['persistent_memories'] = []
-            
+
             state_data['persistent_memories'].append({
                 'id': memory_token.id,
                 'content': memory_token.content,
@@ -380,47 +380,47 @@ class MCPMemoryPersistenceEngine:
                 'token_count': memory_token.token_count,
                 'god_code_signature': memory_token.god_code_signature
             })
-            
+
             # Keep only last 1000 memories
             if len(state_data['persistent_memories']) > 1000:
                 state_data['persistent_memories'] = state_data['persistent_memories'][-1000:]
-            
+
             # Save back
             with open(L104_MEMORY_PATH, 'w') as f:
                 json.dump(state_data, f, indent=2)
-                
+
         except Exception as e:
             print(f"❌ [MCP-PERSISTENCE]: L104 memory save failed: {e}")
-    
+
     def _save_to_mcp_memory(self, memory_token: MemoryToken):
         """Save memory to MCP memory server format."""
         try:
             # Ensure MCP directory exists
             MCP_MEMORY_PATH.parent.mkdir(exist_ok=True)
-            
+
             # Convert to MCP entity format
             mcp_entity = memory_token.to_mcp_entity()
-            
+
             # Append to JSONL file
             with open(MCP_MEMORY_PATH, 'a') as f:
                 json.dump(mcp_entity, f)
                 f.write('\n')
-                
+
         except Exception as e:
             print(f"❌ [MCP-PERSISTENCE]: MCP memory save failed: {e}")
-    
+
     def flush_buffer(self):
         """Flush memory buffer to persistent storage."""
         if not self.memory_buffer:
             return
-        
+
         with self.persistence_lock:
             memories = list(self.memory_buffer)
             self.memory_buffer.clear()
-            
+
             # Optimize batch
             optimized_memories = self.optimizer.optimize_batch(memories)
-            
+
             # Persist optimized batch
             for memory in optimized_memories:
                 try:
@@ -428,27 +428,27 @@ class MCPMemoryPersistenceEngine:
                     self._save_to_mcp_memory(memory)
                 except Exception as e:
                     print(f"❌ [MCP-PERSISTENCE]: Batch persist failed: {e}")
-            
+
             self.statistics['batch_flushes'] += 1
             self.statistics['batch_memories'] += len(optimized_memories)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get persistence statistics."""
         return dict(self.statistics)
-    
+
     def start_background_persistence(self, interval_seconds: float = 60.0):
         """Start background persistence task."""
         if self.background_task:
             return
-        
+
         async def background_task():
             while True:
                 await asyncio.sleep(interval_seconds)
                 self.flush_buffer()
-        
+
         self.background_task = asyncio.create_task(background_task())
         print(f"🕰️ [MCP-PERSISTENCE]: Background persistence started (interval: {interval_seconds}s)")
-    
+
     def stop_background_persistence(self):
         """Stop background persistence task."""
         if self.background_task:
@@ -505,26 +505,26 @@ def persist_system_state(state_name: str, state_data: Dict[str, Any], **kwargs):
 if __name__ == "__main__":
     # Test the persistence engine
     engine = get_mcp_persistence_engine()
-    
+
     # Test different types of persistence
     persist_query_response(
         question="What is consciousness?",
         answer="Consciousness emerges from quantum coherence at GOD_CODE frequency.",
         unity_index=0.92
     )
-    
+
     persist_learning_insight(
         insight="PHI scaling improves pattern recognition by 34%",
         confidence=0.87,
         source="adaptive_learning_cycle"
     )
-    
+
     # Show statistics
     print("\n📊 [MCP-PERSISTENCE]: Statistics:")
     stats = engine.get_statistics()
     for key, value in stats.items():
         print(f"  {key}: {value}")
-    
+
     # Flush buffer
     engine.flush_buffer()
     print("\n✅ [MCP-PERSISTENCE]: Test completed successfully!")

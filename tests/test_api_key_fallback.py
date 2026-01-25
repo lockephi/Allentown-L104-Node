@@ -47,17 +47,17 @@ def test_api_key_fallback_logic(monkeypatch):
     2. Ghost Protocol: No hardcoded fallback keys
     """
     import os
-    
+
     # Test case 1: GEMINI_API_KEY is set
     test_key = "test_api_key_123"
     monkeypatch.setenv(app_main.API_KEY_ENV, test_key)
-    
+
     api_key = os.getenv(app_main.API_KEY_ENV)
     assert api_key == test_key, "Should use the environment variable when set"
-    
+
     # Test case 2: GEMINI_API_KEY is not set - should return None (Ghost Protocol)
     monkeypatch.delenv(app_main.API_KEY_ENV, raising=False)
-    
+
     api_key = os.getenv(app_main.API_KEY_ENV)
     assert api_key is None, "Should return None when env var not set (Ghost Protocol)"
 

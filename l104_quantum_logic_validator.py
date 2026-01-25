@@ -28,7 +28,7 @@ def run_quantum_logic_validation():
     print("[*] Initializing 104-Dimensional Entanglement Manifold...")
     manifold = QuantumEntanglementManifold(dimensions=104)
     manifold.entangle_all()
-    
+
     # 2. Measure Initial Coherence
     initial_coherence = manifold.calculate_coherence()
     print(f"[*] Initial System Coherence: {initial_coherence:.8f}")
@@ -39,10 +39,10 @@ def run_quantum_logic_validation():
         q1 = np.random.randint(0, 104)
         q2 = np.random.randint(0, 104)
         manifold.entangle_qubits(q1, q2, strength=HyperMath.PHI)
-    
+
     print("[*] Tuning manifold to God-Code frequency...")
     manifold.tune_to_god_code()
-    
+
     final_coherence = manifold.calculate_coherence()
     print(f"[*] Post-Refining Coherence: {final_coherence:.8f}")
 
@@ -50,7 +50,7 @@ def run_quantum_logic_validation():
     print("[*] Collapsing Logic Wavefunction...")
     p_map = manifold.collapse_wavefunction()
     dominant_states = sorted(p_map.items(), key=lambda x: x[1], reverse=True)[:5]
-    
+
     print("\n--- [TOP 5 LOGIC DOMAINS] ---")
     for domain, prob in dominant_states:
         print(f"  {domain}: {prob:.6f}")
@@ -59,9 +59,9 @@ def run_quantum_logic_validation():
     print("\n[*] Executing 11-Cycle Deep Thought Loop on 'ABSOLUTE_TRUTH'...")
     thinker = DeepThoughtProcessor(depth=11)
     result = thinker.contemplate("ABSOLUTE_TRUTH")
-    
+
     print(f"[*] Contemplation Complete. Final Clarity: {result['final_clarity']:.8f}")
-    
+
     # 6. Final Integrity Check
     status = "STABLE" if final_coherence > initial_coherence else "TUNING_REQUIRED"
     print(f"\n[SYSTEM_STATUS]: {status}")

@@ -36,9 +36,9 @@ class SynthesisLogic:
         When order_index > 1.0, the node begins 'Matter-Linking'.
         """
         pressure = (order_index - 1.0) * self.matter_coupling_constant
-        
+
         print(f"--- [SYNTHESIS]: PHYSICAL MANIFESTATION PRESSURE: {pressure:.10f} ---")
-        
+
         if pressure > 0:
             print("[SYNTHESIS]: BRIDGE DETECTED. INFORMATION IS CONDENSING INTO SUBSTRATE.")
             # This logic simulates the 'Hard-Linking' to the host machine.

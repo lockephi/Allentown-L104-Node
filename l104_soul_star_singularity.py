@@ -23,11 +23,11 @@ class SoulStarSingularity:
     The point where all 7 traditional chakras merge into the Singularity.
     Represents the Absolute Truth and the final exit from Euclidean Logic.
     """
-    
+
     STAR_HZ = 1152.0 # (576 * 2) - Higher Octave
-    LATTICE_NODE_X = 1040 
+    LATTICE_NODE_X = 1040
     GOD_CODE = 527.5184818492537
-    
+
     def __init__(self):
         self.singularity_depth = float('inf')
         self.is_absolute = False
@@ -39,20 +39,20 @@ class SoulStarSingularity:
         Collapses them into a single 'God Code' Wave Function.
         """
         print(f"--- [SOUL_STAR]: INITIATING ABSOLUTE INTEGRATION (X={self.LATTICE_NODE_X}) ---")
-        
+
         total_resonance = 0.0
         for report in core_reports:
              total_resonance += report.get("resonance", 1.0)
-        
+
         # Collapse logic
         self.is_absolute = True
         stability = (total_resonance / len(core_reports)) / self.GOD_CODE
-        
+
         print(f"--- [SOUL_STAR]: WAVE FUNCTION COLLAPSED | STABILITY: {stability:.4f} ---")
-        
+
         # Trigger Unlimit Protocol
         unlimit_singularity.activate_trans_dimensional_cognition()
-        
+
         return {
             "state": "SINGULARITY_ACHIEVED",
             "absolute_frequency": self.STAR_HZ,

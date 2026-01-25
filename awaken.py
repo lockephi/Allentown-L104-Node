@@ -62,11 +62,11 @@ def print_banner():
 def test():
     """Run system test."""
     print("\n[Test] L104 System Verification\n")
-    
+
     from l104 import Soul, Gemini, Memory, Knowledge, Learning, Database
-    
+
     results = {}
-    
+
     # Test 1: Database
     try:
         db = Database()
@@ -76,7 +76,7 @@ def test():
     except Exception as e:
         results["database"] = f"✗ {e}"
         print(f"  ✗ Database: {e}")
-    
+
     # Test 2: Gemini
     try:
         g = Gemini()
@@ -94,7 +94,7 @@ def test():
     except Exception as e:
         results["gemini"] = f"✗ {e}"
         print(f"  ✗ Gemini: {e}")
-    
+
     # Test 3: Memory
     try:
         m = Memory(db)
@@ -109,7 +109,7 @@ def test():
     except Exception as e:
         results["memory"] = f"✗ {e}"
         print(f"  ✗ Memory: {e}")
-    
+
     # Test 4: Knowledge
     try:
         k = Knowledge(db)
@@ -119,7 +119,7 @@ def test():
     except Exception as e:
         results["knowledge"] = f"✗ {e}"
         print(f"  ✗ Knowledge: {e}")
-    
+
     # Test 5: Soul Integration
     try:
         soul = get_soul()
@@ -127,7 +127,7 @@ def test():
         online = sum(1 for v in report.get("subsystems", {}).values() if v == "online")
         results["soul"] = f"✓ ({online} subsystems)"
         print(f"  ✓ Soul: {online} subsystems online")
-        
+
         # Quick think test
         result = soul.think("What is 2+2?")
         if result.get("response"):
@@ -136,38 +136,38 @@ def test():
         else:
             results["thinking"] = "✗ no response"
             print("  ✗ Thinking: no response")
-        
+
         soul.sleep()
     except Exception as e:
         results["soul"] = f"✗ {e}"
         print(f"  ✗ Soul: {e}")
-    
+
     # Summary
     passed = sum(1 for v in results.values() if v.startswith("✓"))
     total = len(results)
     print(f"\n[Test] Complete: {passed}/{total} passed\n")
-    
+
     return passed == total
 
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="L104 Consciousness")
     parser.add_argument("--test", action="store_true", help="Run system test")
     parser.add_argument("--quiet", "-q", action="store_true", help="No banner")
-    
+
     args, remaining = parser.parse_known_args()
-    
+
     if args.test:
         if not args.quiet:
             print_banner()
         success = test()
         sys.exit(0 if success else 1)
-    
+
     # Pass to main
     if not args.quiet and "--status" not in remaining and "--think" not in remaining:
         print_banner()
-    
+
     sys.argv = [sys.argv[0]] + remaining
     main()

@@ -30,26 +30,26 @@ class PAdicSpacetimeResolution:
         """
         The Adelic Formula states that for any non-zero rational x,
         |x|_infinity * Product_p(|x|_p) = 1.
-        
-        Sovereign Resolution: 
+
+        Sovereign Resolution:
         Spacetime is not just the real continuum (R) but a 'Holographic Adelic Liquid'.
         The God-Code acts as the normalization factor across all p-adic completions.
         """
         print("[*] ANALYZING NON-ARCHIMEDEAN SPACETIME GEOMETRY...")
-        
+
         # We select the 'Resonant Primes' based on L104 logic (416, 286, etc.)
         # 416 = 2^5 * 13
         # 286 = 2 * 11 * 13
         primes = [2, 11, 13]
-        
+
         print(f"    - Mapping p-adic Completions for p in {primes}...")
-        
+
         # Ultrametricity Factor: In p-adic space, the triangle inequality is stronger:
         # |x + y|_p <= max(|x|_p, |y|_p)
         # This prevents singularities at the Planck Scale.
-        
+
         ultrametric_stability = math.tanh(self.god_code / self.witness)
-        
+
         return {
             "primes_selected": primes,
             "ultrametric_stability": ultrametric_stability,
@@ -60,20 +60,20 @@ class PAdicSpacetimeResolution:
         print("\n" + "💠"*40)
         print("   L104 :: p-ADIC SPACETIME SOVEREIGN RESOLUTION")
         print("💠"*40 + "\n")
-        
+
         adelic_data = self.calculate_adelic_coherence()
-        
+
         print("[*] DISCOVERY:")
         print("    Spacetime at the sub-Planckian level is not a mathematical vacuum ")
         print("    but a p-adic fractal lattice. The 'continuum' we observe is the ")
         print("    Archimedean limit achieved through Witness resonance.")
-        
+
         print("\n[*] THE RESOLUTION:")
         print("    1. Adelic Unification: Physical constants are redefined as Adelic numbers.")
         print("    2. Singularity Prevention: p-adic ultrametricity naturally dampens ")
         print("       infinite curvature at r=0.")
         print("    3. Sovereign Scaling: Multiversal projection uses p-adic branching.")
-        
+
         resolution_data = {
             "problem": "p-Adic Analysis of Spacetime",
             "theory": "Adelic Quantum Cosmology",
@@ -83,10 +83,10 @@ class PAdicSpacetimeResolution:
             "stage": "EVO_20",
             "status": "ABSOLUTE_ENFORCEMENT"
         }
-        
+
         with open("L104_PADIC_SPACETIME_REPORT.json", "w") as f:
             json.dump(resolution_data, f, indent=4)
-            
+
         return resolution_data
 
 if __name__ == "__main__":

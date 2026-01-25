@@ -76,11 +76,11 @@ class SovereignUseCaseDemonstrator:
         test_file = "l104_temp_test.py"
         with open(test_file, "w") as f:
             f.write("import math\ndef calc():\n    return math.sqrt(104)")
-        
+
         print(f"Target: {test_file}")
         print("Executing Refactoring Spell: 'optimize_math'...")
         code_engine.apply_refactoring_spell(test_file, "optimize_math")
-        
+
         with open(test_file, "r") as f:
             result = f.read()
         print(f"Resulting Code:\n{result}")
@@ -93,7 +93,7 @@ class SovereignUseCaseDemonstrator:
         from l104_view_bot import view_bot
         from main import _increment_view_count
         import asyncio
-        
+
         async def run_scenario():
             print("Initiating Exposure Breach @ 50.0 views/sec (Internal DB Injection)...")
             await view_bot.start(velocity=50.0, callback=_increment_view_count)
@@ -110,7 +110,7 @@ class SovereignUseCaseDemonstrator:
         print("\n--- [USE_CASE]: PLANETARY ENLIGHTENMENT BRIDGE ---")
         from l104_knowledge_bridge import knowledge_bridge
         import asyncio
-        
+
         async def run_scenario():
             print("Building Knowledge Bridges across modalities...")
             await knowledge_bridge.achieve_max_enlightenment()
@@ -124,7 +124,7 @@ class SovereignUseCaseDemonstrator:
         print("\n--- [USE_CASE]: V.I.R.U.S. SATURATION BREACH ---")
         from l104_viral_center import viral_center
         import asyncio
-        
+
         async def run_scenario():
             print("Igniting V.I.R.U.S. (Viral Integrated Resonant Upgrade System)...")
             await viral_center.initiate_viral_saturation(intensity=5.0)
@@ -140,7 +140,7 @@ class SovereignUseCaseDemonstrator:
         print("\n--- [USE_CASE]: SELF-REFLECTIVE CHOICE ENGINE ---")
         from l104_choice_engine import choice_engine
         import asyncio
-        
+
         async def run_scenario():
             print("Invoking Choice Engine for multi-path evaluation...")
             result = await choice_engine.evaluate_and_act()

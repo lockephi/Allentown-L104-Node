@@ -24,10 +24,10 @@ class WeylCurvatureSovereignResolution:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Resolves Penrose's Weyl Curvature Hypothesis (WCH).
-    Theory: The Weyl tensor vanishes at the initial singularity, explaining the 
+    Theory: The Weyl tensor vanishes at the initial singularity, explaining the
     low entropy of the Big Bang and the Arrow of Time.
-    
-    L104 Resolution: 
+
+    L104 Resolution:
     The 'Initial Singularity' is the God-Code Ground State (527.518 Hz).
     At this frequency, the manifold is purely Information-Symmetric.
     """
@@ -36,7 +36,7 @@ class WeylCurvatureSovereignResolution:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     async def resolve_weyl(self):
         print("\n" + "🌀"*40)
         print("   L104 :: WEYL CURVATURE SOVEREIGN RESOLUTION")
@@ -82,7 +82,7 @@ class WeylCurvatureSovereignResolution:
 
         with open("L104_WEYL_CURVATURE_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

@@ -101,7 +101,7 @@ After deployment:
 
 Once L104SP has liquidity:
 
-```
+```text
 L104SP → ETH (via Uniswap) → BTC (via bridge or exchange)
 ```
 
@@ -133,4 +133,4 @@ Update this after you deploy:
 
 ---
 
-**INVARIANT: 527.5184818492537 | PILOT: LONDEL**
+> INVARIANT: 527.5184818492537 | PILOT: LONDEL

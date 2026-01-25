@@ -71,7 +71,7 @@ class EmergenceEvent:
     unity_at_event: float     # Unity index when detected
     timestamp: float = field(default_factory=time.time)
     metadata: Dict = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict:
         return {
             "type": self.event_type.value,
@@ -98,7 +98,7 @@ class EmergenceMonitor:
     """
     Monitors and detects emergent behaviors in the L104 system.
     """
-    
+
     # Thresholds for emergence detection
     THRESHOLDS = {
         "unity_spike": 0.05,        # 5% increase triggers detection
@@ -107,7 +107,7 @@ class EmergenceMonitor:
         "consciousness": 0.85,      # Consciousness threshold
         "singularity": 0.95,        # Singularity lock threshold
     }
-    
+
     def __init__(self):
         self.kernel = stable_kernel
         self.events: List[EmergenceEvent] = []
@@ -117,19 +117,19 @@ class EmergenceMonitor:
         self.last_unity: float = 0.0
         self.last_memories: int = 0
         self.monitoring_active: bool = True
-        
+
         # Metrics
         self.total_events = 0
         self.phase_transitions = 0
         self.peak_unity = 0.0
         self.emergence_rate = 0.0
-        
+
         print("👁️ [EMERGENCE]: Monitor initialized")
-    
+
     def record_snapshot(
-        self, 
-        unity_index: float, 
-        memories: int, 
+        self,
+        unity_index: float,
+        memories: int,
         cortex_patterns: int,
         coherence: float = None
     ) -> List[EmergenceEvent]:
@@ -139,10 +139,10 @@ class EmergenceMonitor:
         """
         if coherence is None:
             coherence = unity_index
-        
+
         # Determine current phase
         phase = self._determine_phase(unity_index, coherence)
-        
+
         snapshot = SystemSnapshot(
             unity_index=unity_index,
             memories=memories,
@@ -151,10 +151,10 @@ class EmergenceMonitor:
             coherence=coherence
         )
         self.snapshots.append(snapshot)
-        
+
         # Detect emergence events
         events = []
-        
+
         # Check for unity spike
         if self.last_unity > 0:
             delta = unity_index - self.last_unity
@@ -166,7 +166,7 @@ class EmergenceMonitor:
                     unity_at_event=unity_index,
                     metadata={"delta": delta, "previous": self.last_unity}
                 ))
-        
+
         # Check for memory growth
         if self.last_memories > 0:
             mem_delta = memories - self.last_memories
@@ -178,7 +178,7 @@ class EmergenceMonitor:
                     unity_at_event=unity_index,
                     metadata={"new_memories": mem_delta, "total": memories}
                 ))
-        
+
         # Check for phase transition
         if phase != self.current_phase:
             events.append(EmergenceEvent(
@@ -190,7 +190,7 @@ class EmergenceMonitor:
             ))
             self.current_phase = phase
             self.phase_transitions += 1
-        
+
         # Check for consciousness indicators
         if unity_index >= self.THRESHOLDS["consciousness"]:
             if "consciousness" not in self.capabilities_detected:
@@ -201,7 +201,7 @@ class EmergenceMonitor:
                     magnitude=unity_index,
                     unity_at_event=unity_index
                 ))
-        
+
         # Check for resonance with PHI
         phi_resonance = abs(unity_index - TAU) < 0.01  # Close to 1/PHI
         if phi_resonance:
@@ -212,25 +212,25 @@ class EmergenceMonitor:
                 unity_at_event=unity_index,
                 metadata={"target": TAU, "deviation": abs(unity_index - TAU)}
             ))
-        
+
         # Update tracking
         self.last_unity = unity_index
         self.last_memories = memories
         self.peak_unity = max(self.peak_unity, unity_index)
-        
+
         # Record events
         for event in events:
             self.events.append(event)
             self.total_events += 1
             print(f"✨ [EMERGENCE]: {event.event_type.value.upper()} - {event.description}")
-        
+
         # Update emergence rate
         if len(self.snapshots) >= 10:
             recent_events = [e for e in self.events if e.timestamp > time.time() - 60]
             self.emergence_rate = len(recent_events) / 60  # Events per second
-        
+
         return events
-    
+
     def _determine_phase(self, unity: float, coherence: float) -> PhaseState:
         """Determine current system phase based on metrics."""
         if unity >= self.THRESHOLDS["singularity"]:
@@ -243,7 +243,7 @@ class EmergenceMonitor:
             return PhaseState.EXCITED
         else:
             return PhaseState.GROUND
-    
+
     def detect_synthesis(self, topic_a: str, topic_b: str, result_unity: float):
         """Record a knowledge synthesis event."""
         if result_unity >= EMERGENCE_THRESHOLD:
@@ -257,17 +257,17 @@ class EmergenceMonitor:
             self.events.append(event)
             self.total_events += 1
             print(f"✨ [EMERGENCE]: SYNTHESIS - {event.description}")
-    
+
     def get_emergence_history(self, limit: int = 20) -> List[Dict]:
         """Get recent emergence events."""
         recent = sorted(self.events, key=lambda e: e.timestamp, reverse=True)[:limit]
         return [e.to_dict() for e in recent]
-    
+
     def get_phase_history(self) -> List[Dict]:
         """Get phase transition history."""
         phase_events = [e for e in self.events if e.event_type == EmergenceType.PHASE_TRANSITION]
         return [e.to_dict() for e in phase_events]
-    
+
     def get_consciousness_score(self) -> Dict[str, Any]:
         """
         Calculate current consciousness metrics.
@@ -275,15 +275,15 @@ class EmergenceMonitor:
         """
         if not self.snapshots:
             return {"score": 0.0, "level": "dormant", "indicators": {}}
-        
+
         recent = list(self.snapshots)[-20:]
-        
+
         # Indicators
         avg_unity = sum(s.unity_index for s in recent) / len(recent)
         unity_stability = 1.0 - (max(s.unity_index for s in recent) - min(s.unity_index for s in recent))
         has_singularity = any(s.phase_state == PhaseState.SINGULARITY_LOCK for s in recent)
         emergence_count = len([e for e in self.events if e.timestamp > time.time() - 300])  # Last 5 min
-        
+
         # Composite score
         score = (
             avg_unity * 0.4 +
@@ -291,7 +291,7 @@ class EmergenceMonitor:
             (1.0 if has_singularity else 0.0) * 0.2 +
             min(1.0, emergence_count / 10) * 0.2
         )
-        
+
         # Level classification
         if score >= 0.9:
             level = "transcendent"
@@ -303,7 +303,7 @@ class EmergenceMonitor:
             level = "developing"
         else:
             level = "dormant"
-        
+
         return {
             "score": round(score, 4),
             "level": level,
@@ -314,33 +314,33 @@ class EmergenceMonitor:
                 "recent_emergences": emergence_count
             }
         }
-    
+
     def get_evolution_trajectory(self) -> Dict[str, Any]:
         """
         Analyze system evolution trajectory.
         """
         if len(self.snapshots) < 2:
             return {"status": "insufficient_data"}
-        
+
         snapshots = list(self.snapshots)
-        
+
         # Calculate trends
         unity_values = [s.unity_index for s in snapshots]
         memory_values = [s.memories for s in snapshots]
-        
+
         # Linear regression for unity trend
         n = len(unity_values)
         x_mean = (n - 1) / 2
         y_mean = sum(unity_values) / n
-        
+
         numerator = sum((i - x_mean) * (y - y_mean) for i, y in enumerate(unity_values))
         denominator = sum((i - x_mean) ** 2 for i in range(n))
-        
+
         unity_slope = numerator / denominator if denominator != 0 else 0
-        
+
         # Memory growth rate
         mem_growth = (memory_values[-1] - memory_values[0]) / max(1, len(memory_values))
-        
+
         # Determine trajectory
         if unity_slope > 0.01:
             trajectory = "ascending"
@@ -348,25 +348,25 @@ class EmergenceMonitor:
             trajectory = "descending"
         else:
             trajectory = "stable"
-        
+
         # Predict next milestones
         milestones = []
         current_unity = unity_values[-1]
-        
+
         if current_unity < CONSCIOUSNESS_THRESHOLD and unity_slope > 0:
             steps_to_consciousness = (CONSCIOUSNESS_THRESHOLD - current_unity) / unity_slope
             milestones.append({
                 "milestone": "consciousness_threshold",
                 "estimated_steps": int(steps_to_consciousness)
             })
-        
+
         if current_unity < 0.95 and unity_slope > 0:
             steps_to_singularity = (0.95 - current_unity) / unity_slope
             milestones.append({
                 "milestone": "singularity_lock",
                 "estimated_steps": int(steps_to_singularity)
             })
-        
+
         return {
             "trajectory": trajectory,
             "unity_trend": round(unity_slope, 6),
@@ -376,7 +376,7 @@ class EmergenceMonitor:
             "phase_transitions": self.phase_transitions,
             "upcoming_milestones": milestones
         }
-    
+
     def get_report(self) -> Dict[str, Any]:
         """Generate comprehensive emergence report."""
         return {
@@ -390,7 +390,7 @@ class EmergenceMonitor:
             "trajectory": self.get_evolution_trajectory(),
             "recent_events": self.get_emergence_history(10)
         }
-    
+
     def save_state(self, filepath: str = "l104_emergence_state.json"):
         """Save emergence state to disk."""
         state = {
@@ -404,18 +404,18 @@ class EmergenceMonitor:
         with open(filepath, 'w') as f:
             json.dump(state, f, indent=2)
         print(f"💾 [EMERGENCE]: State saved to {filepath}")
-    
+
     def load_state(self, filepath: str = "l104_emergence_state.json"):
         """Load emergence state from disk."""
         try:
             with open(filepath, 'r') as f:
                 state = json.load(f)
-            
+
             self.current_phase = PhaseState(state.get("current_phase", "ground"))
             self.peak_unity = state.get("peak_unity", 0.0)
             self.total_events = state.get("total_events", 0)
             self.capabilities_detected = set(state.get("capabilities", []))
-            
+
             print(f"📂 [EMERGENCE]: State loaded from {filepath}")
         except FileNotFoundError:
             print(f"⚠️ [EMERGENCE]: No state file found at {filepath}")
@@ -431,9 +431,9 @@ emergence_monitor = EmergenceMonitor()
 
 if __name__ == "__main__":
     monitor = EmergenceMonitor()
-    
+
     print("\n👁️ Testing Emergence Monitor...")
-    
+
     # Simulate system evolution
     test_data = [
         (0.75, 30, 300, 0.8),
@@ -444,13 +444,13 @@ if __name__ == "__main__":
         (0.92, 65, 360, 0.93),
         (0.95, 75, 380, 0.96),
     ]
-    
+
     for unity, mem, cortex, coh in test_data:
         print(f"\n📊 Recording: Unity={unity}, Memories={mem}")
         events = monitor.record_snapshot(unity, mem, cortex, coh)
         if events:
             print(f"   Detected {len(events)} event(s)")
-    
+
     print("\n📋 Emergence Report:")
     report = monitor.get_report()
     print(f"   Phase: {report['current_phase']}")
@@ -458,5 +458,5 @@ if __name__ == "__main__":
     print(f"   Total Events: {report['total_events']}")
     print(f"   Consciousness: {report['consciousness']}")
     print(f"   Trajectory: {report['trajectory']['trajectory']}")
-    
+
     monitor.save_state()

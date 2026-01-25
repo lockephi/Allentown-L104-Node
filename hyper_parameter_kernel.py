@@ -46,23 +46,23 @@ print(f"""
 # ARCHITECTURE PARAMETER CALCULATORS (No Memory Allocation)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def calc_transformer_params(vocab_size: int, embed_dim: int = 768, 
+def calc_transformer_params(vocab_size: int, embed_dim: int = 768,
                             num_layers: int = 12, max_seq: int = 2048) -> int:
     """Transformer architecture parameters (GPT-2 style)."""
     params = 0
     params += vocab_size * embed_dim  # token embeddings
     params += max_seq * embed_dim  # position embeddings
-    
+
     per_layer = 4 * embed_dim * embed_dim  # attention Q,K,V,O
     per_layer += 2 * embed_dim * (4 * embed_dim)  # FFN
     per_layer += 4 * embed_dim  # layer norms
     params += num_layers * per_layer
-    
+
     params += embed_dim * vocab_size  # output projection
     return params
 
 
-def calc_moe_params(embed_dim: int = 768, num_experts: int = 64, 
+def calc_moe_params(embed_dim: int = 768, num_experts: int = 64,
                     expert_dim: int = 2048) -> int:
     """Mixture of Experts layer parameters."""
     params = embed_dim * num_experts  # router
@@ -71,7 +71,7 @@ def calc_moe_params(embed_dim: int = 768, num_experts: int = 64,
     return params
 
 
-def calc_hierarchical_params(vocab_size: int, levels: int = 4, 
+def calc_hierarchical_params(vocab_size: int, levels: int = 4,
                              base_dim: int = 512) -> int:
     """Hierarchical multi-scale embeddings."""
     params = 0
@@ -84,13 +84,13 @@ def calc_hierarchical_params(vocab_size: int, levels: int = 4,
     return params
 
 
-def calc_lora_params(base_dim: int = 768, num_adapters: int = 1000, 
+def calc_lora_params(base_dim: int = 768, num_adapters: int = 1000,
                      rank: int = 64) -> int:
     """LoRA adapter parameters."""
     return num_adapters * 2 * base_dim * rank
 
 
-def calc_recursive_meta_params(base_dim: int = 768, meta_layers: int = 6, 
+def calc_recursive_meta_params(base_dim: int = 768, meta_layers: int = 6,
                                recursion_depth: int = 4) -> int:
     """Recursive self-improvement network."""
     params = meta_layers * base_dim * base_dim
@@ -124,14 +124,14 @@ def calc_memory_network_params(embed_dim: int = 768, memory_size: int = 10000,
 
 def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
     """Expand training data without loading all into memory."""
-    
+
     existing_count = 0
     if base_path.exists():
         with open(base_path, 'r') as f:
             existing_count = sum(1 for _ in f)
-    
+
     print(f"  Existing: {existing_count}")
-    
+
     # Load base examples
     base_examples = []
     if base_path.exists():
@@ -143,17 +143,17 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
                     base_examples.append(json.loads(line.strip()))
                 except:
                     pass
-    
+
     output_path = Path("/workspaces/Allentown-L104-Node/kernel_hyper_training.jsonl")
-    
+
     with open(output_path, 'w') as out:
         if base_path.exists():
             with open(base_path, 'r') as inp:
                 for line in inp:
                     out.write(line)
-        
+
         count = existing_count
-        
+
         templates = [
             "Can you explain: {}",
             "What do you know about: {}",
@@ -164,15 +164,15 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
             "How does {} relate to PHI=1.618?",
             "What is the significance of: {}",
         ]
-        
+
         while count < target_count and base_examples:
             base = random.choice(base_examples)
             template = random.choice(templates)
-            
+
             try:
                 prompt = base.get('prompt', '')
                 completion = base.get('completion', '')
-                
+
                 if prompt and completion:
                     new_ex = {
                         "prompt": template.format(prompt.lower()),
@@ -181,12 +181,12 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
                     }
                     out.write(json.dumps(new_ex) + "\n")
                     count += 1
-                    
+
                     if count % 10000 == 0:
                         print(f"   Generated: {count}/{target_count}")
             except:
                 pass
-    
+
     print(f"  ✓ Expanded to {count} examples")
     return count
 
@@ -199,11 +199,11 @@ def main():
     print("═" * 70)
     print("PHASE 1: VOCABULARY ANALYSIS")
     print("═" * 70)
-    
+
     merged_path = Path("/workspaces/Allentown-L104-Node/kernel_full_merged.jsonl")
     vocab = set()
     example_count = 0
-    
+
     if merged_path.exists():
         with open(merged_path, 'r') as f:
             for line in f:
@@ -214,57 +214,57 @@ def main():
                     example_count += 1
                 except:
                     pass
-    
+
     base_vocab_size = len(vocab)
     vocab_size = max(100000, base_vocab_size * 4)
-    
+
     print(f"  Base vocabulary: {base_vocab_size:,}")
     print(f"  Subword vocab:   {vocab_size:,}")
     print(f"  Base examples:   {example_count:,}")
-    
+
     print("\n" + "═" * 70)
     print("PHASE 2: ARCHITECTURE PARAMETER CALCULATION")
     print("═" * 70)
-    
+
     params = {}
-    
+
     params['transformer_base'] = calc_transformer_params(
         vocab_size=vocab_size, embed_dim=1024, num_layers=24, max_seq=2048
     )
     print(f"  Transformer (1024d×24L):  {params['transformer_base']:>15,}")
-    
+
     params['moe_layer'] = calc_moe_params(
         embed_dim=1024, num_experts=128, expert_dim=4096
     )
     print(f"  MoE (128 experts):        {params['moe_layer']:>15,}")
-    
+
     params['hierarchical'] = calc_hierarchical_params(
         vocab_size=vocab_size, levels=5, base_dim=512
     )
     print(f"  Hierarchical (5 levels):  {params['hierarchical']:>15,}")
-    
+
     params['lora'] = calc_lora_params(
         base_dim=1024, num_adapters=2000, rank=128
     )
     print(f"  LoRA (2000×r128):         {params['lora']:>15,}")
-    
+
     params['recursive'] = calc_recursive_meta_params(
         base_dim=1024, meta_layers=12, recursion_depth=6
     )
     print(f"  Recursive Meta:           {params['recursive']:>15,}")
-    
+
     params['phi_harmonic'] = calc_phi_harmonic_params(
         base_dim=int(GOD_CODE), num_octaves=10
     )
     print(f"  PHI-Harmonic (10 oct):    {params['phi_harmonic']:>15,}")
-    
+
     params['memory_network'] = calc_memory_network_params(
         embed_dim=1024, memory_size=50000, num_hops=5
     )
     print(f"  Memory Network:           {params['memory_network']:>15,}")
-    
+
     params['total'] = sum(params.values())
-    
+
     print(f"""
   ╔═══════════════════════════════════════════════════════════════════╗
   ║  TOTAL HYPER-KERNEL PARAMETERS                                    ║
@@ -273,23 +273,23 @@ def main():
   ║  {params['total']/1e9:>20.3f} BILLION                                   ║
   ╚═══════════════════════════════════════════════════════════════════╝
 """)
-    
+
     print("═" * 70)
     print("PHASE 3: TRAINING DATA EXPANSION")
     print("═" * 70)
-    
+
     expanded_count = expand_training_data(merged_path, target_count=50000)
-    
+
     print("\n" + "═" * 70)
     print("PHASE 4: FINE-TUNE EXPORT GENERATION")
     print("═" * 70)
-    
+
     hyper_training_path = Path("/workspaces/Allentown-L104-Node/kernel_hyper_training.jsonl")
     export_dir = Path("/workspaces/Allentown-L104-Node/fine_tune_exports")
     export_dir.mkdir(exist_ok=True)
-    
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+
     # OpenAI format
     openai_path = export_dir / f"l104_hyper_openai_{timestamp}.jsonl"
     with open(openai_path, 'w') as out:
@@ -308,7 +308,7 @@ def main():
                 except:
                     pass
     print(f"  ✓ OpenAI format: {openai_path.name}")
-    
+
     # Claude format
     claude_path = export_dir / f"l104_hyper_claude_{timestamp}.jsonl"
     with open(claude_path, 'w') as out:
@@ -324,7 +324,7 @@ def main():
                 except:
                     pass
     print(f"  ✓ Claude format: {claude_path.name}")
-    
+
     # Alpaca/Llama format
     alpaca_path = export_dir / f"l104_hyper_alpaca_{timestamp}.json"
     alpaca_data = []
@@ -341,15 +341,15 @@ def main():
                 })
             except:
                 pass
-    
+
     with open(alpaca_path, 'w') as out:
         json.dump(alpaca_data, out)
     print(f"  ✓ Alpaca format: {alpaca_path.name}")
-    
+
     print("\n" + "═" * 70)
     print("PHASE 5: UPDATE MANIFEST")
     print("═" * 70)
-    
+
     manifest = {
         "kernel_version": "L104-HYPER-EVO36",
         "build_date": datetime.now().isoformat(),
@@ -384,12 +384,12 @@ def main():
         },
         "status": "BILLION_SCALE_ACHIEVED"
     }
-    
+
     manifest_path = Path("/workspaces/Allentown-L104-Node/KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
     print(f"  ✓ Updated {manifest_path}")
-    
+
     print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║   ✅ L104 HYPER-KERNEL COMPLETE - EVO_36 BILLION SCALE                        ║
@@ -416,7 +416,7 @@ def main():
 ║   GOD_CODE: {GOD_CODE:.10f}  LOCKED & VERIFIED                         ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     return params
 
 

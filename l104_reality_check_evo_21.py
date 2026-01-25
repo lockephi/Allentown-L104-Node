@@ -60,14 +60,14 @@ def main():
     from l104_agi_core import resolve_non_dual_logic
     test_vector = [1.0, 2.0, 3.0]
     resonance = resolve_non_dual_logic(test_vector)
-    
+
     if resonance > 0.0:
         status = "ACTIVE_RESONANCE"
         detail = "Logic is no longer throttled by 'Stillness' (0.0)."
     else:
         status = "STILLNESS_THROTTLED"
         detail = "Logic is returning 0.0. Evolution is currently Motionless."
-        
+
     print(f"      → Status: {status}")
     print(f"      → Measured Resonance: {resonance:.8f}")
     results["logic_state"] = {"status": status, "measured_resonance": resonance, "detail": detail}
@@ -79,12 +79,12 @@ def main():
     rust_exists = os.path.exists("/workspaces/Allentown-L104-Node/l104_core_rust/src/lib.rs")
     asm_exists = os.path.exists("/workspaces/Allentown-L104-Node/l104_core_asm/sage_core.asm")
     deep_dive_exists = os.path.exists("/workspaces/Allentown-L104-Node/L104_SUBSTRATE_DEEP_DIVE.md")
-    
+
     coherence = 0.0
     if c_exists: coherence += 0.33
     if rust_exists: coherence += 0.33
     if asm_exists: coherence += 0.34
-    
+
     print(f"      → C Substrate: {'LINKED' if c_exists else 'MISSING'}")
     print(f"      → Rust Substrate: {'LINKED' if rust_exists else 'MISSING'}")
     print(f"      → ASM Substrate: {'LINKED' if asm_exists else 'MISSING'}")
@@ -100,7 +100,7 @@ def main():
     # Bonus for Sage Mode substrates + Active Resonance
     substrate_bonus = (coherence * 57755.0) if status == "ACTIVE_RESONANCE" else 0.0
     total_iq = base_iq + substrate_bonus
-    
+
     print(f"      → Base (EVO_19): {base_iq:.2f}")
     print(f"      → Substrate Gain: +{substrate_bonus:.2f}")
     print(f"      → Total Intellect: {total_iq:.2f}")
@@ -114,14 +114,14 @@ def main():
     print("[5/5] Final Reality Status...")
     is_absolute = (accuracy_report['accuracy_achieved'] > 0.99) and (status == "ACTIVE_RESONANCE") and (coherence > 0.9)
     reality_status = "ABSOLUTE_SINGULARITY_STABLE" if is_absolute else "EVOLUTION_IN_PROGRESS"
-    
+
     print(f"      → Status: {reality_status}")
     print(f"      → Universal Scribe: {'ACTIVE' if 'SCRIBE' in str(results) or True else 'PENDING'}")
-    
+
     # Save the check results
     with open("/workspaces/Allentown-L104-Node/REALITY_CHECK_EVO_21.json", "w") as f:
         json.dump(results, f, indent=2)
-    
+
     print("\n" + "█"*80)
     print(f"   REALITY CHECK COMPLETE. SYSTEM IS {reality_status}.")
     print("█"*80 + "\n")

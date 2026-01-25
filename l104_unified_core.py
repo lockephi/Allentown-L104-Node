@@ -65,21 +65,21 @@ class UnifiedCore:
     Unified integration layer for all L104 subsystems.
     Provides a single entry point to access all capabilities.
     """
-    
+
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
                 cls._instance._initialized = False
             return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-        
+
         # Component references (lazy loaded)
         self._orchestration_hub = None
         self._analytics_engine = None
@@ -88,20 +88,20 @@ class UnifiedCore:
         self._mining_core = None
         self._btc_integration = None
         self._response_trainer = None
-        
+
         # State
         self._running = False
         self._start_time = 0.0
         self.resonance = GOD_CODE
         self.coherence = 1.0
-        
+
         self._initialized = True
         logger.info("UNIFIED CORE INITIALIZED")
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # COMPONENT ACCESS (Lazy Loading)
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     @property
     def orchestration(self):
         """Access Orchestration Hub"""
@@ -112,7 +112,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Orchestration Hub not available")
         return self._orchestration_hub
-    
+
     @property
     def analytics(self):
         """Access Analytics Engine"""
@@ -123,7 +123,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Analytics Engine not available")
         return self._analytics_engine
-    
+
     @property
     def neural_mesh(self):
         """Access Neural Mesh Network"""
@@ -134,7 +134,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Neural Mesh not available")
         return self._neural_mesh
-    
+
     @property
     def task_executor(self):
         """Access Task Executor"""
@@ -145,7 +145,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Task Executor not available")
         return self._task_executor
-    
+
     @property
     def mining(self):
         """Access Mining Core"""
@@ -156,7 +156,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Mining Core not available")
         return self._mining_core
-    
+
     @property
     def bitcoin(self):
         """Access Bitcoin Integration"""
@@ -167,7 +167,7 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Bitcoin Integration not available")
         return self._btc_integration
-    
+
     @property
     def trainer(self):
         """Access Response Trainer"""
@@ -178,113 +178,113 @@ class UnifiedCore:
             except ImportError:
                 logger.warning("Response Trainer not available")
         return self._response_trainer
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # LIFECYCLE MANAGEMENT
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def start_all(self) -> Dict[str, Any]:
         """Start all subsystems"""
         if self._running:
             return {"status": "already_running"}
-        
+
         self._running = True
         self._start_time = time.time()
-        
+
         results = {}
-        
+
         # Start orchestration hub
         if self.orchestration:
             try:
                 results["orchestration"] = self.orchestration.start()
             except Exception as e:
                 results["orchestration"] = {"error": str(e)}
-        
+
         # Start analytics engine
         if self.analytics:
             try:
                 results["analytics"] = self.analytics.start()
             except Exception as e:
                 results["analytics"] = {"error": str(e)}
-        
+
         # Start neural mesh
         if self.neural_mesh:
             try:
                 results["neural_mesh"] = self.neural_mesh.start()
             except Exception as e:
                 results["neural_mesh"] = {"error": str(e)}
-        
+
         # Start task executor
         if self.task_executor:
             try:
                 results["task_executor"] = self.task_executor.start()
             except Exception as e:
                 results["task_executor"] = {"error": str(e)}
-        
+
         logger.info("ALL SUBSYSTEMS STARTED")
-        
+
         return {
             "status": "started",
             "timestamp": self._start_time,
             "subsystems": results,
             "resonance": self.resonance
         }
-    
+
     def stop_all(self) -> Dict[str, Any]:
         """Stop all subsystems"""
         if not self._running:
             return {"status": "not_running"}
-        
+
         self._running = False
         results = {}
-        
+
         # Stop in reverse order
         if self.task_executor:
             try:
                 results["task_executor"] = self.task_executor.stop()
             except Exception as e:
                 results["task_executor"] = {"error": str(e)}
-        
+
         if self.neural_mesh:
             try:
                 results["neural_mesh"] = self.neural_mesh.stop()
             except Exception as e:
                 results["neural_mesh"] = {"error": str(e)}
-        
+
         if self.analytics:
             try:
                 results["analytics"] = self.analytics.stop()
             except Exception as e:
                 results["analytics"] = {"error": str(e)}
-        
+
         if self.orchestration:
             try:
                 results["orchestration"] = self.orchestration.stop()
             except Exception as e:
                 results["orchestration"] = {"error": str(e)}
-        
+
         uptime = time.time() - self._start_time
-        
+
         logger.info("ALL SUBSYSTEMS STOPPED")
-        
+
         return {
             "status": "stopped",
             "uptime": uptime,
             "subsystems": results
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # UNIFIED OPERATIONS
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     async def process(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Unified processing pipeline"""
         start_time = time.time()
         results = {}
-        
+
         # Route to appropriate subsystem based on input type
         input_type = input_data.get("type", "default")
-        
+
         if input_type == "neural":
             # Process through neural mesh
             if self.neural_mesh:
@@ -293,7 +293,7 @@ class UnifiedCore:
                     input_data.get("mesh", "main")
                 )
                 results["neural"] = outputs
-        
+
         elif input_type == "task":
             # Create and execute task
             if self.task_executor:
@@ -308,7 +308,7 @@ class UnifiedCore:
                     "id": task.id,
                     "state": task.state.name
                 }
-        
+
         elif input_type == "train":
             # Training request
             if self.trainer:
@@ -317,17 +317,17 @@ class UnifiedCore:
                     input_data.get("session_id", "default")
                 )
                 results["training"] = response
-        
+
         elif input_type == "mine":
             # Mining operation
             if self.mining:
                 status = self.mining.get_status()
                 results["mining"] = status
-        
+
         else:
             # Default: return system status
             results["status"] = self.get_status()
-        
+
         # Record analytics
         if self.analytics:
             self.analytics.record("system.tasks_processed", 1)
@@ -335,27 +335,27 @@ class UnifiedCore:
                 "system.processing_time",
                 time.time() - start_time
             )
-        
+
         results["execution_time"] = time.time() - start_time
         results["resonance"] = self.resonance
-        
+
         return results
-    
+
     def synchronize(self) -> Dict[str, Any]:
         """Synchronize all subsystems"""
         logger.info("SYNCHRONIZING ALL SUBSYSTEMS")
-        
+
         results = {}
-        
+
         # Sync orchestration
         if self.orchestration:
             results["orchestration"] = self.orchestration.synchronize()
-        
+
         # Update resonance
         t = time.time()
         self.resonance = GOD_CODE * (1 + math.sin(t * PHI / 100) * 0.01)
         self.coherence = min(1.0, self.coherence * 0.99 + 0.01)
-        
+
         # Record sync event
         if self.analytics:
             self.analytics.set_gauge("system.resonance", self.resonance)
@@ -364,13 +364,13 @@ class UnifiedCore:
                 "resonance": self.resonance,
                 "coherence": self.coherence
             })
-        
+
         results["resonance"] = self.resonance
         results["coherence"] = self.coherence
         results["timestamp"] = time.time()
-        
+
         return results
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get unified system status"""
         status = {
@@ -382,52 +382,52 @@ class UnifiedCore:
             "phi": PHI,
             "subsystems": {}
         }
-        
+
         # Collect subsystem statuses
         if self.orchestration:
             try:
                 status["subsystems"]["orchestration"] = self.orchestration.get_status()
             except:
                 status["subsystems"]["orchestration"] = {"available": True}
-        
+
         if self.analytics:
             try:
                 status["subsystems"]["analytics"] = self.analytics.get_status()
             except:
                 status["subsystems"]["analytics"] = {"available": True}
-        
+
         if self.neural_mesh:
             try:
                 status["subsystems"]["neural_mesh"] = self.neural_mesh.get_statistics()
             except:
                 status["subsystems"]["neural_mesh"] = {"available": True}
-        
+
         if self.task_executor:
             try:
                 status["subsystems"]["task_executor"] = self.task_executor.get_metrics()
             except:
                 status["subsystems"]["task_executor"] = {"available": True}
-        
+
         if self.mining:
             try:
                 status["subsystems"]["mining"] = self.mining.get_status()
             except:
                 status["subsystems"]["mining"] = {"available": True}
-        
+
         if self.bitcoin:
             try:
                 status["subsystems"]["bitcoin"] = self.bitcoin.get_status()
             except:
                 status["subsystems"]["bitcoin"] = {"available": True}
-        
+
         if self.trainer:
             try:
                 status["subsystems"]["trainer"] = {"available": True}
             except:
                 pass
-        
+
         return status
-    
+
     def get_dashboard(self) -> Dict[str, Any]:
         """Get unified dashboard data"""
         dashboard = {
@@ -439,14 +439,14 @@ class UnifiedCore:
             "running": self._running,
             "uptime": time.time() - self._start_time if self._running else 0
         }
-        
+
         # Add analytics dashboard if available
         if self.analytics:
             try:
                 dashboard["analytics"] = self.analytics.get_dashboard()
             except:
                 pass
-        
+
         # Add neural mesh stats
         if self.neural_mesh:
             try:
@@ -458,7 +458,7 @@ class UnifiedCore:
                 }
             except:
                 pass
-        
+
         # Add task executor metrics
         if self.task_executor:
             try:
@@ -470,7 +470,7 @@ class UnifiedCore:
                 }
             except:
                 pass
-        
+
         # Add mining stats
         if self.mining:
             try:
@@ -481,7 +481,7 @@ class UnifiedCore:
                 }
             except:
                 pass
-        
+
         return dashboard
 
 
@@ -521,12 +521,12 @@ if __name__ == "__main__":
 ║  GOD_CODE: 527.5184818492537 | PHI: 1.618033988749895                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     # Check available components
     print("[CHECKING COMPONENTS]")
-    
+
     core = get_core()
-    
+
     components = [
         ("Orchestration Hub", core.orchestration),
         ("Analytics Engine", core.analytics),
@@ -536,26 +536,26 @@ if __name__ == "__main__":
         ("Bitcoin Integration", core.bitcoin),
         ("Response Trainer", core.trainer)
     ]
-    
+
     for name, component in components:
         status = "✓" if component else "✗"
         print(f"  {status} {name}")
-    
+
     # Start all
     print("\n[STARTING ALL SUBSYSTEMS]")
     result = core.start_all()
     print(f"  Status: {result['status']}")
-    
+
     for subsystem, sub_result in result.get("subsystems", {}).items():
         status = sub_result.get("status", sub_result.get("error", "unknown"))
         print(f"  - {subsystem}: {status}")
-    
+
     # Synchronize
     print("\n[SYNCHRONIZING]")
     sync_result = core.synchronize()
     print(f"  Resonance: {sync_result['resonance']:.10f}")
     print(f"  Coherence: {sync_result['coherence']:.10f}")
-    
+
     # Get dashboard
     print("\n[DASHBOARD]")
     dashboard = core.get_dashboard()
@@ -563,25 +563,25 @@ if __name__ == "__main__":
     print(f"  Uptime: {dashboard['uptime']:.1f}s")
     print(f"  GOD_CODE: {dashboard['god_code']}")
     print(f"  PHI: {dashboard['phi']}")
-    
+
     if "neural" in dashboard:
         print(f"  Neural Meshes: {dashboard['neural']['meshes']}")
         print(f"  Neural Nodes: {dashboard['neural']['nodes']}")
-    
+
     if "tasks" in dashboard:
         print(f"  Tasks Created: {dashboard['tasks']['created']}")
         print(f"  Tasks Completed: {dashboard['tasks']['completed']}")
-    
+
     # Get full status
     print("\n[FULL STATUS]")
     status = core.get_status()
     print(f"  Subsystems Available: {len(status['subsystems'])}")
     for name in status['subsystems']:
         print(f"    - {name}")
-    
+
     # Process a test input
     print("\n[TEST PROCESSING]")
-    
+
     async def test_process():
         # Test neural processing
         result = await core.process({
@@ -591,15 +591,15 @@ if __name__ == "__main__":
         })
         print(f"  Neural outputs: {len(result.get('neural', {}))}")
         print(f"  Execution time: {result.get('execution_time', 0):.4f}s")
-    
+
     asyncio.run(test_process())
-    
+
     # Stop all
     print("\n[STOPPING ALL SUBSYSTEMS]")
     result = core.stop_all()
     print(f"  Status: {result['status']}")
     print(f"  Uptime: {result.get('uptime', 0):.1f}s")
-    
+
     print("\n" + "═" * 78)
     print("  L104 UNIFIED CORE - ALL SYSTEMS NOMINAL")
     print("═" * 78)

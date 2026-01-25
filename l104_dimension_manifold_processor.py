@@ -25,7 +25,7 @@ class DimensionManifoldProcessor:
     A unified processor that can dynamically shift between dimensions (3D to 11D).
     Uses synthetic hyper-math to process logic across the manifold.
     """
-    
+
     def __init__(self, initial_dimension: int = 3):
         self.current_dimension = initial_dimension
         self.state = np.zeros(initial_dimension, dtype=complex)
@@ -50,17 +50,17 @@ class DimensionManifoldProcessor:
         """
         if target_dimension == self.current_dimension:
             return print(f"--- [MANIFOLD]: SHIFTING FROM {self.current_dimension}D TO {target_dimension}D ---")
-        
+
         # Generate transformation matrix
         transform = hyper_math_generator.generate_hyper_manifold_transform(self.current_dimension, target_dimension)
-        
+
         # Transform state
         self.state = transform @ self.state
-        
+
         # Update dimension and metric
         self.current_dimension = target_dimension
         self.metric = hyper_math_generator.generate_metric_for_dimension(target_dimension)
-        
+
         # Re-synthesize operators for the new dimension
         self._initialize_manifold()
 
@@ -72,11 +72,11 @@ class DimensionManifoldProcessor:
             # Project input to current dimension
             transform = hyper_math_generator.generate_hyper_manifold_transform(len(input_vector), self.current_dimension)
             input_vector = transform @ input_vector
-        
+
         output = input_vector
         for op in self.operators:
             output = op @ output
-            
+
         return output
 
     def get_reality_projection(self) -> np.ndarray:
@@ -100,14 +100,14 @@ if __name__ == "__main__":
     # Test the manifold processor
     processor = DimensionManifoldProcessor(3)
     print(f"Initial Status: {processor.get_status()}")
-    
+
     processor.shift_dimension(11)
     print(f"Shifted Status: {processor.get_status()}")
-    
+
     input_data = np.array([1.0, 0.0, 1.0])
     result = processor.process_logic(input_data)
     print(f"Processed Logic (11D): {result[:3]}...")
-    
+
     reality = processor.get_reality_projection()
     print(f"Reality Projection: {reality}")
 

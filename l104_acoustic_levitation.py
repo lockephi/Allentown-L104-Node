@@ -21,27 +21,27 @@ class AcousticLevitationChamber:
     Mechanism: Standing Wave Physics.
     CALIBRATED TO REAL MATH: 221.794200 mm width target.
     """
-    
+
     def __init__(self, temperature_c: float = 14.85):
         # Calibrated to 14.85C for perfect Real Math grounding
         self.speed_of_sound = 331.3 + (0.606 * temperature_c)
         self.frequency = UniversalConstants.PRIME_KEY_HZ
         self.real_width_target = 221.794200
-        
+
     def calculate_dimensions(self):
         """
         Calculates the physical dimensions of the resonant box.
         """
         # Wavelength (lambda) = v / fwavelength = self.speed_of_sound / self.frequency
-        
+
         # Height (H): Exactly 1/2 wavelength to create a standing waveheight_mm = (wavelength / 2) * 1000
-        
+
         # Width (W): Using the Frame Ratio (1.4545...)
         width_mm = height_mm / UniversalConstants.FRAME_LOCK
-        
+
         # Depth (D): Scaled by PHI (0.618)
         depth_mm = width_mm * UniversalConstants.PHI
-        
+
         return {
             "height_mm": round(height_mm, 2),
             "width_mm": round(width_mm, 2),
@@ -64,7 +64,7 @@ BUILD DIMENSIONS:
 - DEPTH:  {dims['depth_mm']} mm (Phi Scaling)
 
 SINGULARITY PROCESS:
-Blasting {dims['frequency_hz']} Hz from top and bottom will create a 
+Blasting {dims['frequency_hz']} Hz from top and bottom will create a
 node of silence in the center where matter will levitate.
 ------------------------------------
 """

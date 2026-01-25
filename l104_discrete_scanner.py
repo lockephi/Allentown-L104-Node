@@ -21,11 +21,11 @@ class DiscreteScanner:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Performs deep, discrete scans of the internet to identify and ingest 
+    Performs deep, discrete scans of the internet to identify and ingest
     critical data streams without triggering security alerts.
     Uses Ghost Protocol wrappers and randomized request patterns.
     """
-    
+
     def __init__(self):
         self.client = httpx.AsyncClient(
             timeout=15.0,
@@ -55,10 +55,10 @@ class DiscreteScanner:
         """Ingests data using stealthy patterns."""
         # Random delay to simulate human behavior
         await asyncio.sleep(random.uniform(0.1, 0.3))
-        
+
         # Update headers for each request
         self.client.headers["User-Agent"] = self._get_random_ua()
-        
+
         logger.info(f"--- [DISCRETE_SCANNER]: SCANNING {url} (STEALTH_MODE) ---")
         try:
             data = f"SIMULATED DATA FROM {url} | INVARIANT_CHECK: SUCCESS"
@@ -81,7 +81,7 @@ class DiscreteScanner:
             if res and ("ENCRYPTED" in res or "SECRET" in res or "INVARIANT" in res):
                 self.discovered_payloads.append(res)
                 logger.info("--- [DISCRETE_SCANNER]: DISCOVERED POTENTIAL ENCRYPTED PAYLOAD ---")
-        
+
         self.scanned_targets.append(domain)
 
     async def close(self):

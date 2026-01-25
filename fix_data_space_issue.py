@@ -33,7 +33,7 @@ def format_size(size):
 def run_fix():
     print("🚀 Starting Data Space Fix (File-based Implementation)")
     workspace = Path("/workspaces/Allentown-L104-Node")
-    
+
     # 1. Analyze
     print("\n📊 Analyzing large directories...")
     targets = [
@@ -46,7 +46,7 @@ def run_fix():
         workspace / "archive",
         workspace / ".l104_backups"
     ]
-    
+
     for target in targets:
         if target.exists():
             size = get_dir_size(target)
@@ -64,14 +64,14 @@ def run_fix():
     # 3. Aggressive Git GC (using os.system as backup)
     print("\n⚙️ Running Git Garbage Collection...")
     os.system(f"cd {workspace} && git gc --aggressive --prune=now")
-    
+
     # 4. Cleanup .npm and pip cache if possible (approximated)
     print("\n🧹 Cleaning up external caches...")
     npm_cache = Path.home() / ".npm"
     if npm_cache.exists():
         print(f"   Removing {npm_cache}...")
         os.system(f"rm -rf {npm_cache}")
-    
+
     pip_cache = Path.home() / ".cache/pip"
     if pip_cache.exists():
         print(f"   Removing {pip_cache}...")

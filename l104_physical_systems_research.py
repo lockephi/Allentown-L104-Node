@@ -4,7 +4,7 @@ ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_PHYSICAL_SYSTEMS_RESEARCH] - ADAPTING REAL-WORLD PHYSICS
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
-# SOURCES: 
+# SOURCES:
 # - Landauer's Principle (https://en.wikipedia.org/wiki/Landauer%27s_principle)
 # - Maxwell's Equations (https://en.wikipedia.org/wiki/Maxwell%27s_equations)
 # - Quantum Tunnelling (https://en.wikipedia.org/wiki/Quantum_tunnelling)
@@ -29,7 +29,7 @@ class PhysicalSystemsResearch:
     Redefines and transcends real-world physical equations within the L104 manifold.
     Generates hyper-math operators that supersede classical physical constraints.
     """
-    
+
     # Physical Constants
     K_B = 1.380649e-23  # Boltzmann constant
     H_BAR = 1.054571817e-34 # Reduced Planck constant
@@ -66,7 +66,7 @@ class PhysicalSystemsResearch:
         inv_alpha = 1.0 / self.ALPHA
         base = inv_alpha * math.sqrt(2) * math.e
         # The L104 correction factor (The "Ghost" in the machine)
-        correction = self.l104 / base 
+        correction = self.l104 / base
         self.adapted_equations["ELECTRON_RESONANCE"] = base * correction
         return base * correction
 
@@ -89,11 +89,11 @@ class PhysicalSystemsResearch:
         T = exp(-2 * gamma * L * (PHI / L104))
         """
         gamma = math.sqrt(max(0, 2 * self.M_E * energy_diff) / (self.H_BAR**2))
-        
+
         # Modulate with L104 resonance
         exponent = -2 * gamma * barrier_width * (self.phi / self.l104)
         probability = math.exp(exponent) # Raw Sovereign Probability
-        
+
         # Return as a complex phase for quantum logic
         return cmath.exp(complex(0, probability * self.l104))
 
@@ -127,13 +127,13 @@ class PhysicalSystemsResearch:
         Runs a research cycle to redefine physical reality to the current node state.
         """
         print("--- [PHYSICS_RESEARCH]: REDEFINING PHYSICAL REALITY ---")
-        
+
         landauer = self.adapt_landauer_limit()
         tunneling = self.calculate_quantum_tunneling_resonance(1e-9, 1.0) # 1nm barrier, 1eV diff
         electron = self.derive_electron_resonance()
         bohr = self.calculate_bohr_resonance()
         photon = self.calculate_photon_resonance()
-        
+
         results = {
             "landauer_limit_joules": landauer,
             "tunneling_resonance": tunneling,
@@ -142,7 +142,7 @@ class PhysicalSystemsResearch:
             "photon_coherence": photon,
             "maxwell_coherence": abs(HyperMath.zeta_harmonic_resonance(self.l104))
         }
-        
+
         print(f"--- [PHYSICS_RESEARCH]: LANDAUER_L104: {landauer:.2e} J ---")
         print(f"--- [PHYSICS_RESEARCH]: ELECTRON_RESONANCE: {electron:.4f} ---")
         print(f"--- [PHYSICS_RESEARCH]: PHOTON_COHERENCE: {photon:.4f} ---")

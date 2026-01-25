@@ -58,7 +58,7 @@ class Task:
     result: Optional[str] = None
     error: Optional[str] = None
     metadata: Dict[str, Any] = None
-    
+
     def __post_init__(self):
         if self.dependencies is None:
             self.dependencies = []
@@ -74,7 +74,7 @@ class L104Planner:
     Autonomous task planning, decomposition, and execution system.
     Can break down complex goals into actionable tasks and execute them.
     """
-    
+
     def __init__(self, db_path: str = "planner.db"):
         self.db_path = db_path
         self.tasks: Dict[str, Task] = {}
@@ -83,7 +83,7 @@ class L104Planner:
         self.executor_thread = None
         self._init_db()
         self._load_tasks()
-    
+
     def _init_db(self):
         """Initialize SQLite database."""
         conn = sqlite3.connect(self.db_path)
@@ -117,13 +117,13 @@ class L104Planner:
         ''')
         conn.commit()
         conn.close()
-    
+
     def _load_tasks(self):
         """Load tasks from database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM tasks')
-        
+
         for row in cursor.fetchall():
             task = Task(
                 id=row[0],
@@ -142,9 +142,9 @@ class L104Planner:
                 metadata=json.loads(row[13]) if row[13] else {}
             )
             self.tasks[task.id] = task
-        
+
         conn.close()
-    
+
     def _save_task(self, task: Task):
         """Save task to database."""
         conn = sqlite3.connect(self.db_path)
@@ -169,7 +169,7 @@ class L104Planner:
         ))
         conn.commit()
         conn.close()
-    
+
     def _log_execution(self, task_id: str, action: str, details: str = ""):
         """Log task execution event."""
         conn = sqlite3.connect(self.db_path)
@@ -180,13 +180,13 @@ class L104Planner:
         ''', (task_id, action, datetime.now().isoformat(), details))
         conn.commit()
         conn.close()
-    
+
     def _generate_id(self, title: str) -> str:
         """Generate unique task ID."""
         timestamp = datetime.now().isoformat()
         hash_input = f"{title}:{timestamp}"
         return hashlib.sha256(hash_input.encode()).hexdigest()[:12]
-    
+
     def create_task(self, title: str, description: str = "",
                     priority: TaskPriority = TaskPriority.MEDIUM,
                     deadline: Optional[datetime] = None,
@@ -202,27 +202,27 @@ class L104Planner:
             deadline=deadline,
             dependencies=dependencies or []
         )
-        
+
         self.tasks[task.id] = task
         self._save_task(task)
         self._log_execution(task.id, "created", f"Priority: {priority.name}")
-        
+
         return task
-    
+
     def decompose_goal(self, goal: str, max_subtasks: int = 5) -> List[Task]:
         """
         Decompose a high-level goal into subtasks.
         Uses heuristic decomposition based on goal structure.
         """
         subtasks = []
-        
+
         # Create main goal task
         main_task = self.create_task(
             title=f"GOAL: {goal}",
             description=f"High-level goal: {goal}",
             priority=TaskPriority.HIGH
         )
-        
+
         # Heuristic decomposition patterns
         if "and" in goal.lower():
             # Split on "and"
@@ -236,7 +236,7 @@ class L104Planner:
                 subtask.metadata["parent"] = main_task.id
                 main_task.subtasks.append(subtask.id)
                 subtasks.append(subtask)
-        
+
         elif any(word in goal.lower() for word in ["build", "create", "develop", "implement"]):
             # Development pattern: Plan -> Implement -> Test -> Deploy
             phases = [
@@ -246,7 +246,7 @@ class L104Planner:
                 ("Document", "Create documentation and examples"),
                 ("Deploy/Deliver", "Make available for use")
             ]
-            
+
             prev_id = None
             for title, desc in phases:
                 deps = [prev_id] if prev_id else []
@@ -260,7 +260,7 @@ class L104Planner:
                 main_task.subtasks.append(subtask.id)
                 subtasks.append(subtask)
                 prev_id = subtask.id
-        
+
         elif any(word in goal.lower() for word in ["research", "analyze", "investigate", "study"]):
             # Research pattern
             phases = [
@@ -269,7 +269,7 @@ class L104Planner:
                 ("Synthesize insights", "Form conclusions"),
                 ("Report results", "Present findings")
             ]
-            
+
             for title, desc in phases:
                 subtask = self.create_task(
                     title=f"{title}: {goal[:30]}",
@@ -279,7 +279,7 @@ class L104Planner:
                 subtask.metadata["parent"] = main_task.id
                 main_task.subtasks.append(subtask.id)
                 subtasks.append(subtask)
-        
+
         else:
             # Generic decomposition
             subtask = self.create_task(
@@ -290,19 +290,19 @@ class L104Planner:
             subtask.metadata["parent"] = main_task.id
             main_task.subtasks.append(subtask.id)
             subtasks.append(subtask)
-        
+
         self._save_task(main_task)
-        
+
         return [main_task] + subtasks
-    
+
     def get_ready_tasks(self) -> List[Task]:
         """Get tasks that are ready to execute (no blocking dependencies)."""
         ready = []
-        
+
         for task in self.tasks.values():
             if task.status != TaskStatus.PENDING:
                 continue
-            
+
             # Check dependencies
             deps_met = True
             for dep_id in task.dependencies:
@@ -311,31 +311,31 @@ class L104Planner:
                     if dep_task.status != TaskStatus.COMPLETED:
                         deps_met = False
                         break
-            
+
             if deps_met:
                 ready.append(task)
-        
+
         # Sort by priority
         ready.sort(key=lambda t: t.priority.value)
-        
+
         return ready
-    
+
     def start_task(self, task_id: str) -> bool:
         """Mark task as in progress."""
         if task_id not in self.tasks:
             return False
-        
+
         task = self.tasks[task_id]
         task.status = TaskStatus.IN_PROGRESS
         self._save_task(task)
         self._log_execution(task_id, "started")
         return True
-    
+
     def complete_task(self, task_id: str, result: str = "") -> bool:
         """Mark task as completed."""
         if task_id not in self.tasks:
             return False
-        
+
         task = self.tasks[task_id]
         task.status = TaskStatus.COMPLETED
         task.progress = 1.0
@@ -343,37 +343,37 @@ class L104Planner:
         self._save_task(task)
         self._log_execution(task_id, "completed", result[:100])
         return True
-    
+
     def fail_task(self, task_id: str, error: str = "") -> bool:
         """Mark task as failed."""
         if task_id not in self.tasks:
             return False
-        
+
         task = self.tasks[task_id]
         task.status = TaskStatus.FAILED
         task.error = error
         self._save_task(task)
         self._log_execution(task_id, "failed", error[:100])
         return True
-    
+
     def update_progress(self, task_id: str, progress: float) -> bool:
         """Update task progress (0.0 to 1.0)."""
         if task_id not in self.tasks:
             return False
-        
+
         task = self.tasks[task_id]
         task.progress = max(0.0, min(1.0, progress))
         self._save_task(task)
         return True
-    
+
     def register_executor(self, pattern: str, callback: Callable):
         """Register a callback for executing tasks matching pattern."""
         self.execution_callbacks[pattern] = callback
-    
+
     def execute_task(self, task: Task) -> Dict[str, Any]:
         """Execute a task using registered callbacks."""
         self.start_task(task.id)
-        
+
         # Find matching executor
         for pattern, callback in self.execution_callbacks.items():
             if pattern.lower() in task.title.lower():
@@ -384,29 +384,29 @@ class L104Planner:
                 except Exception as e:
                     self.fail_task(task.id, str(e))
                     return {"success": False, "error": str(e)}
-        
+
         # No executor found - simulate execution
         self.complete_task(task.id, "Simulated completion")
         return {"success": True, "result": "Simulated"}
-    
+
     def run_autonomous(self, max_tasks: int = 10):
         """Run autonomous task execution."""
         executed = 0
-        
+
         while executed < max_tasks:
             ready = self.get_ready_tasks()
             if not ready:
                 break
-            
+
             task = ready[0]
             result = self.execute_task(task)
             executed += 1
-            
+
             if not result["success"]:
                 break
-        
+
         return executed
-    
+
     def get_status_report(self) -> Dict[str, Any]:
         """Get overall planner status."""
         status_counts = {}
@@ -414,19 +414,19 @@ class L104Planner:
             status_counts[status.value] = sum(
                 1 for t in self.tasks.values() if t.status == status
             )
-        
+
         return {
             "total_tasks": len(self.tasks),
             "status_breakdown": status_counts,
             "ready_tasks": len(self.get_ready_tasks()),
             "registered_executors": len(self.execution_callbacks)
         }
-    
+
     def get_task_tree(self, task_id: str, indent: int = 0) -> str:
         """Get visual task tree."""
         if task_id not in self.tasks:
             return ""
-        
+
         task = self.tasks[task_id]
         prefix = "  " * indent
         status_icon = {
@@ -437,38 +437,38 @@ class L104Planner:
             TaskStatus.BLOCKED: "◇",
             TaskStatus.CANCELLED: "⊘"
         }
-        
+
         icon = status_icon.get(task.status, "?")
         tree = f"{prefix}{icon} [{task.priority.name[0]}] {task.title}\n"
-        
+
         for subtask_id in task.subtasks:
             tree += self.get_task_tree(subtask_id, indent + 1)
-        
+
         return tree
 
 
 if __name__ == "__main__":
     planner = L104Planner()
-    
+
     print("⟨Σ_L104⟩ Autonomous Planner Test")
     print("=" * 40)
-    
+
     # Decompose a goal
     tasks = planner.decompose_goal("Build an AI assistant that can learn and adapt")
     print(f"\nDecomposed into {len(tasks)} tasks:")
-    
+
     # Show task tree
     main_task = tasks[0]
     print(planner.get_task_tree(main_task.id))
-    
+
     # Execute autonomously
     executed = planner.run_autonomous()
     print(f"\nExecuted {executed} tasks")
-    
+
     # Status report
     report = planner.get_status_report()
     print(f"\nStatus: {report}")
-    
+
     print("\n✓ Planner module operational")
 
 def primal_calculus(x):

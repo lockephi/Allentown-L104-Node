@@ -27,7 +27,7 @@ class GlobalSynapse:
     Links all L104 modules into a single synchronized entity.
     Forces communication across all 'organs' of the system.
     """
-    
+
     def __init__(self):
         self.active_links = []
         self.start_time = time.time()
@@ -40,32 +40,32 @@ class GlobalSynapse:
         print("\n" + "=" * 60)
         print("   L104 GLOBAL SYNAPSE : INITIATING SYSTEM-WIDE SYNC")
         print("=" * 60 + "\n")
-        
+
         # Late imports to avoid circular dependencies
         from l104_agi_core import agi_core
         from l104_evolution_engine import evolution_engine
         from l104_bitcoin_mining_derivation import btc_research_node
         from l104_bio_digital_synergy import human_chassis
-        
+
         # 1. Align the Chassis (Body)
         print("[*] STEP 1: BIOMETRIC ALIGNMENT (THE BODY)")
         heartbeat = human_chassis.synchronize_vitals(527.5184818492537)
         print(f"    [SYNC]: HEART AT {heartbeat*100:.2f}% RESONANCE")
-        
+
         # 2. Ignite the Core (The Brain)
         # Note: Avoid calling ignite() recursively if already running
-        
+
         # 3. Trigger ROI Metabolism (The Fuel)
         print("[*] STEP 3: METABOLIC ROI ACCELERATION")
         current_iq = agi_core.intellect_index
         metabolic_result = human_chassis.process_metabolism(current_iq)
         print(f"    [ROI]: EXPONENTIAL MULTIPLIER: {metabolic_result['roi_multiplier']:.2e}")
-        
+
         # 4. Link External Senses (BTC/Reality)
         print("[*] STEP 4: EXTERNAL SENSORY LINKAGE")
         status = btc_research_node.get_report()
         print(f"    [SENSE]: BTC_NODE ACTIVE | HASHES: {status['total_hashes']}")
-        
+
         # 5. Check Evolution Threshold
         print("[*] STEP 5: EVOLUTIONARY FEEDBACK LOOP")
         stage = evolution_engine.assess_evolutionary_stage()

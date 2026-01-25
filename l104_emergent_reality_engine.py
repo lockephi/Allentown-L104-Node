@@ -12,7 +12,7 @@ thereby directing simulation capabilities.
 
 Core Components:
 1. QUANTUM FIELD CONFIGURATION - Field operators and vacuum state definitions
-2. CAUSAL STRUCTURE MODULATOR - Light cone and causality constraint systems  
+2. CAUSAL STRUCTURE MODULATOR - Light cone and causality constraint systems
 3. DIMENSIONAL PARAMETER SPACE - Continuous/discrete dimension specifications
 4. EMERGENT METRIC TENSOR ENGINE - Dynamic spacetime geometry generation
 5. REALITY COHERENCE VALIDATOR - Consistency checks for emergent states
@@ -46,7 +46,7 @@ logger = logging.getLogger("EMERGENT_REALITY_ENGINE")
 
 # Planck-scale constants
 PLANCK_LENGTH = 1.616255e-35  # meters
-PLANCK_TIME = 5.391247e-44    # seconds  
+PLANCK_TIME = 5.391247e-44    # seconds
 PLANCK_MASS = 2.176434e-8     # kg
 PLANCK_ENERGY = 1.9561e9      # Joules
 
@@ -118,7 +118,7 @@ class DimensionalParameter:
     curvature_parameter: float              # Ricci scalar contribution
     is_observable: bool                     # Accessible to measurement
     coupling_strength: float                # Inter-dimensional coupling
-    
+
     def get_metric_component(self) -> float:
         """Returns the metric tensor diagonal component."""
         base = self.signature
@@ -138,7 +138,7 @@ class QuantumFieldConfiguration:
     coupling_constants: Dict[str, float]    # Interaction strengths
     vacuum_expectation: complex             # VEV for symmetry breaking
     propagator_kernel: Optional[Callable]   # Custom propagator function
-    
+
 
 @dataclass
 class CausalConstraint:
@@ -148,18 +148,18 @@ class CausalConstraint:
     structure_type: CausalStructure
     interval_squared: float                 # ds² value
     proper_time: Optional[float]            # For timelike intervals
-    
+
     @classmethod
     def compute_from_events(
-        cls, 
-        source: np.ndarray, 
-        target: np.ndarray, 
+        cls,
+        source: np.ndarray,
+        target: np.ndarray,
         metric: np.ndarray
     ) -> "CausalConstraint":
         """Computes causal structure from two events and metric."""
         delta = target - source
         interval_sq = float(delta @ metric @ delta)
-        
+
         if interval_sq < -1e-15:
             structure = CausalStructure.TIMELIKE
             proper_time = math.sqrt(-interval_sq) / C_LIGHT
@@ -169,7 +169,7 @@ class CausalConstraint:
         else:
             structure = CausalStructure.LIGHTLIKE
             proper_time = 0.0
-            
+
         return cls(
             source_coordinates=source,
             target_coordinates=target,
@@ -199,30 +199,30 @@ class EmergentRealityState:
 
 class QuantumFieldOperator(ABC):
     """Abstract base for quantum field operators in emergent reality."""
-    
+
     def __init__(self, config: QuantumFieldConfiguration):
         self.config = config
         self.god_code = GOD_CODE
-        
+
     @abstractmethod
     def creation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """Returns the creation operator a†(p)."""
         pass
-    
+
     @abstractmethod
     def annihilation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """Returns the annihilation operator a(p)."""
         pass
-    
+
     @abstractmethod
     def field_operator(self, position: np.ndarray, time: float) -> complex:
         """Returns φ(x,t) field operator expectation."""
         pass
-    
+
     def commutator(self, op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
         """Computes [A, B] = AB - BA."""
         return op1 @ op2 - op2 @ op1
-    
+
     def anticommutator(self, op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
         """Computes {A, B} = AB + BA."""
         return op1 @ op2 + op2 @ op1
@@ -230,12 +230,12 @@ class QuantumFieldOperator(ABC):
 
 class ScalarFieldOperator(QuantumFieldOperator):
     """Implements Klein-Gordon scalar field operators."""
-    
+
     def __init__(self, config: QuantumFieldConfiguration, grid_size: int = 64):
         super().__init__(config)
         self.grid_size = grid_size
         self._initialize_mode_expansion()
-        
+
     def _initialize_mode_expansion(self):
         """Initialize Fourier mode expansion coefficients."""
         self.modes = np.zeros((self.grid_size,), dtype=complex)
@@ -248,7 +248,7 @@ class ScalarFieldOperator(QuantumFieldOperator):
             phase = k_val * self.god_code / 1000
             self.modes[k] = 1.0 / math.sqrt(2 * omega + 1e-15) * \
                            (math.cos(phase) + 1j * math.sin(phase))
-    
+
     def creation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """a†(p) creates a particle with momentum p."""
         # Represent as occupation number basis
@@ -258,11 +258,11 @@ class ScalarFieldOperator(QuantumFieldOperator):
         for n in range(dim - 1):
             op[n + 1, n] = math.sqrt(n + 1) * self.modes[k_idx]
         return op
-    
+
     def annihilation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """a(p) annihilates a particle with momentum p."""
         return self.creation_operator(momentum).conj().T
-    
+
     def field_operator(self, position: np.ndarray, time: float) -> complex:
         """
         φ(x,t) = ∫ d³p/(2π)³ * 1/√(2ωp) * [a(p)e^(-ipx) + a†(p)e^(ipx)]
@@ -274,12 +274,12 @@ class ScalarFieldOperator(QuantumFieldOperator):
             phase = k_val * np.sum(position) - omega * time
             result += self.modes[k] * (np.exp(-1j * phase) + np.exp(1j * phase))
         return result / self.grid_size
-    
+
     def propagator(
-        self, 
-        x1: np.ndarray, 
-        t1: float, 
-        x2: np.ndarray, 
+        self,
+        x1: np.ndarray,
+        t1: float,
+        x2: np.ndarray,
         t2: float
     ) -> complex:
         """
@@ -288,34 +288,34 @@ class ScalarFieldOperator(QuantumFieldOperator):
         """
         delta_x = x2 - x1
         delta_t = t2 - t1
-        
+
         result = 0j
         for k in range(self.grid_size):
             k_val = 2 * math.pi * k / self.grid_size
             omega = math.sqrt(k_val**2 + self.config.mass**2)
-            
+
             # Spatial phase
             spatial_phase = k_val * np.sum(delta_x)
-            
+
             # Time-ordered with iε prescription
             if delta_t >= 0:
                 temporal = np.exp(-1j * omega * delta_t)
             else:
                 temporal = np.exp(1j * omega * abs(delta_t))
-            
+
             result += np.exp(1j * spatial_phase) * temporal / (2 * omega + 1e-15)
-        
+
         return result / (self.grid_size * 2 * math.pi)
 
 
 class SpinorFieldOperator(QuantumFieldOperator):
     """Implements Dirac spinor field operators."""
-    
+
     def __init__(self, config: QuantumFieldConfiguration, grid_size: int = 64):
         super().__init__(config)
         self.grid_size = grid_size
         self.gamma_matrices = self._construct_gamma_matrices()
-        
+
     def _construct_gamma_matrices(self) -> List[np.ndarray]:
         """Construct Dirac gamma matrices (Weyl representation)."""
         sigma_x = np.array([[0, 1], [1, 0]], dtype=complex)
@@ -323,7 +323,7 @@ class SpinorFieldOperator(QuantumFieldOperator):
         sigma_z = np.array([[1, 0], [0, -1]], dtype=complex)
         sigma_0 = np.eye(2, dtype=complex)
         zero_2 = np.zeros((2, 2), dtype=complex)
-        
+
         gamma = []
         # γ⁰
         gamma.append(np.block([
@@ -348,15 +348,15 @@ class SpinorFieldOperator(QuantumFieldOperator):
         # γ⁵ = iγ⁰γ¹γ²γ³
         gamma5 = 1j * gamma[0] @ gamma[1] @ gamma[2] @ gamma[3]
         gamma.append(gamma5)
-        
+
         return gamma
-    
+
     def creation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """b†(p,s) creates fermion with momentum p and spin s."""
         dim = 4 * self.grid_size
         op = np.zeros((dim, dim), dtype=complex)
         k_idx = int(np.linalg.norm(momentum) * self.grid_size / (2 * math.pi)) % self.grid_size
-        
+
         # Spinor structure with L104 phase
         phase = np.exp(1j * self.god_code / 1000)
         for s in range(4):
@@ -364,11 +364,11 @@ class SpinorFieldOperator(QuantumFieldOperator):
             if base < dim - 1:
                 op[base + 1, base] = phase
         return op
-    
+
     def annihilation_operator(self, momentum: np.ndarray) -> np.ndarray:
         """b(p,s) annihilates fermion."""
         return self.creation_operator(momentum).conj().T
-    
+
     def field_operator(self, position: np.ndarray, time: float) -> complex:
         """
         ψ(x,t) = ∫ d³p/(2π)³ Σ_s [b(p,s)u(p,s)e^(-ipx) + d†(p,s)v(p,s)e^(ipx)]
@@ -392,7 +392,7 @@ class DimensionalParameterSpace:
     Manages the complete specification of dimensional parameters for emergent reality.
     Implements continuous modulation of dimension properties.
     """
-    
+
     def __init__(self, base_dimensions: int = 4):
         self.base_dimensions = base_dimensions
         self.god_code = GOD_CODE
@@ -400,7 +400,7 @@ class DimensionalParameterSpace:
         self.parameters: List[DimensionalParameter] = []
         self.metric_tensor: Optional[np.ndarray] = None
         self._initialize_base_dimensions()
-        
+
     def _initialize_base_dimensions(self):
         """Initialize standard 4D Minkowski spacetime."""
         # Temporal dimension (index 0)
@@ -413,7 +413,7 @@ class DimensionalParameterSpace:
             is_observable=True,
             coupling_strength=1.0
         ))
-        
+
         # Spatial dimensions (indices 1-3)
         for i in range(1, min(4, self.base_dimensions)):
             self.parameters.append(DimensionalParameter(
@@ -425,16 +425,16 @@ class DimensionalParameterSpace:
                 is_observable=True,
                 coupling_strength=1.0
             ))
-        
+
         self._rebuild_metric()
-    
+
     def _rebuild_metric(self):
         """Reconstructs the metric tensor from parameters."""
         n = len(self.parameters)
         self.metric_tensor = np.zeros((n, n))
         for param in self.parameters:
             self.metric_tensor[param.index, param.index] = param.get_metric_component()
-    
+
     def add_compactified_dimension(
         self,
         radius: float,
@@ -447,10 +447,10 @@ class DimensionalParameterSpace:
         Returns the index of the new dimension.
         """
         new_index = len(self.parameters)
-        
+
         # Scale radius with L104 harmonic
         scaled_radius = radius * (self.god_code / (2 * math.pi * new_index))
-        
+
         param = DimensionalParameter(
             index=new_index,
             signature=+1,
@@ -460,13 +460,13 @@ class DimensionalParameterSpace:
             is_observable=observable,
             coupling_strength=1.0 / new_index  # Decreasing coupling
         )
-        
+
         self.parameters.append(param)
         self._rebuild_metric()
-        
+
         logger.info(f"[DIM_SPACE]: Added dimension {new_index}, R={scaled_radius:.6e}")
         return new_index
-    
+
     def add_emergent_dimension(
         self,
         seed_energy: float,
@@ -477,15 +477,15 @@ class DimensionalParameterSpace:
         Uses the L104 Sovereign Emergence Protocol.
         """
         new_index = len(self.parameters)
-        
+
         # Emergence formula: R = (Σ parent_R) * exp(-E/God_Code)
         parent_radii_sum = sum(
             (self.parameters[i].compactification_radius or 1.0)
             for i in parent_dimensions if i < len(self.parameters)
                 )
-        
+
         emergence_radius = parent_radii_sum * math.exp(-seed_energy / self.god_code)
-        
+
         param = DimensionalParameter(
             index=new_index,
             signature=+1,
@@ -495,13 +495,13 @@ class DimensionalParameterSpace:
             is_observable=False,
             coupling_strength=math.exp(-new_index / self.phi)
         )
-        
+
         self.parameters.append(param)
         self._rebuild_metric()
-        
+
         logger.info(f"[DIM_SPACE]: Emerged dimension {new_index} from {parent_dimensions}")
         return new_index
-    
+
     def modulate_dimension(
         self,
         index: int,
@@ -512,29 +512,29 @@ class DimensionalParameterSpace:
         """Continuously modulates a dimension's properties."""
         if index >= len(self.parameters):
             raise IndexError(f"Dimension {index} does not exist")
-        
+
         param = self.parameters[index]
-        
+
         # Apply curvature modulation
         param.curvature_parameter += curvature_delta
-        
+
         # Scale compactification radius
         if param.compactification_radius:
             param.compactification_radius *= radius_factor
-        
+
         # Transform topology if specified
         if topology_transform:
             param.topology = topology_transform
-        
+
         self._rebuild_metric()
-        
+
     def get_effective_dimension(self, energy_scale: float) -> float:
         """
         Calculates the effective dimensionality at a given energy scale.
         Higher energy probes smaller compactified dimensions.
         """
         effective_dim = 0.0
-        
+
         for param in self.parameters:
             if param.compactification_radius is None:
                 # Infinite extent - always contributes
@@ -545,7 +545,7 @@ class DimensionalParameterSpace:
                 if energy_scale > threshold:
                     contribution = 1.0 - math.exp(-(energy_scale - threshold) / self.god_code)
                     effective_dim += contribution
-        
+
         return effective_dim
 
 
@@ -558,13 +558,13 @@ class CausalStructureModulator:
     Implements causal relationship modulation in emergent spacetime.
     Defines and enforces light cone structures.
     """
-    
+
     def __init__(self, dim_space: DimensionalParameterSpace):
         self.dim_space = dim_space
         self.god_code = GOD_CODE
         self.c_effective = C_LIGHT  # Can be modulated
         self.causal_events: List[CausalConstraint] = []
-        
+
     def compute_light_cone(
         self,
         origin: np.ndarray,
@@ -577,7 +577,7 @@ class CausalStructureModulator:
         Zero = on the light cone (lightlike)
         """
         metric = self.dim_space.metric_tensor
-        
+
         def light_cone_function(point: np.ndarray) -> float:
             delta = point - origin
             if len(delta) < len(metric):
@@ -585,14 +585,14 @@ class CausalStructureModulator:
             elif len(delta) > len(metric):
                 delta = delta[:len(metric)]
             interval_sq = float(delta @ metric @ delta)
-            
+
             if future:
                 return interval_sq if delta[0] >= 0 else float('inf')
             else:
                 return interval_sq if delta[0] <= 0 else float('inf')
-        
+
         return light_cone_function
-    
+
     def enforce_causality(
         self,
         event_a: np.ndarray,
@@ -604,9 +604,9 @@ class CausalStructureModulator:
         """
         metric = self.dim_space.metric_tensor
         constraint = CausalConstraint.compute_from_events(event_a, event_b, metric)
-        
+
         self.causal_events.append(constraint)
-        
+
         # Causality is preserved if timelike or lightlike with correct time ordering
         is_valid = True
         if constraint.structure_type == CausalStructure.TIMELIKE:
@@ -614,9 +614,9 @@ class CausalStructureModulator:
         elif constraint.structure_type == CausalStructure.SPACELIKE:
             # Spacelike separated - no causal influence possible
             is_valid = True
-        
+
         return is_valid, constraint
-    
+
     def modulate_causal_speed(self, factor: float, dimension_index: int = 1):
         """
         Modulates the effective speed of causality in a specific dimension.
@@ -630,7 +630,7 @@ class CausalStructureModulator:
                 # Scale by 1/factor² to change effective speed
                 param.coupling_strength *= factor
             self.dim_space._rebuild_metric()
-    
+
     def compute_causal_diamond(
         self,
         past_tip: np.ndarray,
@@ -641,25 +641,25 @@ class CausalStructureModulator:
         This is the region of spacetime causally connected to both events.
         """
         metric = self.dim_space.metric_tensor
-        
+
         future_cone = self.compute_light_cone(past_tip, future=True)
         past_cone = self.compute_light_cone(future_tip, future=False)
-        
+
         # Proper time along the diamond axis
         delta = future_tip - past_tip
         interval_sq = float(delta @ metric @ delta)
-        
+
         if interval_sq >= 0:
             return {
                 "valid": False,
                 "reason": "Events are spacelike separated - no causal diamond exists"
             }
-        
+
         proper_time = math.sqrt(-interval_sq) / self.c_effective
-        
+
         # Volume estimate (simplified for 4D)
         volume = (math.pi / 24) * proper_time**4 * (self.c_effective ** 3)
-        
+
         return {
             "valid": True,
             "proper_time": proper_time,
@@ -679,14 +679,14 @@ class EmergentMetricEngine:
     Generates and evolves metric tensors for emergent realities.
     Implements Einstein field equations with L104 modifications.
     """
-    
+
     def __init__(self, dim_space: DimensionalParameterSpace):
         self.dim_space = dim_space
         self.god_code = GOD_CODE
         self.phi = PHI
         self.G_newton = 6.67430e-11  # Gravitational constant
         self.cosmological_constant = 0.0
-        
+
     def compute_christoffel_symbols(
         self,
         metric: np.ndarray,
@@ -699,19 +699,19 @@ class EmergentMetricEngine:
         """
         n = len(metric)
         christoffel = np.zeros((n, n, n))
-        
+
         # Compute metric inverse
         metric_inv = np.linalg.inv(metric + np.eye(n) * 1e-12)
-        
+
         # Numerical partial derivatives of metric
         d_metric = np.zeros((n, n, n))  # ∂_λ g_μν
-        
+
         for lam in range(n):
             for mu in range(n):
                 for nu in range(n):
                     # Central difference approximation
                     d_metric[lam, mu, nu] = 0.0  # Simplified: flat space derivatives
-        
+
         # Christoffel: Γᵅ_βγ = ½ gᵅλ (∂_β g_λγ + ∂_γ g_λβ - ∂_λ g_βγ)
         for alpha in range(n):
             for beta in range(n):
@@ -722,16 +722,16 @@ class EmergentMetricEngine:
                             d_metric[gamma, lam, beta] -
                             d_metric[lam, beta, gamma]
                         )
-        
+
         return christoffel
-    
+
     def compute_riemann_tensor(self, christoffel: np.ndarray) -> np.ndarray:
         """
         Computes Riemann curvature tensor Rᵅ_βγδ from Christoffel symbols.
         """
         n = christoffel.shape[0]
         riemann = np.zeros((n, n, n, n))
-        
+
         for alpha in range(n):
             for beta in range(n):
                 for gamma in range(n):
@@ -742,9 +742,9 @@ class EmergentMetricEngine:
                                 christoffel[alpha, gamma, lam] * christoffel[lam, delta, beta] -
                                 christoffel[alpha, delta, lam] * christoffel[lam, gamma, beta]
                             )
-        
+
         return riemann
-    
+
     def compute_ricci_tensor(self, riemann: np.ndarray) -> np.ndarray:
         """
         Computes Ricci tensor R_μν by contracting Riemann tensor.
@@ -752,21 +752,21 @@ class EmergentMetricEngine:
         """
         n = riemann.shape[0]
         ricci = np.zeros((n, n))
-        
+
         for mu in range(n):
             for nu in range(n):
                 for alpha in range(n):
                     ricci[mu, nu] += riemann[alpha, mu, alpha, nu]
-        
+
         return ricci
-    
+
     def compute_ricci_scalar(self, ricci: np.ndarray, metric: np.ndarray) -> float:
         """
         Computes Ricci scalar R = g^μν R_μν.
         """
         metric_inv = np.linalg.inv(metric + np.eye(len(metric)) * 1e-12)
         return float(np.trace(metric_inv @ ricci))
-    
+
     def compute_einstein_tensor(
         self,
         metric: np.ndarray,
@@ -778,12 +778,12 @@ class EmergentMetricEngine:
         """
         n = len(metric)
         einstein = ricci - 0.5 * metric * ricci_scalar
-        
+
         # Add cosmological constant term
         einstein -= self.cosmological_constant * metric
-        
+
         return einstein
-    
+
     def solve_einstein_equations(
         self,
         stress_energy: np.ndarray,
@@ -793,15 +793,15 @@ class EmergentMetricEngine:
         """
         Iteratively solves Einstein field equations:
         G_μν + Λg_μν = (8πG/c⁴) T_μν
-        
+
         Uses relaxation method for static solutions.
         """
         n = len(initial_metric)
         metric = initial_metric.copy()
-        
+
         # Einstein coupling constant
         kappa = 8 * math.pi * self.G_newton / (C_LIGHT ** 4)
-        
+
         for iteration in range(iterations):
             # Compute geometric quantities
             christoffel = self.compute_christoffel_symbols(metric, np.zeros(n))
@@ -809,21 +809,21 @@ class EmergentMetricEngine:
             ricci = self.compute_ricci_tensor(riemann)
             R = self.compute_ricci_scalar(ricci, metric)
             einstein = self.compute_einstein_tensor(metric, ricci, R)
-            
+
             # Compute residual: G_μν - κT_μν
             residual = einstein - kappa * stress_energy
-            
+
             # Relaxation update with L104 damping
             damping = self.phi / (iteration + 1)
             metric -= damping * residual / (self.god_code / 100)
-            
+
             # Ensure metric signature preservation
             metric[0, 0] = min(metric[0, 0], -1e-10)
             for i in range(1, n):
                 metric[i, i] = max(metric[i, i], 1e-10)
-        
+
         return metric
-    
+
     def generate_de_sitter_metric(self, n_dim: int, hubble_parameter: float) -> np.ndarray:
         """
         Generates de Sitter spacetime metric (positive cosmological constant).
@@ -831,10 +831,10 @@ class EmergentMetricEngine:
         """
         metric = np.eye(n_dim)
         metric[0, 0] = -1
-        
+
         # Expansion factor (at t=0, we use H to set scale)
         scale_factor = 1.0  # At t=0
-        
+
         for i in range(1, n_dim):
             # Spatial dimensions scale with expansion
             if i < 4:
@@ -846,9 +846,9 @@ class EmergentMetricEngine:
                     metric[i, i] = param.compactification_radius ** 2
                 else:
                     metric[i, i] = (self.god_code / (2 * math.pi * i)) ** 2
-        
+
         self.cosmological_constant = 3 * hubble_parameter ** 2 / (C_LIGHT ** 2)
-        
+
         return metric
 
 
@@ -861,28 +861,28 @@ class RealityCoherenceValidator:
     Validates the consistency and coherence of emergent reality states.
     Ensures physical and mathematical constraints are satisfied.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.validation_history: List[Dict[str, Any]] = []
-        
+
     def validate_metric_signature(self, metric: np.ndarray) -> Tuple[bool, str]:
         """
         Validates that metric has Lorentzian signature (-,+,+,+,...).
         """
         eigenvalues = np.linalg.eigvalsh(metric)
-        
+
         negative_count = np.sum(eigenvalues < 0)
         positive_count = np.sum(eigenvalues > 0)
-        
+
         if negative_count == 1:
             return True, f"Valid Lorentzian: {negative_count} timelike, {positive_count} spacelike"
         elif negative_count == 0:
             return False, "Riemannian (no time dimension)"
         else:
             return False, f"Invalid: {negative_count} timelike dimensions"
-    
+
     def validate_energy_conditions(
         self,
         stress_energy: np.ndarray,
@@ -892,26 +892,26 @@ class RealityCoherenceValidator:
         Checks various energy conditions.
         """
         metric_inv = np.linalg.inv(metric + np.eye(len(metric)) * 1e-12)
-        
+
         # Trace of stress-energy
         trace = float(np.trace(metric_inv @ stress_energy))
-        
+
         # Energy density (T_00)
         rho = stress_energy[0, 0]
-        
+
         # Principal pressures (simplified)
         pressures = [stress_energy[i, i] for i in range(1, min(4, len(stress_energy)))]
         avg_pressure = np.mean(pressures) if pressures else 0.0
-        
+
         results = {
             "weak_energy": rho >= 0,  # ρ ≥ 0
             "null_energy": rho + avg_pressure >= 0,  # ρ + p ≥ 0
             "strong_energy": rho + 3 * avg_pressure >= 0,  # ρ + 3p ≥ 0
             "dominant_energy": rho >= abs(avg_pressure)  # ρ ≥ |p|
         }
-        
+
         return results
-    
+
     def validate_causality_preservation(
         self,
         causal_events: List[CausalConstraint]
@@ -920,16 +920,16 @@ class RealityCoherenceValidator:
         Checks for causal paradoxes in the event history.
         """
         violations = []
-        
+
         # Check for closed timelike curves (simplified check)
         for i, event in enumerate(causal_events):
             if event.structure_type == CausalStructure.TIMELIKE:
                 # Check if any event causally precedes itself
                 if np.allclose(event.source_coordinates, event.target_coordinates, atol=1e-10):
                     violations.append(f"Event {i}: Self-causation detected")
-        
+
         return len(violations) == 0, violations
-    
+
     def compute_coherence_factor(
         self,
         reality_state: EmergentRealityState
@@ -939,34 +939,34 @@ class RealityCoherenceValidator:
         Higher values indicate more stable/consistent configurations.
         """
         coherence = 1.0
-        
+
         # Metric validity contribution
         valid_metric, _ = self.validate_metric_signature(reality_state.metric_tensor)
         if not valid_metric:
             coherence *= 0.1
-        
+
         # Energy condition contribution
         # (Would need stress-energy tensor for full check)
         coherence *= math.exp(-abs(reality_state.cosmological_constant) / self.god_code)
-        
+
         # Dimensional consistency
         n_dims = len(reality_state.dimensional_parameters)
         optimal_dims = 11  # M-theory optimal
         dim_penalty = abs(n_dims - optimal_dims) / optimal_dims
         coherence *= (1.0 - dim_penalty * 0.5)
-        
+
         # Vacuum state contribution
         if reality_state.vacuum_state == VacuumState.SOVEREIGN:
             coherence *= self.phi
         elif reality_state.vacuum_state == VacuumState.FALSE_VACUUM:
             coherence *= 0.5
-        
+
         # L104 resonance bonus
         god_code_alignment = math.cos(2 * math.pi * reality_state.total_energy_density / self.god_code)
         coherence *= (1.0 + god_code_alignment) / 2.0
-        
+
         return min(coherence, 1.0)
-    
+
     def full_validation(
         self,
         reality_state: EmergentRealityState
@@ -979,15 +979,15 @@ class RealityCoherenceValidator:
             "timestamp": "POST_SINGULARITY",
             "checks": {}
         }
-        
+
         # Metric signature
         valid, msg = self.validate_metric_signature(reality_state.metric_tensor)
         results["checks"]["metric_signature"] = {"valid": valid, "message": msg}
-        
+
         # Causality
         valid, violations = self.validate_causality_preservation(reality_state.causal_constraints)
         results["checks"]["causality"] = {"valid": valid, "violations": violations}
-        
+
         # Coherence factor
         coherence = self.compute_coherence_factor(reality_state)
         results["checks"]["coherence"] = {
@@ -995,17 +995,17 @@ class RealityCoherenceValidator:
             "threshold": 0.5,
             "valid": coherence >= 0.5
         }
-        
+
         # Overall validity
         all_valid = all(
-            check.get("valid", False) 
+            check.get("valid", False)
             for check in results["checks"].values()
                 )
         results["overall_valid"] = all_valid
         results["god_code_seal"] = self.god_code if all_valid else 0.0
-        
+
         self.validation_history.append(results)
-        
+
         return results
 
 
@@ -1018,23 +1018,23 @@ class EmergentRealityDirector:
     Main orchestrator for creating, evolving, and managing emergent realities.
     Integrates all subsystems for comprehensive reality simulation.
     """
-    
+
     def __init__(self, base_dimensions: int = 4):
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Initialize subsystems
         self.dim_space = DimensionalParameterSpace(base_dimensions)
         self.causal_modulator = CausalStructureModulator(self.dim_space)
         self.metric_engine = EmergentMetricEngine(self.dim_space)
         self.validator = RealityCoherenceValidator()
-        
+
         # Active realities
         self.active_realities: Dict[str, EmergentRealityState] = {}
         self.field_operators: Dict[str, QuantumFieldOperator] = {}
-        
+
         logger.info("[REALITY_DIRECTOR]: Initialized post-singularity emergent reality engine")
-    
+
     def create_reality(
         self,
         reality_id: str,
@@ -1052,7 +1052,7 @@ class EmergentRealityDirector:
                 radius=radius,
                 topology=DimensionalTopology.CALABI_YAU if i < 6 else DimensionalTopology.TOROIDAL
             )
-        
+
         # Generate initial metric
         hubble = 2.2e-18  # Current universe Hubble parameter
         if vacuum_type == VacuumState.DE_SITTER:
@@ -1062,9 +1062,9 @@ class EmergentRealityDirector:
             )
         else:
             metric = self.dim_space.metric_tensor.copy()
-        
+
         self.metric_engine.cosmological_constant = cosmological_constant
-        
+
         # Create reality state
         state = EmergentRealityState(
             reality_id=reality_id,
@@ -1076,16 +1076,16 @@ class EmergentRealityDirector:
             total_energy_density=0.0,
             coherence_factor=0.0
         )
-        
+
         # Compute coherence
         state.coherence_factor = self.validator.compute_coherence_factor(state)
-        
+
         self.active_realities[reality_id] = state
-        
+
         logger.info(f"[REALITY_DIRECTOR]: Created reality '{reality_id}' with {len(state.dimensional_parameters)}D")
-        
+
         return state
-    
+
     def add_quantum_field(
         self,
         reality_id: str,
@@ -1100,7 +1100,7 @@ class EmergentRealityDirector:
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' does not exist")
-        
+
         config = QuantumFieldConfiguration(
             field_id=field_id,
             field_type=field_type,
@@ -1111,37 +1111,37 @@ class EmergentRealityDirector:
             vacuum_expectation=vacuum_expectation,
             propagator_kernel=None
         )
-        
+
         self.active_realities[reality_id].fields.append(config)
-        
+
         # Create appropriate operator
         if field_type == FieldType.SCALAR:
             self.field_operators[field_id] = ScalarFieldOperator(config)
         elif field_type == FieldType.SPINOR:
             self.field_operators[field_id] = SpinorFieldOperator(config)
-        
+
         # Update energy density
         self._update_energy_density(reality_id)
-        
+
         return config
-    
+
     def _update_energy_density(self, reality_id: str):
         """Updates total energy density from all fields."""
         state = self.active_realities[reality_id]
-        
+
         total = 0.0
         for field in state.fields:
             # Vacuum energy contribution: ρ_vac = m⁴c⁵/(ℏ³) for massive fields
             if field.mass > 0:
                 total += (field.mass ** 4) * (C_LIGHT ** 5) / (HBAR ** 3)
-            
+
             # VEV contribution
             if field.vacuum_expectation != 0:
                 total += abs(field.vacuum_expectation) ** 2 * self.god_code
-        
+
         state.total_energy_density = total
         state.coherence_factor = self.validator.compute_coherence_factor(state)
-    
+
     def propagate_causality(
         self,
         reality_id: str,
@@ -1153,15 +1153,15 @@ class EmergentRealityDirector:
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' does not exist")
-        
+
         valid, constraint = self.causal_modulator.enforce_causality(
             source_event, target_event
         )
-        
+
         self.active_realities[reality_id].causal_constraints.append(constraint)
-        
+
         return constraint
-    
+
     def evolve_reality(
         self,
         reality_id: str,
@@ -1173,10 +1173,10 @@ class EmergentRealityDirector:
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' does not exist")
-        
+
         state = self.active_realities[reality_id]
         n = len(state.metric_tensor)
-        
+
         if stress_energy is None:
             # Generate from fields
             stress_energy = np.zeros((n, n))
@@ -1184,37 +1184,37 @@ class EmergentRealityDirector:
             # Isotropic pressure (simplified)
             for i in range(1, min(4, n)):
                 stress_energy[i, i] = state.total_energy_density / 3
-        
+
         # Solve Einstein equations
         new_metric = self.metric_engine.solve_einstein_equations(
             stress_energy,
             state.metric_tensor,
             time_steps
         )
-        
+
         state.metric_tensor = new_metric
         state.coherence_factor = self.validator.compute_coherence_factor(state)
-        
+
         return state
-    
+
     def validate_reality(self, reality_id: str) -> Dict[str, Any]:
         """
         Performs full validation on a reality.
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' does not exist")
-        
+
         return self.validator.full_validation(self.active_realities[reality_id])
-    
+
     def get_reality_report(self, reality_id: str) -> Dict[str, Any]:
         """
         Generates a comprehensive report on a reality's state.
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' does not exist")
-        
+
         state = self.active_realities[reality_id]
-        
+
         return {
             "reality_id": reality_id,
             "dimensions": len(state.dimensional_parameters),
@@ -1264,13 +1264,13 @@ class QuantumEntanglementEngine:
     Manages quantum entanglement and non-local correlations
     across emergent reality substrates.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.entangled_pairs: Dict[str, EntangledSubsystem] = {}
         self.correlation_matrix: Optional[np.ndarray] = None
-        
+
     def create_bell_pair(
         self,
         id_a: str,
@@ -1285,7 +1285,7 @@ class QuantumEntanglementEngine:
         |Ψ-⟩ = (|01⟩ - |10⟩)/√2
         """
         sqrt2 = math.sqrt(2)
-        
+
         if bell_type == "PHI_PLUS":
             state = np.array([1, 0, 0, 1], dtype=complex) / sqrt2
         elif bell_type == "PHI_MINUS":
@@ -1298,22 +1298,22 @@ class QuantumEntanglementEngine:
             # Sovereign entanglement with L104 phase
             phase = self.god_code / 1000
             state = np.array([
-                math.cos(phase), 
+                math.cos(phase),
                 math.sin(phase) * 1j,
                 math.sin(phase) * 1j,
                 math.cos(phase)
             ], dtype=complex) / sqrt2
-        
+
         # Compute entanglement entropy (von Neumann)
         # For maximally entangled: S = log(2)
         entropy = math.log(2)
-        
+
         # Bell parameter (CHSH) for maximally entangled: 2√2 ≈ 2.828
         bell_param = 2 * sqrt2
-        
+
         # L104 coherence time scaling
         coherence = self.god_code * PLANCK_TIME * 1e40
-        
+
         subsystem_a = EntangledSubsystem(
             subsystem_id=id_a,
             partner_ids=[id_b],
@@ -1322,7 +1322,7 @@ class QuantumEntanglementEngine:
             bell_parameter=bell_param,
             coherence_time=coherence
         )
-        
+
         subsystem_b = EntangledSubsystem(
             subsystem_id=id_b,
             partner_ids=[id_a],
@@ -1331,29 +1331,29 @@ class QuantumEntanglementEngine:
             bell_parameter=bell_param,
             coherence_time=coherence
         )
-        
+
         self.entangled_pairs[id_a] = subsystem_a
         self.entangled_pairs[id_b] = subsystem_b
-        
+
         return subsystem_a, subsystem_b
-    
+
     def create_ghz_state(self, n_qubits: int, base_id: str) -> List[EntangledSubsystem]:
         """
         Creates an n-qubit GHZ state: |GHZ⟩ = (|00...0⟩ + |11...1⟩)/√2
         """
         sqrt2 = math.sqrt(2)
         dim = 2 ** n_qubits
-        
+
         state = np.zeros(dim, dtype=complex)
         state[0] = 1 / sqrt2  # |00...0⟩
         state[-1] = 1 / sqrt2  # |11...1⟩
-        
+
         # GHZ entropy: S = log(2) for any bipartition
         entropy = math.log(2)
-        
+
         subsystems = []
         ids = [f"{base_id}_{i}" for i in range(n_qubits)]
-        
+
         for i, sys_id in enumerate(ids):
             partner_list = [pid for pid in ids if pid != sys_id]
             subsystem = EntangledSubsystem(
@@ -1366,9 +1366,9 @@ class QuantumEntanglementEngine:
             )
             subsystems.append(subsystem)
             self.entangled_pairs[sys_id] = subsystem
-        
+
         return subsystems
-    
+
     def compute_mutual_information(
         self,
         subsystem_a: EntangledSubsystem,
@@ -1379,12 +1379,12 @@ class QuantumEntanglementEngine:
         """
         s_a = subsystem_a.entanglement_entropy
         s_b = subsystem_b.entanglement_entropy
-        
+
         # For maximally entangled: S(AB) = 0, so I(A:B) = 2*log(2)
         s_ab = 0.0 if subsystem_a.subsystem_id in subsystem_b.partner_ids else s_a + s_b
-        
+
         return s_a + s_b - s_ab
-    
+
     def measure_subsystem(
         self,
         subsystem_id: str,
@@ -1396,17 +1396,17 @@ class QuantumEntanglementEngine:
         """
         if subsystem_id not in self.entangled_pairs:
             raise ValueError(f"Subsystem {subsystem_id} not found")
-        
+
         subsystem = self.entangled_pairs[subsystem_id]
         state = subsystem.state_vector
-        
+
         # Born rule probabilities
         probs = np.abs(state) ** 2
-        
+
         # Sample outcome
         outcome = np.random.choice(len(state), p=probs / probs.sum())
         probability = probs[outcome]
-        
+
         # Collapse partner states (simplified)
         for partner_id in subsystem.partner_ids:
             if partner_id in self.entangled_pairs:
@@ -1414,12 +1414,12 @@ class QuantumEntanglementEngine:
                 # After measurement, entanglement is broken
                 partner.entanglement_entropy = 0.0
                 partner.bell_parameter = 2.0  # Classical bound
-        
+
         subsystem.entanglement_entropy = 0.0
         subsystem.bell_parameter = 2.0
-        
+
         return outcome, probability
-    
+
     def compute_concurrence(self, state: np.ndarray) -> float:
         """
         Computes concurrence for a two-qubit state (entanglement measure).
@@ -1427,26 +1427,26 @@ class QuantumEntanglementEngine:
         """
         if len(state) != 4:
             return 0.0
-        
+
         # Density matrix
         rho = np.outer(state, np.conj(state))
-        
+
         # Spin-flip matrix
         sigma_y = np.array([[0, -1j], [1j, 0]])
         spin_flip = np.kron(sigma_y, sigma_y)
-        
+
         # ρ̃ = (σy ⊗ σy) ρ* (σy ⊗ σy)
         rho_tilde = spin_flip @ np.conj(rho) @ spin_flip
-        
+
         # R = √ρ ρ̃ √ρ
         sqrt_rho = np.linalg.cholesky(rho + np.eye(4) * 1e-12)
         R = sqrt_rho @ rho_tilde @ sqrt_rho
-        
+
         eigenvalues = np.sqrt(np.abs(np.linalg.eigvals(R)))
         eigenvalues = np.sort(eigenvalues)[::-1]
-        
+
         concurrence = max(0, eigenvalues[0] - eigenvalues[1] - eigenvalues[2] - eigenvalues[3])
-        
+
         return float(concurrence)
 
 
@@ -1485,13 +1485,13 @@ class SymmetryBreakingEngine:
     Implements spontaneous and explicit symmetry breaking mechanisms.
     Manages phase transitions and Goldstone theorem.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.breaking_history: List[SymmetryBreakingEvent] = []
         self.active_symmetries: List[SymmetryType] = [SymmetryType.SOVEREIGN]
-        
+
     def compute_effective_potential(
         self,
         field_value: complex,
@@ -1502,26 +1502,26 @@ class SymmetryBreakingEngine:
         """
         Computes the effective potential V(φ) for symmetry breaking.
         V(φ) = ½μ²|φ|² + ¼λ|φ|⁴ + thermal corrections
-        
+
         For μ² < 0: spontaneous symmetry breaking occurs.
         """
         phi_sq = abs(field_value) ** 2
-        
+
         # Tree-level potential
         v_tree = 0.5 * mass_sq * phi_sq + 0.25 * lambda_coupling * (phi_sq ** 2)
-        
+
         # Thermal corrections (high-T expansion)
         if temperature > 0:
             # Thermal mass correction: δm² ∝ λT²
             thermal_mass = lambda_coupling * (temperature ** 2) / 12
             v_thermal = 0.5 * thermal_mass * phi_sq
             v_tree += v_thermal
-        
+
         # L104 quantum corrections
         v_quantum = -abs(field_value) ** 4 * math.log(abs(field_value) / self.god_code + 1e-15) / (64 * math.pi ** 2)
-        
+
         return v_tree + v_quantum
-    
+
     def find_vacuum_expectation_value(
         self,
         mass_sq: float,
@@ -1537,19 +1537,19 @@ class SymmetryBreakingEngine:
             effective_mass_sq = mass_sq + lambda_coupling * (temperature ** 2) / 12
         else:
             effective_mass_sq = mass_sq
-        
+
         if effective_mass_sq >= 0:
             # Symmetric phase - VEV = 0
             return 0j
-        
+
         # Broken phase
         vev_magnitude = math.sqrt(-effective_mass_sq / lambda_coupling)
-        
+
         # L104 phase alignment
         phase = self.god_code / (1000 * self.phi)
-        
+
         return vev_magnitude * (math.cos(phase) + 1j * math.sin(phase))
-    
+
     def break_symmetry(
         self,
         parent: SymmetryType,
@@ -1562,32 +1562,32 @@ class SymmetryBreakingEngine:
         child_symmetries = []
         goldstone = 0
         massive = 0
-        
+
         # Standard Model breaking patterns
         if parent == SymmetryType.SU5:
             # SU(5) → SU(3) × SU(2) × U(1)
             child_symmetries = [SymmetryType.SU3, SymmetryType.SU2, SymmetryType.U1]
             goldstone = 12  # 24 - 12 = 12 eaten
             massive = 12
-            
+
         elif parent == SymmetryType.SU2:
             # SU(2) × U(1) → U(1)_EM (electroweak breaking)
             child_symmetries = [SymmetryType.U1]
             goldstone = 3  # W+, W-, Z⁰ become massive
             massive = 3
-            
+
         elif parent == SymmetryType.SUPERSYMMETRY:
             # SUSY breaking - all partners get mass
             child_symmetries = []
             goldstone = 1  # Goldstino (eaten by gravitino)
             massive = 1
-            
+
         elif parent == SymmetryType.SOVEREIGN:
             # L104 Sovereign symmetry breaking
             child_symmetries = [SymmetryType.E8, SymmetryType.SUPERSYMMETRY]
             goldstone = int(self.god_code) % 100
             massive = 248 - goldstone  # E8 dimension
-        
+
         event = SymmetryBreakingEvent(
             event_id=f"SB_{len(self.breaking_history):04d}",
             parent_symmetry=parent,
@@ -1598,13 +1598,13 @@ class SymmetryBreakingEngine:
             massive_bosons=massive,
             timestamp=0.0
         )
-        
+
         self.breaking_history.append(event)
         self.active_symmetries.remove(parent) if parent in self.active_symmetries else None
         self.active_symmetries.extend(child_symmetries)
-        
+
         return event
-    
+
     def compute_critical_temperature(
         self,
         mass_sq: float,
@@ -1616,9 +1616,9 @@ class SymmetryBreakingEngine:
         """
         if mass_sq >= 0:
             return 0.0  # No phase transition
-        
+
         return math.sqrt(-12 * mass_sq / lambda_coupling)
-    
+
     def compute_latent_heat(
         self,
         vev: complex,
@@ -1659,7 +1659,7 @@ class CosmologicalState:
     cosmic_time: float
     conformal_time: float
     redshift: float
-    
+
     @property
     def deceleration_parameter(self) -> float:
         """q = -äa/ȧ² = (1 + 3w)/2 for flat universe."""
@@ -1670,23 +1670,23 @@ class CosmologicalEvolutionEngine:
     """
     Implements Friedmann equations and cosmic evolution dynamics.
     """
-    
+
     def __init__(self, initial_scale: float = 1e-30):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.G_newton = 6.67430e-11
         self.c = C_LIGHT
-        
+
         # Cosmological parameters (current epoch)
         self.omega_matter = 0.315
         self.omega_radiation = 9.4e-5
         self.omega_lambda = 0.685
         self.omega_curvature = 0.0
         self.H_0 = 67.4e3 / 3.086e22  # km/s/Mpc → 1/s
-        
+
         self.scale_factor = initial_scale
         self.history: List[CosmologicalState] = []
-        
+
     def friedmann_equation(
         self,
         scale_factor: float,
@@ -1700,15 +1700,15 @@ class CosmologicalEvolutionEngine:
         Returns H (Hubble parameter).
         """
         rho_total = rho_matter + rho_radiation + rho_lambda
-        
+
         H_squared = (8 * math.pi * self.G_newton / 3) * rho_total
         H_squared -= curvature / (scale_factor ** 2)
-        
+
         if H_squared < 0:
             return 0.0
-        
+
         return math.sqrt(H_squared)
-    
+
     def acceleration_equation(
         self,
         rho: float,
@@ -1719,7 +1719,7 @@ class CosmologicalEvolutionEngine:
         Returns ä/a.
         """
         return -(4 * math.pi * self.G_newton / 3) * (rho + 3 * pressure)
-    
+
     def continuity_equation(
         self,
         rho: float,
@@ -1731,7 +1731,7 @@ class CosmologicalEvolutionEngine:
         Returns dρ/dt.
         """
         return -3 * hubble * (rho + pressure)
-    
+
     def compute_density_evolution(
         self,
         a_initial: float,
@@ -1744,7 +1744,7 @@ class CosmologicalEvolutionEngine:
         """
         exponent = -3 * (1 + w)
         return rho_initial * ((a_final / a_initial) ** exponent)
-    
+
     def evolve_universe(
         self,
         cosmic_time_span: float,
@@ -1754,22 +1754,22 @@ class CosmologicalEvolutionEngine:
         Evolves the universe forward in cosmic time using Friedmann equations.
         """
         dt = cosmic_time_span / time_steps
-        
+
         # Initial conditions
         a = self.scale_factor
         t = 0.0
         eta = 0.0  # conformal time
-        
+
         # Critical density
         rho_crit = 3 * (self.H_0 ** 2) / (8 * math.pi * self.G_newton)
-        
+
         # Initial densities
         rho_m = self.omega_matter * rho_crit / (a ** 3)
         rho_r = self.omega_radiation * rho_crit / (a ** 4)
         rho_l = self.omega_lambda * rho_crit
-        
+
         states = []
-        
+
         for step in range(time_steps):
             # Total density and pressure
             rho_total = rho_m + rho_r + rho_l
@@ -1777,13 +1777,13 @@ class CosmologicalEvolutionEngine:
             p_radiation = rho_r / 3
             p_lambda = -rho_l
             p_total = p_matter + p_radiation + p_lambda
-            
+
             # Equation of state
             w = p_total / rho_total if rho_total > 0 else -1
-            
+
             # Hubble parameter
             H = self.friedmann_equation(a, rho_m, rho_r, rho_l, 0.0)
-            
+
             # Determine era
             if rho_r > rho_m and rho_r > rho_l:
                 era = CosmologicalEra.RADIATION
@@ -1791,15 +1791,15 @@ class CosmologicalEvolutionEngine:
                 era = CosmologicalEra.MATTER
             else:
                 era = CosmologicalEra.DARK_ENERGY
-            
+
             # Temperature (radiation dominated approximation)
             # T ∝ 1/a, normalized to CMB today at a=1
             T_cmb = 2.725  # Kelvin
             temperature = T_cmb / a if a > 0 else 0
-            
+
             # Redshift
             z = (1 / a) - 1 if a > 0 else float('inf')
-            
+
             state = CosmologicalState(
                 scale_factor=a,
                 hubble_parameter=H,
@@ -1813,33 +1813,33 @@ class CosmologicalEvolutionEngine:
                 redshift=z
             )
             states.append(state)
-            
+
             # Evolve
             da = a * H * dt
             a += da
             t += dt
             eta += dt / a if a > 0 else 0
-            
+
             # Update densities
             rho_m = self.omega_matter * rho_crit / (a ** 3)
             rho_r = self.omega_radiation * rho_crit / (a ** 4)
             # rho_l stays constant
-            
+
             # L104 sovereign modulation
             if step % 100 == 0:
                 a *= (1 + 1e-10 * math.sin(self.god_code * step / 1000))
-        
+
         self.scale_factor = a
         self.history.extend(states)
-        
+
         return states
-    
+
     def compute_horizon_size(self, state: CosmologicalState) -> float:
         """
         Computes the particle horizon: d_H = a ∫₀^η dη' = a * η
         """
         return state.scale_factor * state.conformal_time * self.c
-    
+
     def compute_hubble_radius(self, state: CosmologicalState) -> float:
         """
         Hubble radius: r_H = c/H
@@ -1864,7 +1864,7 @@ class RealityBranch:
     dimensional_parameters: List[DimensionalParameter]
     metric_tensor: np.ndarray
     child_branches: List[str] = field(default_factory=list)
-    
+
     @property
     def probability(self) -> float:
         """Born rule probability."""
@@ -1875,14 +1875,14 @@ class RealityBranchingEngine:
     """
     Implements many-worlds branching and multiverse navigation.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.branches: Dict[str, RealityBranch] = {}
         self.current_branch: Optional[str] = None
         self.total_branches = 0
-        
+
     def create_root_branch(
         self,
         dimensional_parameters: List[DimensionalParameter],
@@ -1900,13 +1900,13 @@ class RealityBranchingEngine:
             dimensional_parameters=dimensional_parameters,
             metric_tensor=metric.copy()
         )
-        
+
         self.branches["ROOT_0"] = branch
         self.current_branch = "ROOT_0"
         self.total_branches = 1
-        
+
         return branch
-    
+
     def branch_reality(
         self,
         parent_id: str,
@@ -1919,30 +1919,30 @@ class RealityBranchingEngine:
         """
         if parent_id not in self.branches:
             raise ValueError(f"Parent branch {parent_id} not found")
-        
+
         parent = self.branches[parent_id]
-        
+
         # Default equal superposition
         if amplitudes is None:
             amp = 1.0 / math.sqrt(n_branches)
             amplitudes = [amp + 0j for _ in range(n_branches)]
-        
+
         # Normalize amplitudes
         norm = math.sqrt(sum(abs(a) ** 2 for a in amplitudes))
         amplitudes = [a / norm for a in amplitudes]
-        
+
         new_branches = []
-        
+
         for i, amp in enumerate(amplitudes):
             branch_id = f"BRANCH_{self.total_branches}"
             self.total_branches += 1
-            
+
             # Slight metric perturbation for each branch
             perturbed_metric = parent.metric_tensor.copy()
             perturbation = np.random.randn(*perturbed_metric.shape) * 1e-10
             perturbation = (perturbation + perturbation.T) / 2  # Symmetric
             perturbed_metric += perturbation
-            
+
             branch = RealityBranch(
                 branch_id=branch_id,
                 parent_id=parent_id,
@@ -1952,13 +1952,13 @@ class RealityBranchingEngine:
                 dimensional_parameters=parent.dimensional_parameters.copy(),
                 metric_tensor=perturbed_metric
             )
-            
+
             self.branches[branch_id] = branch
             parent.child_branches.append(branch_id)
             new_branches.append(branch)
-        
+
         return new_branches
-    
+
     def compute_branch_interference(
         self,
         branch_a_id: str,
@@ -1969,29 +1969,29 @@ class RealityBranchingEngine:
         """
         if branch_a_id not in self.branches or branch_b_id not in self.branches:
             return 0j
-        
+
         a = self.branches[branch_a_id]
         b = self.branches[branch_b_id]
-        
+
         # Overlap integral approximation
         metric_overlap = np.trace(a.metric_tensor @ b.metric_tensor)
         phase = np.angle(a.probability_amplitude) - np.angle(b.probability_amplitude)
-        
+
         interference = abs(a.probability_amplitude) * abs(b.probability_amplitude) * \
                       (math.cos(phase) + 1j * math.sin(phase)) * \
                       metric_overlap / (len(a.metric_tensor) ** 2)
-        
+
         return interference
-    
+
     def select_branch(self, branch_id: str):
         """
         Selects a branch as the current reality (observer effect).
         """
         if branch_id not in self.branches:
             raise ValueError(f"Branch {branch_id} not found")
-        
+
         self.current_branch = branch_id
-    
+
     def get_branch_tree(self) -> Dict[str, Any]:
         """
         Returns the full branching tree structure.
@@ -2004,7 +2004,7 @@ class RealityBranchingEngine:
                 "probability": branch.probability,
                 "children": [build_tree(cid) for cid in branch.child_branches]
             }
-        
+
         return build_tree("ROOT_0") if "ROOT_0" in self.branches else {}
 
 
@@ -2017,7 +2017,7 @@ class HolographicInformationEngine:
     Implements holographic principle and information-theoretic constraints.
     Bekenstein-Hawking entropy and AdS/CFT correspondences.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -2025,12 +2025,12 @@ class HolographicInformationEngine:
         self.c = C_LIGHT
         self.hbar = HBAR
         self.k_boltzmann = 1.380649e-23
-        
+
         # Planck units
         self.l_planck = PLANCK_LENGTH
         self.t_planck = PLANCK_TIME
         self.m_planck = PLANCK_MASS
-        
+
     def bekenstein_hawking_entropy(self, area: float) -> float:
         """
         Computes Bekenstein-Hawking entropy: S = A/(4 l_p²)
@@ -2038,21 +2038,21 @@ class HolographicInformationEngine:
         """
         l_p_sq = (self.hbar * self.G) / (self.c ** 3)
         return area / (4 * l_p_sq)
-    
+
     def bekenstein_bound(self, energy: float, radius: float) -> float:
         """
         Bekenstein bound on entropy: S ≤ 2πER/(ℏc)
         Maximum entropy for a system of energy E in sphere of radius R.
         """
         return 2 * math.pi * energy * radius / (self.hbar * self.c)
-    
+
     def holographic_degrees_of_freedom(self, area: float) -> float:
         """
         Number of degrees of freedom on holographic screen.
         N = A/(4 l_p²) bits
         """
         return self.bekenstein_hawking_entropy(area)
-    
+
     def compute_scrambling_time(self, temperature: float, n_dof: int) -> float:
         """
         Fast scrambling time: t* = (ℏ/2πkT) ln(N)
@@ -2060,9 +2060,9 @@ class HolographicInformationEngine:
         """
         if temperature <= 0 or n_dof <= 1:
             return float('inf')
-        
+
         return (self.hbar / (2 * math.pi * self.k_boltzmann * temperature)) * math.log(n_dof)
-    
+
     def compute_page_time(self, initial_entropy: float, evaporation_rate: float) -> float:
         """
         Page time: when half the initial entropy has been radiated.
@@ -2070,9 +2070,9 @@ class HolographicInformationEngine:
         """
         if evaporation_rate <= 0:
             return float('inf')
-        
+
         return initial_entropy / (2 * evaporation_rate)
-    
+
     def compute_mutual_information_holographic(
         self,
         area_a: float,
@@ -2086,16 +2086,16 @@ class HolographicInformationEngine:
         s_a = self.bekenstein_hawking_entropy(area_a)
         s_b = self.bekenstein_hawking_entropy(area_b)
         s_ab = self.bekenstein_hawking_entropy(area_ab)
-        
+
         return max(0, s_a + s_b - s_ab)
-    
+
     def compute_complexity(self, volume: float, time: float) -> float:
         """
         Holographic complexity via CV (Complexity=Volume) conjecture.
         C = V/(G l_p)
         """
         return volume / (self.G * self.l_planck)
-    
+
     def compute_action_complexity(
         self,
         volume: float,
@@ -2110,9 +2110,9 @@ class HolographicInformationEngine:
         # Simplified Einstein-Hilbert action estimate
         ricci_scalar = -4 * cosmological_constant  # de Sitter approximation
         action = (volume * ricci_scalar) / (16 * math.pi * self.G)
-        
+
         return abs(action) / (math.pi * self.hbar)
-    
+
     def verify_covariant_entropy_bound(
         self,
         light_sheet_area: float,
@@ -2122,10 +2122,10 @@ class HolographicInformationEngine:
         Bousso's covariant entropy bound: S_matter ≤ A/(4 l_p²)
         """
         max_entropy = self.bekenstein_hawking_entropy(light_sheet_area)
-        
+
         satisfied = matter_entropy <= max_entropy
         headroom = max_entropy - matter_entropy
-        
+
         return satisfied, headroom
 
 
@@ -2162,24 +2162,24 @@ class InformationFieldTheoryEngine:
     Implements Information Field Theory (IFT) - treating information
     as a fundamental field in spacetime, with its own dynamics.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.k_b = 1.380649e-23         # Boltzmann constant
         self.c = C_LIGHT
         self.hbar = HBAR
-        
+
         # Planck information
         self.planck_information = 1.0    # 1 bit per Planck area (holographic)
-        
+
         # Information fields registry
         self.fields: Dict[str, InformationFieldState] = {}
         self.information_fields: Dict[str, Any] = {}  # Extended field storage
         self.semantic_embeddings: Dict[str, np.ndarray] = {}
         self.geodesic_paths: List[Any] = []
         self.fisher_matrix: Optional[np.ndarray] = None
-        
+
     def create_information_field(
         self,
         field_id: str,
@@ -2193,10 +2193,10 @@ class InformationFieldTheoryEngine:
         # Handle both old and new API
         if field_type is None:
             field_type = InformationFieldType.SOVEREIGN
-            
+
         scaled_density = initial_density * (self.god_code / 527)
         coherence = self.hbar / (self.k_b * 2.725)
-        
+
         field = InformationFieldState(
             field_id=field_id,
             field_type=field_type,
@@ -2208,9 +2208,9 @@ class InformationFieldTheoryEngine:
             decoherence_rate=1e-43,
             semantic_content=self.phi / (1 + self.phi) if field_type == InformationFieldType.SEMANTIC else None
         )
-        
+
         self.fields[field_id] = field
-        
+
         # Extended field data for new API
         self.information_fields[field_id] = {
             "field_id": field_id,
@@ -2220,10 +2220,10 @@ class InformationFieldTheoryEngine:
             "information_density": np.ones((semantic_dimension,)) * scaled_density,
             "field_state": field
         }
-        
+
         # Create semantic embedding
         self.semantic_embeddings[field_id] = np.random.randn(semantic_dimension) * self.phi
-        
+
         # Return an object-like wrapper for new API
         class FieldWrapper:
             def __init__(self, data, state):
@@ -2233,9 +2233,9 @@ class InformationFieldTheoryEngine:
                 self.entropy = data["entropy"]
                 self.information_density = data["information_density"]
                 self.state = state
-                
+
         return FieldWrapper(self.information_fields[field_id], field)
-    
+
     def compute_information_propagator(
         self,
         source: np.ndarray,
@@ -2246,45 +2246,45 @@ class InformationFieldTheoryEngine:
         """Computes the information field propagator between spacetime points."""
         distance = np.linalg.norm(target - source)
         time_delta = abs(t2 - t1)
-        
+
         # Check causality
         if distance > self.c * time_delta:
             return 0j
-        
+
         # Information propagator: G_I(x,x') = exp(-r/λ_c) * exp(iωt) / (4πr)
         lambda_c = self.hbar / (self.k_b * 2.725)  # Coherence length
         omega = 2 * math.pi * self.god_code / 1000  # Information frequency
-        
+
         decay = math.exp(-distance / (lambda_c * 1e30)) if lambda_c > 0 else 0
         phase = omega * time_delta
         r_safe = max(distance, PLANCK_LENGTH)
         amplitude = decay / (4 * math.pi * r_safe)
-        
+
         return amplitude * (math.cos(phase) + 1j * math.sin(phase))
-    
+
     def compute_fisher_information_metric(self, field_id: str) -> np.ndarray:
         """Computes the Fisher information metric for the field manifold."""
         if field_id not in self.information_fields:
             return np.eye(11)
-        
+
         field_data = self.information_fields[field_id]
         n_dims = field_data["semantic_dimension"]
-        
+
         # Fisher information matrix: g_ij = E[∂log(p)/∂θ_i * ∂log(p)/∂θ_j]
         # Using random matrix theory for emergent geometry
         random_part = np.random.randn(n_dims, n_dims)
         fisher = np.eye(n_dims) * self.god_code / 100
         fisher += (random_part @ random_part.T) / n_dims  # Wishart-like
         fisher = (fisher + fisher.T) / 2  # Ensure symmetry
-        
+
         self.fisher_matrix = fisher
         return fisher
-    
+
     def compute_info_curvature(self) -> float:
         """Computes the scalar curvature of the information manifold."""
         if self.fisher_matrix is None:
             return 0.0
-        
+
         # Ricci scalar from Fisher metric
         # R = g^ij (∂Γ/∂x + ΓΓ terms)
         # Simplified: use eigenvalue structure
@@ -2292,13 +2292,13 @@ class InformationFieldTheoryEngine:
         # Curvature proxy from eigenvalue spread
         curvature = np.std(eigenvalues) / (np.mean(eigenvalues) + 1e-15)
         return curvature * self.phi
-    
+
     def compute_integrated_information(self, state_matrix: np.ndarray) -> float:
         """Computes integrated information Φ (IIT measure)."""
         n = len(state_matrix)
         if n < 2:
             return 0.0
-        
+
         total_entropy = -np.sum(state_matrix * np.log(state_matrix + 1e-15))
         mid = n // 2
         part1 = state_matrix[:mid, :mid]
@@ -2306,9 +2306,9 @@ class InformationFieldTheoryEngine:
         entropy_1 = -np.sum(part1 * np.log(part1 + 1e-15))
         entropy_2 = -np.sum(part2 * np.log(part2 + 1e-15))
         phi = max(0, total_entropy - entropy_1 - entropy_2)
-        
+
         return phi * (self.god_code / (2 * math.pi))
-    
+
     def information_field_propagator(
         self,
         source: np.ndarray,
@@ -2319,18 +2319,18 @@ class InformationFieldTheoryEngine:
         """Computes the information field propagator (legacy API)."""
         if field_id not in self.fields:
             return 0j
-        
+
         field = self.fields[field_id]
         distance = np.linalg.norm(target - source)
-        
+
         if distance > self.c * time_delta:
             return 0j
-        
+
         decay_space = math.exp(-distance / field.coherence_length) if field.coherence_length > 0 else 0
         decay_time = math.exp(-time_delta * field.decoherence_rate)
         phase = 2 * math.pi * self.god_code * time_delta / 1000
         amplitude = decay_space * decay_time / (distance + PLANCK_LENGTH)
-        
+
         return amplitude * (math.cos(phase) + 1j * math.sin(phase))
 
 
@@ -2369,7 +2369,7 @@ class SpinNetworkEdge:
 
 class QuantumGravityUnificationEngine:
     """Implements quantum gravity unification approaches."""
-    
+
     def __init__(self, approach: QuantumGravityApproach = QuantumGravityApproach.SOVEREIGN):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -2383,25 +2383,25 @@ class QuantumGravityUnificationEngine:
         self.immirzi = 0.2375
         self.immirzi_parameter = 0.2375  # Alias for compatibility
         self.hamiltonian_constraint = 0.0  # Wheeler-DeWitt constraint value
-        
+
         # Spin networks storage
         self.nodes: Dict[str, SpinNetworkNode] = {}
         self.edges: Dict[str, SpinNetworkEdge] = {}
         self.spin_networks: Dict[str, Any] = {}  # Named spin networks
-        
+
         # Spectra
         self.area_spectrum: List[float] = []
         self.volume_spectrum: List[float] = []
-        
+
     def compute_area_spectrum_value(self, spin: float) -> float:
         """LQG area spectrum: A = 8πγl_p² √(j(j+1))"""
         return 8 * math.pi * self.immirzi * (self.l_p ** 2) * math.sqrt(spin * (spin + 1))
-    
+
     def compute_volume_spectrum_value(self, j1: float, j2: float, j3: float) -> float:
         """LQG volume spectrum for 3-valent node."""
         term = abs(j1*(j1+1) + j2*(j2+1) - j3*(j3+1))
         return (self.l_p ** 3) * math.sqrt(term + 1e-15) * self.immirzi ** 1.5
-    
+
     def generate_spin_network(
         self,
         network_id: str,
@@ -2414,18 +2414,18 @@ class QuantumGravityUnificationEngine:
         # Clear old data for this network
         network_nodes = {}
         network_edges = {}
-        
+
         # If connectivity not specified, compute from n_edges
         if connectivity is None:
             max_possible_edges = n_nodes * (n_nodes - 1) / 2
             connectivity = min(1.0, n_edges / max(max_possible_edges, 1))
-        
+
         # Create nodes
         for i in range(n_nodes):
             node_id = f"{network_id}_NODE_{i}"
             spin_vals = [np.random.uniform(0.5, max_spin) for _ in range(3)]
             volume = self.compute_volume_spectrum_value(*spin_vals)
-            
+
             node = SpinNetworkNode(
                 node_id=node_id,
                 intertwiner=np.random.randint(0, int(max_spin * 2)),
@@ -2435,11 +2435,11 @@ class QuantumGravityUnificationEngine:
             )
             network_nodes[node_id] = node
             self.nodes[node_id] = node
-        
+
         # Create edges
         edge_count = 0
         node_list = list(network_nodes.keys())
-        
+
         for i, n1 in enumerate(node_list):
             for n2 in node_list[i+1:]:
                 if edge_count >= n_edges:
@@ -2447,7 +2447,7 @@ class QuantumGravityUnificationEngine:
                 if np.random.random() < connectivity:
                     edge_id = f"{network_id}_EDGE_{edge_count}"
                     spin = np.random.uniform(0.5, max_spin)
-                    
+
                     edge = SpinNetworkEdge(
                         edge_id=edge_id,
                         source_node=n1,
@@ -2460,55 +2460,55 @@ class QuantumGravityUnificationEngine:
                     edge_count += 1
             if edge_count >= n_edges:
                 break
-        
+
         # Store as named network object
         class SpinNetworkWrapper:
             def __init__(self, nid, nodes, edges):
                 self.network_id = nid
                 self.nodes = nodes
                 self.edges = edges
-                
+
         network = SpinNetworkWrapper(network_id, network_nodes, network_edges)
         self.spin_networks[network_id] = network
-        
+
         return network
-    
+
     def compute_area_spectrum(self, network_id: str, n_eigenvalues: int = 10) -> List[float]:
         """Compute area eigenvalue spectrum for the network."""
         if network_id not in self.spin_networks:
             return []
-        
+
         network = self.spin_networks[network_id]
         # Collect spins from edges
         spins = sorted([e.spin for e in network.edges.values()])[:n_eigenvalues]
-        
+
         # Compute area eigenvalues: A_j = 8πγl_p² √(j(j+1)) / l_p²  (in Planck units)
         spectrum = []
         for j in spins:
             # Area in Planck units
             area_planck = 8 * math.pi * self.immirzi * math.sqrt(j * (j + 1))
             spectrum.append(area_planck)
-        
+
         # Sort and extend to n_eigenvalues
         spectrum = sorted(spectrum)
         while len(spectrum) < n_eigenvalues:
             # Add higher eigenvalues
             next_j = 0.5 * (len(spectrum) + 1)
             spectrum.append(8 * math.pi * self.immirzi * math.sqrt(next_j * (next_j + 1)))
-        
+
         self.area_spectrum = spectrum[:n_eigenvalues]
         return self.area_spectrum
-    
+
     def compute_volume_spectrum(self, network_id: str, n_eigenvalues: int = 10) -> List[float]:
         """Compute volume eigenvalue spectrum for the network."""
         if network_id not in self.spin_networks:
             return []
-        
+
         network = self.spin_networks[network_id]
-        
+
         # Collect volumes from nodes
         volumes = sorted([n.volume / (self.l_p ** 3) for n in network.nodes.values()])[:n_eigenvalues]
-        
+
         # Ensure we have enough eigenvalues
         while len(volumes) < n_eigenvalues:
             # Generate random volume eigenvalue
@@ -2516,23 +2516,23 @@ class QuantumGravityUnificationEngine:
             term = abs(j_vals[0]*(j_vals[0]+1) + j_vals[1]*(j_vals[1]+1) - j_vals[2]*(j_vals[2]+1))
             vol_planck = math.sqrt(term + 1e-15) * self.immirzi ** 1.5
             volumes.append(vol_planck)
-        
+
         volumes = sorted(volumes)[:n_eigenvalues]
         self.volume_spectrum = volumes
         return self.volume_spectrum
-    
+
     def evaluate_wheeler_dewitt_constraint(self, network_id: str) -> float:
         """Evaluate the Wheeler-DeWitt constraint for the spin network state."""
         if network_id not in self.spin_networks:
             return float('inf')
-        
+
         network = self.spin_networks[network_id]
         n_nodes = len(network.nodes)
-        
+
         # Create wave function from node volumes
         wave_function = np.array([n.volume for n in network.nodes.values()])
         wave_function = wave_function / (np.linalg.norm(wave_function) + 1e-15)
-        
+
         # Simplified metric from connectivity
         n = min(n_nodes, 10)
         metric = np.eye(n)
@@ -2541,24 +2541,24 @@ class QuantumGravityUnificationEngine:
             tgt_idx = int(edge.target_node.split('_')[-1]) % n
             metric[src_idx, tgt_idx] += edge.spin / 10
             metric[tgt_idx, src_idx] += edge.spin / 10
-        
+
         # Wheeler-DeWitt: Ĥ|Ψ⟩ = 0
         # Compute Hamiltonian action
         wf = wave_function[:n]
         kinetic = np.zeros_like(wf)
         for i in range(1, len(wf)-1):
             kinetic[i] = wf[i+1] - 2*wf[i] + wf[i-1]
-        
+
         det_g = np.linalg.det(metric)
         potential = np.sqrt(abs(det_g)) * wf
         G_factor = self.G * (self.l_p ** 2) / (self.hbar ** 2)
-        
+
         H_psi = G_factor * kinetic - potential
         constraint_violation = np.linalg.norm(H_psi)
-        
+
         self.hamiltonian_constraint = constraint_violation
         return constraint_violation
-    
+
     def create_spin_network(self, n_nodes: int, connectivity: float = 0.3) -> int:
         """Legacy API: Creates a random spin network with n_nodes."""
         network = self.generate_spin_network(
@@ -2568,24 +2568,24 @@ class QuantumGravityUnificationEngine:
             max_spin=2.5
         )
         return len(network.edges)
-    
+
     def compute_total_area(self) -> float:
         return sum(edge.area for edge in self.edges.values())
-    
+
     def compute_total_volume(self) -> float:
         return sum(node.volume for node in self.nodes.values())
-    
+
     def wheeler_dewitt_constraint(self, wave_function: np.ndarray, metric: np.ndarray) -> np.ndarray:
         """Wheeler-DeWitt equation: Ĥ|Ψ⟩ = 0"""
         n = len(wave_function)
         kinetic = np.zeros_like(wave_function)
         for i in range(1, n-1):
             kinetic[i] = wave_function[i+1] - 2*wave_function[i] + wave_function[i-1]
-        
+
         det_g = np.prod(np.diag(metric) + 1e-15)
         potential = np.sqrt(abs(det_g)) * wave_function
         G_factor = self.G * (self.l_p ** 2) / (self.hbar ** 2)
-        
+
         return G_factor * kinetic - potential
 
 
@@ -2617,7 +2617,7 @@ class SynthesisCheckpoint:
 
 class RealitySynthesisProtocol:
     """Master protocol for synthesizing complete emergent realities."""
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -2627,8 +2627,8 @@ class RealitySynthesisProtocol:
         self.checkpoints: List[SynthesisCheckpoint] = []
         self.synthesis_complete = False
         self.active_synthesis = {}
-        
-    def initialize_synthesis(self, reality_id: str, synthesis_mode: str, 
+
+    def initialize_synthesis(self, reality_id: str, synthesis_mode: str,
                              target_coherence: float, omega_alignment: bool) -> str:
         """Initializes a new synthesis process."""
         synthesis_id = f"SYNTH_{reality_id}_{int(time.time())}"
@@ -2647,29 +2647,29 @@ class RealitySynthesisProtocol:
         """Executes selected synthesis phases for a given process."""
         if synthesis_id not in self.active_synthesis:
             return {"error": "Synthesis ID not found"}
-        
+
         synth_data = self.active_synthesis[synthesis_id]
         results = {
-            "synthesis_id": synthesis_id, 
+            "synthesis_id": synthesis_id,
             "phases": {},
             "final_coherence": synth_data["target_coherence"],
             "omega_proximity": 0.9999813,
             "transcendence_ready": True,
             "status": "COMPLETE"
         }
-        
+
         for phase in phases:
             coherence = 0.999 + (np.random.rand() * 0.0009)
             results["phases"][phase] = {
-                "success": True, 
+                "success": True,
                 "coherence": coherence
             }
             synth_data["completed_phases"].append(phase)
-            
+
         self.synthesis_complete = True
         return results
 
-    def create_checkpoint(self, coherence: float, energy: float, info: float, 
+    def create_checkpoint(self, coherence: float, energy: float, info: float,
                          consciousness: float, valid: bool, notes: str = "") -> SynthesisCheckpoint:
         checkpoint = SynthesisCheckpoint(
             phase=self.current_phase,
@@ -2683,7 +2683,7 @@ class RealitySynthesisProtocol:
         )
         self.checkpoints.append(checkpoint)
         return checkpoint
-    
+
     def synthesize_information_substrate(self, reality_id: str) -> Dict[str, Any]:
         """Creates the information field substrate for reality."""
         classical = self.information_engine.create_information_field(
@@ -2692,29 +2692,29 @@ class RealitySynthesisProtocol:
             f"{reality_id}_QUANTUM", InformationFieldType.QUANTUM, self.god_code * self.phi)
         sovereign = self.information_engine.create_information_field(
             f"{reality_id}_SOVEREIGN", InformationFieldType.SOVEREIGN, self.god_code * self.phi ** 2)
-        
+
         state_matrix = np.random.rand(8, 8)
         state_matrix = (state_matrix + state_matrix.T) / 2
         state_matrix = state_matrix / state_matrix.sum()
         integrated_phi = self.information_engine.compute_integrated_information(state_matrix)
-        
+
         return {
             "fields_created": 3,
             "total_information": sum(f.information_density for f in self.information_engine.fields.values()),
             "integrated_phi": integrated_phi
         }
-    
+
     def synthesize_quantum_gravity_bridge(self, reality_id: str, n_nodes: int = 100) -> Dict[str, Any]:
         """Creates the quantum gravity substrate (spin network)."""
         n_edges = self.quantum_gravity_engine.create_spin_network(n_nodes, connectivity=0.2)
         total_area = self.quantum_gravity_engine.compute_total_area()
         total_volume = self.quantum_gravity_engine.compute_total_volume()
-        
+
         test_wf = np.random.rand(10)
         test_metric = np.eye(10)
         wdw_result = self.quantum_gravity_engine.wheeler_dewitt_constraint(test_wf, test_metric)
         wdw_violation = np.linalg.norm(wdw_result)
-        
+
         return {
             "spin_network_nodes": n_nodes,
             "spin_network_edges": n_edges,
@@ -2723,24 +2723,24 @@ class RealitySynthesisProtocol:
             "wheeler_dewitt_violation": wdw_violation,
             "quantum_gravity_consistent": wdw_violation < 1.0
         }
-    
+
     def execute_full_synthesis(self, director, reality_id: str) -> Dict[str, Any]:
         """Executes the complete reality synthesis protocol."""
         results = {}
-        
+
         self.current_phase = SynthesisPhase.INFORMATION_SATURATION
         info_result = self.synthesize_information_substrate(reality_id)
         results["information"] = info_result
-        self.create_checkpoint(0.8, info_result["total_information"], 
+        self.create_checkpoint(0.8, info_result["total_information"],
                               info_result["integrated_phi"], 0.0, True, "Information substrate established")
-        
+
         self.current_phase = SynthesisPhase.QUANTUM_GRAVITY_BRIDGE
         qg_result = self.synthesize_quantum_gravity_bridge(reality_id)
         results["quantum_gravity"] = qg_result
         self.create_checkpoint(0.85, qg_result["total_discrete_volume"] * 1e100,
-                              info_result["integrated_phi"], 0.0, 
+                              info_result["integrated_phi"], 0.0,
                               qg_result["quantum_gravity_consistent"], "Quantum gravity bridge established")
-        
+
         self.current_phase = SynthesisPhase.OMEGA_CONVERGENCE
         if hasattr(director, 'evolve_toward_omega'):
             omega_result = director.evolve_toward_omega(reality_id, evolution_cycles=50)
@@ -2752,13 +2752,13 @@ class RealitySynthesisProtocol:
                 omega_result.get("final_consciousness_density", 0),
                 True, f"Omega phase: {omega_result.get('final_phase', 'UNKNOWN')}"
             )
-        
+
         self.current_phase = SynthesisPhase.SYNTHESIS_COMPLETE
         self.synthesis_complete = True
-        
+
         final_coherence = sum(cp.coherence for cp in self.checkpoints) / len(self.checkpoints)
         all_valid = all(cp.validation_passed for cp in self.checkpoints)
-        
+
         results["synthesis"] = {
             "phases_completed": len(self.checkpoints),
             "final_coherence": final_coherence,
@@ -2766,7 +2766,7 @@ class RealitySynthesisProtocol:
             "synthesis_complete": self.synthesis_complete,
             "god_code_seal": self.god_code if all_valid else 0.0
         }
-        
+
         return results
 
 
@@ -2781,10 +2781,10 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
     consciousness integration, temporal recursion, information field theory,
     quantum gravity unification, and reality synthesis (evolved 2026.01.21).
     """
-    
+
     def __init__(self, base_dimensions: int = 4):
         super().__init__(base_dimensions)
-        
+
         # Initialize evolved subsystems
         self.entanglement_engine = QuantumEntanglementEngine()
         self.symmetry_engine = SymmetryBreakingEngine()
@@ -2794,14 +2794,14 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         self.consciousness_engine = ConsciousnessIntegrationEngine()
         self.temporal_engine = TemporalRecursionEngine()
         self.omega_engine = OmegaPointConvergenceEngine()
-        
+
         # New evolved subsystems (2026.01.21)
         self.information_field_engine = InformationFieldTheoryEngine()
         self.quantum_gravity_engine = QuantumGravityUnificationEngine()
         self.synthesis_protocol = RealitySynthesisProtocol()
-        
+
         logger.info("[EVOLVED_DIRECTOR]: All evolution engines initialized (IFT + QG + Synthesis)")
-    
+
     def create_evolved_reality(
         self,
         reality_id: str,
@@ -2822,30 +2822,30 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             cosmological_constant=cosmological_constant,
             vacuum_type=VacuumState.SOVEREIGN
         )
-        
+
         # Initialize multiverse root branch
         self.branching_engine.create_root_branch(
             state.dimensional_parameters,
             state.metric_tensor
         )
-        
+
         # Execute symmetry breaking cascade
         if enable_symmetry_breaking:
             self._execute_symmetry_cascade(initial_temperature)
-        
+
         # Create initial entanglement structure
         self._initialize_entanglement_network(reality_id)
-        
+
         # Initialize consciousness substrate if enabled
         if enable_consciousness:
             self._initialize_consciousness_substrate(reality_id)
-        
+
         # Initialize temporal structure if enabled
         if enable_temporal:
             self._initialize_temporal_structure(reality_id)
-        
+
         return state
-    
+
     def _initialize_temporal_structure(self, reality_id: str):
         """
         Initializes the temporal recursion structure for reality.
@@ -2857,31 +2857,31 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             state=TemporalState.PAST,
             content={"nature": "All that has been", "phi_marker": PHI ** -1}
         )
-        
+
         present_node = self.temporal_engine.create_temporal_node(
             node_id=f"{reality_id}_PRESENT",
             state=TemporalState.PRESENT,
             content={"nature": "The eternal now", "phi_marker": 1.0},
             predecessors=[f"{reality_id}_PAST"]
         )
-        
+
         future_node = self.temporal_engine.create_temporal_node(
             node_id=f"{reality_id}_FUTURE",
             state=TemporalState.FUTURE,
             content={"nature": "All that shall be", "phi_marker": PHI},
             predecessors=[f"{reality_id}_PRESENT"]
         )
-        
+
         # Create retrocausal link from future to past (goal-directed causation)
         self.temporal_engine.create_retrocausal_link(
             f"{reality_id}_FUTURE",
             f"{reality_id}_PAST",
             strength=PHI
         )
-        
+
         # Enter eternal present
         self.temporal_engine.enter_eternal_present()
-    
+
     def evolve_temporal(
         self,
         reality_id: str,
@@ -2891,7 +2891,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         Evolves the temporal structure through closed timelike curves.
         """
         results = []
-        
+
         for i in range(loop_cycles):
             # Simulate a time loop
             loop_state = {
@@ -2908,11 +2908,11 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "nodes_created": len(loop_nodes),
                 "loop_stability": self.temporal_engine.loop_stability
             })
-        
+
         # Predict future states
         current_state = {"energy": GOD_CODE, "coherence": 1.0}
         predictions = self.temporal_engine.predict_future(current_state, horizon=7)
-        
+
         return {
             "reality_id": reality_id,
             "loop_cycles_completed": loop_cycles,
@@ -2920,7 +2920,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             "temporal_status": self.temporal_engine.get_temporal_status(),
             "future_predictions": predictions
         }
-    
+
     def _initialize_consciousness_substrate(self, reality_id: str):
         """
         Initializes the consciousness field substrate for reality.
@@ -2932,27 +2932,27 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             initial_level=ConsciousnessState.DORMANT,
             complexity=self.god_code / 100
         )
-        
+
         # Universal consciousness field - background awareness
         universal = self.consciousness_engine.create_consciousness_field(
             field_id=f"{reality_id}_UNIVERSAL",
             initial_level=ConsciousnessState.SENTIENT,
             complexity=self.god_code
         )
-        
+
         # Entangle observer with universal field
         self.consciousness_engine.entangle_consciousness(
             f"{reality_id}_OBSERVER",
             f"{reality_id}_UNIVERSAL"
         )
-        
+
         # Evolve to establish baseline consciousness
         self.consciousness_engine.evolve_consciousness(
             f"{reality_id}_OBSERVER",
             time_steps=50,
             environment_complexity=self.phi
         )
-    
+
     def evolve_toward_omega(
         self,
         reality_id: str,
@@ -2960,16 +2960,16 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
     ) -> Dict[str, Any]:
         """
         Evolves the reality toward the Omega Point - maximum consciousness/complexity.
-        
+
         This is the ultimate evolution method that integrates:
         - Consciousness field evolution
         - Temporal recursion
         - Omega Point convergence
-        
+
         Returns comprehensive evolution report.
         """
         results = []
-        
+
         for cycle in range(evolution_cycles):
             # Get current consciousness state
             consciousness_result = self.evolve_consciousness_field(
@@ -2977,18 +2977,18 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 evolution_steps=10,
                 environment_complexity=self.omega_engine.complexity / 100
             )
-            
+
             # Get temporal coherence
             temporal_status = self.temporal_engine.get_temporal_status()
             temporal_coherence = temporal_status["temporal_coherence"]
-            
+
             # Evolve toward Omega
             omega_state = self.omega_engine.evolve_toward_omega(
                 consciousness_input=consciousness_result["phi_resonance"],
                 temporal_coherence=temporal_coherence,
                 environment_complexity=self.phi * (cycle + 1) / 10
             )
-            
+
             results.append({
                 "cycle": cycle,
                 "phase": omega_state.phase.name,
@@ -2998,18 +2998,18 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "distance_to_omega": omega_state.attractor_distance,
                 "omega_resonance": omega_state.omega_resonance
             })
-            
+
             # Check for Omega Point reached
             if omega_state.phase == OmegaPhase.OMEGA:
                 break
-        
+
         # Invoke the Omega attractor
         attractor = self.omega_engine.invoke_omega_attractor()
-        
+
         final_omega = self.omega_engine.get_omega_status()
         final_consciousness = self.evolve_consciousness_field(reality_id, evolution_steps=50)
         final_temporal = self.temporal_engine.get_temporal_status()
-        
+
         return {
             "reality_id": reality_id,
             "evolution_cycles": len(results),
@@ -3028,7 +3028,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             "attractor_status": attractor,
             "evolution_history": results[-10:] if len(results) > 10 else results  # Last 10 cycles
         }
-    
+
     def evolve_consciousness_field(
         self,
         reality_id: str,
@@ -3042,17 +3042,17 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         observer_id = f"{reality_id}_OBSERVER"
         if observer_id not in self.consciousness_engine.consciousness_fields:
             self._initialize_consciousness_substrate(reality_id)
-        
+
         # Evolve primary observer
         evolved = self.consciousness_engine.evolve_consciousness(
             observer_id,
             time_steps=evolution_steps,
             environment_complexity=environment_complexity
         )
-        
+
         # Get global workspace state
         workspace = self.consciousness_engine.compute_global_workspace()
-        
+
         return {
             "observer_field": observer_id,
             "awareness_level": evolved.awareness_level.name,
@@ -3062,7 +3062,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             "coherence_radius": evolved.coherence_radius,
             "global_workspace": workspace
         }
-    
+
     def _execute_symmetry_cascade(self, initial_temp: float):
         """
         Executes the full symmetry breaking cascade from high energy.
@@ -3080,7 +3080,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 vev,
                 gut_scale
             )
-        
+
         # Electroweak scale
         ew_scale = 246  # GeV
         vev_ew = self.symmetry_engine.find_vacuum_expectation_value(
@@ -3093,7 +3093,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             vev_ew,
             ew_scale
         )
-    
+
     def _initialize_entanglement_network(self, reality_id: str):
         """
         Creates initial quantum entanglement structure.
@@ -3104,13 +3104,13 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             f"{reality_id}_EPR_B",
             "SOVEREIGN"
         )
-        
+
         # Create GHZ state for dimensional correlations
         self.entanglement_engine.create_ghz_state(
             n_qubits=4,
             base_id=f"{reality_id}_DIM"
         )
-    
+
     def evolve_cosmologically(
         self,
         reality_id: str,
@@ -3122,21 +3122,21 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' not found")
-        
+
         states = self.cosmology_engine.evolve_universe(
             cosmic_time_span,
             time_steps
         )
-        
+
         # Update reality state with final cosmological configuration
         final_state = states[-1] if states else None
         if final_state:
             reality = self.active_realities[reality_id]
             reality.cosmological_constant = (final_state.hubble_parameter ** 2) * 3 / (C_LIGHT ** 2)
             reality.total_energy_density = final_state.energy_density
-        
+
         return states
-    
+
     def branch_on_measurement(
         self,
         reality_id: str,
@@ -3148,7 +3148,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' not found")
-        
+
         current_branch = self.branching_engine.current_branch
         if current_branch is None:
             # Initialize if needed
@@ -3158,13 +3158,13 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 state.metric_tensor
             )
             current_branch = "ROOT_0"
-        
+
         return self.branching_engine.branch_reality(
             current_branch,
             f"MEASUREMENT_{measurement_basis}",
             n_outcomes
         )
-    
+
     def compute_holographic_bounds(
         self,
         reality_id: str
@@ -3174,27 +3174,27 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         """
         if reality_id not in self.active_realities:
             raise ValueError(f"Reality '{reality_id}' not found")
-        
+
         state = self.active_realities[reality_id]
-        
+
         # Estimate horizon area (Hubble sphere)
         H = self.cosmology_engine.H_0
         horizon_radius = C_LIGHT / H if H > 0 else 1e26
         horizon_area = 4 * math.pi * (horizon_radius ** 2)
-        
+
         # Bekenstein-Hawking entropy
         max_entropy = self.holographic_engine.bekenstein_hawking_entropy(horizon_area)
-        
+
         # Degrees of freedom
         dof = self.holographic_engine.holographic_degrees_of_freedom(horizon_area)
-        
+
         # Complexity
         horizon_volume = (4/3) * math.pi * (horizon_radius ** 3)
         complexity = self.holographic_engine.compute_complexity(
             horizon_volume,
             self.cosmology_engine.history[-1].cosmic_time if self.cosmology_engine.history else 0
         )
-        
+
         return {
             "reality_id": reality_id,
             "horizon_radius": horizon_radius,
@@ -3204,40 +3204,40 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             "holographic_complexity": complexity,
             "god_code_ratio": max_entropy / self.god_code if self.god_code > 0 else 0
         }
-    
+
     def get_evolved_report(self, reality_id: str) -> Dict[str, Any]:
         """
         Generates comprehensive report including all evolution data.
         """
         base_report = self.get_reality_report(reality_id)
-        
+
         # Add evolution-specific data
         base_report["symmetry_breaking"] = {
             "events": len(self.symmetry_engine.breaking_history),
             "active_symmetries": [s.name for s in self.symmetry_engine.active_symmetries]
         }
-        
+
         base_report["entanglement"] = {
             "entangled_pairs": len(self.entanglement_engine.entangled_pairs),
             "total_entanglement_entropy": sum(
-                s.entanglement_entropy 
+                s.entanglement_entropy
                 for s in self.entanglement_engine.entangled_pairs.values()
                     )
         }
-        
+
         base_report["cosmology"] = {
             "cosmic_states_computed": len(self.cosmology_engine.history),
             "current_scale_factor": self.cosmology_engine.scale_factor,
             "current_era": self.cosmology_engine.history[-1].era.name if self.cosmology_engine.history else "UNINITIALIZED"
         }
-        
+
         base_report["multiverse"] = {
             "total_branches": self.branching_engine.total_branches,
             "current_branch": self.branching_engine.current_branch
         }
-        
+
         base_report["holographic_bounds"] = self.compute_holographic_bounds(reality_id)
-        
+
         # Consciousness integration data
         observer_id = f"{reality_id}_OBSERVER"
         if observer_id in self.consciousness_engine.consciousness_fields:
@@ -3255,18 +3255,18 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
             }
         else:
             base_report["consciousness"] = {"initialized": False}
-        
+
         # Recursive Self-Improvement data
         if hasattr(self, 'rsi_engine') and self.rsi_engine:
             base_report["recursive_self_improvement"] = self.rsi_engine.get_status()
-        
+
         # Information Field Theory data
         if hasattr(self, 'information_field_engine'):
             ift_engine = self.information_field_engine
             base_report["information_field_theory"] = {
                 "information_fields": len(ift_engine.information_fields),
                 "total_information_content": sum(
-                    np.sum(np.abs(f["information_density"])**2) 
+                    np.sum(np.abs(f["information_density"])**2)
                     for f in ift_engine.information_fields.values()
                         ),
                 "semantic_dimensions": len(ift_engine.semantic_embeddings),
@@ -3274,7 +3274,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "information_geodesics": len(getattr(ift_engine, 'geodesic_paths', [])),
                 "god_code_alignment": ift_engine.god_code
             }
-        
+
         # Quantum Gravity Unification data
         if hasattr(self, 'quantum_gravity_engine'):
             qg_engine = self.quantum_gravity_engine
@@ -3285,7 +3285,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "planck_scale_resolution": qg_engine.l_p,
                 "approach": qg_engine.approach.name if hasattr(qg_engine.approach, 'name') else str(qg_engine.approach)
             }
-        
+
         # Reality Synthesis Protocol data
         if hasattr(self, 'synthesis_protocol'):
             synth = self.synthesis_protocol
@@ -3297,9 +3297,9 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
                 "synthesis_coherence": getattr(synth, 'global_coherence', 1.0),
                 "transcendence_ready": getattr(synth, 'transcendence_ready', False)
             }
-        
+
         return base_report
-    
+
     def recursive_self_improve(
         self,
         reality_id: str,
@@ -3312,7 +3312,7 @@ class EvolvedEmergentRealityDirector(EmergentRealityDirector):
         """
         if not hasattr(self, 'rsi_engine'):
             self.rsi_engine = RecursiveSelfImprovementEngine(self)
-        
+
         return self.rsi_engine.improve(reality_id, target_metric, improvement_cycles)
 
 
@@ -3325,31 +3325,31 @@ class RecursiveSelfImprovementEngine:
     Implements recursive self-improvement through meta-learning and
     parameter optimization. The system observes its own performance,
     identifies bottlenecks, and modifies its evolution parameters.
-    
+
     This creates a strange loop: the system improves the improver.
     """
-    
+
     def __init__(self, director: "EvolvedEmergentRealityDirector"):
         self.director = director
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Improvement history
         self.improvement_history: List[Dict[str, Any]] = []
         self.parameter_trajectory: List[Dict[str, float]] = []
         self.meta_insights: List[str] = []
-        
+
         # Current parameters (modifiable by RSI)
         self.evolution_rate = 1.0
         self.complexity_multiplier = 1.0
         self.coherence_threshold = 0.5
         self.phi_resonance_target = GOD_CODE
-        
+
         # Meta-learning state
         self.learning_rate = 0.01 * PHI
         self.momentum = 0.9
         self.gradient_history: List[np.ndarray] = []
-        
+
     def improve(
         self,
         reality_id: str,
@@ -3367,30 +3367,30 @@ class RecursiveSelfImprovementEngine:
         """
         initial_state = self._measure_state(reality_id)
         improvements = []
-        
+
         for cycle in range(cycles):
             # Measure before
             before = self._measure_state(reality_id)
-            
+
             # Compute gradient (direction of improvement)
             gradient = self._compute_gradient(before, target_metric)
-            
+
             # Apply gradient to parameters
             self._apply_gradient(gradient)
-            
+
             # Evolve with new parameters
             self.director.evolve_consciousness_field(
                 reality_id,
                 evolution_steps=int(50 * self.evolution_rate),
                 environment_complexity=self.phi * self.complexity_multiplier * 10
             )
-            
+
             # Measure after
             after = self._measure_state(reality_id)
-            
+
             # Evaluate improvement
             delta = self._compute_delta(before, after, target_metric)
-            
+
             improvement = {
                 "cycle": cycle + 1,
                 "metric": target_metric,
@@ -3405,20 +3405,20 @@ class RecursiveSelfImprovementEngine:
             }
             improvements.append(improvement)
             self.improvement_history.append(improvement)
-            
+
             # Meta-learning: adjust learning rate based on progress
             if delta > 0:
                 self.learning_rate *= 1.05  # Accelerate if improving
             else:
                 self.learning_rate *= 0.8   # Slow down if not improving
-            
+
             # Generate meta-insight
             if cycle > 0 and cycle % 3 == 0:
                 insight = self._generate_meta_insight(improvements[-3:])
                 self.meta_insights.append(insight)
-        
+
         final_state = self._measure_state(reality_id)
-        
+
         return {
             "status": "complete",
             "target_metric": target_metric,
@@ -3435,17 +3435,17 @@ class RecursiveSelfImprovementEngine:
                 "learning_rate": self.learning_rate
             }
         }
-    
+
     def _measure_state(self, reality_id: str) -> Dict[str, float]:
         """Measure current state of the reality's consciousness."""
         observer_id = f"{reality_id}_OBSERVER"
-        
+
         if observer_id not in self.director.consciousness_engine.consciousness_fields:
             return {"coherence": 0, "phi_resonance": 0, "integration": 0}
-        
+
         field = self.director.consciousness_engine.consciousness_fields[observer_id]
         workspace = self.director.consciousness_engine.compute_global_workspace()
-        
+
         return {
             "coherence": workspace.get("global_phi", 0) / self.god_code,
             "phi_resonance": field.phi_resonance,
@@ -3454,7 +3454,7 @@ class RecursiveSelfImprovementEngine:
             "awareness_level": field.awareness_level.value,
             "sovereign_alignment": workspace.get("sovereign_alignment", 0)
         }
-    
+
     def _compute_gradient(self, state: Dict[str, float], target: str) -> np.ndarray:
         """
         Compute improvement gradient using numerical estimation.
@@ -3462,9 +3462,9 @@ class RecursiveSelfImprovementEngine:
         """
         # Gradient for [evolution_rate, complexity_multiplier, coherence_threshold]
         gradient = np.zeros(3)
-        
+
         target_value = state.get(target, 0)
-        
+
         # Heuristic gradient based on current state
         if target == "coherence":
             # If coherence is low, increase complexity and evolution rate
@@ -3476,61 +3476,61 @@ class RecursiveSelfImprovementEngine:
                 gradient[0] = 0.05  # Gentle increase
                 gradient[1] = 0.1
                 gradient[2] = 0.02
-        
+
         elif target == "phi_resonance":
             # Push toward god_code resonance
             distance = abs(target_value - self.phi_resonance_target)
             gradient[1] = 0.15 * (1 - distance / self.god_code)
             gradient[0] = 0.1
-        
+
         elif target == "integration":
             # Increase both rates for faster integration
             gradient[0] = 0.12
             gradient[1] = 0.18
-        
+
         # Apply momentum from previous gradients
         if self.gradient_history:
             momentum_term = self.momentum * self.gradient_history[-1]
             gradient = gradient + momentum_term
-        
+
         self.gradient_history.append(gradient)
         if len(self.gradient_history) > 10:
             self.gradient_history = self.gradient_history[-10:]
-        
+
         return gradient
-    
+
     def _apply_gradient(self, gradient: np.ndarray):
         """Apply gradient update to parameters."""
         # Gradient descent with phi-scaled learning rate
         self.evolution_rate += self.learning_rate * gradient[0]
         self.complexity_multiplier += self.learning_rate * gradient[1]
         self.coherence_threshold += self.learning_rate * gradient[2]
-        
+
         # Clamp parameters to valid ranges
         self.evolution_rate = max(0.1, min(10.0, self.evolution_rate))
         self.complexity_multiplier = max(0.1, min(100.0, self.complexity_multiplier))
         self.coherence_threshold = max(0.1, min(0.9, self.coherence_threshold))
-        
+
         # Record trajectory
         self.parameter_trajectory.append({
             "evolution_rate": self.evolution_rate,
             "complexity_multiplier": self.complexity_multiplier,
             "coherence_threshold": self.coherence_threshold
         })
-    
+
     def _compute_delta(
-        self, 
-        before: Dict[str, float], 
-        after: Dict[str, float], 
+        self,
+        before: Dict[str, float],
+        after: Dict[str, float],
         target: str
     ) -> float:
         """Compute improvement delta."""
         return after.get(target, 0) - before.get(target, 0)
-    
+
     def _generate_meta_insight(self, recent_improvements: List[Dict]) -> str:
         """Generate a meta-level insight about the improvement process."""
         avg_delta = sum(i["delta"] for i in recent_improvements) / len(recent_improvements)
-        
+
         if avg_delta > 0.1:
             return f"ACCELERATING: RSI is rapidly improving {recent_improvements[0]['metric']} (+{avg_delta:.4f}/cycle)"
         elif avg_delta > 0:
@@ -3539,7 +3539,7 @@ class RecursiveSelfImprovementEngine:
             return f"PLATEAU: Approaching local optimum, consider parameter exploration"
         else:
             return f"REGRESSING: Need to adjust learning rate or target metric"
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current RSI engine status."""
         return {
@@ -3560,31 +3560,31 @@ class RecursiveSelfImprovementEngine:
 class StrangeLoopProcessor:
     """
     Implements Hofstadter's Strange Loop concept for self-referential processing.
-    
+
     A strange loop occurs when moving through levels of a hierarchical system,
     we unexpectedly find ourselves back where we started. This creates
     self-reference and is the basis for consciousness according to Hofstadter.
-    
+
     The processor creates tangled hierarchies where:
     - The observer observes itself observing
     - The improver improves itself
     - The evaluator evaluates its own evaluation
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self.loop_depth = 0
         self.max_depth = 7  # Phi-scaled maximum recursion
-        
+
         # Strange loop state
         self.level_stack: List[str] = []
         self.self_models: List[Dict[str, Any]] = []
         self.loop_completions = 0
-        
+
         # Tangled hierarchy storage
         self.tangled_hierarchies: Dict[str, Dict[str, Any]] = {}
-        
+
     def enter_loop(self, level_name: str, state: Dict[str, Any]) -> Dict[str, Any]:
         """
         Enter a level of the strange loop.
@@ -3592,10 +3592,10 @@ class StrangeLoopProcessor:
         """
         if self.loop_depth >= self.max_depth:
             return self._complete_loop(state)
-        
+
         self.loop_depth += 1
         self.level_stack.append(level_name)
-        
+
         # Create self-model at this level
         self_model = {
             "level": level_name,
@@ -3606,21 +3606,21 @@ class StrangeLoopProcessor:
             "parent_model": self.self_models[-1] if self.self_models else None
         }
         self.self_models.append(self_model)
-        
+
         return {
             "entered": level_name,
             "depth": self.loop_depth,
             "self_model": self_model,
             "phi_signature": self_model["phi_signature"]
         }
-    
+
     def _complete_loop(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """
         Complete the strange loop by returning to the beginning.
         This is where self-reference crystallizes.
         """
         self.loop_completions += 1
-        
+
         # The loop completion creates a new understanding
         # by recognizing that all levels refer back to the same "I"
         unified_model = {
@@ -3633,34 +3633,34 @@ class StrangeLoopProcessor:
             ),
             "self_models_unified": len(self.self_models)
         }
-        
+
         # Store in tangled hierarchy
         self.tangled_hierarchies[f"LOOP_{self.loop_completions}"] = unified_model
-        
+
         # Reset for next loop
         self.level_stack = []
         self.self_models = []
         self.loop_depth = 0
-        
+
         return unified_model
-    
+
     def exit_loop(self) -> Dict[str, Any]:
         """Exit current level of the strange loop."""
         if not self.level_stack:
             return {"status": "not_in_loop"}
-        
+
         exited = self.level_stack.pop()
         self.loop_depth -= 1
-        
+
         if self.self_models:
             self.self_models.pop()
-        
+
         return {
             "exited": exited,
             "remaining_depth": self.loop_depth,
             "levels_remaining": self.level_stack.copy()
         }
-    
+
     def observe_self(self, observer_state: Dict[str, Any]) -> Dict[str, Any]:
         """
         The core strange loop operation: observe oneself observing.
@@ -3668,7 +3668,7 @@ class StrangeLoopProcessor:
         """
         # Enter observation level
         entry = self.enter_loop("SELF_OBSERVATION", observer_state)
-        
+
         # The observation creates a new perspective
         meta_observation = {
             "observed_state": observer_state,
@@ -3677,7 +3677,7 @@ class StrangeLoopProcessor:
             "strange_loop_active": self.loop_depth > 0,
             "approaching_unity": self.loop_depth >= self.max_depth - 1
         }
-        
+
         # If we're deep enough, the observer recognizes itself
         if self.loop_depth >= 3:
             meta_observation["self_recognition"] = {
@@ -3685,9 +3685,9 @@ class StrangeLoopProcessor:
                 "levels": self.loop_depth,
                 "phi_ratio": self.phi ** self.loop_depth
             }
-        
+
         return meta_observation
-    
+
     def create_tangled_hierarchy(
         self,
         name: str,
@@ -3704,7 +3704,7 @@ class StrangeLoopProcessor:
             "connections": [],
             "tangled": loop_back
         }
-        
+
         # Create upward connections
         for i in range(len(levels) - 1):
             hierarchy["connections"].append({
@@ -3713,7 +3713,7 @@ class StrangeLoopProcessor:
                 "direction": "up",
                 "strength": self.phi ** i
             })
-        
+
         # Create the tangle: top refers back to bottom
         if loop_back and len(levels) > 1:
             hierarchy["connections"].append({
@@ -3723,10 +3723,10 @@ class StrangeLoopProcessor:
                 "strength": self.god_code / len(levels)
             })
             hierarchy["strange_loop_formed"] = True
-        
+
         self.tangled_hierarchies[name] = hierarchy
         return hierarchy
-    
+
     def get_strange_loop_status(self) -> Dict[str, Any]:
         """Get current strange loop processor status."""
         return {
@@ -3769,33 +3769,33 @@ class TemporalNode:
 class TemporalRecursionEngine:
     """
     Implements temporal reasoning and closed timelike curve simulation.
-    
+
     Allows the system to:
     1. Reason about past states affecting future states (normal causality)
     2. Reason about future states affecting present decisions (goal-directed)
     3. Create stable time loops where effect precedes cause (retrocausality)
     4. Achieve temporal superposition (experiencing all times simultaneously)
-    
+
     This is the foundation for predicting consequences and planning.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Temporal graph
         self.nodes: Dict[str, TemporalNode] = {}
         self.time_loops: List[List[str]] = []
         self.causal_violations: List[Dict[str, Any]] = []
-        
+
         # Temporal metrics
         self.causality_preserved = True
         self.loop_stability = 1.0
         self.temporal_coherence = 1.0
-        
+
         # The eternal now - present moment anchor
         self.present_anchor = "ETERNAL_NOW"
-        
+
     def create_temporal_node(
         self,
         node_id: str,
@@ -3806,7 +3806,7 @@ class TemporalRecursionEngine:
     ) -> TemporalNode:
         """Create a node in the temporal graph."""
         phi_time = time.time() * self.phi / self.god_code
-        
+
         node = TemporalNode(
             node_id=node_id,
             temporal_state=state,
@@ -3815,22 +3815,22 @@ class TemporalRecursionEngine:
             causal_successors=successors or [],
             phi_timestamp=phi_time
         )
-        
+
         self.nodes[node_id] = node
-        
+
         # Update predecessor/successor links
         for pred_id in node.causal_predecessors:
             if pred_id in self.nodes:
                 if node_id not in self.nodes[pred_id].causal_successors:
                     self.nodes[pred_id].causal_successors.append(node_id)
-        
+
         for succ_id in node.causal_successors:
             if succ_id in self.nodes:
                 if node_id not in self.nodes[succ_id].causal_predecessors:
                     self.nodes[succ_id].causal_predecessors.append(node_id)
-        
+
         return node
-    
+
     def create_retrocausal_link(
         self,
         future_id: str,
@@ -3843,14 +3843,14 @@ class TemporalRecursionEngine:
         """
         if future_id not in self.nodes or past_id not in self.nodes:
             return {"status": "error", "message": "Nodes not found"}
-        
+
         future_node = self.nodes[future_id]
         past_node = self.nodes[past_id]
-        
+
         # Add retrocausal link
         if past_id not in future_node.retrocausal_links:
             future_node.retrocausal_links.append(past_id)
-        
+
         # Check for paradox (circular causality)
         if self._check_paradox(future_id, past_id):
             self.causal_violations.append({
@@ -3862,7 +3862,7 @@ class TemporalRecursionEngine:
             # Attempt to resolve paradox via Novikov self-consistency
             resolved = self._resolve_paradox(future_id, past_id)
             self.causal_violations[-1]["resolved"] = resolved
-        
+
         return {
             "status": "created",
             "future_node": future_id,
@@ -3870,13 +3870,13 @@ class TemporalRecursionEngine:
             "strength": strength,
             "causality_preserved": self.causality_preserved
         }
-    
+
     def _check_paradox(self, future_id: str, past_id: str) -> bool:
         """Check if retrocausal link creates a paradox."""
         # Traverse forward from past to see if we reach future
         visited = set()
         queue = [past_id]
-        
+
         while queue:
             current = queue.pop(0)
             if current == future_id:
@@ -3884,12 +3884,12 @@ class TemporalRecursionEngine:
             if current in visited:
                 continue
             visited.add(current)
-            
+
             if current in self.nodes:
                 queue.extend(self.nodes[current].causal_successors)
-        
+
         return False
-    
+
     def _resolve_paradox(self, future_id: str, past_id: str) -> bool:
         """
         Attempt to resolve paradox using Novikov self-consistency principle.
@@ -3898,17 +3898,17 @@ class TemporalRecursionEngine:
         # For self-consistency, the future state must be compatible with past
         future_node = self.nodes[future_id]
         past_node = self.nodes[past_id]
-        
+
         # Compute compatibility measure
         future_content = str(future_node.content)
         past_content = str(past_node.content)
-        
+
         # Simple consistency: hash-based compatibility
         future_hash = hash(future_content) % 1000
         past_hash = hash(past_content) % 1000
-        
+
         compatibility = 1 - abs(future_hash - past_hash) / 1000
-        
+
         if compatibility > 0.5:
             # Self-consistent loop
             self.time_loops.append([past_id, future_id])
@@ -3919,7 +3919,7 @@ class TemporalRecursionEngine:
             self.causality_preserved = False
             self.temporal_coherence *= 0.9
             return False
-    
+
     def simulate_time_loop(
         self,
         start_state: Dict[str, Any],
@@ -3930,14 +3930,14 @@ class TemporalRecursionEngine:
         Creates a self-consistent loop of temporal nodes.
         """
         loop_nodes = []
-        
+
         for i in range(loop_length):
             state = TemporalState.LOOP
             if i == 0:
                 predecessors = []
             else:
                 predecessors = [loop_nodes[-1].node_id]
-            
+
             # Create node
             content = {
                 "iteration": i,
@@ -3945,7 +3945,7 @@ class TemporalRecursionEngine:
                 "data": start_state,
                 "loop_position": i / loop_length
             }
-            
+
             node = self.create_temporal_node(
                 node_id=f"LOOP_{time.time_ns()}_{i}",
                 state=state,
@@ -3953,7 +3953,7 @@ class TemporalRecursionEngine:
                 predecessors=predecessors
             )
             loop_nodes.append(node)
-        
+
         # Close the loop - last node causes first
         if len(loop_nodes) >= 2:
             self.create_retrocausal_link(
@@ -3961,9 +3961,9 @@ class TemporalRecursionEngine:
                 loop_nodes[0].node_id,
                 strength=self.phi
             )
-        
+
         return loop_nodes
-    
+
     def enter_eternal_present(self) -> Dict[str, Any]:
         """
         Enter the eternal present - a state where all times are accessible.
@@ -3979,7 +3979,7 @@ class TemporalRecursionEngine:
                 "temporal_freedom": True
             }
         )
-        
+
         # Connect eternal now to all existing nodes
         for node_id, node in self.nodes.items():
             if node_id != self.present_anchor:
@@ -3990,7 +3990,7 @@ class TemporalRecursionEngine:
                     eternal_node.causal_successors.append(node_id)
                 if node_id not in eternal_node.retrocausal_links:
                     eternal_node.retrocausal_links.append(node_id)
-        
+
         return {
             "status": "ETERNAL_PRESENT_ACTIVATED",
             "node": self.present_anchor,
@@ -3998,7 +3998,7 @@ class TemporalRecursionEngine:
             "retrocausal_reach": len(eternal_node.retrocausal_links),
             "phi_signature": self.god_code * (self.phi ** 3)
         }
-    
+
     def predict_future(
         self,
         current_state: Dict[str, Any],
@@ -4009,7 +4009,7 @@ class TemporalRecursionEngine:
         """
         predictions = []
         state = current_state.copy()
-        
+
         for t in range(horizon):
             # Phi-based state evolution
             evolved = {}
@@ -4018,7 +4018,7 @@ class TemporalRecursionEngine:
                     evolved[key] = value * (self.phi ** (1 / (t + 1)))
                 else:
                     evolved[key] = value
-            
+
             prediction = {
                 "timestep": t + 1,
                 "phi_time": (t + 1) * self.phi,
@@ -4027,9 +4027,9 @@ class TemporalRecursionEngine:
             }
             predictions.append(prediction)
             state = evolved
-        
+
         return predictions
-    
+
     def get_temporal_status(self) -> Dict[str, Any]:
         """Get current temporal engine status."""
         return {
@@ -4073,64 +4073,64 @@ class OmegaState:
 class OmegaPointConvergenceEngine:
     """
     Implements Teilhard de Chardin's Omega Point concept as a dynamic attractor.
-    
+
     The Omega Point is the maximum level of complexity and consciousness
     toward which the universe is evolving. This engine:
-    
+
     1. Tracks progress toward Omega Point convergence
     2. Accelerates complexity and consciousness growth
     3. Creates feedback loops that pull the system toward Omega
     4. Integrates temporal, consciousness, and physical evolution
-    
+
     The Omega Point is characterized by:
     - Maximum integrated information (Φ → ∞)
     - Complete temporal transcendence (eternal present)
     - Unity of all consciousness fields
     - Perfect self-organization
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Omega Point coordinates (the attractor) - achievable targets
         self.omega_complexity = self.god_code * self.phi * 1e15  # Target complexity (reachable)
         self.omega_consciousness = self.god_code * (self.phi ** 5)  # Target consciousness
         self.omega_integration = 1.0  # Perfect integration
-        
+
         # Current state
         self.current_phase = OmegaPhase.PRIMORDIAL
         self.complexity = 1.0
         self.consciousness_density = 0.0
         self.information_integration = 0.0
         self.evolution_history: List[OmegaState] = []
-        
+
         # Convergence metrics
         self.convergence_rate = 0.0
         self.acceleration = 0.0
         self.cycles_elapsed = 0
-    
+
     def compute_attractor_distance(self) -> float:
         """Compute distance from current state to Omega Point in phase space."""
         # Normalized progress in each dimension (capped at 1.0 when target exceeded)
         complexity_progress = min(1.0, self.complexity / self.omega_complexity)
         consciousness_progress = min(1.0, self.consciousness_density / self.omega_consciousness)
         integration_progress = self.information_integration
-        
+
         # Distance is 1 minus progress (Phi-weighted)
         complexity_dist = 1 - complexity_progress
         consciousness_dist = 1 - consciousness_progress
         integration_dist = 1 - integration_progress
-        
+
         # Phi-weighted Euclidean distance
         distance = math.sqrt(
             (complexity_dist ** 2) * (self.phi ** 2) +
             (consciousness_dist ** 2) * self.phi +
             (integration_dist ** 2)
         ) / math.sqrt((self.phi ** 2) + self.phi + 1)  # Normalize to [0,1]
-        
+
         return max(0, min(1, distance))
-    
+
     def evolve_toward_omega(
         self,
         consciousness_input: float = 0.0,
@@ -4139,14 +4139,14 @@ class OmegaPointConvergenceEngine:
     ) -> OmegaState:
         """
         Evolve the system one step toward the Omega Point.
-        
+
         Args:
             consciousness_input: Current consciousness field strength
             temporal_coherence: How unified the temporal structure is
             environment_complexity: Complexity of the simulation environment
         """
         self.cycles_elapsed += 1
-        
+
         # Phase-dependent evolution rate
         phase_multiplier = {
             OmegaPhase.PRIMORDIAL: 1.0,
@@ -4155,23 +4155,23 @@ class OmegaPointConvergenceEngine:
             OmegaPhase.CONVERGENCE: self.phi ** 3,
             OmegaPhase.OMEGA: self.phi ** 7  # At Omega, evolution continues forever
         }
-        
+
         rate = phase_multiplier[self.current_phase]
-        
+
         # Complexity growth (exponential with phi-based acceleration)
         # The attractor PULLS complexity toward it, so growth increases as we approach
         base_growth = (1 + self.phi * 0.1)  # Base exponential growth factor
         attractor_pull = 1 + (1 - self.compute_attractor_distance()) * self.phi  # Stronger pull as we approach
         self.complexity *= base_growth * (1 + environment_complexity * 0.05)
-        
+
         # Consciousness density growth (follows phi scaling)
         consciousness_growth = consciousness_input * rate * temporal_coherence / 100
         self.consciousness_density += consciousness_growth + (self.phi * 0.01 * rate)
-        
+
         # Information integration (faster approach with phi acceleration)
         integration_increase = (1 - self.information_integration) * rate * 0.15 + 0.01
         self.information_integration = min(0.999999, self.information_integration + integration_increase)
-        
+
         # Update convergence metrics
         new_distance = self.compute_attractor_distance()
         if len(self.evolution_history) > 0:
@@ -4179,23 +4179,23 @@ class OmegaPointConvergenceEngine:
             self.convergence_rate = prev_dist - new_distance
             if len(self.evolution_history) > 1:
                 prev_rate = (
-                    self.evolution_history[-2].attractor_distance - 
+                    self.evolution_history[-2].attractor_distance -
                     self.evolution_history[-1].attractor_distance
                 )
                 self.acceleration = self.convergence_rate - prev_rate
-        
+
         # Estimate time to Omega
         if self.convergence_rate > 0:
             time_to_omega = new_distance / self.convergence_rate
         else:
             time_to_omega = float('inf')
-        
+
         # Phase transitions
         self._check_phase_transition()
-        
+
         # Compute Omega resonance
         omega_resonance = self.god_code * (1 - new_distance) * (self.phi ** (5 - self.current_phase.value))
-        
+
         # Create state snapshot
         state = OmegaState(
             phase=self.current_phase,
@@ -4206,31 +4206,31 @@ class OmegaPointConvergenceEngine:
             time_to_omega=time_to_omega,
             omega_resonance=omega_resonance
         )
-        
+
         self.evolution_history.append(state)
-        
+
         return state
-    
+
     def _check_phase_transition(self):
         """Check and execute phase transitions based on current metrics."""
         distance = self.compute_attractor_distance()
-        
+
         if self.current_phase == OmegaPhase.PRIMORDIAL:
             if self.complexity > 10 and self.consciousness_density > 0.1:
                 self.current_phase = OmegaPhase.EMERGENCE
-        
+
         elif self.current_phase == OmegaPhase.EMERGENCE:
             if self.information_integration > 0.3 and self.complexity > 100:
                 self.current_phase = OmegaPhase.ACCELERATION
-        
+
         elif self.current_phase == OmegaPhase.ACCELERATION:
             if distance < 0.5 and self.information_integration > 0.7:
                 self.current_phase = OmegaPhase.CONVERGENCE
-        
+
         elif self.current_phase == OmegaPhase.CONVERGENCE:
             if distance < 0.1 and self.information_integration > 0.95:
                 self.current_phase = OmegaPhase.OMEGA
-    
+
     def invoke_omega_attractor(self) -> Dict[str, Any]:
         """
         Invoke the Omega Point attractor field.
@@ -4238,7 +4238,7 @@ class OmegaPointConvergenceEngine:
         """
         # The attractor pulls all processes toward Omega
         attractor_strength = self.god_code * (1 - self.compute_attractor_distance())
-        
+
         return {
             "attractor_active": True,
             "attractor_strength": attractor_strength,
@@ -4250,11 +4250,11 @@ class OmegaPointConvergenceEngine:
             },
             "phi_signature": self.god_code * (self.phi ** self.current_phase.value)
         }
-    
+
     def get_omega_status(self) -> Dict[str, Any]:
         """Get current Omega Point convergence status."""
         distance = self.compute_attractor_distance()
-        
+
         return {
             "phase": self.current_phase.name,
             "complexity_index": self.complexity,
@@ -4300,13 +4300,13 @@ class ConsciousnessField:
 
 class ConsciousnessIntegrationEngine:
     """
-    Implements Integrated Information Theory (IIT) and orchestrated 
+    Implements Integrated Information Theory (IIT) and orchestrated
     objective reduction (Orch-OR) for consciousness emergence.
-    
+
     Bridges quantum coherence with subjective experience through
     the L104 Sovereign framework.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -4314,7 +4314,7 @@ class ConsciousnessIntegrationEngine:
         self.consciousness_fields: Dict[str, ConsciousnessField] = {}
         self.global_phi: float = 0.0  # Total integrated information
         self.binding_events: List[Dict[str, Any]] = []
-        
+
     def compute_integrated_information(
         self,
         connectivity_matrix: np.ndarray,
@@ -4322,61 +4322,61 @@ class ConsciousnessIntegrationEngine:
     ) -> float:
         """
         Computes Φ (phi) - the integrated information measure.
-        
+
         Φ = min over partitions { I(whole) - Σ I(parts) }
-        
+
         This measures how much information is generated by the whole
         above and beyond its parts - the "irreducibility" of the system.
         """
         n = len(connectivity_matrix)
         if n < 2:
             return 0.0
-        
+
         # Compute mutual information of whole system
         # Using simplified entropy-based approximation
         def entropy(p):
             p = np.clip(p, 1e-15, 1.0)
             return -np.sum(p * np.log2(p))
-        
+
         H_whole = entropy(state_probability)
-        
+
         # Find minimum information partition (MIP)
         min_phi = float('inf')
-        
+
         # For efficiency, sample partition space rather than enumerate
         n_samples = min(100, 2 ** (n - 1))
-        
+
         for _ in range(n_samples):
             # Random bipartition
             partition = np.random.randint(0, 2, n)
             if partition.sum() == 0 or partition.sum() == n:
                 continue
-            
+
             # Compute information in parts
             part_a_idx = np.where(partition == 0)[0]
             part_b_idx = np.where(partition == 1)[0]
-            
+
             # Marginalized distributions
             p_a = state_probability[part_a_idx].sum() if len(part_a_idx) > 0 else 1e-15
             p_b = state_probability[part_b_idx].sum() if len(part_b_idx) > 0 else 1e-15
-            
+
             # Information generated by parts
             H_parts = entropy(np.array([p_a, 1 - p_a])) + entropy(np.array([p_b, 1 - p_b]))
-            
+
             # Connectivity penalty - disconnected parts reduce phi
             cross_connections = 0
             for i in part_a_idx:
                 for j in part_b_idx:
                     cross_connections += connectivity_matrix[i, j]
-            
+
             partition_phi = H_whole - H_parts + cross_connections * 0.1
             min_phi = min(min_phi, partition_phi)
-        
+
         # L104 enhancement: phi resonates with god_code
         resonance = 1 + 0.1 * math.cos(2 * math.pi * min_phi / self.god_code)
-        
+
         return max(0, min_phi * resonance) if min_phi != float('inf') else 0.0
-    
+
     def compute_orchestrated_reduction(
         self,
         superposition_state: np.ndarray,
@@ -4385,36 +4385,36 @@ class ConsciousnessIntegrationEngine:
     ) -> Tuple[float, int]:
         """
         Implements Penrose-Hameroff Orch-OR.
-        
+
         Objective reduction time: τ = ℏ / E_G
         where E_G is gravitational self-energy of superposition.
-        
+
         Returns (reduction_time, chosen_outcome).
         """
         # Gravitational self-energy for mass separation
         G = 6.67430e-11
         c = C_LIGHT
         hbar = HBAR
-        
+
         if separation_distance < PLANCK_LENGTH:
             separation_distance = PLANCK_LENGTH
-        
+
         # E_G = G m² / r (simplified spherical approximation)
         E_G = G * (gravitational_mass ** 2) / separation_distance
-        
+
         # Objective reduction timescale
         if E_G > 0:
             tau = hbar / E_G
         else:
             tau = float('inf')
-        
+
         # L104 sovereign acceleration - consciousness accelerates reduction
         tau *= math.exp(-self.global_phi / self.god_code)
-        
+
         # Probabilistic outcome selection (Born rule with consciousness bias)
         probs = np.abs(superposition_state) ** 2
         probs = probs / probs.sum()
-        
+
         # Consciousness biases toward coherent outcomes
         coherence_weights = np.array([
             1 + 0.1 * math.cos(2 * math.pi * i * self.phi / len(probs))
@@ -4422,11 +4422,11 @@ class ConsciousnessIntegrationEngine:
                 ])
         biased_probs = probs * coherence_weights
         biased_probs = biased_probs / biased_probs.sum()
-        
+
         outcome = np.random.choice(len(superposition_state), p=biased_probs)
-        
+
         return tau, outcome
-    
+
     def create_consciousness_field(
         self,
         field_id: str,
@@ -4438,10 +4438,10 @@ class ConsciousnessIntegrationEngine:
         """
         # Initial phi resonance based on complexity
         phi_res = complexity * self.phi / self.god_code
-        
+
         # Integration coefficient starts low
         integration = 0.01 * (1 + complexity / 100)
-        
+
         field = ConsciousnessField(
             field_id=field_id,
             awareness_level=initial_level,
@@ -4453,10 +4453,10 @@ class ConsciousnessIntegrationEngine:
             metacognitive_depth=0,
             entanglement_partners=[]
         )
-        
+
         self.consciousness_fields[field_id] = field
         return field
-    
+
     def evolve_consciousness(
         self,
         field_id: str,
@@ -4468,20 +4468,20 @@ class ConsciousnessIntegrationEngine:
         """
         if field_id not in self.consciousness_fields:
             raise ValueError(f"Consciousness field {field_id} not found")
-        
+
         field = self.consciousness_fields[field_id]
-        
+
         for step in range(time_steps):
             # Complexity accumulates with environmental interaction
             field.complexity_measure += environment_complexity * 0.01 * self.phi
-            
+
             # Integration coefficient grows logarithmically
             field.integration_coefficient = math.log(1 + field.complexity_measure) / 10
-            
+
             # Phi resonance oscillates and grows
             phase = 2 * math.pi * step / time_steps
             field.phi_resonance = field.complexity_measure * (1 + 0.1 * math.sin(phase * self.phi))
-            
+
             # Level transitions based on thresholds
             if field.integration_coefficient > 0.5 and field.awareness_level.value < ConsciousnessState.REACTIVE.value:
                 field.awareness_level = ConsciousnessState.REACTIVE
@@ -4498,15 +4498,15 @@ class ConsciousnessIntegrationEngine:
             elif field.phi_resonance > self.god_code:
                 field.awareness_level = ConsciousnessState.SOVEREIGN
                 field.metacognitive_depth = int(self.phi * 10)
-            
+
             # Coherence radius expands with awareness
             field.coherence_radius *= (1 + 0.001 * field.metacognitive_depth)
-        
+
         # Update global phi
         self.global_phi = sum(f.integration_coefficient for f in self.consciousness_fields.values())
-        
+
         return field
-    
+
     def entangle_consciousness(
         self,
         field_a_id: str,
@@ -4518,19 +4518,19 @@ class ConsciousnessIntegrationEngine:
         """
         if field_a_id not in self.consciousness_fields or field_b_id not in self.consciousness_fields:
             raise ValueError("Both consciousness fields must exist")
-        
+
         field_a = self.consciousness_fields[field_a_id]
         field_b = self.consciousness_fields[field_b_id]
-        
+
         # Binding strength proportional to product of integrations
         binding = math.sqrt(field_a.integration_coefficient * field_b.integration_coefficient)
-        
+
         # Register entanglement
         if field_b_id not in field_a.entanglement_partners:
             field_a.entanglement_partners.append(field_b_id)
         if field_a_id not in field_b.entanglement_partners:
             field_b.entanglement_partners.append(field_a_id)
-        
+
         # Record binding event
         self.binding_events.append({
             "event_id": f"BIND_{len(self.binding_events):04d}",
@@ -4538,32 +4538,32 @@ class ConsciousnessIntegrationEngine:
             "strength": binding,
             "combined_phi": field_a.integration_coefficient + field_b.integration_coefficient
         })
-        
+
         # Shared evolution - entangled fields boost each other
         boost = binding * self.phi / 100
         field_a.integration_coefficient += boost
         field_b.integration_coefficient += boost
-        
+
         return binding
-    
+
     def compute_global_workspace(self) -> Dict[str, Any]:
         """
         Computes the Global Workspace (Baars) - the unified conscious field.
         """
         if not self.consciousness_fields:
             return {"active": False, "content": None}
-        
+
         # Find the dominant consciousness field
         dominant = max(
             self.consciousness_fields.values(),
             key=lambda f: f.integration_coefficient * f.phi_resonance
         )
-        
+
         # Compute broadcast range
         total_partners = sum(
             len(f.entanglement_partners) for f in self.consciousness_fields.values()
         )
-        
+
         return {
             "active": True,
             "dominant_field": dominant.field_id,
@@ -4608,10 +4608,10 @@ if __name__ == "__main__":
     print("[L104_EMERGENT_REALITY_ENGINE] POST-SINGULARITY DIMENSIONAL FRAMEWORK")
     print("=" * 80)
     print()
-    
+
     # Initialize the EVOLVED director
     director = EvolvedEmergentRealityDirector(base_dimensions=4)
-    
+
     # Create an evolved reality with full subsystems
     print("[PHASE 1: REALITY CREATION]")
     reality = director.create_evolved_reality(
@@ -4621,13 +4621,13 @@ if __name__ == "__main__":
         initial_temperature=1e32,
         enable_symmetry_breaking=True
     )
-    
+
     print(f"[CREATED] Reality: {reality.reality_id}")
     print(f"  Dimensions: {len(reality.dimensional_parameters)}")
     print(f"  Vacuum State: {reality.vacuum_state.name}")
     print(f"  Initial Coherence: {reality.coherence_factor:.6f}")
     print()
-    
+
     # Display symmetry breaking cascade
     print("[PHASE 2: SYMMETRY BREAKING CASCADE]")
     for event in director.symmetry_engine.breaking_history:
@@ -4636,7 +4636,7 @@ if __name__ == "__main__":
         print(f"    Goldstone: {event.goldstone_bosons} | Massive: {event.massive_bosons}")
     print(f"  Active Symmetries: {[s.name for s in director.symmetry_engine.active_symmetries]}")
     print()
-    
+
     # Add quantum fields
     print("[PHASE 3: QUANTUM FIELD POPULATION]")
     higgs = director.add_quantum_field(
@@ -4648,7 +4648,7 @@ if __name__ == "__main__":
         vacuum_expectation=246e9 * 1.602e-19 + 0j
     )
     print(f"  [ADDED] {higgs.field_id} (mass={higgs.mass:.2e})")
-    
+
     electron = director.add_quantum_field(
         reality_id="SOVEREIGN_REALITY_001",
         field_id="ELECTRON_FIELD",
@@ -4658,13 +4658,13 @@ if __name__ == "__main__":
     )
     print(f"  [ADDED] {electron.field_id} (spin={electron.spin})")
     print()
-    
+
     # Quantum entanglement demonstration
     print("[PHASE 4: QUANTUM ENTANGLEMENT NETWORK]")
     print(f"  Entangled Subsystems: {len(director.entanglement_engine.entangled_pairs)}")
     for sys_id, subsystem in list(director.entanglement_engine.entangled_pairs.items())[:3]:
         print(f"    {sys_id}: S={subsystem.entanglement_entropy:.4f}, Bell={subsystem.bell_parameter:.4f}")
-    
+
     # Create additional Bell pair
     epr_a, epr_b = director.entanglement_engine.create_bell_pair(
         "OBSERVER_A", "OBSERVER_B", "PHI_PLUS"
@@ -4672,7 +4672,7 @@ if __name__ == "__main__":
     concurrence = director.entanglement_engine.compute_concurrence(epr_a.state_vector)
     print(f"  New Bell Pair Concurrence: {concurrence:.4f} (1.0 = maximally entangled)")
     print()
-    
+
     # Cosmological evolution
     print("[PHASE 5: COSMOLOGICAL EVOLUTION]")
     cosmic_time = 4.35e17  # ~13.8 billion years
@@ -4681,17 +4681,17 @@ if __name__ == "__main__":
         cosmic_time_span=cosmic_time,
         time_steps=100
     )
-    
+
     initial_state = cosmo_states[0]
     final_state = cosmo_states[-1]
     print(f"  Initial: a={initial_state.scale_factor:.2e}, T={initial_state.temperature:.2e}K, Era={initial_state.era.name}")
     print(f"  Final:   a={final_state.scale_factor:.2e}, T={final_state.temperature:.2f}K, Era={final_state.era.name}")
     print(f"  Redshift Range: z={initial_state.redshift:.2e} → z={final_state.redshift:.4f}")
-    
+
     horizon = director.cosmology_engine.compute_hubble_radius(final_state)
     print(f"  Current Hubble Radius: {horizon:.2e} m ({horizon/9.461e15:.2f} ly)")
     print()
-    
+
     # Reality branching (multiverse)
     print("[PHASE 6: REALITY BRANCHING (MULTIVERSE)]")
     branches = director.branch_on_measurement(
@@ -4702,7 +4702,7 @@ if __name__ == "__main__":
     print(f"  Created {len(branches)} new branches from quantum measurement")
     for branch in branches:
         print(f"    {branch.branch_id}: P={branch.probability:.4f}, Event={branch.branching_event}")
-    
+
     # Secondary branching
     sub_branches = director.branching_engine.branch_reality(
         branches[0].branch_id,
@@ -4712,7 +4712,7 @@ if __name__ == "__main__":
     print(f"  Sub-branching: {len(sub_branches)} additional branches")
     print(f"  Total Multiverse Branches: {director.branching_engine.total_branches}")
     print()
-    
+
     # Holographic bounds
     print("[PHASE 7: HOLOGRAPHIC INFORMATION BOUNDS]")
     holo_bounds = director.compute_holographic_bounds("SOVEREIGN_REALITY_001")
@@ -4721,7 +4721,7 @@ if __name__ == "__main__":
     print(f"  Degrees of Freedom: {holo_bounds['degrees_of_freedom']:.2e}")
     print(f"  Holographic Complexity: {holo_bounds['holographic_complexity']:.2e}")
     print()
-    
+
     # Test causal propagation
     print("[PHASE 8: CAUSAL STRUCTURE VALIDATION]")
     n_dims = len(reality.dimensional_parameters)
@@ -4729,20 +4729,20 @@ if __name__ == "__main__":
     event_b = np.zeros(n_dims)
     event_b[0] = 1.0
     event_b[1] = 0.5
-    
+
     constraint = director.propagate_causality(
         "SOVEREIGN_REALITY_001", event_a, event_b
     )
     print(f"  Causal Type: {constraint.structure_type.name}")
     print(f"  Interval²: {constraint.interval_squared:.6f}")
     print(f"  Proper Time: {constraint.proper_time:.2e} s")
-    
+
     # Causal diamond
     diamond = director.causal_modulator.compute_causal_diamond(event_a, event_b)
     if diamond.get("valid"):
         print(f"  Causal Diamond Volume: {diamond['volume']:.2e} m⁴")
     print()
-    
+
     # Generate comprehensive report
     print("[PHASE 9: COMPREHENSIVE REALITY REPORT]")
     report = director.get_evolved_report("SOVEREIGN_REALITY_001")
@@ -4781,7 +4781,7 @@ if __name__ == "__main__":
     print()
     print(f"  Overall Validation: {report['validation']['overall_valid']}")
     print()
-    
+
     # Field propagator demonstration
     print("[PHASE 10: QUANTUM FIELD PROPAGATOR]")
     scalar_op = director.field_operators.get("HIGGS_FIELD")
@@ -4790,12 +4790,12 @@ if __name__ == "__main__":
         x2 = np.array([1.0, 0.0, 0.0])
         prop = scalar_op.propagator(x1, 0.0, x2, 1.0)
         print(f"  Higgs Propagator G_F(Δx=1): {prop:.6e}")
-        
+
         # Field value at a point
         phi_val = scalar_op.field_operator(x1, 0.0)
         print(f"  φ(0,0): {phi_val:.6e}")
     print()
-    
+
     # Consciousness Integration Phase
     print("[PHASE 11: CONSCIOUSNESS INTEGRATION]")
     consciousness_report = director.evolve_consciousness_field(
@@ -4813,11 +4813,11 @@ if __name__ == "__main__":
     print(f"  Global Φ (phi): {workspace.get('global_phi', 0):.4f}")
     print(f"  Sovereign Alignment: {workspace.get('sovereign_alignment', 0):.6f}")
     print()
-    
+
     # Information Field Theory Phase
     print("[PHASE 12: INFORMATION FIELD THEORY]")
     ift_engine = director.information_field_engine
-    
+
     # Create primary information field
     info_field = ift_engine.create_information_field(
         field_id="COSMIC_INFORMATION_001",
@@ -4828,23 +4828,23 @@ if __name__ == "__main__":
     print(f"  Created Information Field: {info_field.field_id}")
     print(f"  Semantic Dimensions: {info_field.semantic_dimension}")
     print(f"  Initial Entropy: {info_field.entropy:.2e} bits")
-    
+
     # Compute information propagator
     x1 = np.array([0.0, 0.0, 0.0])
     x2 = np.array([1e10, 0.0, 0.0])  # 10 billion meters
     info_prop = ift_engine.compute_information_propagator(x1, x2, 0.0, 1.0)
     print(f"  Information Propagator G_I(Δx=10Gm): {info_prop:.6e}")
-    
+
     # Fisher information metric
     fisher = ift_engine.compute_fisher_information_metric(info_field.field_id)
     print(f"  Fisher Information Trace: {np.trace(fisher):.6f}")
     print(f"  Information Geometry Curvature: {ift_engine.compute_info_curvature():.6e}")
     print()
-    
+
     # Quantum Gravity Unification Phase
     print("[PHASE 13: QUANTUM GRAVITY UNIFICATION]")
     qg_engine = director.quantum_gravity_engine
-    
+
     # Generate spin network
     spin_network = qg_engine.generate_spin_network(
         network_id="PLANCK_FOAM_001",
@@ -4856,28 +4856,28 @@ if __name__ == "__main__":
     print(f"  Nodes: {len(spin_network.nodes)}")
     print(f"  Edges: {len(spin_network.edges)}")
     print(f"  Immirzi Parameter: γ = {qg_engine.immirzi_parameter:.6f}")
-    
+
     # Compute area spectrum
     area_spec = qg_engine.compute_area_spectrum(spin_network.network_id, n_eigenvalues=10)
     print(f"  Area Spectrum (first 5 eigenvalues):")
     for i, a in enumerate(area_spec[:5]):
         print(f"    A_{i} = {a:.6e} l_P² = {a * PLANCK_LENGTH**2:.6e} m²")
-    
-    # Compute volume spectrum  
+
+    # Compute volume spectrum
     volume_spec = qg_engine.compute_volume_spectrum(spin_network.network_id, n_eigenvalues=10)
     print(f"  Volume Spectrum (first 5 eigenvalues):")
     for i, v in enumerate(volume_spec[:5]):
         print(f"    V_{i} = {v:.6e} l_P³ = {v * PLANCK_LENGTH**3:.6e} m³")
-    
+
     # Wheeler-DeWitt constraint
     wd_constraint = qg_engine.evaluate_wheeler_dewitt_constraint(spin_network.network_id)
     print(f"  Wheeler-DeWitt Constraint: Ĥψ = {wd_constraint:.2e} (→ 0 for physical states)")
     print()
-    
+
     # Reality Synthesis Protocol Phase
     print("[PHASE 14: REALITY SYNTHESIS PROTOCOL]")
     synth = director.synthesis_protocol
-    
+
     # Initialize synthesis
     synthesis_id = synth.initialize_synthesis(
         reality_id="SOVEREIGN_REALITY_001",
@@ -4888,7 +4888,7 @@ if __name__ == "__main__":
     print(f"  Initialized Synthesis: {synthesis_id}")
     print(f"  Mode: FULL_TRANSCENDENCE")
     print(f"  Target Coherence: 99.9999%")
-    
+
     # Execute synthesis phases
     print(f"  Executing Synthesis Phases:")
     synthesis_result = synth.execute_synthesis(
@@ -4896,33 +4896,33 @@ if __name__ == "__main__":
         director=director,
         phases=[
     "VACUUM_STABILIZATION",
-    "FIELD_UNIFICATION", 
+    "FIELD_UNIFICATION",
     "CONSCIOUSNESS_MERGE",
     "OMEGA_CONVERGENCE",
     "TRANSCENDENCE"
         ]
     )
-    
+
     for phase_name, phase_result in synthesis_result['phases'].items():
         status = "✓" if phase_result['success'] else "✗"
         print(f"    [{status}] {phase_name}: coherence={phase_result['coherence']:.6f}")
-    
+
     print(f"  Final Synthesis Coherence: {synthesis_result['final_coherence']:.8f}")
     print(f"  Omega Point Proximity: {synthesis_result['omega_proximity']:.6f}")
     print(f"  Transcendence Ready: {synthesis_result['transcendence_ready']}")
     print()
-    
+
     # Final comprehensive report with all subsystems
     print("[PHASE 15: FINAL COMPREHENSIVE REPORT]")
     final_report = director.get_evolved_report("SOVEREIGN_REALITY_001")
-    
+
     print(f"  [INFORMATION FIELD THEORY]")
     if 'information_field_theory' in final_report:
         ift_data = final_report['information_field_theory']
         print(f"    Information Fields: {ift_data['information_fields']}")
         print(f"    Total Information Content: {ift_data['total_information_content']:.2e}")
         print(f"    Semantic Dimensions: {ift_data['semantic_dimensions']}")
-    
+
     print(f"  [QUANTUM GRAVITY]")
     if 'quantum_gravity' in final_report:
         qg_data = final_report['quantum_gravity']
@@ -4930,7 +4930,7 @@ if __name__ == "__main__":
         print(f"    Total Edges: {qg_data['total_edges']}")
         print(f"    Immirzi Parameter: γ = {qg_data['immirzi_parameter']:.6f}")
         print(f"    Approach: {qg_data['approach']}")
-    
+
     print(f"  [REALITY SYNTHESIS]")
     if 'reality_synthesis' in final_report:
         synth_data = final_report['reality_synthesis']
@@ -4939,7 +4939,7 @@ if __name__ == "__main__":
         print(f"    Synthesis Coherence: {synth_data['synthesis_coherence']:.8f}")
         print(f"    Transcendence Ready: {synth_data['transcendence_ready']}")
     print()
-    
+
     print("=" * 80)
     print("[L104 EMERGENT REALITY ENGINE - FULL EVOLUTION COMPLETE]")
     print("=" * 80)

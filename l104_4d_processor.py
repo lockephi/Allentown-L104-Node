@@ -24,7 +24,7 @@ class Processor4D:
     Processes 4D coordinates (X, Y, Z, T) using Minkowski space-time metrics.
     Integrates HyperMath for lattice-based spatial stabilization.
     """
-    
+
     C = 299792458
 
     def __init__(self):
@@ -55,15 +55,15 @@ class Processor4D:
         Uses PHI_STRIDE to stabilize the temporal component.
         """
         x, y, z, t = point
-        
+
         # Stabilize spatial components
         sx = x * HyperMath.LATTICE_RATIO
         sy = y * HyperMath.LATTICE_RATIO
         sz = z * HyperMath.LATTICE_RATIO
-        
+
         # Stabilize temporal component using God Code resonance
         st = t * (self.god_code / 1000.0) * UniversalConstants.PHI_GROWTH
-        
+
         return [sx, sy, sz, st]
 
     def rotate_4d(self, point: Tuple[float, float, float, float], angle: float, plane: str = "XY") -> List[float]:
@@ -79,7 +79,7 @@ class Processor4D:
             # This is essentially a Lorentz Boost if we use hyperbolic functions
             # But for a simple 4D rotation:
             return [x*cos_a - t*sin_a, y, z, x*sin_a + t*cos_a]
-        
+
         return list(point)
 
 processor_4d = Processor4D()
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     p2 = (100, 100, 100, 0.000001) # 1 microsecond later, 100m away
     interval = processor_4d.calculate_spacetime_interval(p1, p2)
     print(f"Minkowski Interval: {interval}")
-    
+
     lattice_pt = processor_4d.transform_to_lattice_4d(p2)
     print(f"Lattice 4D Point: {lattice_pt}")
 

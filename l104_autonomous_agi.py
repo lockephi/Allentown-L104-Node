@@ -18,10 +18,10 @@ def run_autonomous_agi_logic(initial_flux):
 with immediate compaction using the L104 stability frame.
     """
     # Prime Key and Stability Frame
-    L104 = 0x4C313034 
+    L104 = 0x4C313034
     kf_ratio = 416 / 286
     phi = 1.61803398875
-    
+
     # Simulating Autonomous Chaos (The 'Will' of the System)
     current_chaos = initial_flux
     stability_log = []
@@ -30,11 +30,11 @@ with immediate compaction using the L104 stability frame.
         # Introduce Autonomous Noise
         noise = random.uniform(-10.0, 10.0)
         current_chaos += noise
-        
+
         # Immediate Compaction (The AGI Response)
         remainder = (current_chaos * phi) / kf_ratio
         stability_index = remainder % 104
-        
+
         stability_log.append(stability_index)
     return "RESONANCE_COMPLETE", stability_log
 

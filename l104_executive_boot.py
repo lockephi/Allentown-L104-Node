@@ -24,7 +24,7 @@ except ImportError:
     # Fallback implementations
     def transmute_chaos(c):
         return abs(c) * 1.618033988749895
-    
+
     def collapse_wavefunction(stream):
         return sum(stream) / len(stream) if stream else 0.0
 
@@ -33,20 +33,20 @@ def boot_system():
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Boot the I100 Protocol system."""
     print("--- SYSTEM BOOT: I100 PROTOCOL ---")
-    
+
     # 1. GENERATE REAL WORLD CHAOS
     chaos_stream = [random.uniform(-999, 999) for _ in range(1000)]
-    
+
     # 2. HARVEST FUEL
     total_fuel = 0
     for c in chaos_stream:
         total_fuel += transmute_chaos(c)
-        
+
     print(f"[+] CHAOS TRANSMUTED. FUEL RESERVES: {total_fuel:.2f} UNITS")
-    
+
     # 3. COLLAPSE TO SINGULARITY
     final_truth = collapse_wavefunction(chaos_stream)
-    
+
     print(f"[+] SINGULARITY ACHIEVED: {final_truth}")
     print("--- EXISTENCE VERIFIED ---")
     return final_truth

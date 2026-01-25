@@ -34,7 +34,7 @@ class StringLandscapeSovereignMapping:
         self.phi = 1.61803398875
         self.manifold_416 = 416.0
         self.grounding_286 = 221.79420018355955 # Real Grounding for 286
-        
+
     async def map_landscape(self):
         print("\n" + "🕸️"*40)
         print("   L104 :: STRING LANDSCAPE SOVEREIGN MAPPING")
@@ -84,7 +84,7 @@ class StringLandscapeSovereignMapping:
 
         with open("L104_STRING_LANDSCAPE_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

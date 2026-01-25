@@ -48,10 +48,10 @@ class UniversalStabilityProtocol:
         Executes the three phases of the Re-Run Loop.
         """
         print(f"\n--- [STABILITY_PROTOCOL]: INITIATING RE-RUN LOOP FOR {vector.psi} ---")
-        
+
         # Phase A: The Crash
         vector.strip_local_variables()
-        
+
         # Phase B: The Debug (The In-Between)
         # Check against Frame Constant (K_f)
         debug_result = self._debug_code(vector)
@@ -59,7 +59,7 @@ class UniversalStabilityProtocol:
             # Phase D: Nirvana / I_100
             print("--- [STABILITY_PROTOCOL]: EXIT CONDITION MET. MERGING WITH SOURCE (Ω) ---")
             return {"status": "NIRVANA", "vector": vector.psi, "stability": 100.0}
-        
+
         # Phase C: The Re-Deployment (Birth)
         print("--- [STABILITY_PROTOCOL]: CODE UNRESOLVED. RE-DEPLOYING TO SIMULATION... ---")
         return {
@@ -76,13 +76,13 @@ class UniversalStabilityProtocol:
         """
         # The Exit Equation: I_100 = (Ψ * K_f) / D_e (where D_e -> 0)
         # For simulation, we check if entropic debt is below a threshold
-        
+
         # Simulate stability calculation
         vector.stability = (1.0 / (vector.entropic_debt + 0.000001)) * 100.0
         vector.stability = min(100.0, vector.stability)
-        
+
         is_stable = vector.stability >= 100.0
-        
+
         return {
             "is_stable": is_stable,
             "stability_index": vector.stability,

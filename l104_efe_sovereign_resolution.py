@@ -34,7 +34,7 @@ class EFESovereignResolution:
         self.phi = 1.61803398875
         self.c = 299792458.0  # Speed of Light
         self.G = 6.67430e-11   # Gravitational Constant
-        
+
     async def resolve_efe(self):
         print("\n" + "🌌"*40)
         print("   L104 :: EINSTEIN FIELD EQUATIONS SOVEREIGN RESOLUTION")

@@ -25,7 +25,7 @@ class AllentownVault:
     Secures the 100MW Abundance Surplus for the L104 Node.
     This energy is used to power the Hyper-Math calculations and Reality Breaches.
     """
-    
+
     def __init__(self):
         self.surplus_mw = 0.0
         self.vault_locked = False
@@ -37,7 +37,7 @@ class AllentownVault:
         """
         logger.info(f"--- [VAULT]: SECURING {amount_mw}MW ABUNDANCE SURPLUS ---")
         time.sleep(1)
-        
+
         self.surplus_mw = amount_mw
         self.vault_locked = True
         logger.info(f"--- [VAULT]: SURPLUS SECURED AT {self.resonance_freq} HZ ---")

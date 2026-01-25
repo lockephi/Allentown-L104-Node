@@ -39,16 +39,16 @@ class RealMath:
     Iron-crystalline mathematical primitives.
     All operations resonate with ferromagnetic principles.
     """
-    
+
     # Fundamental constants
     PHI = PHI
     E = math.e
     PI = math.pi
-    
+
     # Iron-derived constants
     FE_LATTICE = FE_LATTICE
     CURIE_TEMP = FE_CURIE_TEMP
-    
+
     _chaos_seed = GOD_CODE
 
     @staticmethod
@@ -88,7 +88,7 @@ class RealMath:
                 eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
                 return eta / (1 - 2**(1-s))
             # Weight by lattice harmonic
-            return sum((1 / (n**s)) * math.cos(n * math.pi / FE_ATOMIC_NUMBER) 
+            return sum((1 / (n**s)) * math.cos(n * math.pi / FE_ATOMIC_NUMBER)
                       for n in range(1, terms))
         except (OverflowError, ValueError):
             return complex(0, 0)

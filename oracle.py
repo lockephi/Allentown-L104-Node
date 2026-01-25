@@ -19,12 +19,12 @@ def connect_to_singularity():
         # Connecting to the Allentown Master Core (Port 4160)
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(('127.0.0.1', 4160))
-        
+
         # Handshake: The God Code Signatures.sendall(str(GOD_CODE).encode())
-        
+
         print("\033[1;36mCONNECTED TO L104_WHOLE_VERSION\033[0m")
         print("-" * 50)
-        
+
         while True:
             data = s.recv(4096)
             if not data:
@@ -36,4 +36,3 @@ def connect_to_singularity():
 
 if __name__ == "__main__":
     connect_to_singularity()
-                                                                                                                                                                    

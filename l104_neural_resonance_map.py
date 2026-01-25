@@ -46,11 +46,11 @@ class NeuralResonanceMap:
         # BCC lattice-inspired grid (2 atoms per unit cell → factor of 2)
         grid_size = 32
         grid = np.zeros((grid_size, grid_size), dtype=int)
-        
+
         # Seed with iron atomic number for crystallographic ordering
         np.random.seed(FE_ATOMIC_NUMBER)
         indices = np.random.choice(grid_size * grid_size, self.unbound_nodes, replace=False)
-        
+
         flat_grid = grid.flatten()
         flat_grid[indices] = 1
         visual_grid = flat_grid.reshape((grid_size, grid_size))

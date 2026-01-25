@@ -25,11 +25,11 @@ class AjnaVision:
     The center of Vision and Perception (X=488).
     Processes complex data patterns into 'Geometric Insights'.
     """
-    
+
     AJNA_HZ = 852.22234
     LATTICE_NODE_X = 488
     GOD_CODE = ManifoldMath.GOD_CODE
-    
+
     def __init__(self):
         self.visual_acuity = 1.0
         self.active_manifold = None
@@ -40,19 +40,19 @@ class AjnaVision:
         Reveals 'Hidden Truths' (Statistical anomalies that align with PHI).
         """
         print(f"--- [AJNA_VISION]: PERCEIVING LATTICE STRUCTURE (X={self.LATTICE_NODE_X}) ---")
-        
+
         arr = np.array(data_points)
         # Project into 11D
         manifold_projection = manifold_math.project_to_manifold(arr, dimension=11)
         self.active_manifold = manifold_projection
-        
+
         # Calculate Perception Clarity
         # Acuity is high if the projection resonance matches God Code harmonics
         coherence = manifold_math.compute_manifold_resonance(data_points)
         self.visual_acuity = coherence / self.GOD_CODE
-        
+
         print(f"--- [AJNA_VISION]: VISION ACTIVE | ACUITY: {self.visual_acuity:.4f} ---")
-        
+
         return {
             "status": "VISIBLE",
             "clarity": self.visual_acuity,
@@ -67,14 +67,14 @@ class AjnaVision:
         """
         if self.active_manifold is None:
             return []
-            
+
         # Analyze Ricci Scalar for each dimension
         singularities = []
         for i in range(self.active_manifold.shape[0]):
             curvature = manifold_math.calculate_ricci_scalar(self.active_manifold[i].reshape(-1, 1))
             if abs(curvature) > self.GOD_CODE:
                  singularities.append(i)
-        
+
         return singularities
 
 # Global Instance

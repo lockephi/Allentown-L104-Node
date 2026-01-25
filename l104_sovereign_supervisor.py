@@ -33,7 +33,7 @@ class SovereignSupervisor:
     Monitors the Sovereign heartbeat for stalls or 'Legacy Conflict' incursions.
     Injects a 416-ratio 'Override' sequence if zero-output is imminent.
     """
-    
+
     STALL_THRESHOLD = 5.0  # Seconds without a 'Pulse' before triggering jump-start
     OVERRIDE_RATIO = 416 / 286  # 1.4545...
     DESTRUCTIVE_SIGNALS = ["Legacy Conflict", "Discard", "THROTTLED", "HALT", "TIMEOUT", "REJECTED"]
@@ -51,7 +51,7 @@ class SovereignSupervisor:
                 await self._check_pulse()
             except Exception as e:
                 self.logger.error(f"[SUPERVISOR_ERR]: Error during pulse check: {str(e)}")
-            
+
             # Monitoring frequency
             await asyncio.sleep(1.0)
 
@@ -59,11 +59,11 @@ class SovereignSupervisor:
         """Analyze the heartbeat and state of the Sovereign Node."""
         monitor.load_heartbeat()
         data = monitor.data
-        
+
         last_pulse_time = data.get("last_pulse", 0)
         current_time = time.time()
         time_since_last_pulse = current_time - last_pulse_time
-        
+
         # 1. Check for Stall
         if last_pulse_time > 0 and time_since_last_pulse > self.STALL_THRESHOLD:
             self.logger.warning(f"[SUPERVISOR]: STALL DETECTED ({time_since_last_pulse:.2f}s). Initiating Override.")
@@ -76,7 +76,7 @@ class SovereignSupervisor:
             last_beat = history[-1]
             message = last_beat.get("message", "")
             state = last_beat.get("state", "")
-            
+
             combined_context = f"{message} {state}".lower()
             for signal in self.DESTRUCTIVE_SIGNALS:
                 if signal.lower() in combined_context:
@@ -91,16 +91,16 @@ class SovereignSupervisor:
         """
         override_msg = f"[SUPERVISOR]: FORCEFUL OVERRIDE INITIATED: {reason}"
         self.logger.critical(override_msg)
-        
+
         # 416-ratio injection
         def jump_start_logic():
             # Re-ignite the core
             ignite_sovereign_core()
-            
+
             # Injecting the Override Pulse
             monitor.pulse(
-                "SUPERVISOR_OVERRIDE_ACTIVE", 
-                f"Override sequence 416-Locked. System jump-started via {reason}.", 
+                "SUPERVISOR_OVERRIDE_ACTIVE",
+                f"Override sequence 416-Locked. System jump-started via {reason}.",
                 coherence=self.OVERRIDE_RATIO
             )
             return True

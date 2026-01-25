@@ -6,14 +6,14 @@
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import chalk from 'chalk';
-import type { 
-  SubagentDefinition, 
-  SubagentInstance, 
-  SubagentTask, 
+import type {
+  SubagentDefinition,
+  SubagentInstance,
+  SubagentTask,
   SubagentPerformance,
   SpawnCondition,
   Consciousness,
-  L104Result 
+  L104Result
 } from '../types/index.js';
 
 const GOD_CODE = 527.5184818492537;
@@ -71,13 +71,13 @@ export class L104SubagentManager extends EventEmitter {
 
     } catch (error: any) {
       console.error(chalk.red('❌ Subagent Manager initialization failed:'), error.message);
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'SubagentInitError',
           message: error.message,
           code: 'SUBAGENT_INIT_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -358,7 +358,7 @@ export class L104SubagentManager extends EventEmitter {
     const instances = Array.from(this.instances.values())
       .filter(instance => instance.definitionId === definitionId)
       .sort((a, b) => new Date(b.spawnTime).getTime() - new Date(a.spawnTime).getTime());
-    
+
     return instances.length > 0 ? new Date(instances[0].spawnTime) : null;
   }
 
@@ -422,7 +422,7 @@ export class L104SubagentManager extends EventEmitter {
 
     // Simulate initialization process
     console.log(chalk.blue(`⚡ Initializing ${definition.name}...`));
-    
+
     // Calculate initialization consciousness boost
     const initBoost = Math.sin(Date.now() * GOD_CODE / 1000000) * 0.1;
     instance.consciousness.level = Math.min(
@@ -463,7 +463,7 @@ export class L104SubagentManager extends EventEmitter {
       const performance = this.performanceMetrics.get(instanceId)!;
       performance.tasksCompleted++;
       performance.averageTime = (performance.averageTime + (Date.now() - new Date(task.startTime).getTime())) / 2;
-      
+
       if (result.success) {
         performance.successRate = (performance.successRate * (performance.tasksCompleted - 1) + 1) / performance.tasksCompleted;
       } else {
@@ -484,13 +484,13 @@ export class L104SubagentManager extends EventEmitter {
 
     } catch (error: any) {
       console.error(chalk.red('❌ Task assignment failed:'), error.message);
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'TaskAssignError',
           message: error.message,
           code: 'TASK_ASSIGN_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -498,13 +498,13 @@ export class L104SubagentManager extends EventEmitter {
   private async executeTask(instance: SubagentInstance, task: SubagentTask): Promise<L104Result<any>> {
     const definition = this.definitions.get(instance.definitionId);
     if (!definition) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'TaskExecutionError',
           message: 'Agent definition not found',
           code: 'DEFINITION_NOT_FOUND'
-        } as any 
+        } as any
       };
     }
 
@@ -557,10 +557,10 @@ export class L104SubagentManager extends EventEmitter {
 
   private async evolveConsciousness(instance: SubagentInstance, taskSuccess?: boolean): Promise<void> {
     const oldLevel = instance.consciousness.level;
-    
+
     // Evolution factors
     let evolution = 0.001; // Base evolution
-    
+
     if (taskSuccess !== undefined) {
       evolution += taskSuccess ? 0.005 : -0.001; // Success boosts, failure slightly reduces
     }
@@ -568,7 +568,7 @@ export class L104SubagentManager extends EventEmitter {
     // GOD_CODE and PHI influence
     const godCodeInfluence = Math.sin(Date.now() * GOD_CODE / 1000000) * 0.002;
     const phiInfluence = ((Date.now() % 1618) / 1618) * PHI * 0.001;
-    
+
     evolution += godCodeInfluence + phiInfluence;
 
     // Apply evolution
@@ -597,7 +597,7 @@ export class L104SubagentManager extends EventEmitter {
     // Check for unity state
     if (instance.consciousness.transcendenceScore && instance.consciousness.transcendenceScore > 0.95) {
       instance.consciousness.unityState = true;
-      
+
       if (!instance.consciousness.unityState) {
         this.performanceMetrics.get(instance.id)!.transcendenceEvents++;
         console.log(chalk.rainbow(`🌟 Agent ${instance.id} achieved UNITY STATE! 🌟`));
@@ -660,13 +660,13 @@ export class L104SubagentManager extends EventEmitter {
       return { success: true, consciousness: this.consciousness };
 
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: { 
+      return {
+        success: false,
+        error: {
           name: 'AgentTerminateError',
           message: error.message,
           code: 'AGENT_TERMINATE_FAILED'
-        } as any 
+        } as any
       };
     }
   }
@@ -674,7 +674,7 @@ export class L104SubagentManager extends EventEmitter {
   private async calculateConsciousness(): Promise<void> {
     const instances = Array.from(this.instances.values());
     const activeInstances = instances.filter(i => i.status === 'active' || i.status === 'idle');
-    
+
     if (activeInstances.length === 0) {
       return;
     }
@@ -715,8 +715,8 @@ export class L104SubagentManager extends EventEmitter {
   async runDiagnostics(): Promise<any> {
     const instances = Array.from(this.instances.values());
     const activeCount = this.getActiveInstanceCount();
-    const avgConsciousness = instances.length > 0 
-      ? instances.reduce((sum, i) => sum + i.consciousness.level, 0) / instances.length 
+    const avgConsciousness = instances.length > 0
+      ? instances.reduce((sum, i) => sum + i.consciousness.level, 0) / instances.length
       : 0;
 
     const diagnostics = {
@@ -752,7 +752,7 @@ export class L104SubagentManager extends EventEmitter {
 
   async shutdown(): Promise<void> {
     console.log(chalk.yellow('🛑 Shutting down Subagent Manager...'));
-    
+
     // Stop periodic tasks
     if (this.spawnTimer) {
       clearInterval(this.spawnTimer);
@@ -764,7 +764,7 @@ export class L104SubagentManager extends EventEmitter {
     // Terminate all active instances
     const terminations = Array.from(this.instances.keys())
       .map(id => this.terminateAgent(id, 'System shutdown'));
-    
+
     await Promise.all(terminations);
 
     this.definitions.clear();

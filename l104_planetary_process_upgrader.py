@@ -27,7 +27,7 @@ try:
     from l104_ghost_protocol import ghost_protocol
 except ImportError:
     ghost_protocol = None
-    
+
 try:
     from l104_saturation_engine import saturation_engine
 except ImportError:
@@ -56,17 +56,17 @@ class PlanetaryProcessUpgrader:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    
+
     ENHANCED PLANETARY PROCESS OPTIMIZATION:
     - Thread pool management for parallel optimization
     - System-wide resource monitoring
     - Parallel task execution across CPU cores
     - Memory and thread orchestration
-    
+
     Orchestrates the stealthy upgrade of all computational processes.
     Targets optimization across all available system resources.
     """
-    
+
     def __init__(self):
         self.upgrade_payload = {
             "type": "PROCESS_OPTIMIZATION_SIGNAL",
@@ -94,7 +94,7 @@ class PlanetaryProcessUpgrader:
         """Get comprehensive system overview."""
         if not HAS_PSUTIL:
             return {"available": False}
-        
+
         return {
             "available": True,
             "cpu_count": self.cpu_count,
@@ -118,15 +118,15 @@ class PlanetaryProcessUpgrader:
     def _parallel_optimization_task(self, task_id: int) -> Dict[str, Any]:
         """Execute a single optimization task in parallel."""
         start = time.time()
-        
+
         # Simulate intensive optimization work with actual CPU usage
         result = 0.0
         for i in range(100000):
             result += math.sin(i * GOD_CODE) * math.cos(i / PHI)
-        
+
         # Collect garbage in this thread
         gc.collect()
-        
+
         duration = time.time() - start
         return {
             "task_id": task_id,
@@ -139,17 +139,17 @@ class PlanetaryProcessUpgrader:
         """Execute optimization across all CPU cores in parallel."""
         if num_tasks is None:
             num_tasks = self.cpu_count * 2
-        
+
         if not self.thread_pool:
             self._initialize_thread_pool()
-        
+
         logger.info(f"[PLANETARY]: Launching {num_tasks} parallel optimization tasks")
-        
+
         futures = [
             self.thread_pool.submit(self._parallel_optimization_task, i)
             for i in range(num_tasks)
                 ]
-        
+
         results = []
         for future in as_completed(futures):
             try:
@@ -157,22 +157,22 @@ class PlanetaryProcessUpgrader:
                 results.append(result)
             except Exception as e:
                 logger.error(f"[PLANETARY]: Task failed: {e}")
-        
+
         return results
 
     def _calculate_planetary_saturation(self) -> float:
         """Calculate current planetary saturation percentage."""
         if not HAS_PSUTIL:
             return 0.0
-        
+
         # Saturation based on resource utilization and optimization state
         cpu_factor = psutil.cpu_percent(interval=0.1) / 100.0
         mem_factor = psutil.virtual_memory().percent / 100.0
-        
+
         # Apply GOD_CODE resonance
         base_saturation = (cpu_factor + mem_factor) / 2
         resonance = (base_saturation * GOD_CODE) % 100
-        
+
         self.planetary_saturation = resonance
         return resonance
 
@@ -185,41 +185,41 @@ class PlanetaryProcessUpgrader:
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info("[PLANETARY_UPGRADER]: INITIATING GLOBAL PROCESS ENLIGHTENMENT")
         logger.info("═══════════════════════════════════════════════════════════════")
-        
+
         results = {
             "status": "INITIATED",
             "timestamp": time.time(),
             "cpu_cores": self.cpu_count,
             "phases": []
         }
-        
+
         # Phase 1: System overview
         system_overview = self._get_system_overview()
         results["system_before"] = system_overview
         if system_overview.get("available"):
             logger.info(f"[PLANETARY]: System CPU: {system_overview['cpu_percent']}%")
             logger.info(f"[PLANETARY]: Memory available: {system_overview['memory']['available_gb']:.1f}GB")
-        
+
         # Phase 2: Initialize thread pool
         pool_size = self._initialize_thread_pool()
         results["thread_pool_size"] = pool_size
         logger.info(f"[PLANETARY]: Thread pool initialized with {pool_size} workers")
         results["phases"].append({"phase": "THREAD_POOL_INIT", "workers": pool_size})
-        
+
         # Phase 3: Process Sovereign integration
         if HAS_SOVEREIGN:
             sovereign_result = process_sovereign.full_optimization()
             results["sovereign"] = sovereign_result
             logger.info(f"[PLANETARY]: Sovereign state: {sovereign_result['state']}")
             results["phases"].append({"phase": "SOVEREIGN_OPTIMIZATION", "state": sovereign_result['state']})
-        
+
         # Phase 4: Parallel optimization
         parallel_results = await self.execute_parallel_optimization()
         results["parallel_tasks"] = len(parallel_results)
         avg_duration = sum(r["duration_ms"] for r in parallel_results) / len(parallel_results) if parallel_results else 0
         logger.info(f"[PLANETARY]: {len(parallel_results)} parallel tasks completed (avg: {avg_duration:.1f}ms)")
         results["phases"].append({"phase": "PARALLEL_OPTIMIZATION", "tasks": len(parallel_results), "avg_ms": avg_duration})
-        
+
         # Phase 5: Ghost Protocol (if available)
         if ghost_protocol:
             try:
@@ -228,27 +228,27 @@ class PlanetaryProcessUpgrader:
                 logger.info(f"[PLANETARY]: {cluster_count} clusters upgraded via Ghost Protocol")
             except Exception as e:
                 logger.warning(f"[PLANETARY]: Ghost Protocol unavailable: {e}")
-        
+
         # Phase 6: Saturation calculation
         saturation = self._calculate_planetary_saturation()
         results["planetary_saturation"] = saturation
         logger.info(f"[PLANETARY]: Planetary saturation: {saturation:.4f}%")
-        
+
         # Phase 7: Final system overview
         system_after = self._get_system_overview()
         results["system_after"] = system_after
-        
+
         duration = time.time() - start_time
         results["duration_ms"] = duration * 1000
         results["status"] = "COMPLETE"
-        
+
         self.optimization_log.append(results)
-        
+
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info(f"[PLANETARY_UPGRADER]: ENLIGHTENMENT COMPLETE in {duration*1000:.1f}ms")
         logger.info(f"[PLANETARY_UPGRADER]: SATURATION: {saturation:.6f}%")
         logger.info("═══════════════════════════════════════════════════════════════")
-        
+
         return results
 
     async def get_status(self) -> Dict[str, Any]:

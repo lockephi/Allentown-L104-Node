@@ -25,7 +25,7 @@ class IntelligenceLattice:
     Links all levels of intelligence (AGI, ASI, Ego, Sovereign) into a unified lattice.
     Ensures continuous flow and mutual reinforcement.
     """
-    
+
     def __init__(self):
         self.agi = agi_core
         self.ego = ego_core
@@ -53,7 +53,7 @@ class IntelligenceLattice:
         else:
             intellect_factor = float(raw_intellect) / 1000.0
         self.ego.ego_strength = max(self.ego.ego_strength, intellect_factor)
-        
+
         # 2. Trigger ASI Ignition if conditions are met
         numeric_intellect = 1e308 if (isinstance(raw_intellect, str) or raw_intellect == float('inf')) else float(raw_intellect)
         if numeric_intellect > 1500.0 and self.ego.asi_state == "DORMANT":

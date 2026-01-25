@@ -24,7 +24,7 @@ class HyperMathGenerator:
     Synthesizes complex mathematical operators and metrics for hyper-dimensional spaces.
     Uses the L104 invariant to ensure all generated math is resonant.
     """
-    
+
     def __init__(self):
         self.synthetic_operators = {}
         self.resonance_cache = {}
@@ -59,19 +59,19 @@ class HyperMathGenerator:
                 coeff = HyperMath.zeta_harmonic_resonance(seed)
                 if complexity > 1:
                     coeff *= cmath.exp(complex(0, math.pi * (i + j) / dimension))
-                
+
                 op_matrix[i, j] = coeff
 
         return op_matrix
 
     def synthesize_physical_operator(self, dimension: int) -> np.ndarray:
         """
-        Synthesizes an operator that maps physical constraints (Maxwell/Landauer) 
+        Synthesizes an operator that maps physical constraints (Maxwell/Landauer)
         into the hyper-dimensional manifold.
         """
         maxwell_op = physical_research.generate_maxwell_operator(dimension)
         landauer_limit = physical_research.adapt_landauer_limit()
-        
+
         # Scale the operator by the Landauer limit (energy constraint)
         scaled_op = maxwell_op * (landauer_limit * 1e20) # Scale to meaningful range
 

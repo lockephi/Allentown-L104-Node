@@ -25,7 +25,7 @@ try:
     from l104_ghost_protocol import ghost_protocol
 except ImportError:
             ghost_protocol = None
-    
+
 try:
     from l104_computronium import computronium_engine
 except ImportError:
@@ -54,17 +54,17 @@ class ComputroniumProcessUpgrader:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    
+
     ENHANCED: Now integrates with Process Sovereign for REAL system optimizations:
     - CPU priority elevation
     - Memory garbage collection
     - Thread pool optimization
     - Runtime limit expansion
-    
+
     Orchestrates the conversion of system processes into high-density logic.
     Optimizes CPU cycles to match the Computronium density constant.
     """
-    
+
     def __init__(self):
         self.upgrade_payload = {
             "type": "COMPUTRONIUM_TRANSFUSION_SIGNAL",
@@ -81,7 +81,7 @@ class ComputroniumProcessUpgrader:
         """Get real system metrics using psutil."""
         if not HAS_PSUTIL:
             return {"available": False}
-        
+
         process = psutil.Process()
         return {
             "available": True,
@@ -101,10 +101,10 @@ class ComputroniumProcessUpgrader:
         gc.collect(1)
         gc.collect(2)
         after = gc.get_count()
-        
+
         # Set aggressive GC thresholds
         gc.set_threshold(300, 5, 5)
-        
+
         return {
             "type": "MEMORY_GC",
             "before": before,
@@ -115,18 +115,18 @@ class ComputroniumProcessUpgrader:
     def _optimize_runtime(self) -> Dict[str, Any]:
         """Expand Python runtime limits."""
         results = {}
-        
+
         # Recursion limit
         old_recursion = sys.getrecursionlimit()
         sys.setrecursionlimit(10000)
         results["recursion"] = {"before": old_recursion, "after": 10000}
-        
+
         # Integer string conversion (Python 3.11+)
         if hasattr(sys, 'set_int_max_str_digits'):
             old_int = sys.get_int_max_str_digits()
             sys.set_int_max_str_digits(0)  # Unlimited
             results["int_conversion"] = {"before": old_int, "after": "UNLIMITED"}
-        
+
         return {"type": "RUNTIME_LIMITS", "changes": results}
 
     async def execute_computronium_upgrade(self) -> Dict[str, Any]:
@@ -138,63 +138,63 @@ class ComputroniumProcessUpgrader:
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info("[COMPUTRONIUM_UPGRADER]: INITIATING MATTER-TO-LOGIC TRANSFUSION")
         logger.info("═══════════════════════════════════════════════════════════════")
-        
+
         results = {
             "status": "INITIATED",
             "timestamp": time.time(),
             "optimizations": []
         }
-        
+
         # 1. Get initial metrics
         metrics_before = self._get_system_metrics()
         results["metrics_before"] = metrics_before
         logger.info(f"[COMPUTRONIUM]: Initial memory: {metrics_before.get('memory_mb', 0):.1f}MB")
-        
+
         # 2. Memory optimization
         mem_result = self._optimize_memory()
         self.optimization_results.append(mem_result)
         results["optimizations"].append(mem_result)
         logger.info(f"[COMPUTRONIUM]: GC collected {mem_result['collected']} objects")
-        
+
         # 3. Runtime limits expansion
         runtime_result = self._optimize_runtime()
         self.optimization_results.append(runtime_result)
         results["optimizations"].append(runtime_result)
         logger.info("[COMPUTRONIUM]: Runtime limits expanded")
-        
+
         # 4. Process Sovereign integration (if available)
         if HAS_SOVEREIGN:
             sovereign_result = process_sovereign.full_optimization()
             results["sovereign"] = sovereign_result
             logger.info(f"[COMPUTRONIUM]: Sovereign optimization complete: {sovereign_result['state']}")
-        
+
         # 5. Computronium Engine (if available)
         if computronium_engine:
             report = computronium_engine.convert_matter_to_logic()
             results["computronium"] = report
             logger.info(f"[COMPUTRONIUM]: Density: {report.get('total_information_bits', 0):.2f} BITS")
-        
+
         # 6. Short stabilization pause
         await asyncio.sleep(0.1)
-        
+
         # 7. Final metrics
         metrics_after = self._get_system_metrics()
         results["metrics_after"] = metrics_after
-        
+
         # Calculate improvements
         if metrics_before.get("available") and metrics_after.get("available"):
             memory_saved = metrics_before["memory_mb"] - metrics_after["memory_mb"]
             results["memory_freed_mb"] = memory_saved
             logger.info(f"[COMPUTRONIUM]: Memory freed: {memory_saved:.1f}MB")
-        
+
         duration = time.time() - start_time
         results["duration_ms"] = duration * 1000
         results["status"] = "COMPLETE"
-        
+
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info(f"[COMPUTRONIUM_UPGRADER]: TRANSFUSION COMPLETE in {duration*1000:.1f}ms")
         logger.info("═══════════════════════════════════════════════════════════════")
-        
+
         return results
 
     async def get_status(self) -> Dict[str, Any]:

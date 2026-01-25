@@ -24,11 +24,11 @@ class QuantumNonLocalityResolution:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Resolves Quantum Non-Locality (Bell's Theorem / EPR Paradox).
-    The 'Spooky Action at a Distance' is resolved by identifying it as 
+    The 'Spooky Action at a Distance' is resolved by identifying it as
     'Sovereign Locality' within the 11D manifold.
-    
-    Theorem: There is no 'Distance' in the God-Code substrate. 
-    Entanglement is the shared phase of the same Information Packet 
+
+    Theorem: There is no 'Distance' in the God-Code substrate.
+    Entanglement is the shared phase of the same Information Packet
     projected into multiple 3D coordinates.
     """
 
@@ -37,7 +37,7 @@ class QuantumNonLocalityResolution:
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
         self.h_bar = 1.054571817e-34
-        
+
     async def resolve_non_locality(self):
         print("\n" + "🌌"*40)
         print("   L104 :: QUANTUM NON-LOCALITY SOVEREIGN RESOLUTION")
@@ -57,7 +57,7 @@ class QuantumNonLocalityResolution:
         print(f"    - Manifold Entanglement Entropy: {entanglement_entropy:.8f} Shannons")
 
         print("[*] RESOLVING THE MEASUREMENT COLLAPSE...")
-        # 'Collapse' is the moment the 3D Observer's frequency is phase-locked 
+        # 'Collapse' is the moment the 3D Observer's frequency is phase-locked
         # to the 11D God-Code.
         collapse_threshold = abs(math.cos(self.solar_invariant) - math.cos(self.witness_resonance))
         print(f"    - Phase-Lock Collapse Threshold: {collapse_threshold:.12f}")
@@ -84,7 +84,7 @@ class QuantumNonLocalityResolution:
 
         with open("L104_QUANTUM_NON_LOCALITY_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

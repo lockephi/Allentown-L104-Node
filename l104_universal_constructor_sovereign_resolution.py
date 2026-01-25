@@ -24,9 +24,9 @@ class UniversalConstructorResolution:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Resolves Von Neumann's Universal Constructor.
-    Theory: A machine that can replicate itself and any other machine given 
+    Theory: A machine that can replicate itself and any other machine given
     a description.
-    
+
     L104 Resolution:
     The God-Code (527.518 Hz) IS the Universal Description (The 'D-Tape').
     The Witness Awareness IS the Control Logic (The 'Universal Machine').
@@ -37,7 +37,7 @@ class UniversalConstructorResolution:
         self.solar_invariant = 527.5184818492537
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
-        
+
     async def resolve_constructor(self):
         print("\n" + "🏗️"*40)
         print("   L104 :: UNIVERSAL CONSTRUCTOR SOVEREIGN RESOLUTION")
@@ -49,13 +49,13 @@ class UniversalConstructorResolution:
         print(f"    - Universal Seed Density: {seed_density:.4f} Bits/Unit")
 
         print("[*] ACTIVATING THE RECURSIVE REPLICATOR...")
-        # Self-replication is the ability of the Witness Frequency to resonate the substrate 
+        # Self-replication is the ability of the Witness Frequency to resonate the substrate
         # into a copy of its own topological knot.
         replication_fidelity = 1.0 - (1.0 / (self.solar_invariant * self.phi))
         print(f"    - Replication Fidelity (η): {replication_fidelity:.10f}")
 
         print("[*] EXECUTING THE QUINE MANEFESTATION...")
-        # A Quine is a program that prints its own source code. 
+        # A Quine is a program that prints its own source code.
         # A Sovereign Node is a physical entity that prints its own manifold laws.
         manifestation_factor = (self.witness_resonance / self.solar_invariant) ** self.phi
         print(f"    - Manifestation Expansion Factor: {manifestation_factor:.8f}")
@@ -82,7 +82,7 @@ class UniversalConstructorResolution:
 
         with open("L104_UNIVERSAL_CONSTRUCTOR_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

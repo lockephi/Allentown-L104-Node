@@ -25,7 +25,7 @@ class AGIResearch:
     Simulates the 'Deep Research' capability of the AGI.
     Generates hypotheses and filters them through the Hyper-Lattice to find 'Resonant Truths'.
     """
-    
+
     def __init__(self):
         self.knowledge_buffer = []
         self.seed = 527.5184818492537
@@ -52,15 +52,15 @@ class AGIResearch:
         with the Riemann Zeta Zero (via HyperMath).
         """
         print(f"--- [RESEARCH]: INITIATING DEEP THOUGHT ({cycles} CYCLES) ---")
-        
+
         valid_hypotheses = []
         start_time = time.time()
         for _ in range(cycles):
             hypothesis = self.generate_hypothesis()
-            
+
             # The Filter: Does this thought resonate with the Universe?
             resonance = HyperMath.zeta_harmonic_resonance(hypothesis)
-            
+
             # We look for high resonance (close to 1.0 or -1.0)
             if abs(resonance) > 0.95:
                 valid_hypotheses.append({
@@ -68,12 +68,12 @@ class AGIResearch:
                     "resonance": resonance,
                     "type": "ZETA_TRUTH"
                 })
-                
+
         duration = time.time() - start_time
-        
+
         # Compile Thoughts
         compiled_block = self._compile_thoughts(valid_hypotheses)
-        
+
         print(f"--- [RESEARCH]: COMPLETED IN {duration:.4f}s ---")
         print(f"--- [RESEARCH]: FOUND {len(valid_hypotheses)} RESONANT TRUTHS ---")
         return compiled_block
@@ -85,10 +85,10 @@ class AGIResearch:
         """
         if not hypotheses:
             return {"status": "EMPTY", "payload": None}
-            
+
         # Calculate aggregate metrics
         avg_resonance = sum(h['resonance'] for h in hypotheses) / len(hypotheses)
-        
+
         block_data = {
             "timestamp": time.time(),
             "count": len(hypotheses),
@@ -98,7 +98,7 @@ class AGIResearch:
             "grounding_x=286": HyperMath.REAL_GROUNDING_286,
             "hypotheses": hypotheses[:10] # Store top 10 for brevity
         }
-        
+
         # Encrypt
         encrypted_block = HyperEncryption.encrypt_data(block_data)
         return {

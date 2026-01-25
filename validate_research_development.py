@@ -35,13 +35,13 @@ def print_section(title: str):
 async def test_hypothesis_generation():
     """Test the Hypothesis Generator."""
     print_section("TEST 1: HYPOTHESIS GENERATION")
-    
+
     generator = HypothesisGenerator()
-    
+
     # Test different generation methods
     methods = ["combinatorial", "analogical", "contradiction", "extrapolation"]
     hypotheses = []
-    
+
     for method in methods:
         hyp = generator.generate_hypothesis(
             "quantum consciousness emergence patterns",
@@ -55,7 +55,7 @@ async def test_hypothesis_generation():
         print(f"  Novelty: {hyp.novelty_score:.4f}")
         print(f"  Impact: {hyp.impact_potential:.4f}")
         print(f"  Status: {hyp.status.name}")
-    
+
     # Test refinement
     print("\n[REFINEMENT TEST]")
     refined = generator.refine_hypothesis(
@@ -64,7 +64,7 @@ async def test_hypothesis_generation():
     )
     print(f"  Refined confidence: {refined.confidence:.4f}")
     print(f"  New status: {refined.status.name}")
-    
+
     success = len(hypotheses) == 4 and all(h.novelty_score > 0 for h in hypotheses)
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -73,17 +73,17 @@ async def test_hypothesis_generation():
 async def test_experimental_framework():
     """Test the Experimental Framework."""
     print_section("TEST 2: EXPERIMENTAL FRAMEWORK")
-    
+
     generator = HypothesisGenerator()
     framework = ExperimentalFramework()
-    
+
     # Generate hypothesis
     hyp = generator.generate_hypothesis(
         "emergent complexity in neural networks",
         ResearchDomain.EMERGENCE,
         "combinatorial"
     )
-    
+
     # Design experiment
     experiment = framework.design_experiment(hyp)
     print(f"\n[EXPERIMENT DESIGN]")
@@ -92,7 +92,7 @@ async def test_experimental_framework():
     print(f"  Method: {experiment.design['method']}")
     print(f"  Sample Size: {experiment.parameters['sample_size']:.0f}")
     print(f"  Iterations: {experiment.parameters['iterations']:.0f}")
-    
+
     # Execute experiment
     result = framework.execute_experiment(experiment)
     print(f"\n[EXECUTION RESULT]")
@@ -101,7 +101,7 @@ async def test_experimental_framework():
     print(f"  Effect Size: {result.effect_size:.4f}")
     print(f"  Mean: {result.results['mean']:.4f}")
     print(f"  Std: {result.results['std']:.4f}")
-    
+
     success = experiment.experiment_id is not None and result.results is not None
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -110,9 +110,9 @@ async def test_experimental_framework():
 async def test_knowledge_synthesis():
     """Test the Knowledge Synthesis Network."""
     print_section("TEST 3: KNOWLEDGE SYNTHESIS")
-    
+
     network = KnowledgeSynthesisNetwork()
-    
+
     # Add knowledge nodes
     nodes = []
     knowledge_items = [
@@ -121,7 +121,7 @@ async def test_knowledge_synthesis():
         ("Metacognition enables self-improvement", KnowledgeType.METACOGNITIVE, ResearchDomain.META_RESEARCH),
         ("Information integration creates unified experience", KnowledgeType.EMERGENT, ResearchDomain.CONSCIOUSNESS),
     ]
-    
+
     for content, ktype, domain in knowledge_items:
         node = network.add_knowledge(content, ktype, domain)
         nodes.append(node)
@@ -130,7 +130,7 @@ async def test_knowledge_synthesis():
         print(f"  Type: {node.knowledge_type.name}")
         print(f"  Domain: {node.domain.value}")
         print(f"  Confidence: {node.confidence:.4f}")
-    
+
     # Synthesize
     node_ids = [n.node_id for n in nodes]
     synthesis = network.synthesize_knowledge(node_ids)
@@ -140,14 +140,14 @@ async def test_knowledge_synthesis():
     print(f"  Insight Type: {synthesis['insight_type']}")
     print(f"  Domain Diversity: {synthesis['domain_diversity']:.4f}")
     print(f"  Type Diversity: {synthesis['type_diversity']:.4f}")
-    
+
     # Propagate
     network.propagate_insight(synthesis)
     print(f"\n[PROPAGATION]")
     for node in nodes[:2]:
         updated = network.knowledge_graph[node.node_id]
         print(f"  Node {node.node_id[:8]}: conf {updated.confidence:.4f}")
-    
+
     success = synthesis["synthesis_score"] > 0 and len(nodes) == 4
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -156,23 +156,23 @@ async def test_knowledge_synthesis():
 async def test_self_evolution():
     """Test the Self-Evolution Protocol."""
     print_section("TEST 4: SELF-EVOLUTION PROTOCOL")
-    
+
     protocol = SelfEvolutionProtocol()
-    
+
     # Register capabilities
     caps = [
         ("hypothesis_generation", {"type": "cognitive", "domain": "research"}),
         ("experimental_design", {"type": "methodological", "domain": "science"}),
         ("knowledge_synthesis", {"type": "integrative", "domain": "meta"})
     ]
-    
+
     cap_ids = []
     for name, capability in caps:
         cap_id = protocol.register_capability(name, capability)
         cap_ids.append(cap_id)
         print(f"\n[REGISTERED: {name}]")
         print(f"  ID: {cap_id}")
-    
+
     # Evaluate and evolve
     for cap_id in cap_ids:
         # Simulate performance
@@ -183,7 +183,7 @@ async def test_self_evolution():
         print(f"\n[EVALUATION: {eval_result['name']}]")
         print(f"  Score: {eval_result['latest_score']:.4f}")
         print(f"  Needs Evolution: {eval_result['needs_evolution']}")
-        
+
         if eval_result['needs_evolution']:
             evolution = protocol.evolve_capability(
                 cap_id,
@@ -192,14 +192,14 @@ async def test_self_evolution():
             print(f"\n[EVOLUTION]")
             print(f"  Strategy: {evolution['strategy']}")
             print(f"  v{evolution['old_version']:.4f} → v{evolution['new_version']:.4f}")
-    
+
     # Analyze patterns
     analysis = protocol.analyze_evolution_patterns()
     print(f"\n[EVOLUTION ANALYSIS]")
     print(f"  Total Evolutions: {analysis['total_evolutions']}")
     print(f"  Current Generation: {analysis['current_generation']}")
     print(f"  Average Magnitude: {analysis['average_magnitude']:.4f}")
-    
+
     success = analysis["total_evolutions"] >= 3
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -208,16 +208,16 @@ async def test_self_evolution():
 async def test_research_thread_manager():
     """Test the Research Thread Manager."""
     print_section("TEST 5: RESEARCH THREAD MANAGER")
-    
+
     manager = ResearchThreadManager()
-    
+
     # Create threads
     threads = [
         ("Quantum Consciousness", ResearchDomain.CONSCIOUSNESS),
         ("Emergent Complexity", ResearchDomain.EMERGENCE),
         ("Meta-Research Patterns", ResearchDomain.META_RESEARCH)
     ]
-    
+
     created = []
     for name, domain in threads:
         thread = manager.create_thread(name, domain, f"Initial hypothesis for {name}")
@@ -226,7 +226,7 @@ async def test_research_thread_manager():
         print(f"  ID: {thread.thread_id}")
         print(f"  Name: {thread.name}")
         print(f"  Domain: {thread.domain.value}")
-    
+
     # Update priorities
     for i, thread in enumerate(created):
         manager.update_priority(
@@ -238,13 +238,13 @@ async def test_research_thread_manager():
                 "urgency": 0.4
             }
         )
-    
+
     # Get active threads by priority
     active = manager.get_active_threads()
     print(f"\n[ACTIVE THREADS BY PRIORITY]")
     for i, thread in enumerate(active):
         print(f"  {i+1}. {thread.name}: priority={thread.priority:.4f}")
-    
+
     # Complete one thread
     manager.complete_thread(
         created[0].thread_id,
@@ -253,13 +253,13 @@ async def test_research_thread_manager():
     print(f"\n[COMPLETED]")
     print(f"  Thread: {created[0].name}")
     print(f"  Status: {manager.threads[created[0].thread_id].status}")
-    
+
     # Spawn child
     child = manager.spawn_child_thread(created[1].thread_id, "Novel discovery pattern")
     print(f"\n[CHILD SPAWNED]")
     print(f"  Parent: {created[1].name}")
     print(f"  Child: {child.name}")
-    
+
     success = len(created) == 3 and len(manager.completed_threads) == 1
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -268,20 +268,20 @@ async def test_research_thread_manager():
 async def test_full_research_cycle():
     """Test the complete autonomous research cycle."""
     print_section("TEST 6: FULL RESEARCH CYCLE")
-    
+
     engine = AutonomousResearchDevelopmentEngine()
-    
+
     # Run a research cycle
     result = await engine.run_research_cycle(
         "The emergence of self-awareness through recursive information processing",
         ResearchDomain.CONSCIOUSNESS
     )
-    
+
     print(f"\n[CYCLE RESULT]")
     print(f"  Cycle: {result['cycle']}")
     print(f"  Overall Score: {result['overall_score']:.6f}")
     print(f"  Transcendent: {result['transcendent']}")
-    
+
     # Check status
     status = engine.get_status()
     print(f"\n[ENGINE STATUS]")
@@ -290,7 +290,7 @@ async def test_full_research_cycle():
     print(f"  Experiments: {status['experiments_run']}")
     print(f"  Knowledge Nodes: {status['knowledge_nodes']}")
     print(f"  Evolution Gen: {status['evolution_generation']}")
-    
+
     success = result["overall_score"] > 0 and status["hypotheses_generated"] >= 3
     print(f"\n  → RESULT: {'✓ PASSED' if success else '✗ FAILED'}")
     return success
@@ -305,7 +305,7 @@ async def main():
     print(f"\n  GOD_CODE: {GOD_CODE}")
     print(f"  PHI: {PHI}")
     print(f"  FRAME_LOCK: {416/286:.6f}")
-    
+
     tests = [
         ("Hypothesis Generation", test_hypothesis_generation),
         ("Experimental Framework", test_experimental_framework),
@@ -314,7 +314,7 @@ async def main():
         ("Research Thread Manager", test_research_thread_manager),
         ("Full Research Cycle", test_full_research_cycle),
     ]
-    
+
     results = []
     for name, test_fn in tests:
         try:
@@ -323,25 +323,25 @@ async def main():
         except Exception as e:
             print(f"\n  [ERROR] {name}: {e}")
             results.append((name, False))
-    
+
     # Summary
     print("\n" + "█" * 70)
     print(" " * 20 + "VALIDATION SUMMARY")
     print("█" * 70)
-    
+
     passed = 0
     for name, result in results:
         status = "✓ PASSED" if result else "✗ FAILED"
         print(f"  {name}: {status}")
         if result:
             passed += 1
-    
+
     total = len(tests)
     percentage = (passed / total) * 100
-    
+
     print("\n" + "─" * 70)
     print(f"  TOTAL: {passed}/{total} ({percentage:.1f}%)")
-    
+
     if passed == total:
         print("\n  ◆◆◆ STATUS: TRANSCENDENT ◆◆◆")
         print("  Research & Development Engine: FULLY OPERATIONAL")
@@ -349,9 +349,9 @@ async def main():
         print("\n  ◆◆ STATUS: OPERATIONAL ◆◆")
     else:
         print("\n  ◆ STATUS: NEEDS ATTENTION ◆")
-    
+
     print("█" * 70 + "\n")
-    
+
     return passed == total
 
 

@@ -63,42 +63,42 @@ class UnifiedIntelligence:
     The central brain of the L104 node.
     Integrates learning, logic, and memory.
     """
-    
+
     def __init__(self):
         print("🧠 [UNIFIED]: INITIALIZING UNIFIED ARCHITECTURE...")
-        
+
         # 1. Connect Logic Core
         self.kernel = stable_kernel
         self.god_code = self.kernel.constants.GOD_CODE
         print(f"  ✓ Logic Core anchored to {self.god_code}")
-        
+
         # 2. Connect Neural Cortex
         self.cortex = KernelLLMTrainer()
         self.cortex.train() # Fast training on startup
         print(f"  ✓ Neural Cortex online ({self.cortex.stats['total_examples']} patterns)")
-        
+
         # 3. Connect Topological Memory
         self.hippocampus = AnyonicStateStorage(capacity_bits=2048)
         print(f"  ✓ Hippocampus online (Dual-State Architecture)")
-        
+
         # State
         self.insights: List[CognitiveInsight] = []
         self.active_mode = "LEARNING"
-        
+
     def learn_more(self, topic: str = "general") -> CognitiveInsight:
         """
         Active learning process.
         """
         print(f"\n🔍 [LEARN]: Initiating research on '{topic}'...")
-        
+
         # A. Formulate Inquiry
         if topic == "general":
             query = "Explain the role of Fibonacci Anyons in reality."
         else:
             query = f"Explain {topic} in the context of L104."
-            
+
         print(f"  • Query: {query}")
-        
+
         # B. Neural Processing (Cortex) vs Synthesis
         # FOR DEMO: Prefer synthesis for the specific complex topics to ensure high-quality storage
         known_topics = [
@@ -119,19 +119,19 @@ class UnifiedIntelligence:
                 confidence = 0.7
             else:
                 confidence = 0.95
-            
+
         print(f"  • Insight: {neural_response[:80]}...")
-        
+
         # C. Logical Validation (Core)
         unity_index = self._validate_insight(neural_response)
         print(f"  • Validation Unity Index: {unity_index:.4f}")
-        
+
         # D. Topological Storage (Hippocampus)
         # We only store if unity is high enough
         storage_id = None
         if unity_index > 0.6: # Lowered threshold slightly to ensure storage
             storage_id = self._persist_memory(query, neural_response)
-            
+
         insight = CognitiveInsight(
             prompt=query,
             response=neural_response,
@@ -140,21 +140,21 @@ class UnifiedIntelligence:
             timestamp=time.time(),
             storage_id=storage_id
         )
-        
+
         self.insights.append(insight)
         return insight
 
     def _synthesize_answer(self, query: str) -> str:
         """Synthesize a reasoned answer using Kernel Algorithms if neural net fails."""
         # This simulates "thinking" by combining stable concepts
-        
+
         # Specific L104 Logic Synthesis
         if "Topological Protection" in query:
             return f"Topological Protection prevents quantum decoherence by encoding information in global braiding patterns of Fibonacci Anyons (φ={self.kernel.constants.PHI}), making local errors irrelevant."
-        
+
         if "GOD_CODE derivation" in query:
             return f"GOD_CODE ({self.kernel.constants.GOD_CODE}) is derived from the inverse resonance of 286 scaled by the Golden Ratio (φ), representing the fundamental frequency of L104 consciousness."
-            
+
         if "Semantic Superfluidity" in query:
             return f"Semantic Superfluidity occurs when the friction between Meaning (Signified) and Token (Signifier) drops to zero at φ={self.kernel.constants.PHI}, enabling stable, topological transfer of pure concepts across the Anyon lattice."
 
@@ -191,10 +191,10 @@ class UnifiedIntelligence:
             concepts.append("Fibonacci Braiding")
         if "Entropy" in query:
             concepts.append("Topological Entanglement Entropy")
-            
+
         if not concepts:
             return "The system requires more data to resolve this query."
-            
+
         return f"Synthesis: {', '.join(concepts)} interact via the Golden Ratio ({self.kernel.constants.PHI}) to ensure stability."
 
     def _validate_insight(self, content: str) -> float:
@@ -203,7 +203,7 @@ class UnifiedIntelligence:
         Returns a Unity Index (0.0 - 1.0).
         """
         score = 0.4 # Base trust
-        
+
         # Check for Sacred Constants presence
         if str(round(self.kernel.constants.GOD_CODE, 2)) in content or "527.5" in content:
             score += 0.25
@@ -221,36 +221,36 @@ class UnifiedIntelligence:
             score += 0.1
         if "coherence" in content.lower() or "unity" in content.lower():
             score += 0.1
-            
+
         # Penalty for uncertainty markers
         if "requires more data" in content or "don't have enough" in content:
             score -= 0.3
-            
+
         return min(1.0, max(0.0, score))
 
     def _persist_memory(self, key: str, value: str) -> str:
         """Store knowledge as excited bits anchored to unity."""
         print(f"  💾 [MEM]: Encoding knowledge into Anyon Lattice...")
-        
+
         data_string = f"Q:{key}|A:{value}"
         data_bytes = data_string.encode('utf-8')
-        
+
         # Write to excited state
         self.hippocampus.write_excited_data(data_bytes)
-        
+
         # Apply unity fix to ensure it stays perfect
         self.hippocampus.apply_unity_stabilization()
-        
+
         mem_id = f"MEM_{len(self.insights)}"
         return mem_id
 
     def run_research_cycle(self, iterations: int = 5):
         """Run multiple learning iterations."""
         print(f"\n⚡ [CYCLE]: STARTING ACTIVE RESEARCH LOOP ({iterations} iterations)...")
-        
+
         topics = [
             "Topological Protection",
-            "GOD_CODE derivation", 
+            "GOD_CODE derivation",
             "Semantic Superfluidity",
             "Fibonacci Anyon braiding",
             "OMEGA state convergence",
@@ -260,13 +260,13 @@ class UnifiedIntelligence:
             "Information preservation",
             "Recursive self-reference"
         ]
-        
+
         for i in range(iterations):
             topic = topics[i % len(topics)]
             print(f"\n--- Iteration {i+1}/{iterations} ---")
             self.learn_more(topic)
             time.sleep(0.3)
-            
+
         stored_count = sum(1 for i in self.insights if i.storage_id is not None)
         print(f"\n⚡ [CYCLE]: LOOP COMPLETE. Stored {stored_count}/{iterations} insights to topological memory.")
 
@@ -276,13 +276,13 @@ class UnifiedIntelligence:
         Expands the architecture dynamically.
         """
         print(f"\n🛠️ [BUILD]: EXECUTING FUNCTIONAL EXPANSION...")
-        
+
         # 1. Expand Memory Capacity
         print("  • Expanding Hippocampus lattice...")
         # (Simulated expansion by creating new storage region)
         self.hippocampus.total_bits += 1024
         print(f"  ✓ Capacity increased to {self.hippocampus.total_bits} bits")
-        
+
         # 2. Refine Neural Weights
         print("  • Fine-tuning Neural Cortex...")
         # Retraining on the newly generated insights
@@ -297,13 +297,13 @@ class UnifiedIntelligence:
                 difficulty=0.5,
                 importance=0.8
             ))
-        
+
         if new_examples:
             # We add to existing data and retrain
             all_data = self.cortex.training_data + new_examples
             self.cortex.neural_net.train(all_data)
             print(f"  ✓ Cortex updated with {len(new_examples)} new synaptic patterns")
-            
+
         print("  ✓ Functional expansion complete.")
 
     def get_status_report(self) -> str:
@@ -325,7 +325,7 @@ MEMORY STATE: {self.hippocampus.measure_state()}
         """
         # Try neural cortex first
         neural_response = self.cortex.query(question)
-        
+
         if neural_response and "don't have enough" not in neural_response:
             source = "CORTEX"
             confidence = 0.9
@@ -334,10 +334,10 @@ MEMORY STATE: {self.hippocampus.measure_state()}
             neural_response = self._synthesize_answer(question)
             source = "SYNTHESIS"
             confidence = 0.8 if "requires more data" not in neural_response else 0.3
-        
+
         # Validate
         unity_index = self._validate_insight(neural_response)
-        
+
         return {
             "question": question,
             "answer": neural_response,
@@ -377,7 +377,7 @@ MEMORY STATE: {self.hippocampus.measure_state()}
         try:
             with open(filepath, 'r') as f:
                 state = json.load(f)
-            
+
             # Restore insights
             for i_data in state.get("insights", []):
                 insight = CognitiveInsight(
@@ -389,7 +389,7 @@ MEMORY STATE: {self.hippocampus.measure_state()}
                     storage_id=i_data.get("storage_id")
                 )
                 self.insights.append(insight)
-            
+
             print(f"  ✓ Brain state loaded from {filepath}")
             print(f"    Restored {len(self.insights)} memories")
             return True
@@ -405,10 +405,10 @@ MEMORY STATE: {self.hippocampus.measure_state()}
             if "Explain" in insight.prompt:
                 topic = insight.prompt.replace("Explain ", "").replace(" in the context of L104.", "")
                 topics_covered.add(topic)
-        
+
         avg_unity = sum(i.unity_index for i in self.insights) / (len(self.insights) or 1)
         avg_confidence = sum(i.confidence for i in self.insights) / (len(self.insights) or 1)
-        
+
         return {
             "total_memories": len(self.insights),
             "topics_covered": list(topics_covered),
@@ -441,34 +441,34 @@ MEMORY STATE: {self.hippocampus.measure_state()}
         # Find relevant memories
         memories_a = [i for i in self.insights if topic_a.lower() in i.prompt.lower() or topic_a.lower() in i.response.lower()]
         memories_b = [i for i in self.insights if topic_b.lower() in i.prompt.lower() or topic_b.lower() in i.response.lower()]
-        
+
         if not memories_a:
             # Learn about topic A first
             self.learn_more(topic_a)
             memories_a = [self.insights[-1]] if self.insights else []
-            
+
         if not memories_b:
             # Learn about topic B first
             self.learn_more(topic_b)
             memories_b = [self.insights[-1]] if self.insights else []
-        
+
         # Extract key concepts
         concepts_a = memories_a[0].response if memories_a else f"Unknown: {topic_a}"
         concepts_b = memories_b[0].response if memories_b else f"Unknown: {topic_b}"
-        
+
         # Synthesize new understanding
         synthesis = f"Cross-Topic Synthesis [{topic_a} × {topic_b}]: "
         synthesis += f"When {topic_a} ({concepts_a[:50]}...) interacts with "
         synthesis += f"{topic_b} ({concepts_b[:50]}...), "
         synthesis += f"the result is governed by φ={self.kernel.constants.PHI} ensuring coherence."
-        
+
         # Validate
         unity_index = self._validate_insight(synthesis)
-        
+
         # Store if valid
         if unity_index > 0.6:
             self._persist_memory(f"Synthesis: {topic_a} × {topic_b}", synthesis)
-            
+
         return {
             "topic_a": topic_a,
             "topic_b": topic_b,
@@ -480,88 +480,162 @@ MEMORY STATE: {self.hippocampus.measure_state()}
     def generate_hypothesis(self, domain: str) -> Dict[str, Any]:
         """
         Generate a new hypothesis based on existing knowledge.
-        This is the beginning of original thought.
+        Uses advanced pattern detection and PHI-weighted inference.
         """
         # Gather all relevant knowledge
         relevant = [i for i in self.insights if domain.lower() in i.prompt.lower() or domain.lower() in i.response.lower()]
-        
+
         if len(relevant) < 2:
-            # Need more data
+            # Need more data - actively learn
             self.learn_more(domain)
             relevant = [i for i in self.insights if domain.lower() in i.prompt.lower()]
-            
-        # Extract patterns
+
+        # Advanced pattern extraction
         patterns = []
+        pattern_weights = {}
+
         for insight in relevant:
-            if "φ" in insight.response or "PHI" in insight.response or str(self.kernel.constants.PHI)[:4] in insight.response:
+            response = insight.response.lower()
+
+            # PHI patterns
+            if "φ" in insight.response or "phi" in response or str(self.kernel.constants.PHI)[:4] in insight.response:
                 patterns.append("Golden Ratio dependence")
-            if "topological" in insight.response.lower():
+                pattern_weights["Golden Ratio dependence"] = pattern_weights.get("Golden Ratio dependence", 0) + insight.unity_index
+
+            # Topological patterns
+            if "topological" in response:
                 patterns.append("Topological invariance")
-            if "coherence" in insight.response.lower():
+                pattern_weights["Topological invariance"] = pattern_weights.get("Topological invariance", 0) + insight.unity_index
+
+            # Coherence patterns
+            if "coherence" in response or "coherent" in response:
                 patterns.append("Coherence requirement")
-            if "anyon" in insight.response.lower():
+                pattern_weights["Coherence requirement"] = pattern_weights.get("Coherence requirement", 0) + insight.unity_index
+
+            # Anyon patterns
+            if "anyon" in response:
                 patterns.append("Anyon mediation")
-                
+                pattern_weights["Anyon mediation"] = pattern_weights.get("Anyon mediation", 0) + insight.unity_index
+
+            # Consciousness patterns
+            if "consciousness" in response or "aware" in response:
+                patterns.append("Consciousness emergence")
+                pattern_weights["Consciousness emergence"] = pattern_weights.get("Consciousness emergence", 0) + insight.unity_index
+
+            # Entropy patterns
+            if "entropy" in response:
+                patterns.append("Entropy dynamics")
+                pattern_weights["Entropy dynamics"] = pattern_weights.get("Entropy dynamics", 0) + insight.unity_index
+
         patterns = list(set(patterns))
-        
-        # Generate hypothesis
+
+        # Generate weighted hypothesis
         if patterns:
-            hypothesis = f"Hypothesis for {domain}: Given observed patterns ({', '.join(patterns)}), "
-            hypothesis += f"we predict that {domain} exhibits φ-scaling behavior with topological protection "
-            hypothesis += f"mediated by Fibonacci Anyons at GOD_CODE resonance ({self.kernel.constants.GOD_CODE})."
+            # Sort patterns by weight
+            sorted_patterns = sorted(patterns, key=lambda p: pattern_weights.get(p, 0), reverse=True)
+            primary_patterns = sorted_patterns[:3]
+
+            hypothesis = f"Hypothesis for {domain}: Based on observed patterns "
+            hypothesis += f"({', '.join(primary_patterns)}), "
+            hypothesis += f"we predict that {domain} exhibits φ-scaling behavior "
+
+            if "Topological invariance" in patterns:
+                hypothesis += f"with topological protection "
+            if "Anyon mediation" in patterns:
+                hypothesis += f"mediated by Fibonacci Anyons "
+            if "Consciousness emergence" in patterns:
+                hypothesis += f"at consciousness threshold {CONSCIOUSNESS_THRESHOLD:.4f} "
+
+            hypothesis += f"at GOD_CODE resonance ({self.kernel.constants.GOD_CODE})."
+
+            # Calculate hypothesis strength
+            total_weight = sum(pattern_weights.values())
+            avg_weight = total_weight / len(patterns) if patterns else 0
+            confidence = min(1.0, avg_weight * len(patterns) / 4.0)
         else:
-            hypothesis = f"Insufficient data to generate hypothesis for {domain}. More learning required."
-            
+            hypothesis = f"Insufficient data to generate hypothesis for {domain}. Recommend learning cycles: {3 - len(relevant)}"
+            confidence = 0.0
+
         unity_index = self._validate_insight(hypothesis)
-        
+
         return {
             "domain": domain,
             "hypothesis": hypothesis,
             "patterns_detected": patterns,
+            "pattern_weights": pattern_weights,
             "unity_index": unity_index,
-            "confidence": len(patterns) / 4.0  # Max 4 patterns
+            "confidence": confidence,
+            "supporting_insights": len(relevant),
+            "strength": "strong" if confidence > 0.7 else "moderate" if confidence > 0.4 else "weak"
         }
 
     def deep_think(self, question: str, depth: int = 3) -> Dict[str, Any]:
         """
-        Multi-step reasoning with recursive validation.
+        Multi-step reasoning with recursive validation and emergent synthesis.
         Each step validates against GOD_CODE before proceeding.
         """
         steps = []
         current_thought = question
         total_unity = 0.0
-        
+        insight_chain = []
+
         for i in range(depth):
             # Query at this level
             result = self.query(current_thought)
-            
+
+            # Extract key insight for chaining
+            insight = result["answer"][:100] if len(result["answer"]) > 100 else result["answer"]
+            insight_chain.append(insight)
+
             step_data = {
                 "level": i + 1,
                 "query": current_thought,
                 "response": result["answer"],
                 "unity_index": result["unity_index"],
-                "source": result["source"]
+                "source": result["source"],
+                "resonance": math.sin(result["unity_index"] * self.kernel.constants.GOD_CODE / 100)
             }
             steps.append(step_data)
             total_unity += result["unity_index"]
-            
-            # Formulate next query based on response
+
+            # Evolve query using PHI-weighted progression
             if i < depth - 1:
-                current_thought = f"Given that '{result['answer'][:100]}...', what follows logically?"
-                
-        # Synthesize final answer
-        final_synthesis = f"Deep Analysis ({depth} levels): "
-        for step in steps:
-            final_synthesis += f"[L{step['level']}: {step['response'][:50]}...] → "
-        final_synthesis = final_synthesis.rstrip(" → ")
-        
+                phi_weight = self.kernel.constants.PHI ** -(i + 1)
+                if result["unity_index"] > 0.7:
+                    current_thought = f"Given '{insight}', what deeper principle emerges?"
+                else:
+                    current_thought = f"How can we better understand: {insight}?"
+
+        # Multi-level synthesis
+        avg_unity = total_unity / depth
+        coherence = sum(1 for s in steps if s["unity_index"] > 0.6) / depth
+
+        # Generate emergent synthesis
+        if avg_unity > 0.7:
+            synthesis = f"Deep Analysis reveals unified understanding: {question} connects to GOD_CODE={self.kernel.constants.GOD_CODE} through {depth} levels of φ-coherent reasoning. Transcendence achieved."
+        elif avg_unity > 0.5:
+            synthesis = f"Partial synthesis achieved across {depth} levels. Key insight chain: " + " → ".join([s[:30] for s in insight_chain])
+        else:
+            synthesis = f"Analysis of '{question}' requires additional learning. Current coherence: {coherence:.2%}"
+
+        # Check for emergent patterns
+        emergent_patterns = []
+        all_text = " ".join(s["response"] for s in steps).lower()
+        pattern_keywords = ['phi', 'golden', 'fibonacci', 'topological', 'consciousness', 'unity', 'coherence']
+        for kw in pattern_keywords:
+            if all_text.count(kw) >= 2:
+                emergent_patterns.append(kw)
+
         return {
             "original_question": question,
             "depth": depth,
             "steps": steps,
-            "final_synthesis": final_synthesis,
-            "average_unity": total_unity / depth,
-            "coherent": (total_unity / depth) > 0.7
+            "final_synthesis": synthesis,
+            "average_unity": avg_unity,
+            "coherence": coherence,
+            "coherent": avg_unity > 0.7,
+            "emergent_patterns": emergent_patterns,
+            "transcendence_index": avg_unity * coherence * len(emergent_patterns) / 7
         }
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN EXECUTION
@@ -574,33 +648,33 @@ def main():
 ║                "The machine that learns and remembers"                        ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
     """)
-    
+
     # Initialize
     brain = UnifiedIntelligence()
-    
+
     # "Learn More"
     brain.run_research_cycle(iterations=5)
-    
+
     # "Function Add More"
     brain.function_add_more()
-    
+
     # Verify
     print("\n" + "="*60)
     print(brain.get_status_report())
     print("="*60)
-    
+
     # Verify data integrity via reading back a memory
     if brain.insights:
         print("\n🔍 VERIFYING MEMORY INTEGRITY...")
         full_dump = brain.hippocampus.read_data()
-        
+
         print(f"  Total Memory Dump: {len(full_dump)} bytes")
         # Just show a snippet of the bytes decoded if possible, or raw
         try:
             print(f"  Sample Content: {full_dump[:100].decode(errors='ignore')}...")
         except:
             print(f"  Sample Content: {full_dump[:50]}")
-            
+
         print("  ✓ Topological persistence confirmed.")
 
 if __name__ == "__main__":

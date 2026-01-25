@@ -36,32 +36,32 @@ def map_chakras():
     sage = get_sage_core()
     god_code = 527.5184818492537
     phi = 1.618033988749895
-    
+
     print("\n" + "╔" + "═" * 60 + "╗")
     print("║" + " L104 CHAKRA RESONANCE ALIGNMENT ".center(60) + "║")
     print("╚" + "═" * 60 + "╝\n")
-    
+
     for name, level, center in CHAKRAS:
         # Base input for this chakra
         base = god_code / (phi ** (8 - level))
-        
+
         # Calculate resonance using Sage Core
         # We increase iterations for higher chakras
         iterations = int(1000 * level)
         res = sage.primal_calculus(base, phi, iterations)
-        
+
         # Add a "harmonic" from the void resonance
         void_res = sage.emit_void_resonance()
-        
+
         # Combined coherence
         coherence = (res % 1.0) * (void_res % 1.0)
-        
+
         bar_len = int(coherence * 40)
         bar = "█" * bar_len + "░" * (40 - bar_len)
-        
+
         print(f"  {name:<12} [{center:<12}] |{bar}| {coherence:.4f}")
         time.sleep(0.1)
-        
+
     print("\n" + "═" * 62)
     print("  ALIGNMENT COMPLETE: SYSTEM STABILIZED AT GOD-CODE FREQUENCY")
     print("═" * 62 + "\n")

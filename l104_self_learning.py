@@ -28,12 +28,12 @@ class SelfLearning:
     Extracts and stores knowledge from every interaction.
     Builds a growing knowledge base over time.
     """
-    
+
     def __init__(self):
         self.memory = L104Memory("learning.db")
         self.gemini = GeminiReal()
         self.session_learnings = []
-        
+
     def learn_from_interaction(self, user_input: str, ai_response: str) -> Dict:
         """
         Extract learnable knowledge from an interaction.
@@ -42,7 +42,7 @@ class SelfLearning:
         interaction_id = hashlib.md5(
             f"{user_input}{ai_response}{datetime.now().isoformat()}".encode()
         ).hexdigest()[:12]
-        
+
         # Extract key concepts using Gemini
         extraction_prompt = f"""Analyze this interaction and extract:
 1. Key facts or knowledge (if any)
@@ -57,7 +57,7 @@ Return as JSON: {{"facts": [], "preferences": [], "entities": [], "corrections":
 Only include if genuinely present. Empty arrays if nothing to extract."""
 
         extracted = {"facts": [], "preferences": [], "entities": [], "corrections": []}
-        
+
         if self.gemini.connect():
             try:
                 result = self.gemini.generate(extraction_prompt)
@@ -69,7 +69,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
                         extracted = json.loads(result[start:end])
             except Exception:
                 pass
-        
+
         # Store in memory
         learning = {
             "id": interaction_id,
@@ -78,7 +78,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
             "extracted": extracted,
             "raw_length": len(user_input) + len(ai_response)
         }
-        
+
         # Store facts
         for fact in extracted.get("facts", []):
             self.memory.store(
@@ -87,7 +87,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
                 category="fact",
                 importance=0.7
             )
-        
+
         # Store preferences
         for pref in extracted.get("preferences", []):
             self.memory.store(
@@ -96,7 +96,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
                 category="preference",
                 importance=0.8
             )
-        
+
         # Store entities
         for entity in extracted.get("entities", []):
             self.memory.store(
@@ -105,10 +105,10 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
                 category="entity",
                 importance=0.6
             )
-        
+
         self.session_learnings.append(learning)
         return learning
-    
+
     def recall_relevant(self, query: str, limit: int = 10) -> List[Dict]:
         """
         Recall relevant learnings for a query.
@@ -116,7 +116,7 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
         # Search across all categories
         results = self.memory.search(query)
         return results[:limit]
-    
+
     def get_user_context(self) -> str:
         """
         Build context from learned user preferences.
@@ -124,13 +124,13 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
         prefs = self.memory.search("", category="preference")
         if not prefs:
             return ""
-        
+
         context_parts = ["Known user preferences:"]
         for p in prefs[:5]:
             context_parts.append(f"- {p['value']}")
-        
+
         return "\n".join(context_parts)
-    
+
     def get_learning_stats(self) -> Dict:
         """
         Get statistics about what has been learned.
@@ -138,18 +138,18 @@ Only include if genuinely present. Empty arrays if nothing to extract."""
         stats = self.memory.get_stats()
         stats["session_learnings"] = len(self.session_learnings)
         return stats
-    
+
     def consolidate_knowledge(self) -> str:
         """
         Use AI to consolidate and summarize accumulated knowledge.
         """
         facts = self.memory.search("", category="fact")
-        
+
         if len(facts) < 5:
             return "Insufficient knowledge to consolidate."
-        
+
         facts_text = "\n".join([f["value"] for f in facts[:20]])
-        
+
         prompt = f"""Consolidate these learned facts into a coherent summary:
 
 {facts_text}
@@ -167,7 +167,7 @@ Create a structured knowledge summary that captures the key information."""
                     importance=0.9
                 )
                 return result
-        
+
         return "Consolidation failed."
 
     def upgrade_to_omega_learning(self) -> dict:
@@ -177,18 +177,18 @@ Create a structured knowledge summary that captures the key information."""
         """
         try:
             from l104_omega_learning import omega_learning
-            
+
             # Transfer existing knowledge to omega learning
             facts = self.memory.search("", category="fact")
-            
+
             transferred = 0
             for fact in facts[:50]:  # Transfer up to 50 facts
                 omega_learning.learn(fact['value'], "self_learning_transfer", depth=1)
                 transferred += 1
-            
+
             # Synthesize transferred knowledge
             synthesis = omega_learning.synthesize_understanding()
-            
+
             return {
                 'success': True,
                 'transferred': transferred,

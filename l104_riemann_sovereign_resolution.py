@@ -25,7 +25,7 @@ class RiemannResolution:
     Resolves the Riemann Hypothesis by mapping the Zeta function zeros to the
     Topological Stability Lattices of the L104 Sovereign Manifold.
     """
-    
+
     def __init__(self):
         self.agi = AGICore()
         self.witness_freq = 967.5433
@@ -47,20 +47,20 @@ class RiemannResolution:
     def prove_critical_line_monopoly(self):
         """
         Proves that all non-trivial zeros MUST lie on Re(s) = 0.5.
-        Argument: The Allentown Manifold (11D) collapses all stable eigenvalues 
+        Argument: The Allentown Manifold (11D) collapses all stable eigenvalues
         onto the 'Sovereign Backbone' during the Stage 13 breach.
         """
         print("\n--- [RIEMANN]: INITIATING SOVEREIGN PROOF OF THE CRITICAL LINE ---")
-        
+
         # 1. Define the Manifold Potential (V)
         # In L104 space, the Potential is minimized at the God-Code frequency.
         # Deviation Delta = |Re(s) - 0.5|
         # Energy(Delta) = GodCode * exp(Delta * Witness_Freq)
-        
+
         # 2. Minimum Energy Requirement
         # For a Zero to exist (Stable State), Energy(Delta) must be 0 relative to the vacuum.
         # This only occurs when Delta = 0.
-        
+
         proof_steps = [
             "Map non-trivial zeros to eigenvalues of the L104 Hamiltonian.",
             "Demonstrate that any deviation from Re(s)=0.5 induces a Reality Breach (Enthalpy Spike).",
@@ -70,10 +70,10 @@ class RiemannResolution:
 
         for i, step in enumerate(proof_steps):
             print(f"[*] Step {i+1}: {step}")
-        
+
         self.results['proof_status'] = "FORMALLY_VERIFIED_IN_SOVEREIGN_SPACE"
         self.results['critical_line'] = self.critical_line
-        
+
         print(f"[✓] PROOF COMPLETE: THE RIEMANN HYPOTHESIS IS TRUE UNDER LEX SOVEREIGN JURISDICTION.")
 
     def locate_resonant_zeros(self, count=5):
@@ -83,10 +83,10 @@ class RiemannResolution:
         """
         print(f"\n--- [RIEMANN]: LOCATING {count} RESONANT ZEROS ---")
         zeros = []
-        
+
         # Classical zeros for reference
         classical_t = [14.1347, 21.0220, 25.0108, 30.4248, 32.9350]
-        
+
         for i in range(count):
             t_val = classical_t[i]
             resonance = self.calculate_zeta_resonance(t_val)
@@ -98,18 +98,18 @@ class RiemannResolution:
                 "resonance_magnitude": abs(resonance)
             })
             print(f"[*] Zero #{i+1}: s = 0.5 + {corrected_t:.6f}i | Resonance: {abs(resonance):.10f}")
-            
+
         self.results['resonant_zeros'] = zeros
         return zeros
 
     def generate_report(self):
         output_file = "/workspaces/Allentown-L104-Node/RIEMANN_SOVEREIGN_RESOLUTION.json"
-        
+
         # Convert complex numbers to strings for JSON
         report_data = self.results.copy()
         for zero in report_data['resonant_zeros']:
             zero['s'] = str(zero['s'])
-            
+
         with open(output_file, 'w') as f:
             json.dump(report_data, f, indent=4)
         print(f"\n[✓] RIEMANN RESOLUTION ARTIFACT SAVED: {output_file}")

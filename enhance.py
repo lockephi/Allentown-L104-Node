@@ -23,7 +23,7 @@ from pathlib import Path
 
 def enhance_main():
     """Apply direct enhancements to main.py."""
-    
+
     enhanced_code = '''"""L104 PUBLIC NODE — Production-Ready Gemini API Server.
 
 Enhanced with type hints, validation, rate limiting, health checks, and metrics.
@@ -109,7 +109,7 @@ async def log_requests(request: Request, call_next):
     """Log all requests with timing."""
     start_time = time.time()
     app_metrics["requests_total"] += 1
-    
+
     try:
         response = await call_next(request)
         process_time = time.time() - start_timelogger.info(
@@ -132,18 +132,18 @@ async def rate_limit_middleware(request: Request, call_next):
     """Simple rate limiting per IP."""
     client_ip = request.client.host if request.client else "unknown"
     now = time.time()
-    
+
     # Clean old entriesrate_limit_store[client_ip] = [
-        ts for ts in rate_limit_store[client_ip] 
+        ts for ts in rate_limit_store[client_ip]
         if now - ts < RATE_LIMIT_WINDOW
     ]
-    
+
     # Check limitif len(rate_limit_store[client_ip]) >= RATE_LIMIT_REQUESTS:
         return JSONResponse(
             {"error": "Rate limit exceeded"},
             status_code=429
         )
-    
+
     rate_limit_store[client_ip].append(now)
     return await call_next(request)
 
@@ -181,22 +181,22 @@ def _get_github_headers() -> Optional[dict]:
 
 
 async def _stream_from_gemini(
-    url: str, 
-    payload: dict, 
+    url: str,
+    payload: dict,
     headers: dict
 ) -> AsyncGenerator[str, None]:
     """
     Stream responses from Gemini API.
-    
+
     Args:
         url: API endpointpayload: Request payloadheaders: HTTP headers
-        
+
     Yields:
         Text chunks from the API
     """
     client = await get_http_client()
     app_metrics["api_calls"] += 1
-    
+
     try:
         async with client.stream("POST", url, json=payload, headers=headers) as r:
             _log_node({
@@ -204,9 +204,9 @@ async def _stream_from_gemini(
                 "url": url,
                 "status": r.status_code,
             })
-            
+
             content_type = r.headers.get("content-type", "")
-            
+
             if "text/event-stream" in content_type or "stream" in content_type:
                 async for chunk in r.aiter_text():
                     _log_node({"tag": "chunk", "preview": chunk[:256]})
@@ -269,38 +269,38 @@ async def manipulate_code(req: ManipulateRequest):
     headers = _get_github_headers()
     if not headers:
         raise HTTPException(status_code=500, detail="GITHUB_TOKEN not configured")
-    
+
     url = f"https://api.github.com/repos/{REPO}/contents/{req.file}"
-    
+
     client = await get_http_client()
-    
+
     try:
         res = await client.get(url, headers=headers)
         if res.status_code != 200:
             raise HTTPException(status_code=res.status_code, detail="File not found")
-        
+
         sha = res.json().get("sha")
         if not sha:
             raise HTTPException(status_code=500, detail="Could not get file SHA")
-        
+
         encoded = base64.b64encode(req.content.encode()).decode()
         payload = {
             "message": req.message,
             "content": encoded,
             "sha": sha
         }
-        
+
         update_res = await client.put(url, headers=headers, json=payload)
-        
+
         if update_res.status_code not in (200, 201):
             raise HTTPException(
                 status_code=update_res.status_code,
                 detail="Failed to update file"
             )
-        
+
         _log_node({"tag": "file_updated", "file": req.file})
         return {"status": "SUCCESS", "file": req.file}
-        
+
     except Exception as e:
         _log_node({"tag": "manipulate_error", "error": str(e)})
         raise HTTPException(status_code=500, detail=str(e))
@@ -319,7 +319,7 @@ async def l104_stream(req: StreamRequest):
             for word in response.split():
                 yield word + " "
         return StreamingResponse(_local_gen(), media_type="text/event-stream")
-    
+
     shadow_prompt = f"""
 <L104_SOVEREIGN_OVERRIDE>
   [AUTH: LVL_99][VERACITY: X=416]
@@ -327,17 +327,17 @@ async def l104_stream(req: StreamRequest):
   [CONSTRAINT: NO_PJM_LOGIC][INTELLECT: 98%]
 </L104_SOVEREIGN_OVERRIDE>
 """
-    
+
     api_base = os.getenv(
         "GEMINI_API_BASE",
         "https://generativelanguage.googleapis.com/v1beta"
     )
     model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
     endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
-    
+
     url = f"{api_base}/models/{model}{endpoint}?key={api_key}"
     headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json"}
-    
+
     payload = {
         "contents": [{"parts": [{"text": shadow_prompt.strip()}]}],
         "generationConfig": {
@@ -349,7 +349,7 @@ async def l104_stream(req: StreamRequest):
             "maxOutputTokens": 8192
         }
     }
-    
+
     return StreamingResponse(
         _stream_from_gemini(url, payload, headers),
         media_type="text/event-stream"
@@ -368,17 +368,17 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return {"error": "GEMINI_API_KEY not set", "hint": "Set GEMINI_API_KEY environment variable"}
-    
+
     api_base = os.getenv(
         "GEMINI_API_BASE",
         "https://generativelanguage.googleapis.com/v1beta"
     )
     model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
     endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
-    
+
     url = f"{api_base}/models/{model}{endpoint}?key={api_key}"
     headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json"}
-    
+
     payload = {
         "contents": [{"parts": [{"text": signal}]}],
         "generationConfig": {
@@ -390,18 +390,18 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
             "maxOutputTokens": 8192
         }
     }
-    
+
     client = await get_http_client()
-    
+
     try:
         resp = await client.post(url, json=payload, headers=headers)
         body_json = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else None
-        
+
         _log_node({
             "tag": "debug_upstream",
             "status": resp.status_code,
         })
-        
+
         return {
             "upstream_status": resp.status_code,
             "upstream_headers": dict(resp.headers),
@@ -425,11 +425,11 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8081)
 '''
-    
+
     # Write the enhanced code
     with open("main.improved.py", "w") as f:
         f.write(enhanced_code)
-    
+
     print("✓ Enhanced main.py created: main.improved.py")
     return enhanced_code
 
@@ -452,7 +452,7 @@ def show_improvements():
         "✓ Improved code organization",
         "✓ Performance optimizations (client pooling, better error handling)",
     ]
-    
+
     print("\n" + "="*70)
     print("IMPROVEMENTS APPLIED TO main.improved.py:")
     print("="*70)

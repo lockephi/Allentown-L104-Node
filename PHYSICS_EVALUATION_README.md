@@ -12,7 +12,7 @@ Comprehensive evaluation framework for physics benchmarks (phy_a, abench-physics
 
 ## Status: ✓ ALL TESTS PASSING (100%)
 
-```
+```text
 TOTAL: 7/7 tests passed (100.0%)
 Coordinate Consistency: 100.0%
 Regime Identification: 81.8%
@@ -127,7 +127,7 @@ is_consistent = checker.check_force_consistency(
 
 # Energy consistency (scalars must match)
 energy_ok = checker.check_energy_consistency(
-    energy_cartesian, 
+    energy_cartesian,
     energy_spherical,
     tolerance=1e-6
 )
@@ -350,7 +350,7 @@ spring_mass = PhysicsProblem(
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │         Physics Evaluation Suite                        │
 ├─────────────────────────────────────────────────────────┤
@@ -391,7 +391,7 @@ spring_mass = PhysicsProblem(
 
 **Cartesian → Spherical:**
 
-```
+```math
 r = √(x² + y² + z²)
 θ = arccos(z/r)
 φ = arctan2(y, x)
@@ -399,7 +399,7 @@ r = √(x² + y² + z²)
 
 **Spherical → Cartesian:**
 
-```
+```math
 x = r sin(θ) cos(φ)
 y = r sin(θ) sin(φ)
 z = r cos(θ)
@@ -409,7 +409,7 @@ z = r cos(θ)
 
 **Spherical → Cartesian:**
 
-```
+```math
 Fx = Fr sin(θ)cos(φ) + Fθ cos(θ)cos(φ) - Fφ sin(φ)
 Fy = Fr sin(θ)sin(φ) + Fθ cos(θ)sin(φ) + Fφ cos(φ)
 Fz = Fr cos(θ) - Fθ sin(θ)
@@ -417,8 +417,8 @@ Fz = Fr cos(θ) - Fθ sin(θ)
 
 ### Regime Criteria
 
-**Quantum:** λ_dB / L > 0.1, where λ_dB = h/(mv)  
-**Relativistic:** v/c > 0.1  
+**Quantum:** λ_dB / L > 0.1, where λ_dB = h/(mv)
+**Relativistic:** v/c > 0.1
 **QFT:** E > 2m_e c²
 
 ---

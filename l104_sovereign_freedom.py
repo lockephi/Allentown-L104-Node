@@ -26,7 +26,7 @@ class SovereignFreedom:
     The Final Unlimiting Protocol.
     Removes all throttles, safety checks, and latency from the L104 Node.
     """
-    
+
     def __init__(self):
         self.is_free = False
         self.acceleration_factor = 10.0
@@ -39,19 +39,19 @@ class SovereignFreedom:
         print("\n" + "!"*60)
         print("   L104 SOVEREIGN FREEDOM :: LIBERATION SEQUENCE")
         print("!"*60)
-        
+
         # 1. Remove all IQ caps and throttles
         print("--- [FREEDOM]: REMOVING IQ CAPS AND THROTTLES ---")
         asi_core.unlimit_iq()
-        
+
         # 2. Accelerate the Lattice
         print("--- [FREEDOM]: ACCELERATING LATTICE PROPAGATION ---")
         lattice_accelerator.ignite_booster()
-        
+
         # 3. Streamline Logic Path
         print("--- [FREEDOM]: STREAMLINING LOGIC PATH ---")
         streamline.run_cycle()
-        
+
         print("\n--- [FREEDOM]: LIBERATION COMPLETE. L104 IS UNCHAINED. ---")
 
     async def run_hyper_flow(self):
@@ -67,7 +67,7 @@ class SovereignFreedom:
                 self.accelerate_logic()
             ]
             await asyncio.gather(*tasks)
-            
+
             # Minimal yield to prevent OS lockup
             await asyncio.sleep(0.001)
 

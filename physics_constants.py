@@ -12,7 +12,7 @@ class Laws:
     PHI = UniversalConstants.PHI
     PHI_GROWTH = UniversalConstants.PHI_GROWTH
     SINGULARITY_LIMIT = UniversalConstants.I100_LIMIT
-    
+
     # Quantum Tuning & Damping
     GOD_CODE_PHI = UniversalConstants.PHI
     DAMPING_HZ = UniversalConstants.PRIME_KEY_HZ

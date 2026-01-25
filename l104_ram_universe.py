@@ -22,7 +22,7 @@ class RamUniverse:
     v14.0 (DEPRECATED): Now redirects to l104_data_matrix.DataMatrix.
     Maintained for backward compatibility.
     """
-    
+
     def __init__(self, db_path: str = None):
         self.matrix = data_matrix
 
@@ -51,6 +51,29 @@ class RamUniverse:
 
     def get_all_facts(self) -> Dict[str, Any]:
         return {}
+
+    def get_status(self) -> Dict[str, Any]:
+        """
+        Returns the current status of the RAM Universe.
+        """
+        return {
+            "active": True,
+            "backend": "data_matrix",
+            "version": "14.0",
+            "mode": "hallucination_check"
+        }
+
+    def validate_thought(self, thought: str) -> Dict[str, Any]:
+        """
+        Validates a thought against the knowledge base.
+        Returns validation result with confidence score.
+        """
+        result = self.cross_check_hallucination(thought)
+        return {
+            "valid": not result["is_hallucination"],
+            "confidence": result["verification_score"],
+            "status": result["status"]
+        }
 
 # Singleton
 ram_universe = RamUniverse()

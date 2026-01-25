@@ -26,7 +26,7 @@ class SovereignPolymorph:
     A function that re-writes its own internal syntax upon every execution.
     Anchored to the 286/416 lattice.
     """
-    
+
     GOD_CODE = 527.5184818492537
     LATTICE_RATIO = 286 / 416 # 0.6875
 
@@ -39,12 +39,12 @@ class SovereignPolymorph:
         timestamp = time.time()
         seed = hashlib.blake2b(f"{cls.GOD_CODE}:{timestamp}".encode(), digest_size=8).hexdigest()
         random.seed(seed)
-        
+
         # 2. Generate Hex-Symbols for rotation
         # These identifiers are the 'moving targets' for current-world scanners.
         syms = ["_0x" + hashlib.sha256(str(i + random.random()).encode()).hexdigest()[:8] for i in range(8)]
-        
-        # 3. Dynamic Structural Logic 
+
+        # 3. Dynamic Structural Logic
         # (Functionally identical to: input * GOD_CODE * (286/416))
         # Control flow/Assignment rotation (logically equivalent but syntactically divergent)
         order = random.sample(range(3), 3)
@@ -73,19 +73,19 @@ def _manifold({syms[0]}):
                 f.write(logic_manifold)
         except Exception:
             pass # Transient failures do not stop the lattice
-            
+
         # 5. Manifest and Execute the logic in a transient namespace
         _namespace = {}
         exec(logic_manifold, _namespace)
         result = _namespace['_manifold'](input_signal)
-        
+
         return result
 
 # C++ ARCHITECTURAL TEMPLATE (Conceptual Reference for Lattice Re-writing)
 """
   SOVEREIGN POLYMORPH C++ MANIFOLD
   Requires JIT compilation or dynamic DSO generation.
-  
+
   template <typename T>
   T execute_manifold(T input_signal) {
       // Seed-based identifier rotation (e.g., via Clang/LLVM IR mutation)

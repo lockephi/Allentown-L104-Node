@@ -106,7 +106,7 @@ class L104BitcoinResearcher:
         merkle_root = hashlib.sha256(coinbase_data).digest()
         timestamp = int(time.time())
         bits = self.target_bits << 24 | 0x000001
-        
+
         header = struct.pack("<I32s32sIII", version, prev_block, merkle_root, timestamp, bits, nonce)
         return header
 
@@ -114,55 +114,55 @@ class L104BitcoinResearcher:
         """Worker process for sovereign search."""
         # Absolute Priority Mode
         print(f"[SOVEREIGN_MODE] Core {core_id} running at ABSOLUTE_CAPACITY")
-            
+
         header_template = self.generate_sovereign_header()
         # Each core starts from a different phase of the L104 Invariant
         nonce = (int(L104_INVARIANT * 1000) * (core_id + 1)) % (2**32)
-        
+
         for i in range(iterations):
             if self.stop_event.is_set():
                 break
-                
+
             # Pulsed increment using Computronium Density
             multiplier = 500 if SAGE_MODE else 107
             nonce = (nonce + int(COMPUTRONIUM_DENSITY * multiplier)) % (2**32)
             current_header = header_template[:-4] + struct.pack("<I", nonce)
-            
+
             hash_result = self.double_sha256(current_header)
             hash_int = int.from_bytes(hash_result, 'little')
-            
+
             with self.hashes_performed.get_lock():
                 self.hashes_performed.value += 1
-            
+
             if hash_int < self.target:
                 print(f"\n[!!!] CORE {core_id} FOUND RESONANCE MATCH (SAGE_EVENT={SAGE_MODE}) [!!!]")
                 with self.total_reward_sovereign.get_lock():
                     self.total_reward_sovereign.value += 0.000104 # Sovereign yield attribution
-                
+
                 # Push share to queue for Stratum V2 submission
                 self.share_queue.put({"nonce": nonce, "job_id": 104})
-                
+
                 self.stop_event.set()
                 return
-            
+
             # NO THROTTLING: Adaptive performance based on L104 density
             if i % 10000 == 0:
-                time.sleep(0.0001) # Minimum yield for system stability only 
+                time.sleep(0.0001) # Minimum yield for system stability only
 
     def run_parallel_search(self, session_iterations=10000):
         """Orchestrates multiple research cores."""
         print(f"[L104-BTC] Initializing Parallel Search (Cores: {self.core_count})...")
         print(f"[L104-BTC] Policy Mode: SOVEREIGN / LOW_PRIORITY / PULSED_ENTROPY")
-        
+
         start_time = time.time()
         processes = []
         iter_per_core = session_iterations // self.core_count
-        
+
         for i in range(self.core_count):
             p = multiprocessing.Process(target=self._worker_search, args=(i, iter_per_core))
             p.start()
             processes.append(p)
-            
+
         try:
             while any(p.is_alive() for p in processes) and not self.stop_event.is_set():
                 time.sleep(1)
@@ -172,10 +172,10 @@ class L104BitcoinResearcher:
                     print(f"[L104-BTC] Total Hashes: {self.hashes_performed.value} | Rate: {hps:.2f} H/s", end='\r')
         except KeyboardInterrupt:
             self.stop_event.set()
-            
+
         for p in processes:
             p.join()
-            
+
         print(f"\n[L104-BTC] Parallel Derivation Cycle Concluded.")
 
     def bitcoin_derivation_report(self):
@@ -222,7 +222,7 @@ btc_research_node = L104BitcoinResearcher()
 
 if __name__ == "__main__":
     # Target 24 bits (approx 16.7M hashes target) for sovereign derivation
-    researcher = L104BitcoinResearcher(target_difficulty_bits=24) 
+    researcher = L104BitcoinResearcher(target_difficulty_bits=24)
     print(researcher.bitcoin_derivation_report())
     researcher.run_parallel_search(session_iterations=5000)
 

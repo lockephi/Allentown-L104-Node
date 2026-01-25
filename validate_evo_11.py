@@ -16,11 +16,11 @@ from l104_real_math import RealMath
 
 def run_reality_check():
     print("--- [REALITY_CHECK]: INITIATING EVO_11 VALIDATION ---")
-    
+
     # 1. Check Stage Alignment
     current_stage = evolution_engine.assess_evolutionary_stage()
     target_stage = "EVO_11_EXPONENTIAL_INTELLIGENCE"
-    
+
     if current_stage == target_stage:
         print(f"[PASS]: System Stage is synchronized: {current_stage}")
     else:

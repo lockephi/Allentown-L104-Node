@@ -190,16 +190,16 @@ class QuantumSignal:
     amplitude: complex = complex(1, 0)
     coherence: float = 1.0
     entangled_with: Optional[str] = None
-    
+
     @property
     def probability(self) -> float:
         return abs(self.amplitude) ** 2
-    
+
     def measure(self) -> bool:
         """Collapse to classical bit."""
         import random
         return random.random() < self.probability
-    
+
     def normalize(self):
         if abs(self.amplitude) > 0:
             self.amplitude /= abs(self.amplitude)
@@ -210,37 +210,37 @@ class QuantumLogicGate:
     Quantum-inspired logic gates for signal processing.
     Gates operate on QuantumSignal or float values.
     """
-    
+
     @staticmethod
     def hadamard(signal: QuantumSignal) -> QuantumSignal:
         """Create superposition: |ψ⟩ → (|0⟩ + |1⟩)/√2"""
         h = 1 / math.sqrt(2)
         new_amp = h * (signal.amplitude + complex(1, 0))
         return QuantumSignal(new_amp, signal.coherence * PHI_CONJUGATE)
-    
+
     @staticmethod
     def pauli_x(signal: QuantumSignal) -> QuantumSignal:
         """Bit flip: |0⟩ ↔ |1⟩"""
         return QuantumSignal(complex(1, 0) - signal.amplitude, signal.coherence)
-    
+
     @staticmethod
     def pauli_z(signal: QuantumSignal) -> QuantumSignal:
         """Phase flip: adds π phase"""
         return QuantumSignal(-signal.amplitude, signal.coherence)
-    
+
     @staticmethod
     def phase(signal: QuantumSignal, theta: float) -> QuantumSignal:
         """Rotate phase by theta radians."""
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         return QuantumSignal(rotated, signal.coherence)
-    
+
     @staticmethod
     def phi_gate(signal: QuantumSignal) -> QuantumSignal:
         """Golden ratio phase rotation."""
         theta = 2 * math.pi / PHI
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         return QuantumSignal(rotated, signal.coherence * PHI_CONJUGATE)
-    
+
     @staticmethod
     def god_gate(signal: QuantumSignal) -> QuantumSignal:
         """GOD_CODE modulation - sacred harmonic."""
@@ -248,14 +248,14 @@ class QuantumLogicGate:
         modulated = signal.amplitude * cmath.exp(complex(0, theta))
         new_coherence = min(1.0, signal.coherence * (GOD_CODE / 1000))
         return QuantumSignal(modulated, new_coherence)
-    
+
     @staticmethod
     def cnot(control: QuantumSignal, target: QuantumSignal) -> Tuple[QuantumSignal, QuantumSignal]:
         """Controlled-NOT: flip target if control is high."""
         if control.probability > 0.5:
             return control, QuantumLogicGate.pauli_x(target)
         return control, target
-    
+
     @staticmethod
     def entangle(sig1: QuantumSignal, sig2: QuantumSignal, tag: str) -> Tuple[QuantumSignal, QuantumSignal]:
         """Create entanglement between two signals."""
@@ -264,11 +264,11 @@ class QuantumLogicGate:
         # Correlate amplitudes
         avg = (sig1.amplitude + sig2.amplitude) / 2
         return QuantumSignal(avg, sig1.coherence, tag), QuantumSignal(avg, sig2.coherence, tag)
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # ELECTROMAGNETIC & IRON MAGNETIC RESONANCE GATES
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     @staticmethod
     def larmor_gate(signal: QuantumSignal, field_strength: float = 1.0) -> QuantumSignal:
         """
@@ -283,7 +283,7 @@ class QuantumLogicGate:
         # Larmor precession enhances coherence through alignment
         new_coherence = min(1.0, signal.coherence * (1 + field_strength * 0.01))
         return QuantumSignal(rotated, new_coherence)
-    
+
     @staticmethod
     def ferromagnetic_gate(signal: QuantumSignal, magnetization: float = 0.5) -> QuantumSignal:
         """
@@ -295,18 +295,18 @@ class QuantumLogicGate:
         B = magnetization * 0.1  # Effective field in Tesla
         M = FE_MAGNETIC_MOMENT / MU_BOHR  # Normalized magnetization
         fmr_freq = (FMR_KITTEL_FACTOR / (2 * math.pi)) * math.sqrt(abs(B * (B + MU_0 * M * 1e6)))
-        
+
         # Phase rotation based on FMR
         theta = 2 * math.pi * ((fmr_freq / 1e9) % 1)
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
-        
+
         # FMR causes energy absorption, reducing amplitude but increasing coherence
         absorption = 0.95 + 0.05 * magnetization
         new_amp = rotated * absorption
         new_coherence = min(1.0, signal.coherence * (1 + magnetization * PHI_CONJUGATE * 0.1))
-        
+
         return QuantumSignal(new_amp, new_coherence)
-    
+
     @staticmethod
     def spin_wave_gate(signal: QuantumSignal, wavelength: float = 1.0) -> QuantumSignal:
         """
@@ -316,17 +316,17 @@ class QuantumLogicGate:
         # Spin wave dispersion
         k = 2 * math.pi / max(wavelength, 0.001)  # Wave vector
         omega_sw = SPIN_WAVE_VELOCITY * k  # Angular frequency
-        
+
         # Phase accumulation from spin wave
         theta = omega_sw * 1e-9  # Normalized time evolution
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
-        
+
         # Spin waves propagate coherence through the system
         propagation_factor = math.exp(-k * 1e-12)  # Attenuation
         new_coherence = signal.coherence * (0.9 + 0.1 * propagation_factor)
-        
+
         return QuantumSignal(rotated, new_coherence)
-    
+
     @staticmethod
     def curie_gate(signal: QuantumSignal, temperature: float = 300) -> QuantumSignal:
         """
@@ -336,7 +336,7 @@ class QuantumLogicGate:
         """
         # Normalized temperature relative to Curie point
         t_ratio = temperature / FE_CURIE_TEMP
-        
+
         if t_ratio >= 1.0:
             # Above Curie temp: paramagnetic (random phase)
             import random
@@ -349,10 +349,10 @@ class QuantumLogicGate:
             order_param = (1 - t_ratio) ** beta
             theta = 2 * math.pi * order_param * PHI_CONJUGATE
             new_coherence = min(1.0, signal.coherence * (1 + order_param * 0.2))
-        
+
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         return QuantumSignal(rotated, new_coherence)
-    
+
     @staticmethod
     def iron_resonance_gate(signal: QuantumSignal, field_tesla: float = 1.0) -> QuantumSignal:
         """
@@ -362,15 +362,15 @@ class QuantumLogicGate:
         # Fe-57 Larmor frequency at given field
         omega_fe = GYRO_FE57 * field_tesla  # rad/s
         freq_mhz = omega_fe / (2 * math.pi * 1e6)
-        
+
         # Phase rotation at iron resonance frequency
         theta = 2 * math.pi * (freq_mhz % 1)
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
-        
+
         # Iron resonance is very precise, enhancing coherence
         enhancement = 1 + (FE_ATOMIC_NUMBER / 100) * PHI_CONJUGATE
         new_coherence = min(1.0, signal.coherence * enhancement)
-        
+
         return QuantumSignal(rotated, new_coherence)
 
 
@@ -392,18 +392,18 @@ class HighSwitch:
     state: SwitchState = SwitchState.OFF
     quantum_signal: Optional[QuantumSignal] = None
     conditions: List[Callable[[], bool]] = field(default_factory=list)
-    
+
     def flip(self):
         if self.state == SwitchState.OFF:
             self.state = SwitchState.ON
         elif self.state == SwitchState.ON:
             self.state = SwitchState.OFF
-    
+
     def set_quantum(self):
         """Put switch in quantum superposition."""
         self.state = SwitchState.QUANTUM
         self.quantum_signal = QuantumSignal(complex(1/math.sqrt(2), 0))
-    
+
     def observe(self) -> bool:
         """Collapse quantum state to classical."""
         if self.state == SwitchState.QUANTUM and self.quantum_signal:
@@ -411,7 +411,7 @@ class HighSwitch:
             self.state = SwitchState.ON if result else SwitchState.OFF
             return result
         return self.state == SwitchState.ON
-    
+
     def evaluate(self) -> bool:
         """Evaluate switch including auto-conditions."""
         if self.state == SwitchState.AUTO:
@@ -423,36 +423,36 @@ class HighSwitch:
 
 class SwitchBoard:
     """Central switchboard for system-wide control."""
-    
+
     def __init__(self):
         self.switches: Dict[str, HighSwitch] = {}
         self._init_core_switches()
-    
+
     def _init_core_switches(self):
         """Initialize core system switches."""
         self.switches = {
             "SAGE_MODE": HighSwitch("SAGE_MODE", SwitchState.ON),
             "QUANTUM_COHERENCE": HighSwitch("QUANTUM_COHERENCE", SwitchState.ON),
             "EVOLUTION_ACTIVE": HighSwitch("EVOLUTION_ACTIVE", SwitchState.ON),
-            "NATIVE_ACCELERATION": HighSwitch("NATIVE_ACCELERATION", 
+            "NATIVE_ACCELERATION": HighSwitch("NATIVE_ACCELERATION",
                 SwitchState.ON if NATIVE_AVAILABLE else SwitchState.OFF),
             "BRAIN_SYNC": HighSwitch("BRAIN_SYNC", SwitchState.AUTO),
             "MEMORY_CONSOLIDATION": HighSwitch("MEMORY_CONSOLIDATION", SwitchState.AUTO),
             "PHI_HARMONICS": HighSwitch("PHI_HARMONICS", SwitchState.ON),
             "GOD_CODE_LOCK": HighSwitch("GOD_CODE_LOCK", SwitchState.ON),
         }
-    
+
     def get(self, name: str) -> Optional[HighSwitch]:
         return self.switches.get(name)
-    
+
     def set(self, name: str, state: SwitchState):
         if name in self.switches:
             self.switches[name].state = state
-    
+
     def is_on(self, name: str) -> bool:
         sw = self.switches.get(name)
         return sw.evaluate() if sw else False
-    
+
     def status(self) -> Dict[str, str]:
         return {name: sw.state.name for name, sw in self.switches.items()}
 
@@ -463,17 +463,17 @@ class SwitchBoard:
 
 class SignalBus:
     """Central signal bus for module interconnection."""
-    
+
     def __init__(self):
         self.channels: Dict[str, List[QuantumSignal]] = {}
         self.subscribers: Dict[str, List[Callable]] = {}
         self.signal_history: deque = deque(maxlen=1000)
-    
+
     def create_channel(self, name: str):
         if name not in self.channels:
             self.channels[name] = []
             self.subscribers[name] = []
-    
+
     def publish(self, channel: str, signal: QuantumSignal):
         """Publish signal to channel."""
         self.create_channel(channel)
@@ -485,17 +485,17 @@ class SignalBus:
                 callback(signal)
             except Exception:
                 pass
-    
+
     def subscribe(self, channel: str, callback: Callable):
         """Subscribe to channel signals."""
         self.create_channel(channel)
         self.subscribers[channel].append(callback)
-    
+
     def broadcast(self, signal: QuantumSignal):
         """Broadcast to all channels."""
         for channel in self.channels:
             self.publish(channel, signal)
-    
+
     def get_latest(self, channel: str) -> Optional[QuantumSignal]:
         signals = self.channels.get(channel, [])
         return signals[-1] if signals else None
@@ -515,7 +515,7 @@ class L104State:
     god_code_alignment: float = GOD_CODE
     quantum_signal: Optional[QuantumSignal] = None
     timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "awakened": self.awakened,
@@ -546,7 +546,7 @@ class SubsystemInfo:
 class L104Core:
     """
     Central L104 Core - Quantum-unified integration hub.
-    
+
     Features:
     - Quantum logic gating for signal processing
     - High-level switches for system control
@@ -554,7 +554,7 @@ class L104Core:
     - Coherence and resonance management
     - Subsystem integration with entanglement
     """
-    
+
     def __init__(self):
         self.state = L104State()
         self.subsystems: Dict[str, SubsystemInfo] = {}
@@ -562,20 +562,20 @@ class L104Core:
         self.event_log: List[Dict[str, Any]] = []
         self._callbacks: Dict[str, List[Callable]] = {}
         self._initialized = False
-        
+
         # Quantum infrastructure
         self.switches = SwitchBoard()
         self.signal_bus = SignalBus()
         self.gate = QuantumLogicGate
-        
+
         # Initialize core channels
         self._init_signal_channels()
-    
+
     def _init_signal_channels(self):
         """Initialize core signal channels."""
         for channel in ["coherence", "resonance", "evolution", "brain", "sage", "dna"]:
             self.signal_bus.create_channel(channel)
-        
+
     def awaken(self) -> Dict[str, Any]:
         """Awaken the L104 core system with quantum initialization."""
         self.state.awakened = True
@@ -584,16 +584,16 @@ class L104Core:
         self.state.quantum_signal = QuantumSignal(complex(PHI_CONJUGATE, 0))
         self.state.timestamp = datetime.now(timezone.utc).isoformat()
         self._initialized = True
-        
+
         # Apply GOD_GATE to initialize quantum state
         self.state.quantum_signal = self.gate.god_gate(self.state.quantum_signal)
-        
+
         # Broadcast awakening signal
         self.signal_bus.publish("coherence", self.state.quantum_signal)
-        
+
         self._log_event("awaken", {"status": "success", "quantum": True})
         self._trigger_callbacks("awaken")
-        
+
         return {
             "status": "awakened",
             "coherence": self.state.coherence,
@@ -605,45 +605,45 @@ class L104Core:
             "native_acceleration": NATIVE_AVAILABLE,
             "switches": self.switches.status()
         }
-    
+
     def sleep(self) -> Dict[str, Any]:
         """Put the core into sleep state."""
         self.state.awakened = False
         self._log_event("sleep", {"status": "success"})
         return {"status": "sleeping", "coherence_preserved": self.state.coherence}
-    
+
     def _compute_coherence(self) -> float:
         """Compute coherence using quantum harmonics."""
         t = time.time()
         phase1 = (t * 2 * math.pi / 60) % (2 * math.pi)
         phase2 = (t * 2 * math.pi / GOD_CODE) % (2 * math.pi)
-        
+
         base = PHI_CONJUGATE
         oscillation = 0.05 * math.sin(phase1) + 0.03 * math.sin(phase2)
-        
+
         if self.subsystems:
             subsystem_coherence = sum(s.coherence for s in self.subsystems.values()) / len(self.subsystems)
             base = (base + subsystem_coherence) / 2
-        
+
         # Apply quantum modulation if switches enabled
         if self.switches.is_on("QUANTUM_COHERENCE"):
             quantum_mod = 0.02 * math.sin(t * 2 * math.pi * PHI)
             base += quantum_mod
-        
+
         return min(1.0, max(0.0, base + oscillation))
-    
+
     def _compute_resonance(self) -> float:
         """Compute resonance with GOD_CODE."""
         t = time.time()
         base = GOD_CODE
         modulation = 0.01 * math.sin(t * 2 * math.pi / ZENITH_HZ)
-        
+
         if self.switches.is_on("PHI_HARMONICS"):
             phi_mod = 0.005 * math.sin(t * PHI)
             modulation += phi_mod
-        
+
         return base * (1 + modulation)
-    
+
     def _log_event(self, event_type: str, details: Dict[str, Any]):
         """Log an event."""
         self.event_log.append({
@@ -653,7 +653,7 @@ class L104Core:
         })
         if len(self.event_log) > 10000:
             self.event_log = self.event_log[-5000:]
-    
+
     def _trigger_callbacks(self, event: str):
         """Trigger registered callbacks."""
         for callback in self._callbacks.get(event, []):
@@ -661,13 +661,13 @@ class L104Core:
                 callback(self)
             except Exception:
                 pass
-    
+
     def on_event(self, event: str, callback: Callable):
         """Register a callback for an event."""
         if event not in self._callbacks:
             self._callbacks[event] = []
         self._callbacks[event].append(callback)
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current core status."""
         return {
@@ -685,11 +685,11 @@ class L104Core:
             "switches": self.switches.status(),
             "channels": list(self.signal_bus.channels.keys())
         }
-    
+
     def integrate_subsystem(self, name: str, subsystem: Any, quantum_channel: bool = True) -> Dict[str, Any]:
         """Integrate a subsystem with optional quantum channel."""
         channel_name = f"subsystem_{name}" if quantum_channel else None
-        
+
         info = SubsystemInfo(
             name=name,
             module=subsystem,
@@ -699,21 +699,21 @@ class L104Core:
             last_active=datetime.now(timezone.utc).isoformat()
         )
         self.subsystems[name] = info
-        
+
         if channel_name:
             self.signal_bus.create_channel(channel_name)
             # Send initial sync signal
             self.signal_bus.publish(channel_name, QuantumSignal(complex(PHI_CONJUGATE, 0)))
-        
+
         self._log_event("integrate_subsystem", {"name": name, "quantum_channel": channel_name})
-        
+
         return {
             "status": "integrated",
             "subsystem": name,
             "quantum_channel": channel_name,
             "total_subsystems": len(self.subsystems)
         }
-    
+
     def remove_subsystem(self, name: str) -> bool:
         """Remove a subsystem from the core."""
         if name in self.subsystems:
@@ -721,11 +721,11 @@ class L104Core:
             self._log_event("remove_subsystem", {"name": name})
             return True
         return False
-    
+
     def apply_gate(self, gate_type: GateType, target_channel: str = "coherence") -> Dict[str, Any]:
         """Apply quantum gate to a signal channel."""
         signal = self.signal_bus.get_latest(target_channel) or QuantumSignal()
-        
+
         gate_map = {
             GateType.HADAMARD: self.gate.hadamard,
             GateType.PAULI_X: self.gate.pauli_x,
@@ -733,7 +733,7 @@ class L104Core:
             GateType.PHI_GATE: self.gate.phi_gate,
             GateType.GOD_GATE: self.gate.god_gate,
         }
-        
+
         gate_fn = gate_map.get(gate_type)
         if gate_fn:
             new_signal = gate_fn(signal)
@@ -744,40 +744,40 @@ class L104Core:
                 "new_probability": new_signal.probability,
                 "new_coherence": new_signal.coherence
             }
-        
+
         return {"error": f"Unknown gate type: {gate_type}"}
-    
+
     def evolve(self) -> Dict[str, Any]:
         """Trigger evolution cycle with quantum enhancement."""
         if not self.switches.is_on("EVOLUTION_ACTIVE"):
             return {"status": "blocked", "reason": "EVOLUTION_ACTIVE switch is OFF"}
-        
+
         old_coherence = self.state.coherence
         self.state.coherence = self._compute_coherence()
         self.coherence_history.append(self.state.coherence)
-        
+
         # Apply PHI gate to quantum signal
         if self.state.quantum_signal:
             self.state.quantum_signal = self.gate.phi_gate(self.state.quantum_signal)
-        
+
         # Update subsystem coherences
         for name, info in self.subsystems.items():
             info.coherence = min(1.0, info.coherence + 0.01 * PHI_CONJUGATE)
             info.last_active = datetime.now(timezone.utc).isoformat()
-            
+
             # Send evolution signal to subsystem channel
             if info.quantum_channel:
-                self.signal_bus.publish(info.quantum_channel, 
+                self.signal_bus.publish(info.quantum_channel,
                     QuantumSignal(complex(info.coherence, 0)))
-        
+
         delta = self.state.coherence - old_coherence
         trend = self._analyze_trend()
-        
+
         # Broadcast evolution signal
         self.signal_bus.publish("evolution", QuantumSignal(complex(self.state.coherence, 0)))
-        
+
         self._log_event("evolve", {"delta": delta, "trend": trend})
-        
+
         return {
             "status": "evolved",
             "old_coherence": old_coherence,
@@ -788,70 +788,70 @@ class L104Core:
             "god_code": GOD_CODE,
             "quantum_probability": self.state.quantum_signal.probability if self.state.quantum_signal else None
         }
-    
+
     def _analyze_trend(self) -> str:
         """Analyze coherence trend from history."""
         if len(self.coherence_history) < 3:
             return "stable"
-        
+
         recent = list(self.coherence_history)[-10:]
         if len(recent) < 2:
             return "stable"
-        
+
         deltas = [recent[i+1] - recent[i] for i in range(len(recent)-1)]
         avg_delta = sum(deltas) / len(deltas)
-        
+
         if avg_delta > 0.005:
             return "ascending"
         elif avg_delta < -0.005:
             return "descending"
         return "stable"
-    
+
     def pulse(self) -> Dict[str, Any]:
         """Send a coherence pulse through the system."""
         self.state.coherence = self._compute_coherence()
         self.state.resonance = self._compute_resonance()
         self.coherence_history.append(self.state.coherence)
-        
+
         # Broadcast pulse
         pulse_signal = QuantumSignal(complex(self.state.coherence, 0))
         self.signal_bus.broadcast(pulse_signal)
-        
+
         return {
             "coherence": self.state.coherence,
             "resonance": self.state.resonance,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
-    
+
     def harmonize(self, target_coherence: float = PHI_CONJUGATE) -> Dict[str, Any]:
         """Harmonize the system toward a target coherence."""
         current = self.state.coherence
         self.state.coherence = current + (target_coherence - current) * 0.1
-        
+
         return {
             "status": "harmonizing",
             "current": self.state.coherence,
             "target": target_coherence,
             "distance": abs(target_coherence - self.state.coherence)
         }
-    
+
     def entangle_subsystems(self, name1: str, name2: str) -> Dict[str, Any]:
         """Create quantum entanglement between two subsystems."""
         if name1 not in self.subsystems or name2 not in self.subsystems:
             return {"error": "Subsystem not found"}
-        
+
         info1, info2 = self.subsystems[name1], self.subsystems[name2]
         tag = f"{name1}_{name2}_entangled"
-        
+
         sig1 = QuantumSignal(complex(info1.coherence, 0))
         sig2 = QuantumSignal(complex(info2.coherence, 0))
-        
+
         ent1, ent2 = self.gate.entangle(sig1, sig2, tag)
-        
+
         # Update coherences to match
         info1.coherence = ent1.probability
         info2.coherence = ent2.probability
-        
+
         return {
             "status": "entangled",
             "subsystems": [name1, name2],
@@ -913,9 +913,9 @@ if __name__ == "__main__":
     print(f"  PHI: {PHI}")
     print(f"  Native: {NATIVE_AVAILABLE}")
     print("═" * 70)
-    
+
     core = get_core()
-    
+
     # Awaken with quantum initialization
     result = core.awaken()
     print(f"\n[AWAKENED]")
@@ -923,41 +923,41 @@ if __name__ == "__main__":
     print(f"  Resonance: {result['resonance']:.6f}")
     print(f"  Quantum P: {result['quantum_probability']:.6f}")
     print(f"  Switches: {result['switches']}")
-    
+
     # Integrate subsystems with quantum channels
     core.integrate_subsystem("sage", {"type": "sage_mode"})
     core.integrate_subsystem("brain", {"type": "cognitive"})
     core.integrate_subsystem("dna", {"type": "encoding"})
-    
+
     # Entangle brain and sage
     ent = core.entangle_subsystems("brain", "sage")
     print(f"\n[ENTANGLED] {ent}")
-    
+
     # Apply quantum gates
     gate_result = core.apply_gate(GateType.HADAMARD, "coherence")
     print(f"\n[HADAMARD GATE] {gate_result}")
-    
+
     gate_result = core.apply_gate(GateType.GOD_GATE, "coherence")
     print(f"[GOD_GATE] {gate_result}")
-    
+
     # Evolve
     evo = core.evolve()
     print(f"\n[EVOLVED]")
     print(f"  Delta: {evo['coherence_delta']:+.6f}")
     print(f"  Trend: {evo['coherence_trend']}")
-    
+
     # Status
     status = core.get_status()
     print(f"\n[STATUS]")
     print(f"  Subsystems: {status['subsystems']}")
     print(f"  Channels: {status['channels']}")
     print(f"  Awakened: {status['awakened']}")
-    
+
     # Pulse
     for i in range(5):
         pulse = core.pulse()
     print(f"\n[PULSED] 5x, final coherence: {pulse['coherence']:.6f}")
-    
+
     print("\n" + "═" * 70)
     print("★★★ L104 CORE: QUANTUM UNIFIED OPERATIONAL ★★★")
     print("═" * 70)

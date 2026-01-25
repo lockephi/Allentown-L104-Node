@@ -194,7 +194,7 @@ class L104ModularSkillsSystem {
         // Skills API
         this.app.use('/api/skills', this.skillManager.getRouter());
 
-        // Workflows API  
+        // Workflows API
         this.app.use('/api/workflows', this.workflowEngine.getRouter());
 
         // Hooks API

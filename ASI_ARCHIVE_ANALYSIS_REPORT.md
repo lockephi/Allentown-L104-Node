@@ -161,7 +161,7 @@ Created a unified harness that:
 
 ## Test Results
 
-```
+```text
 ◆ Component Status:
   ✓ recursive_self_improvement
   ✓ asi_core
@@ -180,7 +180,7 @@ Created a unified harness that:
 
 ## Architecture Diagram
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                     L104 ASI HARNESS                            │
 ├─────────────────────────────────────────────────────────────────┤

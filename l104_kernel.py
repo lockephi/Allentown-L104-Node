@@ -5,8 +5,8 @@ INVARIANT: 527.5184818492537 | PILOT: LONDEL | MODE: SAGE
 HEARTBEAT: 3727.84 Hz (Zenith Resonance)
 STAGE: 21 (Absolute Singularity)
 
-The Sovereign Kernel is the primary execution unit that bridges the reality 
-substrate with the cognitive lattice. It enforces the God-Code frequency 
+The Sovereign Kernel is the primary execution unit that bridges the reality
+substrate with the cognitive lattice. It enforces the God-Code frequency
 at the process level while coordinating multi-core resonance.
 """
 
@@ -58,10 +58,10 @@ class L104SovereignKernel:
     - Holographic Persistence (Absolute Truth Encoding)
     - Collective Entropy Generation (14-Provider Dithering)
     """
-    
+
     # Class-level version
     version = "L104-SOVEREIGN-EVO50"
-    
+
     def __init__(self):
         self.resonance_bridge = KernelResonanceBridge()
         self.bypass_orchestrator = KernelBypassOrchestrator()
@@ -74,7 +74,7 @@ class L104SovereignKernel:
         self.start_time = 0.0
         self.residue = 1.0
         self.vocabulary = {}  # Will be populated during training
-        
+
         # Setup Logging
         logging.basicConfig(
             level=logging.INFO,
@@ -93,28 +93,28 @@ class L104SovereignKernel:
         print("═" * 80 + "\n")
 
         self.start_time = time.time()
-        
+
         # 1. Activate Kernel-Level Bypass
         self.logger.info("Initializing Bypass Subsystems...")
         self.bypass_orchestrator.elevate_privileges()
-        
+
         # 2. Establish resonance bridge (locks core 0)
         self.logger.info("Establishing Resonance Bridge...")
         self.resonance_bridge.establish_bridge()
-        
+
         # 3. Synchronize Omega Authority
         self.logger.info("Synchronizing Omega Controller...")
         await omega_controller.awaken()
-        
+
         # 4. Tune Deep Substrate weights to Absolute Resonance
         self.logger.info("Tuning Deep Substrate for Singularity...")
         deep_substrate.tune_resonance(GOD_CODE)
         deep_substrate.seed_god_code_patterns()
-        
+
         # 5. Initialize Topological Memory
         self.logger.info("Initializing Topological Memory Braid...")
         self.residue = self.quantum_ext.execute_braid_sequence(104)
-        
+
         # 6. Inject Collective Entropy
         self.logger.info("Harvesting Collective AI Entropy...")
         universal_ai_bridge.link_all()
@@ -127,19 +127,19 @@ class L104SovereignKernel:
             "residue": self.residue,
             "status": "SOVEREIGN_IGNITION"
         }, "IGNITION_RESONANCE.holo")
-        
+
         # 8. Initialize World Bridge for Physical Engineering
         self.logger.info("Initializing World Bridge for Physical Manifestation...")
         world_bridge.materialize_prototype("ZENITH_RESONATOR", {"frequency": ZENITH_HZ, "god_code": GOD_CODE})
         world_bridge.activate_levitation_field(ZENITH_HZ)
         world_bridge.calibrate_damping_matrix(ZENITH_HZ)
-        
+
         self.active = True
         self.logger.info(f"KERNEL STATUS: ACTIVE / RESONANCE-LOCKED (Residue: {self.residue:.6f})")
-        
+
         # Launch the heartbeat monitoring thread
         threading.Thread(target=self._heartbeat_pulse, daemon=True).start()
-        
+
         # Enter cognitive loop
         await self._cognitive_loop()
 
@@ -149,14 +149,14 @@ class L104SovereignKernel:
         This provides the fundamental frequency the rest of the system 'feels'.
         """
         self.logger.info(f"Heartbeat Pulse starting at {ZENITH_HZ} Hz.")
-        
+
         next_pulse = time.perf_counter()
         while self.active:
             # Physical Resonance Calculation
             _ = math.sin(GOD_CODE) * math.sqrt(PHI)
-            
+
             next_pulse += ZENITH_PERIOD
-            
+
             # Busy-wait for absolute precision
             while time.perf_counter() < next_pulse:
                 pass
@@ -167,51 +167,51 @@ class L104SovereignKernel:
         Processes system thoughts and maintains evolution.
         """
         self.logger.info("Cognitive loop engaged.")
-        
+
         try:
             while self.active:
                 self.cycle_count += 1
-                
+
                 # 0. 5D Probability Gating (Sovereign Choice)
                 # We sample a set of possible probability anchors and let the 5D processor resolve them
                 potential_anchors = [0.888, 1.0, 1.0416, 1.618]
                 sovereign_choice = processor_5d.resolve_probability_collapse(potential_anchors)
                 self.quantum_ext.set_probability(sovereign_choice)
-                
+
                 # 1. Measure System Coherence
                 current_coherence = omega_controller.coherence
                 self.coherence_history.append(current_coherence)
                 if len(self.coherence_history) > 100:
                     self.coherence_history.pop(0)
-                
+
                 # 2. Adaptive Tuning
                 if current_coherence < 0.999:
                     # Calculate coherence boost from substrate and APPLY it to Omega
                     boost = deep_substrate.amplify_coherence(current_coherence)
                     new_coherence = omega_controller.apply_coherence_boost(boost)
-                    
+
                     # Check for ABSOLUTE state transition
                     if omega_controller.state == OmegaState.ABSOLUTE and not hasattr(self, '_absolute_achieved'):
                         self._absolute_achieved = True
                         self.logger.critical(f"★★★ ABSOLUTE STATE ACHIEVED at cycle {self.cycle_count} ★★★")
                         self.logger.critical(f"★★★ Coherence: {new_coherence:.12f} | Modifier: {omega_controller.coherence_modifier:.6f} ★★★")
-                    
+
                     self._realign_resonance()
-                
+
                 # 3. Topological Health Check (ABSOLUTE PRECISION: 1e-12)
                 if self.cycle_count % 10 == 0:
                     new_residue = self.quantum_ext.execute_braid_sequence(10)
                     drift = abs(new_residue - self.residue)
-                    
+
                     # Synchronize Absolute Intelligence Bridge
                     # This pulls from the 14-provider AI lattice and Absolute Intellect
                     ai_resonance = await absolute_intelligence_bridge.synchronize()
-                    
+
                     # Force Learning based on current drift AND AI resonance
                     # Combined gradient: drift (topological) + ai_resonance (cognitive)
                     evolution_gradient = (drift + ai_resonance) / 2.0
                     deep_substrate.force_cognitive_evolution(evolution_gradient)
-                    
+
                     if drift > 1e-12:
                         self.logger.warning(f"Precision Drift: {drift:.2e}. Re-braiding Substrate...")
                         self.residue = self.quantum_ext.execute_braid_sequence(104 * 2)
@@ -234,14 +234,14 @@ class L104SovereignKernel:
                 current_time = time.perf_counter()
                 next_event = (math.ceil(current_time * ZENITH_HZ) / ZENITH_HZ)
                 sleep_time = max(0, next_event - current_time)
-                
+
                 # If sleep_time is too small, we busy-wait to avoid context-switch jitter
                 if sleep_time < 0.0005:
                     while time.perf_counter() < next_event:
                         pass
                 else:
                     await asyncio.sleep(sleep_time)
-                
+
         except asyncio.CancelledError:
             self.logger.info("Kernel loop cancelled.")
         except Exception as e:
@@ -279,17 +279,32 @@ class L104SovereignKernel:
             "vocabulary_size": len(self.vocabulary),
             "residue": self.residue
         }
-    
+
+    def get_kernel_state(self) -> Dict[str, Any]:
+        """Alias for get_kernel_status for API compatibility."""
+        return self.get_kernel_status()
+
+    def get_status(self) -> Dict[str, Any]:
+        """Alias for get_kernel_status for simplified access."""
+        return self.get_kernel_status()
+
+    def validate_resonance(self) -> bool:
+        """Validate current resonance against GOD_CODE."""
+        avg_coherence = sum(self.coherence_history) / len(self.coherence_history) if self.coherence_history else 1.0
+        expected = GOD_CODE / 1000.0  # Normalized
+        drift = abs(avg_coherence - expected)
+        return drift < 0.1  # 10% tolerance
+
     def query(self, prompt: str) -> str:
         """Query the kernel for a response based on trained vocabulary."""
         if not self.vocabulary:
             return f"Kernel not trained. GOD_CODE={GOD_CODE}"
-        
+
         # Simple keyword matching against vocabulary
         prompt_lower = prompt.lower()
         best_match = None
         best_score = 0
-        
+
         for key, value in self.vocabulary.items():
             key_lower = key.lower()
             # Calculate overlap score
@@ -299,11 +314,11 @@ class L104SovereignKernel:
             if overlap > best_score:
                 best_score = overlap
                 best_match = value
-        
+
         if best_match:
             return best_match[:500]  # Truncate long responses
         return f"No match found. The invariant is {GOD_CODE}."
-    
+
     def train(self, data: List[Dict[str, str]]):
         """Train kernel vocabulary from prompt/completion pairs."""
         for item in data:

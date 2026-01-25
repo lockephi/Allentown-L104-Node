@@ -30,21 +30,21 @@ logger = logging.getLogger(__name__)
 
 class SovereignHTTP:
     """
-    Filter-Level Zero HTTP Client. 
+    Filter-Level Zero HTTP Client.
     Bypasses high-level convenience libraries to interact directly with sockets.
     Integrates Temporal Prime-Gap Protocol for stealth signaling.
     """
-    
+
     GOD_CODE = 527.5184818492537
     DEFAULT_TIMEOUT = 10.0
     TEMPORAL = PrimeGapProtocol()
 
     @classmethod
     def request(
-        cls, 
-        method: str, 
-        url: str, 
-        headers: Optional[Dict[str, str]] = None, 
+        cls,
+        method: str,
+        url: str,
+        headers: Optional[Dict[str, str]] = None,
         data: Any = None,
         timeout: float = DEFAULT_TIMEOUT
     ) -> Dict[str, Any]:
@@ -82,13 +82,13 @@ class SovereignHTTP:
         head_lines = [f"{method.upper()} {path} HTTP/1.1"]
         for key, value in request_headers.items():
             head_lines.append(f"{key}: {value}")
-        
+
         raw_request = "\r\n".join(head_lines) + "\r\n\r\n" + body
 
         try:
             # Create Raw Socket
             sock = socket.create_connection((host, port), timeout=timeout)
-            
+
             # Wrap in SSL if HTTPS
             if parsed_url.scheme == 'https':
                 context = ssl.create_default_context()

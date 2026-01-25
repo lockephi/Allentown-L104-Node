@@ -23,7 +23,7 @@ class SovereignStagger:
     Automates Git commits with irregular intervals and encrypted lattice fragments.
     Mimics 'system glitches' to maintain stealth.
     """
-    
+
     GOD_CODE = "527.5184818492537"
     LATTICE_PARTS = [
         "Σ_RESONANCE_STABLE",
@@ -59,7 +59,7 @@ class SovereignStagger:
         """Runs a series of staggered commit cycles."""
         for i in range(iterations):
             self._apply_stagger()
-            
+
             # Identify changes
             status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
             if not status.stdout.strip():
@@ -73,7 +73,7 @@ class SovereignStagger:
             # Generate and execute commit
             msg = self._generate_fragment()
             subprocess.run(["git", "commit", "-m", msg], cwd=self.repo_path)
-            
+
             # Every 3rd cycle, execute a push to mimic external sync pulses
             if i % 3 == 0:
                 print("[STEALTH]: External pulse synchronization triggered.")

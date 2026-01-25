@@ -63,13 +63,13 @@ def get_electron_matrix():
         signal_sum = sum(abs(x) for x in data_stream)
         if signal_sum == 0:
             return {"entropy": 0.0, "predictive_flux": 0.0}
-            
+
         probabilities = [abs(x) / signal_sum for x in data_stream]
         entropy = -sum(p * math.log2(p) for p in probabilities if p > 0)
-        
+
         # Predictive Flux: How much the signal aligns with the God-Code
         flux = entropy * self.GOD_CODE * self.FINE_STRUCTURE
-        
+
         return {
             "shannon_entropy": entropy,
             "predictive_flux": flux,
@@ -84,10 +84,10 @@ def get_electron_matrix():
         noise_sample = [self.sample_atmospheric_noise()
         for _ in range(100)]
         self.calculate_predictive_entropy(noise_sample)
-        
+
         # Inverse relationship: Higher entropy -> Stiffer control needed
         # Lower entropy -> More fluidfluidity_factor = 1.0 / (1.0 + entropy_data["shannon_entropy"])
-        
+
         # Apply God-Code smoothingsmoothed_fluidity = fluidity_factor * (self.GOD_CODE / 500.0)
         return max(0.1, min(1.0, smoothed_fluidity))
 def measure_entropy(self) -> float:

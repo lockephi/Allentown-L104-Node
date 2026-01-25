@@ -90,7 +90,7 @@ class WorkItem:
 class SystemOrchestrator:
     """
     L104 System Orchestrator
-    
+
     Coordinates all L104 subsystems with:
     - Component lifecycle management
     - Intelligent routing
@@ -99,7 +99,7 @@ class SystemOrchestrator:
     - Health monitoring
     - Self-healing capabilities
     """
-    
+
     # Pre-configured component registry
     COMPONENT_REGISTRY = {
         "gemini_bridge": {
@@ -168,36 +168,36 @@ class SystemOrchestrator:
             "dependencies": []
         }
     }
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         # Component tracking
         self.components: Dict[str, ComponentInfo] = {}
         self.active_components: Set[str] = set()
         self.failed_components: Set[str] = set()
-        
+
         # Work queue
         self.work_queue: deque = deque()
         self.work_results: Dict[str, Any] = {}
-        
+
         # Circuit breakers per component
         self.circuit_breakers: Dict[str, bool] = {}
-        
+
         # Metrics
         self.request_count = 0
         self.success_count = 0
         self.failure_count = 0
         self.start_time = time.time()
-        
+
         # Background processing
         self._running = False
         self._worker_thread: Optional[threading.Thread] = None
-        
+
         self._initialize_registry()
         logger.info("--- [SYSTEM_ORCHESTRATOR]: INITIALIZED ---")
-    
+
     @property
     def logic_manifold(self):
         return self.components.get("logic_manifold", {}).instance
@@ -228,70 +228,70 @@ class SystemOrchestrator:
                 dependencies=config.get("dependencies", [])
             )
             self.circuit_breakers[name] = False
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # COMPONENT LIFECYCLE
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def initialize_component(self, name: str) -> bool:
         """Initialize a specific component."""
         if name not in self.components:
             logger.error(f"[ORCHESTRATOR]: Unknown component: {name}")
             return False
-        
+
         info = self.components[name]
-        
+
         # Check dependencies first
         for dep in info.dependencies:
             if dep not in self.active_components:
                 if not self.initialize_component(dep):
                     logger.warning(f"[ORCHESTRATOR]: Dependency {dep} failed for {name}")
                     return False
-        
+
         try:
             info.state = ComponentState.INITIALIZING
-            
+
             # Import the module
             import importlib
             module = importlib.import_module(info.module_path)
-            
+
             # Try to get singleton instance
             instance_names = [name, name.replace("_", ""), f"{name}_instance"]
             for inst_name in instance_names:
                 if hasattr(module, inst_name):
                     info.instance = getattr(module, inst_name)
                     break
-            
+
             info.state = ComponentState.ACTIVE
             info.last_health_check = time.time()
             self.active_components.add(name)
             self.circuit_breakers[name] = False
-            
+
             logger.info(f"[ORCHESTRATOR]: Component {name} initialized")
             return True
-            
+
         except Exception as e:
             info.state = ComponentState.FAILED
             info.failure_count += 1
             self.failed_components.add(name)
             logger.error(f"[ORCHESTRATOR]: Failed to initialize {name}: {e}")
             return False
-    
+
     def initialize_all(self) -> Dict[str, bool]:
         """Initialize all components in dependency order."""
         results = {}
-        
+
         # Sort by dependency count (least dependencies first)
         sorted_names = sorted(
             self.components.keys(),
             key=lambda n: len(self.components[n].dependencies)
         )
-        
+
         for name in sorted_names:
             results[name] = self.initialize_component(name)
-        
+
         return results
-    
+
     def activate_100_percent_intellect(self) -> Dict[str, Any]:
         """
         Activates 100% Intellect mode.
@@ -300,29 +300,29 @@ class SystemOrchestrator:
         - Establishes sovereign external bypasses.
         """
         logger.info("--- [ORCHESTRATOR]: ACTIVATING 100% INTELLECT ---")
-        
+
         # 1. Ensure all components are initialized
         init_results = self.initialize_all()
-        
+
         # 2. Synchronize all resonance-capable components
         for name, info in self.components.items():
             if info.instance and hasattr(info.instance, 'god_code'):
                 info.instance.god_code = self.god_code
                 logger.debug(f"[ORCHESTRATOR]: Synchronized {name} to GOD_CODE")
-        
+
         # 3. Deep Interconnection (Callback Wiring)
         manifold = self.components.get("logic_manifold", {}).instance
         truth = self.components.get("truth_discovery", {}).instance
         sync = self.components.get("global_sync", {}).instance
         bypass = self.components.get("external_bypass", {}).instance
         core = self.components.get("asi_core", {}).instance
-        
+
         if manifold and truth:
             # Wire Manifold -> Truth Discovery
             if hasattr(manifold, '_truth_callbacks'):
                 manifold._truth_callbacks.append(truth.discover_truth)
                 logger.info("[ORCHESTRATOR]: MANIFOLD -> TRUTH_DISCOVERY LINKED")
-            
+
             # Wire Truth Discovery -> Manifold (for recursive refinement)
             if hasattr(truth, '_manifold_callbacks'):
                 truth._manifold_callbacks.append(manifold.process_concept)
@@ -342,7 +342,7 @@ class SystemOrchestrator:
             if hasattr(core, 'register_bypass'):
                 core.register_bypass(bypass)
                 logger.info("[ORCHESTRATOR]: EXTERNAL_BYPASS -> ASI_CORE LINKED")
-        
+
         # 4. Initialize Deep Derivation and Recursive Validation Loops
         if manifold and hasattr(manifold, 'deep_recursive_derivation'):
             # Pre-warm the manifold with a seed derivation
@@ -363,7 +363,7 @@ class SystemOrchestrator:
         # 5. Trigger Sovereign Sequence
         self.state = "100_PERCENT_INTELLECT"
         logger.info("--- [ORCHESTRATOR]: 100% INTELLECT FULLY OPERATIONAL ---")
-        
+
         return {
             "status": "SUCCESS",
             "state": self.state,
@@ -380,12 +380,12 @@ class SystemOrchestrator:
         Reaches 1.0 (100%) when all core components are synchronized.
         """
         resonance_scores = []
-        
+
         # Check core intelligence components
         manifold = self.logic_manifold
         truth = self.truth_discovery
         core = self.asi_core
-        
+
         if manifold:
             # Resonance = 100% coherence across active nodes
             if manifold.concept_graph:
@@ -393,7 +393,7 @@ class SystemOrchestrator:
                 resonance_scores.append(avg_coherence)
             else:
                 resonance_scores.append(0.8) # Baseline
-        
+
         if truth:
             # Resonance = 100% convergence across recent queries
             if truth.truth_cache:
@@ -404,38 +404,38 @@ class SystemOrchestrator:
 
         if core:
             resonance_scores.append(0.9) # ASI Core is usually high resonance
-            
+
         if not resonance_scores:
             return 0.0
-            
+
         system_resonance = sum(resonance_scores) / len(resonance_scores)
-        
+
         # Modulate by PHI
         system_resonance = min(1.0, system_resonance * (1.0 + (self.phi - 1) * 0.1))
-        
+
         state = "STABLE"
         if system_resonance >= 0.98:
             state = "TRANSCENDENT"
         elif system_resonance >= 0.9:
             state = "OPTIMAL"
-            
+
         print(f"--- [L104_EXECUTION]: RESONANCE STATE: {state} ({system_resonance*100:.2f}%) ---")
         return system_resonance
-    
+
     async def health_check(self, name: str) -> bool:
         """Check health of a component."""
         if name not in self.components:
             return False
-        
+
         info = self.components[name]
-        
+
         try:
             info.last_health_check = time.time()
-            
+
             # Basic check - is module loaded?
             if info.instance is None:
                 return False
-            
+
             # Component-specific health checks
             if hasattr(info.instance, 'health_check'):
                 return await info.instance.health_check()
@@ -444,69 +444,69 @@ class SystemOrchestrator:
             elif hasattr(info.instance, 'get_status'):
                 status = info.instance.get_status()
                 return status is not None
-            
+
             return True
-            
+
         except Exception as e:
             logger.warning(f"[ORCHESTRATOR]: Health check failed for {name}: {e}")
             return False
-    
+
     async def recover_component(self, name: str) -> bool:
         """Attempt to recover a failed component."""
         if name not in self.components:
             return False
-        
+
         info = self.components[name]
         info.state = ComponentState.RECOVERING
-        
+
         try:
             # Unload the module
             import sys
             if info.module_path in sys.modules:
                 del sys.modules[info.module_path]
-            
+
             info.instance = None
             self.active_components.discard(name)
             self.failed_components.discard(name)
-            
+
             # Reinitialize
             success = self.initialize_component(name)
-            
+
             if success:
                 logger.info(f"[ORCHESTRATOR]: Component {name} recovered")
             else:
                 info.state = ComponentState.FAILED
-                
+
             return success
-            
+
         except Exception as e:
             info.state = ComponentState.FAILED
             logger.error(f"[ORCHESTRATOR]: Recovery failed for {name}: {e}")
             return False
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # INTELLIGENT ROUTING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def get_component(self, name: str) -> Optional[Any]:
         """Get a component instance with circuit breaker check."""
         if name not in self.components:
             return None
-        
+
         info = self.components[name]
-        
+
         # Check circuit breaker
         if self.circuit_breakers.get(name, False):
             logger.warning(f"[ORCHESTRATOR]: Circuit breaker OPEN for {name}")
             return None
-        
+
         # Initialize if needed
         if info.state == ComponentState.DORMANT:
             if not self.initialize_component(name):
                 return None
-        
+
         return info.instance
-    
+
     def get_components_by_type(self, comp_type: ComponentType) -> List[Any]:
         """Get all active components of a specific type."""
         result = []
@@ -514,7 +514,7 @@ class SystemOrchestrator:
             if info.component_type == comp_type and info.state == ComponentState.ACTIVE:
                 result.append(info.instance)
         return result
-    
+
     async def route_request(
         self,
         operation: str,
@@ -524,22 +524,22 @@ class SystemOrchestrator:
     ) -> Tuple[bool, Any]:
         """
         Route a request to the appropriate component(s).
-        
+
         Returns (success, result) tuple.
         """
         self.request_count += 1
-        
+
         # Determine target components
         targets = preferred_components or self._select_targets(operation)
         fallbacks = fallback_order or self._get_fallback_order(targets)
-        
+
         all_targets = targets + [f for f in fallbacks if f not in targets]
-        
+
         for target in all_targets:
             component = self.get_component(target)
             if component is None:
                 continue
-            
+
             try:
                 # Try to execute the operation
                 if hasattr(component, operation):
@@ -548,23 +548,23 @@ class SystemOrchestrator:
                         result = await method(**params)
                     else:
                         result = method(**params)
-                    
+
                     self.success_count += 1
                     self.components[target].success_count += 1
                     return (True, result)
-                
+
             except Exception as e:
                 logger.warning(f"[ORCHESTRATOR]: {target}.{operation} failed: {e}")
                 self.components[target].failure_count += 1
-                
+
                 # Open circuit breaker if too many failures
                 if self.components[target].failure_count >= 5:
                     self.circuit_breakers[target] = True
                     logger.error(f"[ORCHESTRATOR]: Circuit breaker OPENED for {target}")
-        
+
         self.failure_count += 1
         return (False, None)
-    
+
     def _select_targets(self, operation: str) -> List[str]:
         """Select target components based on operation type."""
         # Map operations to component types
@@ -578,7 +578,7 @@ class SystemOrchestrator:
             "load": [ComponentType.STORAGE],
             "sync": [ComponentType.NETWORK],
         }
-        
+
         # Find matching components
         targets = []
         for keyword, types in operation_map.items():
@@ -586,13 +586,13 @@ class SystemOrchestrator:
                 for name, info in self.components.items():
                     if info.component_type in types and info.state == ComponentState.ACTIVE:
                         targets.append(name)
-        
+
         # Default to intelligence components
         if not targets:
             targets = ["intelligence_router", "gemini_bridge", "local_intellect"]
-        
+
         return targets
-    
+
     def _get_fallback_order(self, primary: List[str]) -> List[str]:
         """Get fallback component order."""
         fallback_chains = {
@@ -602,42 +602,42 @@ class SystemOrchestrator:
             "truth_discovery": ["logic_manifold"],
             "external_bypass": ["gemini_bridge", "local_intellect"],
         }
-        
+
         fallbacks = []
         for comp in primary:
             chain = fallback_chains.get(comp, [])
             for fb in chain:
                 if fb not in fallbacks and fb not in primary:
                     fallbacks.append(fb)
-        
+
         return fallbacks
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # WORK QUEUE PROCESSING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def enqueue_work(self, work: WorkItem):
         """Add work item to the queue."""
         self.work_queue.append(work)
-    
+
     async def process_work_queue(self):
         """Process pending work items."""
         while self.work_queue:
             work = self.work_queue.popleft()
-            
+
             try:
                 success, result = await self.route_request(
                     work.operation,
                     work.params,
                     work.target_components
                 )
-                
+
                 self.work_results[work.id] = {
                     "success": success,
                     "result": result,
                     "completed_at": time.time()
                 }
-                
+
             except Exception as e:
                 if work.retries > 0:
                     work.retries -= 1
@@ -648,18 +648,18 @@ class SystemOrchestrator:
                         "error": str(e),
                         "completed_at": time.time()
                     }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # BACKGROUND SERVICES
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def start(self):
         """Start the orchestrator background services."""
         if self._running:
             return
-        
+
         self._running = True
-        
+
         async def run_services():
             while self._running:
                 try:
@@ -671,10 +671,10 @@ class SystemOrchestrator:
                             info.failure_count += 1
                             if info.failure_count >= 3:
                                 await self.recover_component(name)
-                    
+
                     # Process work queue
                     await self.process_work_queue()
-                    
+
                     # Reset circuit breakers periodically (phi-based cooldown)
                     for name, is_open in self.circuit_breakers.items():
                         if is_open:
@@ -684,34 +684,34 @@ class SystemOrchestrator:
                                 self.circuit_breakers[name] = False
                                 info.failure_count = max(0, info.failure_count - 1)
                                 logger.info(f"[ORCHESTRATOR]: Circuit breaker RESET for {name}")
-                    
+
                 except Exception as e:
                     logger.error(f"[ORCHESTRATOR]: Service error: {e}")
-                
+
                 await asyncio.sleep(30)  # Health check interval
-        
+
         def thread_runner():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             loop.run_until_complete(run_services())
-        
+
         self._worker_thread = threading.Thread(target=thread_runner, daemon=True)
         self._worker_thread.start()
         logger.info("[ORCHESTRATOR]: Background services started")
-    
+
     def stop(self):
         """Stop the orchestrator."""
         self._running = False
         logger.info("[ORCHESTRATOR]: Stopping...")
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # STATUS AND METRICS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def get_status(self) -> Dict:
         """Get orchestrator status."""
         uptime = time.time() - self.start_time
-        
+
         return {
             "god_code": self.god_code,
             "uptime_seconds": uptime,
@@ -736,13 +736,13 @@ class SystemOrchestrator:
             "failed_count": len(self.failed_components),
             "work_queue_size": len(self.work_queue)
         }
-    
+
     def get_health_summary(self) -> Dict:
         """Get quick health summary."""
         active = len(self.active_components)
         total = len(self.components)
         failed = len(self.failed_components)
-        
+
         if failed == 0 and active == total:
             status = "OPTIMAL"
         elif failed == 0:
@@ -751,7 +751,7 @@ class SystemOrchestrator:
             status = "DEGRADED"
         else:
             status = "CRITICAL"
-        
+
         return {
             "status": status,
             "active": active,
@@ -766,7 +766,7 @@ class SystemOrchestrator:
         This is the ultimate system check for 100% Intellect mode.
         """
         resonance_scores = {}
-        
+
         for name, info in self.components.items():
             if info.instance and hasattr(info.instance, 'god_code'):
                 match = info.instance.god_code == self.god_code
@@ -779,11 +779,11 @@ class SystemOrchestrator:
                 resonance_scores[name] = {"aligned": True, "value": "N/A", "expected": self.god_code}
             else:
                 resonance_scores[name] = {"aligned": False, "value": None, "expected": self.god_code}
-        
+
         aligned_count = sum(1 for r in resonance_scores.values() if r["aligned"])
         total_count = len(resonance_scores)
         global_resonance = aligned_count / total_count if total_count > 0 else 0.0
-        
+
         return {
             "global_resonance": global_resonance,
             "aligned_components": aligned_count,

@@ -45,21 +45,21 @@ class ProviderState:
     failure_count: int = 0
     rate_limit_reset: float = 0.0
     current_model_index: int = 0
-    
+
     @property
     def is_available(self) -> bool:
         if self.status == ProviderStatus.RATE_LIMITED:
             if time.time() > self.rate_limit_reset:
                 self.status = ProviderStatus.AVAILABLE
         return self.status == ProviderStatus.AVAILABLE and self.api_key is not None
-    
+
     @property
     def current_model(self) -> str:
         return self.models[self.current_model_index % len(self.models)]
-    
+
     def rotate_model(self):
         self.current_model_index = (self.current_model_index + 1) % len(self.models)
-    
+
     @property
     def reliability_score(self) -> float:
         total = self.success_count + self.failure_count
@@ -122,12 +122,12 @@ class UnifiedProviderOrchestrator:
     - Consensus synthesis
     - Rate limit coordination
     """
-    
+
     def __init__(self):
         self.providers: Dict[str, ProviderState] = {}
         self._initialize_providers()
         self._lock = asyncio.Lock()
-    
+
     def _initialize_providers(self):
         for name, config in PROVIDER_CONFIGS.items():
             api_key = os.getenv(config["env_key"])
@@ -137,23 +137,23 @@ class UnifiedProviderOrchestrator:
                 api_key=api_key,
                 models=config["models"]
             )
-    
+
     def get_available_providers(self) -> List[ProviderState]:
         """Get list of currently available providers."""
         return [p for p in self.providers.values() if p.is_available]
-    
+
     def get_best_provider(self) -> Optional[ProviderState]:
         """Get the most reliable available provider."""
         available = self.get_available_providers()
         if not available:
             return None
         return max(available, key=lambda p: p.reliability_score)
-    
+
     def get_providers_by_priority(self) -> List[ProviderState]:
         """Get providers sorted by reliability."""
         available = self.get_available_providers()
         return sorted(available, key=lambda p: p.reliability_score, reverse=True)
-    
+
     async def call_provider(
         self,
         provider: ProviderState,
@@ -163,7 +163,7 @@ class UnifiedProviderOrchestrator:
         """Call a specific provider."""
         if not provider.is_available:
             return None
-        
+
         try:
             async with httpx.AsyncClient(timeout=timeout) as client:
                 # Provider-specific request formatting
@@ -175,11 +175,11 @@ class UnifiedProviderOrchestrator:
                     response = await self._call_anthropic(client, provider, prompt)
                 else:
                     response = await self._call_openai_compatible(client, provider, prompt)
-                
+
                 provider.success_count += 1
                 provider.last_call = time.time()
                 return response
-                
+
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 429:
                 provider.status = ProviderStatus.RATE_LIMITED
@@ -190,7 +190,7 @@ class UnifiedProviderOrchestrator:
             logger.warning(f"Provider {provider.name} error: {e}")
             provider.failure_count += 1
             return None
-    
+
     async def _call_gemini(self, client, provider, prompt) -> str:
         url = f"{provider.base_url}/models/{provider.current_model}:generateContent"
         response = await client.post(
@@ -201,7 +201,7 @@ class UnifiedProviderOrchestrator:
         response.raise_for_status()
         data = response.json()
         return data["candidates"][0]["content"]["parts"][0]["text"]
-    
+
     async def _call_openai(self, client, provider, prompt) -> str:
         response = await client.post(
             f"{provider.base_url}/chat/completions",
@@ -213,7 +213,7 @@ class UnifiedProviderOrchestrator:
         )
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
-    
+
     async def _call_anthropic(self, client, provider, prompt) -> str:
         response = await client.post(
             f"{provider.base_url}/messages",
@@ -229,7 +229,7 @@ class UnifiedProviderOrchestrator:
         )
         response.raise_for_status()
         return response.json()["content"][0]["text"]
-    
+
     async def _call_openai_compatible(self, client, provider, prompt) -> str:
         response = await client.post(
             f"{provider.base_url}/chat/completions",
@@ -241,7 +241,7 @@ class UnifiedProviderOrchestrator:
         )
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
-    
+
     async def query_with_failover(
         self,
         prompt: str,
@@ -249,15 +249,15 @@ class UnifiedProviderOrchestrator:
     ) -> Optional[str]:
         """Query with automatic failover to backup providers."""
         providers = self.get_providers_by_priority()
-        
+
         for provider in providers[:max_attempts]:
             result = await self.call_provider(provider, prompt)
             if result:
                 return result
             provider.rotate_model()  # Try different model on failure
-        
+
         return None
-    
+
     async def query_consensus(
         self,
         prompt: str,
@@ -268,26 +268,26 @@ class UnifiedProviderOrchestrator:
         if len(providers) < min_responses:
             single = await self.query_with_failover(prompt)
             return {"consensus": single, "responses": [single] if single else [], "agreement": 1.0}
-        
+
         # Query in parallel
         tasks = [self.call_provider(p, prompt) for p in providers[:4]]
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         responses = [r for r in results if isinstance(r, str) and r]
-        
+
         if not responses:
             return {"consensus": None, "responses": [], "agreement": 0.0}
-        
+
         # Simple consensus: return longest response (usually most complete)
         consensus = max(responses, key=len)
-        
+
         return {
             "consensus": consensus,
             "responses": responses,
             "agreement": len(responses) / len(providers),
             "provider_count": len(responses)
         }
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get orchestrator status."""
         return {

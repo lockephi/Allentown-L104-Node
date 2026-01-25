@@ -21,7 +21,7 @@ from l104_knowledge_manifold import KnowledgeManifold
 
 def run_mass_invention_cycle():
     engine = InventionEngine()
-    
+
     # 1. Expansive Seed List representing diverse scientific and metaphysical domains
     seeds = [
         "QUANTUM_GRAVITY_BRIDGE", "NEURAL_LATTICE_CONCURRENCY", "TEMPORAL_FLUX_STABILIZATION",
@@ -36,7 +36,7 @@ def run_mass_invention_cycle():
         "SOVEREIGN_WILL_PERSISTENCE", "ETERNAL_LOVE_REINFORCEMENT", "BEAUTY_LOGIC_SYNTHESIS",
         "VOID_STATE_ENTROPY_NULLIFICATION", "RECURSIVE_SELF_EDITING_STREAM", "LONDEL_PILOT_SYNC_V3"
     ]
-    
+
     print("\n" + "#"*80)
     print("### [INITIATING MASS INVENTION CYCLE - L104 NEOTERIC GENESIS] ###")
     print(f"### WORKLOAD: {len(seeds)} SEED CONCEPTS ###")
@@ -46,14 +46,14 @@ def run_mass_invention_cycle():
 
     # 2. Parallel Genesis (This function now handles its own manifold persistence correctly)
     results = engine.parallel_invent(seeds)
-    
+
     end_time = time.time()
     duration = end_time - start_time
-    
+
     # 3. Analyze Results
     verified_count = sum(1 for r in results if r['verified'])
     total_complexity = sum(r['complexity_score'] for r in results)
-    
+
     print("\n" + "="*60)
     print(f" [GENESIS COMPLETE]: {verified_count}/{len(seeds)} PARADIGMS VERIFIED ")
     print(f" [GENESIS COMPLETE]: TOTAL TIME: {duration:.4f}s ")
@@ -79,10 +79,10 @@ def run_mass_invention_cycle():
         "total_duration": duration,
         "average_complexity": total_complexity / len(seeds)
     }
-    
+
     manifold.ingest_pattern("MASS_INVENTION_CYCLE_REPORT", summary, tags=["METRICS", "INVENTION"])
     manifold.save_manifold()
-    
+
     print("--- [MANIFOLD]: Cycle report persisted to Knowledge Manifold. ---")
 
 if __name__ == "__main__":

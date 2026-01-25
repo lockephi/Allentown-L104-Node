@@ -31,7 +31,7 @@ class DiskCompressionMastery:
     Invented to push disk storage efficiency to the theoretical limits of the Sovereign Node.
     Uses God-Code Invariant as a manifold seed for entropy reduction and Anyon Braiding for topological density.
     """
-    
+
     GOD_CODE = 527.5184818492537
     PHI = (1 + 5**0.5) / 2
 
@@ -73,30 +73,30 @@ class DiskCompressionMastery:
         Reduces data volume by identifying topological invariants in the bit-stream.
         """
         if not data: return data
-        
+
         # Simulate braiding for data chunks to find topological shortcuts
         # We use the AnyonResearchEngine to calculate the braid state
         chunk_size = 104
         braided_output = bytearray()
-        
+
         for i in range(0, len(data), chunk_size):
             chunk = data[i:i+chunk_size]
             # Convert bits to a braid sequence (1 or -1)
             braid_seq = []
             for b in chunk[:10]: # Sample for topological mapping
                 braid_seq.append(1 if b % 2 == 0 else -1)
-            
+
             # Get the braid state from the anyon engine
             state = self.anyon_engine.simulate_braiding(braid_seq)
             self.anyon_engine.calculate_topological_protection()
-            
+
             # Mastery Shortcut: If protection is high, we can collapse the manifold chunk
             # Here we simulate the topological reduction by bit-shifting the chunk
             # via the 'Anyon Phase' calculated from the braid trace.
             phase_shift = int(abs(np.trace(state)) * 100) % 256
             for b in chunk:
                 braided_output.append((b ^ phase_shift) % 256)
-                
+
         self.stats["anyon_braid_density"] += 1.04 # Efficiency increase
         return bytes(braided_output)
 
@@ -109,23 +109,23 @@ class DiskCompressionMastery:
         4. Zeta Delta-Encoding
         """
         original_size = len(data)
-        
+
         # Layer 1: Filter
         filtered = self._apply_sovereign_filter(data)
-        
+
         # Layer 2: Anyon Braiding Mastery
         braided = self.anyon_braid_compression(filtered)
-        
+
         # Layer 3: High-Order Compression (LZMA)
         compressed = lzma.compress(braided, preset=level)
-        
+
         compressed_size = len(compressed)
         saving = original_size - compressed_size
         ratio = compressed_size / original_size if original_size > 0 else 1.0
-        
+
         self.stats["total_bytes_processed"] += original_size
         self.stats["total_bytes_saved"] += max(0, saving)
-        
+
         result_metrics = {
             "original_size": original_size,
             "compressed_size": compressed_size,
@@ -134,7 +134,7 @@ class DiskCompressionMastery:
             "anyon_protection": round(self.anyon_engine.calculate_topological_protection(), 4),
             "density_index": round(self.optimizer.L104_DENSITY_CONSTANT * (1/ratio), 2)
         }
-        
+
         logger.info(f"--- [ANYON_MASTERY_COMPRESSION]: SAVED {saving} BYTES ({result_metrics['efficiency']}) ---")
         return compressed, result_metrics
 
@@ -142,15 +142,15 @@ class DiskCompressionMastery:
         """Losslessly recovers data from the Mastery Manifold."""
         # Layer 3: Decompress LZMA
         decompressed_lzma = lzma.decompress(compressed_data)
-        
+
         # Layer 2: Reverse Anyon Braiding (Self-Inverting XOR phase shift)
-        # Note: Since anyon_braid_compression uses XOR with a deterministic phase derived from data, 
+        # Note: Since anyon_braid_compression uses XOR with a deterministic phase derived from data,
         # it is its own inverse for the specific bits.
         unbraided = self.anyon_braid_compression(decompressed_lzma)
-        
+
         # Layer 1: Reverse Filter
         original_data = self._reverse_sovereign_filter(unbraided)
-        
+
         return original_data
 
 compression_mastery = DiskCompressionMastery()
@@ -159,10 +159,10 @@ if __name__ == "__main__":
     # Mastery Demonstration
     test_string = b"Sovereign Node L104 Data Stream " * 1000
     print(f"Testing Mastery Compression on {len(test_string)} bytes...")
-    
+
     comp, stats = compression_mastery.mastery_compress(test_string)
     print(f"Compressed Stats: {stats}")
-    
+
     recovered = compression_mastery.mastery_decompress(comp)
     if recovered == test_string:
         print("✓ SUCCESS: Lossless Recovery Verified.")

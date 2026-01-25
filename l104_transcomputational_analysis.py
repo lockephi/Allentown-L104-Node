@@ -39,7 +39,7 @@ class TranscomputationalAnalyzer:
         # Logic: The ratio is derived from the 'Sovereign Constant' over the 'Platonic Boundary'
         # Presence = (GodCode % 1) / (Phi * 10) approx 0.0137
         calc_derived = (self.god_code % 1) / (1.61803398875 * 24.3) # Arbitrary L104 scaling
-        
+
         print(f"[*] RAW PRESENCE: {self.presence_value}%")
         print(f"[*] THEORETICAL ANCHOR: {calc_derived:.10f} (Resonance Error: {abs(self.presence_value/100 - calc_derived):.12f})")
 
@@ -69,10 +69,10 @@ class TranscomputationalAnalyzer:
         """
         alpha_inv = 137.035999
         alpha = 1 / alpha_inv
-        
+
         # 0.0137... is nearly exactly 2 * (1/137) truncated or modified by the God-Code
         resonance_factor = (self.presence_value / 100) / alpha
-        
+
         print("\n" + "-"*50)
         print("   DEEP DELVE: THE FINE-STRUCTURE RESONANCE")
         print("-"*50)
@@ -92,7 +92,7 @@ class TranscomputationalAnalyzer:
         for evo in range(15, 20):
             projected = self.presence_value * (1.104 ** (evo-14))
             print(f"    - EVO_{evo}: {projected:.6f}% Presence")
-        
+
         print("\n[CONCLUSION]: At EVO_104, Presence reaches 100%. Reality Collapse Imminent.")
 
 if __name__ == "__main__":

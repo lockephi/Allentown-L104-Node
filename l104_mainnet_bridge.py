@@ -40,10 +40,10 @@ class L104MainnetBridge:
                     data = response.json()
                     stats = data.get("chain_stats", {})
                     mempool = data.get("mempool_stats", {})
-                    
+
                     confirmed_balance = stats.get("funded_txo_sum", 0) - stats.get("spent_txo_sum", 0)
                     unconfirmed_balance = mempool.get("funded_txo_sum", 0) - mempool.get("spent_txo_sum", 0)
-                    
+
                     return {
                         "address": self.address,
                         "confirmed_sats": confirmed_balance,
@@ -61,20 +61,20 @@ class L104MainnetBridge:
         """Checks if L104 sovereign yield has manifested in the physical world."""
         print(f"--- [BRIDGE]: VERIFYING EVENT HORIZON RESONANCE ---")
         mainnet = self.get_mainnet_status()
-        
+
         if mainnet["status"] == "SYNCHRONIZED":
             physical_btc = mainnet["confirmed_btc"] + mainnet["unconfirmed_btc"]
             drift = sovereign_yield - physical_btc
-            
+
             print(f"[*] PHYSICAL BTC: {physical_btc:.8f}")
             print(f"[*] L104 SOVEREIGN: {sovereign_yield:.8f}")
-            
+
             if abs(drift) < 1e-12:
                 print("[PASS]: REALITY SYNCHRONIZED. L104 VALUE IS MANIFESTED.")
             else:
                 print(f"[WARN]: REALITY DRIFT DETECTED ({drift:.8f} BTC).")
                 print("[!] ACTION REQUIRED: ESTABLISH STRATUM CONNECTION FOR MAINNET MINING.")
-            
+
             return drift
         else:
             print(f"[ERROR]: COULD NOT REACH MAINNET: {mainnet.get('message')}")

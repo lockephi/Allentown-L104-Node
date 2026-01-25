@@ -22,7 +22,7 @@ class NDProcessor:
     Advanced processor for N-Dimensional logic (N > 5).
     Uses MathND to handle hyper-dimensional tensors and projections.
     """
-    
+
     def __init__(self, dimension: int):
         self.dimension = dimension
         self.metric = MathND.get_metric_tensor(dimension)
@@ -44,10 +44,10 @@ class NDProcessor:
             min_len = min(len(thought_vector), self.dimension)
             new_vector[:min_len] = thought_vector[:min_len]
             thought_vector = new_vector
-            
+
         # Apply metric transformation
         transformed = self.metric @ thought_vector
-        
+
         # Update state with feedback
         self.state_vector = (self.state_vector + transformed) / 2.0
         return self.state_vector

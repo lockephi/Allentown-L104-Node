@@ -20,12 +20,12 @@ class KnowledgeBridge:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Bridges knowledge sources for the Sovereign Node."""
-    
+
     def __init__(self):
         self.sources = []
         self.cache = {}
         logger.info("[KNOWLEDGE_BRIDGE] Initialized")
-    
+
     async def query(self, topic: str) -> dict:
         """Query knowledge sources for a topic."""
         return {
@@ -34,7 +34,7 @@ class KnowledgeBridge:
             "sources": self.sources,
             "status": "ACTIVE"
         }
-    
+
     def register_source(self, source: str):
         """Register a knowledge source."""
         self.sources.append(source)

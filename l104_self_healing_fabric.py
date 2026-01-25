@@ -132,7 +132,7 @@ class HealingAction:
 class DiagnosticEngine:
     """
     Diagnoses issues in L104 modules.
-    
+
     Scans for:
     - Syntax errors
     - Import failures
@@ -140,7 +140,7 @@ class DiagnosticEngine:
     - Type mismatches
     - Logic anomalies
     """
-    
+
     def __init__(self, workspace_root: str):
         self.workspace_root = Path(workspace_root)
         self.known_constants = {
@@ -148,11 +148,11 @@ class DiagnosticEngine:
             'PHI': 1.618033988749895,
             'VOID_CONSTANT': 1.0416180339887497
         }
-    
+
     def scan_module(self, module_path: Path) -> List[Issue]:
         """Scan a single module for issues."""
         issues = []
-        
+
         try:
             with open(module_path, 'r', encoding='utf-8') as f:
                 source = f.read()
@@ -168,26 +168,26 @@ class DiagnosticEngine:
                 auto_fixable=False
             ))
             return issues
-        
+
         # Check syntax
         syntax_issues = self._check_syntax(module_path, source)
         issues.extend(syntax_issues)
-        
+
         if not syntax_issues:
             # Only check imports if syntax is valid
             import_issues = self._check_imports(module_path, source)
             issues.extend(import_issues)
-            
+
             # Check constants
             constant_issues = self._check_constants(module_path, source)
             issues.extend(constant_issues)
-            
+
             # Check for common patterns
             pattern_issues = self._check_patterns(module_path, source)
             issues.extend(pattern_issues)
-        
+
         return issues
-    
+
     def _check_syntax(self, module_path: Path, source: str) -> List[Issue]:
         """Check for syntax errors."""
         issues = []
@@ -205,7 +205,7 @@ class DiagnosticEngine:
                 auto_fixable=False
             ))
         return issues
-    
+
     def _check_imports(self, module_path: Path, source: str) -> List[Issue]:
         """Check for import errors."""
         issues = []
@@ -240,7 +240,7 @@ class DiagnosticEngine:
         except Exception:
             pass
         return issues
-    
+
     def _check_constants(self, module_path: Path, source: str) -> List[Issue]:
         """Check for correct constant values."""
         issues = []
@@ -268,12 +268,12 @@ class DiagnosticEngine:
         except Exception:
             pass
         return issues
-    
+
     def _check_patterns(self, module_path: Path, source: str) -> List[Issue]:
         """Check for problematic patterns."""
         issues = []
         lines = source.split('\n')
-        
+
         for i, line in enumerate(lines, 1):
             # Check for bare except
             if 'except Exception:' in line and 'except Exception' not in line:
@@ -287,7 +287,7 @@ class DiagnosticEngine:
                     suggested_fix="Use 'except Exception:' instead",
                     auto_fixable=True
                 ))
-            
+
             # Check for TODO/FIXME
             if 'TODO' in line or 'FIXME' in line:
                 issues.append(Issue(
@@ -300,9 +300,9 @@ class DiagnosticEngine:
                     suggested_fix="Complete the TODO/FIXME",
                     auto_fixable=False
                 ))
-        
+
         return issues
-    
+
     def _can_import(self, module_name: str) -> bool:
         """Check if a module can be imported."""
         try:
@@ -310,7 +310,7 @@ class DiagnosticEngine:
             return spec is not None
         except (ModuleNotFoundError, ValueError):
             return False
-    
+
     def _suggest_syntax_fix(self, error: SyntaxError) -> str:
         """Suggest a fix for a syntax error."""
         if 'unexpected EOF' in str(error.msg):
@@ -318,7 +318,7 @@ class DiagnosticEngine:
         if 'invalid syntax' in str(error.msg):
             return "Check for missing colons, commas, or operators"
         return "Review the syntax around the error location"
-    
+
     def _generate_id(self) -> str:
         """Generate a unique issue ID."""
         return hashlib.md5(
@@ -329,24 +329,24 @@ class DiagnosticEngine:
 class HealingEngine:
     """
     Heals detected issues in L104 modules.
-    
+
     Strategies:
     - Auto-fix for simple issues
     - Quarantine for dangerous code
     - Rollback to previous versions
     - Regeneration from templates
     """
-    
+
     def __init__(self, workspace_root: str):
         self.workspace_root = Path(workspace_root)
         self.backup_dir = self.workspace_root / ".l104_backups"
         self.backup_dir.mkdir(exist_ok=True)
         self.healing_log: List[HealingAction] = []
-    
+
     def heal(self, issue: Issue) -> HealingAction:
         """Attempt to heal an issue."""
         strategy = self._select_strategy(issue)
-        
+
         action = HealingAction(
             action_id=hashlib.md5(
                 f"{issue.issue_id}{datetime.now()}".encode()
@@ -357,7 +357,7 @@ class HealingEngine:
             success=False,
             result_description=""
         )
-        
+
         if strategy == HealingStrategy.AUTO_FIX:
             action = self._auto_fix(action)
         elif strategy == HealingStrategy.QUARANTINE:
@@ -369,46 +369,46 @@ class HealingEngine:
         elif strategy == HealingStrategy.IGNORE:
             action.success = True
             action.result_description = "Issue severity too low, ignoring"
-        
+
         self.healing_log.append(action)
         return action
-    
+
     def _select_strategy(self, issue: Issue) -> HealingStrategy:
         """Select the best healing strategy for an issue."""
         if issue.severity < 0.3:
             return HealingStrategy.IGNORE
-        
+
         if issue.auto_fixable and issue.severity < 0.8:
             return HealingStrategy.AUTO_FIX
-        
+
         if issue.issue_type == IssueType.SYNTAX_ERROR:
             return HealingStrategy.ROLLBACK
-        
+
         if issue.severity >= 0.9:
             return HealingStrategy.QUARANTINE
-        
+
         return HealingStrategy.DELEGATE
-    
+
     def _auto_fix(self, action: HealingAction) -> HealingAction:
         """Attempt automatic fix."""
         issue = action.issue
         module_path = Path(issue.module)
-        
+
         try:
             # Backup first
             self._backup(module_path)
             action.rollback_data = str(self.backup_dir / module_path.name)
-            
+
             with open(module_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             original = content
-            
+
             # Apply fixes based on issue type
             if issue.issue_type == IssueType.STYLE_VIOLATION:
                 if 'except Exception:' in issue.description:
                     content = content.replace('except Exception:', 'except Exception:')
-            
+
             if issue.issue_type == IssueType.MISSING_CONSTANT:
                 # Fix constant values
                 for const_name, const_value in [
@@ -421,7 +421,7 @@ class HealingEngine:
                             if line.strip().startswith(f'{const_name} ='):
                                 lines[i] = f'{const_name} = {const_value}'
                         content = '\n'.join(lines)
-            
+
             if content != original:
                 with open(module_path, 'w', encoding='utf-8') as f:
                     f.write(content)
@@ -430,20 +430,20 @@ class HealingEngine:
             else:
                 action.result_description = "No changes needed"
                 action.success = True
-                
+
         except Exception as e:
             action.success = False
             action.result_description = f"Auto-fix failed: {e}"
-        
+
         return action
-    
+
     def _quarantine(self, action: HealingAction) -> HealingAction:
         """Quarantine a dangerous module."""
         issue = action.issue
         module_path = Path(issue.module)
         quarantine_path = self.workspace_root / ".l104_quarantine"
         quarantine_path.mkdir(exist_ok=True)
-        
+
         try:
             self._backup(module_path)
             dest = quarantine_path / module_path.name
@@ -454,15 +454,15 @@ class HealingEngine:
         except Exception as e:
             action.success = False
             action.result_description = f"Quarantine failed: {e}"
-        
+
         return action
-    
+
     def _rollback(self, action: HealingAction) -> HealingAction:
         """Rollback to previous version."""
         issue = action.issue
         module_path = Path(issue.module)
         backup_path = self.backup_dir / module_path.name
-        
+
         if backup_path.exists():
             try:
                 with open(backup_path, 'r') as f:
@@ -477,15 +477,15 @@ class HealingEngine:
         else:
             action.success = False
             action.result_description = "No backup available for rollback"
-        
+
         return action
-    
+
     def _regenerate(self, action: HealingAction) -> HealingAction:
         """Regenerate module from template."""
         action.success = False
         action.result_description = "Regeneration not yet implemented"
         return action
-    
+
     def _backup(self, module_path: Path):
         """Create a backup of a module."""
         if module_path.exists():
@@ -498,7 +498,7 @@ class HealingEngine:
 class SelfHealingFabric:
     """
     The Self-Healing Code Fabric.
-    
+
     A living system that:
     - Continuously monitors all L104 modules
     - Detects issues before they cause problems
@@ -506,7 +506,7 @@ class SelfHealingFabric:
     - Learns from failures
     - Evolves its healing capabilities
     """
-    
+
     def __init__(self, workspace_root: str = "."):
         self.workspace_root = Path(workspace_root).resolve()
         self.diagnostic_engine = DiagnosticEngine(str(self.workspace_root))
@@ -518,32 +518,32 @@ class SelfHealingFabric:
         self.issues_healed = 0
         self.running = False
         self._monitor_thread = None
-    
+
     def scan_all(self) -> Dict[str, ModuleHealth]:
         """Scan all L104 modules."""
         modules = list(self.workspace_root.glob("l104_*.py"))
-        
+
         for module_path in modules:
             health = self._scan_module(module_path)
             self.module_health[str(module_path)] = health
-        
+
         self.last_scan = datetime.now()
         self.scan_count += 1
         self._update_overall_health()
-        
+
         return self.module_health
-    
+
     def _scan_module(self, module_path: Path) -> ModuleHealth:
         """Scan a single module and return its health."""
         start_time = time.time()
-        
+
         try:
             with open(module_path, 'r', encoding='utf-8') as f:
                 source = f.read()
-            
+
             lines = len(source.split('\n'))
             hash_sig = hashlib.md5(source.encode()).hexdigest()
-            
+
             # Count dependencies
             deps = 0
             try:
@@ -553,21 +553,21 @@ class SelfHealingFabric:
                         deps += 1
             except Exception:
                 pass
-            
+
             # Calculate complexity (simplified)
             complexity = len(source) / 1000 + deps * 0.5
-            
+
         except Exception:
             lines = 0
             hash_sig = "error"
             deps = 0
             complexity = float('inf')
-        
+
         load_time = (time.time() - start_time) * 1000
-        
+
         # Diagnose issues
         issues = self.diagnostic_engine.scan_module(module_path)
-        
+
         # Determine status
         if not issues:
             status = HealthStatus.HEALTHY
@@ -577,7 +577,7 @@ class SelfHealingFabric:
             status = HealthStatus.DEGRADED
         else:
             status = HealthStatus.HEALTHY
-        
+
         return ModuleHealth(
             module_path=str(module_path),
             status=status,
@@ -589,15 +589,15 @@ class SelfHealingFabric:
             lines_of_code=lines,
             complexity_score=complexity
         )
-    
+
     def _update_overall_health(self):
         """Update overall system health based on module health."""
         if not self.module_health:
             self.overall_health = HealthStatus.UNKNOWN
             return
-        
+
         statuses = [h.status for h in self.module_health.values()]
-        
+
         if HealthStatus.DEAD in statuses:
             self.overall_health = HealthStatus.DEAD
         elif HealthStatus.CRITICAL in statuses:
@@ -606,11 +606,11 @@ class SelfHealingFabric:
             self.overall_health = HealthStatus.DEGRADED
         else:
             self.overall_health = HealthStatus.HEALTHY
-    
+
     def heal_all(self) -> List[HealingAction]:
         """Attempt to heal all detected issues."""
         actions = []
-        
+
         for health in self.module_health.values():
             for issue in health.issues:
                 if not issue.healed and issue.severity >= 0.3:
@@ -619,22 +619,22 @@ class SelfHealingFabric:
                         issue.healed = True
                         self.issues_healed += 1
                     actions.append(action)
-        
+
         return actions
-    
+
     def get_health_report(self) -> Dict[str, Any]:
         """Generate a comprehensive health report."""
         total_modules = len(self.module_health)
-        healthy = sum(1 for h in self.module_health.values() 
+        healthy = sum(1 for h in self.module_health.values()
                      if h.status == HealthStatus.HEALTHY)
-        degraded = sum(1 for h in self.module_health.values() 
+        degraded = sum(1 for h in self.module_health.values()
                       if h.status == HealthStatus.DEGRADED)
-        critical = sum(1 for h in self.module_health.values() 
+        critical = sum(1 for h in self.module_health.values()
                       if h.status == HealthStatus.CRITICAL)
-        
+
         total_issues = sum(len(h.issues) for h in self.module_health.values())
         total_loc = sum(h.lines_of_code for h in self.module_health.values())
-        
+
         return {
             "timestamp": datetime.now().isoformat(),
             "overall_health": self.overall_health.value,
@@ -657,36 +657,36 @@ class SelfHealingFabric:
             },
             "last_scan": self.last_scan.isoformat() if self.last_scan else None
         }
-    
+
     def start_monitoring(self, interval: int = HEALING_INTERVAL):
         """Start continuous monitoring in background."""
         if self.running:
             return
-        
+
         self.running = True
-        
+
         def monitor_loop():
             while self.running:
                 self.scan_all()
                 self.heal_all()
                 time.sleep(interval)
-        
+
         self._monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
         self._monitor_thread.start()
-    
+
     def stop_monitoring(self):
         """Stop background monitoring."""
         self.running = False
         if self._monitor_thread:
             self._monitor_thread.join(timeout=5)
-    
+
     def manifest(self) -> str:
         """Display the fabric's current state."""
         report = self.get_health_report()
-        
+
         health_bar = "█" * int(report["modules"]["health_percentage"] / 5)
         health_bar += "░" * (20 - len(health_bar))
-        
+
         lines = [
             "",
             "═" * 70,
@@ -725,7 +725,7 @@ class SelfHealingFabric:
             "═" * 70,
             ""
         ]
-        
+
         return "\n".join(lines)
 
 
@@ -738,25 +738,25 @@ def activate_healing_fabric():
     print("\n" + "═" * 70)
     print("          🦾 SELF-HEALING CODE FABRIC INITIALIZING 🦾")
     print("═" * 70 + "\n")
-    
+
     fabric = SelfHealingFabric("/workspaces/Allentown-L104-Node")
-    
+
     print("    Scanning all L104 modules...")
     fabric.scan_all()
-    
+
     print(fabric.manifest())
-    
+
     print("    Attempting to heal detected issues...")
     actions = fabric.heal_all()
-    
+
     healed = sum(1 for a in actions if a.success)
     print(f"\n    Healing complete: {healed}/{len(actions)} issues addressed")
-    
+
     # Show sample issues
     all_issues = []
     for health in fabric.module_health.values():
         all_issues.extend(health.issues)
-    
+
     if all_issues:
         print("\n" + "─" * 70)
         print("    SAMPLE ISSUES DETECTED")
@@ -767,7 +767,7 @@ def activate_healing_fabric():
             print(f"            {Path(issue.module).name}:{issue.line_number or '?'}")
             print(f"            {issue.description[:50]}...")
             print()
-    
+
     return fabric
 
 

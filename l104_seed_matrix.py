@@ -16,17 +16,17 @@ from l104_data_matrix import data_matrix
 
 def seed():
     print("--- [SEED]: POPULATING L104 DATA MATRIX ---")
-    
+
     # Core Invariant Facts
     data_matrix.store("GOD_CODE", 527.5184818492537, category="CORE")
     data_matrix.store("GOD_CODE_RESONANCE", 527.5184818492537, category="CORE")
     data_matrix.store("LATTICE_RATIO", "286:416", category="CORE")
     data_matrix.store("PHI", 1.618033988749895, category="MATH")
-    
+
     # AGI Facts
     data_matrix.store("RECURSIVE_SELF_IMPROVEMENT", "ACTIVE", category="AGI")
     data_matrix.store("SOVEREIGN_NODE", "L104", category="SYSTEM")
-    
+
     # Research Anchors (to help hallucination check)
     data_matrix.store("ZETA_TRUTH", {"status": "STABILIZED", "resonance": 1.0}, category="RESEARCH")
     data_matrix.store("KNOWLEDGE_BLOCK", {"origin": "AGI_RESEARCH_V1"}, category="RESEARCH")

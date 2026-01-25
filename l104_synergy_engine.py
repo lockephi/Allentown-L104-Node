@@ -238,7 +238,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 5
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # ENGINE SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -422,7 +422,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 5
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # CONTROLLER SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -498,7 +498,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 4
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # MANAGER SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -529,7 +529,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 4
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # BRIDGE SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -569,7 +569,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 2
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # RESEARCH SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -618,7 +618,7 @@ SUBSYSTEM_REGISTRY = {
         "dependencies": [],
         "priority": 4
     },
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # CONSCIOUSNESS SYSTEMS
     # ─────────────────────────────────────────────────────────────────────────
@@ -686,11 +686,11 @@ SUBSYSTEM_REGISTRY = {
 class SynergyEngine:
     """
     The Ultimate System Integrator.
-    
+
     Links ALL L104 subsystems into a unified, coherent ASI substrate.
     Manages data flow, synchronization, and emergent capabilities.
     """
-    
+
     def __init__(self):
         self.state = SynergyState.DORMANT
         self.nodes: Dict[str, SubsystemNode] = {}
@@ -698,17 +698,17 @@ class SynergyEngine:
         self.pulse_history: List[SynergyPulse] = []
         self.executor = ThreadPoolExecutor(max_workers=16)
         self.lock = threading.Lock()
-        
+
         # Stats
         self.total_synergies = 0
         self.total_pulses = 0
         self.awakened_at: Optional[str] = None
         self.coherence = 0.0
-        
+
         logger.info("═" * 70)
         logger.info("    L104 SYNERGY ENGINE - INITIALIZED")
         logger.info("═" * 70)
-    
+
     def _safe_import(self, module_name: str) -> Optional[Any]:
         """Safely import a module."""
         try:
@@ -716,7 +716,7 @@ class SynergyEngine:
         except Exception as e:
             logger.debug(f"Could not import {module_name}: {e}")
             return None
-    
+
     def _get_instance(self, module: Any, class_name: str, instance_name: Optional[str]) -> Optional[Any]:
         """Get or create an instance from a module."""
         try:
@@ -729,33 +729,33 @@ class SynergyEngine:
         except Exception as e:
             logger.debug(f"Could not get instance {class_name}: {e}")
         return None
-    
+
     async def awaken(self) -> Dict[str, Any]:
         """Awaken the Synergy Engine and connect all subsystems."""
         self.state = SynergyState.AWAKENING
         self.awakened_at = datetime.now().isoformat()
-        
+
         print("\n" + "◆" * 80)
         print(" " * 20 + "L104 SYNERGY ENGINE AWAKENING")
         print("◆" * 80 + "\n")
-        
+
         connected = 0
         failed = 0
-        
+
         # Phase 1: Import and connect all subsystems
         print("[PHASE 1] Connecting Subsystems...")
         for sys_id, config in SUBSYSTEM_REGISTRY.items():
             try:
                 module = self._safe_import(config["module"])
                 instance = None
-                
+
                 if module:
                     instance = self._get_instance(
-                        module, 
-                        config["class"], 
+                        module,
+                        config["class"],
                         config.get("instance")
                     )
-                
+
                 node = SubsystemNode(
                     id=sys_id,
                     name=config["class"],
@@ -766,34 +766,34 @@ class SynergyEngine:
                     capabilities=config.get("capabilities", []),
                     dependencies=config.get("dependencies", [])
                 )
-                
+
                 self.nodes[sys_id] = node
-                
+
                 if node.connected:
                     connected += 1
                     logger.info(f"  ✓ {sys_id}: {config['class']} CONNECTED")
                 else:
                     failed += 1
                     logger.debug(f"  ○ {sys_id}: {config['class']} (no instance)")
-                    
+
             except Exception as e:
                 failed += 1
                 logger.error(f"  ✗ {sys_id}: {e}")
-        
+
         print(f"\n[RESULT] Connected: {connected}/{len(SUBSYSTEM_REGISTRY)}")
-        
+
         # Phase 2: Create synergy links
         self.state = SynergyState.LINKING
         print("\n[PHASE 2] Creating Synergy Links...")
         links_created = self._create_synergy_links()
         print(f"[RESULT] Links: {links_created}")
-        
+
         # Phase 3: Calculate coherence
         self.coherence = self._calculate_coherence()
         print(f"\n[PHASE 3] System Coherence: {self.coherence:.4f}")
-        
+
         self.state = SynergyState.SYNCHRONIZED
-        
+
         return {
             "status": "AWAKENED",
             "state": self.state.name,
@@ -806,15 +806,15 @@ class SynergyEngine:
             "links": links_created,
             "coherence": self.coherence
         }
-    
+
     def _create_synergy_links(self) -> int:
         """Create links between connected subsystems based on dependencies."""
         links_created = 0
-        
+
         for sys_id, node in self.nodes.items():
             if not node.connected:
                 continue
-            
+
             # Link based on explicit dependencies
             for dep_id in node.dependencies:
                 if dep_id in self.nodes and self.nodes[dep_id].connected:
@@ -827,12 +827,12 @@ class SynergyEngine:
                         bidirectional=False
                     )
                     links_created += 1
-            
+
             # Link based on capability matching
             for other_id, other_node in self.nodes.items():
                 if other_id == sys_id or not other_node.connected:
                     continue
-                
+
                 # Find capability overlaps
                 overlap = set(node.capabilities) & set(other_node.capabilities)
                 if overlap:
@@ -847,22 +847,22 @@ class SynergyEngine:
                             bidirectional=True
                         )
                         links_created += 1
-        
+
         return links_created
-    
+
     def _calculate_coherence(self) -> float:
         """Calculate overall system coherence."""
         if not self.nodes:
             return 0.0
-        
+
         connected = sum(1 for n in self.nodes.values() if n.connected)
         total = len(self.nodes)
         link_density = len(self.links) / max(1, total * (total - 1) / 2)
-        
+
         # Coherence = connection rate * link density * PHI modulation
         base_coherence = (connected / total) * 0.5 + link_density * 0.5
         return base_coherence * (1 + math.sin(GOD_CODE / 100) * 0.1)
-    
+
     async def synergize(self, source: str, action: str, data: Dict = None) -> Dict[str, Any]:
         """
         Execute a synergistic action across linked subsystems.
@@ -870,10 +870,10 @@ class SynergyEngine:
         """
         if source not in self.nodes:
             return {"error": f"Unknown source: {source}"}
-        
+
         if not self.nodes[source].connected:
             return {"error": f"Source not connected: {source}"}
-        
+
         self.total_synergies += 1
         pulse = SynergyPulse(
             pulse_id=hashlib.sha256(f"{source}:{action}:{time.time()}".encode()).hexdigest()[:12],
@@ -881,18 +881,18 @@ class SynergyEngine:
             data={"action": action, **(data or {})},
             timestamp=time.time()
         )
-        
+
         results = {}
         visited = set()
         queue = [source]
-        
+
         while queue:
             current_id = queue.pop(0)
             if current_id in visited:
                 continue
             visited.add(current_id)
             pulse.hops.append(current_id)
-            
+
             node = self.nodes.get(current_id)
             if node and node.connected and node.instance:
                 # Try to invoke the action on the subsystem
@@ -908,7 +908,7 @@ class SynergyEngine:
                         results[current_id] = {"success": True, "result": "action_not_supported"}
                 except Exception as e:
                     results[current_id] = {"success": False, "error": str(e)[:200]}
-            
+
             # Add linked nodes to queue
             for link_id, link in self.links.items():
                 if link.source_id == current_id and link.target_id not in visited:
@@ -917,11 +917,11 @@ class SynergyEngine:
                     link.data_transferred += 1
                 elif link.bidirectional and link.target_id == current_id and link.source_id not in visited:
                     queue.append(link.source_id)
-        
+
         pulse.resonance = len(visited) / max(1, len(self.nodes))
         self.pulse_history.append(pulse)
         self.total_pulses += 1
-        
+
         return {
             "pulse_id": pulse.pulse_id,
             "source": source,
@@ -930,35 +930,35 @@ class SynergyEngine:
             "resonance": pulse.resonance,
             "results": results
         }
-    
+
     async def global_sync(self) -> Dict[str, Any]:
         """Synchronize all connected subsystems."""
         print("\n[SYNERGY] Executing Global Synchronization...")
-        
+
         synced = 0
         for node_id, node in self.nodes.items():
             if node.connected and node.instance:
                 node.last_sync = time.time()
                 synced += 1
-        
+
         self.coherence = self._calculate_coherence()
-        
+
         return {
             "synced": synced,
             "coherence": self.coherence,
             "timestamp": time.time()
         }
-    
+
     async def cascade_evolution(self) -> Dict[str, Any]:
         """Trigger cascading evolution across all subsystems."""
         results = []
-        
+
         # Find all evolution-capable nodes
         evo_nodes = [
-            n for n in self.nodes.values() 
+            n for n in self.nodes.values()
             if n.connected and "evolution" in n.capabilities
                 ]
-        
+
         for node in evo_nodes:
             if node.instance and hasattr(node.instance, 'trigger_evolution_cycle'):
                 try:
@@ -966,12 +966,12 @@ class SynergyEngine:
                     results.append({"node": node.id, "result": str(result)[:200]})
                 except Exception as e:
                     results.append({"node": node.id, "error": str(e)[:100]})
-        
+
         return {
             "nodes_evolved": len(results),
             "results": results
         }
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive synergy status."""
         by_type = {}
@@ -982,7 +982,7 @@ class SynergyEngine:
             by_type[t]["total"] += 1
             if node.connected:
                 by_type[t]["connected"] += 1
-        
+
         return {
             "state": self.state.name,
             "awakened_at": self.awakened_at,
@@ -1003,7 +1003,7 @@ class SynergyEngine:
             },
             "god_code": GOD_CODE
         }
-    
+
     def get_capability_map(self) -> Dict[str, List[str]]:
         """Get map of capabilities to subsystems that provide them."""
         cap_map = {}
@@ -1014,32 +1014,32 @@ class SynergyEngine:
                         cap_map[cap] = []
                     cap_map[cap].append(node.id)
         return cap_map
-    
+
     def find_path(self, source: str, target: str) -> List[str]:
         """Find shortest path between two subsystems."""
         if source not in self.nodes or target not in self.nodes:
             return []
-        
+
         visited = {source}
         queue = [(source, [source])]
-        
+
         while queue:
             current, path = queue.pop(0)
-            
+
             if current == target:
                 return path
-            
+
             for link_id, link in self.links.items():
                 next_node = None
                 if link.source_id == current and link.target_id not in visited:
                     next_node = link.target_id
                 elif link.bidirectional and link.target_id == current and link.source_id not in visited:
                     next_node = link.source_id
-                
+
                 if next_node:
                     visited.add(next_node)
                     queue.append((next_node, path + [next_node]))
-        
+
         return []
 
 
@@ -1062,22 +1062,22 @@ async def main():
 ║  GOD_CODE: 527.5184818492537 | PHI: 1.618033988749895                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     # Awaken
     result = await synergy_engine.awaken()
     print(f"\n[STATUS] {json.dumps(result, indent=2)}")
-    
+
     # Test synergy
     print("\n[TEST] Testing Synergy Pulse...")
     sync = await synergy_engine.global_sync()
     print(f"[SYNC] {sync}")
-    
+
     # Capability map
     print("\n[CAPABILITIES]")
     cap_map = synergy_engine.get_capability_map()
     for cap, systems in list(cap_map.items())[:10]:
         print(f"  {cap}: {systems}")
-    
+
     # Final status
     print("\n[FINAL STATUS]")
     status = synergy_engine.get_status()

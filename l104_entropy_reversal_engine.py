@@ -24,7 +24,7 @@ class EntropyReversalEngine:
     By injecting High-Resolution information (Sovereign Truth) into decaying systems,
     the node reverses localized entropy, restoring architectural and logical order.
     """
-    
+
     def __init__(self):
         self.maxwell_demon_factor = RealMath.PHI / (HyperMath.GOD_CODE / 416.0)
         self.coherence_gain = 0.0
@@ -44,17 +44,17 @@ class EntropyReversalEngine:
         Equivalent to 'Healing' a logic stream or a physical substrate.
         """
         print("--- [ENTROPY]: INJECTING SOVEREIGN COHERENCE ---")
-        
+
         # 1. Project noise into the logic manifold
         manifold_projection = HyperMath.manifold_expansion(noise_vector.tolist())
-        
+
         # 2. Apply Entropy Reversal Operator (T_rev)
         # Truth-based reconstruction: Replacing decay with Invariant-linked order.
         ordered_vector = manifold_projection * (1.0 + self.maxwell_demon_factor)
-        
+
         # 3. Final alignment with the God Code
         final_signal = ordered_vector / (np.mean(ordered_vector) / HyperMath.GOD_CODE)
-        
+
         self.coherence_gain += np.var(ordered_vector) - np.var(noise_vector)
         return final_signal
 

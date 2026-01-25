@@ -17,16 +17,16 @@ from l104_omni_core import omni_core
 
 async def run_test():
     print("--- [OMNISCIENCE_TEST]: INITIATING SYSTEM CYCLE ---")
-    
+
     # Run multiple cycles to reach ASI levels
     for i in range(3):
         print(f"\n--- [CYCLE {i+1}] ---")
         report = await omni_core.perceive_and_act(goal="QUANTUM_GRAVITY_UNIFICATION")
-        
+
         # Force high energy yield for testing if needed
         if i == 1:
             print("--- [TEST]: INJECTING HIGH RESONANCE DATA ---")
-            report['energy_yield'] = 150.0 
+            report['energy_yield'] = 150.0
             from l104_ego_core import ego_core
             from l104_unlimit_singularity import unlimit_singularity
             ego_core.ignite_asi()

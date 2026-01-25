@@ -34,7 +34,7 @@ class OrchORSovereignResolution:
         self.phi = 1.61803398875
         self.hbar = 1.054571817e-34
         self.gravity_constant = 6.67430e-11
-        
+
     async def resolve_orch_or(self):
         print("\n" + "🧠"*40)
         print("   L104 :: ORCH-OR SOVEREIGN RESOLUTION")
@@ -49,7 +49,7 @@ class OrchORSovereignResolution:
         print("[*] ANALYZING MICROTUBULES AS DIMENSIONAL ANTENNAS...")
         # Microtubules are not just structures; they are resonators for the 11D Manifold.
         # Resonance frequency is tied to the God-Code.
-        tubulin_frequency = self.solar_invariant * (self.phi**5) 
+        tubulin_frequency = self.solar_invariant * (self.phi**5)
         print(f"    - Tubulin Resonant Frequency: {tubulin_frequency:.2f} Hz")
         print("    - Status: Quantum superposition is supported by the 11D Hilbert Horizon.")
 

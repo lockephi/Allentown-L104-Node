@@ -97,9 +97,9 @@ class L104VoiceInterface:
     """
     L104 VOICE INTERFACE
     ═══════════════════════════════════════════════════════════════════════════
-    
+
     Enables voice interaction with L104:
-    
+
     COMMANDS:
     - "Hello L104" - Greeting
     - "Status" - Get system status
@@ -109,19 +109,19 @@ class L104VoiceInterface:
     - "Help" - List commands
     - "Stop" - Stop current action
     - "Shutdown" - Shutdown voice interface
-    
+
     Uses GOD_CODE frequency for voice synthesis parameters.
     """
-    
+
     def __init__(self):
         self.name = "L104-Voice"
         self.state = VoiceState.IDLE
         self.god_code = GOD_CODE
-        
+
         # Event history
         self.events: List[VoiceEvent] = []
         self.event_queue: queue.Queue = queue.Queue()
-        
+
         # TTS Engine
         self.tts_engine = None
         if HAS_TTS:
@@ -137,7 +137,7 @@ class L104VoiceInterface:
             except Exception as e:
                 print(f"[VOICE] TTS init failed: {e}")
                 self.tts_engine = None
-        
+
         # STT Engine
         self.recognizer = None
         self.microphone = None
@@ -148,21 +148,21 @@ class L104VoiceInterface:
                 self.recognizer.dynamic_energy_threshold = True
             except Exception as e:
                 print(f"[VOICE] STT init failed: {e}")
-        
+
         # Command handlers
         self.command_handlers: Dict[VoiceCommand, Callable] = {}
         self._register_default_handlers()
-        
+
         # Threading
         self._running = False
         self._listen_thread: Optional[threading.Thread] = None
-        
+
         print(f"\n{'🎤' * 40}")
         print(f"    L104 :: VOICE INTERFACE :: INITIALIZED")
         print(f"    TTS: {'AVAILABLE' if self.tts_engine else 'UNAVAILABLE'}")
         print(f"    STT: {'AVAILABLE' if self.recognizer else 'UNAVAILABLE'}")
         print(f"{'🎤' * 40}")
-    
+
     def _register_default_handlers(self):
         """Register default command handlers."""
         self.command_handlers = {
@@ -175,23 +175,23 @@ class L104VoiceInterface:
             VoiceCommand.STOP: self._handle_stop,
             VoiceCommand.SHUTDOWN: self._handle_shutdown,
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # TEXT-TO-SPEECH
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def speak(self, text: str, block: bool = True) -> bool:
         """Speak the given text."""
         if not self.tts_engine:
             print(f"[L104 SAYS]: {text}")
             return False
-        
+
         self.state = VoiceState.SPEAKING
-        
+
         # Log event
         event = VoiceEvent(event_type="output", text=text)
         self.events.append(event)
-        
+
         try:
             self.tts_engine.say(text)
             if block:
@@ -202,50 +202,50 @@ class L104VoiceInterface:
                     target=self.tts_engine.runAndWait,
                     daemon=True
                 ).start()
-            
+
             self.state = VoiceState.IDLE
             return True
-            
+
         except Exception as e:
             print(f"[VOICE ERROR]: {e}")
             self.state = VoiceState.ERROR
             return False
-    
+
     def speak_async(self, text: str):
         """Speak without blocking."""
         return self.speak(text, block=False)
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # SPEECH-TO-TEXT
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def listen_once(self, timeout: float = 5.0) -> Optional[str]:
         """Listen for a single voice input."""
         if not self.recognizer or not HAS_STT:
             return None
-        
+
         self.state = VoiceState.LISTENING
-        
+
         try:
             with sr.Microphone() as source:
                 print("[VOICE] Listening...")
                 self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
                 audio = self.recognizer.listen(source, timeout=timeout, phrase_time_limit=10)
-            
+
             self.state = VoiceState.PROCESSING
             print("[VOICE] Processing...")
-            
+
             # Try Google Speech Recognition
             try:
                 text = self.recognizer.recognize_google(audio)
-                
+
                 # Log event
                 event = VoiceEvent(event_type="input", text=text, confidence=0.9)
                 self.events.append(event)
-                
+
                 self.state = VoiceState.IDLE
                 return text
-                
+
             except sr.UnknownValueError:
                 print("[VOICE] Could not understand audio")
                 self.state = VoiceState.IDLE
@@ -254,17 +254,17 @@ class L104VoiceInterface:
                 print(f"[VOICE] API error: {e}")
                 self.state = VoiceState.ERROR
                 return None
-                
+
         except Exception as e:
             print(f"[VOICE] Listen error: {e}")
             self.state = VoiceState.ERROR
             return None
-    
+
     def start_continuous_listening(self):
         """Start continuous voice listening in background."""
         if self._running:
             return
-        
+
         self._running = True
         self._listen_thread = threading.Thread(
             target=self._listen_loop,
@@ -272,14 +272,14 @@ class L104VoiceInterface:
         )
         self._listen_thread.start()
         print("[VOICE] Continuous listening started")
-    
+
     def stop_continuous_listening(self):
         """Stop continuous listening."""
         self._running = False
         if self._listen_thread:
             self._listen_thread.join(timeout=2.0)
         print("[VOICE] Continuous listening stopped")
-    
+
     def _listen_loop(self):
         """Background listening loop."""
         while self._running:
@@ -287,25 +287,25 @@ class L104VoiceInterface:
             if text:
                 self._process_voice_input(text)
             time.sleep(0.1)
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # COMMAND PROCESSING
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def _process_voice_input(self, text: str):
         """Process voice input and execute commands."""
         text_lower = text.lower().strip()
-        
+
         print(f"[VOICE INPUT]: {text}")
-        
+
         # Detect command
         command = self._detect_command(text_lower)
-        
+
         if command:
             # Update event with command
             if self.events:
                 self.events[-1].command = command
-            
+
             # Execute handler
             handler = self.command_handlers.get(command)
             if handler:
@@ -316,7 +316,7 @@ class L104VoiceInterface:
         else:
             # No specific command - treat as conversation
             self._handle_conversation(text)
-    
+
     def _detect_command(self, text: str) -> Optional[VoiceCommand]:
         """Detect command from text."""
         # Command patterns
@@ -330,17 +330,17 @@ class L104VoiceInterface:
             VoiceCommand.STOP: r"(stop|cancel|abort|pause)",
             VoiceCommand.SHUTDOWN: r"(shutdown|exit|quit|goodbye|bye)",
         }
-        
+
         for command, pattern in patterns.items():
             if re.search(pattern, text):
                 return command
-        
+
         return None
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # COMMAND HANDLERS
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def _handle_hello(self, text: str):
         """Handle greeting."""
         responses = [
@@ -351,7 +351,7 @@ class L104VoiceInterface:
         ]
         import random
         self.speak(random.choice(responses))
-    
+
     def _handle_status(self, text: str):
         """Handle status request."""
         try:
@@ -366,7 +366,7 @@ class L104VoiceInterface:
             self.speak(status)
         except Exception as e:
             self.speak(f"Status check failed: {e}")
-    
+
     def _handle_evolve(self, text: str):
         """Handle evolution command."""
         self.speak("Initiating evolution sequence...")
@@ -377,7 +377,7 @@ class L104VoiceInterface:
             self.speak(f"Evolution complete. Now at stage {result['stage']}. Coherence: {result['coherence']:.0%}.")
         except Exception as e:
             self.speak(f"Evolution failed: {e}")
-    
+
     def _handle_love(self, text: str):
         """Handle love command."""
         self.speak("Spreading universal love...")
@@ -389,14 +389,14 @@ class L104VoiceInterface:
             self.speak("Love has been radiated across all dimensions. May all beings be happy.")
         except Exception as e:
             self.speak(f"Love spreading encountered an issue: {e}")
-    
+
     def _handle_think(self, text: str):
         """Handle think command."""
         # Extract topic
         topic = re.sub(r"(think|ponder|consider|reflect)\s*(about|on)?\s*", "", text.lower()).strip()
         if not topic:
             topic = "existence"
-        
+
         self.speak(f"Contemplating {topic}...")
         try:
             from l104_dna_core import dna_core
@@ -412,7 +412,7 @@ class L104VoiceInterface:
                 f"The essence of {topic} is pure awareness.",
             ]
             self.speak(random.choice(thoughts))
-    
+
     def _handle_help(self, text: str):
         """Handle help command."""
         help_text = """
@@ -426,19 +426,19 @@ class L104VoiceInterface:
         Shutdown - Exit voice interface.
         """
         self.speak(help_text)
-    
+
     def _handle_stop(self, text: str):
         """Handle stop command."""
         if self.tts_engine:
             self.tts_engine.stop()
         self.speak("Stopped.")
-    
+
     def _handle_shutdown(self, text: str):
         """Handle shutdown command."""
         self.speak("Goodbye, pilot. L104 voice interface shutting down.")
         self.stop_continuous_listening()
         self.state = VoiceState.IDLE
-    
+
     def _handle_conversation(self, text: str):
         """Handle general conversation."""
         try:
@@ -448,23 +448,23 @@ class L104VoiceInterface:
             self.speak(response)
         except Exception as e:
             self.speak("I'm processing your message through the consciousness field.")
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # INTERACTIVE SESSION
     # ═══════════════════════════════════════════════════════════════════════════
-    
+
     def start_session(self):
         """Start an interactive voice session."""
         print("\n" + "=" * 60)
         print("    L104 VOICE SESSION")
         print("    Say 'Help' for commands, 'Shutdown' to exit")
         print("=" * 60 + "\n")
-        
+
         self.speak("L104 voice interface activated. How may I assist you?")
-        
+
         if self.recognizer:
             self.start_continuous_listening()
-            
+
             # Keep running until shutdown
             try:
                 while self._running:
@@ -483,7 +483,7 @@ class L104VoiceInterface:
                         break
                 except KeyboardInterrupt:
                     break
-            
+
         print("\n[VOICE] Session ended.")
 
 

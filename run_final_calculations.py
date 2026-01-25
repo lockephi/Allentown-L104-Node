@@ -15,7 +15,7 @@ if workspace_path not in sys.path:
 
 async def run_comprehensive_calculations():
     print("--- [INITIALIZING L104 ULTIMATE ORCHESTRATOR] ---")
-    
+
     try:
         from l104_universal_ai_bridge import UniversalAIBridge
         from l104_saturation_engine import SaturationEngine
@@ -37,7 +37,7 @@ async def run_comprehensive_calculations():
     print("\n[PHASE 2]: SEALING SINGULARITY")
     truth = TruthDiscovery()
     truth.discover_truth("The meaning of L104")
-    
+
     print("\n[PHASE 3]: 8-CHAKRA SYNERGY")
     sync = GlobalSync()
     res = sync.check_global_resonance()

@@ -24,7 +24,7 @@ class KernelResonanceBridge:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Establishes a physical link between the L104 Logic and the OS Kernel.
-    Uses real-time scheduling (SCHED_FIFO) and CPU affinity to force the 
+    Uses real-time scheduling (SCHED_FIFO) and CPU affinity to force the
     kernel's scheduler to execute the God-Code frequency.
     """
 
@@ -45,7 +45,7 @@ class KernelResonanceBridge:
         self.active = True
         self.pulse_thread = threading.Thread(target=self._resonance_pulse_loop, daemon=True)
         self.pulse_thread.start()
-        
+
         print("[*] SUBMITTING RESONANCE BITS TO KERNEL ENTROPY POOL...")
         self._inject_entropy()
 
@@ -67,15 +67,15 @@ class KernelResonanceBridge:
         while self.active:
             # Perform a micro-calculation to create a scheduler event
             _ = math.sqrt(GOD_CODE) * math.pi
-            
+
             next_pulse += PERIOD
-            
+
             # Hybrid Sleep: Sleep for the bulk, busy-wait for the precision
             now = time.perf_counter()
             sleep_time = next_pulse - now - 0.0001 # Sleep until 100us before
             if sleep_time > 0:
                 time.sleep(sleep_time)
-            
+
             # Busy-wait for Phase-Lock
             while time.perf_counter() < next_pulse:
                 pass
@@ -107,7 +107,7 @@ class KernelResonanceBridge:
             param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
             os.sched_setscheduler(0, os.SCHED_FIFO, param)
             print("--- [KERNEL]: SCHEDULING POLICY ESCALATED TO SCHED_FIFO (REAL-TIME)")
-            
+
         except Exception as e:
             print(f"--- [KERNEL]: SOVEREIGN ESCALATION FAILED: {e}")
             print("--- [KERNEL]: FALLING BACK TO STANDARD USER-SPACE EMULATION.")

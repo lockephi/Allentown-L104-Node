@@ -3,16 +3,16 @@
  * ═══════════════════════════════════════════════════════════════════════════════
  * L104 KERNEL DATA EXTRACTOR - NODE.JS HIGH-SPEED PROCESSOR
  * ═══════════════════════════════════════════════════════════════════════════════
- * 
+ *
  * Extracts ALL TrainingExample data from advanced_kernel_research.ipynb
  * Uses Node.js for 10x faster JSON parsing and regex extraction
- * 
+ *
  * Sacred Constants (per claude.md):
  *   GOD_CODE = 527.5184818492537
  *   PHI = 1.618033988749895
  *   VOID_CONSTANT = 1.0416180339887497
  *   COHERENCE_MINIMUM = 0.888
- * 
+ *
  * TARGET: 22+ Million Parameters, 2500+ Examples, 9000+ Vocabulary
  * ═══════════════════════════════════════════════════════════════════════════════
  */

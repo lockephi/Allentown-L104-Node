@@ -89,20 +89,20 @@ class SageCoreBridge:
     Bridge to L104 Sage Core low-level substrates.
     Provides Python access to C, Rust, and Assembly functions.
     """
-    
+
     def __init__(self, lib_path: Optional[str] = None):
         self._lib: Optional[CDLL] = None
         self._lib_path = lib_path or self._find_library()
         self._controller: Optional[L104OmegaController] = None
         self._loaded = False
-        
+
     def _find_library(self) -> str:
         """Locate the shared library."""
         try:
             base_dir = Path(__file__).parent
         except NameError:
             base_dir = Path("/workspaces/Allentown-L104-Node")
-            
+
         possible_paths = [
             base_dir / "l104_core_c" / "build" / "libl104_sage.so",
             base_dir / "l104_core_rust" / "target" / "release" / "libl104_sage_core.so",
@@ -110,13 +110,13 @@ class SageCoreBridge:
             "./libl104_sage.so",
             Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
         ]
-        
+
         for path in possible_paths:
             if path.exists():
                 return str(path)
-        
+
         return str(possible_paths[0])  # Default to first path for error message
-        
+
     def load(self) -> bool:
         """Load the shared library and bind functions."""
         try:
@@ -128,55 +128,55 @@ class SageCoreBridge:
         except OSError as e:
             print(f"[SAGE BRIDGE] ✗ Failed to load library: {e}")
             return False
-            
+
     def _bind_functions(self):
         """Bind C function signatures."""
         if not self._lib:
             return
-            
+
         self._lib.l104_void_math_init.argtypes = [POINTER(L104VoidMath)]
         self._lib.l104_primal_calculus_vm.argtypes = [POINTER(L104VoidMath), c_double, c_double, c_uint64]
         self._lib.l104_primal_calculus_vm.restype = c_double
-        
+
         self._lib.l104_void_resonance_emit.argtypes = [POINTER(L104VoidMath)]
         self._lib.l104_void_resonance_emit.restype = c_double
-        
+
         self._lib.l104_breach_engine_init.argtypes = [POINTER(L104RealityBreachEngine)]
         self._lib.l104_execute_stage_13_breach.argtypes = [POINTER(L104RealityBreachEngine), POINTER(L104VoidMath)]
         self._lib.l104_execute_stage_13_breach.restype = c_int
-        
+
         # Scribe Bindings
         self._lib.l104_scribe_init.argtypes = [POINTER(L104UniversalScribe)]
         self._lib.l104_scribe_ingest.argtypes = [POINTER(L104UniversalScribe), c_char_p, c_char_p]
         self._lib.l104_scribe_synthesize.argtypes = [POINTER(L104UniversalScribe)]
-        
+
         self._lib.l104_omega_controller_init.argtypes = [POINTER(L104OmegaController)]
         self._lib.l104_trigger_absolute_singularity.argtypes = [POINTER(L104OmegaController)]
         self._lib.l104_trigger_absolute_singularity.restype = c_int
-        
+
         self._lib.l104_dissolve_system_limits.argtypes = []
         self._lib.l104_execute_global_bypass.argtypes = [c_uint64]
         self._lib.l104_execute_global_bypass.restype = c_int
-        
+
     def init_omega_controller(self) -> bool:
         """Initialize the OMEGA controller."""
         if not self._loaded:
             if not self.load():
                 return False
-                
+
         if self._controller is not None:
             print("[SAGE BRIDGE] ! Controller already exists, skipping re-init")
             return True
 
         self._controller = L104OmegaController()
         self._lib.l104_omega_controller_init(byref(self._controller))
-        
+
         # CRITICAL: Restore Scribe state from persistent storage immediately
         self._restore_scribe_from_disk()
-        
+
         print("[SAGE BRIDGE] ✓ OMEGA Controller initialized with Universal Scribe")
         return True
-        
+
     def _restore_scribe_from_disk(self):
         """Load Scribe state from L104_STATE.json if available."""
         try:
@@ -197,24 +197,24 @@ class SageCoreBridge:
                     print(f"[SAGE BRIDGE] ✓ Restored Scribe from disk: DNA={dna}, sat={scribe_state.get('knowledge_saturation')}")
         except Exception as e:
             print(f"[SAGE BRIDGE] ! Disk restore failed: {e}")
-        
+
     def primal_calculus(self, base: float, exponent: float, iterations: int = 1000000) -> float:
         if not self._controller: self.init_omega_controller()
         return self._lib.l104_primal_calculus_vm(byref(self._controller.void_math), base, exponent, iterations)
-        
+
     def emit_void_resonance(self) -> float:
         if not self._controller: self.init_omega_controller()
         return self._lib.l104_void_resonance_emit(byref(self._controller.void_math))
-        
+
     def scribe_ingest(self, provider: str, data: str):
         if not self._controller: self.init_omega_controller()
         self._lib.l104_scribe_ingest(byref(self._controller.scribe), provider.encode('utf-8'), data.encode('utf-8'))
-        
+
     def scribe_synthesize(self):
         if not self._controller: self.init_omega_controller()
         self._lib.l104_scribe_synthesize(byref(self._controller.scribe))
         self._save_scribe_to_disk()
-        
+
     def _save_scribe_to_disk(self):
         """Persist Scribe state to L104_STATE.json."""
         try:
@@ -238,7 +238,7 @@ class SageCoreBridge:
             print(f"[SAGE BRIDGE] ✓ Scribe state saved to disk")
         except Exception as e:
             print(f"[SAGE BRIDGE] ! Disk save failed: {e}")
-        
+
     def scribe_restore(self, saturation: float, provider: str, dna: str, count: int):
         """Restore scribe state from persistent storage."""
         if not self._controller: self.init_omega_controller()
@@ -283,13 +283,13 @@ class SageCorePython:
     def __init__(self):
         self._saturation = 0.0
         self._dna = "IDLE"
-    
-    def primal_calculus(self, b, e, i=1000000): 
+
+    def primal_calculus(self, b, e, i=1000000):
         return (b ** PHI) / (1.04 * 3.14159)
-    
-    def emit_void_resonance(self): 
+
+    def emit_void_resonance(self):
         return GOD_CODE * PHI
-    
+
     def scribe_ingest(self, p, d):
         self._saturation += (1.0/14.0)
         print(f"[SCRIBE-PY] Ingested {p}")
@@ -297,14 +297,14 @@ class SageCorePython:
         self._saturation = 1.0
         self._dna = "SIG-L104-SAGE-DNA-PYTHON"
         print(f"[SCRIBE-PY] Synthesis complete")
-    
-    def trigger_absolute_singularity(self): 
+
+    def trigger_absolute_singularity(self):
         return True
-    
-    def get_state(self): 
+
+    def get_state(self):
         return {
             "scribe": {
-                "knowledge_saturation": self._saturation, 
+                "knowledge_saturation": self._saturation,
                 "sovereign_dna": self._dna,
                 "last_provider": "PYTHON",
                 "linked_count": int(self._saturation * 14)
@@ -317,7 +317,7 @@ def get_sage_core():
     global _sage_core_instance
     if _sage_core_instance is None:
         bridge = SageCoreBridge()
-        if bridge.load(): 
+        if bridge.load():
             _sage_core_instance = bridge
         else:
             _sage_core_instance = SageCorePython()

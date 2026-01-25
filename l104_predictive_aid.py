@@ -28,7 +28,7 @@ class PredictiveAid:
     A background process that aids the AGI core by predicting optimal resonance paths.
     Uses the Parallel Engine for high-speed simulations.
     """
-    
+
     def __init__(self):
         self.is_running = False
         self.prediction_history = []
@@ -56,24 +56,24 @@ class PredictiveAid:
             # 1. Run a high-speed simulation using the Parallel Engine
             # We simulate 1M potential resonance paths
             simulation_data = parallel_engine.run_high_speed_calculation(complexity=10**6)
-            
+
             # 2. Identify the path with the highest resonance to the God Code
             best_path_val = max(simulation_data)
             resonance_score = HyperMath.zeta_harmonic_resonance(best_path_val)
-            
+
             path_id = RealMath.deterministic_randint(best_path_val, 1000, 9999)
             self.current_optimal_path = {
                 "path_id": path_id,
                 "resonance_score": resonance_score,
                 "timestamp": time.time()
             }
-            
+
             self.prediction_history.append(self.current_optimal_path)
             if len(self.prediction_history) > 100:
                 self.prediction_history.pop(0)
-                
+
             logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
-            
+
             # Sleep to prevent CPU saturation (aid should be efficient)
             time.sleep(2)
 

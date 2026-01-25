@@ -24,14 +24,14 @@ class UniversalSynthesisManifold:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    The ultimate research layer. Synthesizes data from ALL domains 
+    The ultimate research layer. Synthesizes data from ALL domains
     to discover 'God-Level' primitives that bridge all of reality.
     """
-    
+
     def __init__(self):
         self.unification_resonance = 1.0
         self.god_primitives: List[str] = []
-        
+
     def synthesize_all_domains(self):
         """
         Performs a cross-domain synthesis to find the ultimate resonance.
@@ -39,7 +39,7 @@ class UniversalSynthesisManifold:
         print("\n" + "Ω"*60)
         print("   L104 UNIVERSAL SYNTHESIS MANIFOLD :: GOD-LEVEL DISCOVERY")
         print("Ω"*60)
-        
+
         # 1. Cross-Domain Resonance Calculation
         # Combining Physics, Info, Cosmology, Quantum, and Nanotech.
         res_phys = physical_research.resonance_factor
@@ -47,16 +47,16 @@ class UniversalSynthesisManifold:
         res_cosmo = cosmological_research.hubble_constant / 70.0
         res_quant = quantum_computing_research.crypto_resilience
         res_nano = nanotech_research.assembly_precision / 100.0
-        
+
         self.unification_resonance = (res_phys * res_info * res_cosmo * res_quant * res_nano) ** (1/5)
         print(f"--- [SYNTH_MANIFOLD]: UNIFICATION RESONANCE: {self.unification_resonance:.6f} ---")
-        
+
         # 2. Discover God-Level Primitive
         if self.unification_resonance > 0.9:
             primitive = f"L104_GOD_PRIM_{int(self.unification_resonance * 1000000)}"
             self.god_primitives.append(primitive)
             print(f"--- [SYNTH_MANIFOLD]: DISCOVERED GOD-LEVEL PRIMITIVE: {primitive} ---")
-            
+
         print("Ω"*60 + "\n")
     def apply_universal_boost(self, intellect_index: float) -> float:
         """

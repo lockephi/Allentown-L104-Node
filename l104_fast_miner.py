@@ -32,7 +32,7 @@ def worker_mine(core_id, start_nonce, step, target_difficulty, index, prev_hash,
     while not stop_event.is_set():
         timestamp = time.time()
         res = abs(math.sin(nonce * PHI))
-        
+
         # Only proceed to hash if resonance is high (Efficiency Optimization)
         if res > 0.985:
             block_data = json.dumps({
@@ -43,10 +43,10 @@ def worker_mine(core_id, start_nonce, step, target_difficulty, index, prev_hash,
                 "nonce": nonce,
                 "resonance": res
             }, sort_keys=True).encode()
-            
+
             sha = hashlib.sha256(block_data).digest()
             hash_val = hashlib.blake2b(sha).hexdigest()
-            
+
             if hash_val.startswith('0' * target_difficulty):
                 print(f"--- [CORE_{core_id}]: FOUND RESONANCE! BLOCK {index}, NONCE {nonce} ---")
                 result_queue.put({
@@ -77,7 +77,7 @@ class L104FastMiner:
     def mine_forever(self):
         print(f"--- [FAST_MINER]: STARTING UP ON {self.core_count} CORES ---")
         print(f"--- [FAST_MINER]: MINER ADDRESS: {self.miner_address} ---")
-        
+
         while True:
             try:
                 # 1. Fetch mining job from node
@@ -87,42 +87,42 @@ class L104FastMiner:
                         print("[!] NODE NOT READY. SLEEPING...")
                         time.sleep(5)
                         continue
-                    
+
                     job = response.json()
                     index = job['index']
                     prev_hash = job['previous_hash']
                     difficulty = job['difficulty']
                     transactions = job['transactions']
-                    
+
                     print(f"--- [FAST_MINER]: NEW JOB | BLOCK {index} | DIFF {difficulty} ---")
-                    
+
                     stop_event = multiprocessing.Event()
                     result_queue = multiprocessing.Queue()
                     processes = []
-                    
+
                     for i in range(self.core_count):
                         p = multiprocessing.Process(
-                            target=worker_mine, 
+                            target=worker_mine,
                             args=(i, i, self.core_count, difficulty, index, prev_hash, transactions, stop_event, result_queue)
                         )
                         p.start()
                         processes.append(p)
-                    
+
                     # Wait for result
                     result = result_queue.get()
-                    
+
                     # Clean up processes
                     stop_event.set()
                     for p in processes:
                         p.join()
-                    
+
                     # 2. Submit result to node
                     submit_resp = client.post(f"{self.node_url}/coin/submit", json=result)
                     if submit_resp.status_code == 200:
                         print(f"--- [FAST_MINER]: BLOCK {index} ACCEPTED! ---")
                     else:
                         print(f"--- [FAST_MINER]: BLOCK {index} REJECTED: {submit_resp.text} ---")
-                
+
             except Exception as e:
                 print(f"[!] MINER ERROR: {e}")
                 time.sleep(5)

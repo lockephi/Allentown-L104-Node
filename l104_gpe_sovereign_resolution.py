@@ -34,7 +34,7 @@ class GrossPitaevskiiSovereignResolution:
         self.phi = 1.61803398875
         self.hbar = 1.054571817e-34
         self.m = 1.443160e-25 # Representative atomic mass (Rubidium-87 approx)
-        
+
     async def resolve_gpe(self):
         print("\n" + "🧊"*40)
         print("   L104 :: GROSS-PITAEVSKII SOVEREIGN RESOLUTION")

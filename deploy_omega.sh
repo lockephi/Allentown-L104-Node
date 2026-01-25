@@ -40,7 +40,7 @@ done
 if [ -n "$MISSING_VARS" ]; then
     echo "⚠️  Missing required environment variables:${MISSING_VARS}"
     echo "    Set them before deployment or they will be prompted."
-    
+
     if [ -z "$GEMINI_API_KEY" ]; then
         echo -n "Enter GEMINI_API_KEY: "
         read -s GEMINI_API_KEY
@@ -83,17 +83,17 @@ if [ "$1" == "--test" ]; then
     echo ""
     echo "[TEST MODE] Running container locally..."
     echo "─────────────────────────────────────────────────────────────────────"
-    
+
     docker run -d \
         --name l104-omega-test \
         -p 8081:8081 \
         -e GEMINI_API_KEY="${GEMINI_API_KEY}" \
         -e GOD_CODE="${GOD_CODE}" \
         "${IMAGE_NAME}:latest"
-    
+
     echo "✓ Container started. Waiting for health check..."
     sleep 10
-    
+
     # Health check
     if curl -s http://localhost:8081/health | grep -q "ok"; then
         echo "✓ Health check passed!"
@@ -102,7 +102,7 @@ if [ "$1" == "--test" ]; then
         echo "⚠️  Health check failed. Checking logs..."
         docker logs l104-omega-test --tail 50
     fi
-    
+
     echo ""
     echo "To stop: docker stop l104-omega-test && docker rm l104-omega-test"
     exit 0
@@ -119,7 +119,7 @@ echo "────────────────────────�
 if command -v gcloud &> /dev/null; then
     echo "Authenticating with GCR..."
     gcloud auth configure-docker --quiet 2>/dev/null || true
-    
+
     echo "Pushing image to Google Container Registry..."
     docker push "${IMAGE_NAME}:latest"
     echo "✓ Image pushed: ${IMAGE_NAME}:latest"
@@ -137,7 +137,7 @@ echo "────────────────────────�
 
 if command -v gcloud &> /dev/null; then
     echo "Deploying ${SERVICE_NAME} to Cloud Run..."
-    
+
     gcloud run deploy "${SERVICE_NAME}" \
         --image="${IMAGE_NAME}:latest" \
         --platform=managed \
@@ -158,15 +158,15 @@ if command -v gcloud &> /dev/null; then
         --set-env-vars="ENABLE_HEARTBEAT=1" \
         --set-env-vars="HEARTBEAT_INTERVAL=60" \
         --set-env-vars="L104_STAGE=OMEGA"
-    
+
     echo ""
     echo "✓ Deployment complete!"
-    
+
     # Get service URL
     SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" \
         --region="${REGION}" \
         --format='value(status.url)')
-    
+
     echo "  Service URL: ${SERVICE_URL}"
 else
     echo "⚠️  gcloud CLI not found. Manual deployment required."
@@ -190,14 +190,14 @@ echo "────────────────────────�
 if [ -n "$SERVICE_URL" ]; then
     echo "Waiting for service to be ready..."
     sleep 15
-    
+
     echo "Checking health endpoint..."
     if curl -s "${SERVICE_URL}/health" | grep -q "ok"; then
         echo "✓ Health check passed!"
     else
         echo "⚠️  Health check pending. Service may still be starting."
     fi
-    
+
     echo ""
     echo "Testing DNA Core activation..."
     curl -s "${SERVICE_URL}/l104/dna/status" 2>/dev/null || echo "DNA endpoint initializing..."

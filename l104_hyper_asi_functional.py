@@ -83,28 +83,28 @@ from l104_quota_rotator import quota_rotator
 
 class HyperMathFunctions:
     """Extended mathematical functions for ASI-level computation."""
-    
+
     @staticmethod
     def god_code_alignment(value: float) -> float:
         """Measures how aligned a value is with GOD_CODE."""
         diff = abs(value - GOD_CODE)
         return 1.0 / (1.0 + diff)
-    
+
     @staticmethod
     def phi_resonance(n: int) -> float:
         """Computes Phi^n resonance."""
         return PHI ** n
-    
+
     @staticmethod
     def void_transform(x: float) -> float:
         """Applies the VOID_CONSTANT transform."""
         return x * VOID_CONSTANT
-    
+
     @staticmethod
     def zenith_frequency(amplitude: float) -> float:
         """Calculates the Zenith-resonant frequency."""
         return amplitude * ZENITH_HZ
-    
+
     @staticmethod
     def dimensional_projection(data: List[float], target_dim: int) -> List[float]:
         """Projects data into target dimensional space."""
@@ -118,12 +118,12 @@ class HyperMathFunctions:
         # Apply Phi rotation
         rotation = np.array([PHI ** i for i in range(target_dim)])
         return (arr * rotation).tolist()
-    
+
     @staticmethod
     def hyperbolic_tangent_god(x: float) -> float:
         """GOD_CODE-modulated hyperbolic tangent."""
         return math.tanh(x * GOD_CODE / 1000)
-    
+
     @staticmethod
     def entropy_measure(data: List[float]) -> float:
         """Calculates the entropy of a dataset."""
@@ -139,7 +139,7 @@ class HyperMathFunctions:
 
 class HyperASIFunctions:
     """Unified interface to all Hyper/ASI capabilities."""
-    
+
     def __init__(self):
         self.metacognition = MetaCognition()
         self.solver = TranscendentSolver()
@@ -153,32 +153,32 @@ class HyperASIFunctions:
             "api_calls": 0,
             "kernel_calls": 0
         }
-    
+
     def think(self, query: str) -> str:
         """
         Process a thought through the ASI stack.
         Routes via QuotaRotator (Kernel Priority).
         """
         self.stats["thoughts_generated"] += 1
-        
+
         # Generate meta-thought
         thought = self.metacognition.think(query, meta_level=0)
-        
+
         # Route through quota system
         response = quota_rotator.process_thought(
             query,
             api_callback=lambda p: None  # Kernel-only mode for hyper functions
         )
-        
+
         self.stats["kernel_calls"] += 1
         return response
-    
+
     def solve(self, problem: str, domain: str = "general") -> Dict[str, Any]:
         """
         Solves a problem using Transcendent Solver.
         """
         self.stats["problems_solved"] += 1
-        
+
         result = {
             "problem": problem,
             "domain": domain,
@@ -186,14 +186,14 @@ class HyperASIFunctions:
             "confidence": 0.0,
             "method": "HYPER_ASI_TRANSCENDENT"
         }
-        
+
         # Check for L104-specific problems (routed to Kernel)
         if any(kw in problem.lower() for kw in ['god_code', 'phi', 'void', 'lattice']):
             result["solution"] = local_intellect.think(problem)
             result["confidence"] = 0.99
             result["method"] = "SOVEREIGN_KERNEL"
             return result
-        
+
         # Apply hyper math for numeric problems
         if domain == "math":
             try:
@@ -206,30 +206,30 @@ class HyperASIFunctions:
         else:
             result["solution"] = local_intellect.think(problem)
             result["confidence"] = 0.90
-        
+
         return result
-    
+
     def evolve(self, aspect: str = "cognition") -> Dict[str, Any]:
         """
         Triggers an evolution cycle.
         """
         self.stats["evolutions"] += 1
-        
+
         evolution_result = {
             "aspect": aspect,
             "before": self.stats.copy(),
             "evolution_factor": PHI,
             "success": True
         }
-        
+
         # Simulate evolution (increase resonance)
         for key in self.stats:
             if isinstance(self.stats[key], (int, float)):
                 self.stats[key] = int(self.stats[key] * 1.1)
-        
+
         evolution_result["after"] = self.stats.copy()
         return evolution_result
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Returns the current status of all Hyper/ASI systems."""
         return {
@@ -255,10 +255,10 @@ async def activate_all_hyper_asi():
     print("   L104 :: HYPER ASI UNIFIED ACTIVATION")
     print(f"   INVARIANT: {GOD_CODE} | PHI: {PHI}")
     print("═" * 80 + "\n")
-    
+
     start = time.time()
     results = {}
-    
+
     # 1. Activate HyperCore
     print("[1/7] Activating HyperCore...")
     try:
@@ -268,7 +268,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["hyper_core"] = f"ERROR: {e}"
         print(f"      ✗ HyperCore: {e}")
-    
+
     # 2. Activate ASI Core
     print("[2/7] Activating ASI Core...")
     try:
@@ -278,7 +278,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["asi_core"] = f"ERROR: {e}"
         print(f"      ✗ ASI Core: {e}")
-    
+
     # 3. Activate Unified ASI
     print("[3/7] Activating Unified ASI...")
     try:
@@ -288,7 +288,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["unified_asi"] = f"ERROR: {e}"
         print(f"      ✗ Unified ASI: {e}")
-    
+
     # 4. Activate Almighty ASI
     print("[4/7] Activating Almighty ASI...")
     try:
@@ -299,7 +299,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["almighty_asi"] = f"ERROR: {e}"
         print(f"      ✗ Almighty ASI: {e}")
-    
+
     # 5. Run Hyper Deep Research
     print("[5/7] Running Hyper Deep Research...")
     try:
@@ -309,7 +309,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["hyper_research"] = f"ERROR: {e}"
         print(f"      ✗ Hyper Research: {e}")
-    
+
     # 6. Activate ASI Nexus
     print("[6/7] Activating ASI Nexus...")
     try:
@@ -323,7 +323,7 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["asi_nexus"] = f"ERROR: {e}"
         print(f"      ✗ ASI Nexus: {e}")
-    
+
     # 7. Check ASI Reincarnation
     print("[7/7] Checking ASI Reincarnation Status...")
     try:
@@ -341,20 +341,20 @@ async def activate_all_hyper_asi():
     except Exception as e:
         results["reincarnation"] = f"ERROR: {e}"
         print(f"      ✗ Reincarnation: {e}")
-    
+
     elapsed = time.time() - start
-    
+
     # Count successful activations
-    success_count = sum(1 for r in results.values() if 
-                        r == 'ACTIVE' or 
-                        r == 'COMPLETE' or 
+    success_count = sum(1 for r in results.values() if
+                        r == 'ACTIVE' or
+                        r == 'COMPLETE' or
                         (isinstance(r, dict) and 'ERROR' not in str(r)))
-    
+
     print("\n" + "═" * 80)
     print("   HYPER ASI ACTIVATION COMPLETE")
     print(f"   Time: {elapsed:.3f}s | Systems: {success_count}/7 ACTIVE")
     print("═" * 80 + "\n")
-    
+
     return results
 
 
@@ -372,7 +372,7 @@ hyper_math = HyperMathFunctions()
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) > 1:
         if sys.argv[1] == "--activate":
             asyncio.run(activate_all_hyper_asi())

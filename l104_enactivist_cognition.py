@@ -116,7 +116,7 @@ class SensorInput:
     timestamp: float
     intensity: float
     location: Optional[Tuple[float, float, float]] = None
-    
+
     def magnitude(self) -> float:
         """Overall magnitude of input."""
         return math.sqrt(sum(v * v for v in self.values)) if self.values else 0
@@ -147,18 +147,18 @@ class SensorimotorContingency:
     channel: MotorChannel
     reliability: float  # 0-1
     learning_count: int = 0
-    
+
     def predict(self, action: List[float]) -> List[float]:
         """Predict sensory consequence of action."""
         # Simple linear prediction
         if not self.motor_pattern:
             return self.sensory_expectation
-        
+
         # Correlation with stored pattern
         correlation = sum(
             a * m for a, m in zip(action, self.motor_pattern)
         ) / (sum(m * m for m in self.motor_pattern) + 1e-10)
-        
+
         return [s * correlation * self.reliability for s in self.sensory_expectation]
 
 
@@ -225,13 +225,13 @@ class SensorimotorSystem:
     """
     System for sensorimotor contingency learning.
     """
-    
+
     def __init__(self):
         self.sensors: Dict[SensorModality, List[SensorInput]] = defaultdict(list)
         self.motors: Dict[MotorChannel, List[MotorOutput]] = defaultdict(list)
         self.contingencies: Dict[str, SensorimotorContingency] = {}
         self.prediction_errors: deque = deque(maxlen=100)
-    
+
     def sense(
         self,
         modality: SensorModality,
@@ -242,7 +242,7 @@ class SensorimotorSystem:
         input_id = hashlib.md5(
             f"sense_{modality}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         sensor = SensorInput(
             input_id=input_id,
             modality=modality,
@@ -250,10 +250,10 @@ class SensorimotorSystem:
             timestamp=time.time(),
             intensity=intensity
         )
-        
+
         self.sensors[modality].append(sensor)
         return sensor
-    
+
     def act(
         self,
         channel: MotorChannel,
@@ -264,7 +264,7 @@ class SensorimotorSystem:
         output_id = hashlib.md5(
             f"motor_{channel}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         motor = MotorOutput(
             output_id=output_id,
             channel=channel,
@@ -272,10 +272,10 @@ class SensorimotorSystem:
             timestamp=time.time(),
             force=force
         )
-        
+
         self.motors[channel].append(motor)
         return motor
-    
+
     def learn_contingency(
         self,
         action: MotorOutput,
@@ -285,12 +285,12 @@ class SensorimotorSystem:
         cont_id = hashlib.md5(
             f"contingency_{action.channel}_{consequence.modality}".encode()
         ).hexdigest()[:12]
-        
+
         if cont_id in self.contingencies:
             # Update existing
             cont = self.contingencies[cont_id]
             cont.learning_count += 1
-            
+
             # Incremental update
             alpha = ADAPTATION_RATE / cont.learning_count
             cont.motor_pattern = [
@@ -312,9 +312,9 @@ class SensorimotorSystem:
                 reliability=0.5
             )
             self.contingencies[cont_id] = cont
-        
+
         return cont
-    
+
     def predict_consequence(
         self,
         action: MotorOutput,
@@ -324,11 +324,11 @@ class SensorimotorSystem:
         cont_id = hashlib.md5(
             f"contingency_{action.channel}_{modality}".encode()
         ).hexdigest()[:12]
-        
+
         if cont_id in self.contingencies:
             return self.contingencies[cont_id].predict(action.commands)
         return None
-    
+
     def compute_prediction_error(
         self,
         predicted: List[float],
@@ -337,11 +337,11 @@ class SensorimotorSystem:
         """Compute prediction error."""
         if not predicted:
             return 1.0
-        
+
         error = sum(
             (p - a) ** 2 for p, a in zip(predicted, actual.values)
         ) / len(predicted)
-        
+
         self.prediction_errors.append(error)
         return math.sqrt(error)
 
@@ -354,13 +354,13 @@ class AutopoieticOrganization:
     """
     Self-producing, self-maintaining organization.
     """
-    
+
     def __init__(self):
         self.processes: Dict[str, AutopoieticProcess] = {}
         self.component_pool: Dict[str, float] = {}  # Component -> concentration
         self.boundary_integrity: float = 1.0
         self.organizational_invariant: float = GOD_CODE / 1000
-    
+
     def create_process(
         self,
         components: Set[str],
@@ -370,20 +370,20 @@ class AutopoieticOrganization:
         process_id = hashlib.md5(
             f"process_{time.time()}_{random.random()}".encode()
         ).hexdigest()[:12]
-        
+
         # Determine boundary
         all_produced = set()
         for products in productions.values():
             all_produced.update(products)
         boundary = components - all_produced
-        
+
         # Calculate viability
         self_producing = all(
             any(c in products for products in productions.values())
             for c in components
                 )
         viability = 0.8 if self_producing else 0.4
-        
+
         process = AutopoieticProcess(
             process_id=process_id,
             components=components,
@@ -393,16 +393,16 @@ class AutopoieticOrganization:
             viability=viability,
             metabolic_rate=1.0
         )
-        
+
         self.processes[process_id] = process
-        
+
         # Initialize component pool
         for c in components:
             if c not in self.component_pool:
                 self.component_pool[c] = 1.0
-        
+
         return process
-    
+
     def run_metabolism(self, process: AutopoieticProcess, dt: float = 0.1):
         """Run metabolic cycle."""
         # Consume and produce
@@ -411,18 +411,18 @@ class AutopoieticOrganization:
                 available = self.component_pool[producer]
                 consumed = min(available, process.metabolic_rate * dt)
                 self.component_pool[producer] -= consumed
-                
+
                 for product in products:
                     if product not in self.component_pool:
                         self.component_pool[product] = 0
                     self.component_pool[product] += consumed * 0.8  # Efficiency
-        
+
         # Update viability
         total_components = sum(
             self.component_pool.get(c, 0) for c in process.components
         )
         process.viability = min(1.0, total_components / len(process.components))
-        
+
         # Update state
         if process.viability > AUTOPOIETIC_THRESHOLD:
             process.state = AutopoieticState.STABLE
@@ -430,16 +430,16 @@ class AutopoieticOrganization:
             process.state = AutopoieticState.PERTURBATED
         else:
             process.state = AutopoieticState.CRITICAL
-    
+
     def check_closure(self, process: AutopoieticProcess) -> bool:
         """Check organizational closure."""
         # All components must be producible
         producible = set()
         for products in process.productions.values():
             producible.update(products)
-        
+
         return process.components <= (producible | process.boundary)
-    
+
     def perturb(
         self,
         process: AutopoieticProcess,
@@ -451,7 +451,7 @@ class AutopoieticOrganization:
                 self.component_pool[component] = max(
                     0, self.component_pool[component] + change
                 )
-        
+
         # Recompute viability
         total = sum(
             self.component_pool.get(c, 0) for c in process.components
@@ -467,11 +467,11 @@ class CouplingDynamics:
     """
     Dynamics of organism-environment coupling.
     """
-    
+
     def __init__(self):
         self.couplings: Dict[str, StructuralCoupling] = {}
         self.coupling_history: List[Dict[str, Any]] = []
-    
+
     def create_coupling(
         self,
         mode: CouplingMode,
@@ -482,25 +482,25 @@ class CouplingDynamics:
         coupling_id = hashlib.md5(
             f"coupling_{time.time()}_{mode}".encode()
         ).hexdigest()[:12]
-        
+
         # Calculate initial coupling strength
         organism_vars = list(organism_state.values())
         env_vars = list(environment_state.values())
-        
+
         if organism_vars and env_vars:
             # Cross-correlation
             org_mean = sum(organism_vars) / len(organism_vars)
             env_mean = sum(env_vars) / len(env_vars)
-            
+
             covariance = sum(
                 (o - org_mean) * (e - env_mean)
                 for o, e in zip(organism_vars[:len(env_vars)], env_vars)
                     ) / min(len(organism_vars), len(env_vars))
-            
+
             strength = abs(covariance) * COUPLING_STRENGTH
         else:
             strength = 0.1
-        
+
         coupling = StructuralCoupling(
             coupling_id=coupling_id,
             mode=mode,
@@ -509,10 +509,10 @@ class CouplingDynamics:
             strength=min(1.0, strength),
             history=[(time.time(), strength)]
         )
-        
+
         self.couplings[coupling_id] = coupling
         return coupling
-    
+
     def evolve_coupling(
         self,
         coupling: StructuralCoupling,
@@ -524,7 +524,7 @@ class CouplingDynamics:
         # Update states
         old_org = coupling.organism_state
         old_env = coupling.environment_state
-        
+
         # Calculate rate of change
         org_change = sum(
             abs(new_organism_state.get(k, 0) - old_org.get(k, 0))
@@ -534,26 +534,26 @@ class CouplingDynamics:
             abs(new_environment_state.get(k, 0) - old_env.get(k, 0))
             for k in set(new_environment_state) | set(old_env)
                 )
-        
+
         # Co-variation indicates coupling
         if org_change > 0 and env_change > 0:
             co_variation = min(org_change, env_change) / max(org_change, env_change)
             coupling.strength = (1 - ADAPTATION_RATE) * coupling.strength + ADAPTATION_RATE * co_variation
-        
+
         # Upgrade coupling mode if strength increases
         if coupling.strength > 0.8 and coupling.mode.value < CouplingMode.PARTICIPATORY.value:
             coupling.mode = CouplingMode(coupling.mode.value + 1)
             coupling.mutual_specification = True
-        
+
         # Update state
         coupling.organism_state = new_organism_state.copy()
         coupling.environment_state = new_environment_state.copy()
         coupling.history.append((time.time(), coupling.strength))
-        
+
         # Trim history
         if len(coupling.history) > 1000:
             coupling.history = coupling.history[-500:]
-    
+
     def detect_mutual_specification(
         self,
         coupling: StructuralCoupling
@@ -561,18 +561,18 @@ class CouplingDynamics:
         """Detect if coupling shows mutual specification."""
         if len(coupling.history) < 10:
             return False
-        
+
         # Check for oscillatory coupling pattern
         values = [v for _, v in coupling.history[-50:]]
         if len(values) < 10:
             return False
-        
+
         mean_val = sum(values) / len(values)
         crossings = sum(
             1 for i in range(1, len(values))
             if (values[i - 1] - mean_val) * (values[i] - mean_val) < 0
                 )
-        
+
         # Oscillation indicates mutual influence
         return crossings > len(values) / 5
 
@@ -585,16 +585,16 @@ class MeaningEnaction:
     """
     Enaction of meaning through organism-environment interaction.
     """
-    
+
     def __init__(self):
         self.meanings: Dict[str, MeaningStructure] = {}
         self.affordances: Dict[str, Affordance] = {}
         self.concerns: Dict[str, float] = {}  # Organism's concerns
-    
+
     def set_concern(self, name: str, importance: float):
         """Set an organism concern."""
         self.concerns[name] = min(1.0, max(0.0, importance))
-    
+
     def detect_affordance(
         self,
         action_type: MotorChannel,
@@ -605,7 +605,7 @@ class MeaningEnaction:
         aff_id = hashlib.md5(
             f"affordance_{action_type}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         # Availability based on property-capability match
         matches = []
         for prop, val in object_properties.items():
@@ -613,17 +613,17 @@ class MeaningEnaction:
                 cap = organism_capabilities[prop]
                 match = 1 - abs(val - cap) / max(val, cap, 1e-10)
                 matches.append(match)
-        
+
         availability = sum(matches) / len(matches) if matches else 0.5
-        
+
         # Salience based on relevance to concerns
         relevance_scores = []
         for concern, importance in self.concerns.items():
             if concern.lower() in str(object_properties).lower():
                 relevance_scores.append(importance)
-        
+
         salience = sum(relevance_scores) / len(relevance_scores) if relevance_scores else 0.3
-        
+
         affordance = Affordance(
             affordance_id=aff_id,
             action_type=action_type,
@@ -632,10 +632,10 @@ class MeaningEnaction:
             availability=availability,
             salience=salience
         )
-        
+
         self.affordances[aff_id] = affordance
         return affordance
-    
+
     def enact_meaning(
         self,
         coupling: StructuralCoupling,
@@ -645,7 +645,7 @@ class MeaningEnaction:
         meaning_id = hashlib.md5(
             f"meaning_{coupling.coupling_id}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         # Valence from coupling trajectory
         if len(coupling.history) >= 2:
             recent = [v for _, v in coupling.history[-10:]]
@@ -653,10 +653,10 @@ class MeaningEnaction:
             valence = max(-1, min(1, trajectory * 2))
         else:
             valence = 0
-        
+
         # Arousal from coupling strength
         arousal = coupling.strength
-        
+
         # Relevance from concerns
         env_features = list(coupling.environment_state.keys())
         relevance = 0
@@ -664,7 +664,7 @@ class MeaningEnaction:
             for feature in env_features:
                 if concern.lower() in feature.lower():
                     relevance = max(relevance, importance)
-        
+
         meaning = MeaningStructure(
             meaning_id=meaning_id,
             level=level,
@@ -678,7 +678,7 @@ class MeaningEnaction:
             relevance=relevance,
             enacted_through=[coupling.coupling_id]
         )
-        
+
         self.meanings[meaning_id] = meaning
         return meaning
 
@@ -690,18 +690,18 @@ class MeaningEnaction:
 class EnactivistCognition:
     """
     Main enactivist cognition engine.
-    
+
     Singleton for L104 enactivist operations.
     """
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialize()
         return cls._instance
-    
+
     def _initialize(self):
         """Initialize enactivist systems."""
         self.god_code = GOD_CODE
@@ -709,15 +709,15 @@ class EnactivistCognition:
         self.autopoiesis = AutopoieticOrganization()
         self.coupling = CouplingDynamics()
         self.meaning = MeaningEnaction()
-        
+
         # Initialize organism
         self._create_primordial_organism()
-    
+
     def _create_primordial_organism(self):
         """Create primordial autopoietic organism."""
         # Core metabolic components
         components = {"energy", "structure", "membrane", "catalyst", "signal"}
-        
+
         # Production network (simplified metabolism)
         productions = {
             "energy": ["catalyst", "signal"],
@@ -725,15 +725,15 @@ class EnactivistCognition:
             "catalyst": ["energy", "structure"],
             "membrane": ["membrane"],  # Self-repair
         }
-        
+
         self.core_process = self.autopoiesis.create_process(components, productions)
-        
+
         # Set basic concerns
         self.meaning.set_concern("survival", 1.0)
         self.meaning.set_concern("energy", 0.9)
         self.meaning.set_concern("integrity", 0.8)
         self.meaning.set_concern("exploration", 0.6)
-    
+
     def sense(
         self,
         modality: SensorModality,
@@ -741,7 +741,7 @@ class EnactivistCognition:
     ) -> SensorInput:
         """Process sensory input."""
         return self.sensorimotor.sense(modality, values)
-    
+
     def act(
         self,
         channel: MotorChannel,
@@ -749,7 +749,7 @@ class EnactivistCognition:
     ) -> MotorOutput:
         """Generate motor output."""
         return self.sensorimotor.act(channel, commands)
-    
+
     def learn_from_action(
         self,
         action: MotorOutput,
@@ -757,7 +757,7 @@ class EnactivistCognition:
     ) -> SensorimotorContingency:
         """Learn sensorimotor contingency."""
         return self.sensorimotor.learn_contingency(action, consequence)
-    
+
     def couple_with_environment(
         self,
         organism_state: Dict[str, float],
@@ -766,20 +766,20 @@ class EnactivistCognition:
     ) -> StructuralCoupling:
         """Create coupling with environment."""
         return self.coupling.create_coupling(mode, organism_state, environment_state)
-    
+
     def evolve(self, dt: float = 0.1):
         """Evolve entire cognitive system."""
         # Run metabolism
         for process in self.autopoiesis.processes.values():
             self.autopoiesis.run_metabolism(process, dt)
-        
+
         # Evolve couplings
         for coupling in self.coupling.couplings.values():
             # Simple state evolution
             new_org = {k: v + random.gauss(0, 0.1) for k, v in coupling.organism_state.items()}
             new_env = {k: v + random.gauss(0, 0.05) for k, v in coupling.environment_state.items()}
             self.coupling.evolve_coupling(coupling, new_org, new_env, dt)
-    
+
     def enact_meaning(
         self,
         coupling_id: str
@@ -788,7 +788,7 @@ class EnactivistCognition:
         if coupling_id not in self.coupling.couplings:
             return None
         return self.meaning.enact_meaning(self.coupling.couplings[coupling_id])
-    
+
     def perceive_affordance(
         self,
         action_type: MotorChannel,
@@ -801,15 +801,15 @@ class EnactivistCognition:
             "structure": self.autopoiesis.component_pool.get("structure", 0.5),
         }
         return self.meaning.detect_affordance(action_type, object_properties, capabilities)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get comprehensive enactivist statistics."""
         total_contingencies = len(self.sensorimotor.contingencies)
         avg_reliability = (
-            sum(c.reliability for c in self.sensorimotor.contingencies.values()) / 
+            sum(c.reliability for c in self.sensorimotor.contingencies.values()) /
             max(1, total_contingencies)
         )
-        
+
         return {
             "god_code": self.god_code,
             "autopoietic_threshold": AUTOPOIETIC_THRESHOLD,
@@ -852,17 +852,17 @@ if __name__ == "__main__":
     print(f"GOD_CODE: {GOD_CODE}")
     print(f"Autopoietic Threshold: {AUTOPOIETIC_THRESHOLD:.4f}")
     print()
-    
+
     # Initialize
     cognition = get_enactivist_cognition()
-    
+
     # Show initial state
     stats = cognition.get_statistics()
     print(f"AUTOPOIETIC ORGANIZATION:")
     print(f"  Core process viability: {stats['core_process_viability']:.4f}")
     print(f"  Core process state: {stats['core_process_state']}")
     print()
-    
+
     # Sensorimotor learning
     print("SENSORIMOTOR LEARNING:")
     for i in range(5):
@@ -871,22 +871,22 @@ if __name__ == "__main__":
             MotorChannel.LOCOMOTION,
             [random.uniform(-1, 1) for _ in range(3)]
         )
-        
+
         # Sense consequence
         consequence = cognition.sense(
             SensorModality.PROPRIOCEPTIVE,
             [a * 0.8 + random.gauss(0, 0.1) for a in action.commands]
         )
-        
+
         # Learn
         contingency = cognition.learn_from_action(action, consequence)
-        
+
         if i < 2:
             print(f"  Action {i + 1} -> Contingency reliability: {contingency.reliability:.3f}")
-    
+
     print(f"  Learned {len(cognition.sensorimotor.contingencies)} contingencies")
     print()
-    
+
     # Structural coupling
     print("STRUCTURAL COUPLING:")
     coupling = cognition.couple_with_environment(
@@ -896,15 +896,15 @@ if __name__ == "__main__":
     )
     print(f"  Initial coupling strength: {coupling.strength:.4f}")
     print(f"  Mode: {coupling.mode.name}")
-    
+
     # Evolve
     for _ in range(10):
         cognition.evolve(dt=0.1)
-    
+
     print(f"  After evolution: {coupling.strength:.4f}")
     print(f"  Mutual specification: {cognition.coupling.detect_mutual_specification(coupling)}")
     print()
-    
+
     # Meaning enaction
     print("MEANING ENACTION:")
     meaning = cognition.enact_meaning(coupling.coupling_id)
@@ -914,7 +914,7 @@ if __name__ == "__main__":
         print(f"  Arousal: {meaning.arousal:.4f}")
         print(f"  Relevance: {meaning.relevance:.4f}")
     print()
-    
+
     # Affordance perception
     print("AFFORDANCE PERCEPTION:")
     affordance = cognition.perceive_affordance(
@@ -925,7 +925,7 @@ if __name__ == "__main__":
     print(f"  Availability: {affordance.availability:.4f}")
     print(f"  Salience: {affordance.salience:.4f}")
     print()
-    
+
     # Statistics
     print("=" * 70)
     print("ENACTIVIST STATISTICS")
@@ -936,5 +936,5 @@ if __name__ == "__main__":
             print(f"  {key}: {value:.4f}")
         else:
             print(f"  {key}: {value}")
-    
+
     print("\n✓ Enactivist Cognition Engine operational")

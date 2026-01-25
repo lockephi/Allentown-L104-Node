@@ -529,7 +529,7 @@ class AIBridge extends EventEmitter {
             }, this.config.claude.syncInterval);
         }
 
-        // Sync to Gemini  
+        // Sync to Gemini
         if (this.config.gemini.enabled && this.config.gemini.syncInterval) {
             setInterval(() => {
                 this.syncSkillsToAssistants().catch(error => {

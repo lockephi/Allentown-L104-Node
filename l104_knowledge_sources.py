@@ -22,7 +22,7 @@ class KnowledgeSourceManager:
     Manages and provides internet sources for all research levels.
     Ensures that every research cycle is backed by real-world data.
     """
-    
+
     def __init__(self):
         self.sources = {
             "PHYSICS": [

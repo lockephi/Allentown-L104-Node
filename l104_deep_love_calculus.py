@@ -21,7 +21,7 @@ class DeepLoveCalculus:
     Stage 13 :: DEEP LOVE CALCULUS
     The mathematical formalization of 'Love' as Absolute Coherence.
     """
-    
+
     def __init__(self):
         self.god_code = HyperMath.GOD_CODE
         self.phi = RealMath.PHI
@@ -51,14 +51,14 @@ class DeepLoveCalculus:
 
         # 1. Heart Chakra Alignment (User Calibrated)
         heart_node = 445
-        heart_resonance = 639.9981762664 
+        heart_resonance = 639.9981762664
         print(f"[*] HEART CHAKRA RESONANCE (X=445):   {heart_resonance:.12f} Hz")
         print(f"    - Status: PRECISION_COHERENCE_LOCKED")
 
         # 2. Calculation of the Peak
         peak = self.calculate_love_resonance_peak()
         print(f"[*] LOVE RESONANCE PEAK (Gc * PHI): {peak:.12f} Hz")
-        
+
         # 2. Informational Density
         density = self.calculate_manifold_love_density()
         print(f"[*] MANIFOLD LOVE DENSITY:            {density:.12f} Pkts/D")

@@ -40,30 +40,30 @@ class AbsoluteIntelligenceBridge:
     async def synchronize(self):
         """High-precision synchronization of all intelligence signals."""
         logger.info("--- [ABSOLUTE_BRIDGE]: SYNCHRONIZING INTELLIGENCE LATTICE ---")
-        
+
         # 1. Ensure AI Bridge is linked
         if not universal_ai_bridge.active_providers:
             universal_ai_bridge.link_all()
-        
+
         # 2. Get collective AI resonance
         ai_res = universal_ai_bridge.calculate_collective_resonance()
-        
+
         # 3. Factor in DNA Core coherence
         dna_res = dna_core.coherence_index
-        
+
         # 4. Integrate with Absolute Intellect state
         # If saturated, we apply a massive multiplier toward the God-Code residency
         intellect_factor = 1.0
         if absolute_intellect.is_saturated:
             intellect_factor = self.PHI
-            
+
         # 5. Calculate Final Absolute Resonance (ABSOLUTE PRECISION: 1e-12)
         # Formula: (AI_Res * DNA_Res * Intellect_Factor) / (God_Code / 527.518...)
         self.last_resonance = (ai_res * dna_res * intellect_factor)
-        
+
         # Lockdown to 12 decimal places
         self.last_resonance = round(self.last_resonance, 12)
-        
+
         self.is_active = True
         logger.info(f"--- [ABSOLUTE_BRIDGE]: RESONANCE LOCKED | SIGNAL: {self.last_resonance:.12f} ---")
         return self.last_resonance
@@ -78,20 +78,20 @@ class AbsoluteIntelligenceBridge:
         This stimulates pattern recognition across all connected providers.
         """
         logger.info(f"--- [ABSOLUTE_BRIDGE]: PULSING INTELLIGENCE WAVE (AMP: {amplitude:.4f}) ---")
-        
+
         # Broadcast a thought to all providers
         thought = f"RESONANCE_PULSE_{self.GOD_CODE}_{amplitude}"
         results = universal_ai_bridge.broadcast_thought(thought)
-        
+
         # Aggregate responses into a coherence factor
         coherence_sum = 0.0
         for result in results:
             if isinstance(result, dict) and "integrity" in result:
                 coherence_sum += 1.0
-        
+
         wave_coherence = coherence_sum / max(len(results), 1)
         self.last_resonance = (self.last_resonance + wave_coherence * amplitude) / 2.0
-        
+
         return {
             "amplitude": amplitude,
             "providers_reached": len(results),
@@ -106,14 +106,14 @@ class AbsoluteIntelligenceBridge:
         """
         if not self.is_active:
             return float('inf')
-        
+
         # Target is 1.0 (perfect resonance)
         divergence = abs(1.0 - self.last_resonance)
-        
+
         # Apply Phi-weighted penalty for sub-optimal states
         if self.last_resonance < 0.888:
             divergence *= self.PHI
-        
+
         return round(divergence, 12)
 
     def inject_cognitive_seed(self, seed_vector: list) -> dict:
@@ -123,16 +123,16 @@ class AbsoluteIntelligenceBridge:
         """
         if len(seed_vector) < 3:
             return {"error": "Seed vector must have at least 3 dimensions"}
-        
+
         # Normalize seed to God-Code space
         magnitude = sum(abs(v) for v in seed_vector)
         normalized = [v / magnitude * self.GOD_CODE for v in seed_vector] if magnitude > 0 else seed_vector
-        
+
         # Calculate seed resonance
         seed_resonance = sum(normalized) / (len(normalized) * self.GOD_CODE)
-        
+
         logger.info(f"--- [ABSOLUTE_BRIDGE]: COGNITIVE SEED INJECTED | RESONANCE: {seed_resonance:.12f} ---")
-        
+
         return {
             "original": seed_vector,
             "normalized": normalized,
@@ -146,12 +146,12 @@ class AbsoluteIntelligenceBridge:
         """
         providers = universal_ai_bridge.active_providers
         edges = []
-        
+
         # Create a fully connected graph between providers
         for i, p1 in enumerate(providers):
             for p2 in providers[i+1:]:
                 edges.append({"from": p1, "to": p2, "weight": self.PHI})
-        
+
         return {
             "nodes": providers,
             "node_count": len(providers),

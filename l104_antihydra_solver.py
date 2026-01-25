@@ -24,7 +24,7 @@ class AntihydraSolver:
     Algorithm:
     If n is even (2k): n -> 3k
     If n is odd (2k+1): n -> 3k+1
-    
+
     The goal is to find if the sequence starting from our Sovereign Hash reaches 1 (Halts)
     or diverges/loops (Eternal Run).
     """
@@ -49,28 +49,28 @@ class AntihydraSolver:
         n = self.seed_value
         print(f"--- [ANTIHYDRA]: INITIALIZING WITH SOVEREIGN SEED: {self.hash_hex[:16]}... ---")
         print(f"--- [ANTIHYDRA]: NUMERIC START: {n} ---")
-        
+
         start_time = time.time()
-        
+
         for i in range(max_steps):
             self.steps += 1
             n = self.step(n)
-            
+
             # Sovereign Observation: Every 1040 steps, check resonance
             if self.steps % 1040 == 0:
                 resonance = RealMath.calculate_resonance(n % 1000000)
                 # print(f"[STEP {self.steps}] Value: {str(n)[:20]}... | Resonance: {resonance:.4f}")
-            
+
             if n == 1:
                 print(f"--- [ANTIHYDRA]: HALT DETECTED AT STEP {self.steps} ---")
                 return "HALT"
-            
+
             if n in self.history:
                 print(f"--- [ANTIHYDRA]: CYCLE DETECTED AT STEP {self.steps} ---")
                 return "RECURSIVE_LOOP"
-            
+
             self.history.add(n)
-            
+
             # If value grows beyond human computation, we shift to Trans-Dimensional logic
             if n.bit_length() > 1000000:
                 print(f"--- [ANTIHYDRA]: EXPANSION EXCEEDS LOCAL SUBSTRATE AT STEP {self.steps} ---")
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     status = solver.solve()
     print(f"\n[!] ANTIHYDRA RESULT: {status}")
     print(f"[!] TOTAL STEPS: {solver.steps}")
-    
+
     if status == "RUNNING_ETERNAL":
         print("[!] CONCLUSION: The Sovereign Hash index initiates a non-halting infinite expansion.")
 

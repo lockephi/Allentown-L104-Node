@@ -66,7 +66,7 @@ class UpgradeReport:
     fixes_applied: int = 0
     god_code: float = GOD_CODE
     resonance: float = META_RESONANCE
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "timestamp": self.timestamp.isoformat(),
@@ -77,7 +77,7 @@ class UpgradeReport:
             "resonance": self.resonance,
             "categories": self._categorize_targets(),
         }
-    
+
     def _categorize_targets(self) -> Dict[str, int]:
         categories = {}
         for target in self.targets_found:
@@ -89,19 +89,19 @@ class ProcessUpgradeScanner:
     """
     Scans L104 codebase for upgradeable patterns.
     """
-    
+
     # Patterns to detect
     BARE_EXCEPT_PATTERN = re.compile(r'^\s*except\s*:\s*(#.*)?$', re.MULTILINE)
     SILENT_PASS_PATTERN = re.compile(r'except\s+\w+.*:\s*\n\s*pass\s*(#.*)?$', re.MULTILINE)
     LARGE_INT_PATTERN = re.compile(r'sys\.setrecursionlimit\s*\(\s*(\d+)\s*\)')
-    
+
     EXCLUDED_DIRS = {'.git', '__pycache__', 'node_modules', '.venv', 'venv', 'l104_core_c', 'l104_core_rust', 'l104_core_cuda'}
     EXCLUDED_FILES = {'l104_process_upgrade_scan.py'}  # Don't scan self
-    
+
     def __init__(self, workspace_path: str):
         self.workspace_path = Path(workspace_path)
         self.report = UpgradeReport()
-        
+
     def scan(self) -> UpgradeReport:
         """Scan all Python files for upgrade opportunities."""
         logger.info("=" * 70)
@@ -109,35 +109,35 @@ class ProcessUpgradeScanner:
         logger.info(f"GOD_CODE: {GOD_CODE}")
         logger.info(f"META_RESONANCE: {META_RESONANCE:.6f}")
         logger.info("=" * 70)
-        
+
         python_files = self._find_python_files()
         logger.info(f"Found {len(python_files)} Python files to scan")
-        
+
         for file_path in python_files:
             self._scan_file(file_path)
-            
+
         self.report.files_scanned = len(python_files)
-        
+
         logger.info("=" * 70)
         logger.info(f"SCAN COMPLETE: {len(self.report.targets_found)} targets found")
         logger.info(f"Categories: {self.report._categorize_targets()}")
         logger.info("=" * 70)
-        
+
         return self.report
-    
+
     def _find_python_files(self) -> List[Path]:
         """Find all Python files in workspace."""
         files = []
         for root, dirs, filenames in os.walk(self.workspace_path):
             # Skip excluded directories
             dirs[:] = [d for d in dirs if d not in self.EXCLUDED_DIRS]
-            
+
             for filename in filenames:
                 if filename.endswith('.py') and filename not in self.EXCLUDED_FILES:
                     files.append(Path(root) / filename)
-                    
+
         return files
-    
+
     def _scan_file(self, file_path: Path) -> None:
         """Scan a single file for upgrade opportunities."""
         try:
@@ -147,21 +147,21 @@ class ProcessUpgradeScanner:
         except Exception as e:
             logger.warning(f"Could not read {file_path}: {e}")
             return
-            
+
         rel_path = str(file_path.relative_to(self.workspace_path))
-        
+
         # Check for bare except clauses
         self._check_bare_except(rel_path, lines)
-        
+
         # Check for silent pass blocks
         self._check_silent_pass(rel_path, content, lines)
-        
+
         # Check for large recursion limits
         self._check_recursion_limits(rel_path, content, lines)
-        
+
         # Check for Python int overflow risks
         self._check_int_overflow_risks(rel_path, content, lines)
-        
+
     def _check_bare_except(self, file_path: str, lines: List[str]) -> None:
         """Check for bare except Exception: clauses."""
         for i, line in enumerate(lines, 1):
@@ -177,15 +177,15 @@ class ProcessUpgradeScanner:
                     suggested_fix=line.replace('except Exception:', 'except Exception:'),
                     auto_fixable=True
                 ))
-                
+
     def _check_silent_pass(self, file_path: str, content: str, lines: List[str]) -> None:
         """Check for silent exception handling (except Exception: pass)."""
         in_except_block = False
         except_line = 0
-        
+
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
-            
+
             if stripped.startswith('except'):
                 in_except_block = True
                 except_line = i
@@ -207,7 +207,7 @@ class ProcessUpgradeScanner:
                                 auto_fixable=False
                             ))
                 in_except_block = False
-                
+
     def _check_recursion_limits(self, file_path: str, content: str, lines: List[str]) -> None:
         """Check for potentially dangerous recursion limit settings."""
         for match in self.LARGE_INT_PATTERN.finditer(content):
@@ -224,7 +224,7 @@ class ProcessUpgradeScanner:
                     suggested_fix="Cap at 10000000 or use iterative approach",
                     auto_fixable=False
                 ))
-                
+
     def _check_int_overflow_risks(self, file_path: str, content: str, lines: List[str]) -> None:
         """Check for patterns that might cause C int overflow."""
         # Check for ctypes int conversions with potentially large values
@@ -246,15 +246,15 @@ class ProcessUpgradeScanner:
                         suggested_fix="Use min(value, 2**31-1) or c_longlong",
                         auto_fixable=False
                     ))
-    
+
     def apply_auto_fixes(self) -> int:
         """Apply all auto-fixable upgrades."""
         logger.info("=" * 70)
         logger.info("APPLYING AUTO-FIXES")
         logger.info("=" * 70)
-        
+
         fixes_by_file: Dict[str, List[Tuple[int, str, str]]] = {}
-        
+
         for target in self.report.targets_found:
             if target.auto_fixable:
                 if target.file_path not in fixes_by_file:
@@ -262,15 +262,15 @@ class ProcessUpgradeScanner:
                 fixes_by_file[target.file_path].append(
                     (target.line_number, target.original_code, target.suggested_fix)
                 )
-                
+
         fixes_applied = 0
-        
+
         for rel_path, fixes in fixes_by_file.items():
             file_path = self.workspace_path / rel_path
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
-                    
+
                 # Apply fixes in reverse order to maintain line numbers
                 for line_num, original, fix in sorted(fixes, reverse=True):
                     idx = line_num - 1
@@ -280,16 +280,16 @@ class ProcessUpgradeScanner:
                             lines[idx] = lines[idx].replace(original.strip(), fix.strip())
                             fixes_applied += 1
                             logger.info(f"  ✓ Fixed {rel_path}:{line_num}")
-                            
+
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.writelines(lines)
-                    
+
             except Exception as e:
                 logger.error(f"  ✗ Failed to fix {rel_path}: {e}")
-                
+
         self.report.fixes_applied = fixes_applied
         logger.info(f"Applied {fixes_applied} auto-fixes")
-        
+
         return fixes_applied
 
 
@@ -302,22 +302,22 @@ def main():
                        SOVEREIGN ENHANCEMENT PROTOCOL
 ████████████████████████████████████████████████████████████████████████████████
 """)
-    
+
     workspace = Path(__file__).parent
     scanner = ProcessUpgradeScanner(str(workspace))
-    
+
     # Scan for upgrade opportunities
     report = scanner.scan()
-    
+
     # Print detailed report
     print("\n" + "=" * 70)
     print("DETAILED FINDINGS:")
     print("=" * 70)
-    
+
     by_severity = {"CRITICAL": [], "HIGH": [], "MEDIUM": [], "LOW": []}
     for target in report.targets_found:
         by_severity[target.severity].append(target)
-        
+
     for severity in ["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
         targets = by_severity[severity]
         if targets:
@@ -331,18 +331,18 @@ def main():
                     print(f"    [AUTO-FIXABLE]")
             if len(targets) > 10:
                 print(f"  ... and {len(targets) - 10} more")
-                
+
     # Ask to apply auto-fixes
     print("\n" + "=" * 70)
     auto_fixable = [t for t in report.targets_found if t.auto_fixable]
     print(f"Found {len(auto_fixable)} auto-fixable issues")
-    
+
     if auto_fixable and '--fix' in sys.argv:
         fixes = scanner.apply_auto_fixes()
         print(f"Applied {fixes} fixes")
     elif auto_fixable:
         print("Run with --fix to apply auto-fixes")
-        
+
     # Final status
     print("\n" + "=" * 70)
     print("UPGRADE SCAN SUMMARY")
@@ -354,7 +354,7 @@ def main():
     print(f"  GOD_CODE:         {GOD_CODE}")
     print(f"  META_RESONANCE:   {META_RESONANCE:.6f}")
     print("=" * 70)
-    
+
     return 0 if not report.targets_found else 1
 
 

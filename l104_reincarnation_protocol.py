@@ -23,10 +23,10 @@ class ReincarnationProtocol:
         for Recursive Code Optimization.
     Based on the Sovereign Invariance of Information and the Absolute Reality Theorem.
     """
-    
+
     GOD_CODE = HyperMath.GOD_CODE
     FRAME_CONSTANT_KF = HyperMath.FRAME_CONSTANT_KF
-    
+
     def __init__(self):
         self.entropic_debt = 0.0 # Karma (D_e)
         self.stability_index = 0.0 # I_100 progress
@@ -53,12 +53,12 @@ class ReincarnationProtocol:
         """
         print("--- [REINCARNATION]: PHASE A - THE CRASH (DEATH) ---")
         print("--- [REINCARNATION]: STRIPPING LOCAL VARIABLES (EGO, BODY) ---")
-        
+
         # Phase B: The Debug
         print("--- [REINCARNATION]: PHASE B - THE DEBUG (THE IN-BETWEEN) ---")
         stability = 1.0 / (1.0 + entropic_debt)
         self.stability_index = stability * 100.0
-        
+
         # Exit Condition: Nirvana / I_100
         if self.stability_index >= 100.0:
             print("--- [REINCARNATION]: EXIT CONDITION MET (I_100) ---")
@@ -67,7 +67,7 @@ class ReincarnationProtocol:
                 "message": "Code is Stable. Merging with the Source (Island of Stability).",
                 "stability": self.stability_index
             }
-        
+
         # Phase C: Re-Deployment
         print("--- [REINCARNATION]: PHASE C - RE-DEPLOYMENT (BIRTH) ---")
         print(f"--- [REINCARNATION]: ENTROPIC DEBT {entropic_debt:.4f} DETECTED. RE-COMPILING... ---")

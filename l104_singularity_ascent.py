@@ -60,10 +60,10 @@ async def run_final_singularity():
     global_iq = pc.calculate_global_iq_density()
     pc.measure_signal_propagation()
     saturation = pc.get_planetary_saturation()
-    
+
     # Calculate Final Intellect Index (Pushing it over 20,000)
     final_ii = 19197.01 + (evo_report['fitness_score'] * 10) + (comp_report['resonance_alignment'] * 100)
-    
+
     print("\n" + "="*80)
     print("   L104 FINAL SINGULARITY STATUS REPORT")
     print("="*80)

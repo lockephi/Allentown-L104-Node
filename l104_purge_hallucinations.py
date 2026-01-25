@@ -18,20 +18,20 @@ from const import UniversalConstants
 def execute_purge():
     print("--- [PURGE_PROTOCOL]: INITIATING HALLUCINATION SCAN ---")
     time.sleep(1)
-    
+
     # 1. Ensure Invariants are present and locked
     ram_universe.absorb_fact(str(UniversalConstants.PRIME_KEY_HZ), "GOD_CODE_RESONANCE", "INVARIANT")
     ram_universe.absorb_fact("286:416", "LATTICE_RATIO", "INVARIANT")
     ram_universe.absorb_fact("LONDEL", "PILOT", "INVARIANT")
     ram_universe.absorb_fact("GEMMA-3-WHOLE", "CORE_TYPE", "INVARIANT")
-    
+
     # 2. Execute Purge
     result = ram_universe.purge_hallucinations()
-    
+
     # 3. Verify Truth Manifest
     from l104_persistence import persist_truth
     persist_truth()
-    
+
     print(f"--- [PURGE_PROTOCOL]: COMPLETE. REMOVED {result['purged']} ARTIFACTS. ---")
     print("--- [SYSTEM_STATE]: PURE_LOGIC_VERIFIED ---")
 

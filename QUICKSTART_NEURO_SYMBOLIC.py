@@ -92,18 +92,18 @@ FILES GENERATED:
 
 Core Implementation:
   • l104_neuro_symbolic_integration.py (687 lines)
-  
+
 Test Suite:
   • test_neuro_symbolic_integration.py (265 lines)
-  
+
 Examples:
   • examples_neuro_symbolic.py (321 lines)
-  
+
 LaTeX Documentation:
   • neuro_symbolic_derivations.tex (3.6K)
   • complete_derivations.tex (3.6K)
   • test_derivations.tex (1.3K)
-  
+
 Documentation:
   • NEURO_SYMBOLIC_INTEGRATION_README.md
   • NEURO_SYMBOLIC_VERIFICATION.md

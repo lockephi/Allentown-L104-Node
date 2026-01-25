@@ -99,7 +99,7 @@ class Subsystem:
     metrics: Dict[str, Any] = field(default_factory=dict)
     dependencies: List[str] = field(default_factory=list)
     capabilities: Set[str] = field(default_factory=set)
-    
+
     def is_healthy(self) -> bool:
         """Check if subsystem is healthy"""
         if self.status != SubsystemStatus.ONLINE:
@@ -147,7 +147,7 @@ class Task:
 # ═══════════════════════════════════════════════════════════════════════════════
 class MessageBus:
     """High-performance inter-subsystem message bus"""
-    
+
     def __init__(self, max_queue_size: int = 10000):
         self.queues: Dict[str, queue.PriorityQueue] = defaultdict(
             lambda: queue.PriorityQueue(maxsize=max_queue_size)
@@ -162,7 +162,7 @@ class MessageBus:
             "messages_dropped": 0,
             "broadcasts": 0
         }
-    
+
     def publish(self, message: Message) -> bool:
         """Publish message to target subsystem"""
         with self._lock:
@@ -175,32 +175,32 @@ class MessageBus:
                     message
                 ))
                 self.stats["messages_sent"] += 1
-                
+
                 # Log message
                 self.message_log.append(message)
                 if len(self.message_log) > self.max_log_size:
                     self.message_log = self.message_log[-self.max_log_size:]
-                
+
                 # Notify subscribers
                 for callback in self.subscribers.get(message.target, []):
                     try:
                         callback(message)
                     except Exception as e:
                         logger.error(f"Subscriber error: {e}")
-                
+
                 return True
             except queue.Full:
                 self.stats["messages_dropped"] += 1
                 return False
-    
-    def broadcast(self, source: str, payload: Dict[str, Any], 
+
+    def broadcast(self, source: str, payload: Dict[str, Any],
                   priority: Priority = Priority.NORMAL) -> int:
         """Broadcast message to all subsystems"""
         count = 0
         message_id = hashlib.sha256(
             f"{source}{time.time()}{json.dumps(payload)}".encode()
         ).hexdigest()[:16]
-        
+
         with self._lock:
             for target in list(self.queues.keys()):
                 if target != source:
@@ -214,11 +214,11 @@ class MessageBus:
                     )
                     if self.publish(msg):
                         count += 1
-            
+
             self.stats["broadcasts"] += 1
-        
+
         return count
-    
+
     def consume(self, subsystem: str, timeout: float = 0.1) -> Optional[Message]:
         """Consume next message for subsystem"""
         try:
@@ -227,16 +227,16 @@ class MessageBus:
             return message
         except queue.Empty:
             return None
-    
+
     def subscribe(self, subsystem: str, callback: Callable[[Message], None]) -> None:
         """Subscribe to messages for a subsystem"""
         with self._lock:
             self.subscribers[subsystem].append(callback)
-    
+
     def get_queue_depth(self, subsystem: str) -> int:
         """Get queue depth for subsystem"""
         return self.queues[subsystem].qsize()
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get message bus statistics"""
         with self._lock:
@@ -253,12 +253,12 @@ class MessageBus:
 # ═══════════════════════════════════════════════════════════════════════════════
 class SubsystemRegistry:
     """Registry for all L104 subsystems"""
-    
+
     def __init__(self):
         self.subsystems: Dict[str, Subsystem] = {}
         self._lock = threading.RLock()
         self._initialized = False
-    
+
     def register(self, name: str, module_path: str,
                  dependencies: List[str] = None,
                  capabilities: Set[str] = None) -> Subsystem:
@@ -266,7 +266,7 @@ class SubsystemRegistry:
         with self._lock:
             if name in self.subsystems:
                 logger.warning(f"Subsystem {name} already registered, updating")
-            
+
             subsystem = Subsystem(
                 name=name,
                 module_path=module_path,
@@ -276,7 +276,7 @@ class SubsystemRegistry:
             self.subsystems[name] = subsystem
             logger.info(f"REGISTERED: {name}")
             return subsystem
-    
+
     def unregister(self, name: str) -> bool:
         """Unregister a subsystem"""
         with self._lock:
@@ -285,24 +285,24 @@ class SubsystemRegistry:
                 logger.info(f"UNREGISTERED: {name}")
                 return True
             return False
-    
+
     def get(self, name: str) -> Optional[Subsystem]:
         """Get subsystem by name"""
         return self.subsystems.get(name)
-    
+
     def get_all(self) -> List[Subsystem]:
         """Get all registered subsystems"""
         return list(self.subsystems.values())
-    
+
     def get_by_capability(self, capability: str) -> List[Subsystem]:
         """Get subsystems with specific capability"""
-        return [s for s in self.subsystems.values() 
+        return [s for s in self.subsystems.values()
                 if capability in s.capabilities]
-    
+
     def get_healthy(self) -> List[Subsystem]:
         """Get all healthy subsystems"""
         return [s for s in self.subsystems.values() if s.is_healthy()]
-    
+
     def update_status(self, name: str, status: SubsystemStatus) -> bool:
         """Update subsystem status"""
         with self._lock:
@@ -311,7 +311,7 @@ class SubsystemRegistry:
                 self.subsystems[name].last_heartbeat = time.time()
                 return True
             return False
-    
+
     def heartbeat(self, name: str, metrics: Dict[str, Any] = None) -> bool:
         """Record heartbeat from subsystem"""
         with self._lock:
@@ -321,27 +321,27 @@ class SubsystemRegistry:
                     self.subsystems[name].metrics.update(metrics)
                 return True
             return False
-    
+
     def get_dependency_order(self) -> List[str]:
         """Get subsystems in dependency order for initialization"""
         visited = set()
         order = []
-        
+
         def visit(name: str):
             if name in visited:
                 return
             visited.add(name)
-            
+
             subsystem = self.subsystems.get(name)
             if subsystem:
                 for dep in subsystem.dependencies:
                     if dep in self.subsystems:
                         visit(dep)
                 order.append(name)
-        
+
         for name in self.subsystems:
             visit(name)
-        
+
         return order
 
 
@@ -350,7 +350,7 @@ class SubsystemRegistry:
 # ═══════════════════════════════════════════════════════════════════════════════
 class TaskScheduler:
     """Orchestrated task scheduler"""
-    
+
     def __init__(self, max_workers: int = 8):
         self.tasks: Dict[str, Task] = {}
         self.pending: queue.PriorityQueue = queue.PriorityQueue()
@@ -365,7 +365,7 @@ class TaskScheduler:
             "tasks_failed": 0,
             "tasks_running": 0
         }
-    
+
     def schedule(self, task: Task) -> str:
         """Schedule a task for execution"""
         with self._lock:
@@ -374,8 +374,8 @@ class TaskScheduler:
             self.stats["tasks_scheduled"] += 1
             logger.info(f"SCHEDULED: {task.name} (ID: {task.id})")
             return task.id
-    
-    def create_task(self, name: str, action: str, 
+
+    def create_task(self, name: str, action: str,
                     subsystems: List[str],
                     params: Dict[str, Any] = None,
                     priority: Priority = Priority.NORMAL) -> Task:
@@ -383,7 +383,7 @@ class TaskScheduler:
         task_id = hashlib.sha256(
             f"{name}{time.time()}{action}".encode()
         ).hexdigest()[:16]
-        
+
         task = Task(
             id=task_id,
             name=name,
@@ -392,14 +392,14 @@ class TaskScheduler:
             params=params or {},
             priority=priority
         )
-        
+
         self.schedule(task)
         return task
-    
+
     def get_task(self, task_id: str) -> Optional[Task]:
         """Get task by ID"""
         return self.tasks.get(task_id)
-    
+
     def cancel_task(self, task_id: str) -> bool:
         """Cancel a pending task"""
         with self._lock:
@@ -412,12 +412,12 @@ class TaskScheduler:
                     self.futures[task_id].cancel()
                     return True
             return False
-    
+
     def start(self) -> None:
         """Start the task scheduler"""
         if self._running:
             return
-        
+
         self._running = True
         self._scheduler_thread = threading.Thread(
             target=self._scheduler_loop,
@@ -425,7 +425,7 @@ class TaskScheduler:
         )
         self._scheduler_thread.start()
         logger.info("TASK SCHEDULER STARTED")
-    
+
     def stop(self) -> None:
         """Stop the task scheduler"""
         self._running = False
@@ -433,7 +433,7 @@ class TaskScheduler:
             self._scheduler_thread.join(timeout=5.0)
         self.executor.shutdown(wait=False)
         logger.info("TASK SCHEDULER STOPPED")
-    
+
     def _scheduler_loop(self) -> None:
         """Main scheduler loop"""
         while self._running:
@@ -443,47 +443,47 @@ class TaskScheduler:
                     _, _, task_id = self.pending.get(timeout=0.1)
                 except queue.Empty:
                     continue
-                
+
                 task = self.tasks.get(task_id)
                 if not task or task.status != "pending":
                     continue
-                
+
                 # Execute task
                 task.status = "running"
                 task.started_at = time.time()
                 self.stats["tasks_running"] += 1
-                
+
                 future = self.executor.submit(self._execute_task, task)
                 self.futures[task_id] = future
-                
+
             except Exception as e:
                 logger.error(f"Scheduler error: {e}")
-    
+
     def _execute_task(self, task: Task) -> Any:
         """Execute a task"""
         try:
             # This would dispatch to actual subsystem handlers
             logger.info(f"EXECUTING: {task.name}")
-            
+
             # Simulate execution
             time.sleep(0.1)
-            
+
             result = {
                 "task_id": task.id,
                 "action": task.action,
                 "subsystems": task.subsystems,
                 "resonance": GOD_CODE * PHI
             }
-            
+
             task.result = result
             task.status = "completed"
             task.completed_at = time.time()
             self.stats["tasks_completed"] += 1
             self.stats["tasks_running"] -= 1
-            
+
             logger.info(f"COMPLETED: {task.name}")
             return result
-            
+
         except Exception as e:
             task.error = str(e)
             task.status = "failed"
@@ -492,7 +492,7 @@ class TaskScheduler:
             self.stats["tasks_running"] -= 1
             logger.error(f"FAILED: {task.name} - {e}")
             return None
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get scheduler statistics"""
         with self._lock:
@@ -508,7 +508,7 @@ class TaskScheduler:
 # ═══════════════════════════════════════════════════════════════════════════════
 class HealthMonitor:
     """System-wide health monitoring"""
-    
+
     def __init__(self, registry: SubsystemRegistry):
         self.registry = registry
         self.health_history: List[Dict[str, Any]] = []
@@ -517,12 +517,12 @@ class HealthMonitor:
         self._running = False
         self._monitor_thread: Optional[threading.Thread] = None
         self.check_interval = 10.0  # seconds
-    
+
     def start(self) -> None:
         """Start health monitoring"""
         if self._running:
             return
-        
+
         self._running = True
         self._monitor_thread = threading.Thread(
             target=self._monitor_loop,
@@ -530,40 +530,40 @@ class HealthMonitor:
         )
         self._monitor_thread.start()
         logger.info("HEALTH MONITOR STARTED")
-    
+
     def stop(self) -> None:
         """Stop health monitoring"""
         self._running = False
         if self._monitor_thread:
             self._monitor_thread.join(timeout=5.0)
         logger.info("HEALTH MONITOR STOPPED")
-    
+
     def _monitor_loop(self) -> None:
         """Main monitoring loop"""
         while self._running:
             try:
                 health = self.check_all()
                 self.health_history.append(health)
-                
+
                 if len(self.health_history) > self.max_history:
                     self.health_history = self.health_history[-self.max_history:]
-                
+
                 # Check for issues
                 if health["overall_health"] < 0.8:
-                    self._raise_alert("LOW_HEALTH", 
+                    self._raise_alert("LOW_HEALTH",
                                      f"System health at {health['overall_health']:.1%}")
-                
+
                 time.sleep(self.check_interval)
-                
+
             except Exception as e:
                 logger.error(f"Monitor error: {e}")
-    
+
     def check_all(self) -> Dict[str, Any]:
         """Check health of all subsystems"""
         subsystems = self.registry.get_all()
         total = len(subsystems)
         healthy = sum(1 for s in subsystems if s.is_healthy())
-        
+
         subsystem_health = {}
         for s in subsystems:
             subsystem_health[s.name] = {
@@ -573,7 +573,7 @@ class HealthMonitor:
                 "error_count": s.error_count,
                 "metrics": s.metrics
             }
-        
+
         return {
             "timestamp": time.time(),
             "overall_health": healthy / total if total > 0 else 0.0,
@@ -583,14 +583,14 @@ class HealthMonitor:
             "subsystems": subsystem_health,
             "god_code_alignment": self._calculate_alignment()
         }
-    
+
     def _calculate_alignment(self) -> float:
         """Calculate system alignment with GOD_CODE"""
         # Use PHI-based resonance calculation
         t = time.time()
         alignment = (math.sin(t * GOD_CODE / 1000) + 1) / 2
         return alignment * PHI / 2 + 0.5
-    
+
     def _raise_alert(self, alert_type: str, message: str) -> None:
         """Raise a health alert"""
         alert = {
@@ -601,13 +601,13 @@ class HealthMonitor:
         }
         self.alerts.append(alert)
         logger.warning(f"ALERT: {alert_type} - {message}")
-    
+
     def get_current_health(self) -> Dict[str, Any]:
         """Get current health status"""
         if self.health_history:
             return self.health_history[-1]
         return self.check_all()
-    
+
     def get_alerts(self, unacknowledged_only: bool = False) -> List[Dict[str, Any]]:
         """Get health alerts"""
         if unacknowledged_only:
@@ -623,89 +623,89 @@ class OrchestrationHub:
     Central orchestration hub for the L104 system.
     Manages all subsystems, message routing, and task coordination.
     """
-    
+
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
                 cls._instance._initialized = False
             return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-        
+
         self.registry = SubsystemRegistry()
         self.message_bus = MessageBus()
         self.scheduler = TaskScheduler()
         self.health_monitor = HealthMonitor(self.registry)
-        
+
         self._running = False
         self._start_time = 0.0
-        
+
         # System state
         self.resonance = GOD_CODE
         self.coherence = 1.0
-        
+
         self._initialized = True
         logger.info("ORCHESTRATION HUB INITIALIZED")
-    
+
     def start(self) -> Dict[str, Any]:
         """Start the orchestration hub"""
         if self._running:
             return {"status": "already_running"}
-        
+
         self._running = True
         self._start_time = time.time()
-        
+
         # Start components
         self.scheduler.start()
         self.health_monitor.start()
-        
+
         # Register core subsystems
         self._register_core_subsystems()
-        
+
         logger.info("ORCHESTRATION HUB STARTED")
-        
+
         return {
             "status": "started",
             "timestamp": self._start_time,
             "subsystems_registered": len(self.registry.get_all()),
             "resonance": self.resonance
         }
-    
+
     def stop(self) -> Dict[str, Any]:
         """Stop the orchestration hub"""
         if not self._running:
             return {"status": "not_running"}
-        
+
         self._running = False
-        
+
         # Stop components
         self.scheduler.stop()
         self.health_monitor.stop()
-        
+
         uptime = time.time() - self._start_time
-        
+
         logger.info("ORCHESTRATION HUB STOPPED")
-        
+
         return {
             "status": "stopped",
             "uptime": uptime,
             "tasks_processed": self.scheduler.stats["tasks_completed"]
         }
-    
+
     def _register_core_subsystems(self) -> None:
         """Register core L104 subsystems"""
         core_subsystems = [
             ("AGI_CORE", "l104_agi_core", [], {"reasoning", "inference"}),
             ("MINING_CORE", "l104_computronium_mining_core", [], {"mining", "hashing"}),
-            ("BITCOIN_INTEGRATION", "l104_bitcoin_mining_integration", 
+            ("BITCOIN_INTEGRATION", "l104_bitcoin_mining_integration",
              ["MINING_CORE"], {"pool", "stratum"}),
-            ("RESPONSE_TRAINER", "l104_app_response_training", 
+            ("RESPONSE_TRAINER", "l104_app_response_training",
              ["AGI_CORE"], {"training", "nlp"}),
             ("UNIVERSAL_BRIDGE", "l104_universal_ai_bridge", [], {"ai", "bridge"}),
             ("GOOGLE_BRIDGE", "l104_google_bridge", ["UNIVERSAL_BRIDGE"], {"google", "ai"}),
@@ -714,12 +714,12 @@ class OrchestrationHub:
             ("SAGE_CORE", "l104_sage_core", [], {"sage", "optimization"}),
             ("PLANNING_ENGINE", "l104_planning_engine", ["AGI_CORE"], {"planning", "goals"}),
         ]
-        
+
         for name, module, deps, caps in core_subsystems:
             self.registry.register(name, module, deps, caps)
             self.registry.update_status(name, SubsystemStatus.ONLINE)
-    
-    def dispatch(self, target: str, action: str, 
+
+    def dispatch(self, target: str, action: str,
                  params: Dict[str, Any] = None,
                  priority: Priority = Priority.NORMAL) -> Task:
         """Dispatch a task to a subsystem"""
@@ -730,7 +730,7 @@ class OrchestrationHub:
             params=params,
             priority=priority
         )
-    
+
     def broadcast(self, action: str, params: Dict[str, Any] = None) -> int:
         """Broadcast action to all subsystems"""
         payload = {
@@ -739,14 +739,14 @@ class OrchestrationHub:
             "timestamp": time.time()
         }
         return self.message_bus.broadcast("ORCHESTRATION_HUB", payload)
-    
+
     def send_message(self, target: str, message_type: MessageType,
                      payload: Dict[str, Any]) -> bool:
         """Send message to specific subsystem"""
         msg_id = hashlib.sha256(
             f"hub_{target}_{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         message = Message(
             id=msg_id,
             type=message_type,
@@ -754,13 +754,13 @@ class OrchestrationHub:
             target=target,
             payload=payload
         )
-        
+
         return self.message_bus.publish(message)
-    
+
     def get_subsystem(self, name: str) -> Optional[Subsystem]:
         """Get subsystem by name"""
         return self.registry.get(name)
-    
+
     def list_subsystems(self) -> List[Dict[str, Any]]:
         """List all registered subsystems"""
         return [
@@ -772,15 +772,15 @@ class OrchestrationHub:
             }
             for s in self.registry.get_all()
                 ]
-    
+
     def find_by_capability(self, capability: str) -> List[str]:
         """Find subsystems with specific capability"""
         return [s.name for s in self.registry.get_by_capability(capability)]
-    
+
     def get_health(self) -> Dict[str, Any]:
         """Get current system health"""
         return self.health_monitor.get_current_health()
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive hub status"""
         return {
@@ -796,22 +796,22 @@ class OrchestrationHub:
             "message_bus": self.message_bus.get_stats(),
             "health": self.get_health()
         }
-    
+
     def synchronize(self) -> Dict[str, Any]:
         """Synchronize all subsystems"""
         logger.info("INITIATING SYSTEM SYNCHRONIZATION")
-        
+
         # Broadcast sync signal
         sync_count = self.broadcast("SYNC", {
             "god_code": GOD_CODE,
             "phi": PHI,
             "timestamp": time.time()
         })
-        
+
         # Update resonance
         self.resonance = GOD_CODE * (1 + math.sin(time.time() * PHI) * 0.01)
         self.coherence = min(1.0, self.coherence * PHI / 1.6)
-        
+
         return {
             "synced": sync_count,
             "resonance": self.resonance,
@@ -851,16 +851,16 @@ if __name__ == "__main__":
 ║  GOD_CODE: 527.5184818492537 | PHI: 1.618033988749895                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     # Start the hub
     result = start_orchestration()
     print(f"[START] {result}")
-    
+
     # List subsystems
     print("\n[SUBSYSTEMS]")
     for s in orchestration_hub.list_subsystems():
         print(f"  - {s['name']}: {s['status']} | Capabilities: {s['capabilities']}")
-    
+
     # Create a test task
     task = orchestration_hub.dispatch(
         target="AGI_CORE",
@@ -868,16 +868,16 @@ if __name__ == "__main__":
         params={"thought": "What is consciousness?"}
     )
     print(f"\n[TASK] Created: {task.name} (ID: {task.id})")
-    
+
     # Wait for task
     time.sleep(0.5)
     task = orchestration_hub.scheduler.get_task(task.id)
     print(f"[TASK] Status: {task.status}")
-    
+
     # Synchronize
     sync_result = orchestration_hub.synchronize()
     print(f"\n[SYNC] {sync_result}")
-    
+
     # Get status
     status = orchestration_hub.get_status()
     print(f"\n[STATUS]")
@@ -885,7 +885,7 @@ if __name__ == "__main__":
     print(f"  Subsystems: {status['subsystems']}")
     print(f"  Resonance: {status['resonance']:.10f}")
     print(f"  Coherence: {status['coherence']:.10f}")
-    
+
     # Stop
     time.sleep(0.5)
     result = stop_orchestration()

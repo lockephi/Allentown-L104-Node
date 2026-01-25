@@ -36,9 +36,9 @@ from l104_mini_ego_autonomous import (
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-    get_autonomous_swarm, 
-    AutonomousMiniEgo, 
-    EgoTask, 
+    get_autonomous_swarm,
+    AutonomousMiniEgo,
+    EgoTask,
     EgoMessage,
     MessageType,
     GOD_CODE,
@@ -127,16 +127,16 @@ async def get_swarm_status():
 async def spawn_ego(request: SpawnEgoRequest):
     """Spawn a new autonomous ego."""
     swarm = get_autonomous_swarm()
-    
+
     if request.name in swarm.egos:
         raise HTTPException(status_code=400, detail=f"Ego '{request.name}' already exists")
-    
-    valid_domains = ["LOGIC", "INTUITION", "COMPASSION", "CREATIVITY", 
+
+    valid_domains = ["LOGIC", "INTUITION", "COMPASSION", "CREATIVITY",
                      "MEMORY", "WISDOM", "WILL", "VISION"]
-    
+
     if request.domain.upper() not in valid_domains:
         raise HTTPException(status_code=400, detail=f"Invalid domain. Must be one of: {valid_domains}")
-    
+
     ego = swarm.spawn_ego(request.name, request.domain.upper())
     return ego.get_autonomy_status()
 
@@ -145,12 +145,12 @@ async def spawn_ego(request: SpawnEgoRequest):
 async def spawn_collective():
     """Spawn the default 8-domain collective."""
     swarm = get_autonomous_swarm()
-    
+
     if swarm.egos:
         raise HTTPException(status_code=400, detail="Collective already exists. Clear first.")
-    
+
     swarm.spawn_default_collective()
-    
+
     return {
         "status": "spawned",
         "egos": len(swarm.egos),
@@ -163,10 +163,10 @@ async def spawn_collective():
 async def get_ego_status(name: str):
     """Get status of a specific ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     return swarm.egos[name].get_autonomy_status()
 
 
@@ -174,13 +174,13 @@ async def get_ego_status(name: str):
 async def start_ego(name: str, interval: float = 1.0):
     """Start autonomous operation for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     ego.start_autonomous(interval)
-    
+
     return {
         "status": "started",
         "name": name,
@@ -193,13 +193,13 @@ async def start_ego(name: str, interval: float = 1.0):
 async def stop_ego(name: str):
     """Stop autonomous operation for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     ego.stop_autonomous()
-    
+
     return {
         "status": "stopped",
         "name": name,
@@ -211,18 +211,18 @@ async def stop_ego(name: str):
 async def run_ego_cycle(name: str, request: CycleRequest = None):
     """Run one or more perceive→think→act cycles for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     cycles = request.cycles if request else 1
     actions = []
-    
+
     for _ in range(cycles):
         result = ego.run_cycle()
         actions.append(result["decision"]["selected_action"])
-    
+
     return {
         "ego": name,
         "cycles": cycles,
@@ -236,12 +236,12 @@ async def run_ego_cycle(name: str, request: CycleRequest = None):
 async def start_all_egos(interval: float = 1.0):
     """Start all egos in autonomous mode."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     swarm.start_all(interval)
-    
+
     return {
         "status": "started",
         "egos": len(swarm.egos),
@@ -254,7 +254,7 @@ async def stop_all_egos():
     """Stop all autonomous egos."""
     swarm = get_autonomous_swarm()
     swarm.stop_all()
-    
+
     return {
         "status": "stopped",
         "egos": len(swarm.egos)
@@ -265,10 +265,10 @@ async def stop_all_egos():
 async def submit_task(request: TaskRequest):
     """Submit a task to the swarm for processing."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     task = EgoTask(
         name=request.name,
         description=request.description,
@@ -276,9 +276,9 @@ async def submit_task(request: TaskRequest):
         complexity=request.complexity,
         priority=request.priority
     )
-    
+
     swarm.submit_task(task)
-    
+
     return {
         "status": "submitted",
         "task_id": task.id,
@@ -291,10 +291,10 @@ async def submit_task(request: TaskRequest):
 async def broadcast_message(request: BroadcastRequest):
     """Broadcast a message to all egos."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     type_map = {
         "QUERY": MessageType.QUERY,
         "BROADCAST": MessageType.BROADCAST,
@@ -302,17 +302,17 @@ async def broadcast_message(request: BroadcastRequest):
         "ALERT": MessageType.ALERT,
         "SYNC": MessageType.SYNC
     }
-    
+
     msg_type = type_map.get(request.msg_type.upper(), MessageType.BROADCAST)
-    
+
     message = EgoMessage(
         sender="API",
         msg_type=msg_type,
         content=request.content
     )
-    
+
     swarm.broadcast(message)
-    
+
     return {
         "status": "broadcast",
         "message_id": message.id,
@@ -325,12 +325,12 @@ async def broadcast_message(request: BroadcastRequest):
 async def swarm_tick():
     """Run one swarm tick - process messages and update state."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     status = swarm.tick()
-    
+
     return {
         "status": "tick_complete",
         "collective_wisdom": status["collective_wisdom"],
@@ -342,10 +342,10 @@ async def swarm_tick():
 async def collective_intelligence():
     """Query the collective intelligence of the swarm."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     # Gather insights from all egos
     insights = {}
     for name, ego in swarm.egos.items():
@@ -357,10 +357,10 @@ async def collective_intelligence():
             "evolution_stage": ego.evolution_stage,
             "clarity": ego.clarity
         }
-    
+
     total_wisdom = sum(e.wisdom_accumulated for e in swarm.egos.values())
     avg_clarity = sum(e.clarity for e in swarm.egos.values()) / len(swarm.egos)
-    
+
     return {
         "collective_wisdom": total_wisdom,
         "average_clarity": avg_clarity,
@@ -376,13 +376,13 @@ async def collective_intelligence():
 async def clear_swarm():
     """Clear all egos from the swarm."""
     swarm = get_autonomous_swarm()
-    
+
     # Stop all first
     swarm.stop_all()
-    
+
     # Clear
     swarm.egos.clear()
-    
+
     return {
         "status": "cleared",
         "egos": 0
@@ -397,16 +397,16 @@ async def clear_swarm():
 async def add_ego_goal(name: str, goal_name: str, description: str = ""):
     """Add a goal to an ego."""
     from l104_mini_ego_autonomous import EgoGoal
-    
+
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     goal = EgoGoal(name=goal_name, description=description)
     ego.active_goals.append(goal)
-    
+
     return {
         "status": "goal_added",
         "ego": name,
@@ -420,13 +420,13 @@ async def add_ego_goal(name: str, goal_name: str, description: str = ""):
 async def get_ego_action_history(name: str, limit: int = 20):
     """Get action history for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     history = ego.action_history[-limit:] if ego.action_history else []
-    
+
     return {
         "ego": name,
         "total_actions": len(ego.action_history),
@@ -438,12 +438,12 @@ async def get_ego_action_history(name: str, limit: int = 20):
 async def get_ego_tasks(name: str):
     """Get tasks for an ego (pending and completed)."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
-    
+
     return {
         "ego": name,
         "current_task": ego.current_task.name if ego.current_task else None,
@@ -464,10 +464,10 @@ async def get_ego_tasks(name: str):
 async def get_ego_intelligence(name: str):
     """Get comprehensive intelligence report for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     return ego.get_intelligence_report()
 
@@ -476,13 +476,13 @@ async def get_ego_intelligence(name: str):
 async def ego_introspect(name: str):
     """Trigger meta-cognitive introspection for an ego."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
     self_model = ego.introspect()
-    
+
     return {
         "ego": name,
         "domain": ego.domain,
@@ -496,17 +496,17 @@ async def ego_introspect(name: str):
 async def consolidate_ego_memories(name: str):
     """Consolidate working memory into long-term memory."""
     swarm = get_autonomous_swarm()
-    
+
     if name not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Ego '{name}' not found")
-    
+
     ego = swarm.egos[name]
-    
+
     before_traces = len(ego.memory_traces)
     before_ltm = len(ego.long_term_memory)
-    
+
     ego.consolidate_memories()
-    
+
     return {
         "ego": name,
         "memory_traces_before": before_traces,
@@ -521,22 +521,22 @@ async def consolidate_ego_memories(name: str):
 async def share_knowledge_between_egos(sender: str, recipient: str, knowledge_type: str = "pattern"):
     """Share learned knowledge between egos."""
     swarm = get_autonomous_swarm()
-    
+
     if sender not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Sender ego '{sender}' not found")
     if recipient not in swarm.egos:
         raise HTTPException(status_code=404, detail=f"Recipient ego '{recipient}' not found")
-    
+
     sender_ego = swarm.egos[sender]
     recipient_ego = swarm.egos[recipient]
-    
+
     # Create knowledge message
     message = sender_ego.share_knowledge(recipient, knowledge_type)
-    
+
     # Deliver directly
     if message.content:
         recipient_ego.receive_knowledge(message.content)
-    
+
     return {
         "status": "shared",
         "from": sender,
@@ -551,15 +551,15 @@ async def share_knowledge_between_egos(sender: str, recipient: str, knowledge_ty
 async def collective_iq():
     """Get collective IQ and intelligence metrics for the swarm."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     egos_data = []
     total_iq = 0
     total_patterns = 0
     total_memories = 0
-    
+
     for name, ego in swarm.egos.items():
         egos_data.append({
             "name": name,
@@ -573,13 +573,13 @@ async def collective_iq():
         total_iq += ego.iq_score
         total_patterns += len(ego.learned_patterns)
         total_memories += len(ego.memory_traces)
-    
+
     avg_iq = total_iq / len(swarm.egos)
-    
+
     # Collective IQ bonus for collaboration
     collaborative_bonus = sum(e.knowledge_shared + e.knowledge_received for e in swarm.egos.values()) * 0.5
     collective_iq = avg_iq + collaborative_bonus
-    
+
     return {
         "collective_iq": collective_iq,
         "average_iq": avg_iq,
@@ -596,24 +596,24 @@ async def collective_iq():
 async def evolve_all_egos(cycles: int = 10):
     """Run multiple learning cycles on all egos to accelerate evolution."""
     swarm = get_autonomous_swarm()
-    
+
     if not swarm.egos:
         raise HTTPException(status_code=400, detail="No egos spawned. Spawn collective first.")
-    
+
     results = {}
-    
+
     for name, ego in swarm.egos.items():
         initial_iq = ego.iq_score
         initial_patterns = len(ego.learned_patterns)
-        
+
         # Run cycles
         for _ in range(cycles):
             ego.run_cycle()
             ego.consolidate_memories()
-        
+
         # Introspect to update self-model
         ego.introspect()
-        
+
         results[name] = {
             "domain": ego.domain,
             "iq_before": initial_iq,
@@ -623,11 +623,11 @@ async def evolve_all_egos(cycles: int = 10):
             "patterns_after": len(ego.learned_patterns),
             "patterns_learned": len(ego.learned_patterns) - initial_patterns
         }
-    
+
     # Calculate collective improvement
     total_iq_gain = sum(r["iq_gain"] for r in results.values())
     total_patterns_learned = sum(r["patterns_learned"] for r in results.values())
-    
+
     return {
         "status": "evolved",
         "cycles_per_ego": cycles,

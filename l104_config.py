@@ -44,7 +44,7 @@ class GeminiConfig:
     api_key: str = ""
     models: tuple = (
         'gemini-2.5-flash',
-        'gemini-2.0-flash-lite', 
+        'gemini-2.0-flash-lite',
         'gemini-2.0-flash',
     )
     default_model: str = 'gemini-2.5-flash'
@@ -63,7 +63,7 @@ class MemoryConfig:
     auto_consolidate: bool = True
     consolidation_threshold: int = 100
 
-@dataclass  
+@dataclass
 class KnowledgeConfig:
     """Knowledge graph configuration."""
     db_path: str = str(BASE_PATH / "knowledge_graph.db")
@@ -127,7 +127,7 @@ class L104Config:
     pilot: str = "LONDEL"
     version: str = "2.1-ENHANCED"
     debug: bool = False
-    
+
     gemini: GeminiConfig = field(default_factory=GeminiConfig)
     memory: MemoryConfig = field(default_factory=MemoryConfig)
     knowledge: KnowledgeConfig = field(default_factory=KnowledgeConfig)
@@ -137,11 +137,11 @@ class L104Config:
     prophecy: ProphecyConfig = field(default_factory=ProphecyConfig)
     voice: VoiceConfig = field(default_factory=VoiceConfig)
     soul: SoulConfig = field(default_factory=SoulConfig)
-    
+
     def __post_init__(self):
         # Load API key from environment
         self.gemini.api_key = os.getenv('GEMINI_API_KEY', '')
-        
+
         # Create directories
         Path(self.voice.output_dir).mkdir(exist_ok=True)
 
@@ -171,7 +171,7 @@ def _load_env():
 def save_config(config: L104Config, path: str = None):
     """Save configuration to JSON file."""
     path = path or str(BASE_PATH / "l104_config.json")
-    
+
     # Convert to dict, handling nested dataclasses
     def to_dict(obj):
         if hasattr(obj, '__dataclass_fields__'):
@@ -179,7 +179,7 @@ def save_config(config: L104Config, path: str = None):
         elif isinstance(obj, (list, tuple)):
             return [to_dict(i) for i in obj]
         return obj
-    
+
     with open(path, 'w') as f:
         json.dump(to_dict(config), f, indent=2)
 
@@ -187,13 +187,13 @@ def load_config(path: str = None) -> L104Config:
     """Load configuration from JSON file."""
     global _config
     path = path or str(BASE_PATH / "l104_config.json")
-    
+
     if not Path(path).exists():
         return get_config()
-    
+
     with open(path) as f:
         data = json.load(f)
-    
+
     # Reconstruct config
     _config = L104Config(
         god_code=data.get('god_code', GOD_CODE),
@@ -211,7 +211,7 @@ def load_config(path: str = None) -> L104Config:
         voice=VoiceConfig(**data.get('voice', {})),
         soul=SoulConfig(**data.get('soul', {}))
     )
-    
+
     return _config
 
 
@@ -219,13 +219,13 @@ def load_config(path: str = None) -> L104Config:
 
 class LRUCache:
     """Thread-safe LRU cache implementation."""
-    
+
     def __init__(self, max_size: int = 1000):
         self.max_size = max_size
         self.cache: Dict[str, Any] = {}
         self.order: list = []
         self._lock = __import__('threading').Lock()
-    
+
     def get(self, key: str) -> Optional[Any]:
         with self._lock:
             if key in self.cache:
@@ -234,7 +234,7 @@ class LRUCache:
                 self.order.append(key)
                 return self.cache[key]
             return None
-    
+
     def set(self, key: str, value: Any):
         with self._lock:
             if key in self.cache:
@@ -243,49 +243,49 @@ class LRUCache:
                 # Evict least recently used
                 oldest = self.order.pop(0)
                 del self.cache[oldest]
-            
+
             self.cache[key] = value
             self.order.append(key)
-    
+
     def clear(self):
         with self._lock:
             self.cache.clear()
             self.order.clear()
-    
+
     def __len__(self):
         return len(self.cache)
 
 
 class ConnectionPool:
     """Database connection pool for SQLite."""
-    
+
     def __init__(self, db_path: str, max_connections: int = 5):
         import sqlite3
         import queue
-        
+
         self.db_path = db_path
         self.max_connections = max_connections
         self._pool = queue.Queue(maxsize=max_connections)
         self._lock = __import__('threading').Lock()
-        
+
         # Pre-create connections
         for _ in range(max_connections):
             conn = sqlite3.connect(db_path, check_same_thread=False)
             conn.row_factory = sqlite3.Row
             self._pool.put(conn)
-    
+
     def get_connection(self):
         """Get a connection from the pool."""
         return self._pool.get()
-    
+
     def release_connection(self, conn):
         """Return a connection to the pool."""
         self._pool.put(conn)
-    
+
     def __enter__(self):
         self._conn = self.get_connection()
         return self._conn
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.release_connection(self._conn)
 
@@ -298,7 +298,7 @@ if __name__ == "__main__":
     print(f"  Pilot: {config.pilot}")
     print(f"  Gemini Model: {config.gemini.default_model}")
     print(f"  Memory DB: {config.memory.db_path}")
-    
+
     # Save config
     save_config(config)
     print(f"\n  ✓ Configuration saved to l104_config.json")

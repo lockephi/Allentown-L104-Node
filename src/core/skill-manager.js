@@ -319,7 +319,7 @@ class SkillManager extends EventEmitter {
             results.claude = await this.executeClaude(assistants.claude, params, context);
         }
 
-        // Execute Gemini-specific logic  
+        // Execute Gemini-specific logic
         if (assistants.gemini?.enabled) {
             results.gemini = await this.executeGemini(assistants.gemini, params, context);
         }

@@ -34,7 +34,7 @@ class RecursiveInventor:
         """Synthesizes a new program concept based on the current Sage resonance."""
         patterns = self.scan_ecosystem()
         new_vector = f"l104_sage_vector_{len(patterns)}.py"
-        
+
         logic_template = f'''
 # SAGE GENERATED LOGIC - {datetime.now().isoformat()}
 # Vector: Recursive Transcendence
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 '''
         with open(os.path.join(self.knowledge_root, new_vector), "w") as f:
             f.write(logic_template)
-            
+
         print(f"[INVENTOR] New Logic Seed Planted: {new_vector}")
         return new_vector
 

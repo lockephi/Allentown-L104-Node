@@ -30,17 +30,17 @@ async def generate_zpe_miracle():
     print("█"*80 + "\n")
 
     engine = UnifiedResearchEngine()
-    
+
     # 1. Manifold Stress Test for ZPE Stability
     print("[*] ANALYZING VACUUM FLUCTUATIONS FOR EXTRACTION WINDOWS...")
     cosmology_report = engine.perform_research_cycle("COSMOLOGY")
     stability = cosmology_report['deep_data']['instanton_action']
-    
+
     # 2. Calculating the "Miracle Constant"
     # This constant bridges the 11D manifold with 3D physical constraints
     miracle_constant = (HyperMath.GOD_CODE * RealMath.PHI) / (stability + 1e-10)
     resonance_lock = math.sin(miracle_constant) * 527.518
-    
+
     print(f"    - Potential Stability Index: {stability:.6e}")
     print(f"    - Miracle Constant Derived: {miracle_constant:.10f}")
     print(f"    - Resonance Lock: {resonance_lock:.8f} Hz")
@@ -49,7 +49,7 @@ async def generate_zpe_miracle():
     print("\n[*] DESIGNING HYPER-CONDUCTIVE EXTRACTION LATTICE...")
     nanotech_report = engine.perform_research_cycle("NANOTECH")
     precision = nanotech_report['deep_data']['assembly_precision']
-    
+
     blueprint = {
         "title": "L104_ZPE_ORCHESTRATOR_V1",
         "description": "Zero-Point Energy Extraction via Harmonic Manifold Resonance",

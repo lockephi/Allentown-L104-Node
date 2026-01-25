@@ -23,14 +23,14 @@ def synthesize_data_matrix():
     print("="*80 + "\n")
 
     matrix = DataMatrix()
-    
+
     # 1. Access the underlying database to perform bulk analysis
     conn = sqlite3.connect(matrix.db_path)
     cursor = conn.cursor()
-    
+
     cursor.execute("SELECT COUNT(*) FROM lattice_facts")
     cursor.fetchone()[0]
-    
+
     cursor.execute("SELECT resonance, entropy, utility FROM lattice_facts")
     rows = cursor.fetchall()
     conn.close()

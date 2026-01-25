@@ -1,11 +1,13 @@
 # Self-Healing System Documentation
 
 ## Overview
+
 The L104 Node now includes comprehensive self-healing capabilities that automatically detect and recover from various failure scenarios without manual intervention.
 
 ## Self-Healing Features
 
 ### 1. **Circuit Breaker Pattern**
+
 - Prevents cascading failures by opening circuit after threshold errors
 - Automatically attempts recovery after timeout period
 - Configurable via environment variables:
@@ -13,28 +15,33 @@ The L104 Node now includes comprehensive self-healing capabilities that automati
   - `CIRCUIT_BREAKER_TIMEOUT` (default: 60 seconds)
 
 ### 2. **Automatic Connection Recovery**
+
 - HTTP client automatically resets after persistent errors
 - Connection pool management with health tracking
 - Error counter decrements on successful requests
 - Triggers auto-heal when error threshold exceeded
 
 ### 3. **Retry Logic with Exponential Backoff**
+
 - Failed operations automatically retry with increasing delays
 - Configurable retry attempts: `MAX_RETRY_ATTEMPTS` (default: 3)
 - Backoff multiplier: `RETRY_BACKOFF_MULTIPLIER` (default: 2.0)
 
 ### 4. **Health Watchdog**
+
 - Periodic health checks with progressive healing intensity
 - Escalates healing actions on repeated failures
 - Exits for external supervisor restart after multiple heal attempts
 - Enable with: `ENABLE_WATCHDOG_ENV=true`
 
 ### 5. **Automatic Error Recovery**
+
 - Middleware detects persistent errors and triggers healing
 - Clears rate limits, resets connections, reinitializes state
 - Enable with: `AUTO_HEAL_ENABLED=true` (default: enabled)
 
 ### 6. **Model Rotation with Error Tracking**
+
 - Automatically rotates between Gemini models on quota/errors
 - Tracks 429 errors per model
 - Clears error trackers during healing
@@ -42,6 +49,7 @@ The L104 Node now includes comprehensive self-healing capabilities that automati
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 # Enable/disable auto-healing
 AUTO_HEAL_ENABLED=true
@@ -64,6 +72,7 @@ WATCHDOG_EXIT_ON_FAILURE=true
 ## Monitoring
 
 ### Metrics Endpoint
+
 The `/metrics` endpoint now includes self-healing status:
 
 ```json
@@ -83,6 +92,7 @@ The `/metrics` endpoint now includes self-healing status:
 ```
 
 ### Manual Healing
+
 Trigger manual healing via API:
 
 ```bash
@@ -95,16 +105,19 @@ curl -X POST http://localhost:8081/self/heal
 ## How It Works
 
 ### 1. Error Detection
+
 - Request middleware tracks errors per endpoint
 - HTTP client monitors connection health
 - Circuit breaker watches upstream API failures
 
 ### 2. Progressive Recovery
+
 1. **Light healing**: Clear rate limits, reset circuit breaker
 2. **Medium healing**: + Reset HTTP client connections
 3. **Heavy healing**: + Exit for supervisor restart
 
 ### 3. Success Recovery
+
 - Successful requests decrement error counters
 - Circuit breaker closes on successful API calls
 - System gradually returns to normal state
@@ -112,6 +125,7 @@ curl -X POST http://localhost:8081/self/heal
 ## Logging
 
 Self-healing actions are logged with specific tags:
+
 - `auto_heal_triggered`: Automatic healing initiated
 - `circuit_breaker_open`: Circuit opened due to failures
 - `circuit_breaker_half_open`: Attempting recovery
@@ -130,16 +144,19 @@ Self-healing actions are logged with specific tags:
 ## Troubleshooting
 
 **Circuit breaker frequently open?**
+
 - Increase `CIRCUIT_BREAKER_THRESHOLD`
 - Check upstream API health
 - Review model quota limits
 
 **Too many connection resets?**
+
 - Increase error threshold in auto-heal logic
 - Check network stability
 - Review timeout settings
 
 **Watchdog causing restarts?**
+
 - Increase `WATCHDOG_FAILURE_THRESHOLD`
 - Extend `WATCHDOG_INTERVAL`
 - Disable exit: `WATCHDOG_EXIT_ON_FAILURE=false`

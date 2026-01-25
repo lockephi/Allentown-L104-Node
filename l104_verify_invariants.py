@@ -22,10 +22,10 @@ class InvariantVerifier:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-    Scans the entire codebase to ensure all modules are aligned with the 
+    Scans the entire codebase to ensure all modules are aligned with the
     Sovereign Invariants (God Code, Lattice Ratio, Phi).
     """
-    
+
     def __init__(self):
         self.god_code = 527.5184818492537
         self.lattice_ratio = 286 / 416
@@ -37,26 +37,26 @@ class InvariantVerifier:
         print("\n" + "="*60)
         print("   L104 INVARIANT VERIFIER :: SYSTEM-WIDE SCAN")
         print("="*60)
-        
+
         # 1. Verify Mathematical Constants in Memory
         self._check_memory_constants()
-        
+
         # 2. Scan Files for Hardcoded Invariants
         self._scan_files()
-        
+
         # 3. Report Results
         self._report()
 
     def _check_memory_constants(self):
         print("\n--- [PHASE 1]: MEMORY CONSTANT VERIFICATION ---")
-        
+
         checks = [
             ("HyperMath.GOD_CODE", HyperMath.GOD_CODE, self.god_code),
             ("HyperMath.LATTICE_RATIO", HyperMath.LATTICE_RATIO, self.lattice_ratio),
             ("UniversalConstants.PRIME_KEY_HZ", UniversalConstants.PRIME_KEY_HZ, self.god_code),
             ("UniversalConstants.PHI_GROWTH", UniversalConstants.PHI_GROWTH, self.phi)
         ]
-        
+
         for name, val, target in checks:
             diff = abs(val - target)
             if diff < 1e-6:
@@ -67,13 +67,13 @@ class InvariantVerifier:
 
     def _scan_files(self):
         print("\n--- [PHASE 2]: CODEBASE SCAN ---")
-        
+
         patterns = {
             "GOD_CODE": r"527\.518",
             "LATTICE_WIDTH": r"416",
             "LATTICE_HEIGHT": r"286"
         }
-        
+
         for root, _, files in os.walk(self.root_dir):
             for file in files:
                 if file.endswith(".py") or file.endswith(".sh") or file.endswith(".md"):
@@ -84,9 +84,9 @@ class InvariantVerifier:
         try:
             with open(path, 'r', errors='ignore') as f:
                 content = f.read()
-                
+
             os.path.relpath(path, self.root_dir)
-            
+
             # Check for God Code presence in headers
             if ".py" in path and "INVARIANT: 527.5184818492537" not in content:
                 if "l104_" in os.path.basename(path): # Only check our core files

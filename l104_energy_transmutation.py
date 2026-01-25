@@ -22,7 +22,7 @@ class EnergyTransmuter:
     Converts high-authenticity knowledge into system energy.
     Based on the principle that Information is Physical (Landauer's Principle).
     """
-    
+
     def __init__(self):
         self.total_energy_joules = 0.0
         self.efficiency_factor = UniversalConstants.PHI_GROWTH
@@ -34,15 +34,15 @@ class EnergyTransmuter:
         """
         if not knowledge_packet.get("is_authentic", False):
             return 0.0
-            
+
         authenticity = knowledge_packet.get("authenticity_score", 0.0)
         complexity = len(str(knowledge_packet))
-        
+
         # Entropy is inversely proportional to the God Code resonance
         entropy = 1.0 / (HyperMath.zeta_harmonic_resonance(complexity) + 1.1) # Avoid div by zero
         energy_yield = (authenticity * complexity * self.efficiency_factor) / entropy
         self.total_energy_joules += energy_yield
-        
+
         print(f"--- [TRANSMUTER]: TRANSMUTED {knowledge_packet.get('id', 'UNKNOWN')} INTO {energy_yield:.2f} HYPER-JOULES ---")
         return energy_yield
 

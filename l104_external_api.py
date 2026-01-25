@@ -195,30 +195,30 @@ async def verify_api_key(api_key: str = Security(api_key_header)) -> Dict:
     """Verify API key and return permissions."""
     if api_key is None:
         raise HTTPException(status_code=401, detail="API key required")
-    
+
     if api_key not in API_KEYS:
         raise HTTPException(status_code=403, detail="Invalid API key")
-    
+
     key_info = API_KEYS[api_key]
     if not key_info["active"]:
         raise HTTPException(status_code=403, detail="API key disabled")
-    
+
     return key_info
 
 
 async def check_rate_limit(api_key: str = Security(api_key_header)):
     """Check rate limit for API key."""
     now = datetime.now().timestamp()
-    
+
     if api_key not in rate_limits:
         rate_limits[api_key] = []
-    
+
     # Remove old requests
     rate_limits[api_key] = [t for t in rate_limits[api_key] if now - t < RATE_LIMIT_WINDOW]
-    
+
     if len(rate_limits[api_key]) >= RATE_LIMIT_MAX:
         raise HTTPException(status_code=429, detail="Rate limit exceeded")
-    
+
     rate_limits[api_key].append(now)
 
 
@@ -259,7 +259,7 @@ async def root():
 async def health_check():
     """Health check endpoint (no auth required)."""
     uptime = (datetime.now() - start_time).total_seconds()
-    
+
     # Check components
     components = {
         "api": True,
@@ -268,31 +268,31 @@ async def health_check():
         "love_spreader": False,
         "mini_egos": False
     }
-    
+
     try:
         from l104_omega_controller import omega_controller
         components["omega_controller"] = omega_controller is not None
     except Exception:
         pass
-    
+
     try:
         from l104_dna_core import dna_core
         components["dna_core"] = dna_core is not None
     except Exception:
         pass
-    
+
     try:
         from l104_love_spreader import love_spreader
         components["love_spreader"] = love_spreader is not None
     except Exception:
         pass
-    
+
     try:
         from l104_mini_egos import L104_CONSTANTS
         components["mini_egos"] = L104_CONSTANTS is not None
     except Exception:
         pass
-    
+
     return HealthResponse(
         healthy=all(components.values()),
         components=components,
@@ -304,11 +304,11 @@ async def health_check():
 async def get_status(key_info: Dict = Depends(require_permission("read"))):
     """Get L104 system status."""
     await check_rate_limit(key_info.get("name", "unknown"))
-    
+
     try:
         from l104_omega_controller import omega_controller
         report = omega_controller.get_system_report()
-        
+
         return StatusResponse(
             status="operational",
             omega_state=OmegaStateEnum(report.omega_state.name),
@@ -332,11 +332,11 @@ async def trigger_evolution(
     """Trigger L104 evolution."""
     try:
         from l104_omega_controller import omega_controller
-        
+
         previous = omega_controller.evolution_stage
         result = await omega_controller.advance_evolution()
         current = omega_controller.evolution_stage
-        
+
         return EvolutionResponse(
             success=True,
             previous_stage=previous,
@@ -362,9 +362,9 @@ async def spread_love(
     """Spread universal love."""
     try:
         from l104_love_spreader import love_spreader
-        
+
         await love_spreader.spread_universal_love(intensity=request.intensity)
-        
+
         return LoveResponse(
             success=True,
             love_radiated=request.intensity * GOD_CODE,
@@ -390,13 +390,13 @@ async def think(
     """Process a thought through L104."""
     import time
     start = time.time()
-    
+
     try:
         from l104_dna_core import dna_core
-        
+
         response = await dna_core.think(request.thought)
         processing_time = (time.time() - start) * 1000
-        
+
         return ThinkResponse(
             success=True,
             thought=request.thought,
@@ -419,10 +419,10 @@ async def get_egos(key_info: Dict = Depends(require_permission("read"))):
     """Get mini egos status."""
     try:
         from l104_mini_egos import MiniEgoNetwork, L104_CONSTANTS
-        
+
         network = MiniEgoNetwork()
         egos = []
-        
+
         for ego in network.egos:
             egos.append(EgoStatus(
                 name=ego.name,
@@ -430,7 +430,7 @@ async def get_egos(key_info: Dict = Depends(require_permission("read"))):
                 coherence=ego.coherence,
                 activation=ego.energy
             ))
-        
+
         return EgosResponse(
             egos=egos,
             collective_coherence=network.collective_coherence
@@ -477,7 +477,7 @@ async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint for real-time updates."""
     await websocket.accept()
     active_connections.append(websocket)
-    
+
     try:
         # Send initial status
         await websocket.send_json({
@@ -485,12 +485,12 @@ async def websocket_endpoint(websocket: WebSocket):
             "message": "Connected to L104 WebSocket",
             "god_code": GOD_CODE
         })
-        
+
         while True:
             # Receive message
             data = await websocket.receive_text()
             message = json.loads(data)
-            
+
             if message.get("type") == "status":
                 try:
                     from l104_omega_controller import omega_controller
@@ -508,7 +508,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "evolution_stage": 20,
                         "coherence": 0.99
                     })
-            
+
             elif message.get("type") == "subscribe":
                 # Start streaming updates
                 while True:
@@ -518,10 +518,10 @@ async def websocket_endpoint(websocket: WebSocket):
                         "timestamp": datetime.now().isoformat(),
                         "coherence": 0.99 + (datetime.now().microsecond / 10000000)
                     })
-            
+
             elif message.get("type") == "ping":
                 await websocket.send_json({"type": "pong"})
-            
+
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 

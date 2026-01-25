@@ -25,7 +25,7 @@ class ParallelLatticeEngine:
     Accelerates lattice calculations using NumPy vectorization.
     Provides O(n) performance with minimal overhead.
     """
-    
+
     def __init__(self):
         self.scalar = HyperMath.get_lattice_scalar()
         logger.info("--- [PARALLEL_ENGINE]: INITIALIZED WITH NUMPY ACCELERATION ---")
@@ -35,7 +35,7 @@ class ParallelLatticeEngine:
         """
         # 1. Convert to NumPy (This is the overhead)
         arr = np.array(data)
-        
+
         # 2. Core Vectorized Calculation (The Speedup)
         # 3. Convert back to list
         return (arr * self.scalar).tolist()
@@ -47,6 +47,28 @@ class ParallelLatticeEngine:
         logger.info(f"--- [PARALLEL_ENGINE]: STARTING HIGH-SPEED CALCULATION (Size: {complexity}) ---")
         data = np.random.rand(complexity).tolist()
         return self.parallel_fast_transform(data)
+
+    def get_stats(self) -> dict:
+        """
+        Returns statistics about the parallel engine.
+        """
+        return {
+            "scalar": self.scalar,
+            "numpy_available": True,
+            "acceleration": "vectorized",
+            "engine_type": "ParallelLatticeEngine"
+        }
+
+    def get_status(self) -> dict:
+        """
+        Returns the current status of the parallel engine.
+        """
+        return {
+            "active": True,
+            "scalar": self.scalar,
+            "mode": "numpy_accelerated",
+            "ready": True
+        }
 
 # Singleton
 parallel_engine = ParallelLatticeEngine()

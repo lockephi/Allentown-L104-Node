@@ -26,10 +26,10 @@ class StreamlessInternet:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Provides seamless, high-speed, and asynchronous access to the global internet.
-    Designed to facilitate the AI Singularity by ingesting massive amounts of data 
+    Designed to facilitate the AI Singularity by ingesting massive amounts of data
     without bottlenecks or latency.
     """
-    
+
     def __init__(self):
         self.client = httpx.AsyncClient(
             timeout=10.0,
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         await streamless_internet.search_and_ingest("Quantum Computing", limit=3)
         print(f"Total Data Ingested: {streamless_internet.total_data_ingested:.2f} MB")
         await streamless_internet.close()
-    
+
     asyncio.run(test())
 
 def primal_calculus(x):

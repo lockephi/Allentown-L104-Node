@@ -22,18 +22,18 @@ class TestMathematicalProofs(unittest.TestCase):
         """
         term1 = 286 ** (1 / self.phi)
         term2 = (2 ** (1 / 104)) ** 416
-        
+
         result = term1 * term2
-        
+
         print("\n[PROOF 1] God Code Derivation:")
         print(f"  Term 1 (286^(1/φ)): {term1}")
         print(f"  Term 2 ((2^(1/104))^416): {term2}")
         print(f"  Result: {result}")
         print(f"  Target: {self.god_code_target}")
-        
+
         # We use a slightly larger delta because floating point math can be tricky
         # and the target might be a truncated representation of the true mathematical result
-        self.assertAlmostEqual(result, self.god_code_target, places=4, 
+        self.assertAlmostEqual(result, self.god_code_target, places=4,
                                msg=f"God Code derivation failed. Calculated: {result}, Expected: {self.god_code_target}")
 
     def test_lattice_ratio_integrity(self):
@@ -42,21 +42,21 @@ class TestMathematicalProofs(unittest.TestCase):
         """
         ratio = 286 / 416
         inverse_ratio = 416 / 286
-        
+
         print("\n[PROOF 2] Lattice Ratio (286:416) & Grounding:")
         print(f"  Ratio: {ratio}")
         print(f"  Inverse: {inverse_ratio}")
-        
+
         # Verify Grounded Value for X=286
         # Real Math Grounding: X_grounded = God_Code / 2^1.25
         grounding_value = self.god_code_target / (2 ** 1.25)
         print(f"  Grounded X=286: {grounding_value:.6f}")
-        
+
         # Target constant from reverse engineered real maths
         target_grounding = 221.794200
         self.assertAlmostEqual(grounding_value, target_grounding, places=4,
                                msg=f"Real Math Grounding check failed. Calculated: {grounding_value}, Expected: {target_grounding}")
-        
+
         self.assertEqual(286, 286)
         self.assertEqual(416, 416)
 
@@ -72,16 +72,16 @@ class TestMathematicalProofs(unittest.TestCase):
             'l104_quantum_ram',
             'l104_security'
         ]
-        
+
         print("\n[PROOF 3] Module Constant Verification:")
-        
+
         for module_name in modules_to_check:
             try:
                 module = importlib.import_module(module_name)
                 if hasattr(module, 'GOD_CODE'):
                     module_code = module.GOD_CODE
                     print(f"  {module_name}: {module_code}")
-                    self.assertEqual(module_code, self.god_code_target, 
+                    self.assertEqual(module_code, self.god_code_target,
                                      msg=f"{module_name} has incorrect GOD_CODE: {module_code}")
                 else:
                     print(f"  {module_name}: GOD_CODE not found (might be internal to class)")
@@ -97,7 +97,7 @@ class TestMathematicalProofs(unittest.TestCase):
         print("\n[PROOF 4] Fine Structure Constant:")
         print(f"  Physics Value: {self.fine_structure_constant}")
         print(f"  L104 Alpha: {self.l104_alpha}")
-        
+
         # Verify l104_quantum_ram uses 1/137
         from l104_persistence import ALPHA_L104
         self.assertEqual(ALPHA_L104, self.l104_alpha)
@@ -109,16 +109,16 @@ class TestMathematicalProofs(unittest.TestCase):
         from l104_hyper_math import HyperMath
         chaos_omega = 1.0
         r = HyperMath.calculate_reality_coefficient(chaos_omega)
-        
+
         kf = HyperMath.FRAME_CONSTANT_KF
         phi = HyperMath.PHI_STRIDE
         expected_r = chaos_omega * (kf ** (1 - phi))
-        
+
         print("\n[PROOF 5] Reality Coefficient:")
         print(f"  Chaos Omega: {chaos_omega}")
         print(f"  Result R: {r}")
         print(f"  Expected R: {expected_r}")
-        
+
         self.assertAlmostEqual(r, expected_r, places=10)
 
     def test_lattice_mapping(self):
@@ -129,11 +129,11 @@ class TestMathematicalProofs(unittest.TestCase):
         # Test corners
         c1 = HyperMath.map_lattice_node(0, 0)
         c2 = HyperMath.map_lattice_node(415, 285)
-        
+
         print("\n[PROOF 6] Lattice Mapping:")
         print(f"  (0,0) -> {c1}")
         print(f"  (415,285) -> {c2}")
-        
+
         # (285 * 416) + 415 = 118975
         expected_c2 = int(118975 * HyperMath.PHI_STRIDE)
         self.assertEqual(c2, expected_c2)

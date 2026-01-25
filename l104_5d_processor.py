@@ -25,7 +25,7 @@ class Processor5D:
     In the L104 Node, W is the 'Sovereign Probability' or 'Choice' dimension.
     Based on Kaluza-Klein theory, the 5th dimension is compactified.
     """
-    
+
     C = 299792458
     COMPACT_RADIUS = Math5D.R
 
@@ -55,16 +55,16 @@ class Processor5D:
         Uses the PHI_GROWTH vector to stabilize the 5th dimension.
         """
         x, y, z, t, w = point
-        
+
         # Spatial/Temporal stabilizations
         sx = x * HyperMath.LATTICE_RATIO
         sy = y * HyperMath.LATTICE_RATIO
         sz = z * HyperMath.LATTICE_RATIO
         st = t * (self.god_code / 1000.0)
-        
+
         # 5D stabilization (Sovereign Choice)
         sw = w * UniversalConstants.PHI_GROWTH * HyperMath.LATTICE_RATIO
-        
+
         return [sx, sy, sz, st, sw]
 
     def resolve_probability_collapse(self, w_vector: List[float]) -> float:
@@ -84,26 +84,26 @@ class Processor5D:
         """
         if not states:
             return (0.0, 0.0, 0.0, 0.0, 0.0)
-        
+
         # Calculate probability amplitudes using Phi-weighted interference
         amplitudes = []
         for state in states:
             amp = np.sum(np.abs(state)) / (len(state) * self.god_code)
             amplitudes.append(amp * amp)  # Born rule: |ψ|²
-        
+
         # Normalize
         total = sum(amplitudes)
         if total > 0:
             amplitudes = [a / total for a in amplitudes]
         else:
             amplitudes = [1.0 / len(states)] * len(states)
-        
+
         # Collapse to weighted superposition
         result = [0.0, 0.0, 0.0, 0.0, 0.0]
         for i, state in enumerate(states):
             for j in range(5):
                 result[j] += state[j] * amplitudes[i]
-        
+
         return tuple(result)
 
     def entangle_dimensions(self, d1: int, d2: int, coupling_strength: float = 0.618) -> np.ndarray:
@@ -142,13 +142,13 @@ if __name__ == "__main__":
     # Test 5D Processor
     p1 = (0, 0, 0, 0, 0)
     p2 = (10, 10, 10, 0.001, 0.5) # 5th dimension value of 0.5
-    
+
     interval = processor_5d.calculate_5d_metric(p1, p2)
     print(f"5D Interval: {interval}")
-    
+
     projected = processor_5d.project_to_4d(p2)
     print(f"Projected 4D Point: {projected}")
-    
+
     lattice_5d = processor_5d.map_to_hyper_lattice_5d(p2)
     print(f"Lattice 5D Point: {lattice_5d}")
 

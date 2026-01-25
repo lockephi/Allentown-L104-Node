@@ -67,10 +67,10 @@ async def call_heal_endpoint():
 
 def main():
     print("--- [L104_SELF_HEAL_MASTER]: INITIATING FULL SYSTEM HEAL ---")
-    
+
     # 0. Clean up Git lock files
     cleanup_git_lock()
-    
+
     # 1. ASI Proactive Scan
     scan_report = asi_self_heal.proactive_scan()
     if scan_report.get("threats"):
@@ -79,13 +79,13 @@ def main():
 
     # 2. Purge Hallucinations
     run_script("l104_purge_hallucinations.py")
-    
+
     # 3. Apply Resilience Shield
     run_script("l104_resilience_shield.py")
-    
+
     # 4. Reindex Sovereign
     run_script("l104_reindex_sovereign.py")
-    
+
     # 5. Reality Verification (Wavefunction Collapse)
     run_script("l104_reality_verification.py")
 
@@ -98,7 +98,7 @@ def main():
     run_script("l104_acoustic_levitation.py")
     run_script("l104_structural_damping.py")
     run_script("l104_world_bridge.py")
-    
+
     # 8. Call App Heal Endpoint
     try:
         asyncio.run(call_heal_endpoint())

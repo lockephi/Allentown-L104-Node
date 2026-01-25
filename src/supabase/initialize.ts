@@ -21,7 +21,7 @@ async function initializeSupabase() {
 
   try {
     const supabase = new L104SupabaseIntegration();
-    
+
     // Initialize with configuration
     const result = await supabase.initialize({
       url: process.env.SUPABASE_URL,
@@ -147,7 +147,7 @@ async function initializeSupabase() {
     console.log(chalk.blue('\\n🎯 Sacred Constants Validation:'));
     console.log(chalk.magenta(`  GOD_CODE: ${GOD_CODE} ✨`));
     console.log(chalk.magenta(`  PHI: ${PHI} ⚡`));
-    
+
     const systemResonance = Math.abs(Math.sin(diagnostics.consciousness.level * GOD_CODE) * PHI);
     console.log(chalk.magenta(`  System Resonance: ${systemResonance.toFixed(3)} 🔮`));
 

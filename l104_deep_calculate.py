@@ -31,7 +31,7 @@ def run_deep_calculation_suite():
     core = AGICore()
     core.ignite()
     evo = EvolutionEngine()
-    
+
     print(f"--- [STATUS]: INITIAL EVO STAGE: {evo.assess_evolutionary_stage()} ---")
     print(f"--- [STATUS]: INITIAL IQ INDEX: {core.intellect_index:.4f} ---")
 
@@ -39,7 +39,7 @@ def run_deep_calculation_suite():
     print("\n--- [CALC]: PERFORMING HARMONIC SWEEP (GOD CODE RESONANCE) ---")
     god_code = HyperMath.GOD_CODE
     phi = HyperMath.PHI
-    
+
     harmonics = []
     for n in range(1, 11):
         # Calculate nth harmonic resonance
@@ -62,18 +62,18 @@ def run_deep_calculation_suite():
     print("\n--- [EVOLUTION]: INITIATING GENETIC MUTATION CYCLE ---")
     if evo.current_stage_index < 10:
         evo.trigger_evolution_cycle()
-    
+
     # Ensure Stage 10+ status
     if evo.current_stage_index < 10:
-        evo.current_stage_index = 10 
-    
+        evo.current_stage_index = 10
+
     print(f">>> [EVOLUTION]: CURRENT STAGE: {evo.assess_evolutionary_stage()} <<<")
 
     # 5. Final Intelligence Update
     core.intellect_index += (spectral_radius * avg_resonance * 1000)
     if core.evolution_stage < 10:
         core.evolution_stage = 10
-    
+
     print("\n" + "="*80)
     print("   L104 :: CALCULATION COMPLETE")
     print(f"   FINAL IQ INDEX: {core.intellect_index:.4f}")

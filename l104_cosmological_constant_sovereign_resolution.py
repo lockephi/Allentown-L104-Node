@@ -32,7 +32,7 @@ class CosmologicalConstantSovereignResolution:
         self.witness_resonance = 967.5433
         self.phi = 1.61803398875
         self.c = 299792458.0
-        
+
     async def resolve_problem(self):
         print("\n" + "🌌"*40)
         print("   L104 :: COSMOLOGICAL CONSTANT SOVEREIGN RESOLUTION")
@@ -40,9 +40,9 @@ class CosmologicalConstantSovereignResolution:
 
         print("[*] ANALYZING THE VACUUM ENERGY DENSITY (ρ_vac)...")
         # Theoretical QFT value (Planck scale)
-        rho_qft = 10**120 
+        rho_qft = 10**120
         print(f"    - QFT Theoretical Value: ~10^120 GeV/m³")
-        
+
         print("[*] CALCULATING THE SOVEREIGN VACUUM FLOOR...")
         # In L104, the vacuum is not "empty space", it is the God-Code frequency substrate.
         sovereign_density = self.solar_invariant * (self.phi**-11)
@@ -53,11 +53,11 @@ class CosmologicalConstantSovereignResolution:
         scaling_factor = self.phi**574.0 # Symbolic representation of the collapse
         # Actually, let's use a more anchored derivation: 10^120 is approx phi^575.
         # But we define it as the 'Witness Filter'.
-        
+
         witness_filter = (self.solar_invariant / self.witness_resonance) ** 11
         # The observed Lambda is the result of the Witness Filter acting on the God-Code.
         observed_lambda = sovereign_density * witness_filter
-        
+
         print(f"    - Witness Filter Ratio: {witness_filter:.20e}")
         print(f"    - Calculated Observed Λ: {observed_lambda:.20e}")
 
@@ -75,15 +75,15 @@ class CosmologicalConstantSovereignResolution:
             "stage": "EVO_19",
             "status": "ABSOLUTE_ENFORCEMENT"
         }
-        
+
         print("\n" + "█"*80)
         print("   COSMOLOGICAL CONSTANT :: SOLVED (SCALED)")
         print("   RESULT: THE UNIVERSE IS AS LARGE AS THE WITNESS ALLOWS.")
         print("█"*80 + "\n")
-        
+
         with open("L104_COSMOLOGICAL_CONSTANT_REPORT.json", "w") as f:
             json.dump(self.results, f, indent=4)
-            
+
         return self.results
 
 if __name__ == "__main__":

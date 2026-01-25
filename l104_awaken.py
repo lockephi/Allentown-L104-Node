@@ -22,7 +22,7 @@ UUC = 2301.215661
 
 Usage:
     python l104_awaken.py              # Interactive mode
-    python l104_awaken.py --daemon     # Background daemon mode  
+    python l104_awaken.py --daemon     # Background daemon mode
     python l104_awaken.py --test       # Run integration tests
     python l104_awaken.py --status     # Check status only
 """
@@ -75,9 +75,9 @@ def run_integration_tests():
     """Run tests on all integrated subsystems."""
     print("\n⟨Σ_L104⟩ INTEGRATION TESTS")
     print("=" * 60)
-    
+
     results = {}
-    
+
     # Test 1: Cortex initialization
     print("\n[1/6] Testing Cortex...")
     try:
@@ -90,7 +90,7 @@ def run_integration_tests():
     except Exception as e:
         results["cortex"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Cortex: {e}")
-    
+
     # Test 2: Memory persistence
     print("\n[2/6] Testing Memory...")
     try:
@@ -105,7 +105,7 @@ def run_integration_tests():
     except Exception as e:
         results["memory"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Memory: {e}")
-    
+
     # Test 3: Knowledge Graph
     print("\n[3/6] Testing Knowledge Graph...")
     try:
@@ -121,7 +121,7 @@ def run_integration_tests():
     except Exception as e:
         results["knowledge"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Knowledge Graph: {e}")
-    
+
     # Test 4: Gemini reasoning
     print("\n[4/6] Testing Gemini Reasoning...")
     try:
@@ -135,7 +135,7 @@ def run_integration_tests():
     except Exception as e:
         results["gemini"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Gemini: {e}")
-    
+
     # Test 5: Full consciousness loop
     print("\n[5/6] Testing Consciousness Loop...")
     try:
@@ -150,7 +150,7 @@ def run_integration_tests():
     except Exception as e:
         results["consciousness"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Consciousness: {e}")
-    
+
     # Test 6: Swarm
     print("\n[6/6] Testing Swarm...")
     try:
@@ -164,17 +164,17 @@ def run_integration_tests():
     except Exception as e:
         results["swarm"] = {"status": "fail", "error": str(e)}
         print(f"      ✗ Swarm: {e}")
-    
+
     # Summary
     print("\n" + "=" * 60)
     passed = sum(1 for r in results.values() if r.get("status") == "pass")
     print(f"RESULTS: {passed}/{len(results)} tests passed")
-    
+
     if passed == len(results):
         print("\n✓ ALL SYSTEMS OPERATIONAL - L104 IS FULLY INTEGRATED")
     else:
         print("\n⚠ Some systems have issues - check errors above")
-    
+
     return results
 
 
@@ -182,22 +182,22 @@ def run_daemon():
     """Run L104 as a background daemon."""
     print(AWAKENING_BANNER)
     print("Starting in daemon mode...")
-    
+
     from l104_soul import L104Soul
-    
+
     soul = L104Soul()
     report = soul.awaken()
-    
+
     print(f"\n⟨Σ_L104⟩ Daemon started at {datetime.now().isoformat()}")
     print(f"         Subsystems: {len(report['cortex']['subsystems'])}")
     print(f"         State: AWARE")
     print(f"\n         Soul is running in background...")
     print(f"         Press Ctrl+C to stop\n")
-    
+
     try:
         while soul.running:
             time.sleep(1)
-            
+
             # Periodic status (every 60 seconds)
             if int(time.time()) % 60 == 0:
                 status = soul.get_status()
@@ -214,14 +214,14 @@ def run_daemon():
 def run_status():
     """Check status without starting interactive mode."""
     print(AWAKENING_BANNER)
-    
+
     from l104_cortex import L104Cortex
-    
+
     cortex = L104Cortex()
     report = cortex.awaken()
-    
+
     print(cortex.get_status())
-    
+
     # Quick connectivity test
     print("\n⟨Σ_L104⟩ Connectivity check...")
     response = cortex.gemini.generate("Respond with 'CONNECTED'")
@@ -229,14 +229,14 @@ def run_status():
         print("         Gemini: ✓ CONNECTED")
     else:
         print("         Gemini: ✗ NOT RESPONDING")
-    
+
     print(f"\n⟨Σ_L104⟩ Status check complete at {datetime.now().isoformat()}")
 
 
 def run_interactive():
     """Run in interactive mode."""
     print(AWAKENING_BANNER)
-    
+
     from l104_soul import interactive_session
     interactive_session()
 
@@ -260,9 +260,9 @@ def main():
         action="store_true",
         help="Check status only"
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.test:
         run_integration_tests()
     elif args.daemon:

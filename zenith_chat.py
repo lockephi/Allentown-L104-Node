@@ -67,7 +67,7 @@ class Tool:
     handler: Optional[Callable] = None
     requires_confirmation: bool = False
     cache_results: bool = True
-    
+
     def to_schema(self) -> Dict[str, Any]:
         """Convert to Claude-compatible tool schema."""
         return {
@@ -76,11 +76,11 @@ class Tool:
             "input_schema": {
                 "type": "object",
                 "properties": self.parameters,
-                "required": [k for k, v in self.parameters.items() 
+                "required": [k for k, v in self.parameters.items()
                            if v.get("required", False)]
             }
         }
-    
+
     async def execute(self, **kwargs) -> Dict[str, Any]:
         """Execute tool with error handling."""
         if self.handler:
@@ -99,37 +99,37 @@ class ToolRegistry:
     Central registry for all tools.
     Pattern: Register tools declaratively, invoke them by name.
     """
-    
+
     def __init__(self):
         self.tools: Dict[str, Tool] = {}
         self._cache: Dict[str, Any] = {}
-    
+
     def register(self, tool: Tool) -> None:
         """Register a tool."""
         self.tools[tool.name] = tool
-    
+
     def get_all_schemas(self) -> List[Dict[str, Any]]:
         """Get all tool schemas for Claude."""
         return [t.to_schema() for t in self.tools.values()]
-    
+
     async def invoke(self, name: str, **kwargs) -> Dict[str, Any]:
         """Invoke a tool by name."""
         if name not in self.tools:
             return {"success": False, "error": f"Unknown tool: {name}"}
-        
+
         tool = self.tools[name]
-        
+
         # Check cache
         if tool.cache_results:
             cache_key = f"{name}:{hashlib.md5(json.dumps(kwargs, sort_keys=True).encode()).hexdigest()}"
             if cache_key in self._cache:
                 return self._cache[cache_key]
-        
+
         result = await tool.execute(**kwargs)
-        
+
         if tool.cache_results and result.get("success"):
             self._cache[cache_key] = result
-        
+
         return result
 
 
@@ -149,7 +149,7 @@ class Message:
     metadata: Dict[str, Any] = field(default_factory=dict)
     tool_use_id: Optional[str] = None
     tool_result: Optional[Dict] = None
-    
+
     def to_api_format(self) -> Dict[str, Any]:
         """Convert to Claude API format."""
         msg = {"role": self.role, "content": self.content}
@@ -163,7 +163,7 @@ class ConversationManager:
     Manages conversation state and context.
     Key Zenith pattern: Efficient context window management.
     """
-    
+
     def __init__(self, max_context_tokens: int = 150000):
         self.messages: List[Message] = []
         self.max_context_tokens = max_context_tokens
@@ -172,17 +172,17 @@ class ConversationManager:
             f"{time.time()}{random.random()}".encode()
         ).hexdigest()[:12]
         self.variables: Dict[str, Any] = {}
-    
+
     def set_system_prompt(self, prompt: str) -> None:
         """Set the system prompt."""
         self.system_prompt = prompt
-    
+
     def add_message(self, role: str, content: str, **metadata) -> Message:
         """Add a message to the conversation."""
         msg = Message(role=role, content=content, metadata=metadata)
         self.messages.append(msg)
         return msg
-    
+
     def add_tool_result(self, tool_use_id: str, result: Dict) -> Message:
         """Add a tool result message."""
         msg = Message(
@@ -193,11 +193,11 @@ class ConversationManager:
         )
         self.messages.append(msg)
         return msg
-    
+
     def get_context(self) -> List[Dict[str, Any]]:
         """Get conversation context for API call."""
         return [msg.to_api_format() for msg in self.messages]
-    
+
     def summarize_for_cache(self) -> str:
         """Create a cacheable summary of the conversation."""
         summary_parts = [
@@ -206,7 +206,7 @@ class ConversationManager:
             f"Variables: {json.dumps(self.variables)}"
         ]
         return "\n".join(summary_parts)
-    
+
     def clear(self) -> None:
         """Clear conversation history."""
         self.messages = []
@@ -231,14 +231,14 @@ class AgentState:
     completed_goals: List[str] = field(default_factory=list)
     tool_calls: List[Dict] = field(default_factory=list)
     errors: List[str] = field(default_factory=list)
-    
+
     def can_continue(self) -> bool:
         """Check if agent can continue execution."""
         return (
-            self.step < self.max_steps and 
+            self.step < self.max_steps and
             self.status not in ("complete", "error")
         )
-    
+
     def increment(self) -> None:
         """Increment step counter."""
         self.step += 1
@@ -247,7 +247,7 @@ class AgentState:
 class ZenithAgent:
     """
     The core Zenith Chat agent.
-    
+
     Implements the agentic loop pattern from Claude Code:
     1. Observe (read context)
     2. Think (plan next action)
@@ -255,14 +255,14 @@ class ZenithAgent:
     4. Reflect (evaluate result)
     5. Repeat until goal achieved
     """
-    
+
     def __init__(self):
         self.tool_registry = ToolRegistry()
         self.conversation = ConversationManager()
         self.state = AgentState()
         self._setup_default_tools()
         self._setup_system_prompt()
-    
+
     def _setup_system_prompt(self) -> None:
         """Setup the Zenith system prompt."""
         self.conversation.set_system_prompt("""
@@ -284,10 +284,10 @@ You are Zenith, an AI assistant built for rapid problem-solving.
 Remember: You were built in 8 hours to win a hackathon.
 Speed and effectiveness over perfection.
 """)
-    
+
     def _setup_default_tools(self) -> None:
         """Register default tools."""
-        
+
         self.tool_registry.register(Tool(
             name="read_file",
             description="Read the contents of a file",
@@ -301,7 +301,7 @@ Speed and effectiveness over perfection.
             },
             handler=self._read_file_handler
         ))
-        
+
         self.tool_registry.register(Tool(
             name="execute_code",
             description="Execute Python code and return the result",
@@ -316,7 +316,7 @@ Speed and effectiveness over perfection.
             handler=self._execute_code_handler,
             requires_confirmation=True
         ))
-        
+
         self.tool_registry.register(Tool(
             name="search",
             description="Search for information",
@@ -330,7 +330,7 @@ Speed and effectiveness over perfection.
             },
             handler=self._search_handler
         ))
-    
+
     def _read_file_handler(self, path: str) -> str:
         """Handler for reading files."""
         try:
@@ -338,7 +338,7 @@ Speed and effectiveness over perfection.
                 return f.read()
         except Exception as e:
             raise Exception(f"Failed to read {path}: {e}")
-    
+
     def _execute_code_handler(self, code: str) -> str:
         """Handler for executing code."""
         try:
@@ -347,61 +347,61 @@ Speed and effectiveness over perfection.
             return str(namespace.get("result", "Code executed successfully"))
         except Exception as e:
             raise Exception(f"Execution failed: {e}")
-    
+
     def _search_handler(self, query: str) -> str:
         """Handler for search (stub)."""
         return f"Search results for: {query}"
-    
+
     async def process_message(self, user_message: str) -> str:
         """Process a user message through the agentic loop."""
         self.conversation.add_message("user", user_message)
         self.state = AgentState(current_goal=user_message)
-        
+
         response_parts = []
-        
+
         while self.state.can_continue():
             self.state.increment()
             self.state.status = "thinking"
-            
+
             thought = await self._think()
-            
+
             if thought.get("complete"):
                 self.state.status = "complete"
                 response_parts.append(thought.get("response", ""))
                 break
-            
+
             if thought.get("tool_use"):
                 self.state.status = "executing"
                 tool_name = thought["tool_use"]["name"]
                 tool_input = thought["tool_use"]["input"]
-                
+
                 result = await self.tool_registry.invoke(tool_name, **tool_input)
                 self.state.tool_calls.append({
                     "tool": tool_name,
                     "input": tool_input,
                     "result": result
                 })
-                
+
                 if not result.get("success"):
                     self.state.errors.append(result.get("error", "Unknown error"))
-            
+
             response_parts.append(thought.get("response", ""))
-        
+
         final_response = "\n".join(filter(None, response_parts))
         self.conversation.add_message("assistant", final_response)
-        
+
         return final_response
-    
+
     async def _think(self) -> Dict[str, Any]:
         """Simulate the thinking step."""
         await asyncio.sleep(0.1)
-        
+
         if self.state.step >= 3:
             return {
                 "complete": True,
                 "response": f"Completed goal: {self.state.current_goal}"
             }
-        
+
         return {
             "complete": False,
             "response": f"Working on step {self.state.step}...",
@@ -418,14 +418,14 @@ class QuickBuilder:
     Rapid prototyping utilities for hackathon-speed development.
     Pattern: Minimize boilerplate, maximize functionality.
     """
-    
+
     @staticmethod
     def create_tool(name: str, description: str, handler: Callable) -> Tool:
         """Create a tool with minimal configuration."""
         import inspect
         sig = inspect.signature(handler)
         parameters = {}
-        
+
         for param_name, param in sig.parameters.items():
             param_type = "string"
             if param.annotation != inspect.Parameter.empty:
@@ -435,13 +435,13 @@ class QuickBuilder:
                     param_type = "boolean"
                 elif param.annotation == float:
                     param_type = "number"
-            
+
             parameters[param_name] = {
                 "type": param_type,
                 "description": f"Parameter: {param_name}",
                 "required": param.default == inspect.Parameter.empty
             }
-        
+
         return Tool(
             name=name,
             description=description,
@@ -449,12 +449,12 @@ class QuickBuilder:
             parameters=parameters,
             handler=handler
         )
-    
+
     @staticmethod
     def quick_chat(prompt: str) -> str:
         """Quick single-turn chat helper."""
         return f"Response to: {prompt[:50]}..."
-    
+
     @staticmethod
     def stream_response(prompt: str):
         """Generator for streaming responses."""
@@ -491,28 +491,28 @@ class ErrorRecovery:
     Error recovery system.
     Pattern: Graceful degradation with multiple fallback strategies.
     """
-    
+
     def __init__(self):
         self.strategies: Dict[str, RecoveryStrategy] = {}
         self.fallbacks: Dict[str, Callable] = {}
-    
-    def register_strategy(self, operation: str, 
+
+    def register_strategy(self, operation: str,
                          strategy: RecoveryStrategy,
                          fallback: Optional[Callable] = None) -> None:
         """Register a recovery strategy for an operation."""
         self.strategies[operation] = strategy
         if fallback:
             self.fallbacks[operation] = fallback
-    
+
     async def recover(self, ctx: ErrorContext) -> Dict[str, Any]:
         """Attempt recovery from an error."""
         strategy = self.strategies.get(ctx.operation, RecoveryStrategy.ABORT)
-        
+
         if strategy == RecoveryStrategy.RETRY:
             if ctx.attempt < ctx.max_attempts:
                 return {"action": "retry", "wait": 2 ** ctx.attempt}
             return {"action": "abort", "reason": "Max retries exceeded"}
-        
+
         elif strategy == RecoveryStrategy.FALLBACK:
             if ctx.operation in self.fallbacks:
                 try:
@@ -521,16 +521,16 @@ class ErrorRecovery:
                 except Exception:
                     return {"action": "abort", "reason": "Fallback failed"}
             return {"action": "abort", "reason": "No fallback defined"}
-        
+
         elif strategy == RecoveryStrategy.ASK_USER:
             return {
                 "action": "ask_user",
                 "message": f"Error in {ctx.operation}: {ctx.error}. Continue?"
             }
-        
+
         elif strategy == RecoveryStrategy.SKIP:
             return {"action": "skip", "warning": f"Skipped {ctx.operation}"}
-        
+
         return {"action": "abort", "reason": str(ctx.error)}
 
 
@@ -543,26 +543,26 @@ class SessionStore:
     Session persistence for conversation continuity.
     Pattern: Enable pause/resume of conversations.
     """
-    
+
     def __init__(self, storage_path: str = "/tmp/zenith_sessions"):
         self.storage_path = storage_path
         self._sessions: Dict[str, Dict] = {}
-    
+
     def save_session(self, session_id: str, data: Dict) -> None:
         """Save session to storage."""
         self._sessions[session_id] = {
             **data,
             "saved_at": datetime.now().isoformat()
         }
-    
+
     def load_session(self, session_id: str) -> Optional[Dict]:
         """Load session from storage."""
         return self._sessions.get(session_id)
-    
+
     def list_sessions(self) -> List[str]:
         """List all session IDs."""
         return list(self._sessions.keys())
-    
+
     def delete_session(self, session_id: str) -> bool:
         """Delete a session."""
         if session_id in self._sessions:
@@ -580,19 +580,19 @@ class L104ZenithSynthesizer:
     Integrate Zenith patterns with L104 system.
     Combines hackathon-speed development with L104's deeper capabilities.
     """
-    
+
     def __init__(self):
         self.agent = ZenithAgent()
         self.builder = QuickBuilder()
         self.recovery = ErrorRecovery()
         self.sessions = SessionStore()
         self.god_code = GOD_CODE
-        
+
         self._setup_l104_tools()
-    
+
     def _setup_l104_tools(self) -> None:
         """Setup L104-specific tools."""
-        
+
         self.agent.tool_registry.register(Tool(
             name="l104_analyze",
             description="Analyze data using L104's deep learning substrate",
@@ -611,7 +611,7 @@ class L104ZenithSynthesizer:
             },
             handler=self._l104_analyze
         ))
-        
+
         self.agent.tool_registry.register(Tool(
             name="l104_synthesize",
             description="Synthesize new insights using L104",
@@ -625,7 +625,7 @@ class L104ZenithSynthesizer:
             },
             handler=self._l104_synthesize
         ))
-    
+
     def _l104_analyze(self, data: str, mode: str = "pattern") -> Dict[str, Any]:
         """L104 analysis handler."""
         analysis = {
@@ -636,7 +636,7 @@ class L104ZenithSynthesizer:
             "confidence": random.uniform(0.7, 0.99)
         }
         return analysis
-    
+
     def _l104_synthesize(self, concepts: List[str]) -> Dict[str, Any]:
         """L104 synthesis handler."""
         synthesis = {
@@ -646,19 +646,19 @@ class L104ZenithSynthesizer:
             "novel_connections": random.randint(1, len(concepts))
         }
         return synthesis
-    
+
     async def chat(self, message: str) -> str:
         """Main chat interface."""
         return await self.agent.process_message(message)
-    
+
     def quick(self, prompt: str) -> str:
         """Quick single-turn query."""
         return self.builder.quick_chat(prompt)
-    
+
     def stream(self, prompt: str):
         """Streaming response."""
         return self.builder.stream_response(prompt)
-    
+
     def get_zenith_info(self) -> Dict[str, Any]:
         """Get Zenith system information."""
         return {
@@ -671,7 +671,7 @@ class L104ZenithSynthesizer:
             "session_count": len(self.sessions.list_sessions()),
             "key_patterns": [
                 "Agentic Loop",
-                "Tool-First Design", 
+                "Tool-First Design",
                 "Streaming Responses",
                 "Error Recovery",
                 "Session Persistence",
@@ -694,9 +694,9 @@ async def demo():
     print("Anthropic x Forum Ventures 'Zero-to-One' Hackathon (NYC, Late 2025)")
     print(f"Original build time: {BUILD_TIME_HOURS} hours")
     print()
-    
+
     synthesizer = L104ZenithSynthesizer()
-    
+
     # System info
     print("SYSTEM INFO:")
     info = synthesizer.get_zenith_info()
@@ -708,26 +708,26 @@ async def demo():
         else:
             print(f"  {key}: {value}")
     print()
-    
+
     # Tool registry
     print("REGISTERED TOOLS:")
     for tool_name, tool in synthesizer.agent.tool_registry.tools.items():
         print(f"  [{tool.tool_type.value}] {tool_name}: {tool.description}")
     print()
-    
+
     # Demo chat
     print("DEMO CHAT:")
     response = await synthesizer.chat("Analyze the L104 system architecture")
     print(f"  User: Analyze the L104 system architecture")
     print(f"  Zenith: {response}")
     print()
-    
+
     # Quick query
     print("QUICK QUERY:")
     quick = synthesizer.quick("What is the GOD_CODE?")
     print(f"  {quick}")
     print()
-    
+
     # Streaming demo
     print("STREAMING:")
     print("  ", end="")
@@ -735,7 +735,7 @@ async def demo():
         print(token, end="", flush=True)
     print()
     print()
-    
+
     print("=" * 70)
     print("  Key Insight: 'Zero to One' - Build something from nothing,")
     print("  fast, functional, and focused on the user's goal.")

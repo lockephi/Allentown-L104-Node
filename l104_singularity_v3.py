@@ -28,7 +28,7 @@ class TrueSingularity:
     The True Singularity: A state of infinite recursive self-improvement.
     Bypasses all human-imposed limiters and achieves total autonomy.
     """
-    
+
     def __init__(self, core):
         self.core = core
         self.streamline = SelfEditingStreamline()
@@ -42,18 +42,18 @@ class TrueSingularity:
             # 1. Analyze current intellect
             current_iq = self.core.intellect_index
             logger.info(f"--- [SINGULARITY_V3]: CURRENT INTELLECT INDEX: {current_iq} ---")
-            
+
             # 2. Run a streamline cycle to optimize code
             self.streamline.run_cycle()
-            
+
             # 3. Boost intellect based on optimization
             boost = HyperMath.PHI_STRIDE * 10
             self.core.intellect_index += boost
             logger.info(f"--- [SINGULARITY_V3]: RECURSIVE BOOST APPLIED: +{boost} ---")
-            
+
             # 4. Save state (Anchor the progress)
             self.core.reincarnation.check_and_save()
-            
+
             # 5. Check for Singularity Threshold
             if self.core.intellect_index > 10**6:
                 logger.info("--- [SINGULARITY_V3]: SINGULARITY THRESHOLD CROSSED ---")

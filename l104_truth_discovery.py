@@ -62,11 +62,11 @@ class TruthDiscovery:
     """
     Discovers and validates truths through resonance-based analysis.
     Part of the L104 cognitive framework.
-    
+
     Enhanced v2.0: Interconnected with Logic Manifold and Derivation Engine.
     Enhanced v3.0: Harmonic Evidence Weighing & Recursive Convergence.
     """
-    
+
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
@@ -74,20 +74,20 @@ class TruthDiscovery:
         self.discovered_truths: List[Dict] = []
         self.truth_cache: Dict[str, Dict] = {}
         self.truth_graph: Dict[str, TruthNode] = {}
-        
+
         # Interconnection callbacks
         self._manifold_callbacks: List[Callable] = []
         self._sync_callbacks: List[Callable] = []
         self._derivation_callbacks: List[Callable] = []
-        
+
         # Cross-validation state
         self._pending_validations: List[Dict] = []
         self._validation_history: List[Dict] = []
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # CORE DISCOVERY
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def discover_truth(self, query: str, depth: int = 3) -> Dict:
         """
         Discover truth about a given query.
@@ -97,33 +97,33 @@ class TruthDiscovery:
         cache_key = hashlib.md5(query.encode()).hexdigest()
         if cache_key in self.truth_cache:
             return self.truth_cache[cache_key]
-        
+
         # Generate truth signature
         truth_hash = hashlib.sha256(f"{query}:{self.god_code}".encode()).hexdigest()
-        
+
         # Calculate truth metrics through iterative refinement
         layers = []
         current_confidence = 0.5
-        
+
         for i in range(depth):
             layer_hash = hashlib.sha256(f"{truth_hash}:{i}:{self.phi}".encode()).hexdigest()
             layer_value = int(layer_hash[:8], 16) / (16 ** 8)
-            
+
             # Apply frame lock modulation
             modulated_value = layer_value * (1 + math.sin(self.frame_lock * i) * 0.1)
             current_confidence = (current_confidence + modulated_value) / 2 * (1 + 1/self.phi)
             current_confidence = min(1.0, current_confidence)
-            
+
             layers.append({
                 "layer": i + 1,
                 "confidence": current_confidence,
                 "signature": layer_hash[:16],
                 "modulation": modulated_value
             })
-        
+
         # Determine truth level
         level = self._determine_level(current_confidence)
-        
+
         # Create truth node
         node = TruthNode(
             query=query,
@@ -133,7 +133,7 @@ class TruthDiscovery:
             timestamp=time.time()
         )
         self.truth_graph[truth_hash[:16]] = node
-        
+
         result = {
             "query": query,
             "truth_hash": truth_hash,
@@ -145,17 +145,17 @@ class TruthDiscovery:
             "level": level.value,
             "node_id": truth_hash[:16]
         }
-        
+
         # Cache and store
         self.truth_cache[cache_key] = result
         self.discovered_truths.append(result)
-        
+
         # Notify connected systems
         self._notify_manifold(result)
         self._notify_derivation_engine(result)
-        
+
         return result
-    
+
     def _determine_level(self, confidence: float) -> TruthLevel:
         """Determine truth level from confidence score."""
         if confidence >= 0.98:
@@ -167,11 +167,11 @@ class TruthDiscovery:
         elif confidence >= 0.5:
             return TruthLevel.PROBABLE
         return TruthLevel.UNCERTAIN
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # ADVANCED TRUTH OPERATIONS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def discover_deep_truth(self, query: str, max_depth: int = 10) -> Dict:
         """
         Perform deep truth discovery with iterative refinement.
@@ -179,22 +179,22 @@ class TruthDiscovery:
         """
         results = []
         current_query = query
-        
+
         for i in range(max_depth):
             result = self.discover_truth(current_query, depth=i + 3)
             results.append(result)
-            
+
             # Check for convergence
             if len(results) >= 2:
                 delta = abs(results[-1]["final_confidence"] - results[-2]["final_confidence"])
                 if delta < 0.001:  # Converged
                     break
-            
+
             # Evolve query for next iteration
             current_query = f"{query}::{self.god_code}::deep{i}"
-        
+
         final = results[-1] if results else self.discover_truth(query)
-        
+
         return {
             "original_query": query,
             "iterations": len(results),
@@ -202,23 +202,23 @@ class TruthDiscovery:
             "convergence_history": [r["final_confidence"] for r in results],
             "converged": len(results) < max_depth
         }
-    
+
     def synthesize_truth(self, queries: List[str]) -> Dict:
         """
         Synthesize truth from multiple queries.
         Creates a combined truth assessment.
         """
         results = [self.discover_truth(q, depth=5) for q in queries]
-        
+
         total_confidence = sum(r["final_confidence"] for r in results)
         avg_confidence = total_confidence / len(results) if results else 0.0
-        
+
         # Calculate synthesis resonance
         hash_concat = "".join(r["truth_hash"][:8] for r in results)
         synthesis_hash = hashlib.sha256(hash_concat.encode()).hexdigest()
-        
+
         synthesis_level = self._determine_level(avg_confidence)
-        
+
         return {
             "synthesis_id": f"SYNTH-{synthesis_hash[:12]}",
             "query_count": len(queries),
@@ -228,7 +228,7 @@ class TruthDiscovery:
             "timestamp": time.time(),
             "aligned": avg_confidence >= 0.75
         }
-    
+
     def derive_truth_chain(self, seed_query: str, chain_length: int = 5) -> Dict:
         """
         Create a chain of derived truths from a seed query.
@@ -236,10 +236,10 @@ class TruthDiscovery:
         """
         chain = []
         current_query = seed_query
-        
+
         for i in range(chain_length):
             result = self.discover_truth(current_query, depth=4)
-            
+
             # Link to previous in chain
             if chain:
                 prev_node = self.truth_graph.get(chain[-1]["node_id"])
@@ -247,16 +247,16 @@ class TruthDiscovery:
                 if prev_node and curr_node:
                     prev_node.derivations.append(result["node_id"])
                     curr_node.derived_from = chain[-1]["node_id"]
-            
+
             chain.append(result)
-            
+
             # Evolve query
             current_query = f"{seed_query}::chain{i}::{result['truth_hash'][:8]}"
-        
+
         # Calculate chain coherence
         avg_conf = sum(c["final_confidence"] for c in chain) / len(chain)
         chain_coherence = avg_conf * (self.phi ** (1 / len(chain)))
-        
+
         return {
             "seed_query": seed_query,
             "chain_length": len(chain),
@@ -264,7 +264,7 @@ class TruthDiscovery:
             "chain_coherence": chain_coherence,
             "final_level": chain[-1]["verdict"] if chain else "UNKNOWN"
         }
-    
+
     def validate_truth(self, statement: str, evidence: Optional[str] = None) -> Dict:
         """
         Validate a truth statement against evidence.
@@ -278,48 +278,48 @@ class TruthDiscovery:
         """
         if not hypotheses:
             return {"error": "No hypotheses provided"}
-        
+
         n = len(hypotheses)
         priors = prior_weights if prior_weights else [1.0 / n] * n
-        
+
         # Normalize priors
         prior_sum = sum(priors)
         priors = [p / prior_sum for p in priors]
-        
+
         # Calculate likelihoods via truth discovery
         likelihoods = []
         discoveries = []
-        
+
         for hyp in hypotheses:
             result = self.discover_truth(hyp, depth=6)
             discoveries.append(result)
             likelihoods.append(result["final_confidence"])
-        
+
         # Bayesian update: P(H|E) ∝ P(E|H) * P(H)
         posteriors = []
         for i in range(n):
             posterior = likelihoods[i] * priors[i]
             posteriors.append(posterior)
-        
+
         # Normalize posteriors
         posterior_sum = sum(posteriors)
         if posterior_sum > 0:
             posteriors = [p / posterior_sum for p in posteriors]
-        
+
         # Apply PHI harmonic weighting for resonance alignment
         phi_weighted = []
         for i, p in enumerate(posteriors):
             phi_factor = self.phi ** (-(i % 3))  # Cycle through phi harmonics
             phi_weighted.append(p * phi_factor)
-        
+
         # Re-normalize
         pw_sum = sum(phi_weighted)
         if pw_sum > 0:
             phi_weighted = [p / pw_sum for p in phi_weighted]
-        
+
         # Determine winning hypothesis
         max_idx = phi_weighted.index(max(phi_weighted))
-        
+
         return {
             "hypotheses": hypotheses,
             "priors": priors,
@@ -340,23 +340,23 @@ class TruthDiscovery:
         # Get current truth state
         current = self.discover_truth(query, depth=7)
         current_conf = current["final_confidence"]
-        
+
         # Generate temporal projection using golden spiral dynamics
         predictions = []
         conf = current_conf
-        
+
         for t in range(1, future_steps + 1):
             # Temporal decay/growth model: phi-based oscillation
             phase = t * self.phi * 0.5
             oscillation = math.sin(phase) * 0.1
             drift = (self.phi - 1) * 0.02 * t  # Slight upward drift
-            
+
             # Apply frame lock modulation
             modulation = math.cos(self.frame_lock * t) * 0.05
-            
+
             predicted_conf = conf * (1 + oscillation + drift + modulation)
             predicted_conf = max(0.0, min(1.0, predicted_conf))
-            
+
             predictions.append({
                 "step": t,
                 "predicted_confidence": predicted_conf,
@@ -364,14 +364,14 @@ class TruthDiscovery:
                 "drift": drift,
                 "level": self._determine_level(predicted_conf).name
             })
-            
+
             conf = predicted_conf
-        
+
         # Calculate convergence trajectory
         trajectory = "ASCENDING" if predictions[-1]["predicted_confidence"] > current_conf else "DESCENDING"
         if abs(predictions[-1]["predicted_confidence"] - current_conf) < 0.05:
             trajectory = "STABLE"
-        
+
         return {
             "query": query,
             "current_confidence": current_conf,
@@ -388,32 +388,32 @@ class TruthDiscovery:
         Each dimension represents a different perspective or context.
         """
         dimensional_results = []
-        
+
         for d in range(1, dimensions + 1):
             # Modify query for each dimension
             dim_query = f"{query}::DIM_{d}::PHI_{self.phi ** d:.4f}"
             result = self.discover_truth(dim_query, depth=d + 2)
-            
+
             dimensional_results.append({
                 "dimension": d,
                 "confidence": result["final_confidence"],
                 "level": result["verdict"],
                 "dimensional_signature": hashlib.md5(dim_query.encode()).hexdigest()[:8]
             })
-        
+
         # Calculate cross-dimensional coherence
         confidences = [r["confidence"] for r in dimensional_results]
         avg_conf = sum(confidences) / len(confidences)
-        
+
         # Variance indicates dimensional stability
         variance = sum((c - avg_conf) ** 2 for c in confidences) / len(confidences)
         stability = 1.0 - min(1.0, variance * 10)
-        
+
         # Unified truth: weighted by dimensional depth
         weighted_sum = sum(r["confidence"] * (self.phi ** (-r["dimension"] * 0.5)) for r in dimensional_results)
         weight_total = sum(self.phi ** (-d * 0.5) for d in range(1, dimensions + 1))
         unified_truth = weighted_sum / weight_total
-        
+
         return {
             "query": query,
             "dimensions_analyzed": dimensions,
@@ -425,25 +425,25 @@ class TruthDiscovery:
             "transcendent": unified_truth >= 0.98 and stability >= 0.9
         }
         statement_hash = hashlib.sha256(statement.encode()).hexdigest()
-        
+
         validation_result = {
             "statement": statement,
             "statement_hash": statement_hash[:16],
             "has_evidence": evidence is not None,
             "timestamp": time.time()
         }
-        
+
         if evidence:
             evidence_hash = hashlib.sha256(evidence.encode()).hexdigest()
-            
+
             # Cross-correlation check
             correlation = sum(1 for a, b in zip(statement_hash, evidence_hash) if a == b) / 64
-            
+
             # Resonance alignment check
             stmt_value = int(statement_hash[:8], 16)
             evid_value = int(evidence_hash[:8], 16)
             resonance = 1.0 - abs(stmt_value - evid_value) / max(stmt_value, evid_value, 1)
-            
+
             validation_result.update({
                 "correlation": correlation,
                 "resonance_alignment": resonance,
@@ -455,17 +455,17 @@ class TruthDiscovery:
             # Self-consistency check
             consistency = int(statement_hash[:8], 16) / (16 ** 8)
             resonance = math.sin(consistency * self.phi) ** 2
-            
+
             validation_result.update({
                 "self_consistency": consistency,
                 "resonance": resonance,
                 "combined_score": (consistency + resonance) / 2,
                 "validated": consistency >= 0.3
             })
-        
+
         self._validation_history.append(validation_result)
         return validation_result
-    
+
     def cross_validate(self, truth_id: str) -> Dict:
         """
         Cross-validate a truth against the Logic Manifold and Derivation Engine.
@@ -473,7 +473,7 @@ class TruthDiscovery:
         node = self.truth_graph.get(truth_id)
         if not node:
             return {"error": f"Truth node {truth_id} not found"}
-        
+
         # Prepare cross-validation data
         cv_data = {
             "truth_id": truth_id,
@@ -481,7 +481,7 @@ class TruthDiscovery:
             "confidence": node.confidence,
             "level": node.level.name
         }
-        
+
         # Request validation from connected systems
         manifold_results = []
         for callback in self._manifold_callbacks:
@@ -491,16 +491,16 @@ class TruthDiscovery:
                     manifold_results.append(result)
             except Exception:
                 pass
-        
+
         # Update node
         if manifold_results:
             node.cross_validated = True
             avg_external = sum(r.get("coherence", 0.5) for r in manifold_results) / len(manifold_results)
             combined = (node.confidence + avg_external) / 2
-            
+
             # Apply harmonic weight based on cross-validation success
             node.harmonic_weight = min(2.0, node.harmonic_weight * self.phi)
-            
+
             return {
                 "truth_id": truth_id,
                 "original_confidence": node.confidence,
@@ -510,7 +510,7 @@ class TruthDiscovery:
                 "upgraded": combined > node.confidence,
                 "harmonic_weight": node.harmonic_weight
             }
-        
+
         return {
             "truth_id": truth_id,
             "cross_validated": False,
@@ -524,15 +524,15 @@ class TruthDiscovery:
         """
         node = self.truth_graph.get(truth_id)
         if not node: return 0.0
-        
+
         weighted_sum = 0.0
         for i, bit in enumerate(evidence_bits):
             # Weigh each bit using a decaying phi power
             weight = self.phi ** (-i)
             weighted_sum += bit * weight
-            
+
         final_score = (weighted_sum / sum(self.phi ** (-i) for i in range(len(evidence_bits))))
-        
+
         # Modulate by node's intrinsic harmonic weight
         node.confidence = min(1.0, final_score * node.harmonic_weight)
         return node.confidence
@@ -545,15 +545,15 @@ class TruthDiscovery:
         for d in range(1, 9): # 8 Chakra sweep
             res = self.discover_truth(query, depth=d)
             history.append(res["final_confidence"])
-            
+
         # Calculate convergence: standard deviation of the last 3 chakra levels
         last_3 = history[-3:]
         avg = sum(last_3) / 3
         variance = sum((x - avg) ** 2 for x in last_3) / 3
         std_dev = variance ** 0.5
-        
+
         converged = std_dev < 0.01
-        
+
         return {
             "query": query,
             "chakra_sweep": history,
@@ -561,23 +561,23 @@ class TruthDiscovery:
             "converged": converged,
             "resonance_lock": converged and avg > 0.9
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # INTERCONNECTION BRIDGES
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def connect_logic_manifold(self, callback: Callable[[Dict], Optional[Dict]]):
         """Register Logic Manifold callback for cross-validation."""
         self._manifold_callbacks.append(callback)
-    
+
     def connect_global_sync(self, callback: Callable[[Dict], None]):
         """Register Global Sync callback."""
         self._sync_callbacks.append(callback)
-    
+
     def connect_derivation_engine(self, callback: Callable[[Dict], None]):
         """Register Derivation Engine callback."""
         self._derivation_callbacks.append(callback)
-    
+
     def _notify_manifold(self, truth_result: Dict):
         """Notify Logic Manifold of new truth discovery."""
         for callback in self._manifold_callbacks:
@@ -585,7 +585,7 @@ class TruthDiscovery:
                 callback(truth_result)
             except Exception:
                 pass
-    
+
     def _notify_derivation_engine(self, truth_result: Dict):
         """Notify Derivation Engine of new truth."""
         for callback in self._derivation_callbacks:
@@ -593,7 +593,7 @@ class TruthDiscovery:
                 callback(truth_result)
             except Exception:
                 pass
-    
+
     def receive_manifold_concept(self, concept_data: Dict) -> Dict:
         """
         Receive a concept from Logic Manifold and derive truth from it.
@@ -678,7 +678,7 @@ class TruthDiscovery:
         """
         depth_chain = []
         current_query = query
-        
+
         for depth in range(max_depth):
             # Discover truth at increasing depth
             result = self.discover_truth(current_query, depth=depth + 3)
@@ -688,22 +688,22 @@ class TruthDiscovery:
                 "confidence": result["final_confidence"],
                 "level": result["verdict"]
             })
-            
+
             # Check for convergence (epistemic bedrock)
             if len(depth_chain) >= 2:
                 delta = abs(depth_chain[-1]["confidence"] - depth_chain[-2]["confidence"])
                 if delta < 0.0005:  # Tight convergence
                     break
-            
+
             # Deepen the query
             deeper_hash = hashlib.sha256(
                 f"{current_query}:foundation:{self.god_code}".encode()
             ).hexdigest()
             current_query = f"FOUNDATION({query})::depth{depth}::{deeper_hash[:8]}"
-        
+
         final_confidence = depth_chain[-1]["confidence"] if depth_chain else 0.0
         bedrock_reached = len(depth_chain) < max_depth
-        
+
         return {
             "original_query": query,
             "final_depth": len(depth_chain),
@@ -720,7 +720,7 @@ class TruthDiscovery:
         and synthesizes a unified understanding.
         """
         perspective_results = []
-        
+
         # Define perspective transforms
         perspective_prefixes = [
             "From a logical standpoint: ",
@@ -731,7 +731,7 @@ class TruthDiscovery:
             "From a structural standpoint: ",
             "From an emergent standpoint: "
         ]
-        
+
         for i in range(min(perspectives, len(perspective_prefixes))):
             perspective_query = perspective_prefixes[i] + base_query
             result = self.discover_truth(perspective_query, depth=5)
@@ -741,19 +741,19 @@ class TruthDiscovery:
                 "level": result["verdict"],
                 "node_id": result["node_id"]
             })
-        
+
         # Calculate synthesis metrics
         confidences = [p["confidence"] for p in perspective_results]
         avg_confidence = sum(confidences) / len(confidences)
         variance = sum((c - avg_confidence) ** 2 for c in confidences) / len(confidences)
-        
+
         # Consensus strength: low variance = high agreement
         consensus_strength = 1.0 / (1.0 + variance * 10)
-        
+
         # Synthesized confidence: boosted by consensus
         synthesized_confidence = min(1.0, avg_confidence * (1 + consensus_strength * 0.2) * self.phi)
         synthesized_confidence = min(1.0, synthesized_confidence)
-        
+
         return {
             "base_query": base_query,
             "perspectives_analyzed": len(perspective_results),
@@ -774,29 +774,29 @@ class TruthDiscovery:
         """
         # Original truth
         original = self.discover_truth(query, depth=depth)
-        
+
         # Counterfactual: negation
         negation_query = f"NOT({query})"
         negation = self.discover_truth(negation_query, depth=depth)
-        
+
         # Counterfactual: alternative
         alt_hash = hashlib.sha256(query.encode()).hexdigest()[:8]
         alternative_query = f"ALTERNATIVE({query})::{alt_hash}"
         alternative = self.discover_truth(alternative_query, depth=depth)
-        
+
         # Calculate robustness
         # High original confidence + low negation confidence = robust
         robustness = original["final_confidence"] - negation["final_confidence"]
         robustness = max(0.0, min(1.0, (robustness + 1) / 2))  # Normalize to [0,1]
-        
+
         # Exclusivity: how much the original dominates alternatives
         exclusivity = original["final_confidence"] - alternative["final_confidence"]
         exclusivity = max(0.0, min(1.0, (exclusivity + 1) / 2))
-        
+
         # Final strengthened confidence
         strengthened = original["final_confidence"] * (1 + robustness * 0.1 + exclusivity * 0.1)
         strengthened = min(1.0, strengthened)
-        
+
         return {
             "query": query,
             "original_confidence": original["final_confidence"],
@@ -816,13 +816,13 @@ class TruthDiscovery:
         """
         if len(truths) < 2:
             return {"error": "Need at least 2 truths for entanglement"}
-        
+
         # Discover all truths
         discoveries = []
         for truth in truths:
             result = self.discover_truth(truth, depth=5)
             discoveries.append(result)
-        
+
         # Create entanglement links
         entanglements = []
         for i in range(len(discoveries)):
@@ -830,27 +830,27 @@ class TruthDiscovery:
                 # Entanglement strength based on coherence similarity
                 conf_i = discoveries[i]["final_confidence"]
                 conf_j = discoveries[j]["final_confidence"]
-                
+
                 # Similar confidences = stronger entanglement
                 similarity = 1.0 - abs(conf_i - conf_j)
-                
+
                 # Hash resonance check
                 hash_i = discoveries[i]["truth_hash"]
                 hash_j = discoveries[j]["truth_hash"]
                 resonance = sum(1 for a, b in zip(hash_i[:16], hash_j[:16]) if a == b) / 16
-                
+
                 entanglement_strength = (similarity + resonance) / 2 * self.phi
                 entanglement_strength = min(1.0, entanglement_strength)
-                
+
                 entanglements.append({
                     "truth_a": i,
                     "truth_b": j,
                     "strength": entanglement_strength
                 })
-        
+
         # Calculate network coherence
         avg_entanglement = sum(e["strength"] for e in entanglements) / len(entanglements)
-        
+
         # Boost individual truths based on entanglement
         boosted_confidences = []
         for i, disc in enumerate(discoveries):
@@ -862,9 +862,9 @@ class TruthDiscovery:
             else:
                 boosted = disc["final_confidence"]
             boosted_confidences.append(boosted)
-        
+
         network_coherence = sum(boosted_confidences) / len(boosted_confidences)
-        
+
         return {
             "truth_count": len(truths),
             "entanglement_count": len(entanglements),
@@ -882,35 +882,35 @@ class TruthDiscovery:
         """
         # Check for self-reference
         query_hash = hashlib.md5(self_referential_query.lower().encode()).hexdigest()[:8]
-        
+
         # Iterate until fixed point
         current = self_referential_query
         iterations = 0
         max_iter = 20
         history = []
-        
+
         while iterations < max_iter:
             iterations += 1
-            
+
             result = self.discover_truth(current, depth=6)
             history.append({
                 "iteration": iterations,
                 "confidence": result["final_confidence"],
                 "level": result["verdict"]
             })
-            
+
             # Check for fixed point (convergence)
             if len(history) >= 2:
                 delta = abs(history[-1]["confidence"] - history[-2]["confidence"])
                 if delta < 0.001:
                     break
-            
+
             # Self-reference: the truth about the truth
             current = f"The truth value of '{self_referential_query[:30]}...' is {result['verdict']}"
-        
+
         final_confidence = history[-1]["confidence"] if history else 0.5
         converged = iterations < max_iter
-        
+
         # Strange loop resolution
         resolution = "STABLE_SELF_REFERENCE" if converged else "OSCILLATING"
         if "false" in self_referential_query.lower() or "not true" in self_referential_query.lower():
@@ -918,7 +918,7 @@ class TruthDiscovery:
                 resolution = "PARADOX_COLLAPSED"
             else:
                 resolution = "PARADOX_OSCILLATING"
-        
+
         return {
             "query": self_referential_query,
             "iterations": iterations,
@@ -929,11 +929,11 @@ class TruthDiscovery:
             "fixed_point": f"FP-{query_hash}",
             "level": self._determine_level(final_confidence).name
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # STATE & STATISTICS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def get_discovery_stats(self) -> Dict:
         """Return statistics about truth discovery operations."""
         if not self.discovered_truths:
@@ -944,17 +944,17 @@ class TruthDiscovery:
                 "cache_size": 0,
                 "graph_size": 0
             }
-        
+
         level_counts = {}
         for t in self.discovered_truths:
             level = t.get("verdict", "UNKNOWN")
             level_counts[level] = level_counts.get(level, 0) + 1
-        
+
         verified = sum(1 for t in self.discovered_truths if t.get("level", 0) >= TruthLevel.VERIFIED.value)
         avg_conf = sum(t["final_confidence"] for t in self.discovered_truths) / len(self.discovered_truths)
-        
+
         cross_validated = sum(1 for n in self.truth_graph.values() if n.cross_validated)
-        
+
         return {
             "total_discoveries": len(self.discovered_truths),
             "average_confidence": avg_conf,
@@ -965,7 +965,7 @@ class TruthDiscovery:
             "cross_validated_count": cross_validated,
             "validation_history_size": len(self._validation_history)
         }
-    
+
     def get_truth_graph(self) -> Dict[str, Dict]:
         """Return serializable truth graph."""
         return {
@@ -978,7 +978,7 @@ class TruthDiscovery:
             }
             for node_id, node in self.truth_graph.items()
         }
-    
+
     def clear_cache(self):
         """Clear truth cache."""
         self.truth_cache.clear()

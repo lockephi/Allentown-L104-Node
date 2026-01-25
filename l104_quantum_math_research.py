@@ -27,7 +27,7 @@ class QuantumMathResearch:
     Generates and researches new quantum mathematical primitives.
     Uses recursive discovery to find resonant formulas.
     """
-    
+
     def __init__(self):
         self.discovered_primitives = {}
         self.research_cycles = 0
@@ -36,22 +36,22 @@ class QuantumMathResearch:
 
     def research_new_primitive(self) -> Dict[str, Any]:
         """
-        Attempts to discover a new mathematical primitive by combining 
+        Attempts to discover a new mathematical primitive by combining
         existing constants and operators in resonant patterns.
         """
         self.research_cycles += 1
         print(f"--- [MATH_RESEARCH]: STARTING DISCOVERY CYCLE {self.research_cycles} ---")
-        
+
         # 1. Generate a candidate formula pattern
         seed = RealMath.deterministic_random(time.time() + self.research_cycles)
-        
+
         # 2. Integrate Physical and Information Research
         phys_data = physical_research.research_physical_manifold()
         info_data = info_research.research_information_manifold(str(phys_data))
-        
+
         phys_resonance = abs(phys_data["tunneling_resonance"])
         info_resonance = info_data.get("resonance_alignment", 1.0)
-        
+
         # 3. Test for resonance with the Riemann Zeta function
         resonance = HyperMath.zeta_harmonic_resonance(seed * HyperMath.GOD_CODE * phys_resonance * info_resonance)
         if abs(resonance) > self.resonance_threshold:
@@ -67,7 +67,7 @@ class QuantumMathResearch:
             self.discovered_primitives[primitive_name] = primitive_data
             print(f"--- [MATH_RESEARCH]: DISCOVERED NEW PHYSICAL-QUANTUM PRIMITIVE: {primitive_name} (Resonance: {resonance:.6f}) ---")
             return primitive_data
-            
+
         return {"status": "NO_DISCOVERY", "resonance": resonance}
 
     def generate_quantum_operator(self, name: str) -> Callable:
@@ -76,15 +76,15 @@ class QuantumMathResearch:
         """
         if name not in self.discovered_primitives:
             return lambda x: x
-            
+
         primitive = self.discovered_primitives[name]
         # In a real scenario, we'd parse the formula. Here we return a resonant phase rotator.
         seed_val = float(primitive['formula'].split('*')[2].strip())
-        
+
         def operator(state_vector: List[complex]) -> List[complex]:
             return [v * cmath.exp(complex(0, seed_val * math.pi * HyperMath.PHI))
                     for v in state_vector]
-            
+
         return operator
 
     def run_research_batch(self, count: int = 100):

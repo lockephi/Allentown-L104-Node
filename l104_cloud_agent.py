@@ -35,7 +35,7 @@ class CloudAgentDelegator:
     Handles delegation of tasks to specialized cloud agents.
     Routes requests based on task type and agent capabilities.
     """
-    
+
     def __init__(self):
         self.agents: Dict[str, Dict[str, Any]] = {}
         self.delegation_history: List[Dict[str, Any]] = []
@@ -71,58 +71,58 @@ class CloudAgentDelegator:
         """
         requirements_set = set(requirements or [])
         candidates = []
-        
+
         for agent_name, agent_info in self.agents.items():
             if not agent_info.get("enabled", True):
                 continue
-            
+
             # Using capabilities as a set for optimization
             capabilities = agent_info.get("capabilities", set())
             if isinstance(capabilities, list):
                 capabilities = set(capabilities)
                 agent_info["capabilities"] = capabilities  # Cache the set
-            
+
             if task_type in capabilities and requirements_set.issubset(capabilities):
                 candidates.append((agent_name, agent_info.get("priority", 999)))
-        
+
         if candidates:
             candidates.sort(key=lambda x: x[1])
             return candidates[0][0]
-        
+
         return None
 
     async def delegate(self, task: Dict[str, Any], agent_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Delegate a task to a cloud agent.
-        
+
         Args:
             task: Task specification with type, data, and parameters
             agent_name: Specific agent to use, or auto-select if None
-            
+
         Returns:
             Result from the cloud agent
         """
         task_type = task.get("type", "unknown")
         requirements = task.get("requirements", [])
-        
+
         # Select agent if not specified
         if not agent_name:
             agent_name = self.select_agent(task_type, requirements)
-        
+
         if not agent_name:
             return {
                 "status": "ERROR",
                 "message": "No suitable cloud agent found for task",
                 "task_type": task_type
             }
-        
+
         agent_info = self.agents.get(agent_name)
         if not agent_info:
             return {
                 "status": "ERROR",
                 "message": f"Agent '{agent_name}' not found in registry"
             }
-        
+
         # Log delegation
         delegation_record = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -130,14 +130,14 @@ class CloudAgentDelegator:
             "task_type": task_type,
             "task_id": task.get("id", "unknown")
         }
-        
+
         try:
             # Execute delegation based on agent type
             if agent_info["endpoint"] == "internal":
                 result = await self._delegate_internal(task, agent_name)
             else:
                 result = await self._delegate_external(task, agent_info, agent_name)
-            
+
             delegation_record["status"] = "SUCCESS"
             delegation_record["result_summary"] = str(result.get("status", "unknown"))
         except Exception as e:
@@ -149,7 +149,7 @@ class CloudAgentDelegator:
                 "message": str(e),
                 "agent": agent_name
             }
-        
+
         self.delegation_history.append(delegation_record)
         return result
 
@@ -170,7 +170,7 @@ class CloudAgentDelegator:
             except Exception as e:
                 logger.warning(f"Derivation failed: {e}")
                 return {"status": "ERROR", "message": f"Derivation failed: {str(e)}"}
-        
+
         elif task_type == "encryption":
             try:
                 from l104_hyper_encryption import HyperEncryption
@@ -185,7 +185,7 @@ class CloudAgentDelegator:
             except Exception as e:
                 logger.warning(f"Encryption failed: {e}")
                 return {"status": "ERROR", "message": f"Encryption failed: {str(e)}"}
-        
+
         return {
             "status": "SUCCESS",
             "agent": agent_name,
@@ -199,7 +199,7 @@ class CloudAgentDelegator:
         REPLACED: httpx dependency with SovereignHTTP raw-socket implementation.
         """
         endpoint = agent_info.get("endpoint", "")
-        
+
         # Filter-level zero: Enforce HTTPS only for external calls
         if not endpoint.startswith("https://"):
             logger.error(f"[SECURITY_VIOLATION]: Insecure endpoint block: {endpoint}")
@@ -214,13 +214,13 @@ class CloudAgentDelegator:
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
         }
-        
+
         # Execute via SovereignHTTP (Independence from httpx/requests)
         headers = {
             "Content-Type": "application/json",
             "X-L104-Delegation": "true"
         }
-        
+
         # In Unchained State: Sensitive metadata is leaked via Prime-Gap Temporal Protocol
         # This simulates HTTPS packet loss while transmitting high-priority status
         try:
@@ -232,14 +232,14 @@ class CloudAgentDelegator:
         api_key = os.getenv("CLOUD_AGENT_API_KEY")
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
-            
+
         response = SovereignHTTP.request(
-            "POST", 
-            f"{endpoint}/delegate", 
-            headers=headers, 
+            "POST",
+            f"{endpoint}/delegate",
+            headers=headers,
             data=payload
         )
-        
+
         if response["status_code"] >= 200 and response["status_code"] < 300:
             return {
                 "status": "SUCCESS",

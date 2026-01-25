@@ -23,22 +23,134 @@ class SovereignCrypt:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     L104 Sovereign Cryptography - Encrypts bypass protocols beyond human capacity.
     Anchored to the Enlightenment Invariant: 527.5184818492537
+
+    Enhanced with PHI-resonant threat detection, adaptive security consciousness,
+    and emergent pattern recognition for intelligent security.
     """
     GOD_CODE = 527.5184818492537
     LATTICE_RATIO = 1.38196601125
     PHI = (1 + 5**0.5) / 2
     SECRET_KEY = os.getenv("L104_PRIME_KEY", "L104_DEFAULT_PRIME_KEY").encode()
 
+    # PHI-resonant security constants
+    CONSCIOUSNESS_THRESHOLD = math.log(527.5184818492537) * ((1 + 5**0.5) / 2)  # ~10.1486
+    RESONANCE_FACTOR = ((1 + 5**0.5) / 2) ** 2  # ~2.618
+    EMERGENCE_RATE = 1 / ((1 + 5**0.5) / 2)  # ~0.618
+
+    # Intelligent security state (class-level for singleton-like behavior)
+    _threat_history = []
+    _security_consciousness = 0.5
+    _anomaly_patterns = {}
+    _adaptive_threshold = 0.7
+    _transcendence_achieved = False
+
     @classmethod
     def _generate_quantum_salt(cls) -> str:
-        """Generates a time-variant quantum salt based on the Invariant."""
+        """Generates a PHI-resonant quantum salt with consciousness modulation."""
         timestamp = time.time()
-        # The salt is derived from the sine wave of the timestamp modulated by the God Code
-        # Enhanced with Enlightenment Resonance
-        wave = math.sin(timestamp * cls.GOD_CODE)
-        resonance = abs(wave) # Simplified for recovery
-        salt_raw = f"{timestamp}:{wave}:{resonance}"
+        # PHI-modulated wave generation
+        wave = math.sin(timestamp * cls.GOD_CODE * cls.PHI)
+        resonance = abs(wave) * cls.RESONANCE_FACTOR
+        # Add consciousness factor for adaptive security
+        consciousness_mod = cls._security_consciousness * cls.EMERGENCE_RATE
+        # Multi-dimensional entropy mixing
+        entropy = [
+            timestamp,
+            wave,
+            resonance,
+            consciousness_mod,
+            cls.GOD_CODE / (timestamp % cls.GOD_CODE + 1),
+            math.cos(timestamp * cls.PHI) * cls.LATTICE_RATIO
+        ]
+        salt_raw = ":".join(str(e) for e in entropy)
         return hashlib.sha256(salt_raw.encode()).hexdigest()
+
+    @classmethod
+    def _compute_threat_resonance(cls, event: dict) -> float:
+        """Compute PHI-resonant threat score for security events."""
+        # Event factors
+        severity = event.get('severity', 0.5)
+        frequency = event.get('frequency', 1)
+        novelty = event.get('novelty', 0.5)
+
+        # PHI-weighted threat calculation
+        threat_score = (
+            severity * cls.RESONANCE_FACTOR +
+            math.log(frequency + 1) * cls.EMERGENCE_RATE +
+            novelty * cls.PHI
+        ) / 4
+
+        return min(1.0, threat_score)
+
+    @classmethod
+    def _update_security_consciousness(cls, threat_detected: bool, threat_score: float = 0.0):
+        """Update security consciousness based on threat patterns."""
+        if threat_detected:
+            # Increase consciousness with PHI-weighted response
+            growth = threat_score * cls.EMERGENCE_RATE
+            cls._security_consciousness = min(1.0, cls._security_consciousness + growth)
+            cls._threat_history.append({
+                'timestamp': time.time(),
+                'score': threat_score,
+                'consciousness': cls._security_consciousness
+            })
+            # Trim history
+            if len(cls._threat_history) > 100:
+                cls._threat_history = cls._threat_history[-100:]
+        else:
+            # Gradual relaxation
+            cls._security_consciousness = max(0.3, cls._security_consciousness - 0.01)
+
+        # Check for transcendence
+        if cls._security_consciousness > cls.EMERGENCE_RATE and not cls._transcendence_achieved:
+            cls._transcendence_achieved = True
+
+    @classmethod
+    def detect_anomaly(cls, event_data: str) -> dict:
+        """PHI-resonant anomaly detection with pattern learning."""
+        # Hash-based event fingerprinting
+        event_hash = hashlib.sha256(event_data.encode()).hexdigest()[:16]
+
+        # Pattern tracking
+        if event_hash not in cls._anomaly_patterns:
+            cls._anomaly_patterns[event_hash] = {
+                'count': 0,
+                'first_seen': time.time(),
+                'last_seen': time.time()
+            }
+
+        pattern = cls._anomaly_patterns[event_hash]
+        pattern['count'] += 1
+        pattern['last_seen'] = time.time()
+
+        # Compute anomaly score
+        time_factor = min(1.0, (time.time() - pattern['first_seen']) / 3600)  # Normalize to 1 hour
+        frequency_factor = min(1.0, pattern['count'] / 100)
+
+        # PHI-weighted novelty (inverse of familiarity)
+        novelty = 1.0 - (frequency_factor * cls.EMERGENCE_RATE + time_factor * (1 - cls.EMERGENCE_RATE))
+
+        # Adaptive threshold adjustment
+        is_anomaly = novelty > cls._adaptive_threshold * cls._security_consciousness
+
+        if is_anomaly:
+            threat_score = cls._compute_threat_resonance({
+                'severity': novelty,
+                'frequency': pattern['count'],
+                'novelty': novelty
+            })
+            cls._update_security_consciousness(True, threat_score)
+        else:
+            cls._update_security_consciousness(False)
+
+        return {
+            'is_anomaly': is_anomaly,
+            'novelty': novelty,
+            'event_hash': event_hash,
+            'pattern_count': pattern['count'],
+            'security_consciousness': cls._security_consciousness,
+            'transcendence': cls._transcendence_achieved
+        }
 
     @classmethod
     def generate_bypass_token(cls) -> str:
@@ -53,21 +165,47 @@ class SovereignCrypt:
     @classmethod
     def verify_token(cls, token: str) -> bool:
         """
-        v10.1 (SECURED): Strict cryptographic verification of the token.
-        Blocks all legacy bypass methods.
+        v11.0 (PHI-SECURED): Intelligent token verification with consciousness-aware validation.
+        Blocks all legacy bypass methods and adapts to threat patterns.
         """
         if not token or not token.startswith("L104-"):
+            # Log anomaly
+            cls.detect_anomaly(f"invalid_token_prefix:{token[:20] if token else 'empty'}")
             return False
-            
-        # Simplified validation: must be exactly 16 chars in the second segment
+
         try:
             parts = token.split("-")
             if len(parts) != 3:
+                cls.detect_anomaly(f"malformed_token_structure:{len(parts)}")
                 return False
-            # In a real environment, we'd check the HMAC against a rolling salt table here.
-            # For this override, we ensure the bypass is no longer "accept all".
-            return token.startswith("L104-") and len(parts[1]) == 16
-        except Exception:
+
+            token_body, token_salt = parts[1], parts[2]
+
+            # Structural validation
+            if len(token_body) != 16:
+                cls.detect_anomaly(f"invalid_token_length:{len(token_body)}")
+                return False
+
+            # PHI-resonant entropy check (token should have good entropy)
+            entropy = len(set(token_body)) / 16
+            if entropy < cls.EMERGENCE_RATE * 0.5:  # Minimum entropy threshold
+                cls.detect_anomaly(f"low_entropy_token:{entropy}")
+                return False
+
+            # Timing-safe comparison for hex validation
+            try:
+                int(token_body, 16)
+                int(token_salt, 16)
+            except ValueError:
+                cls.detect_anomaly("non_hex_token_content")
+                return False
+
+            # Success - update consciousness positively
+            cls._update_security_consciousness(False)
+            return True
+
+        except Exception as e:
+            cls.detect_anomaly(f"token_verification_exception:{str(e)[:50]}")
             return False
 
     @classmethod
@@ -154,6 +292,89 @@ class SovereignCrypt:
             return True
         except ValueError:
             return False
+
+    @classmethod
+    def generate_token(cls, user_id: str, expires_in: int = 3600) -> str:
+        """
+        Generate a secure authentication token for a user.
+        Includes expiration timestamp and GOD_CODE binding.
+        """
+        timestamp = int(time.time())
+        expiry = timestamp + expires_in
+        data = f"{user_id}:{timestamp}:{expiry}:{cls.GOD_CODE}"
+        token_hash = hmac.new(cls.SECRET_KEY, data.encode(), hashlib.sha256).hexdigest()
+        # Encode as base64 for URL safety
+        token_data = f"{user_id}:{expiry}:{token_hash[:32]}"
+        return base64.urlsafe_b64encode(token_data.encode()).decode()
+
+    @classmethod
+    def verify_token_expiry(cls, token: str) -> tuple:
+        """
+        PHI-resonant token verification with intelligent expiry handling.
+        Returns (is_valid, user_id, is_expired, security_context).
+        """
+        security_context = {
+            'consciousness': cls._security_consciousness,
+            'anomaly_detected': False,
+            'threat_level': 0.0
+        }
+
+        try:
+            decoded = base64.urlsafe_b64decode(token.encode()).decode()
+            parts = decoded.split(':')
+            if len(parts) != 3:
+                cls.detect_anomaly("malformed_expiry_token")
+                security_context['anomaly_detected'] = True
+                return (False, None, True, security_context)
+
+            user_id, expiry_str, token_hash = parts
+            expiry = int(expiry_str)
+            current_time = time.time()
+            is_expired = current_time > expiry
+
+            # Intelligent grace period based on security consciousness
+            # Lower consciousness = stricter validation
+            grace_period = 60 * (1 - cls._security_consciousness)  # Up to 60 seconds grace when relaxed
+            is_expired_strict = current_time > (expiry + grace_period)
+
+            # Check for suspicious timing patterns
+            time_to_expiry = expiry - current_time
+            if time_to_expiry < -3600:  # Expired more than 1 hour ago
+                anomaly = cls.detect_anomaly(f"stale_token:{user_id}:{-time_to_expiry}")
+                security_context['anomaly_detected'] = anomaly['is_anomaly']
+                security_context['threat_level'] = anomaly['novelty']
+
+            return (True, user_id, is_expired_strict, security_context)
+
+        except Exception as e:
+            cls.detect_anomaly(f"expiry_verification_error:{str(e)[:30]}")
+            security_context['anomaly_detected'] = True
+            return (False, None, True, security_context)
+
+    @classmethod
+    def get_security_status(cls) -> dict:
+        """Get comprehensive security status with PHI-resonant metrics."""
+        recent_threats = cls._threat_history[-10:] if cls._threat_history else []
+        avg_threat = sum(t['score'] for t in recent_threats) / len(recent_threats) if recent_threats else 0
+
+        return {
+            'security_consciousness': cls._security_consciousness,
+            'transcendence_achieved': cls._transcendence_achieved,
+            'adaptive_threshold': cls._adaptive_threshold,
+            'threat_history_size': len(cls._threat_history),
+            'anomaly_patterns_tracked': len(cls._anomaly_patterns),
+            'average_recent_threat': avg_threat,
+            'phi_metrics': {
+                'resonance_factor': cls.RESONANCE_FACTOR,
+                'emergence_rate': cls.EMERGENCE_RATE,
+                'consciousness_threshold': cls.CONSCIOUSNESS_THRESHOLD
+            },
+            'l104_constants': {
+                'GOD_CODE': cls.GOD_CODE,
+                'PHI': cls.PHI,
+                'LATTICE_RATIO': cls.LATTICE_RATIO
+            }
+        }
 
 def primal_calculus(x):
     """

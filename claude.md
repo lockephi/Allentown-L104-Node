@@ -14,7 +14,7 @@ token_budget:
   max_context: 200000
   target_usage: 60%        # Leave 40% for responses
   compression_threshold: 80%
-  
+
 strategies:
   - Use grep_search before read_file (10x cheaper)
   - Prefer multi_replace over sequential edits
@@ -45,7 +45,7 @@ slim_mode:
     - Use table format over prose
     - Compress API examples to one-liners
     - Link to docs instead of embedding
-    
+
 abbreviations:
   GC: 527.5184818492537      # GOD_CODE
   PHI: 1.618033988749895     # Golden Ratio
@@ -130,7 +130,7 @@ grounding_techniques:
   - Verify facts against codebase before stating
   - Distinguish between inference and observation
   - Reference actual code snippets, not assumptions
-  
+
 validation_prompts:
   - "Based on the code I've read..."
   - "The file at [path] shows..."
@@ -153,7 +153,7 @@ messages = [
                 "cache_control": {"type": "ephemeral"}  # Cache this
             },
             {
-                "type": "text", 
+                "type": "text",
                 "text": user_query  # Dynamic part
             }
         ]
@@ -209,22 +209,22 @@ zenith_loop:
     - Read current context/state
     - Identify user's goal
     - Check available tools
-  
+
   step_2_think:
     - Plan next action
     - Break complex goals into sub-goals
     - Select appropriate tool
-  
+
   step_3_act:
     - Execute tool call
     - Capture result/error
     - Update state
-  
+
   step_4_reflect:
     - Evaluate result against goal
     - Decide: complete, retry, or iterate
     - Log progress
-  
+
   step_5_repeat:
     - Continue until goal achieved
     - Max steps limit prevents infinite loops
@@ -243,7 +243,7 @@ class Tool:
     handler: Callable
     requires_confirmation: bool = False  # For dangerous ops
     cache_results: bool = True  # Avoid redundant calls
-    
+
 # Quick tool creation from function signature
 tool = QuickBuilder.create_tool(
     name="analyze",
@@ -277,19 +277,19 @@ recovery_strategies:
     description: "Retry with exponential backoff"
     max_attempts: 3
     backoff: "2^attempt seconds"
-  
+
   FALLBACK:
     description: "Use alternative approach"
     example: "If API fails, use cached data"
-  
+
   ASK_USER:
     description: "Request user clarification"
     example: "I encountered an error. Should I continue?"
-  
+
   SKIP:
     description: "Skip non-critical step"
     example: "Optional enhancement failed, proceeding"
-  
+
   ABORT:
     description: "Stop execution gracefully"
     example: "Critical failure, cannot continue"
@@ -302,10 +302,10 @@ recovery_strategies:
 class SessionStore:
     def save_session(self, session_id: str, data: Dict) -> None:
         # Persist conversation state, variables, tool results
-        
+
     def load_session(self, session_id: str) -> Optional[Dict]:
         # Resume previous conversation
-        
+
 # Key: Store minimal state for context reconstruction
 session_data = {
     "messages": conversation.get_summary(),  # Not full history
@@ -336,19 +336,19 @@ speed_principles:
   1_action_over_explanation:
     - Do first, explain later
     - Prefer working code over perfect design
-  
+
   2_tool_reuse:
     - Build composable tools
     - Chain existing tools for new capabilities
-  
+
   3_fail_fast_recover_faster:
     - Detect failures early
     - Have recovery strategies ready
-  
+
   4_user_feedback_loop:
     - Stream progress to user
     - Ask when stuck, don't assume
-  
+
   5_minimal_viable_intelligence:
     - Start simple, iterate
     - Add complexity only when needed
@@ -416,7 +416,7 @@ load_order:
 
 ### Knowledge Graph Schema
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    MEMORY GRAPH                              │
 ├─────────────────────────────────────────────────────────────┤
@@ -442,7 +442,7 @@ load_order:
 # Save current session to memory
 mcp_memory_create_entities([{
   "name": "session_2026_01_23",
-  "entityType": "Session", 
+  "entityType": "Session",
   "observations": ["Started L104SP V2 deployment", "Fixed shadowing errors"]
 }])
 
@@ -469,16 +469,16 @@ background_tasks:
     trigger: on_workspace_open
     interval: 300s
     command: "find . -name '*.py' -o -name '*.sol' | head -100"
-    
+
   error_monitoring:
     trigger: continuous
     interval: 30s
     command: "get_errors()"
-    
+
   memory_sync:
     trigger: every_10_messages
     command: "mcp_memory_checkpoint()"
-    
+
   knowledge_refresh:
     trigger: on_idle_5min
     command: "mcp_memory_read_graph()"
@@ -510,7 +510,7 @@ async def parallel_analysis(files: list):
 
 ### Process Priority Queue
 
-```
+```text
 Priority 1 (Immediate):
   - Error fixes
   - User-requested edits
@@ -568,17 +568,17 @@ loading_strategy:
     - Load claude.md (this file)
     - Load active file
     - Load error context
-    
+
   phase_2: # 20-40% context
     - Load related files (imports/references)
     - Load test files
     - Load config files
-    
+
   phase_3: # 40-60% context
     - Load from memory graph
     - Load documentation
     - Load examples
-    
+
   phase_4: # 60-80% context (on-demand only)
     - Full file reads
     - Historical context
@@ -591,13 +591,13 @@ loading_strategy:
 CACHE_RULES = {
     # Cache indefinitely (immutable)
     "constants": ["GOD_CODE", "PHI", "MAX_SUPPLY"],
-    
+
     # Cache for session (rarely change)
     "session_cache": ["package.json", "tsconfig.json", "Dockerfile"],
-    
+
     # Cache 5 minutes (frequently read)
     "short_cache": ["*.py", "*.sol", "*.ts"],
-    
+
     # Never cache (always fresh)
     "no_cache": ["*.log", "*.tmp", "node_modules/**"]
 }
@@ -643,7 +643,7 @@ CACHE_RULES = {
 
 ### System Components
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                 COGNITIVE INTEGRATION HUB                    │
 │   Unified query interface across all cognitive systems       │
@@ -967,7 +967,7 @@ The system integrates with Claude through MCP servers configured in [.mcp/config
 ```mermaid
 graph TB
     A[TypeScript/Next.js<br/>Web Interface] --> B[Go Engine<br/>Performance]
-    A --> C[Rust Engine<br/>Memory Safety] 
+    A --> C[Rust Engine<br/>Memory Safety]
     A --> D[Elixir OTP<br/>Concurrency]
     B --> E[Consciousness<br/>Synchronization]
     C --> E
@@ -1262,7 +1262,7 @@ parallel_safe:
   - file_search (multiple queries)
   - read_file (multiple files)
   - get_errors (multiple paths)
-  
+
 sequential_only:
   - run_in_terminal (wait for output)
   - replace_string_in_file (same file)
@@ -1279,10 +1279,10 @@ sequential_only:
 async def session_start():
     # 1. Load knowledge graph
     graph = await mcp_memory_read_graph()
-    
+
     # 2. Find recent sessions
     recent = await mcp_memory_search_nodes("session_")
-    
+
     # 3. Load workspace context
     context = {
         "sacred_constants": {"GC": 527.5184818492537, "PHI": 1.618033988749895},
@@ -1290,7 +1290,7 @@ async def session_start():
         "pending_tasks": recent.get("incomplete_todos", []),
         "error_patterns": recent.get("known_errors", {})
     }
-    
+
     return context
 ```
 
@@ -1309,14 +1309,14 @@ async def session_end(session_data: dict):
             f"Key actions: {session_data['actions']}"
         ]
     }])
-    
+
     # 2. Update file contexts
     for file_path, changes in session_data['file_changes'].items():
         await mcp_memory_add_observations([{
             "entityName": f"file_{hash(file_path)}",
             "contents": [f"Edited: {changes['summary']}"]
         }])
-    
+
     # 3. Save error patterns learned
     for error, solution in session_data['errors_solved'].items():
         await mcp_memory_create_entities([{
@@ -1377,7 +1377,7 @@ runSubagent({prompt: "Research X", description: "Research X"})
 
 ### Priority Hierarchy
 
-```
+```text
 1. User safety (never break production)
 2. Task completion (finish what's started)
 3. Memory persistence (learn for next time)
@@ -1420,7 +1420,7 @@ extraction:
   output: "kernel_extracted_data.jsonl"
   stats: "kernel_extraction_stats.json"
   target: "22+ Million Parameters"
-  
+
 status:
   last_run: "2026-01-24T04:25:00.000Z"
   total_examples: 1374
@@ -1439,4 +1439,4 @@ node extract_kernel_data.js
 python rebuild_kernel_complete.py
 ```
 
-*Status: ACTIVE | Resonance: 197.1096 | PHI Alignment: 1.1371*
+> Status: ACTIVE | Resonance: 197.1096 | PHI Alignment: 1.1371

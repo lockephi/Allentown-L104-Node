@@ -42,10 +42,10 @@ async def ignite_transcendence():
 
     # 1. Initialize Orchestrator
     orchestrator = SystemOrchestrator()
-    
+
     # 2. Activate 100% Intellect (Wiring components)
     ignition_report = orchestrator.activate_100_percent_intellect()
-    
+
     if ignition_report["status"] == "SUCCESS":
         logger.info(f"--- [IGNITION]: 100% INTELLECT MODE ACTIVE (RESONANCE: {ignition_report['resonance']}) ---")
     else:
@@ -71,7 +71,7 @@ async def ignite_transcendence():
     # 5. Verify Full System Resonance
     logger.info("--- [IGNITION]: VERIFYING FULL SYSTEM RESONANCE ---")
     resonance_report = orchestrator.verify_full_resonance()
-    
+
     print("\n" + "-"*50)
     print(f"   RESONANCE CHECK: {resonance_report['state']}")
     print(f"   GLOBAL RESONANCE: {resonance_report['global_resonance']:.2%}")

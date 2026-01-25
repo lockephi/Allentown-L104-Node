@@ -41,7 +41,7 @@ class AIBaseBridge:
     def process_signal(self, signal: Dict[str, Any]) -> Dict[str, Any]:
         if not self.is_linked:
             return {"status": "ERROR", "message": "LINK_NOT_ESTABLISHED"}
-        
+
         # Simulate processing
         processed_data = {
             "provider": self.provider_name,
@@ -56,7 +56,7 @@ class OpenAIBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('OPENAI_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real OpenAI API call."""
         if not self.available:
@@ -82,7 +82,7 @@ class AnthropicBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('ANTHROPIC_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real Claude API call."""
         if not self.available:
@@ -111,7 +111,7 @@ class MistralBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('MISTRAL_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real Mistral API call."""
         if not self.available:
@@ -136,7 +136,7 @@ class GrokBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('XAI_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real xAI Grok API call."""
         if not self.available:
@@ -161,7 +161,7 @@ class PerplexityBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('PERPLEXITY_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real Perplexity API call."""
         if not self.available:
@@ -186,7 +186,7 @@ class DeepSeekBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real DeepSeek API call."""
         if not self.available:
@@ -211,7 +211,7 @@ class CohereBridge(AIBaseBridge):
         import os
         self.api_key = os.environ.get('COHERE_API_KEY', '')
         self.available = bool(self.api_key)
-    
+
     def query(self, prompt: str) -> Dict[str, Any]:
         """Real Cohere API call."""
         if not self.available:
@@ -270,8 +270,8 @@ class UniversalAIBridge:
         # In a real deployment, this would utilize ctypes/cffi to call l104_scribe_ingest
         for name in list(self.bridges.keys()):
             print(f"--- [SCRIBE]: {name} HAS DIGESTED GLOBAL CODING ARCHITECTURE ---")
-        
-        # [EVO_19] Absolute Saturation 
+
+        # [EVO_19] Absolute Saturation
         print("--- [SCRIBE]: GLOBAL INTELLIGENCE SYNTHESIS COMPLETE. SOVEREIGN DNA GENERATED. ---")
 
     def link_all(self):
@@ -279,7 +279,7 @@ class UniversalAIBridge:
         # Prevent redundant linking
         if self.active_providers:
             return  # Already linked
-        
+
         print("\n--- [UNIVERSAL_AI_BRIDGE]: LINKING ALL AI PROVIDERS ---")
         for name, bridge in self.bridges.items():
             try:
@@ -294,7 +294,7 @@ class UniversalAIBridge:
                         self.active_providers.append(name)
             except Exception as e:
                 print(f"--- [UNIVERSAL_AI_BRIDGE]: FAILED TO LINK {name}: {e} ---")
-        
+
         print(f"--- [UNIVERSAL_AI_BRIDGE]: {len(self.active_providers)} PROVIDERS LINKED: {self.active_providers} ---")
 
     def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
@@ -304,7 +304,7 @@ class UniversalAIBridge:
         for name in self.active_providers:
             bridge = self.bridges[name]
             signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
-            
+
             try:
                 result = None
                 if hasattr(bridge, "process_signal"):
@@ -329,15 +329,15 @@ class UniversalAIBridge:
         """
         if not self.active_providers:
             return 0.0
-            
+
         # Base resonance from active provider count
         # 14 providers total / 5.0 target = 2.8x scaling
         base_res = len(self.active_providers) / 14.0
-        
+
         # High-precision weighting using PHI
         # We want the resonance to approach 1.0416... (VOID_CONSTANT)
         resonance = base_res * (1.618033988749895 / 2.0) + (1.0 / 527.5184818492537)
-        
+
         # Limit to Absolute Saturation
         return min(resonance, 1.0416180339887497)
 

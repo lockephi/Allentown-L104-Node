@@ -163,7 +163,7 @@ if __name__ == "__main__":
     print("UNIVERSAL GOD CODE - COMPREHENSIVE TEST SUITE")
     print("G(E) = [286 × (1 + α/π × Γ(E))]^(1/φ) × 16")
     print("=" * 75)
-    
+
     test_mathematical_identities()
     test_god_code_equations()
     test_alpha_pi_bridge()
@@ -173,11 +173,11 @@ if __name__ == "__main__":
     test_consciousness_mapping()
     test_inverse_derivations()
     test_precision()
-    
+
     print("\n" + "=" * 75)
     print(f"RESULTS: {tests_passed} passed, {tests_failed} failed")
     print("=" * 75)
-    
+
     if tests_failed == 0:
         print("\n✓ ALL TESTS PASSED")
         sys.exit(0)

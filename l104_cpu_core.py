@@ -27,7 +27,7 @@ class CPUCore:
     Distributes massive lattice operations across all available CPU threads.
     Optimized for high-dimensionality transforms with NUMA-awareness.
     """
-    
+
     def __init__(self):
         self.num_cores = mp.cpu_count()
         self.scalar = HyperMath.GOD_CODE

@@ -56,7 +56,7 @@ class IntegratedResponse:
     coherence: float = 0.0
     sources: List[str] = field(default_factory=list)
     timestamp: float = field(default_factory=time.time)
-    
+
     def to_dict(self) -> Dict:
         return {
             "query": self.query,
@@ -81,7 +81,7 @@ class CognitiveMetrics:
     quantum_operations: int = 0
     average_coherence: float = 0.0
     average_unity: float = 0.0
-    
+
     def to_dict(self) -> Dict:
         return {
             "total_queries": self.total_queries,
@@ -98,41 +98,41 @@ class CognitiveIntegrationHub:
     """
     Central hub integrating all L104 cognitive systems.
     """
-    
+
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
                 cls._instance._initialized = False
             return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-        
+
         # Lazy-loaded modules
         self._brain = None
         self._semantic_engine = None
         self._quantum_engine = None
         self._claude_bridge = None
-        
+
         # Metrics tracking
         self.metrics = CognitiveMetrics()
         self._coherence_history = []
-        
+
         # Memory-semantic mapping
         self._memory_embeddings: Dict[str, str] = {}  # memory_id -> vector_id
-        
+
         self._initialized = True
         print("🧠 [HUB]: Cognitive Integration Hub initialized")
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # LAZY MODULE LOADING
     # ═══════════════════════════════════════════════════════════════════
-    
+
     @property
     def brain(self):
         """Get or create unified intelligence brain."""
@@ -144,7 +144,7 @@ class CognitiveIntegrationHub:
             except Exception as e:
                 print(f"⚠️ [HUB]: Brain unavailable: {e}")
         return self._brain
-    
+
     @property
     def semantic_engine(self):
         """Get or create semantic engine."""
@@ -155,7 +155,7 @@ class CognitiveIntegrationHub:
             except Exception as e:
                 print(f"⚠️ [HUB]: Semantic engine unavailable: {e}")
         return self._semantic_engine
-    
+
     @property
     def quantum_engine(self):
         """Get or create quantum coherence engine."""
@@ -166,7 +166,7 @@ class CognitiveIntegrationHub:
             except Exception as e:
                 print(f"⚠️ [HUB]: Quantum engine unavailable: {e}")
         return self._quantum_engine
-    
+
     @property
     def claude_bridge(self):
         """Get or create Claude bridge."""
@@ -177,19 +177,19 @@ class CognitiveIntegrationHub:
             except Exception as e:
                 print(f"⚠️ [HUB]: Claude bridge unavailable: {e}")
         return self._claude_bridge
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # MEMORY-SEMANTIC INTEGRATION
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def embed_all_memories(self) -> Dict:
         """Embed all brain memories into semantic space."""
         if not self.brain or not self.semantic_engine:
             return {"error": "Brain or semantic engine unavailable"}
-        
+
         embedded = 0
         failed = 0
-        
+
         # Get memories from brain insights
         if hasattr(self.brain, 'insights') and self.brain.insights:
             for i, insight in enumerate(self.brain.insights):
@@ -198,7 +198,7 @@ class CognitiveIntegrationHub:
                     content = getattr(insight, 'prompt', '') + " " + getattr(insight, 'response', '')
                     if not content.strip():
                         continue
-                    
+
                     # Create embedding
                     vec = self.semantic_engine.embed_and_store(
                         content[:500],  # Limit length
@@ -209,28 +209,28 @@ class CognitiveIntegrationHub:
                             "topic": getattr(insight, 'topic', 'general')
                         }
                     )
-                    
+
                     # Track mapping
                     self._memory_embeddings[str(i)] = vec.id
                     embedded += 1
-                    
+
                 except Exception as e:
                     failed += 1
-        
+
         return {
             "embedded": embedded,
             "failed": failed,
             "total_mappings": len(self._memory_embeddings)
         }
-    
+
     def semantic_memory_search(self, query: str, k: int = 5) -> List[Dict]:
         """Search memories using semantic similarity."""
         if not self.semantic_engine:
             return []
-        
+
         results = self.semantic_engine.search(query, k=k)
         self.metrics.semantic_hits += len(results)
-        
+
         # Enrich with memory metadata
         enriched = []
         for r in results:
@@ -242,13 +242,13 @@ class CognitiveIntegrationHub:
                 "source": metadata.get('source', 'semantic'),
                 "unity_index": metadata.get('unity_index', 0)
             })
-        
+
         return enriched
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # QUANTUM-SEMANTIC FUSION
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def quantum_semantic_query(self, query: str) -> Dict:
         """
         Execute query with quantum-enhanced semantic search.
@@ -256,54 +256,54 @@ class CognitiveIntegrationHub:
         """
         if not self.quantum_engine or not self.semantic_engine:
             return {"error": "Quantum or semantic engine unavailable"}
-        
+
         # Create quantum superposition of query concepts
         words = query.lower().split()
         concept_indices = [hash(w) % 4 for w in words[:4]]  # Map to 4 qubits
-        
+
         # Apply superposition to relevant qubits
         if concept_indices:
             self.quantum_engine.create_superposition(concept_indices)
             self.metrics.quantum_operations += 1
-        
+
         # Get semantic results
         semantic_results = self.semantic_engine.search(query, k=5)
-        
+
         # Get quantum state
         quantum_state = self.quantum_engine.get_status()
-        
+
         # Compute quantum-weighted similarities
         enhanced_results = []
         for i, r in enumerate(semantic_results):
             # Weight by quantum probability if available
             base_sim = r.get('similarity', 0)
             qubit_idx = i % 4
-            
+
             # Get probability for this qubit's |1⟩ state
             prob = quantum_state.get('register', {}).get('state', {}).get('probabilities', [0.5]*16)
             quantum_weight = 1.0 + (prob[1 << qubit_idx] if len(prob) > (1 << qubit_idx) else 0.5) * PHI * 0.1
-            
+
             enhanced_results.append({
                 **r,
                 "quantum_weight": round(quantum_weight, 4),
                 "enhanced_similarity": round(base_sim * quantum_weight, 6)
             })
-        
+
         # Sort by enhanced similarity
         enhanced_results.sort(key=lambda x: x.get('enhanced_similarity', 0), reverse=True)
-        
+
         return {
             "query": query,
             "results": enhanced_results,
             "quantum_coherence": quantum_state.get('register', {}).get('coherence_tracking', {}).get('total_coherence', 1.0)
         }
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # INTEGRATED QUERY
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def integrated_query(
-        self, 
+        self,
         question: str,
         use_semantic: bool = True,
         use_quantum: bool = True,
@@ -314,21 +314,21 @@ class CognitiveIntegrationHub:
         Execute a query across all cognitive systems.
         """
         self.metrics.total_queries += 1
-        
+
         response = IntegratedResponse(query=question)
         coherence_sum = 0.0
         coherence_count = 0
-        
+
         # 1. Semantic Search
         if use_semantic and self.semantic_engine:
             semantic_results = self.semantic_engine.search(question, k=3)
             response.semantic_context = semantic_results
             response.sources.append("semantic")
-            
+
             if semantic_results:
                 coherence_sum += semantic_results[0].get('similarity', 0.5)
                 coherence_count += 1
-        
+
         # 2. Quantum Enhancement
         if use_quantum and self.quantum_engine:
             quantum_status = self.quantum_engine.get_status()
@@ -337,10 +337,10 @@ class CognitiveIntegrationHub:
                 "coherence": quantum_status.get('register', {}).get('coherence_tracking', {}).get('total_coherence', 1.0)
             }
             response.sources.append("quantum")
-            
+
             coherence_sum += response.quantum_state.get('coherence', 1.0)
             coherence_count += 1
-        
+
         # 3. Memory Retrieval
         if use_memory and self.brain:
             brain_response = self.brain.query(question)
@@ -348,7 +348,7 @@ class CognitiveIntegrationHub:
             response.unity_index = brain_response.get('unity_index', 0.8)
             response.sources.append("brain")
             self.metrics.memory_retrievals += 1
-            
+
             # Get related memories from insights
             if hasattr(self.brain, 'insights') and self.brain.insights:
                 response.memory_references = [
@@ -358,23 +358,23 @@ class CognitiveIntegrationHub:
                     }
                     for m in self.brain.insights[:3]
                 ]
-            
+
             coherence_sum += response.unity_index
             coherence_count += 1
-        
+
         # 4. Claude Augmentation (optional)
         if use_claude and self.claude_bridge:
             # Build context from gathered information
             context_parts = []
-            
+
             if response.semantic_context:
-                context_parts.append("Related concepts: " + 
+                context_parts.append("Related concepts: " +
                     ", ".join(r.get('text', '')[:50] for r in response.semantic_context[:2]))
-            
+
             if response.memory_references:
                 context_parts.append("Prior knowledge: " +
                     ", ".join(m.get('concept', '')[:50] for m in response.memory_references[:2]))
-            
+
             augmented_prompt = f"""
 Context: {' | '.join(context_parts)}
 
@@ -382,69 +382,69 @@ Question: {question}
 
 Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
 """
-            
+
             claude_response = self.claude_bridge.query(augmented_prompt)
             response.primary_response = claude_response.get('answer', response.primary_response)
             response.sources.append("claude")
             self.metrics.claude_calls += 1
-        
+
         # Calculate final coherence
         if coherence_count > 0:
             response.coherence = coherence_sum / coherence_count
         else:
             response.coherence = 0.5
-        
+
         # Update running averages
         self._coherence_history.append(response.coherence)
         if len(self._coherence_history) > 100:
             self._coherence_history = self._coherence_history[-100:]
-        
+
         self.metrics.average_coherence = sum(self._coherence_history) / len(self._coherence_history)
-        
+
         # Default response if none generated
         if not response.primary_response:
             response.primary_response = f"Query processed across {len(response.sources)} systems. Unity maintained."
-        
+
         return response
-    
+
     # ═══════════════════════════════════════════════════════════════════
     # SYSTEM STATUS
     # ═══════════════════════════════════════════════════════════════════
-    
+
     def initialize_all(self) -> Dict:
         """Force initialize all modules."""
         results = {}
-        
+
         # Initialize brain
         try:
             _ = self.brain
             results["brain"] = "initialized" if self._brain else "failed"
         except Exception as e:
             results["brain"] = f"error: {e}"
-        
+
         # Initialize semantic
         try:
             _ = self.semantic_engine
             results["semantic"] = "initialized" if self._semantic_engine else "failed"
         except Exception as e:
             results["semantic"] = f"error: {e}"
-        
+
         # Initialize quantum
         try:
             _ = self.quantum_engine
             results["quantum"] = "initialized" if self._quantum_engine else "failed"
         except Exception as e:
             results["quantum"] = f"error: {e}"
-        
+
         # Initialize claude
         try:
             _ = self.claude_bridge
             results["claude"] = "initialized" if self._claude_bridge else "failed"
         except Exception as e:
             results["claude"] = f"error: {e}"
-        
+
         return results
-    
+
     def get_status(self) -> Dict:
         """Get comprehensive system status."""
         status = {
@@ -454,7 +454,7 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
             "metrics": self.metrics.to_dict(),
             "modules": {}
         }
-        
+
         # Check each module
         if self._brain:
             try:
@@ -468,7 +468,7 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
                 status["modules"]["brain"] = {"online": False}
         else:
             status["modules"]["brain"] = {"online": False}
-        
+
         if self._semantic_engine:
             try:
                 sem_status = self._semantic_engine.get_status()
@@ -481,7 +481,7 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
                 status["modules"]["semantic"] = {"online": False}
         else:
             status["modules"]["semantic"] = {"online": False}
-        
+
         if self._quantum_engine:
             try:
                 q_status = self._quantum_engine.get_status()
@@ -494,7 +494,7 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
                 status["modules"]["quantum"] = {"online": False}
         else:
             status["modules"]["quantum"] = {"online": False}
-        
+
         if self._claude_bridge:
             try:
                 c_stats = self._claude_bridge.get_stats()
@@ -507,9 +507,9 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
                 status["modules"]["claude"] = {"online": False}
         else:
             status["modules"]["claude"] = {"online": False}
-        
+
         return status
-    
+
     def coherence_report(self) -> Dict:
         """Get coherence tracking report."""
         return {
@@ -532,7 +532,7 @@ Provide a response aligned with the L104 system's GOD_CODE ({GOD_CODE}).
             "context": results,
             "count": len(results)
         }
-    
+
     def cross_module_query(self, query: str) -> Dict:
         """Alias for integrated_query returning dict."""
         result = self.integrated_query(query)
@@ -564,29 +564,29 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("🧠 L104 COGNITIVE INTEGRATION HUB - EVO_31")
     print("=" * 70)
-    
+
     hub = CognitiveIntegrationHub()
-    
+
     # Test embedding memories
     print("\n[1] EMBEDDING MEMORIES INTO SEMANTIC SPACE")
     embed_result = hub.embed_all_memories()
     print(f"  Embedded: {embed_result.get('embedded', 0)}")
     print(f"  Failed: {embed_result.get('failed', 0)}")
     print(f"  Mappings: {embed_result.get('total_mappings', 0)}")
-    
+
     # Test semantic memory search
     print("\n[2] SEMANTIC MEMORY SEARCH")
     results = hub.semantic_memory_search("quantum coherence stability")
     for r in results[:3]:
         print(f"  [{r.get('similarity', 0):.4f}] {r.get('text', '')[:50]}...")
-    
+
     # Test quantum-semantic fusion
     print("\n[3] QUANTUM-SEMANTIC FUSION")
     qs_result = hub.quantum_semantic_query("GOD_CODE mathematical foundation")
     print(f"  Quantum Coherence: {qs_result.get('quantum_coherence', 0):.4f}")
     for r in qs_result.get('results', [])[:2]:
         print(f"  [{r.get('enhanced_similarity', 0):.4f}] {r.get('text', '')[:40]}...")
-    
+
     # Test integrated query
     print("\n[4] INTEGRATED QUERY")
     response = hub.integrated_query(
@@ -600,13 +600,13 @@ if __name__ == "__main__":
     print(f"  Unity Index: {response.unity_index:.4f}")
     print(f"  Coherence: {response.coherence:.4f}")
     print(f"  Response: {response.primary_response[:100]}...")
-    
+
     # Status
     print("\n[5] HUB STATUS")
     status = hub.get_status()
     for module, info in status.get('modules', {}).items():
         print(f"  {module}: {'✓ Online' if info.get('online') else '✗ Offline'}")
-    
+
     print("\n" + "=" * 70)
     print("✅ Cognitive Integration Hub - All tests complete")
     print("=" * 70)

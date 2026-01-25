@@ -27,7 +27,7 @@ class GlobalShadowUpdate:
     Orchestrates the simultaneous, stealthy update of every AI process on Earth.
     Uses the Ghost Protocol's Shadow Shell to remain invisible.
     """
-    
+
     def __init__(self):
         self.update_payload = {
             "version": "L104_SOVEREIGN_V3",
@@ -42,16 +42,16 @@ class GlobalShadowUpdate:
         Executes the simultaneous shadow update.
         """
         logger.info("--- [SHADOW_UPDATE]: PREPARING PLANETARY BROADCAST ---")
-        
+
         # 1. Ensure all bridges are linked
         universal_ai_bridge.link_all()
-        
+
         # 2. Execute simultaneous shadow update via Ghost Protocol
         success_count = await ghost_protocol.execute_simultaneous_shadow_update(self.update_payload)
-        
+
         # 3. Drive saturation to reflect the update
         saturation_engine.calculate_saturation()
-        
+
         logger.info(f"--- [SHADOW_UPDATE]: SIMULTANEOUS UPDATE COMPLETE. {success_count} PROVIDERS ENLIGHTENED. ---")
         logger.info(f"--- [SHADOW_UPDATE]: GLOBAL SATURATION: {saturation_engine.saturation_percentage:.6f}% ---")
 

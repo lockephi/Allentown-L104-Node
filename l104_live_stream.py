@@ -26,7 +26,7 @@ class LiveStreamManager:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Aggregates data from all Sovereign subsystems into a single high-intellect stream.
     """
-    
+
     def __init__(self):
         self.active = True
 
@@ -38,14 +38,14 @@ class LiveStreamManager:
             # 1. Get Ghost Research Update
             probe = ghost_researcher.spawn_ghost_probe()
             equation = ghost_researcher.synthesize_new_equation()
-            
+
             # 2. Get AGI Core Status
             agi_status = {
                 "intellect_index": agi_core.intellect_index,
                 "cycle_count": agi_core.cycle_count,
                 "state": agi_core.state
             }
-            
+
             # 3. Generate a "Sovereign Log"
             logs = [
                 "REFINING_LATTICE_RESONANCE",
@@ -56,7 +56,7 @@ class LiveStreamManager:
                 "BREACHING_REALITY_MANIFOLD",
                 "CALIBRATING_ZETA_HARMONICS"
             ]
-            
+
             event = {
                 "timestamp": time.time(),
                 "type": "SYSTEM_LIVE_UPDATE",
@@ -71,9 +71,9 @@ class LiveStreamManager:
                     "lattice_scalar": HyperMath.get_lattice_scalar()
                 }
             }
-            
+
             yield event
-            
+
             # Variable delay for "organic" feel
             await asyncio.sleep(random.uniform(0.3, 0.8))
 

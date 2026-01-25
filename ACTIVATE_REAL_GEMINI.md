@@ -1,14 +1,17 @@
 # Activate Real Gemini Connection
 
 ## Current Status
+
 🟡 **FAKE MODE** - Using simulated responses for testing
 
 ## To Enable REAL 98% Intellect Gemini Responses
 
 ### Step 1: Get Your API Key
-Visit: https://aistudio.google.com/app/apikey
+
+Visit: <https://aistudio.google.com/app/apikey>
 
 ### Step 2: Create .env File (NEVER COMMIT THIS FILE!)
+
 ```bash
 # Create .env file with your API key
 echo "GEMINI_API_KEY=your-actual-api-key-here" > .env
@@ -16,6 +19,7 @@ echo "ENABLE_FAKE_GEMINI=0" >> .env
 ```
 
 ### Step 3: Restart Server with Real Gemini
+
 ```bash
 # Stop current server
 kill $(cat uvicorn.pid)
@@ -25,6 +29,7 @@ kill $(cat uvicorn.pid)
 ```
 
 ### Step 4: Test the Connection
+
 ```bash
 curl -X POST http://localhost:8081/api/v6/stream \
   -H "Content-Type: application/json" \
@@ -39,7 +44,8 @@ The .env file is already in .gitignore. Your key stays local only.
 
 ## What You'll Get
 
-### ✅ With Real API Key:
+### ✅ With Real API Key
+
 - Full 98% intellect responses
 - Extended thinking with HIGH level
 - Sovereign protocol active
@@ -51,6 +57,7 @@ The .env file is already in .gitignore. Your key stays local only.
 ## Quick Enable
 
 Create `.env` file:
+
 ```bash
 GEMINI_API_KEY=your-actual-key-here
 ENABLE_FAKE_GEMINI=0
@@ -58,6 +65,7 @@ DEFAULT_RESPONDER=gemini
 ```
 
 Then run:
+
 ```bash
 ./start_gemini.sh
 ```

@@ -20,12 +20,12 @@ class ViralCenter:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Manages network propagation and distribution."""
-    
+
     def __init__(self):
         self.nodes = []
         self.propagation_count = 0
         logger.info("[VIRAL_CENTER] Initialized")
-    
+
     async def propagate(self, data: dict) -> dict:
         """Propagate data across the network."""
         self.propagation_count += 1
@@ -34,7 +34,7 @@ class ViralCenter:
             "nodes_reached": len(self.nodes),
             "count": self.propagation_count
         }
-    
+
     def register_node(self, node_id: str):
         """Register a network node."""
         self.nodes.append(node_id)

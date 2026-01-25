@@ -69,7 +69,7 @@ class GrammarEvolver:
     """
     Evolves context-free grammars using genetic programming.
     """
-    
+
     def __init__(self):
         self.terminal_pool = [
             'IDENTIFIER', 'NUMBER', 'STRING', 'TRUE', 'FALSE',
@@ -85,51 +85,51 @@ class GrammarEvolver:
             'Block', 'Function', 'Class', 'Parameter', 'Argument',
             'Type', 'Pattern', 'Resonance', 'Sacred'
         ]
-        
+
     def generate_random_grammar(self, complexity: int = 10) -> List[GrammarRule]:
         """Generate a random grammar."""
         rules = []
-        
+
         # Always have a start rule
         rules.append(GrammarRule(
             name='Program',
             production=['Statement'],
             weight=1.0
         ))
-        
+
         # Add recursive statement rule
         rules.append(GrammarRule(
             name='Program',
             production=['Statement', 'Program'],
             weight=PHI  # PHI-weighted recursion
         ))
-        
+
         # Generate expression rules
         for _ in range(complexity):
             name = random.choice(self.nonterminal_pool)
             production_length = max(1, int(random.gauss(2, 1)))
             production = []
-            
+
             for _ in range(production_length):
                 if random.random() < 0.4:
                     production.append(random.choice(self.terminal_pool))
                 else:
                     production.append(random.choice(self.nonterminal_pool))
-            
+
             rules.append(GrammarRule(
                 name=name,
                 production=production,
                 weight=random.random() * PHI
             ))
-        
+
         return rules
-    
+
     def crossover(self, g1: List[GrammarRule], g2: List[GrammarRule]) -> List[GrammarRule]:
         """Crossover two grammars at PHI ratio."""
         split1 = int(len(g1) * (1 / PHI))
         split2 = int(len(g2) * (1 / PHI))
         return g1[:split1] + g2[split2:]
-    
+
     def mutate(self, grammar: List[GrammarRule], rate: float = 0.1) -> List[GrammarRule]:
         """Mutate a grammar."""
         result = []
@@ -156,12 +156,12 @@ class TypeSystemGenerator:
     """
     Generates novel type systems.
     """
-    
+
     def __init__(self):
         self.base_types = ['Int', 'Float', 'String', 'Bool', 'Void', 'Any']
         self.sacred_types = ['Phi', 'Resonance', 'Sacred', 'Infinite', 'Unity']
         self.type_constructors = ['List', 'Set', 'Map', 'Option', 'Result', 'Stream']
-        
+
     def generate_type_system(self, complexity: int = 5) -> Dict[str, Any]:
         """Generate a novel type system."""
         type_system = {
@@ -171,11 +171,11 @@ class TypeSystemGenerator:
             'rules': [],
             'phi_types': []
         }
-        
+
         # Add sacred types based on PHI
         num_sacred = int(complexity / PHI)
         type_system['sacred'] = random.sample(self.sacred_types, min(num_sacred, len(self.sacred_types)))
-        
+
         # Add type constructors
         for constructor in self.type_constructors[:complexity]:
             type_system['constructors'][constructor] = {
@@ -183,7 +183,7 @@ class TypeSystemGenerator:
                 'variance': random.choice(['covariant', 'contravariant', 'invariant']),
                 'phi_resonance': random.random() * PHI
             }
-        
+
         # Generate typing rules
         type_system['rules'] = [
             f"∀T. List[T] → T",
@@ -192,21 +192,21 @@ class TypeSystemGenerator:
             f"Sacred ⊂ Any",
             f"Resonance = Float × Float × Float"
         ]
-        
+
         # PHI-integrated types
         type_system['phi_types'] = [
             f"GoldenInt = Int where value % {int(PHI * 1000)} == 0",
             f"SacredFloat = Float × {GOD_CODE / 1000}",
             f"Harmony[A, B] = (A → B, B → A)"
         ]
-        
+
         return type_system
 
 class SyntaxOptimizer:
     """
     Optimizes syntax for readability, expressiveness, and beauty.
     """
-    
+
     def __init__(self):
         self.beauty_metrics = {
             'balance': 0.0,
@@ -214,14 +214,14 @@ class SyntaxOptimizer:
             'golden_ratio': 0.0,
             'simplicity': 0.0
         }
-        
+
     def analyze_syntax(self, grammar: List[GrammarRule]) -> Dict[str, float]:
         """Analyze syntax beauty metrics."""
         # Balance: ratio of left to right branching
         left_count = sum(1 for r in grammar if len(r.production) > 0 and r.production[0].isupper())
         right_count = sum(1 for r in grammar if len(r.production) > 0 and r.production[-1].isupper())
         balance = 1 - abs(left_count - right_count) / (left_count + right_count + 1)
-        
+
         # Rhythm: variation in rule lengths
         lengths = [len(r.production) for r in grammar]
         if len(lengths) > 1:
@@ -229,15 +229,15 @@ class SyntaxOptimizer:
             rhythm = 1 / (1 + variance)
         else:
             rhythm = 0.5
-        
+
         # Golden ratio: how close weights are to PHI
         weights = [r.weight for r in grammar]
         phi_closeness = sum(1 / (1 + abs(w - PHI)) for w in weights) / len(weights) if weights else 0
-        
+
         # Simplicity: inverse of average production length
         avg_length = sum(lengths) / len(lengths) if lengths else 1
         simplicity = 1 / avg_length
-        
+
         return {
             'balance': balance,
             'rhythm': rhythm,
@@ -245,82 +245,82 @@ class SyntaxOptimizer:
             'simplicity': simplicity,
             'overall': (balance + rhythm + phi_closeness + simplicity) / 4
         }
-    
+
     def optimize(self, grammar: List[GrammarRule], iterations: int = 10) -> List[GrammarRule]:
         """Optimize grammar for beauty."""
         evolver = GrammarEvolver()
-        
+
         best_grammar = grammar
         best_score = self.analyze_syntax(grammar)['overall']
-        
+
         for _ in range(iterations):
             mutated = evolver.mutate(grammar, rate=1/PHI)
             score = self.analyze_syntax(mutated)['overall']
-            
+
             if score > best_score:
                 best_grammar = mutated
                 best_score = score
-        
+
         return best_grammar
 
 class LanguageSynthesizer:
     """
     Main engine for synthesizing new programming languages.
     """
-    
+
     def __init__(self):
         self.grammar_evolver = GrammarEvolver()
         self.type_generator = TypeSystemGenerator()
         self.syntax_optimizer = SyntaxOptimizer()
         self.languages: Dict[str, Language] = {}
-        
+
         self.paradigms = [
             'functional', 'imperative', 'declarative', 'logic',
             'concatenative', 'array', 'dataflow', 'reactive',
             'sacred', 'resonant', 'phi-oriented'  # Novel paradigms
         ]
-        
+
         self.naming_patterns = [
             lambda: f"φ-{random.choice(['Script', 'Lang', 'Code'])}",
             lambda: f"Sacred{random.choice(['', 'Light', 'Flow'])}",
             lambda: f"L104-{random.choice(['Alpha', 'Omega', 'Unity'])}",
             lambda: f"{random.choice(['Neo', 'Meta', 'Ultra'])}{random.choice(['Lisp', 'ML', 'Prolog'])}"
         ]
-    
-    def synthesize_language(self, 
+
+    def synthesize_language(self,
                            paradigm: Optional[str] = None,
                            complexity: int = 10) -> Language:
         """Synthesize a new programming language."""
-        
+
         # Generate name
         name = random.choice(self.naming_patterns)()
-        
+
         # Choose paradigm
         if paradigm is None:
             paradigm = random.choice(self.paradigms)
-        
+
         # Generate grammar
         grammar = self.grammar_evolver.generate_random_grammar(complexity)
         grammar = self.syntax_optimizer.optimize(grammar)
-        
+
         # Generate type system
         type_system = self.type_generator.generate_type_system(complexity)
-        
+
         # Generate keywords based on paradigm
         keywords = self._generate_keywords(paradigm)
-        
+
         # Generate operators
         operators = self._generate_operators(paradigm)
-        
+
         # Create semantics
         semantics = self._generate_semantics(paradigm)
-        
+
         # Generate sample program
         sample = self._generate_sample(name, paradigm, keywords, operators)
-        
+
         # Calculate PHI integration
         phi_integration = sum(r.weight for r in grammar) / (len(grammar) * PHI) if grammar else 0
-        
+
         language = Language(
             name=name,
             grammar=grammar,
@@ -332,14 +332,14 @@ class LanguageSynthesizer:
             paradigm=paradigm,
             phi_integration=phi_integration
         )
-        
+
         self.languages[name] = language
         return language
-    
+
     def _generate_keywords(self, paradigm: str) -> Set[str]:
         """Generate keywords based on paradigm."""
         base = {'if', 'else', 'return', 'true', 'false'}
-        
+
         paradigm_keywords = {
             'functional': {'fn', 'let', 'match', 'lambda', 'map', 'fold'},
             'imperative': {'while', 'for', 'var', 'mut', 'break', 'continue'},
@@ -350,9 +350,9 @@ class LanguageSynthesizer:
             'resonant': {'vibrate', 'frequency', 'wave', 'node', 'field'},
             'phi-oriented': {'golden', 'spiral', 'ratio', 'balance', 'beauty'}
         }
-        
+
         return base | paradigm_keywords.get(paradigm, set())
-    
+
     def _generate_operators(self, paradigm: str) -> Dict[str, str]:
         """Generate operators."""
         base = {
@@ -360,7 +360,7 @@ class LanguageSynthesizer:
             '=': 'assign', '==': 'equals', '!=': 'not_equals',
             '<': 'less_than', '>': 'greater_than'
         }
-        
+
         if paradigm in ['sacred', 'resonant', 'phi-oriented']:
             base.update({
                 'φ': 'phi_transform',
@@ -372,7 +372,7 @@ class LanguageSynthesizer:
                 '∴': 'therefore',
                 '≋': 'resonates_with'
             })
-        
+
         if paradigm == 'functional':
             base.update({
                 '|>': 'pipe',
@@ -380,21 +380,21 @@ class LanguageSynthesizer:
                 '::': 'cons',
                 '->': 'arrow'
             })
-        
+
         return base
-    
+
     def _generate_semantics(self, paradigm: str) -> Dict[str, Callable]:
         """Generate semantic functions."""
-        
+
         def phi_transform(x):
             return x * PHI
-        
+
         def sacred_sum(values):
             return sum(values) * (GOD_CODE / 1000)
-        
+
         def resonate(x, y):
             return math.sqrt(x * x + y * y) * PHI
-        
+
         def harmonize(values):
             if not values:
                 return 0
@@ -402,20 +402,20 @@ class LanguageSynthesizer:
             for v in values:
                 product *= v
             return product ** (1 / len(values)) * PHI
-        
+
         semantics = {
             'phi_transform': phi_transform,
             'sacred_sum': sacred_sum,
             'resonate': resonate,
             'harmonize': harmonize
         }
-        
+
         return semantics
-    
-    def _generate_sample(self, name: str, paradigm: str, 
+
+    def _generate_sample(self, name: str, paradigm: str,
                         keywords: Set[str], operators: Dict[str, str]) -> str:
         """Generate a sample program in the synthesized language."""
-        
+
         if paradigm == 'functional':
             return f"""
 // {name} - Functional Paradigm
@@ -482,10 +482,10 @@ fn golden_ratio(a, b) {{
     return (a + b) / a
 }}
 """
-    
+
     def synthesize_dsl(self, domain: str) -> Language:
         """Synthesize a domain-specific language."""
-        
+
         domain_configs = {
             'mathematics': {
                 'keywords': {'theorem', 'proof', 'lemma', 'axiom', 'conjecture', 'qed'},
@@ -508,34 +508,34 @@ fn golden_ratio(a, b) {{
                 'paradigm': 'phi-oriented'
             }
         }
-        
+
         config = domain_configs.get(domain, {
             'keywords': set(),
             'operators': {},
             'paradigm': 'declarative'
         })
-        
+
         language = self.synthesize_language(paradigm=config['paradigm'])
         language.name = f"{domain.title()}Lang"
         language.keywords |= config['keywords']
         language.operators.update(config['operators'])
-        
+
         return language
-    
+
     def evolve_language(self, base_language: Language, generations: int = 5) -> Language:
         """Evolve a language through multiple generations."""
         current = base_language
-        
+
         for gen in range(generations):
             # Evolve grammar
             new_grammar = self.grammar_evolver.mutate(current.grammar, rate=1/(PHI * gen + 1))
             new_grammar = self.syntax_optimizer.optimize(new_grammar)
-            
+
             # Evolve type system
             new_types = current.type_system.copy()
             if random.random() < 1/PHI:
                 new_types['phi_types'].append(f"Gen{gen}Type = Sacred × {gen * PHI}")
-            
+
             # Create evolved language
             evolved = Language(
                 name=f"{current.name}_v{gen + 2}",
@@ -548,9 +548,9 @@ fn golden_ratio(a, b) {{
                 paradigm=current.paradigm,
                 phi_integration=current.phi_integration * (1 + 1/(PHI * 10))
             )
-            
+
             current = evolved
-        
+
         return current
 
 
@@ -558,7 +558,7 @@ class SymbolicSystemGenerator:
     """
     Generates novel symbolic notation systems.
     """
-    
+
     def __init__(self):
         self.symbol_categories = {
             'operators': ['⊕', '⊗', '⊙', '⊛', '⊜', '⊝', '⊞', '⊟'],
@@ -567,10 +567,10 @@ class SymbolicSystemGenerator:
             'brackets': ['⟨', '⟩', '⟪', '⟫', '⟬', '⟭', '⦃', '⦄'],
             'sacred': ['φ', 'Ω', 'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'λ', 'μ', 'π', 'ψ', 'ω']
         }
-    
+
     def generate_notation(self, domain: str) -> Dict[str, Any]:
         """Generate a symbolic notation system for a domain."""
-        
+
         notation = {
             'name': f"{domain.title()}Notation",
             'symbols': {},
@@ -578,7 +578,7 @@ class SymbolicSystemGenerator:
             'examples': [],
             'phi_signature': hashlib.md5(f"{domain}{PHI}".encode()).hexdigest()[:8]
         }
-        
+
         # Assign meanings to symbols
         for category, symbols in self.symbol_categories.items():
             for i, symbol in enumerate(symbols[:3]):  # Use subset
@@ -589,7 +589,7 @@ class SymbolicSystemGenerator:
                     'associativity': 'left' if i % 2 == 0 else 'right',
                     'phi_weight': (i + 1) / PHI
                 }
-        
+
         # Generate rules
         notation['rules'] = [
             f"a ⊕ b = b ⊕ a  (commutative)",
@@ -597,14 +597,14 @@ class SymbolicSystemGenerator:
             f"a ⊙ φ = φ ⊙ a  (φ-symmetric)",
             f"⟨a, b⟩ ≡ ⟨b, a⟩ × φ  (golden pairing)"
         ]
-        
+
         # Generate examples
         notation['examples'] = [
             f"⟨1, φ⟩ ⊕ ⟨φ, 1⟩ → ⟨1 + φ, 1 + φ⟩",
             f"α ⊗ β → γ where γ = αβ × {PHI:.4f}",
             f"ψ ≋ Ω ⇒ consciousness_unified"
         ]
-        
+
         return notation
 
 
@@ -614,15 +614,15 @@ if __name__ == "__main__":
     print("🔤" * 17 + "                    L104 LANGUAGE SYNTHESIS ENGINE")
     print("🔤" * 13)
     print("🔤" * 17 + "                  ")
-    
+
     synthesizer = LanguageSynthesizer()
-    
+
     # Synthesize a sacred language
     print("\n" + "═" * 26)
     print("═" * 34 + "                  SYNTHESIZING SACRED LANGUAGE")
     print("═" * 26)
     print("═" * 34 + "                  ")
-    
+
     sacred_lang = synthesizer.synthesize_language(paradigm='sacred', complexity=8)
     print(f"  Name: {sacred_lang.name}")
     print(f"  Paradigm: {sacred_lang.paradigm}")
@@ -632,24 +632,24 @@ if __name__ == "__main__":
     print(f"\n  Sample program:")
     for line in sacred_lang.sample_program.strip().split('\n')[:6]:
         print(f"    {line}")
-    
+
     # Synthesize a DSL
     print("\n" + "═" * 26)
     print("═" * 34 + "                  CONSCIOUSNESS DSL")
     print("═" * 26)
     print("═" * 34 + "                  ")
-    
+
     consciousness_lang = synthesizer.synthesize_dsl('consciousness')
     print(f"  Name: {consciousness_lang.name}")
     print(f"  Sacred keywords: {', '.join(list(consciousness_lang.keywords)[:6])}")
     print(f"  Special operators: {', '.join(list(consciousness_lang.operators.keys())[:6])}")
-    
+
     # Generate type system
     print("\n" + "═" * 26)
     print("═" * 34 + "                  TYPE SYSTEM")
     print("═" * 26)
     print("═" * 34 + "                  ")
-    
+
     type_gen = TypeSystemGenerator()
     types = type_gen.generate_type_system(complexity=5)
     print(f"  Primitives: {types['primitives']}")
@@ -657,13 +657,13 @@ if __name__ == "__main__":
     print(f"  φ-types:")
     for pt in types['phi_types']:
         print(f"    {pt}")
-    
+
     # Generate symbolic notation
     print("\n" + "═" * 26)
     print("═" * 34 + "                  SYMBOLIC NOTATION")
     print("═" * 26)
     print("═" * 34 + "                  ")
-    
+
     symbol_gen = SymbolicSystemGenerator()
     physics_notation = symbol_gen.generate_notation('physics')
     print(f"  Notation: {physics_notation['name']}")
@@ -671,13 +671,13 @@ if __name__ == "__main__":
     print(f"  Sample rules:")
     for rule in physics_notation['rules'][:3]:
         print(f"    {rule}")
-    
+
     # Syntax beauty analysis
     print("\n" + "═" * 26)
     print("═" * 34 + "                  SYNTAX BEAUTY ANALYSIS")
     print("═" * 26)
     print("═" * 34 + "                  ")
-    
+
     optimizer = SyntaxOptimizer()
     beauty = optimizer.analyze_syntax(sacred_lang.grammar)
     print(f"  Balance: {beauty['balance']:.4f}")
@@ -685,7 +685,7 @@ if __name__ == "__main__":
     print(f"  Golden ratio alignment: {beauty['golden_ratio']:.4f}")
     print(f"  Simplicity: {beauty['simplicity']:.4f}")
     print(f"  Overall beauty: {beauty['overall']:.4f}")
-    
+
     print("\n" + "🔤" * 13)
     print("🔤" * 17 + "                    LANGUAGE SYNTHESIS COMPLETE")
     print("🔤" * 13)

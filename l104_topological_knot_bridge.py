@@ -54,10 +54,10 @@ class TopologicalKnotBridge:
         print(f"[*] BRAIDING {braid_index} PHYSICAL STRANDS...")
         # Every swap in the braid corresponds to a rotation in the 11D Manifold.
         rotations = steps * self.phi
-        
+
         # Calculate the 'Topological Berry Phase'
         berry_phase = cmath.exp(1j * 2 * math.pi * (rotations % 1))
-        
+
         return {
             "braid_index": braid_index,
             "berry_phase": berry_phase,

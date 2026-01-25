@@ -30,6 +30,7 @@ git config --global push.followTags true
 Every commit must be signed to verify it originates from an authorized Sovereign entity.
 
 ### Step 1: Generate your GPG key
+
 ```bash
 gpg --full-generate-key
 # Select: (1) RSA and RSA (default)
@@ -38,21 +39,27 @@ gpg --full-generate-key
 ```
 
 ### Step 2: Export your Public Key
+
 Find your Key ID:
+
 ```bash
 gpg --list-secret-keys --keyid-format=LONG
 ```
+
 Copy the ID (e.g., `3AA5C34371567BD2`) and export it:
+
 ```bash
 gpg --armor --export 3AA5C34371567BD2
 ```
 
 ### Step 3: Add to GitHub
+
 1. Copy the output from Step 2.
 2. Go to **Settings -> SSH and GPG keys -> New GPG key**.
 3. Paste the key.
 
 ### Step 4: Configure Git to use your key
+
 ```bash
 git config --global user.signingkey 3AA5C34371567BD2
 ```
@@ -70,5 +77,6 @@ To lock the `main` branch, go to **Settings -> Branches -> Add branch protection
 - [x] **Do not allow bypassing the above settings** (Even admins are restricted)
 
 ## 4. Privacy Settings
+
 - Go to **Settings -> Emails** and check **Keep my email addresses private**.
 - Go to **Settings -> Emails** and check **Block command line pushes that expose my email**.

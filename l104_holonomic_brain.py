@@ -66,7 +66,7 @@ class FrequencyBand(Enum):
     ALPHA = (8, 13)       # Relaxed awareness
     BETA = (13, 30)       # Active thinking
     GAMMA = (30, 100)     # Higher cognition
-    
+
     @property
     def center(self) -> float:
         return (self.value[0] + self.value[1]) / 2
@@ -105,26 +105,26 @@ class NeuralWave:
     wavelength: float
     position: Tuple[float, float, float]  # 3D position
     direction: Tuple[float, float, float]  # Propagation direction
-    
+
     def evaluate(self, x: float, y: float, z: float, t: float = 0) -> complex:
         """Evaluate wave at position and time."""
         # Calculate distance along propagation direction
         dx = x - self.position[0]
         dy = y - self.position[1]
         dz = z - self.position[2]
-        
+
         # Project onto direction
         dir_mag = math.sqrt(sum(d**2 for d in self.direction))
         if dir_mag < 1e-10:
             r = math.sqrt(dx**2 + dy**2 + dz**2)
         else:
-            r = (dx * self.direction[0] + dy * self.direction[1] + 
+            r = (dx * self.direction[0] + dy * self.direction[1] +
                  dz * self.direction[2]) / dir_mag
-        
+
         # Wave equation
         k = 2 * PI / self.wavelength
         omega = 2 * PI * self.frequency
-        
+
         phase_total = k * r - omega * t + self.phase
         return self.amplitude * cmath.exp(1j * phase_total)
 
@@ -133,7 +133,7 @@ class NeuralWave:
 class GaborWavelet:
     """
     Gabor wavelet - optimal time-frequency localization.
-    
+
     Models dendritic microprocessing.
     """
     wavelet_id: str
@@ -143,24 +143,24 @@ class GaborWavelet:
     orientation: float  # radians
     phase: float
     amplitude: float
-    
+
     def evaluate(self, x: float, y: float) -> complex:
         """Evaluate 2D Gabor wavelet at position."""
         # Relative position
         dx = x - self.center_position[0]
         dy = y - self.center_position[1]
-        
+
         # Rotate
         x_rot = dx * math.cos(self.orientation) + dy * math.sin(self.orientation)
         y_rot = -dx * math.sin(self.orientation) + dy * math.cos(self.orientation)
-        
+
         # Gaussian envelope
         sigma = 1 / (2 * PI * self.bandwidth)
         envelope = math.exp(-(x_rot**2 + y_rot**2) / (2 * sigma**2))
-        
+
         # Sinusoidal carrier
         carrier = cmath.exp(1j * (2 * PI * self.center_frequency * x_rot + self.phase))
-        
+
         return self.amplitude * envelope * carrier
 
 
@@ -215,11 +215,11 @@ class WaveMechanics:
     """
     Wave mechanics for neural processing.
     """
-    
+
     def __init__(self):
         self.waves: Dict[str, NeuralWave] = {}
         self.wavelets: Dict[str, GaborWavelet] = {}
-    
+
     def create_wave(
         self,
         wave_type: WaveType,
@@ -233,10 +233,10 @@ class WaveMechanics:
         wave_id = hashlib.md5(
             f"{wave_type}{frequency}{time.time()}{random.random()}".encode()
         ).hexdigest()[:12]
-        
+
         # Wavelength from frequency (using dendritic constant)
         wavelength = DENDRITIC_WAVELENGTH / (frequency / GOD_CODE + 0.001)
-        
+
         wave = NeuralWave(
             wave_id=wave_id,
             wave_type=wave_type,
@@ -247,10 +247,10 @@ class WaveMechanics:
             position=position,
             direction=direction
         )
-        
+
         self.waves[wave_id] = wave
         return wave
-    
+
     def create_gabor(
         self,
         center_frequency: float,
@@ -262,11 +262,11 @@ class WaveMechanics:
         wavelet_id = hashlib.md5(
             f"gabor_{center_frequency}_{time.time()}".encode()
         ).hexdigest()[:12]
-        
+
         if bandwidth is None:
             # Optimal bandwidth per uncertainty principle
             bandwidth = center_frequency * GABOR_UNCERTAINTY * 4
-        
+
         wavelet = GaborWavelet(
             wavelet_id=wavelet_id,
             center_frequency=center_frequency,
@@ -276,10 +276,10 @@ class WaveMechanics:
             phase=0.0,
             amplitude=1.0
         )
-        
+
         self.wavelets[wavelet_id] = wavelet
         return wavelet
-    
+
     def interfere_waves(
         self,
         wave_ids: List[str],
@@ -289,35 +289,35 @@ class WaveMechanics:
         Create interference pattern from multiple waves.
         """
         waves = [self.waves[wid] for wid in wave_ids if wid in self.waves]
-        
+
         if len(waves) < 2:
             return None
-        
+
         pattern_id = hashlib.md5(
             f"interference_{'_'.join(wave_ids)}".encode()
         ).hexdigest()[:12]
-        
+
         # Sample interference
         frequency_spectrum = []
         spatial_frequencies = []
-        
+
         # Collect frequencies
         for wave in waves:
             amplitude = wave.amplitude * cmath.exp(1j * wave.phase)
             frequency_spectrum.append((wave.frequency, amplitude))
-            
+
             # Spatial frequency from wavelength
             kx = 2 * PI / wave.wavelength * wave.direction[0]
             ky = 2 * PI / wave.wavelength * wave.direction[1]
             spatial_frequencies.append((kx, ky, amplitude))
-        
+
         # Calculate interference contrast
         amps = [abs(fs[1]) for fs in frequency_spectrum]
         max_amp = max(amps) if amps else 1
         min_amp = min(amps) if amps else 0
-        
+
         contrast = (max_amp - min_amp) / (max_amp + min_amp + 1e-10)
-        
+
         pattern = InterferencePattern(
             pattern_id=pattern_id,
             constituent_waves=wave_ids,
@@ -326,9 +326,9 @@ class WaveMechanics:
             contrast=contrast,
             timestamp=time.time()
         )
-        
+
         return pattern
-    
+
     def superpose(
         self,
         wave_ids: List[str],
@@ -355,10 +355,10 @@ class FourierProcessor:
     """
     Fourier transform processing for holonomic brain.
     """
-    
+
     def __init__(self):
         self.components: Dict[str, FourierComponent] = {}
-    
+
     def decompose(
         self,
         signal: List[complex],
@@ -370,30 +370,30 @@ class FourierProcessor:
         n = len(signal)
         if n == 0:
             return []
-        
+
         components = []
-        
+
         # DFT
         for k in range(n // 2):
             frequency = k * sample_rate / n
-            
+
             # Calculate DFT coefficient
             coefficient = 0j
             for t, s in enumerate(signal):
                 coefficient += s * cmath.exp(-2j * PI * k * t / n)
             coefficient /= n
-            
+
             amplitude = abs(coefficient)
             phase = cmath.phase(coefficient)
-            
+
             # Determine frequency band
             band = self._classify_frequency(frequency)
-            
+
             if amplitude > INTERFERENCE_THRESHOLD:
                 comp_id = hashlib.md5(
                     f"fourier_{frequency}_{time.time()}".encode()
                 ).hexdigest()[:12]
-                
+
                 component = FourierComponent(
                     component_id=comp_id,
                     frequency=frequency,
@@ -401,12 +401,12 @@ class FourierProcessor:
                     phase=phase,
                     band=band
                 )
-                
+
                 self.components[comp_id] = component
                 components.append(component)
-        
+
         return components
-    
+
     def reconstruct(
         self,
         components: List[FourierComponent],
@@ -417,7 +417,7 @@ class FourierProcessor:
         Reconstruct signal from Fourier components.
         """
         signal = [0j] * num_samples
-        
+
         for comp in components:
             for t in range(num_samples):
                 time_sec = t / sample_rate
@@ -425,9 +425,9 @@ class FourierProcessor:
                     2j * PI * comp.frequency * time_sec
                 )
                 signal[t] += contribution
-        
+
         return signal
-    
+
     def convolve(
         self,
         signal_a: List[complex],
@@ -439,15 +439,15 @@ class FourierProcessor:
         n = len(signal_a)
         m = len(signal_b)
         result_len = n + m - 1
-        
+
         result = [0j] * result_len
-        
+
         for i in range(n):
             for j in range(m):
                 result[i + j] += signal_a[i] * signal_b[j]
-        
+
         return result
-    
+
     def cross_correlate(
         self,
         signal_a: List[complex],
@@ -459,7 +459,7 @@ class FourierProcessor:
         # Correlation is convolution with one signal conjugated
         signal_b_conj = [s.conjugate() for s in signal_b]
         return self.convolve(signal_a, signal_b_conj)
-    
+
     def _classify_frequency(self, freq: float) -> FrequencyBand:
         """Classify frequency into band."""
         if freq <= 4:
@@ -482,12 +482,12 @@ class HolographicMemory:
     """
     Holographic memory storage and retrieval.
     """
-    
+
     def __init__(self, wave_mechanics: WaveMechanics):
         self.wave_mechanics = wave_mechanics
         self.holograms: Dict[str, Hologram] = {}
         self.patterns: Dict[str, InterferencePattern] = {}
-    
+
     def encode(
         self,
         content: str,
@@ -506,16 +506,16 @@ class HolographicMemory:
             phase=0.0,
             direction=(1, 0, 0)
         )
-        
+
         # Create object waves from content
         object_waves = []
         content_hash = hashlib.md5(content.encode()).hexdigest()
-        
+
         for i, char in enumerate(content[:10]):  # Use first 10 chars
             freq = (ord(char) % 50) + 20  # 20-70 Hz
             phase = (ord(char) / 256) * 2 * PI
             amplitude = 0.5 + 0.5 * (i / 10)
-            
+
             wave = self.wave_mechanics.create_wave(
                 wave_type=WaveType.DENDRITIC,
                 frequency=freq,
@@ -524,19 +524,19 @@ class HolographicMemory:
                 direction=(math.cos(i), math.sin(i), 0)
             )
             object_waves.append(wave.wave_id)
-        
+
         # Create interference pattern
         all_waves = [reference.wave_id] + object_waves
         pattern = self.wave_mechanics.interfere_waves(all_waves)
-        
+
         if pattern:
             self.patterns[pattern.pattern_id] = pattern
-        
+
         # Create hologram
         hologram_id = hashlib.md5(
             f"hologram_{content_hash}_{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         hologram = Hologram(
             hologram_id=hologram_id,
             memory_type=memory_type,
@@ -548,10 +548,10 @@ class HolographicMemory:
             strength=pattern.contrast if pattern else 0.5,
             creation_time=time.time()
         )
-        
+
         self.holograms[hologram_id] = hologram
         return hologram
-    
+
     def retrieve(
         self,
         cue: str,
@@ -559,39 +559,39 @@ class HolographicMemory:
     ) -> List[Tuple[Hologram, float]]:
         """
         Retrieve memories matching cue via holographic reconstruction.
-        
+
         Returns list of (hologram, similarity_score) tuples.
         """
         matches = []
-        
+
         # Create cue wave pattern
         cue_hash = hashlib.md5(cue.encode()).hexdigest()
-        
+
         for hologram in self.holograms.values():
             # Calculate similarity via frequency matching
             content_hash = hashlib.md5(
                 hologram.content_description.encode()
             ).hexdigest()
-            
+
             # Simple hash-based similarity
             same_chars = sum(1 for a, b in zip(cue_hash, content_hash) if a == b)
             hash_similarity = same_chars / len(cue_hash)
-            
+
             # String similarity
             common_chars = len(set(cue.lower()) & set(hologram.content_description.lower()))
             str_similarity = common_chars / (len(set(cue)) + 1)
-            
+
             similarity = (hash_similarity + str_similarity) / 2 * hologram.strength
-            
+
             if similarity >= threshold:
                 hologram.access_count += 1
                 hologram.last_access = time.time()
                 matches.append((hologram, similarity))
-        
+
         # Sort by similarity
         matches.sort(key=lambda x: x[1], reverse=True)
         return matches
-    
+
     def reconstruct(
         self,
         hologram: Hologram,
@@ -602,19 +602,19 @@ class HolographicMemory:
         """
         if hologram.interference_pattern_id not in self.patterns:
             return None
-        
+
         pattern = self.patterns[hologram.interference_pattern_id]
-        
+
         # If no reference provided, use stored reference
         if reference_wave is None:
             reference_wave = self.wave_mechanics.waves.get(hologram.reference_wave_id)
-        
+
         if reference_wave is None:
             return pattern  # Return stored pattern
-        
+
         # Reconstruct by multiplying reference with pattern
         reconstructed_freqs = []
-        
+
         for freq, amp in pattern.frequency_spectrum:
             # Modulate by reference
             ref_contribution = reference_wave.amplitude * cmath.exp(
@@ -622,7 +622,7 @@ class HolographicMemory:
             )
             reconstructed_amp = amp * ref_contribution
             reconstructed_freqs.append((freq, reconstructed_amp))
-        
+
         return InterferencePattern(
             pattern_id=f"recon_{pattern.pattern_id}",
             constituent_waves=pattern.constituent_waves,
@@ -631,7 +631,7 @@ class HolographicMemory:
             contrast=pattern.contrast * reference_wave.amplitude,
             timestamp=time.time()
         )
-    
+
     def associate(
         self,
         hologram_a: Hologram,
@@ -639,31 +639,31 @@ class HolographicMemory:
     ) -> float:
         """
         Create association between two memories.
-        
+
         Returns association strength.
         """
         if (hologram_a.interference_pattern_id not in self.patterns or
             hologram_b.interference_pattern_id not in self.patterns):
             return 0.0
-        
+
         pattern_a = self.patterns[hologram_a.interference_pattern_id]
         pattern_b = self.patterns[hologram_b.interference_pattern_id]
-        
+
         # Calculate correlation between patterns
         freqs_a = dict(pattern_a.frequency_spectrum)
         freqs_b = dict(pattern_b.frequency_spectrum)
-        
+
         common_freqs = set(freqs_a.keys()) & set(freqs_b.keys())
-        
+
         if not common_freqs:
             return 0.0
-        
+
         correlation = 0j
         for freq in common_freqs:
             correlation += freqs_a[freq] * freqs_b[freq].conjugate()
-        
+
         association_strength = abs(correlation) / (len(common_freqs) + 1)
-        
+
         return min(1.0, association_strength)
 
 
@@ -675,11 +675,11 @@ class DendriticMicroprocessor:
     """
     Models dendritic microprocessing as Gabor transforms.
     """
-    
+
     def __init__(self, wave_mechanics: WaveMechanics):
         self.wave_mechanics = wave_mechanics
         self.receptive_fields: Dict[str, List[GaborWavelet]] = {}
-    
+
     def create_receptive_field(
         self,
         field_id: str,
@@ -691,23 +691,23 @@ class DendriticMicroprocessor:
         Create receptive field with multiple Gabor wavelets.
         """
         wavelets = []
-        
+
         for o in range(orientations):
             orientation = o * PI / orientations
-            
+
             for s in range(scales):
                 frequency = GOD_CODE / (10 * (s + 1))  # Decreasing frequency
-                
+
                 wavelet = self.wave_mechanics.create_gabor(
                     center_frequency=frequency,
                     position=center,
                     orientation=orientation
                 )
                 wavelets.append(wavelet)
-        
+
         self.receptive_fields[field_id] = wavelets
         return wavelets
-    
+
     def process_input(
         self,
         field_id: str,
@@ -715,25 +715,25 @@ class DendriticMicroprocessor:
     ) -> Dict[str, float]:
         """
         Process input through receptive field.
-        
+
         Returns activation for each wavelet.
         """
         if field_id not in self.receptive_fields:
             return {}
-        
+
         activations = {}
-        
+
         for wavelet in self.receptive_fields[field_id]:
             # Convolve input with wavelet
             response = 0j
             for x, y, value in input_pattern:
                 gabor_response = wavelet.evaluate(x, y)
                 response += value * gabor_response.conjugate()
-            
+
             activations[wavelet.wavelet_id] = abs(response)
-        
+
         return activations
-    
+
     def extract_features(
         self,
         field_id: str,
@@ -743,10 +743,10 @@ class DendriticMicroprocessor:
         Extract features from input using receptive field.
         """
         activations = self.process_input(field_id, input_pattern)
-        
+
         if not activations:
             return {}
-        
+
         # Dominant orientation
         orientations = {}
         for wavelet in self.receptive_fields.get(field_id, []):
@@ -754,9 +754,9 @@ class DendriticMicroprocessor:
             if ori not in orientations:
                 orientations[ori] = 0
             orientations[ori] += activations.get(wavelet.wavelet_id, 0)
-        
+
         dominant_orientation = max(orientations.keys(), key=lambda o: orientations[o]) if orientations else 0
-        
+
         # Dominant scale
         scales = {}
         for wavelet in self.receptive_fields.get(field_id, []):
@@ -764,9 +764,9 @@ class DendriticMicroprocessor:
             if freq not in scales:
                 scales[freq] = 0
             scales[freq] += activations.get(wavelet.wavelet_id, 0)
-        
+
         dominant_scale = max(scales.keys(), key=lambda s: scales[s]) if scales else 0
-        
+
         return {
             "total_activation": sum(activations.values()),
             "dominant_orientation": dominant_orientation,
@@ -783,18 +783,18 @@ class DendriticMicroprocessor:
 class HolonomicBrain:
     """
     Main holonomic brain processor.
-    
+
     Singleton for L104 holonomic operations.
     """
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialize()
         return cls._instance
-    
+
     def _initialize(self):
         """Initialize holonomic systems."""
         self.god_code = GOD_CODE
@@ -802,10 +802,10 @@ class HolonomicBrain:
         self.fourier = FourierProcessor()
         self.memory = HolographicMemory(self.wave_mechanics)
         self.dendritic = DendriticMicroprocessor(self.wave_mechanics)
-        
+
         # Initialize default receptive fields
         self._create_default_fields()
-    
+
     def _create_default_fields(self):
         """Create default dendritic receptive fields."""
         # Visual-like receptive field
@@ -814,14 +814,14 @@ class HolonomicBrain:
             orientations=8,
             scales=4
         )
-        
+
         # Auditory-like receptive field
         self.dendritic.create_receptive_field(
             "primary_auditory",
             orientations=4,
             scales=6
         )
-    
+
     def encode_memory(
         self,
         content: str,
@@ -829,7 +829,7 @@ class HolonomicBrain:
     ) -> Hologram:
         """Encode content as holographic memory."""
         return self.memory.encode(content, memory_type)
-    
+
     def recall(
         self,
         cue: str,
@@ -837,12 +837,12 @@ class HolonomicBrain:
     ) -> List[Tuple[str, float]]:
         """
         Recall memories matching cue.
-        
+
         Returns list of (content, similarity) tuples.
         """
         matches = self.memory.retrieve(cue, threshold)
         return [(h.content_description, score) for h, score in matches]
-    
+
     def create_wave(
         self,
         frequency: float,
@@ -856,18 +856,18 @@ class HolonomicBrain:
             amplitude=amplitude,
             phase=phase
         )
-    
+
     def interfere(self, wave_ids: List[str]) -> Optional[InterferencePattern]:
         """Create interference from waves."""
         return self.wave_mechanics.interfere_waves(wave_ids)
-    
+
     def fourier_decompose(
         self,
         signal: List[complex]
     ) -> List[FourierComponent]:
         """Decompose signal into Fourier components."""
         return self.fourier.decompose(signal)
-    
+
     def fourier_reconstruct(
         self,
         components: List[FourierComponent],
@@ -875,7 +875,7 @@ class HolonomicBrain:
     ) -> List[complex]:
         """Reconstruct signal from components."""
         return self.fourier.reconstruct(components, num_samples)
-    
+
     def process_perception(
         self,
         field_id: str,
@@ -883,7 +883,7 @@ class HolonomicBrain:
     ) -> Dict[str, Any]:
         """Process perceptual input through receptive field."""
         return self.dendritic.extract_features(field_id, input_pattern)
-    
+
     def associate_memories(
         self,
         hologram_a_id: str,
@@ -893,29 +893,29 @@ class HolonomicBrain:
         if (hologram_a_id not in self.memory.holograms or
             hologram_b_id not in self.memory.holograms):
             return 0.0
-        
+
         return self.memory.associate(
             self.memory.holograms[hologram_a_id],
             self.memory.holograms[hologram_b_id]
         )
-    
+
     def compute_coherence(
         self,
         wave_ids: List[str]
     ) -> float:
         """Compute phase coherence among waves."""
-        waves = [self.wave_mechanics.waves[wid] for wid in wave_ids 
+        waves = [self.wave_mechanics.waves[wid] for wid in wave_ids
                  if wid in self.wave_mechanics.waves]
-        
+
         if len(waves) < 2:
             return 1.0
-        
+
         phases = [w.phase for w in waves]
         avg_phase = sum(phases) / len(phases)
-        
+
         coherence = sum(math.cos(p - avg_phase) for p in phases) / len(phases)
         return max(0, coherence)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get comprehensive holonomic statistics."""
         return {
@@ -930,7 +930,7 @@ class HolonomicBrain:
             "receptive_fields": len(self.dendritic.receptive_fields),
             "memory_types": {
                 mt.name: sum(
-                    1 for h in self.memory.holograms.values() 
+                    1 for h in self.memory.holograms.values()
                     if h.memory_type == mt
                         )
                 for mt in MemoryType
@@ -958,10 +958,10 @@ if __name__ == "__main__":
     print(f"GOD_CODE: {GOD_CODE}")
     print(f"Holographic Resolution: {HOLOGRAPHIC_RESOLUTION}")
     print()
-    
+
     # Initialize
     brain = get_holonomic_brain()
-    
+
     # Create waves
     print("CREATING NEURAL WAVES:")
     wave1 = brain.create_wave(40.0, 1.0, 0.0)  # 40 Hz gamma
@@ -970,18 +970,18 @@ if __name__ == "__main__":
     print(f"  Created wave at {wave1.frequency} Hz")
     print(f"  Created wave at {wave2.frequency} Hz")
     print(f"  Created wave at {wave3.frequency} Hz")
-    
+
     # Interfere
     pattern = brain.interfere([wave1.wave_id, wave2.wave_id, wave3.wave_id])
     if pattern:
         print(f"  Interference contrast: {pattern.contrast:.4f}")
     print()
-    
+
     # Coherence
     coherence = brain.compute_coherence([wave1.wave_id, wave2.wave_id, wave3.wave_id])
     print(f"PHASE COHERENCE: {coherence:.4f}")
     print()
-    
+
     # Encode memories
     print("ENCODING HOLOGRAPHIC MEMORIES:")
     memories = [
@@ -990,14 +990,14 @@ if __name__ == "__main__":
         ("How to ride a bicycle", MemoryType.PROCEDURAL),
         ("The smell of fresh rain", MemoryType.SENSORY),
     ]
-    
+
     holograms = []
     for content, mem_type in memories:
         h = brain.encode_memory(content, mem_type)
         holograms.append(h)
         print(f"  Encoded: '{content[:30]}...' (strength: {h.strength:.3f})")
     print()
-    
+
     # Recall
     print("HOLOGRAPHIC RECALL:")
     cues = ["golden", "garden", "bicycle", "smell"]
@@ -1009,7 +1009,7 @@ if __name__ == "__main__":
         else:
             print(f"  '{cue}' -> no matches")
     print()
-    
+
     # Fourier decomposition
     print("FOURIER PROCESSING:")
     test_signal = [
@@ -1022,7 +1022,7 @@ if __name__ == "__main__":
     for comp in components[:3]:
         print(f"    {comp.frequency:.1f} Hz: amplitude={abs(comp.amplitude):.4f} ({comp.band.name})")
     print()
-    
+
     # Perception processing
     print("PERCEPTUAL PROCESSING:")
     input_pattern = [
@@ -1034,7 +1034,7 @@ if __name__ == "__main__":
     print(f"  Dominant orientation: {features.get('dominant_orientation', 0):.4f} rad")
     print(f"  Active wavelets: {features.get('num_active_wavelets', 0)}")
     print()
-    
+
     # Statistics
     print("=" * 70)
     print("HOLONOMIC STATISTICS")
@@ -1047,5 +1047,5 @@ if __name__ == "__main__":
             print(f"  {key}: {value}")
         else:
             print(f"  {key}: {value}")
-    
+
     print("\n✓ Holonomic Brain Processor operational")

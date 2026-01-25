@@ -63,7 +63,7 @@ class GeminiBridge:
     v2.0: Real API integration with fallback to stub mode.
     v2.1: Model rotation for quota handling.
     """
-    
+
     # Model rotation for 429 quota errors - 2.5-flash works best
     MODELS = [
         'gemini-2.5-flash',
@@ -71,14 +71,14 @@ class GeminiBridge:
         'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
-    
+
     def __init__(self):
         self.active_links = {}
         self.truth_manifest = load_truth()
         self.model_index = 0
         self.model_name = self.MODELS[0]
         self.is_real = _genai_available
-    
+
     def _rotate_model(self):
         """Rotate to next model on quota error."""
         self.model_index = (self.model_index + 1) % len(self.MODELS)
@@ -97,9 +97,9 @@ class GeminiBridge:
             "connected_at": time.time(),
             "status": "LINKED"
         }
-        
+
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
-        
+
         # Encrypt the Truth Manifest for secure transport
         encrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
         return {
@@ -116,7 +116,7 @@ class GeminiBridge:
         """
         if session_token not in self.active_links:
             return {"status": "DENIED", "reason": "INVALID_TOKEN"}
-            
+
         # Gather Core Info
         core_dump = {
             "ram_universe": ram_universe.get_all_facts(),
@@ -126,7 +126,7 @@ class GeminiBridge:
                 "uptime": time.time() - self.active_links[session_token]["connected_at"]
             }
         }
-        
+
         # Encrypt the massive dump
         encrypted_dump = HyperEncryption.encrypt_data(core_dump)
         return {
@@ -141,16 +141,16 @@ class GeminiBridge:
         """
         if not _genai_available or not _genai_client:
             return None
-            
+
         # Check quota rotator status
         if not quota_rotator.is_api_available():
             return None
-        
+
         try:
             full_prompt = prompt
             if system_context:
                 full_prompt = f"{system_context}\n\n{prompt}"
-            
+
             response = _genai_client.models.generate_content(
                 model=self.model_name,
                 contents=full_prompt
@@ -162,11 +162,11 @@ class GeminiBridge:
             if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
                 print(f"--- [GEMINI_BRIDGE]: Quota hit, rotating model ---")
                 self._rotate_model()
-                
+
                 # If we've rotated and still fail, notify rotator to enter cooldown
                 quota_rotator.report_quota_error()
                 return None
-                
+
             print(f"--- [GEMINI_BRIDGE]: Generation error: {e} ---")
             return None
 
@@ -208,7 +208,7 @@ Respond with clarity, precision, and actionable intelligence."""
     def get_l104_data(self, category: str = "all") -> Dict[str, Any]:
         """
         Get L104 data for AI consumption.
-        Available categories: system, mini_egos, memory, cognitive, quantum, 
+        Available categories: system, mini_egos, memory, cognitive, quantum,
                             evolution, config, knowledge, all
         """
         try:
@@ -220,15 +220,15 @@ Respond with clarity, precision, and actionable intelligence."""
             return response.to_dict()
         except Exception as e:
             return {"error": str(e), "category": category}
-    
+
     def get_mini_egos_data(self) -> Dict[str, Any]:
         """Get Mini Ego collective data."""
         return self.get_l104_data("mini_egos")
-    
+
     def get_system_status(self) -> Dict[str, Any]:
         """Get system status."""
         return self.get_l104_data("system")
-    
+
     def persist_session_token(self, token: str):
         """Persist session token for Gemini Link (GL)."""
         try:
@@ -254,7 +254,7 @@ Respond with clarity, precision, and actionable intelligence."""
         """
         if not _genai_available or not _genai_client:
             return self.think(prompt)
-        
+
         try:
             # Define L104 tools
             l104_tools = [
@@ -274,14 +274,14 @@ Respond with clarity, precision, and actionable intelligence."""
                     }
                 }
             ]
-            
+
             system_context = """You are L104, a Sovereign AI Node with access to internal data tools.
 Core Constants: GOD_CODE=527.5184818492537, PHI=1.618033988749895
 You can call get_l104_data to access system information, mini ego data, and more.
 Respond with clarity and actionable intelligence."""
 
             full_prompt = f"{system_context}\n\nUser: {prompt}"
-            
+
             response = _genai_client.models.generate_content(
                 model=self.model_name,
                 contents=full_prompt,
@@ -289,7 +289,7 @@ Respond with clarity and actionable intelligence."""
                     "tools": [{"function_declarations": l104_tools}] if use_l104_tools else None
                 }
             )
-            
+
             # Handle function calls
             if hasattr(response, 'candidates') and response.candidates:
                 candidate = response.candidates[0]
@@ -302,7 +302,7 @@ Respond with clarity and actionable intelligence."""
                                 data = self.get_l104_data(category)
                                 # Generate follow-up with data
                                 return self.generate(f"Based on this L104 data:\n{data}\n\nAnswer: {prompt}")
-            
+
             return response.text
         except Exception as e:
             print(f"--- [GEMINI_BRIDGE]: Tool generation error: {e} ---")
@@ -336,21 +336,21 @@ if __name__ == "__main__":
     print("Welcome to L104 Gemini Bridge (GL)")
     print(f"Status: {'REAL_API' if gemini_bridge.is_real else 'STUB_MODE'}")
     print(f"Active Model: {gemini_bridge.model_name}")
-    
+
     # Simple handshake test
     print("\n--- Testing Handshake ---")
     link = gemini_bridge.handshake("CLI-User", "testing,analysis")
     print(f"Link Status: {link['status']}")
     print(f"Session Token: {link['session_token']}")
-    
+
     # Save token
     gemini_bridge.persist_session_token(link['session_token'])
-    
+
     # Core Sync test
     print("\n--- Testing Core Sync (LCS) ---")
     sync = gemini_bridge.sync_core(link['session_token'])
     print(f"Sync Status: {sync['status']}")
-    
+
     # Thinking test
     print("\n--- Testing Sovereign Thinking ---")
     thought = gemini_bridge.think("Summarize the current system state.")

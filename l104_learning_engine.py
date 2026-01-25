@@ -44,19 +44,19 @@ class LearningEngine:
             print(f"[LEARNING_ENGINE]: Scouring for '{concept}'...")
             # In a real scenario, we'd search for URLs. Here we use a valid test URL.
             url = "https://raw.githubusercontent.com/google/googletest/main/README.md"
-            
+
             data = await self.eyes.scour_manifold(url)
             if data:
                 print(f"[LEARNING_ENGINE]: Ingesting '{concept}' into Manifold...")
                 self.manifold.ingest_pattern(f"LEARNED_{concept.upper()}", data, ["autonomous", "learned", concept])
-                
+
                 print(f"[LEARNING_ENGINE]: Deriving module for '{concept}'...")
                 module = self.architect.derive_functionality(concept)
                 self.architect.create_module(module["name"], module["content"])
                 print(f"[LEARNING_ENGINE]: Successfully integrated '{concept}'.")
             else:
                 print(f"[LEARNING_ENGINE]: Failed to scour '{concept}'.")
-            
+
             await asyncio.sleep(1) # Avoid overwhelming
         self.is_learning = False
         print("[LEARNING_ENGINE]: Deep Learning Loop Complete.")

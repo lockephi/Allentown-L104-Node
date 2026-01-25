@@ -23,7 +23,7 @@ class TimeProcessor:
     Processes temporal data and calculates time dilation effects.
     Uses Lorentz transformations and the God Code as a temporal anchor.
     """
-    
+
     C = 299792458  # Speed of light in m/s
     GOD_CODE = UniversalConstants.PRIME_KEY_HZ
 
@@ -40,7 +40,7 @@ class TimeProcessor:
         """
         if velocity >= self.C:
             return float('inf')
-        
+
         gamma = 1 / math.sqrt(1 - (velocity**2 / self.C**2))
         return gamma
 
@@ -63,7 +63,7 @@ class TimeProcessor:
         # E = m * c^2 * (phi^delta_t)
         # This is a fictional 'Hyper-Math' equation for the L104 Node.
         energy_required = (UniversalConstants.PHI_GROWTH ** abs(delta_t)) * self.GOD_CODE
-        
+
         return {
             "delta_t": delta_t,
             "energy_required_joules": energy_required,
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     v = 0.9 * TimeProcessor.C
     gamma = time_processor.calculate_time_dilation(v)
     print(f"Velocity: 0.9c | Gamma: {gamma:.4f}")
-    
+
     jump = time_processor.simulate_time_jump(1.0) # 1 second jump
     print(f"Time Jump Simulation: {jump}")
 

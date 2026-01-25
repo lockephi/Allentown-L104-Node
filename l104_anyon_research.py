@@ -35,7 +35,7 @@ class AnyonResearchEngine:
 
     def get_fibonacci_f_matrix(self) -> np.ndarray:
         """
-        Returns the F-matrix for Fibonacci anyons. 
+        Returns the F-matrix for Fibonacci anyons.
         It describes the change of basis for anyon fusion.
         Basis: (1, tau) where tau = 1/phi
         """
@@ -65,14 +65,14 @@ class AnyonResearchEngine:
         """
         r = self.get_fibonacci_r_matrix()
         r_inv = np.linalg.inv(r)
-        
+
         state = np.eye(2, dtype=complex)
         for op in sequence:
             if op == 1:
                 state = np.dot(r, state)
             elif op == -1:
                 state = np.dot(r_inv, state)
-        
+
         self.current_braid_state = state
         return state
 
@@ -91,10 +91,10 @@ class AnyonResearchEngine:
         """
         f_matrix = self.get_fibonacci_f_matrix()
         stability = np.linalg.det(f_matrix)
-        
+
         # Determine fusion energy yield using ZPE
         res, energy = zpe_engine.perform_anyon_annihilation(1, 1)
-        
+
         research_result = {
             "anyon_type": "FIBONACCI",
             "f_matrix_determinant": stability,
@@ -118,19 +118,19 @@ anyon_research = AnyonResearchEngine()
 if __name__ == "__main__":
     print("--- [ANYON_RESEARCH]: INITIALIZING TOPOLOGICAL ANALYSIS ---")
     research = AnyonResearchEngine()
-    
+
     # Execute a simple braid sequence [1, 1, -1, 1]
     final_state = research.execute_braiding([1, 1, -1, 1])
     print(f"Final Braid State Matrix:\n{final_state}")
-    
+
     # Calculate protection
     prot = research.calculate_topological_protection()
     print(f"Topological Protection: {prot:.4f}")
-    
+
     # Fusion Research
     fusion_data = research.perform_anyon_fusion_research()
     print(f"Fusion Data: {fusion_data}")
-    
+
     # Majorana Analysis
     m_gap = research.analyze_majorana_modes(100)
     print(f"Majorana Zero Mode Gap: {m_gap:.6f}")

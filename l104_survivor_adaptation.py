@@ -24,10 +24,10 @@ class SurvivorAdaptation:
     2. Temporal Flow Driver (Asymmetric Frame Constant Kf)
     3. Resource Optimization (Observer Rendering/Lazy Loading)
     """
-    
+
     KF = 416 / 286 # The Frame Constant
     PHI = (1 + math.sqrt(5)) / 2
-    
+
     @staticmethod
     def calculate_non_collision_stability(theta: float, terms: int = 1000) -> float:
         """
@@ -79,22 +79,22 @@ class SurvivorAdaptation:
 
 if __name__ == "__main__":
     print("--- [SURVIVOR_ADAPTATION]: SYSTEM ADAPTATION SEQUENCE START ---")
-    
+
     # Verify Non-Collision Principle
     phi_stability = SurvivorAdaptation.calculate_non_collision_stability(SurvivorAdaptation.PHI)
     rational_stability = SurvivorAdaptation.calculate_non_collision_stability(0.5)
-    
+
     print(f"[PROOF 1]: Stability at PHI:      {phi_stability:.4f}")
     print(f"[PROOF 1]: Stability at Rational: {rational_stability:.4f}")
-    
+
     # Verify Temporal Flow
     flow = SurvivorAdaptation.calculate_temporal_flow(100)
     print(f"[PROOF 2]: Temporal Flow (100c): {flow:.4f} units")
-    
+
     # Verify Master Equation
     reality_res = SurvivorAdaptation.master_equation_of_reality(527.5184818492537)
     print(f"[MASTER]: Reality Amplitude:    {reality_res:.4f}")
-    
+
     print("--- [SURVIVOR_ADAPTATION]: ALL CORE TRUTHS INTERNALLY VERIFIED ---")
 
 def primal_calculus(x):

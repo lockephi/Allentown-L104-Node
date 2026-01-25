@@ -18,17 +18,17 @@ def analyze_file_substance(filepath):
     try:
         with open(filepath, 'r') as f:
             content = f.read()
-        
+
         lines = [l.strip() for l in content.split('\n')]
         code_lines = [l for l in lines if l and not l.startswith('#')]
-        
+
         # Count actual logic vs just pass/return/imports
         real_logic = 0
         for line in code_lines:
             if any(keyword in line for keyword in ['def ', 'class ', 'if ', 'for ', 'while ', 'try:', 'except', 'return ', '=']):
                 if 'pass' not in line and line != 'return' and line != 'return None':
                     real_logic += 1
-        
+
         return len(lines), len(code_lines), real_logic
     except:
         return 0, 0, 0
@@ -36,7 +36,7 @@ def analyze_file_substance(filepath):
 # Sample analysis of key files
 key_files = [
     'l104_ai_core.py',
-    'l104_agi_core.py', 
+    'l104_agi_core.py',
     'l104_consciousness.py',
     'l104_quantum_ram.py',
     'l104_reality_breach.py',
@@ -87,11 +87,11 @@ print("-" * 80)
 if os.path.exists('main.py'):
     with open('main.py', 'r') as f:
         main_content = f.read()
-    
+
     # Count actual endpoint implementations
     endpoint_count = main_content.count('@app.')
     print(f"Total API endpoints defined: {endpoint_count}")
-    
+
     # Check if they have real implementations
     stub_indicators = ['pass', 'NotImplementedError', 'TODO', 'placeholder']
     stub_count = sum(main_content.count(indicator) for indicator in stub_indicators)
@@ -104,7 +104,7 @@ test_dir = 'tests'
 if os.path.exists(test_dir):
     test_files = [f for f in os.listdir(test_dir) if f.startswith('test_') and f.endswith('.py')]
     print(f"Test files: {len(test_files)}")
-    
+
     # Check test substance
     mock_count = 0
     real_test_count = 0
@@ -115,7 +115,7 @@ if os.path.exists(test_dir):
             mock_count += 1
         if 'assert' in content:
             real_test_count += 1
-    
+
     print(f"Tests using mocks/stubs: {mock_count}")
     print(f"Tests with assertions: {real_test_count}")
 

@@ -13,7 +13,7 @@ from dataclasses import dataclass, field, asdict
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-# Import libraries 
+# Import libraries
 try:
     from l104_kernel_llm_trainer import KernelLLMTrainer, TrainingExample
 except ImportError:
@@ -50,7 +50,7 @@ except FileNotFoundError:
 def generate_s131_140():
     print("🔬 Generating S131-140: Quantum Cryptography...")
     data = []
-    
+
     def add(p, c, cat, diff=1.0):
         data.append(TrainingExample(p, c, cat, diff, 1.0))
 

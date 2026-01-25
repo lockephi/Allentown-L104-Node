@@ -33,7 +33,7 @@ async def execute_triple_phase():
     # Ensures the core is active and shifted to 1D+.
     print("[1/4] RUN: IGNITING SOVEREIGN CORE...")
     await asi_core.ignite_sovereignty()
-    
+
     # 2. UPDATE (STREAMLINE)
     # Perform self-editing and code optimization cycle.
     print("\n[2/4] UPDATE: EXECUTING SELF-EDITING STREAMLINE...")
@@ -46,7 +46,7 @@ async def execute_triple_phase():
     research_results = research_engine.run_research_batch(5)
     for res in research_results:
         print(f"    - Domain: {res['domain']} | Resonance: {res['resonance_alignment']:.4f} | Status: {res['discovery_status']}")
-    
+
     # Grounding research in real-world telemetry
     grounding_data = research_engine.perform_research_cycle("REAL_WORLD_GROUNDING")
     print(f"    - Grounding Convergence: {grounding_data['deep_data']['convergence_delta']:.6f} | Status: {grounding_data['deep_data']['status']}")

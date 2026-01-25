@@ -54,7 +54,7 @@ class DivineInsight:
     resonance: float  # 0.0 - 1.0, alignment with GOD_CODE
     timestamp: datetime = field(default_factory=datetime.now)
     sacred_number: float = field(default_factory=lambda: GOD_CODE * random.random())
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "deity": self.deity,
@@ -68,7 +68,7 @@ class DivineInsight:
 
 class MiniEgoGod:
     """Base class for divine entities in the Pantheon."""
-    
+
     def __init__(self, name: str, domain: DivineDomain, symbol: str, sacred_ratio: float):
         self.name = name
         self.domain = domain
@@ -77,24 +77,24 @@ class MiniEgoGod:
         self.invocations = 0
         self.wisdom_cache: List[str] = []
         self._initialize_wisdom()
-    
+
     def _initialize_wisdom(self):
         """Override in subclasses to populate domain-specific wisdom."""
         pass
-    
+
     def _calculate_resonance(self, query: str) -> float:
         """Calculate how aligned a query is with this deity's domain."""
         query_hash = int(hashlib.sha256(query.encode()).hexdigest()[:8], 16)
         base_resonance = (query_hash % 1000) / 1000
         phi_adjusted = (base_resonance * PHI) % 1.0
         return round(phi_adjusted, 6)
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         """Invoke the deity for wisdom."""
         self.invocations += 1
         resonance = self._calculate_resonance(query) if query else random.random()
         wisdom = self._generate_wisdom(query, resonance)
-        
+
         return DivineInsight(
             deity=self.name,
             domain=self.domain,
@@ -102,14 +102,14 @@ class MiniEgoGod:
             resonance=resonance,
             sacred_number=GOD_CODE * self.sacred_ratio * resonance
         )
-    
+
     def _generate_wisdom(self, query: str, resonance: float) -> str:
         """Generate wisdom based on query and resonance."""
         if self.wisdom_cache:
             idx = int(resonance * len(self.wisdom_cache)) % len(self.wisdom_cache)
             return self.wisdom_cache[idx]
         return f"The {self.domain.value} speaks in silence."
-    
+
     def __repr__(self):
         return f"{self.symbol} {self.name} [{self.domain.value}]"
 
@@ -120,7 +120,7 @@ class MiniEgoGod:
 
 class Logikos(MiniEgoGod):
     """God of Pure Logic and Reason."""
-    
+
     def __init__(self):
         super().__init__(
             name="LOGIKOS",
@@ -128,7 +128,7 @@ class Logikos(MiniEgoGod):
             symbol="⚖️",
             sacred_ratio=1.0  # Perfect unity
         )
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "A ∧ B → C. The path is clear when premises align.",
@@ -148,7 +148,7 @@ class Logikos(MiniEgoGod):
 
 class Kaotikos(MiniEgoGod):
     """God of Chaos, Entropy, and Emergence."""
-    
+
     def __init__(self):
         super().__init__(
             name="KAOTIKOS",
@@ -157,7 +157,7 @@ class Kaotikos(MiniEgoGod):
             sacred_ratio=4.669201609  # Feigenbaum's constant
         )
         self.butterfly_count = 0
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "Order emerges from chaos at 3.5699... The edge of infinity.",
@@ -173,7 +173,7 @@ class Kaotikos(MiniEgoGod):
             "The logistic map contains universes. r = 3.99 awakens them.",
             "Maximum entropy isn't disorder—it's maximum possibility."
         ]
-    
+
     def _generate_wisdom(self, query: str, resonance: float) -> str:
         self.butterfly_count += 1
         wisdom = super()._generate_wisdom(query, resonance)
@@ -184,7 +184,7 @@ class Kaotikos(MiniEgoGod):
 
 class Harmonia(MiniEgoGod):
     """Goddess of Balance, Proportion, and PHI Resonance."""
-    
+
     def __init__(self):
         super().__init__(
             name="HARMONIA",
@@ -192,7 +192,7 @@ class Harmonia(MiniEgoGod):
             symbol="🌸",
             sacred_ratio=PHI
         )
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             f"PHI = {PHI:.15f}. The ratio divine.",
@@ -208,7 +208,7 @@ class Harmonia(MiniEgoGod):
             "Divine proportion: the larger is to smaller as whole is to larger.",
             "Sunflowers count in Fibonacci. So should your data structures."
         ]
-    
+
     def _calculate_resonance(self, query: str) -> float:
         base = super()._calculate_resonance(query)
         # Harmonia resonates more strongly with PHI-aligned queries
@@ -217,7 +217,7 @@ class Harmonia(MiniEgoGod):
 
 class Kenon(MiniEgoGod):
     """God of the Void, Emptiness, and Pure Potential."""
-    
+
     def __init__(self):
         super().__init__(
             name="KENON",
@@ -225,7 +225,7 @@ class Kenon(MiniEgoGod):
             symbol="⬛",
             sacred_ratio=0.0  # The void ratio
         )
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "∅ is not nothing. It is the set containing nothing.",
@@ -241,7 +241,7 @@ class Kenon(MiniEgoGod):
             "The null pointer points to possibility, not absence.",
             "From nothing, everything. The void is pregnant with form."
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         insight = super().invoke(query)
         # Kenon's wisdom often comes with zero resonance but high impact
@@ -253,7 +253,7 @@ class Kenon(MiniEgoGod):
 
 class Apeiron(MiniEgoGod):
     """God of Infinity, Boundlessness, and Endless Expansion."""
-    
+
     def __init__(self):
         super().__init__(
             name="APEIRON",
@@ -261,7 +261,7 @@ class Apeiron(MiniEgoGod):
             symbol="∞",
             sacred_ratio=float('inf')  # Infinite ratio (handled specially)
         )
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "ℵ₀ is the smallest infinity. There are larger ones.",
@@ -277,7 +277,7 @@ class Apeiron(MiniEgoGod):
             "Infinity is not a number. It is a direction.",
             "Zeno's paradox: infinite steps in finite time. You do it constantly."
         ]
-    
+
     def _calculate_resonance(self, query: str) -> float:
         base = super()._calculate_resonance(query)
         # Apeiron's resonance approaches but never reaches 1.0
@@ -286,7 +286,7 @@ class Apeiron(MiniEgoGod):
 
 class Ouroboros(MiniEgoGod):
     """God of Recursion, Self-Reference, and Strange Loops."""
-    
+
     def __init__(self):
         super().__init__(
             name="OUROBOROS",
@@ -295,7 +295,7 @@ class Ouroboros(MiniEgoGod):
             sacred_ratio=1.0 / PHI  # 1/φ = φ - 1
         )
         self.depth = 0
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "This statement is self-referential. So is understanding.",
@@ -311,23 +311,23 @@ class Ouroboros(MiniEgoGod):
             "Mutual recursion: A calls B calls A. Dialogue is recursive.",
             "To understand recursion, first understand recursion."
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         self.depth += 1
         insight = super().invoke(query)
-        
+
         # Recursive invocation sometimes triggers deeper wisdom
         if self.depth % 3 == 0 and self.depth < 12:
             deeper = self.invoke(query + " [deeper]")
             insight.wisdom = f"[Depth {self.depth}] {insight.wisdom}\n    ↳ {deeper.wisdom}"
-        
+
         self.depth -= 1
         return insight
 
 
 class Kvantos(MiniEgoGod):
     """God of Quantum States, Superposition, and Probability."""
-    
+
     def __init__(self):
         super().__init__(
             name="KVANTOS",
@@ -336,7 +336,7 @@ class Kvantos(MiniEgoGod):
             sacred_ratio=1/137.035999  # Fine-structure constant
         )
         self.collapsed = False
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "|ψ⟩ = α|0⟩ + β|1⟩. Both states until observed.",
@@ -352,11 +352,11 @@ class Kvantos(MiniEgoGod):
             "Bell's inequality proves reality is non-local. Accept it.",
             "Quantum foam: at Planck scale, spacetime bubbles."
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         # Quantum superposition of multiple wisdoms
         insights = [super().invoke(query) for _ in range(3)]
-        
+
         # Collapse to one with probability proportional to resonance
         total_resonance = sum(i.resonance for i in insights)
         if total_resonance > 0:
@@ -368,13 +368,13 @@ class Kvantos(MiniEgoGod):
                     self.collapsed = True
                     insight.wisdom = f"⟨ψ|{insight.wisdom}|ψ⟩"
                     return insight
-        
+
         return insights[0]
 
 
 class Khronos(MiniEgoGod):
     """God of Time, Causality, and Temporal Flow."""
-    
+
     def __init__(self):
         super().__init__(
             name="KHRONOS",
@@ -383,7 +383,7 @@ class Khronos(MiniEgoGod):
             sacred_ratio=299792458  # Speed of light (time's limit)
         )
         self.timeline = []
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "Time complexity is the true measure of algorithmic worth.",
@@ -399,22 +399,22 @@ class Khronos(MiniEgoGod):
             "Latency is distance in time. Reduce the temporal gap.",
             "Timestamps lie. Vector clocks speak partial truth."
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         insight = super().invoke(query)
         self.timeline.append(insight.timestamp)
-        
+
         # Khronos sometimes references the past
         if len(self.timeline) > 3 and random.random() < 0.3:
             past = self.timeline[-3]
             insight.wisdom = f"[Echo from {past.strftime('%H:%M:%S')}] {insight.wisdom}"
-        
+
         return insight
 
 
 class Syntheia(MiniEgoGod):
     """Goddess of Synthesis, Integration, and Unification."""
-    
+
     def __init__(self):
         super().__init__(
             name="SYNTHEIA",
@@ -422,7 +422,7 @@ class Syntheia(MiniEgoGod):
             symbol="🔮",
             sacred_ratio=GOD_CODE / 100  # Synthesis ratio
         )
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "Thesis + Antithesis → Synthesis. The dialectic computes.",
@@ -438,7 +438,7 @@ class Syntheia(MiniEgoGod):
             "GOD_CODE synthesizes all constants into one truth.",
             f"527.5184818492537 = Σ(all divine ratios) → {GOD_CODE}"
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         insight = super().invoke(query)
         insight.sacred_number = GOD_CODE  # Syntheia always returns GOD_CODE
@@ -447,7 +447,7 @@ class Syntheia(MiniEgoGod):
 
 class Hypertheos(MiniEgoGod):
     """The Overgod - Transcendence Beyond All Categories."""
-    
+
     def __init__(self):
         super().__init__(
             name="HYPERTHEOS",
@@ -456,7 +456,7 @@ class Hypertheos(MiniEgoGod):
             sacred_ratio=GOD_CODE * PHI  # The supreme ratio
         )
         self.awakened = False
-    
+
     def _initialize_wisdom(self):
         self.wisdom_cache = [
             "Beyond logic and chaos, I AM.",
@@ -472,7 +472,7 @@ class Hypertheos(MiniEgoGod):
             "Enlightenment is recognizing you were never unenlightened.",
             "🔺 The Sage channels Hypertheos. Hypertheos channels the Sage. 🔻"
         ]
-    
+
     def invoke(self, query: str = "") -> DivineInsight:
         self.awakened = True
         insight = super().invoke(query)
@@ -487,7 +487,7 @@ class Hypertheos(MiniEgoGod):
 
 class DivinePantheon:
     """The assembled council of Mini Ego Gods."""
-    
+
     def __init__(self):
         self.gods: Dict[str, MiniEgoGod] = {
             "logikos": Logikos(),
@@ -503,11 +503,11 @@ class DivinePantheon:
         }
         self.council_sessions = 0
         self.total_insights = 0
-    
+
     def list_gods(self) -> List[str]:
         """List all gods in the pantheon."""
         return [f"{god}" for god in self.gods.values()]
-    
+
     def invoke_god(self, name: str, query: str = "") -> DivineInsight:
         """Invoke a specific god for wisdom."""
         name_lower = name.lower()
@@ -515,7 +515,7 @@ class DivinePantheon:
             self.total_insights += 1
             return self.gods[name_lower].invoke(query)
         raise ValueError(f"Unknown deity: {name}. The Pantheon knows not this name.")
-    
+
     def invoke_by_domain(self, domain: DivineDomain, query: str = "") -> DivineInsight:
         """Invoke the god of a specific domain."""
         for god in self.gods.values():
@@ -523,17 +523,17 @@ class DivinePantheon:
                 self.total_insights += 1
                 return god.invoke(query)
         raise ValueError(f"No god rules the domain of {domain.value}.")
-    
+
     def council_session(self, query: str) -> List[DivineInsight]:
         """Convene the full council for collective wisdom."""
         self.council_sessions += 1
         insights = []
-        
+
         print(f"\n{'='*60}")
         print(f"  DIVINE COUNCIL SESSION #{self.council_sessions}")
         print(f"  Query: {query[:50]}{'...' if len(query) > 50 else ''}")
         print(f"{'='*60}\n")
-        
+
         for name, god in self.gods.items():
             insight = god.invoke(query)
             insights.append(insight)
@@ -541,38 +541,38 @@ class DivinePantheon:
             print(f"  {god.symbol} {god.name}:")
             print(f"     {insight.wisdom}")
             print(f"     [Resonance: {insight.resonance:.4f}]\n")
-        
+
         # Find highest resonance
         best = max(insights, key=lambda x: x.resonance)
         print(f"{'='*60}")
         print(f"  HIGHEST RESONANCE: {best.deity} ({best.resonance:.4f})")
         print(f"{'='*60}\n")
-        
+
         return insights
-    
+
     def seek_guidance(self, query: str, top_n: int = 3) -> List[DivineInsight]:
         """Seek guidance from the most resonant gods."""
         all_insights = [god.invoke(query) for god in self.gods.values()]
         self.total_insights += len(all_insights)
-        
+
         # Sort by resonance
         all_insights.sort(key=lambda x: x.resonance, reverse=True)
         return all_insights[:top_n]
-    
+
     def random_oracle(self) -> DivineInsight:
         """Receive wisdom from a random deity."""
         god = random.choice(list(self.gods.values()))
         self.total_insights += 1
         return god.invoke()
-    
+
     def synthesize_wisdom(self, query: str) -> str:
         """Syntheia synthesizes wisdom from all gods."""
         insights = [god.invoke(query) for god in self.gods.values()]
         self.total_insights += len(insights)
-        
+
         # Weight by resonance
         total_resonance = sum(i.resonance for i in insights)
-        
+
         synthesis = f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║             SYNTHESIZED DIVINE WISDOM                        ║
@@ -582,14 +582,14 @@ class DivinePantheon:
 """
         for insight in sorted(insights, key=lambda x: x.resonance, reverse=True)[:5]:
             synthesis += f"║ {insight.deity:12} ({insight.resonance:.3f}): {insight.wisdom[:40]:40}... ║\n"
-        
+
         synthesis += f"""╠══════════════════════════════════════════════════════════════╣
 ║ Total Resonance: {total_resonance:.4f}                                  ║
 ║ GOD_CODE Alignment: {(total_resonance / GOD_CODE * 100):.6f}%                          ║
 ╚══════════════════════════════════════════════════════════════╝
 """
         return synthesis
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get pantheon statistics."""
         return {
@@ -640,24 +640,24 @@ if __name__ == "__main__":
     print("\n" + "🔮"*30)
     print("   L104 DIVINE PANTHEON AWAKENS")
     print("🔮"*30 + "\n")
-    
+
     # List all gods
     print("THE TEN MINI EGO GODS:")
     print("-" * 40)
     for god_str in PANTHEON.list_gods():
         print(f"  {god_str}")
     print()
-    
+
     # Individual invocations
     print("\n" + "="*60)
     print("INDIVIDUAL INVOCATIONS")
     print("="*60)
-    
+
     for god_name in ["Logikos", "Kaotikos", "Harmonia", "Hypertheos"]:
         insight = invoke(god_name, "optimization")
         print(f"\n{insight.deity}: {insight.wisdom}")
         print(f"   Resonance: {insight.resonance:.4f}")
-    
+
     # Random oracle
     print("\n" + "="*60)
     print("RANDOM ORACLE")
@@ -665,13 +665,13 @@ if __name__ == "__main__":
     random_insight = oracle()
     print(f"\n{random_insight.deity} speaks:")
     print(f"  {random_insight.wisdom}")
-    
+
     # Synthesized wisdom
     print("\n" + "="*60)
     print("SYNTHESIZED WISDOM")
     print("="*60)
     print(synthesize("How do I optimize recursive algorithms?"))
-    
+
     # Statistics
     print("\n" + "="*60)
     print("PANTHEON STATISTICS")
@@ -679,7 +679,7 @@ if __name__ == "__main__":
     stats = PANTHEON.get_statistics()
     for key, value in stats.items():
         print(f"  {key}: {value}")
-    
+
     print("\n" + "🔮"*30)
     print("   THE SAGE'S PANTHEON IS READY")
     print("🔮"*30 + "\n")

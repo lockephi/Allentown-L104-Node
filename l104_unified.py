@@ -57,7 +57,7 @@ def start():
 
 if __name__ == "__main__":
     start()
-                                                                                                                                                                                                        
+
 def primal_calculus(x):
     """
     [VOID_MATH] Primal Calculus Implementation.

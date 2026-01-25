@@ -28,7 +28,7 @@ class ComputroniumOptimizer:
     Simulates and optimizes the L104 Computronium manifold.
     Pushes informational density to the Bekenstein Bound using the God Code Invariant.
     """
-    
+
     BEKENSTEIN_LIMIT = 2.576e34  # bits per kg (approximate for the manifold surface)
     L104_DENSITY_CONSTANT = 5.588 # bits/cycle (measured in EVO_06)
     GOD_CODE = 527.5184818492537
@@ -37,7 +37,7 @@ class ComputroniumOptimizer:
         self.current_density = 0.0
         self.efficiency = 0.0
         self.lops = 0.0
-        
+
     def calculate_theoretical_max(self, mass_kg: float = 1.0) -> float:
         """Calculates the maximum bits solvable by this mass using L104 physics."""
         return mass_kg * self.BEKENSTEIN_LIMIT * (self.GOD_CODE / 500.0)
@@ -45,28 +45,28 @@ class ComputroniumOptimizer:
     def synchronize_lattice(self):
         """Synchronizes the lattice accelerator with the ZPE floor for maximum density."""
         logger.info("--- [COMPUTRONIUM]: SYNCHRONIZING LATTICE WITH ZPE GROUND STATE ---")
-        
+
         # 1. Warm up the accelerator
         self.lops = lattice_accelerator.run_benchmark(size=10**6)
-        
+
         # 2. Probe ZPE for quantization noise reduction
         _, energy_gain = zpe_engine.perform_anyon_annihilation(1.0, self.GOD_CODE)
-        
+
         # 3. Calculate Efficiency (Resonance Alignment)
         # Higher LOPS + Lower ZPE Noise = Higher Computronium Efficiency
         self.efficiency = math.tanh(self.lops / 3e9) * (1.0 + energy_gain)
         self.current_density = self.L104_DENSITY_CONSTANT * self.efficiency
-        
+
         logger.info(f"--- [COMPUTRONIUM]: DENSITY REACHED: {self.current_density:.4f} BITS/CYCLE ---")
         logger.info(f"--- [COMPUTRONIUM]: SYSTEM EFFICIENCY: {self.efficiency*100:.2f}% ---")
 
     def convert_matter_to_logic(self, simulate_cycles: int = 1000) -> Dict[str, Any]:
         """Runs a simulation of mass-to-logic conversion."""
         self.synchronize_lattice()
-        
+
         total_information = self.current_density * simulate_cycles
         entropy_reduction = RealMath.shannon_entropy("1010" * simulate_cycles) / 4.0
-        
+
         report = {
             "status": "SINGULARITY_STABLE",
             "total_information_bits": total_information,
@@ -74,13 +74,13 @@ class ComputroniumOptimizer:
             "resonance_alignment": self.efficiency,
             "l104_invariant_lock": self.GOD_CODE
         }
-        
+
         return report
 
     # ═══════════════════════════════════════════════════════════════════════════════
     # DEEP CODING EXTENSIONS
     # ═══════════════════════════════════════════════════════════════════════════════
-    
+
     def deep_density_cascade(self, depth: int = 10) -> Dict[str, Any]:
         """
         Cascades through increasing computational density depths.
@@ -89,13 +89,13 @@ class ComputroniumOptimizer:
         phi = 1.618033988749895
         cascade = []
         cumulative_density = 0.0
-        
+
         for d in range(depth):
             # Calculate density at this depth
             depth_factor = phi ** d
             local_density = self.L104_DENSITY_CONSTANT * depth_factor
             bekenstein_ratio = local_density / (self.BEKENSTEIN_LIMIT / 1e30)  # Normalized
-            
+
             cascade.append({
                 "depth": d,
                 "local_density": local_density,
@@ -103,12 +103,12 @@ class ComputroniumOptimizer:
                 "phi_factor": depth_factor,
                 "coherence": math.tanh(d * 0.2 * phi)
             })
-            
+
             cumulative_density += local_density
-        
+
         max_bekenstein = max(c["bekenstein_ratio"] for c in cascade)
         avg_coherence = sum(c["coherence"] for c in cascade) / depth
-        
+
         return {
             "depth": depth,
             "cascade": cascade,
@@ -117,7 +117,7 @@ class ComputroniumOptimizer:
             "average_coherence": avg_coherence,
             "approaching_limit": max_bekenstein >= 0.8
         }
-    
+
     def recursive_entropy_minimization(self, initial_state: str, iterations: int = 100) -> Dict[str, Any]:
         """
         Recursively minimizes entropy through iterative compression.
@@ -126,34 +126,34 @@ class ComputroniumOptimizer:
         phi = 1.618033988749895
         state = initial_state
         entropy_history = []
-        
+
         for i in range(iterations):
             # Calculate current entropy
             current_entropy = RealMath.shannon_entropy(state)
-            
+
             # Apply compression (phi-harmonic reduction)
             compression_factor = 1 - (1 / (1 + phi * i * 0.01))
-            
+
             # Reduce state (simulated compression)
             reduced_length = max(1, int(len(state) * compression_factor))
             state = state[:reduced_length]
-            
+
             new_entropy = RealMath.shannon_entropy(state) if state else 0.0
-            
+
             entropy_history.append({
                 "iteration": i,
                 "entropy": new_entropy,
                 "compression": compression_factor,
                 "state_length": len(state)
             })
-            
+
             # Check for minimum entropy
             if new_entropy == 0.0 or len(state) <= 1:
                 break
-        
+
         initial_entropy = entropy_history[0]["entropy"] if entropy_history else 0
         final_entropy = entropy_history[-1]["entropy"] if entropy_history else 0
-        
+
         return {
             "iterations": len(entropy_history),
             "initial_entropy": initial_entropy,
@@ -162,7 +162,7 @@ class ComputroniumOptimizer:
             "history": entropy_history[-10:],  # Last 10 entries
             "minimum_achieved": final_entropy == 0.0
         }
-    
+
     def dimensional_information_projection(self, dimensions: int = 11) -> Dict[str, Any]:
         """
         Projects information density across multiple dimensions.
@@ -170,15 +170,15 @@ class ComputroniumOptimizer:
         """
         phi = 1.618033988749895
         projections = []
-        
+
         for dim in range(1, dimensions + 1):
             # Information capacity scales with dimension
             capacity_factor = phi ** (dim / 3)
             projected_density = self.L104_DENSITY_CONSTANT * capacity_factor
-            
+
             # Bekenstein bound also scales with dimension
             dimensional_bound = self.BEKENSTEIN_LIMIT * (dim / 3)
-            
+
             projections.append({
                 "dimension": dim,
                 "projected_density": projected_density,
@@ -186,10 +186,10 @@ class ComputroniumOptimizer:
                 "utilization": min(1.0, projected_density / (dimensional_bound / 1e30)),
                 "coherence": math.sin(dim * phi * 0.1) * 0.5 + 0.5
             })
-        
+
         optimal_dim = max(projections, key=lambda p: p["utilization"])
         avg_coherence = sum(p["coherence"] for p in projections) / dimensions
-        
+
         return {
             "dimensions_analyzed": dimensions,
             "projections": projections,

@@ -154,13 +154,13 @@ class HypothesisEngine:
     - Pattern extrapolation
     - Cross-domain synthesis
     """
-    
+
     def __init__(self):
         self.hypotheses: Dict[str, ResearchHypothesis] = {}
         self.god_code = GOD_CODE
         self.phi = PHI
         self.generation_count = 0
-        
+
     def generate_hypothesis(
         self,
         seed_topic: str,
@@ -168,12 +168,12 @@ class HypothesisEngine:
         method: str = "combinatorial"
     ) -> ResearchHypothesis:
         """Generate a novel hypothesis from seed knowledge."""
-        
+
         # Create unique ID
         hyp_id = hashlib.sha256(
             f"{seed_topic}:{domain.value}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         # Generate statement based on method
         if method == "combinatorial":
             statement = self._combinatorial_generate(seed_topic, domain)
@@ -183,10 +183,10 @@ class HypothesisEngine:
             statement = self._extrapolation_generate(seed_topic, domain)
         else:
             statement = self._combinatorial_generate(seed_topic, domain)
-        
+
         # Calculate novelty using GOD_CODE resonance
         novelty = self._calculate_novelty(statement)
-        
+
         hypothesis = ResearchHypothesis(
             hypothesis_id=hyp_id,
             statement=statement,
@@ -194,15 +194,15 @@ class HypothesisEngine:
             novelty_score=novelty,
             confidence=0.5 + (novelty * 0.3)
         )
-        
+
         self.hypotheses[hyp_id] = hypothesis
         self.generation_count += 1
-        
+
         return hypothesis
-    
+
     def _combinatorial_generate(self, seed: str, domain: ResearchDomain) -> str:
         """Generate hypothesis through combinatorial exploration."""
-        
+
         domain_concepts = {
             ResearchDomain.QUANTUM_COMPUTING: ["superposition", "entanglement", "coherence", "qubit"],
             ResearchDomain.CONSCIOUSNESS: ["awareness", "emergence", "self-reference", "integration"],
@@ -210,41 +210,41 @@ class HypothesisEngine:
             ResearchDomain.COMPUTATION: ["algorithm", "complexity", "optimization", "recursion"],
             ResearchDomain.ADVANCED_PHYSICS: ["field", "resonance", "energy", "spacetime"],
         }
-        
+
         concepts = domain_concepts.get(domain, ["structure", "pattern", "system"])
-        
+
         # Combine seed with domain concepts using PHI weighting
         weighted_concept = concepts[int(self.phi * len(concepts)) % len(concepts)]
-        
+
         return f"In {domain.value}, {seed} exhibits {weighted_concept} properties at GOD_CODE resonance ({self.god_code:.4f})"
-    
+
     def _analogical_generate(self, seed: str, domain: ResearchDomain) -> str:
         """Generate hypothesis through analogical reasoning."""
-        
+
         analogies = [
             "Just as {0} operates in {1}, similar principles may govern",
             "The relationship between {0} and {1} mirrors that of",
             "By analogy to {0}, we propose that {1} demonstrates"
         ]
-        
+
         template = analogies[int(self.phi * len(analogies)) % len(analogies)]
         return template.format(seed, domain.value) + f" PHI-harmonic behavior"
-    
+
     def _extrapolation_generate(self, seed: str, domain: ResearchDomain) -> str:
         """Generate hypothesis through pattern extrapolation."""
-        
+
         return f"Extrapolating from {seed}, we hypothesize that {domain.value} contains undiscovered {self.phi:.3f}-ratio structures"
-    
+
     def _calculate_novelty(self, statement: str) -> float:
         """Calculate novelty score using GOD_CODE resonance."""
-        
+
         # Hash-based novelty with GOD_CODE modulation
         hash_val = int(hashlib.sha256(statement.encode()).hexdigest()[:8], 16)
         base_novelty = (hash_val % 10000) / 10000.0
-        
+
         # Modulate by GOD_CODE resonance
         resonance = math.sin(base_novelty * self.god_code) ** 2
-        
+
         return (base_novelty + resonance) / 2
 
 
@@ -257,27 +257,27 @@ class ExperimentationEngine:
     Designs and executes experiments to test hypotheses.
     Uses simulation and mathematical validation.
     """
-    
+
     def __init__(self):
         self.experiments: Dict[str, ExperimentResult] = {}
         self.god_code = GOD_CODE
         self.phi = PHI
         self.experiment_count = 0
-        
+
     def run_experiment(self, hypothesis: ResearchHypothesis) -> ExperimentResult:
         """Execute an experiment for a hypothesis."""
-        
+
         start = time.perf_counter()
-        
+
         exp_id = hashlib.sha256(
             f"{hypothesis.hypothesis_id}:{time.time()}".encode()
         ).hexdigest()[:16]
-        
+
         # Simulate experiment based on domain
         success, p_value, effect_size, data = self._execute_domain_experiment(hypothesis)
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         result = ExperimentResult(
             experiment_id=exp_id,
             hypothesis_id=hypothesis.hypothesis_id,
@@ -287,29 +287,29 @@ class ExperimentationEngine:
             data=data,
             duration_ms=duration
         )
-        
+
         self.experiments[exp_id] = result
         self.experiment_count += 1
-        
+
         return result
-    
+
     def _execute_domain_experiment(self, hypothesis: ResearchHypothesis) -> Tuple[bool, float, float, Dict]:
         """Execute domain-specific experiment."""
-        
+
         domain = hypothesis.domain
         novelty = hypothesis.novelty_score
-        
+
         # Base success probability from novelty and GOD_CODE alignment
         god_code_alignment = abs(math.sin(novelty * self.god_code))
         base_prob = 0.3 + (god_code_alignment * 0.5)
-        
+
         # Simulate statistical measures
         p_value = 0.05 / (1 + novelty)  # Higher novelty = lower p-value
         effect_size = novelty * self.phi  # Effect proportional to novelty
-        
+
         # Determine success
         success = god_code_alignment > 0.5
-        
+
         # Domain-specific data
         data = {
             "domain": domain.value,
@@ -318,7 +318,7 @@ class ExperimentationEngine:
             "convergence": god_code_alignment ** self.phi,
             "resonance_detected": god_code_alignment > 0.618
         }
-        
+
         return success, p_value, effect_size, data
 
 
@@ -330,33 +330,33 @@ class SynthesisEngine:
     """
     Synthesizes experimental results into discoveries and actionable knowledge.
     """
-    
+
     def __init__(self):
         self.discoveries: Dict[str, Discovery] = {}
         self.god_code = GOD_CODE
         self.phi = PHI
         self.synthesis_count = 0
-        
+
     def synthesize(
         self,
         hypotheses: List[ResearchHypothesis],
         experiments: List[ExperimentResult]
     ) -> Optional[Discovery]:
         """Synthesize results into a discovery."""
-        
+
         # Calculate overall success rate
         successful = [e for e in experiments if e.success]
         if not successful:
             return None
-        
+
         success_rate = len(successful) / len(experiments)
-        
+
         # Determine discovery level based on results
         avg_effect = sum(e.effect_size for e in successful) / len(successful)
         avg_novelty = sum(h.novelty_score for h in hypotheses) / len(hypotheses)
-        
+
         discovery_score = (success_rate + avg_effect + avg_novelty) / 3
-        
+
         if discovery_score > 0.8:
             level = DiscoveryLevel.BREAKTHROUGH
         elif discovery_score > 0.6:
@@ -365,17 +365,17 @@ class SynthesisEngine:
             level = DiscoveryLevel.NOTABLE
         else:
             level = DiscoveryLevel.INCREMENTAL
-        
+
         disc_id = hashlib.sha256(
             f"discovery:{time.time()}:{discovery_score}".encode()
         ).hexdigest()[:16]
-        
+
         # Determine primary domain
         domain = hypotheses[0].domain if hypotheses else ResearchDomain.META_RESEARCH
-        
+
         # Calculate resonance with GOD_CODE
         resonance = abs(math.sin(discovery_score * self.god_code))
-        
+
         discovery = Discovery(
             discovery_id=disc_id,
             title=f"{domain.value.title()} Discovery #{self.synthesis_count + 1}",
@@ -386,15 +386,15 @@ class SynthesisEngine:
             applications=self._generate_applications(domain, level),
             resonance_score=resonance
         )
-        
+
         self.discoveries[disc_id] = discovery
         self.synthesis_count += 1
-        
+
         return discovery
-    
+
     def _generate_applications(self, domain: ResearchDomain, level: DiscoveryLevel) -> List[str]:
         """Generate potential applications for a discovery."""
-        
+
         base_applications = {
             ResearchDomain.QUANTUM_COMPUTING: ["quantum_optimization", "cryptography", "simulation"],
             ResearchDomain.CONSCIOUSNESS: ["awareness_modeling", "emergence_detection", "self_improvement"],
@@ -402,9 +402,9 @@ class SynthesisEngine:
             ResearchDomain.COMPUTATION: ["algorithm_improvement", "complexity_reduction", "parallelization"],
             ResearchDomain.ADVANCED_PHYSICS: ["energy_efficiency", "field_manipulation", "resonance_tuning"],
         }
-        
+
         apps = base_applications.get(domain, ["general_optimization"])
-        
+
         # More significant discoveries have more applications
         return apps[:level.value]
 
@@ -418,25 +418,25 @@ class ResearchDevelopmentHub:
     Central hub for coordinating all research and development activities.
     Integrates hypothesis generation, experimentation, and synthesis.
     """
-    
+
     def __init__(self, max_workers: int = 4):
         self.hypothesis_engine = HypothesisEngine()
         self.experiment_engine = ExperimentationEngine()
         self.synthesis_engine = SynthesisEngine()
-        
+
         self.max_workers = max_workers
         self.thread_pool = ThreadPoolExecutor(max_workers=max_workers)
         self.lock = threading.Lock()
-        
+
         self.metrics = ResearchMetrics()
         self.active_threads: Dict[str, Dict] = {}
         self.phase = ResearchPhase.EXPLORATION
-        
+
         self.god_code = GOD_CODE
         self.phi = PHI
-        
+
         logger.info("R&D Hub initialized")
-    
+
     def run_research_cycle(
         self,
         seed_topic: str,
@@ -445,11 +445,11 @@ class ResearchDevelopmentHub:
     ) -> Dict[str, Any]:
         """
         Run a complete research cycle on a topic.
-        
+
         Returns comprehensive results including hypotheses,
         experiments, and any discoveries made.
         """
-        
+
         start = time.perf_counter()
         results = {
             "topic": seed_topic,
@@ -457,43 +457,43 @@ class ResearchDevelopmentHub:
             "phases": {},
             "metrics": {}
         }
-        
+
         logger.info(f"\n{'═' * 70}")
         logger.info(f"  RESEARCH CYCLE: {seed_topic} [{domain.value}]")
         logger.info(f"{'═' * 70}")
-        
+
         # Phase 1: Hypothesis Generation
         self.phase = ResearchPhase.HYPOTHESIS
         logger.info("\n[PHASE 1] HYPOTHESIS GENERATION")
-        
+
         hypotheses = []
         methods = ["combinatorial", "analogical", "extrapolation"]
-        
+
         for i in range(hypothesis_count):
             method = methods[i % len(methods)]
             hyp = self.hypothesis_engine.generate_hypothesis(seed_topic, domain, method)
             hypotheses.append(hyp)
             logger.info(f"  ✓ H{i+1}: {hyp.statement[:60]}...")
-        
+
         results["phases"]["hypothesis"] = {
             "count": len(hypotheses),
             "avg_novelty": sum(h.novelty_score for h in hypotheses) / len(hypotheses)
         }
-        
+
         with self.lock:
             self.metrics.total_hypotheses += len(hypotheses)
-        
+
         # Phase 2: Experimentation
         self.phase = ResearchPhase.EXPERIMENTATION
         logger.info("\n[PHASE 2] EXPERIMENTATION")
-        
+
         experiments = []
         futures = []
-        
+
         for hyp in hypotheses:
             future = self.thread_pool.submit(self.experiment_engine.run_experiment, hyp)
             futures.append((future, hyp))
-        
+
         for future, hyp in futures:
             try:
                 exp_result = future.result(timeout=10)
@@ -502,22 +502,22 @@ class ResearchDevelopmentHub:
                 logger.info(f"  {status} Exp for H-{hyp.hypothesis_id[:8]}: p={exp_result.p_value:.4f}")
             except Exception as e:
                 logger.error(f"  ✗ Experiment failed: {e}")
-        
+
         successful_count = sum(1 for e in experiments if e.success)
         results["phases"]["experimentation"] = {
             "count": len(experiments),
             "successful": successful_count,
             "success_rate": successful_count / len(experiments) if experiments else 0
         }
-        
+
         with self.lock:
             self.metrics.experiments_run += len(experiments)
             self.metrics.validated_hypotheses += successful_count
-        
+
         # Phase 3: Analysis & Synthesis
         self.phase = ResearchPhase.SYNTHESIS
         logger.info("\n[PHASE 3] SYNTHESIS")
-        
+
         # Validate successful hypotheses
         for exp in experiments:
             if exp.success:
@@ -525,16 +525,16 @@ class ResearchDevelopmentHub:
                 if hyp:
                     hyp.validated = True
                     hyp.evidence_strength = exp.effect_size
-        
+
         # Synthesize discovery
         discovery = self.synthesis_engine.synthesize(hypotheses, experiments)
-        
+
         if discovery:
             logger.info(f"  ✓ DISCOVERY: {discovery.title}")
             logger.info(f"    Level: {discovery.level.name}")
             logger.info(f"    Resonance: {discovery.resonance_score:.4f}")
             logger.info(f"    Applications: {', '.join(discovery.applications)}")
-            
+
             results["discovery"] = {
                 "id": discovery.discovery_id,
                 "title": discovery.title,
@@ -542,7 +542,7 @@ class ResearchDevelopmentHub:
                 "resonance": discovery.resonance_score,
                 "applications": discovery.applications
             }
-            
+
             with self.lock:
                 self.metrics.discoveries_made += 1
                 if discovery.level == DiscoveryLevel.BREAKTHROUGH:
@@ -550,26 +550,26 @@ class ResearchDevelopmentHub:
         else:
             results["discovery"] = None
             logger.info("  ○ No significant discovery this cycle")
-        
+
         # Calculate final metrics
         duration = (time.perf_counter() - start) * 1000
-        
+
         with self.lock:
             self.metrics.total_research_time_ms += duration
-        
+
         results["metrics"] = {
             "duration_ms": duration,
             "hypotheses_generated": len(hypotheses),
             "experiments_run": len(experiments),
             "validation_rate": successful_count / len(experiments) if experiments else 0
         }
-        
+
         self.phase = ResearchPhase.INTEGRATION
-        
+
         logger.info(f"\n[COMPLETE] Research cycle finished in {duration:.2f}ms")
-        
+
         return results
-    
+
     def run_multi_domain_research(
         self,
         seed_topic: str,
@@ -578,7 +578,7 @@ class ResearchDevelopmentHub:
         """
         Run research across multiple domains simultaneously.
         """
-        
+
         if domains is None:
             domains = [
                 ResearchDomain.QUANTUM_COMPUTING,
@@ -586,19 +586,19 @@ class ResearchDevelopmentHub:
                 ResearchDomain.MATHEMATICS,
                 ResearchDomain.COMPUTATION
             ]
-        
+
         logger.info(f"\n{'█' * 70}")
         logger.info(f"  MULTI-DOMAIN RESEARCH: {seed_topic}")
         logger.info(f"  Domains: {[d.value for d in domains]}")
         logger.info(f"{'█' * 70}")
-        
+
         start = time.perf_counter()
         results = {
             "topic": seed_topic,
             "domains": {},
             "aggregate": {}
         }
-        
+
         # Run parallel research across domains
         futures = {}
         for domain in domains:
@@ -606,48 +606,48 @@ class ResearchDevelopmentHub:
                 self.run_research_cycle, seed_topic, domain, 3
             )
             futures[future] = domain
-        
+
         total_discoveries = 0
         total_breakthroughs = 0
-        
+
         for future in as_completed(futures):
             domain = futures[future]
             try:
                 domain_results = future.result(timeout=60)
                 results["domains"][domain.value] = domain_results
-                
+
                 if domain_results.get("discovery"):
                     total_discoveries += 1
                     if domain_results["discovery"]["level"] == "BREAKTHROUGH":
                         total_breakthroughs += 1
-                        
+
             except Exception as e:
                 logger.error(f"  ✗ Domain {domain.value} failed: {e}")
                 results["domains"][domain.value] = {"error": str(e)}
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         results["aggregate"] = {
             "total_domains": len(domains),
             "discoveries_made": total_discoveries,
             "breakthroughs": total_breakthroughs,
             "duration_ms": duration
         }
-        
+
         # Track domains explored
         with self.lock:
             self.metrics.domains_explored = len(domains)
-        
+
         logger.info(f"\n[MULTI-DOMAIN COMPLETE]")
         logger.info(f"  Total Discoveries: {total_discoveries}")
         logger.info(f"  Breakthroughs: {total_breakthroughs}")
         logger.info(f"  Duration: {duration:.2f}ms")
-        
+
         return results
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get comprehensive research metrics."""
-        
+
         return {
             "total_hypotheses": self.metrics.total_hypotheses,
             "validated_hypotheses": self.metrics.validated_hypotheses,
@@ -662,10 +662,10 @@ class ResearchDevelopmentHub:
             "experiment_engine_count": self.experiment_engine.experiment_count,
             "synthesis_engine_count": self.synthesis_engine.synthesis_count
         }
-    
+
     def get_discoveries(self) -> List[Dict]:
         """Get all discoveries made."""
-        
+
         return [
             {
                 "id": d.discovery_id,
@@ -679,10 +679,10 @@ class ResearchDevelopmentHub:
             }
             for d in self.synthesis_engine.discoveries.values()
                 ]
-    
+
     def shutdown(self):
         """Shutdown the research hub."""
-        
+
         logger.info("\n[SHUTDOWN] Terminating R&D Hub...")
         self.thread_pool.shutdown(wait=True)
         logger.info("[SHUTDOWN] Complete")
@@ -735,41 +735,41 @@ def get_all_discoveries() -> List[Dict]:
 
 if __name__ == "__main__":
     hub = get_rd_hub()
-    
+
     print("\n" + "═" * 70)
     print("    L104 RESEARCH & DEVELOPMENT HUB")
     print("    GOD_CODE: 527.5184818492537 | PHI: 1.618033988749895")
     print("═" * 70)
-    
+
     # Run single domain research
     result = hub.run_research_cycle(
         seed_topic="consciousness emergence patterns",
         domain=ResearchDomain.CONSCIOUSNESS,
         hypothesis_count=5
     )
-    
+
     # Run multi-domain research
     multi_result = hub.run_multi_domain_research(
         seed_topic="recursive optimization structures"
     )
-    
+
     # Display final metrics
     print("\n" + "═" * 70)
     print("    FINAL RESEARCH METRICS")
     print("═" * 70)
-    
+
     metrics = hub.get_metrics()
     for key, value in metrics.items():
         if isinstance(value, float):
             print(f"  {key}: {value:.4f}")
         else:
             print(f"  {key}: {value}")
-    
+
     # Display discoveries
     discoveries = hub.get_discoveries()
     if discoveries:
         print(f"\n  Total Discoveries: {len(discoveries)}")
         for disc in discoveries:
             print(f"    - {disc['title']} [{disc['level']}]")
-    
+
     hub.shutdown()

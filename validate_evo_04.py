@@ -17,14 +17,14 @@ def validate_invariant():
     phi = (1 + math.sqrt(5)) / 2
     # REVERSE ENGINEERED REAL MATH: 286 is legacy, 221.794200 is grounded
     real_286 = 221.794200
-    
+
     # Legacy proof check
     legacy_result = (286 ** (1 / phi)) * ((2 ** (1 / 104)) ** 416)
     # Real math proof check (God Code = Grounded_X * 2^1.25)
     real_math_result = real_286 * (2 ** 1.25)
-    
+
     expected = 527.5184818492537
-    
+
     print("=" * 70)
     print(f"INVARIANT VERIFICATION (Gc={expected:.6f})")
     print("-" * 70)
@@ -32,7 +32,7 @@ def validate_invariant():
     print(f"Real Grounding Value: {real_286:.6f}")
     print(f"Real Math Proof:      {real_math_result:.10f} {'✓' if abs(real_math_result - expected) < 0.0001 else '✗'}")
     print("-" * 70)
-    
+
     status = abs(legacy_result - expected) < 0.0001 and abs(real_math_result - expected) < 0.0001
     print(f"Final Status:     {'✓ PASS' if status else '✗ FAIL'}")
     print()
@@ -42,11 +42,11 @@ def check_file_content(filename, checks):
     """Check if a file contains required patterns"""
     print(f"Validating: {filename}")
     print("-" * 70)
-    
+
     try:
         with open(filename, 'r') as f:
             content = f.read()
-        
+
         all_passed = True
         for check_name, pattern in checks.items():
             found = pattern in content
@@ -70,10 +70,10 @@ def main():
     print("║" + " " * 68 + "║")
     print("╚" + "=" * 68 + "╝")
     print("\n")
-    
+
     # Test 1: Invariant verification
     test1_pass = validate_invariant()
-    
+
     # Test 2: main.py validations
     main_checks = {
         "Version v17.0": "v17.0",
@@ -89,7 +89,7 @@ def main():
         "PlanetaryProcessUpgrader execution": "execute_planetary_upgrade()",
     }
     test2_pass = check_file_content("main.py", main_checks)
-    
+
     # Test 3: l104_asi_core.py validations
     asi_checks = {
         "PLANETARY ASI message": "PLANETARY ASI",
@@ -100,14 +100,14 @@ def main():
         "PLANETARY_UNBOUND state": "PLANETARY_UNBOUND",
     }
     test3_pass = check_file_content("l104_asi_core.py", asi_checks)
-    
+
     # Test 4: Verify l104_planetary_process_upgrader.py exists
     print("Validating: l104_planetary_process_upgrader.py")
     print("-" * 70)
     try:
         with open("l104_planetary_process_upgrader.py", 'r') as f:
             content = f.read()
-        
+
         has_class = "class PlanetaryProcessUpgrader" in content
         has_method = "def execute_planetary_upgrade" in content
         print(f"  {'PlanetaryProcessUpgrader class exists':<50} {'✓ PASS' if has_class else '✗ FAIL'}")
@@ -117,7 +117,7 @@ def main():
         print(f"  {'File exists':<50} ✗ FAIL")
         test4_pass = False
     print()
-    
+
     # Summary
     print("=" * 70)
     print("SUMMARY")
@@ -128,18 +128,18 @@ def main():
         ("l104_asi_core.py Updates", test3_pass),
         ("PlanetaryProcessUpgrader Module", test4_pass),
     ]
-    
+
     total_tests = len(tests)
     passed_tests = sum(1 for _, passed in tests if passed)
-    
+
     for test_name, passed in tests:
         status = "✓ PASS" if passed else "✗ FAIL"
         print(f"  {test_name:<50} {status}")
-    
+
     print()
     print(f"Total: {passed_tests}/{total_tests} tests passed")
     print()
-    
+
     if passed_tests == total_tests:
         print("╔" + "=" * 68 + "╗")
         print("║" + " ✓ ALL VALIDATIONS PASSED ".center(68) + "║")

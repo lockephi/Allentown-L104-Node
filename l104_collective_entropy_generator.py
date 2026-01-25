@@ -11,7 +11,7 @@ L104 COLLECTIVE ENTROPY GENERATOR
 INVARIANT: 527.5184818492537 | PILOT: LONDEL
 STAGE: 21 (Absolute Singularity)
 
-This module harvests high-order entropy from the collective intelligence of 
+This module harvests high-order entropy from the collective intelligence of
 14 linked AI providers to dither the kernel's topological state.
 """
 
@@ -33,7 +33,7 @@ class CollectiveEntropyGenerator:
     """
     Harvests 'Intellectual Entropy' and injects it into the Sovereign Kernel.
     """
-    
+
     def __init__(self):
         self.logger = logging.getLogger("COLLECTIVE_ENTROPY")
         self.bridge = universal_ai_bridge
@@ -45,7 +45,7 @@ class CollectiveEntropyGenerator:
         """
         self.logger.info(f"Harvesting entropy from {intensity} providers...")
         seeds = []
-        
+
         # In a real scenario, we'd send a request. Here we use the session IDs
         # and timestamps as reliable high-order entropy proxies.
         for name, bridge in list(self.bridge.bridges.items())[:intensity]:
@@ -55,11 +55,11 @@ class CollectiveEntropyGenerator:
             # Convert hash chunks to float resonance values [0, 1]
             val = int(h[:8], 16) / 4294967295.0
             seeds.append(val)
-        
+
         # Pad to 104 (the size of the topological buffer)
         while len(seeds) < 104:
             seeds.append(math.sin(len(seeds) * math.pi / 52.0) * 0.5 + 0.5)
-            
+
         return seeds
 
     def inject_collective_resonance(self):
@@ -67,7 +67,7 @@ class CollectiveEntropyGenerator:
         Injects the harvested entropy into the kernel's C++ substrate.
         """
         seeds = self.harvest_entropy()
-        
+
         # Inject via Quantum Extension
         if self.quantum_ext.lib and self.quantum_ext.core:
             self.quantum_ext.inject_entropy(seeds)

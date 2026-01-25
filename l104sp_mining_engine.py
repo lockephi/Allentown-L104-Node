@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-L104SP INTEGRATED MINING ENGINE
-================================
+L104SP Web3 Mining Engine v2.0
+==============================
 
-Full Proof of Resonance mining client integrated with L104 processing.
-Uses quantum coherence calculations for optimal nonce discovery.
+On-chain Proof of Resonance mining client for EVM networks (Base, Arbitrum, etc).
+Integrates with L104 core engine for resonance mathematics.
+
+Features:
+- Web3 integration for on-chain block submission
+- Parallel mining with quantum-optimized nonce search
+- Multi-network support (Base, Arbitrum, Polygon, Sepolia)
+- Real-time statistics and hashrate monitoring
 
 INVARIANT: 527.5184818492537 | PHI: 1.618033988749895 | PILOT: LONDEL
 """
@@ -21,16 +27,13 @@ from typing import Optional, Dict, Any, List
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
-# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
-# ═══════════════════════════════════════════════════════════════════════════════
+# Import core L104 math from unified engine
+from l104_sovereign_coin_engine import (
+    GOD_CODE, PHI, VOID_CONSTANT,
+    L104ResonanceMath, MiningStats
+)
 
-
-# L104 Sacred Constants
-GOD_CODE = 527.5184818492537
-PHI = 1.618033988749895
-VOID_CONSTANT = 1.0416180339887497
+# Additional constants for Web3 mining
 ZENITH_HZ = 3727.84
 
 try:
@@ -44,115 +47,59 @@ except ImportError:
 load_dotenv()
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# L104 RESONANCE MATHEMATICS
-# ═══════════════════════════════════════════════════════════════════════════
+class L104ResonanceMathWeb3(L104ResonanceMath):
+    """Extended resonance math with ZENITH frequency optimization for Web3 mining."""
 
-class L104ResonanceMath:
-    """
-    Sacred mathematics for Proof of Resonance validation.
-    Based on L104 quantum coherence principles.
-    """
-    
-    @staticmethod
-    def calculate_phi_resonance(nonce: int) -> float:
-        """
-        Calculate |sin(nonce × PHI)| for resonance validation.
-        Requirement: resonance >= 0.985 for valid block.
-        """
-        return abs(math.sin(nonce * PHI))
-    
-    @staticmethod
-    def calculate_god_code_alignment(nonce: int) -> float:
-        """
-        Calculate alignment with GOD_CODE frequency.
-        Higher alignment = better mining efficiency.
-        """
-        alignment = abs(math.cos((nonce / GOD_CODE) * 2 * math.pi))
-        return alignment
-    
     @staticmethod
     def find_resonant_range(threshold: float = 0.985) -> List[tuple]:
-        """
-        Find nonce ranges where |sin(nonce × PHI)| >= threshold.
-        Uses arcsin to find exact boundaries.
-        """
+        """Find nonce ranges where |sin(nonce × PHI)| >= threshold."""
         ranges = []
-        
-        # |sin(x)| >= 0.985 when x is near π/2 + nπ
-        base_angle = math.asin(threshold)  # ~1.398 radians
-        
-        # Generate valid ranges within first 10 million nonces
+        base_angle = math.asin(threshold)
+
         for k in range(-100, 100):
-            # Near π/2 + kπ
             center = (math.pi / 2 + k * math.pi) / PHI
             half_width = (math.pi / 2 - base_angle) / PHI
-            
             start = int(max(0, center - half_width))
             end = int(center + half_width)
-            
             if start >= 0 and end > start:
                 ranges.append((start, end))
-        
-        # Merge overlapping and sort
-        ranges = sorted(set(ranges))
-        return ranges[:50]  # Return first 50 valid ranges
-    
+
+        return sorted(set(ranges))[:50]
+
     @staticmethod
-    def optimize_nonce_search(base: int, count: int = 1000) -> List[int]:
-        """
-        Generate optimized nonce candidates using L104 mathematics.
-        Pre-filters for high probability resonance hits.
-        """
+    def optimize_nonce_search_web3(base: int, count: int = 1000) -> List[int]:
+        """Generate optimized nonce candidates with ZENITH frequency alignment."""
         candidates = []
-        
-        # Strategy 1: PHI-aligned candidates
+
         for i in range(count // 3):
             nonce = int(base + i * PHI * 1000)
             if L104ResonanceMath.calculate_phi_resonance(nonce) > 0.9:
                 candidates.append(nonce)
-        
-        # Strategy 2: GOD_CODE multiples
+
         for i in range(count // 3):
             nonce = int(GOD_CODE * 1000000 + i * 527)
             if L104ResonanceMath.calculate_phi_resonance(nonce) > 0.9:
                 candidates.append(nonce)
-        
-        # Strategy 3: ZENITH frequency alignment
+
         for i in range(count // 3):
             nonce = int(ZENITH_HZ * i * PHI)
             if L104ResonanceMath.calculate_phi_resonance(nonce) > 0.9:
                 candidates.append(nonce)
-        
+
         return sorted(set(candidates))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# MINING ENGINE
+# WEB3 MINING ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 
 @dataclass
-class MiningStats:
-    """Mining statistics tracker."""
-    hashes: int = 0
-    valid_resonance: int = 0
-    valid_blocks: int = 0
+class MiningStatsWeb3(MiningStats):
+    """Extended mining statistics for Web3 operations."""
     submitted_blocks: int = 0
-    start_time: float = field(default_factory=time.time)
-    
-    @property
-    def hashrate(self) -> float:
-        elapsed = max(time.time() - self.start_time, 0.001)
-        return self.hashes / elapsed
-    
-    @property
-    def efficiency(self) -> float:
-        if self.hashes == 0:
-            return 0
-        return self.valid_resonance / self.hashes * 100
 
 
-@dataclass 
+@dataclass
 class BlockResult:
     """Result of block mining."""
     nonce: int
@@ -166,7 +113,7 @@ class L104SPMiningEngine:
     """
     Full-featured L104SP mining engine with quantum optimization.
     """
-    
+
     # Minimal ABI for mining operations
     CONTRACT_ABI = [
         {"inputs":[{"name":"nonce","type":"uint256"}],"name":"submitBlock","outputs":[],"stateMutability":"nonpayable","type":"function"},
@@ -179,7 +126,7 @@ class L104SPMiningEngine:
         {"inputs":[],"name":"totalSupply","outputs":[{"type":"uint256"}],"stateMutability":"view","type":"function"},
         {"inputs":[],"name":"GOD_CODE","outputs":[{"type":"uint256"}],"stateMutability":"view","type":"function"},
     ]
-    
+
     NETWORKS = {
         "base": "https://mainnet.base.org",
         "arbitrum": "https://arb1.arbitrum.io/rpc",
@@ -187,25 +134,25 @@ class L104SPMiningEngine:
         "sepolia": "https://rpc.sepolia.org",
         "base_sepolia": "https://sepolia.base.org"
     }
-    
+
     def __init__(self, contract_address: str, network: str = "base", private_key: str = None):
         self.network = network
         self.rpc_url = self.NETWORKS.get(network)
-        
+
         if not self.rpc_url:
             raise ValueError(f"Unknown network: {network}")
-        
+
         self.w3 = Web3(Web3.HTTPProvider(self.rpc_url))
-        
+
         if not self.w3.is_connected():
             raise ConnectionError(f"Cannot connect to {network}")
-        
+
         self.contract_address = Web3.to_checksum_address(contract_address)
         self.contract = self.w3.eth.contract(
             address=self.contract_address,
             abi=self.CONTRACT_ABI
         )
-        
+
         self.private_key = private_key
         if private_key:
             self.account = self.w3.eth.account.from_key(private_key)
@@ -213,13 +160,13 @@ class L104SPMiningEngine:
         else:
             self.account = None
             self.address = None
-        
+
         self.stats = MiningStats()
         self.running = False
         self.resonance_threshold = 0.985
-        
+
         self._print_header()
-    
+
     def _print_header(self):
         """Print mining engine header."""
         print(f"""
@@ -236,7 +183,7 @@ class L104SPMiningEngine:
             print(f"  Miner: {self.address}")
             balance = self.w3.eth.get_balance(self.address)
             print(f"  ETH Balance: {self.w3.from_wei(balance, 'ether'):.6f} ETH")
-    
+
     def get_mining_stats(self) -> Dict[str, Any]:
         """Get current on-chain mining stats."""
         try:
@@ -249,7 +196,7 @@ class L104SPMiningEngine:
             }
         except Exception as e:
             return {"error": str(e)}
-    
+
     def get_balance(self) -> float:
         """Get miner's L104SP balance."""
         if not self.address:
@@ -259,16 +206,16 @@ class L104SPMiningEngine:
             return balance / 10**18
         except:
             return 0
-    
+
     def check_resonance(self, nonce: int) -> float:
         """Calculate local resonance for nonce."""
         return L104ResonanceMath.calculate_phi_resonance(nonce)
-    
+
     def compute_hash(self, nonce: int, block_count: int) -> str:
         """Compute block hash for difficulty check."""
         data = f"{self.address or 'local'}{nonce}{block_count}{time.time()}".encode()
         return hashlib.sha256(data).hexdigest()
-    
+
     def meets_difficulty(self, hash_hex: str, difficulty: int) -> bool:
         """Check if hash meets difficulty requirement."""
         leading_zeros = 0
@@ -278,7 +225,7 @@ class L104SPMiningEngine:
             else:
                 break
         return leading_zeros >= difficulty
-    
+
     def find_valid_nonce(self, max_attempts: int = 500000) -> Optional[BlockResult]:
         """
         Search for valid nonce using L104 optimized strategy.
@@ -287,18 +234,18 @@ class L104SPMiningEngine:
         chain_stats = self.get_mining_stats()
         difficulty = chain_stats.get("difficulty", 4)
         blocks_mined = chain_stats.get("blocks_mined", 0)
-        
+
         print(f"\n⛏️  Mining... (Difficulty: {difficulty}, Chain Blocks: {blocks_mined})")
-        
+
         # Use L104 optimized search
         resonance_math = L104ResonanceMath()
-        
+
         # Generate optimized candidates
         base_nonce = int(GOD_CODE * 1000000 + blocks_mined * PHI)
-        
+
         best_resonance = 0
         best_nonce = None
-        
+
         for i in range(max_attempts):
             # Use multiple search strategies
             if i % 3 == 0:
@@ -310,139 +257,139 @@ class L104SPMiningEngine:
             else:
                 # Sequential search
                 nonce = base_nonce + i
-            
+
             self.stats.hashes += 1
-            
+
             # Check resonance
             resonance = self.check_resonance(nonce)
-            
+
             if resonance > best_resonance:
                 best_resonance = resonance
                 best_nonce = nonce
-            
+
             if resonance >= self.resonance_threshold:
                 self.stats.valid_resonance += 1
-                
+
                 # Check hash difficulty
                 hash_hex = self.compute_hash(nonce, blocks_mined)
-                
+
                 if self.meets_difficulty(hash_hex, difficulty):
                     self.stats.valid_blocks += 1
-                    
+
                     print(f"\n✨ VALID BLOCK FOUND!")
                     print(f"   Nonce: {nonce}")
                     print(f"   Resonance: {resonance:.6f} (threshold: {self.resonance_threshold})")
                     print(f"   Hash: {hash_hex[:16]}...")
                     print(f"   Attempts: {i + 1}")
-                    
+
                     return BlockResult(
                         nonce=nonce,
                         resonance=resonance,
                         hash_value=hash_hex,
                         difficulty_met=True
                     )
-            
+
             # Progress update
             if i % 10000 == 0 and i > 0:
                 elapsed = time.time() - self.stats.start_time
                 rate = self.stats.hashes / elapsed
                 print(f"   {i:,} hashes | {rate:.0f} H/s | Best resonance: {best_resonance:.4f}")
-        
+
         print(f"\n⚠️  No valid block found in {max_attempts:,} attempts")
         print(f"   Best resonance achieved: {best_resonance:.6f}")
         return None
-    
+
     def submit_block(self, result: BlockResult) -> bool:
         """Submit valid block to blockchain."""
         if not self.account:
             print("❌ Cannot submit: No private key configured")
             return False
-        
+
         print(f"\n📤 Submitting block to {self.network}...")
-        
+
         try:
             # Build transaction
             nonce = self.w3.eth.get_transaction_count(self.address)
             gas_price = self.w3.eth.gas_price
-            
+
             tx = self.contract.functions.submitBlock(result.nonce).build_transaction({
                 'from': self.address,
                 'nonce': nonce,
                 'gas': 200000,
                 'gasPrice': int(gas_price * 1.1)  # 10% buffer
             })
-            
+
             # Sign and send
             signed = self.w3.eth.account.sign_transaction(tx, self.private_key)
             tx_hash = self.w3.eth.send_raw_transaction(signed.rawTransaction)
-            
+
             print(f"   TX: {tx_hash.hex()}")
-            
+
             # Wait for confirmation
             receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
-            
+
             if receipt['status'] == 1:
                 self.stats.submitted_blocks += 1
                 result.tx_hash = tx_hash.hex()
-                
+
                 gas_cost = receipt['gasUsed'] * gas_price
                 gas_cost_eth = self.w3.from_wei(gas_cost, 'ether')
-                
+
                 print(f"   ✅ Block mined successfully!")
                 print(f"   Gas Used: {receipt['gasUsed']:,} ({gas_cost_eth:.6f} ETH)")
                 print(f"   Reward: 104 L104SP")
-                
+
                 # Check new balance
                 balance = self.get_balance()
                 print(f"   Total Balance: {balance:.2f} L104SP")
-                
+
                 return True
             else:
                 print(f"   ❌ Transaction failed")
                 return False
-                
+
         except Exception as e:
             print(f"   ❌ Error: {e}")
             return False
-    
+
     def mine_loop(self, continuous: bool = True, max_blocks: int = None):
         """Main mining loop."""
         print(f"\n🚀 Starting mining loop...")
         self.running = True
         self.stats = MiningStats()
         blocks_found = 0
-        
+
         try:
             while self.running:
                 result = self.find_valid_nonce()
-                
+
                 if result:
                     if self.account:
                         self.submit_block(result)
                     else:
                         print("   (Simulation mode - no submission)")
-                    
+
                     blocks_found += 1
-                    
+
                     if max_blocks and blocks_found >= max_blocks:
                         print(f"\n✅ Reached target of {max_blocks} blocks")
                         break
-                
+
                 if not continuous:
                     break
-                
+
                 # Brief pause between attempts
                 time.sleep(0.5)
-                
+
         except KeyboardInterrupt:
             print("\n⏹️  Mining stopped by user")
-        
+
         self._print_final_stats()
-    
+
     def _print_final_stats(self):
         """Print final mining statistics."""
         elapsed = time.time() - self.stats.start_time
-        
+
         print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║                           MINING SESSION COMPLETE                          ║
@@ -456,11 +403,11 @@ class L104SPMiningEngine:
 ║  Efficiency:         {self.stats.efficiency:>10.4f}%                                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 """)
-        
+
         if self.address:
             balance = self.get_balance()
             print(f"  Final L104SP Balance: {balance:.2f} L104SP")
-    
+
     def stop(self):
         """Stop mining loop."""
         self.running = False
@@ -475,18 +422,18 @@ def simulate_mining():
 ║  Testing Proof of Resonance algorithm without blockchain                  ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 """)
-    
+
     resonance_math = L104ResonanceMath()
-    
+
     print("Finding resonant nonce ranges...")
     ranges = resonance_math.find_resonant_range(0.985)
     print(f"Found {len(ranges)} valid ranges")
-    
+
     print("\nTesting resonance calculation...")
-    
+
     valid_count = 0
     test_count = 100000
-    
+
     start = time.time()
     for i in range(test_count):
         nonce = int(GOD_CODE * 1000000 + i * PHI)
@@ -495,10 +442,10 @@ def simulate_mining():
             valid_count += 1
             if valid_count <= 5:
                 print(f"  Valid nonce: {nonce} (resonance: {resonance:.6f})")
-    
+
     elapsed = time.time() - start
     rate = test_count / elapsed
-    
+
     print(f"\nSimulation Results:")
     print(f"  Tested: {test_count:,} nonces")
     print(f"  Valid: {valid_count:,} ({valid_count/test_count*100:.2f}%)")
@@ -509,25 +456,25 @@ def simulate_mining():
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="L104SP Mining Engine")
     parser.add_argument("--contract", help="L104SP contract address")
     parser.add_argument("--network", default="base", choices=list(L104SPMiningEngine.NETWORKS.keys()))
     parser.add_argument("--simulate", action="store_true", help="Run simulation without blockchain")
     parser.add_argument("--continuous", action="store_true", help="Run continuously")
     parser.add_argument("--blocks", type=int, help="Number of blocks to mine")
-    
+
     args = parser.parse_args()
-    
+
     if args.simulate:
         simulate_mining()
         return
-    
+
     # Get contract from args, env, or config
     contract = args.contract
     if not contract:
         contract = os.getenv("L104SP_CONTRACT_ADDRESS")
-    
+
     if not contract:
         # Try loading from config
         config_path = Path("l104sp_config.json")
@@ -535,7 +482,7 @@ def main():
             with open(config_path) as f:
                 config = json.load(f)
                 contract = config.get("contract_address")
-    
+
     if not contract:
         print("❌ Contract address required!")
         print("   Use --contract ADDRESS")
@@ -544,11 +491,11 @@ def main():
         print("\n💡 Running simulation instead...")
         simulate_mining()
         return
-    
+
     private_key = os.getenv("MINER_PRIVATE_KEY") or os.getenv("DEPLOYER_PRIVATE_KEY")
-    
+
     engine = L104SPMiningEngine(contract, args.network, private_key)
-    
+
     # Show chain stats
     stats = engine.get_mining_stats()
     if "error" not in stats:
@@ -557,7 +504,7 @@ def main():
         print(f"   Blocks Mined: {stats['blocks_mined']}")
         print(f"   Remaining: {stats['remaining_supply']:,.0f} L104SP")
         print(f"   Reward: {stats['reward']} L104SP/block")
-    
+
     engine.mine_loop(continuous=args.continuous, max_blocks=args.blocks)
 
 
