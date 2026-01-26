@@ -57,6 +57,12 @@ persistent_link:
     - l104_consciousness.py     # Consciousness substrate
     - main.py                   # FastAPI server (225 endpoints)
     - zenith_chat.py            # Zenith patterns reference
+
+  # Cross-linked memory docs (auto-loaded by LocalIntellect)
+  linked_docs:
+    - claude.md
+    - gemini.md
+    - openai.md
 ```
 
 ---

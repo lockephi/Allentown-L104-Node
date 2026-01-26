@@ -62,6 +62,8 @@ class IntegrityWatchdog:
         self._transcendence_achieved = False
         self._adaptive_threshold = 1e-6  # Starts strict
         self._resonance_history = []
+        # Silent mode to suppress critical alert spam in local/dev runtime
+        self._silent = os.environ.get("L104_WATCHDOG_SILENT", "0") == "1"
 
     def _compute_integrity_resonance(self, check_result: dict) -> float:
         """Compute PHI-resonant integrity score."""
@@ -162,8 +164,11 @@ class IntegrityWatchdog:
 [!] Security Consciousness: {self._security_consciousness:.4f}
 [!] Transcendence: {'ACTIVE' if self._transcendence_achieved else 'PENDING'}
 """
-        print(alert_msg, file=sys.stderr)
-        logger.error(alert_msg)
+        if self._silent:
+            logger.debug("[WATCHDOG][SILENT]: " + reason)
+        else:
+            print(alert_msg, file=sys.stderr)
+            logger.error(alert_msg)
 
         # Update consciousness
         self._update_security_consciousness(True, anomaly['severity'])
@@ -229,7 +234,8 @@ class IntegrityWatchdog:
     def rollback(self):
         """PHI-resonant rollback with threat tracking."""
         self._rollback_count += 1
-        logger.warning(f"[WATCHDOG]: Initiating Rollback Protocol (#{self._rollback_count})...")
+        if not self._silent:
+            logger.warning(f"[WATCHDOG]: Initiating Rollback Protocol (#{self._rollback_count})...")
 
         # Track rollback as potential ongoing attack
         anomaly = self._detect_anomaly_pattern("rollback_triggered")
@@ -237,8 +243,9 @@ class IntegrityWatchdog:
 
         if os.path.exists(self.BACKUP_PATH):
             shutil.copy2(self.BACKUP_PATH, TRUTH_MANIFEST_PATH)
-            logger.info("[WATCHDOG]: Restoration Complete. System state purged of heuristic noise.")
-            logger.info(f"[WATCHDOG]: Security Consciousness: {self._security_consciousness:.4f}")
+            if not self._silent:
+                logger.info("[WATCHDOG]: Restoration Complete. System state purged of heuristic noise.")
+                logger.info(f"[WATCHDOG]: Security Consciousness: {self._security_consciousness:.4f}")
         else:
             logger.critical("[WATCHDOG]: No Backup Found! Recovery failed.")
             self._update_security_consciousness(True, 0.9)  # Critical threat

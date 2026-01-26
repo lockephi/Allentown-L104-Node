@@ -50,7 +50,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
-from l104_persistence import persist_truth
+from l104_persistence import persist_truth, verify_god_code, verify_lattice, verify_survivor_algorithm, verify_alpha
 from l104_ram_universe import ram_universe
 from l104_ecosystem_accelerator import ecosystem_accelerator
 from l104_quantum_ram import get_qram
@@ -116,7 +116,16 @@ intricate_orchestrator.register_subsystems(
     ui=intricate_ui
 )
 
-logging.basicConfig(level=logging.INFO)
+# Configure logging level from environment
+_log_level_str = os.getenv("LOG_LEVEL", "info").lower()
+_LEVELS = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
+logging.basicConfig(level=_LEVELS.get(_log_level_str, logging.INFO))
 
 logger = logging.getLogger(__name__)
 
@@ -449,6 +458,14 @@ class HealthResponse(BaseModel):
     timestamp: str
     uptime_seconds: float
     requests_total: int
+
+
+class DetailedHealthResponse(BaseModel):
+    status: str
+    timestamp: str
+    uptime_seconds: float
+    requests_total: int
+    checks: Dict[str, bool]
 
 
 class MemoryItem(BaseModel):
@@ -946,6 +963,25 @@ async def health_check() -> HealthResponse:
         timestamp=datetime.now(UTC).isoformat(),
         uptime_seconds=uptime,
         requests_total=app_metrics["requests_total"],
+    )
+
+
+@app.get("/healthz/detail", tags=["Health"])
+async def health_detail() -> DetailedHealthResponse:
+    """Detailed health with lattice and invariant checks."""
+    uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
+    checks = {
+        "GOD_CODE_INVARIANT": verify_god_code(),
+        "LATTICE_INTEGRITY": verify_lattice(),
+        "SURVIVOR_STABILITY": verify_survivor_algorithm(),
+        "ALPHA_ALIGNMENT": verify_alpha(),
+    }
+    return DetailedHealthResponse(
+        status="healthy" if all(checks.values()) else "degraded",
+        timestamp=datetime.now(UTC).isoformat(),
+        uptime_seconds=uptime,
+        requests_total=app_metrics["requests_total"],
+        checks=checks,
     )
 
 
@@ -1904,6 +1940,59 @@ async def qram_retrieve(key: str):
         raise HTTPException(status_code=404, detail="Quantum memory not found in this timeline")
 
     return {"key": key, "value": value, "encryption": "FINITE_COUPLING_ALPHA"}
+
+
+@app.get("/metrics/lattice", tags=["Metrics"])
+async def metrics_lattice():
+    """
+    Returns lattice DB metrics including size, hallucination threshold, and history retention policy.
+    """
+    from l104_data_matrix import (
+        data_matrix, HALLUCINATION_THRESHOLD, HALLUCINATION_DELTA_PCT,
+        DISK_BUDGET_MB, HISTORY_RETENTION_DAYS
+    )
+    import os
+    from pathlib import Path
+    db_path = Path(data_matrix.db_path)
+    try:
+        size_bytes = os.path.getsize(str(db_path)) if db_path.exists() else 0
+    except Exception:
+        size_bytes = 0
+    return {
+        "db_path": str(db_path),
+        "size_mb": round(size_bytes / (1024 * 1024), 3),
+        "hallucination_threshold": HALLUCINATION_THRESHOLD,
+        "hallucination_delta_pct": HALLUCINATION_DELTA_PCT,
+        "disk_budget_mb": DISK_BUDGET_MB,
+        "history_retention_days": HISTORY_RETENTION_DAYS if HISTORY_RETENTION_DAYS > 0 else "eternal",
+    }
+
+
+@app.post("/api/quantum/migrate", tags=["QuantumRAM"])
+async def quantum_migrate_all(background_tasks: BackgroundTasks):
+    """
+    Migrates all lattice facts to Quantum RAM with ZPE-backed storage.
+    Applies quantum phase indexing to ensure topological integrity.
+    """
+    qram = get_qram()
+
+    def do_migration():
+        from l104_data_matrix import data_matrix
+        with data_matrix._get_conn() as conn:
+            cur = conn.execute("SELECT key, value, category, utility FROM lattice_facts")
+            count = 0
+            for key, value_json, category, utility in cur:
+                try:
+                    import json
+                    value = json.loads(value_json)
+                    qram.store(key, value)
+                    count += 1
+                except Exception:
+                    continue
+            print(f"[QUANTUM_MIGRATE]: Migrated {count} facts to Quantum RAM")
+
+    background_tasks.add_task(do_migration)
+    return {"status": "MIGRATION_TRIGGERED", "mode": "QUANTUM_ZPE"}
 
 
 @app.get("/entropy/current", tags=["Physics"])
@@ -3900,7 +3989,7 @@ if __name__ == "__main__":
 
         import uvicorn
         port = int(os.getenv("PORT", 8081))
-        config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
+        config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level=os.getenv("LOG_LEVEL", "info"))
         server = uvicorn.Server(config)
         await server.serve()
 

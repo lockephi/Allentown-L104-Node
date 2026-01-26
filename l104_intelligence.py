@@ -6,6 +6,7 @@ UUC = 2301.215661
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import math
+import os
 import time
 import logging
 import glob
@@ -70,7 +71,8 @@ class SovereignIntelligence:
         """
         Calculates the complexity of the current workspace.
         """
-        files = glob.glob("/workspaces/Allentown-L104-Node/**/*.py", recursive=True)
+        base = os.path.dirname(os.path.abspath(__file__))
+        files = glob.glob(os.path.join(base, "**", "*.py"), recursive=True)
         total_lines = 0
         total_files = len(files)
         for f in files:

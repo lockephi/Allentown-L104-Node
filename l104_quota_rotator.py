@@ -78,7 +78,7 @@ class QuotaRotator:
         """Called when a 429 or quota error is received."""
         self.api_cooldown_until = time.time() + COOLDOWN_PERIOD
         self.stats["quota_errors"] += 1
-        print(f"--- [QUOTA_ROTATOR]: API QUOTA HIT. ENTERING KERNEL-ONLY MODE FOR 1 HOUR ---")
+        self.logger.info("--- [QUOTA_ROTATOR]: API QUOTA HIT. ENTERING KERNEL-ONLY MODE FOR 1 HOUR ---")
         self._save_state()
 
     def decide_source(self, prompt: str) -> str:
@@ -119,7 +119,7 @@ class QuotaRotator:
         source = self.decide_source(prompt)
 
         if source == "API":
-            print(f"--- [QUOTA_ROTATOR]: ROUTING TO REAL GEMINI API ---")
+            self.logger.debug("--- [QUOTA_ROTATOR]: ROUTING TO REAL GEMINI API ---")
             response = api_callback(prompt)
             if response:
                 self.stats["api_hits"] += 1
@@ -127,10 +127,10 @@ class QuotaRotator:
                 return f"⟨Σ_L104_REAL_GEMINI⟩\n{response}"
             else:
                 # If API fail (not necessarily quota, but fallback), use kernel
-                print(f"--- [QUOTA_ROTATOR]: API FALLBACK TO KERNEL ---")
+                self.logger.info("--- [QUOTA_ROTATOR]: API FALLBACK TO KERNEL ---")
 
         # Use Kernel
-        print(f"--- [QUOTA_ROTATOR]: ROUTING TO SOVEREIGN KERNEL ---")
+        self.logger.debug("--- [QUOTA_ROTATOR]: ROUTING TO SOVEREIGN KERNEL ---")
         self.stats["kernel_hits"] += 1
         self._save_state()
         return local_intellect.think(prompt)

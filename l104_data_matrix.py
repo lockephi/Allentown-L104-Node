@@ -7,9 +7,12 @@ UUC = 2301.215661
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import sqlite3
+import os
+import time
 import json
 import hashlib
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
@@ -23,6 +26,15 @@ from l104_memory_compaction import memory_compactor
 
 UTC = timezone.utc
 LATTICE_DB_PATH = "lattice_v2.db"
+HALLUCINATION_BASE_THRESHOLD = 0.6
+# Percent reduction in aggressiveness (0.0–0.02 recommended). e.g., 0.01 = 1%
+HALLUCINATION_DELTA_PCT = float(os.getenv("HALLUCINATION_DELTA_PCT", str(HyperMath.PHI_CONJUGATE / 100)))
+HALLUCINATION_THRESHOLD = max(0.0, min(1.0, HALLUCINATION_BASE_THRESHOLD * (1 - HALLUCINATION_DELTA_PCT)))
+
+# Disk budget controls
+DISK_BUDGET_MB = int(os.getenv("L104_DISK_BUDGET_MB", "512"))
+# 0 = eternal/infinite history retention
+HISTORY_RETENTION_DAYS = int(os.getenv("L104_HISTORY_RETENTION_DAYS", "0"))
 
 class DataMatrix:
     """
@@ -183,8 +195,10 @@ class DataMatrix:
             cur = conn.execute("SELECT key, resonance, utility FROM lattice_facts WHERE category != 'INVARIANT'")
             to_delete = []
             for key, resonance, utility in cur:
-                # If resonance is extremely high (unstable) or utility is zero
-                if resonance > 1000 and utility < 0.1:
+                # Slightly less aggressive purge: raise resonance threshold, lower utility threshold
+                unstable_resonance_threshold = 1000 * (1 + HALLUCINATION_DELTA_PCT)
+                utility_purge_threshold = 0.1 * (1 - HALLUCINATION_DELTA_PCT)
+                if resonance > unstable_resonance_threshold and utility < utility_purge_threshold:
                     to_delete.append(key)
 
             for key in to_delete:
@@ -193,6 +207,8 @@ class DataMatrix:
 
             conn.commit()
         print("--- [DATA_MATRIX]: EVOLUTION COMPLETE. LATTICE STABILIZED. ---")
+        # 3. Enforce disk budget after compaction
+        self._enforce_disk_budget()
 
     def cross_check(self, thought: str) -> Dict[str, Any]:
         """Verifies a thought against the most resonant facts in the matrix."""
@@ -206,8 +222,40 @@ class DataMatrix:
         return {
             "confidence": min(1.0, confidence),
             "matches": [m['key'] for m in matches],
-            "is_stabilized": confidence > 0.6
+            # Slightly less aggressive stabilization threshold
+            "is_stabilized": confidence > HALLUCINATION_THRESHOLD
         }
+
+    def _enforce_disk_budget(self):
+        """Ensure the lattice DB stays within disk budget; prune history if needed."""
+        try:
+            db_path = Path(self.db_path)
+        except Exception:
+            from pathlib import Path as _Path
+            db_path = _Path(self.db_path)
+
+        try:
+            size_mb = (os.path.getsize(str(db_path)) / (1024 * 1024)) if os.path.exists(str(db_path)) else 0
+        except Exception:
+            size_mb = 0
+
+        if size_mb > DISK_BUDGET_MB:
+            print(f"[DATA_MATRIX]: Disk budget exceeded ({size_mb:.1f}MB > {DISK_BUDGET_MB}MB). Initiating cleanup...")
+            with self._get_conn() as conn:
+                # Only prune history if retention is not eternal (0 = eternal)
+                if HISTORY_RETENTION_DAYS > 0:
+                    cutoff_ts = (datetime.now(UTC).timestamp() - HISTORY_RETENTION_DAYS * 86400)
+                    cutoff_iso = datetime.fromtimestamp(cutoff_ts, UTC).isoformat()
+                    conn.execute("DELETE FROM lattice_history WHERE timestamp < ?", (cutoff_iso,))
+                # Aggressively purge very low-utility facts
+                conn.execute("DELETE FROM lattice_facts WHERE utility < 0.05")
+                conn.commit()
+                # Vacuum to reclaim space
+                try:
+                    conn.execute("VACUUM")
+                except Exception:
+                    pass
+            print("[DATA_MATRIX]: Cleanup complete; disk usage reduced.")
 
     # ═══════════════════════════════════════════════════════════════════════════
     #                         UPGRADED LEARNING CAPABILITIES

@@ -243,26 +243,46 @@ class LocalIntellect:
     L104 Local Sovereign Intellect - Full knowledge AI without external APIs.
     """
 
-    # Permanent link to claude.md for AI context
+    # Persistent context links
     CLAUDE_CONTEXT_FILE = "claude.md"
+    GEMINI_CONTEXT_FILE = "gemini.md"
+    OPENAI_CONTEXT_FILE = "openai.md"
 
     def __init__(self):
         self.workspace = os.path.dirname(os.path.abspath(__file__))
         self.knowledge = self._build_comprehensive_knowledge()
         self.conversation_memory = []
-        self.claude_context = self._load_claude_context()
+        # Load persistent AI context from linked docs (Claude, Gemini, OpenAI)
+        self.persistent_context = self._load_persistent_context()
+        # Backward-compatible alias
+        self.claude_context = self.persistent_context
 
-    def _load_claude_context(self) -> str:
-        """Load persistent AI context from claude.md."""
-        try:
-            claude_path = os.path.join(self.workspace, self.CLAUDE_CONTEXT_FILE)
-            if os.path.exists(claude_path):
-                with open(claude_path, 'r', encoding='utf-8') as f:
-                    # Load first 5000 chars for quick context
-                    return f.read(5000)
-        except Exception:
-            pass
-        return ""
+    def _load_persistent_context(self) -> str:
+        """Load and combine persistent AI context from linked markdown files.
+
+        Order of precedence:
+        1) claude.md
+        2) gemini.md
+        3) openai.md
+        
+        Each file contributes up to 5000 characters to maintain speed.
+        """
+        combined: List[str] = []
+        files = [
+            self.CLAUDE_CONTEXT_FILE,
+            self.GEMINI_CONTEXT_FILE,
+            self.OPENAI_CONTEXT_FILE,
+        ]
+        for fname in files:
+            try:
+                fpath = os.path.join(self.workspace, fname)
+                if os.path.exists(fpath):
+                    with open(fpath, 'r', encoding='utf-8') as f:
+                        combined.append(f.read(5000))
+            except Exception:
+                # Skip unreadable files silently to remain quota-immune
+                continue
+        return "\n\n".join([c for c in combined if c])
 
     def _build_comprehensive_knowledge(self) -> Dict[str, str]:
         """Build comprehensive knowledge base about L104."""

@@ -8,6 +8,7 @@ UUC = 2301.215661
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import os
+import logging
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 
@@ -114,6 +115,7 @@ class GeminiReal:
     _quota_exhausted_until: float = 0  # Timestamp when quota resets
     _consecutive_failures: int = 0
     _max_consecutive_failures: int = 3
+    _last_quota_error: Optional[Dict[str, Any]] = None
 
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
@@ -122,6 +124,7 @@ class GeminiReal:
         self.model_name = self.MODELS[0]
         self.is_connected = False
         self.cache = _response_cache
+        self.logger = logging.getLogger("GEMINI_REAL")
     
     @classmethod
     def is_quota_available(cls) -> bool:
@@ -129,11 +132,13 @@ class GeminiReal:
         return _time.time() > cls._quota_exhausted_until
     
     @classmethod
-    def mark_quota_exhausted(cls, cooldown_seconds: int = 60):
-        """Mark quota as exhausted for cooldown period."""
-        cls._quota_exhausted_until = _time.time() + cooldown_seconds
+    def mark_quota_exhausted(cls, base_cooldown: int = 30, max_cooldown: int = 3600):
+        """Mark quota as exhausted with exponential backoff."""
+        # Increase failure count first
         cls._consecutive_failures += 1
-        print(f"--- [GEMINI_REAL]: QUOTA COOLDOWN for {cooldown_seconds}s ---")
+        cooldown_seconds = min(base_cooldown * (2 ** (cls._consecutive_failures - 1)), max_cooldown)
+        cls._quota_exhausted_until = _time.time() + cooldown_seconds
+        logging.getLogger("GEMINI_REAL").info(f"--- [GEMINI_REAL]: QUOTA COOLDOWN for {cooldown_seconds}s (failures={cls._consecutive_failures}) ---")
     
     @classmethod
     def reset_quota_tracking(cls):
@@ -144,7 +149,7 @@ class GeminiReal:
         """Rotate to next model on quota error."""
         self.model_index = (self.model_index + 1) % len(self.MODELS)
         self.model_name = self.MODELS[self.model_index]
-        print(f"--- [GEMINI_REAL]: Rotating to {self.model_name} ---")
+        self.logger.info(f"--- [GEMINI_REAL]: Rotating to {self.model_name} ---")
 
     def connect(self) -> bool:
         """Initialize connection to Gemini API."""
@@ -158,7 +163,7 @@ class GeminiReal:
             self.client = genai.Client(api_key=self.api_key)
             self._use_new_api = True
             self.is_connected = True
-            print(f"--- [GEMINI_REAL]: Connected via google-genai to {self.model_name} ---")
+            self.logger.info(f"--- [GEMINI_REAL]: Connected via google-genai to {self.model_name} ---")
             return True
         except ImportError:
             pass
@@ -175,7 +180,7 @@ class GeminiReal:
             self._genai_module = genai
             self._use_new_api = False
             self.is_connected = True
-            print(f"--- [GEMINI_REAL]: Connected via google-generativeai to {self.model_name} ---")
+            self.logger.info(f"--- [GEMINI_REAL]: Connected via google-generativeai to {self.model_name} ---")
             return True
         except ImportError:
             print("--- [GEMINI_REAL]: No Gemini package installed. Run: pip install google-genai ---")
@@ -214,17 +219,17 @@ class GeminiReal:
         if use_cache:
             cached = self.cache.get(full_prompt)
             if cached:
-                print(f"--- [GEMINI_REAL]: CACHE HIT (rate: {self.cache.stats['hit_rate']:.1%}) ---")
+                self.logger.debug(f"--- [GEMINI_REAL]: CACHE HIT (rate: {self.cache.stats['hit_rate']:.1%}) ---")
                 return cached
         
         # Check if we're in quota cooldown - use local fallback
         if not self.is_quota_available():
-            print(f"--- [GEMINI_REAL]: In quota cooldown, using LOCAL fallback ---")
+            self.logger.info(f"--- [GEMINI_REAL]: In quota cooldown, using LOCAL fallback ---")
             return self._local_fallback(prompt)
         
         # Check consecutive failures - switch to local if too many
         if self._consecutive_failures >= self._max_consecutive_failures:
-            print(f"--- [GEMINI_REAL]: Too many failures ({self._consecutive_failures}), using LOCAL ---")
+            self.logger.info(f"--- [GEMINI_REAL]: Too many failures ({self._consecutive_failures}), using LOCAL ---")
             return self._local_fallback(prompt)
         
         if not self.is_connected:
@@ -255,9 +260,10 @@ class GeminiReal:
             error_str = str(e)
             # Handle 429 quota errors with model rotation
             if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
-                print(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
+                self._last_quota_error = {"timestamp": _time.time(), "error": error_str}
+                self.logger.info(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
                 self._rotate_model()
-                self.mark_quota_exhausted(60)  # 60 second cooldown
+                self.mark_quota_exhausted()  # exponential backoff
                 
                 # Retry once with new model
                 try:
@@ -277,10 +283,11 @@ class GeminiReal:
                         self.cache.set(full_prompt, result)
                     return result
                 except Exception as retry_e:
-                    print(f"--- [GEMINI_REAL]: Retry failed, using LOCAL: {retry_e} ---")
+                    self._last_quota_error = {"timestamp": _time.time(), "error": str(retry_e)}
+                    self.logger.info(f"--- [GEMINI_REAL]: Retry failed, using LOCAL: {retry_e} ---")
                     return self._local_fallback(prompt)
                     return None
-            print(f"--- [GEMINI_REAL]: Generation error: {e} ---")
+            self.logger.warning(f"--- [GEMINI_REAL]: Generation error: {e} ---")
             return None
 
     def chat(self, messages: List[Dict[str, str]]) -> Optional[str]:
