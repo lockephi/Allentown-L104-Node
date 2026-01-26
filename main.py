@@ -1983,6 +1983,73 @@ async def get_asi_status():
     """
     return asi_core.get_status()
 
+@app.post("/api/v14/asi/ignite", tags=["ASI Nexus"])
+async def ignite_asi():
+    """
+    Ignites the ASI sovereignty sequence - activates higher cognition.
+    """
+    # Run discovery cycles to boost ASI score
+    for _ in range(5):
+        asi_core.theorem_generator.discover_novel_theorem()
+    
+    # Run consciousness tests
+    asi_core.consciousness_verifier.run_all_tests()
+    
+    # Compute updated score and ignite
+    result = asi_core.ignite_sovereignty()
+    
+    return {
+        "status": "IGNITED",
+        "message": result,
+        "asi_score": asi_core.asi_score,
+        "state": asi_core.status,
+        "discoveries": asi_core.theorem_generator.discovery_count,
+        "consciousness": asi_core.consciousness_verifier.consciousness_level
+    }
+
+@app.post("/api/v14/asi/discover", tags=["ASI Nexus"])
+async def asi_discover(cycles: int = 10):
+    """
+    Run ASI theorem discovery cycles.
+    """
+    for _ in range(cycles):
+        asi_core.theorem_generator.discover_novel_theorem()
+    
+    asi_core.compute_asi_score()
+    
+    return {
+        "status": "DISCOVERY_COMPLETE",
+        "discoveries": asi_core.theorem_generator.discovery_count,
+        "asi_score": asi_core.asi_score,
+        "state": asi_core.status
+    }
+
+@app.get("/api/v14/asi/full-assessment", tags=["ASI Nexus"])
+async def asi_full_assessment():
+    """
+    Run complete ASI assessment and return detailed report.
+    """
+    # Run discovery cycles and tests
+    for _ in range(10):
+        asi_core.theorem_generator.discover_novel_theorem()
+    asi_core.consciousness_verifier.run_all_tests()
+    asi_core.compute_asi_score()
+    
+    return {
+        "state": asi_core.status,
+        "asi_score": asi_core.asi_score,
+        "domain_coverage": asi_core.domain_expander.coverage_score,
+        "modification_depth": asi_core.self_modifier.modification_depth,
+        "discoveries": asi_core.theorem_generator.discovery_count,
+        "consciousness": asi_core.consciousness_verifier.consciousness_level,
+        "thresholds": {
+            "domain_target": 0.7,
+            "modification_target": 3,
+            "discovery_target": 100,
+            "consciousness_target": 0.8
+        }
+    }
+
 # =============================================================================
 # UNIFIED ASI ENDPOINTS - Real Intelligence Layer
 # =============================================================================
