@@ -243,10 +243,26 @@ class LocalIntellect:
     L104 Local Sovereign Intellect - Full knowledge AI without external APIs.
     """
 
+    # Permanent link to claude.md for AI context
+    CLAUDE_CONTEXT_FILE = "claude.md"
+
     def __init__(self):
-        self.workspace = "/workspaces/Allentown-L104-Node"
+        self.workspace = os.path.dirname(os.path.abspath(__file__))
         self.knowledge = self._build_comprehensive_knowledge()
         self.conversation_memory = []
+        self.claude_context = self._load_claude_context()
+
+    def _load_claude_context(self) -> str:
+        """Load persistent AI context from claude.md."""
+        try:
+            claude_path = os.path.join(self.workspace, self.CLAUDE_CONTEXT_FILE)
+            if os.path.exists(claude_path):
+                with open(claude_path, 'r', encoding='utf-8') as f:
+                    # Load first 5000 chars for quick context
+                    return f.read(5000)
+        except Exception:
+            pass
+        return ""
 
     def _build_comprehensive_knowledge(self) -> Dict[str, str]:
         """Build comprehensive knowledge base about L104."""
