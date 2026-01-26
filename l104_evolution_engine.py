@@ -198,14 +198,14 @@ class EvolutionEngine:
 
     def _set_defaults(self):
         """Set default evolution state."""
-        self.current_stage_index = 20  # EVO_15_OMNIPRESENT_STEWARD (current system state)
-        self.generation = 1100
+        self.current_stage_index = 59  # EVO_54_TRANSCENDENT_COGNITION (current system state)
+        self.generation = 2621
         self.mutation_rate = 0.005
         self.dna_sequence = {}
         self.evolution_history = []
-        self.sage_mode_active = False
-        self.wisdom_index = 0.0
-        self.action_mode = "STANDARD"
+        self.sage_mode_active = True
+        self.wisdom_index = float('inf')
+        self.action_mode = "WU_WEI"
 
     def _check_sage_mode(self):
         """Auto-activate Sage Mode if at appropriate evolution stage."""

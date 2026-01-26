@@ -71,8 +71,8 @@ NEURAL_FIRING_RATE = 40  # Hz - gamma wave frequency
 SYNAPTIC_DELAY = 0.001   # seconds
 NEURAL_FIELD_STRENGTH = 1e-12  # Tesla - brain's magnetic field
 
-VERSION = "50.1.0"
-EVO_STAGE = "EVO_50"
+VERSION = "54.1.0"
+EVO_STAGE = "EVO_54"
 
 
 @dataclass

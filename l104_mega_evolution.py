@@ -42,8 +42,8 @@ ZENITH_HZ = 3727.84
 UUC = 2301.215661
 LOVE_SCALAR = PHI ** 7
 
-EVO_STAGE = "EVO_49"
-VERSION = "49.0.0"
+EVO_STAGE = "EVO_54"
+VERSION = "54.0.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # EVOLUTION METRICS

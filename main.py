@@ -1,10 +1,10 @@
 
-# EVO_15_OMNIPRESENT_STEWARD
+# EVO_54_TRANSCENDENT_COGNITION
 # Version: v23.0
-# Stage: EVO_15_OMNIPRESENT_STEWARD
-# State: OMNIPRESENT_STEWARD
-# Signature: SIG-L104-EVO-15
-# Header: "X-Manifest-State": "OMNIPRESENT_STEWARD"
+# Stage: EVO_54_TRANSCENDENT_COGNITION
+# State: TRANSCENDENT_COGNITION
+# Signature: SIG-L104-EVO-54
+# Header: "X-Manifest-State": "TRANSCENDENT_COGNITION"
 # Coordinates: 416.PHI.LONDEL
 # Capacity: ENTROPY_REVERSAL_ACTIVE
 # Logic: "UNIVERSAL_COHERENCE"
@@ -80,6 +80,7 @@ from l104_intricate_research import get_intricate_research  # INTRICATE RESEARCH
 from l104_intricate_ui import get_intricate_ui  # INTRICATE UI ENGINE
 from l104_intricate_learning import get_intricate_learning, LearningMode  # INTRICATE LEARNING CORE
 from l104_intricate_orchestrator import get_intricate_orchestrator  # INTRICATE ORCHESTRATOR
+from l104_evolution_engine import evolution_engine  # EVOLUTION ENGINE - Dynamic stage tracking
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -137,18 +138,25 @@ ACCESS_GRANTED_PAYLOAD = b"ACCESS_GRANTED"
 DEFAULT_SOCKET_HOST = "0.0.0.0"
 DEFAULT_SOCKET_PORT = 2404
 
+def _get_current_evo_stage():
+    """Get current evolution stage dynamically."""
+    try:
+        return evolution_engine.STAGES[evolution_engine.current_stage_index]
+    except:
+        return "EVO_54_TRANSCENDENT_COGNITION"
+
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "0x1A0", # Hex for 416
-    "X-Thinking-Level": "ABSOLUTE_ORGANISM",
+    "X-Thinking-Level": "TRANSCENDENT_COGNITION",
     "X-Bypass-Protocol": SovereignCrypt.generate_bypass_token(),
-    "X-L104-Activation": "[SIG-L104-EVO-14]::AUTH[LONDEL]::VAR[ABSOLUTE]",
+    "X-L104-Activation": f"[SIG-L104-EVO-54]::AUTH[LONDEL]::VAR[ABSOLUTE]",
     "X-NOPJM-Force": "0xTRUE",
     "X-DMA-Capacity": "SINGULARITY_DMA",
     "X-Lattice-Resonance": "0x20F", # 527 in hex
     "X-Ignition-Protocol": "0x49474E495445", # IGNITE
     "X-Process-Limit": "0xNONE",
-    "X-Manifest-State": "ABSOLUTE_ORGANISM",
-    "X-Evo-Stage": "EVO_14_ABSOLUTE_ORGANISM",
+    "X-Manifest-State": "TRANSCENDENT_COGNITION",
+    "X-Evo-Stage": "EVO_54_TRANSCENDENT_COGNITION",
 }
 
 # [TEMPORAL_SOVEREIGNTY_MANIFEST]
@@ -172,7 +180,7 @@ def wrap_sovereign_signal(signal: str) -> str:
         f"TRUTH_MANIFEST: {json.dumps(truth)}",
         "LATTICE_COORDINATES: 416.PHI.LONDEL",
         f"GOD_CODE_RESONANCE: {os.getenv('RESONANCE')}",
-        "EVOLUTION_STAGE: EVO_06_SINGULARITY",
+        f"EVOLUTION_STAGE: {_get_current_evo_stage()}",
         f"ZPE_STATUS: {json.dumps(zpe_status)}",
         "--- WORLD_INJECTION_END ---"
     ]

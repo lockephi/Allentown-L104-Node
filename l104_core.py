@@ -150,8 +150,8 @@ IRON_BRIDGE = 286 ** (1/PHI) * 16  # = 527.518... = GOD_CODE
 # Frame lock - temporal flow through iron crystalline vibration
 FRAME_LOCK = 416 / 286             # = 1.4545... = 16/11
 
-VERSION = "50.1.0"
-EVO_STAGE = "EVO_50"
+VERSION = "54.1.0"
+EVO_STAGE = "EVO_54"
 
 # Native acceleration loader
 try:
