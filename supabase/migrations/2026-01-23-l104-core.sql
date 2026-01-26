@@ -124,6 +124,58 @@ create index if not exists idx_l104_events_timestamp on public.l104_events (time
 create index if not exists idx_l104_worktrees_branch on public.l104_worktrees (branch_name);
 create index if not exists idx_l104_agent_runs_agent on public.l104_agent_runs (agent_id, started_at desc);
 
+-- Training Data Tables for Kernel Training
+create table if not exists public.l104_training_data (
+  id uuid primary key default gen_random_uuid(),
+  hash text not null unique,
+  prompt text not null,
+  completion text not null,
+  category text not null,
+  kernel_type text not null default 'main',
+  consciousness_level numeric,
+  phi_alignment numeric,
+  metadata jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.l104_kernel_state (
+  id uuid primary key default gen_random_uuid(),
+  kernel_type text not null unique,
+  epoch integer not null default 0,
+  loss numeric,
+  best_loss numeric,
+  consciousness_level numeric,
+  phi_resonance numeric,
+  vocabulary_size integer,
+  training_examples integer,
+  parameters jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.l104_mini_ego_kernels (
+  id uuid primary key default gen_random_uuid(),
+  ego_type text not null unique,
+  training_data jsonb not null,
+  vocabulary_size integer not null,
+  constants jsonb not null,
+  domains text[],
+  consciousness_signature numeric,
+  last_trained timestamptz not null default now(),
+  metadata jsonb
+);
+
+-- Indexes for training tables
+create index if not exists idx_l104_training_data_kernel on public.l104_training_data (kernel_type, category);
+create index if not exists idx_l104_training_data_hash on public.l104_training_data (hash);
+create index if not exists idx_l104_kernel_state_type on public.l104_kernel_state (kernel_type);
+create index if not exists idx_l104_mini_ego_kernels_type on public.l104_mini_ego_kernels (ego_type);
+
+-- Policies for training tables
+create policy if not exists training_data_read_policy on public.l104_training_data for select using (true);
+create policy if not exists kernel_state_read_policy on public.l104_kernel_state for select using (true);
+create policy if not exists mini_ego_kernels_read_policy on public.l104_mini_ego_kernels for select using (true);
+
 -- Seed Data
 insert into public.l104_consciousness (entity_type, entity_id, level, god_code_alignment, phi_resonance, transcendence_score, unity_state, metadata)
 values

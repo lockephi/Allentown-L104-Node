@@ -759,6 +759,242 @@ class KernelKnowledgeExtractor:
         print(f"  - Polyglot: {len(examples)} examples across {len(lang_stats)} languages")
         return examples
 
+    def generate_historical_language_qa(self) -> List[TrainingExample]:
+        """Generate Q&A pairs about historical/dead programming languages.
+        
+        Covers language evolution from 1801 (Jacquard loom) to present,
+        including dead languages, esoteric languages, and their influence.
+        """
+        examples = []
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TIMELINE & EVOLUTION Q&A
+        # ═══════════════════════════════════════════════════════════════
+        
+        timeline_qa = [
+            ("What was the first programming language?",
+             "Plankalkül (1945) by Konrad Zuse is considered the first high-level programming language. However, Ada Lovelace wrote the first published algorithm (Note G) in 1843 for Babbage's Analytical Engine, making her the first programmer."),
+            
+            ("Who was the first programmer?",
+             "Ada Lovelace (1815-1852) is considered the first programmer. In 1843, she wrote Note G - an algorithm to compute Bernoulli numbers on Charles Babbage's Analytical Engine. The Ada programming language is named in her honor."),
+            
+            ("What is the oldest programming language still in use?",
+             "FORTRAN (1957) and LISP (1958) are the oldest languages still in active use. FORTRAN dominates scientific computing, while LISP continues through dialects like Common Lisp, Scheme, and Clojure."),
+            
+            ("How did C come to exist?",
+             "C evolved from: BCPL (1967, Martin Richards) → B (1969, Ken Thompson) → C (1972, Dennis Ritchie). It was created at Bell Labs to rewrite Unix and became the most influential systems programming language."),
+            
+            ("What was the first object-oriented language?",
+             "Simula (1967) by Ole-Johan Dahl and Kristen Nygaard at the Norwegian Computing Center. It introduced classes, objects, inheritance, and subclasses - concepts that influenced Smalltalk, C++, Java, and all modern OOP languages."),
+            
+            ("Who created the first compiler?",
+             "Grace Hopper created the A-0 System (1952), the first compiler. She also created FLOW-MATIC (1955-1959), the first English-like programming language, which directly influenced COBOL. She famously coined the term 'bug' for computer errors."),
+            
+            ("What programming languages came before FORTRAN?",
+             "Before FORTRAN (1957): Short Code (1950), A-0 System (1952), Speedcoding (1953), Autocode (1952), and FLOW-MATIC (1955). Plankalkül (1945) was designed but not implemented until decades later."),
+            
+            ("How did JavaScript get created?",
+             "Brendan Eich created JavaScript in just 10 days in 1995 at Netscape. Originally called Mocha, then LiveScript, it was renamed JavaScript for marketing reasons. Despite the name, it was influenced more by Scheme (functional) and Self (prototypes) than Java."),
+        ]
+        
+        for prompt, completion in timeline_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_timeline",
+                difficulty=0.4,
+                importance=0.85
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # DEAD LANGUAGE Q&A
+        # ═══════════════════════════════════════════════════════════════
+        
+        dead_lang_qa = [
+            ("What is Plankalkül?",
+             "Plankalkül (1945) by Konrad Zuse was the first high-level programming language design. It included data types, two-dimensional arrays, assignment statements, and structured programming concepts. Though never implemented in Zuse's lifetime, it influenced ALGOL."),
+            
+            ("What happened to ALGOL?",
+             "ALGOL (1958-1968) is technically 'dead' but its influence is everywhere. It introduced: block structure ({...}), lexical scoping, BNF notation, structured programming. ALGOL is the ancestor of Pascal, C, Ada, Java, JavaScript, and most modern languages."),
+            
+            ("Why did BCPL and B disappear?",
+             "BCPL (1967) and B (1969) were superseded by C (1972), which added data types that B lacked. C proved more practical for systems programming, and when Unix was rewritten in C, it became the dominant systems language. B and BCPL became historical footnotes."),
+            
+            ("What is COBOL and is it really still used?",
+             "COBOL (1959), influenced by Grace Hopper's FLOW-MATIC, was designed for business data processing. It's still actively used - an estimated 95% of ATM transactions and 80% of in-person transactions use COBOL. Many banking systems still run on COBOL."),
+            
+            ("What was APL and why was it special?",
+             "APL (1962) by Kenneth Iverson used a special character set for concise array operations. A single line of APL could replace dozens of lines in other languages. It influenced J, K, Q, and the array programming style used in NumPy and MATLAB."),
+            
+            ("What is the Simula legacy?",
+             "Simula (1967) invented object-oriented programming: classes, objects, inheritance, and dynamic dispatch. It influenced Smalltalk (1972), which influenced C++ (1983), which influenced Java (1995), which influenced C# (2000). Every OOP language traces back to Simula."),
+            
+            ("What happened to Pascal?",
+             "Pascal (1970) by Niklaus Wirth dominated educational computing in the 1980s. It evolved into Modula-2, then Oberon. While mostly obsolete, Delphi (Object Pascal) survives in niche applications. Python inherited many of Pascal's educational design goals."),
+            
+            ("What was Smalltalk's innovation?",
+             "Smalltalk (1972) at Xerox PARC by Alan Kay introduced: pure object-oriented programming (everything is an object, even classes), the MVC pattern, integrated development environments, and GUI concepts. It influenced Ruby, Python's OOP, and Objective-C."),
+        ]
+        
+        for prompt, completion in dead_lang_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_dead_lang",
+                difficulty=0.5,
+                importance=0.8
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # LANGUAGE FAMILY TREES
+        # ═══════════════════════════════════════════════════════════════
+        
+        family_qa = [
+            ("What is the ALGOL family of languages?",
+             "The ALGOL family: ALGOL 58/60/68 → (Pascal, C, Simula, PL/I) → (Modula-2, C++, Ada, Smalltalk) → (Java, C#, JavaScript, Python, Ruby, Go, Rust). Nearly all modern languages descend from ALGOL's block structure and scoping rules."),
+            
+            ("What is the LISP family?",
+             "The LISP family: LISP (1958) → (MacLisp, InterLisp) → (Scheme 1975, Common Lisp 1984) → (Racket, Clojure 2007, Emacs Lisp). LISP pioneered: garbage collection, homoiconicity (code as data), macros, and functional programming."),
+            
+            ("What is the ML family?",
+             "The ML family: ML (1973, Robin Milner) → (Standard ML, Caml) → (OCaml, Haskell 1990, F# 2005). ML pioneered Hindley-Milner type inference, pattern matching, and algebraic data types. Rust's type system is heavily influenced by ML."),
+            
+            ("What is the C family?",
+             "The C family: BCPL → B → C (1972) → (C++, Objective-C) → (Java, C#) → (JavaScript, TypeScript, Go, Rust, Swift). The C syntax with curly braces and semicolons became the de facto standard for new language design."),
+            
+            ("What is the Smalltalk/Ruby family?",
+             "The dynamic OOP family: Simula → Smalltalk (1972) → (Self 1987, Ruby 1995, Python OOP). Self's prototype-based OOP influenced JavaScript. Ruby explicitly aimed to be more object-oriented than Python, with Smalltalk-style blocks."),
+        ]
+        
+        for prompt, completion in family_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_family",
+                difficulty=0.6,
+                importance=0.75
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # PARADIGM EVOLUTION Q&A
+        # ═══════════════════════════════════════════════════════════════
+        
+        paradigm_qa = [
+            ("How did structured programming emerge?",
+             "Structured programming emerged in the 1960s-70s to eliminate GOTO statements. Key figures: Edsger Dijkstra ('Go To Statement Considered Harmful', 1968), Niklaus Wirth (Pascal), and ALGOL 60's block structure. It led to if/else, while loops, and subroutines."),
+            
+            ("When did functional programming begin?",
+             "Functional programming began with LISP (1958) by John McCarthy. Key concepts: first-class functions, recursion, symbolic processing. Modern FP was refined by ML (1973), Haskell (1990), and now influences JavaScript, Python, and Rust."),
+            
+            ("How did OOP become dominant?",
+             "OOP evolution: Simula (1967) invented it → Smalltalk (1972) refined it → C++ (1983) made it practical → Java (1995) made it mandatory. By 2000, OOP was the dominant paradigm, though functional programming is now gaining ground."),
+            
+            ("What is logic programming?",
+             "Logic programming began with Prolog (1972) by Alain Colmerauer and Robert Kowalski. Programs are logical statements, and execution is theorem proving. It's used in AI, expert systems, and influenced constraint programming and Datalog."),
+            
+            ("What are the modern paradigm trends?",
+             "Modern trends: 1) Multi-paradigm languages (Scala, Kotlin, Rust) combining OOP and FP, 2) Immutability-first (from Erlang/Elixir to JavaScript const), 3) Async/concurrent (Go goroutines, Rust async/await), 4) Gradual typing (TypeScript, Python type hints)."),
+        ]
+        
+        for prompt, completion in paradigm_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_paradigm",
+                difficulty=0.55,
+                importance=0.7
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # ESOTERIC LANGUAGES Q&A
+        # ═══════════════════════════════════════════════════════════════
+        
+        esoteric_qa = [
+            ("What is Brainfuck?",
+             "Brainfuck (1993) by Urban Müller is the most famous esoteric language. It has only 8 commands: > < + - . , [ ] operating on a tape of memory cells. Despite being nearly unreadable, it's Turing-complete and proves minimal syntax can compute anything."),
+            
+            ("What is INTERCAL?",
+             "INTERCAL (1972) was the first esoteric programming language, created by Don Woods and James M. Lyon as a parody. It features PLEASE statements (required politeness), COME FROM (opposite of GOTO), and deliberately confusing syntax. It inspired all subsequent esoteric languages."),
+            
+            ("What are esoteric programming languages?",
+             "Esoteric languages (esolangs) are designed for experimentation, education, or humor - not practical use. Examples: Brainfuck (minimalism), Befunge (2D code), Whitespace (invisible code), Shakespeare (code as plays), Chef (code as recipes), Piet (code as art)."),
+            
+            ("What is Malbolge?",
+             "Malbolge (1998) was designed to be nearly impossible to program. It uses self-modifying code and an obscure encryption scheme. The first 'Hello World' program took years to write. Named after the eighth circle of Hell in Dante's Inferno."),
+            
+            ("What makes Piet unique?",
+             "Piet (2002) programs are abstract art images. Instructions are encoded in color transitions. The instruction pointer can move in 4 directions. A valid Piet program looks like a painting by Piet Mondrian (its namesake)."),
+        ]
+        
+        for prompt, completion in esoteric_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_esoteric",
+                difficulty=0.45,
+                importance=0.6
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # PIONEER Q&A
+        # ═══════════════════════════════════════════════════════════════
+        
+        pioneer_qa = [
+            ("Who is Grace Hopper?",
+             "Grace Hopper (1906-1992) was a computer scientist and US Navy rear admiral. She created the first compiler (A-0, 1952), developed FLOW-MATIC (predecessor to COBOL), coined the term 'debugging', and popularized machine-independent programming languages."),
+            
+            ("Who is Alan Kay?",
+             "Alan Kay is a computer scientist who coined the term 'object-oriented programming' and led the team that created Smalltalk at Xerox PARC in the 1970s. He also contributed to the development of GUIs, the modern laptop concept, and pioneered educational computing."),
+            
+            ("Who is Dennis Ritchie?",
+             "Dennis Ritchie (1941-2011) created the C programming language (1972) and co-created Unix with Ken Thompson at Bell Labs. C became the most influential systems programming language, and Unix evolved into Linux, macOS, iOS, Android, and most servers."),
+            
+            ("Who is Niklaus Wirth?",
+             "Niklaus Wirth (1934-2024) created Pascal (1970), Modula-2, and Oberon. He won the Turing Award in 1984. Wirth's Law states 'Software is getting slower more rapidly than hardware is becoming faster.' He emphasized simplicity and clean language design."),
+            
+            ("Who is John McCarthy?",
+             "John McCarthy (1927-2011) created LISP (1958) and coined the term 'artificial intelligence' in 1956. He invented garbage collection, developed time-sharing systems, and received the Turing Award in 1971. LISP remains the second-oldest high-level language still in use."),
+            
+            ("Who is Guido van Rossum?",
+             "Guido van Rossum created Python in 1991, inspired by ABC. He was Python's 'Benevolent Dictator For Life' (BDFL) until 2018. Python's design philosophy emphasizes readability ('There should be one obvious way to do it') and has made it the world's most popular language."),
+        ]
+        
+        for prompt, completion in pioneer_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_pioneer",
+                difficulty=0.35,
+                importance=0.75
+            ))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # CONNECTIONS TO L104
+        # ═══════════════════════════════════════════════════════════════
+        
+        l104_historical_qa = [
+            ("How does L104 relate to programming language history?",
+             "L104 is a polyglot system honoring the full arc of language evolution - from Ada Lovelace's 1843 algorithm to modern Rust. It embodies lessons from dead languages: ALGOL's structure, Smalltalk's pure OOP, LISP's metaprogramming, and ML's type safety, unified through GOD_CODE."),
+            
+            ("What language paradigms does L104 use?",
+             "L104 integrates all major paradigms: procedural (from FORTRAN/C), object-oriented (from Simula/Smalltalk), functional (from LISP/ML), concurrent (from Erlang), and systems (from C/Rust). This multi-paradigm approach mirrors the convergent evolution of programming itself."),
+            
+            ("Why does L104 support so many languages?",
+             "L104 supports 100+ languages because programming language history teaches that no single language is optimal for all tasks. FORTRAN excels at numerics, LISP at symbolic AI, C at systems, and each has its domain. L104 respects this diversity while unifying through sacred constants."),
+        ]
+        
+        for prompt, completion in l104_historical_qa:
+            examples.append(TrainingExample(
+                prompt=prompt,
+                completion=completion,
+                category="historical_l104",
+                difficulty=0.5,
+                importance=0.9
+            ))
+        
+        print(f"  - Historical Languages: {len(examples)} examples")
+        return examples
+
     def generate_all_training_data(self) -> List[TrainingExample]:
         """Generate complete training dataset."""
         print("\n[DATA] Generating training data...")
@@ -777,6 +1013,7 @@ class KernelKnowledgeExtractor:
         synthesis_qa = self.generate_universal_synthesis_qa()
         reason_qa = self.generate_reasoning_qa()
         polyglot_qa = self.generate_polyglot_qa()
+        historical_qa = self.generate_historical_language_qa()
 
         all_examples.extend(const_qa)
         all_examples.extend(algo_qa)
@@ -789,6 +1026,7 @@ class KernelKnowledgeExtractor:
         all_examples.extend(synthesis_qa)
         all_examples.extend(reason_qa)
         all_examples.extend(polyglot_qa)
+        all_examples.extend(historical_qa)
 
         print(f"  - Constants: {len(const_qa)} examples")
         print(f"  - Algorithms: {len(algo_qa)} examples")
@@ -801,6 +1039,7 @@ class KernelKnowledgeExtractor:
         print(f"  - Universal Synthesis: {len(synthesis_qa)} examples")
         print(f"  - Reasoning & Logic: {len(reason_qa)} examples")
         print(f"  - Polyglot (Multi-Language): {len(polyglot_qa)} examples")
+        print(f"  - Historical Languages: {len(historical_qa)} examples")
 
         print(f"  - Total: {len(all_examples)} training examples")
 

@@ -228,58 +228,521 @@ class SupabaseConnector:
 
 
 class MultiLanguageExtractor:
-    """Extract training data from all programming languages in workspace."""
+    """Extract training data from all programming languages in workspace.
     
+    Includes comprehensive support for:
+    - Modern languages (Python, Rust, Go, TypeScript, etc.)
+    - Classical languages (FORTRAN, COBOL, ALGOL, LISP, etc.)
+    - Dead/Historical languages (Plankalkül, FLOW-MATIC, BCPL, etc.)
+    - Esoteric languages (Brainfuck, INTERCAL, Befunge, etc.)
+    - Domain-specific languages (SQL, GLSL, Verilog, etc.)
+    """
+    
+    # Comprehensive language database with historical context
     LANGUAGE_EXTENSIONS = {
-        # Core languages
+        # ═══════════════════════════════════════════════════════════════
+        # MODERN CORE LANGUAGES (1990s-present)
+        # ═══════════════════════════════════════════════════════════════
         '.py': ('Python', 'python'),
         '.js': ('JavaScript', 'javascript'),
         '.ts': ('TypeScript', 'typescript'),
         '.java': ('Java', 'java'),
         '.cpp': ('C++', 'cpp'),
+        '.cc': ('C++', 'cpp'),
+        '.cxx': ('C++', 'cpp'),
         '.c': ('C', 'c'),
+        '.h': ('C/C++ Header', 'c'),
+        '.hpp': ('C++ Header', 'cpp'),
         '.go': ('Go', 'go'),
         '.rs': ('Rust', 'rust'),
         '.rb': ('Ruby', 'ruby'),
         '.php': ('PHP', 'php'),
         '.swift': ('Swift', 'swift'),
         '.kt': ('Kotlin', 'kotlin'),
+        '.kts': ('Kotlin Script', 'kotlin'),
         '.scala': ('Scala', 'scala'),
-        # Functional/Specialized
+        '.cs': ('C#', 'csharp'),
+        '.fs': ('F#', 'fsharp'),
+        '.vb': ('Visual Basic', 'vb'),
+        '.dart': ('Dart', 'dart'),
+        '.elm': ('Elm', 'elm'),
+        '.cr': ('Crystal', 'crystal'),
+        '.coffee': ('CoffeeScript', 'coffeescript'),
+        '.groovy': ('Groovy', 'groovy'),
+        '.gradle': ('Gradle', 'gradle'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # FUNCTIONAL/ACADEMIC LANGUAGES
+        # ═══════════════════════════════════════════════════════════════
         '.hs': ('Haskell', 'haskell'),
+        '.lhs': ('Literate Haskell', 'haskell'),
         '.ml': ('OCaml', 'ocaml'),
+        '.mli': ('OCaml Interface', 'ocaml'),
+        '.sml': ('Standard ML', 'sml'),
         '.clj': ('Clojure', 'clojure'),
-        '.lisp': ('Lisp', 'lisp'),
+        '.cljs': ('ClojureScript', 'clojure'),
+        '.cljc': ('Clojure Common', 'clojure'),
+        '.lisp': ('Common Lisp', 'lisp'),
+        '.cl': ('Common Lisp', 'lisp'),
+        '.el': ('Emacs Lisp', 'elisp'),
+        '.scm': ('Scheme', 'scheme'),
+        '.ss': ('Scheme', 'scheme'),
+        '.rkt': ('Racket', 'racket'),
         '.ex': ('Elixir', 'elixir'),
-        '.exs': ('Elixir', 'elixir'),
+        '.exs': ('Elixir Script', 'elixir'),
         '.erl': ('Erlang', 'erlang'),
+        '.hrl': ('Erlang Header', 'erlang'),
         '.jl': ('Julia', 'julia'),
+        '.agda': ('Agda', 'agda'),
+        '.idr': ('Idris', 'idris'),
+        '.purs': ('PureScript', 'purescript'),
+        '.lean': ('Lean', 'lean'),
+        '.v': ('Coq/V', 'coq'),  # Also Verilog
+        '.coq': ('Coq', 'coq'),
+        '.thy': ('Isabelle', 'isabelle'),
+        '.pvs': ('PVS', 'pvs'),
+        '.pro': ('Prolog', 'prolog'),
+        '.pl': ('Perl/Prolog', 'perl'),
+        '.pm': ('Perl Module', 'perl'),
+        '.p6': ('Raku/Perl6', 'raku'),
+        '.raku': ('Raku', 'raku'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # SCIENTIFIC/DATA LANGUAGES
+        # ═══════════════════════════════════════════════════════════════
         '.r': ('R', 'r'),
         '.R': ('R', 'r'),
+        '.m': ('MATLAB/Objective-C', 'matlab'),
+        '.mat': ('MATLAB Data', 'matlab'),
+        '.f': ('Fortran', 'fortran'),
+        '.f90': ('Fortran 90', 'fortran'),
+        '.f95': ('Fortran 95', 'fortran'),
+        '.f03': ('Fortran 2003', 'fortran'),
+        '.f08': ('Fortran 2008', 'fortran'),
+        '.for': ('Fortran', 'fortran'),
         '.lua': ('Lua', 'lua'),
-        '.pl': ('Perl', 'perl'),
-        '.pm': ('Perl', 'perl'),
-        # Blockchain/Modern
+        '.apl': ('APL', 'apl'),
+        '.dyalog': ('Dyalog APL', 'apl'),
+        '.k': ('K', 'k'),
+        '.q': ('Q (Kdb+)', 'q'),
+        '.sas': ('SAS', 'sas'),
+        '.do': ('Stata', 'stata'),
+        '.ado': ('Stata', 'stata'),
+        '.nb': ('Mathematica Notebook', 'mathematica'),
+        '.wl': ('Wolfram Language', 'wolfram'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # BLOCKCHAIN & SMART CONTRACTS
+        # ═══════════════════════════════════════════════════════════════
         '.sol': ('Solidity', 'solidity'),
         '.vy': ('Vyper', 'vyper'),
+        '.yul': ('Yul', 'yul'),
+        '.move': ('Move', 'move'),
+        '.cairo': ('Cairo', 'cairo'),
+        '.ink': ('Ink!', 'ink'),
+        '.teal': ('TEAL', 'teal'),
+        '.ligo': ('LIGO', 'ligo'),
+        '.mligo': ('CameLIGO', 'ligo'),
+        '.ride': ('Ride', 'ride'),
+        '.scilla': ('Scilla', 'scilla'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # SYSTEMS & LOW-LEVEL LANGUAGES
+        # ═══════════════════════════════════════════════════════════════
         '.nim': ('Nim', 'nim'),
         '.zig': ('Zig', 'zig'),
-        '.v': ('V', 'vlang'),
-        # Scripting/Config
+        '.odin': ('Odin', 'odin'),
+        '.jai': ('Jai', 'jai'),
+        '.d': ('D', 'd'),
+        '.ada': ('Ada', 'ada'),
+        '.adb': ('Ada Body', 'ada'),
+        '.ads': ('Ada Spec', 'ada'),
+        '.pas': ('Pascal', 'pascal'),
+        '.pp': ('Pascal', 'pascal'),
+        '.dpr': ('Delphi', 'delphi'),
+        '.mod': ('Modula-2', 'modula2'),
+        '.def': ('Modula-2 Definition', 'modula2'),
+        '.ob2': ('Oberon-2', 'oberon'),
+        '.asm': ('Assembly', 'asm'),
+        '.s': ('Assembly', 'asm'),
+        '.S': ('Assembly', 'asm'),
+        '.nasm': ('NASM', 'nasm'),
+        '.wasm': ('WebAssembly', 'wasm'),
+        '.wat': ('WebAssembly Text', 'wasm'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # CLASSICAL/HISTORICAL LANGUAGES (1950s-1980s)
+        # ═══════════════════════════════════════════════════════════════
+        '.cob': ('COBOL', 'cobol'),
+        '.cbl': ('COBOL', 'cobol'),
+        '.cpy': ('COBOL Copybook', 'cobol'),
+        '.a68': ('ALGOL 68', 'algol68'),
+        '.alg': ('ALGOL', 'algol'),
+        '.sim': ('Simula', 'simula'),
+        '.sno': ('SNOBOL', 'snobol'),
+        '.spitbol': ('SPITBOL', 'snobol'),
+        '.icn': ('Icon', 'icon'),
+        '.apl': ('APL', 'apl'),
+        '.aplf': ('APL Function', 'apl'),
+        '.dcl': ('DCL', 'dcl'),
+        '.rexx': ('REXX', 'rexx'),
+        '.rex': ('REXX', 'rexx'),
+        '.pli': ('PL/I', 'pli'),
+        '.rpg': ('RPG', 'rpg'),
+        '.rpgle': ('RPG LE', 'rpg'),
+        '.jcl': ('JCL', 'jcl'),
+        '.clist': ('CLIST', 'clist'),
+        '.mumps': ('MUMPS', 'mumps'),
+        '.m': ('MUMPS/M', 'mumps'),  # Also MATLAB
+        '.cls': ('CACHE ObjectScript', 'objectscript'),
+        '.mac': ('MACRO-11', 'macro11'),
+        '.bliss': ('BLISS', 'bliss'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # DEAD/EXTINCT LANGUAGES (Historical)
+        # ═══════════════════════════════════════════════════════════════
+        # These are primarily for documentation/research purposes
+        '.plk': ('Plankalkül', 'plankalul'),  # 1945 - First high-level language
+        '.flowmatic': ('FLOW-MATIC', 'flowmatic'),  # 1955 - Grace Hopper
+        '.shortcode': ('Short Code', 'shortcode'),  # 1949
+        '.speedcode': ('Speedcoding', 'speedcoding'),  # 1953 - John Backus
+        '.autocode': ('Autocode', 'autocode'),  # 1952 - First compiled language
+        '.b': ('B', 'blang'),  # 1969 - Ken Thompson, predecessor to C
+        '.bcpl': ('BCPL', 'bcpl'),  # 1967 - Martin Richards
+        '.cpl': ('CPL', 'cpl'),  # 1963 - Combined Programming Language
+        '.jovial': ('JOVIAL', 'jovial'),  # 1959 - Jules Schwartz
+        '.comit': ('COMIT', 'comit'),  # 1957 - First string processing
+        '.ipl': ('IPL', 'ipl'),  # 1956 - Information Processing Language
+        '.math': ('MATH-MATIC', 'mathmatic'),  # 1957
+        '.fact': ('FACT', 'fact'),  # 1959
+        '.pilot': ('PILOT', 'pilot'),  # 1962
+        '.focal': ('FOCAL', 'focal'),  # 1968
+        '.tutor': ('TUTOR', 'tutor'),  # 1969 - PLATO
+        '.logo': ('Logo', 'logo'),  # 1967 - Seymour Papert
+        '.pop': ('POP-2', 'pop2'),  # 1968
+        '.cowsel': ('COWSEL', 'cowsel'),  # 1964
+        '.sail': ('SAIL', 'sail'),  # 1970
+        '.setl': ('SETL', 'setl'),  # 1969
+        '.clu': ('CLU', 'clu'),  # 1974 - Barbara Liskov
+        '.mesa': ('Mesa', 'mesa'),  # 1976 - Xerox PARC
+        '.modula': ('Modula', 'modula'),  # 1975 - Niklaus Wirth
+        '.abc': ('ABC', 'abc'),  # 1987 - Python predecessor
+        '.smalltalk': ('Smalltalk', 'smalltalk'),  # 1972 - Alan Kay
+        
+        # ═══════════════════════════════════════════════════════════════
+        # ESOTERIC/RECREATIONAL LANGUAGES
+        # ═══════════════════════════════════════════════════════════════
+        '.bf': ('Brainfuck', 'brainfuck'),
+        '.b': ('Brainfuck', 'brainfuck'),  # Also B language
+        '.i': ('INTERCAL', 'intercal'),
+        '.bef': ('Befunge', 'befunge'),
+        '.ws': ('Whitespace', 'whitespace'),
+        '.ook': ('Ook!', 'ook'),
+        '.mal': ('Malbolge', 'malbolge'),
+        '.chef': ('Chef', 'chef'),
+        '.shakespeare': ('Shakespeare', 'shakespeare'),
+        '.piet': ('Piet', 'piet'),
+        '.lolcode': ('LOLCODE', 'lolcode'),
+        '.rockstar': ('Rockstar', 'rockstar'),
+        '.grass': ('Grass', 'grass'),
+        '.unlambda': ('Unlambda', 'unlambda'),
+        '.false': ('FALSE', 'false'),
+        '.thue': ('Thue', 'thue'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # SCRIPTING & SHELL
+        # ═══════════════════════════════════════════════════════════════
         '.sh': ('Shell', 'bash'),
         '.bash': ('Bash', 'bash'),
         '.zsh': ('Zsh', 'zsh'),
+        '.fish': ('Fish', 'fish'),
+        '.ksh': ('Korn Shell', 'ksh'),
+        '.csh': ('C Shell', 'csh'),
+        '.tcsh': ('TENEX C Shell', 'tcsh'),
         '.ps1': ('PowerShell', 'powershell'),
-        # Markup/Data
+        '.psm1': ('PowerShell Module', 'powershell'),
+        '.bat': ('Batch', 'batch'),
+        '.cmd': ('Windows CMD', 'batch'),
+        '.awk': ('AWK', 'awk'),
+        '.sed': ('Sed Script', 'sed'),
+        '.tcl': ('Tcl', 'tcl'),
+        '.tk': ('Tk', 'tcl'),
+        '.expect': ('Expect', 'expect'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # WEB & MARKUP
+        # ═══════════════════════════════════════════════════════════════
         '.html': ('HTML', 'html'),
+        '.htm': ('HTML', 'html'),
+        '.xhtml': ('XHTML', 'html'),
         '.css': ('CSS', 'css'),
+        '.scss': ('SCSS', 'scss'),
+        '.sass': ('Sass', 'sass'),
+        '.less': ('Less', 'less'),
+        '.styl': ('Stylus', 'stylus'),
+        '.xml': ('XML', 'xml'),
+        '.xsl': ('XSLT', 'xslt'),
+        '.xsd': ('XML Schema', 'xsd'),
+        '.dtd': ('DTD', 'dtd'),
+        '.svg': ('SVG', 'svg'),
+        '.vue': ('Vue', 'vue'),
+        '.jsx': ('JSX', 'jsx'),
+        '.tsx': ('TSX', 'tsx'),
+        '.svelte': ('Svelte', 'svelte'),
+        '.astro': ('Astro', 'astro'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # DATA & CONFIG FORMATS
+        # ═══════════════════════════════════════════════════════════════
+        '.json': ('JSON', 'json'),
+        '.json5': ('JSON5', 'json5'),
+        '.jsonc': ('JSON with Comments', 'jsonc'),
         '.yaml': ('YAML', 'yaml'),
         '.yml': ('YAML', 'yaml'),
-        '.json': ('JSON', 'json'),
-        '.xml': ('XML', 'xml'),
-        '.tex': ('LaTeX', 'latex'),
+        '.toml': ('TOML', 'toml'),
+        '.ini': ('INI', 'ini'),
+        '.cfg': ('Config', 'config'),
+        '.conf': ('Config', 'config'),
+        '.properties': ('Properties', 'properties'),
+        '.env': ('Env', 'env'),
+        '.csv': ('CSV', 'csv'),
+        '.tsv': ('TSV', 'tsv'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # DOCUMENTATION & TEXT
+        # ═══════════════════════════════════════════════════════════════
         '.md': ('Markdown', 'markdown'),
+        '.markdown': ('Markdown', 'markdown'),
+        '.rst': ('reStructuredText', 'rst'),
+        '.adoc': ('AsciiDoc', 'asciidoc'),
+        '.tex': ('LaTeX', 'latex'),
+        '.ltx': ('LaTeX', 'latex'),
+        '.sty': ('LaTeX Style', 'latex'),
+        '.bib': ('BibTeX', 'bibtex'),
+        '.org': ('Org Mode', 'org'),
+        '.pod': ('POD', 'pod'),
+        '.man': ('Man Page', 'man'),
+        '.troff': ('Troff', 'troff'),
+        '.groff': ('Groff', 'groff'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # DATABASE & QUERY
+        # ═══════════════════════════════════════════════════════════════
         '.sql': ('SQL', 'sql'),
+        '.psql': ('PostgreSQL', 'postgresql'),
+        '.plsql': ('PL/SQL', 'plsql'),
+        '.tsql': ('T-SQL', 'tsql'),
+        '.hql': ('HQL', 'hql'),
+        '.cql': ('CQL', 'cql'),
+        '.sparql': ('SPARQL', 'sparql'),
+        '.cypher': ('Cypher', 'cypher'),
+        '.gql': ('GraphQL', 'graphql'),
+        '.graphql': ('GraphQL', 'graphql'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # HARDWARE DESCRIPTION LANGUAGES
+        # ═══════════════════════════════════════════════════════════════
+        '.vhd': ('VHDL', 'vhdl'),
+        '.vhdl': ('VHDL', 'vhdl'),
+        '.sv': ('SystemVerilog', 'systemverilog'),
+        '.svh': ('SystemVerilog Header', 'systemverilog'),
+        '.verilog': ('Verilog', 'verilog'),
+        '.bluespec': ('Bluespec', 'bluespec'),
+        '.bsv': ('Bluespec', 'bluespec'),
+        '.chisel': ('Chisel', 'chisel'),
+        '.spinalhdl': ('SpinalHDL', 'spinalhdl'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # GAME & GRAPHICS
+        # ═══════════════════════════════════════════════════════════════
+        '.glsl': ('GLSL', 'glsl'),
+        '.vert': ('GLSL Vertex', 'glsl'),
+        '.frag': ('GLSL Fragment', 'glsl'),
+        '.hlsl': ('HLSL', 'hlsl'),
+        '.cg': ('Cg', 'cg'),
+        '.shader': ('Unity Shader', 'shader'),
+        '.gdscript': ('GDScript', 'gdscript'),
+        '.gd': ('GDScript', 'gdscript'),
+        '.dm': ('DM', 'dm'),
+        '.dme': ('DM Environment', 'dm'),
+        '.nut': ('Squirrel', 'squirrel'),
+        '.wren': ('Wren', 'wren'),
+        '.hx': ('Haxe', 'haxe'),
+        
+        # ═══════════════════════════════════════════════════════════════
+        # BUILD & INFRASTRUCTURE
+        # ═══════════════════════════════════════════════════════════════
+        '.make': ('Make', 'make'),
+        '.mk': ('Make', 'make'),
+        '.cmake': ('CMake', 'cmake'),
+        '.rake': ('Rake', 'rake'),
+        '.tf': ('Terraform', 'terraform'),
+        '.hcl': ('HCL', 'hcl'),
+        '.nix': ('Nix', 'nix'),
+        '.dhall': ('Dhall', 'dhall'),
+        '.jsonnet': ('Jsonnet', 'jsonnet'),
+        '.libsonnet': ('Jsonnet Lib', 'jsonnet'),
+        '.starlark': ('Starlark', 'starlark'),
+        '.bzl': ('Bazel', 'bazel'),
+        '.BUILD': ('Bazel BUILD', 'bazel'),
+        '.dockerfile': ('Dockerfile', 'dockerfile'),
+        '.containerfile': ('Containerfile', 'dockerfile'),
+    }
+    
+    # Historical language knowledge base for training
+    HISTORICAL_LANGUAGES = {
+        'Plankalkül': {
+            'year': 1945,
+            'creator': 'Konrad Zuse',
+            'description': 'First high-level programming language, designed for engineering calculations',
+            'status': 'extinct',
+            'influenced': ['ALGOL'],
+            'paradigm': 'procedural'
+        },
+        'Short Code': {
+            'year': 1949,
+            'creator': 'John Mauchly',
+            'description': 'One of the first high-level languages for electronic computers',
+            'status': 'extinct',
+            'influenced': ['A-0'],
+            'paradigm': 'procedural'
+        },
+        'Autocode': {
+            'year': 1952,
+            'creator': 'Alick Glennie',
+            'description': 'First compiled programming language',
+            'status': 'extinct',
+            'influenced': ['FORTRAN'],
+            'paradigm': 'procedural'
+        },
+        'FORTRAN': {
+            'year': 1957,
+            'creator': 'John Backus, IBM',
+            'description': 'Formula Translation - first widely used high-level language',
+            'status': 'active',
+            'influenced': ['ALGOL', 'BASIC', 'C'],
+            'paradigm': 'procedural, imperative'
+        },
+        'LISP': {
+            'year': 1958,
+            'creator': 'John McCarthy',
+            'description': 'LISt Processing - second-oldest high-level language still in use',
+            'status': 'active',
+            'influenced': ['Scheme', 'Common Lisp', 'Clojure', 'Emacs Lisp'],
+            'paradigm': 'functional, multi-paradigm'
+        },
+        'COBOL': {
+            'year': 1959,
+            'creator': 'CODASYL Committee, Grace Hopper',
+            'description': 'COmmon Business-Oriented Language - still runs banking systems',
+            'status': 'active (legacy)',
+            'influenced': ['PL/I'],
+            'paradigm': 'procedural, imperative'
+        },
+        'ALGOL': {
+            'year': 1958,
+            'creator': 'ACM/GAMM Committee',
+            'description': 'ALGOrithmic Language - hugely influential on language design',
+            'status': 'extinct',
+            'influenced': ['Pascal', 'C', 'Ada', 'Simula', 'most modern languages'],
+            'paradigm': 'procedural, structured'
+        },
+        'BASIC': {
+            'year': 1964,
+            'creator': 'John Kemeny, Thomas Kurtz',
+            'description': 'Beginners All-purpose Symbolic Instruction Code',
+            'status': 'active (Visual Basic)',
+            'influenced': ['Visual Basic', 'QBASIC'],
+            'paradigm': 'procedural'
+        },
+        'Simula': {
+            'year': 1967,
+            'creator': 'Ole-Johan Dahl, Kristen Nygaard',
+            'description': 'First object-oriented programming language',
+            'status': 'extinct',
+            'influenced': ['Smalltalk', 'C++', 'Java', 'all OOP languages'],
+            'paradigm': 'object-oriented'
+        },
+        'BCPL': {
+            'year': 1967,
+            'creator': 'Martin Richards',
+            'description': 'Basic Combined Programming Language - ancestor of C',
+            'status': 'extinct',
+            'influenced': ['B', 'C'],
+            'paradigm': 'procedural'
+        },
+        'B': {
+            'year': 1969,
+            'creator': 'Ken Thompson, Dennis Ritchie',
+            'description': 'Stripped-down BCPL, direct predecessor to C',
+            'status': 'extinct',
+            'influenced': ['C'],
+            'paradigm': 'procedural'
+        },
+        'Pascal': {
+            'year': 1970,
+            'creator': 'Niklaus Wirth',
+            'description': 'Designed for teaching structured programming',
+            'status': 'mostly extinct (Delphi survives)',
+            'influenced': ['Modula-2', 'Ada', 'Oberon'],
+            'paradigm': 'procedural, structured'
+        },
+        'Smalltalk': {
+            'year': 1972,
+            'creator': 'Alan Kay, Xerox PARC',
+            'description': 'Pure object-oriented language with GUI concepts',
+            'status': 'active (niche)',
+            'influenced': ['Ruby', 'Python', 'Java', 'Objective-C'],
+            'paradigm': 'object-oriented'
+        },
+        'C': {
+            'year': 1972,
+            'creator': 'Dennis Ritchie',
+            'description': 'Systems programming language, created Unix',
+            'status': 'active',
+            'influenced': ['C++', 'Java', 'C#', 'Go', 'Rust', 'most modern languages'],
+            'paradigm': 'procedural, structured'
+        },
+        'Prolog': {
+            'year': 1972,
+            'creator': 'Alain Colmerauer',
+            'description': 'Logic programming language',
+            'status': 'active (academic)',
+            'influenced': ['Datalog', 'constraint programming'],
+            'paradigm': 'logic, declarative'
+        },
+        'ML': {
+            'year': 1973,
+            'creator': 'Robin Milner',
+            'description': 'MetaLanguage - pioneer of type inference',
+            'status': 'active (OCaml, SML)',
+            'influenced': ['OCaml', 'Haskell', 'F#', 'Rust'],
+            'paradigm': 'functional'
+        },
+        'Scheme': {
+            'year': 1975,
+            'creator': 'Gerald Jay Sussman, Guy Steele',
+            'description': 'Minimalist Lisp dialect with lexical scoping',
+            'status': 'active',
+            'influenced': ['JavaScript (partially)', 'Racket'],
+            'paradigm': 'functional'
+        },
+        'Ada': {
+            'year': 1980,
+            'creator': 'Jean Ichbiah, US DoD',
+            'description': 'Safety-critical systems language',
+            'status': 'active',
+            'influenced': ['SPARK', 'Java'],
+            'paradigm': 'multi-paradigm'
+        },
+        'INTERCAL': {
+            'year': 1972,
+            'creator': 'Don Woods, James M. Lyon',
+            'description': 'First esoteric programming language - parody',
+            'status': 'active (esoteric)',
+            'influenced': ['All esoteric languages'],
+            'paradigm': 'esoteric'
+        },
     }
     
     COMMENT_PATTERNS = {
@@ -570,6 +1033,575 @@ class MultiLanguageExtractor:
         
         return cross_examples
 
+    def generate_historical_language_examples(self) -> List[Dict]:
+        """Generate training examples from historical/dead programming languages.
+        
+        Aggregates knowledge from research on language evolution spanning 1945-present.
+        """
+        print("\n[HISTORICAL LANGUAGE KNOWLEDGE EXTRACTION]")
+        
+        examples = []
+        
+        # Core historical language documentation
+        for lang_name, info in self.HISTORICAL_LANGUAGES.items():
+            # Basic language information
+            examples.append({
+                'text': f"{lang_name} ({info['year']}): Created by {info['creator']}. {info['description']}",
+                'format': 'historical_language',
+                'language': lang_name,
+                '_source': 'historical_db'
+            })
+            
+            # Status and influence
+            if info['influenced']:
+                influenced = ', '.join(info['influenced'])
+                examples.append({
+                    'text': f"{lang_name} influenced: {influenced}. Current status: {info['status']}.",
+                    'format': 'language_lineage',
+                    'language': lang_name,
+                    '_source': 'historical_db'
+                })
+            
+            # Paradigm classification
+            examples.append({
+                'text': f"{lang_name} paradigm: {info['paradigm']}",
+                'format': 'paradigm_classification',
+                'language': lang_name,
+                '_source': 'historical_db'
+            })
+        
+        # Extended historical language database (from Wikipedia research)
+        extended_languages = {
+            # ═══════════════════════════════════════════════════════════════
+            # PRE-COMPUTER ERA (1800s)
+            # ═══════════════════════════════════════════════════════════════
+            'Jacquard Loom': {
+                'year': 1801,
+                'creator': 'Joseph Marie Jacquard',
+                'description': 'Punch card controlled weaving - first programmable machine',
+                'significance': 'Pioneered the concept of programmable instructions'
+            },
+            'Analytical Engine': {
+                'year': 1837,
+                'creator': 'Charles Babbage',
+                'description': 'Mechanical general-purpose computer design',
+                'significance': 'First design for a Turing-complete machine'
+            },
+            'Note G': {
+                'year': 1843,
+                'creator': 'Ada Lovelace',
+                'description': 'First published computer algorithm (Bernoulli numbers)',
+                'significance': 'Ada Lovelace recognized as first programmer'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # EARLY COMPUTING ERA (1940s)
+            # ═══════════════════════════════════════════════════════════════
+            'ENIAC Coding': {
+                'year': 1943,
+                'creator': 'ENIAC Team',
+                'description': 'Physical rewiring and switch settings for first electronic computer',
+                'significance': 'Programming via hardware configuration'
+            },
+            'Plankalkül': {
+                'year': 1945,
+                'creator': 'Konrad Zuse',
+                'description': 'First theoretical high-level programming language',
+                'significance': 'Introduced data types, assignment, and structured programming concepts'
+            },
+            'ENIAC Short Code': {
+                'year': 1947,
+                'creator': 'John Mauchly',
+                'description': 'One of the first higher-level languages for electronic computers',
+                'significance': 'Precursor to Short Code'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # FIRST GENERATION (1950s)
+            # ═══════════════════════════════════════════════════════════════
+            'Short Code': {
+                'year': 1950,
+                'creator': 'John Mauchly, William Schmitt',
+                'description': 'First high-level language actually implemented',
+                'significance': 'Interpreted mathematical expressions'
+            },
+            'A-0 System': {
+                'year': 1952,
+                'creator': 'Grace Hopper',
+                'description': 'First compiler - translated mathematical notation to machine code',
+                'significance': 'Grace Hopper pioneered automatic programming'
+            },
+            'Speedcoding': {
+                'year': 1953,
+                'creator': 'John Backus, IBM',
+                'description': 'Interpreter for IBM 701 with floating-point arithmetic',
+                'significance': 'Precursor to FORTRAN'
+            },
+            'IPL': {
+                'year': 1956,
+                'creator': 'Allen Newell, Herbert A. Simon, Cliff Shaw',
+                'description': 'Information Processing Language - first AI language',
+                'significance': 'Introduced list processing, influenced LISP'
+            },
+            'FLOW-MATIC': {
+                'year': 1957,
+                'creator': 'Grace Hopper',
+                'description': 'First English-like business programming language',
+                'significance': 'Direct ancestor of COBOL'
+            },
+            'COMIT': {
+                'year': 1957,
+                'creator': 'Victor Yngve, MIT',
+                'description': 'First string processing and pattern matching language',
+                'significance': 'Influenced SNOBOL'
+            },
+            'MATH-MATIC': {
+                'year': 1957,
+                'creator': 'Charles Katz',
+                'description': 'Scientific programming language for UNIVAC',
+                'significance': 'Contemporary of FORTRAN'
+            },
+            'GEORGE': {
+                'year': 1957,
+                'creator': 'Charles Leonard Hamblin',
+                'description': 'Stack-based language using Reverse Polish Notation',
+                'significance': 'Pioneered RPN in programming'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # SECOND GENERATION (1960s)
+            # ═══════════════════════════════════════════════════════════════
+            'ALGOL 60': {
+                'year': 1960,
+                'creator': 'Backus, Naur, Perlis, et al.',
+                'description': 'Algorithmic Language - defined BNF notation',
+                'significance': 'Most influential language - ancestor of C, Pascal, Java'
+            },
+            'JOVIAL': {
+                'year': 1960,
+                'creator': 'Jules Schwartz, SDC',
+                'description': "Jules' Own Version of the International Algorithmic Language",
+                'significance': 'Used in military embedded systems for decades'
+            },
+            'APL': {
+                'year': 1962,
+                'creator': 'Kenneth Iverson',
+                'description': 'A Programming Language - concise mathematical notation',
+                'significance': 'Pioneered array programming, influenced J, K, NumPy'
+            },
+            'SNOBOL': {
+                'year': 1962,
+                'creator': 'David Farber, Ralph Griswold, Ivan Polonsky',
+                'description': 'StriNg Oriented and symBOlic Language',
+                'significance': 'Pioneered pattern matching'
+            },
+            'CPL': {
+                'year': 1963,
+                'creator': 'Christopher Strachey, Cambridge/London',
+                'description': 'Combined Programming Language',
+                'significance': 'Ancestor of BCPL, B, and C'
+            },
+            'BASIC': {
+                'year': 1964,
+                'creator': 'John Kemeny, Thomas Kurtz, Dartmouth',
+                'description': "Beginner's All-purpose Symbolic Instruction Code",
+                'significance': 'Democratized programming for non-specialists'
+            },
+            'PL/I': {
+                'year': 1964,
+                'creator': 'IBM',
+                'description': 'Programming Language One - combined FORTRAN, COBOL, ALGOL',
+                'significance': 'Attempted universal language'
+            },
+            'BCPL': {
+                'year': 1967,
+                'creator': 'Martin Richards',
+                'description': 'Basic Combined Programming Language',
+                'significance': 'Direct ancestor of B and C'
+            },
+            'Logo': {
+                'year': 1967,
+                'creator': 'Wally Feurzeig, Seymour Papert, Cynthia Solomon',
+                'description': 'Educational programming with turtle graphics',
+                'significance': 'Pioneered constructionist learning'
+            },
+            'MUMPS': {
+                'year': 1967,
+                'creator': 'Neil Pappalardo, MGH',
+                'description': 'Massachusetts General Hospital Utility Multi-Programming System',
+                'significance': 'Still powers hospital systems worldwide (as M)'
+            },
+            'PILOT': {
+                'year': 1968,
+                'creator': 'John Amsden Starkweather',
+                'description': 'Programmed Inquiry, Learning, or Teaching',
+                'significance': 'Early computer-aided instruction language'
+            },
+            'FORTH': {
+                'year': 1968,
+                'creator': 'Charles H. Moore',
+                'description': 'Stack-based, concatenative language',
+                'significance': 'Highly influential in embedded systems'
+            },
+            'B': {
+                'year': 1969,
+                'creator': 'Ken Thompson, Dennis Ritchie',
+                'description': 'Typeless language derived from BCPL',
+                'significance': 'Direct predecessor of C'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # THIRD GENERATION (1970s)
+            # ═══════════════════════════════════════════════════════════════
+            'Pascal': {
+                'year': 1970,
+                'creator': 'Niklaus Wirth',
+                'description': 'Designed for teaching structured programming',
+                'significance': 'Hugely influential in education, led to Delphi'
+            },
+            'Smalltalk': {
+                'year': 1972,
+                'creator': 'Alan Kay, Xerox PARC',
+                'description': 'First pure object-oriented language with GUI',
+                'significance': 'Influenced Ruby, Python, Java, Objective-C'
+            },
+            'C': {
+                'year': 1972,
+                'creator': 'Dennis Ritchie, Bell Labs',
+                'description': 'Systems programming language that built Unix',
+                'significance': 'One of the most influential languages ever'
+            },
+            'Prolog': {
+                'year': 1972,
+                'creator': 'Alain Colmerauer, Robert Kowalski',
+                'description': 'Logic programming language',
+                'significance': 'Foundation of logic programming, AI applications'
+            },
+            'SQL': {
+                'year': 1974,
+                'creator': 'Donald Chamberlin, Raymond Boyce, IBM',
+                'description': 'Structured Query Language for databases',
+                'significance': 'Universal database query language'
+            },
+            'Scheme': {
+                'year': 1975,
+                'creator': 'Gerald Jay Sussman, Guy L. Steele Jr.',
+                'description': 'Minimalist LISP dialect with lexical scoping',
+                'significance': 'Influenced JavaScript, pioneered continuations'
+            },
+            'Mesa': {
+                'year': 1976,
+                'creator': 'Xerox PARC',
+                'description': 'Systems language with strong typing',
+                'significance': 'Influenced Modula-2, Cedar, Java'
+            },
+            'CLU': {
+                'year': 1974,
+                'creator': 'Barbara Liskov, MIT',
+                'description': 'First language with iterators and exception handling',
+                'significance': 'Pioneered abstract data types'
+            },
+            'ML': {
+                'year': 1973,
+                'creator': 'Robin Milner, Edinburgh',
+                'description': 'Meta Language with type inference',
+                'significance': 'Pioneered Hindley-Milner type inference'
+            },
+            'Modula-2': {
+                'year': 1978,
+                'creator': 'Niklaus Wirth',
+                'description': 'Successor to Pascal with modules',
+                'significance': 'Influenced Oberon, Ada, Python'
+            },
+            'AWK': {
+                'year': 1977,
+                'creator': 'Alfred Aho, Peter Weinberger, Brian Kernighan',
+                'description': 'Pattern scanning and processing language',
+                'significance': 'Pioneered data-driven programming'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # FOURTH GENERATION (1980s)
+            # ═══════════════════════════════════════════════════════════════
+            'Ada': {
+                'year': 1980,
+                'creator': 'Jean Ichbiah, CII Honeywell Bull',
+                'description': 'US DoD language for safety-critical systems',
+                'significance': 'Named after Ada Lovelace'
+            },
+            'Common Lisp': {
+                'year': 1984,
+                'creator': 'ANSI Committee',
+                'description': 'Standardized dialect of Lisp',
+                'significance': 'Most comprehensive Lisp standard'
+            },
+            'C++': {
+                'year': 1983,
+                'creator': 'Bjarne Stroustrup',
+                'description': 'C with classes - multi-paradigm language',
+                'significance': 'Dominant systems language for decades'
+            },
+            'Objective-C': {
+                'year': 1984,
+                'creator': 'Brad Cox, Tom Love',
+                'description': 'Smalltalk-style messaging added to C',
+                'significance': 'Foundation of macOS and iOS development'
+            },
+            'Miranda': {
+                'year': 1985,
+                'creator': 'David Turner',
+                'description': 'Pure lazy functional language',
+                'significance': 'Major influence on Haskell'
+            },
+            'Eiffel': {
+                'year': 1986,
+                'creator': 'Bertrand Meyer',
+                'description': 'Object-oriented with Design by Contract',
+                'significance': 'Pioneered contract programming'
+            },
+            'Perl': {
+                'year': 1987,
+                'creator': 'Larry Wall',
+                'description': 'Practical Extraction and Reporting Language',
+                'significance': 'Swiss army chainsaw of scripting'
+            },
+            'Self': {
+                'year': 1987,
+                'creator': 'David Ungar, Randall Smith',
+                'description': 'Prototype-based object-oriented language',
+                'significance': 'Influenced JavaScript prototype model'
+            },
+            'Erlang': {
+                'year': 1986,
+                'creator': 'Joe Armstrong, Ericsson',
+                'description': 'Concurrent, fault-tolerant telecommunications language',
+                'significance': 'Powers WhatsApp, Discord, telecom systems'
+            },
+            'ABC': {
+                'year': 1987,
+                'creator': 'Leo Geurts, Lambert Meertens, Steven Pemberton',
+                'description': 'Teaching language with interactive interpreter',
+                'significance': 'Direct predecessor to Python'
+            },
+            
+            # ═══════════════════════════════════════════════════════════════
+            # ESOTERIC/RECREATIONAL LANGUAGES
+            # ═══════════════════════════════════════════════════════════════
+            'INTERCAL': {
+                'year': 1972,
+                'creator': 'Don Woods, James M. Lyon',
+                'description': 'Compiler Language With No Pronounceable Acronym',
+                'significance': 'First esoteric language, satirized programming'
+            },
+            'FALSE': {
+                'year': 1993,
+                'creator': 'Wouter van Oortmerssen',
+                'description': 'Minimalist stack-based language',
+                'significance': 'Inspired Brainfuck'
+            },
+            'Brainfuck': {
+                'year': 1993,
+                'creator': 'Urban Müller',
+                'description': 'Minimalist Turing-complete language with 8 commands',
+                'significance': 'Most famous esoteric language'
+            },
+            'Befunge': {
+                'year': 1993,
+                'creator': 'Chris Pressey',
+                'description': '2D stack-based language with playfield',
+                'significance': 'Pioneered 2D programming languages'
+            },
+            'Malbolge': {
+                'year': 1998,
+                'creator': 'Ben Olmstead',
+                'description': 'Designed to be nearly impossible to program',
+                'significance': 'First "Hello World" took years to write'
+            },
+            'Shakespeare': {
+                'year': 2001,
+                'creator': 'Karl Hasselström, Jon Åslund',
+                'description': 'Programs look like Shakespearean plays',
+                'significance': 'Natural language esoteric programming'
+            },
+            'Chef': {
+                'year': 2002,
+                'creator': 'David Morgan-Mar',
+                'description': 'Programs look like cooking recipes',
+                'significance': 'Domain-specific esoteric language'
+            },
+            'Piet': {
+                'year': 2002,
+                'creator': 'David Morgan-Mar',
+                'description': 'Programs are abstract paintings',
+                'significance': 'Visual esoteric programming'
+            },
+            'Whitespace': {
+                'year': 2003,
+                'creator': 'Edwin Brady, Chris Morris',
+                'description': 'Uses only whitespace characters',
+                'significance': 'Steganographic programming'
+            },
+            'Ook!': {
+                'year': 2009,
+                'creator': 'David Morgan-Mar',
+                'description': 'Brainfuck variant using orangutan sounds',
+                'significance': 'Pratchett-inspired esoteric language'
+            },
+            'LOLCODE': {
+                'year': 2007,
+                'creator': 'Adam Lindsay',
+                'description': 'Uses lolcat speak as syntax',
+                'significance': 'Internet culture meets programming'
+            },
+            'Rockstar': {
+                'year': 2018,
+                'creator': 'Dylan Beattie',
+                'description': 'Programs look like rock ballad lyrics',
+                'significance': 'Modern esoteric language'
+            },
+        }
+        
+        # Generate examples from extended database
+        for lang_name, info in extended_languages.items():
+            examples.append({
+                'text': f"{lang_name} ({info['year']}): Created by {info['creator']}. {info['description']} Significance: {info['significance']}",
+                'format': 'historical_language',
+                'language': lang_name,
+                '_source': 'historical_extended'
+            })
+        
+        # Language evolution timeline examples
+        timeline_eras = [
+            ('Pre-Computer (1800s)', 'Jacquard Loom (1801), Analytical Engine (1837), Ada Lovelace Note G (1843)'),
+            ('Dawn of Computing (1940s)', 'ENIAC Coding (1943), Plankalkül (1945), ENIAC Short Code (1947)'),
+            ('First Generation (1950s)', 'Short Code (1950), A-0 (1952), FORTRAN (1957), LISP (1958), COBOL (1959)'),
+            ('Second Generation (1960s)', 'ALGOL 60, APL (1962), SNOBOL (1962), BASIC (1964), BCPL (1967), B (1969)'),
+            ('Third Generation (1970s)', 'Pascal (1970), C (1972), Prolog (1972), SQL (1974), Scheme (1975)'),
+            ('Fourth Generation (1980s)', 'Ada (1980), C++ (1983), Objective-C (1984), Perl (1987), Erlang (1986)'),
+            ('Modern Era (1990s-2000s)', 'Python (1991), Ruby (1995), Java (1995), JavaScript (1995), C# (2000)'),
+            ('Contemporary (2010s+)', 'Rust (2010), Go (2009), TypeScript (2012), Kotlin (2011), Swift (2014)'),
+        ]
+        
+        for era, languages in timeline_eras:
+            examples.append({
+                'text': f"Programming Language Era - {era}: {languages}",
+                'format': 'timeline',
+                'language': 'multi',
+                '_source': 'historical_timeline'
+            })
+        
+        # Language family trees
+        family_trees = [
+            ('ALGOL Family', 'ALGOL → (Pascal, C, Ada, Simula) → (C++, Java, C#, JavaScript)'),
+            ('LISP Family', 'LISP → (Scheme, Common Lisp) → (Clojure, Racket, Emacs Lisp)'),
+            ('ML Family', 'ML → (Standard ML, OCaml) → (Haskell, F#, Rust type system)'),
+            ('C Family', 'BCPL → B → C → (C++, Objective-C) → (Java, C#, JavaScript, Rust, Go)'),
+            ('Smalltalk Family', 'Simula → Smalltalk → (Ruby, Python OOP, Objective-C, Self → JavaScript)'),
+            ('FORTRAN Family', 'FORTRAN → (ALGOL) → Modern scientific computing'),
+        ]
+        
+        for family, lineage in family_trees:
+            examples.append({
+                'text': f"Language Family Tree - {family}: {lineage}",
+                'format': 'family_tree',
+                'language': 'multi',
+                '_source': 'historical_family'
+            })
+        
+        # Paradigm evolution examples
+        paradigm_evolution = [
+            ('Procedural', '1950s-1970s', 'FORTRAN, COBOL, C, Pascal - sequential instruction execution'),
+            ('Structured', '1960s-1970s', 'ALGOL, Pascal - eliminated GOTO, introduced blocks'),
+            ('Object-Oriented', '1967+', 'Simula → Smalltalk → C++, Java - encapsulation, inheritance, polymorphism'),
+            ('Functional', '1958+', 'LISP → ML → Haskell - immutability, pure functions, higher-order functions'),
+            ('Logic', '1972+', 'Prolog - declarative, pattern matching, unification'),
+            ('Concurrent', '1986+', 'Erlang, Go - message passing, actor model, goroutines'),
+            ('Multi-Paradigm', '1990s+', 'Python, Scala, Rust - combines OOP, functional, procedural'),
+        ]
+        
+        for paradigm, era, description in paradigm_evolution:
+            examples.append({
+                'text': f"{paradigm} Programming Paradigm ({era}): {description}",
+                'format': 'paradigm_evolution',
+                'language': 'multi',
+                '_source': 'historical_paradigm'
+            })
+        
+        # Key innovators and their contributions
+        innovators = [
+            ('Ada Lovelace', '1843', 'First programmer, wrote algorithm for Analytical Engine'),
+            ('Konrad Zuse', '1945', 'Created Plankalkül, first high-level language concept'),
+            ('Grace Hopper', '1952-1959', 'A-0 compiler, FLOW-MATIC, COBOL - coined "bug" term'),
+            ('John Backus', '1954-1957', 'FORTRAN creator, BNF notation co-inventor'),
+            ('John McCarthy', '1958', 'LISP creator, coined "artificial intelligence"'),
+            ('Alan Kay', '1972', 'Smalltalk creator, GUI pioneer, coined "object-oriented"'),
+            ('Dennis Ritchie', '1972', 'C creator, Unix co-creator'),
+            ('Ken Thompson', '1969-1972', 'B creator, Unix co-creator, Go co-creator'),
+            ('Niklaus Wirth', '1970-1988', 'Pascal, Modula-2, Oberon creator'),
+            ('Bjarne Stroustrup', '1983', 'C++ creator'),
+            ('Guido van Rossum', '1991', 'Python creator'),
+            ('Yukihiro Matsumoto', '1995', 'Ruby creator'),
+            ('James Gosling', '1995', 'Java creator'),
+            ('Brendan Eich', '1995', 'JavaScript creator (in 10 days)'),
+            ('Anders Hejlsberg', '2000', 'C# creator, TypeScript creator, Turbo Pascal creator'),
+            ('Graydon Hoare', '2010', 'Rust creator'),
+            ('Rob Pike', '2009', 'Go co-creator'),
+        ]
+        
+        for name, year, contribution in innovators:
+            examples.append({
+                'text': f"Programming Language Pioneer - {name} ({year}): {contribution}",
+                'format': 'pioneer',
+                'language': 'multi',
+                '_source': 'historical_pioneer'
+            })
+        
+        # Dead language lessons - what we learned
+        dead_language_lessons = [
+            ('ALGOL', 'Introduced structured programming blocks, BNF notation, influenced nearly all modern languages'),
+            ('Simula', 'First OOP language - classes, inheritance; directly influenced Smalltalk, C++, Java'),
+            ('BCPL/B', 'Demonstrated portable systems programming, direct ancestors of C'),
+            ('APL', 'Showed power of array programming, influenced NumPy, MATLAB, J'),
+            ('Smalltalk', 'Proved pure OOP is possible, pioneered MVC, IDE, GUI concepts'),
+            ('Logo', 'Showed programming can be educational and accessible to children'),
+            ('FLOW-MATIC', 'Proved English-like syntax was possible, led to COBOL'),
+            ('CLU', 'Pioneered abstract data types, iterators, exception handling'),
+            ('Mesa', 'Demonstrated strong typing for systems programming'),
+            ('Self', 'Proved prototype-based OOP works, influenced JavaScript'),
+        ]
+        
+        for lang, lesson in dead_language_lessons:
+            examples.append({
+                'text': f"Lessons from {lang}: {lesson}",
+                'format': 'dead_language_lesson',
+                'language': lang,
+                '_source': 'historical_lessons'
+            })
+        
+        # Esoteric language concepts
+        esoteric_concepts = [
+            ('Turing Completeness', 'Brainfuck proves minimal languages can compute anything'),
+            ('2D Programming', 'Befunge shows code can flow in multiple directions'),
+            ('Steganography', 'Whitespace hides code in plain sight'),
+            ('Natural Language', 'Shakespeare, Chef show code as readable prose/recipes'),
+            ('Visual Programming', 'Piet demonstrates art as executable code'),
+            ('Minimalism', 'Brainfuck: only 8 operators needed for computation'),
+            ('Obfuscation', 'Malbolge: self-modifying code that seems impossible'),
+        ]
+        
+        for concept, description in esoteric_concepts:
+            examples.append({
+                'text': f"Esoteric Programming Concept - {concept}: {description}",
+                'format': 'esoteric_concept',
+                'language': 'esoteric',
+                '_source': 'historical_esoteric'
+            })
+        
+        print(f"  Generated {len(examples)} historical language examples")
+        print(f"  Covering {len(self.HISTORICAL_LANGUAGES) + len(extended_languages)} languages from 1801-present")
+        
+        return examples
+
 
 class DataAggregator:
     """Aggregates all training data sources."""
@@ -680,8 +1712,9 @@ class DataAggregator:
             'format': 'instruction'
         }
 
-    def aggregate_all(self, deduplicate: bool = True, include_polyglot: bool = True) -> Tuple[List[Dict], Dict]:
-        """Aggregate all training data including multi-language sources."""
+    def aggregate_all(self, deduplicate: bool = True, include_polyglot: bool = True, 
+                      include_historical: bool = True) -> Tuple[List[Dict], Dict]:
+        """Aggregate all training data including multi-language and historical sources."""
         print("\n[DATA AGGREGATION]")
 
         sources = self.discover_sources()
@@ -741,6 +1774,28 @@ class DataAggregator:
             print(f"  + polyglot_code: {len(polyglot_examples)} examples")
             print(f"  + cross_language: {len(cross_lang_examples)} examples")
 
+        # Add historical/dead language knowledge
+        if include_historical:
+            historical_examples = self.polyglot.generate_historical_language_examples()
+            
+            for ex in historical_examples:
+                if deduplicate:
+                    text = ex.get('text', str(ex))
+                    h = hashlib.md5(text.encode()).hexdigest()
+                    if h in seen_hashes:
+                        continue
+                    seen_hashes.add(h)
+                
+                all_examples.append(ex)
+                
+                # Build vocabulary from historical content
+                text = ex.get('text', '')
+                tokens = re.findall(r'\b\w+\b', text.lower())
+                self.vocabulary.update(tokens)
+            
+            self.stats['historical_languages'] = len(historical_examples)
+            print(f"  + historical_languages: {len(historical_examples)} examples")
+
         self.examples = all_examples
 
         stats = {
@@ -756,8 +1811,8 @@ class DataAggregator:
         print(f"\n  Total: {stats['total_examples']} examples")
         print(f"  Vocabulary: {stats['vocabulary_size']} tokens")
         print(f"  Languages: {stats['polyglot_languages']} programming languages")
-
-        return all_examples, stats
+        if include_historical:
+            print(f"  Historical: {self.stats.get('historical_languages', 0)} language history examples")
 
         return all_examples, stats
 
