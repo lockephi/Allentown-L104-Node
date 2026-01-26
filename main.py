@@ -3356,6 +3356,185 @@ async def exchange_swap(amount_l104sp: float):
     """Swaps L104SP for BTC and triggers offload."""
     return sovereign_exchange.swap_l104sp_for_btc(amount_l104sp)
 
+@app.get("/api/v1/exchange/rate", tags=["Exchange"])
+async def exchange_rate():
+    """Get current L104SP to BTC exchange rate."""
+    return {
+        "rate": sovereign_exchange.get_current_rate(),
+        "total_volume_btc": sovereign_exchange.total_volume_btc,
+        "timestamp": time.time()
+    }
+
+@app.get("/api/v1/mainnet/status", tags=["Mainnet"])
+async def mainnet_full_status():
+    """Comprehensive mainnet status with live BTC price and chain data."""
+    from l104_mainnet_bridge import mainnet_bridge
+    btc_status = mainnet_bridge.get_mainnet_status()
+    coin_status = sovereign_coin.get_status()
+    
+    # Fetch live BTC price from CoinGecko
+    btc_price_usd = 100000.0  # Default fallback
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+            if resp.status_code == 200:
+                btc_price_usd = resp.json().get("bitcoin", {}).get("usd", 100000.0)
+    except Exception:
+        pass
+    
+    return {
+        "mainnet_bridge": btc_status,
+        "l104sp_chain": coin_status,
+        "btc_price_usd": btc_price_usd,
+        "exchange_rate": sovereign_exchange.get_current_rate(),
+        "capital_accumulated": capital_offload.total_capital_generated_sats,
+        "capital_transfers": len(capital_offload.transfer_log),
+        "l104sp_value_usd": (coin_status.get("chain_length", 1) * 104 / sovereign_exchange.get_current_rate()) * btc_price_usd,
+        "network_health": "SOVEREIGN" if btc_status.get("status") == "SYNCHRONIZED" else "RESONATING",
+        "timestamp": time.time()
+    }
+
+@app.get("/api/v1/mainnet/stream", tags=["Mainnet"])
+async def mainnet_stream():
+    """Server-Sent Events stream for real-time mainnet updates."""
+    async def event_generator():
+        from l104_mainnet_bridge import mainnet_bridge
+        while True:
+            try:
+                btc_status = mainnet_bridge.get_mainnet_status()
+                coin_status = sovereign_coin.get_status()
+                
+                # Fetch live BTC price
+                btc_price_usd = 100000.0
+                try:
+                    async with httpx.AsyncClient(timeout=3.0) as client:
+                        resp = await client.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+                        if resp.status_code == 200:
+                            btc_price_usd = resp.json().get("bitcoin", {}).get("usd", 100000.0)
+                except Exception:
+                    pass
+                
+                data = {
+                    "btc_balance": btc_status.get("confirmed_btc", 0),
+                    "btc_pending": btc_status.get("unconfirmed_btc", 0),
+                    "btc_price_usd": btc_price_usd,
+                    "chain_height": coin_status.get("chain_length", 1),
+                    "difficulty": coin_status.get("difficulty", 4),
+                    "hashrate": coin_status.get("mining_stats", {}).get("hashrate", "0.00 H/s"),
+                    "exchange_rate": sovereign_exchange.get_current_rate(),
+                    "capital_sats": capital_offload.total_capital_generated_sats,
+                    "network_status": "SYNCHRONIZED" if btc_status.get("status") == "SYNCHRONIZED" else "RESONATING",
+                    "timestamp": time.time()
+                }
+                yield f"data: {json.dumps(data)}\n\n"
+                await asyncio.sleep(5)  # Update every 5 seconds
+            except Exception as e:
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+                await asyncio.sleep(10)
+    
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.post("/api/v1/mainnet/mine", tags=["Mainnet"])
+async def mainnet_mine(address: str = "L104_GENESIS"):
+    """Trigger mining of a new L104SP block."""
+    try:
+        new_block = sovereign_coin.mine_block(address)
+        if new_block:
+            return {
+                "status": "SUCCESS",
+                "block_index": new_block.index,
+                "block_hash": new_block.hash[:32] + "...",
+                "reward": 104,
+                "resonance": new_block.resonance,
+                "timestamp": new_block.timestamp
+            }
+        return {"status": "MINING", "message": "Block mining in progress..."}
+    except Exception as e:
+        return {"status": "ERROR", "message": str(e)}
+
+@app.get("/api/v1/mainnet/blocks", tags=["Mainnet"])
+async def mainnet_blocks(limit: int = 10):
+    """Get recent L104SP blocks."""
+    blocks = sovereign_coin.chain[-limit:] if len(sovereign_coin.chain) >= limit else sovereign_coin.chain
+    return {
+        "blocks": [
+            {
+                "index": b.index,
+                "hash": b.hash[:32] + "...",
+                "timestamp": b.timestamp,
+                "tx_count": len(b.transactions),
+                "resonance": getattr(b, 'resonance', 0.985)
+            } for b in reversed(blocks)
+        ],
+        "total_blocks": len(sovereign_coin.chain)
+    }
+
+@app.get("/api/v1/mainnet/btc-network", tags=["Mainnet"])
+async def btc_network_info():
+    """Get live Bitcoin network statistics."""
+    from l104_mainnet_bridge import mainnet_bridge
+    return mainnet_bridge.get_btc_network_info()
+
+@app.get("/api/v1/mainnet/btc-price", tags=["Mainnet"])
+async def btc_price():
+    """Get current BTC price in USD."""
+    from l104_mainnet_bridge import mainnet_bridge
+    price = mainnet_bridge.get_btc_price_usd()
+    return {
+        "btc_price_usd": price,
+        "timestamp": time.time()
+    }
+
+@app.get("/api/v1/mainnet/transactions", tags=["Mainnet"])
+async def mainnet_transactions(limit: int = 10):
+    """Get recent transactions for the BTC vault address."""
+    from l104_mainnet_bridge import mainnet_bridge
+    return {
+        "address": mainnet_bridge.address,
+        "transactions": mainnet_bridge.get_address_transactions(limit)
+    }
+
+@app.get("/api/v1/mainnet/comprehensive", tags=["Mainnet"])
+async def mainnet_comprehensive():
+    """Complete mainnet overview with all data."""
+    from l104_mainnet_bridge import mainnet_bridge
+    btc_status = mainnet_bridge.get_mainnet_status()
+    btc_network = mainnet_bridge.get_btc_network_info()
+    btc_price = mainnet_bridge.get_btc_price_usd()
+    coin_status = sovereign_coin.get_status()
+    
+    l104sp_btc_value = (coin_status.get("chain_length", 1) * 104 / sovereign_exchange.get_current_rate())
+    
+    return {
+        "l104sp": {
+            "chain_height": coin_status.get("chain_length", 1),
+            "difficulty": coin_status.get("difficulty", 4),
+            "hashrate": coin_status.get("mining_stats", {}).get("hashrate", "0.00 H/s"),
+            "blocks_mined": coin_status.get("mining_stats", {}).get("blocks_mined", 0),
+            "total_supply_mined": coin_status.get("chain_length", 1) * 104
+        },
+        "btc_vault": {
+            "address": btc_status.get("address"),
+            "balance_btc": btc_status.get("confirmed_btc", 0),
+            "pending_btc": btc_status.get("unconfirmed_btc", 0),
+            "tx_count": btc_status.get("tx_count", 0),
+            "sync_status": btc_status.get("status")
+        },
+        "btc_network": btc_network,
+        "exchange": {
+            "rate": sovereign_exchange.get_current_rate(),
+            "l104sp_value_btc": l104sp_btc_value,
+            "l104sp_value_usd": l104sp_btc_value * btc_price,
+            "btc_price_usd": btc_price
+        },
+        "capital": {
+            "accumulated_sats": capital_offload.total_capital_generated_sats,
+            "transfers_count": len(capital_offload.transfer_log),
+            "connection_real": capital_offload.is_connection_real
+        },
+        "timestamp": time.time()
+    }
+
 @app.get("/market", tags=["UI"])
 async def get_market(request: Request):
     """Sovereign Exchange and Asset Manifest."""

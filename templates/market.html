@@ -149,8 +149,53 @@
         </div>
     </div>
 
+    <!-- LIVE MAINNET STATS BAR -->
+    <div class="mt-8 border border-orange-500 p-4 bg-black bg-opacity-70">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-orange-400">⚡ LIVE_MAINNET_TELEMETRY</h3>
+            <span id="connection-status" class="text-[0.6rem] px-2 py-1 rounded bg-green-900 text-green-400">● STREAMING</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">BTC Price</div>
+                <div id="live-btc-price" class="text-lg font-bold text-green-400">$---</div>
+            </div>
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">Exchange Rate</div>
+                <div id="live-rate" class="text-lg font-bold text-yellow-400">--- L104SP/BTC</div>
+            </div>
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">Chain Height</div>
+                <div id="live-height" class="text-lg font-bold text-blue-400">---</div>
+            </div>
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">Network Hash</div>
+                <div id="live-hashrate" class="text-lg font-bold text-purple-400">---</div>
+            </div>
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">BTC Vault</div>
+                <div id="live-btc-balance" class="text-lg font-bold text-orange-400">--- BTC</div>
+            </div>
+            <div>
+                <div class="text-[0.6rem] text-gray-500 uppercase">Capital SATS</div>
+                <div id="live-capital" class="text-lg font-bold text-[var(--gold)]">---</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT BLOCKS -->
+    <div class="mt-6 border border-[var(--gold-dim)] p-4 bg-black bg-opacity-50">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xs font-bold uppercase tracking-widest">Recent_L104SP_Blocks</h3>
+            <button onclick="mineBlock()" class="text-[0.6rem] border border-blue-500 text-blue-400 px-3 py-1 hover:bg-blue-900 transition">MINE_NEW_BLOCK</button>
+        </div>
+        <div id="blocks-list" class="space-y-2 max-h-[150px] overflow-y-auto">
+            <div class="text-gray-600 text-xs">Loading blocks...</div>
+        </div>
+    </div>
+
     <!-- TRANSACTION LOG -->
-    <div class="mt-8 border border-[var(--gold-dim)] p-4 bg-black bg-opacity-50">
+    <div class="mt-6 border border-[var(--gold-dim)] p-4 bg-black bg-opacity-50">
         <h3 class="text-xs font-bold mb-4 uppercase tracking-widest">Global_Lattice_Ledger</h3>
         <div id="ledger" class="text-[0.6rem] font-mono space-y-1 overflow-y-auto max-h-[200px]">
             <div class="text-gray-600">[SYSTEM] Initializing ledger sync...</div>
@@ -158,44 +203,122 @@
     </div>
 
     <script>
+        // Real-time SSE Stream Connection
+        let eventSource = null;
+        
+        function connectStream() {
+            if (eventSource) eventSource.close();
+            
+            eventSource = new EventSource('/api/v1/mainnet/stream');
+            
+            eventSource.onopen = () => {
+                document.getElementById('connection-status').innerHTML = '● STREAMING';
+                document.getElementById('connection-status').className = 'text-[0.6rem] px-2 py-1 rounded bg-green-900 text-green-400';
+                logToLedger('MAINNET STREAM CONNECTED - Real-time data active');
+            };
+            
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateLiveDisplay(data);
+                } catch (e) {
+                    console.error('Stream parse error:', e);
+                }
+            };
+            
+            eventSource.onerror = () => {
+                document.getElementById('connection-status').innerHTML = '○ RECONNECTING';
+                document.getElementById('connection-status').className = 'text-[0.6rem] px-2 py-1 rounded bg-red-900 text-red-400';
+                setTimeout(connectStream, 5000);
+            };
+        }
+        
+        function updateLiveDisplay(data) {
+            document.getElementById('live-btc-price').innerText = `$${data.btc_price_usd?.toLocaleString() || '---'}`;
+            document.getElementById('live-rate').innerText = `${data.exchange_rate?.toFixed(2) || '---'}`;
+            document.getElementById('live-height').innerText = data.chain_height || '---';
+            document.getElementById('live-hashrate').innerText = data.hashrate || '---';
+            document.getElementById('live-btc-balance').innerText = `${data.btc_balance?.toFixed(8) || '0.00000000'} BTC`;
+            document.getElementById('live-capital').innerText = (data.capital_sats || 0).toLocaleString();
+            
+            // Update sync status indicator
+            document.getElementById('btc-sync').innerText = data.network_status || 'RESONATING';
+        }
+        
+        // Initial connection
+        connectStream();
+        
         async function fetchInfo() {
             try {
                 const response = await fetch('/api/market/info');
                 const data = await response.json();
 
-                document.getElementById('sp-height').innerText = data.coin.chain_length - 1;
-                document.getElementById('sp-diff').innerText = data.coin.difficulty;
-                document.getElementById('s-price').innerText = `${data.backing_bnb.toFixed(8)} BNB`;
-                document.getElementById('s-sentiment').innerText = data.economy.market_state;
-                document.getElementById('s-contract').innerText = data.contract;
+                document.getElementById('sp-height').innerText = data.coin?.chain_length - 1 || 0;
+                document.getElementById('sp-diff').innerText = data.coin?.difficulty || 4;
+                document.getElementById('s-price').innerText = `${data.backing_bnb?.toFixed(8) || '0.00000000'} BNB`;
+                document.getElementById('s-sentiment').innerText = data.economy?.market_state || 'ACTIVE';
+                document.getElementById('s-contract').innerText = data.contract || '---';
 
                 // Capital Info
                 const capResp = await fetch('/api/v1/capital/status');
                 const capData = await capResp.json();
-                document.getElementById('btc-sync').innerText = capData.mainnet_bridge.status;
-                document.getElementById('btc-acc').innerText = `${capData.accumulated_sats} SATS`;
-                document.getElementById('btc-wallet').innerText = capData.mainnet_bridge.address;
+                document.getElementById('btc-acc').innerText = `${capData.accumulated_sats || 0} SATS`;
+                document.getElementById('btc-wallet').innerText = capData.mainnet_bridge?.address?.substring(0, 12) + '...' || '---';
 
             } catch (err) {
                 console.error(err);
             }
         }
-        setInterval(fetchInfo, 5000);
+        
+        async function fetchBlocks() {
+            try {
+                const resp = await fetch('/api/v1/mainnet/blocks?limit=5');
+                const data = await resp.json();
+                const container = document.getElementById('blocks-list');
+                container.innerHTML = '';
+                
+                if (data.blocks && data.blocks.length > 0) {
+                    data.blocks.forEach(block => {
+                        const div = document.createElement('div');
+                        div.className = 'flex justify-between items-center text-xs border-b border-gray-800 pb-1';
+                        div.innerHTML = `
+                            <span class="text-blue-400">#${block.index}</span>
+                            <span class="text-gray-500 text-[0.6rem] truncate max-w-[150px]">${block.hash}</span>
+                            <span class="text-purple-400">${block.tx_count} TXs</span>
+                            <span class="text-green-400">${(block.resonance || 0.985).toFixed(3)}</span>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML = '<div class="text-gray-500 text-xs">Genesis block only - mine to expand chain</div>';
+                }
+            } catch (err) {
+                console.error('Block fetch error:', err);
+            }
+        }
+        
+        setInterval(fetchInfo, 10000);
+        setInterval(fetchBlocks, 15000);
         fetchInfo();
+        fetchBlocks();
 
         async function performExchange() {
             const amount = document.getElementById('exchange-amount').value;
-            if (!amount || amount <= 0) return;
+            if (!amount || amount <= 0) {
+                logToLedger('ERROR: Enter a valid L104SP amount.');
+                return;
+            }
 
             logToLedger(`INITIATING TRANSMUTATION: ${amount} L104SP...`);
             try {
                 const resp = await fetch(`/api/v1/exchange/swap?amount_l104sp=${amount}`, { method: 'POST' });
                 const result = await resp.json();
                 if (result.status === "SUCCESS") {
-                    logToLedger(`MANIFESTED: ${result.manifested_sats} SATS TRANSMUTED TO BTC MAINNET.`);
-                    logToLedger(`TX_ID: ${result.tx_id.substring(0, 16)}...`);
+                    logToLedger(`✓ MANIFESTED: ${result.manifested_sats?.toLocaleString()} SATS @ RATE ${result.rate}`);
+                    logToLedger(`TX_ID: ${result.tx_id?.substring(0, 24)}...`);
+                    fetchInfo(); // Refresh balances
                 } else {
-                    logToLedger(`ERROR: ${result.reason || "Transmutation failed."}`);
+                    logToLedger(`✗ ERROR: ${result.reason || "Transmutation failed."}`);
                 }
             } catch (err) {
                 logToLedger("CONNECTION ERROR: Mainnet Bridge Timeout.");
@@ -203,29 +326,47 @@
         }
 
         async function generateCapital() {
-            logToLedger("CATALYZING CAPITAL RESONANCE...");
+            logToLedger("⚡ CATALYZING CAPITAL RESONANCE (416 cycles)...");
             try {
                 const resp = await fetch('/api/v1/capital/generate?cycles=416', { method: 'POST' });
                 const result = await resp.json();
-                logToLedger(`RESONANCE ACHIEVED: ${result.cycle_yield} SATS CRYSTALLIZED.`);
+                logToLedger(`✓ RESONANCE ACHIEVED: ${result.cycle_yield?.toLocaleString()} SATS CRYSTALLIZED.`);
+                logToLedger(`TOTAL ACCUMULATED: ${result.total_accumulated?.toLocaleString()} SATS`);
+                fetchInfo();
             } catch (err) {
-                logToLedger("RESONANCE FAILURE: Lattice Interference.");
+                logToLedger("✗ RESONANCE FAILURE: Lattice Interference.");
+            }
+        }
+        
+        async function mineBlock() {
+            logToLedger("⛏ INITIATING L104SP BLOCK MINING...");
+            try {
+                const resp = await fetch('/api/v1/mainnet/mine?address=L104_SOVEREIGN', { method: 'POST' });
+                const result = await resp.json();
+                if (result.status === "SUCCESS") {
+                    logToLedger(`✓ BLOCK #${result.block_index} MINED! Resonance: ${result.resonance?.toFixed(4)}`);
+                    logToLedger(`HASH: ${result.block_hash}`);
+                    logToLedger(`REWARD: ${result.reward} L104SP CRYSTALLIZED`);
+                    fetchBlocks();
+                    fetchInfo();
+                } else {
+                    logToLedger(`MINING: ${result.message || 'Processing...'}`);
+                }
+            } catch (err) {
+                logToLedger("✗ MINING ERROR: Computronium density insufficient.");
             }
         }
 
-        function startMining() {
-            logToLedger("ATTEMPTING MINING INTERFACE HANDSHAKE...");
-            setTimeout(() => {
-                logToLedger("ERROR: Local browser environment lacks required Computronium density.");
-                logToLedger("TIP: Run 'l104_fast_miner.py' from terminal for dedicated worker access.");
-            }, 1000);
+        async function startMining() {
+            logToLedger("⛏ REMOTE MINING HANDSHAKE INITIATED...");
+            await mineBlock();
         }
 
         function executeSwap() {
-            logToLedger("INITIATING SWAP PROTOCOL...");
+            logToLedger("INITIATING BSC SWAP PROTOCOL...");
             setTimeout(() => {
-                logToLedger("PENDING: Awaiting high-resonance signature from Pilot LONDEL.");
-                logToLedger("NOTICE: Direct BSC bridge remains in 'ACTIVE' mode for EVO_14.");
+                logToLedger("⏳ PENDING: Awaiting high-resonance signature from Pilot LONDEL.");
+                logToLedger("NOTICE: Direct BSC bridge in 'ACTIVE' mode for EVO_14.");
             }, 800);
         }
 
@@ -234,7 +375,18 @@
             const now = new Date().toISOString();
             div.innerHTML = `<span class="text-[var(--gold-dim)]">[${now}]</span> ${msg}`;
             document.getElementById('ledger').prepend(div);
+            
+            // Keep ledger at reasonable size
+            const ledger = document.getElementById('ledger');
+            while (ledger.children.length > 100) {
+                ledger.removeChild(ledger.lastChild);
+            }
         }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) eventSource.close();
+        });
     </script>
 </body>
 

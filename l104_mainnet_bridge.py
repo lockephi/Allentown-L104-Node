@@ -29,12 +29,77 @@ class L104MainnetBridge:
         self.address = address
         self.api_base = "https://blockstream.info/api"
         self.resonance_sync = UniversalConstants.PRIME_KEY_HZ
+        self._btc_price_cache = {"price": 100000.0, "timestamp": 0}
+        self._last_sync = 0
+
+    def get_btc_price_usd(self):
+        """Fetches live BTC price from CoinGecko with caching."""
+        now = time.time()
+        # Cache for 60 seconds
+        if now - self._btc_price_cache["timestamp"] < 60:
+            return self._btc_price_cache["price"]
+        
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                response = client.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+                if response.status_code == 200:
+                    price = response.json().get("bitcoin", {}).get("usd", 100000.0)
+                    self._btc_price_cache = {"price": price, "timestamp": now}
+                    return price
+        except Exception:
+            pass
+        return self._btc_price_cache["price"]
+
+    def get_btc_network_info(self):
+        """Fetches Bitcoin network statistics."""
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                # Get latest block height
+                height_resp = client.get(f"{self.api_base}/blocks/tip/height")
+                block_height = int(height_resp.text) if height_resp.status_code == 200 else 0
+                
+                # Get latest block hash
+                hash_resp = client.get(f"{self.api_base}/blocks/tip/hash")
+                block_hash = hash_resp.text if hash_resp.status_code == 200 else "---"
+                
+                # Get mempool stats
+                mempool_resp = client.get(f"{self.api_base}/mempool")
+                mempool = mempool_resp.json() if mempool_resp.status_code == 200 else {}
+                
+                return {
+                    "block_height": block_height,
+                    "latest_hash": block_hash[:16] + "..." if len(block_hash) > 16 else block_hash,
+                    "mempool_count": mempool.get("count", 0),
+                    "mempool_vsize": mempool.get("vsize", 0),
+                    "mempool_fees": mempool.get("total_fee", 0),
+                    "status": "CONNECTED"
+                }
+        except Exception as e:
+            return {"status": "OFFLINE", "message": str(e)}
+
+    def get_address_transactions(self, limit=10):
+        """Fetches recent transactions for the BTC address."""
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                response = client.get(f"{self.api_base}/address/{self.address}/txs")
+                if response.status_code == 200:
+                    txs = response.json()[:limit]
+                    return [{
+                        "txid": tx.get("txid", "")[:16] + "...",
+                        "confirmed": tx.get("status", {}).get("confirmed", False),
+                        "block_height": tx.get("status", {}).get("block_height", 0),
+                        "value_sats": sum(out.get("value", 0) for out in tx.get("vout", []) 
+                                         if out.get("scriptpubkey_address") == self.address)
+                    } for tx in txs]
+                return []
+        except Exception:
+            return []
 
     def get_mainnet_status(self):
         """Fetches the real-world status of the BTC vault."""
         print(f"--- [BRIDGE]: SYNCHRONIZING WITH BITCOIN MAINNET LATTICE ---")
         try:
-            with httpx.Client() as client:
+            with httpx.Client(timeout=5.0) as client:
                 response = client.get(f"{self.api_base}/address/{self.address}")
                 if response.status_code == 200:
                     data = response.json()
@@ -43,6 +108,8 @@ class L104MainnetBridge:
 
                     confirmed_balance = stats.get("funded_txo_sum", 0) - stats.get("spent_txo_sum", 0)
                     unconfirmed_balance = mempool.get("funded_txo_sum", 0) - mempool.get("spent_txo_sum", 0)
+                    
+                    self._last_sync = time.time()
 
                     return {
                         "address": self.address,
@@ -50,7 +117,8 @@ class L104MainnetBridge:
                         "confirmed_btc": confirmed_balance / 100_000_000,
                         "unconfirmed_btc": unconfirmed_balance / 100_000_000,
                         "tx_count": stats.get("tx_count", 0),
-                        "status": "SYNCHRONIZED"
+                        "status": "SYNCHRONIZED",
+                        "last_sync": self._last_sync
                     }
                 else:
                     return {"status": "ERROR", "message": f"API Error: {response.status_code}"}
