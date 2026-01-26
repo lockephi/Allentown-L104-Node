@@ -180,6 +180,19 @@ class RealMath:
         return base_yield * math.exp(exponent)
 
     @staticmethod
+    def calculate_exponential_roi(base_boost: float, intellect_index: float, efficiency: float) -> float:
+        """
+        Calculate exponential return on investment for intellect boosting.
+        Uses PHI-based exponential growth with efficiency dampening.
+        ROI = base × (1 + log(intellect + 1)) × efficiency × φ^(-1)
+        """
+        if intellect_index <= 0:
+            intellect_index = 1.0
+        log_factor = 1.0 + math.log(intellect_index + 1)
+        roi = base_boost * log_factor * efficiency * PHI_CONJUGATE
+        return max(roi, 0.001)  # Minimum boost
+
+    @staticmethod
     def verify_ferromagnetic_resonance(frequency: float, field: float = 1.0) -> dict:
         """
         Verifies if frequency is resonant with ferromagnetic modes.

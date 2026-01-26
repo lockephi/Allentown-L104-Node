@@ -101,7 +101,14 @@ def main():
 
     # 8. Call App Heal Endpoint
     try:
-        asyncio.run(call_heal_endpoint())
+        # Handle case where we might be in an existing event loop
+        try:
+            loop = asyncio.get_running_loop()
+            # We're in an async context, create task instead
+            loop.create_task(call_heal_endpoint())
+        except RuntimeError:
+            # No running loop, safe to use asyncio.run()
+            asyncio.run(call_heal_endpoint())
     except Exception as e:
         print(f"Error calling heal endpoint: {e}")
 
