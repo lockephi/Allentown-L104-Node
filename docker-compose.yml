@@ -25,7 +25,7 @@ services:
       - RESONANCE=${RESONANCE:-527.5184818492537}
     volumes:
       - l104-data:/data
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)"]
       interval: 30s

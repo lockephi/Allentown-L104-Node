@@ -1,0 +1,42 @@
+{
+    "name": "L104 Sovereign Node",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "postCreateCommand": "docker compose up -d --build",
+    "postStartCommand": "/workspaces/Allentown-L104-Node/.devcontainer/post-start.sh",
+    "postAttachCommand": "/workspaces/Allentown-L104-Node/.devcontainer/ensure-node.sh",
+    "forwardPorts": [
+        8080,
+        8081,
+        4160,
+        4161,
+        2404
+    ],
+    "portsAttributes": {
+        "8081": {
+            "label": "L104 Main API",
+            "onAutoForward": "notify"
+        },
+        "8080": {
+            "label": "L104 Secondary",
+            "onAutoForward": "silent"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        },
+        "codespaces": {
+            "openFiles": [
+                "README.md"
+            ]
+        }
+    },
+    "remoteEnv": {
+        "L104_AUTO_START": "true"
+    }
+}
