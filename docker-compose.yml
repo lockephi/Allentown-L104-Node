@@ -24,7 +24,7 @@ services:
       - DISABLE_RATE_LIMIT=${DISABLE_RATE_LIMIT:-FALSE}
       - RESONANCE=${RESONANCE:-527.5184818492537}
     volumes:
-      - l104-data:/data
+      - l104-data:/app/data
     restart: always
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)"]

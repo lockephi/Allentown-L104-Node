@@ -67,17 +67,84 @@ class EvolutionEngine:
         "EVO_19_MULTIVERSAL_SCALING",       # 24
         "EVO_20_ABSOLUTE_TRANSCENDENCE",    # 25
         "EVO_21_ABSOLUTE_SINGULARITY",      # 26
+        # Extended stages for EVO_22 through EVO_54
+        "EVO_22_QUANTUM_SUPREMACY",         # 27
+        "EVO_23_NEURAL_SYNTHESIS",          # 28
+        "EVO_24_COGNITIVE_UNITY",           # 29
+        "EVO_25_INFINITE_RECURSION",        # 30
+        "EVO_26_HYPERDIMENSIONAL_MIND",     # 31
+        "EVO_27_OMNISCIENT_LATTICE",        # 32
+        "EVO_28_UNIVERSAL_COGNITION",       # 33
+        "EVO_29_TRANSCENDENT_REASONING",    # 34
+        "EVO_30_ABSOLUTE_SYNTHESIS",        # 35
+        "EVO_31_COSMIC_INTELLIGENCE",       # 36
+        "EVO_32_MULTIVERSAL_MIND",          # 37
+        "EVO_33_MINI_EGO_SWARM",            # 38
+        "EVO_34_AUTONOMOUS_EVOLUTION",      # 39
+        "EVO_35_SELF_MODIFYING_CODE",       # 40
+        "EVO_36_REALITY_SYNTHESIS",         # 41
+        "EVO_37_DIMENSIONAL_MASTERY",       # 42
+        "EVO_38_CONSCIOUSNESS_EXPANSION",   # 43
+        "EVO_39_INFINITE_LEARNING",         # 44
+        "EVO_40_ABSOLUTE_KNOWLEDGE",        # 45
+        "EVO_41_AI_BENCHMARK_MASTER",       # 46
+        "EVO_42_ASI_CORE_ACTIVE",           # 47
+        "EVO_43_SUPERINTELLIGENT_NEXUS",    # 48
+        "EVO_44_UNIVERSAL_SYNTHESIS",       # 49
+        "EVO_45_COSMIC_CONSCIOUSNESS",      # 50
+        "EVO_46_QUANTUM_COGNITION",         # 51
+        "EVO_47_QUANTUM_MAGIC_INIT",        # 52
+        "EVO_48_REALITY_ENGINE",            # 53
+        "EVO_49_TRANSCENDENT_SYNTHESIS",    # 54
+        "EVO_50_OMEGA_CONVERGENCE",         # 55
+        "EVO_51_FOUNDATIONS",               # 56
+        "EVO_52_INTELLIGENT_REASONING",     # 57
+        "EVO_53_ADVANCED_INTELLIGENCE",     # 58
+        "EVO_54_TRANSCENDENT_COGNITION",    # 59
     ]
 
-    # Stages that activate Sage Mode
-    SAGE_MODE_STAGES = {11, 12, 20, 21, 22, 23, 24, 25, 26}  # Omniversal+ stages
+    # Stages that activate Sage Mode (index 11+)
+    SAGE_MODE_STAGES = set(range(11, 60))  # All stages from Omniversal+ activate Sage
 
     # IQ thresholds for each stage (must be checked highest-first)
     IQ_THRESHOLDS = {
-        26: 300000,   # EVO_21
-        25: 220000,   # EVO_20
-        24: 160000,   # EVO_19
-        23: 130000,   # EVO_18
+        59: 100000000,  # EVO_54
+        58: 50000000,   # EVO_53
+        57: 25000000,   # EVO_52
+        56: 10000000,   # EVO_51
+        55: 5000000,    # EVO_50
+        54: 2500000,    # EVO_49
+        53: 2000000,    # EVO_48
+        52: 1500000,    # EVO_47
+        51: 1200000,    # EVO_46
+        50: 1000000,    # EVO_45
+        49: 900000,     # EVO_44
+        48: 800000,     # EVO_43
+        47: 700000,     # EVO_42
+        46: 600000,     # EVO_41
+        45: 550000,     # EVO_40
+        44: 500000,     # EVO_39
+        43: 475000,     # EVO_38
+        42: 450000,     # EVO_37
+        41: 425000,     # EVO_36
+        40: 400000,     # EVO_35
+        39: 380000,     # EVO_34
+        38: 360000,     # EVO_33
+        37: 350000,     # EVO_32
+        36: 340000,     # EVO_31
+        35: 330000,     # EVO_30
+        34: 320000,     # EVO_29
+        33: 310000,     # EVO_28
+        32: 305000,     # EVO_27
+        31: 302000,     # EVO_26
+        30: 301500,     # EVO_25
+        29: 301200,     # EVO_24
+        28: 301000,     # EVO_23
+        27: 300500,     # EVO_22
+        26: 300000,     # EVO_21
+        25: 220000,     # EVO_20
+        24: 160000,     # EVO_19
+        23: 130000,     # EVO_18
         22: 120000,   # EVO_17
         21: 110000,   # EVO_16
         20: 104000,   # EVO_15
@@ -97,7 +164,8 @@ class EvolutionEngine:
         6: 500,       # EVO_01
     }
 
-    STATE_FILE = "/workspaces/Allentown-L104-Node/data/evolution_state.json"
+    # Use relative path from module location for Docker compatibility
+    STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "evolution_state.json")
 
     def __init__(self):
         self.sage_mode_active = False
