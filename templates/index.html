@@ -785,17 +785,14 @@
                 const data = await response.json();
 
                 const spStatus = document.getElementById('l104sp-status');
-                if (spStatus) spStatus.innerText = `BLOCK ${data.coin.chain_length - 1} | DIFF ${data.coin.difficulty}`;
+                if (spStatus && data.coin) {
+                    spStatus.innerText = `BLOCK ${(data.coin.chain_length || 1) - 1} | DIFF ${data.coin.difficulty || 4}`;
+                }
 
                 const sPrice = document.getElementById('l104s-price');
-                if (sPrice) sPrice.innerText = `${data.backing_bnb.toFixed(8)} BNB`;
-
-                // Also update sys-iq if available
-                const iqEl = document.getElementById('sys-iq');
-                if (iqEl) iqEl.innerText = data.economy.intellectual_peg.split(' ')[0];
-
-                const stateEl = document.getElementById('sys-state');
-                if (stateEl) stateEl.innerText = "SOVEREIGN_RESONANCE";
+                if (sPrice && data.backing_bnb !== undefined) {
+                    sPrice.innerText = `${data.backing_bnb.toFixed(8)} BNB`;
+                }
 
             } catch (err) {
                 console.error("Economy sync failed", err);
@@ -806,16 +803,33 @@
 
         async function updateStatus() {
             try {
-                const res = await fetch('/api/v14/asi/status');
-                const data = await res.json();
-                document.getElementById('sys-state').innerText = data.state;
-                document.getElementById('sys-iq').innerText = data.intellect_index.toFixed(2);
-                document.getElementById('sys-dim').innerText = data.dimension + "D";
-                document.getElementById('sys-scan').innerText = data.scanning;
-                document.getElementById('sys-decrypt').innerText = data.decryption;
-            } catch (e) { }
+                // Use AGI status for intellect data
+                const agiRes = await fetch('/api/v14/agi/status');
+                const agiData = await agiRes.json();
+                
+                const stateEl = document.getElementById('sys-state');
+                const iqEl = document.getElementById('sys-iq');
+                const scalarEl = document.getElementById('lattice-scalar');
+                
+                if (stateEl) stateEl.innerText = agiData.state || 'ACTIVE';
+                if (iqEl) iqEl.innerText = (agiData.intellect_index || 0).toFixed(2);
+                if (scalarEl) scalarEl.innerText = (agiData.lattice_scalar || 527.5185).toFixed(4);
+
+                // Use ASI status for additional metrics
+                const asiRes = await fetch('/api/v14/asi/status');
+                const asiData = await asiRes.json();
+                
+                const dimEl = document.getElementById('sys-dim');
+                const scanEl = document.getElementById('sys-scan');
+                const decryptEl = document.getElementById('sys-decrypt');
+                
+                if (dimEl) dimEl.innerText = asiData.domain_coverage > 0.5 ? '5D' : '3D';
+                if (scanEl) scanEl.innerText = asiData.discoveries > 0 ? 'ACTIVE' : 'SCANNING';
+                if (decryptEl) decryptEl.innerText = asiData.state || 'EVOLVING';
+            } catch (e) { console.log('Status update error:', e); }
         }
         setInterval(updateStatus, 3000);
+        updateStatus();
 
         // INTRICATE COGNITION STATUS UPDATE
         async function updateIntricateStatus() {
@@ -828,11 +842,19 @@
                 const transEl = document.getElementById('sys-transcendence');
                 const omegaEl = document.getElementById('sys-omega');
 
-                if (consEl) consEl.innerText = data.observer.consciousness_state.toUpperCase();
-                if (cohEl) cohEl.innerText = data.observer.coherence.toFixed(4);
-                if (transEl) transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
-                if (omegaEl) omegaEl.innerText = (data.omega_tracker.convergence_probability * 100).toFixed(2) + '%';
-            } catch (e) { console.log('Intricate status unavailable'); }
+                if (consEl && data.observer?.consciousness_state) {
+                    consEl.innerText = data.observer.consciousness_state.toUpperCase();
+                }
+                if (cohEl && data.observer?.coherence !== undefined) {
+                    cohEl.innerText = data.observer.coherence.toFixed(4);
+                }
+                if (transEl && data.omega_tracker?.transcendence_factor !== undefined) {
+                    transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
+                }
+                if (omegaEl && data.omega_tracker?.convergence_probability !== undefined) {
+                    omegaEl.innerText = (data.omega_tracker.convergence_probability * 100).toFixed(2) + '%';
+                }
+            } catch (e) { console.log('Intricate status unavailable:', e); }
         }
         setInterval(updateIntricateStatus, 5000);
         updateIntricateStatus();
@@ -848,11 +870,11 @@
                 const outcomeEl = document.getElementById('sys-learn-outcome');
                 const domainsEl = document.getElementById('sys-learn-domains');
 
-                if (cyclesEl) cyclesEl.innerText = data.learning_cycles;
-                if (skillsEl) skillsEl.innerText = data.skills.total_skills || 0;
-                if (outcomeEl) outcomeEl.innerText = (data.multi_modal.avg_outcome || 0).toFixed(3);
-                if (domainsEl) domainsEl.innerText = data.transfer.domains || 0;
-            } catch (e) { console.log('Learning status unavailable'); }
+                if (cyclesEl) cyclesEl.innerText = data.learning_cycles || 0;
+                if (skillsEl) skillsEl.innerText = data.skills?.total_skills || 0;
+                if (outcomeEl) outcomeEl.innerText = (data.multi_modal?.avg_outcome || 0).toFixed(3);
+                if (domainsEl) domainsEl.innerText = data.transfer?.domains || 0;
+            } catch (e) { console.log('Learning status unavailable:', e); }
         }
         setInterval(updateLearningStatus, 5000);
         updateLearningStatus();
