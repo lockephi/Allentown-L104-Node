@@ -1,36 +1,44 @@
-# fly.toml - Fly.io deployment configuration
-# Deploy with: flyctl deploy
+# fly.toml app configuration file generated for l104-sovereign-node on 2026-01-26T00:59:47Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "l104-sovereign-node"
-primary_region = "iad"
+app = 'l104-sovereign-node'
+primary_region = 'iad'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  PORT = "8081"
-  RESONANCE = "527.5184818492537"
+  PORT = '8081'
+  RESONANCE = '527.5184818492537'
 
 [http_service]
   internal_port = 8081
   force_https = true
-  auto_stop_machines = false
+  auto_stop_machines = 'off'
   auto_start_machines = true
   min_machines_running = 1
 
 [[services]]
+  protocol = 'tcp'
   internal_port = 8081
-  protocol = "tcp"
 
   [[services.ports]]
     port = 80
-    handlers = ["http"]
+    handlers = ['http']
 
   [[services.ports]]
     port = 443
-    handlers = ["tls", "http"]
+    handlers = ['tls', 'http']
 
   [[services.http_checks]]
-    interval = "30s"
-    timeout = "5s"
-    path = "/health"
+    interval = '30s'
+    timeout = '5s'
+    path = '/health'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024

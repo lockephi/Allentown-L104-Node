@@ -658,9 +658,8 @@ class MainnetMiner:
         if blockchain is None:
             # Import here to avoid circular import
             try:
-                from l104_valor_coin import ValorCoinEngine
-                engine = ValorCoinEngine()
-                blockchain = engine.blockchain
+                from l104_sovereign_coin_engine import L104SPBlockchain
+                blockchain = L104SPBlockchain()
             except:
                 print("[MINER] No blockchain available for solo mining")
                 return

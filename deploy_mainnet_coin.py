@@ -28,20 +28,19 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import L104 systems
-from l104_ultimate_coin import (
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
-# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
-# ═══════════════════════════════════════════════════════════════════════════════
-
-    UltimateCoinEngine, create_ultimate_coin,
+from l104_sovereign_coin_engine import (
+    SovereignCoinEngine as UltimateCoinEngine,
     Secp256k1, CryptoUtils, HDWallet, ResonanceEngine,
-    Transaction, Block, Blockchain, MiningEngine, BitcoinBridge,
+    Transaction, Block, L104SPBlockchain as Blockchain, MiningEngine,
     GOD_CODE, PHI, COIN_NAME, COIN_SYMBOL, MAX_SUPPLY,
     INITIAL_BLOCK_REWARD, SATOSHI_PER_COIN, TARGET_BLOCK_TIME,
-    HALVING_INTERVAL, BTC_BRIDGE_ADDRESS
+    HALVING_INTERVAL, TxInput, TxOutput, OutPoint, MerkleTree
 )
+
+# Compatibility aliases
+def create_ultimate_coin(): return UltimateCoinEngine()
+BTC_BRIDGE_ADDRESS = "bc1q..."  # Placeholder
+BitcoinBridge = None  # Use l104_bitcoin_network_adapter for real bridge
 
 # ============================================================================
 # VERIFICATION SUITE
@@ -327,7 +326,7 @@ class MainnetVerification:
 
     def test_transaction_serialization(self) -> Tuple[bool, str]:
         """Test transaction serialization"""
-        from l104_ultimate_coin import TxInput, TxOutput, OutPoint
+        from l104_sovereign_coin_engine import TxInput, TxOutput, OutPoint
 
         tx = Transaction(
             version=2,
@@ -348,7 +347,7 @@ class MainnetVerification:
 
     def test_merkle_tree(self) -> Tuple[bool, str]:
         """Test Merkle tree computation"""
-        from l104_ultimate_coin import MerkleTree
+        from l104_sovereign_coin_engine import MerkleTree
 
         txids = ['a' * 64, 'b' * 64, 'c' * 64]
         root = MerkleTree.compute_root(txids)

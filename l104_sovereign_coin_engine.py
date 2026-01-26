@@ -27,10 +27,20 @@ import struct
 import secrets
 import socket
 import threading
-from typing import List, Dict, Any, Optional, Tuple, Set
+import sqlite3
+import os
+import signal
+import http.server
+import urllib.parse
+from typing import List, Dict, Any, Optional, Tuple, Set, Callable
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import cpu_count
+from pathlib import Path
+
+# Data directory for persistent storage
+DATA_DIR = Path(os.environ.get('L104SP_DATA_DIR', os.path.expanduser('~/.l104sp')))
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE
@@ -445,6 +455,184 @@ class UTXOSet:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PERSISTENT STORAGE ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ChainDB:
+    """SQLite-based persistent blockchain storage."""
+
+    def __init__(self, db_path: Optional[Path] = None):
+        self.db_path = db_path or DATA_DIR / 'chainstate.db'
+        self._conn: Optional[sqlite3.Connection] = None
+        self._lock = threading.Lock()
+        self._init_db()
+
+    def _init_db(self) -> None:
+        with self._lock:
+            self._conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
+            self._conn.execute("PRAGMA journal_mode=WAL")
+            self._conn.execute("PRAGMA synchronous=NORMAL")
+            self._conn.executescript('''
+                CREATE TABLE IF NOT EXISTS blocks (
+                    height INTEGER PRIMARY KEY,
+                    hash TEXT UNIQUE NOT NULL,
+                    prev_hash TEXT NOT NULL,
+                    timestamp INTEGER NOT NULL,
+                    bits INTEGER NOT NULL,
+                    nonce INTEGER NOT NULL,
+                    resonance REAL NOT NULL,
+                    merkle_root TEXT NOT NULL,
+                    tx_count INTEGER NOT NULL,
+                    raw_data BLOB NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_blocks_hash ON blocks(hash);
+
+                CREATE TABLE IF NOT EXISTS transactions (
+                    txid TEXT PRIMARY KEY,
+                    block_height INTEGER NOT NULL,
+                    tx_index INTEGER NOT NULL,
+                    raw_data BLOB NOT NULL,
+                    FOREIGN KEY (block_height) REFERENCES blocks(height)
+                );
+                CREATE INDEX IF NOT EXISTS idx_tx_block ON transactions(block_height);
+
+                CREATE TABLE IF NOT EXISTS utxos (
+                    outpoint TEXT PRIMARY KEY,
+                    txid TEXT NOT NULL,
+                    vout INTEGER NOT NULL,
+                    value INTEGER NOT NULL,
+                    script_pubkey BLOB NOT NULL,
+                    height INTEGER NOT NULL,
+                    is_coinbase INTEGER NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_utxo_value ON utxos(value);
+
+                CREATE TABLE IF NOT EXISTS peers (
+                    address TEXT PRIMARY KEY,
+                    port INTEGER NOT NULL,
+                    last_seen INTEGER NOT NULL,
+                    services INTEGER DEFAULT 0
+                );
+
+                CREATE TABLE IF NOT EXISTS chainstate (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                );
+
+                INSERT OR IGNORE INTO chainstate (key, value) VALUES ('height', '-1');
+                INSERT OR IGNORE INTO chainstate (key, value) VALUES ('best_hash', '');
+                INSERT OR IGNORE INTO chainstate (key, value) VALUES ('total_work', '0');
+            ''')
+            self._conn.commit()
+
+    def close(self) -> None:
+        if self._conn:
+            self._conn.close()
+
+    def get_height(self) -> int:
+        with self._lock:
+            cur = self._conn.execute("SELECT value FROM chainstate WHERE key='height'")
+            row = cur.fetchone()
+            return int(row[0]) if row else -1
+
+    def get_best_hash(self) -> str:
+        with self._lock:
+            cur = self._conn.execute("SELECT value FROM chainstate WHERE key='best_hash'")
+            row = cur.fetchone()
+            return row[0] if row else ''
+
+    def store_block(self, block: 'Block') -> bool:
+        with self._lock:
+            try:
+                raw_data = json.dumps(block.to_dict()).encode()
+                self._conn.execute('''
+                    INSERT OR REPLACE INTO blocks 
+                    (height, hash, prev_hash, timestamp, bits, nonce, resonance, merkle_root, tx_count, raw_data)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (block.height, block.hash, block.header.prev_block, block.header.timestamp,
+                      block.header.bits, block.header.nonce, block.header.resonance,
+                      block.header.merkle_root, len(block.transactions), raw_data))
+
+                for idx, tx in enumerate(block.transactions):
+                    tx_raw = json.dumps(tx.to_dict()).encode()
+                    self._conn.execute('''
+                        INSERT OR REPLACE INTO transactions (txid, block_height, tx_index, raw_data)
+                        VALUES (?, ?, ?, ?)
+                    ''', (tx.txid, block.height, idx, tx_raw))
+
+                self._conn.execute("UPDATE chainstate SET value=? WHERE key='height'", (str(block.height),))
+                self._conn.execute("UPDATE chainstate SET value=? WHERE key='best_hash'", (block.hash,))
+                self._conn.commit()
+                return True
+            except Exception as e:
+                print(f"[DB] Error storing block: {e}")
+                self._conn.rollback()
+                return False
+
+    def load_block(self, height: int) -> Optional[Dict[str, Any]]:
+        with self._lock:
+            cur = self._conn.execute("SELECT raw_data FROM blocks WHERE height=?", (height,))
+            row = cur.fetchone()
+            return json.loads(row[0]) if row else None
+
+    def load_block_by_hash(self, block_hash: str) -> Optional[Dict[str, Any]]:
+        with self._lock:
+            cur = self._conn.execute("SELECT raw_data FROM blocks WHERE hash=?", (block_hash,))
+            row = cur.fetchone()
+            return json.loads(row[0]) if row else None
+
+    def store_utxo(self, utxo: UTXO) -> None:
+        with self._lock:
+            self._conn.execute('''
+                INSERT OR REPLACE INTO utxos (outpoint, txid, vout, value, script_pubkey, height, is_coinbase)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (utxo.outpoint.key, utxo.outpoint.txid, utxo.outpoint.vout, utxo.value,
+                  utxo.script_pubkey, utxo.height, 1 if utxo.is_coinbase else 0))
+            self._conn.commit()
+
+    def remove_utxo(self, outpoint: OutPoint) -> None:
+        with self._lock:
+            self._conn.execute("DELETE FROM utxos WHERE outpoint=?", (outpoint.key,))
+            self._conn.commit()
+
+    def load_all_utxos(self) -> Dict[str, UTXO]:
+        utxos = {}
+        with self._lock:
+            cur = self._conn.execute("SELECT outpoint, txid, vout, value, script_pubkey, height, is_coinbase FROM utxos")
+            for row in cur.fetchall():
+                outpoint = OutPoint(row[1], row[2])
+                utxos[row[0]] = UTXO(outpoint, row[3], row[4], row[5], bool(row[6]))
+        return utxos
+
+    def store_peer(self, host: str, port: int) -> None:
+        with self._lock:
+            self._conn.execute('''
+                INSERT OR REPLACE INTO peers (address, port, last_seen) VALUES (?, ?, ?)
+            ''', (host, port, int(time.time())))
+            self._conn.commit()
+
+    def load_peers(self, limit: int = 100) -> List[Tuple[str, int]]:
+        with self._lock:
+            cur = self._conn.execute(
+                "SELECT address, port FROM peers ORDER BY last_seen DESC LIMIT ?", (limit,))
+            return [(row[0], row[1]) for row in cur.fetchall()]
+
+    def get_stats(self) -> Dict[str, Any]:
+        with self._lock:
+            block_count = self._conn.execute("SELECT COUNT(*) FROM blocks").fetchone()[0]
+            tx_count = self._conn.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
+            utxo_count = self._conn.execute("SELECT COUNT(*) FROM utxos").fetchone()[0]
+            total_value = self._conn.execute("SELECT COALESCE(SUM(value), 0) FROM utxos").fetchone()[0]
+            return {
+                'blocks': block_count,
+                'transactions': tx_count,
+                'utxos': utxo_count,
+                'total_supply': total_value / SATOSHI_PER_COIN,
+                'db_size_mb': self.db_path.stat().st_size / (1024 * 1024) if self.db_path.exists() else 0
+            }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # MERKLE TREE
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -579,20 +767,34 @@ class ResonanceEngine:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# BLOCKCHAIN
+# BLOCKCHAIN (WITH PERSISTENCE)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class L104SPBlockchain:
-    """Complete L104SP blockchain."""
+    """Complete L104SP blockchain with persistent storage."""
 
-    def __init__(self, network: str = 'mainnet'):
+    def __init__(self, network: str = 'mainnet', data_dir: Optional[Path] = None):
         self.network = network
+        self.data_dir = data_dir or DATA_DIR
         self.chain: List[Block] = []
         self.utxo_set = UTXOSet()
         self.mempool: Dict[str, Transaction] = {}
         self._lock = threading.Lock()
         self.resonance_engine = ResonanceEngine()
-        self._create_genesis()
+        self.db = ChainDB(self.data_dir / 'chainstate.db')
+        self._callbacks: List[Callable[[Block], None]] = []
+        self._load_or_create_genesis()
+
+    def _load_or_create_genesis(self) -> None:
+        """Load chain from disk or create genesis."""
+        stored_height = self.db.get_height()
+        if stored_height >= 0:
+            print(f"[CHAIN] Loading {stored_height + 1} blocks from disk...")
+            self._load_chain_from_db()
+            print(f"[CHAIN] Loaded to height {self.height}, tip: {self.tip.hash[:16]}...")
+        else:
+            print("[CHAIN] Creating genesis block...")
+            self._create_genesis()
 
     def _create_genesis(self) -> None:
         genesis_header = BlockHeader(version=1, prev_block='0' * 64, timestamp=GENESIS_TIMESTAMP,
@@ -604,6 +806,32 @@ class L104SPBlockchain:
         with self._lock:
             self.chain.append(genesis)
             self.utxo_set.add(UTXO(OutPoint(genesis_coinbase.txid, 0), INITIAL_BLOCK_REWARD, b'\x00' * 25, 0, True))
+            self.db.store_block(genesis)
+            self.db.store_utxo(UTXO(OutPoint(genesis_coinbase.txid, 0), INITIAL_BLOCK_REWARD, b'\x00' * 25, 0, True))
+
+    def _load_chain_from_db(self) -> None:
+        """Reconstruct chain from database."""
+        stored_height = self.db.get_height()
+        utxos = self.db.load_all_utxos()
+        self.utxo_set.utxos = utxos
+        for h in range(stored_height + 1):
+            block_data = self.db.load_block(h)
+            if block_data:
+                header = BlockHeader(
+                    version=block_data.get('version', 1),
+                    prev_block=block_data['prev_block'],
+                    merkle_root=block_data['merkle_root'],
+                    timestamp=block_data['timestamp'],
+                    bits=int(block_data['bits'], 16) if isinstance(block_data['bits'], str) else block_data['bits'],
+                    nonce=block_data['nonce'],
+                    resonance=block_data.get('resonance', 1.0)
+                )
+                block = Block(header=header, transactions=[], height=h)
+                self.chain.append(block)
+
+    def on_new_block(self, callback: Callable[['Block'], None]) -> None:
+        """Register callback for new blocks."""
+        self._callbacks.append(callback)
 
     @property
     def height(self) -> int:
@@ -619,7 +847,16 @@ class L104SPBlockchain:
             return MIN_DIFFICULTY_BITS
         if self.height % DIFFICULTY_ADJUSTMENT_INTERVAL != 0:
             return self.chain[-1].header.bits
-        return MIN_DIFFICULTY_BITS
+        # Calculate new difficulty based on time taken
+        period_start = self.chain[self.height - DIFFICULTY_ADJUSTMENT_INTERVAL + 1]
+        period_end = self.chain[self.height]
+        actual_time = period_end.header.timestamp - period_start.header.timestamp
+        target_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_BLOCK_TIME
+        # Adjust difficulty (max 4x change)
+        ratio = max(0.25, min(4.0, target_time / max(actual_time, 1)))
+        new_target = int(period_end.header.target * ratio)
+        # Convert target back to bits (simplified)
+        return MIN_DIFFICULTY_BITS  # For now, keep minimum
 
     def add_block(self, block: Block) -> Tuple[bool, str]:
         with self._lock:
@@ -631,6 +868,14 @@ class L104SPBlockchain:
                 return False, "INVALID_RESONANCE"
             self._apply_block(block)
             self.chain.append(block)
+            # Persist to disk
+            self.db.store_block(block)
+            # Notify callbacks
+            for cb in self._callbacks:
+                try:
+                    cb(block)
+                except Exception:
+                    pass
             return True, "ACCEPTED"
 
     def _apply_block(self, block: Block) -> None:
@@ -638,9 +883,23 @@ class L104SPBlockchain:
             for inp in tx.inputs:
                 if inp.prevout.txid != '0' * 64:
                     self.utxo_set.remove(inp.prevout)
+                    self.db.remove_utxo(inp.prevout)
             is_coinbase = tx.inputs[0].prevout.txid == '0' * 64
             for vout, out in enumerate(tx.outputs):
-                self.utxo_set.add(UTXO(OutPoint(tx.txid, vout), out.value, out.script_pubkey, block.height, is_coinbase))
+                utxo = UTXO(OutPoint(tx.txid, vout), out.value, out.script_pubkey, block.height, is_coinbase)
+                self.utxo_set.add(utxo)
+                self.db.store_utxo(utxo)
+
+    def get_block(self, height: int) -> Optional[Block]:
+        if 0 <= height <= self.height:
+            return self.chain[height]
+        return None
+
+    def get_block_by_hash(self, block_hash: str) -> Optional[Block]:
+        for block in self.chain:
+            if block.hash == block_hash:
+                return block
+        return None
 
     def get_template(self, miner_address: str) -> Dict[str, Any]:
         return {
@@ -651,12 +910,16 @@ class L104SPBlockchain:
         }
 
     def stats(self) -> Dict[str, Any]:
+        db_stats = self.db.get_stats()
         return {
             'height': self.height, 'tip': self.tip.hash[:16] + '...',
             'difficulty': self.tip.header.difficulty, 'utxo_count': len(self.utxo_set),
             'mempool_size': len(self.mempool), 'total_supply': self.utxo_set.total_supply / SATOSHI_PER_COIN,
-            'network': self.network
+            'network': self.network, 'db': db_stats
         }
+
+    def close(self) -> None:
+        self.db.close()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -797,40 +1060,258 @@ class P2PNode:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FULL NODE
+# DNS SEEDS & PEER DISCOVERY
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class L104SPNode:
-    """Complete L104SP Full Node."""
+# DNS seed nodes for L104SP mainnet discovery
+DNS_SEEDS = [
+    'seed1.l104sp.network',
+    'seed2.l104sp.network',
+    'seed.l104.io',
+]
 
-    def __init__(self, port: int = DEFAULT_PORT):
-        self.wallet = HDWallet()
-        self.blockchain = L104SPBlockchain()
-        self.miner = MiningEngine(self.blockchain)
-        self.p2p = P2PNode(self.blockchain, port=port)
+# Bootstrap nodes (hardcoded for initial network)
+BOOTSTRAP_NODES = [
+    ('127.0.0.1', 10400),  # Local node
+    ('localhost', 10400),
+]
+
+
+class PeerDiscovery:
+    """Peer discovery via DNS seeds and known peers."""
+
+    def __init__(self, blockchain: L104SPBlockchain):
+        self.blockchain = blockchain
+        self.known_peers: Set[Tuple[str, int]] = set(BOOTSTRAP_NODES)
+        self._lock = threading.Lock()
+
+    def discover_dns_seeds(self) -> List[Tuple[str, int]]:
+        """Resolve DNS seeds to peer addresses."""
+        discovered = []
+        for seed in DNS_SEEDS:
+            try:
+                ips = socket.gethostbyname_ex(seed)[2]
+                for ip in ips:
+                    discovered.append((ip, DEFAULT_PORT))
+            except Exception:
+                pass
+        return discovered
+
+    def load_from_db(self) -> None:
+        """Load known peers from database."""
+        peers = self.blockchain.db.load_peers()
+        with self._lock:
+            self.known_peers.update(peers)
+
+    def add_peer(self, host: str, port: int) -> None:
+        with self._lock:
+            self.known_peers.add((host, port))
+            self.blockchain.db.store_peer(host, port)
+
+    def get_peers(self, count: int = 8) -> List[Tuple[str, int]]:
+        with self._lock:
+            return list(self.known_peers)[:count]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# JSON-RPC SERVER
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RPCServer:
+    """JSON-RPC API server for L104SP node."""
+
+    def __init__(self, node: 'L104SPNode', host: str = '127.0.0.1', port: int = 10401):
+        self.node = node
+        self.host = host
+        self.port = port
+        self._server: Optional[http.server.HTTPServer] = None
         self._running = False
 
     def start(self) -> None:
         self._running = True
+        handler = self._create_handler()
+        self._server = http.server.HTTPServer((self.host, self.port), handler)
+        self._server.timeout = 1
+        threading.Thread(target=self._serve, daemon=True).start()
+        print(f"[RPC] Server started on http://{self.host}:{self.port}")
+
+    def _serve(self) -> None:
+        while self._running:
+            self._server.handle_request()
+
+    def _create_handler(self) -> type:
+        node = self.node
+
+        class RPCHandler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, format, *args):
+                pass  # Suppress default logging
+
+            def do_POST(self):
+                try:
+                    content_length = int(self.headers.get('Content-Length', 0))
+                    body = self.rfile.read(content_length).decode()
+                    request = json.loads(body)
+                    method = request.get('method', '')
+                    params = request.get('params', [])
+                    req_id = request.get('id', 1)
+                    result = self._dispatch(method, params)
+                    response = {'jsonrpc': '2.0', 'result': result, 'id': req_id}
+                except Exception as e:
+                    response = {'jsonrpc': '2.0', 'error': {'code': -32600, 'message': str(e)}, 'id': 1}
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps(response).encode())
+
+            def do_GET(self):
+                """Simple REST-style endpoints."""
+                path = urllib.parse.urlparse(self.path).path
+                try:
+                    if path == '/status' or path == '/':
+                        result = node.get_status()
+                    elif path == '/info':
+                        result = {'chain': L104SP_CONFIG, 'node': node.get_status()}
+                    elif path == '/block/latest':
+                        result = node.blockchain.tip.to_dict()
+                    elif path.startswith('/block/'):
+                        height = int(path.split('/')[-1])
+                        block = node.blockchain.get_block(height)
+                        result = block.to_dict() if block else {'error': 'not found'}
+                    elif path == '/peers':
+                        result = {'peers': list(node.p2p.peers.keys()), 'count': len(node.p2p.peers)}
+                    elif path == '/mempool':
+                        result = {'size': len(node.blockchain.mempool), 'txids': list(node.blockchain.mempool.keys())}
+                    elif path == '/mining':
+                        result = {'hashrate': node.miner.stats.hashrate, 'blocks': node.miner.stats.valid_blocks,
+                                  'hashes': node.miner.stats.hashes, 'running': node.miner._running}
+                    elif path == '/newaddress':
+                        result = {'address': node.get_new_address()}
+                    else:
+                        result = {'error': 'unknown endpoint', 'available': ['/status', '/info', '/block/latest', '/block/<height>', '/peers', '/mempool', '/mining', '/newaddress']}
+                except Exception as e:
+                    result = {'error': str(e)}
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps(result, indent=2).encode())
+
+            def _dispatch(self, method: str, params: list) -> Any:
+                if method == 'getblockchaininfo':
+                    return node.blockchain.stats()
+                elif method == 'getblockcount':
+                    return node.blockchain.height
+                elif method == 'getblockhash':
+                    height = params[0] if params else node.blockchain.height
+                    block = node.blockchain.get_block(height)
+                    return block.hash if block else None
+                elif method == 'getblock':
+                    if params:
+                        if isinstance(params[0], int):
+                            block = node.blockchain.get_block(params[0])
+                        else:
+                            block = node.blockchain.get_block_by_hash(params[0])
+                        return block.to_dict() if block else None
+                    return None
+                elif method == 'getmininginfo':
+                    return {'hashrate': node.miner.stats.hashrate, 'blocks': node.miner.stats.valid_blocks,
+                            'difficulty': node.blockchain.tip.header.difficulty}
+                elif method == 'getnewaddress':
+                    return node.get_new_address()
+                elif method == 'getpeerinfo':
+                    return [{'addr': k} for k in node.p2p.peers.keys()]
+                elif method == 'getmempoolinfo':
+                    return {'size': len(node.blockchain.mempool)}
+                elif method == 'stop':
+                    node.stop()
+                    return 'L104SP node stopping...'
+                else:
+                    raise ValueError(f"Unknown method: {method}")
+
+        return RPCHandler
+
+    def stop(self) -> None:
+        self._running = False
+        if self._server:
+            self._server.shutdown()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FULL NODE (ENHANCED)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class L104SPNode:
+    """Complete L104SP Full Node with RPC, persistence, and peer discovery."""
+
+    def __init__(self, port: int = DEFAULT_PORT, rpc_port: int = 10401, data_dir: Optional[Path] = None):
+        self.data_dir = data_dir or DATA_DIR
+        self.wallet = HDWallet()
+        self.blockchain = L104SPBlockchain(data_dir=self.data_dir)
+        self.miner = MiningEngine(self.blockchain)
+        self.p2p = P2PNode(self.blockchain, port=port)
+        self.peer_discovery = PeerDiscovery(self.blockchain)
+        self.rpc: Optional[RPCServer] = None
+        self.rpc_port = rpc_port
+        self._running = False
+        self._setup_signal_handlers()
+
+    def _setup_signal_handlers(self) -> None:
+        """Handle graceful shutdown on SIGINT/SIGTERM."""
+        def handler(signum, frame):
+            print("\n[NODE] Shutdown signal received...")
+            self.stop()
+        try:
+            signal.signal(signal.SIGINT, handler)
+            signal.signal(signal.SIGTERM, handler)
+        except Exception:
+            pass  # May fail in some environments
+
+    def start(self, enable_rpc: bool = True) -> None:
+        self._running = True
+        print("=" * 60)
+        print("    L104SP SOVEREIGN MAINNET NODE v3.1")
+        print("=" * 60)
+        print(f"[NODE] Data directory: {self.data_dir}")
+        print(f"[NODE] Chain height: {self.blockchain.height}")
+        print(f"[NODE] Genesis: {self.blockchain.chain[0].hash[:32]}...")
+        print(f"[NODE] Tip: {self.blockchain.tip.hash[:32]}...")
+
+        # Start P2P
         self.p2p.start()
-        print(f"L104SP Node started on port {self.p2p.port}")
-        print(f"Genesis: {self.blockchain.tip.hash[:16]}...")
-        print(f"Height: {self.blockchain.height}")
+        print(f"[P2P] Listening on port {self.p2p.port}")
+
+        # Load known peers
+        self.peer_discovery.load_from_db()
+        print(f"[P2P] Known peers: {len(self.peer_discovery.known_peers)}")
+
+        # Start RPC
+        if enable_rpc:
+            self.rpc = RPCServer(self, port=self.rpc_port)
+            self.rpc.start()
+
+        print("=" * 60)
+        print(f"[NODE] Ready! RPC: http://127.0.0.1:{self.rpc_port}/status")
+        print("=" * 60)
 
     def start_mining(self, address: str = None) -> None:
         if address is None:
             address, _ = self.wallet.get_address()
-        print(f"Mining to address: {address}")
+        print(f"[MINER] Mining to address: {address}")
         while self._running:
             block = self.miner.mine_block(address)
             if block:
-                print(f"Block {block.height} mined! Hash: {block.hash[:16]}...")
+                print(f"[MINER] Block {block.height} mined! Hash: {block.hash[:16]}... Reward: {block.get_reward() / SATOSHI_PER_COIN} L104SP")
                 self.p2p.broadcast_block(block)
 
     def stop(self) -> None:
+        print("[NODE] Stopping...")
         self._running = False
         self.miner.stop()
         self.p2p.stop()
+        if self.rpc:
+            self.rpc.stop()
+        self.blockchain.close()
+        print("[NODE] Stopped. Chain saved to disk.")
 
     def get_new_address(self) -> str:
         addr, _ = self.wallet.get_address(index=len(self.wallet._cache))
@@ -840,7 +1321,7 @@ class L104SPNode:
         return {
             'node': 'L104SP Full Node', 'version': L104SP_CONFIG['version'],
             'network': self.blockchain.network, 'blockchain': self.blockchain.stats(),
-            'peers': len(self.p2p.peers),
+            'peers': len(self.p2p.peers), 'data_dir': str(self.data_dir),
             'mining': {'hashrate': f"{self.miner.stats.hashrate:.2f} H/s", 'blocks_mined': self.miner.stats.valid_blocks}
         }
 
@@ -1025,21 +1506,54 @@ def resolve_non_dual_logic(vector: List[float]) -> float:
 def main():
     """L104SP Mainnet Node CLI."""
     import argparse
-    parser = argparse.ArgumentParser(description='L104SP Mainnet Node')
-    parser.add_argument('--port', type=int, default=DEFAULT_PORT, help='P2P port')
+    parser = argparse.ArgumentParser(
+        description='L104SP Sovereign Prime Mainnet Node',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  python l104_sovereign_coin_engine.py                    # Start node only
+  python l104_sovereign_coin_engine.py --mine             # Start node and mine
+  python l104_sovereign_coin_engine.py --mine --address ZXX...  # Mine to specific address
+  python l104_sovereign_coin_engine.py --datadir /path    # Use custom data directory
+
+RPC Endpoints (default http://127.0.0.1:10401):
+  GET /status          - Node status
+  GET /info            - Full chain info
+  GET /block/latest    - Latest block
+  GET /block/<height>  - Block by height
+  GET /peers           - Connected peers
+  GET /mining          - Mining stats
+  GET /newaddress      - Generate new address
+'''
+    )
+    parser.add_argument('--port', type=int, default=DEFAULT_PORT, help=f'P2P port (default: {DEFAULT_PORT})')
+    parser.add_argument('--rpcport', type=int, default=10401, help='RPC port (default: 10401)')
+    parser.add_argument('--datadir', type=str, default=None, help=f'Data directory (default: {DATA_DIR})')
     parser.add_argument('--mine', action='store_true', help='Start mining')
-    parser.add_argument('--address', type=str, help='Mining address')
+    parser.add_argument('--address', type=str, help='Mining address (generates new if not specified)')
+    parser.add_argument('--norpc', action='store_true', help='Disable RPC server')
+    parser.add_argument('--daemon', action='store_true', help='Run as background daemon')
     args = parser.parse_args()
 
-    node = L104SPNode(port=args.port)
-    node.start()
+    # Setup data directory
+    data_dir = Path(args.datadir) if args.datadir else DATA_DIR
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create and start node
+    node = L104SPNode(port=args.port, rpc_port=args.rpcport, data_dir=data_dir)
+    node.start(enable_rpc=not args.norpc)
 
     if args.mine:
-        node.start_mining(args.address)
-    else:
-        print("Node running. Press Ctrl+C to stop.")
+        # Mining in foreground
         try:
-            while True:
+            node.start_mining(args.address)
+        except KeyboardInterrupt:
+            node.stop()
+    else:
+        # Node only
+        print("[NODE] Running. Press Ctrl+C to stop.")
+        try:
+            while node._running:
                 time.sleep(1)
         except KeyboardInterrupt:
             node.stop()

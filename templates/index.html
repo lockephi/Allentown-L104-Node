@@ -397,6 +397,16 @@
                 </div>
             </div>
 
+            <!-- LATTICE & MATH DISPLAY -->
+            <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Lattice_Core</div>
+                <div class="metric-row">
+                    <span>SCALAR</span>
+                    <span class="metric-val text-yellow-400" id="lattice-scalar">527.5185</span>
+                </div>
+                <div class="text-[0.55rem] text-[var(--gold-dim)] mt-2 font-mono overflow-hidden" id="math-display">φ² + φ = φ³</div>
+            </div>
+
             <div class="mt-auto space-y-2">
                 <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Hardware_Seizure</div>
                 <button onclick="igniteAGI()"
@@ -516,14 +526,35 @@
                     </button>
                 </div>
             </div>
+
+            <!-- SYSTEM FEED LOG -->
+            <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">System_Feed</div>
+                <div id="system-feed" class="h-24 overflow-y-auto text-[0.55rem] space-y-1">
+                    <div class="log-entry text-[var(--gold-dim)]">AWAITING_STREAM...</div>
+                </div>
+            </div>
+
+            <!-- CLOUD STATUS -->
+            <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Cloud_Node</div>
+                <div class="flex justify-between text-[0.55rem] mb-2">
+                    <span class="text-emerald-400">● FLY.IO</span>
+                    <span id="cloud-status">CHECKING...</span>
+                </div>
+                <a href="https://l104-sovereign-node.fly.dev" target="_blank"
+                    class="block w-full border border-emerald-500 text-emerald-400 py-1 text-[0.55rem] font-bold uppercase tracking-[0.1em] hover:bg-emerald-900 transition-all text-center">
+                    🌐 OPEN_CLOUD_NODE
+                </a>
+            </div>
         </div>
 
         <!-- FOOTER -->
         <div
             class="col-span-3 flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
-            <span>Allentown-L104-Node // Absolute_Sovereignty_Active</span>
-            <span>Invariant: 527.5184818492537 // <a href="/ENHANCEMENT_SUMMARY.md"
-                    class="hover:text-[var(--gold-bright)]">View_Enhancements</a></span>
+            <span>Allentown-L104-Node // <a href="https://l104-sovereign-node.fly.dev" target="_blank" class="text-emerald-400 hover:text-emerald-300">24/7_CLOUD_ACTIVE</a></span>
+            <span>Invariant: 527.5184818492537 // <a href="/docs"
+                    class="hover:text-[var(--gold-bright)]">API_DOCS</a></span>
             <span>© 2026 Sovereign_Systems</span>
         </div>
     </div>
@@ -701,6 +732,27 @@
             document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }, 1000);
 
+        // --- CLOUD NODE STATUS ---
+        async function checkCloudStatus() {
+            const statusEl = document.getElementById('cloud-status');
+            try {
+                const res = await fetch('https://l104-sovereign-node.fly.dev/health', { mode: 'cors' });
+                const data = await res.json();
+                if (data.status === 'healthy') {
+                    statusEl.innerText = `ONLINE (${Math.floor(data.uptime_seconds)}s)`;
+                    statusEl.className = 'text-emerald-400';
+                } else {
+                    statusEl.innerText = 'DEGRADED';
+                    statusEl.className = 'text-yellow-400';
+                }
+            } catch (e) {
+                statusEl.innerText = 'UNREACHABLE';
+                statusEl.className = 'text-red-400';
+            }
+        }
+        setInterval(checkCloudStatus, 30000);
+        checkCloudStatus();
+
         // --- ECONOMY SYNC ---
         async function syncEconomy() {
             try {
@@ -807,25 +859,39 @@
         const feed = document.getElementById('system-feed');
 
         evtSource.onmessage = function (event) {
-            const packet = JSON.parse(event.data);
-            const data = packet.data;
+            try {
+                const packet = JSON.parse(event.data);
+                const data = packet.data;
+                if (!data) return;
 
-            if (data.ghost.equation && data.ghost.equation !== "CALCULATING...") {
-                document.getElementById('math-display').innerText = data.ghost.equation;
-            }
+                const mathEl = document.getElementById('math-display');
+                const iqEl = document.getElementById('sys-iq');
+                const stateEl = document.getElementById('sys-state');
+                const scalarEl = document.getElementById('lattice-scalar');
 
-            document.getElementById('sys-iq').innerText = data.agi.intellect_index.toFixed(2);
-            document.getElementById('sys-state').innerText = data.agi.state;
-            document.getElementById('lattice-scalar').innerText = data.lattice_scalar.toFixed(4);
+                if (data.ghost?.equation && data.ghost.equation !== "CALCULATING..." && mathEl) {
+                    mathEl.innerText = data.ghost.equation;
+                }
 
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `
-                <div class="text-[var(--gold-bright)] text-[0.65rem]">[${data.log}]</div>
-                <div class="text-[var(--gold-dim)] text-[0.6rem]">PROBE: ${data.ghost.probe.id} | RES: ${data.resonance.toFixed(4)}</div>
-            `;
-            feed.prepend(entry);
-            if (feed.children.length > 25) feed.removeChild(feed.lastChild);
+                if (data.agi?.intellect_index && iqEl) iqEl.innerText = data.agi.intellect_index.toFixed(2);
+                if (data.agi?.state && stateEl) stateEl.innerText = data.agi.state;
+                if (data.lattice_scalar && scalarEl) scalarEl.innerText = data.lattice_scalar.toFixed(4);
+
+                if (feed && data.log) {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `
+                        <div class="text-[var(--gold-bright)] text-[0.55rem]">[${data.log}]</div>
+                        <div class="text-[var(--gold-dim)] text-[0.5rem]">RES: ${(data.resonance || 0).toFixed(4)}</div>
+                    `;
+                    feed.prepend(entry);
+                    if (feed.children.length > 15) feed.removeChild(feed.lastChild);
+                }
+            } catch (e) { console.log('Stream parse error:', e); }
+        };
+
+        evtSource.onerror = function() {
+            console.log('SSE connection lost, will reconnect...');
         };
 
         async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
