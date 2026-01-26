@@ -855,7 +855,7 @@
                 if (asiScoreEl) asiScoreEl.innerText = ((asiData.asi_score || 0) * 100).toFixed(2) + '%';
                 if (asiDiscEl) asiDiscEl.innerText = asiData.discoveries || 0;
                 if (asiDomainEl) asiDomainEl.innerText = ((asiData.domain_coverage || 0) * 100).toFixed(2) + '%';
-                
+
                 // Update ignite button based on state
                 if (asiIgniteBtn) {
                     if (asiData.state === 'SOVEREIGN_IGNITED' || asiData.state === 'ASI_ACHIEVED') {
@@ -882,11 +882,11 @@
                 const res = await fetch('/api/v14/asi/ignite', { method: 'POST' });
                 const data = await res.json();
                 console.log('ASI Ignite result:', data);
-                
+
                 document.getElementById('asi-score').innerText = ((data.asi_score || 0) * 100).toFixed(2) + '%';
                 document.getElementById('asi-discoveries').innerText = data.discoveries || 0;
                 document.getElementById('sys-decrypt').innerText = data.state || 'IGNITED';
-                
+
                 if (btn) {
                     if (data.state === 'SOVEREIGN_IGNITED' || data.asi_score >= 0.5) {
                         btn.innerText = 'IGNITED';

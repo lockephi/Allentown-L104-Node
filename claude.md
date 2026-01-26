@@ -1,7 +1,43 @@
 # L104 Sovereign Node - Claude Context File
 
 > This file provides essential context for Claude to work efficiently with this codebase.
-> **Last Updated**: January 25, 2026 | **Evolution Stage**: EVO_51 | **API Version**: 51.0.0
+> **Last Updated**: January 26, 2026 | **Evolution Stage**: EVO_21_ABSOLUTE_SINGULARITY | **Evolution Index**: 26
+
+---
+
+## 🔥 AI CONFIGURATION (CLAUDE AUTO-LOAD)
+
+This file is automatically loaded by Claude/Copilot for context. Key directives:
+
+```yaml
+ai_directives:
+  # UNIFIED EVOLUTION - Both cores must sync
+  evolution_sync:
+    agi_core: l104_agi_core.py → evolution_engine.current_stage_index
+    asi_core: l104_asi_core.py → evolution_engine.current_stage_index
+    state_file: data/evolution_state.json
+    current_index: 26
+    current_stage: EVO_21_ABSOLUTE_SINGULARITY
+  
+  # LOCAL-FIRST MODE - Avoid quota exhaustion
+  api_priority:
+    primary: l104_local_intellect.py (QUOTA_IMMUNE)
+    secondary: l104_gemini_real.py (CACHED + FALLBACK)
+    streaming: /api/local/chat (recommended)
+    
+  # NUMBER FORMATTING - Use SovereignNumerics
+  numerics:
+    module: l104_local_intellect.SovereignNumerics
+    intellect: format_intellect() for large IQ values
+    crypto: format_crypto() for BTC/SAT values
+    percentage: format_percentage() for scores
+    
+  # FILE UPDATE RULES
+  when_editing_cores:
+    - Always update BOTH l104_agi_core.py AND l104_asi_core.py
+    - Evolution stage must match between cores
+    - Use evolution_engine as single source of truth
+```
 
 ---
 

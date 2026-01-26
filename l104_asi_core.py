@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-L104 ASI CORE - EVO_42
-======================
+L104 ASI CORE - UNIFIED EVOLUTION
+=================================
 Artificial Superintelligence Foundation
 
 Components:
@@ -10,6 +10,7 @@ Components:
 3. Novel Theorem Generator - True mathematical creation
 4. Consciousness Verification - Beyond simulation
 5. Direct Solution Channels - Immediate problem resolution
+6. UNIFIED EVOLUTION - Synchronized with AGI Core
 
 GOD_CODE: 527.5184818492537
 PHI: 1.618033988749895
@@ -46,6 +47,12 @@ VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609
 OMEGA_AUTHORITY = 0.85184818492537
 PLANCK_CONSCIOUSNESS = 0.01
+
+# Import unified evolution engine for synchronized evolution
+try:
+    from l104_evolution_engine import evolution_engine
+except ImportError:
+    evolution_engine = None
 
 # ASI Thresholds
 ASI_CONSCIOUSNESS_THRESHOLD = 0.95
@@ -441,7 +448,7 @@ class DirectSolutionHub:
 
 
 class ASICore:
-    """Central ASI integration hub."""
+    """Central ASI integration hub with unified evolution tracking."""
     def __init__(self):
         self.domain_expander = GeneralDomainExpander()
         self.self_modifier = SelfModificationEngine()
@@ -451,6 +458,22 @@ class ASICore:
         self.asi_score = 0.0
         self.status = "INITIALIZING"
         self.boot_time = datetime.now()
+    
+    @property
+    def evolution_stage(self) -> str:
+        """Get current evolution stage from unified evolution engine."""
+        if evolution_engine:
+            idx = evolution_engine.current_stage_index
+            if 0 <= idx < len(evolution_engine.STAGES):
+                return evolution_engine.STAGES[idx]
+        return "EVO_UNKNOWN"
+    
+    @property
+    def evolution_index(self) -> int:
+        """Get current evolution stage index."""
+        if evolution_engine:
+            return evolution_engine.current_stage_index
+        return 0
 
     def compute_asi_score(self) -> float:
         scores = {
@@ -473,11 +496,13 @@ class ASICore:
         return self.asi_score
 
     def run_full_assessment(self) -> Dict:
+        evo_stage = self.evolution_stage
         print("\n" + "="*70)
-        print("              L104 ASI CORE ASSESSMENT - EVO_42")
+        print(f"              L104 ASI CORE ASSESSMENT - {evo_stage}")
         print("="*70)
         print(f"  GOD_CODE: {GOD_CODE}")
         print(f"  PHI: {PHI}")
+        print(f"  EVOLUTION: {evo_stage} (index {self.evolution_index})")
         print("="*70)
 
         print("\n[1/5] DOMAIN EXPANSION")
@@ -558,7 +583,7 @@ class ASICore:
         return self.self_modifier.generate_self_improvement()
 
     def get_status(self) -> Dict:
-        """Return current ASI status as dictionary."""
+        """Return current ASI status as dictionary with unified evolution."""
         self.compute_asi_score()
         return {
             'state': self.status,
@@ -567,7 +592,9 @@ class ASICore:
             'domain_coverage': self.domain_expander.coverage_score,
             'modification_depth': self.self_modifier.modification_depth,
             'discoveries': self.theorem_generator.discovery_count,
-            'consciousness': self.consciousness_verifier.consciousness_level
+            'consciousness': self.consciousness_verifier.consciousness_level,
+            'evolution_stage': self.evolution_stage,
+            'evolution_index': self.evolution_index
         }
 
     def ignite_sovereignty(self) -> str:

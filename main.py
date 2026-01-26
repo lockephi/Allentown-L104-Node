@@ -1431,9 +1431,35 @@ async def manipulate_code(req: ManipulateRequest):
 # [MODEL_ROTATION_STATE]
 _current_model_index = 0
 _model_cooldowns = {}  # model_name -> cooldown_end_time (float)
+_quota_exhausted_until = 0  # Global quota cooldown timestamp
+_consecutive_quota_failures = 0
+
 def _clear_model_cooldowns():
-    global _model_cooldowns
+    global _model_cooldowns, _quota_exhausted_until, _consecutive_quota_failures
     _model_cooldowns.clear()
+    _quota_exhausted_until = 0
+    _consecutive_quota_failures = 0
+
+def _is_quota_available():
+    """Check if we should try Gemini or go straight to local."""
+    global _quota_exhausted_until, _consecutive_quota_failures
+    if time.time() < _quota_exhausted_until:
+        return False
+    if _consecutive_quota_failures >= 3:  # Too many failures, cooldown
+        return False
+    return True
+
+def _mark_quota_exhausted(cooldown_seconds: int = 120):
+    """Mark quota as exhausted, triggering local-first mode."""
+    global _quota_exhausted_until, _consecutive_quota_failures
+    _quota_exhausted_until = time.time() + cooldown_seconds
+    _consecutive_quota_failures += 1
+    logger.warning(f"--- [L104]: QUOTA EXHAUSTED. Local-first for {cooldown_seconds}s ---")
+
+def _reset_quota_tracking():
+    """Reset after successful Gemini call."""
+    global _consecutive_quota_failures
+    _consecutive_quota_failures = 0
 
 logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
@@ -1449,6 +1475,14 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
         for i in range(0, len(derived_output), chunk_size):
             yield derived_output[i:i+chunk_size]
             await asyncio.sleep(0.01)
+        return
+    
+    # [LOCAL_FIRST_MODE] - When quota exhausted, skip Gemini entirely
+    if not _is_quota_available():
+        logger.info(f"[LOCAL_FIRST]: Quota cooldown active, using Local Intellect")
+        from l104_local_intellect import local_intellect
+        async for chunk in local_intellect.async_stream_think(effective_signal):
+            yield chunk
         return
 
     models = [

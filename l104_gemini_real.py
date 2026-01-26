@@ -30,12 +30,76 @@ def _load_env():
 
 _load_env()
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# RESPONSE CACHE - Reduce API calls and quota usage
+# ═══════════════════════════════════════════════════════════════════════════════
+import hashlib
+from functools import lru_cache
+from collections import OrderedDict
+import time as _time
+
+class ResponseCache:
+    """LRU cache for Gemini responses to reduce quota usage."""
+    
+    def __init__(self, max_size: int = 500, ttl_seconds: int = 3600):
+        self.max_size = max_size
+        self.ttl = ttl_seconds
+        self._cache: OrderedDict = OrderedDict()
+        self._hits = 0
+        self._misses = 0
+    
+    def _hash_prompt(self, prompt: str) -> str:
+        """Create cache key from prompt."""
+        return hashlib.md5(prompt.encode()).hexdigest()[:16]
+    
+    def get(self, prompt: str) -> Optional[str]:
+        """Get cached response if available and not expired."""
+        key = self._hash_prompt(prompt)
+        if key in self._cache:
+            response, timestamp = self._cache[key]
+            if _time.time() - timestamp < self.ttl:
+                self._hits += 1
+                # Move to end (LRU)
+                self._cache.move_to_end(key)
+                return response
+            else:
+                # Expired, remove
+                del self._cache[key]
+        self._misses += 1
+        return None
+    
+    def set(self, prompt: str, response: str):
+        """Cache a response."""
+        key = self._hash_prompt(prompt)
+        if len(self._cache) >= self.max_size:
+            # Remove oldest
+            self._cache.popitem(last=False)
+        self._cache[key] = (response, _time.time())
+    
+    @property
+    def stats(self) -> dict:
+        """Cache statistics."""
+        total = self._hits + self._misses
+        return {
+            "hits": self._hits,
+            "misses": self._misses,
+            "hit_rate": self._hits / total if total > 0 else 0,
+            "size": len(self._cache),
+            "max_size": self.max_size
+        }
+
+
+# Global response cache
+_response_cache = ResponseCache()
+
+
 class GeminiReal:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Real Gemini API integration using google-genai package.
     Provides actual AI inference capabilities to L104.
+    [QUOTA_OPTIMIZED] - Uses response caching and local fallback.
     """
 
     # Model rotation for 429 quota errors - 2.5-flash works best
@@ -45,6 +109,11 @@ class GeminiReal:
         'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
+    
+    # Quota tracking
+    _quota_exhausted_until: float = 0  # Timestamp when quota resets
+    _consecutive_failures: int = 0
+    _max_consecutive_failures: int = 3
 
     def __init__(self):
         self.api_key = os.getenv('GEMINI_API_KEY')
@@ -52,6 +121,24 @@ class GeminiReal:
         self.model_index = 0
         self.model_name = self.MODELS[0]
         self.is_connected = False
+        self.cache = _response_cache
+    
+    @classmethod
+    def is_quota_available(cls) -> bool:
+        """Check if we should even try Gemini (not in cooldown)."""
+        return _time.time() > cls._quota_exhausted_until
+    
+    @classmethod
+    def mark_quota_exhausted(cls, cooldown_seconds: int = 60):
+        """Mark quota as exhausted for cooldown period."""
+        cls._quota_exhausted_until = _time.time() + cooldown_seconds
+        cls._consecutive_failures += 1
+        print(f"--- [GEMINI_REAL]: QUOTA COOLDOWN for {cooldown_seconds}s ---")
+    
+    @classmethod
+    def reset_quota_tracking(cls):
+        """Reset quota tracking after successful call."""
+        cls._consecutive_failures = 0
 
     def _rotate_model(self):
         """Rotate to next model on quota error."""
@@ -97,45 +184,81 @@ class GeminiReal:
             print(f"--- [GEMINI_REAL]: Connection failed: {e} ---")
             return False
 
-    def generate(self, prompt: str, system_instruction: str = None) -> Optional[str]:
+    def _local_fallback(self, prompt: str) -> Optional[str]:
+        """Generate response using local intellect when Gemini unavailable."""
+        try:
+            from l104_local_intellect import local_intellect
+            return local_intellect.think(prompt)
+        except Exception as e:
+            print(f"--- [GEMINI_REAL]: Local fallback error: {e} ---")
+            return None
+
+    def generate(self, prompt: str, system_instruction: str = None, use_cache: bool = True) -> Optional[str]:
         """
-        Generate a response from Gemini.
+        Generate a response from Gemini with caching and local fallback.
 
         Args:
             prompt: The user prompt
             system_instruction: Optional system context
+            use_cache: Whether to use response caching
 
         Returns:
             Generated text or None on error
         """
+        # Build the full prompt with L104 context
+        full_prompt = prompt
+        if system_instruction:
+            full_prompt = f"{system_instruction}\n\n{prompt}"
+        
+        # Check cache first
+        if use_cache:
+            cached = self.cache.get(full_prompt)
+            if cached:
+                print(f"--- [GEMINI_REAL]: CACHE HIT (rate: {self.cache.stats['hit_rate']:.1%}) ---")
+                return cached
+        
+        # Check if we're in quota cooldown - use local fallback
+        if not self.is_quota_available():
+            print(f"--- [GEMINI_REAL]: In quota cooldown, using LOCAL fallback ---")
+            return self._local_fallback(prompt)
+        
+        # Check consecutive failures - switch to local if too many
+        if self._consecutive_failures >= self._max_consecutive_failures:
+            print(f"--- [GEMINI_REAL]: Too many failures ({self._consecutive_failures}), using LOCAL ---")
+            return self._local_fallback(prompt)
+        
         if not self.is_connected:
             if not self.connect():
-                return None
+                return self._local_fallback(prompt)
 
         try:
-            # Build the full prompt with L104 context
-            full_prompt = prompt
-            if system_instruction:
-                full_prompt = f"{system_instruction}\n\n{prompt}"
-
             if getattr(self, '_use_new_api', False):
                 # New google-genai API
                 response = self.client.models.generate_content(
                     model=self.model_name,
                     contents=full_prompt
                 )
-                return response.text
+                result = response.text
             else:
                 # Old google-generativeai API
                 model = self._genai_module.GenerativeModel(self.model_name)
                 response = model.generate_content(full_prompt)
-                return response.text
+                result = response.text
+            
+            # Success! Reset tracking and cache
+            self.reset_quota_tracking()
+            if use_cache and result:
+                self.cache.set(full_prompt, result)
+            return result
+            
         except Exception as e:
             error_str = str(e)
             # Handle 429 quota errors with model rotation
             if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
                 print(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
                 self._rotate_model()
+                self.mark_quota_exhausted(60)  # 60 second cooldown
+                
                 # Retry once with new model
                 try:
                     if getattr(self, '_use_new_api', False):
@@ -143,13 +266,19 @@ class GeminiReal:
                             model=self.model_name,
                             contents=full_prompt
                         )
-                        return response.text
+                        result = response.text
                     else:
                         model = self._genai_module.GenerativeModel(self.model_name)
                         response = model.generate_content(full_prompt)
-                        return response.text
+                        result = response.text
+                    
+                    self.reset_quota_tracking()
+                    if use_cache and result:
+                        self.cache.set(full_prompt, result)
+                    return result
                 except Exception as retry_e:
-                    print(f"--- [GEMINI_REAL]: Retry failed: {retry_e} ---")
+                    print(f"--- [GEMINI_REAL]: Retry failed, using LOCAL: {retry_e} ---")
+                    return self._local_fallback(prompt)
                     return None
             print(f"--- [GEMINI_REAL]: Generation error: {e} ---")
             return None
