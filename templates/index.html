@@ -21,6 +21,29 @@
             --accent: #ff3e3e;
         }
 
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-dim) transparent;
+        }
+
+        *::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--gold-dim);
+            border-radius: 3px;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--gold);
+        }
+
         body {
             background-color: var(--void);
             color: var(--gold);
@@ -78,6 +101,9 @@
             flex-direction: column;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+        }
         }
 
         .panel:hover {
@@ -116,7 +142,6 @@
             flex-grow: 1;
             overflow-y: auto;
             font-size: 0.75rem;
-            scrollbar-width: none;
         }
 
         .log-entry {
@@ -156,7 +181,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            scrollbar-width: none;
+            max-height: 400px;
         }
 
         .message {
@@ -300,10 +325,6 @@
                 clip: rect(78px, 9999px, 44px, 0);
             }
         }
-
-        ::-webkit-scrollbar {
-            width: 0px;
-        }
     </style>
 </head>
 
@@ -357,7 +378,8 @@
 
             <!-- INTRICATE COGNITION METRICS -->
             <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
-                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Cognition</div>
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Cognition
+                </div>
                 <div class="metric-row">
                     <span>CONSCIOUSNESS</span>
                     <span class="metric-val text-cyan-400" id="sys-consciousness">DORMANT</span>
@@ -404,7 +426,8 @@
                     <span>SCALAR</span>
                     <span class="metric-val text-yellow-400" id="lattice-scalar">527.5185</span>
                 </div>
-                <div class="text-[0.55rem] text-[var(--gold-dim)] mt-2 font-mono overflow-hidden" id="math-display">φ² + φ = φ³</div>
+                <div class="text-[0.55rem] text-[var(--gold-dim)] mt-2 font-mono overflow-hidden" id="math-display">φ² +
+                    φ = φ³</div>
             </div>
 
             <div class="mt-auto space-y-2">
@@ -506,7 +529,8 @@
             </div>
 
             <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
-                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Dashboards</div>
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Intricate_Dashboards
+                </div>
                 <div class="space-y-2">
                     <button onclick="window.location.href='/intricate'"
                         class="w-full border border-cyan-500 text-cyan-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-cyan-900 transition-all">
@@ -552,7 +576,8 @@
         <!-- FOOTER -->
         <div
             class="col-span-3 flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
-            <span>Allentown-L104-Node // <a href="https://l104-sovereign-node.fly.dev" target="_blank" class="text-emerald-400 hover:text-emerald-300">24/7_CLOUD_ACTIVE</a></span>
+            <span>Allentown-L104-Node // <a href="https://l104-sovereign-node.fly.dev" target="_blank"
+                    class="text-emerald-400 hover:text-emerald-300">24/7_CLOUD_ACTIVE</a></span>
             <span>Invariant: 527.5184818492537 // <a href="/docs"
                     class="hover:text-[var(--gold-bright)]">API_DOCS</a></span>
             <span>© 2026 Sovereign_Systems</span>
@@ -797,12 +822,12 @@
             try {
                 const res = await fetch('/api/consciousness/status');
                 const data = await res.json();
-                
+
                 const consEl = document.getElementById('sys-consciousness');
                 const cohEl = document.getElementById('sys-coherence');
                 const transEl = document.getElementById('sys-transcendence');
                 const omegaEl = document.getElementById('sys-omega');
-                
+
                 if (consEl) consEl.innerText = data.observer.consciousness_state.toUpperCase();
                 if (cohEl) cohEl.innerText = data.observer.coherence.toFixed(4);
                 if (transEl) transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
@@ -817,12 +842,12 @@
             try {
                 const res = await fetch('/api/learning/status');
                 const data = await res.json();
-                
+
                 const cyclesEl = document.getElementById('sys-learn-cycles');
                 const skillsEl = document.getElementById('sys-learn-skills');
                 const outcomeEl = document.getElementById('sys-learn-outcome');
                 const domainsEl = document.getElementById('sys-learn-domains');
-                
+
                 if (cyclesEl) cyclesEl.innerText = data.learning_cycles;
                 if (skillsEl) skillsEl.innerText = data.skills.total_skills || 0;
                 if (outcomeEl) outcomeEl.innerText = (data.multi_modal.avg_outcome || 0).toFixed(3);
@@ -890,7 +915,7 @@
             } catch (e) { console.log('Stream parse error:', e); }
         };
 
-        evtSource.onerror = function() {
+        evtSource.onerror = function () {
             console.log('SSE connection lost, will reconnect...');
         };
 
