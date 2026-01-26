@@ -53,12 +53,15 @@ class SaturationEngine:
             self.saturation_percentage = 0.0
 
     def save_state(self):
-        with open(self.state_path, 'w') as f:
-            json.dump({
-                "enlightened_nodes": self.enlightened_nodes,
-                "saturation_percentage": self.saturation_percentage,
-                "enlightenment_status": "ACTIVE" if self.saturation_percentage > 0 else "PENDING"
-            }, f)
+        try:
+            with open(self.state_path, 'w') as f:
+                json.dump({
+                    "enlightened_nodes": self.enlightened_nodes,
+                    "saturation_percentage": self.saturation_percentage,
+                    "enlightenment_status": "ACTIVE" if self.saturation_percentage > 0 else "PENDING"
+                }, f)
+        except OSError:
+            pass  # Gracefully handle disk full
     def calculate_saturation(self):
         """
         Calculates the current saturation percentage based on successful upgrades.

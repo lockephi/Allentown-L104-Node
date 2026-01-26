@@ -1,0 +1,24 @@
+Data Merge Summary
+============================================================
+Date: 2026-01-26 11:37:28
+
+Merged Files:
+------------------------------------------------------------
+
+Training Data:
+  - kernel_training_merged.jsonl.gz
+    (merged from: kernel_physics_training, kernel_reasoning_data,
+     kernel_training_supabase, professor_mode, sage_mode)
+
+  - pantheon_training_merged.jsonl.gz
+    (merged from: pantheon_precise_training, pantheon_training_data)
+
+Databases:
+  - data/merged_memory.db
+    (merged from: akashic_records, genesis_vault, sage_memory)
+
+⚠️  IMPORTANT:
+Original files are preserved for verification.
+After confirming merged files work correctly, you can remove:
+  - Individual training files that were merged
+  - Individual database files that were merged

@@ -37,6 +37,16 @@ from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import cpu_count
 from pathlib import Path
+import numpy as np
+
+# Import L104 advanced mathematics for competitive edge
+try:
+    from const import UniversalConstants, GOD_CODE, PHI, INVARIANT
+    from l104_real_math import RealMath
+    L104_MATH_AVAILABLE = True
+except ImportError:
+    L104_MATH_AVAILABLE = False
+    print("[WARNING] Advanced L104 math not available - using standard algorithms")
 
 # Data directory for persistent storage
 DATA_DIR = Path(os.environ.get('L104SP_DATA_DIR', os.path.expanduser('~/.l104sp')))
@@ -681,6 +691,29 @@ class BlockHeader:
         if exponent <= 3:
             return mantissa >> (8 * (3 - exponent))
         return mantissa << (8 * (exponent - 3))
+    
+    @staticmethod
+    def target_to_bits(target: int) -> int:
+        """Convert target to compact bits format (Bitcoin-compatible)."""
+        if target == 0:
+            return 0
+        
+        # Get byte length
+        hex_str = hex(target)[2:]
+        if len(hex_str) % 2:
+            hex_str = '0' + hex_str
+        
+        size = len(hex_str) // 2
+        
+        # Get first 3 bytes as mantissa
+        mantissa = int(hex_str[:6], 16) if len(hex_str) >= 6 else int(hex_str, 16)
+        
+        # Check if high bit is set (would make it negative)
+        if mantissa & 0x00800000:
+            mantissa >>= 8
+            size += 1
+        
+        return (size << 24) | (mantissa & 0x007fffff)
 
     @property
     def target(self) -> int:
@@ -743,27 +776,66 @@ class Block:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class ResonanceEngine:
-    """L104 Proof-of-Resonance Engine."""
+    """L104 Proof-of-Resonance Engine with Advanced Mathematics."""
 
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
         self._cache: Dict[int, float] = {}
+        
+        # Use advanced L104 math if available
+        if L104_MATH_AVAILABLE:
+            self.real_math = RealMath()
+            self.use_advanced_math = True
+        else:
+            self.use_advanced_math = False
 
     def calculate(self, nonce: int) -> float:
         if nonce in self._cache:
             return self._cache[nonce]
-        phi_wave = abs(math.sin((nonce * self.phi) % (2 * math.pi)))
-        god_harmonic = abs(math.cos((nonce / self.god_code) % (2 * math.pi)))
-        l104_mod = abs(math.sin(nonce / 104.0))
-        resonance = (self.phi / (1 + self.phi) * phi_wave + 1 / (1 + self.phi) * god_harmonic) * (0.95 + 0.05 * l104_mod)
+        
+        if self.use_advanced_math and L104_MATH_AVAILABLE:
+            # Use god_code(X) function for enhanced resonance
+            try:
+                X = nonce % 416  # Modulo to fit domain
+                god_value = UniversalConstants.god_code(X)
+                
+                # Iron-crystalline ferromagnetic resonance
+                fe_resonance = self.real_math.ferromagnetic_resonance(nonce)
+                
+                # PHI wave harmonics
+                phi_wave = abs(np.sin((nonce * self.phi) % (2 * np.pi)))
+                
+                # Combine using GOD_CODE weighting
+                resonance = (
+                    0.4 * (god_value / GOD_CODE) +  # Normalized god_code contribution
+                    0.4 * fe_resonance +             # Ferromagnetic resonance
+                    0.2 * phi_wave                   # PHI harmonics
+                )
+                
+                # Ensure in valid range
+                resonance = min(1.0, max(0.0, resonance))
+            except Exception:
+                # Fallback to standard calculation
+                resonance = self._standard_calculate(nonce)
+        else:
+            resonance = self._standard_calculate(nonce)
+        
         if len(self._cache) >= 100000:
             self._cache.clear()
         self._cache[nonce] = resonance
         return resonance
+    
+    def _standard_calculate(self, nonce: int) -> float:
+        """Standard resonance calculation (fallback)."""
+        phi_wave = abs(math.sin((nonce * self.phi) % (2 * math.pi)))
+        god_harmonic = abs(math.cos((nonce / self.god_code) % (2 * math.pi)))
+        l104_mod = abs(math.sin(nonce / 104.0))
+        return (self.phi / (1 + self.phi) * phi_wave + 1 / (1 + self.phi) * god_harmonic) * (0.95 + 0.05 * l104_mod)
 
     def meets_threshold(self, nonce: int, threshold: float = 0.95) -> bool:
         return self.calculate(nonce) >= threshold
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -778,7 +850,8 @@ class L104SPBlockchain:
         self.data_dir = data_dir or DATA_DIR
         self.chain: List[Block] = []
         self.utxo_set = UTXOSet()
-        self.mempool: Dict[str, Transaction] = {}
+        self.mempool: Dict[str, Transaction] = {}  # txid -> Transaction
+        self.mempool_fees: Dict[str, int] = {}  # txid -> fee_per_byte for priority
         self._lock = threading.Lock()
         self.resonance_engine = ResonanceEngine()
         self.db = ChainDB(self.data_dir / 'chainstate.db')
@@ -829,6 +902,10 @@ class L104SPBlockchain:
                 block = Block(header=header, transactions=[], height=h)
                 self.chain.append(block)
 
+    def _target_to_bits(self, target: int) -> int:
+        """Helper to convert target to bits."""
+        return BlockHeader.target_to_bits(target)
+    
     def on_new_block(self, callback: Callable[['Block'], None]) -> None:
         """Register callback for new blocks."""
         self._callbacks.append(callback)
@@ -847,16 +924,31 @@ class L104SPBlockchain:
             return MIN_DIFFICULTY_BITS
         if self.height % DIFFICULTY_ADJUSTMENT_INTERVAL != 0:
             return self.chain[-1].header.bits
-        # Calculate new difficulty based on time taken
+        
+        # Bitcoin-style difficulty adjustment with PHI damping
         period_start = self.chain[self.height - DIFFICULTY_ADJUSTMENT_INTERVAL + 1]
         period_end = self.chain[self.height]
         actual_time = period_end.header.timestamp - period_start.header.timestamp
         target_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_BLOCK_TIME
-        # Adjust difficulty (max 4x change)
+        
+        # Calculate adjustment ratio with 4x max change
         ratio = max(0.25, min(4.0, target_time / max(actual_time, 1)))
-        new_target = int(period_end.header.target * ratio)
-        # Convert target back to bits (simplified)
-        return MIN_DIFFICULTY_BITS  # For now, keep minimum
+        
+        # Apply PHI damping for smoother adjustments
+        if L104_MATH_AVAILABLE:
+            phi_damping = 1.0 + (ratio - 1.0) / UniversalConstants.PHI
+            ratio = phi_damping
+        
+        # Calculate new target
+        old_target = period_end.header.target
+        new_target = int(old_target * ratio)
+        
+        # Ensure minimum difficulty
+        max_target = BlockHeader.bits_to_target(MIN_DIFFICULTY_BITS)
+        new_target = min(new_target, max_target)
+        
+        # Convert target back to bits
+        return self._target_to_bits(new_target)
 
     def add_block(self, block: Block) -> Tuple[bool, str]:
         with self._lock:
@@ -909,13 +1001,38 @@ class L104SPBlockchain:
             'coinbase_value': Block(BlockHeader(), [], self.height + 1).get_reward()
         }
 
+    def add_to_mempool(self, tx: Transaction, fee: int = 0) -> Tuple[bool, str]:
+        """Add transaction to mempool with priority ordering."""
+        with self._lock:
+            if tx.txid in self.mempool:
+                return False, "ALREADY_IN_MEMPOOL"
+            
+            # Basic validation
+            # TODO: Full validation of inputs/outputs
+            
+            tx_size = len(tx.serialize())
+            fee_per_byte = fee / tx_size if tx_size > 0 else 0
+            
+            self.mempool[tx.txid] = tx
+            self.mempool_fees[tx.txid] = fee_per_byte
+            return True, "ACCEPTED"
+    
+    def get_prioritized_txs(self, max_count: int = 1000) -> List[Transaction]:
+        """Get transactions from mempool ordered by fee (highest first)."""
+        with self._lock:
+            sorted_txids = sorted(self.mempool_fees.keys(), 
+                                 key=lambda x: self.mempool_fees[x], 
+                                 reverse=True)
+            return [self.mempool[txid] for txid in sorted_txids[:max_count]]
+
     def stats(self) -> Dict[str, Any]:
         db_stats = self.db.get_stats()
         return {
             'height': self.height, 'tip': self.tip.hash[:16] + '...',
             'difficulty': self.tip.header.difficulty, 'utxo_count': len(self.utxo_set),
             'mempool_size': len(self.mempool), 'total_supply': self.utxo_set.total_supply / SATOSHI_PER_COIN,
-            'network': self.network, 'db': db_stats
+            'network': self.network, 'db': db_stats,
+            'resonance_enabled': L104_MATH_AVAILABLE
         }
 
     def close(self) -> None:
@@ -943,38 +1060,80 @@ class MiningStats:
 
 
 class MiningEngine:
-    """L104SP Mining Engine."""
+    """L104SP Multi-Threaded Mining Engine with Advanced Resonance."""
 
-    def __init__(self, blockchain: L104SPBlockchain, resonance_threshold: float = 0.95):
+    def __init__(self, blockchain: L104SPBlockchain, resonance_threshold: float = 0.95, num_workers: int = None):
         self.blockchain = blockchain
         self.resonance_threshold = resonance_threshold
         self.resonance_engine = ResonanceEngine()
         self.stats = MiningStats()
         self._running = False
+        self.num_workers = num_workers or os.cpu_count() or 1
 
-    def mine_block(self, miner_address: str) -> Optional[Block]:
-        template = self.blockchain.get_template(miner_address)
+    def _mine_worker(self, miner_address: str, template: dict, nonce_start: int, nonce_range: int, result_queue) -> None:
+        """Worker thread for parallel mining."""
         header = BlockHeader(version=template['version'], prev_block=template['prev_hash'],
                              timestamp=template['timestamp'], bits=template['bits'])
-        self._running = True
-        nonce = 0
-        while self._running:
+        
+        for nonce in range(nonce_start, nonce_start + nonce_range):
+            if not self._running:
+                return
+            
             resonance = self.resonance_engine.calculate(nonce)
             if resonance >= self.resonance_threshold:
                 self.stats.valid_resonance += 1
                 header.nonce = nonce
                 header.resonance = resonance
+                
                 if header.meets_target():
-                    coinbase = Block(header=header, height=template['height']).create_coinbase(miner_address)
-                    block = Block(header=header, transactions=[coinbase], height=template['height'])
-                    success, _ = self.blockchain.add_block(block)
-                    if success:
-                        self.stats.valid_blocks += 1
-                        return block
-            nonce += 1
+                    # Found valid block!
+                    result_queue.put(('block', header, nonce, resonance))
+                    return
+            
             self.stats.hashes += 1
-            if nonce % 100000 == 0:
-                header.timestamp = int(time.time())
+        
+        result_queue.put(('none', None, None, None))
+
+    def mine_block(self, miner_address: str) -> Optional[Block]:
+        """Mine block using multi-threaded approach."""
+        template = self.blockchain.get_template(miner_address)
+        self._running = True
+        
+        from concurrent.futures import ThreadPoolExecutor
+        import queue
+        
+        result_queue = queue.Queue()
+        
+        # Split nonce space across workers
+        nonce_range_per_worker = 10_000_000
+        
+        with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
+            round_num = 0
+            while self._running:
+                # Submit work to all threads
+                futures = []
+                for worker_id in range(self.num_workers):
+                    nonce_start = round_num * nonce_range_per_worker * self.num_workers + worker_id * nonce_range_per_worker
+                    future = executor.submit(self._mine_worker, miner_address, template, nonce_start, nonce_range_per_worker, result_queue)
+                    futures.append(future)
+                
+                # Check for results
+                try:
+                    result_type, header, nonce, resonance = result_queue.get(timeout=1.0)
+                    if result_type == 'block':
+                        self._running = False
+                        # Build final block
+                        coinbase = Block(header=header, height=template['height']).create_coinbase(miner_address)
+                        block = Block(header=header, transactions=[coinbase], height=template['height'])
+                        success, _ = self.blockchain.add_block(block)
+                        if success:
+                            self.stats.valid_blocks += 1
+                            return block
+                except queue.Empty:
+                    # Update timestamp and continue
+                    template['timestamp'] = int(time.time())
+                    round_num += 1
+                
         return None
 
     def stop(self) -> None:

@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy L104SP blockchain engine
+COPY l104_sovereign_coin_engine.py .
+COPY const.py .
+COPY l104_real_math.py .
+
+# Expose P2P and RPC ports
+EXPOSE 10400 10401
+
+# Start mining node
+CMD ["python", "l104_sovereign_coin_engine.py", "--mine", "--rpcport", "10401"]

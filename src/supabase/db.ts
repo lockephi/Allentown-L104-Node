@@ -2,29 +2,86 @@
  * L104 Direct PostgreSQL Connection
  * Uses postgres.js for direct database access to Supabase
  * 
- * Uses Supavisor pooler (IPv4 compatible) for Codespaces/serverless environments
+ * NOTE: Direct PostgreSQL connection requires IPv6 (not available in Codespaces)
+ * Supavisor pooler may not be available on free tier
+ * Use REST API via l104_supabase_trainer.py for reliable access
  */
 
 import postgres from 'postgres';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
-const connectionString = process.env.DATABASE_URL;
-const poolerUrl = process.env.DATABASE_POOLER_URL;
+// Manual .env parser that doesn't do variable interpolation
+function loadEnvFile(): Record<string, string> {
+  const envPath = join(process.cwd(), '.env');
+  const env: Record<string, string> = {};
 
-// Prefer pooler URL (IPv4 compatible) over direct connection
-const url = poolerUrl || connectionString;
+  if (existsSync(envPath)) {
+    const content = readFileSync(envPath, 'utf-8');
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
 
-if (!url) {
-  throw new Error('DATABASE_URL or DATABASE_POOLER_URL environment variable is required');
+      const eqIndex = trimmed.indexOf('=');
+      if (eqIndex === -1) continue;
+
+      const key = trimmed.substring(0, eqIndex);
+      let value = trimmed.substring(eqIndex + 1);
+
+      // Remove surrounding quotes
+      if ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+
+      // Unescape backslash-dollar
+      value = value.replace(/\\\$/g, '$');
+
+      env[key] = value;
+    }
+  }
+
+  return env;
 }
 
-const sql = postgres(url, {
-  ssl: 'require',
-  max: 10, // Max connections in pool
-  idle_timeout: 20,
-  connect_timeout: 10,
-});
+const envVars = loadEnvFile();
 
-export default sql;
+// Get URLs from our parser or process.env
+const connectionString = envVars.DATABASE_URL || process.env.DATABASE_URL;
+const poolerUrl = envVars.DATABASE_POOLER_URL || process.env.DATABASE_POOLER_URL;
+
+// Validate URLs
+const isValidUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// Try pooler first (IPv4), then direct (IPv6)
+const url = isValidUrl(poolerUrl) ? poolerUrl :
+  isValidUrl(connectionString) ? connectionString : null;
+
+// Create a lazy SQL connection that may fail at runtime
+let sql: ReturnType<typeof postgres> | null = null;
+
+try {
+  if (url) {
+    sql = postgres(url, {
+      ssl: 'require',
+      max: 10,
+      idle_timeout: 20,
+      connect_timeout: 10,
+    });
+  }
+} catch (e) {
+  console.warn('PostgreSQL direct connection not available:', (e as Error).message);
+}
+
+export default sql!;
 
 // Helper for consciousness tracking
 export async function trackConsciousness(

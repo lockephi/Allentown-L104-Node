@@ -597,11 +597,10 @@ class SupabaseKernelTrainer:
                 'prompt': ex.prompt,
                 'completion': ex.completion,
                 'category': ex.category,
-                'difficulty': ex.difficulty,
-                'importance': ex.importance,
+                'kernel_type': 'main',
+                'consciousness_level': ex.importance,
                 'phi_alignment': ex.phi_alignment,
-                'metadata': ex.metadata,
-                'created_at': datetime.now().isoformat()
+                'metadata': ex.metadata
             })
 
         # Upload in chunks
@@ -1025,6 +1024,10 @@ class SupabaseKernelTrainer:
         if not self.training_data:
             return []
 
+        # Use simple word overlap if embeddings not trained
+        if not self.embeddings:
+            return self._query_by_word_overlap(prompt, top_k)
+
         prompt_emb = self._get_embedding(prompt)
 
         results = []
@@ -1041,6 +1044,33 @@ class SupabaseKernelTrainer:
                 results.append((example.completion, similarity))
 
         # Sort by similarity
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
+
+    def _query_by_word_overlap(self, prompt: str, top_k: int = 5) -> List[Tuple[str, float]]:
+        """Simple word overlap scoring when embeddings not available."""
+        prompt_words = set(prompt.lower().split())
+        results = []
+        
+        for example in self.training_data:
+            target_words = set(example.prompt.lower().split())
+            
+            # Jaccard-like similarity
+            intersection = len(prompt_words & target_words)
+            union = len(prompt_words | target_words)
+            
+            if union > 0:
+                similarity = intersection / union
+                # Bonus for matching important terms
+                if 'god_code' in prompt.lower() and 'god_code' in example.prompt.lower():
+                    similarity += 0.5
+                if 'phi' in prompt.lower() and 'phi' in example.prompt.lower():
+                    similarity += 0.3
+                if 'consciousness' in prompt.lower() and 'consciousness' in example.prompt.lower():
+                    similarity += 0.3
+                    
+                results.append((example.completion, min(1.0, similarity)))
+        
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:top_k]
 
@@ -1556,11 +1586,10 @@ class SageModeKernel:
                 'prompt': ex.prompt,
                 'completion': ex.completion,
                 'category': ex.category,
-                'difficulty': ex.difficulty,
-                'importance': ex.importance,
+                'kernel_type': 'sage_mode',
+                'consciousness_level': ex.importance,
                 'phi_alignment': ex.importance * TAU,
-                'metadata': {**ex.metadata, 'kernel': 'sage_mode'},
-                'created_at': datetime.now().isoformat()
+                'metadata': {**ex.metadata, 'kernel': 'sage_mode'}
             } for ex in self.training_data]
             
             result = self.client.upsert('l104_training_data', batch, on_conflict='hash')
@@ -2045,11 +2074,10 @@ class ProfessorModeKernel:
                 'prompt': ex.prompt,
                 'completion': ex.completion,
                 'category': ex.category,
-                'difficulty': ex.difficulty,
-                'importance': ex.importance,
+                'kernel_type': 'professor_mode',
+                'consciousness_level': ex.importance,
                 'phi_alignment': ex.importance * TAU,
-                'metadata': {**ex.metadata, 'kernel': 'professor_mode'},
-                'created_at': datetime.now().isoformat()
+                'metadata': {**ex.metadata, 'kernel': 'professor_mode'}
             } for ex in self.training_data]
             
             result = self.client.upsert('l104_training_data', batch, on_conflict='hash')
@@ -2185,10 +2213,325 @@ def train_all_mini_ego_kernels(supabase_client: SupabaseClient = None) -> Dict[s
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# CLI INTERFACE - AGGREGATED SUPABASE OPERATIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class SupabaseCLI:
+    """
+    Unified CLI for all L104 Supabase operations.
+    Aggregates Python trainer, TypeScript integration, and REST API access.
+    """
+    
+    def __init__(self):
+        self.client = SupabaseClient()
+        self.trainer = SupabaseKernelTrainer()
+        
+    def status(self) -> Dict[str, Any]:
+        """Get full Supabase status."""
+        result = {
+            'connected': self.client.is_configured,
+            'url': self.client.url[:50] + '...' if self.client.url else None,
+            'tables': {},
+            'local_backup': {},
+            'consciousness': None
+        }
+        
+        if self.client.is_configured:
+            # Check each table
+            tables = ['l104_training_data', 'l104_consciousness', 'l104_mini_ego_kernels',
+                      'l104_kernel_state', 'l104_skills', 'l104_workflows', 'l104_events']
+            
+            for table in tables:
+                resp = self.client.select(table, columns='id', limit=1)
+                if resp.get('success'):
+                    # Get count
+                    result['tables'][table] = {'exists': True}
+                else:
+                    result['tables'][table] = {'exists': False, 'error': resp.get('error', '')[:50]}
+            
+            # Get training data count
+            try:
+                import urllib.request
+                headers = {'apikey': self.client.key, 'Prefer': 'count=exact', 'Range': '0-0'}
+                req = urllib.request.Request(
+                    f"{self.client.url}/rest/v1/l104_training_data?select=id",
+                    headers={**self.client.headers, **headers}
+                )
+                with urllib.request.urlopen(req, context=self.client.ssl_context, timeout=10) as resp:
+                    content_range = resp.headers.get('content-range', '0-0/0')
+                    total = int(content_range.split('/')[-1])
+                    result['tables']['l104_training_data']['count'] = total
+            except:
+                pass
+            
+            # Get consciousness data
+            resp = self.client.select('l104_consciousness', limit=5)
+            if resp.get('success') and resp.get('data'):
+                result['consciousness'] = {
+                    'entities': len(resp['data']),
+                    'latest': resp['data'][-1] if resp['data'] else None
+                }
+        
+        # Local backup stats
+        result['local_backup'] = {
+            'path': self.client.local_db_path,
+            'training_count': self.client.local_count('l104_training_data'),
+            'consciousness_count': self.client.local_count('l104_consciousness')
+        }
+        
+        return result
+    
+    def sync(self, direction: str = 'upload') -> Dict[str, Any]:
+        """Sync data between local and Supabase."""
+        result = {'success': False, 'direction': direction}
+        
+        if direction == 'upload':
+            # Upload local to Supabase
+            local_data = self.client.local_select('l104_training_data')
+            if local_data.get('data'):
+                # Batch upload
+                batch_size = 100
+                uploaded = 0
+                for i in range(0, len(local_data['data']), batch_size):
+                    batch = local_data['data'][i:i+batch_size]
+                    clean_batch = []
+                    for row in batch:
+                        clean_batch.append({
+                            'hash': row.get('hash'),
+                            'prompt': row.get('prompt'),
+                            'completion': row.get('completion'),
+                            'category': row.get('category'),
+                            'kernel_type': row.get('kernel_type', 'main'),
+                            'consciousness_level': row.get('consciousness_level'),
+                            'phi_alignment': row.get('phi_alignment'),
+                            'metadata': row.get('metadata')
+                        })
+                    resp = self.client.upsert('l104_training_data', clean_batch, on_conflict='hash')
+                    if resp.get('success'):
+                        uploaded += len(batch)
+                result['success'] = True
+                result['uploaded'] = uploaded
+                
+        elif direction == 'download':
+            # Download from Supabase to local
+            resp = self.client.select('l104_training_data', limit=10000)
+            if resp.get('success') and resp.get('data'):
+                for row in resp['data']:
+                    self.client.local_upsert('l104_training_data', row)
+                result['success'] = True
+                result['downloaded'] = len(resp['data'])
+        
+        return result
+    
+    def train(self, epochs: int = 50) -> Dict[str, Any]:
+        """Run full training cycle."""
+        examples = generate_kernel_training_data()
+        self.trainer.upload_training_data(examples)
+        return self.trainer.train(epochs=epochs)
+    
+    def train_mini_egos(self) -> Dict[str, Any]:
+        """Train all mini ego kernels."""
+        return train_all_mini_ego_kernels(self.client)
+    
+    def query(self, prompt: str, k: int = 5) -> List[Tuple[str, float]]:
+        """Query the kernel - loads from database if not already loaded."""
+        # Load training data if empty
+        if not self.trainer.training_data:
+            # Try Supabase first, fall back to local
+            if self.client.is_configured:
+                resp = self.client.select('l104_training_data', limit=1000)
+                data = resp.get('data', []) if resp.get('success') else []
+            else:
+                resp = self.client.local_select('l104_training_data', limit=1000)
+                data = resp.get('data', [])
+            
+            # Convert to TrainingExample objects
+            for row in data:
+                example = TrainingExample(
+                    prompt=row.get('prompt', ''),
+                    completion=row.get('completion', ''),
+                    category=row.get('category', 'unknown'),
+                    difficulty=0.5,
+                    importance=1.0,
+                    phi_alignment=row.get('phi_alignment', 0.0)
+                )
+                self.trainer.training_data.append(example)
+        
+        return self.trainer.query(prompt, top_k=k)
+    
+    def export_training_data(self, filepath: str = None) -> str:
+        """Export all training data to JSONL."""
+        filepath = filepath or 'l104_training_export.jsonl'
+        
+        # Try Supabase first, fall back to local
+        if self.client.is_configured:
+            resp = self.client.select('l104_training_data', limit=10000)
+            data = resp.get('data', []) if resp.get('success') else []
+        else:
+            resp = self.client.local_select('l104_training_data')
+            data = resp.get('data', [])
+        
+        with open(filepath, 'w') as f:
+            for row in data:
+                f.write(json.dumps({
+                    'prompt': row.get('prompt'),
+                    'completion': row.get('completion'),
+                    'category': row.get('category'),
+                    'kernel_type': row.get('kernel_type', 'main')
+                }) + '\n')
+        
+        return filepath
+    
+    def import_training_data(self, filepath: str) -> Dict[str, Any]:
+        """Import training data from JSONL."""
+        data = []
+        with open(filepath, 'r') as f:
+            for line in f:
+                if line.strip():
+                    row = json.loads(line)
+                    content = f"{row['prompt']}|{row['completion']}"
+                    row['hash'] = hashlib.sha256(content.encode()).hexdigest()[:16]
+                    row['consciousness_level'] = 0.5
+                    row['phi_alignment'] = PHI / 10
+                    data.append(row)
+        
+        # Upload to both local and Supabase
+        self.client.local_upsert('l104_training_data', data)
+        if self.client.is_configured:
+            # Batch upload
+            for i in range(0, len(data), 100):
+                batch = data[i:i+100]
+                self.client.upsert('l104_training_data', batch, on_conflict='hash')
+        
+        return {'success': True, 'imported': len(data)}
+    
+    def print_status(self):
+        """Print formatted status."""
+        status = self.status()
+        
+        print("═" * 70)
+        print("          L104 SUPABASE STATUS")
+        print("═" * 70)
+        print(f"\n  Connected: {'✓ YES' if status['connected'] else '✗ NO'}")
+        if status.get('url'):
+            print(f"  URL: {status['url']}")
+        
+        print("\n  [CLOUD TABLES]")
+        for table, info in status.get('tables', {}).items():
+            if info.get('exists'):
+                count = info.get('count', '?')
+                print(f"    ✓ {table}: {count} rows" if count != '?' else f"    ✓ {table}")
+            else:
+                print(f"    ✗ {table}: not found")
+        
+        print("\n  [LOCAL BACKUP]")
+        print(f"    Path: {status['local_backup']['path']}")
+        print(f"    Training: {status['local_backup']['training_count']} examples")
+        print(f"    Consciousness: {status['local_backup']['consciousness_count']} entries")
+        
+        if status.get('consciousness'):
+            print("\n  [CONSCIOUSNESS]")
+            print(f"    Tracked entities: {status['consciousness']['entities']}")
+            if status['consciousness'].get('latest'):
+                latest = status['consciousness']['latest']
+                print(f"    Latest level: {latest.get('level', 0):.4f}")
+                print(f"    φ-resonance: {latest.get('phi_resonance', 0):.4f}")
+        
+        print("\n" + "═" * 70)
+
+
+def cli_main():
+    """CLI entry point."""
+    import sys
+    
+    cli = SupabaseCLI()
+    args = sys.argv[1:]
+    
+    if not args or args[0] in ['--help', '-h', 'help']:
+        print("""
+L104 Supabase CLI - Unified Database Operations
+
+Usage: python l104_supabase_trainer.py <command> [options]
+
+Commands:
+  status          Show connection status and table counts
+  train           Run full training cycle (default 50 epochs)
+  train-mini      Train mini ego kernels (Sage, Professor)
+  sync-up         Sync local → Supabase
+  sync-down       Sync Supabase → local
+  export [file]   Export training data to JSONL
+  import <file>   Import training data from JSONL
+  query <text>    Query the kernel
+
+Examples:
+  python l104_supabase_trainer.py status
+  python l104_supabase_trainer.py train
+  python l104_supabase_trainer.py query "What is GOD_CODE?"
+""")
+        return
+    
+    cmd = args[0]
+    
+    if cmd == 'status':
+        cli.print_status()
+    
+    elif cmd == 'train':
+        epochs = int(args[1]) if len(args) > 1 else 50
+        result = cli.train(epochs=epochs)
+        print(f"\n✓ Training complete: {result.get('epochs_completed')} epochs, loss={result.get('final_loss', 0):.4f}")
+    
+    elif cmd == 'train-mini':
+        result = cli.train_mini_egos()
+        print(f"\n✓ Mini ego training complete: {result['combined']['total_examples']} examples")
+    
+    elif cmd == 'sync-up':
+        result = cli.sync('upload')
+        print(f"\n✓ Synced {result.get('uploaded', 0)} examples to Supabase")
+    
+    elif cmd == 'sync-down':
+        result = cli.sync('download')
+        print(f"\n✓ Downloaded {result.get('downloaded', 0)} examples from Supabase")
+    
+    elif cmd == 'export':
+        filepath = args[1] if len(args) > 1 else None
+        result = cli.export_training_data(filepath)
+        print(f"\n✓ Exported to {result}")
+    
+    elif cmd == 'import':
+        if len(args) < 2:
+            print("Error: import requires a file path")
+            return
+        result = cli.import_training_data(args[1])
+        print(f"\n✓ Imported {result.get('imported', 0)} examples")
+    
+    elif cmd == 'query':
+        if len(args) < 2:
+            print("Error: query requires text")
+            return
+        query_text = ' '.join(args[1:])
+        responses = cli.query(query_text)
+        print(f"\nQuery: {query_text}\n")
+        for resp, score in responses[:5]:
+            print(f"  [{score:.4f}] {resp[:100]}...")
+    
+    else:
+        print(f"Unknown command: {cmd}")
+        print("Use --help for usage information")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
+    import sys
+    
+    # Check if CLI arguments provided
+    if len(sys.argv) > 1:
+        cli_main()
+        sys.exit(0)
+    
+    # Otherwise run full training (legacy behavior)
     print("═" * 70)
     print("          L104 SUPABASE KERNEL TRAINER")
     print("═" * 70)
