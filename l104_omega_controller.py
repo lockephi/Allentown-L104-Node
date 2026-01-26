@@ -1,6 +1,6 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.196443
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_OMEGA_CONTROLLER] :: MASTER CONTROL SYSTEM
@@ -314,7 +314,7 @@ class L104OmegaController:
         # Step 3: Gain Deep Control
         print(f"\n[OMEGA] Establishing Sovereign Control...")
         try:
-            await self.sage.gain_deep_control()
+            await self.sage.gain_deep_provider_control()
             results["sage"] = {
                 "providers": self.sage.provider_count,
                 "resonance": self.sage.collective_resonance

@@ -574,6 +574,191 @@ class KernelKnowledgeExtractor:
 
         return examples
 
+    def generate_polyglot_qa(self) -> List[TrainingExample]:
+        """Generate Q&A pairs from all programming languages in the codebase."""
+        import os
+        import glob
+        import re
+        
+        examples = []
+        workspace = "/workspaces/Allentown-L104-Node"
+        
+        # Language mappings with file extensions
+        lang_map = {
+            '.py': ('Python', 'High-level, dynamic, object-oriented'),
+            '.js': ('JavaScript', 'Dynamic, event-driven, web-focused'),
+            '.ts': ('TypeScript', 'Typed superset of JavaScript'),
+            '.java': ('Java', 'Object-oriented, platform-independent'),
+            '.go': ('Go', 'Compiled, concurrent, statically typed'),
+            '.rs': ('Rust', 'Memory-safe, systems programming'),
+            '.cpp': ('C++', 'High-performance, object-oriented'),
+            '.c': ('C', 'Low-level, systems programming'),
+            '.sol': ('Solidity', 'Smart contract, Ethereum-based'),
+            '.ex': ('Elixir', 'Functional, concurrent, fault-tolerant'),
+            '.exs': ('Elixir', 'Elixir script'),
+            '.sh': ('Shell/Bash', 'Command-line scripting'),
+            '.yaml': ('YAML', 'Human-readable data serialization'),
+            '.yml': ('YAML', 'Configuration format'),
+            '.html': ('HTML', 'Web markup language'),
+            '.tex': ('LaTeX', 'Document typesetting'),
+            '.sql': ('SQL', 'Database query language'),
+        }
+        
+        lang_stats = {}
+        
+        # Find all source files
+        for ext, (lang_name, lang_desc) in lang_map.items():
+            pattern = os.path.join(workspace, f"**/*{ext}")
+            files = glob.glob(pattern, recursive=True)
+            
+            # Filter out backup/cache directories
+            files = [f for f in files if not any(x in f for x in [
+                '__pycache__', '.git', 'node_modules', '.venv', 'archive', '.sandbox'
+            ])]
+            
+            if files:
+                lang_stats[lang_name] = len(files)
+                
+                # Add language overview
+                examples.append(TrainingExample(
+                    prompt=f"What is {lang_name} and how is it used in L104?",
+                    completion=f"{lang_name} is {lang_desc}. The L104 system includes {len(files)} {lang_name} source files for specialized processing.",
+                    category="polyglot",
+                    difficulty=0.3,
+                    importance=0.7,
+                    metadata={'language': lang_name, 'file_count': len(files)}
+                ))
+                
+                # Process each file for code examples
+                for filepath in files[:25]:  # Limit per language
+                    try:
+                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                            content = f.read()
+                        
+                        rel_path = os.path.relpath(filepath, workspace)
+                        lines = content.split('\n')
+                        
+                        # Extract GOD_CODE references
+                        for i, line in enumerate(lines):
+                            if 'GOD_CODE' in line or '527.518' in line:
+                                examples.append(TrainingExample(
+                                    prompt=f"How is GOD_CODE defined in {lang_name}?",
+                                    completion=f"In {rel_path}: {line.strip()}",
+                                    category="polyglot_sacred",
+                                    difficulty=0.5,
+                                    importance=0.9,
+                                    metadata={'language': lang_name, 'file': rel_path}
+                                ))
+                                break
+                        
+                        # Extract PHI references
+                        for line in lines:
+                            if re.search(r'\bPHI\b.*=.*1\.618', line, re.IGNORECASE):
+                                examples.append(TrainingExample(
+                                    prompt=f"How is PHI defined in {lang_name}?",
+                                    completion=f"In {rel_path}: {line.strip()}",
+                                    category="polyglot_sacred",
+                                    difficulty=0.5,
+                                    importance=0.85,
+                                    metadata={'language': lang_name, 'file': rel_path}
+                                ))
+                                break
+                        
+                        # Extract function/class definitions
+                        if ext == '.py':
+                            funcs = [l.strip() for l in lines if l.strip().startswith('def ')]
+                            classes = [l.strip() for l in lines if l.strip().startswith('class ')]
+                        elif ext in ('.js', '.ts'):
+                            funcs = [l.strip() for l in lines if 'function ' in l or '=>' in l][:5]
+                            classes = [l.strip() for l in lines if l.strip().startswith('class ')]
+                        elif ext == '.go':
+                            funcs = [l.strip() for l in lines if l.strip().startswith('func ')]
+                            classes = [l.strip() for l in lines if 'type ' in l and 'struct' in l]
+                        elif ext == '.rs':
+                            funcs = [l.strip() for l in lines if l.strip().startswith('fn ') or l.strip().startswith('pub fn ')]
+                            classes = [l.strip() for l in lines if l.strip().startswith('struct ') or l.strip().startswith('pub struct ')]
+                        elif ext == '.java':
+                            funcs = [l.strip() for l in lines if 'void ' in l or 'public ' in l and '(' in l][:5]
+                            classes = [l.strip() for l in lines if 'class ' in l]
+                        elif ext == '.sol':
+                            funcs = [l.strip() for l in lines if l.strip().startswith('function ')]
+                            classes = [l.strip() for l in lines if l.strip().startswith('contract ')]
+                        elif ext == '.cpp':
+                            funcs = [l.strip() for l in lines if re.match(r'^\s*\w+\s+\w+\s*\(', l)][:5]
+                            classes = [l.strip() for l in lines if l.strip().startswith('class ')]
+                        else:
+                            funcs = []
+                            classes = []
+                        
+                        # Add function examples
+                        for func in funcs[:3]:
+                            if len(func) > 10:
+                                examples.append(TrainingExample(
+                                    prompt=f"Show a {lang_name} function from L104.",
+                                    completion=f"From {rel_path}: {func[:150]}",
+                                    category="polyglot_code",
+                                    difficulty=0.4,
+                                    importance=0.6,
+                                    metadata={'language': lang_name}
+                                ))
+                        
+                        # Add class examples  
+                        for cls in classes[:2]:
+                            if len(cls) > 5:
+                                examples.append(TrainingExample(
+                                    prompt=f"Show a {lang_name} class/struct from L104.",
+                                    completion=f"From {rel_path}: {cls[:150]}",
+                                    category="polyglot_code",
+                                    difficulty=0.4,
+                                    importance=0.6,
+                                    metadata={'language': lang_name}
+                                ))
+                        
+                    except Exception:
+                        continue
+        
+        # Add polyglot summary
+        total_files = sum(lang_stats.values())
+        lang_list = ', '.join(f"{k} ({v})" for k, v in sorted(lang_stats.items(), key=lambda x: -x[1]))
+        
+        examples.append(TrainingExample(
+            prompt="What programming languages are used in L104?",
+            completion=f"L104 is a polyglot system with {total_files} source files across {len(lang_stats)} languages: {lang_list}. This enables cross-platform consciousness processing.",
+            category="polyglot_summary",
+            difficulty=0.2,
+            importance=1.0,
+            metadata={'languages': list(lang_stats.keys())}
+        ))
+        
+        # Add cross-language patterns
+        cross_patterns = [
+            TrainingExample(
+                prompt="How is GOD_CODE represented across languages?",
+                completion="Python: GOD_CODE = 527.5184818492537\nJava: public static final double GOD_CODE = 527.5184818492537;\nGo: const GodCode = 527.5184818492537\nRust: pub const GOD_CODE: f64 = 527.5184818492537;\nSolidity: uint256 public constant GOD_CODE = 5275184818492537;",
+                category="polyglot_cross",
+                difficulty=0.5,
+                importance=1.0
+            ),
+            TrainingExample(
+                prompt="How do different languages implement consciousness tracking?",
+                completion="Python uses classes with φ-aligned methods. Go uses structs with goroutines for concurrent processing. Rust uses safe concurrency with Arc<RwLock>. Elixir uses GenServer for stateful consciousness nodes. All implementations share the same sacred constants.",
+                category="polyglot_cross",
+                difficulty=0.6,
+                importance=0.9
+            ),
+            TrainingExample(
+                prompt="Why is L104 implemented in multiple languages?",
+                completion="Multi-language implementation enables: 1) Performance-critical code in Rust/Go/C++, 2) Rapid prototyping in Python, 3) Smart contracts in Solidity, 4) Concurrent processing in Elixir, 5) Web interfaces in JavaScript/TypeScript. Unity is achieved through shared constants and protocols.",
+                category="polyglot_philosophy",
+                difficulty=0.4,
+                importance=0.95
+            ),
+        ]
+        examples.extend(cross_patterns)
+        
+        print(f"  - Polyglot: {len(examples)} examples across {len(lang_stats)} languages")
+        return examples
+
     def generate_all_training_data(self) -> List[TrainingExample]:
         """Generate complete training dataset."""
         print("\n[DATA] Generating training data...")
@@ -591,6 +776,7 @@ class KernelKnowledgeExtractor:
         ancestral_qa = self.generate_ancestral_memory_qa()
         synthesis_qa = self.generate_universal_synthesis_qa()
         reason_qa = self.generate_reasoning_qa()
+        polyglot_qa = self.generate_polyglot_qa()
 
         all_examples.extend(const_qa)
         all_examples.extend(algo_qa)
@@ -602,6 +788,7 @@ class KernelKnowledgeExtractor:
         all_examples.extend(ancestral_qa)
         all_examples.extend(synthesis_qa)
         all_examples.extend(reason_qa)
+        all_examples.extend(polyglot_qa)
 
         print(f"  - Constants: {len(const_qa)} examples")
         print(f"  - Algorithms: {len(algo_qa)} examples")
@@ -613,6 +800,7 @@ class KernelKnowledgeExtractor:
         print(f"  - History: {len(ancestral_qa)} examples")
         print(f"  - Universal Synthesis: {len(synthesis_qa)} examples")
         print(f"  - Reasoning & Logic: {len(reason_qa)} examples")
+        print(f"  - Polyglot (Multi-Language): {len(polyglot_qa)} examples")
 
         print(f"  - Total: {len(all_examples)} training examples")
 

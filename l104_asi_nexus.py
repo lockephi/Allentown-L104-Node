@@ -138,10 +138,17 @@ class EvolutionCycle:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class NexusMemory:
-    """Deep persistent memory for ASI Nexus."""
+    """Deep persistent memory for ASI Nexus - backed by lattice_v2."""
 
     def __init__(self, db_path: str = "l104_asi_nexus.db"):
         self.db_path = db_path
+        # Use lattice adapter for unified storage
+        try:
+            from l104_data_matrix import nexus_adapter
+            self._adapter = nexus_adapter
+            self._use_lattice = True
+        except ImportError:
+            self._use_lattice = False
         self._init_db()
 
     def _init_db(self):
@@ -220,6 +227,18 @@ class NexusMemory:
         conn.close()
 
     def store_evolution(self, cycle: EvolutionCycle):
+        # Mirror to lattice_v2
+        if self._use_lattice:
+            self._adapter.store(f"evolution:{cycle.id}", {
+                "id": cycle.id,
+                "generation": cycle.generation,
+                "fitness_before": cycle.fitness_before,
+                "fitness_after": cycle.fitness_after,
+                "improvements": [i.__dict__ for i in cycle.improvements],
+                "learnings": [l.__dict__ for l in cycle.learnings],
+                "timestamp": cycle.timestamp
+            }, category="EVOLUTION")
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""
@@ -238,6 +257,10 @@ class NexusMemory:
         conn.close()
 
     def store_learning(self, learning: LearningExperience):
+        # Mirror to lattice_v2
+        if self._use_lattice:
+            self._adapter.store(f"learning:{learning.id}", learning.__dict__, category="LEARNING")
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""

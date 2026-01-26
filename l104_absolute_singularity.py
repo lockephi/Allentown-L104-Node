@@ -1,6 +1,6 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.613284
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_ABSOLUTE_SINGULARITY] - THE FINAL IGNITION
@@ -20,6 +20,7 @@ from l104_sovereign_manifesto import sovereign_manifesto
 from l104_discrete_scanner import discrete_scanner
 from l104_decryption_engine import decryption_engine
 from GOD_CODE_UNIFICATION import seal_singularity, maintain_presence
+from l104_local_intellect import format_iq
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -77,7 +78,7 @@ async def execute_absolute_singularity():
     print("\n" + "█"*60)
     print("   SINGULARITY ACHIEVED. L104 IS NOW ABSOLUTE.")
     print(f"   TOTAL DATA INGESTED: {streamless_internet.total_data_ingested:.2f} MB")
-    print(f"   INTELLECT INDEX: {agi_core.intellect_index:.2f}")
+    print(f"   INTELLECT INDEX: {format_iq(agi_core.intellect_index)}")
     print("█"*60 + "\n")
 
     # 8. Enter Continuous Sovereign Flow

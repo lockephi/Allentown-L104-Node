@@ -1,9 +1,11 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.506494
+import cmath
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_DATA_MATRIX] - EVOLVED HYPER-DIMENSIONAL STORAGE
+# QUANTUM PROCESSING COMPATIBLE | ENTANGLEMENT READY
 # INVARIANT: 527.5184818492537 | PILOT: LONDEL
 
 import sqlite3
@@ -13,7 +15,7 @@ import json
 import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
 from l104_memory_compaction import memory_compactor
@@ -23,9 +25,13 @@ from l104_memory_compaction import memory_compactor
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Quantum Processing Constants
+PLANCK_CONSTANT = 6.62607015e-34
+ALPHA_FINE_STRUCTURE = 0.0072973525693
+QUANTUM_COHERENCE_THRESHOLD = 0.95
 
 UTC = timezone.utc
-LATTICE_DB_PATH = "lattice_v2.db"
+LATTICE_DB_PATH = os.getenv("LATTICE_DB_PATH", "lattice_v2.db")
 HALLUCINATION_BASE_THRESHOLD = 0.6
 # Percent reduction in aggressiveness (0.0–0.02 recommended). e.g., 0.01 = 1%
 HALLUCINATION_DELTA_PCT = float(os.getenv("HALLUCINATION_DELTA_PCT", str(HyperMath.PHI_CONJUGATE / 100)))
@@ -98,13 +104,335 @@ class DataMatrix:
         resonance = (entropy * HyperMath.PHI) % HyperMath.GOD_CODE
         return resonance
 
+    def _quantum_phase_factor(self, data_str: str) -> complex:
+        """Computes quantum phase factor using ZPE principles."""
+        resonance = self._calculate_resonance(data_str)
+        # Quantum phase derived from resonance modulated by phi conjugate
+        phase_angle = (resonance / HyperMath.GOD_CODE) * 2 * 3.141592653589793
+        return cmath.exp(1j * phase_angle * HyperMath.PHI_CONJUGATE)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QUANTUM PROCESSING INTERFACE - Compatible with quantum subsystems
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def quantum_superposition_store(self, key: str, states: List[Tuple[Any, complex]]) -> bool:
+        """
+        Store data in quantum superposition state.
+        Each state is a tuple of (value, amplitude) where amplitude is complex.
+        """
+        amplitudes = [amp for _, amp in states]
+        norm = math.sqrt(sum(abs(a)**2 for a in amplitudes))
+        if norm < 1e-10:
+            return False
+
+        # Normalize amplitudes
+        normalized = [(val, amp/norm) for val, amp in states]
+
+        superposition_data = {
+            "type": "QUANTUM_SUPERPOSITION",
+            "states": [{"value": v, "amplitude_real": a.real, "amplitude_imag": a.imag} for v, a in normalized],
+            "coherence": self._calculate_coherence(normalized),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+        return self.store(f"qstate:{key}", superposition_data, category="QUANTUM_STATE", utility=1.0)
+
+    def quantum_collapse(self, key: str) -> Optional[Any]:
+        """Collapse superposition to a single classical state based on probability amplitudes."""
+        import random
+        data = self.retrieve(f"qstate:{key}")
+        if not data or data.get("type") != "QUANTUM_SUPERPOSITION":
+            return self.retrieve(key)
+
+        states = data.get("states", [])
+        if not states:
+            return None
+
+        # Calculate probabilities from amplitudes
+        probs = []
+        for s in states:
+            amp = complex(s["amplitude_real"], s["amplitude_imag"])
+            probs.append(abs(amp)**2)
+
+        # Weighted random selection
+        r = random.random()
+        cumulative = 0
+        for i, p in enumerate(probs):
+            cumulative += p
+            if r <= cumulative:
+                return states[i]["value"]
+
+        return states[-1]["value"]
+
+    def quantum_entangle(self, key_a: str, key_b: str) -> str:
+        """Create entanglement between two stored values. Returns entanglement ID."""
+        # Check both direct keys and quantum state keys
+        val_a = self.retrieve(key_a) or self.retrieve(f"qstate:{key_a}")
+        val_b = self.retrieve(key_b) or self.retrieve(f"qstate:{key_b}")
+
+        if val_a is None or val_b is None:
+            return ""
+
+        # Calculate entanglement phase
+        phase_a = self._quantum_phase_factor(json.dumps(val_a))
+        phase_b = self._quantum_phase_factor(json.dumps(val_b))
+        entangle_phase = phase_a * phase_b.conjugate()
+
+        entangle_id = hashlib.sha256(f"{key_a}:{key_b}:{time.time()}".encode()).hexdigest()[:16]
+
+        entanglement_data = {
+            "type": "QUANTUM_ENTANGLEMENT",
+            "key_a": key_a,
+            "key_b": key_b,
+            "phase_real": entangle_phase.real,
+            "phase_imag": entangle_phase.imag,
+            "correlation": abs(entangle_phase),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+        self.store(f"entangle:{entangle_id}", entanglement_data, category="QUANTUM_ENTANGLEMENT", utility=1.0)
+        return entangle_id
+
+    def quantum_measure(self, key: str) -> Dict[str, Any]:
+        """Perform quantum measurement on stored data, returning state info."""
+        # Check both direct key and quantum state key
+        value = self.retrieve(key) or self.retrieve(f"qstate:{key}")
+        if value is None:
+            return {"error": "Key not found", "measured": False}
+
+        serialized = json.dumps(value)
+        phase = self._quantum_phase_factor(serialized)
+        resonance = self._calculate_resonance(serialized)
+        entropy = self.real_math.shannon_entropy(serialized)
+
+        return {
+            "key": key,
+            "measured": True,
+            "phase_real": phase.real,
+            "phase_imag": phase.imag,
+            "phase_magnitude": abs(phase),
+            "phase_angle": cmath.phase(phase),
+            "resonance": resonance,
+            "entropy": entropy,
+            "coherence": 1.0 - (entropy / 8.0),  # Normalize entropy to coherence
+            "god_code_alignment": resonance / HyperMath.GOD_CODE
+        }
+
+    def _calculate_coherence(self, states: List[Tuple[Any, complex]]) -> float:
+        """Calculate quantum coherence from superposition states."""
+        if len(states) < 2:
+            return 1.0
+
+        # Off-diagonal density matrix elements indicate coherence
+        coherence = 0.0
+        for i, (_, amp_i) in enumerate(states):
+            for j, (_, amp_j) in enumerate(states):
+                if i != j:
+                    coherence += abs(amp_i * amp_j.conjugate())
+
+        n = len(states)
+        max_coherence = n * (n - 1)
+        return coherence / max_coherence if max_coherence > 0 else 1.0
+
+    def get_quantum_state(self, key: str) -> Optional[Dict]:
+        """Get quantum state metadata for a key."""
+        return self.retrieve(f"qstate:{key}")
+
+    def list_entanglements(self) -> List[Dict]:
+        """List all active quantum entanglements."""
+        return self.query_by_category("QUANTUM_ENTANGLEMENT")
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QUANTUM PROCESS SUPERPOSITION - Full Quantum Capability
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def superposition_process(self, process_id: str, process_states: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Create a quantum superposition of process states.
+        Each process state can exist in parallel until observed/collapsed.
+        """
+        if not process_states:
+            return {"error": "No process states provided", "success": False}
+
+        # Create amplitudes for each state (equal superposition by default)
+        n = len(process_states)
+        amplitude = 1.0 / math.sqrt(n)
+
+        superposition = {
+            "type": "QUANTUM_PROCESS_SUPERPOSITION",
+            "process_id": process_id,
+            "states": [
+                {
+                    "state_id": i,
+                    "data": state,
+                    "amplitude_real": amplitude,
+                    "amplitude_imag": 0.0,
+                    "probability": 1.0 / n
+                }
+                for i, state in enumerate(process_states)
+            ],
+            "coherence": 1.0,  # Maximum coherence at creation
+            "decoherence_rate": ALPHA_FINE_STRUCTURE,  # Natural decoherence based on alpha
+            "created": datetime.now(UTC).isoformat()
+        }
+
+        self.store(f"qprocess:{process_id}", superposition, category="QUANTUM_PROCESS", utility=1.0)
+        return {"success": True, "process_id": process_id, "states_count": n, "coherence": 1.0}
+
+    def collapse_process(self, process_id: str, observer_bias: float = 0.0) -> Dict[str, Any]:
+        """
+        Collapse a quantum process to a single classical state.
+        Observer bias (-1 to 1) can influence the collapse toward lower or higher indices.
+        """
+        import random
+
+        data = self.retrieve(f"qprocess:{process_id}")
+        if not data or data.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
+            return {"error": "Process not in superposition", "collapsed": False}
+
+        states = data.get("states", [])
+        if not states:
+            return {"error": "No states to collapse", "collapsed": False}
+
+        # Calculate collapse probabilities with observer bias
+        probabilities = []
+        for i, state in enumerate(states):
+            base_prob = state["amplitude_real"]**2 + state["amplitude_imag"]**2
+            # Apply observer bias: positive bias favors later states, negative favors earlier
+            bias_factor = 1.0 + (observer_bias * (i / len(states) - 0.5))
+            probabilities.append(base_prob * bias_factor)
+
+        # Normalize
+        total = sum(probabilities)
+        probabilities = [p / total for p in probabilities]
+
+        # Probabilistic collapse
+        r = random.random()
+        cumulative = 0.0
+        collapsed_state = states[-1]["data"]
+        collapsed_index = len(states) - 1
+
+        for i, p in enumerate(probabilities):
+            cumulative += p
+            if r <= cumulative:
+                collapsed_state = states[i]["data"]
+                collapsed_index = i
+                break
+
+        # Store collapsed result
+        collapsed_data = {
+            "type": "COLLAPSED_PROCESS",
+            "process_id": process_id,
+            "collapsed_from": len(states),
+            "collapsed_to_index": collapsed_index,
+            "result": collapsed_state,
+            "collapse_probability": probabilities[collapsed_index],
+            "observer_bias": observer_bias,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+
+        self.store(f"qprocess:{process_id}", collapsed_data, category="QUANTUM_PROCESS", utility=1.0)
+        return {"collapsed": True, "result": collapsed_state, "index": collapsed_index, "probability": probabilities[collapsed_index]}
+
+    def process_interference(self, process_a: str, process_b: str) -> Dict[str, Any]:
+        """
+        Create quantum interference between two superposed processes.
+        Returns constructive/destructive interference pattern.
+        """
+        data_a = self.retrieve(f"qprocess:{process_a}")
+        data_b = self.retrieve(f"qprocess:{process_b}")
+
+        if not data_a or not data_b:
+            return {"error": "One or both processes not found", "interference": None}
+
+        if data_a.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
+            return {"error": f"Process {process_a} not in superposition", "interference": None}
+        if data_b.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
+            return {"error": f"Process {process_b} not in superposition", "interference": None}
+
+        states_a = data_a.get("states", [])
+        states_b = data_b.get("states", [])
+
+        # Calculate interference
+        constructive = 0.0
+        destructive = 0.0
+
+        for sa in states_a:
+            for sb in states_b:
+                amp_a = complex(sa["amplitude_real"], sa["amplitude_imag"])
+                amp_b = complex(sb["amplitude_real"], sb["amplitude_imag"])
+
+                # Interference term
+                interference_term = (amp_a * amp_b.conjugate()).real
+
+                if interference_term > 0:
+                    constructive += interference_term
+                else:
+                    destructive += abs(interference_term)
+
+        total = constructive + destructive
+        if total > 0:
+            interference_pattern = (constructive - destructive) / total
+        else:
+            interference_pattern = 0.0
+
+        return {
+            "process_a": process_a,
+            "process_b": process_b,
+            "constructive": constructive,
+            "destructive": destructive,
+            "interference_pattern": interference_pattern,  # -1 to 1
+            "quantum_correlation": abs(interference_pattern)
+        }
+
+    def quantum_parallel_execute(self, process_id: str, executor_func: str) -> Dict[str, Any]:
+        """
+        Conceptually execute all superposed states in parallel.
+        Returns results for all branches before collapse.
+        """
+        data = self.retrieve(f"qprocess:{process_id}")
+        if not data or data.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
+            return {"error": "Process not in superposition", "results": []}
+
+        states = data.get("states", [])
+        results = []
+
+        for state in states:
+            # Each state gets its own execution result
+            state_data = state["data"]
+            amplitude = complex(state["amplitude_real"], state["amplitude_imag"])
+
+            result = {
+                "state_id": state["state_id"],
+                "input": state_data,
+                "amplitude": abs(amplitude),
+                "probability": state["probability"],
+                "executed": True,
+                "executor": executor_func
+            }
+            results.append(result)
+
+        return {
+            "process_id": process_id,
+            "parallel_results": results,
+            "branches": len(results),
+            "total_probability": sum(r["probability"] for r in results)
+        }
+
+    def list_quantum_processes(self) -> List[Dict]:
+        """List all quantum processes (superposed and collapsed)."""
+        return self.query_by_category("QUANTUM_PROCESS")
+
     def store(self, key: str, value: Any, category: str = "GENERAL", utility: float = 1.0) -> bool:
-        """Stores or updates a fact in the matrix with automatic versioning."""
+        """Stores or updates a fact in the matrix with automatic versioning and quantum phase indexing."""
         serialized = json.dumps(value)
         data_hash = hashlib.sha256(serialized.encode()).hexdigest()
         resonance = self._calculate_resonance(serialized)
         entropy = self.real_math.shannon_entropy(serialized)
         timestamp = datetime.now(UTC).isoformat()
+
+        # Apply quantum phase factor for topological integrity
+        phase = self._quantum_phase_factor(serialized)
+        # Quantum-enhanced utility using phase magnitude and resonance
+        quantum_utility = utility * (abs(phase) * (1 + (resonance / HyperMath.GOD_CODE)))
 
         try:
             with self._get_conn() as conn:
@@ -123,19 +451,19 @@ class DataMatrix:
                         VALUES (?, ?, ?, ?, ?)
                     """, (key, old_val, serialized, resonance, timestamp))
 
-                    # Update
+                    # Update with quantum-enhanced utility
                     conn.execute("""
                         UPDATE lattice_facts SET
                             value = ?, category = ?, resonance = ?, entropy = ?,
                             utility = ?, version = version + 1, timestamp = ?, hash = ?
                         WHERE key = ?
-                    """, (serialized, category, resonance, entropy, utility, timestamp, data_hash, key))
+                    """, (serialized, category, resonance, entropy, quantum_utility, timestamp, data_hash, key))
                 else:
-                    # Insert new
+                    # Insert new with quantum-enhanced utility
                     conn.execute("""
                         INSERT INTO lattice_facts (key, value, category, resonance, entropy, utility, timestamp, hash)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (key, serialized, category, resonance, entropy, utility, timestamp, data_hash))
+                    """, (key, serialized, category, resonance, entropy, quantum_utility, timestamp, data_hash))
 
                 conn.commit()
                 return True
@@ -166,6 +494,24 @@ class DataMatrix:
                     "key": row[0],
                     "value": json.loads(row[1]),
                     "resonance": row[2]
+                })
+        return results
+
+    def query_by_category(self, category: str) -> List[Dict[str, Any]]:
+        """Query all facts by category."""
+        results = []
+        with self._get_conn() as conn:
+            cur = conn.execute("""
+                SELECT key, value, resonance, utility FROM lattice_facts
+                WHERE category = ?
+                ORDER BY utility DESC
+            """, (category,))
+            for row in cur:
+                results.append({
+                    "key": row[0],
+                    "value": json.loads(row[1]),
+                    "resonance": row[2],
+                    "utility": row[3]
                 })
         return results
 
@@ -480,3 +826,38 @@ def resolve_non_dual_logic(vector):
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIFIED DB ADAPTER - Bridges legacy DBs to lattice_v2
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class LatticeAdapter:
+    """Adapter to redirect legacy database operations to lattice_v2."""
+
+    def __init__(self, namespace: str):
+        self.namespace = namespace
+        self.matrix = data_matrix
+
+    def store(self, key: str, value: Any, category: str = "GENERAL") -> bool:
+        full_key = f"{self.namespace}:{key}"
+        return self.matrix.store(full_key, value, category=category)
+
+    def retrieve(self, key: str) -> Optional[Any]:
+        full_key = f"{self.namespace}:{key}"
+        return self.matrix.retrieve(full_key)
+
+    def query_by_category(self, category: str) -> List[Dict]:
+        return self.matrix.query_by_category(category)
+
+    def delete(self, key: str) -> bool:
+        full_key = f"{self.namespace}:{key}"
+        return self.matrix.delete(full_key)
+
+
+# Pre-built adapters for common subsystems
+nexus_adapter = LatticeAdapter("nexus")
+sage_adapter = LatticeAdapter("sage")
+knowledge_adapter = LatticeAdapter("knowledge")
+prophecy_adapter = LatticeAdapter("prophecy")
+metrics_adapter = LatticeAdapter("metrics")

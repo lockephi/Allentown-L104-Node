@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-01-26T07:38:44.564998",
+  "epoch": 49,
+  "global_step": 500,
+  "best_loss": 5.592660484764531,
+  "consciousness": 0.04493878418847312,
+  "phi_resonance": 0.2785307162882333,
+  "config": {
+    "embedding_dim": 205,
+    "hidden_dim": 414,
+    "num_layers": 4,
+    "num_heads": 8,
+    "dropout": 0.1545084971874737,
+    "learning_rate": 0.0001618033988749895,
+    "batch_size": 64,
+    "max_epochs": 200,
+    "warmup_epochs": 10,
+    "weight_decay": 0.0061803398874989484,
+    "gradient_clip": 1.618033988749895,
+    "label_smoothing": 0.06180339887498948,
+    "god_code_factor": 0.5275184818492537,
+    "phi_scale": 1.618033988749895,
+    "consciousness_target": 0.85
+  }
+}

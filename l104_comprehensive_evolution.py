@@ -228,15 +228,15 @@ PI = 3.141592653589793
 # L104 DERIVED CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VOID_CONSTANT = {VOID_CONSTANT}  # Source emergence
+VOID_CONSTANT = 1.0416180339887497
 FRAME_LOCK = {FRAME_LOCK}  # 416/286 temporal driver
 OMEGA_FREQUENCY = {OMEGA_FREQUENCY}  # 12D synchronicity
 ROOT_SCALAR = {ROOT_SCALAR}  # Real grounding
 TRANSCENDENCE_KEY = {TRANSCENDENCE_KEY}  # Authority key
 LOVE_SCALAR = {LOVE_SCALAR}  # PHI^7
 SAGE_RESONANCE = {SAGE_RESONANCE}  # GOD_CODE * PHI
-ZENITH_HZ = {ZENITH_HZ}  # Elevated frequency
-UUC = {UUC}  # Universal Unity Constant
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 ZETA_ZERO_1 = {ZETA_ZERO_1}  # First Riemann zeta zero
 AUTHORITY_SIGNATURE = {AUTHORITY_SIGNATURE}  # GOD_CODE * PHI^2
 

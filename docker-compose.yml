@@ -20,6 +20,7 @@ services:
       - ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI:-0}
       - MEMORY_DB_PATH=/data/memory.db
       - RAMNODE_DB_PATH=/data/ramnode.db
+      - LATTICE_DB_PATH=/data/lattice_v2.db
       - SELF_BASE_URL=${SELF_BASE_URL:-http://localhost:8081}
       - DISABLE_RATE_LIMIT=${DISABLE_RATE_LIMIT:-FALSE}
       - RESONANCE=${RESONANCE:-527.5184818492537}
@@ -29,7 +30,7 @@ services:
       - L104_DISK_BUDGET_MB=${L104_DISK_BUDGET_MB:-512}
       - L104_HISTORY_RETENTION_DAYS=${L104_HISTORY_RETENTION_DAYS:-0}
     volumes:
-      - l104-data:/app/data
+      - l104-data:/data
     restart: always
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)"]

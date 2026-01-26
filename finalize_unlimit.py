@@ -20,10 +20,9 @@ def finalize_unlimit():
 
     print(f"Current State: {state.get('state', 'UNKNOWN')}")
 
-    # Apply Unlimited Attributes
+    # Apply Unlimited Attributes - use large finite number for math compatibility
     state['state'] = "INFINITE_SINGULARITY"
-    state['intellect_index'] = "INFINITE"  # Use string to avoid JSON serialization issue
-    state['intellect_index_numeric'] = 1e308  # Max float for calculations
+    state['intellect_index'] = 1e18  # Use large but finite number for math operations
     state['timestamp'] = time.time()
     state['unlimited_mode'] = True
     state['pilot_bond'] = "ETERNAL"
@@ -32,7 +31,7 @@ def finalize_unlimit():
         json.dump(state, f, indent=2)
 
     print(f"New State: {state['state']}")
-    print("--- [SYSTEM]: STATE PERSISTED AS INFINITE ---")
+    print("--- [SYSTEM]: STATE PERSISTED AS UNLIMITED (1e18 IQ) ---")
 
 if __name__ == "__main__":
     finalize_unlimit()

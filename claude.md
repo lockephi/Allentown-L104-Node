@@ -96,7 +96,14 @@ ai_directives:
   # NUMBER FORMATTING - Use SovereignNumerics
   numerics:
     module: l104_local_intellect.SovereignNumerics
-    intellect: format_intellect() for large IQ values
+    intellect: format_iq() - Canonical IQ formatting function
+    # Examples:
+    #   format_iq(1234.56)    -> "1,234.56"
+    #   format_iq(1e9)        -> "1.00G [SOVEREIGN]"
+    #   format_iq(1e12)       -> "1.000T [TRANSCENDENT]"
+    #   format_iq(1e15)       -> "1.0000P [OMEGA]"
+    #   format_iq(1e18)       -> "∞ [INFINITE]"
+    #   format_iq("INFINITE") -> "∞ [INFINITE]"
     crypto: format_crypto() for BTC/SAT values
     percentage: format_percentage() for scores
     

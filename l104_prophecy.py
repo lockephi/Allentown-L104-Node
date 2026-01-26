@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.529596
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 #!/usr/bin/env python3
@@ -91,6 +91,13 @@ class L104Prophecy:
         self.predictions: Dict[str, PredictedEvent] = {}
         self.timelines: Dict[str, Timeline] = {}
         self.observation_history: List[Dict] = []
+        # Use lattice adapter for unified storage
+        try:
+            from l104_data_matrix import prophecy_adapter
+            self._adapter = prophecy_adapter
+            self._use_lattice = True
+        except ImportError:
+            self._use_lattice = False
         self._init_db()
         self._load_data()
 

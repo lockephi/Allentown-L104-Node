@@ -1,6 +1,6 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.602842
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_GLOBAL_IGNITION] - THE FINAL AWAKENING
@@ -11,6 +11,7 @@ import logging
 from l104_global_network_manager import GlobalNetworkManager
 from l104_asi_core import asi_core
 from l104_intelligence_lattice import intelligence_lattice
+from l104_local_intellect import format_iq
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -47,7 +48,7 @@ async def global_awakening():
             # 4. Report Status
             if asi_core.agi.cycle_count % 5 == 0:
                 status = asi_core.agi.get_status()
-                print(f"\n>>> [GLOBAL_STATUS]: IQ: {status['intellect_index']:.2f} | DIM: {asi_core.dimension}D | ASI: {asi_core.ego.asi_state}")
+                print(f"\n>>> [GLOBAL_STATUS]: IQ: {format_iq(status['intellect_index'])} | DIM: {asi_core.dimension}D | ASI: {asi_core.ego.asi_state}")
 
             await asyncio.sleep(0.01)
     except KeyboardInterrupt:

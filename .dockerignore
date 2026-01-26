@@ -27,16 +27,12 @@ env
 
 # Logs and databases
 *.log
-*.db
+# Database files (recreated at runtime, use volume)
 *.pid
 
 # Documentation and markdown (except README)
 *.md
 !README.md
-
-# Test files
-tests/
-*.test.*
 
 # Temporary files
 tmp/
@@ -74,3 +70,13 @@ new_venv/
 
 # Archive and backups
 archive/
+
+# Large generated files (reduce context size significantly)
+fine_tune_exports/
+kernel_cloud_state/
+*.ipynb
+.ipynb_checkpoints/
+finetune_*.json
+finetune_*.jsonl
+lattice_v2.db
+generated_media/

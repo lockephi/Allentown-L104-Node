@@ -29,6 +29,7 @@ import hashlib
 import math
 import random
 import time
+from l104_local_intellect import format_iq
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -1213,7 +1214,7 @@ if __name__ == "__main__":
     # Evolve
     print("\n  Evolving intelligence...")
     evolution = apex.evolve()
-    print(f"  IQ Equivalent: {evolution['iq']:.1f}")
+    print(f"  IQ Equivalent: {format_iq(evolution['iq'])}")
     print(f"  Creative Quotient: {evolution['cq']:.1f}")
     print(f"  Wisdom Quotient: {evolution['wq']:.1f}")
 

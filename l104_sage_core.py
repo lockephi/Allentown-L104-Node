@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-01-21T01:41:34.086927
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 #!/usr/bin/env python3
@@ -110,10 +110,18 @@ class SageMemory:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Persistent memory for Sage Core using SQLite.
     Stores experiences, learned patterns, and evolution history.
+    Mirrored to lattice_v2 for unified storage.
     """
 
     def __init__(self, db_path: str = SAGE_DB_PATH):
         self.db_path = db_path
+        # Use lattice adapter for unified storage
+        try:
+            from l104_data_matrix import sage_adapter
+            self._adapter = sage_adapter
+            self._use_lattice = True
+        except ImportError:
+            self._use_lattice = False
         self._ensure_db()
 
     def _ensure_db(self):
@@ -191,13 +199,24 @@ class SageMemory:
         conn.close()
 
     def store_experience(self, context: str, action: str, result: str, reward: float):
-        """Store an experience."""
+        """Store an experience - mirrored to lattice_v2."""
+        ts = time.time()
+        # Mirror to lattice
+        if self._use_lattice:
+            self._adapter.store(f"experience:{int(ts*1000)}", {
+                "timestamp": ts,
+                "context": context,
+                "action": action,
+                "result": result,
+                "reward": reward
+            }, category="SAGE_EXPERIENCE")
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO experiences (timestamp, context, action, result, reward)
             VALUES (?, ?, ?, ?, ?)
-        """, (time.time(), context, action, result, reward))
+        """, (ts, context, action, result, reward))
         conn.commit()
         conn.close()
 

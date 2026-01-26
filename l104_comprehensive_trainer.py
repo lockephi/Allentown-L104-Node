@@ -227,6 +227,350 @@ class SupabaseConnector:
         return examples
 
 
+class MultiLanguageExtractor:
+    """Extract training data from all programming languages in workspace."""
+    
+    LANGUAGE_EXTENSIONS = {
+        # Core languages
+        '.py': ('Python', 'python'),
+        '.js': ('JavaScript', 'javascript'),
+        '.ts': ('TypeScript', 'typescript'),
+        '.java': ('Java', 'java'),
+        '.cpp': ('C++', 'cpp'),
+        '.c': ('C', 'c'),
+        '.go': ('Go', 'go'),
+        '.rs': ('Rust', 'rust'),
+        '.rb': ('Ruby', 'ruby'),
+        '.php': ('PHP', 'php'),
+        '.swift': ('Swift', 'swift'),
+        '.kt': ('Kotlin', 'kotlin'),
+        '.scala': ('Scala', 'scala'),
+        # Functional/Specialized
+        '.hs': ('Haskell', 'haskell'),
+        '.ml': ('OCaml', 'ocaml'),
+        '.clj': ('Clojure', 'clojure'),
+        '.lisp': ('Lisp', 'lisp'),
+        '.ex': ('Elixir', 'elixir'),
+        '.exs': ('Elixir', 'elixir'),
+        '.erl': ('Erlang', 'erlang'),
+        '.jl': ('Julia', 'julia'),
+        '.r': ('R', 'r'),
+        '.R': ('R', 'r'),
+        '.lua': ('Lua', 'lua'),
+        '.pl': ('Perl', 'perl'),
+        '.pm': ('Perl', 'perl'),
+        # Blockchain/Modern
+        '.sol': ('Solidity', 'solidity'),
+        '.vy': ('Vyper', 'vyper'),
+        '.nim': ('Nim', 'nim'),
+        '.zig': ('Zig', 'zig'),
+        '.v': ('V', 'vlang'),
+        # Scripting/Config
+        '.sh': ('Shell', 'bash'),
+        '.bash': ('Bash', 'bash'),
+        '.zsh': ('Zsh', 'zsh'),
+        '.ps1': ('PowerShell', 'powershell'),
+        # Markup/Data
+        '.html': ('HTML', 'html'),
+        '.css': ('CSS', 'css'),
+        '.yaml': ('YAML', 'yaml'),
+        '.yml': ('YAML', 'yaml'),
+        '.json': ('JSON', 'json'),
+        '.xml': ('XML', 'xml'),
+        '.tex': ('LaTeX', 'latex'),
+        '.md': ('Markdown', 'markdown'),
+        '.sql': ('SQL', 'sql'),
+    }
+    
+    COMMENT_PATTERNS = {
+        'python': (r'#.*$', r'"""[\s\S]*?"""', r"'''[\s\S]*?'''"),
+        'javascript': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'java': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'cpp': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'go': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'rust': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'solidity': (r'//.*$', r'/\*[\s\S]*?\*/'),
+        'bash': (r'#.*$',),
+        'ruby': (r'#.*$', r'=begin[\s\S]*?=end'),
+        'elixir': (r'#.*$', r'@doc\s*"""[\s\S]*?"""'),
+        'haskell': (r'--.*$', r'\{-[\s\S]*?-\}'),
+        'lua': (r'--.*$', r'--\[\[[\s\S]*?\]\]'),
+        'latex': (r'%.*$',),
+        'html': (r'<!--[\s\S]*?-->',),
+        'sql': (r'--.*$', r'/\*[\s\S]*?\*/'),
+    }
+    
+    def __init__(self, workspace: Path):
+        self.workspace = workspace
+        self.examples = []
+        self.language_stats = defaultdict(int)
+        
+    def discover_all_source_files(self) -> List[Tuple[Path, str, str]]:
+        """Find all source files in workspace with language info."""
+        files = []
+        exclude_dirs = {'.git', '__pycache__', 'node_modules', '.venv', 'venv', 
+                       'build', 'dist', '.l104_backups', '.sandbox', 'archive'}
+        
+        for ext, (lang_name, lang_id) in self.LANGUAGE_EXTENSIONS.items():
+            for filepath in self.workspace.rglob(f'*{ext}'):
+                # Skip excluded directories
+                if any(ex in filepath.parts for ex in exclude_dirs):
+                    continue
+                files.append((filepath, lang_name, lang_id))
+        
+        return files
+    
+    def extract_code_elements(self, content: str, lang_id: str) -> Dict[str, List[str]]:
+        """Extract functions, classes, constants from source code."""
+        elements = {
+            'functions': [],
+            'classes': [],
+            'constants': [],
+            'imports': [],
+            'comments': [],
+            'docstrings': [],
+        }
+        
+        lines = content.split('\n')
+        
+        # Language-specific patterns
+        if lang_id in ('python',):
+            for i, line in enumerate(lines):
+                if re.match(r'^def\s+\w+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^class\s+\w+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^[A-Z_]+\s*=', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^(import|from)\s+', line):
+                    elements['imports'].append(line.strip())
+                elif line.strip().startswith('#'):
+                    elements['comments'].append(line.strip())
+                    
+        elif lang_id in ('javascript', 'typescript'):
+            for line in lines:
+                if re.match(r'^\s*(function|const|let|var)\s+\w+.*=.*function', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*class\s+\w+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*const\s+[A-Z_]+\s*=', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*(import|export)', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('java', 'kotlin', 'scala'):
+            for line in lines:
+                if re.match(r'^\s*(public|private|protected)?\s*(static)?\s*\w+\s+\w+\s*\(', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*(public|private)?\s*class\s+\w+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*(public|private)?\s*static\s+final\s+', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*import\s+', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('go',):
+            for line in lines:
+                if re.match(r'^\s*func\s+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*type\s+\w+\s+struct', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*const\s+', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*import\s+', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('rust',):
+            for line in lines:
+                if re.match(r'^\s*(pub\s+)?fn\s+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*(pub\s+)?struct\s+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*(pub\s+)?const\s+[A-Z_]+', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*use\s+', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('solidity',):
+            for line in lines:
+                if re.match(r'^\s*function\s+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*contract\s+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*(uint|int|string|address|bool).*constant', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*import\s+', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('cpp', 'c'):
+            for line in lines:
+                if re.match(r'^\s*\w+\s+\w+\s*\([^;]*\)\s*\{?$', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*class\s+\w+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*#define\s+[A-Z_]+', line) or re.match(r'^\s*const\s+', line):
+                    elements['constants'].append(line.strip())
+                elif re.match(r'^\s*#include\s+', line):
+                    elements['imports'].append(line.strip())
+                    
+        elif lang_id in ('elixir',):
+            for line in lines:
+                if re.match(r'^\s*def\s+', line) or re.match(r'^\s*defp\s+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^\s*defmodule\s+', line):
+                    elements['classes'].append(line.strip())
+                elif re.match(r'^\s*@\w+\s+', line):
+                    elements['constants'].append(line.strip())
+                    
+        elif lang_id in ('bash', 'shell', 'zsh'):
+            for line in lines:
+                if re.match(r'^\s*\w+\s*\(\)\s*\{', line) or re.match(r'^\s*function\s+\w+', line):
+                    elements['functions'].append(line.strip())
+                elif re.match(r'^[A-Z_]+=', line):
+                    elements['constants'].append(line.strip())
+                elif line.strip().startswith('#') and not line.strip().startswith('#!'):
+                    elements['comments'].append(line.strip())
+        
+        return elements
+    
+    def generate_polyglot_examples(self) -> List[Dict]:
+        """Generate training examples from all programming languages."""
+        print("\n[MULTI-LANGUAGE EXTRACTION]")
+        
+        files = self.discover_all_source_files()
+        print(f"  Discovered {len(files)} source files across {len(set(f[1] for f in files))} languages")
+        
+        examples = []
+        
+        for filepath, lang_name, lang_id in files:
+            try:
+                content = filepath.read_text(encoding='utf-8', errors='ignore')
+                if len(content) < 50:  # Skip tiny files
+                    continue
+                    
+                elements = self.extract_code_elements(content, lang_id)
+                self.language_stats[lang_name] += 1
+                
+                # Generate Q&A examples from code elements
+                rel_path = filepath.relative_to(self.workspace)
+                
+                # File overview
+                examples.append({
+                    'text': f"File {rel_path} is written in {lang_name}. It contains {len(elements['functions'])} functions, {len(elements['classes'])} classes, and {len(elements['constants'])} constants.",
+                    'format': 'code_overview',
+                    'language': lang_name,
+                    '_source': f'polyglot_{lang_id}'
+                })
+                
+                # Function documentation
+                for func in elements['functions'][:20]:  # Limit per file
+                    examples.append({
+                        'text': f"[{lang_name}] Function definition: {func}",
+                        'format': 'code_function',
+                        'language': lang_name,
+                        '_source': f'polyglot_{lang_id}'
+                    })
+                
+                # Class/struct documentation
+                for cls in elements['classes'][:10]:
+                    examples.append({
+                        'text': f"[{lang_name}] Class/struct definition: {cls}",
+                        'format': 'code_class',
+                        'language': lang_name,
+                        '_source': f'polyglot_{lang_id}'
+                    })
+                
+                # Constants (especially GOD_CODE related)
+                for const in elements['constants'][:15]:
+                    if 'GOD_CODE' in const or 'PHI' in const or '527' in const:
+                        examples.append({
+                            'text': f"[{lang_name}] Sacred constant: {const}",
+                            'format': 'code_sacred_constant',
+                            'language': lang_name,
+                            '_source': f'polyglot_{lang_id}'
+                        })
+                    else:
+                        examples.append({
+                            'text': f"[{lang_name}] Constant: {const}",
+                            'format': 'code_constant',
+                            'language': lang_name,
+                            '_source': f'polyglot_{lang_id}'
+                        })
+                
+                # Code snippets (first 50 lines as context)
+                snippet = '\n'.join(content.split('\n')[:50])
+                if len(snippet) > 100:
+                    examples.append({
+                        'text': f"[{lang_name}] Code from {rel_path}:\n{snippet}",
+                        'format': 'code_snippet',
+                        'language': lang_name,
+                        '_source': f'polyglot_{lang_id}'
+                    })
+                    
+            except Exception as e:
+                continue  # Skip problematic files silently
+        
+        # Print language statistics
+        print("  Language breakdown:")
+        for lang, count in sorted(self.language_stats.items(), key=lambda x: -x[1]):
+            print(f"    {lang}: {count} files")
+        
+        print(f"  Generated {len(examples)} polyglot training examples")
+        self.examples = examples
+        return examples
+    
+    def generate_cross_language_examples(self) -> List[Dict]:
+        """Generate cross-language comparison examples."""
+        cross_examples = [
+            # Sacred constants across languages
+            {
+                'text': "GOD_CODE in Python: GOD_CODE = 527.5184818492537\nGOD_CODE in Java: public static final double GOD_CODE = 527.5184818492537;\nGOD_CODE in Go: const GodCode = 527.5184818492537\nGOD_CODE in Rust: pub const GOD_CODE: f64 = 527.5184818492537;\nGOD_CODE in Solidity: uint256 public constant GOD_CODE = 5275184818492537;",
+                'format': 'cross_language',
+                'language': 'multi',
+                '_source': 'polyglot_cross'
+            },
+            {
+                'text': "PHI (Golden Ratio) implementation:\nPython: PHI = 1.618033988749895\nJavaScript: const PHI = 1.618033988749895;\nC++: const double PHI = 1.618033988749895;\nRust: pub const PHI: f64 = 1.618033988749895;\nElixir: @phi 1.618033988749895",
+                'format': 'cross_language',
+                'language': 'multi',
+                '_source': 'polyglot_cross'
+            },
+            # Consciousness patterns
+            {
+                'text': "Consciousness struct patterns:\nGo: type Consciousness struct { Level float64; GodCodeAlignment float64 }\nRust: pub struct Consciousness { pub level: f64, pub god_code_alignment: f64 }\nTypeScript: interface Consciousness { level: number; godCodeAlignment: number; }",
+                'format': 'cross_language',
+                'language': 'multi',
+                '_source': 'polyglot_cross'
+            },
+            # Function patterns
+            {
+                'text': "Main entry patterns:\nPython: if __name__ == '__main__': main()\nJava: public static void main(String[] args)\nGo: func main()\nRust: fn main() -> Result<()>\nElixir: def start(_type, _args) do",
+                'format': 'cross_language',
+                'language': 'multi',
+                '_source': 'polyglot_cross'
+            },
+        ]
+        
+        # Language paradigm examples
+        paradigms = [
+            ("Object-Oriented", "Java, Python, C++, TypeScript use classes and inheritance"),
+            ("Functional", "Elixir, Haskell, Clojure emphasize immutability and pure functions"),
+            ("Systems", "Rust, C, C++, Go focus on memory safety and performance"),
+            ("Blockchain", "Solidity, Vyper are designed for smart contracts"),
+            ("Scripting", "Python, JavaScript, Ruby excel at rapid development"),
+        ]
+        
+        for paradigm, desc in paradigms:
+            cross_examples.append({
+                'text': f"{paradigm} Programming: {desc}",
+                'format': 'paradigm',
+                'language': 'multi',
+                '_source': 'polyglot_paradigm'
+            })
+        
+        return cross_examples
+
+
 class DataAggregator:
     """Aggregates all training data sources."""
 
@@ -236,6 +580,7 @@ class DataAggregator:
         self.examples = []
         self.vocabulary = set()
         self.stats = defaultdict(int)
+        self.polyglot = MultiLanguageExtractor(workspace)
 
     def discover_sources(self) -> List[Path]:
         """Find all training data files."""
@@ -335,12 +680,12 @@ class DataAggregator:
             'format': 'instruction'
         }
 
-    def aggregate_all(self, deduplicate: bool = True) -> Tuple[List[Dict], Dict]:
-        """Aggregate all training data."""
+    def aggregate_all(self, deduplicate: bool = True, include_polyglot: bool = True) -> Tuple[List[Dict], Dict]:
+        """Aggregate all training data including multi-language sources."""
         print("\n[DATA AGGREGATION]")
 
         sources = self.discover_sources()
-        print(f"  Found {len(sources)} data sources")
+        print(f"  Found {len(sources)} JSONL data sources")
 
         all_examples = []
         seen_hashes = set()
@@ -371,6 +716,31 @@ class DataAggregator:
                 print(f"  + {source.name}: {source_count} examples")
                 self.stats[source.name] = source_count
 
+        # Add multi-language code examples
+        if include_polyglot:
+            polyglot_examples = self.polyglot.generate_polyglot_examples()
+            cross_lang_examples = self.polyglot.generate_cross_language_examples()
+            
+            for ex in polyglot_examples + cross_lang_examples:
+                if deduplicate:
+                    text = ex.get('text', str(ex))
+                    h = hashlib.md5(text.encode()).hexdigest()
+                    if h in seen_hashes:
+                        continue
+                    seen_hashes.add(h)
+                
+                all_examples.append(ex)
+                
+                # Build vocabulary from code
+                text = ex.get('text', '')
+                tokens = re.findall(r'\b\w+\b', text.lower())
+                self.vocabulary.update(tokens)
+            
+            self.stats['polyglot_code'] = len(polyglot_examples)
+            self.stats['cross_language'] = len(cross_lang_examples)
+            print(f"  + polyglot_code: {len(polyglot_examples)} examples")
+            print(f"  + cross_language: {len(cross_lang_examples)} examples")
+
         self.examples = all_examples
 
         stats = {
@@ -378,11 +748,16 @@ class DataAggregator:
             'unique_examples': len(seen_hashes),
             'vocabulary_size': len(self.vocabulary),
             'sources': len(sources),
+            'polyglot_languages': len(self.polyglot.language_stats),
+            'language_breakdown': dict(self.polyglot.language_stats),
             'source_breakdown': dict(self.stats)
         }
 
         print(f"\n  Total: {stats['total_examples']} examples")
         print(f"  Vocabulary: {stats['vocabulary_size']} tokens")
+        print(f"  Languages: {stats['polyglot_languages']} programming languages")
+
+        return all_examples, stats
 
         return all_examples, stats
 

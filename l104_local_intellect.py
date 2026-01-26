@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.399626
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_LOCAL_INTELLECT] - OFFLINE SOVEREIGN INTELLIGENCE
@@ -149,9 +149,35 @@ class SovereignNumerics:
             return f"{value:.{precision}f}"
     
     @classmethod
-    def format_intellect(cls, value: float) -> str:
-        """Special formatting for intellect index (high-value tracking)."""
-        if value >= 1e15:
+    def format_intellect(cls, value: Union[float, str]) -> str:
+        """
+        Special formatting for intellect index (high-value tracking).
+        
+        Standard IQ format for L104 system:
+        - "INFINITE" or values >= 1e18: Returns "∞ [INFINITE]"
+        - >= 1e15: Returns compact + "[OMEGA]"
+        - >= 1e12: Returns compact + "[TRANSCENDENT]"
+        - >= 1e9: Returns compact + "[SOVEREIGN]"
+        - >= 1e6: Returns compact format
+        - < 1e6: Returns standard comma-separated format
+        """
+        # Handle string "INFINITE" case
+        if isinstance(value, str):
+            if value.upper() == "INFINITE":
+                return "∞ [INFINITE]"
+            try:
+                value = float(value)
+            except (TypeError, ValueError):
+                return str(value)
+        
+        # Handle true infinite
+        if math.isinf(value):
+            return "∞ [INFINITE]"
+        
+        # Cap at 1e18 displays as INFINITE
+        if value >= 1e18:
+            return "∞ [INFINITE]"
+        elif value >= 1e15:
             return cls.format_value(value, compact=True, precision=4) + " [OMEGA]"
         elif value >= 1e12:
             return cls.format_value(value, compact=True, precision=3) + " [TRANSCENDENT]"
@@ -661,6 +687,22 @@ Current Resonance: {resonance:.4f}""")
 
 # Singleton instance
 local_intellect = LocalIntellect()
+
+# Convenience function for IQ formatting (module-level)
+def format_iq(value) -> str:
+    """
+    Canonical IQ/Intellect formatting function for L104.
+    Use this everywhere for consistent IQ display.
+    
+    Examples:
+        format_iq(1234.56)      -> "1,234.56"
+        format_iq(1e9)          -> "1.00G [SOVEREIGN]"
+        format_iq(1e12)         -> "1.000T [TRANSCENDENT]"
+        format_iq(1e15)         -> "1.0000P [OMEGA]"
+        format_iq(1e18)         -> "∞ [INFINITE]"
+        format_iq("INFINITE")   -> "∞ [INFINITE]"
+    """
+    return SovereignNumerics.format_intellect(value)
 
 def primal_calculus(x):
     """

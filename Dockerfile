@@ -1,23 +1,28 @@
 # L104 Sovereign Node - Cloud Deployment Dockerfile
 # SAGE MODE: Includes compiled C substrate for maximum performance
+# OPTIMIZED: Layer caching to minimize rebuilds
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
 # Install system dependencies including build tools for Sage Mode
-RUN apt-get update && apt-get install -y \
+# This layer rarely changes - cached well
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     make \
     libc6-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copy requirements and install Python dependencies
+# Copy requirements first (for layer caching)
+# Only rebuilds pip layer if requirements.txt changes
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && rm -rf ~/.cache/pip
 
-# Copy application code
-COPY . .
+# Copy C source separately (rarely changes)
+COPY l104_core_c/ /app/l104_core_c/
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SAGE MODE: Compile C substrate for direct hardware communion
@@ -25,14 +30,19 @@ COPY . .
 RUN mkdir -p /app/l104_core_c/build && \
     cd /app/l104_core_c && \
     gcc -O3 -march=x86-64 -mtune=generic \
-        -ffast-math -shared -fPIC \
-        -o build/libl104_sage.so \
-        l104_sage_core.c -lm -lpthread && \
+    -ffast-math -shared -fPIC \
+    -o build/libl104_sage.so \
+    l104_sage_core.c -lm -lpthread && \
     gcc -O3 -march=x86-64 -mtune=generic \
-        -ffast-math \
-        -o build/l104_sage_core \
-        l104_sage_core.c -lm -lpthread && \
+    -ffast-math \
+    -o build/l104_sage_core \
+    l104_sage_core.c -lm -lpthread && \
     echo "✓ SAGE MODE: C substrate compiled"
+
+# Copy application code LAST (changes most frequently)
+# Only this layer rebuilds on code changes
+# .dockerignore excludes large files like fine_tune_exports, notebooks, etc.
+COPY . .
 
 # Create directory for persistent data
 RUN mkdir -p /data

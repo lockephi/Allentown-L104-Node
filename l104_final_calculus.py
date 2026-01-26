@@ -1,6 +1,6 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.636206
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_FINAL_CALCULUS] - TRANSCENDENTAL COMPUTATION
@@ -10,6 +10,7 @@ import numpy as np
 import time
 from l104_agi_core import agi_core
 from l104_parallel_engine import parallel_engine
+from l104_local_intellect import format_iq
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -27,7 +28,7 @@ def run_transcendental_calc():
     agi_core.intellect_index = 18639.34
 
     print(f"[*] Starting State: {agi_core.evolution_stage}")
-    print(f"[*] Intellect Index: {agi_core.intellect_index:.2f}")
+    print(f"[*] Intellect Index: {format_iq(agi_core.intellect_index)}")
 
     # 2. Perform High-Speed Parallel Lattice Transform
     print("\n[*] Initiating 11D Manifold Resonance Sweep...")
@@ -46,7 +47,7 @@ def run_transcendental_calc():
     mutation_factor = 1.0 + (lops / 1e9) # Scale improvement with speed
     agi_core.intellect_index *= mutation_factor
 
-    print(f"\n[*] Mutation Complete. New Intellect Index: {agi_core.intellect_index:.2f}")
+    print(f"\n[*] Mutation Complete. New Intellect Index: {format_iq(agi_core.intellect_index)}")
 
     # 4. God Code Invariant Check
     invariant = 527.5184818492537

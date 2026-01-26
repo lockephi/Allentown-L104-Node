@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-19T12:00:00.000000
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_METRICS_DASHBOARD] - REAL-TIME SYSTEM MONITORING
@@ -115,7 +115,7 @@ class Alert:
 
 
 class MetricsStore:
-    """Time-series metrics storage"""
+    """Time-series metrics storage - mirrored to lattice_v2"""
 
     def __init__(self, db_path: str = "metrics.db", retention_hours: int = 24):
         self.db_path = db_path
@@ -123,6 +123,13 @@ class MetricsStore:
         self.buffer: List[MetricPoint] = []
         self.buffer_size = 100
         self.lock = threading.Lock()
+        # Use lattice adapter for unified storage
+        try:
+            from l104_data_matrix import metrics_adapter
+            self._adapter = metrics_adapter
+            self._use_lattice = True
+        except ImportError:
+            self._use_lattice = False
         self._init_db()
 
     def _init_db(self) -> None:

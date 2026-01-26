@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-18T11:00:18.568650
+# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 #!/usr/bin/env python3
@@ -50,6 +50,7 @@ class L104KnowledgeGraph:
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
     Dynamic knowledge graph for storing and reasoning over relationships.
     Supports semantic queries, path finding, and inference.
+    Mirrored to lattice_v2 for unified storage.
     """
 
     def __init__(self, db_path: str = "knowledge_graph.db"):
@@ -58,6 +59,13 @@ class L104KnowledgeGraph:
         self.edges: Dict[str, Edge] = {}
         self.adjacency: Dict[str, Set[str]] = defaultdict(set)  # node_id -> connected node_ids
         self.reverse_adjacency: Dict[str, Set[str]] = defaultdict(set)
+        # Use lattice adapter for unified storage
+        try:
+            from l104_data_matrix import knowledge_adapter
+            self._adapter = knowledge_adapter
+            self._use_lattice = True
+        except ImportError:
+            self._use_lattice = False
         self._init_db()
         self._load_graph()
 
@@ -145,7 +153,18 @@ class L104KnowledgeGraph:
         return hashlib.sha256(f"{content}:{timestamp}".encode()).hexdigest()[:12]
 
     def _save_node(self, node: Node):
-        """Save node to database."""
+        """Save node to database - mirrored to lattice_v2."""
+        # Mirror to lattice
+        if self._use_lattice:
+            self._adapter.store(f"node:{node.id}", {
+                "id": node.id,
+                "label": node.label,
+                "node_type": node.node_type,
+                "properties": node.properties,
+                "created_at": node.created_at.isoformat(),
+                "weight": node.weight
+            }, category="KNOWLEDGE_NODE")
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
