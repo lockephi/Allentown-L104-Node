@@ -31,8 +31,8 @@ from functools import lru_cache
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-# Base path
-BASE_PATH = Path('/workspaces/Allentown-L104-Node')
+# Base path - Use module location for Docker compatibility
+BASE_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
 
 # GOD_CODE - The invariant
 GOD_CODE = 527.5184818492537

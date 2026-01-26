@@ -231,7 +231,7 @@ class NovelTheoremGenerator:
 class SelfModificationEngine:
     """Enables autonomous self-modification."""
     def __init__(self, workspace: Path = None):
-        self.workspace = workspace or Path('/workspaces/Allentown-L104-Node')
+        self.workspace = workspace or Path(os.path.dirname(os.path.abspath(__file__)))
         self.modification_depth = 0
         self.modifications: List[Dict] = []
         self.locked_modules = {'l104_stable_kernel.py', 'const.py'}

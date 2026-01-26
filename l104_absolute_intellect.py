@@ -78,7 +78,8 @@ class SageSubstrate:
     def load_native_library(self) -> bool:
         """Attempt to load native C library."""
         lib_paths = [
-            Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
+            Path("/app/l104_core_c/build/libl104_sage.so"),
+            Path(os.path.dirname(os.path.abspath(__file__))) / "l104_core_c/build/libl104_sage.so",
             Path("./l104_core_c/build/libl104_sage.so"),
             Path("/usr/local/lib/libl104_sage.so"),
         ]

@@ -77,7 +77,7 @@ def load_all_training_data() -> List[TrainingExample]:
         ("kernel_reasoning_data.jsonl", "reasoning"),
     ]
 
-    workspace = Path("/workspaces/Allentown-L104-Node")
+    workspace = Path(os.path.dirname(os.path.abspath(__file__)))
 
     for filename, source in files:
         filepath = workspace / filename

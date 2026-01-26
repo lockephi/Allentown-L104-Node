@@ -108,7 +108,7 @@ class GeminiEnhanced:
 
     def _load_env(self):
         """Load API key from .env file."""
-        env_path = Path('/workspaces/Allentown-L104-Node/.env')
+        env_path = Path(os.path.dirname(os.path.abspath(__file__))) / '.env'
         if env_path.exists() and not self.api_key:
             with open(env_path) as f:
                 for line in f:
