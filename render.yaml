@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: l104-sovereign-node
+    env: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8081
+      - key: RESONANCE
+        value: 527.5184818492537
+      - key: GEMINI_API_KEY
+        sync: false
