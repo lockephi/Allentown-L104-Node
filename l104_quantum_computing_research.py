@@ -8,6 +8,7 @@ import cmath
 from dataclasses import dataclass
 from typing import List, Tuple, Dict, Optional
 import random
+import numpy as np  # OPTIMIZATION: Added for vectorized quantum operations
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -106,68 +107,95 @@ class RotationY(QuantumGate):
         super().__init__([[c, -s], [s, c]])
 
 class QuantumCircuit:
-    """Multi-qubit quantum circuit simulator"""
+    """Multi-qubit quantum circuit simulator
+    
+    OPTIMIZATION: Uses numpy arrays for state vector operations for better performance.
+    """
 
     def __init__(self, num_qubits: int):
         self.num_qubits = num_qubits
-        self.state_vector = [complex(0)] * (2 ** num_qubits)
+        # OPTIMIZATION: Use numpy array instead of Python list
+        self.state_vector = np.zeros(2 ** num_qubits, dtype=np.complex128)
         self.state_vector[0] = 1.0  # Initialize to |00...0>
 
     def apply_single_gate(self, gate: QuantumGate, target: int) -> None:
-        """Apply single-qubit gate to target qubit"""
+        """Apply single-qubit gate to target qubit
+        
+        OPTIMIZATION: Uses numpy vectorized operations instead of Python loops.
+        """
         n = 2 ** self.num_qubits
-        new_state = [complex(0)] * n
-
-        for i in range(n):
-            bit = (i >> target) & 1
-            partner = i ^ (1 << target)
-
-            if bit == 0:
-                new_state[i] += gate.matrix[0][0] * self.state_vector[i]
-                new_state[i] += gate.matrix[0][1] * self.state_vector[partner]
-            else:
-                new_state[i] += gate.matrix[1][0] * self.state_vector[partner]
-                new_state[i] += gate.matrix[1][1] * self.state_vector[i]
+        new_state = np.zeros(n, dtype=np.complex128)
+        
+        # Pre-extract gate matrix elements to avoid repeated lookups
+        g00, g01 = gate.matrix[0][0], gate.matrix[0][1]
+        g10, g11 = gate.matrix[1][0], gate.matrix[1][1]
+        
+        # OPTIMIZATION: Vectorize by processing all indices at once
+        indices = np.arange(n)
+        bits = (indices >> target) & 1
+        partners = indices ^ (1 << target)
+        
+        # Indices where bit is 0 or 1
+        mask0 = bits == 0
+        mask1 = ~mask0
+        
+        # Apply gate transformations using vectorized numpy operations
+        new_state[mask0] = g00 * self.state_vector[indices[mask0]] + g01 * self.state_vector[partners[mask0]]
+        new_state[mask1] = g10 * self.state_vector[partners[mask1]] + g11 * self.state_vector[indices[mask1]]
 
         self.state_vector = new_state
 
     def apply_cnot(self, control: int, target: int) -> None:
-        """Apply CNOT gate"""
+        """Apply CNOT gate
+        
+        OPTIMIZATION: Uses numpy array indexing for faster swap operations.
+        """
         n = 2 ** self.num_qubits
         new_state = self.state_vector.copy()
-
-        for i in range(n):
-            if (i >> control) & 1:  # Control is 1
-                partner = i ^ (1 << target)  # Flip target
-                new_state[i], new_state[partner] = self.state_vector[partner], self.state_vector[i]
+        
+        # OPTIMIZATION: Vectorize the swap operations
+        indices = np.arange(n)
+        control_set = (indices >> control) & 1 == 1
+        partners = indices ^ (1 << target)
+        
+        # Only swap where control is 1
+        swap_indices = indices[control_set]
+        swap_partners = partners[control_set]
+        
+        new_state[swap_indices] = self.state_vector[swap_partners]
+        new_state[swap_partners] = self.state_vector[swap_indices]
 
         self.state_vector = new_state
 
     def measure_all(self) -> List[int]:
-        """Measure all qubits"""
-        probabilities = [abs(a)**2 for a in self.state_vector]
+        """Measure all qubits
+        
+        OPTIMIZATION: Uses numpy for probability computation.
+        """
+        probabilities = np.abs(self.state_vector) ** 2
         r = random.random()
 
-        cumulative = 0
-        for i, p in enumerate(probabilities):
-            cumulative += p
-            if r < cumulative:
-                result = [(i >> j) & 1 for j in range(self.num_qubits)]
-                # Collapse state
-                self.state_vector = [complex(0)] * len(self.state_vector)
-                self.state_vector[i] = 1.0
-                return result
-
-        return [0] * self.num_qubits
+        cumulative = np.cumsum(probabilities)
+        idx = np.searchsorted(cumulative, r)
+        idx = min(idx, len(self.state_vector) - 1)
+        
+        result = [(idx >> j) & 1 for j in range(self.num_qubits)]
+        # Collapse state
+        self.state_vector = np.zeros(len(self.state_vector), dtype=np.complex128)
+        self.state_vector[idx] = 1.0
+        return result
 
     def get_probabilities(self) -> Dict[str, float]:
-        """Get measurement probabilities for all basis states"""
+        """Get measurement probabilities for all basis states
+        
+        OPTIMIZATION: Uses numpy for faster probability computation.
+        """
+        probs = np.abs(self.state_vector) ** 2
         result = {}
-        for i, amp in enumerate(self.state_vector):
-            prob = abs(amp)**2
-            if prob > 1e-10:
-                bits = format(i, f"0{self.num_qubits}b")
-                result[bits] = prob
+        nonzero = np.where(probs > 1e-10)[0]
+        for i in nonzero:
+            bits = format(i, f"0{self.num_qubits}b")
+            result[bits] = float(probs[i])
         return result
 
 class QuantumAlgorithms:
