@@ -287,7 +287,7 @@ class QuantumRegister:
         """Calculate quantum coherence measure.
         
         OPTIMIZATION: Uses vectorized numpy operations instead of O(n²) nested loops.
-        l1-norm coherence = sum(|a_i|) * sum(|a_j|) - sum(|a_i|²) for i≠j
+        l1-norm coherence = (sum |a_i|)² - sum |a_i|² (equivalent to sum of |a_i * a_j*| for i≠j)
         """
         import numpy as np
         amplitudes = np.array(self.state.amplitudes)

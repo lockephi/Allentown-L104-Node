@@ -44,7 +44,13 @@ class Hypervector:
     OPTIMIZATION: Uses numpy arrays internally for vectorized operations.
     """
 
-    def __init__(self, dimension: int = 10000, values: Optional[List[float]] = None):
+    def __init__(self, dimension: int = 10000, values = None):
+        """Initialize hypervector.
+        
+        Args:
+            dimension: Number of dimensions
+            values: Optional list or numpy array of values
+        """
         self.dimension = dimension
 
         if values is not None:
@@ -60,13 +66,24 @@ class Hypervector:
 
     @property
     def values(self) -> List[float]:
-        """Return values as list for backward compatibility."""
+        """Return values as list for backward compatibility.
+        
+        Note: For performance-critical code, access ._values directly.
+        """
         return self._values.tolist()
     
     @values.setter
     def values(self, val: List[float]):
-        """Set values from list for backward compatibility."""
-        self._values = np.array(val, dtype=np.float64)
+        """Set values from list for backward compatibility.
+        
+        FIX: Validates and pads/truncates to match dimension.
+        """
+        arr = np.array(val, dtype=np.float64)
+        if len(arr) < self.dimension:
+            arr = np.pad(arr, (0, self.dimension - len(arr)))
+        elif len(arr) > self.dimension:
+            arr = arr[:self.dimension]
+        self._values = arr
 
     @staticmethod
     def random_bipolar(dimension: int = 10000) -> 'Hypervector':
@@ -97,10 +114,16 @@ class Hypervector:
 
     @staticmethod
     def from_seed(seed: str, dimension: int = 10000) -> 'Hypervector':
-        """Create deterministic vector from seed"""
-        np.random.seed(int(hashlib.md5(seed.encode()).hexdigest()[:8], 16) % (2**32))
-        hv = Hypervector.random_bipolar(dimension)
-        np.random.seed()  # Reset seed
+        """Create deterministic vector from seed
+        
+        FIX: Uses numpy's newer random generator API for proper seed handling.
+        """
+        # Use a local random generator to avoid affecting global state
+        seed_int = int(hashlib.md5(seed.encode()).hexdigest()[:8], 16) % (2**32)
+        rng = np.random.default_rng(seed_int)
+        values = rng.choice([1.0, -1.0], size=dimension)
+        hv = Hypervector(dimension)
+        hv._values = values
         return hv
 
     def __add__(self, other: 'Hypervector') -> 'Hypervector':

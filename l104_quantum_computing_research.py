@@ -155,15 +155,21 @@ class QuantumCircuit:
         
         # OPTIMIZATION: Vectorize the swap operations
         indices = np.arange(n)
-        control_set = (indices >> control) & 1 == 1
+        # FIX: Proper operator precedence with parentheses
+        control_set = ((indices >> control) & 1) == 1
         partners = indices ^ (1 << target)
         
-        # Only swap where control is 1
+        # Only swap where control is 1 - copy from original to new state
+        # FIX: Use original state_vector for both sources to avoid overwrite issues
         swap_indices = indices[control_set]
         swap_partners = partners[control_set]
         
-        new_state[swap_indices] = self.state_vector[swap_partners]
-        new_state[swap_partners] = self.state_vector[swap_indices]
+        # Store values before swapping
+        temp_swap = self.state_vector[swap_indices].copy()
+        temp_partner = self.state_vector[swap_partners].copy()
+        
+        new_state[swap_indices] = temp_partner
+        new_state[swap_partners] = temp_swap
 
         self.state_vector = new_state
 
@@ -173,10 +179,12 @@ class QuantumCircuit:
         OPTIMIZATION: Uses numpy for probability computation.
         """
         probabilities = np.abs(self.state_vector) ** 2
+        # Normalize probabilities to handle floating point errors
+        probabilities = probabilities / np.sum(probabilities)
         r = random.random()
 
         cumulative = np.cumsum(probabilities)
-        idx = np.searchsorted(cumulative, r)
+        idx = int(np.searchsorted(cumulative, r))
         idx = min(idx, len(self.state_vector) - 1)
         
         result = [(idx >> j) & 1 for j in range(self.num_qubits)]
