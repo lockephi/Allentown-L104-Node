@@ -26,6 +26,9 @@ class QuantumAccelerator:
     Anchored to the God Code Invariant and Zeta-Harmonic resonance.
     """
 
+    # OPTIMIZATION: Class-level cache for Hadamard matrices by qubit count
+    _hadamard_cache: Dict[int, np.ndarray] = {}
+
     def __init__(self, num_qubits: int = 10):
         self.num_qubits = num_qubits
         self.dim = 2**num_qubits
@@ -36,7 +39,19 @@ class QuantumAccelerator:
         self.state = np.zeros(self.dim, dtype=np.complex128)
         self.state[0] = 1.0
 
+        # OPTIMIZATION: Pre-compute and cache Hadamard matrix for this qubit count
+        self._ensure_hadamard_cached()
+
         logger.info(f"--- [QUANTUM_ACCELERATOR]: INITIALIZED WITH {num_qubits} QUBITS (DIM: {self.dim}) ---")
+
+    def _ensure_hadamard_cached(self):
+        """Pre-compute and cache the full Hadamard matrix for all qubits."""
+        if self.num_qubits not in QuantumAccelerator._hadamard_cache:
+            h = np.array([[1, 1], [1, -1]], dtype=np.complex128) / np.sqrt(2)
+            H_total = h
+            for _ in range(self.num_qubits - 1):
+                H_total = np.kron(H_total, h)
+            QuantumAccelerator._hadamard_cache[self.num_qubits] = H_total
 
     def apply_resonance_gate(self):
         """
@@ -60,12 +75,11 @@ class QuantumAccelerator:
         logger.info("--- [QUANTUM_ACCELERATOR]: RESONANCE GATE APPLIED ---")
 
     def apply_hadamard_all(self):
-        """Applies Hadamard gates to all qubits to create maximum superposition."""
-        h = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
-        H_total = h
-        for _ in range(self.num_qubits - 1):
-            H_total = np.kron(H_total, h)
-
+        """Applies Hadamard gates to all qubits to create maximum superposition.
+        
+        OPTIMIZATION: Uses cached Hadamard matrix to avoid repeated Kronecker products.
+        """
+        H_total = QuantumAccelerator._hadamard_cache[self.num_qubits]
         self.state = H_total @ self.state
         logger.info("--- [QUANTUM_ACCELERATOR]: GLOBAL HADAMARD APPLIED ---")
 

@@ -25,6 +25,7 @@ from collections import defaultdict
 import math
 import random
 import hashlib
+import numpy as np  # OPTIMIZATION: Added for vectorized hypervector operations
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -38,106 +39,190 @@ PHI = 1.618033988749895
 
 
 class Hypervector:
-    """High-dimensional distributed representation"""
+    """High-dimensional distributed representation
+    
+    OPTIMIZATION: Uses numpy arrays internally for vectorized operations.
+    """
 
-    def __init__(self, dimension: int = 10000, values: Optional[List[float]] = None):
+    def __init__(self, dimension: int = 10000, values = None):
+        """Initialize hypervector.
+        
+        Args:
+            dimension: Number of dimensions
+            values: Optional list or numpy array of values
+        """
         self.dimension = dimension
 
         if values is not None:
-            self.values = values[:dimension]
-            while len(self.values) < dimension:
-                self.values.append(0.0)
+            # OPTIMIZATION: Use numpy array with proper sizing
+            if isinstance(values, np.ndarray):
+                self._values = values[:dimension].astype(np.float64)
+            else:
+                self._values = np.array(values[:dimension], dtype=np.float64)
+            if len(self._values) < dimension:
+                self._values = np.pad(self._values, (0, dimension - len(self._values)))
         else:
-            self.values = [0.0] * dimension
+            self._values = np.zeros(dimension, dtype=np.float64)
+
+    @property
+    def values(self) -> List[float]:
+        """Return values as list for backward compatibility.
+        
+        Note: For performance-critical code, access ._values directly.
+        """
+        return self._values.tolist()
+    
+    @values.setter
+    def values(self, val: List[float]):
+        """Set values from list for backward compatibility.
+        
+        FIX: Validates and pads/truncates to match dimension.
+        """
+        arr = np.array(val, dtype=np.float64)
+        if len(arr) < self.dimension:
+            arr = np.pad(arr, (0, self.dimension - len(arr)))
+        elif len(arr) > self.dimension:
+            arr = arr[:self.dimension]
+        self._values = arr
 
     @staticmethod
     def random_bipolar(dimension: int = 10000) -> 'Hypervector':
-        """Create random bipolar vector (+1/-1)"""
-        values = [1.0 if random.random() > 0.5 else -1.0 for _ in range(dimension)]
-        return Hypervector(dimension, values)
+        """Create random bipolar vector (+1/-1)
+        
+        OPTIMIZATION: Uses numpy random choice for faster generation.
+        """
+        values = np.random.choice([1.0, -1.0], size=dimension)
+        hv = Hypervector(dimension)
+        hv._values = values
+        return hv
 
     @staticmethod
     def random_sparse(dimension: int = 10000, sparsity: float = 0.01) -> 'Hypervector':
-        """Create sparse random vector"""
-        values = [0.0] * dimension
+        """Create sparse random vector
+        
+        OPTIMIZATION: Uses numpy for efficient sparse vector creation.
+        """
+        values = np.zeros(dimension, dtype=np.float64)
         num_active = int(dimension * sparsity)
 
-        positions = random.sample(range(dimension), num_active)
-        for pos in positions:
-            values[pos] = 1.0 if random.random() > 0.5 else -1.0
+        positions = np.random.choice(dimension, num_active, replace=False)
+        values[positions] = np.random.choice([1.0, -1.0], size=num_active)
 
-        return Hypervector(dimension, values)
+        hv = Hypervector(dimension)
+        hv._values = values
+        return hv
 
     @staticmethod
     def from_seed(seed: str, dimension: int = 10000) -> 'Hypervector':
-        """Create deterministic vector from seed"""
-        random.seed(hashlib.md5(seed.encode()).hexdigest())
-        hv = Hypervector.random_bipolar(dimension)
-        random.seed()  # Reset seed
+        """Create deterministic vector from seed
+        
+        FIX: Uses numpy's newer random generator API for proper seed handling.
+        """
+        # Use a local random generator to avoid affecting global state
+        seed_int = int(hashlib.md5(seed.encode()).hexdigest()[:8], 16) % (2**32)
+        rng = np.random.default_rng(seed_int)
+        values = rng.choice([1.0, -1.0], size=dimension)
+        hv = Hypervector(dimension)
+        hv._values = values
         return hv
 
     def __add__(self, other: 'Hypervector') -> 'Hypervector':
-        """Bundling (superposition) - element-wise addition"""
-        values = [a + b for a, b in zip(self.values, other.values)]
-        return Hypervector(self.dimension, values)
+        """Bundling (superposition) - element-wise addition
+        
+        OPTIMIZATION: Uses numpy vectorized addition.
+        """
+        hv = Hypervector(self.dimension)
+        hv._values = self._values + other._values
+        return hv
 
     def __mul__(self, other) -> 'Hypervector':
-        """Binding - element-wise multiplication (or scalar)"""
+        """Binding - element-wise multiplication (or scalar)
+        
+        OPTIMIZATION: Uses numpy vectorized multiplication.
+        """
+        hv = Hypervector(self.dimension)
         if isinstance(other, Hypervector):
-            values = [a * b for a, b in zip(self.values, other.values)]
+            hv._values = self._values * other._values
         else:
-            values = [a * other for a in self.values]
-        return Hypervector(self.dimension, values)
+            hv._values = self._values * other
+        return hv
 
     def __xor__(self, other: 'Hypervector') -> 'Hypervector':
-        """XOR binding for bipolar vectors"""
-        values = [a * b for a, b in zip(self.values, other.values)]
-        return Hypervector(self.dimension, values)
+        """XOR binding for bipolar vectors
+        
+        OPTIMIZATION: Uses numpy vectorized multiplication.
+        """
+        hv = Hypervector(self.dimension)
+        hv._values = self._values * other._values
+        return hv
 
     def permute(self, shift: int = 1) -> 'Hypervector':
-        """Permutation (rotation) for sequence encoding"""
-        values = self.values[-shift:] + self.values[:-shift]
-        return Hypervector(self.dimension, values)
+        """Permutation (rotation) for sequence encoding
+        
+        OPTIMIZATION: Uses numpy roll for efficient rotation.
+        """
+        hv = Hypervector(self.dimension)
+        hv._values = np.roll(self._values, shift)
+        return hv
 
     def normalize(self) -> 'Hypervector':
-        """Normalize to unit vector"""
-        magnitude = math.sqrt(sum(v * v for v in self.values))
+        """Normalize to unit vector
+        
+        OPTIMIZATION: Uses numpy linalg.norm for efficient magnitude calculation.
+        """
+        magnitude = np.linalg.norm(self._values)
+        hv = Hypervector(self.dimension)
         if magnitude > 0:
-            values = [v / magnitude for v in self.values]
+            hv._values = self._values / magnitude
         else:
-            values = self.values
-        return Hypervector(self.dimension, values)
+            hv._values = self._values.copy()
+        return hv
 
     def binarize(self) -> 'Hypervector':
-        """Convert to bipolar (+1/-1)"""
-        values = [1.0 if v >= 0 else -1.0 for v in self.values]
-        return Hypervector(self.dimension, values)
+        """Convert to bipolar (+1/-1)
+        
+        OPTIMIZATION: Uses numpy where for vectorized binarization.
+        """
+        hv = Hypervector(self.dimension)
+        hv._values = np.where(self._values >= 0, 1.0, -1.0)
+        return hv
 
     def similarity(self, other: 'Hypervector') -> float:
-        """Cosine similarity"""
-        dot = sum(a * b for a, b in zip(self.values, other.values))
-        norm1 = math.sqrt(sum(a * a for a in self.values))
-        norm2 = math.sqrt(sum(b * b for b in other.values))
+        """Cosine similarity
+        
+        OPTIMIZATION: Uses numpy dot product and norms.
+        """
+        dot = np.dot(self._values, other._values)
+        norm1 = np.linalg.norm(self._values)
+        norm2 = np.linalg.norm(other._values)
 
         if norm1 == 0 or norm2 == 0:
             return 0.0
 
-        return dot / (norm1 * norm2)
+        return float(dot / (norm1 * norm2))
 
     def hamming_similarity(self, other: 'Hypervector') -> float:
-        """Hamming similarity (for bipolar)"""
-        matches = sum(1 for a, b in zip(self.values, other.values)
-                     if (a >= 0) == (b >= 0))
-        return matches / self.dimension
+        """Hamming similarity (for bipolar)
+        
+        OPTIMIZATION: Uses numpy vectorized comparison.
+        """
+        matches = np.sum((self._values >= 0) == (other._values >= 0))
+        return float(matches / self.dimension)
 
     def magnitude(self) -> float:
-        """Vector magnitude"""
-        return math.sqrt(sum(v * v for v in self.values))
+        """Vector magnitude
+        
+        OPTIMIZATION: Uses numpy linalg.norm.
+        """
+        return float(np.linalg.norm(self._values))
 
     def sparsity(self) -> float:
-        """Proportion of zero elements"""
-        zeros = sum(1 for v in self.values if v == 0)
-        return zeros / self.dimension
+        """Proportion of zero elements
+        
+        OPTIMIZATION: Uses numpy count_nonzero.
+        """
+        zeros = self.dimension - np.count_nonzero(self._values)
+        return float(zeros / self.dimension)
 
 
 class ItemMemory:

@@ -284,13 +284,20 @@ class QuantumRegister:
         return "0" * self.num_qubits, 0.0
 
     def calculate_coherence(self) -> float:
-        """Calculate quantum coherence measure."""
-        # Use l1-norm of coherence (sum of off-diagonal elements)
-        coherence = 0.0
-        for i, a in enumerate(self.state.amplitudes):
-            for j, b in enumerate(self.state.amplitudes):
-                if i != j:
-                    coherence += abs(a * b.conjugate())
+        """Calculate quantum coherence measure.
+        
+        OPTIMIZATION: Uses vectorized numpy operations instead of O(n²) nested loops.
+        l1-norm coherence = (sum |a_i|)² - sum |a_i|² (equivalent to sum of |a_i * a_j*| for i≠j)
+        """
+        import numpy as np
+        amplitudes = np.array(self.state.amplitudes)
+        
+        # Compute |amplitude| values
+        abs_amplitudes = np.abs(amplitudes)
+        total_sum = np.sum(abs_amplitudes)
+        
+        # l1-norm coherence = (sum |a_i|)² - sum |a_i|² (for all i≠j terms)
+        coherence = total_sum ** 2 - np.sum(abs_amplitudes ** 2)
 
         # Normalize to [0, 1]
         max_coherence = (self.dimension - 1) * self.dimension / 2
