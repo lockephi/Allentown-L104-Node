@@ -3907,6 +3907,69 @@ async def nexus_full_activation():
 
 
 # ============================================================================
+# [L104_KERNEL_MONITOR_ENDPOINTS] - REAL-TIME INTEGRITY VERIFICATION
+# ============================================================================
+
+from l104_kernel_monitor import L104KernelMonitor
+
+_kernel_monitor = L104KernelMonitor()
+
+@app.get("/api/kernel/health", tags=["Kernel Monitor"])
+async def kernel_health():
+    """Get comprehensive kernel health status with GOD_CODE verification."""
+    health = _kernel_monitor.full_health_check()
+    return {
+        "status": health.overall_status,
+        "god_code": 527.5184818492611,
+        "god_code_verified": health.god_code_verified,
+        "conservation_intact": health.conservation_intact,
+        "file_integrity": health.file_integrity,
+        "database_health": health.database_health,
+        "uptime_seconds": health.uptime_seconds,
+        "check_count": _kernel_monitor.check_count,
+        "anomalies_detected": _kernel_monitor.anomalies_detected,
+        "last_check": health.last_check
+    }
+
+@app.get("/api/kernel/verify/{X}", tags=["Kernel Monitor"])
+async def kernel_verify_conservation(X: float = 0):
+    """Verify conservation law G(X) × 2^(X/104) = 527.5184818492611 for given X."""
+    import math
+    PHI = 1.618033988749895
+    g_x = (286 ** (1/PHI)) * (2 ** ((416 - X) / 104))
+    weight = 2 ** (X / 104)
+    invariant = g_x * weight
+    deviation = abs(invariant - 527.5184818492611)
+    return {
+        "X": X,
+        "G_X": g_x,
+        "weight": weight,
+        "invariant": invariant,
+        "expected": 527.5184818492611,
+        "deviation": deviation,
+        "conserved": deviation < 1e-10
+    }
+
+@app.get("/api/kernel/spectrum", tags=["Kernel Monitor"])
+async def kernel_spectrum():
+    """Get G(X) values across the spectrum from X=-416 to X=416."""
+    import math
+    PHI = 1.618033988749895
+    spectrum = []
+    for X in range(-416, 417, 52):
+        g_x = (286 ** (1/PHI)) * (2 ** ((416 - X) / 104))
+        weight = 2 ** (X / 104)
+        invariant = g_x * weight
+        spectrum.append({
+            "X": X,
+            "G_X": round(g_x, 6),
+            "weight": round(weight, 6),
+            "invariant": round(invariant, 10)
+        })
+    return {"god_code": 527.5184818492611, "spectrum": spectrum}
+
+
+# ============================================================================
 # [L104_OMEGA_CONTROLLER_ENDPOINTS] - ULTIMATE AUTHORITY
 # ============================================================================
 
