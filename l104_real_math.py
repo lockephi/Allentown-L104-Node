@@ -94,6 +94,21 @@ class RealMath:
             return complex(0, 0)
 
     @staticmethod
+    def zeta_high_precision(s: float, precision: int = 100) -> float:
+        """
+        High precision Riemann zeta using l104_math.HighPrecisionEngine.
+        For singularity calculations requiring 100+ decimal accuracy.
+        """
+        try:
+            from l104_math import HighPrecisionEngine
+            from decimal import Decimal
+            result = HighPrecisionEngine.zeta_approximation(Decimal(str(s)), terms=10000)
+            return float(result)
+        except ImportError:
+            # Fallback to standard precision
+            return float(RealMath.zeta_resonance(complex(s, 0)).real)
+
+    @staticmethod
     def fast_fourier_transform(signal: List[float]) -> List[complex]:
         """FFT - spectral decomposition of magnetic signal."""
         return np.fft.fft(signal).tolist()

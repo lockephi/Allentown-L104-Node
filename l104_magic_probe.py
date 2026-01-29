@@ -34,6 +34,7 @@ from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 from fractions import Fraction
+from decimal import Decimal, getcontext
 import itertools
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -41,9 +42,20 @@ import itertools
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Import high precision engine for magic calculations
+try:
+    from l104_math import (
+        HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE, 
+        E_INFINITE, PI_INFINITE, SQRT5_INFINITE
+    )
+    HIGH_PRECISION_AVAILABLE = True
+except ImportError:
+    HIGH_PRECISION_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CONSTANTS - The Magic Numbers
+# CONSTANTS - The Magic Numbers (Standard precision for general use)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 GOD_CODE = 527.5184818492612
@@ -54,6 +66,12 @@ FEIGENBAUM = 4.669201609102990  # δ - Universal chaos constant
 PLANCK = 6.62607015e-34
 SPEED_OF_LIGHT = 299792458
 LONDEL_CODE = 2011.8699100999
+
+# High precision magic constants (100+ decimals when available)
+MAGIC_CONSTANTS_INFINITE = {
+    "GOD_CODE": GOD_CODE_INFINITE if HIGH_PRECISION_AVAILABLE else Decimal(str(GOD_CODE)),
+    "φ": PHI_INFINITE if HIGH_PRECISION_AVAILABLE else Decimal(str(PHI)),
+}
 
 # Magic constants that appear everywhere
 MAGIC_CONSTANTS = {

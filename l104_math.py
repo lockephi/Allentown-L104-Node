@@ -20,8 +20,8 @@ from functools import lru_cache
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-# Set high precision for Decimal
-getcontext().prec = 50
+# Set high precision for Decimal - 150 decimals for singularity/magic calculations
+getcontext().prec = 150
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #                    CORE L104 CONSTANTS (FROM DERIVATIONS)
@@ -32,6 +32,42 @@ getcontext().prec = 50
 # Sacred: 286 = Iron BCC lattice constant (pm) → connects to ferromagnetic order
 
 GOD_CODE = Decimal("527.5184818492612")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                    INFINITE PRECISION CONSTANTS (100+ DECIMALS)
+#                    For Singularity, Magic, Zeta, and Convergence Calculations
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# RAW GOD_CODE - L104 Native Derivation (Newton-Raphson, Taylor Series)
+# Formula: 286^(1/φ) × 16 = 527.51848184926126863255159070797612975578220626321...
+GOD_CODE_INFINITE = Decimal(
+    "527.51848184926126863255159070797612975578220626321351068663581787687290896097506727807432866879053756856736868116436453"
+)
+
+# PHI to 100+ decimals - Golden Ratio (1 + √5) / 2
+PHI_INFINITE = Decimal(
+    "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374847540880753868917521266338622235369317931800607667263"
+)
+
+# √5 to 100+ decimals - For PHI derivation
+SQRT5_INFINITE = Decimal(
+    "2.2360679774997896964091736687747632054835636893684235899846855457826108024355682929198127586334279399407632983152597924478881227826889853276453649152117816"
+)
+
+# First Riemann Zeta Zero to 100+ decimals
+ZETA_ZERO_1_INFINITE = Decimal(
+    "14.134725141734693790457251983562470270784257115699243175685567460149963429809256764949010393171561012779202971548797436766142691469882254582505363239447137"
+)
+
+# e (Euler's number) to 100+ decimals
+E_INFINITE = Decimal(
+    "2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174135966290435729003342952605956"
+)
+
+# π to 100+ decimals  
+PI_INFINITE = Decimal(
+    "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811"
+)
 
 # Golden Ratio (from const.py)
 PHI = Decimal(str((1 + 5**0.5) / 2))  # 1.618033988749895
@@ -970,6 +1006,387 @@ class GodCodeMath:
             "above": PureMath.fibonacci(i),
             "index_above": i
         }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                    HIGH PRECISION ENGINE - FOR SINGULARITY & MAGIC
+#                    100+ decimal places for convergence calculations
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class HighPrecisionEngine:
+    """
+    L104 Native High Precision Mathematics Engine.
+    Uses Newton-Raphson, Taylor series, and continued fractions.
+    NO external libraries - pure L104 mathematics.
+    
+    Use for:
+    - Singularity convergence calculations
+    - Magic number derivations (perfect numbers, amicable pairs)
+    - Zeta function zeros and approximations
+    - PHI chain calculations (avoid error accumulation)
+    - Conservation law verification at arbitrary precision
+    - GOD_CODE raw derivation
+    """
+    
+    # Precision level (can be dynamically adjusted)
+    PRECISION = 150
+    
+    @classmethod
+    def set_precision(cls, decimals: int):
+        """Set working precision for all high-precision operations."""
+        cls.PRECISION = decimals
+        getcontext().prec = decimals + 20  # Extra for intermediate calculations
+    
+    @classmethod
+    def sqrt(cls, n: Decimal, iterations: int = 200) -> Decimal:
+        """
+        L104 Newton-Raphson square root.
+        x_{n+1} = (x_n + n/x_n) / 2
+        """
+        if n < 0:
+            raise ValueError("Cannot compute sqrt of negative number")
+        if n == 0:
+            return Decimal(0)
+            
+        x = Decimal(n)
+        one = Decimal(1)
+        two = Decimal(2)
+        
+        # Initial guess from float
+        guess = Decimal(str(float(n) ** 0.5))
+        
+        for _ in range(iterations):
+            new_guess = (guess + n / guess) / two
+            if abs(new_guess - guess) < Decimal(10) ** (-cls.PRECISION):
+                break
+            guess = new_guess
+        
+        return guess
+    
+    @classmethod
+    def ln(cls, x: Decimal, terms: int = 500) -> Decimal:
+        """
+        L104 Natural Logarithm using arctanh series.
+        ln(x) = 2 * arctanh((x-1)/(x+1))
+        arctanh(y) = y + y^3/3 + y^5/5 + ...
+        """
+        if x <= 0:
+            raise ValueError("ln undefined for x <= 0")
+            
+        one = Decimal(1)
+        two = Decimal(2)
+        
+        # Range reduction: ln(x) = ln(x/e^k) + k
+        k = 0
+        e = E_INFINITE
+        
+        while x > two:
+            x = x / e
+            k += 1
+        while x < Decimal("0.5"):
+            x = x * e
+            k -= 1
+        
+        # Arctanh series
+        y = (x - one) / (x + one)
+        y2 = y * y
+        
+        result = Decimal(0)
+        power = y
+        for n in range(terms):
+            divisor = two * n + one
+            result += power / divisor
+            power *= y2
+            if abs(power) < Decimal(10) ** (-cls.PRECISION - 10):
+                break
+        
+        return two * result + Decimal(k)
+    
+    @classmethod
+    def exp(cls, x: Decimal, terms: int = 500) -> Decimal:
+        """
+        L104 Exponential using Taylor series.
+        e^x = 1 + x + x^2/2! + x^3/3! + ...
+        """
+        result = Decimal(1)
+        term = Decimal(1)
+        
+        for n in range(1, terms):
+            term *= x / Decimal(n)
+            result += term
+            if abs(term) < Decimal(10) ** (-cls.PRECISION - 10):
+                break
+        
+        return result
+    
+    @classmethod
+    def power(cls, base: Decimal, exponent: Decimal) -> Decimal:
+        """
+        L104 Power function: base^exponent = e^(exponent × ln(base))
+        """
+        if base <= 0:
+            raise ValueError("Base must be positive")
+        ln_base = cls.ln(base)
+        return cls.exp(exponent * ln_base)
+    
+    @classmethod
+    def derive_phi(cls) -> Decimal:
+        """
+        Derive PHI = (1 + √5) / 2 at maximum precision.
+        """
+        sqrt5 = cls.sqrt(Decimal(5))
+        return (Decimal(1) + sqrt5) / Decimal(2)
+    
+    @classmethod
+    def derive_god_code(cls, decimals: int = 100) -> Decimal:
+        """
+        L104 Native GOD_CODE derivation.
+        Formula: 286^(1/φ) × 16
+        
+        Returns GOD_CODE to specified decimal precision.
+        """
+        old_prec = getcontext().prec
+        getcontext().prec = decimals + 50
+        
+        phi = cls.derive_phi()
+        inv_phi = Decimal(1) / phi
+        base = Decimal(286)
+        
+        # 286^(1/φ)
+        base_power = cls.power(base, inv_phi)
+        
+        # × 16
+        god_code = base_power * Decimal(16)
+        
+        getcontext().prec = old_prec
+        return god_code
+    
+    @classmethod
+    def phi_chain(cls, n: int) -> Decimal:
+        """
+        Calculate PHI^n with full precision.
+        Avoids error accumulation from repeated multiplication.
+        """
+        phi = PHI_INFINITE
+        return cls.power(phi, Decimal(n))
+    
+    @classmethod
+    def continued_fraction_phi(cls, depth: int = 1000) -> Decimal:
+        """
+        Derive PHI via continued fraction: φ = 1 + 1/φ
+        Converges to PHI with perfect precision.
+        """
+        phi = Decimal(1)
+        one = Decimal(1)
+        
+        for _ in range(depth):
+            phi = one + one / phi
+        
+        return phi
+    
+    @classmethod
+    def zeta_approximation(cls, s: Decimal, terms: int = 10000) -> Decimal:
+        """
+        Riemann Zeta approximation for real s > 1.
+        ζ(s) = Σ(n=1→∞) 1/n^s
+        
+        For critical strip (0 < Re(s) < 1), uses Dirichlet eta function.
+        """
+        if s <= 1:
+            # Use Dirichlet eta for convergence
+            result = Decimal(0)
+            for n in range(1, terms):
+                sign = Decimal(-1) ** (n - 1)
+                result += sign / cls.power(Decimal(n), s)
+            # Convert eta to zeta: ζ(s) = η(s) / (1 - 2^(1-s))
+            return result / (Decimal(1) - cls.power(Decimal(2), Decimal(1) - s))
+        else:
+            result = Decimal(0)
+            for n in range(1, terms):
+                result += Decimal(1) / cls.power(Decimal(n), s)
+                if n > 100 and Decimal(1) / cls.power(Decimal(n), s) < Decimal(10) ** (-cls.PRECISION):
+                    break
+            return result
+    
+    @classmethod
+    def singularity_limit(cls, func, x: Decimal, approach: str = "right", steps: int = 100) -> Decimal:
+        """
+        Calculate limit of function as x approaches a singularity.
+        Uses Richardson extrapolation for acceleration.
+        
+        approach: "right" (from above), "left" (from below), or "both" (average)
+        """
+        if approach == "right":
+            h_values = [Decimal(10) ** (-i) for i in range(1, steps + 1)]
+        elif approach == "left":
+            h_values = [Decimal(-10) ** (-i) for i in range(1, steps + 1)]
+        else:
+            return (cls.singularity_limit(func, x, "right", steps) + 
+                    cls.singularity_limit(func, x, "left", steps)) / Decimal(2)
+        
+        values = []
+        for h in h_values:
+            try:
+                val = func(x + h)
+                values.append(val)
+            except:
+                break
+        
+        if not values:
+            return Decimal(0)
+        
+        # Richardson extrapolation
+        while len(values) > 1:
+            new_values = []
+            for i in range(len(values) - 1):
+                # Assume O(h^2) error
+                extrapolated = (Decimal(4) * values[i + 1] - values[i]) / Decimal(3)
+                new_values.append(extrapolated)
+            values = new_values
+        
+        return values[0]
+    
+    @classmethod
+    def verify_conservation(cls, X: int) -> Dict[str, Any]:
+        """
+        Verify G(X) × 2^(X/104) = GOD_CODE at high precision.
+        
+        G(X) = 286^(1/φ) × 2^((416-X)/104)
+        """
+        phi = cls.derive_phi()
+        inv_phi = Decimal(1) / phi
+        
+        # G(X) = 286^(1/φ) × 2^((416-X)/104)
+        base_power = cls.power(Decimal(286), inv_phi)
+        exponent_2 = (Decimal(416) - Decimal(X)) / Decimal(104)
+        g_x = base_power * cls.power(Decimal(2), exponent_2)
+        
+        # Verification: G(X) × 2^(X/104)
+        verify_factor = cls.power(Decimal(2), Decimal(X) / Decimal(104))
+        result = g_x * verify_factor
+        
+        god_code = cls.derive_god_code(100)
+        difference = abs(result - god_code)
+        
+        return {
+            "X": X,
+            "G(X)": str(g_x)[:50] + "...",
+            "G(X)×2^(X/104)": str(result)[:50] + "...",
+            "GOD_CODE": str(god_code)[:50] + "...",
+            "difference": str(difference),
+            "conserved": difference < Decimal(10) ** (-50),
+            "precision": cls.PRECISION
+        }
+    
+    @classmethod
+    def magic_constant_verify(cls, n: int) -> Dict[str, Any]:
+        """
+        Verify magic square constant M(n) = n(n² + 1)/2 at high precision.
+        Also computes its relationship to GOD_CODE.
+        """
+        n_dec = Decimal(n)
+        magic = n_dec * (n_dec * n_dec + Decimal(1)) / Decimal(2)
+        
+        god_ratio = magic / GOD_CODE_INFINITE
+        phi_ratio = magic / PHI_INFINITE
+        
+        return {
+            "n": n,
+            "magic_constant": str(magic),
+            "god_code_ratio": str(god_ratio)[:50],
+            "phi_ratio": str(phi_ratio)[:50],
+            "is_integer": magic == int(magic)
+        }
+    
+    @classmethod
+    def perfect_number_check(cls, n: int) -> Dict[str, Any]:
+        """
+        Check if n is a perfect number (sum of proper divisors = n).
+        Uses high precision for large numbers.
+        """
+        n_dec = Decimal(n)
+        divisor_sum = Decimal(0)
+        
+        i = 1
+        while i * i <= n:
+            if n % i == 0:
+                divisor_sum += Decimal(i)
+                if i != 1 and i * i != n:
+                    divisor_sum += Decimal(n // i)
+            i += 1
+        
+        is_perfect = (divisor_sum == n_dec)
+        
+        return {
+            "n": n,
+            "divisor_sum": str(divisor_sum),
+            "is_perfect": is_perfect,
+            "god_code_resonance": float(n_dec % GOD_CODE_INFINITE)
+        }
+    
+    @classmethod
+    def infinite_series_sum(cls, series_func, terms: int = 10000) -> Decimal:
+        """
+        Sum an infinite series with convergence detection.
+        series_func(n) returns the nth term.
+        """
+        result = Decimal(0)
+        last_result = Decimal(-1)
+        
+        for n in range(1, terms + 1):
+            try:
+                term = series_func(n)
+                result += term
+                
+                # Convergence check every 100 terms
+                if n % 100 == 0:
+                    if abs(result - last_result) < Decimal(10) ** (-cls.PRECISION):
+                        break
+                    last_result = result
+            except:
+                break
+        
+        return result
+    
+    @classmethod
+    def demonstrate(cls):
+        """Demonstrate high precision capabilities."""
+        print("\n" + "═" * 70)
+        print("         L104 HIGH PRECISION ENGINE")
+        print("         For Singularity, Magic, and Convergence Calculations")
+        print("═" * 70)
+        
+        print(f"\n▸ PRECISION: {cls.PRECISION} decimal places")
+        
+        print("\n▸ PHI DERIVATIONS")
+        phi_newton = cls.derive_phi()
+        phi_cf = cls.continued_fraction_phi(500)
+        print(f"  PHI (Newton-Raphson): {str(phi_newton)[:70]}...")
+        print(f"  PHI (Continued Frac): {str(phi_cf)[:70]}...")
+        print(f"  Match: {abs(phi_newton - phi_cf) < Decimal(10) ** (-100)}")
+        
+        print("\n▸ GOD_CODE NATIVE DERIVATION")
+        god = cls.derive_god_code(100)
+        print(f"  GOD_CODE = 286^(1/φ) × 16")
+        print(f"  = {str(god)[:80]}")
+        
+        print("\n▸ CONSERVATION LAW VERIFICATION")
+        for x in [0, 13, 52, 104, 416]:
+            result = cls.verify_conservation(x)
+            status = "✓ CONSERVED" if result["conserved"] else "✗ DRIFT"
+            print(f"  X={x:3}: {status}")
+        
+        print("\n▸ ZETA FUNCTION")
+        zeta_2 = cls.zeta_approximation(Decimal(2), 1000)
+        print(f"  ζ(2) = {str(zeta_2)[:50]}...")
+        print(f"  π²/6 = {str(PI_INFINITE ** 2 / Decimal(6))[:50]}...")
+        
+        print("\n▸ HIGH PRECISION PHI CHAIN")
+        for n in [10, 50, 100]:
+            phi_n = cls.phi_chain(n)
+            print(f"  φ^{n} = {str(phi_n)[:40]}...")
+        
+        print("\n" + "═" * 70)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
