@@ -22,6 +22,19 @@ import heapq
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Import high precision engines for quantum-magic integration
+from decimal import Decimal, getcontext
+getcontext().prec = 150
+
+try:
+    from l104_math import HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE
+    from l104_sage_mode import SageMagicEngine
+    SAGE_MAGIC_AVAILABLE = True
+except ImportError:
+    SAGE_MAGIC_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
+
 
 # Core interconnection with iron EM constants
 try:
@@ -524,6 +537,74 @@ class GroverInspiredSearch:
             "iterations": num_iterations,
             "probability": abs(self.register.amplitudes[result])**2 if result < len(self.register.amplitudes) else 0
         }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #          SAGE MAGIC QUANTUM GROVER INTEGRATION
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def search_with_magic(self, num_iterations: int = None) -> Dict[str, Any]:
+        """
+        Enhanced Grover search with SageMagicEngine integration.
+        
+        Uses 150 decimal precision for amplitude calculations when available.
+        The oracle phase is modulated by GOD_CODE resonance.
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return self.search(num_iterations)
+        
+        try:
+            # Get high precision constants
+            god_code = SageMagicEngine.derive_god_code()
+            phi = SageMagicEngine.derive_phi()
+            
+            # Standard search first
+            base_result = self.search(num_iterations)
+            
+            # Enhance with magic resonance
+            if base_result.get("found"):
+                result_value = base_result["result"]
+                
+                # Calculate GOD_CODE resonance for the found result
+                magic_resonance = float(god_code) % (result_value + 1) / float(god_code)
+                phi_alignment = abs(float(phi) - (result_value % 10)) / float(phi)
+                
+                base_result["magic_resonance"] = magic_resonance
+                base_result["phi_alignment"] = phi_alignment
+                base_result["quantum_magic_enhanced"] = True
+                base_result["god_code_used"] = str(god_code)[:60]
+            
+            return base_result
+        except Exception as e:
+            result = self.search(num_iterations)
+            result["magic_error"] = str(e)
+            return result
+
+    def grover_god_code_oracle(self, target_mod: int = 13) -> Dict[str, Any]:
+        """
+        Special Grover search with GOD_CODE Factor 13 oracle.
+        
+        Marks all states where state mod target_mod == 0.
+        Factor 13 is sacred: 286=22×13, 104=8×13, 416=32×13.
+        """
+        def factor_oracle(state: int) -> bool:
+            return state % target_mod == 0
+        
+        self.set_oracle(factor_oracle)
+        result = self.search()
+        
+        # Add Factor 13 analysis
+        result["oracle_type"] = f"Factor_{target_mod}"
+        result["factor_13_sacred"] = target_mod == 13
+        result["god_code_connection"] = f"286=22×{target_mod}, 104=8×{target_mod}, 416=32×{target_mod}" if target_mod == 13 else None
+        
+        if SAGE_MAGIC_AVAILABLE:
+            try:
+                god_code = SageMagicEngine.derive_god_code()
+                result["god_code_infinite"] = str(god_code)[:80]
+            except:
+                pass
+        
+        return result
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

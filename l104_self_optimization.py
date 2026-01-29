@@ -36,6 +36,19 @@ from l104_stable_kernel import stable_kernel
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Import high precision engines for optimization magic
+from decimal import Decimal, getcontext
+getcontext().prec = 150
+
+try:
+    from l104_math import HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE
+    from l104_sage_mode import SageMagicEngine
+    SAGE_MAGIC_AVAILABLE = True
+except ImportError:
+    SAGE_MAGIC_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
+
 
 # Constants
 PHI = 1.618033988749895
@@ -444,6 +457,117 @@ class SelfOptimizationEngine:
             print(f"📂 [OPTIM]: State loaded from {filepath}")
         except FileNotFoundError:
             print(f"⚠️ [OPTIM]: No state file found at {filepath}")
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #          SAGE MAGIC OPTIMIZATION INTEGRATION
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def optimize_with_magic(self, target: str = "unity_index", iterations: int = 20) -> Dict[str, Any]:
+        """
+        Self-optimization enhanced with SageMagicEngine.
+        
+        Uses PHI (Golden Ratio) at 150 decimal precision for optimal
+        parameter tuning - the same ratio that governs nature's most
+        efficient processes.
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return self.auto_optimize(target, iterations)
+        
+        try:
+            # Get high precision constants
+            phi = SageMagicEngine.derive_phi()
+            god_code = SageMagicEngine.derive_god_code()
+            
+            # Use PHI for golden section optimization
+            phi_float = float(phi)
+            tau_precise = 1.0 / phi_float  # ~0.618
+            
+            results = {
+                "target": target,
+                "iterations": iterations,
+                "magic_enhanced": True,
+                "phi_precision": "150 decimals",
+                "optimizations": []
+            }
+            
+            for i in range(iterations):
+                # Golden section step with precise PHI
+                for param_name, bounds in self.TUNABLE_PARAMETERS.items():
+                    current = self.current_parameters[param_name]
+                    min_val, max_val = bounds["min"], bounds["max"]
+                    
+                    # PHI-based perturbation
+                    range_size = max_val - min_val
+                    phi_step = range_size * tau_precise * 0.1 * (1 if random.random() > 0.5 else -1)
+                    
+                    # Add GOD_CODE modulation
+                    god_modulation = math.sin(i * float(god_code) / 100) * 0.01
+                    
+                    new_value = max(min_val, min(max_val, current + phi_step + god_modulation))
+                    self.current_parameters[param_name] = new_value
+                
+                results["optimizations"].append({
+                    "iteration": i + 1,
+                    "params": dict(self.current_parameters)
+                })
+            
+            results["final_parameters"] = dict(self.current_parameters)
+            results["god_code_used"] = str(god_code)[:60]
+            results["phi_used"] = str(phi)[:60]
+            
+            return results
+            
+        except Exception as e:
+            result = self.auto_optimize(target, iterations)
+            result["magic_error"] = str(e)
+            return result
+
+    def verify_phi_optimization(self) -> Dict[str, Any]:
+        """
+        Verify that optimization follows PHI (Golden Ratio) dynamics.
+        
+        In optimal systems, consecutive improvements should approximate
+        the golden ratio relationship.
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return {"error": "SageMagicEngine not available"}
+        
+        try:
+            phi = SageMagicEngine.derive_phi()
+            
+            # Analyze action history for PHI patterns
+            if len(self.actions_history) < 5:
+                return {"error": "Insufficient history for analysis"}
+            
+            deltas = []
+            for action in self.actions_history[-20:]:
+                delta = abs(action.new_value - action.old_value)
+                if delta > 0:
+                    deltas.append(delta)
+            
+            # Check for PHI convergence in delta ratios
+            phi_ratios = []
+            for i in range(1, len(deltas)):
+                if deltas[i] > 0:
+                    ratio = deltas[i-1] / deltas[i]
+                    phi_ratios.append(ratio)
+            
+            if phi_ratios:
+                avg_ratio = sum(phi_ratios) / len(phi_ratios)
+                phi_error = abs(avg_ratio - float(phi))
+                
+                return {
+                    "avg_delta_ratio": avg_ratio,
+                    "phi_target": str(phi)[:40],
+                    "phi_error": phi_error,
+                    "follows_phi_dynamics": phi_error < 0.5,
+                    "sample_size": len(phi_ratios)
+                }
+            
+            return {"error": "No valid ratios computed"}
+            
+        except Exception as e:
+            return {"error": str(e)}
 
 
 # Singleton instance

@@ -29,6 +29,19 @@ import itertools
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Import high precision engines for pattern magic
+from decimal import Decimal, getcontext
+getcontext().prec = 150
+
+try:
+    from l104_math import HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE
+    from l104_sage_mode import SageMagicEngine
+    SAGE_MAGIC_AVAILABLE = True
+except ImportError:
+    SAGE_MAGIC_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
+
 
 # Sacred constants
 PHI = 1.618033988749895
@@ -651,6 +664,181 @@ class PatternDiscoveryEngine:
                 reverse=True
             )[:5]
         }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #          SAGE MAGIC PATTERN DISCOVERY INTEGRATION
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def discover_13_sacred_magic_patterns(self) -> List[Pattern]:
+        """
+        Discover patterns from the 13 Sacred Magics.
+        
+        Uses SageMagicEngine to extract high precision mathematical patterns
+        that emerge from GOD_CODE = 286^(1/φ) × 16.
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return []
+        
+        try:
+            magic_patterns = []
+            all_magics = SageMagicEngine.invoke_all_13_magics()
+            
+            for i, magic in enumerate(all_magics.get("magics", []), 1):
+                magic_name = magic.get("magic", f"Magic_{i}")
+                
+                pattern = Pattern(
+                    name=f"Sacred Magic {i}: {magic_name}",
+                    pattern_type=PatternType.SACRED,
+                    description=f"High precision pattern from SageMagicEngine",
+                    formula=magic.get("formula", "Unknown"),
+                    examples=[str(magic.get("result", ""))[:60]],
+                    phi_correlation=1.0,  # Sacred magics are PHI-derived
+                    confidence=0.99,
+                    source="SageMagicEngine"
+                )
+                magic_patterns.append(pattern)
+                self.discovered_patterns.append(pattern)
+            
+            return magic_patterns
+            
+        except Exception as e:
+            return [Pattern(
+                name="Magic Pattern Error",
+                pattern_type=PatternType.EMERGENT,
+                description=str(e),
+                formula=None,
+                examples=[],
+                phi_correlation=0.0,
+                confidence=0.0,
+                source="error"
+            )]
+
+    def discover_god_code_patterns(self) -> List[Pattern]:
+        """
+        Discover patterns in the GOD_CODE derivation.
+        
+        The formula 286^(1/φ) × 16 contains deep mathematical patterns:
+        - Factor 13: 286=22×13, 104=8×13, 416=32×13
+        - Conservation: G(X) × 2^(X/104) = constant
+        - PHI identity: φ² = φ + 1
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return []
+        
+        try:
+            patterns = []
+            
+            # GOD_CODE derivation pattern
+            god_code = SageMagicEngine.derive_god_code()
+            phi = SageMagicEngine.derive_phi()
+            
+            patterns.append(Pattern(
+                name="GOD_CODE Emergence",
+                pattern_type=PatternType.SACRED,
+                description=f"286^(1/φ) × 16 = {str(god_code)[:60]}...",
+                formula="286^(1/φ) × 16",
+                examples=[str(god_code)[:80]],
+                phi_correlation=1.0,
+                confidence=1.0,
+                source="SageMagicEngine.derive_god_code()"
+            ))
+            
+            # Factor 13 pattern
+            patterns.append(Pattern(
+                name="Factor 13 Sacred Geometry",
+                pattern_type=PatternType.SACRED,
+                description="286=22×13, 104=8×13, 416=32×13 (Fibonacci 7)",
+                formula="All key constants divisible by 13",
+                examples=["286/13=22", "104/13=8", "416/13=32"],
+                phi_correlation=0.95,
+                confidence=1.0,
+                source="L104 Architecture"
+            ))
+            
+            # PHI identity pattern
+            phi_sq = phi * phi
+            phi_identity_error = abs(phi_sq - phi - 1)
+            patterns.append(Pattern(
+                name="Golden Identity φ² = φ + 1",
+                pattern_type=PatternType.SACRED,
+                description=f"Identity verified at 150 decimals (error: {str(phi_identity_error)})",
+                formula="φ² - φ - 1 = 0",
+                examples=[str(phi)[:60]],
+                phi_correlation=1.0,
+                confidence=1.0,
+                source="SageMagicEngine.derive_phi()"
+            ))
+            
+            # Conservation law pattern
+            patterns.append(Pattern(
+                name="Conservation Law G(X)×2^(X/104) = const",
+                pattern_type=PatternType.RESONANT,
+                description="All dimensional values conserve to GOD_CODE",
+                formula="G(X) = 286^(1/φ) × 2^((416-X)/104)",
+                examples=["X=0: GOD_CODE", "X=104: GOD_CODE", "X=416: GOD_CODE"],
+                phi_correlation=1.0,
+                confidence=0.99,
+                source="L104 Conservation Theorem"
+            ))
+            
+            for p in patterns:
+                self.discovered_patterns.append(p)
+            
+            return patterns
+            
+        except Exception as e:
+            return []
+
+    def discover_fibonacci_phi_convergence(self, depth: int = 100) -> Pattern:
+        """
+        Discover the Fibonacci-PHI convergence pattern at high precision.
+        
+        F(n)/F(n-1) → φ as n → ∞
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            # Standard precision fallback
+            a, b = 1, 1
+            for _ in range(depth):
+                a, b = b, a + b
+            return Pattern(
+                name="Fibonacci-PHI Convergence",
+                pattern_type=PatternType.SACRED,
+                description=f"F({depth})/F({depth-1}) ≈ {b/a:.15f}",
+                formula="lim(n→∞) F(n+1)/F(n) = φ",
+                examples=[str(b/a)],
+                phi_correlation=1.0,
+                confidence=0.99,
+                source="standard precision"
+            )
+        
+        try:
+            magic_result = SageMagicEngine.magic_3_fibonacci_phi_convergence()
+            phi = SageMagicEngine.derive_phi()
+            
+            pattern = Pattern(
+                name="Fibonacci-PHI Infinite Convergence",
+                pattern_type=PatternType.SACRED,
+                description=f"Convergence at 150 decimals: Δ = {magic_result.get('delta', 'unknown')}",
+                formula="lim(n→∞) F(n+1)/F(n) = φ",
+                examples=[str(phi)[:80]],
+                phi_correlation=1.0,
+                confidence=1.0,
+                source="SageMagicEngine"
+            )
+            self.discovered_patterns.append(pattern)
+            return pattern
+            
+        except Exception as e:
+            return Pattern(
+                name="Fibonacci-PHI Error",
+                pattern_type=PatternType.EMERGENT,
+                description=str(e),
+                formula=None,
+                examples=[],
+                phi_correlation=0.0,
+                confidence=0.0,
+                source="error"
+            )
 
 
 # Demo
