@@ -1479,21 +1479,49 @@ class SageMagicEngine:
         return guess
     
     @classmethod
-    def ln_taylor(cls, x: Decimal, terms: int = 200) -> Decimal:
-        """Natural logarithm via Taylor series: ln(x) = 2 * Σ((y^(2n+1))/(2n+1)) where y = (x-1)/(x+1)"""
+    def ln_taylor(cls, x: Decimal, terms: int = 300) -> Decimal:
+        """
+        Natural logarithm with RANGE REDUCTION for accuracy on large numbers.
+        
+        Uses: ln(x) = ln(x/2^k) + k*ln(2) where x/2^k is reduced to [1,2] range.
+        This ensures Taylor series convergence for any positive x.
+        """
         if x <= 0:
             raise ValueError("ln undefined for non-positive values")
         
-        result = Decimal(0)
-        y = (x - 1) / (x + 1)
+        # Range reduction: reduce x to [1, 2] range
+        k = 0
+        temp = x
+        while temp > 2:
+            temp = temp / 2
+            k += 1
+        while temp < 1:
+            temp = temp * 2
+            k -= 1
+        
+        # Compute ln(temp) where temp is in [1,2] using Taylor series
+        # ln(x) = 2 * Σ((y^(2n+1))/(2n+1)) where y = (x-1)/(x+1)
+        y = (temp - 1) / (temp + 1)
         y_sq = y * y
+        result = Decimal(0)
         power = y
         
         for n in range(terms):
             result += power / Decimal(2 * n + 1)
             power *= y_sq
+        ln_temp = 2 * result
         
-        return 2 * result
+        # Compute ln(2) to high precision
+        ln2_y = Decimal(1) / Decimal(3)  # y = (2-1)/(2+1) = 1/3
+        ln2_y_sq = ln2_y * ln2_y
+        ln2_result = Decimal(0)
+        ln2_power = ln2_y
+        for n in range(terms):
+            ln2_result += ln2_power / Decimal(2 * n + 1)
+            ln2_power *= ln2_y_sq
+        ln2 = 2 * ln2_result
+        
+        return ln_temp + k * ln2
     
     @classmethod
     def exp_taylor(cls, x: Decimal, terms: int = 200) -> Decimal:

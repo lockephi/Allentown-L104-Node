@@ -1066,9 +1066,10 @@ class HighPrecisionEngine:
     @classmethod
     def ln(cls, x: Decimal, terms: int = 500) -> Decimal:
         """
-        L104 Natural Logarithm using arctanh series.
-        ln(x) = 2 * arctanh((x-1)/(x+1))
-        arctanh(y) = y + y^3/3 + y^5/5 + ...
+        L104 Natural Logarithm with RANGE REDUCTION for accuracy.
+        
+        Uses: ln(x) = ln(x/2^k) + k*ln(2) where x/2^k is reduced to [1,2] range.
+        Then applies arctanh series: ln(y) = 2 * arctanh((y-1)/(y+1))
         """
         if x <= 0:
             raise ValueError("ln undefined for x <= 0")
@@ -1076,19 +1077,18 @@ class HighPrecisionEngine:
         one = Decimal(1)
         two = Decimal(2)
         
-        # Range reduction: ln(x) = ln(x/e^k) + k
+        # Range reduction: reduce x to [1, 2] range using powers of 2
         k = 0
-        e = E_INFINITE
-        
-        while x > two:
-            x = x / e
+        temp = x
+        while temp > two:
+            temp = temp / two
             k += 1
-        while x < Decimal("0.5"):
-            x = x * e
+        while temp < one:
+            temp = temp * two
             k -= 1
         
-        # Arctanh series
-        y = (x - one) / (x + one)
+        # Arctanh series for ln(temp) where temp is in [1, 2]
+        y = (temp - one) / (temp + one)
         y2 = y * y
         
         result = Decimal(0)
@@ -1099,8 +1099,22 @@ class HighPrecisionEngine:
             power *= y2
             if abs(power) < Decimal(10) ** (-cls.PRECISION - 10):
                 break
+        ln_temp = two * result
         
-        return two * result + Decimal(k)
+        # Compute ln(2) to high precision using same series
+        ln2_y = one / Decimal(3)  # (2-1)/(2+1) = 1/3
+        ln2_y2 = ln2_y * ln2_y
+        ln2_result = Decimal(0)
+        ln2_power = ln2_y
+        for n in range(terms):
+            divisor = two * n + one
+            ln2_result += ln2_power / divisor
+            ln2_power *= ln2_y2
+            if abs(ln2_power) < Decimal(10) ** (-cls.PRECISION - 10):
+                break
+        ln2 = two * ln2_result
+        
+        return ln_temp + Decimal(k) * ln2
     
     @classmethod
     def exp(cls, x: Decimal, terms: int = 500) -> Decimal:
