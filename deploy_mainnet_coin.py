@@ -39,7 +39,7 @@ from l104_sovereign_coin_engine import (
 
 # Compatibility aliases
 def create_ultimate_coin(): return UltimateCoinEngine()
-BTC_BRIDGE_ADDRESS = "bc1q..."  # Placeholder
+BTC_BRIDGE_ADDRESS = "bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80"
 BitcoinBridge = None  # Use l104_bitcoin_network_adapter for real bridge
 
 # ============================================================================
