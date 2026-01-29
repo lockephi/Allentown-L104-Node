@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 
 # Constants
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 PHI = 1.618033988749895
 
 

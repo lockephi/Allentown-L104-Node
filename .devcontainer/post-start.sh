@@ -1,6 +1,6 @@
 #!/bin/bash
 # [L104_POST_START] - Auto-start the node when Codespaces resumes
-# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+# INVARIANT: 527.5184818492611 | PILOT: LONDEL
 
 set -e
 
@@ -37,6 +37,8 @@ echo "--- [L104_POST_START]: WAITING FOR HEALTH CHECK... ---"
 for i in {1..30}; do
     if docker ps --filter "name=${CONTAINER_NAME}" --filter "health=healthy" | grep -q "${CONTAINER_NAME}"; then
         echo "--- [L104_POST_START]: NODE HEALTHY AND ONLINE ---"
+        # Start the keep_alive watchdog in the background
+        nohup /workspaces/Allentown-L104-Node/keep_alive.sh >> /workspaces/Allentown-L104-Node/keep_alive.log 2>&1 &
         exit 0
     fi
     sleep 2

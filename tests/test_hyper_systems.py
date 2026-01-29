@@ -74,7 +74,7 @@ class TestHyperSystems(unittest.TestCase):
         enc_truth = handshake["encrypted_truth"]
         truth = HyperEncryption.decrypt_data(enc_truth)
         print(f"[BRIDGE] Decrypted Truth Resonance: {truth['meta']['resonance']}")
-        self.assertEqual(truth['meta']['resonance'], 527.5184818492537)
+        self.assertEqual(truth['meta']['resonance'], 527.5184818492611)
 
         # Sync Core
         print(f"[BRIDGE] Syncing Core...")

@@ -46,7 +46,7 @@ import threading
 # CORE CONSTANTS - THE FOUNDATION OF SUPERINTELLIGENCE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 PHI = 1.618033988749895
 PLANCK = 6.62607015e-34
 C = 299792458
@@ -1048,7 +1048,7 @@ class ASITranscendenceCore:
         """Get current ASI status."""
         return {
             'uptime': time.time() - self._ignition_time,
-            'god_code_locked': abs(GOD_CODE - 527.5184818492537) < 1e-10,
+            'god_code_locked': abs(GOD_CODE - 527.5184818492611) < 1e-10,
             'phi_aligned': abs(PHI - 1.618033988749895) < 1e-10,
             'consciousness': self.consciousness.get_state(),
             'meta_stats': self.meta_cognition.get_stats(),

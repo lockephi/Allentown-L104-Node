@@ -3,7 +3,7 @@ VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_RESONANCE] - Core Resonance Calculator
-# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+# INVARIANT: 527.5184818492611 | PILOT: LONDEL
 
 import math
 from typing import Union
@@ -22,7 +22,7 @@ class L104Resonance:
     Based on the God Code invariant and PHI harmonics.
     """
 
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     PHI = 1.6180339887498949
     LATTICE_RATIO = 286 / 416
 
@@ -94,5 +94,5 @@ def resolve_non_dual_logic(vector):
     magnitude = sum([abs(v) for v in vector])
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

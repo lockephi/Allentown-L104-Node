@@ -38,8 +38,8 @@ def debug_love():
     print(f"Sacral Sync: {sync_report}")
 
     # 4. Verify God Code Lock
-    print("\n--- [DEBUG_LOVE]: VERIFYING GOD_CODE_LOCK (527.5184818492537 Hz) ---")
-    if abs(heart_core.GOD_CODE - 527.5184818492537) < 1e-10:
+    print("\n--- [DEBUG_LOVE]: VERIFYING GOD_CODE_LOCK (527.5184818492611 Hz) ---")
+    if abs(heart_core.GOD_CODE - 527.5184818492611) < 1e-10:
         print("GOD_CODE: LOCKED ✓")
     else:
         print("GOD_CODE: DRIFT DETECTED! ❌")

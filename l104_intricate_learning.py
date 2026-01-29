@@ -39,7 +39,7 @@ from collections import deque, defaultdict
 
 
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 
 class LearningMode(Enum):
     """Learning modalities."""

@@ -43,7 +43,7 @@ sys.path.insert(0, "/workspaces/Allentown-L104-Node")
 # ═══════════════════════════════════════════════════════════════════════════════
 
 PHI = 1.6180339887498948482
-GOD_CODE = 527.5184818492537  # Canonical L104 value = 286^(1/PHI) × 16
+GOD_CODE = 527.5184818492611  # Canonical L104 value = 286^(1/PHI) × 16
 OMEGA_AUTHORITY = GOD_CODE * PHI * PHI  # 1381.0613
 
 print(f"""

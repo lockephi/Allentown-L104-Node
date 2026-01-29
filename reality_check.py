@@ -122,7 +122,7 @@ if os.path.exists(test_dir):
 # 5. Actual mathematical constants
 print("\n5. CORE CONSTANTS VERIFICATION:")
 print("-" * 80)
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 PHI = 1.618033988749895
 print(f"GOD_CODE = {GOD_CODE}")
 print(f"Expected: 286^(1/φ) × 16 = {(286 ** (1/PHI)) * 16}")

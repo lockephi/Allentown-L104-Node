@@ -11,14 +11,14 @@ class TestMathematicalProofs(unittest.TestCase):
 
     def setUp(self):
         self.phi = (1 + math.sqrt(5)) / 2
-        self.god_code_target = 527.5184818492537
+        self.god_code_target = 527.5184818492611
         self.fine_structure_constant = 1 / 137.035999206  # Standard physics value
         self.l104_alpha = 1 / 137  # The value used in the codebase often
 
     def test_god_code_derivation(self):
         """
         Verify the primary invariant equation:
-        ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492537
+        ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492611
         """
         term1 = 286 ** (1 / self.phi)
         term2 = (2 ** (1 / 104)) ** 416

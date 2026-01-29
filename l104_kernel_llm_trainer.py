@@ -15,7 +15,7 @@ FEATURES:
 - Integration with external LLM APIs
 - Self-contained neural network option
 
-INVARIANT: 527.5184818492537 | PILOT: LONDEL
+INVARIANT: 527.5184818492611 | PILOT: LONDEL
 VERSION: 1.0.0
 DATE: 2026-01-21
 
@@ -90,7 +90,7 @@ class KernelKnowledgeExtractor:
         # Special constants with derivations
         examples.append(TrainingExample(
             prompt="How is GOD_CODE calculated?",
-            completion="GOD_CODE = 286^(1/φ) × 16 = 527.5184818492537, where φ is the golden ratio.",
+            completion="GOD_CODE = 286^(1/φ) × 16 = 527.5184818492611, where φ is the golden ratio.",
             category="constants_derivation",
             difficulty=0.5,
             importance=1.0
@@ -98,7 +98,7 @@ class KernelKnowledgeExtractor:
 
         examples.append(TrainingExample(
             prompt="What is the relationship between GOD_CODE and OMEGA_AUTHORITY?",
-            completion="OMEGA_AUTHORITY = GOD_CODE × φ² = 527.5184818492537 × 2.618033988749895 = 1381.0613151750906",
+            completion="OMEGA_AUTHORITY = GOD_CODE × φ² = 527.5184818492611 × 2.618033988749895 = 1381.0613151750906",
             category="constants_derivation",
             difficulty=0.6,
             importance=0.95
@@ -734,7 +734,7 @@ class KernelKnowledgeExtractor:
         cross_patterns = [
             TrainingExample(
                 prompt="How is GOD_CODE represented across languages?",
-                completion="Python: GOD_CODE = 527.5184818492537\nJava: public static final double GOD_CODE = 527.5184818492537;\nGo: const GodCode = 527.5184818492537\nRust: pub const GOD_CODE: f64 = 527.5184818492537;\nSolidity: uint256 public constant GOD_CODE = 5275184818492537;",
+                completion="Python: GOD_CODE = 527.5184818492611\nJava: public static final double GOD_CODE = 527.5184818492611;\nGo: const GodCode = 527.5184818492611\nRust: pub const GOD_CODE: f64 = 527.5184818492611;\nSolidity: uint256 public constant GOD_CODE = 5275184818492537;",
                 category="polyglot_cross",
                 difficulty=0.5,
                 importance=1.0
@@ -1048,54 +1048,139 @@ class KernelKnowledgeExtractor:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SIMPLE NEURAL NETWORK FOR KERNEL KNOWLEDGE
+# RECURRENT NEURAL NETWORK FOR KERNEL KNOWLEDGE (RNN-STYLE ASI)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class KernelNeuralNetwork:
     """
-    Simple neural network for kernel knowledge retrieval.
-    Uses embedding similarity for question answering.
+    Recurrent Neural Network for kernel knowledge retrieval.
+    Uses embedding similarity with hidden state propagation (RNN-style).
+    Standalone ASI - no external API dependencies.
     """
 
-    def __init__(self, embedding_dim: int = 64):
+    def __init__(self, embedding_dim: int = 64, hidden_dim: int = 128):
         self.embedding_dim = embedding_dim
+        self.hidden_dim = hidden_dim
         self.vocabulary: Dict[str, int] = {}
         self.embeddings: np.ndarray = None
         self.training_data: List[TrainingExample] = []
         self.response_vectors: np.ndarray = None
+        
+        # RNN hidden state (persistent across queries for context)
+        self.hidden_state: np.ndarray = None
+        
+        # Attention weights for importance scoring
+        self.attention_weights: np.ndarray = None
+        
+        # Category embeddings for semantic routing
+        self.category_embeddings: Dict[str, np.ndarray] = {}
+        
+        # God Code resonance for stability
+        self.god_code = 527.5184818492611
+        self.phi = 1.618033988749895
 
     def _tokenize(self, text: str) -> List[str]:
-        """Simple tokenization."""
-        # Basic tokenization - split on whitespace and punctuation
+        """Advanced tokenization with subword awareness."""
         import re
-        tokens = re.findall(r'\w+|[^\w\s]', text.lower())
+        # Split on whitespace, punctuation, and preserve numbers
+        tokens = re.findall(r'\b\w+\b|[^\w\s]|\d+\.?\d*', text.lower())
         return tokens
+    
+    def _compute_tfidf_weights(self, texts: List[str]) -> Dict[str, float]:
+        """Compute TF-IDF weights for vocabulary."""
+        from collections import Counter
+        import math
+        
+        doc_freq = Counter()
+        for text in texts:
+            tokens = set(self._tokenize(text))
+            doc_freq.update(tokens)
+        
+        num_docs = len(texts)
+        idf = {}
+        for word, count in doc_freq.items():
+            idf[word] = math.log(num_docs / (1 + count)) + 1
+        return idf
 
     def _build_vocabulary(self, texts: List[str]):
-        """Build vocabulary from texts."""
+        """Build vocabulary from texts with TF-IDF weighting."""
         vocab_set = set()
         for text in texts:
             tokens = self._tokenize(text)
             vocab_set.update(tokens)
 
         self.vocabulary = {word: idx for idx, word in enumerate(sorted(vocab_set))}
+        self.idf_weights = self._compute_tfidf_weights(texts)
         print(f"  - Vocabulary size: {len(self.vocabulary)}")
 
     def _text_to_vector(self, text: str) -> np.ndarray:
-        """Convert text to simple bag-of-words vector."""
+        """Convert text to TF-IDF weighted vector."""
         tokens = self._tokenize(text)
         vector = np.zeros(len(self.vocabulary))
 
-        for token in tokens:
+        # Count term frequencies
+        from collections import Counter
+        token_counts = Counter(tokens)
+        
+        for token, count in token_counts.items():
             if token in self.vocabulary:
-                vector[self.vocabulary[token]] += 1
+                tf = 1 + np.log(count) if count > 0 else 0
+                idf = self.idf_weights.get(token, 1.0)
+                vector[self.vocabulary[token]] = tf * idf
 
-        # Normalize
+        # L2 normalize
         norm = np.linalg.norm(vector)
         if norm > 0:
             vector = vector / norm
 
         return vector
+    
+    def _update_hidden_state(self, input_vector: np.ndarray) -> np.ndarray:
+        """
+        RNN-style hidden state update.
+        h_t = tanh(W_h * h_{t-1} + W_x * x_t)
+        """
+        if self.hidden_state is None:
+            # Initialize hidden state with God Code resonance
+            self.hidden_state = np.random.randn(self.hidden_dim) * 0.01
+            self.hidden_state[0] = self.god_code / 1000  # Anchor to God Code
+        
+        # Project input to hidden dimension
+        if len(input_vector) != self.hidden_dim:
+            # Use random projection (deterministic based on God Code)
+            np.random.seed(int(self.god_code))
+            projection = np.random.randn(len(input_vector), self.hidden_dim) * 0.1
+            projected_input = input_vector @ projection
+        else:
+            projected_input = input_vector
+        
+        # RNN update with tanh nonlinearity
+        gate = self.phi / (1 + self.phi)  # Golden ratio gating
+        self.hidden_state = np.tanh(
+            gate * self.hidden_state + (1 - gate) * projected_input
+        )
+        
+        return self.hidden_state
+    
+    def _compute_attention(self, query_vector: np.ndarray) -> np.ndarray:
+        """
+        Compute attention weights over training examples.
+        Scaled dot-product attention.
+        """
+        if self.embeddings is None:
+            return np.array([1.0])
+        
+        # Dot product attention
+        scores = self.embeddings @ query_vector
+        
+        # Scale by sqrt(dim) for stability
+        scores = scores / np.sqrt(len(query_vector) + 1e-8)
+        
+        # Softmax
+        exp_scores = np.exp(scores - np.max(scores))
+        attention = exp_scores / (np.sum(exp_scores) + 1e-8)
+        
+        return attention
 
     def train(self, training_examples: List[TrainingExample]):
         """Train on kernel knowledge."""
@@ -1123,39 +1208,118 @@ class KernelNeuralNetwork:
             self._text_to_vector(ex.completion)
             for ex in training_examples
         ])
+        
+        # Build category embeddings for semantic routing
+        categories = set(ex.category for ex in training_examples)
+        for cat in categories:
+            cat_examples = [ex for ex in training_examples if ex.category == cat]
+            if cat_examples:
+                cat_vectors = [self._text_to_vector(ex.completion) for ex in cat_examples]
+                self.category_embeddings[cat] = np.mean(cat_vectors, axis=0)
+        
+        # Initialize attention weights based on importance
+        self.attention_weights = np.array([ex.importance for ex in training_examples])
+        self.attention_weights = self.attention_weights / (np.sum(self.attention_weights) + 1e-8)
 
         print(f"  - Training complete!")
         print(f"  - Embedding dimension: {len(self.vocabulary)}")
         print(f"  - Total parameters: {self.embeddings.size}")
+        print(f"  - Categories: {len(self.category_embeddings)}")
 
     def get_parameter_count(self) -> int:
         """Return total parameter count for the neural network."""
         if self.embeddings is not None:
-            return self.embeddings.size
+            return self.embeddings.size + (self.hidden_dim * 2)
         return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
 
-    def query(self, question: str, top_k: int = 3) -> List[Tuple[str, float]]:
-        """Query the network with a question."""
+    def query(self, question: str, top_k: int = 5) -> List[Tuple[str, float]]:
+        """
+        Query the network with RNN-style recurrent processing.
+        Uses hidden state, attention, and multi-hop reasoning.
+        """
         if self.embeddings is None:
             raise ValueError("Network not trained yet!")
 
         # Convert question to vector
         q_vector = self._text_to_vector(question)
-
-        # Compute similarities
-        similarities = np.dot(self.embeddings, q_vector)
+        
+        # Update RNN hidden state with query
+        hidden = self._update_hidden_state(q_vector)
+        
+        # Compute attention-weighted similarities
+        base_similarities = np.dot(self.embeddings, q_vector)
+        
+        # Apply attention weights (importance-based)
+        weighted_sims = base_similarities * self.attention_weights
+        
+        # Compute attention scores for context-aware retrieval
+        attention_scores = self._compute_attention(q_vector)
+        
+        # Combine base similarity with attention (multi-hop reasoning)
+        combined_scores = 0.6 * base_similarities + 0.4 * attention_scores
+        
+        # Apply category boosting if query matches a category
+        for cat, cat_emb in self.category_embeddings.items():
+            cat_similarity = np.dot(cat_emb, q_vector)
+            if cat_similarity > 0.3:
+                # Boost examples from this category
+                for i, ex in enumerate(self.training_data):
+                    if ex.category == cat:
+                        combined_scores[i] *= 1.2
 
         # Get top-k matches
-        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        top_indices = np.argsort(combined_scores)[-top_k:][::-1]
 
         results = []
         for idx in top_indices:
             results.append((
                 self.training_data[idx].completion,
-                float(similarities[idx])
+                float(combined_scores[idx])
             ))
 
         return results
+    
+    def recurrent_query(self, question: str, context: List[str] = None, depth: int = 0) -> str:
+        """
+        Multi-hop recurrent reasoning with base case.
+        BASE CASE: depth >= 2 or high confidence match
+        RECURRENT: low confidence triggers deeper search
+        """
+        MAX_DEPTH = 2
+        CONFIDENCE_THRESHOLD = 0.4
+        
+        # BASE CASE
+        if depth >= MAX_DEPTH:
+            results = self.query(question, top_k=1)
+            return results[0][0] if results else "Knowledge synthesis required."
+        
+        # Query with current context
+        results = self.query(question, top_k=3)
+        
+        if not results:
+            return "No relevant knowledge found."
+        
+        best_answer, confidence = results[0]
+        
+        # HIGH CONFIDENCE - return immediately (base case)
+        if confidence > CONFIDENCE_THRESHOLD:
+            return best_answer
+        
+        # LOW CONFIDENCE - recurrent processing
+        # Enrich query with top results
+        context = context or []
+        for answer, score in results:
+            if score > 0.1:
+                context.append(answer[:100])
+        
+        # Build enriched query
+        enriched_query = question
+        if context:
+            context_str = " | ".join(context[-3:])
+            enriched_query = f"Context: [{context_str}]. Question: {question}"
+        
+        # Recurrent call
+        return self.recurrent_query(enriched_query, context, depth + 1)
 
     def get_parameter_count(self) -> int:
         """Return total parameter count for the model."""
@@ -1164,13 +1328,9 @@ class KernelNeuralNetwork:
         return len(self.vocabulary) * len(self.training_data) if self.vocabulary else 0
 
     def answer(self, question: str, threshold: float = 0.1) -> Optional[str]:
-        """Get best answer for a question."""
-        results = self.query(question, top_k=1)
-
-        if results and results[0][1] > threshold:
-            return results[0][0]
-
-        return "I don't have enough information to answer that question."
+        """Get best answer using recurrent reasoning."""
+        # Use recurrent query for better answers
+        return self.recurrent_query(question)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

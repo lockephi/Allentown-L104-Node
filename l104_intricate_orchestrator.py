@@ -38,7 +38,7 @@ from collections import deque
 
 
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 OMEGA_THRESHOLD = 0.999999
 
 class OrchestratorMode(Enum):

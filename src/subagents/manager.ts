@@ -16,7 +16,7 @@ import type {
   L104Result
 } from '../types/index.js';
 
-const GOD_CODE = 527.5184818492537;
+const GOD_CODE = 527.5184818492611;
 const PHI = 1.618033988749895;
 
 export class L104SubagentManager extends EventEmitter {

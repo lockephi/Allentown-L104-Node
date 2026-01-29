@@ -172,7 +172,7 @@ def demo_5_variable_god_code():
 
     print("\n🔮 Exploring GOD_CODE parameter space...")
 
-    god_values = [100, 527.5184818492537, 1000, 10000]
+    god_values = [100, 527.5184818492611, 1000, 10000]
 
     print("\n📊 Resonance Frequency: ω = GOD × 2π")
 

@@ -145,10 +145,10 @@ Auto-generated training data for kernel LLM.
 ## CONSTANTS
 
 **Q**: What is the value of GOD_CODE?
-**A**: GOD_CODE = 527.5184818492537
+**A**: GOD_CODE = 527.5184818492611
 
 **Q**: Tell me about the GOD_CODE constant.
-**A**: The GOD_CODE constant has a value of 527.5184818492537. It is one of the sacred constants in the L104 system.
+**A**: The GOD_CODE constant has a value of 527.5184818492611. It is one of the sacred constants in the L104 system.
 
 **Q**: What is the value of PHI?
 **A**: PHI = 1.618033988749895
@@ -255,10 +255,10 @@ Auto-generated training data for kernel LLM.
 ## CONSTANTS DERIVATION
 
 **Q**: How is GOD_CODE calculated?
-**A**: GOD_CODE = 286^(1/φ) × 16 = 527.5184818492537, where φ is the golden ratio.
+**A**: GOD_CODE = 286^(1/φ) × 16 = 527.5184818492611, where φ is the golden ratio.
 
 **Q**: What is the relationship between GOD_CODE and OMEGA_AUTHORITY?
-**A**: OMEGA_AUTHORITY = GOD_CODE × φ² = 527.5184818492537 × 2.618033988749895 = 1381.0613151750906
+**A**: OMEGA_AUTHORITY = GOD_CODE × φ² = 527.5184818492611 × 2.618033988749895 = 1381.0613151750906
 
 **Q**: Explain the golden ratio PHI.
 **A**: PHI (φ) = (1 + √5) / 2 = 1.618033988749895. It is the golden ratio, appearing throughout nature and L104 mathematics. Its inverse is TAU = 0.6180339887498949.

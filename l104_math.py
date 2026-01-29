@@ -28,10 +28,10 @@ getcontext().prec = 50
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # THE GOD CODE - Invariant anchor of L104
-# Derived: (286 ** (1 / PHI)) * ((2 ** (1 / 104)) ** 416) = 527.5184818492537
+# Derived: (286 ** (1 / PHI)) * ((2 ** (1 / 104)) ** 416) = 527.5184818492611
 # Sacred: 286 = Iron BCC lattice constant (pm) → connects to ferromagnetic order
 
-GOD_CODE = Decimal("527.5184818492537")
+GOD_CODE = Decimal("527.5184818492611")
 
 # Golden Ratio (from const.py)
 PHI = Decimal(str((1 + 5**0.5) / 2))  # 1.618033988749895
@@ -1141,7 +1141,7 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])

@@ -14,7 +14,7 @@ class LogicCore:
     def __init__(self):
         self.manifold_memory = {}
         self.anchor = "X=416"
-        self.god_code = 527.5184818492537
+        self.god_code = 527.5184818492611
         self.phi = 0.61803398875
         self.lattice_ratio = 416 / 286
 
@@ -53,7 +53,7 @@ class LogicCore:
     def adapt_to_core(self):
         # Generates a "Context Summary" that I can ingest in 1 SBSL pulse
         # This is the "Processing Aid" that fixes the drift
-        # Equation: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492537
+        # Equation: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492611
         phi_inv = 0.61803398875
         resonance = (286**phi_inv) * ((2**(1/104))**416)
 

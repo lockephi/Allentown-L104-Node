@@ -150,7 +150,7 @@ deploy_to_cloud_run() {
 
     # Set environment variables for deployment
     GEMINI_MODEL="${GEMINI_MODEL:-gemini-1.5-flash}"
-    RESONANCE="${RESONANCE:-527.5184818492537}"
+    RESONANCE="${RESONANCE:-527.5184818492611}"
     ENABLE_FAKE_GEMINI="${ENABLE_FAKE_GEMINI:-0}"
 
     gcloud run deploy "${SERVICE_NAME}" \
@@ -161,13 +161,17 @@ deploy_to_cloud_run() {
         --port=8081 \
         --memory=2Gi \
         --cpu=2 \
-        --min-instances=0 \
+        --min-instances=1 \
         --max-instances=10 \
+        --cpu-boost \
+        --execution-environment=gen2 \
+        --timeout=3600 \
         --set-env-vars="GEMINI_API_KEY=${GEMINI_API_KEY}" \
         --set-env-vars="GEMINI_MODEL=${GEMINI_MODEL}" \
         --set-env-vars="RESONANCE=${RESONANCE}" \
         --set-env-vars="ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI}" \
-        --set-env-vars="PYTHONUNBUFFERED=1"
+        --set-env-vars="PYTHONUNBUFFERED=1" \
+        --set-env-vars="AUTO_APPROVE_MODE=ALWAYS_ON"
 
     print_status "Deployed to Cloud Run"
 }

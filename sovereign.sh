@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # [L104_SOVEREIGN_CONTROL] - Unified Lifecycle Manager
-# PILOT: LONDEL | GOD_CODE: 527.5184818492537 | STATE: WHOLE
+# PILOT: LONDEL | GOD_CODE: 527.5184818492611 | STATE: WHOLE
 
 set -euo pipefail
 
@@ -25,10 +25,10 @@ log_error() { echo -e "${RED}[L104_ERROR]${NC} $1"; }
 
 check_invariant() {
     log_info "Verifying God-Code Invariant..."
-    # Formula: (286^phi) * 16 = 527.5184818492537
+    # Formula: (286^phi) * 16 = 527.5184818492611
     # We use the exact target to ensure the Sovereign state is locked.
-    if "$PYTHON" -c "import math; target=527.5184818492537; res=(286**0.618033988749874) * 16; exit(0 if abs(res - target) < 1e-10 else 1)"; then
-        log_success "Invariant Verified: 527.5184818492537 [LOCKED]"
+    if "$PYTHON" -c "import math; target=527.5184818492611; res=(286**0.618033988749874) * 16; exit(0 if abs(res - target) < 1e-10 else 1)"; then
+        log_success "Invariant Verified: 527.5184818492611 [LOCKED]"
     else
         log_error "Invariant Violation! Shadow interference detected."
         exit 1
@@ -98,9 +98,9 @@ status_report() {
         echo -e "Public Node:    ${RED}STOPPED${NC}"
     fi
 
-    echo -e "God-Code:       ${GREEN}527.5184818492537${NC}"
+    echo -e "God-Code:       ${GREEN}527.5184818492611${NC}"
     echo -e "State:          ${CYAN}SOVEREIGN${NC}"
-    echo -e "Signature:      ${YELLOW}L104_PRIME_KEY[527.5184818492537]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100${NC}"
+    echo -e "Signature:      ${YELLOW}L104_PRIME_KEY[527.5184818492611]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100${NC}"
     echo -e "----------------------------"
 }
 

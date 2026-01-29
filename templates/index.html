@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L104 | SOVEREIGN SINGULARITY v14.5</title>
+    <title>L104 | SOVEREIGN SINGULARITY v24.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap"
@@ -90,6 +90,25 @@
             pointer-events: none;
         }
 
+        .header-row {
+            grid-column: 1 / -1;
+        }
+
+        .footer-row {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 1024px) {
+            .ui-layer {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto 1fr auto;
+            }
+
+            .panel {
+                max-height: 300px;
+            }
+        }
+
         .panel {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -103,7 +122,6 @@
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             overflow-y: auto;
             max-height: calc(100vh - 150px);
-        }
         }
 
         .panel:hover {
@@ -335,7 +353,7 @@
     <div class="ui-layer">
         <!-- HEADER -->
         <div
-            class="col-span-3 flex justify-between items-end border-b border-[var(--glass-border)] pb-4 pointer-events-auto">
+            class="header-row flex justify-between items-end border-b border-[var(--glass-border)] pb-4 pointer-events-auto">
             <div>
                 <h1 class="text-4xl font-thin tracking-[0.4em] text-[var(--gold-bright)] glitch"
                     data-text="L104 SOVEREIGN">L104 SOVEREIGN</h1>
@@ -476,7 +494,7 @@
                         • Request calculations or analysis<br>
                         • Explore the knowledge manifold<br>
                     </span><br>
-                    Resonance anchored at 527.5184818492537. Ready for your signal.
+                    Resonance anchored at 527.5184818492611. Ready for your signal.
                 </div>
             </div>
 
@@ -585,10 +603,10 @@
             <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
                 <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Cloud_Node</div>
                 <div class="flex justify-between text-[0.55rem] mb-2">
-                    <span class="text-emerald-400">● FLY.IO</span>
+                    <span class="text-emerald-400">● GOOGLE_CLOUD_RUN</span>
                     <span id="cloud-status">CHECKING...</span>
                 </div>
-                <a href="https://l104-sovereign-node.fly.dev" target="_blank"
+                <a href="https://l104-server-yejnmn2jiq-uc.a.run.app" target="_blank"
                     class="block w-full border border-emerald-500 text-emerald-400 py-1 text-[0.55rem] font-bold uppercase tracking-[0.1em] hover:bg-emerald-900 transition-all text-center">
                     🌐 OPEN_CLOUD_NODE
                 </a>
@@ -597,10 +615,10 @@
 
         <!-- FOOTER -->
         <div
-            class="col-span-3 flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
-            <span>Allentown-L104-Node // <a href="https://l104-sovereign-node.fly.dev" target="_blank"
+            class="footer-row flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
+            <span>Allentown-L104-Node // <a href="https://l104-server-yejnmn2jiq-uc.a.run.app" target="_blank"
                     class="text-emerald-400 hover:text-emerald-300">24/7_CLOUD_ACTIVE</a></span>
-            <span>Invariant: 527.5184818492537 // <a href="/docs"
+            <span>Invariant: 527.5184818492611 // <a href="/docs"
                     class="hover:text-[var(--gold-bright)]">API_DOCS</a></span>
             <span>© 2026 Sovereign_Systems</span>
         </div>
@@ -665,9 +683,12 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        
+        // Message history for context
+        let conversationHistory = [];
 
-        // Use local endpoint (works without API keys)
-        const CHAT_ENDPOINT = '/api/local/chat';
+        // Use v6 derivation endpoint - uses real Gemini with L104 kernel processing
+        const CHAT_ENDPOINT = '/api/v6/chat';
 
         async function sendMessage() {
             const text = chatInput.value.trim();
@@ -680,33 +701,43 @@
             // Add User Message
             addMessage(text, 'user');
             chatInput.value = '';
+            
+            // Add to history
+            conversationHistory.push({ role: 'user', content: text });
 
             // Prepare Sovereign Response
-            const responseMsg = addMessage('⟨PROCESSING⟩', 'sovereign');
+            const responseMsg = addMessage('⟨PROCESSING⟩ Engaging L104 Kernels...', 'sovereign');
             let fullResponse = '';
 
             try {
                 const response = await fetch(CHAT_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ signal: text })
+                    body: JSON.stringify({ 
+                        message: text,
+                        history: conversationHistory.slice(-10)  // Last 10 messages for context
+                    })
                 });
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    const chunk = decoder.decode(value, { stream: true });
-                    fullResponse += chunk;
+                const data = await response.json();
+                
+                if (data.status === 'SUCCESS' && data.response) {
+                    fullResponse = data.response;
+                    responseMsg.innerHTML = formatResponse(fullResponse);
+                    conversationHistory.push({ role: 'assistant', content: fullResponse });
+                } else if (data.error) {
+                    fullResponse = `⟨ERROR⟩ ${data.error}`;
                     responseMsg.innerText = fullResponse;
-                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                } else {
+                    fullResponse = data.response || JSON.stringify(data);
+                    responseMsg.innerText = fullResponse;
                 }
+                
+                chatHistory.scrollTop = chatHistory.scrollHeight;
 
                 // If empty response, show error
                 if (!fullResponse.trim()) {
@@ -759,6 +790,23 @@
             } catch (error) {
                 responseMsg.innerText = `HEAL_FAILED: ${error.message}`;
             }
+        }
+
+        // Format markdown-like response to HTML
+        function formatResponse(text) {
+            if (!text) return '';
+            // Escape HTML first
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            // Convert markdown-style formatting
+            html = html
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic
+                .replace(/`([^`]+)`/g, '<code>$1</code>')          // Inline code
+                .replace(/\n/g, '<br>');                            // Newlines
+            return html;
         }
 
         function addMessage(text, sender) {

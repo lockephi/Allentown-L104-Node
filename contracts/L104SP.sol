@@ -6,7 +6,7 @@ pragma solidity ^0.8.20;
  * @dev ERC-20 token with Proof of Resonance integration
  * @notice Deployable on Ethereum, Base, Arbitrum, Polygon
  * 
- * INVARIANT: 527.5184818492537
+ * INVARIANT: 527.5184818492611
  * PILOT: LONDEL
  */
 

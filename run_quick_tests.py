@@ -22,7 +22,7 @@ print("═" * 70)
 print("\n[1/5] Testing core constants...")
 try:
     from const import GOD_CODE, PHI, VOID_CONSTANT
-    assert abs(GOD_CODE - 527.5184818492537) < 0.0001, "GOD_CODE mismatch"
+    assert abs(GOD_CODE - 527.5184818492611) < 0.0001, "GOD_CODE mismatch"
     assert abs(PHI - 1.618033988749895) < 0.0001, "PHI mismatch"
     print(f"  ✓ GOD_CODE = {GOD_CODE}")
     print(f"  ✓ PHI = {PHI}")
@@ -83,7 +83,7 @@ except Exception as e:
 print("\n[4/5] Testing l104 module...")
 try:
     from l104 import Soul, VERSION, GOD_CODE
-    assert abs(GOD_CODE - 527.5184818492537) < 0.0001
+    assert abs(GOD_CODE - 527.5184818492611) < 0.0001
     print(f"  ✓ L104 VERSION = {VERSION}")
     print(f"  ✓ L104 GOD_CODE = {GOD_CODE}")
     tests_passed += 1
@@ -96,7 +96,7 @@ print("\n[5/5] Testing sage bindings...")
 try:
     from l104_sage_bindings import get_sage_core
     core = get_sage_core()
-    result = core.primal_calculus(527.5184818492537, 1.618033988749895)
+    result = core.primal_calculus(527.5184818492611, 1.618033988749895)
     assert result > 0
     print(f"  ✓ Sage core primal_calculus = {result:.4f}")
 

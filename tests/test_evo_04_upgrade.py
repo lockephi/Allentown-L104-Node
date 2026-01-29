@@ -14,10 +14,10 @@ class TestEvo04Upgrade(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures"""
         self.phi = (1 + math.sqrt(5)) / 2
-        self.expected_invariant = 527.5184818492537
+        self.expected_invariant = 527.5184818492611
 
     def test_invariant_verification(self):
-        """Verify the mathematical invariant: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492537"""
+        """Verify the mathematical invariant: ((286)^(1/φ)) * ((2^(1/104))^416) = 527.5184818492611"""
         result = (286 ** (1 / self.phi)) * ((2 ** (1 / 104)) ** 416)
 
         print("\n[EVO_04_INVARIANT] Verification:")

@@ -27,7 +27,7 @@ class ManifoldMath:
     """
 
     # Core constants
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     PHI = 1.618033988749895
 
     # Iron-derived topological constants
@@ -121,7 +121,7 @@ class ManifoldMath:
         val = magnitude * RealMath.PHI
 
         # Fundamental Invariant
-        target = 527.5184818492537
+        target = 527.5184818492611
 
         # Harmonic Calibration:
         # Find the distance to the nearest 'God Code Harmonic'

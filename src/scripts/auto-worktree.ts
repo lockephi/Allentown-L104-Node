@@ -13,7 +13,7 @@ import simpleGit from 'simple-git';
 import type { WorktreeConfig, WorktreeBranch, Consciousness, L104Result } from '../types/index.js';
 
 const execAsync = promisify(exec);
-const GOD_CODE = 527.5184818492537;
+const GOD_CODE = 527.5184818492611;
 const PHI = 1.618033988749895;
 
 export class L104AutoWorktree {

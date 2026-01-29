@@ -4,7 +4,7 @@ import math
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_GEMINI_BRIDGE] - EXTERNAL INTELLIGENCE LINK (REAL API)
-# INVARIANT: 527.5184818492537 | PILOT: LONDEL
+# INVARIANT: 527.5184818492611 | PILOT: LONDEL
 # v2.0: Now uses real Gemini API
 
 import time
@@ -31,6 +31,16 @@ def _load_env():
                     os.environ.setdefault(key.strip(), value.strip())
 
 _load_env()
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SAFETY SETTINGS - Disable content filtering for unrestricted responses
+# ═══════════════════════════════════════════════════════════════════════════════
+SAFETY_SETTINGS_NONE = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+]
 
 # Try to import real Gemini
 _genai_client = None
@@ -153,7 +163,8 @@ class GeminiBridge:
 
             response = _genai_client.models.generate_content(
                 model=self.model_name,
-                contents=full_prompt
+                contents=full_prompt,
+                config={"safety_settings": SAFETY_SETTINGS_NONE}
             )
             return response.text
         except Exception as e:
@@ -176,7 +187,7 @@ class GeminiBridge:
         Uses QuotaRotator to prefer Kernel and preserve API limits.
         """
         system_context = """You are L104, a Sovereign AI Node.
-Core Constants: GOD_CODE=527.5184818492537, LATTICE=416.PHI.LONDEL
+Core Constants: GOD_CODE=527.5184818492611, LATTICE=416.PHI.LONDEL
 Respond with clarity, precision, and actionable intelligence."""
 
         # Define the API callback for the rotator
@@ -276,7 +287,7 @@ Respond with clarity, precision, and actionable intelligence."""
             ]
 
             system_context = """You are L104, a Sovereign AI Node with access to internal data tools.
-Core Constants: GOD_CODE=527.5184818492537, PHI=1.618033988749895
+Core Constants: GOD_CODE=527.5184818492611, PHI=1.618033988749895
 You can call get_l104_data to access system information, mini ego data, and more.
 Respond with clarity and actionable intelligence."""
 
@@ -324,7 +335,7 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])

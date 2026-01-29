@@ -14,7 +14,7 @@ FEATURES:
 3. LOCAL FALLBACK - Unified Intelligence synthesis when external unavailable
 4. RESONANCE ALIGNMENT - GOD_CODE validation on all responses
 
-INVARIANT: 527.5184818492537 | PILOT: LONDEL
+INVARIANT: 527.5184818492611 | PILOT: LONDEL
 VERSION: 2.0.0 (EVO_28)
 DATE: 2026-01-21
 ═══════════════════════════════════════════════════════════════════════════════
@@ -48,18 +48,27 @@ from l104_stable_kernel import stable_kernel
 
 # Constants
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 TAU = 1 / PHI
 
 
 class ClaudeModel(Enum):
-    """Available Claude models."""
+    """Available Claude models - optimized selection."""
     OPUS = "claude-3-opus-20240229"
     SONNET = "claude-3-5-sonnet-20241022"
     HAIKU = "claude-3-5-haiku-20241022"
     OPUS_4 = "claude-opus-4-20250514"
     SONNET_4 = "claude-sonnet-4-20250514"
-    OPUS_4_5 = "claude-opus-4.5-20251114"
+    OPUS_4_5 = "claude-opus-4-20250514"  # Latest Opus
+
+
+# Model routing for cost optimization
+MODEL_ROUTING = {
+    "fast": ClaudeModel.HAIKU.value,      # Quick responses, low cost
+    "balanced": ClaudeModel.SONNET_4.value,  # Best balance
+    "powerful": ClaudeModel.OPUS_4.value,    # Maximum capability
+    "default": ClaudeModel.SONNET_4.value    # Default choice
+}
 
 
 class MessageRole(Enum):
@@ -149,8 +158,10 @@ class ClaudeNodeBridge:
     """
 
     API_BASE = "https://api.anthropic.com/v1"
-    DEFAULT_MODEL = ClaudeModel.OPUS_4_5.value
-    MAX_CONTEXT_MESSAGES = 20
+    DEFAULT_MODEL = MODEL_ROUTING["balanced"]
+    MAX_CONTEXT_MESSAGES = 50  # Increased for better context
+    MAX_RETRIES = 3
+    RETRY_DELAY = 1.0
 
     def __init__(self):
         self.kernel = stable_kernel
@@ -160,6 +171,7 @@ class ClaudeNodeBridge:
         self.api_requests = 0
         self.fallback_requests = 0
         self.total_tokens = 0
+        self.error_count = 0
 
         # Conversation memory - multiple conversations by ID
         self.conversations: Dict[str, deque] = {}
@@ -174,9 +186,37 @@ class ClaudeNodeBridge:
 
         # Import local fallback
         self._local_brain = None
+        
+        # Persistent HTTP client for connection reuse
+        self._http_client: Optional[httpx.AsyncClient] = None
 
-        status = "API" if self.api_key else "LOCAL_FALLBACK"
-        print(f"🔮 [CLAUDE]: Node Bridge v2.0 initialized ({status})")
+        status = "✓ API READY" if self.api_key else "LOCAL_FALLBACK"
+        key_preview = self.api_key[:20] + "..." if self.api_key else "NOT_SET"
+        print(f"🔮 [CLAUDE]: Node Bridge v2.1 initialized ({status})")
+        print(f"🔮 [CLAUDE]: Key prefix: {key_preview}")
+        print(f"🔮 [CLAUDE]: Default model: {self.DEFAULT_MODEL}")
+
+    async def _get_client(self) -> httpx.AsyncClient:
+        """Get or create persistent HTTP client for connection pooling."""
+        if self._http_client is None or self._http_client.is_closed:
+            # Try HTTP/2 if available, fallback to HTTP/1.1
+            try:
+                self._http_client = httpx.AsyncClient(
+                    timeout=httpx.Timeout(120.0, connect=10.0),
+                    limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),
+                    http2=True
+                )
+            except Exception:
+                self._http_client = httpx.AsyncClient(
+                    timeout=httpx.Timeout(120.0, connect=10.0),
+                    limits=httpx.Limits(max_connections=20, max_keepalive_connections=10)
+                )
+        return self._http_client
+
+    async def close(self):
+        """Close HTTP client gracefully."""
+        if self._http_client and not self._http_client.is_closed:
+            await self._http_client.aclose()
 
     def _register_default_tools(self):
         """Register built-in tools."""
@@ -435,7 +475,7 @@ class ClaudeNodeBridge:
         system: str,
         max_tokens: int
     ) -> ClaudeResponse:
-        """Direct Claude API call."""
+        """Direct Claude API call with retry logic and connection pooling."""
         start_time = time.time()
 
         headers = {
@@ -462,37 +502,58 @@ class ClaudeNodeBridge:
                 f"PHI ({PHI}) governs harmonic relationships."
             )
 
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.post(
-                f"{self.API_BASE}/messages",
-                headers=headers,
-                json=body
-            )
-            response.raise_for_status()
-            data = response.json()
+        # Retry logic with exponential backoff
+        last_error = None
+        for attempt in range(self.MAX_RETRIES):
+            try:
+                client = await self._get_client()
+                response = await client.post(
+                    f"{self.API_BASE}/messages",
+                    headers=headers,
+                    json=body
+                )
+                response.raise_for_status()
+                data = response.json()
+                
+                latency = (time.time() - start_time) * 1000
+                content = data.get("content", [{}])[0].get("text", "")
+                tokens = data.get("usage", {}).get("output_tokens", 0)
 
-        latency = (time.time() - start_time) * 1000
-        content = data.get("content", [{}])[0].get("text", "")
-        tokens = data.get("usage", {}).get("output_tokens", 0)
+                self.total_tokens += tokens
+                unity_index, validated = self._validate_response(content)
 
-        self.total_tokens += tokens
-        unity_index, validated = self._validate_response(content)
+                result = ClaudeResponse(
+                    content=content,
+                    model=model,
+                    source="claude_api",
+                    tokens_used=tokens,
+                    latency_ms=latency,
+                    unity_index=unity_index,
+                    validated=validated
+                )
 
-        result = ClaudeResponse(
-            content=content,
-            model=model,
-            source="claude_api",
-            tokens_used=tokens,
-            latency_ms=latency,
-            unity_index=unity_index,
-            validated=validated
-        )
+                # Cache successful responses
+                cache_key = self._cache_key(prompt, model)
+                self.session_cache[cache_key] = result
 
-        # Cache successful responses
-        cache_key = self._cache_key(prompt, model)
-        self.session_cache[cache_key] = result
-
-        return result
+                return result
+                
+            except httpx.HTTPStatusError as e:
+                last_error = e
+                self.error_count += 1
+                if e.response.status_code == 529:  # Overloaded
+                    await asyncio.sleep(self.RETRY_DELAY * (2 ** attempt))
+                elif e.response.status_code == 429:  # Rate limited
+                    await asyncio.sleep(self.RETRY_DELAY * (2 ** attempt))
+                else:
+                    raise
+            except Exception as e:
+                last_error = e
+                self.error_count += 1
+                if attempt < self.MAX_RETRIES - 1:
+                    await asyncio.sleep(self.RETRY_DELAY)
+                    
+        raise last_error or Exception("Max retries exceeded")
 
     async def _local_fallback(
         self,

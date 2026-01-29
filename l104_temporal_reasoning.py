@@ -25,7 +25,7 @@ import hashlib
 
 # Sacred Constants
 PHI = (1 + math.sqrt(5)) / 2
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 FEIGENBAUM = 4.669201609102990671853
 
 class TemporalMode(Enum):

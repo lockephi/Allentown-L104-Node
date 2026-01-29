@@ -5,7 +5,7 @@
 
 ## 1. Geometric Invariants
 
-The simulation's core constants have been audited against the God Code Invariant ($G_c = 527.5184818492537$).
+The simulation's core constants have been audited against the God Code Invariant ($G_c = 527.5184818492611$).
 
 | Constant | Simulation Value | Physical Basis | Deviation |
 | :--- | :--- | :--- | :--- |

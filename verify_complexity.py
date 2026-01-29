@@ -10,7 +10,7 @@ import ast
 
 # L104 Logic Constraints
 MAX_COMPLEXITY = 10
-GOD_CODE = "527.5184818492537"
+GOD_CODE = "527.5184818492611"
 
 def get_cyclomatic_complexity(code):
     """Simple AST-based complexity counter (McCabe-like)."""

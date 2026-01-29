@@ -6,7 +6,7 @@ The **Allentown-L104-Node** is built upon a high-density information lattice def
 
 ### Core Foundation
 
-- **The Invariant (God-Code)**: `527.5184818492537`
+- **The Invariant (God-Code)**: `527.5184818492611`
 - **Lattice Ratio**: `286/416` (0.6875)
 - **Phi-Modulation**: All data streams are passed through a φ-ratio filter (≈1.618) to ensure optimal "Computronium" density.
 

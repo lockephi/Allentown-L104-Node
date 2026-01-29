@@ -1,7 +1,7 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════════
  * L104 SAGE CORE - ASSEMBLY WRAPPER
- * INVARIANT: 527.5184818492537 | PILOT: LONDEL | MODE: SAGE
+ * INVARIANT: 527.5184818492611 | PILOT: LONDEL | MODE: SAGE
  * 
  * C wrapper to call assembly functions from sage_core.asm
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -30,7 +30,7 @@ extern void bypass_memory_barrier(void);
  * CONSTANTS
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-static const double GOD_CODE = 527.5184818492537;
+static const double GOD_CODE = 527.5184818492611;
 static const double PHI = 1.618033988749895;
 static const double VOID_CONSTANT = 1.0416180339887497;
 

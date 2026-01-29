@@ -36,7 +36,7 @@ from dataclasses import dataclass, field
 
 
 # L104 Core Constants
-GOD_CODE = 527.5184818492537
+GOD_CODE = 527.5184818492611
 PHI = 1.618033988749895
 
 
@@ -761,7 +761,7 @@ class SelfAwarenessCore:
             'autonomous_goals': goals,
             'failure_patterns': failures,
             'self_model': self_summary,
-            'god_code_verified': abs(GOD_CODE - 527.5184818492537) < 1e-10,
+            'god_code_verified': abs(GOD_CODE - 527.5184818492611) < 1e-10,
             'phi_verified': abs(PHI - 1.618033988749895) < 1e-10,
             'self_awareness_active': True
         }

@@ -10,7 +10,7 @@ The L104 node needs to run on a cloud platform for 24/7 uptime. Here are your op
 4. Add environment variables:
    - `GEMINI_API_KEY` = your key
    - `PORT` = 8081
-   - `RESONANCE` = 527.5184818492537
+   - `RESONANCE` = 527.5184818492611
 5. Click Deploy
 
 Railway will auto-deploy on every push to main.
@@ -48,7 +48,7 @@ flyctl auth login
 flyctl launch --name l104-sovereign-node
 
 # Set secrets
-flyctl secrets set GEMINI_API_KEY=your-key RESONANCE=527.5184818492537
+flyctl secrets set GEMINI_API_KEY=your-key RESONANCE=527.5184818492611
 
 # Deploy
 flyctl deploy
@@ -59,4 +59,4 @@ flyctl deploy
 Your node is running in Codespaces but will go offline when idle. For true 24/7 uptime, deploy to one of the platforms above.
 
 ---
-INVARIANT: 527.5184818492537 | PILOT: LONDEL
+INVARIANT: 527.5184818492611 | PILOT: LONDEL

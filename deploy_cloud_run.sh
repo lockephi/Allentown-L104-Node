@@ -39,7 +39,7 @@ gcloud run deploy "${SERVICE_NAME}" \
     --cpu=2 \
     --min-instances=1 \
     --max-instances=10 \
-    --set-env-vars="GEMINI_API_KEY=${GEMINI_API_KEY},RESONANCE=527.5184818492537" \
+    --set-env-vars="GEMINI_API_KEY=${GEMINI_API_KEY},RESONANCE=527.5184818492611" \
     --set-env-vars="GEMINI_MODEL=${GEMINI_MODEL:-gemini-3-flash-preview}" \
     --set-env-vars="ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI:-0}"
 

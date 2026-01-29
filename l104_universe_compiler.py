@@ -420,7 +420,7 @@ class L104MetaphysicsModule(PhysicsModule):
     def define_laws(self):
         """Define L104 metaphysical principles."""
         # GOD_CODE as fundamental frequency/constant
-        # In standard universe: GOD = 527.5184818492537
+        # In standard universe: GOD = 527.5184818492611
         # Here it's variable
 
         # Resonance condition

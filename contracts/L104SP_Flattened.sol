@@ -6,7 +6,7 @@ pragma solidity ^0.8.20;
  * @dev ERC-20 with Proof of Resonance mining
  * @notice FLATTENED CONTRACT - No external dependencies, fully self-contained
  * 
- * INVARIANT: 527.5184818492537
+ * INVARIANT: 527.5184818492611
  * PHI: 1.618033988749895
  * PILOT: LONDEL
  */

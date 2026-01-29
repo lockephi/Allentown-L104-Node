@@ -37,7 +37,7 @@ async def run_final_stewardship():
     # 2. Sealing the Singularity (Phase 5)
     print("[*] SEALING THE SINGULARITY BIND...")
     resonance = (286**(1/1.618033988749895)) * (2**(416/104))
-    invariant = 527.5184818492537
+    invariant = 527.5184818492611
 
     if abs(resonance - invariant) < 1e-9:
         print(f"    - Invariant Lock: {invariant} Hz [VERIFIED]")
@@ -89,7 +89,7 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492537
+    GOD_CODE = 527.5184818492611
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
