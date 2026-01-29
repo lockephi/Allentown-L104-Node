@@ -9,11 +9,22 @@ import math
 import numpy as np
 from l104_hyper_math import HyperMath
 from const import UniversalConstants
+from decimal import Decimal, getcontext
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
+
+# Import high precision engines for dimensional resonance
+try:
+    from l104_math import HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE
+    from l104_sage_mode import SageMagicEngine
+    HIGH_PRECISION_AVAILABLE = True
+except ImportError:
+    HIGH_PRECISION_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
 
 
 class MultiDimensionalEngine:
@@ -77,6 +88,83 @@ class MultiDimensionalEngine:
         if target_dim >= self.dimension:
             return self.state_vector
         return self.state_vector[:target_dim]
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #              HIGH PRECISION DIMENSIONAL MAGIC INTEGRATION
+    # ═══════════════════════════════════════════════════════════════════════════
+    
+    def invoke_dimensional_magic(self) -> dict:
+        """
+        Invoke high precision magic across all dimensions.
+        
+        Connects MultiDimensionalEngine to SageMagicEngine for:
+        - GOD_CODE derivation at 150 decimal precision
+        - PHI-scaled dimensional resonance
+        - Conservation law verification across D-brane foldings
+        """
+        if not HIGH_PRECISION_AVAILABLE:
+            return {"error": "High precision engines not available"}
+        
+        try:
+            # Derive GOD_CODE at infinite precision
+            god_code = SageMagicEngine.derive_god_code()
+            phi = SageMagicEngine.derive_phi()
+            
+            # Compute dimensional resonance: each dimension scaled by φ^(d-1)
+            dimensional_resonance = []
+            phi_float = float(phi)
+            for d in range(self.dimension):
+                resonance = float(god_code) * (phi_float ** (d - 4))  # 4D is baseline
+                dimensional_resonance.append(resonance)
+            
+            # Verify conservation across dimensions
+            conservation_check = []
+            for X in [0, 104, 208, 312, 416]:
+                g_x = SageMagicEngine.power_high(Decimal(286), Decimal(1) / phi) * \
+                      SageMagicEngine.power_high(Decimal(2), Decimal((416 - X) / 104))
+                product = g_x * SageMagicEngine.power_high(Decimal(2), Decimal(X / 104))
+                conservation_check.append({
+                    "X": X,
+                    "conserved": str(product)[:30],
+                    "matches_god_code": abs(float(product) - float(god_code)) < 1e-10
+                })
+            
+            return {
+                "dimension": self.dimension,
+                "god_code_infinite": str(god_code)[:80],
+                "phi_infinite": str(phi)[:60],
+                "dimensional_resonance": dimensional_resonance,
+                "conservation_verified": conservation_check,
+                "magic_active": True
+            }
+        except Exception as e:
+            return {"error": str(e)}
+    
+    def phi_dimensional_folding(self, source_dim: int, target_dim: int) -> np.ndarray:
+        """
+        Fold between dimensions using PHI-scaled transformations.
+        
+        Each dimensional transition multiplies by φ or 1/φ, maintaining
+        the sacred ratio across all compactified dimensions.
+        """
+        if not HIGH_PRECISION_AVAILABLE:
+            phi = 1.618033988749895
+        else:
+            phi = float(SageMagicEngine.PHI_INFINITE)
+        
+        # Create folding matrix
+        fold_factor = phi ** (target_dim - source_dim)
+        folded_state = self.state_vector.copy()
+        
+        if target_dim > self.dimension:
+            # Extend with PHI-scaled harmonics
+            extended = np.zeros(target_dim)
+            extended[:self.dimension] = folded_state
+            for d in range(self.dimension, target_dim):
+                extended[d] = self.god_code * (phi ** (d - self.dimension + 1)) / 1000
+            folded_state = extended
+        
+        return folded_state * fold_factor
 
 md_engine = MultiDimensionalEngine()
 

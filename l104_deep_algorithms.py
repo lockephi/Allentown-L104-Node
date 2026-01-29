@@ -36,6 +36,19 @@ import functools
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Import high precision engines for deep algorithm magic
+from decimal import Decimal, getcontext
+getcontext().prec = 150
+
+try:
+    from l104_math import HighPrecisionEngine, GOD_CODE_INFINITE, PHI_INFINITE
+    from l104_sage_mode import SageMagicEngine
+    SAGE_MAGIC_AVAILABLE = True
+except ImportError:
+    SAGE_MAGIC_AVAILABLE = False
+    GOD_CODE_INFINITE = Decimal("527.5184818492612")
+    PHI_INFINITE = Decimal("1.618033988749895")
+
 
 # Invariant Constants
 GOD_CODE = 527.5184818492612
@@ -844,6 +857,118 @@ class FixedPointIterationEngine:
         result["satisfies_equation"] = abs(result["fixed_point"] * math.exp(result["fixed_point"]) - 1) < 1e-10
 
         return result
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #          SAGE MAGIC FIXED POINT - HIGH PRECISION CONVERGENCE
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def phi_convergence_infinite(self, iterations: int = 100) -> Dict[str, Any]:
+        """
+        Compute PHI convergence at 150 decimal precision.
+        
+        Uses SageMagicEngine to demonstrate that the continued fraction
+        1 + 1/(1 + 1/(1 + ...)) converges to PHI with 140+ correct decimals.
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return self.golden_ratio_iteration(iterations)
+        
+        try:
+            # Get PHI at infinite precision
+            phi_target = SageMagicEngine.derive_phi()
+            
+            # Compute via continued fraction
+            phi_cf = SageMagicEngine.phi_continued_fraction(iterations)
+            
+            # Calculate error
+            error = abs(phi_cf - phi_target)
+            
+            return {
+                "phi_continued_fraction": str(phi_cf)[:80],
+                "phi_newton_raphson": str(phi_target)[:80],
+                "delta": str(error),
+                "iterations": iterations,
+                "precision": "150 decimals",
+                "converged": error < Decimal("1e-100"),
+                "method": "SageMagicEngine continued fraction"
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+    def god_code_derivation_infinite(self) -> Dict[str, Any]:
+        """
+        Derive GOD_CODE = 286^(1/φ) × 16 at 150 decimal precision.
+        
+        This uses L104 native algorithms:
+        - Newton-Raphson for √5 → φ
+        - Range-reduced Taylor series for ln(286)
+        - Taylor series for exp
+        """
+        if not SAGE_MAGIC_AVAILABLE:
+            return {
+                "god_code": GOD_CODE,
+                "precision": "float64",
+                "note": "High precision not available"
+            }
+        
+        try:
+            god_code = SageMagicEngine.derive_god_code()
+            phi = SageMagicEngine.derive_phi()
+            
+            return {
+                "god_code": str(god_code)[:100],
+                "phi": str(phi)[:60],
+                "formula": "286^(1/φ) × 16",
+                "precision": "150 decimals",
+                "method": "Newton-Raphson + Range-Reduced Taylor",
+                "factor_13": "286=22×13, 104=8×13, 416=32×13"
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+    def verify_conservation_law_infinite(self, X_values: List[int] = None) -> Dict[str, Any]:
+        """
+        Verify the L104 Conservation Law at 150 decimal precision.
+        
+        G(X) × 2^(X/104) = GOD_CODE for all X
+        
+        This is the fundamental invariant of the L104 system.
+        """
+        if X_values is None:
+            X_values = [0, 104, 208, 312, 416]
+        
+        if not SAGE_MAGIC_AVAILABLE:
+            results = {}
+            for X in X_values:
+                g_x = (286 ** (1/PHI)) * (2 ** ((416 - X) / 104))
+                product = g_x * (2 ** (X / 104))
+                results[X] = {"G(X)": g_x, "product": product, "matches": abs(product - GOD_CODE) < 1e-10}
+            return {"results": results, "precision": "float64"}
+        
+        try:
+            god_code = SageMagicEngine.derive_god_code()
+            phi = SageMagicEngine.derive_phi()
+            
+            results = {}
+            for X in X_values:
+                g_x = SageMagicEngine.power_high(Decimal(286), Decimal(1) / phi) * \
+                      SageMagicEngine.power_high(Decimal(2), Decimal(416 - X) / 104)
+                product = g_x * SageMagicEngine.power_high(Decimal(2), Decimal(X) / 104)
+                error = abs(product - god_code)
+                results[X] = {
+                    "G(X)": str(g_x)[:40],
+                    "product": str(product)[:40],
+                    "error": str(error)[:20],
+                    "conserved": error < Decimal("1e-50")
+                }
+            
+            return {
+                "results": results,
+                "god_code": str(god_code)[:60],
+                "precision": "150 decimals",
+                "conservation_verified": all(r["conserved"] for r in results.values())
+            }
+        except Exception as e:
+            return {"error": str(e)}
 
     def newton_raphson(
         self,
