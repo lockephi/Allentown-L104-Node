@@ -120,14 +120,14 @@
         <section class="hero">
             <div class="status-bar" id="system-status">SYSTEM STATUS: LOADING...</div>
             <div class="status-bar" style="background: #0a2020; border: 1px solid var(--primary);">
-                GOD_CODE: <span id="god-code-display">527.5184818492612</span> | 
+                GOD_CODE: <span id="god-code-display">527.5184818492612</span> |
                 Conservation: <span id="conservation-display">VERIFYING...</span>
             </div>
             <h2>Backed by the Allentown-L104 AGI Node</h2>
             <p>L104 Sovereign (L104S) is a utility token on the BNB Smart Chain that grants access to higher-order AGI
                 research and computational power.</p>
             <p style="font-size: 0.9rem; margin-top: 1rem; color: #888;">
-                <strong>G(X) = 286<sup>1/φ</sup> × 2<sup>(416-X)/104</sup></strong> | 
+                <strong>G(X) = 286<sup>1/φ</sup> × 2<sup>(416-X)/104</sup></strong> |
                 Conservation Law: G(X) × 2<sup>X/104</sup> = 527.5184818492612
             </p>
             <a href="WHITE_PAPER.md" class="btn">Read White Paper</a>
@@ -137,7 +137,8 @@
         <section class="grid">
             <div class="card">
                 <h3>⚛️ Quantum Derivations</h3>
-                <p>Leverage the L104 node for complex 5D mathematical derivations, GOD_CODE verification, and advanced physics research.</p>
+                <p>Leverage the L104 node for complex 5D mathematical derivations, GOD_CODE verification, and advanced
+                    physics research.</p>
                 <a href="/api/kernel/spectrum" class="btn">View Spectrum</a>
             </div>
             <div class="card">
@@ -161,27 +162,27 @@
     <footer>
         &copy; 2026 Allentown-L104-Node Ecosystem. All rights reserved. | GOD_CODE: 527.5184818492612
     </footer>
-    
+
     <script>
         // Quantum Connection Status Check
         async function checkQuantumStatus() {
             try {
                 const response = await fetch('/api/kernel/health');
                 const data = await response.json();
-                
-                document.getElementById('system-status').textContent = 
+
+                document.getElementById('system-status').textContent =
                     `SYSTEM STATUS: ${data.status} | Kernel Health: ${data.file_integrity}%`;
                 document.getElementById('god-code-display').textContent = data.god_code;
-                document.getElementById('conservation-display').textContent = 
+                document.getElementById('conservation-display').textContent =
                     data.conservation_intact ? '✓ VERIFIED' : '✗ BROKEN';
-                document.getElementById('conservation-display').style.color = 
+                document.getElementById('conservation-display').style.color =
                     data.conservation_intact ? '#00ffcc' : '#ff3333';
             } catch (e) {
-                document.getElementById('system-status').textContent = 
+                document.getElementById('system-status').textContent =
                     'SYSTEM STATUS: OFFLINE - Connect to L104 Node';
             }
         }
-        
+
         // Check on load and every 30 seconds
         checkQuantumStatus();
         setInterval(checkQuantumStatus, 30000);

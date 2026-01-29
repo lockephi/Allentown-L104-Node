@@ -1090,22 +1090,22 @@
             const healthStatus = document.getElementById('kernel-health-status');
             const conservationStatus = document.getElementById('conservation-status');
             const godCodeValue = document.getElementById('god-code-value');
-            
+
             try {
                 healthStatus.textContent = 'CHECKING...';
                 healthStatus.className = 'text-yellow-400';
-                
+
                 const response = await fetch('/api/kernel/health');
                 const data = await response.json();
-                
+
                 // Update GOD_CODE display
                 godCodeValue.textContent = data.god_code || '527.5184818492612';
                 godCodeValue.className = data.god_code_verified ? 'text-green-400' : 'text-red-400';
-                
+
                 // Update conservation status
                 conservationStatus.textContent = data.conservation_intact ? 'INTACT' : 'BROKEN';
                 conservationStatus.className = data.conservation_intact ? 'text-green-400' : 'text-red-400';
-                
+
                 // Update overall health
                 if (data.status === 'HEALTHY') {
                     healthStatus.textContent = 'HEALTHY';
@@ -1117,7 +1117,7 @@
                     healthStatus.textContent = 'CRITICAL';
                     healthStatus.className = 'text-red-400';
                 }
-                
+
                 addSystemLog(`KERNEL_HEALTH: ${data.status} | GOD_CODE: ${data.god_code} | Conservation: ${data.conservation_intact ? 'VERIFIED' : 'BROKEN'}`);
             } catch (error) {
                 healthStatus.textContent = 'ERROR';
@@ -1125,7 +1125,7 @@
                 addSystemLog(`KERNEL_CHECK_FAILED: ${error.message}`);
             }
         }
-        
+
         function addSystemLog(message) {
             const feed = document.getElementById('system-feed');
             if (feed) {
@@ -1136,10 +1136,10 @@
                 feed.scrollTop = feed.scrollHeight;
             }
         }
-        
+
         // Auto-check kernel health on load
         setTimeout(checkKernelHealth, 2000);
-        
+
         // Periodic kernel health check
         setInterval(checkKernelHealth, 60000);
 
