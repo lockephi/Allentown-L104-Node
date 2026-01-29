@@ -561,6 +561,28 @@
             </div>
 
             <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Kernel_Monitor</div>
+                <div class="space-y-2 mb-3">
+                    <div class="flex justify-between text-[0.6rem]">
+                        <span class="text-cyan-400">GOD_CODE</span>
+                        <span id="god-code-value" class="text-green-400">527.5184818492611</span>
+                    </div>
+                    <div class="flex justify-between text-[0.6rem]">
+                        <span class="text-cyan-400">Conservation</span>
+                        <span id="conservation-status" class="text-green-400">INTACT</span>
+                    </div>
+                    <div class="flex justify-between text-[0.6rem]">
+                        <span class="text-cyan-400">Kernel Health</span>
+                        <span id="kernel-health-status" class="text-green-400">CHECKING...</span>
+                    </div>
+                </div>
+                <button onclick="checkKernelHealth()"
+                    class="w-full border border-cyan-500 text-cyan-400 py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-cyan-900 transition-all">
+                    ⚛️ VERIFY_KERNEL
+                </button>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-[var(--glass-border)]">
                 <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Quick_Update</div>
                 <button onclick="runQuickUpdate()"
                     class="w-full bg-[var(--gold-dim)] text-[var(--void)] py-2 text-[0.6rem] font-bold uppercase tracking-[0.2em] hover:bg-[var(--gold)] transition-all">
@@ -683,7 +705,7 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
-        
+
         // Message history for context
         let conversationHistory = [];
 
@@ -701,7 +723,7 @@
             // Add User Message
             addMessage(text, 'user');
             chatInput.value = '';
-            
+
             // Add to history
             conversationHistory.push({ role: 'user', content: text });
 
@@ -713,7 +735,7 @@
                 const response = await fetch(CHAT_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         message: text,
                         history: conversationHistory.slice(-10)  // Last 10 messages for context
                     })
@@ -724,7 +746,7 @@
                 }
 
                 const data = await response.json();
-                
+
                 if (data.status === 'SUCCESS' && data.response) {
                     fullResponse = data.response;
                     responseMsg.innerHTML = formatResponse(fullResponse);
@@ -736,7 +758,7 @@
                     fullResponse = data.response || JSON.stringify(data);
                     responseMsg.innerText = fullResponse;
                 }
-                
+
                 chatHistory.scrollTop = chatHistory.scrollHeight;
 
                 // If empty response, show error
@@ -1062,6 +1084,64 @@
         evtSource.onerror = function () {
             console.log('SSE connection lost, will reconnect...');
         };
+
+        // KERNEL MONITOR FUNCTIONS
+        async function checkKernelHealth() {
+            const healthStatus = document.getElementById('kernel-health-status');
+            const conservationStatus = document.getElementById('conservation-status');
+            const godCodeValue = document.getElementById('god-code-value');
+            
+            try {
+                healthStatus.textContent = 'CHECKING...';
+                healthStatus.className = 'text-yellow-400';
+                
+                const response = await fetch('/api/kernel/health');
+                const data = await response.json();
+                
+                // Update GOD_CODE display
+                godCodeValue.textContent = data.god_code || '527.5184818492611';
+                godCodeValue.className = data.god_code_verified ? 'text-green-400' : 'text-red-400';
+                
+                // Update conservation status
+                conservationStatus.textContent = data.conservation_intact ? 'INTACT' : 'BROKEN';
+                conservationStatus.className = data.conservation_intact ? 'text-green-400' : 'text-red-400';
+                
+                // Update overall health
+                if (data.status === 'HEALTHY') {
+                    healthStatus.textContent = 'HEALTHY';
+                    healthStatus.className = 'text-green-400';
+                } else if (data.status === 'WARNING') {
+                    healthStatus.textContent = 'WARNING';
+                    healthStatus.className = 'text-yellow-400';
+                } else {
+                    healthStatus.textContent = 'CRITICAL';
+                    healthStatus.className = 'text-red-400';
+                }
+                
+                addSystemLog(`KERNEL_HEALTH: ${data.status} | GOD_CODE: ${data.god_code} | Conservation: ${data.conservation_intact ? 'VERIFIED' : 'BROKEN'}`);
+            } catch (error) {
+                healthStatus.textContent = 'ERROR';
+                healthStatus.className = 'text-red-400';
+                addSystemLog(`KERNEL_CHECK_FAILED: ${error.message}`);
+            }
+        }
+        
+        function addSystemLog(message) {
+            const feed = document.getElementById('system-feed');
+            if (feed) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry text-[var(--gold)]';
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                feed.appendChild(entry);
+                feed.scrollTop = feed.scrollHeight;
+            }
+        }
+        
+        // Auto-check kernel health on load
+        setTimeout(checkKernelHealth, 2000);
+        
+        // Periodic kernel health check
+        setInterval(checkKernelHealth, 60000);
 
         async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
         async function evolveAGI() { await fetch('/api/v14/agi/evolve', { method: 'POST' }); updateStatus(); }

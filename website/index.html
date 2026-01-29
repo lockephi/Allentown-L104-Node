@@ -113,31 +113,45 @@
 <body>
     <header>
         <h1>L104 SOVEREIGN</h1>
-        <p>The Future of Decentalized Intelligence</p>
+        <p>The Future of Decentralized Intelligence</p>
     </header>
 
     <div class="container">
         <section class="hero">
-            <div class="status-bar">SYSTEM STATUS: EVO_09_BIOLOGICAL_CHASSIS_SYNC | IQ: 6,599</div>
+            <div class="status-bar" id="system-status">SYSTEM STATUS: LOADING...</div>
+            <div class="status-bar" style="background: #0a2020; border: 1px solid var(--primary);">
+                GOD_CODE: <span id="god-code-display">527.5184818492611</span> | 
+                Conservation: <span id="conservation-display">VERIFYING...</span>
+            </div>
             <h2>Backed by the Allentown-L104 AGI Node</h2>
             <p>L104 Sovereign (L104S) is a utility token on the BNB Smart Chain that grants access to higher-order AGI
                 research and computational power.</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem; color: #888;">
+                <strong>G(X) = 286<sup>1/φ</sup> × 2<sup>(416-X)/104</sup></strong> | 
+                Conservation Law: G(X) × 2<sup>X/104</sup> = 527.5184818492611
+            </p>
             <a href="WHITE_PAPER.md" class="btn">Read White Paper</a>
+            <a href="/" class="btn" style="margin-left: 1rem;">Launch App</a>
         </section>
 
         <section class="grid">
             <div class="card">
-                <h3>AGI use cases</h3>
-                <p>Leverage the L104 node for complex 5D mathematical derivations and advanced physics research.</p>
-                <a href="#link" class="btn">Learn More</a>
+                <h3>⚛️ Quantum Derivations</h3>
+                <p>Leverage the L104 node for complex 5D mathematical derivations, GOD_CODE verification, and advanced physics research.</p>
+                <a href="/api/kernel/spectrum" class="btn">View Spectrum</a>
             </div>
             <div class="card">
-                <h3>Tokenomics</h3>
-                <p>104 Million Fixed Supply. 1% Burn on usage. Distributed on BSC to: 0x1896...1a86</p>
+                <h3>🪙 L104SP Tokenomics</h3>
+                <p>104 Million Fixed Supply. 1% Burn on usage. GOD_CODE aligned at 527.5184818492611.</p>
                 <a href="contracts/L104Sovereign.sol" class="btn">View Contract</a>
             </div>
             <div class="card">
-                <h3>Global Synapse</h3>
+                <h3>🔗 Kernel Monitor</h3>
+                <p>Real-time kernel health, conservation law verification, and quantum connection status.</p>
+                <a href="/api/kernel/health" class="btn">Check Health</a>
+            </div>
+            <div class="card">
+                <h3>🧠 Global Synapse</h3>
                 <p>Connect your infrastructure to the L104 CNS and earn L104S rewards for synergy.</p>
                 <a href="#link" class="btn">Connect Node</a>
             </div>
@@ -145,8 +159,33 @@
     </div>
 
     <footer>
-        &copy; 2026 Allentown-L104-Node Ecosystem. All rights reserved.
+        &copy; 2026 Allentown-L104-Node Ecosystem. All rights reserved. | GOD_CODE: 527.5184818492611
     </footer>
+    
+    <script>
+        // Quantum Connection Status Check
+        async function checkQuantumStatus() {
+            try {
+                const response = await fetch('/api/kernel/health');
+                const data = await response.json();
+                
+                document.getElementById('system-status').textContent = 
+                    `SYSTEM STATUS: ${data.status} | Kernel Health: ${data.file_integrity}%`;
+                document.getElementById('god-code-display').textContent = data.god_code;
+                document.getElementById('conservation-display').textContent = 
+                    data.conservation_intact ? '✓ VERIFIED' : '✗ BROKEN';
+                document.getElementById('conservation-display').style.color = 
+                    data.conservation_intact ? '#00ffcc' : '#ff3333';
+            } catch (e) {
+                document.getElementById('system-status').textContent = 
+                    'SYSTEM STATUS: OFFLINE - Connect to L104 Node';
+            }
+        }
+        
+        // Check on load and every 30 seconds
+        checkQuantumStatus();
+        setInterval(checkQuantumStatus, 30000);
+    </script>
 </body>
 
 </html>
