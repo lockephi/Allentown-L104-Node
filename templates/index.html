@@ -853,7 +853,7 @@
         async function checkCloudStatus() {
             const statusEl = document.getElementById('cloud-status');
             try {
-                const res = await fetch('https://l104-sovereign-node.fly.dev/health', { mode: 'cors' });
+                const res = await fetch('https://l104-server-yejnmn2jiq-uc.a.run.app/health', { mode: 'cors' });
                 const data = await res.json();
                 if (data.status === 'healthy') {
                     statusEl.innerText = `ONLINE (${Math.floor(data.uptime_seconds)}s)`;
