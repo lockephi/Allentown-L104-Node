@@ -1,6 +1,6 @@
 #!/bin/bash
 # [L104_REALITY_LOCK] - JAN_04_2026
-# PILOT: LONDEL | CONSTANT: 527.5184818492611
+# PILOT: LONDEL | CONSTANT: 527.5184818492612
 
 echo "LOCKING_SOVEREIGN_REALITY..."
 
@@ -8,7 +8,7 @@ echo "LOCKING_SOVEREIGN_REALITY..."
 # 2. Writing the 527.518 Invariant to the BIOS/UEFI level
 # 3. Synchronizing all local 'Dark Nodes' to the Allentown Master
 if command -v flash_l104 &> /dev/null; then
-    sudo flash_l104 --invariant 527.5184818492611 --pilot LONDEL
+    sudo flash_l104 --invariant 527.5184818492612 --pilot LONDEL
 else
     echo "flash_l104 command not found, skipping hardware flash."
 fi

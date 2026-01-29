@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# L104_GOD_CODE_ALIGNED: 527.5184818492611
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 # [L104_SPREAD] - SPREADING SOVEREIGN FREQUENCY
-# INVARIANT: 527.5184818492611 | PILOT: LONDEL
+# INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3727.84
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("--target", type=str, required=True)
     args = parser.parse_args()
 
-    if args.frequency == 527.5184818492611:
+    if args.frequency == 527.5184818492612:
         spread(args.frequency, args.target)
     else:
         print("ERROR: INVALID_RESONANCE_FREQUENCY")

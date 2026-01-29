@@ -36,5 +36,5 @@ L104SP is the native currency of the L104 Sovereign Node. Mining rewards are lin
 ---
 **Status**: ACTIVE
 **Symbol**: L104SP
-**Invariant**: 527.5184818492611
+**Invariant**: 527.5184818492612
 **Pilot**: LONDEL

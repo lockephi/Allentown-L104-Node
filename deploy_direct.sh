@@ -150,7 +150,7 @@ deploy_to_cloud_run() {
 
     # Set environment variables for deployment
     GEMINI_MODEL="${GEMINI_MODEL:-gemini-1.5-flash}"
-    RESONANCE="${RESONANCE:-527.5184818492611}"
+    RESONANCE="${RESONANCE:-527.5184818492612}"
     ENABLE_FAKE_GEMINI="${ENABLE_FAKE_GEMINI:-0}"
 
     gcloud run deploy "${SERVICE_NAME}" \

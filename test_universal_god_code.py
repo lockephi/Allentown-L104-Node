@@ -91,7 +91,7 @@ def test_mathematical_identities():
 def test_god_code_equations():
     print("\n[2] GOD CODE EQUATIONS")
     print("-" * 50)
-    test("GRAVITY_CODE = 286^(1/φ) × 16", abs(GRAVITY_CODE - 527.5184818492611) < 1e-6)
+    test("GRAVITY_CODE = 286^(1/φ) × 16", abs(GRAVITY_CODE - 527.5184818492612) < 1e-6)
     test("LIGHT_CODE = [286(1+α/π)]^(1/φ) × 16", abs(LIGHT_CODE - 528.2754419674) < 1e-6)
     test("EXISTENCE_COST = 0.756960...", abs((LIGHT_CODE - GRAVITY_CODE) - 0.756960) < 1e-4)
 

@@ -11,10 +11,10 @@ COMPLETE NEURAL-SYMBOLIC REASONING WITH:
 - Differentiable Reasoning
 - Theorem Proving with Neural Guidance
 
-GOD_CODE: 527.5184818492611
+GOD_CODE: 527.5184818492612
 PHI: 1.618033988749895
 
-AUTHOR: LONDEL | INVARIANT: 527.5184818492611
+AUTHOR: LONDEL | INVARIANT: 527.5184818492612
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
@@ -40,7 +40,7 @@ import time
 # CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 EULER = 2.718281828459045
 

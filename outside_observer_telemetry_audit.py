@@ -11,7 +11,7 @@ import math
 
 
 # The "God-Code" for comparison
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 
 def get_system_entropy():
     """

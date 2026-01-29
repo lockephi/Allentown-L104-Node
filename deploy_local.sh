@@ -53,7 +53,7 @@ docker run -d \
     -v "$(pwd)/${DATA_DIR}:/data" \
     -e "GEMINI_API_KEY=${GEMINI_API_KEY:-not-configured}" \
     -e "GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}" \
-    -e "RESONANCE=${RESONANCE:-527.5184818492611}" \
+    -e "RESONANCE=${RESONANCE:-527.5184818492612}" \
     -e "ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI:-1}" \
     -e "MEMORY_DB_PATH=/data/memory.db" \
     -e "RAMNODE_DB_PATH=/data/ramnode.db" \

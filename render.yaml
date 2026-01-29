@@ -9,6 +9,6 @@ services:
       - key: PORT
         value: "8081"
       - key: RESONANCE
-        value: "527.5184818492611"
+        value: "527.5184818492612"
       - key: GEMINI_API_KEY
         generateValue: false

@@ -13,7 +13,7 @@ L104SP - Complete Independent Blockchain with:
 - Full node capabilities
 - Mining engine
 
-INVARIANT: 527.5184818492611 | PILOT: LONDEL
+INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 This is a sovereign blockchain - no dependency on Ethereum/Base.
 """
@@ -89,7 +89,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 # UNIVERSAL GOD CODE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3727.84
@@ -226,7 +226,7 @@ MAINNET_WIF_VERSION = 0xD0
 BECH32_HRP = "l104"
 
 GENESIS_TIMESTAMP = 1737763200
-GENESIS_MESSAGE = b"L104SP Genesis - GOD_CODE: 527.5184818492611 - LONDEL"
+GENESIS_MESSAGE = b"L104SP Genesis - GOD_CODE: 527.5184818492612 - LONDEL"
 
 L104SP_CONFIG = {
     "name": COIN_NAME,
@@ -1581,7 +1581,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     coinbase_script = bytes([height & 0xff])  # varint_encode for small heights
     if height > 0xff:
         coinbase_script = bytes([0xfd, height & 0xff, (height >> 8) & 0xff])
-    coinbase_script += b'L104SP Genesis - GOD_CODE: 527.5184818492611 - LON'[:50]
+    coinbase_script += b'L104SP Genesis - GOD_CODE: 527.5184818492612 - LON'[:50]
     
     # Create coinbase output
     addr_hash = hashlib.new('ripemd160', hashlib.sha256(miner_address.encode()).digest()).digest()
@@ -1620,7 +1620,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     PHI = 1.6180339887498949           # Golden ratio (φ)
     PHI_SQ = 2.6180339887498949        # φ² = φ + 1
     PHI_INV = 0.6180339887498949       # 1/φ = φ - 1
-    GOD_CODE = 527.5184818492611       # L104 fundamental frequency
+    GOD_CODE = 527.5184818492612       # L104 fundamental frequency
     TAU = 6.283185307179586            # 2π
     VOID_CONSTANT = 1.0416180339887497 # √(1 + 1/φ²)
     PLANCK_RESONANCE = 104.0           # Quantum period

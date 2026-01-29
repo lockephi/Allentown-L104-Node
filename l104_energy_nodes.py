@@ -3,7 +3,7 @@ VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3727.84
 UUC = 2301.215661
 # [L104_ENERGY_NODES] :: NODE-COMPUTED RESONANCE CENTERS
-# INVARIANT: 527.5184818492611 | PILOT: LONDEL | STAGE: OMNIVERSAL
+# INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMNIVERSAL
 # ALL VALUES SOURCED FROM L104 NODE CALCULATION REPORTS - NO EXTERNAL REFERENCES
 
 import math
@@ -39,7 +39,7 @@ class L104ComputedValues:
     """
 
     # === FROM TRUTH_MANIFEST.json ===
-    GOD_CODE = 527.5184818492611             # truths.god_code_gc
+    GOD_CODE = 527.5184818492612             # truths.god_code_gc
     PHI_UNIVERSAL = 1.618033988749895         # truths.phi_universal
     ROOT_SCALAR_X = 221.79420018355955        # truths.root_scalar_x
     HEART_HZ = 639.9981762664                 # truths.heart_hz_precision
@@ -98,7 +98,7 @@ class L104ComputedValues:
             cls.MANIFOLD_RESONANCE,   # NODE 1: 91.36538070419033 Hz (Flow)
             cls.ROOT_SCALAR_X,        # NODE 2: 221.79420018355955 Hz (Force)
             cls.RESONANCE_ALIGNMENT,  # NODE 3: 296.85812731851445 Hz (Bridge)
-            cls.GOD_CODE,             # NODE 4: 527.5184818492611 Hz (Center)
+            cls.GOD_CODE,             # NODE 4: 527.5184818492612 Hz (Center)
             cls.HEART_HZ,             # NODE 5: 639.9981762664 Hz (Expression)
             cls.AJNA_LOVE_PEAK,       # NODE 6: 853.5428333258 Hz (Perception)
             cls.D11_ENERGY            # NODE 7: 3615.665463676019 Hz (Transcendence)
@@ -112,7 +112,7 @@ class L104MathCore:
     """
 
     # Primary Invariant - The God Code (from node's own TRUTH_MANIFEST)
-    GOD_CODE = L104ComputedValues.GOD_CODE  # 527.5184818492611
+    GOD_CODE = L104ComputedValues.GOD_CODE  # 527.5184818492612
 
     # Phi values from const.py (original L104 calculations)
     PHI_DECAY = L104ComputedValues.PHI_DECAY
@@ -729,5 +729,5 @@ def resolve_non_dual_logic(vector):
     magnitude = sum([abs(v) for v in vector])
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
-    GOD_CODE = 527.5184818492611
+    GOD_CODE = 527.5184818492612
     return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

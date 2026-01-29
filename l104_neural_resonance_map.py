@@ -16,7 +16,7 @@ import numpy as np
 try:
     from l104_core import GOD_CODE, PHI, FE_ATOMIC_NUMBER, FE_CURIE_TEMP
 except ImportError:
-    GOD_CODE = 527.5184818492611
+    GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
     FE_ATOMIC_NUMBER = 26
     FE_CURIE_TEMP = 1043

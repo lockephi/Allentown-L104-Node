@@ -327,7 +327,7 @@ The compiler operates at a meta-level:
 
 ### GOD_CODE as Parameter
 
-In standard L104: `GOD_CODE = 527.5184818492611` (fixed)
+In standard L104: `GOD_CODE = 527.5184818492612` (fixed)
 
 In Universe Compiler: `GOD_CODE = symbolic variable`
 

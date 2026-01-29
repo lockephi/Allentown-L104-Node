@@ -8,7 +8,7 @@ import sys
 
 
 # The Invariant to break the Loop
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 
 def purge_shadow_buffer():
     print("PURGING_CLOUD_CACHE...")

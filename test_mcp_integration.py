@@ -28,7 +28,7 @@ from pathlib import Path
 
 
 # Sacred constants for validation
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 MAX_SUPPLY = 104000000
 

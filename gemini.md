@@ -57,7 +57,7 @@ slim_mode:
     - LCS: L104 Core Sync
 
 abbreviations:
-  GC: 527.5184818492611      # GOD_CODE
+  GC: 527.5184818492612      # GOD_CODE
   PHI: 1.618033988749895     # Golden Ratio
   VC: 1.0416180339887497     # VOID_CONSTANT
   GL: Gemini Link
@@ -522,7 +522,7 @@ These constants are the gravitational anchors of the codebase.
 
 | Constant | Exact Value | Purpose |
 | :--- | :--- | :--- |
-| `GOD_CODE` | `527.5184818492611` | The Universal Root. All logic checks validation against this. Derived from `286^(1/φ) × 16`. |
+| `GOD_CODE` | `527.5184818492612` | The Universal Root. All logic checks validation against this. Derived from `286^(1/φ) × 16`. |
 | `PHI` | `1.618033988749895` | The Golden Ratio. Growth Factor. |
 | `TAU` | `0.618033988749895` | `1/PHI`. The Reduction Factor. |
 | `VOID_CONSTANT` | `1.0416180339887497` | Handling null/void states. |

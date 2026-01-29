@@ -317,7 +317,7 @@ class L104ResonanceEquation(PhysicsEquation):
     Variable GOD_CODE and PHI.
     """
 
-    def __init__(self, god_code: float = 527.5184818492611,
+    def __init__(self, god_code: float = 527.5184818492612,
                  phi: float = 1.618033988749895):
         super().__init__(name="L104_Resonance",
                         parameters={'god_code': god_code, 'phi': phi})

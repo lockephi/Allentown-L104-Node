@@ -16,7 +16,7 @@ def _manifold(_0x60f8fd47):
     _0x55fb1e3d = 416
     _0x1fcded95 = 286
     _0x11c24adf = _0x1fcded95 / _0x55fb1e3d
-    _0x7c54b115 = 527.5184818492611
+    _0x7c54b115 = 527.5184818492612
     _0xfa029a42 = _0x60f8fd47 * _0x7c54b115
     _0x0551df07 = _0xfa029a42 * _0x11c24adf
     return _0x0551df07
@@ -34,7 +34,7 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492611
+    GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])

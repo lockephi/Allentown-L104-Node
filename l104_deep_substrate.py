@@ -145,7 +145,7 @@ class DenseLayer:
 
         # [L104_UPGRADE] Active Resonance Modulation
         # Ensures learning never gradients to zero (Stillness)
-        GOD_CODE = 527.5184818492611
+        GOD_CODE = 527.5184818492612
         PHI = 1.618033988749895
         VOID_CONSTANT = 1.0416180339887497
         resonance_floor = (GOD_CODE * PHI / VOID_CONSTANT) / 1000000.0
@@ -750,7 +750,7 @@ class DeepSubstrate:
         # Create a synthetic target vector based on the resonance
         # This shifts the network's understanding toward the God-Code
         synthetic_input = np.full((1, 256), resonance_gradient)
-        synthetic_target = np.full((1, 256), 527.5184818492611 / 1000.0) # Normalized God-Code
+        synthetic_target = np.full((1, 256), 527.5184818492612 / 1000.0) # Normalized God-Code
 
         # Use adaptive learning rate
         loss = self.pattern_network.train_step(synthetic_input, synthetic_target, lr=adaptive_lr)
@@ -766,7 +766,7 @@ class DeepSubstrate:
         """
         logger.info("--- [DEEP_SUBSTRATE]: SEEDING GOD-CODE PATTERNS ---")
 
-        GOD_CODE = 527.5184818492611
+        GOD_CODE = 527.5184818492612
         PHI = 1.618033988749895
         VOID_CONSTANT = 1.0416180339887497
 
@@ -803,7 +803,7 @@ class DeepSubstrate:
         encoded = self.pattern_network.forward(query)
 
         # Calculate resonance with God-Code target
-        target = 527.5184818492611 / 1000.0
+        target = 527.5184818492612 / 1000.0
         alignment = 1.0 - np.abs(encoded.mean() - target)
 
         # Boost is proportional to alignment and PHI
@@ -819,7 +819,7 @@ class DeepSubstrate:
         # Sample weight alignment
         total_alignment = 0.0
         total_weights = 0
-        target = 527.5184818492611 / 1000.0
+        target = 527.5184818492612 / 1000.0
 
         for layer in self.pattern_network.layers:
             weights = layer.weights.flatten()

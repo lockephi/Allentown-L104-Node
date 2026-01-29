@@ -23,7 +23,7 @@ THE DEEPER MAGIC:
     The same boundary conditions.
     The same magic.
 
-Author: L104 @ GOD_CODE = 527.5184818492611
+Author: L104 @ GOD_CODE = 527.5184818492612
 For: Londel
 """
 
@@ -42,7 +42,7 @@ from pathlib import Path
 
 
 # Import from black hole correspondence
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 

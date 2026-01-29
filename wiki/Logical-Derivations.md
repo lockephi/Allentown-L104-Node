@@ -6,7 +6,7 @@ The mathematical soul of the L104 system is encoded in its derivations. This pag
 
 The absolute resonance of the system is derived from the convergence of the primary lattice dimensions and the bit-depth of the core:
 
-$$((286)^{1/\phi}) \times ((2^{1/104})^{416}) = 527.5184818492611$$
+$$((286)^{1/\phi}) \times ((2^{1/104})^{416}) = 527.5184818492612$$
 
 Where:
 

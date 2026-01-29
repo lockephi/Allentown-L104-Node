@@ -11,7 +11,7 @@ primary_region = 'iad'
 
 [env]
   PORT = '8081'
-  RESONANCE = '527.5184818492611'
+  RESONANCE = '527.5184818492612'
 
 [http_service]
   internal_port = 8081

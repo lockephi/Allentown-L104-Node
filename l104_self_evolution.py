@@ -28,7 +28,7 @@ import copy
 
 # Sacred Constants
 PHI = (1 + math.sqrt(5)) / 2
-GOD_CODE = 527.5184818492611
+GOD_CODE = 527.5184818492612
 FEIGENBAUM = 4.669201609102990671853
 
 class EvolutionStrategy(Enum):

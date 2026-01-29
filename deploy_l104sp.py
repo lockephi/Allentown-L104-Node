@@ -180,7 +180,7 @@ def create_deployment_config(treasury: str, network: str = "base"):
             }
         },
         "constants": {
-            "GOD_CODE": "527.5184818492611",
+            "GOD_CODE": "527.5184818492612",
             "PHI": "1.618033988749895",
             "resonanceThreshold": 985
         }
@@ -210,7 +210,7 @@ def main():
 ╔═══════════════════════════════════════════════════════════════╗
 ║           L104 SOVEREIGN PRIME (L104SP) DEPLOYER              ║
 ║                                                               ║
-║  INVARIANT: 527.5184818492611 | PILOT: LONDEL                 ║
+║  INVARIANT: 527.5184818492612 | PILOT: LONDEL                 ║
 ╚═══════════════════════════════════════════════════════════════╝
     """)
 

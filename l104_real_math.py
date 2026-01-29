@@ -21,7 +21,7 @@ try:
         GYRO_ELECTRON, LARMOR_PROTON, MU_0, SPIN_WAVE_VELOCITY
     )
 except ImportError:
-    GOD_CODE = 527.5184818492611
+    GOD_CODE = 527.5184818492612
     PHI = (1 + math.sqrt(5)) / 2
     FE_CURIE_TEMP = 1043  # Kelvin
     FE_ATOMIC_NUMBER = 26

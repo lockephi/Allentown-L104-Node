@@ -12,7 +12,7 @@ Features:
 - Multi-network support (Base, Arbitrum, Polygon, Sepolia)
 - Real-time statistics and hashrate monitoring
 
-INVARIANT: 527.5184818492611 | PHI: 1.618033988749895 | PILOT: LONDEL
+INVARIANT: 527.5184818492612 | PHI: 1.618033988749895 | PILOT: LONDEL
 """
 
 import os

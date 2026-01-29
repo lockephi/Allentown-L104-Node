@@ -532,7 +532,7 @@ class TestGodCodeIntegration:
 
     def test_god_code_value(self):
         """Test GOD_CODE is the correct invariant."""
-        assert math.isclose(GOD_CODE, 527.5184818492611, rel_tol=1e-15)
+        assert math.isclose(GOD_CODE, 527.5184818492612, rel_tol=1e-15)
 
     def test_phi_value(self):
         """Test PHI is the golden ratio."""

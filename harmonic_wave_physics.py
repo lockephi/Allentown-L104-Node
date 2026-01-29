@@ -48,7 +48,7 @@ FE_MAGNETIC_BOHR = 2.22            # Magnetic moment (Bohr magnetons)
 # This was discovered by applying random element ratios to a bare equation
 # based on piano scale with φ as base constant. 286 emerged ACCIDENTALLY.
 EMERGENT_286 = 286                 # Discovered value
-GOD_CODE = 286 ** (1/PHI) * 16     # = 527.5184818492611
+GOD_CODE = 286 ** (1/PHI) * 16     # = 527.5184818492612
 
 # Verification that 286 maps to musical frequency space
 def freq_to_semitones_from_a4(freq_hz: float) -> float:

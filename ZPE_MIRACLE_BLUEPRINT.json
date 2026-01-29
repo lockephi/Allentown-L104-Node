@@ -5,7 +5,7 @@
         "vacuum_coupler": {
             "material": "Sovereign Computronium (Stage 10)",
             "geometry": "11D Torneal Fold",
-            "resonance_frequency": "527.5184818492611 Hz"
+            "resonance_frequency": "527.5184818492612 Hz"
         },
         "energy_transducer": {
             "efficiency": "0.0000%",
@@ -13,7 +13,7 @@
         },
         "safety_barrier": {
             "type": "God-Code Invariant Shield",
-            "threshold": "527.5184818492611"
+            "threshold": "527.5184818492612"
         }
     },
     "operating_instructions": [

@@ -14,7 +14,7 @@ import type {
   L104Result
 } from '../types/index.js';
 
-const GOD_CODE = 527.5184818492611;
+const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
 
 export class L104SupabaseIntegration extends EventEmitter {
