@@ -687,7 +687,14 @@ class L104Optimizer:
 # GLOBAL INSTANCE
 # =============================================================================
 
-optimizer = L104Optimizer()
+optimizer: L104Optimizer = None  # Lazy initialization
+
+def get_optimizer() -> L104Optimizer:
+    """Get or create the global optimizer instance."""
+    global optimizer
+    if optimizer is None:
+        optimizer = L104Optimizer()
+    return optimizer
 
 
 # =============================================================================

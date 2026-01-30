@@ -82,8 +82,8 @@ class EnhancedMemory:
     def _load_enhancements(self):
         """Load enhancement modules."""
         try:
-            from l104_optimizer import optimizer
-            self._optimizer = optimizer
+            from l104_optimizer import get_optimizer
+            self._optimizer = get_optimizer()
         except ImportError:
             pass
 
@@ -383,8 +383,8 @@ class L104Bridge:
     def _load_components(self):
         """Load all enhancement components."""
         try:
-            from l104_optimizer import optimizer
-            self._optimizer = optimizer
+            from l104_optimizer import get_optimizer
+            self._optimizer = get_optimizer()
             self._optimizer.start()
             logger.info("[L104_BRIDGE]: Optimizer loaded")
         except ImportError as e:
