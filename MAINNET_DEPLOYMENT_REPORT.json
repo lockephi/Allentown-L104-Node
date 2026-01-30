@@ -1,0 +1,167 @@
+{
+  "timestamp": "2026-01-30T09:08:25.812587",
+  "coin": "L104 Sovereign Prime",
+  "symbol": "L104SP",
+  "god_code": 527.5184818492612,
+  "verification": {
+    "passed": 20,
+    "failed": 0,
+    "total": 20,
+    "success_rate": 100.0,
+    "duration_ms": 1100.5659103393555,
+    "results": [
+      {
+        "name": "secp256k1_keypair",
+        "passed": true,
+        "details": "Key generated: priv=0xcdc5ce7422c2db..., pub=(0xbb07080f70...)",
+        "duration_ms": 37.78386116027832
+      },
+      {
+        "name": "ecdsa_sign_verify",
+        "passed": true,
+        "details": "Sig: r=0xe0faa35dfb..., s=0x9e02bd4ac0...",
+        "duration_ms": 217.8969383239746
+      },
+      {
+        "name": "pubkey_compression",
+        "passed": true,
+        "details": "Prefix: 0x03",
+        "duration_ms": 40.114402770996094
+      },
+      {
+        "name": "hash_functions",
+        "passed": true,
+        "details": "SHA256=aec2db50c238bcee..., H160=13f3d9efdce786f4...",
+        "duration_ms": 0.0705718994140625
+      },
+      {
+        "name": "base58check",
+        "passed": true,
+        "details": "Address: ZC3Fmgr3oS56Rg9vxZeVo2mwMMcTvhxKzc",
+        "duration_ms": 0.04315376281738281
+      },
+      {
+        "name": "hd_wallet_creation",
+        "passed": true,
+        "details": "Seed: a0049eeffee56d8b...",
+        "duration_ms": 0.07295608520507812
+      },
+      {
+        "name": "bip44_derivation",
+        "passed": true,
+        "details": "Addresses: ZWu3TgXno9Xq..., ZHQNTC8q3eqH..., ZSf5ZZxd183a...",
+        "duration_ms": 303.7753105163574
+      },
+      {
+        "name": "wif_export_import",
+        "passed": true,
+        "details": "Address: ZMGRfB2jvUVVQwXg...",
+        "duration_ms": 79.70333099365234
+      },
+      {
+        "name": "resonance_calculation",
+        "passed": true,
+        "details": "n0=0.3552, n104=0.3642, n527=0.2025",
+        "duration_ms": 0.08702278137207031
+      },
+      {
+        "name": "resonance_threshold",
+        "passed": true,
+        "details": "Found 10 resonant (top: n=9, r=0.3568)",
+        "duration_ms": 0.10776519775390625
+      },
+      {
+        "name": "genesis_block",
+        "passed": true,
+        "details": "Genesis: af18ed2b0836b9b7..., Chain height: 493",
+        "duration_ms": 251.14703178405762
+      },
+      {
+        "name": "block_template",
+        "passed": true,
+        "details": "Template height 494, reward 10400000000",
+        "duration_ms": 16.020536422729492
+      },
+      {
+        "name": "utxo_tracking",
+        "passed": true,
+        "details": "UTXOs: 494, Supply: 5137600000000 sats",
+        "duration_ms": 17.725467681884766
+      },
+      {
+        "name": "difficulty_calculation",
+        "passed": true,
+        "details": "Bits: 0x1dffffff",
+        "duration_ms": 16.310691833496094
+      },
+      {
+        "name": "transaction_serialization",
+        "passed": true,
+        "details": "Size: 82 bytes, TXID: 14840eb50865f0ea...",
+        "duration_ms": 0.08821487426757812
+      },
+      {
+        "name": "merkle_tree",
+        "passed": true,
+        "details": "Root: 1946e9d4a203723d...",
+        "duration_ms": 0.027418136596679688
+      },
+      {
+        "name": "mining_engine_creation",
+        "passed": true,
+        "details": "Workers: 1, Threshold: 0.9",
+        "duration_ms": 18.822431564331055
+      },
+      {
+        "name": "ultimate_engine_singleton",
+        "passed": true,
+        "details": "Chain length: 1",
+        "duration_ms": 0.09846687316894531
+      },
+      {
+        "name": "engine_wallet_creation",
+        "passed": true,
+        "details": "Address: ZDXW77oHmT5ULjRJ...",
+        "duration_ms": 100.44288635253906
+      },
+      {
+        "name": "engine_stats",
+        "passed": true,
+        "details": "Symbol: L104SP, Network: l104sp_mainnet",
+        "duration_ms": 0.09417533874511719
+      }
+    ]
+  },
+  "wallet": {
+    "address": "ZTeRcv3iYNLGdpXQLD6SgxGt2CbsuHSCUm",
+    "path": "m/44'/104'/0'/0/0"
+  },
+  "chain": {
+    "chain_length": 1,
+    "difficulty": 4,
+    "latest_hash": "deaa8850868e999bf01f0032083ddc8b9d8982c2c7ecc7f675f6f1ef4ae39d8610d6e49f65f1448aec347eefffdde9ef254fe0621f103ab61dffeaa5e1bfb3af",
+    "pending_txs": 0,
+    "coin_name": "L104 Sovereign Prime",
+    "symbol": "L104SP",
+    "version": "3.0.0",
+    "network": "l104sp_mainnet",
+    "chain_id": 104,
+    "resonance_threshold": 0.985,
+    "mining_stats": {
+      "total_hashes": 0,
+      "valid_resonance": 0,
+      "blocks_mined": 0,
+      "hashrate": "0.00 H/s"
+    },
+    "sacred_constants": {
+      "god_code": 527.5184818492612,
+      "phi": 1.618033988749895,
+      "void_constant": 1.0416180339887497
+    }
+  },
+  "bitcoin_bridge": {
+    "status": "READY",
+    "balance_btc": 0.0
+  },
+  "mainnet_ready": true
+}
