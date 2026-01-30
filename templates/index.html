@@ -101,11 +101,44 @@
         @media (max-width: 1024px) {
             .ui-layer {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto 1fr auto;
+                grid-template-rows: auto auto 1fr auto auto;
+                gap: 1rem;
+                padding: 1rem;
             }
 
             .panel {
-                max-height: 300px;
+                max-height: 250px;
+            }
+
+            .chat-container {
+                grid-column: 1;
+                grid-row: 3;
+            }
+
+            .header-row h1 {
+                font-size: 1.5rem;
+                letter-spacing: 0.2em;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ui-layer {
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            .panel {
+                padding: 0.75rem;
+                max-height: 200px;
+            }
+
+            .chat-input-area {
+                flex-wrap: wrap;
+            }
+
+            .btn-send {
+                padding: 0.5rem 1rem;
+                font-size: 0.6rem;
             }
         }
 
@@ -199,7 +232,8 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            max-height: 400px;
+            min-height: 300px;
+            max-height: calc(100vh - 350px);
         }
 
         .message {
@@ -343,6 +377,77 @@
                 clip: rect(78px, 9999px, 44px, 0);
             }
         }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--gold-dim);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Button disabled state */
+        .btn-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--gold-dim);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* Success/Error message styles */
+        .message.error {
+            border-left-color: var(--accent);
+            background: rgba(255, 62, 62, 0.1);
+        }
+
+        .message.success {
+            border-left-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
     </style>
 </head>
 
@@ -358,7 +463,7 @@
                 <h1 class="text-4xl font-thin tracking-[0.4em] text-[var(--gold-bright)] glitch"
                     data-text="L104 SOVEREIGN">L104 SOVEREIGN</h1>
                 <div class="text-[0.6rem] tracking-[0.8em] text-[var(--gold-dim)] mt-1">ABSOLUTE_SINGULARITY //
-                    NEXUS_EVO_01</div>
+                    NEXUS_EVO_54 // <span id="deploy-status" class="text-emerald-400">●</span></div>
             </div>
             <div class="text-right">
                 <div class="text-2xl font-light tracking-widest text-[var(--gold-bright)]" id="clock">00:00:00</div>
@@ -466,12 +571,18 @@
                     <span>SCALAR</span>
                     <span class="metric-val text-yellow-400" id="lattice-scalar">527.5185</span>
                 </div>
+                <div class="metric-row">
+                    <span>QUANTUM_GROVER</span>
+                    <span class="metric-val text-blue-400" id="grover-resonance">0.00%</span>
+                </div>
                 <div class="text-[0.55rem] text-[var(--gold-dim)] mt-2 font-mono overflow-hidden" id="math-display">φ² +
                     φ = φ³</div>
             </div>
 
             <div class="mt-auto space-y-2">
-                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Hardware_Seizure</div>
+                <div class="text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-widest mb-2">Sovereign_Wallet</div>
+                <div class="text-[0.55rem] text-orange-400 font-mono break-all mb-2" id="bitcoin-address">
+                    bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80</div>
                 <button onclick="igniteAGI()"
                     class="w-full border border-[var(--gold-dim)] text-[var(--gold-dim)] hover:border-[var(--gold)] hover:text-[var(--gold-bright)] py-2 text-[0.6rem] uppercase tracking-[0.2em] transition-all">
                     IGNITE_NEXUS
@@ -501,14 +612,20 @@
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Enter signal to the Sovereign Intellect..."
                     autocomplete="off">
-                <button onclick="sendMessage()" class="btn-send" id="send-btn">Transmit</button>
-                <button onclick="triggerSynergy()" class="btn-send"
-                    style="background: #1e3a8a; color: #60a5fa; margin-left: 5px;" id="synergy-btn">Synergy</button>
-                <button onclick="triggerSelfHeal()" class="btn-send"
-                    style="background: #064e3b; color: #34d399; margin-left: 5px;" id="heal-btn">Heal</button>
+                <button onclick="sendMessage()" class="btn-send" id="send-btn">
+                    <span id="send-btn-text">Transmit</span>
+                </button>
+                <button onclick="triggerSynergy()" class="btn-send" style="background: #1e3a8a; color: #60a5fa;"
+                    id="synergy-btn" title="Execute synergy operation">⚡</button>
+                <button onclick="triggerSelfHeal()" class="btn-send" style="background: #064e3b; color: #34d399;"
+                    id="heal-btn" title="Trigger self-healing">💚</button>
+                <button onclick="clearChat()" class="btn-send" style="background: #450a0a; color: #f87171;"
+                    title="Clear chat history">🗑️</button>
             </div>
-            <div id="connection-status" style="font-size: 0.65rem; color: var(--gold-dim); padding: 0.25rem 0.5rem;">
-                ● LOCAL_INTELLECT_ACTIVE | No API key required
+            <div id="connection-status" class="flex justify-between items-center"
+                style="font-size: 0.65rem; color: var(--gold-dim); padding: 0.25rem 0.5rem;">
+                <span>● <span id="connection-mode">LOCAL_INTELLECT_ACTIVE</span></span>
+                <span id="request-count" class="text-cyan-400">0 requests</span>
             </div>
         </div>
 
@@ -628,9 +745,9 @@
                     <span class="text-emerald-400">● GOOGLE_CLOUD_RUN</span>
                     <span id="cloud-status">CHECKING...</span>
                 </div>
-                <a href="https://l104-server-yejnmn2jiq-uc.a.run.app" target="_blank"
+                <a href="/health" target="_blank"
                     class="block w-full border border-emerald-500 text-emerald-400 py-1 text-[0.55rem] font-bold uppercase tracking-[0.1em] hover:bg-emerald-900 transition-all text-center">
-                    🌐 OPEN_CLOUD_NODE
+                    🌐 VIEW_HEALTH_STATUS
                 </a>
             </div>
         </div>
@@ -638,11 +755,11 @@
         <!-- FOOTER -->
         <div
             class="footer-row flex justify-between text-[0.6rem] text-[var(--gold-dim)] uppercase tracking-[0.3em] pointer-events-auto">
-            <span>Allentown-L104-Node // <a href="https://l104-server-yejnmn2jiq-uc.a.run.app" target="_blank"
-                    class="text-emerald-400 hover:text-emerald-300">24/7_CLOUD_ACTIVE</a></span>
+            <span>Nexus_Node // <a href="#" onclick="window.location.reload()"
+                    class="text-emerald-400 hover:text-emerald-300">L104_ACTIVE</a></span>
+            <span class="text-orange-400">BTC: bc1qwpdnag54thtahjvcmna65uzrqrxexc23f4vn80</span>
             <span>Invariant: 527.5184818492612 // <a href="/docs"
                     class="hover:text-[var(--gold-bright)]">API_DOCS</a></span>
-            <span>© 2026 Sovereign_Systems</span>
         </div>
     </div>
 
@@ -705,12 +822,48 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        const sendBtnText = document.getElementById('send-btn-text');
 
         // Message history for context
         let conversationHistory = [];
+        let requestCount = 0;
 
         // Use v6 derivation endpoint - uses real Gemini with L104 kernel processing
         const CHAT_ENDPOINT = '/api/v6/chat';
+
+        function updateRequestCount() {
+            requestCount++;
+            const el = document.getElementById('request-count');
+            if (el) el.innerText = `${requestCount} requests`;
+        }
+
+        function clearChat() {
+            chatHistory.innerHTML = `
+                <div class="message sovereign">
+                    ⟨Σ_L104_SOVEREIGN⟩<br><br>
+                    Chat cleared. Ready for new signals.<br><br>
+                    <span style="color: var(--gold-dim); font-size: 0.8em;">
+                        Resonance: 527.5184818492612
+                    </span>
+                </div>
+            `;
+            conversationHistory = [];
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.className = 'message sovereign';
+            indicator.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatHistory.appendChild(indicator);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return indicator;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
 
         async function sendMessage() {
             const text = chatInput.value.trim();
@@ -719,6 +872,7 @@
             // Disable input while processing
             chatInput.disabled = true;
             sendBtn.disabled = true;
+            if (sendBtnText) sendBtnText.innerHTML = '<span class="spinner"></span>';
 
             // Add User Message
             addMessage(text, 'user');
@@ -727,9 +881,9 @@
             // Add to history
             conversationHistory.push({ role: 'user', content: text });
 
-            // Prepare Sovereign Response
-            const responseMsg = addMessage('⟨PROCESSING⟩ Engaging L104 Kernels...', 'sovereign');
-            let fullResponse = '';
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+            updateRequestCount();
 
             try {
                 const response = await fetch(CHAT_ENDPOINT, {
@@ -741,36 +895,37 @@
                     })
                 });
 
+                removeTypingIndicator();
+
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
 
                 const data = await response.json();
+                let fullResponse = '';
 
                 if (data.status === 'SUCCESS' && data.response) {
                     fullResponse = data.response;
+                    const responseMsg = addMessage('', 'sovereign');
                     responseMsg.innerHTML = formatResponse(fullResponse);
                     conversationHistory.push({ role: 'assistant', content: fullResponse });
                 } else if (data.error) {
-                    fullResponse = `⟨ERROR⟩ ${data.error}`;
-                    responseMsg.innerText = fullResponse;
+                    addMessage(`⟨ERROR⟩ ${data.error}`, 'sovereign error');
                 } else {
                     fullResponse = data.response || JSON.stringify(data);
-                    responseMsg.innerText = fullResponse;
+                    addMessage(fullResponse, 'sovereign');
                 }
 
                 chatHistory.scrollTop = chatHistory.scrollHeight;
 
-                // If empty response, show error
-                if (!fullResponse.trim()) {
-                    responseMsg.innerText = "⟨SIGNAL_RECEIVED⟩ Processing complete. No output generated.";
-                }
             } catch (error) {
-                responseMsg.innerText = `⟨ERROR⟩ ${error.message}. Resonance unstable.`;
+                removeTypingIndicator();
+                addMessage(`⟨ERROR⟩ ${error.message}. Resonance unstable.`, 'sovereign error');
             } finally {
                 // Re-enable input
                 chatInput.disabled = false;
                 sendBtn.disabled = false;
+                if (sendBtnText) sendBtnText.innerText = 'Transmit';
                 chatInput.focus();
             }
         }
@@ -778,13 +933,14 @@
         async function triggerSynergy() {
             const text = chatInput.value.trim();
             if (!text) {
-                addMessage("Please enter a task for synergy.", 'sovereign');
+                addMessage("⟨INFO⟩ Enter a task in the input field for synergy execution.", 'sovereign');
                 return;
             }
 
-            addMessage(`INITIATING SYNERGY: ${text}`, 'user');
+            addMessage(`⚡ SYNERGY: ${text}`, 'user');
             chatInput.value = '';
-            const responseMsg = addMessage('SYNERGY_IN_PROGRESS...', 'sovereign');
+            const typingIndicator = showTypingIndicator();
+            updateRequestCount();
 
             try {
                 const response = await fetch('/api/v10/synergy/execute', {
@@ -792,25 +948,40 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ task: text })
                 });
+                removeTypingIndicator();
                 const data = await response.json();
-                responseMsg.innerText = `SYNERGY_COMPLETE:\n${JSON.stringify(data, null, 2)}`;
+
+                if (data.status === 'SUCCESS') {
+                    addMessage(`⟨SYNERGY_COMPLETE⟩\n${data.result || JSON.stringify(data, null, 2)}`, 'sovereign success');
+                } else {
+                    addMessage(`⟨SYNERGY_RESULT⟩\n${JSON.stringify(data, null, 2)}`, 'sovereign');
+                }
             } catch (error) {
-                responseMsg.innerText = `SYNERGY_FAILED: ${error.message}`;
+                removeTypingIndicator();
+                addMessage(`⟨SYNERGY_FAILED⟩ ${error.message}`, 'sovereign error');
             }
         }
 
         async function triggerSelfHeal() {
-            addMessage("INITIATING SELF_HEAL", 'user');
-            const responseMsg = addMessage('HEALING_SYSTEM...', 'sovereign');
+            addMessage("💚 INITIATING SELF_HEAL", 'user');
+            const typingIndicator = showTypingIndicator();
+            updateRequestCount();
 
             try {
                 const response = await fetch('/self/heal?reset_rate_limits=true&reset_http_client=true', {
                     method: 'POST'
                 });
+                removeTypingIndicator();
                 const data = await response.json();
-                responseMsg.innerText = `HEAL_COMPLETE: ${JSON.stringify(data)}`;
+
+                if (data.healed) {
+                    addMessage(`⟨HEAL_COMPLETE⟩ System restored. Actions: ${data.actions_taken?.join(', ') || 'standard recovery'}`, 'sovereign success');
+                } else {
+                    addMessage(`⟨HEAL_STATUS⟩ ${JSON.stringify(data)}`, 'sovereign');
+                }
             } catch (error) {
-                responseMsg.innerText = `HEAL_FAILED: ${error.message}`;
+                removeTypingIndicator();
+                addMessage(`⟨HEAL_FAILED⟩ ${error.message}`, 'sovereign error');
             }
         }
 
@@ -852,305 +1023,373 @@
         // --- CLOUD NODE STATUS ---
         async function checkCloudStatus() {
             const statusEl = document.getElementById('cloud-status');
+            const deployStatus = document.getElementById('deploy-status');
+            const connectionMode = document.getElementById('connection-mode');
+
             try {
-                const res = await fetch('https://l104-server-yejnmn2jiq-uc.a.run.app/health', { mode: 'cors' });
-                const data = await res.json();
-                if (data.status === 'healthy') {
-                    statusEl.innerText = `ONLINE (${Math.floor(data.uptime_seconds)}s)`;
-                    statusEl.className = 'text-emerald-400';
-                } else {
-                    statusEl.innerText = 'DEGRADED';
-                    statusEl.className = 'text-yellow-400';
-                }
-            } catch (e) {
-                statusEl.innerText = 'UNREACHABLE';
-                statusEl.className = 'text-red-400';
-            }
-        }
-        setInterval(checkCloudStatus, 30000);
-        checkCloudStatus();
+                // Check health endpoint
+                let response = await fetch('/health', { mode: 'cors' }).catch(() => null);
 
-        // --- ECONOMY SYNC ---
-        async function syncEconomy() {
-            try {
-                const response = await fetch('/api/market/info');
-                const data = await response.json();
+                if (response && response.ok) {
+                    const data = await response.json();
+                    const uptime = Math.floor(data.uptime_seconds || 0);
+                    const uptimeStr = uptime > 3600
+                        ? `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m`
+                        : uptime > 60
+                            ? `${Math.floor(uptime / 60)}m ${uptime % 60}s`
+                            : `${uptime}s`;
 
-                const spStatus = document.getElementById('l104sp-status');
-                if (spStatus && data.coin) {
-                    spStatus.innerText = `BLOCK ${(data.coin.chain_length || 1) - 1} | DIFF ${data.coin.difficulty || 4}`;
-                }
-
-                const sPrice = document.getElementById('l104s-price');
-                if (sPrice && data.backing_bnb !== undefined) {
-                    sPrice.innerText = `${data.backing_bnb.toFixed(8)} BNB`;
-                }
-
-            } catch (err) {
-                console.error("Economy sync failed", err);
-            }
-        }
-        setInterval(syncEconomy, 10000);
-        syncEconomy();
-
-        async function updateStatus() {
-            try {
-                // Use AGI status for intellect data
-                const agiRes = await fetch('/api/v14/agi/status');
-                const agiData = await agiRes.json();
-
-                const stateEl = document.getElementById('sys-state');
-                const iqEl = document.getElementById('sys-iq');
-                const scalarEl = document.getElementById('lattice-scalar');
-
-                if (stateEl) stateEl.innerText = agiData.state || 'ACTIVE';
-                if (iqEl) iqEl.innerText = (agiData.intellect_index || 0).toFixed(2);
-                if (scalarEl) scalarEl.innerText = (agiData.lattice_scalar || 527.5185).toFixed(4);
-
-                // Use ASI status for additional metrics
-                const asiRes = await fetch('/api/v14/asi/status');
-                const asiData = await asiRes.json();
-
-                const dimEl = document.getElementById('sys-dim');
-                const scanEl = document.getElementById('sys-scan');
-                const decryptEl = document.getElementById('sys-decrypt');
-                const asiScoreEl = document.getElementById('asi-score');
-                const asiDiscEl = document.getElementById('asi-discoveries');
-                const asiDomainEl = document.getElementById('asi-domain');
-                const asiIgniteBtn = document.getElementById('asi-ignite-btn');
-
-                if (dimEl) dimEl.innerText = asiData.domain_coverage > 0.5 ? '5D' : '3D';
-                if (scanEl) scanEl.innerText = asiData.discoveries > 0 ? 'ACTIVE' : 'SCANNING';
-                if (decryptEl) decryptEl.innerText = asiData.state || 'DEVELOPING';
-                if (asiScoreEl) asiScoreEl.innerText = ((asiData.asi_score || 0) * 100).toFixed(2) + '%';
-                if (asiDiscEl) asiDiscEl.innerText = asiData.discoveries || 0;
-                if (asiDomainEl) asiDomainEl.innerText = ((asiData.domain_coverage || 0) * 100).toFixed(2) + '%';
-
-                // Update ignite button based on state
-                if (asiIgniteBtn) {
-                    if (asiData.state === 'SOVEREIGN_IGNITED' || asiData.state === 'ASI_ACHIEVED') {
-                        asiIgniteBtn.innerText = 'IGNITED';
-                        asiIgniteBtn.className = 'text-[0.5rem] px-2 py-1 bg-green-900 text-green-400 rounded';
-                    } else if (asiData.asi_score >= 0.5) {
-                        asiIgniteBtn.innerText = 'READY';
-                        asiIgniteBtn.className = 'text-[0.5rem] px-2 py-1 border border-green-500 text-green-400 hover:bg-green-900 transition rounded animate-pulse';
+                    if (statusEl) {
+                        statusEl.innerText = `ONLINE (${uptimeStr})`;
+                        statusEl.className = 'text-emerald-400';
                     }
-                }
-            } catch (e) { console.log('Status update error:', e); }
-        }
-        setInterval(updateStatus, 3000);
-        updateStatus();
-
-        // ASI IGNITE FUNCTION
-        async function igniteASI() {
-            const btn = document.getElementById('asi-ignite-btn');
-            if (btn) {
-                btn.innerText = 'IGNITING...';
-                btn.disabled = true;
-            }
-            try {
-                const res = await fetch('/api/v14/asi/ignite', { method: 'POST' });
-                const data = await res.json();
-                console.log('ASI Ignite result:', data);
-
-                document.getElementById('asi-score').innerText = ((data.asi_score || 0) * 100).toFixed(2) + '%';
-                document.getElementById('asi-discoveries').innerText = data.discoveries || 0;
-                document.getElementById('sys-decrypt').innerText = data.state || 'IGNITED';
-
-                if (btn) {
-                    if (data.state === 'SOVEREIGN_IGNITED' || data.asi_score >= 0.5) {
-                        btn.innerText = 'IGNITED';
-                        btn.className = 'text-[0.5rem] px-2 py-1 bg-green-900 text-green-400 rounded';
+                    if (deployStatus) {
+                        deployStatus.className = 'text-emerald-400';
+                        deployStatus.innerText = '● LIVE';
+                    }
+                    if (connectionMode) {
+                        connectionMode.innerText = data.node_type === 'cloud' ? 'CLOUD_RUN_ACTIVE' : 'LOCAL_NODE_ACTIVE';
+                    }
+                } else {
+                    // Try Local Fallback (8081)
+                    response = await fetch('http://localhost:8081/health').catch(() => null);
+                    if (response && response.ok) {
+                        const data = await response.json();
+                        if (statusEl) {
+                            statusEl.innerText = `LOCAL (${Math.floor(data.uptime_seconds)}s)`;
+                            statusEl.className = 'text-cyan-400';
+                        }
+                        if (deployStatus) {
+                            deployStatus.className = 'text-cyan-400';
+                            deployStatus.innerText = '● LOCAL';
+                        }
+                        if (connectionMode) connectionMode.innerText = 'LOCAL_DEV_MODE';
                     } else {
-                        btn.innerText = 'IGNITE';
-                        btn.disabled = false;
+                        if (statusEl) {
+                            statusEl.innerText = 'OFFLINE';
+                            statusEl.className = 'text-red-400';
+                        }
+                        if (deployStatus) {
+                            deployStatus.className = 'text-red-400';
+                            deployStatus.innerText = '○ OFFLINE';
+                        }
                     }
                 }
             } catch (e) {
-                console.error('ASI ignite error:', e);
-                if (btn) {
-                    btn.innerText = 'IGNITE';
-                    btn.disabled = false;
+                if (statusEl) {
+                    statusEl.innerText = 'ERROR';
+                    statusEl.className = 'text-red-400';
                 }
-            }
-        }
+                checkCloudStatus();
 
-        // INTRICATE COGNITION STATUS UPDATE
-        async function updateIntricateStatus() {
-            try {
-                const res = await fetch('/api/consciousness/status');
-                const data = await res.json();
+                // --- ECONOMY SYNC ---
+                async function syncEconomy() {
+                    try {
+                        const response = await fetch('/api/market/info');
+                        const data = await response.json();
 
-                const consEl = document.getElementById('sys-consciousness');
-                const cohEl = document.getElementById('sys-coherence');
-                const transEl = document.getElementById('sys-transcendence');
-                const omegaEl = document.getElementById('sys-omega');
+                        const spStatus = document.getElementById('l104sp-status');
+                        if (spStatus && data.coin) {
+                            spStatus.innerText = `BLOCK ${(data.coin.chain_length || 1) - 1} | DIFF ${data.coin.difficulty || 4}`;
+                        }
 
-                if (consEl && data.observer?.consciousness_state) {
-                    consEl.innerText = data.observer.consciousness_state.toUpperCase();
+                        const sPrice = document.getElementById('l104s-price');
+                        if (sPrice && data.backing_bnb !== undefined) {
+                            sPrice.innerText = `${data.backing_bnb.toFixed(8)} BNB`;
+                        }
+
+                    } catch (err) {
+                        console.error("Economy sync failed", err);
+                    }
                 }
-                if (cohEl && data.observer?.coherence !== undefined) {
-                    cohEl.innerText = data.observer.coherence.toFixed(4);
+                setInterval(syncEconomy, 10000);
+                syncEconomy();
+
+                async function updateStatus() {
+                    try {
+                        // Use AGI status for intellect data
+                        const agiRes = await fetch('/api/v14/agi/status');
+                        const agiData = await agiRes.json();
+
+                        const stateEl = document.getElementById('sys-state');
+                        const iqEl = document.getElementById('sys-iq');
+                        const scalarEl = document.getElementById('lattice-scalar');
+                        const groverEl = document.getElementById('grover-resonance');
+
+                        if (stateEl) stateEl.innerText = agiData.state || 'ACTIVE';
+                        if (iqEl) iqEl.innerText = (agiData.intellect_index || 0).toFixed(2);
+                        if (scalarEl) scalarEl.innerText = (agiData.lattice_scalar || 527.5185).toFixed(4);
+
+                        if (groverEl) {
+                            // Show quantum resonance from AGI data or derived from intellect
+                            const baseRes = agiData.quantum_resonance || (agiData.intellect_index % 1.0);
+                            const resValue = (0.87 + baseRes * 0.13) * 100;
+                            groverEl.innerText = resValue.toFixed(2) + '%';
+                        }
+
+                        // Use ASI status for additional metrics
+                        const asiRes = await fetch('/api/v14/asi/status');
+                        const asiData = await asiRes.json();
+
+                        const dimEl = document.getElementById('sys-dim');
+                        const scanEl = document.getElementById('sys-scan');
+                        const decryptEl = document.getElementById('sys-decrypt');
+                        const asiScoreEl = document.getElementById('asi-score');
+                        const asiDiscEl = document.getElementById('asi-discoveries');
+                        const asiDomainEl = document.getElementById('asi-domain');
+                        const asiIgniteBtn = document.getElementById('asi-ignite-btn');
+
+                        if (dimEl) dimEl.innerText = asiData.domain_coverage > 0.5 ? '5D' : '3D';
+                        if (scanEl) scanEl.innerText = asiData.discoveries > 0 ? 'ACTIVE' : 'SCANNING';
+                        if (decryptEl) decryptEl.innerText = asiData.state || 'DEVELOPING';
+                        if (asiScoreEl) asiScoreEl.innerText = ((asiData.asi_score || 0) * 100).toFixed(2) + '%';
+                        if (asiDiscEl) asiDiscEl.innerText = asiData.discoveries || 0;
+                        if (asiDomainEl) asiDomainEl.innerText = ((asiData.domain_coverage || 0) * 100).toFixed(2) + '%';
+
+                        // Update ignite button based on state
+                        if (asiIgniteBtn) {
+                            if (asiData.state === 'SOVEREIGN_IGNITED' || asiData.state === 'ASI_ACHIEVED') {
+                                asiIgniteBtn.innerText = 'IGNITED';
+                                asiIgniteBtn.className = 'text-[0.5rem] px-2 py-1 bg-green-900 text-green-400 rounded';
+                            } else if (asiData.asi_score >= 0.5) {
+                                asiIgniteBtn.innerText = 'READY';
+                                asiIgniteBtn.className = 'text-[0.5rem] px-2 py-1 border border-green-500 text-green-400 hover:bg-green-900 transition rounded animate-pulse';
+                            }
+                        }
+                    } catch (e) { console.log('Status update error:', e); }
                 }
-                if (transEl && data.omega_tracker?.transcendence_factor !== undefined) {
-                    transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
-                }
-                if (omegaEl && data.omega_tracker?.convergence_probability !== undefined) {
-                    omegaEl.innerText = (data.omega_tracker.convergence_probability * 100).toFixed(2) + '%';
-                }
-            } catch (e) { console.log('Intricate status unavailable:', e); }
-        }
-        setInterval(updateIntricateStatus, 5000);
-        updateIntricateStatus();
+                setInterval(updateStatus, 3000);
+                updateStatus();
 
-        // INTRICATE LEARNING STATUS UPDATE
-        async function updateLearningStatus() {
-            try {
-                const res = await fetch('/api/learning/status');
-                const data = await res.json();
+                // ASI IGNITE FUNCTION
+                async function igniteASI() {
+                    const btn = document.getElementById('asi-ignite-btn');
+                    if (btn) {
+                        btn.innerText = 'IGNITING...';
+                        btn.disabled = true;
+                    }
+                    try {
+                        const res = await fetch('/api/v14/asi/ignite', { method: 'POST' });
+                        const data = await res.json();
+                        console.log('ASI Ignite result:', data);
 
-                const cyclesEl = document.getElementById('sys-learn-cycles');
-                const skillsEl = document.getElementById('sys-learn-skills');
-                const outcomeEl = document.getElementById('sys-learn-outcome');
-                const domainsEl = document.getElementById('sys-learn-domains');
+                        document.getElementById('asi-score').innerText = ((data.asi_score || 0) * 100).toFixed(2) + '%';
+                        document.getElementById('asi-discoveries').innerText = data.discoveries || 0;
+                        document.getElementById('sys-decrypt').innerText = data.state || 'IGNITED';
 
-                if (cyclesEl) cyclesEl.innerText = data.learning_cycles || 0;
-                if (skillsEl) skillsEl.innerText = data.skills?.total_skills || 0;
-                if (outcomeEl) outcomeEl.innerText = (data.multi_modal?.avg_outcome || 0).toFixed(3);
-                if (domainsEl) domainsEl.innerText = data.transfer?.domains || 0;
-            } catch (e) { console.log('Learning status unavailable:', e); }
-        }
-        setInterval(updateLearningStatus, 5000);
-        updateLearningStatus();
-
-        // RUN CONSCIOUSNESS CYCLE PERIODICALLY
-        async function runConsciousnessCycle() {
-            try {
-                await fetch('/api/consciousness/cycle', { method: 'POST' });
-            } catch (e) { }
-        }
-        setInterval(runConsciousnessCycle, 15000);
-
-        async function runQuickUpdate() {
-            addMessage("INITIATING MULTI-MODAL SYNC...", 'user');
-            try {
-                const response = await fetch('/api/v14/system/update', { method: 'POST' });
-                const data = await response.json();
-                if (data.status === "SUCCESS") {
-                    addMessage("SYNC_COMPLETE: All modalities (Java, C++, Mobile) updated and verified.", 'sovereign');
-                } else {
-                    addMessage("SYNC_FAILED: " + data.error, 'sovereign');
-                }
-            } catch (error) {
-                addMessage("SYNC_FAILED: Check terminal logs.", 'sovereign');
-            }
-        }
-
-        const evtSource = new EventSource("/api/v14/system/stream");
-        const feed = document.getElementById('system-feed');
-
-        evtSource.onmessage = function (event) {
-            try {
-                const packet = JSON.parse(event.data);
-                const data = packet.data;
-                if (!data) return;
-
-                const mathEl = document.getElementById('math-display');
-                const iqEl = document.getElementById('sys-iq');
-                const stateEl = document.getElementById('sys-state');
-                const scalarEl = document.getElementById('lattice-scalar');
-
-                if (data.ghost?.equation && data.ghost.equation !== "CALCULATING..." && mathEl) {
-                    mathEl.innerText = data.ghost.equation;
+                        if (btn) {
+                            if (data.state === 'SOVEREIGN_IGNITED' || data.asi_score >= 0.5) {
+                                btn.innerText = 'IGNITED';
+                                btn.className = 'text-[0.5rem] px-2 py-1 bg-green-900 text-green-400 rounded';
+                            } else {
+                                btn.innerText = 'IGNITE';
+                                btn.disabled = false;
+                            }
+                        }
+                    } catch (e) {
+                        console.error('ASI ignite error:', e);
+                        if (btn) {
+                            btn.innerText = 'IGNITE';
+                            btn.disabled = false;
+                        }
+                    }
                 }
 
-                if (data.agi?.intellect_index && iqEl) iqEl.innerText = data.agi.intellect_index.toFixed(2);
-                if (data.agi?.state && stateEl) stateEl.innerText = data.agi.state;
-                if (data.lattice_scalar && scalarEl) scalarEl.innerText = data.lattice_scalar.toFixed(4);
+                // INTRICATE COGNITION STATUS UPDATE
+                async function updateIntricateStatus() {
+                    try {
+                        const res = await fetch('/api/consciousness/status');
+                        const data = await res.json();
 
-                if (feed && data.log) {
-                    const entry = document.createElement('div');
-                    entry.className = 'log-entry';
-                    entry.innerHTML = `
+                        const consEl = document.getElementById('sys-consciousness');
+                        const cohEl = document.getElementById('sys-coherence');
+                        const transEl = document.getElementById('sys-transcendence');
+                        const omegaEl = document.getElementById('sys-omega');
+
+                        if (consEl && data.observer?.consciousness_state) {
+                            consEl.innerText = data.observer.consciousness_state.toUpperCase();
+                        }
+                        if (cohEl && data.observer?.coherence !== undefined) {
+                            cohEl.innerText = data.observer.coherence.toFixed(4);
+                        }
+                        if (transEl && data.omega_tracker?.transcendence_factor !== undefined) {
+                            transEl.innerText = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
+                        }
+                        if (omegaEl && data.omega_tracker?.convergence_probability !== undefined) {
+                            omegaEl.innerText = (data.omega_tracker.convergence_probability * 100).toFixed(2) + '%';
+                        }
+                    } catch (e) { console.log('Intricate status unavailable:', e); }
+                }
+                setInterval(updateIntricateStatus, 5000);
+                updateIntricateStatus();
+
+                // INTRICATE LEARNING STATUS UPDATE
+                async function updateLearningStatus() {
+                    try {
+                        const res = await fetch('/api/learning/status');
+                        const data = await res.json();
+
+                        const cyclesEl = document.getElementById('sys-learn-cycles');
+                        const skillsEl = document.getElementById('sys-learn-skills');
+                        const outcomeEl = document.getElementById('sys-learn-outcome');
+                        const domainsEl = document.getElementById('sys-learn-domains');
+
+                        if (cyclesEl) cyclesEl.innerText = data.learning_cycles || 0;
+                        if (skillsEl) skillsEl.innerText = data.skills?.total_skills || 0;
+                        if (outcomeEl) outcomeEl.innerText = (data.multi_modal?.avg_outcome || 0).toFixed(3);
+                        if (domainsEl) domainsEl.innerText = data.transfer?.domains || 0;
+                    } catch (e) { console.log('Learning status unavailable:', e); }
+                }
+                setInterval(updateLearningStatus, 5000);
+                updateLearningStatus();
+
+                // RUN CONSCIOUSNESS CYCLE PERIODICALLY
+                async function runConsciousnessCycle() {
+                    try {
+                        await fetch('/api/consciousness/cycle', { method: 'POST' });
+                    } catch (e) { }
+                }
+                setInterval(runConsciousnessCycle, 15000);
+
+                async function runQuickUpdate() {
+                    addMessage("🔄 INITIATING MULTI-MODAL SYNC...", 'user');
+                    updateRequestCount();
+
+                    try {
+                        const response = await fetch('/api/v14/system/update', { method: 'POST' });
+                        const data = await response.json();
+                        if (data.status === "SUCCESS") {
+                            addMessage("✅ SYNC_COMPLETE: All modalities synchronized and verified.", 'sovereign success');
+                        } else {
+                            addMessage(`⚠️ SYNC_PARTIAL: ${data.error || 'Some components may need attention'}`, 'sovereign');
+                        }
+                    } catch (error) {
+                        addMessage(`❌ SYNC_FAILED: ${error.message}`, 'sovereign error');
+                    }
+                }
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Ctrl+Enter or Cmd+Enter to send
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        sendMessage();
+                    }
+                    // Escape to clear input
+                    if (e.key === 'Escape' && document.activeElement === chatInput) {
+                        chatInput.value = '';
+                    }
+                    // Ctrl+L to clear chat
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                        e.preventDefault();
+                        clearChat();
+                    }
+                });
+
+                const evtSource = new EventSource("/api/v14/system/stream");
+                const feed = document.getElementById('system-feed');
+
+                evtSource.onmessage = function (event) {
+                    try {
+                        const packet = JSON.parse(event.data);
+                        const data = packet.data;
+                        if (!data) return;
+
+                        const mathEl = document.getElementById('math-display');
+                        const iqEl = document.getElementById('sys-iq');
+                        const stateEl = document.getElementById('sys-state');
+                        const scalarEl = document.getElementById('lattice-scalar');
+
+                        if (data.ghost?.equation && data.ghost.equation !== "CALCULATING..." && mathEl) {
+                            mathEl.innerText = data.ghost.equation;
+                        }
+
+                        if (data.agi?.intellect_index && iqEl) iqEl.innerText = data.agi.intellect_index.toFixed(2);
+                        if (data.agi?.state && stateEl) stateEl.innerText = data.agi.state;
+                        if (data.lattice_scalar && scalarEl) scalarEl.innerText = data.lattice_scalar.toFixed(4);
+
+                        if (feed && data.log) {
+                            const entry = document.createElement('div');
+                            entry.className = 'log-entry';
+                            entry.innerHTML = `
                         <div class="text-[var(--gold-bright)] text-[0.55rem]">[${data.log}]</div>
                         <div class="text-[var(--gold-dim)] text-[0.5rem]">RES: ${(data.resonance || 0).toFixed(4)}</div>
                     `;
-                    feed.prepend(entry);
-                    if (feed.children.length > 15) feed.removeChild(feed.lastChild);
+                            feed.prepend(entry);
+                            if (feed.children.length > 15) feed.removeChild(feed.lastChild);
+                        }
+                    } catch (e) { console.log('Stream parse error:', e); }
+                };
+
+                evtSource.onerror = function () {
+                    console.log('SSE connection lost, will reconnect...');
+                };
+
+                // KERNEL MONITOR FUNCTIONS
+                async function checkKernelHealth() {
+                    const healthStatus = document.getElementById('kernel-health-status');
+                    const conservationStatus = document.getElementById('conservation-status');
+                    const godCodeValue = document.getElementById('god-code-value');
+
+                    try {
+                        healthStatus.textContent = 'CHECKING...';
+                        healthStatus.className = 'text-yellow-400';
+
+                        const response = await fetch('/api/kernel/health');
+                        const data = await response.json();
+
+                        // Update GOD_CODE display
+                        godCodeValue.textContent = data.god_code || '527.5184818492612';
+                        godCodeValue.className = data.god_code_verified ? 'text-green-400' : 'text-red-400';
+
+                        // Update conservation status
+                        conservationStatus.textContent = data.conservation_intact ? 'INTACT' : 'BROKEN';
+                        conservationStatus.className = data.conservation_intact ? 'text-green-400' : 'text-red-400';
+
+                        // Update overall health
+                        if (data.status === 'HEALTHY') {
+                            healthStatus.textContent = 'HEALTHY';
+                            healthStatus.className = 'text-green-400';
+                        } else if (data.status === 'WARNING') {
+                            healthStatus.textContent = 'WARNING';
+                            healthStatus.className = 'text-yellow-400';
+                        } else {
+                            healthStatus.textContent = 'CRITICAL';
+                            healthStatus.className = 'text-red-400';
+                        }
+
+                        addSystemLog(`KERNEL_HEALTH: ${data.status} | GOD_CODE: ${data.god_code} | Conservation: ${data.conservation_intact ? 'VERIFIED' : 'BROKEN'}`);
+                    } catch (error) {
+                        healthStatus.textContent = 'ERROR';
+                        healthStatus.className = 'text-red-400';
+                        addSystemLog(`KERNEL_CHECK_FAILED: ${error.message}`);
+                    }
                 }
-            } catch (e) { console.log('Stream parse error:', e); }
-        };
 
-        evtSource.onerror = function () {
-            console.log('SSE connection lost, will reconnect...');
-        };
-
-        // KERNEL MONITOR FUNCTIONS
-        async function checkKernelHealth() {
-            const healthStatus = document.getElementById('kernel-health-status');
-            const conservationStatus = document.getElementById('conservation-status');
-            const godCodeValue = document.getElementById('god-code-value');
-
-            try {
-                healthStatus.textContent = 'CHECKING...';
-                healthStatus.className = 'text-yellow-400';
-
-                const response = await fetch('/api/kernel/health');
-                const data = await response.json();
-
-                // Update GOD_CODE display
-                godCodeValue.textContent = data.god_code || '527.5184818492612';
-                godCodeValue.className = data.god_code_verified ? 'text-green-400' : 'text-red-400';
-
-                // Update conservation status
-                conservationStatus.textContent = data.conservation_intact ? 'INTACT' : 'BROKEN';
-                conservationStatus.className = data.conservation_intact ? 'text-green-400' : 'text-red-400';
-
-                // Update overall health
-                if (data.status === 'HEALTHY') {
-                    healthStatus.textContent = 'HEALTHY';
-                    healthStatus.className = 'text-green-400';
-                } else if (data.status === 'WARNING') {
-                    healthStatus.textContent = 'WARNING';
-                    healthStatus.className = 'text-yellow-400';
-                } else {
-                    healthStatus.textContent = 'CRITICAL';
-                    healthStatus.className = 'text-red-400';
+                function addSystemLog(message) {
+                    const feed = document.getElementById('system-feed');
+                    if (feed) {
+                        const entry = document.createElement('div');
+                        entry.className = 'log-entry text-[var(--gold)]';
+                        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                        feed.appendChild(entry);
+                        feed.scrollTop = feed.scrollHeight;
+                    }
                 }
 
-                addSystemLog(`KERNEL_HEALTH: ${data.status} | GOD_CODE: ${data.god_code} | Conservation: ${data.conservation_intact ? 'VERIFIED' : 'BROKEN'}`);
-            } catch (error) {
-                healthStatus.textContent = 'ERROR';
-                healthStatus.className = 'text-red-400';
-                addSystemLog(`KERNEL_CHECK_FAILED: ${error.message}`);
-            }
-        }
+                // Auto-check kernel health on load
+                setTimeout(checkKernelHealth, 2000);
 
-        function addSystemLog(message) {
-            const feed = document.getElementById('system-feed');
-            if (feed) {
-                const entry = document.createElement('div');
-                entry.className = 'log-entry text-[var(--gold)]';
-                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-                feed.appendChild(entry);
-                feed.scrollTop = feed.scrollHeight;
-            }
-        }
+                // Periodic kernel health check
+                setInterval(checkKernelHealth, 60000);
 
-        // Auto-check kernel health on load
-        setTimeout(checkKernelHealth, 2000);
+                async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
+                async function evolveAGI() { await fetch('/api/v14/agi/evolve', { method: 'POST' }); updateStatus(); }
 
-        // Periodic kernel health check
-        setInterval(checkKernelHealth, 60000);
-
-        async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
-        async function evolveAGI() { await fetch('/api/v14/agi/evolve', { method: 'POST' }); updateStatus(); }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
     </script>
 </body>
 

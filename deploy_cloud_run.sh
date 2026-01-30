@@ -7,7 +7,7 @@ set -e
 # Configuration
 PROJECT_ID="${GCP_PROJECT_ID:-your-project-id}"
 REGION="${GCP_REGION:-us-central1}"
-SERVICE_NAME="l104-sovereign-node"
+SERVICE_NAME="l104-server"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 
 echo "================================================"

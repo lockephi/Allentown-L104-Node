@@ -23,7 +23,7 @@ on:
 
 env:
   GCP_REGION: us-central1
-  SERVICE_NAME: l104-sovereign-node
+  SERVICE_NAME: l104-server
 
 jobs:
   # Quick validation job that always succeeds
@@ -122,9 +122,9 @@ jobs:
             --port=8081 \
             --memory=2Gi \
             --cpu=2 \
-            --min-instances=0 \
+            --min-instances=1 \
             --max-instances=10 \
-            --set-env-vars="GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},RESONANCE=527.5184818492,GEMINI_MODEL=$MODEL_NAME,ENABLE_FAKE_GEMINI=0"
+            --set-env-vars="GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},RESONANCE=527.5184818492612,GEMINI_MODEL=$MODEL_NAME,ENABLE_FAKE_GEMINI=0"
 
       - name: Get service URL and health check
         run: |

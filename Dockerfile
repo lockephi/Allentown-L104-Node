@@ -52,13 +52,14 @@ ENV MEMORY_DB_PATH=/data/memory.db
 ENV RAMNODE_DB_PATH=/data/ramnode.db
 ENV PYTHONUNBUFFERED=1
 ENV L104_SAGE_LIB=/app/l104_core_c/build/libl104_sage.so
+ENV PORT=8081
 
 # Expose ports: 8081 (API), 8080 (Bridge), 4160 (AI Core), 4161 (UI), 2404 (Socket)
 EXPOSE 8081 8080 4160 4161 2404
 
 # Health check - increased start-period to allow for initialization
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
-    CMD python -c "import httpx; import os; r=httpx.get(f'http://localhost:{os.environ.get(\"PORT\", \"8080\")}/health'); exit(0 if r.status_code==200 else 1)" || exit 1
+    CMD python -c "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)" || exit 1
 
-# Run the application - use PORT env variable for Cloud Run compatibility
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+# Run the application - use PORT env variable for Cloud Run compatibility (default: 8081)
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8081}"]

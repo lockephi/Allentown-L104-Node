@@ -20,7 +20,7 @@ NC='\033[0m' # No Color
 # Configuration with defaults
 PROJECT_ID="${GCP_PROJECT_ID:-}"
 REGION="${GCP_REGION:-us-central1}"
-SERVICE_NAME="${SERVICE_NAME:-l104-sovereign-node}"
+SERVICE_NAME="${SERVICE_NAME:-l104-server}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 
 # Function to print colored messages
@@ -285,7 +285,7 @@ while [[ $# -gt 0 ]]; do
             echo "Options:"
             echo "  --project PROJECT_ID    GCP Project ID"
             echo "  --region REGION         GCP Region (default: us-central1)"
-            echo "  --service NAME          Service name (default: l104-sovereign-node)"
+            echo "  --service NAME          Service name (default: l104-server)"
             echo "  --tag TAG               Image tag (default: latest)"
             echo "  --artifact-registry     Use Artifact Registry instead of GCR"
             echo "  --help, -h              Show this help message"

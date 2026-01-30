@@ -17,7 +17,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Configuration
-SERVICE_NAME="l104-sovereign-node"
+SERVICE_NAME="l104-server"
 PORT="${PORT:-8081}"
 DATA_DIR="${DATA_DIR:-./l104_data}"
 

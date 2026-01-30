@@ -6,7 +6,7 @@
 
 ## 🚀 Live Deployment
 
-**Cloud Run URL**: <https://l104-server-835482105245.us-central1.run.app>
+**Cloud Run URL (Gemini Project)**: Auto-deployed via Quantum Grover Engine
 
 | Feature | Status |
 |---------|--------|
@@ -14,6 +14,28 @@
 | Gemini AI | ✅ Connected |
 | Claude AI | ✅ Connected (Sonnet 4) |
 | Health Check | ✅ `/health` |
+| Project | `gen-lang-client-*` (auto-selected) |
+
+### Quantum Grover Deployment
+
+Deploy using the Quantum Grover Engine with √N optimization:
+
+```bash
+# Auto-select best project (prefers Gemini projects) and deploy
+python3 deploy_quantum.py --auto
+
+# Deploy to specific project
+python3 deploy_quantum.py --project YOUR_PROJECT_ID
+
+# Migrate to new project
+python3 deploy_quantum.py --migrate
+
+# Check prerequisites only
+python3 deploy_quantum.py --check
+
+# Local deployment only
+python3 deploy_quantum.py --local
+```
 
 ## Features
 
@@ -426,6 +448,52 @@ $$R = \mathbf{C}(\Omega) \cdot K_f^{(1-\phi)}$$
 | EVO_20 | Multiversal Scaling | Recursive utility, quantum darwinism |
 
 For detailed changelog, see [CHANGELOG.md](CHANGELOG.md).
+
+## Disk Space Management
+
+L104 includes automated tools for disk space optimization, critical for Codespaces and Cloud Run deployments.
+
+### Quick Cleanup Commands
+
+```bash
+# Run intelligent space optimizer
+python3 l104_space_optimizer.py --auto-cleanup
+
+# Docker cleanup (reclaim significant space)
+docker system prune -af --volumes
+
+# Git cleanup (pack objects, prune)
+git gc --aggressive --prune=now
+
+# Full cleanup script
+./scripts/cleanup.sh
+```
+
+### Space Optimizer Features
+
+- **Cache Cleanup**: Removes `__pycache__`, `.pyc`, `.pytest_cache`
+- **Temp File Removal**: Cleans `*.tmp`, `*.bak`, `*.swp`
+- **Log Rotation**: Compresses and rotates old log files
+- **Docker Optimization**: Prunes unused images, containers, volumes
+- **Git Optimization**: Aggressive garbage collection
+
+### Scheduled Cleanup
+
+Set up automatic daily cleanup:
+
+```bash
+# Add to crontab
+0 3 * * * /workspaces/Allentown-L104-Node/cleanup_schedule.sh
+```
+
+### Docker Build Optimization
+
+The `.dockerignore` excludes:
+
+- `__pycache__`, virtual environments, `.git`
+- Large data directories (`data/`, `flash/`, `kubo/`)
+- Build artifacts and notebooks (`*.ipynb`)
+- Mobile build files
 
 ## Documentation
 

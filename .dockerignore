@@ -80,3 +80,49 @@ finetune_*.json
 finetune_*.jsonl
 lattice_v2.db
 generated_media/
+
+# Additional space optimizations
+*.gz
+*.tar
+*.zip
+*.rar
+*.7z
+new_venv/
+.buildozer/
+archive/
+elixir/
+tests/
+test_*.py
+*_test.py
+*.spec
+*.bak
+*.tmp
+*.log
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+*.mo
+*.pot
+
+# Documentation (not needed in container)
+docs/
+*.tex
+*.pdf
+
+# Development files
+.editorconfig
+.pre-commit-config.yaml
+Makefile
+docker-compose*.yml
+!docker-compose.yml
+fly*.toml
+
+# Scripts (keep only essential)
+cleanup*.sh
+debug_*.py
+test_*.py
+benchmark*.py
+verify_*.py
+diagnose_*.py
