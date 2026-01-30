@@ -106,8 +106,8 @@ class SageCoreBridge:
         possible_paths = [
             base_dir / "l104_core_c" / "build" / "libl104_sage.so",
             base_dir / "l104_core_rust" / "target" / "release" / "libl104_sage_core.so",
-            "/usr/local/lib/libl104_sage.so",
-            "./libl104_sage.so",
+            Path("/usr/local/lib/libl104_sage.so"),
+            Path("./libl104_sage.so"),
             Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
         ]
 
