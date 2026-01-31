@@ -5,20 +5,40 @@
 """
 L104 Memory Persistence Hooks
 Auto-saves context and learnings to MCP memory for cross-session persistence.
+Integrates with l104_workflow_stabilizer for git persistence.
 """
 
 import json
 import hashlib
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 # Memory file location
-MEMORY_FILE = Path(__file__).parent / "memory.jsonl"
-SESSION_FILE = Path(__file__).parent / "current_session.json"
+MCP_DIR = Path(__file__).parent
+WORKSPACE = MCP_DIR.parent
+MEMORY_FILE = MCP_DIR / "memory.jsonl"
+SESSION_FILE = MCP_DIR / "current_session.json"
+
+# Link to workflow stabilizer
+sys.path.insert(0, str(WORKSPACE))
+try:
+    from l104_workflow_stabilizer import get_stabilizer, sync, checkpoint
+    STABILIZER_LINKED = True
+except ImportError:
+    STABILIZER_LINKED = False
+    def get_stabilizer(): return None
+    def sync(msg=None): return {}
+    def checkpoint(name=""): return ""
 
 class MemoryHooks:
     """Handles automatic memory persistence for Claude sessions."""
+
+    # Auto-commit threshold (number of file edits before auto-commit)
+    AUTO_COMMIT_THRESHOLD = 5
+    # Checkpoint interval (number of operations)
+    CHECKPOINT_INTERVAL = 10
 
     def __init__(self):
         self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -29,9 +49,20 @@ class MemoryHooks:
             "errors_solved": {},
             "patterns_learned": [],
             "tokens_used": 0,
-            "checkpoints": []
+            "checkpoints": [],
+            "operation_count": 0,
+            "stabilizer_linked": STABILIZER_LINKED
         }
         self._load_session()
+        
+        # Initialize stabilizer if available
+        if STABILIZER_LINKED:
+            try:
+                stabilizer = get_stabilizer()
+                stabilizer.check_and_sync()
+                print(f"[MEMORY_HOOKS] Stabilizer linked, session {self.session_id}")
+            except Exception as e:
+                print(f"[MEMORY_HOOKS] Stabilizer init warning: {e}")
 
     def _load_session(self):
         """Load existing session if resuming."""
@@ -72,6 +103,7 @@ class MemoryHooks:
             "lines_changed": lines_changed,
             "summary": changes[:200]
         })
+        self.session_data["operation_count"] = self.session_data.get("operation_count", 0) + 1
 
         self._append_to_memory({
             "type": "file_edit",
@@ -85,6 +117,21 @@ class MemoryHooks:
         })
 
         self._save_session()
+        
+        # Stabilizer integration: checkpoint every N operations
+        if STABILIZER_LINKED:
+            op_count = self.session_data["operation_count"]
+            if op_count % self.CHECKPOINT_INTERVAL == 0:
+                checkpoint(f"Auto-checkpoint after {op_count} operations")
+            
+            # Auto-commit after threshold file edits
+            edit_count = len(self.session_data["files_edited"])
+            if edit_count >= self.AUTO_COMMIT_THRESHOLD and edit_count % self.AUTO_COMMIT_THRESHOLD == 0:
+                try:
+                    result = sync(f"🔧 Auto-sync: {edit_count} files edited in session")
+                    print(f"[MEMORY_HOOKS] Auto-sync triggered: {result.get('success', False)}")
+                except Exception as e:
+                    print(f"[MEMORY_HOOKS] Auto-sync warning: {e}")
 
     def on_error_fix(self, error_type: str, error_msg: str, solution: str):
         """Called when an error is fixed."""
@@ -185,6 +232,18 @@ class MemoryHooks:
                 f"tokens_used: {self.session_data['tokens_used']}"
             ]
         })
+
+        # Final git sync before session ends
+        if STABILIZER_LINKED:
+            try:
+                files_count = len(self.session_data["files_edited"])
+                errors_count = len(self.session_data["errors_solved"])
+                if files_count > 0:
+                    msg = f"📦 Session end: {files_count} files, {errors_count} fixes, {duration}s"
+                    result = sync(msg)
+                    print(f"[MEMORY_HOOKS] Session-end sync: {result.get('success', False)}")
+            except Exception as e:
+                print(f"[MEMORY_HOOKS] Session-end sync warning: {e}")
 
         # Clear session file
         if SESSION_FILE.exists():
