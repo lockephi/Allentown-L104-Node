@@ -67,7 +67,7 @@ def test_coordinate_transformations():
             all_passed = False
 
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
-    return all_passed
+    assert all_passed, "Some coordinate transformation tests failed"
 
 
 def test_regime_identification():
@@ -114,7 +114,7 @@ def test_regime_identification():
             all_passed = False
 
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
-    return all_passed
+    assert all_passed, "Some regime identification tests failed"
 
 
 def test_conservation_laws():
@@ -150,7 +150,7 @@ def test_conservation_laws():
     all_passed = energy_test_1 and not energy_test_2 and momentum_test_1 and not momentum_test_2
 
     print(f"\n{'✓ ALL TESTS PASSED' if all_passed else '✗ SOME TESTS FAILED'}")
-    return all_passed
+    assert all_passed, "Some conservation law tests failed"
 
 
 def test_consistency_checking():
@@ -186,7 +186,7 @@ def test_consistency_checking():
     print(f"  F_spherical: ({F_spherical[0]:.2e}, {F_spherical[1]:.2e}, {F_spherical[2]:.2e})")
 
     print(f"\n{'✓ ALL TESTS PASSED' if consistent else '✗ SOME TESTS FAILED'}")
-    return consistent
+    assert consistent, "Force consistency check failed"
 
 
 def test_multi_scale_problems():
@@ -216,7 +216,7 @@ def test_multi_scale_problems():
     success = len(scales) >= 3 and len(regimes) >= 2
 
     print(f"\n{'✓ ALL TESTS PASSED' if success else '✗ SOME TESTS FAILED'}")
-    return success
+    assert success, f"Expected at least 3 scales and 2 regimes, got {len(scales)} scales and {len(regimes)} regimes"
 
 
 def test_specific_physics_problems():
@@ -278,7 +278,7 @@ def test_specific_physics_problems():
     success = regime_correct and regime_correct_2
 
     print(f"\n{'✓ ALL TESTS PASSED' if success else '✗ SOME TESTS FAILED'}")
-    return success
+    assert success, "Some specific physics problem tests failed"
 
 
 def test_jacobian_derivation():
@@ -305,7 +305,7 @@ def test_jacobian_derivation():
         success = False
 
     print(f"\n{'✓ TEST PASSED' if success else '✗ TEST FAILED'}")
-    return success
+    assert success, "Jacobian derivation test failed"
 
 
 def run_all_tests():
@@ -328,8 +328,8 @@ def run_all_tests():
 
     for name, test_func in tests:
         try:
-            result = test_func()
-            results.append((name, result))
+            test_func()
+            results.append((name, True))
         except Exception as e:
             print(f"\n✗ TEST FAILED: {name}")
             print(f"  Error: {e}")

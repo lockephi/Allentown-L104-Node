@@ -32,7 +32,6 @@ def test_neural_network_forward():
 
     print(f"  ✓ Forward pass works")
     print(f"  ✓ Output shape: {y.shape}")
-    return True
 
 
 def test_neural_network_backward():
@@ -56,8 +55,6 @@ def test_neural_network_backward():
     print(f"  ✓ Loss after: {loss_after:.6f}")
     print(f"  ✓ Loss decreased: {loss_after < loss_before}")
 
-    return True
-
 
 def test_derivative_computation():
     """Test finite difference derivatives."""
@@ -79,8 +76,6 @@ def test_derivative_computation():
     print(f"  ✓ First derivative computed")
     print(f"  ✓ Second derivative computed")
     print(f"  ✓ No NaN values")
-
-    return True
 
 
 def test_wave_equation():
@@ -114,8 +109,6 @@ def test_wave_equation():
     print(f"  ✓ Boundary conditions set")
     print(f"  ✓ Residual computable")
 
-    return True
-
 
 def test_heat_equation():
     """Test heat equation setup."""
@@ -131,8 +124,6 @@ def test_heat_equation():
 
     print(f"  ✓ Heat equation α={heat_eq.alpha}")
     print(f"  ✓ Step function initial condition")
-
-    return True
 
 
 def test_schrodinger_equation():
@@ -155,8 +146,6 @@ def test_schrodinger_equation():
     print(f"  ✓ Gaussian wavepacket initial condition")
     print(f"  ✓ Harmonic potential V(x)=0.5x²")
 
-    return True
-
 
 def test_l104_resonance():
     """Test L104 resonance equation."""
@@ -172,8 +161,6 @@ def test_l104_resonance():
     print(f"  ✓ L104 equation GOD_CODE={l104_eq.god_code:.3f}")
     print(f"  ✓ PHI={l104_eq.phi:.3f}")
     print(f"  ✓ Golden ratio pulse initial condition")
-
-    return True
 
 
 def test_pinn_training():
@@ -200,8 +187,6 @@ def test_pinn_training():
     print(f"  ✓ Loss after: {history['loss_total'][-1]:.6f}")
     print(f"  ✓ Loss decreased by {(1 - history['loss_total'][-1]/history['loss_total'][0])*100:.1f}%")
 
-    return True
-
 
 def test_pinn_prediction():
     """Test PINN prediction."""
@@ -226,8 +211,6 @@ def test_pinn_prediction():
     print(f"  ✓ Predictions generated")
     print(f"  ✓ Output shape: {u_pred.shape}")
     print(f"  ✓ Sample predictions: {u_pred[:3]}")
-
-    return True
 
 
 def test_variable_parameters():
@@ -255,8 +238,6 @@ def test_variable_parameters():
     for r in results:
         print(f"    c={r['c']}: loss={r['final_loss']:.6f}")
 
-    return True
-
 
 def test_god_code_variation():
     """Test L104 equation with different GOD_CODE values."""
@@ -282,8 +263,6 @@ def test_god_code_variation():
     print(f"  ✓ Trained with multiple GOD_CODE values")
     for r in results:
         print(f"    GOD={r['god_code']:.1f}: loss={r['final_loss']:.6f}")
-
-    return True
 
 
 def test_loss_components():
@@ -312,8 +291,6 @@ def test_loss_components():
     print(f"  ✓ Boundary loss: {history['loss_boundary'][-1]:.6f}")
     print(f"  ✓ Initial loss: {history['loss_initial'][-1]:.6f}")
 
-    return True
-
 
 def run_all_tests():
     """Run complete test suite."""
@@ -341,13 +318,9 @@ def run_all_tests():
 
     for test in tests:
         try:
-            result = test()
-            if result:
-                passed += 1
-                print(f"  ✓✓✓ PASS\n")
-            else:
-                failed += 1
-                print(f"  ✗✗✗ FAIL\n")
+            test()
+            passed += 1
+            print(f"  ✓✓✓ PASS\n")
         except Exception as e:
             failed += 1
             print(f"  ✗✗✗ FAIL: {e}\n")

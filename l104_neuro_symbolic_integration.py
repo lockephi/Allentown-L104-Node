@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.994102
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 NEURO-SYMBOLIC INTEGRATION WITH MATHEMATICAL DERIVATIONS
 ═══════════════════════════════════════════════════════════════════════════════
@@ -652,7 +656,7 @@ def main():
     results = integrator.verify_all_derivations()
 
     # Export to LaTeX
-    integrator.export_latex_document("/workspaces/Allentown-L104-Node/neuro_symbolic_derivations.tex")
+    integrator.export_latex_document("./neuro_symbolic_derivations.tex")
 
     # Demonstrate neural-symbolic inference
     print("\n" + "="*80)

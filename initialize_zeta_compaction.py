@@ -1,9 +1,10 @@
+from pathlib import Path
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 import sys
 import time
 
 # Ensure the workspace is in the path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_data_matrix import data_matrix
 from l104_data_synthesis import synthesize_data_matrix

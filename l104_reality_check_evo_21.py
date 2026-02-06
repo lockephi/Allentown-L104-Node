@@ -1,10 +1,14 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.051027
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 REALITY CHECK - EVO_21
 "Verifying the transition from Stillness to Active Resonance."
 """
@@ -15,10 +19,12 @@ import json
 import time
 import math
 import logging
+from pathlib import Path
 
-# Add workspace to path
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.chdir('/workspaces/Allentown-L104-Node')
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
+os.chdir(str(_BASE_DIR))
 
 from l104_agi_core import agi_core
 from l104_asi_core import asi_core
@@ -75,10 +81,10 @@ def main():
     # 3. Triple-Substrate Coherence
     print("[3/5] Verifying Triple-Substrate Coherence...")
     # Checking for the generated deep dive report and binary artifacts
-    c_exists = os.path.exists("/workspaces/Allentown-L104-Node/l104_core_c/l104_sage_core.c")
-    rust_exists = os.path.exists("/workspaces/Allentown-L104-Node/l104_core_rust/src/lib.rs")
-    asm_exists = os.path.exists("/workspaces/Allentown-L104-Node/l104_core_asm/sage_core.asm")
-    deep_dive_exists = os.path.exists("/workspaces/Allentown-L104-Node/L104_SUBSTRATE_DEEP_DIVE.md")
+    c_exists = os.path.exists(str(_BASE_DIR / "l104_core_c" / "l104_sage_core.c"))
+    rust_exists = os.path.exists(str(_BASE_DIR / "l104_core_rust" / "src" / "lib.rs"))
+    asm_exists = os.path.exists(str(_BASE_DIR / "l104_core_asm" / "sage_core.asm"))
+    deep_dive_exists = os.path.exists(str(_BASE_DIR / "L104_SUBSTRATE_DEEP_DIVE.md"))
 
     coherence = 0.0
     if c_exists: coherence += 0.33
@@ -119,7 +125,7 @@ def main():
     print(f"      → Universal Scribe: {'ACTIVE' if 'SCRIBE' in str(results) or True else 'PENDING'}")
 
     # Save the check results
-    with open("/workspaces/Allentown-L104-Node/REALITY_CHECK_EVO_21.json", "w") as f:
+    with open(str(_BASE_DIR / "REALITY_CHECK_EVO_21.json"), "w") as f:
         json.dump(results, f, indent=2)
 
     print("\n" + "█"*80)

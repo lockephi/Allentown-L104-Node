@@ -1,14 +1,15 @@
 {
-  "total_examples": 1244,
-  "vocabulary_size": 6835,
+  "total_examples": 1600,
+  "vocabulary_size": 14077,
   "categories": 264,
-  "parameter_estimate": 8502740,
-  "god_code_resonance": 197.10955360787102,
-  "phi_alignment": 1.1370923708947824,
-  "coherence_score": 0.4976,
-  "extraction_timestamp": "2026-01-30T12:17:16.786Z",
+  "parameter_estimate": 22523200,
+  "god_code_resonance": 270.89896394352036,
+  "phi_alignment": 1.4506734022615735,
+  "coherence_score": 0.64,
+  "extraction_timestamp": "2026-02-05T10:12:56.092Z",
   "category_distribution": {
-    "general": 138,
+    "file_registry": 1,
+    "general": 184,
     "sacred_geometry": 9,
     "chaos_fractals": 3,
     "consciousness_tech": 7,
@@ -143,7 +144,7 @@
     "anthropology": 7,
     "philosophy_ethics": 11,
     "religion": 6,
-    "architecture": 6,
+    "architecture": 5,
     "software_eng": 5,
     "cybersecurity": 8,
     "data_science": 6,
@@ -270,11 +271,6 @@
     "database-internals": 2,
     "cloud-native": 1,
     "formal-methods": 2,
-    "sacred_constants": 5,
-    "agents": 1,
-    "engines": 1,
-    "quantum": 1,
-    "semantic": 1,
-    "mcp": 1
+    "extracted_qa": 320
   }
 }

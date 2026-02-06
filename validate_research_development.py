@@ -1,3 +1,4 @@
+from pathlib import Path
 #!/usr/bin/env python3
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -8,7 +9,7 @@ Tests all core capabilities
 
 import asyncio
 import sys
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 from l104_autonomous_research_development import (
     AutonomousResearchDevelopmentEngine,

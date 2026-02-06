@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 Data File Merger - Consolidates training data and databases without data loss
 Merges multiple JSONL training files and consolidates databases
@@ -53,7 +54,7 @@ def merge_jsonl_gz_files(file_list, output_file):
 
 def merge_training_files():
     """Merge all kernel training files"""
-    base_path = Path('/workspaces/Allentown-L104-Node')
+    base_path = Path(str(Path(__file__).parent.absolute()))
     
     # Group related training files
     training_groups = {
@@ -96,7 +97,7 @@ def merge_training_files():
 
 def merge_sqlite_databases():
     """Merge similar SQLite databases"""
-    base_path = Path('/workspaces/Allentown-L104-Node')
+    base_path = Path(str(Path(__file__).parent.absolute()))
     
     # Merge data directory databases
     data_dbs = [
@@ -174,7 +175,7 @@ def merge_sqlite_databases():
 
 def create_merge_summary():
     """Create a summary of what was merged"""
-    summary_file = Path('/workspaces/Allentown-L104-Node/MERGE_SUMMARY.txt')
+    summary_file = Path('./MERGE_SUMMARY.txt')
     
     with open(summary_file, 'w') as f:
         f.write(f"Data Merge Summary\n")

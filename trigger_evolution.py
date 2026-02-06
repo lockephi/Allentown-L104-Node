@@ -1,10 +1,11 @@
+from pathlib import Path
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 # [TRIGGER_EVOLUTION] - ACCELERATED RSI LOOP
 import asyncio
 import sys
 
 # Add workspace to path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_agi_core import agi_core
 

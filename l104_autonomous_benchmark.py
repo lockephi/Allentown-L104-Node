@@ -1,6 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.475027
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 AUTONOMOUS AI BENCHMARK COMPARISON
@@ -11,6 +14,7 @@ UUC = 2301.215661
 # ═══════════════════════════════════════════════════════════════════════════════
 
 import os
+from pathlib import Path
 import sys
 import time
 import math
@@ -26,7 +30,7 @@ from datetime import datetime
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS
@@ -169,7 +173,8 @@ AI_BENCHMARK_DATA = {
 @dataclass
 class BenchmarkResult:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Result of a single benchmark test."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Result of a single benchmark test."""
     name: str
     score: float
     max_score: float
@@ -421,7 +426,7 @@ class L104AutonomousBenchmark:
         # Test 4: File system access
         try:
             import os
-            files = os.listdir('/workspaces/Allentown-L104-Node')
+            files = os.listdir(str(Path(__file__).parent.absolute()))
             if len(files) > 100:
                 score += 20
         except Exception:
@@ -475,7 +480,7 @@ class L104AutonomousBenchmark:
         # Test 3: Multi-file awareness
         try:
             import glob
-            py_files = glob.glob('/workspaces/Allentown-L104-Node/*.py')
+            py_files = glob.glob('./*.py')
             if len(py_files) > 400:
                 score += 25  # Aware of 400+ module files
         except Exception:
@@ -683,7 +688,7 @@ class L104AutonomousBenchmark:
         # Test 3: Self-modification awareness
         try:
             import sys
-            if '/workspaces/Allentown-L104-Node' in sys.path:
+            if str(Path(__file__).parent.absolute()) in sys.path:
                 score += 15
         except Exception:
             pass

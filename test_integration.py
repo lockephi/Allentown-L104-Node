@@ -228,10 +228,18 @@ def test_all():
     else:
         print(f"\n  ⚠ {total - passed} test(s) need attention.\n")
 
-    return results
+    # Store results for run_integration_tests() but don't return from test function
+    test_all._results = results
+
+
+def run_integration_tests():
+    """Run all integration tests without returning from test_all."""
+    test_all()
+    results = getattr(test_all, '_results', {})
+    passed = sum(1 for v in results.values() if v)
+    return passed == len(results)
 
 
 if __name__ == "__main__":
-    results = test_all()
-    passed = sum(1 for v in results.values() if v)
-    sys.exit(0 if passed == len(results) else 1)
+    success = run_integration_tests()
+    sys.exit(0 if success else 1)

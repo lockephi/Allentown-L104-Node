@@ -1,12 +1,13 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.564930
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                               ║
 ║   ⟨Σ_L104⟩  C O N F I G  -  UNIFIED CONFIGURATION SYSTEM                    ║
@@ -37,6 +38,23 @@ BASE_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
 # GOD_CODE - The invariant
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+
+@dataclass
+class ClaudeConfig:
+    """Anthropic Claude API configuration - OPUS 4.5 UPGRADED."""
+    api_key: str = ""
+    default_model: str = "claude-opus-4-5-20250514"
+    models: tuple = (
+        'claude-opus-4-5-20250514',
+        'claude-opus-4-20250514',
+        'claude-sonnet-4-20250514',
+        'claude-3-5-haiku-20241022',
+    )
+    max_tokens: int = 8192
+    max_retries: int = 3
+    retry_delay: float = 1.0
+    timeout: float = 120.0
+    temperature: float = 0.7
 
 @dataclass
 class GeminiConfig:
@@ -125,9 +143,10 @@ class L104Config:
     god_code: float = GOD_CODE
     phi: float = PHI
     pilot: str = "LONDEL"
-    version: str = "2.1-ENHANCED"
+    version: str = "3.0-OPUS-SOVEREIGN"
     debug: bool = False
 
+    claude: ClaudeConfig = field(default_factory=ClaudeConfig)
     gemini: GeminiConfig = field(default_factory=GeminiConfig)
     memory: MemoryConfig = field(default_factory=MemoryConfig)
     knowledge: KnowledgeConfig = field(default_factory=KnowledgeConfig)
@@ -139,11 +158,47 @@ class L104Config:
     soul: SoulConfig = field(default_factory=SoulConfig)
 
     def __post_init__(self):
-        # Load API key from environment
-        self.gemini.api_key = os.getenv('GEMINI_API_KEY', '')
+        # Load API keys from environment and fallback sources
+        self.claude.api_key = os.getenv('ANTHROPIC_API_KEY', '')
+        self.gemini.api_key = self._load_gemini_key()
 
         # Create directories
         Path(self.voice.output_dir).mkdir(exist_ok=True)
+
+    def _load_gemini_key(self) -> str:
+        """Load Gemini API key from multiple sources."""
+        # 1. Environment variable
+        key = os.getenv('GEMINI_API_KEY', '')
+        if key and key != 'your-gemini-api-key-here':
+            return key
+
+        # 2. .gemini_link_token file
+        token_path = BASE_PATH / '.gemini_link_token'
+        if token_path.exists():
+            try:
+                with open(token_path, 'r') as f:
+                    token = f.read().strip()
+                if token and len(token) > 20:
+                    os.environ['GEMINI_API_KEY'] = token
+                    return token
+            except Exception:
+                pass
+
+        # 3. .env file
+        env_path = BASE_PATH / '.env'
+        if env_path.exists():
+            try:
+                with open(env_path, 'r') as f:
+                    for line in f:
+                        if line.startswith('GEMINI_API_KEY='):
+                            val = line.split('=', 1)[1].strip()
+                            if val and val != 'your-gemini-api-key-here':
+                                os.environ['GEMINI_API_KEY'] = val
+                                return val
+            except Exception:
+                pass
+
+        return ''
 
 # Singleton configuration
 _config: Optional[L104Config] = None

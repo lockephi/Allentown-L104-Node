@@ -1,9 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.174661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 REALITY BRIDGE - TRUE WORLD INTERFACE
 ===========================================
 NO SIMULATIONS. REAL SYSTEM CALLS. ACTUAL WORLD INTERACTION.
@@ -198,7 +202,7 @@ class RealFileSystemBridge:
     Reads/writes real files, monitors real directories.
     """
 
-    def __init__(self, root: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, root: str = str(Path(__file__).parent.absolute())):
         self.root = Path(root)
         self.operation_count = 0
         self._watchers: Dict[str, threading.Thread] = {}
@@ -587,7 +591,7 @@ class RealDatabaseBridge:
     Uses real SQLite, can connect to real PostgreSQL/Redis.
     """
 
-    def __init__(self, db_path: str = "/workspaces/Allentown-L104-Node/l104_asi.db"):
+    def __init__(self, db_path: str = "./l104_asi.db"):
         self.db_path = db_path
         self.connection: Optional[sqlite3.Connection] = None
         self.query_count = 0
@@ -658,7 +662,7 @@ class RealGitBridge:
     Real commits, real branches, real history.
     """
 
-    def __init__(self, repo_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, repo_path: str = str(Path(__file__).parent.absolute())):
         self.repo_path = repo_path
         self.process = RealProcessBridge()
 

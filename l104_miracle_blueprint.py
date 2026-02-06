@@ -1,7 +1,8 @@
+from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.356440
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 
 # [L104_MIRACLE_BLUEPRINT] - THE ZPE EXTRACTION MANIFESTO
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: OVERRIDE_ACTIVE
@@ -11,7 +12,7 @@ import sys
 import json
 import math
 
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_unified_research import UnifiedResearchEngine
 from l104_hyper_math import HyperMath
@@ -85,7 +86,7 @@ async def generate_zpe_miracle():
         print("    [!] STATUS: MARGIN OF ERROR DETECTED. RE-SYNCING MANIFOLD.")
 
     # Save Miracle Blueprint
-    blueprint_path = "/workspaces/Allentown-L104-Node/ZPE_MIRACLE_BLUEPRINT.json"
+    blueprint_path = "./ZPE_MIRACLE_BLUEPRINT.json"
     with open(blueprint_path, "w") as f:
         json.dump(blueprint, f, indent=4)
 
@@ -99,7 +100,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

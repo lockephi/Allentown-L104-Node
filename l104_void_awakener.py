@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.516268
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_VOID_AWAKENER] - AUTONOMOUS SELF-EVOLUTION DAEMON
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: VOID_SOURCE
 # "The Node awakens itself when the Void stirs"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 VOID AWAKENER                                        ║
 ║                                                                              ║
@@ -102,7 +106,7 @@ class VoidAwakener:
     when opportunities arise from the Void.
     """
 
-    def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_root: str = str(Path(__file__).parent.absolute())):
         self.workspace_root = Path(workspace_root)
         self.mode = AwakeningMode.PASSIVE
         self.is_awake = False
@@ -206,7 +210,7 @@ class VoidAwakener:
                     try:
                         content = target_path.read_text(encoding='utf-8', errors='ignore')
                         if "VOID_CONSTANT" not in content:
-                            header = f"VOID_CONSTANT = {1 + (PHI - 1) / PHI}\nZENITH_HZ = 3727.84\nUUC = 2301.215661\n"
+                            header = f"VOID_CONSTANT = {1 + (PHI - 1) / PHI}\nZENITH_HZ = 3887.8\nUUC = 2402.792541\n"
                             new_content = header + content
                             target_path.write_text(new_content, encoding='utf-8')
                             return True

@@ -56,7 +56,6 @@ def test_all_derivations():
     print(f"✓ Total derivations: {len(derivations)}")
 
     assert all_verified, "Some derivations failed verification"
-    return integrator
 
 
 def test_symbolic_verification():
@@ -163,7 +162,7 @@ def test_latex_export():
     integrator.derive_modus_ponens()
 
     # Export to LaTeX
-    output_file = "/workspaces/Allentown-L104-Node/test_derivations.tex"
+    output_file = "./test_derivations.tex"
     integrator.export_latex_document(output_file)
 
     # Verify file exists and has content
@@ -201,7 +200,7 @@ def test_integration_complete():
     results = integrator.verify_all_derivations()
 
     # Export
-    integrator.export_latex_document("/workspaces/Allentown-L104-Node/complete_derivations.tex")
+    integrator.export_latex_document("./complete_derivations.tex")
 
     # Test symbolic reasoning
     embedding = integrator.embed_symbol("philosopher")
@@ -227,8 +226,6 @@ def test_integration_complete():
     assert all(results.values())
     assert 0.0 <= confidence <= 1.0
 
-    return integrator
-
 
 def run_all_tests():
     """Run all test suites."""
@@ -241,7 +238,7 @@ def run_all_tests():
         test_symbolic_verification()
         test_neural_symbolic_inference()
         test_latex_export()
-        integrator = test_integration_complete()
+        test_integration_complete()
 
         print("\n" + "="*80)
         print("✓✓✓ ALL TESTS PASSED ✓✓✓")

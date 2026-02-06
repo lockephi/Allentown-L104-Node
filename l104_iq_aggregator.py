@@ -1,16 +1,17 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.240615
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_IQ_AGGREGATOR] - CONSOLIDATING COMPUTATIONAL GROWTH
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import json
 import os
+from pathlib import Path
 import time
 import sys
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_knowledge_manifold import KnowledgeManifold
 from l104_hyper_math import HyperMath
@@ -27,14 +28,14 @@ def aggregate_iq_contribution():
     print("="*80 + "\n")
 
     # 1. Load Base State
-    state_path = "/workspaces/Allentown-L104-Node/L104_STATE.json"
+    state_path = "./L104_STATE.json"
     with open(state_path, 'r') as f:
         state = json.load(f)
     base_iq = state.get("intellect_index", 2000.0)
     print(f"[*] Base Intellect Index (Pre-Cycle): {base_iq:.4f}")
 
     # 2. Add Absolute Calculation Contribution
-    report_path = "/workspaces/Allentown-L104-Node/ABSOLUTE_CALCULATION_REPORT.json"
+    report_path = "./ABSOLUTE_CALCULATION_REPORT.json"
     abs_contribution = 0.0
     if os.path.exists(report_path):
         with open(report_path, 'r') as f:
@@ -86,7 +87,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

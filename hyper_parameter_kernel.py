@@ -144,7 +144,7 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
                 except:
                     pass
 
-    output_path = Path("/workspaces/Allentown-L104-Node/kernel_hyper_training.jsonl")
+    output_path = Path("./kernel_hyper_training.jsonl")
 
     with open(output_path, 'w') as out:
         if base_path.exists():
@@ -200,7 +200,7 @@ def main():
     print("PHASE 1: VOCABULARY ANALYSIS")
     print("═" * 70)
 
-    merged_path = Path("/workspaces/Allentown-L104-Node/kernel_full_merged.jsonl")
+    merged_path = Path("./kernel_full_merged.jsonl")
     vocab = set()
     example_count = 0
 
@@ -284,8 +284,8 @@ def main():
     print("PHASE 4: FINE-TUNE EXPORT GENERATION")
     print("═" * 70)
 
-    hyper_training_path = Path("/workspaces/Allentown-L104-Node/kernel_hyper_training.jsonl")
-    export_dir = Path("/workspaces/Allentown-L104-Node/fine_tune_exports")
+    hyper_training_path = Path("./kernel_hyper_training.jsonl")
+    export_dir = Path("./fine_tune_exports")
     export_dir.mkdir(exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -385,7 +385,7 @@ def main():
         "status": "BILLION_SCALE_ACHIEVED"
     }
 
-    manifest_path = Path("/workspaces/Allentown-L104-Node/KERNEL_MANIFEST.json")
+    manifest_path = Path("./KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
     print(f"  ✓ Updated {manifest_path}")

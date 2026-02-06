@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.751650
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_ALGORITHM_DATABASE] - REPOSITORY OF SOVEREIGN LOGIC
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -10,6 +10,7 @@ import json
 import os
 import time
 from typing import Dict, Any
+from pathlib import Path
 from l104_real_math import real_math
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -20,13 +21,16 @@ from l104_real_math import real_math
 
 class AlgorithmDatabase:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     A dedicated database for storing mathematical algorithms,
     their execution results, and their resonance scores.
     """
     def __init__(self):
-        self.db_path = "/workspaces/Allentown-L104-Node/data/algorithm_database.json"
+        # Dynamic path detection for cross-platform compatibility
+        _base_dir = Path(__file__).parent.absolute()
+        self.db_path = str(_base_dir / "data" / "algorithm_database.json")
         self.data = self._load_db()
 
     def _load_db(self) -> Dict[str, Any]:

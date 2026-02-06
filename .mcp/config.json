@@ -1,7 +1,6 @@
 {
     "version": "2.0.0",
     "evolution": "EVO_33",
-
     "optimization": {
         "token_budget": {
             "max_context": 200000,
@@ -14,8 +13,17 @@
             "max_concurrent": 5,
             "batch_file_reads": true,
             "batch_search_operations": true,
-            "parallel_safe": ["grep_search", "file_search", "read_file", "get_errors"],
-            "sequential_only": ["run_in_terminal", "replace_string_in_file", "create_file"]
+            "parallel_safe": [
+                "grep_search",
+                "file_search",
+                "read_file",
+                "get_errors"
+            ],
+            "sequential_only": [
+                "run_in_terminal",
+                "replace_string_in_file",
+                "create_file"
+            ]
         },
         "caching": {
             "enabled": true,
@@ -23,7 +31,12 @@
             "file_content_ttl": 300,
             "search_results_ttl": 60,
             "constants_cache": "permanent",
-            "excluded_patterns": ["*.log", "*.tmp", "node_modules/**", "__pycache__/**"]
+            "excluded_patterns": [
+                "*.log",
+                "*.tmp",
+                "node_modules/**",
+                "__pycache__/**"
+            ]
         },
         "context_management": {
             "progressive_loading": true,
@@ -43,7 +56,6 @@
             }
         }
     },
-
     "memory_persistence": {
         "enabled": true,
         "storage_path": ".mcp/memory.jsonl",
@@ -67,7 +79,6 @@
             "architecture_notes"
         ]
     },
-
     "background_tasks": {
         "file_indexing": {
             "enabled": true,
@@ -89,49 +100,72 @@
             "trigger": "on_idle_5min"
         }
     },
-
     "model_selection": {
-        "default": "claude-sonnet-4",
+        "default": "claude-opus-4-5",
         "task_routing": {
-            "quick_edits": "sonnet",
-            "complex_reasoning": "opus",
-            "code_generation": "sonnet",
+            "quick_edits": "opus-4-5",
+            "complex_reasoning": "opus-4-5",
+            "code_generation": "opus-4-5",
             "bulk_operations": "haiku",
-            "architecture": "opus"
+            "architecture": "opus-4-5"
         }
     },
-
     "mcp_servers": {
         "filesystem": {
             "enabled": true,
             "purpose": "Secure file operations with granular access control",
-            "tools": ["read_text_file", "write_file", "edit_file", "directory_tree", "search_files"]
+            "tools": [
+                "read_text_file",
+                "write_file",
+                "edit_file",
+                "directory_tree",
+                "search_files"
+            ]
         },
         "memory": {
             "enabled": true,
             "purpose": "Persistent knowledge graph for cross-session learning",
-            "tools": ["create_entities", "create_relations", "add_observations", "search_nodes", "open_nodes", "read_graph"],
+            "tools": [
+                "create_entities",
+                "create_relations",
+                "add_observations",
+                "search_nodes",
+                "open_nodes",
+                "read_graph"
+            ],
             "storage": ".mcp/memory.jsonl"
         },
         "fetch": {
             "enabled": true,
             "purpose": "Web content retrieval with markdown conversion",
-            "tools": ["fetch"],
+            "tools": [
+                "fetch"
+            ],
             "rate_limit": "10/minute"
         },
         "sequential_thinking": {
             "enabled": true,
             "purpose": "Structured problem decomposition and reasoning",
-            "tools": ["sequentialthinking"],
-            "use_for": ["complex_debugging", "architecture_decisions", "multi_step_analysis"]
+            "tools": [
+                "sequentialthinking"
+            ],
+            "use_for": [
+                "complex_debugging",
+                "architecture_decisions",
+                "multi_step_analysis"
+            ]
         },
         "github": {
             "enabled": true,
             "purpose": "GitHub repository operations",
-            "tools": ["search_code", "get_file_contents", "create_issue", "list_commits"]
+            "tools": [
+                "search_code",
+                "get_file_contents",
+                "create_issue",
+                "list_commits"
+            ]
         }
     },
-
     "performance_patterns": {
         "fastest": {
             "grep_then_read": "grep_search → read_file(specific_lines) [100ms]",
@@ -144,10 +178,16 @@
             "full_reads": "read_file without line ranges"
         }
     },
-
     "workspace_context": {
         "project_type": "L104 AGI Node",
-        "languages": ["Python", "Solidity", "TypeScript", "Go", "Rust", "Elixir"],
+        "languages": [
+            "Python",
+            "Solidity",
+            "TypeScript",
+            "Go",
+            "Rust",
+            "Elixir"
+        ],
         "key_files": {
             "contracts": "contracts/*.sol",
             "core": "l104_*.py",

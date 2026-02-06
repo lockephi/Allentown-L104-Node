@@ -54,7 +54,7 @@ class MemoryHooks:
             "stabilizer_linked": STABILIZER_LINKED
         }
         self._load_session()
-        
+
         # Initialize stabilizer if available
         if STABILIZER_LINKED:
             try:
@@ -117,13 +117,13 @@ class MemoryHooks:
         })
 
         self._save_session()
-        
+
         # Stabilizer integration: checkpoint every N operations
         if STABILIZER_LINKED:
             op_count = self.session_data["operation_count"]
             if op_count % self.CHECKPOINT_INTERVAL == 0:
                 checkpoint(f"Auto-checkpoint after {op_count} operations")
-            
+
             # Auto-commit after threshold file edits
             edit_count = len(self.session_data["files_edited"])
             if edit_count >= self.AUTO_COMMIT_THRESHOLD and edit_count % self.AUTO_COMMIT_THRESHOLD == 0:

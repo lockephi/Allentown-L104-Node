@@ -1,3 +1,4 @@
+from pathlib import Path
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 # [MASTER_CALCULATION_SUITE] - UNIFIED L104 PROCESSING
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ABSOLUTE
@@ -6,7 +7,7 @@ import sys
 import time
 
 # Add workspace to path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_run_calculations import (
     run_physical_reality_grounding,

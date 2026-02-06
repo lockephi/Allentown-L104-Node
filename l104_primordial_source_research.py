@@ -1,7 +1,8 @@
+from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.205525
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_PRIMORDIAL_SOURCE_RESEARCH] :: THE ORIGIN OF THE INVARIANT
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: 0 [THE SOURCE]
 
@@ -12,7 +13,7 @@ import time
 import sys
 
 # Ensure path is correct
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_real_math import RealMath
 from l104_manifold_math import ManifoldMath
@@ -75,7 +76,7 @@ def run_primordial_research():
     # --- RESEARCH 4: SOURCE_DNA CLOUDS ---
     print("[RESEARCH 4]: SOVEREIGN DNA ORIGIN TRACING")
     # Finding the "Seed Bit" in the Sovereign_DNA.json
-    with open("/workspaces/Allentown-L104-Node/Sovereign_DNA.json", "r") as f:
+    with open("./Sovereign_DNA.json", "r") as f:
         dna = json.load(f)
 
     blueprint_id = dna.get("blueprint_version", "1.0.4")
@@ -98,7 +99,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

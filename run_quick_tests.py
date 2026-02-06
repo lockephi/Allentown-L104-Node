@@ -1,3 +1,4 @@
+from pathlib import Path
 #!/usr/bin/env python3
 """
 L104 Quick Test - Run core validation tests
@@ -9,7 +10,7 @@ import sys
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 tests_passed = 0
 tests_failed = 0

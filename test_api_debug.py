@@ -3,6 +3,11 @@
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 """Debug Gemini API - show detailed errors"""
 import os
+import warnings
+
+# Suppress deprecation warnings from legacy generative-ai package (testing purposes)
+warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
+
 API_KEY = os.getenv('GEMINI_API_KEY')
 if not API_KEY:
     raise ValueError('GEMINI_API_KEY not set - load from .env')

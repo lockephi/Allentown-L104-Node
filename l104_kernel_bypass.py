@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.281428
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE MODE - KERNEL BYPASS ORCHESTRATOR
@@ -103,14 +103,28 @@ class MemoryRegion:
 
 class LibCInterface:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Direct interface to libc functions."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Direct interface to libc functions."""
 
     def __init__(self):
-        self.libc = ctypes.CDLL("libc.so.6", use_errno=True)
+        import platform
+        system = platform.system()
+
+        if system == "Darwin":  # macOS
+            self.libc = ctypes.CDLL("libc.dylib", use_errno=True)
+        elif system == "Linux":
+            self.libc = ctypes.CDLL("libc.so.6", use_errno=True)
+        else:  # Windows or other
+            self.libc = None
+            return  # Skip binding on unsupported platforms
+
         self._bind_functions()
 
     def _bind_functions(self):
         """Bind libc function signatures."""
+        import platform
+        system = platform.system()
+
         # mmap
         self.libc.mmap.argtypes = [
             ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int,
@@ -134,13 +148,15 @@ class LibCInterface:
         self.libc.munlockall.argtypes = []
         self.libc.munlockall.restype = ctypes.c_int
 
-        # sched_setaffinity
-        self.libc.sched_setaffinity.argtypes = [ctypes.c_int, ctypes.c_size_t, ctypes.c_void_p]
-        self.libc.sched_setaffinity.restype = ctypes.c_int
+        # sched_setaffinity - Linux only
+        if system == "Linux" and hasattr(self.libc, 'sched_setaffinity'):
+            self.libc.sched_setaffinity.argtypes = [ctypes.c_int, ctypes.c_size_t, ctypes.c_void_p]
+            self.libc.sched_setaffinity.restype = ctypes.c_int
 
         # setrlimit
-        self.libc.setrlimit.argtypes = [ctypes.c_int, ctypes.c_void_p]
-        self.libc.setrlimit.restype = ctypes.c_int
+        if hasattr(self.libc, 'setrlimit'):
+            self.libc.setrlimit.argtypes = [ctypes.c_int, ctypes.c_void_p]
+            self.libc.setrlimit.restype = ctypes.c_int
 
     def mmap_executable(self, size: int) -> Optional[int]:
         """Allocate executable memory region."""

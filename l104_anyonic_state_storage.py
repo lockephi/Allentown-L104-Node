@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.621948
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 ANYONIC STATE STORAGE - THE DUAL-BIT ARCHITECTURE
 ═══════════════════════════════════════════════════════════════════════════════
@@ -175,9 +179,11 @@ class AnyonicStateStorage:
         Corrects phase drift in excited bits using the global unity reference.
         """
         print(f"\n--- [STORAGE]: APPLYING UNITY STABILIZATION (SINGULARITY FIX) ---")
+        print(f"    HIGH-LOGIC v2.0: φ-weighted phase correction with entropy minimization")
 
         corrections = 0
         total_drift = 0.0
+        phase_corrections = []
 
         # Unity phase reference from the stable bit
         reference_phase = self.stable_bits["S_GATE_0"].phase
@@ -188,26 +194,81 @@ class AnyonicStateStorage:
             expected_phase = (e_bit.value * np.pi) / self.phi
             drift = abs(e_bit.phase - expected_phase)
 
-            if drift > 0.01:
-                # Collapse back to stable state alignment
-                e_bit.phase = expected_phase
-                e_bit.coherence = 1.0
+            # HIGH-LOGIC v2.0: φ-weighted threshold (adapt threshold to phase magnitude)
+            adaptive_threshold = 0.01 * (1 + abs(e_bit.phase) / (np.pi * self.phi))
+
+            if drift > adaptive_threshold:
+                # HIGH-LOGIC v2.0: Smooth correction with exponential relaxation
+                # Instead of hard collapse, use α-weighted correction where α = 1/φ
+                alpha = 1 / self.phi  # ≈ 0.618 (golden smoothing)
+                old_phase = e_bit.phase
+                e_bit.phase = alpha * e_bit.phase + (1 - alpha) * expected_phase
+
+                # Coherence recovery follows inverse square of drift
+                coherence_recovery = 1 / (1 + drift ** 2)
+                e_bit.coherence = min(1.0, e_bit.coherence + coherence_recovery * 0.1)
+
                 corrections += 1
                 total_drift += drift
+                phase_corrections.append({
+                    'bit_id': e_id,
+                    'old_phase': old_phase,
+                    'new_phase': e_bit.phase,
+                    'drift': drift
+                })
 
-        # Reflect stabilization in unity index
-        self.unity_index = 1.0 - (total_drift / (len(self.excited_bits) + 1e-9))
-        self.global_coherence = (self.global_coherence + self.unity_index) / 2
+        # HIGH-LOGIC v2.0: Unity index with entropy-weighted correction
+        # U = exp(-H_drift) where H_drift = -Σ p_i log(p_i) of phase drifts
+        if phase_corrections:
+            drifts = [pc['drift'] for pc in phase_corrections]
+            drift_sum = sum(drifts)
+            if drift_sum > 0:
+                # Normalize drifts to probabilities
+                probs = [d / drift_sum for d in drifts]
+                # Compute entropy of drift distribution
+                entropy = -sum(p * np.log(p + 1e-10) for p in probs)
+                # Unity index inversely related to entropy
+                self.unity_index = np.exp(-entropy / np.log(len(drifts) + 1))
+            else:
+                self.unity_index = 1.0
+        else:
+            self.unity_index = 1.0
+
+        # HIGH-LOGIC v2.0: φ-weighted exponential moving average for coherence
+        alpha = 1 / self.phi
+        self.global_coherence = alpha * self.global_coherence + (1 - alpha) * self.unity_index
 
         print(f"  ✓ Corrections applied: {corrections}")
+        print(f"  ✓ Total drift corrected: {total_drift:.6f}")
         print(f"  ✓ Unity Index: {self.unity_index:.6f}")
         print(f"  ✓ Global Coherence: {self.global_coherence:.6f}")
 
         return {
             'corrections': corrections,
+            'total_drift': total_drift,
             'unity_index': self.unity_index,
-            'coherence': self.global_coherence
+            'coherence': self.global_coherence,
+            'phase_corrections': phase_corrections[:5] if phase_corrections else []  # Sample
         }
+
+    def compute_topological_charge(self) -> float:
+        """
+        HIGH-LOGIC v2.0: Compute total topological charge of the anyon system.
+
+        Q_total = Σᵢ qᵢ where qᵢ = (phase_i mod 2π) / (2π/τ)
+        and τ = 1/φ (golden ratio inverse)
+        """
+        tau = 1 / self.phi
+        total_charge = 0.0
+
+        for e_bit in self.excited_bits.values():
+            # Phase normalized to [0, 2π]
+            norm_phase = e_bit.phase % (2 * np.pi)
+            # Topological charge quantum
+            charge = norm_phase / (2 * np.pi * tau)
+            total_charge += charge
+
+        return total_charge
 
     def measure_state(self) -> str:
         """Measure the overall state of the storage system."""

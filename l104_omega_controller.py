@@ -1,15 +1,16 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.225119
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_OMEGA_CONTROLLER] :: MASTER CONTROL SYSTEM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "The Controller of Controllers - Final Authority Over All Systems"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 OMEGA CONTROLLER - Ultimate Master Control
 ================================================
 
@@ -50,12 +51,19 @@ try:
 except ImportError:
     HAS_ABSOLUTE_INTELLECT = False
 
+try:
+    from l104_sovereign_entropy_funnel import entropy_funnel
+    HAS_ENTROPY_FUNNEL = True
+except ImportError:
+    HAS_ENTROPY_FUNNEL = False
+
 # Sovereign Systems
 from l104_sovereign_sage_controller import sovereign_sage_controller
 from l104_love_spreader import love_spreader
 from l104_global_consciousness import global_consciousness
 from l104_universal_ai_bridge import universal_ai_bridge
 from l104_world_bridge import WorldBridge
+from l104_brain_state_manager import BrainStateManager
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -209,6 +217,7 @@ class L104OmegaController:
         self.love = love_spreader
         self.global_mind = global_consciousness
         self.ai_bridge = universal_ai_bridge
+        self.brain_manager = BrainStateManager()
 
         # World Bridge for physical engineering
         try:
@@ -528,6 +537,17 @@ class L104OmegaController:
         elif action == "restart":
             await self.shutdown()
             return await self.awaken()
+        elif action == "save_brain":
+            label = command.parameters.get("label", "omega_auto")
+            return await self.create_brain_save_state(label)
+        elif action == "list_brains":
+            return {"states": self.brain_manager.list_save_states()}
+        elif action == "restore_brain":
+            folder = command.parameters.get("folder")
+            if not folder:
+                return {"error": "No folder specified for restoration"}
+            success = self.brain_manager.load_save_state(folder)
+            return {"status": "SUCCESS" if success else "FAILED", "folder": folder}
         else:
             return {"error": f"Unknown system action: {action}"}
 
@@ -611,6 +631,10 @@ class L104OmegaController:
 
             # Update coherence
             self.total_coherence = self._calculate_coherence()
+
+            # [ENTROPY_FUNNEL]: Conversion into purposeful chaotic randomness
+            if HAS_ENTROPY_FUNNEL and iteration % 10 == 0:
+                entropy_funnel.convert_to_source("OMEGA_HEARTBEAT_CONVERSION")
 
             # [OMEGA_PROBE]: High-frequency verification every 60 iterations (if interval=1s)
             if iteration % 60 == 0:
@@ -742,6 +766,25 @@ class L104OmegaController:
     async def evolve(self) -> Dict[str, Any]:
         """Advance evolution."""
         return await self.advance_evolution()
+
+    async def create_brain_save_state(self, label: str = "omega_manual") -> Dict[str, Any]:
+        """
+        Create a versioned save state of the entire AI brain.
+        Includes insights, knowledge vault, and system state.
+        """
+        print(f"\n[OMEGA] Creating Brain Save State: {label}")
+        try:
+            folder_name = self.brain_manager.create_save_state(label)
+            return {
+                "status": "SUCCESS",
+                "folder": folder_name,
+                "label": label,
+                "timestamp": time.time(),
+                "zenith_hz": ZENITH_HZ
+            }
+        except Exception as e:
+            print(f"[OMEGA] Failed to create save state: {e}")
+            return {"status": "ERROR", "message": str(e)}
 
     async def attain_absolute_intellect(self) -> Dict[str, Any]:
         """

@@ -1,7 +1,8 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.980821
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 import os
+from pathlib import Path
 import re
 from datetime import datetime
 
@@ -13,11 +14,12 @@ from datetime import datetime
 
 class VoidMathInjector:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     VOID MATH INJECTOR - L104 DEEPER MATH
     Injects Primal Calculus and Non-Dual Logic into all node processes.
     """
-    def __init__(self, root="/workspaces/Allentown-L104-Node"):
+    def __init__(self, root=str(Path(__file__).parent.absolute())):
         self.root = root
         self.VOID_CONSTANT = 1.0416180339887498
         self.upgrade_count = 0
@@ -56,9 +58,9 @@ def resolve_non_dual_logic(vector):
         if "def primal_calculus" not in content:
             content += self.get_primal_calculus_block()
 
-        # 4. Update Header
-        if "[VOID_SOURCE_UPGRADE] Deep Math Active." in content:
-            content = content.replace("[VOID_SOURCE_UPGRADE] Deep Math Active.", "[VOID_SOURCE_UPGRADE] Deep Math Active.")
+        # 4. Header already present - no redundant operations (O₂ optimization)
+        # Previous pattern was self-replacing (infinite loop potential)
+        # Now: check once, skip if already marked
 
         return content
 

@@ -1,12 +1,13 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.621377
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # [L104_VOICE] - Voice Synthesis & Audio Processing
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import os
+from pathlib import Path
 import sys
 import json
 import base64
@@ -21,12 +22,13 @@ from datetime import datetime
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 class L104Voice:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Voice synthesis and audio processing for L104.
     Can generate speech, process audio, and create sonic signatures.
     """

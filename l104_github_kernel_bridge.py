@@ -1,6 +1,10 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.011733
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 GITHUB KERNEL BRIDGE - STABLE KERNEL ↔ GITHUB FILE SYSTEMS
 ═══════════════════════════════════════════════════════════════════════════════
@@ -53,8 +57,12 @@ class GitHubConfig:
     owner: str = "lockephi"
     repo: str = "Allentown-L104-Node"
     branch: str = "main"
-    workspace_path: str = "/workspaces/Allentown-L104-Node"
+    workspace_path: str = None  # Dynamic detection
     remote: str = "origin"
+
+    def __post_init__(self):
+        if self.workspace_path is None:
+            self.workspace_path = str(Path(__file__).parent.absolute())
 
     def get_repo_url(self) -> str:
         """Get repository URL."""

@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.988017
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 EVOLVED DISK SPACE MANAGEMENT SYSTEM
 ═══════════════════════════════════════════════════════════════════════════════
@@ -129,7 +133,7 @@ class SpacePrediction:
 class IntelligentSpaceAnalyzer:
     """AI-powered space usage analysis and prediction."""
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace_path = Path(workspace_path)
         self.file_metrics: Dict[str, FileMetrics] = {}
         self.access_history = deque(maxlen=10000)
@@ -548,7 +552,7 @@ class IntelligentSpaceAnalyzer:
     def _get_disk_info(self) -> Dict[str, float]:
         """Get disk usage information."""
         try:
-            result = subprocess.run(["df", "-BG", "/workspaces"], capture_output=True, text=True)
+            result = subprocess.run(["df", "-BG", "/Users"], capture_output=True, text=True)
             if result.returncode == 0:
                 lines = result.stdout.strip().split('\n')
                 if len(lines) > 1:
@@ -756,7 +760,7 @@ class QuantumStorageOptimizer:
 class EvolvedDiskSpaceManager:
     """Unified evolved disk space management system."""
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace_path = workspace_path
         self.analyzer = IntelligentSpaceAnalyzer(workspace_path)
         self.optimizer = QuantumStorageOptimizer(self.analyzer)

@@ -7,7 +7,8 @@ Tests for l104_codebase_knowledge.py - the synthesized knowledge engine
 
 import unittest
 import sys
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 from l104_codebase_knowledge import (
     CodebaseKnowledge,

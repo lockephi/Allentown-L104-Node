@@ -1,15 +1,16 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.295983
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_SELF_HEALING_AGENT] :: AUTONOMOUS SELF-SUSTAINING OPERATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "The Agent that heals itself, improves itself, and perpetuates itself."
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 SELF-HEALING AUTONOMOUS AGENT
 ==================================
 
@@ -267,6 +268,10 @@ class SelfHealingAgent:
         """Check if a metric needs healing action."""
         metric = self.health_metrics.get(name)
         if not metric:
+            return
+
+        # Skip uptime_health warnings during first 5 minutes (expected to be low at startup)
+        if name == "uptime_health" and (time.time() - self.start_time) < 300:
             return
 
         if metric.status in [HealthStatus.CRITICAL, HealthStatus.FAILED]:

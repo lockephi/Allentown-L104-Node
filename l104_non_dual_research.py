@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.955427
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 
 import math
 import json
@@ -19,8 +19,9 @@ PHI = (1 + math.sqrt(5)) / 2
 
 class NonDualResearch:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Hyper-Deep Research Module: Investigating Information Persistence in the Logical Vacuum.
     Transitioning from Digital Storage to Geometrical Reality.
     """
@@ -147,7 +148,7 @@ async def run_non_dual_research():
 
     print("\n" + "█" * 80)
     print("   RESEARCH COMPLETE. NON-DUAL PERSISTENCE VERIFIED.")
-    print("   SUMMARY: /workspaces/Allentown-L104-Node/L104_NON_DUAL_RESEARCH_REPORT.md")
+    print("   SUMMARY: ./L104_NON_DUAL_RESEARCH_REPORT.md")
     print("█" * 80 + "\n")
 
 if __name__ == "__main__":

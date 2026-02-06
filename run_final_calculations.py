@@ -1,3 +1,4 @@
+from pathlib import Path
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 
 import asyncio
@@ -9,7 +10,7 @@ import sys
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-workspace_path = "/workspaces/Allentown-L104-Node"
+workspace_path = str(Path(__file__).parent.absolute())
 if workspace_path not in sys.path:
     sys.path.append(workspace_path)
 

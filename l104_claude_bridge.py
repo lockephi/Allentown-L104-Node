@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.363528
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 CLAUDE NODE BRIDGE
 ═══════════════════════════════════════════════════════════════════════════════
@@ -59,15 +63,15 @@ class ClaudeModel(Enum):
     HAIKU = "claude-3-5-haiku-20241022"
     OPUS_4 = "claude-opus-4-20250514"
     SONNET_4 = "claude-sonnet-4-20250514"
-    OPUS_4_5 = "claude-opus-4-20250514"  # Latest Opus
+    OPUS_4_5 = "claude-opus-4-5-20250514"  # Latest Opus 4.5
 
 
-# Model routing for cost optimization
+# Model routing for cost optimization - UPGRADED TO OPUS 4.5
 MODEL_ROUTING = {
-    "fast": ClaudeModel.HAIKU.value,      # Quick responses, low cost
-    "balanced": ClaudeModel.SONNET_4.value,  # Best balance
-    "powerful": ClaudeModel.OPUS_4.value,    # Maximum capability
-    "default": ClaudeModel.SONNET_4.value    # Default choice
+    "fast": ClaudeModel.HAIKU.value,         # Quick responses, low cost
+    "balanced": ClaudeModel.OPUS_4_5.value,   # Balanced: Opus 4.5 (upgraded from Sonnet)
+    "powerful": ClaudeModel.OPUS_4_5.value,   # Powerful: Opus 4.5
+    "default": ClaudeModel.OPUS_4_5.value     # Default: Opus 4.5
 }
 
 
@@ -159,9 +163,10 @@ class ClaudeNodeBridge:
 
     API_BASE = "https://api.anthropic.com/v1"
     DEFAULT_MODEL = MODEL_ROUTING["balanced"]
-    MAX_CONTEXT_MESSAGES = 50  # Increased for better context
-    MAX_RETRIES = 3
-    RETRY_DELAY = 1.0
+    MAX_CONTEXT_MESSAGES = 100  # Doubled for Opus 4.5 extended context
+    MAX_RETRIES = 5  # Increased for reliability
+    RETRY_DELAY = 0.5  # Faster initial retry
+    EXTENDED_THINKING_BUDGET = 32000  # Extended thinking tokens for Opus 4.5
 
     def __init__(self):
         self.kernel = stable_kernel
@@ -186,7 +191,7 @@ class ClaudeNodeBridge:
 
         # Import local fallback
         self._local_brain = None
-        
+
         # Persistent HTTP client for connection reuse
         self._http_client: Optional[httpx.AsyncClient] = None
 
@@ -202,14 +207,14 @@ class ClaudeNodeBridge:
             # Try HTTP/2 if available, fallback to HTTP/1.1
             try:
                 self._http_client = httpx.AsyncClient(
-                    timeout=httpx.Timeout(120.0, connect=10.0),
-                    limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),
+                    timeout=httpx.Timeout(180.0, connect=15.0),  # Extended for Opus 4.5
+                    limits=httpx.Limits(max_connections=50, max_keepalive_connections=25),
                     http2=True
                 )
             except Exception:
                 self._http_client = httpx.AsyncClient(
-                    timeout=httpx.Timeout(120.0, connect=10.0),
-                    limits=httpx.Limits(max_connections=20, max_keepalive_connections=10)
+                    timeout=httpx.Timeout(180.0, connect=15.0),
+                    limits=httpx.Limits(max_connections=50, max_keepalive_connections=25)
                 )
         return self._http_client
 
@@ -514,7 +519,7 @@ class ClaudeNodeBridge:
                 )
                 response.raise_for_status()
                 data = response.json()
-                
+
                 latency = (time.time() - start_time) * 1000
                 content = data.get("content", [{}])[0].get("text", "")
                 tokens = data.get("usage", {}).get("output_tokens", 0)
@@ -537,7 +542,7 @@ class ClaudeNodeBridge:
                 self.session_cache[cache_key] = result
 
                 return result
-                
+
             except httpx.HTTPStatusError as e:
                 last_error = e
                 self.error_count += 1
@@ -552,7 +557,7 @@ class ClaudeNodeBridge:
                 self.error_count += 1
                 if attempt < self.MAX_RETRIES - 1:
                     await asyncio.sleep(self.RETRY_DELAY)
-                    
+
         raise last_error or Exception("Max retries exceeded")
 
     async def _local_fallback(

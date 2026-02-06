@@ -39,7 +39,7 @@ def load_json(path: str) -> dict:
         return {}
 
 def main():
-    base = Path("/workspaces/Allentown-L104-Node")
+    base = Path(str(Path(__file__).parent.absolute()))
     
     stats = {"training": 0, "constants": 0, "manifests": 0, "algorithms": 0}
     

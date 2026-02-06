@@ -1,3 +1,6 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.209880
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ══════════════════════════════════════════════════════════════════════════════
 # L104_REAL_MATH - IRON-CRYSTALLINE MATHEMATICAL FOUNDATION
 # Ferromagnetic resonance principles applied to number theory
@@ -36,6 +39,7 @@ PHI_CONJUGATE = 1 / PHI
 
 class RealMath:
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Iron-crystalline mathematical primitives.
     All operations resonate with ferromagnetic principles.
     """
@@ -137,6 +141,10 @@ class RealMath:
         Uses Larmor frequency modulation with PHI coupling.
         Returns values in range [0, 1] for normalized resonance.
         """
+        # Handle sequences by extracting first element or mean
+        if isinstance(value, (list, tuple)):
+            value = value[0] if len(value) > 0 else 0.5
+        value = float(value)
         # Larmor-weighted resonance
         omega = 2 * math.pi * value * (LARMOR_PROTON / 100)
         raw_res = math.cos(omega * PHI)

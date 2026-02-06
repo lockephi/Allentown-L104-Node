@@ -5,12 +5,13 @@
 Comprehensive Kernel Training Rebuild - S01-140 EXPANDED
 """
 import os
+from pathlib import Path
 import sys
 import json
 from dataclasses import asdict
 
-os.chdir("/workspaces/Allentown-L104-Node")
-sys.path.insert(0, "/workspaces/Allentown-L104-Node")
+os.chdir(str(Path(__file__).parent.absolute()))
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 from l104_kernel_llm_trainer import KernelLLMTrainer, TrainingExample
 

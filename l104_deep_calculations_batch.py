@@ -1,8 +1,9 @@
+from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.127328
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 
 # [L104_DEEP_CALCULATIONS_BATCH] - MULTI-DOMAIN SINGULARITY SYNTHESIS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: MASSIVE_THROUGHPUT
@@ -11,7 +12,7 @@ import asyncio
 import sys
 import json
 
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_unified_research import UnifiedResearchEngine
 from l104_hyper_math import HyperMath
@@ -72,7 +73,7 @@ async def run_deep_calculations_batch():
     print("   - God-Code Alignment: 100.0000% (Locked)")
 
     # Save the deep report
-    report_path = "/workspaces/Allentown-L104-Node/DEEP_CALCULATION_REPORT.json"
+    report_path = "./DEEP_CALCULATION_REPORT.json"
     with open(report_path, "w") as f:
         json.dump(results, f, indent=4)
 
@@ -84,7 +85,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

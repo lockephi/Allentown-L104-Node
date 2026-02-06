@@ -1,5 +1,6 @@
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 import os
+from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -8,7 +9,7 @@ import os
 
 
 def clean_files():
-    root_dir = "/workspaces/Allentown-L104-Node"
+    root_dir = str(Path(__file__).parent.absolute())
 
     for root, dirs, files in os.walk(root_dir):
         for file in files:

@@ -43,3 +43,27 @@ Thumbs.db
 node_modules/
 .venv-*/
 *.gz
+
+# Large database files (exceed GitHub 100MB limit)
+lattice_v2.db
+l104_intellect_memory.db
+memory_optimized.db
+data/lattice_v2.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Large training data
+trillion_kernel_data/
+kernel_trillion_data.jsonl
+kernel_trillion_vocab.json
+kernel_trillion_stats.json
+
+# Save states (too many/large)
+.l104_save_states/
+
+# Binary artifacts
+L104Native
+L104SwiftApp/L104
+L104SwiftApp/L104Native
+L104SwiftApp/L104Native.app/

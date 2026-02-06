@@ -1,12 +1,13 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.735575
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                               ║
 ║   ⟨Σ_L104⟩  C O R T E X  -  THE INTEGRATION LAYER                           ║
@@ -48,10 +49,12 @@ from typing import Optional, Dict, Any, List, Callable
 from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
 
-# Ensure path
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.chdir('/workspaces/Allentown-L104-Node')
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
+os.chdir(str(_BASE_DIR))
 
 # Ghost Protocol: API key loaded from .env only
 # os.environ.setdefault('GEMINI_API_KEY', '***REDACTED***')

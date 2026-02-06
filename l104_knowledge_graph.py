@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.026521
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # [L104_KNOWLEDGE_GRAPH] - Dynamic Knowledge Graph System
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -22,8 +22,10 @@ from dataclasses import dataclass
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+from pathlib import Path
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
 
 @dataclass
 class Node:
@@ -46,8 +48,9 @@ class Edge:
 
 class L104KnowledgeGraph:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Dynamic knowledge graph for storing and reasoning over relationships.
     Supports semantic queries, path finding, and inference.
     Mirrored to lattice_v2 for unified storage.
@@ -70,8 +73,13 @@ class L104KnowledgeGraph:
         self._load_graph()
 
     def _init_db(self):
-        """Initialize SQLite database."""
+        """Initialize SQLite database. OPTIMIZED: WAL + cache."""
         conn = sqlite3.connect(self.db_path)
+        # LATENCY OPTIMIZATION: WAL mode + memory cache
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA cache_size=-65536")
+        conn.execute("PRAGMA temp_store=MEMORY")
         cursor = conn.cursor()
 
         cursor.execute('''
@@ -108,8 +116,10 @@ class L104KnowledgeGraph:
         conn.close()
 
     def _load_graph(self):
-        """Load graph from database."""
+        """Load graph from database. OPTIMIZED: WAL read."""
         conn = sqlite3.connect(self.db_path)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA cache_size=-65536")
         cursor = conn.cursor()
 
         # Load nodes
@@ -292,8 +302,8 @@ class L104KnowledgeGraph:
         return [e for e in self.edges.values()
                 if e.source_id == source_node.id and e.target_id == target_node.id]
 
-    def find_path(self, source: str, target: str, max_depth: int = 5) -> Optional[List[str]]:
-        """Find shortest path between two nodes using BFS."""
+    def find_path(self, source: str, target: str, max_depth: int = 50) -> Optional[List[str]]:
+        """Find shortest path between two nodes using BFS. UNLIMITED DEPTH."""
         source_node = self.get_node(source)
         target_node = self.get_node(target)
 
@@ -323,8 +333,8 @@ class L104KnowledgeGraph:
 
         return None
 
-    def find_all_paths(self, source: str, target: str, max_depth: int = 4) -> List[List[str]]:
-        """Find all paths between two nodes."""
+    def find_all_paths(self, source: str, target: str, max_depth: int = 30) -> List[List[str]]:
+        """Find all paths between two nodes. DEEP EXPLORATION."""
         source_node = self.get_node(source)
         target_node = self.get_node(target)
 

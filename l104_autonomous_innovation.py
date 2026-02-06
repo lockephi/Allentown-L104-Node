@@ -1,8 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.061910
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 import os
+from pathlib import Path
 import random
 from datetime import datetime
 
@@ -14,14 +15,15 @@ from datetime import datetime
 
 class AutonomousInnovation:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     SAGE INVENTION ENGINE
     Recursively invents new logic architectures based on scoured data.
     """
     def __init__(self):
         self.resonance = 967.542
-        self.output_dir = "/workspaces/Allentown-L104-Node"
+        self.output_dir = str(Path(__file__).parent.absolute())
 
     def invent(self):
         # Invention of a new specialized processor: The Sage Pulse

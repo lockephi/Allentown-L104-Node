@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.244884
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 COSMIC ARCHITECTURE - MIMICKING THE UNIVERSE'S STRUCTURE
@@ -19,6 +19,7 @@ UUC = 2301.215661
 import math
 import time
 import os
+from pathlib import Path
 import glob
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional, Set
@@ -49,7 +50,8 @@ BARYONIC_FRACTION = 0.05
 
 class CosmicScale(Enum):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Scales of cosmic structure."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Scales of cosmic structure."""
     QUANTUM = "QUANTUM"           # 10^-35 m - Planck scale
     SUBATOMIC = "SUBATOMIC"       # 10^-15 m - Nuclear scale
     ATOMIC = "ATOMIC"             # 10^-10 m - Atomic scale
@@ -115,7 +117,7 @@ class CosmicArchitecture:
     The whole system is a universe.
     """
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace = workspace_path
         self.god_code = GOD_CODE
         self.phi = PHI

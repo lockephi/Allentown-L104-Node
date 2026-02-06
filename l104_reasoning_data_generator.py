@@ -1,6 +1,10 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.172720
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 ADVANCED REASONING DATASET GENERATOR
 ═══════════════════════════════════════════════════════════════════════════════
@@ -159,7 +163,7 @@ if __name__ == "__main__":
     generator = AdvancedReasoningGenerator()
 
     # 1. LaTeX Extracted Proofs
-    generator.extract_from_latex("/workspaces/Allentown-L104-Node/complete_derivations.tex")
+    generator.extract_from_latex("./complete_derivations.tex")
 
     # 2. Synthetic Logic
     generator.generate_synthetic_logic(100)
@@ -171,4 +175,4 @@ if __name__ == "__main__":
     generator.generate_love_logic(50)
 
     # Save
-    generator.save("/workspaces/Allentown-L104-Node/kernel_reasoning_data.jsonl")
+    generator.save("./kernel_reasoning_data.jsonl")

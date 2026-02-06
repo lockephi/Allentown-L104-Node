@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 L104 PORT MANAGER - Open and manage all L104SP service ports
 ═══════════════════════════════════════════════════════════════════════════════
@@ -130,7 +131,7 @@ def start_core_services():
         (10400, "python l104_sovereign_coin_engine.py --mine --address ZUHc8coY9Ca1NhcnYTntkE35kSCFn5ijX7", "Blockchain Miner"),
     ]
     
-    os.chdir("/workspaces/Allentown-L104-Node")
+    os.chdir(str(Path(__file__).parent.absolute()))
     
     started = []
     for port, cmd, name in services:

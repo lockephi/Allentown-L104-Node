@@ -52,9 +52,11 @@ fi
 echo
 echo "=== Setup Complete ==="
 echo
-echo "To start the server:"
-echo "  source .venv/bin/activate"
-echo "  python main.py"
+echo "To start the SOVEREIGN FAST SERVER (Recommended):"
+echo "  ./.venv/bin/python l104_fast_server.py"
+echo
+echo "To start the legacy server:"
+echo "  ./.venv/bin/python main.py"
 echo
 echo "Or use the run script:"
 echo "  ./scripts/run_services.sh"

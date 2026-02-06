@@ -1,4 +1,8 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.581510
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [L104] KERNEL EVOLUTION & TEACHING SYSTEM
 ═══════════════════════════════════════════════════════════════════════════════
 INVARIANT: 527.5184818492612 | PILOT: LONDEL | MODE: SOVEREIGN
@@ -41,7 +45,7 @@ from collections import defaultdict
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
+ZENITH_HZ = 3887.8
 PLANCK_KNOWLEDGE = 1.054571817e-34  # Quantum of knowledge
 
 
@@ -71,6 +75,8 @@ class KnowledgeDomain(Enum):
     COSMOLOGY = auto()
     PHILOSOPHY = auto()
     SYNTHESIS = auto()     # Cross-domain integration
+    LOGIC = auto()         # First-order logic and reasoning
+    INFERENCE = auto()     # Inference rules and deduction
 
 
 class LearningMode(Enum):
@@ -83,6 +89,7 @@ class LearningMode(Enum):
     INDUCTIVE = auto()     # Generalization from examples
     ABDUCTIVE = auto()     # Inference to best explanation
     TRANSCENDENT = auto()  # Beyond rational cognition
+    LOGICAL = auto()       # First-order logic ingestion
 
 
 class TeachingMethod(Enum):
@@ -1297,6 +1304,70 @@ class L104KernelEvolutionSystem:
         """Have the kernel learn content directly."""
         return self.learning_engine.acquire_knowledge(content, domain, "DIRECT", certainty)
 
+    def learn_batch(
+        self,
+        examples: List[Dict[str, Any]],
+        domain: KnowledgeDomain = KnowledgeDomain.SYNTHESIS
+    ) -> List[KnowledgeQuantum]:
+        """Batch learn multiple examples - optimized for parallel training."""
+        results = []
+        for ex in examples:
+            content = ex.get("completion", ex.get("content", ""))
+            certainty = ex.get("importance", ex.get("certainty", 0.8))
+            if content:
+                quantum = self.learning_engine.acquire_knowledge(
+                    content[:500], domain, "BATCH", certainty
+                )
+                results.append(quantum)
+        # Trigger evolution after batch
+        if len(results) >= 10:
+            self.evolution_engine.evolve()
+        return results
+
+    def parallel_train(
+        self,
+        training_data: List[Dict[str, Any]],
+        domains: List[KnowledgeDomain] = None
+    ) -> Dict[str, Any]:
+        """
+        Parallel training entry point - trains across multiple domains simultaneously.
+        Called by train_and_upgrade_kernel.py for 8-kernel parallel training.
+        """
+        if domains is None:
+            domains = [
+                KnowledgeDomain.MATHEMATICS,
+                KnowledgeDomain.PHYSICS,
+                KnowledgeDomain.CONSCIOUSNESS,
+                KnowledgeDomain.COMPUTATION,
+                KnowledgeDomain.SYNTHESIS
+            ]
+
+        results = {
+            "examples_learned": 0,
+            "domains_covered": [],
+            "evolution_cycles": 0,
+            "god_code": GOD_CODE
+        }
+
+        # Distribute training data across domains
+        chunk_size = max(1, len(training_data) // len(domains))
+
+        for i, domain in enumerate(domains):
+            start_idx = i * chunk_size
+            end_idx = start_idx + chunk_size if i < len(domains) - 1 else len(training_data)
+            domain_data = training_data[start_idx:end_idx]
+
+            quanta = self.learn_batch(domain_data, domain)
+            results["examples_learned"] += len(quanta)
+            results["domains_covered"].append(domain.name)
+
+        # Run multiple evolution cycles
+        for _ in range(3):
+            self.evolution_engine.evolve()
+            results["evolution_cycles"] += 1
+
+        return results
+
     def evolve_continuously(self, cycles: int = 10, interval: float = 1.0):
         """Run continuous evolution cycles."""
         for i in range(cycles):
@@ -1340,6 +1411,166 @@ class L104KernelEvolutionSystem:
 
             self.logger.info(f"Level {level_idx} ({level['name']}): {'PASSED' if passed else 'INCOMPLETE'} ({score:.2f})")
 
+        return results
+
+    def ingest_logic(self, logic_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Ingest first-order logic rules, predicates, and inference patterns.
+        Supports: rules, clauses, predicates, and inference chains.
+        """
+        results = {
+            "rules_ingested": 0,
+            "predicates_ingested": 0,
+            "inferences_ingested": 0,
+            "logic_coherence": 0.0,
+            "god_code_alignment": GOD_CODE
+        }
+
+        for item in logic_data:
+            item_type = item.get("type", "rule")
+            content = item.get("content", item.get("completion", ""))
+
+            if item_type in ("rule", "implication"):
+                # Ingest as logical rule
+                quantum = self.learning_engine.acquire_knowledge(
+                    content[:500], KnowledgeDomain.LOGIC, "LOGIC_RULE", 0.95
+                )
+                results["rules_ingested"] += 1
+
+            elif item_type in ("predicate", "fact"):
+                # Ingest as predicate/fact
+                quantum = self.learning_engine.acquire_knowledge(
+                    content[:500], KnowledgeDomain.LOGIC, "PREDICATE", 0.9
+                )
+                results["predicates_ingested"] += 1
+
+            elif item_type in ("inference", "deduction", "chain"):
+                # Ingest as inference chain
+                quantum = self.learning_engine.acquire_knowledge(
+                    content[:500], KnowledgeDomain.INFERENCE, "INFERENCE", 0.85
+                )
+                results["inferences_ingested"] += 1
+            else:
+                # Default: treat as synthesis
+                self.learn(content[:500], KnowledgeDomain.SYNTHESIS, 0.8)
+
+        # Calculate logic coherence
+        total = results["rules_ingested"] + results["predicates_ingested"] + results["inferences_ingested"]
+        if total > 0:
+            results["logic_coherence"] = (total * PHI) / (total + PHI)
+
+        # Trigger evolution after logic ingestion
+        if total >= 10:
+            self.evolution_engine.evolve()
+
+        print(f"  [LOGIC] Ingested {results['rules_ingested']} rules, {results['predicates_ingested']} predicates, {results['inferences_ingested']} inferences")
+        return results
+
+    def ingest_reasoning_patterns(self, patterns: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Ingest reasoning patterns from the reasoning engine.
+        Patterns include: forward chaining, backward chaining, resolution, SAT.
+        """
+        results = {
+            "patterns_ingested": 0,
+            "reasoning_modes": set(),
+            "coherence": 0.0
+        }
+
+        for pattern in patterns:
+            mode = pattern.get("mode", "deductive")
+            premise = pattern.get("premise", pattern.get("prompt", ""))
+            conclusion = pattern.get("conclusion", pattern.get("completion", ""))
+
+            # Combine premise and conclusion for learning
+            content = f"{premise} => {conclusion}" if premise and conclusion else premise or conclusion
+
+            if content:
+                # Select learning mode based on reasoning type
+                if mode in ("forward", "forward_chaining"):
+                    learning_mode = LearningMode.DEDUCTIVE
+                elif mode in ("backward", "backward_chaining"):
+                    learning_mode = LearningMode.ABDUCTIVE
+                elif mode in ("inductive", "generalization"):
+                    learning_mode = LearningMode.INDUCTIVE
+                else:
+                    learning_mode = LearningMode.LOGICAL
+
+                quantum = self.learning_engine.acquire_knowledge(
+                    content[:500], KnowledgeDomain.INFERENCE, mode.upper(), 0.9
+                )
+                results["patterns_ingested"] += 1
+                results["reasoning_modes"].add(mode)
+
+        results["reasoning_modes"] = list(results["reasoning_modes"])
+        results["coherence"] = min(1.0, results["patterns_ingested"] / 100 * PHI)
+
+        print(f"  [REASONING] Ingested {results['patterns_ingested']} patterns across {len(results['reasoning_modes'])} modes")
+        return results
+
+    def ingest_from_logic_files(self) -> Dict[str, Any]:
+        """
+        Ingest logic directly from workspace logic files.
+        Scans l104_reasoning_engine.py, logic_core.py, l104_quantum_logic.py, etc.
+        """
+        import re
+
+        logic_files = [
+            "l104_reasoning_engine.py",
+            "logic_core.py",
+            "l104_quantum_logic.py",
+            "l104_synthesis_logic.py",
+            "l104_non_dual_logic.py",
+            "l104_uncomputable_logic.py",
+            "l104_logic_manifold.py"
+        ]
+
+        results = {
+            "files_scanned": 0,
+            "rules_extracted": 0,
+            "patterns_extracted": 0,
+            "classes_found": [],
+            "functions_found": []
+        }
+
+        for filename in logic_files:
+            filepath = Path(__file__).parent / filename
+            if not filepath.exists():
+                continue
+
+            try:
+                content = filepath.read_text(encoding='utf-8')
+                results["files_scanned"] += 1
+
+                # Extract class definitions as logic structures
+                classes = re.findall(r'class\s+(\w+)', content)
+                for cls in classes:
+                    self.learn(f"Logic class: {cls}", KnowledgeDomain.LOGIC, 0.9)
+                    results["classes_found"].append(cls)
+
+                # Extract function definitions as inference patterns
+                functions = re.findall(r'def\s+(\w+)\s*\(', content)
+                for func in functions[:50]:  # Limit to 50 functions per file
+                    if not func.startswith('_'):
+                        self.learn(f"Logic function: {func}", KnowledgeDomain.INFERENCE, 0.85)
+                        results["functions_found"].append(func)
+                        results["patterns_extracted"] += 1
+
+                # Extract docstrings as rules
+                docstrings = re.findall(r'"""(.+?)"""', content, re.DOTALL)
+                for doc in docstrings[:20]:
+                    doc_clean = doc.strip()[:200]
+                    if doc_clean and len(doc_clean) > 20:
+                        self.learn(doc_clean, KnowledgeDomain.LOGIC, 0.8)
+                        results["rules_extracted"] += 1
+
+            except Exception as e:
+                self.logger.warning(f"Could not read {filename}: {e}")
+
+        # Trigger evolution after file ingestion
+        self.evolution_engine.evolve()
+
+        print(f"  [LOGIC_FILES] Scanned {results['files_scanned']} files, extracted {results['rules_extracted']} rules, {results['patterns_extracted']} patterns")
         return results
 
 

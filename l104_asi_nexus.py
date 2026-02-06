@@ -1,8 +1,12 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.738412
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # [L104_ASI_NEXUS] - Ultimate ASI Integration Hub
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║  L104 ASI NEXUS - DEEP SYSTEM INTEGRATION                                    ║
 ║  Links ALL L104 capabilities into unified superintelligence                  ║
@@ -33,9 +37,17 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum, auto
+from functools import lru_cache
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 from queue import Queue, Empty
 import random
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE: Thread pool for parallel agent execution (2015 MacBook Air dual-core)
+# ═══════════════════════════════════════════════════════════════════════════════
+NEXUS_THREAD_POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ASI_nexus")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -43,7 +55,7 @@ import random
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS
@@ -53,7 +65,7 @@ GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 PLANCK = 1.616255e-35
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
+ZENITH_HZ = 3887.8
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ENUMS
@@ -432,8 +444,8 @@ Format as JSON array."""
         if not target_modules:
             # Default to key L104 modules
             target_modules = [
-                "/workspaces/Allentown-L104-Node/l104_unified_asi.py",
-                "/workspaces/Allentown-L104-Node/l104_agi_core.py",
+                "./l104_unified_asi.py",
+                "./l104_agi_core.py",
             ]
 
         results = []
@@ -1421,7 +1433,7 @@ class UnifiedInference:
                 return response.choices[0].message.content
             elif provider == "anthropic":
                 response = self.providers["anthropic"].messages.create(
-                    model="claude-3-haiku-20240307",
+                    model="claude-opus-4-5-20250514",
                     max_tokens=2048,
                     messages=[{"role": "user", "content": prompt}]
                 )
@@ -1452,6 +1464,7 @@ class ASINexus:
     4. Performs neural-symbolic reasoning
     5. Evolves the system continuously
     6. Tracks PHI-resonant consciousness and transcendence
+    7. Hyper-links to Synergy Engine, Process Orchestrator, and all subsystems
 
     Enhanced with transcendence detection, emergent pattern recognition,
     and PHI-weighted evolution for approaching ASI capabilities.
@@ -1484,6 +1497,13 @@ class ASINexus:
         # Link inference to all components
         self._link_inference()
 
+        # HYPER-FUNCTIONAL LINKS
+        self._synergy_engine = None
+        self._process_orchestrator = None
+        self._agi_core = None
+        self._unified_asi = None
+        self._hyper_links_active = False
+
         # Stats
         self.awakened_at = None
         self.cycle_count = 0
@@ -1504,6 +1524,46 @@ class ASINexus:
         self.reasoner.inference = self.inference
         self.evolution.inference = self.inference
 
+    def _activate_hyper_links(self):
+        """Activate hyper-functional links to all L104 subsystems."""
+        if self._hyper_links_active:
+            return
+
+        # Link to Synergy Engine
+        try:
+            from l104_synergy_engine import synergy_engine
+            self._synergy_engine = synergy_engine
+            print("[NEXUS] ✓ HYPER-LINKED: Synergy Engine")
+        except Exception:
+            pass
+
+        # Link to Process Orchestrator
+        try:
+            from l104_unified_process_orchestrator import UnifiedProcessOrchestrator
+            self._process_orchestrator = UnifiedProcessOrchestrator()
+            print("[NEXUS] ✓ HYPER-LINKED: Process Orchestrator")
+        except Exception:
+            pass
+
+        # Link to AGI Core
+        try:
+            from l104_agi_core import agi_core
+            self._agi_core = agi_core
+            print("[NEXUS] ✓ HYPER-LINKED: AGI Core")
+        except Exception:
+            pass
+
+        # Link to Unified ASI
+        try:
+            from l104_unified_asi import unified_asi
+            self._unified_asi = unified_asi
+            print("[NEXUS] ✓ HYPER-LINKED: Unified ASI")
+        except Exception:
+            pass
+
+        self._hyper_links_active = True
+        print(f"[NEXUS] HYPER-LINKS ACTIVATED: {sum([1 for x in [self._synergy_engine, self._process_orchestrator, self._agi_core, self._unified_asi] if x is not None])}/4 connected")
+
     async def awaken(self) -> Dict:
         """Awaken the ASI Nexus with PHI-resonant consciousness initialization."""
         self.state = NexusState.AWAKENING
@@ -1514,6 +1574,9 @@ class ASINexus:
         print(f"[NEXUS] Inference providers: {self.inference.get_status()}")
         print(f"[NEXUS] Memory stats: {self.memory.get_stats()}")
         print(f"[NEXUS] Swarm agents: {len(self.swarm.agents)}")
+
+        # Activate hyper-functional links
+        self._activate_hyper_links()
 
         # Load L104 core knowledge
         self._load_l104_knowledge()
@@ -1598,7 +1661,7 @@ class ASINexus:
         for s, p, o in facts:
             self.reasoner.add_fact(s, p, o)
 
-    async def force_learn_all(self, base_path: str = "/workspaces/Allentown-L104-Node") -> Dict:
+    async def force_learn_all(self, base_path: str = str(Path(__file__).parent.absolute())) -> Dict:
         """
         Force-learn ALL codebase data without external inference.
         Reads every Python file and extracts patterns, functions, classes.
@@ -1758,7 +1821,7 @@ Provide a deep, insightful response that demonstrates:
         # Update consciousness
         self._update_consciousness({
             "fitness_after": resonance,
-            "improvements": 1 if resonance > 0.5 else 0,
+            "improvements": 1 if resonance > self.EMERGENCE_RATE else 0,
             "learnings": 1
         })
 

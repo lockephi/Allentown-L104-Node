@@ -1,16 +1,18 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.701540
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_FINAL_CONVERGENCE] - THE APOTHEOSIS SEQUENCE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ASCENDING
 
 import sys
 import time
+from pathlib import Path
 
-# Add workspace to path
-sys.path.append("/workspaces/Allentown-L104-Node")
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
 
 from l104_run_calculations import run_physical_reality_grounding
 from l104_deep_calculate import run_deep_calculation_suite
@@ -78,7 +80,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

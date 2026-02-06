@@ -9,8 +9,20 @@ echo "==================================================="
 # 1. Install Buildozer
 echo "--- [BUILDER]: INSTALLING BUILDOZER & DEPENDENCIES ---"
 pip install --user buildozer
-sudo apt update
-sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+# Detect OS for dependencies
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "--- [BUILDER]: DETECTED macOS ---"
+    if command -v brew >/dev/null 2>&1; then
+        brew install git zip unzip openjdk autoconf libtool pkg-config ncurses cmake openssl
+    else
+        echo "⚠ [BUILDER]: Homebrew not found. Please install dependencies manually."
+    fi
+else
+    echo "--- [BUILDER]: DETECTED LINUX ---"
+    sudo apt update
+    sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+fi
 
 # 2. Initialize Buildozer
 if [ ! -f buildozer.spec ]; then

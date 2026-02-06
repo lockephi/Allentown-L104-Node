@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.726588
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 CLAIM VERIFIER - RIGOROUS TESTING
 =======================================
 Tests every claim about L104 with real verification.
@@ -48,7 +52,8 @@ class ClaimVerifier:
 
     def __init__(self):
         self.results: List[ClaimResult] = []
-        self.workspace = Path('/workspaces/Allentown-L104-Node')
+        # Dynamic path detection for cross-platform compatibility
+        self.workspace = Path(__file__).parent.absolute()
 
     def verify(self, claim: str, category: str, test_func,
                evidence_func=None) -> ClaimResult:

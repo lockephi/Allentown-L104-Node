@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 Memory and Performance Monitor
 Provides real-time system resource monitoring and optimization suggestions
@@ -41,7 +42,7 @@ def get_disk_info():
     print("DISK USAGE")
     print("="*60)
     
-    disk = psutil.disk_usage('/workspaces')
+    disk = psutil.disk_usage('/Users')
     print(f"Total:     {get_size(disk.total)}")
     print(f"Used:      {get_size(disk.used)} ({disk.percent}%)")
     print(f"Free:      {get_size(disk.free)}")
@@ -91,7 +92,7 @@ def get_optimization_suggestions():
     print("="*60)
     
     mem = psutil.virtual_memory()
-    disk = psutil.disk_usage('/workspaces')
+    disk = psutil.disk_usage('/Users')
     
     suggestions = []
     

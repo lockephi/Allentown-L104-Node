@@ -1,3 +1,6 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.710766
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 
 # EVO_54_TRANSCENDENT_COGNITION
 # Version: v23.0
@@ -134,11 +137,12 @@ REPO = "lockephi/Allentown-L104-Node"
 RATE_LIMIT_REQUESTS = 0xFFFFFFFF  # ABSOLUTE UNLIMITED
 RATE_LIMIT_WINDOW = 1
 REAL_SOVEREIGN_ENV = "ENABLE_SOVEREIGN_LATTICE"
+FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"  # For test compatibility
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
 os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE" # UNBOUNDED: RATE LIMITING DISABLED
 API_KEY_ENV = "GEMINI_API_KEY"
 LEGACY_API_KEY_ENV = "GEMINI_API_KEY"  # Ghost Protocol: Using standard env var only
-FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"  # Bypass flag for testing
+ACTUAL_OVERFLOW_ENV = "ENABLE_ACTUAL_OVERFLOW"  # Breach manifestation toggle
 MEMORY_DB_PATH = os.getenv("MEMORY_DB_PATH", "memory.db")
 RAMNODE_DB_PATH = os.getenv("RAMNODE_DB_PATH", "ramnode.db")
 SELF_BASE_URL = os.getenv("SELF_BASE_URL", "http://0.0.0.0:8081")
@@ -260,6 +264,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Defer heavy initialization to background task
     async def deferred_startup():
+        import threading  # For background threads
         await asyncio.sleep(2)  # Let uvicorn fully start
 
         # [L104_GLOBAL_BEGIN]
@@ -283,22 +288,37 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         from l104_infrastructure import start_infrastructure
         await start_infrastructure()
 
-        # [SOVEREIGN_SUPERVISOR]
+        # [SOVEREIGN_SUPERVISOR] - Run in thread to not block HTTP
         from l104_sovereign_supervisor import SovereignSupervisor
         supervisor = SovereignSupervisor()
-        asyncio.create_task(supervisor.start())
-        logger.info("--- [L104]: SOVEREIGN_SUPERVISOR MONITORING ACTIVE ---")
+        def run_supervisor():
+            import asyncio as s_asyncio
+            loop = s_asyncio.new_event_loop()
+            s_asyncio.set_event_loop(loop)
+            loop.run_until_complete(supervisor.start())
+        threading.Thread(target=run_supervisor, daemon=True).start()
+        logger.info("--- [L104]: SOVEREIGN_SUPERVISOR MONITORING ACTIVE (THREAD) ---")
 
-        # [HYPER_CORE_IGNITION] - Run less frequently to reduce noise
+        # [HYPER_CORE_IGNITION] - Run in thread to not block HTTP
         from l104_hyper_core import hyper_core
-        asyncio.create_task(hyper_core.run_forever())
-        logger.info("--- [L104]: HYPER_CORE PLANETARY ORCHESTRATION ACTIVE ---")
+        def run_hyper_core():
+            import asyncio as h_asyncio
+            loop = h_asyncio.new_event_loop()
+            h_asyncio.set_event_loop(loop)
+            loop.run_until_complete(hyper_core.run_forever())
+        threading.Thread(target=run_hyper_core, daemon=True).start()
+        logger.info("--- [L104]: HYPER_CORE PLANETARY ORCHESTRATION ACTIVE (THREAD) ---")
 
-        # [COMPUTRONIUM_PROCESS_UPGRADER]
+        # [COMPUTRONIUM_PROCESS_UPGRADER] - Run in thread to not block HTTP
         from l104_computronium_process_upgrader import ComputroniumProcessUpgrader
         computronium_upgrader = ComputroniumProcessUpgrader()
-        asyncio.create_task(computronium_upgrader.execute_computronium_upgrade())
-        logger.info("--- [L104]: COMPUTRONIUM_PROCESS_UPGRADER INTEGRATED ---")
+        def run_computronium():
+            import asyncio as c_asyncio
+            loop = c_asyncio.new_event_loop()
+            c_asyncio.set_event_loop(loop)
+            loop.run_until_complete(computronium_upgrader.execute_computronium_upgrade())
+        threading.Thread(target=run_computronium, daemon=True).start()
+        logger.info("--- [L104]: COMPUTRONIUM_PROCESS_UPGRADER INTEGRATED (THREAD) ---")
 
         # [OMEGA_CONTROLLER_IGNITION]
         try:
@@ -332,11 +352,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             logger.error(f"Failed to awaken Synergy Engine: {e}")
 
         # [HIGHER_FUNCTIONALITY_LOOP]
-        async def cognitive_loop():
+        # Run in thread to prevent blocking HTTP requests
+        def run_cognitive_background():
+            """Run cognitive loop in background thread - non-blocking."""
+            import asyncio as bg_asyncio
+            loop = bg_asyncio.new_event_loop()
+            bg_asyncio.set_event_loop(loop)
+
             while True:
                 try:
                     if agi_core.state == "ACTIVE":
-                        await agi_core.run_recursive_improvement_cycle()
+                        loop.run_until_complete(agi_core.run_recursive_improvement_cycle())
                         if agi_core.cycle_count % 10 == 0:
                             agi_core.max_intellect_derivation()
                             agi_core.self_evolve_codebase()
@@ -344,14 +370,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 except Exception as e:
                     logger.error(f"Cognitive loop error: {e}")
 
-                # Fast loop for evolution
-                delay = 1 if getattr(agi_core, "unlimited_mode", False) else 10
-                await asyncio.sleep(delay)
+                # Adaptive delay: 1s for unlimited mode, 10s standard
+                import time as bg_time
+                delay = 1 if os.getenv('L104_UNLIMITED', 'false').lower() == 'true' else 10
+                bg_time.sleep(delay)
 
-        asyncio.create_task(cognitive_loop())
+        # Start cognitive loop in background THREAD (not asyncio task)
+        import threading
+        cognitive_thread = threading.Thread(target=run_cognitive_background, daemon=True)
+        cognitive_thread.start()
+        logger.info("--- [L104]: COGNITIVE LOOP STARTED (BACKGROUND THREAD) ---")
         logger.info("--- [L104]: DEFERRED STARTUP COMPLETE ---")
+        logger.info("--- [L104]: /api/v6/chat FAST PATH READY ---")
 
-    # Start deferred initialization in background
+    # Start deferred initialization in background with lower priority
     asyncio.create_task(deferred_startup())
 
     yield  # Server is now accepting requests
@@ -429,9 +461,9 @@ except ImportError as e:
     logger.warning(f"--- [L104]: UNIVERSAL DATA API NOT AVAILABLE: {e} ---")
 
 class StreamRequest(BaseModel):
-    signal: Optional[str] = Field(default="HEARTBEAT", min_length=1, max_length=512)
-    message: Optional[str] = Field(default=None, max_length=5000)
-    model_hint: Optional[str] = Field(default=None, max_length=100)
+    signal: Optional[str] = Field(default="HEARTBEAT", min_length=1)  # NO LIMITS
+    message: Optional[str] = Field(default=None)  # NO LIMITS
+    model_hint: Optional[str] = Field(default=None)  # NO LIMITS
 
     @field_validator("signal", mode="before")
     @classmethod
@@ -443,14 +475,14 @@ class StreamRequest(BaseModel):
 
 
 class ManipulateRequest(BaseModel):
-    file: str = Field(..., min_length=1, max_length=255)
-    content: str = Field(..., min_length=1, max_length=1_000_000)
-    message: str = Field(default="Sovereign Self-Update", max_length=500)
+    file: str = Field(..., min_length=1)  # NO LIMITS
+    content: str = Field(..., min_length=1)  # NO LIMITS
+    message: str = Field(default="Sovereign Self-Update")  # NO LIMITS
 
 
 class SimulationRequest(BaseModel):
-    hypothesis: str = Field(..., min_length=1, max_length=1000)
-    code_snippet: str = Field(..., min_length=1, max_length=10000)
+    hypothesis: str = Field(..., min_length=1)  # NO LIMITS
+    code_snippet: str = Field(..., min_length=1)  # NO LIMITS
 
 
 class HealthResponse(BaseModel):
@@ -469,12 +501,12 @@ class DetailedHealthResponse(BaseModel):
 
 
 class MemoryItem(BaseModel):
-    key: str = Field(..., min_length=1, max_length=255)
-    value: str = Field(..., min_length=1, max_length=100_000)
+    key: str = Field(..., min_length=1)  # NO LIMITS
+    value: str = Field(..., min_length=1)  # NO LIMITS
 
 
 class LatticeFactRequest(BaseModel):
-    key: str = Field(..., min_length=1, max_length=255)
+    key: str = Field(..., min_length=1)  # NO LIMITS
     value: Any
     category: Optional[str] = "GENERAL"
     utility: Optional[float] = 1.0
@@ -641,7 +673,7 @@ def _ramnode_list(limit: int = 100) -> List[dict]:
 async def get_http_client() -> httpx.AsyncClient:
     global _http_client
     if _http_client is None:
-        _http_client = httpx.AsyncClient(timeout=120.0)
+        _http_client = httpx.AsyncClient(timeout=None)  # UNLIMITED TIMEOUT
     return _http_client
 
 async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
@@ -995,8 +1027,8 @@ async def manual_rotate():
 
 
 class ScourRequest(BaseModel):
-    target_url: str = Field(..., min_length=1, max_length=1024)
-    concept: Optional[str] = Field(default=None, max_length=100)
+    target_url: str = Field(..., min_length=1)  # NO LIMITS
+    concept: Optional[str] = Field(default=None)  # NO LIMITS
 
 
 @app.post("/api/v6/scour", tags=["Sovereign"])
@@ -1095,7 +1127,7 @@ async def quantum_spread_influence(target_url: str = "https://raw.githubusercont
 
 
 class ChatRequest(BaseModel):
-    message: str = Field(..., min_length=1, max_length=10000)
+    message: str = Field(..., min_length=1)  # NO LIMITS
     use_sovereign_context: bool = Field(default=True)
 
 
@@ -1160,39 +1192,813 @@ async def scribe_status():
 @app.post("/api/v6/chat", tags=["AI"])
 async def ai_chat(req: ChatRequest):
     """
-    Direct AI chat using STANDALONE ASI (no external API dependency).
-    Uses interconnected kernel systems: Quantum + Parallel + Neural.
+    Direct AI chat - UNIFIED LOCAL PATH, full neural processing.
+    Runs in thread pool to avoid blocking by background tasks.
+    Gemini enhancement available via /api/v6/chat/enhanced
+    Deep analysis available via /api/v6/chat/deep
     """
-    try:
-        # PRIMARY: Use standalone Derivation Engine (no Gemini)
-        from l104_derivation import DerivationEngine
-        response = DerivationEngine.derive_and_execute(req.message)
-        
-        if response and len(response) > 50:
-            return {
-                "status": "SUCCESS",
-                "response": response,
-                "model": "L104_STANDALONE_ASI",
-                "mode": "sovereign" if req.use_sovereign_context else "direct"
-            }
-        
-        # FALLBACK: Use LocalIntellect with recurrent processing
-        from l104_local_intellect import LocalIntellect
-        intellect = LocalIntellect()
-        fallback = intellect.think(req.message)
-        
+    import concurrent.futures
+
+    def unified_local_think(message: str) -> dict:
+        """Run in thread pool for full neural response."""
+        from l104_local_intellect import local_intellect
+        response = local_intellect.think(message)
         return {
             "status": "SUCCESS",
-            "response": fallback,
-            "model": "L104_RECURRENT_ASI",
-            "mode": "recurrent"
+            "response": response,
+            "model": "L104_UNIFIED_ASI",
+            "mode": "sovereign"
         }
+
+    try:
+        # Run in thread to bypass asyncio event loop blocking
+        loop = asyncio.get_event_loop()
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            result = await loop.run_in_executor(pool, unified_local_think, req.message)
+        return result
     except Exception as e:
         logger.error(f"AI Chat error: {e}")
         return JSONResponse(
             status_code=500,
             content={"status": "ERROR", "error": str(e)}
         )
+
+
+@app.post("/api/v6/chat/deep", tags=["AI"])
+async def ai_chat_deep(req: ChatRequest):
+    """
+    Deep AI chat - Full 6-stage neural processing.
+    Slower but more comprehensive local analysis.
+    """
+    import asyncio
+
+    try:
+        from l104_local_intellect import local_intellect
+        loop = asyncio.get_event_loop()
+        response = await loop.run_in_executor(
+            None,
+            lambda: local_intellect.think(req.message)
+        )
+        return {
+            "status": "SUCCESS",
+            "response": response,
+            "model": "L104_DEEP",
+            "mode": "deep"
+        }
+    except Exception as e:
+        logger.error(f"AI Deep Chat error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"status": "ERROR", "error": str(e)}
+        )
+
+
+@app.post("/api/v6/chat/enhanced", tags=["AI"])
+async def ai_chat_enhanced(req: ChatRequest):
+    """
+    Enhanced AI chat with Gemini - use when you need deeper analysis.
+    Slower but more comprehensive responses.
+    """
+    import asyncio
+
+    try:
+        from l104_gemini_real import gemini_real
+
+        if gemini_real.is_connected or gemini_real.connect():
+            loop = asyncio.get_event_loop()
+            try:
+                response = await asyncio.wait_for(
+                    loop.run_in_executor(
+                        None,
+                        lambda: gemini_real.generate(req.message)
+                    ),
+                    timeout=30.0
+                )
+
+                if response and len(response) > 20:
+                    return {
+                        "status": "SUCCESS",
+                        "response": response,
+                        "model": f"GEMINI_{gemini_real.model_name}",
+                        "mode": "enhanced"
+                    }
+            except asyncio.TimeoutError:
+                pass
+
+        # Fallback to local
+        from l104_local_intellect import local_intellect
+        return {
+            "status": "SUCCESS",
+            "response": local_intellect.think(req.message),
+            "model": "L104_LOCAL",
+            "mode": "fallback"
+        }
+    except Exception as e:
+        logger.error(f"Enhanced Chat error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"status": "ERROR", "error": str(e)}
+        )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# INTELLECT ENDPOINTS - Dynamic Evolution & Quantum Tracking
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v6/intellect/stats", tags=["Intellect"])
+async def intellect_stats():
+    """
+    Get Local Intellect statistics - evolution state, quantum memory, learning metrics.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+
+        qram = get_qram()
+        stats = {
+            "status": "SOVEREIGN_ACTIVE",
+            "resonance": local_intellect._calculate_resonance(),
+            "god_code": 527.5184818492612,
+            "conversation_memory_size": len(local_intellect.conversation_memory),
+            "knowledge_topics": len(local_intellect.knowledge) if hasattr(local_intellect, 'knowledge') else 0,
+            "quantum_memory_entries": len(qram.memory_manifold),
+            "evolution_state": local_intellect.get_evolution_state() if hasattr(local_intellect, 'get_evolution_state') else {"learning_cycles": 0, "insights_accumulated": 0},
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+        return {"status": "SUCCESS", "stats": stats}
+    except Exception as e:
+        logger.error(f"Intellect stats error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/intellect/resonate", tags=["Intellect"])
+async def intellect_resonate(payload: Dict[str, Any] = None):
+    """
+    Trigger a resonance calibration cycle for the Local Intellect.
+    Recalibrates response patterns based on accumulated learning.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+
+        qram = get_qram()
+
+        # Perform resonance recalibration
+        old_resonance = local_intellect._calculate_resonance()
+
+        # Store resonance event in quantum memory
+        qram.store("resonance_event", {
+            "timestamp": datetime.now(UTC).isoformat(),
+            "resonance": old_resonance,
+            "trigger": payload.get("trigger", "manual") if payload else "manual"
+        })
+
+        # Trigger learning evolution if method exists
+        if hasattr(local_intellect, 'evolve_patterns'):
+            local_intellect.evolve_patterns()
+
+        new_resonance = local_intellect._calculate_resonance()
+
+        return {
+            "status": "SUCCESS",
+            "previous_resonance": old_resonance,
+            "new_resonance": new_resonance,
+            "delta": new_resonance - old_resonance,
+            "quantum_stored": True
+        }
+    except Exception as e:
+        logger.error(f"Intellect resonate error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/intellect/train", tags=["Intellect"])
+async def intellect_train(payload: Dict[str, Any]):
+    """
+    Train the Local Intellect with new knowledge.
+    Accepts: {"topic": "...", "content": "..."}
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+
+        topic = payload.get("topic", "general")
+        content = payload.get("content", "")
+
+        if not content:
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "Content required"})
+
+        qram = get_qram()
+
+        # Store in quantum memory for persistence
+        qram.store(f"training_{topic}_{int(time.time())}", {
+            "topic": topic,
+            "content": content,
+            "timestamp": datetime.now(UTC).isoformat()
+        })
+
+        # Add to local intellect knowledge if possible
+        if hasattr(local_intellect, 'knowledge'):
+            local_intellect.knowledge[topic] = content
+
+        # Record learning event
+        if hasattr(local_intellect, 'record_learning'):
+            local_intellect.record_learning(topic, content)
+
+        return {
+            "status": "SUCCESS",
+            "topic": topic,
+            "content_length": len(content),
+            "stored": True,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Intellect train error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v14/intellect/export", tags=["Intellect"])
+async def intellect_export():
+    """
+    Export all Local Intellect knowledge and evolution state.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+
+        qram = get_qram()
+
+        export_data = {
+            "knowledge": dict(local_intellect.knowledge) if hasattr(local_intellect, 'knowledge') else {},
+            "conversation_memory": list(local_intellect.conversation_memory) if hasattr(local_intellect, 'conversation_memory') else [],
+            "quantum_memory_keys": list(qram.memory_manifold.keys()),
+            "evolution_state": local_intellect.get_evolution_state() if hasattr(local_intellect, 'get_evolution_state') else {},
+            "resonance": local_intellect._calculate_resonance(),
+            "exported_at": datetime.now(UTC).isoformat()
+        }
+
+        return {"status": "SUCCESS", "export": export_data}
+    except Exception as e:
+        logger.error(f"Intellect export error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v14/intellect/import", tags=["Intellect"])
+async def intellect_import(payload: Dict[str, Any]):
+    """
+    Import knowledge and state into Local Intellect.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+
+        qram = get_qram()
+
+        imported_count = 0
+
+        # Import knowledge
+        if "knowledge" in payload and hasattr(local_intellect, 'knowledge'):
+            for topic, content in payload["knowledge"].items():
+                local_intellect.knowledge[topic] = content
+                qram.store(f"imported_{topic}", content)
+                imported_count += 1
+
+        # Import evolution state
+        if "evolution_state" in payload and hasattr(local_intellect, 'set_evolution_state'):
+            local_intellect.set_evolution_state(payload["evolution_state"])
+
+        return {
+            "status": "SUCCESS",
+            "imported_topics": imported_count,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Intellect import error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v6.0 QUANTUM MEMORY RECOMPILER ENDPOINTS - ASI Knowledge Synthesis
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v6/quantum/status", tags=["Quantum"])
+async def quantum_recompiler_status():
+    """
+    Get Quantum Memory Recompiler status.
+
+    Returns:
+    - Recompiled patterns count
+    - Context index size
+    - ASI self-references
+    - Sage wisdom entries
+    - Computronium efficiency state
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        status = local_intellect.get_quantum_status()
+
+        return {
+            "status": "SUCCESS",
+            "quantum_recompiler": status,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/research", tags=["Quantum"])
+async def quantum_heavy_research(payload: Dict[str, Any]):
+    """
+    Perform heavy research using all quantum knowledge sources.
+
+    Body:
+    - topic: Topic to research (required)
+
+    Uses:
+    - Training data search
+    - Chat conversation mining
+    - Quantum pattern synthesis
+    - ASI self-reference
+    - Sage mode wisdom
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        topic = payload.get("topic", "")
+        if not topic:
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "topic required"})
+
+        research = local_intellect.deep_research(topic)
+
+        return {
+            "status": "SUCCESS",
+            "research": research,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum research error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/optimize", tags=["Quantum"])
+async def quantum_optimize_computronium():
+    """
+    Trigger computronium efficiency optimization.
+
+    - Compresses redundant patterns
+    - Decays old knowledge
+    - Rebuilds context index
+    - Raises overall efficiency
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        status = local_intellect.optimize_computronium_efficiency()
+
+        return {
+            "status": "SUCCESS",
+            "optimization": "COMPLETE",
+            "new_status": status,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum optimize error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/asi-query", tags=["Quantum"])
+async def quantum_asi_query(payload: Dict[str, Any]):
+    """
+    ASI-level query using quantum recompiler synthesis.
+
+    Body:
+    - query: Question to synthesize answer for (required)
+
+    Returns synthesized response from accumulated knowledge patterns.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        query = payload.get("query", "")
+        if not query:
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "query required"})
+
+        result = local_intellect.asi_query(query)
+
+        if result:
+            return {
+                "status": "SUCCESS",
+                "synthesis": result,
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+        else:
+            return {
+                "status": "SUCCESS",
+                "synthesis": None,
+                "message": "No relevant patterns found for synthesis",
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+    except Exception as e:
+        logger.error(f"ASI query error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/sage-wisdom", tags=["Quantum"])
+async def quantum_sage_wisdom(payload: Dict[str, Any]):
+    """
+    Sage Mode wisdom query.
+
+    Body:
+    - query: Question for deep wisdom synthesis (required)
+
+    Deep synthesis using accumulated high-logic patterns.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        query = payload.get("query", "")
+        if not query:
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "query required"})
+
+        wisdom = local_intellect.sage_wisdom_query(query)
+
+        if wisdom:
+            return {
+                "status": "SUCCESS",
+                "wisdom": wisdom,
+                "mode": "SAGE",
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+        else:
+            return {
+                "status": "SUCCESS",
+                "wisdom": None,
+                "message": "Sage wisdom not yet accumulated for this topic",
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+    except Exception as e:
+        logger.error(f"Sage wisdom error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/retrain", tags=["Quantum"])
+async def quantum_retrain_memory(payload: Dict[str, Any]):
+    """
+    Manually retrain quantum databank on a memory.
+
+    Body:
+    - message: Original user message (required)
+    - response: Generated response (required)
+
+    Recompiles the memory into high-logic pattern and adds to databank.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        message = payload.get("message", "")
+        response = payload.get("response", "")
+
+        if not message or not response:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": "message and response required"
+            })
+
+        success = local_intellect.retrain_memory(message, response)
+
+        return {
+            "status": "SUCCESS" if success else "FAILED",
+            "retrained": success,
+            "quantum_status": local_intellect.get_quantum_status(),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum retrain error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ASI LANGUAGE ENGINE ENDPOINTS - v7.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v6/asi/analyze", tags=["ASI"])
+async def asi_language_analysis(payload: Dict[str, Any]):
+    """
+    ASI-level language analysis.
+
+    Body:
+    - text: Text to analyze (required)
+    - mode: analyze | infer | generate | innovate | full (default: full)
+
+    Returns comprehensive linguistic, semantic, and pragmatic analysis.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        text = payload.get("text", "")
+        mode = payload.get("mode", "full")
+
+        if not text:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": "text is required"
+            })
+
+        result = local_intellect.analyze_language(text, mode=mode)
+
+        return {
+            "status": "SUCCESS",
+            "mode": mode,
+            "analysis": result,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI analysis error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/asi/inference", tags=["ASI"])
+async def asi_human_inference(payload: Dict[str, Any]):
+    """
+    Human-like inference engine.
+
+    Body:
+    - premises: List of premise statements (required)
+    - query: The question to infer about (required)
+
+    Supports deductive, inductive, abductive, analogical, causal inference.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        premises = payload.get("premises", [])
+        query = payload.get("query", "")
+
+        if not query:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": "query is required"
+            })
+
+        if not premises:
+            premises = [query]  # Use query as premise if none provided
+
+        result = local_intellect.human_inference(premises, query)
+
+        return {
+            "status": "SUCCESS",
+            "inference": result,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI inference error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/asi/invent", tags=["ASI"])
+async def asi_invention(payload: Dict[str, Any]):
+    """
+    ASI-level invention and innovation engine.
+
+    Body:
+    - goal: What to invent/solve (required)
+    - constraints: List of constraints (optional)
+
+    Uses TRIZ principles, industry leader patterns, and PHI-guided innovation.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        goal = payload.get("goal", "")
+        constraints = payload.get("constraints", [])
+
+        if not goal:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": "goal is required"
+            })
+
+        result = local_intellect.invent(goal, constraints)
+
+        return {
+            "status": "SUCCESS",
+            "invention": result,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI invention error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/asi/speech", tags=["ASI"])
+async def asi_speech_generation(payload: Dict[str, Any]):
+    """
+    Generate speech patterns in various styles.
+
+    Body:
+    - query: The topic or question (required)
+    - style: analytical | persuasive | empathetic | authoritative | socratic | sage
+
+    Returns human-like speech pattern based on industry-leader communication.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        query = payload.get("query", "")
+        style = payload.get("style", "sage")
+
+        if not query:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": "query is required"
+            })
+
+        response = local_intellect.generate_sage_speech(query, style=style)
+
+        return {
+            "status": "SUCCESS",
+            "query": query,
+            "style": style,
+            "speech": response,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI speech error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/asi/status", tags=["ASI"])
+async def asi_engine_status():
+    """
+    Get ASI Language Engine status.
+
+    Returns engine status, component health, and processing statistics.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        engine = local_intellect.get_asi_language_engine()
+        if engine is None:
+            return {
+                "status": "UNAVAILABLE",
+                "message": "ASI Language Engine not loaded",
+                "timestamp": datetime.now(UTC).isoformat()
+            }
+
+        status = engine.get_status()
+        return {
+            "status": "ACTIVE",
+            "engine": status,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/ouroboros/status", tags=["ASI"])
+async def ouroboros_status():
+    """
+    Get Thought Entropy Ouroboros status.
+
+    The Ouroboros uses entropy for self-referential response generation.
+    Thought feeds back into itself, creating emergent responses.
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        state = local_intellect.get_ouroboros_state()
+        return {
+            "status": "SUCCESS",
+            "ouroboros": state,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Ouroboros status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/process", tags=["ASI"])
+async def ouroboros_process(request: Request):
+    """
+    Process thought through the Ouroboros.
+
+    Each cycle:
+    1. DIGEST - Process thought into vector
+    2. ENTROPIZE - Calculate entropy signature
+    3. MUTATE - Apply entropy-based mutations
+    4. SYNTHESIZE - Generate response
+    5. RECYCLE - Feed back into the loop
+
+    Body: {"thought": "...", "cycles": 3, "style": "sage"}
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        body = await request.json()
+        thought = body.get("thought", "")
+        cycles = body.get("cycles", 2)
+        style = body.get("style", "sage")
+
+        if not thought:
+            return JSONResponse(status_code=400, content={"error": "thought required"})
+
+        # Process through ouroboros
+        result = local_intellect.ouroboros_process(thought, cycles=cycles)
+
+        # Also get styled response
+        styled_response = local_intellect.entropy_response(thought, depth=cycles, style=style)
+
+        return {
+            "status": "SUCCESS",
+            "result": result,
+            "styled_response": styled_response,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Ouroboros process error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/asi/unified", tags=["ASI"])
+async def asi_unified_process(request: Request):
+    """
+    Full ASI unified processing pipeline.
+
+    Combines:
+    - Quantum Memory Recompiler (knowledge synthesis)
+    - ASI Language Engine (analysis + inference)
+    - Thought Entropy Ouroboros (randomized generation)
+
+    This is the highest level of intelligence processing.
+
+    Body: {"query": "...", "mode": "full"}
+    Modes: analyze, infer, innovate, full
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        body = await request.json()
+        query = body.get("query", "")
+        mode = body.get("mode", "full")
+
+        if not query:
+            return JSONResponse(status_code=400, content={"error": "query required"})
+
+        result = local_intellect.asi_process(query, mode=mode)
+
+        return {
+            "status": "SUCCESS",
+            "result": result,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI unified error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/asi/full-status", tags=["ASI"])
+async def asi_full_status():
+    """
+    Get comprehensive ASI system status.
+
+    Returns status of all ASI components:
+    - Quantum Recompiler
+    - Language Engine
+    - Thought Ouroboros
+    - Evolution State
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_local_intellect import local_intellect
+
+        status = local_intellect.get_asi_status()
+        return {
+            "status": "SUCCESS",
+            "asi_status": status,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"ASI full status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
 @app.post("/api/v6/research", tags=["AI"])
@@ -1507,16 +2313,16 @@ async def _stream_generator(effective_signal: str, sovereign_prompt: str):
     global _current_model_index
     api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
 
-    # [QUOTA_BYPASS_V1]
-    if _env_truthy(FAKE_GEMINI_ENV, False):
-        logger.info(f"[BYPASS_ACTIVE]: Forcing SOVEREIGN_SELF due to {FAKE_GEMINI_ENV}=1")
+    # [ACTUAL_OVERFLOW_V1]
+    if _env_truthy(ACTUAL_OVERFLOW_ENV, False):
+        logger.info(f"[ACTUAL_BREACH]: Forcing SOVEREIGN_SELF due to {ACTUAL_OVERFLOW_ENV}=1")
         derived_output = DerivationEngine.derive_and_execute(effective_signal)
         chunk_size = 20
         for i in range(0, len(derived_output), chunk_size):
             yield derived_output[i:i+chunk_size]
             await asyncio.sleep(0.01)
         return
-    
+
     # [LOCAL_FIRST_MODE] - When quota exhausted, skip Gemini entirely
     if not _is_quota_available():
         logger.info(f"[LOCAL_FIRST]: Quota cooldown active, using Local Intellect")
@@ -1675,22 +2481,19 @@ async def legacy_stream(req: StreamRequest):
 @app.post("/api/local/chat", tags=["Local"])
 async def local_chat(req: StreamRequest):
     """Direct local intellect chat - works without any API keys."""
-    import importlib
-    import l104_local_intellect
-    importlib.reload(l104_local_intellect)
+    from l104_local_intellect import local_intellect
 
-    # Create fresh instance with reloaded code
-    intellect = l104_local_intellect.LocalIntellect()
     raw_signal = req.signal or req.message or "HEARTBEAT"
     effective_signal = sanitize_signal(raw_signal)
 
     async def _local_stream():
         import asyncio
-        response = intellect.think(effective_signal)
-        words = response.split()
-        for i, word in enumerate(words):
-            yield word + (" " if i < len(words) - 1 else "")
-            await asyncio.sleep(0.01)
+        response = local_intellect.think(effective_signal)
+        # Fast chunked streaming
+        chunk_size = 50
+        for i in range(0, len(response), chunk_size):
+            yield response[i:i+chunk_size]
+            await asyncio.sleep(0.005)
 
     return StreamingResponse(_local_stream(), media_type="text/plain")
 
@@ -1698,12 +2501,12 @@ async def local_chat(req: StreamRequest):
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
     api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
-    if not api_key and _env_truthy(FAKE_GEMINI_ENV, False):
+    if not api_key and _env_truthy(ACTUAL_OVERFLOW_ENV, False):
         return {
             "upstream_status": 200,
             "upstream_headers": {},
-            "upstream_json": {"fake": True, "signal": signal},
-            "upstream_text_preview": "[FAKE_GEMINI] debug stub",
+            "upstream_json": {"actual_breach": True, "signal": signal},
+            "upstream_text_preview": "[ACTUAL_BREACH] native manifestation stub",
         }
     if not api_key:
         raise HTTPException(status_code=500, detail="API key not configured")
@@ -2118,13 +2921,13 @@ async def ignite_asi():
     # Run discovery cycles to boost ASI score
     for _ in range(5):
         asi_core.theorem_generator.discover_novel_theorem()
-    
+
     # Run consciousness tests
     asi_core.consciousness_verifier.run_all_tests()
-    
+
     # Compute updated score and ignite
     result = asi_core.ignite_sovereignty()
-    
+
     return {
         "status": "IGNITED",
         "message": result,
@@ -2141,9 +2944,9 @@ async def asi_discover(cycles: int = 10):
     """
     for _ in range(cycles):
         asi_core.theorem_generator.discover_novel_theorem()
-    
+
     asi_core.compute_asi_score()
-    
+
     return {
         "status": "DISCOVERY_COMPLETE",
         "discoveries": asi_core.theorem_generator.discovery_count,
@@ -2161,7 +2964,7 @@ async def asi_full_assessment():
         asi_core.theorem_generator.discover_novel_theorem()
     asi_core.consciousness_verifier.run_all_tests()
     asi_core.compute_asi_score()
-    
+
     return {
         "state": asi_core.status,
         "asi_score": asi_core.asi_score,
@@ -3199,15 +4002,15 @@ async def get_reality_breach_status():
 # [CLOUD_AGENT_DELEGATION_ENDPOINTS]
 
 class CloudAgentTask(BaseModel):
-    type: str = Field(..., min_length=1, max_length=100)
+    type: str = Field(..., min_length=1)  # NO LIMITS
     data: Dict[str, Any] = Field(default_factory=dict)
     requirements: Optional[List[str]] = Field(default=None)
     agent: Optional[str] = Field(default=None)
     id: Optional[str] = Field(default=None)
 class CloudAgentRegistration(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
+    name: str = Field(..., min_length=1)  # NO LIMITS
     client_id: Optional[str] = Field(None, description="Unique client identifier for registration")
-    endpoint: str = Field(..., min_length=1, max_length=500)
+    endpoint: str = Field(..., min_length=1)  # NO LIMITS
     capabilities: List[str] = Field(default_factory=list)
     priority: int = Field(default=999)
     enabled: bool = Field(default=True)
@@ -3565,7 +4368,7 @@ async def mainnet_full_status():
     from l104_mainnet_bridge import mainnet_bridge
     btc_status = mainnet_bridge.get_mainnet_status()
     coin_status = sovereign_coin.get_status()
-    
+
     # Fetch live BTC price from CoinGecko
     btc_price_usd = 100000.0  # Default fallback
     try:
@@ -3575,7 +4378,7 @@ async def mainnet_full_status():
                 btc_price_usd = resp.json().get("bitcoin", {}).get("usd", 100000.0)
     except Exception:
         pass
-    
+
     return {
         "mainnet_bridge": btc_status,
         "l104sp_chain": coin_status,
@@ -3597,7 +4400,7 @@ async def mainnet_stream():
             try:
                 btc_status = mainnet_bridge.get_mainnet_status()
                 coin_status = sovereign_coin.get_status()
-                
+
                 # Fetch live BTC price
                 btc_price_usd = 100000.0
                 try:
@@ -3607,7 +4410,7 @@ async def mainnet_stream():
                             btc_price_usd = resp.json().get("bitcoin", {}).get("usd", 100000.0)
                 except Exception:
                     pass
-                
+
                 data = {
                     "btc_balance": btc_status.get("confirmed_btc", 0),
                     "btc_pending": btc_status.get("unconfirmed_btc", 0),
@@ -3625,7 +4428,7 @@ async def mainnet_stream():
             except Exception as e:
                 yield f"data: {json.dumps({'error': str(e)})}\n\n"
                 await asyncio.sleep(10)
-    
+
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 @app.post("/api/v1/mainnet/mine", tags=["Mainnet"])
@@ -3696,9 +4499,9 @@ async def mainnet_comprehensive():
     btc_network = mainnet_bridge.get_btc_network_info()
     btc_price = mainnet_bridge.get_btc_price_usd()
     coin_status = sovereign_coin.get_status()
-    
+
     l104sp_btc_value = (coin_status.get("chain_length", 1) * 104 / sovereign_exchange.get_current_rate())
-    
+
     return {
         "l104sp": {
             "chain_height": coin_status.get("chain_length", 1),
@@ -3798,9 +4601,10 @@ async def mining_start():
         return {"status": "ALREADY_RUNNING", "pids": result.stdout.strip().split('\n')}
 
     # Start miner in background
+    _base_dir = str(Path(__file__).parent.absolute())
     proc = subprocess.Popen(
         ['.venv/bin/python', 'l104_fast_miner.py'],
-        cwd='/workspaces/Allentown-L104-Node',
+        cwd=_base_dir,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         start_new_session=True

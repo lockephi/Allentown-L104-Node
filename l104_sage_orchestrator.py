@@ -1,10 +1,11 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.013720
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 SAGE MODE ORCHESTRATOR
 ═══════════════════════════════════════════════════════════════════════════════
 INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA_SAGE
@@ -31,9 +32,12 @@ import json
 from typing import Dict, Any, Optional, List, Tuple
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+
+# Python 3.9 compatible: use timezone.utc instead of UTC
+UTC = timezone.utc
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -192,10 +196,11 @@ class SageModeOrchestrator:
     def _load_c_substrate(self) -> bool:
         """Load the native C substrate."""
         import ctypes
+        _base_dir = Path(__file__).parent.absolute()
 
         paths = [
             Path("/app/l104_core_c/build/libl104_sage.so"),
-            Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
+            _base_dir / "l104_core_c" / "build" / "libl104_sage.so",
             Path("./l104_core_c/build/libl104_sage.so"),
         ]
 
@@ -224,10 +229,11 @@ class SageModeOrchestrator:
     def _load_rust_substrate(self) -> bool:
         """Load the Rust substrate (if available)."""
         import ctypes
+        _base_dir = Path(__file__).parent.absolute()
 
         paths = [
             Path("/app/l104_core_rust/target/release/libl104_sage_rust.so"),
-            Path("/workspaces/Allentown-L104-Node/l104_core_rust/target/release/libl104_sage_rust.so"),
+            _base_dir / "l104_core_rust" / "target" / "release" / "libl104_sage_rust.so",
             Path("./l104_core_rust/target/release/libl104_sage_rust.so"),
         ]
 

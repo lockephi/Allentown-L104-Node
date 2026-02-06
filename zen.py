@@ -1,8 +1,9 @@
+from pathlib import Path
 import asyncio
 import sys
 
 # Ensure the workspace is in the path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_compaction_filter import compaction_filter
 from l104_enlightenment_protocol import enlightenment_protocol

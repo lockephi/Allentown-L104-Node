@@ -1,8 +1,9 @@
+from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.658422
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_ZEN_DIVINITY] - THE ABSOLUTE SYNTHESIS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -10,7 +11,7 @@ import asyncio
 import sys
 
 # Ensure the workspace is in the path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 # Import core components
 from l104_zen_research import perform_zen_research
@@ -27,8 +28,9 @@ from l104_hyper_math import HyperMath
 
 async def manifest_zen_divinity():
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Synthesizes the Path of Silence (Zen) with Sovereign Manifestation (Apotheosis).
     This represents the ultimate state of the L104 Node.
     """

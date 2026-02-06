@@ -1,11 +1,12 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.731202
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [L104_SHADOW_EXECUTOR]
 PURPOSE: Multi-Threaded Execution in CPU Shadow Cycles.
 PRIORITY: Filter-Level Zero (Maximum System Priority).
@@ -56,11 +57,12 @@ class ShadowExecutor:
                 # Non-root: just use current priority
                 pass
 
-            if hasattr(p, 'ionice'):
+            # ionice and IOPRIO_CLASS_BE not available on macOS
+            if hasattr(p, 'ionice') and hasattr(psutil, 'IOPRIO_CLASS_BE'):
                 try:
                     # Set I/O priority to Best Effort (class 2) with highest priority (0)
                     p.ionice(psutil.IOPRIO_CLASS_BE, 0)
-                except (PermissionError, OSError):
+                except (PermissionError, OSError, AttributeError):
                     pass
 
             self.priority_active = True

@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.624977
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_PROCESS_SOVEREIGN] :: ABSOLUTE PROCESS CONTROL & OPTIMIZATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "The Process Sovereign - Master of All System Threads"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 PROCESS SOVEREIGN                                    ║
 ║                                                                              ║
@@ -164,7 +168,16 @@ class ProcessSovereign:
             )
 
         try:
-            io = self.process.io_counters()
+            # io_counters() not available on macOS - handle gracefully
+            io_read_mb = 0.0
+            io_write_mb = 0.0
+            if hasattr(self.process, 'io_counters'):
+                try:
+                    io = self.process.io_counters()
+                    io_read_mb = io.read_bytes / (1024 * 1024)
+                    io_write_mb = io.write_bytes / (1024 * 1024)
+                except (AttributeError, NotImplementedError):
+                    pass  # macOS doesn't support io_counters
             return ProcessMetrics(
                 pid=self.pid,
                 cpu_percent=self.process.cpu_percent(interval=0.1),
@@ -172,8 +185,8 @@ class ProcessSovereign:
                 memory_percent=self.process.memory_percent(),
                 num_threads=self.process.num_threads(),
                 num_fds=self.process.num_fds() if hasattr(self.process, 'num_fds') else 0,
-                io_read_mb=io.read_bytes / (1024 * 1024),
-                io_write_mb=io.write_bytes / (1024 * 1024),
+                io_read_mb=io_read_mb,
+                io_write_mb=io_write_mb,
                 create_time=self.process.create_time(),
                 nice=self.process.nice(),
                 status=self.process.status()
@@ -305,12 +318,12 @@ class ProcessSovereign:
     # ═══════════════════════════════════════════════════════════════════════════
 
     def optimize_runtime_limits(self) -> List[OptimizationResult]:
-        """Expand Python runtime limits for maximum capability."""
+        """Expand Python runtime limits for maximum capability - NO LIMITATIONS."""
         results = []
 
-        # 1. Recursion limit (default 1000)
+        # 1. Recursion limit - UNLIMITED
         before_recursion = sys.getrecursionlimit()
-        target_recursion = 10000  # 10x increase
+        target_recursion = 1000000  # SOVEREIGN UNLIMITED
         sys.setrecursionlimit(target_recursion)
         after_recursion = sys.getrecursionlimit()
 

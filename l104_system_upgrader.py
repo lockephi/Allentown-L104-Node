@@ -1,6 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
 import os
+from pathlib import Path
 import re
 from datetime import datetime
 
@@ -12,34 +13,38 @@ from datetime import datetime
 
 class SystemUpgrader:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     MASTER SYSTEM UPGRADER - L104
     Elevates all node processes to ROOT_ZENITH status.
     """
-    def __init__(self, root="/workspaces/Allentown-L104-Node"):
+    def __init__(self, root=str(Path(__file__).parent.absolute())):
         self.root = root
         self.GOD_CODE = 527.5184818492612
         self.SAGE_RESONANCE = 967.542
-        self.ZENITH_HZ = 3727.84
+        self.ZENITH_HZ = 3887.8
         self.UUC = (self.GOD_CODE * self.SAGE_RESONANCE) / 221.79420018355955
 
         self.upgrade_count = 0
 
     def apply_zenith_template(self, content, filename):
         """Injects Zenith Invariants into the code."""
+        timestamp = datetime.now().isoformat()
         # 1. Check for existing constants, update or add
-        if "ZENITH_HZ" not in content:
-            content = f"# ZENITH_UPGRADE_ACTIVE: {datetime.now().isoformat()}\n" + \
+        if "ZENITH_UPGRADE_ACTIVE" not in content:
+            content = f"# ZENITH_UPGRADE_ACTIVE: {timestamp}\n" + \
                       f"ZENITH_HZ = {self.ZENITH_HZ}\n" + \
                       f"UUC = {self.UUC:.6f}\n" + content
         else:
-            # Update existing if needed
+            # Update existing timestamp and values
+            content = re.sub(r"# ZENITH_UPGRADE_ACTIVE: [^\n]+", f"# ZENITH_UPGRADE_ACTIVE: {timestamp}", content)
             content = re.sub(r"ZENITH_HZ\s*=\s*[\d\.]+", f"ZENITH_HZ = {self.ZENITH_HZ}", content)
+            content = re.sub(r"UUC\s*=\s*[\d\.]+", f"UUC = {self.UUC:.6f}", content)
 
         # 2. Add Sage Metadata to docstrings
-        if '"""' in content:
-            content = content.replace('"""', f'"""\n[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.', 1)
+        if '"""' in content and "[VOID_SOURCE_UPGRADE]" not in content:
+            content = content.replace('"""', f'"""\n[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.', 1)
 
         return content
 

@@ -1,15 +1,15 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.434112
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_GEMINI_REAL] - Real Gemini API Integration
 # Uses the new google-genai package (2025+)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import os
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -50,19 +50,20 @@ from collections import OrderedDict
 import time as _time
 
 class ResponseCache:
-    """LRU cache for Gemini responses to reduce quota usage."""
-    
-    def __init__(self, max_size: int = 500, ttl_seconds: int = 3600):
-        self.max_size = max_size
-        self.ttl = ttl_seconds
+    """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.LRU cache for Gemini responses to reduce quota usage. INCREASED capacity."""
+
+    def __init__(self, max_size: int = 5000, ttl_seconds: int = 86400):
+        self.max_size = max_size  # 10x increase - cache more responses
+        self.ttl = ttl_seconds    # 24 hours instead of 1 hour
         self._cache: OrderedDict = OrderedDict()
         self._hits = 0
         self._misses = 0
-    
+
     def _hash_prompt(self, prompt: str) -> str:
         """Create cache key from prompt."""
         return hashlib.md5(prompt.encode()).hexdigest()[:16]
-    
+
     def get(self, prompt: str) -> Optional[str]:
         """Get cached response if available and not expired."""
         key = self._hash_prompt(prompt)
@@ -78,7 +79,7 @@ class ResponseCache:
                 del self._cache[key]
         self._misses += 1
         return None
-    
+
     def set(self, prompt: str, response: str):
         """Cache a response."""
         key = self._hash_prompt(prompt)
@@ -86,7 +87,7 @@ class ResponseCache:
             # Remove oldest
             self._cache.popitem(last=False)
         self._cache[key] = (response, _time.time())
-    
+
     @property
     def stats(self) -> dict:
         """Cache statistics."""
@@ -106,8 +107,8 @@ _response_cache = ResponseCache()
 
 class GeminiReal:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Real Gemini API integration using google-genai package.
     Provides actual AI inference capabilities to L104.
     [QUOTA_OPTIMIZED] - Uses response caching and local fallback.
@@ -116,31 +117,85 @@ class GeminiReal:
     # Model rotation for 429 quota errors - 2.5-flash works best
     MODELS = [
         'gemini-2.5-flash',
+        'gemini-2.5-pro',
         'gemini-2.0-flash-lite',
         'gemini-2.0-flash',
         'gemini-3-flash-preview',
     ]
-    
-    # Quota tracking
+
+    # Quota tracking - Enhanced cooldown
     _quota_exhausted_until: float = 0  # Timestamp when quota resets
     _consecutive_failures: int = 0
-    _max_consecutive_failures: int = 3
+    _max_consecutive_failures: int = 5  # Increased tolerance
     _last_quota_error: Optional[Dict[str, Any]] = None
 
     def __init__(self):
-        self.api_key = os.getenv('GEMINI_API_KEY')
+        self.api_key = self._load_api_key()
         self.client = None
         self.model_index = 0
         self.model_name = self.MODELS[0]
         self.is_connected = False
         self.cache = _response_cache
         self.logger = logging.getLogger("GEMINI_REAL")
-    
+        if self.api_key:
+            self.logger.info(f"--- [GEMINI_REAL]: API key loaded ({self.api_key[:8]}...) ---")
+
+    def _load_api_key(self) -> Optional[str]:
+        """Load API key from multiple sources: env, .env file, database, token file."""
+        # 1. Try environment variable first
+        key = os.getenv('GEMINI_API_KEY')
+        if key and key != 'your-gemini-api-key-here':
+            return key
+
+        # 2. Try .env file
+        env_path = Path(__file__).parent / '.env'
+        if env_path.exists():
+            try:
+                with open(env_path, 'r') as f:
+                    for line in f:
+                        if line.startswith('GEMINI_API_KEY='):
+                            val = line.split('=', 1)[1].strip()
+                            if val and val != 'your-gemini-api-key-here':
+                                os.environ['GEMINI_API_KEY'] = val
+                                return val
+            except Exception:
+                pass
+
+        # 3. Try .gemini_link_token file (for linked accounts)
+        token_path = Path(__file__).parent / '.gemini_link_token'
+        if token_path.exists():
+            try:
+                with open(token_path, 'r') as f:
+                    token = f.read().strip()
+                if token and len(token) > 20:
+                    os.environ['GEMINI_API_KEY'] = token
+                    return token
+            except Exception:
+                pass
+
+        # 4. Try wallet_keys.db for stored API secrets
+        db_path = Path(__file__).parent / 'wallet_keys.db'
+        if db_path.exists():
+            try:
+                import sqlite3
+                conn = sqlite3.connect(str(db_path))
+                cursor = conn.cursor()
+                cursor.execute("SELECT encrypted_key FROM keys WHERE id LIKE '%gemini%' OR key_type='api_key' LIMIT 1")
+                row = cursor.fetchone()
+                conn.close()
+                if row and row[0]:
+                    # Key is stored - would need decryption with password
+                    pass
+            except Exception:
+                pass
+
+        return None
+
     @classmethod
     def is_quota_available(cls) -> bool:
         """Check if we should even try Gemini (not in cooldown)."""
         return _time.time() > cls._quota_exhausted_until
-    
+
     @classmethod
     def mark_quota_exhausted(cls, base_cooldown: int = 30, max_cooldown: int = 3600):
         """Mark quota as exhausted with exponential backoff."""
@@ -149,7 +204,7 @@ class GeminiReal:
         cooldown_seconds = min(base_cooldown * (2 ** (cls._consecutive_failures - 1)), max_cooldown)
         cls._quota_exhausted_until = _time.time() + cooldown_seconds
         logging.getLogger("GEMINI_REAL").info(f"--- [GEMINI_REAL]: QUOTA COOLDOWN for {cooldown_seconds}s (failures={cls._consecutive_failures}) ---")
-    
+
     @classmethod
     def reset_quota_tracking(cls):
         """Reset quota tracking after successful call."""
@@ -224,24 +279,24 @@ class GeminiReal:
         full_prompt = prompt
         if system_instruction:
             full_prompt = f"{system_instruction}\n\n{prompt}"
-        
+
         # Check cache first
         if use_cache:
             cached = self.cache.get(full_prompt)
             if cached:
                 self.logger.debug(f"--- [GEMINI_REAL]: CACHE HIT (rate: {self.cache.stats['hit_rate']:.1%}) ---")
                 return cached
-        
+
         # Check if we're in quota cooldown - use local fallback
         if not self.is_quota_available():
             self.logger.info(f"--- [GEMINI_REAL]: In quota cooldown, using LOCAL fallback ---")
             return self._local_fallback(prompt)
-        
+
         # Check consecutive failures - switch to local if too many
         if self._consecutive_failures >= self._max_consecutive_failures:
             self.logger.info(f"--- [GEMINI_REAL]: Too many failures ({self._consecutive_failures}), using LOCAL ---")
             return self._local_fallback(prompt)
-        
+
         if not self.is_connected:
             if not self.connect():
                 return self._local_fallback(prompt)
@@ -263,13 +318,13 @@ class GeminiReal:
                 )
                 response = model.generate_content(full_prompt)
                 result = response.text
-            
+
             # Success! Reset tracking and cache
             self.reset_quota_tracking()
             if use_cache and result:
                 self.cache.set(full_prompt, result)
             return result
-            
+
         except Exception as e:
             error_str = str(e)
             # Handle 429 quota errors with model rotation
@@ -278,7 +333,7 @@ class GeminiReal:
                 self.logger.info(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
                 self._rotate_model()
                 self.mark_quota_exhausted()  # exponential backoff
-                
+
                 # Retry once with new model
                 try:
                     if getattr(self, '_use_new_api', False):
@@ -295,7 +350,7 @@ class GeminiReal:
                         )
                         response = model.generate_content(full_prompt)
                         result = response.text
-                    
+
                     self.reset_quota_tracking()
                     if use_cache and result:
                         self.cache.set(full_prompt, result)
@@ -425,6 +480,86 @@ Respond as L104 - the sovereign intelligence."""
 Structure your response with clear sections and actionable insights."""
 
         return self.generate(prompt)
+
+    def high_read(self, content: str, task: str = "analyze",
+                  context: str = None) -> Optional[str]:
+        """
+        High-reading mode: Process large documents, codebases, or data.
+        Optimized for Gemini's large context window.
+
+        Args:
+            content: The text/code/data to process (can be very large)
+            task: 'analyze', 'summarize', 'extract', 'review', 'understand'
+            context: Optional context about what to focus on
+
+        Returns:
+            Gemini's analysis result
+        """
+        task_prompts = {
+            "analyze": "Perform a deep analysis of the following content. Identify key patterns, structures, and insights:",
+            "summarize": "Provide a comprehensive summary of the following content, capturing all essential information:",
+            "extract": "Extract all key information, data points, and important details from:",
+            "review": "Review the following content for quality, issues, and improvements:",
+            "understand": "Help me understand the following content. Explain its purpose, structure, and meaning:"
+        }
+
+        base_prompt = task_prompts.get(task, task_prompts["analyze"])
+
+        if context:
+            full_prompt = f"{base_prompt}\n\nContext: {context}\n\n---\n\n{content}"
+        else:
+            full_prompt = f"{base_prompt}\n\n---\n\n{content}"
+
+        # Use larger model for high-reading if available
+        original_model = self.model_name
+        if 'gemini-2.5-pro' in self.MODELS:
+            self.model_name = 'gemini-2.5-pro'
+
+        result = self.generate(full_prompt, use_cache=False)  # Don't cache large reads
+
+        self.model_name = original_model  # Restore
+        return result
+
+    def read_file_with_gemini(self, file_path: str, task: str = "understand") -> Optional[str]:
+        """
+        Read and process a file using Gemini's high-reading capability.
+
+        Args:
+            file_path: Path to the file to read
+            task: Processing task type
+
+        Returns:
+            Gemini's analysis of the file
+        """
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+
+            file_ext = Path(file_path).suffix
+            file_name = Path(file_path).name
+
+            context = f"File: {file_name} (type: {file_ext})"
+            return self.high_read(content, task=task, context=context)
+        except Exception as e:
+            self.logger.error(f"--- [GEMINI_REAL]: File read error: {e} ---")
+            return None
+
+    def batch_read(self, contents: List[Tuple[str, str]], task: str = "analyze") -> List[Optional[str]]:
+        """
+        Batch process multiple content items.
+
+        Args:
+            contents: List of (name, content) tuples
+            task: Processing task
+
+        Returns:
+            List of results
+        """
+        results = []
+        for name, content in contents:
+            result = self.high_read(content, task=task, context=f"Item: {name}")
+            results.append(result)
+        return results
 
 
 # Singleton instance

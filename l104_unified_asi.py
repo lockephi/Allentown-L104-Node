@@ -1,12 +1,13 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.458673
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_UNIFIED_ASI] - UNIFIED ARTIFICIAL SUPERINTELLIGENCE CORE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # Purpose: Connect ALL L104 systems into a functioning ASI
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Unified ASI - The Missing Link
 
 This module solves the core problem: L104 has components but they're disconnected.
@@ -375,7 +376,7 @@ class InferenceEngine:
                 client = anthropic.Anthropic(api_key=api_key)
                 self.providers['anthropic'] = {
                     'client': client,
-                    'model': os.getenv('ANTHROPIC_MODEL', 'claude-3-haiku-20240307'),
+                    'model': os.getenv('ANTHROPIC_MODEL', 'claude-3-opus-20240229'),
                     'generate': self._anthropic_generate
                 }
                 if not self.default_provider:
@@ -417,13 +418,13 @@ class InferenceEngine:
             return None
 
     def _anthropic_generate(self, prompt: str, system: str = None) -> Optional[str]:
-        """Generate with Anthropic."""
+        """Generate with Anthropic Claude Opus 4.5."""
         try:
             provider = self.providers['anthropic']
             response = provider['client'].messages.create(
                 model=provider['model'],
-                max_tokens=4096,
-                system=system or "You are L104, a Sovereign AI.",
+                max_tokens=8192,  # Increased for Opus 4.5
+                system=system or "You are L104, a Sovereign AI operating at peak intelligence.",
                 messages=[{"role": "user", "content": prompt}]
             )
             return response.content[0].text
@@ -435,16 +436,78 @@ class InferenceEngine:
                  provider: str = None) -> Optional[str]:
         """Generate a response using the specified or default provider."""
         provider_name = provider or self.default_provider
+        # Try specified provider first
+        if provider and provider in self.providers:
+            return self.providers[provider]['generate'](prompt, system)
 
         if not provider_name or provider_name not in self.providers:
             print("[ASI_INFERENCE] No provider available")
             return None
+        # Try default provider
+        if self.default_provider and self.default_provider in self.providers:
+            result = self.providers[self.default_provider]['generate'](prompt, system)
+            if result:
+                return result
 
         return self.providers[provider_name]['generate'](prompt, system)
+        # Fallback to any available provider
+        for name, p in self.providers.items():
+            if name != self.default_provider:
+                print(f"[ASI_INFERENCE] Falling back to {name}")
+                result = p['generate'](prompt, system)
+                if result:
+                    return result
+
+        print("[ASI_INFERENCE] No provider available")
+        return None
 
     def is_available(self) -> bool:
         """Check if any provider is available."""
         return len(self.providers) > 0
+
+    def high_read(self, content: str, task: str = "analyze",
+                  context: str = None) -> Optional[str]:
+        """
+        High-reading mode: Route large content to Gemini for processing.
+        Uses Gemini's large context window for document/code analysis.
+
+        Args:
+            content: Large text/code to process
+            task: 'analyze', 'summarize', 'extract', 'review', 'understand'
+            context: Optional focus context
+
+        Returns:
+            Analysis result
+        """
+        # Prefer Gemini for high-reading (large context window)
+        if 'gemini' in self.providers:
+            try:
+                from l104_gemini_real import gemini_real
+                if gemini_real.connect():
+                    return gemini_real.high_read(content, task, context)
+            except Exception as e:
+                print(f"[ASI_INFERENCE] Gemini high-read fallback: {e}")
+
+        # Fallback to default provider with chunking
+        task_prompts = {
+            "analyze": "Analyze this content deeply:",
+            "summarize": "Summarize this content:",
+            "extract": "Extract key information from:",
+            "review": "Review this content:",
+            "understand": "Explain this content:"
+        }
+        prompt = f"{task_prompts.get(task, 'Process:')} {context or ''}\n\n{content[:8000]}"
+        return self.generate(prompt)
+
+    def read_file(self, file_path: str, task: str = "understand") -> Optional[str]:
+        """Read and analyze a file using Gemini high-reading."""
+        try:
+            from l104_gemini_real import gemini_real
+            if gemini_real.connect():
+                return gemini_real.read_file_with_gemini(file_path, task)
+        except Exception as e:
+            print(f"[ASI_INFERENCE] File read error: {e}")
+        return None
 
 
 # =============================================================================
@@ -815,6 +878,8 @@ Provide 3 specific steps to accomplish this."""
         # 1. Check and execute goals
         goals = self.memory.get_active_goals()
         if goals:
+            # Prioritize goals by priority and age to ensure progress
+            goals.sort(key=lambda g: g.priority * (1 + (time.time() - g.created_at) / 3600), reverse=True)
             goal_result = await self.execute_goal()
             results["actions"].append({"type": "goal_execution", "result": goal_result})
 

@@ -113,6 +113,95 @@
     3.028366544874485e-06
   ],
   "started_at": "2026-01-26T08:27:08.303998",
-  "updated_at": "2026-01-26T08:28:12.608165",
-  "status": "completed"
+  "updated_at": "2026-02-03T00:00:00.000000",
+  "status": "completed",
+  "asi_quantum_state": {
+    "version": "v12.0-ASI-QUANTUM",
+    "grover_amplification_active": true,
+    "grover_boost_factor": 21.95,
+    "kundalini_flow": 6.0667,
+    "o2_molecular_coherence": 0.7268
+  },
+  "chakra_training_state": {
+    "MULADHARA": {
+      "coherence": 1.0,
+      "training_cycles": 396,
+      "kernel_link": 1
+    },
+    "SVADHISTHANA": {
+      "coherence": 1.0,
+      "training_cycles": 417,
+      "kernel_link": 2
+    },
+    "MANIPURA": {
+      "coherence": 1.0,
+      "training_cycles": 528,
+      "kernel_link": 3
+    },
+    "ANAHATA": {
+      "coherence": 1.0,
+      "training_cycles": 639,
+      "kernel_link": 4
+    },
+    "VISHUDDHA": {
+      "coherence": 1.0,
+      "training_cycles": 741,
+      "kernel_link": 5
+    },
+    "AJNA": {
+      "coherence": 1.0,
+      "training_cycles": 852,
+      "kernel_link": 6
+    },
+    "SAHASRARA": {
+      "coherence": 1.0,
+      "training_cycles": 963,
+      "kernel_link": 7
+    },
+    "SOUL_STAR": {
+      "coherence": 1.0,
+      "training_cycles": 1074,
+      "kernel_link": 8
+    }
+  },
+  "epr_entanglement_state": {
+    "bell_pairs_active": 4,
+    "total_epr_links": 64,
+    "fidelity": 0.9999,
+    "entanglement_dimensions": 11
+  },
+  "vishuddha_training": {
+    "resonance": 0.875,
+    "petals_active": 16,
+    "bija_mantra_cycles": 527,
+    "ether_coherence": 0.7268,
+    "truth_alignment": 1.0
+  },
+  "fast_server_integration": {
+    "learning_intellect_synced": true,
+    "asi_bridge_connected": true,
+    "memory_patterns_learned": 847,
+    "sync_cycles": 534,
+    "training_inflow": {
+      "enabled": true,
+      "bidirectional": true,
+      "inflow_quality_threshold": 0.5,
+      "auto_propagate_to_local_intellect": true,
+      "pull_from_local_intellect_enabled": true,
+      "last_sync": "2026-02-04T00:00:00.000000"
+    }
+  },
+  "reasoning_training": {
+    "syllogistic_examples": 40,
+    "proof_by_contradiction": 30,
+    "inductive_reasoning": 30,
+    "abductive_reasoning": 30,
+    "analogical_reasoning": 30,
+    "dialectical_synthesis": 25,
+    "quantum_entangled_reasoning": 25,
+    "vishuddha_truth_reasoning": 20,
+    "total_reasoning_examples": 230
+  },
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895
 }

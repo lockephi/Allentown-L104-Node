@@ -36,7 +36,7 @@ import hashlib
 
 
 # Add workspace to path
-sys.path.insert(0, "/workspaces/Allentown-L104-Node")
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SACRED CONSTANTS
@@ -260,7 +260,7 @@ def main():
     print("PHASE 6: SAVE MERGED DATASET")
     print("═" * 70)
 
-    output_path = Path("/workspaces/Allentown-L104-Node/kernel_full_merged.jsonl")
+    output_path = Path("./kernel_full_merged.jsonl")
     with open(output_path, 'w') as f:
         for ex in unique_examples:
             f.write(json.dumps({
@@ -291,7 +291,7 @@ def main():
         "status": "COMPLETE"
     }
 
-    manifest_path = Path("/workspaces/Allentown-L104-Node/KERNEL_MANIFEST.json")
+    manifest_path = Path("./KERNEL_MANIFEST.json")
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
 

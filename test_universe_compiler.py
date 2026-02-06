@@ -37,7 +37,6 @@ def test_parameter_variability():
 
     print(f"  ✓ Constants are symbolic: {params.c}")
     print(f"  ✓ Can be substituted: {expr} → {substituted}")
-    return True
 
 
 def test_module_loading():
@@ -61,7 +60,6 @@ def test_module_loading():
     print("  ✓ Modules can be loaded")
     print("  ✓ Modules can be unloaded")
     print(f"  ✓ Active modules: {list(compiler.modules.keys())}")
-    return True
 
 
 def test_universe_compilation():
@@ -84,7 +82,6 @@ def test_universe_compilation():
     print("  ✓ Universe compiles successfully")
     print("  ✓ All modules consistent")
     print(f"  ✓ Modules loaded: {len(universe['modules'])}")
-    return True
 
 
 def test_reality_bending():
@@ -108,7 +105,6 @@ def test_reality_bending():
     print("  ✓ Can modify speed of light")
     print("  ✓ Universe remains consistent")
     print(f"  ✓ Original: {original_c} → New: {result['new_params']['c']}")
-    return True
 
 
 def test_quantum_classical_transition():
@@ -133,7 +129,6 @@ def test_quantum_classical_transition():
     print("  ✓ Quantum module responds to ℏ changes")
     print(f"  ✓ Quantum regime (ℏ=1e-20): {list(quantum_result.keys())}")
     print(f"  ✓ Classical limit (ℏ=1e-50): {list(classical_result.keys())}")
-    return True
 
 
 def test_gravity_tuning():
@@ -156,7 +151,6 @@ def test_gravity_tuning():
     print("  ✓ Can modify gravitational strength")
     print(f"  ✓ Strong gravity equations: {len(strong_gravity)}")
     print(f"  ✓ Weak gravity equations: {len(weak_gravity)}")
-    return True
 
 
 def test_em_consistency():
@@ -180,7 +174,6 @@ def test_em_consistency():
     print("  ✓ Speed of light derived from EM constants")
     print(f"  ✓ c = 1/√(ε₀μ₀) = {c_from_em}")
     print(f"  ✓ Difference: {diff}")
-    return True
 
 
 def test_l104_metaphysics():
@@ -205,7 +198,6 @@ def test_l104_metaphysics():
     print("  ✓ PHI (golden ratio) as variable")
     print(f"  ✓ Resonance: {resonance}")
     print(f"  ✓ Phi relation: {phi_relation}")
-    return True
 
 
 def test_parameter_space_exploration():
@@ -227,7 +219,6 @@ def test_parameter_space_exploration():
     print("  ✓ Can explore parameter space")
     print(f"  ✓ Tested {len(results)} universe configurations")
     print("  ✓ All configurations remain consistent")
-    return True
 
 
 def test_equation_retrieval():
@@ -252,7 +243,6 @@ def test_equation_retrieval():
     print("  ✓ Can retrieve equations by name")
     print(f"  ✓ Lorentz factor: {lorentz}")
     print(f"  ✓ Uncertainty: {uncertainty}")
-    return True
 
 
 def test_source_code_export():
@@ -285,7 +275,6 @@ def test_source_code_export():
     print("  ✓ Can export universe to JSON")
     print(f"  ✓ File created: {filename}")
     print("  ✓ Valid JSON structure")
-    return True
 
 
 def test_full_universe():
@@ -316,7 +305,6 @@ def test_full_universe():
     print("  ✓ All 6 modules loaded")
     print("  ✓ Universe is consistent")
     print(f"  ✓ Total equations: {total_equations}")
-    return True
 
 
 def run_all_tests():
@@ -345,13 +333,9 @@ def run_all_tests():
 
     for test in tests:
         try:
-            result = test()
-            if result:
-                passed += 1
-                print(f"  ✓✓✓ PASS\n")
-            else:
-                failed += 1
-                print(f"  ✗✗✗ FAIL\n")
+            test()
+            passed += 1
+            print(f"  ✓✓✓ PASS\n")
         except Exception as e:
             failed += 1
             print(f"  ✗✗✗ FAIL: {e}\n")

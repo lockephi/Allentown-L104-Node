@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.738476
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 SEMANTIC EMBEDDING ENGINE
 ═══════════════════════════════════════════════════════════════════════════════
@@ -365,8 +369,8 @@ class ConceptClusterer:
         self.index = index
         self.clusters: Dict[str, Cluster] = {}
 
-    def cluster_kmeans(self, k: int = 5, iterations: int = 10) -> List[Cluster]:
-        """Simple k-means clustering."""
+    def cluster_kmeans(self, k: int = 20, iterations: int = 25) -> List[Cluster]:
+        """Simple k-means clustering - ENHANCED for more clusters."""
         vectors = list(self.index.vectors.values())
         if len(vectors) < k:
             k = max(1, len(vectors))
@@ -451,8 +455,8 @@ class ConceptClusterer:
 
         return clusters
 
-    def get_cluster_topics(self, cluster_id: str, top_k: int = 5) -> List[str]:
-        """Get representative topics for a cluster."""
+    def get_cluster_topics(self, cluster_id: str, top_k: int = 20) -> List[str]:
+        """Get representative topics for a cluster - MORE topics."""
         cluster = self.clusters.get(cluster_id)
         if not cluster:
             return []
@@ -602,8 +606,8 @@ class SemanticEngine:
             "solutions": [r.to_dict() for r in results]
         }
 
-    def cluster(self, k: int = 5) -> List[Dict]:
-        """Cluster indexed vectors."""
+    def cluster(self, k: int = 20) -> List[Dict]:
+        """Cluster indexed vectors - MORE clusters by default."""
         clusters = self.clusterer.cluster_kmeans(k)
         return [c.to_dict() for c in clusters]
 
@@ -653,8 +657,8 @@ class SemanticEngine:
         self.clusterer.clusters.clear()
         return {"status": "cleared"}
 
-    def export_vectors(self, limit: int = 100) -> List[Dict]:
-        """Export vectors from index."""
+    def export_vectors(self, limit: int = 1000) -> List[Dict]:
+        """Export vectors from index - MORE vectors."""
         vectors = list(self.index.vectors.values())[:limit]
         return [v.to_dict() for v in vectors]
 

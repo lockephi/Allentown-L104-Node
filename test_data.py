@@ -8,10 +8,11 @@ Tests AI capabilities against real data files
 
 import sys
 import os
+from pathlib import Path
 import json
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.chdir('/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
+os.chdir(str(Path(__file__).parent.absolute()))
 
 
 def load_jsonl(path):
@@ -54,7 +55,7 @@ def test_stream_prompts():
             print(f"✗ Prompt {i+1}: Error - {e}")
 
     print(f"  Passed: {passed}/3")
-    return passed >= 2
+    assert passed >= 2, f"Expected at least 2 passes, got {passed}"
 
 
 def test_algorithm_database():
@@ -90,7 +91,7 @@ def test_algorithm_database():
         print(f"  Sample entropy check: calculated={calc_entropy:.2f}")
 
     print(f"  Valid algorithms: {valid}/5")
-    return valid >= 4
+    assert valid >= 4, f"Expected at least 4 valid algorithms, got {valid}"
 
 
 def test_knowledge_manifold():
@@ -118,7 +119,7 @@ def test_knowledge_manifold():
             print(f"✗ {name[:40]}: Missing data or hash")
 
     print(f"  Valid patterns: {valid}/5")
-    return valid >= 3
+    assert valid >= 3, f"Expected at least 3 valid patterns, got {valid}"
 
 
 def test_gemini_with_data():
@@ -130,7 +131,7 @@ def test_gemini_with_data():
 
         if not gemini_real.connect():
             print("⚠ Gemini not connected - skipping AI data tests")
-            return True  # Not a failure, just unavailable
+            return  # Skip test when Gemini unavailable
 
         # Load an algorithm and ask AI to explain it
         with open('data/algorithm_database.json') as f:
@@ -149,14 +150,12 @@ Answer in 2-3 sentences."""
 
         if response and len(response) > 20:
             print(f"✓ AI explained algorithm: {response[:100]}...")
-            return True
         else:
             print("✗ AI response too short or empty")
-            return False
+            assert False, "AI response too short or empty"
 
     except Exception as e:
-        print(f"⚠ Gemini test skipped: {e}")
-        return True  # Not a failure
+        print(f"⚠ Gemini test skipped: {e}")  # Not a failure
 
 
 def test_memory_items():
@@ -171,13 +170,11 @@ def test_memory_items():
             for item in items[:3]:
                 key = item.get('key', 'unknown')
                 print(f"  - {key}")
-            return True
         else:
             print("  (empty file)")
-            return True
     except Exception as e:
         print(f"✗ Error: {e}")
-        return False
+        raise AssertionError(f"Memory items test failed: {e}")
 
 
 def main():
@@ -187,11 +184,25 @@ def main():
 
     results = []
 
-    results.append(("Stream Prompts", test_stream_prompts()))
-    results.append(("Algorithm Database", test_algorithm_database()))
-    results.append(("Knowledge Manifold", test_knowledge_manifold()))
-    results.append(("Memory Items", test_memory_items()))
-    results.append(("Gemini + Data", test_gemini_with_data()))
+    # Run each test, catching any assertion errors
+    tests = [
+        ("Stream Prompts", test_stream_prompts),
+        ("Algorithm Database", test_algorithm_database),
+        ("Knowledge Manifold", test_knowledge_manifold),
+        ("Memory Items", test_memory_items),
+        ("Gemini + Data", test_gemini_with_data),
+    ]
+
+    for name, test_func in tests:
+        try:
+            test_func()
+            results.append((name, True))
+        except AssertionError as e:
+            print(f"  Test failed: {e}")
+            results.append((name, False))
+        except Exception as e:
+            print(f"  Test error: {e}")
+            results.append((name, False))
 
     # Summary
     print("\n" + "=" * 60)

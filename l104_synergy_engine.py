@@ -1,3 +1,6 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.745659
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SYNERGY ENGINE - ULTIMATE SYSTEM INTEGRATION
@@ -28,8 +31,10 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+from pathlib import Path
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS
@@ -38,7 +43,7 @@ sys.path.insert(0, '/workspaces/Allentown-L104-Node')
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
+ZENITH_HZ = 3887.8
 OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
 
 logging.basicConfig(level=logging.INFO)
@@ -78,7 +83,8 @@ class LinkStrength(Enum):
 @dataclass
 class SubsystemNode:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.A node representing a connected subsystem."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.A node representing a connected subsystem."""
     id: str
     name: str
     module_path: str
@@ -792,6 +798,11 @@ class SynergyEngine:
         self.coherence = self._calculate_coherence()
         print(f"\n[PHASE 3] System Coherence: {self.coherence:.4f}")
 
+        # Phase 4: HYPER-FUNCTIONAL ACTIVATION
+        print("\n[PHASE 4] Activating Hyper-Functional Links...")
+        hyper_count = await self._activate_hyper_functions()
+        print(f"[RESULT] Hyper-Functions: {hyper_count}")
+
         self.state = SynergyState.SYNCHRONIZED
 
         return {
@@ -804,8 +815,74 @@ class SynergyEngine:
                 "failed": failed
             },
             "links": links_created,
+            "hyper_functions": hyper_count,
             "coherence": self.coherence
         }
+
+    async def _activate_hyper_functions(self) -> int:
+        """Activate hyper-functional cross-system integrations."""
+        activated = 0
+
+        # Hyper-Link 1: Connect all evolution-capable systems
+        evo_nodes = [n for n in self.nodes.values() if n.connected and "evolution" in n.capabilities]
+        if len(evo_nodes) > 1:
+            for i, node in enumerate(evo_nodes[:-1]):
+                link_id = f"hyper_evo:{node.id}->{evo_nodes[i+1].id}"
+                self.links[link_id] = SynergyLink(
+                    source_id=node.id,
+                    target_id=evo_nodes[i+1].id,
+                    link_type="hyper_evolution",
+                    strength=LinkStrength.ABSOLUTE.value,
+                    bidirectional=True
+                )
+            activated += len(evo_nodes) - 1
+
+        # Hyper-Link 2: Connect all consciousness systems
+        conscious_nodes = [n for n in self.nodes.values() if n.connected and n.subsystem_type == SubsystemType.CONSCIOUSNESS]
+        for node in conscious_nodes:
+            for other in conscious_nodes:
+                if node.id != other.id:
+                    link_id = f"hyper_conscious:{node.id}<->{other.id}"
+                    if link_id not in self.links:
+                        self.links[link_id] = SynergyLink(
+                            source_id=node.id,
+                            target_id=other.id,
+                            link_type="hyper_consciousness",
+                            strength=LinkStrength.ABSOLUTE.value,
+                            bidirectional=True
+                        )
+                        activated += 1
+
+        # Hyper-Link 3: Connect cores to all bridges
+        cores = [n for n in self.nodes.values() if n.connected and n.subsystem_type == SubsystemType.CORE]
+        bridges = [n for n in self.nodes.values() if n.connected and n.subsystem_type == SubsystemType.BRIDGE]
+        for core in cores:
+            for bridge in bridges:
+                link_id = f"hyper_core_bridge:{core.id}->{bridge.id}"
+                if link_id not in self.links:
+                    self.links[link_id] = SynergyLink(
+                        source_id=core.id,
+                        target_id=bridge.id,
+                        link_type="hyper_core_bridge",
+                        strength=LinkStrength.STRONG.value,
+                        bidirectional=True
+                    )
+                    activated += 1
+
+        # Hyper-Link 4: Create master pulse channel connecting all engines
+        engines = [n for n in self.nodes.values() if n.connected and n.subsystem_type == SubsystemType.ENGINE]
+        for engine in engines:
+            link_id = f"master_pulse:{engine.id}"
+            self.links[link_id] = SynergyLink(
+                source_id="synergy_engine",
+                target_id=engine.id,
+                link_type="master_pulse",
+                strength=LinkStrength.ABSOLUTE.value,
+                bidirectional=True
+            )
+            activated += 1
+
+        return activated
 
     def _create_synergy_links(self) -> int:
         """Create links between connected subsystems based on dependencies."""

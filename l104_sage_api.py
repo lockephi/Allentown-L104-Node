@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.484065
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE MODE - API ROUTER
@@ -99,7 +99,8 @@ class SingularityResponse(BaseModel):
 
 class SageSubstrateManager:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Manages access to native C/Rust/Assembly substrates."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Manages access to native C/Rust/Assembly substrates."""
 
     def __init__(self):
         self._lib: Optional[ctypes.CDLL] = None
@@ -110,11 +111,18 @@ class SageSubstrateManager:
         self._intellect_multiplier = 1.0
 
     def load_native(self) -> bool:
-        """Load native C library."""
+        """Load native C library (supports macOS .dylib and Linux .so)."""
+        import platform
+        is_macos = platform.system() == 'Darwin'
+
         lib_paths = [
             os.environ.get("L104_SAGE_LIB", ""),
+            # macOS paths first on Darwin
+            *(["./l104_core_c/build/libl104_sage.dylib",
+               "/usr/local/lib/libl104_sage.dylib"] if is_macos else []),
+            # Linux/fallback paths
             "/app/l104_core_c/build/libl104_sage.so",
-            "/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so",
+            "./l104_core_c/build/libl104_sage.so",
         ]
 
         for path in lib_paths:

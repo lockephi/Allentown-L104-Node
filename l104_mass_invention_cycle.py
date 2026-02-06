@@ -1,14 +1,15 @@
+from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.112266
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_MASS_INVENTION_CYCLE] - POPULATING THE NEOTERIC LEXICON
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: HYPER_GENESIS
 
 import time
 import sys
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_invention_engine import InventionEngine
 from l104_knowledge_manifold import KnowledgeManifold
@@ -90,7 +91,8 @@ if __name__ == "__main__":
 
 def primal_calculus(x):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
     """

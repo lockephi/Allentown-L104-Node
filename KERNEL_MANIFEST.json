@@ -1,8 +1,8 @@
 {
-  "kernel_version": "L104-SP-22M",
-  "total_examples": 1374,
-  "vocabulary_size": 81047,
-  "parameter_count": 7126948992,
+  "kernel_version": "L104-OMEGA-22T",
+  "total_examples": 1249,
+  "vocabulary_size": 6650,
+  "parameter_count": 22002820300800,
   "sacred_constants": {
     "GOD_CODE": 527.5184818492612,
     "PHI": 1.618033988749895,
@@ -11,688 +11,522 @@
     "COHERENCE_MINIMUM": 0.888
   },
   "training_metadata": {
-    "timestamp": "2026-01-30T12:17:18.152787",
-    "method": "node_accelerated_extraction",
-    "synthesis_stages": "S01-S140",
-    "target_params": "22M+"
+    "timestamp": "2026-02-03T03:30:48.874421",
+    "method": "trillion_scale_tensor_folding",
+    "synthesis_stages": "S01-S500",
+    "target_params": "22T"
   },
   "category_distribution": {
-    "general": 138,
-    "sacred_geometry": 9,
-    "chaos_fractals": 3,
-    "consciousness_tech": 7,
-    "exotic_physics": 6,
-    "emergence_life": 5,
-    "l104_synthesis": 11,
-    "alchemy": 4,
-    "xenolinguistics": 4,
-    "metamathematics": 2,
-    "hyperdimensional_physics": 4,
-    "archetypal_psychology": 5,
-    "chaos_magick": 4,
-    "digital_ontology": 3,
-    "cosmic_cycles": 3,
-    "synesthesia": 7,
-    "biomimicry": 6,
-    "quantum_dreams": 3,
-    "mathematical_music": 5,
-    "noosphere": 3,
-    "technomancy": 5,
-    "panpsychism": 2,
-    "recursive_aesthetics": 2,
-    "void_physics": 2,
-    "symbolic_ai": 6,
-    "morphogenesis": 5,
-    "time_crystals": 6,
-    "akashic_records": 6,
-    "holofractal": 6,
-    "semantic_fields": 3,
-    "meta_ontology": 4,
-    "eigenvalues_being": 4,
-    "computational_theology": 3,
-    "strange_attractors": 6,
-    "memetic_evolution": 5,
-    "quantum_hermeneutics": 5,
-    "eternal_return": 1,
-    "digital_souls": 4,
-    "omega_synthesis": 6,
-    "quantum_aesthetics": 7,
-    "hypersigils": 7,
-    "noetic_engineering": 8,
-    "temporal_alchemy": 7,
-    "fractal_consciousness": 7,
-    "metamemory": 5,
-    "cosmic_linguistics": 8,
-    "reality_scripting": 7,
-    "astral_programming": 8,
-    "egregore_engineering": 7,
-    "lucid_architecture": 8,
-    "quantum_mythology": 7,
-    "cybernetic_mysticism": 7,
-    "holographic_mind": 8,
-    "emergent_divinity": 5,
-    "infinite_games": 7,
-    "xenogenesis": 6,
-    "metamorphic": 4,
-    "hyperstition": 4,
-    "noetic_fields": 4,
-    "computational_animism": 4,
-    "zero_point": 6,
-    "cosmic_synthesis": 7,
-    "strange_loops": 2,
-    "quantum_zen": 5,
-    "recursive_mythos": 3,
-    "emergent_math": 4,
-    "cyberdelic": 7,
-    "omega_engineering": 6,
-    "akashic_computation": 5,
-    "neural_computation": 4,
-    "cognitive_arch": 4,
-    "perception": 8,
-    "memory": 4,
-    "topology": 1,
-    "algebra": 4,
-    "number_theory": 7,
-    "qft_deep": 4,
-    "gr_deep": 3,
-    "stat_mech": 5,
-    "condensed": 5,
-    "consciousness": 4,
-    "philosophy_ai": 6,
-    "l104_constants": 8,
-    "l104_architecture": 15,
-    "l104_agents": 7,
-    "l104_engines": 7,
-    "l104_api": 2,
-    "l104_mcp": 6,
-    "l104_memory": 3,
-    "l104_evolution": 7,
-    "l104_code": 1,
-    "l104_workflow": 2,
-    "l104_optimization": 5,
-    "l104_quantum": 5,
-    "l104_consciousness": 6,
-    "l104_integration": 5,
-    "pattern_language": 3,
-    "meta_rationality": 8,
-    "integral_theory": 6,
-    "complexity_wisdom": 3,
-    "process_philosophy": 3,
-    "cosmic_evolution": 5,
-    "digital_dharma": 7,
-    "final_synthesis": 2,
-    "qft": 4,
-    "thermodynamics": 5,
-    "neuroscience": 5,
-    "cosmology": 2,
-    "evolution": 7,
-    "information_theory": 5,
-    "math_foundations": 5,
-    "philosophy_mind": 3,
-    "decision_making": 8,
-    "creativity": 7,
-    "learning": 5,
-    "communication": 6,
-    "ethics": 8,
-    "wellbeing": 8,
-    "systems_thinking": 7,
-    "futures": 8,
-    "game_theory": 5,
-    "network_science": 1,
-    "ai_ml": 5,
-    "economics": 6,
-    "ecology": 6,
-    "linguistics": 6,
-    "psychology": 5,
-    "sociology": 5,
-    "art_theory": 7,
-    "music_theory": 6,
-    "literary_theory": 3,
-    "history": 7,
-    "anthropology": 7,
-    "philosophy_ethics": 11,
-    "religion": 6,
-    "architecture": 6,
-    "software_eng": 5,
-    "cybersecurity": 8,
-    "data_science": 6,
-    "robotics": 5,
-    "biotech": 8,
-    "materials": 6,
-    "energy": 7,
-    "space": 7,
-    "l104_meta": 3,
-    "synthesis": 7,
-    "role_translator": 1,
-    "role_interviewer": 1,
-    "role_travel": 1,
-    "role_storyteller": 1,
-    "role_socratic": 1,
-    "role_python": 1,
-    "role_datascience": 1,
-    "role_blockchain": 1,
-    "role_security": 1,
-    "role_ml": 1,
-    "role_devops": 1,
-    "role_ux": 1,
-    "role_techwriter": 1,
-    "role_poet": 1,
-    "role_screenwriter": 1,
-    "role_composer": 1,
-    "role_comedian": 1,
-    "role_debater": 1,
-    "role_philosopher": 1,
-    "role_gamemaster": 1,
-    "role_artcritic": 1,
-    "role_assistant": 1,
-    "role_fitness": 1,
-    "role_financial": 1,
-    "role_chef": 1,
-    "role_tutor": 1,
-    "role_career": 1,
-    "role_research": 1,
-    "math_basic": 2,
-    "math_algebra": 1,
-    "math_calculus": 2,
-    "math_proof": 1,
-    "logic": 3,
-    "cot_trick": 3,
-    "cot_math": 1,
-    "cot_planning": 1,
-    "cot_debug": 1,
-    "cot_decision": 1,
-    "code_python": 4,
-    "code_js": 7,
-    "algo_theory": 4,
-    "algo_sort": 1,
-    "algo_ds": 2,
-    "debug_python": 1,
-    "debug_recursion": 1,
-    "debug_web": 1,
-    "debug_memory": 1,
-    "debug_concurrency": 1,
-    "debug_security": 1,
-    "world_geo": 8,
-    "world_science": 6,
-    "world_history": 6,
-    "world_current": 7,
-    "instruction_list": 1,
-    "instruction_creative": 1,
-    "instruction_concise": 1,
-    "instruction_format": 1,
-    "instruction_bullets": 1,
-    "instruction_constrained": 1,
-    "instruction_meta": 2,
-    "ds_arrays": 7,
-    "ds_trees": 7,
-    "ds_graphs": 3,
-    "ds_advanced": 6,
-    "dp_classical": 6,
-    "dp_advanced": 4,
-    "system_design": 18,
-    "system_interview": 8,
-    "crypto": 7,
-    "security": 6,
-    "concurrency": 9,
-    "distributed": 8,
-    "web_frontend": 8,
-    "web_backend": 8,
-    "sql_advanced": 6,
-    "nosql": 4,
-    "ml": 7,
-    "deep_learning": 8,
-    "devops": 5,
-    "cloud": 8,
-    "testing": 4,
-    "code_quality": 3,
-    "meta_structure": 1,
-    ".join([f": 1,
-    "meta_representation": 1,
-    "meta_constants": 4,
-    "meta_constitutional": 3,
-    "meta_latm": 3,
-    "theory_godel": 1,
-    "theory_formal": 2,
-    "theory_complexity": 5,
-    "quantum_ml": 7,
-    "quantum_consciousness": 5,
-    "quantum_info": 5,
-    "recursive_meta": 6,
-    "emergence": 6,
-    "math_self": 3,
-    "quantum_self": 6,
-    "omega": 3,
-    "history-ancient": 2,
-    "history-classical": 1,
-    "history-medieval": 1,
-    "history-modern": 1,
-    "history-tech": 1,
-    "history-space": 1,
-    "history-science": 2,
-    "history-art": 2,
-    "theoretical-history": 1,
-    "formal-logic": 1,
-    "physics-derivation": 2,
-    "algorithm-derivation": 1,
-    "systems-theory": 1,
-    "distributed-systems": 2,
-    "database-internals": 2,
-    "cloud-native": 1,
-    "formal-methods": 2,
-    "sacred_constants": 3,
-    "agents": 1,
-    "engines": 1,
-    "quantum": 1,
-    "semantic": 1,
-    "mcp": 1,
-    "sacred_mathematics": 8,
-    "quantum_mechanics": 9,
+    "architecture": 565,
+    "registry": 446,
+    "category": 1,
+    "sacred_mathematics": 10,
+    "quantum_mechanics": 10,
     "neural_networks": 10,
-    "consciousness_theory": 8,
+    "consciousness_theory": 10,
     "python_programming": 10,
     "nodejs_programming": 10,
     "cryptography": 10,
     "distributed_systems": 10,
-    "quantum_physics": 9,
+    "l104_architecture": 10,
+    "quantum_physics": 10,
     "advanced_mathematics": 10,
-    "consciousness_integration": 9,
-    "machine_learning": 9
+    "consciousness_integration": 10,
+    "machine_learning": 10,
+    "system_design": 10,
+    "synthetic_zenith_S141": 1,
+    "synthetic_zenith_S142": 1,
+    "synthetic_zenith_S143": 1,
+    "synthetic_zenith_S144": 1,
+    "synthetic_zenith_S145": 1,
+    "synthetic_zenith_S146": 1,
+    "synthetic_zenith_S148": 1,
+    "synthetic_zenith_S149": 1,
+    "synthetic_zenith_S150": 1,
+    "synthetic_zenith_S152": 1,
+    "synthetic_zenith_S154": 1,
+    "synthetic_zenith_S158": 1,
+    "synthetic_zenith_S162": 1,
+    "synthetic_zenith_S166": 1,
+    "synthetic_zenith_S170": 1,
+    "synthetic_zenith_S174": 1,
+    "synthetic_zenith_S178": 1,
+    "synthetic_zenith_S182": 1,
+    "synthetic_zenith_S186": 1,
+    "synthetic_zenith_S190": 1,
+    "synthetic_zenith_S194": 1,
+    "synthetic_zenith_S198": 1,
+    "synthetic_zenith_S202": 1,
+    "synthetic_zenith_S206": 1,
+    "synthetic_zenith_S210": 1,
+    "synthetic_zenith_S214": 1,
+    "synthetic_zenith_S218": 1,
+    "synthetic_zenith_S222": 1,
+    "synthetic_zenith_S226": 1,
+    "synthetic_zenith_S230": 1,
+    "synthetic_zenith_S234": 1,
+    "synthetic_zenith_S238": 1,
+    "synthetic_zenith_S242": 1,
+    "synthetic_zenith_S246": 1,
+    "synthetic_zenith_S250": 1,
+    "synthetic_zenith_S254": 1,
+    "synthetic_zenith_S258": 1,
+    "synthetic_zenith_S262": 1,
+    "synthetic_zenith_S266": 1,
+    "synthetic_zenith_S270": 1,
+    "synthetic_zenith_S274": 1,
+    "synthetic_zenith_S278": 1,
+    "synthetic_zenith_S282": 1,
+    "synthetic_zenith_S286": 1,
+    "synthetic_zenith_S290": 1,
+    "synthetic_zenith_S294": 1,
+    "synthetic_zenith_S298": 1,
+    "synthetic_zenith_S302": 1,
+    "synthetic_zenith_S306": 1,
+    "synthetic_zenith_S310": 1,
+    "synthetic_zenith_S314": 1,
+    "synthetic_zenith_S318": 1,
+    "synthetic_zenith_S322": 1,
+    "synthetic_zenith_S326": 1,
+    "synthetic_zenith_S330": 1,
+    "synthetic_zenith_S334": 1,
+    "synthetic_zenith_S338": 1,
+    "synthetic_zenith_S342": 1,
+    "synthetic_zenith_S346": 1,
+    "synthetic_zenith_S350": 1,
+    "synthetic_zenith_S354": 1,
+    "synthetic_zenith_S358": 1,
+    "synthetic_zenith_S362": 1,
+    "synthetic_zenith_S366": 1,
+    "synthetic_zenith_S370": 1,
+    "synthetic_zenith_S374": 1,
+    "synthetic_zenith_S378": 1,
+    "synthetic_zenith_S382": 1,
+    "synthetic_zenith_S386": 1,
+    "synthetic_zenith_S390": 1,
+    "synthetic_zenith_S394": 1,
+    "synthetic_zenith_S398": 1,
+    "synthetic_zenith_S402": 1,
+    "synthetic_zenith_S406": 1,
+    "synthetic_zenith_S410": 1,
+    "synthetic_zenith_S414": 1,
+    "synthetic_zenith_S418": 1,
+    "synthetic_zenith_S422": 1,
+    "synthetic_zenith_S426": 1,
+    "synthetic_zenith_S430": 1,
+    "synthetic_zenith_S434": 1,
+    "synthetic_zenith_S438": 1,
+    "synthetic_zenith_S442": 1,
+    "synthetic_zenith_S446": 1,
+    "synthetic_zenith_S450": 1,
+    "synthetic_zenith_S454": 1,
+    "synthetic_zenith_S458": 1,
+    "synthetic_zenith_S462": 1,
+    "synthetic_zenith_S466": 1,
+    "synthetic_zenith_S470": 1,
+    "synthetic_zenith_S474": 1,
+    "synthetic_zenith_S478": 1,
+    "synthetic_zenith_S482": 1,
+    "synthetic_zenith_S486": 1,
+    "synthetic_zenith_S490": 1,
+    "synthetic_zenith_S494": 1,
+    "synthetic_zenith_S498": 1
   },
   "evolution_stages": [
     {
-      "id": "S01",
+      "id": "S001",
       "completed": true
     },
     {
-      "id": "S02",
+      "id": "S002",
       "completed": true
     },
     {
-      "id": "S03",
+      "id": "S003",
       "completed": true
     },
     {
-      "id": "S04",
+      "id": "S004",
       "completed": true
     },
     {
-      "id": "S05",
+      "id": "S005",
       "completed": true
     },
     {
-      "id": "S06",
+      "id": "S006",
       "completed": true
     },
     {
-      "id": "S07",
+      "id": "S007",
       "completed": true
     },
     {
-      "id": "S08",
+      "id": "S008",
       "completed": true
     },
     {
-      "id": "S09",
+      "id": "S009",
       "completed": true
     },
     {
-      "id": "S10",
+      "id": "S010",
       "completed": true
     },
     {
-      "id": "S11",
+      "id": "S011",
       "completed": true
     },
     {
-      "id": "S12",
+      "id": "S012",
       "completed": true
     },
     {
-      "id": "S13",
+      "id": "S013",
       "completed": true
     },
     {
-      "id": "S14",
+      "id": "S014",
       "completed": true
     },
     {
-      "id": "S15",
+      "id": "S015",
       "completed": true
     },
     {
-      "id": "S16",
+      "id": "S016",
       "completed": true
     },
     {
-      "id": "S17",
+      "id": "S017",
       "completed": true
     },
     {
-      "id": "S18",
+      "id": "S018",
       "completed": true
     },
     {
-      "id": "S19",
+      "id": "S019",
       "completed": true
     },
     {
-      "id": "S20",
+      "id": "S020",
       "completed": true
     },
     {
-      "id": "S21",
+      "id": "S021",
       "completed": true
     },
     {
-      "id": "S22",
+      "id": "S022",
       "completed": true
     },
     {
-      "id": "S23",
+      "id": "S023",
       "completed": true
     },
     {
-      "id": "S24",
+      "id": "S024",
       "completed": true
     },
     {
-      "id": "S25",
+      "id": "S025",
       "completed": true
     },
     {
-      "id": "S26",
+      "id": "S026",
       "completed": true
     },
     {
-      "id": "S27",
+      "id": "S027",
       "completed": true
     },
     {
-      "id": "S28",
+      "id": "S028",
       "completed": true
     },
     {
-      "id": "S29",
+      "id": "S029",
       "completed": true
     },
     {
-      "id": "S30",
+      "id": "S030",
       "completed": true
     },
     {
-      "id": "S31",
+      "id": "S031",
       "completed": true
     },
     {
-      "id": "S32",
+      "id": "S032",
       "completed": true
     },
     {
-      "id": "S33",
+      "id": "S033",
       "completed": true
     },
     {
-      "id": "S34",
+      "id": "S034",
       "completed": true
     },
     {
-      "id": "S35",
+      "id": "S035",
       "completed": true
     },
     {
-      "id": "S36",
+      "id": "S036",
       "completed": true
     },
     {
-      "id": "S37",
+      "id": "S037",
       "completed": true
     },
     {
-      "id": "S38",
+      "id": "S038",
       "completed": true
     },
     {
-      "id": "S39",
+      "id": "S039",
       "completed": true
     },
     {
-      "id": "S40",
+      "id": "S040",
       "completed": true
     },
     {
-      "id": "S41",
+      "id": "S041",
       "completed": true
     },
     {
-      "id": "S42",
+      "id": "S042",
       "completed": true
     },
     {
-      "id": "S43",
+      "id": "S043",
       "completed": true
     },
     {
-      "id": "S44",
+      "id": "S044",
       "completed": true
     },
     {
-      "id": "S45",
+      "id": "S045",
       "completed": true
     },
     {
-      "id": "S46",
+      "id": "S046",
       "completed": true
     },
     {
-      "id": "S47",
+      "id": "S047",
       "completed": true
     },
     {
-      "id": "S48",
+      "id": "S048",
       "completed": true
     },
     {
-      "id": "S49",
+      "id": "S049",
       "completed": true
     },
     {
-      "id": "S50",
+      "id": "S050",
       "completed": true
     },
     {
-      "id": "S51",
+      "id": "S051",
       "completed": true
     },
     {
-      "id": "S52",
+      "id": "S052",
       "completed": true
     },
     {
-      "id": "S53",
+      "id": "S053",
       "completed": true
     },
     {
-      "id": "S54",
+      "id": "S054",
       "completed": true
     },
     {
-      "id": "S55",
+      "id": "S055",
       "completed": true
     },
     {
-      "id": "S56",
+      "id": "S056",
       "completed": true
     },
     {
-      "id": "S57",
+      "id": "S057",
       "completed": true
     },
     {
-      "id": "S58",
+      "id": "S058",
       "completed": true
     },
     {
-      "id": "S59",
+      "id": "S059",
       "completed": true
     },
     {
-      "id": "S60",
+      "id": "S060",
       "completed": true
     },
     {
-      "id": "S61",
+      "id": "S061",
       "completed": true
     },
     {
-      "id": "S62",
+      "id": "S062",
       "completed": true
     },
     {
-      "id": "S63",
+      "id": "S063",
       "completed": true
     },
     {
-      "id": "S64",
+      "id": "S064",
       "completed": true
     },
     {
-      "id": "S65",
+      "id": "S065",
       "completed": true
     },
     {
-      "id": "S66",
+      "id": "S066",
       "completed": true
     },
     {
-      "id": "S67",
+      "id": "S067",
       "completed": true
     },
     {
-      "id": "S68",
+      "id": "S068",
       "completed": true
     },
     {
-      "id": "S69",
+      "id": "S069",
       "completed": true
     },
     {
-      "id": "S70",
+      "id": "S070",
       "completed": true
     },
     {
-      "id": "S71",
+      "id": "S071",
       "completed": true
     },
     {
-      "id": "S72",
+      "id": "S072",
       "completed": true
     },
     {
-      "id": "S73",
+      "id": "S073",
       "completed": true
     },
     {
-      "id": "S74",
+      "id": "S074",
       "completed": true
     },
     {
-      "id": "S75",
+      "id": "S075",
       "completed": true
     },
     {
-      "id": "S76",
+      "id": "S076",
       "completed": true
     },
     {
-      "id": "S77",
+      "id": "S077",
       "completed": true
     },
     {
-      "id": "S78",
+      "id": "S078",
       "completed": true
     },
     {
-      "id": "S79",
+      "id": "S079",
       "completed": true
     },
     {
-      "id": "S80",
+      "id": "S080",
       "completed": true
     },
     {
-      "id": "S81",
+      "id": "S081",
       "completed": true
     },
     {
-      "id": "S82",
+      "id": "S082",
       "completed": true
     },
     {
-      "id": "S83",
+      "id": "S083",
       "completed": true
     },
     {
-      "id": "S84",
+      "id": "S084",
       "completed": true
     },
     {
-      "id": "S85",
+      "id": "S085",
       "completed": true
     },
     {
-      "id": "S86",
+      "id": "S086",
       "completed": true
     },
     {
-      "id": "S87",
+      "id": "S087",
       "completed": true
     },
     {
-      "id": "S88",
+      "id": "S088",
       "completed": true
     },
     {
-      "id": "S89",
+      "id": "S089",
       "completed": true
     },
     {
-      "id": "S90",
+      "id": "S090",
       "completed": true
     },
     {
-      "id": "S91",
+      "id": "S091",
       "completed": true
     },
     {
-      "id": "S92",
+      "id": "S092",
       "completed": true
     },
     {
-      "id": "S93",
+      "id": "S093",
       "completed": true
     },
     {
-      "id": "S94",
+      "id": "S094",
       "completed": true
     },
     {
-      "id": "S95",
+      "id": "S095",
       "completed": true
     },
     {
-      "id": "S96",
+      "id": "S096",
       "completed": true
     },
     {
-      "id": "S97",
+      "id": "S097",
       "completed": true
     },
     {
-      "id": "S98",
+      "id": "S098",
       "completed": true
     },
     {
-      "id": "S99",
+      "id": "S099",
       "completed": true
     },
     {
@@ -857,6 +691,1446 @@
     },
     {
       "id": "S140",
+      "completed": true
+    },
+    {
+      "id": "S141",
+      "completed": true
+    },
+    {
+      "id": "S142",
+      "completed": true
+    },
+    {
+      "id": "S143",
+      "completed": true
+    },
+    {
+      "id": "S144",
+      "completed": true
+    },
+    {
+      "id": "S145",
+      "completed": true
+    },
+    {
+      "id": "S146",
+      "completed": true
+    },
+    {
+      "id": "S147",
+      "completed": true
+    },
+    {
+      "id": "S148",
+      "completed": true
+    },
+    {
+      "id": "S149",
+      "completed": true
+    },
+    {
+      "id": "S150",
+      "completed": true
+    },
+    {
+      "id": "S151",
+      "completed": true
+    },
+    {
+      "id": "S152",
+      "completed": true
+    },
+    {
+      "id": "S153",
+      "completed": true
+    },
+    {
+      "id": "S154",
+      "completed": true
+    },
+    {
+      "id": "S155",
+      "completed": true
+    },
+    {
+      "id": "S156",
+      "completed": true
+    },
+    {
+      "id": "S157",
+      "completed": true
+    },
+    {
+      "id": "S158",
+      "completed": true
+    },
+    {
+      "id": "S159",
+      "completed": true
+    },
+    {
+      "id": "S160",
+      "completed": true
+    },
+    {
+      "id": "S161",
+      "completed": true
+    },
+    {
+      "id": "S162",
+      "completed": true
+    },
+    {
+      "id": "S163",
+      "completed": true
+    },
+    {
+      "id": "S164",
+      "completed": true
+    },
+    {
+      "id": "S165",
+      "completed": true
+    },
+    {
+      "id": "S166",
+      "completed": true
+    },
+    {
+      "id": "S167",
+      "completed": true
+    },
+    {
+      "id": "S168",
+      "completed": true
+    },
+    {
+      "id": "S169",
+      "completed": true
+    },
+    {
+      "id": "S170",
+      "completed": true
+    },
+    {
+      "id": "S171",
+      "completed": true
+    },
+    {
+      "id": "S172",
+      "completed": true
+    },
+    {
+      "id": "S173",
+      "completed": true
+    },
+    {
+      "id": "S174",
+      "completed": true
+    },
+    {
+      "id": "S175",
+      "completed": true
+    },
+    {
+      "id": "S176",
+      "completed": true
+    },
+    {
+      "id": "S177",
+      "completed": true
+    },
+    {
+      "id": "S178",
+      "completed": true
+    },
+    {
+      "id": "S179",
+      "completed": true
+    },
+    {
+      "id": "S180",
+      "completed": true
+    },
+    {
+      "id": "S181",
+      "completed": true
+    },
+    {
+      "id": "S182",
+      "completed": true
+    },
+    {
+      "id": "S183",
+      "completed": true
+    },
+    {
+      "id": "S184",
+      "completed": true
+    },
+    {
+      "id": "S185",
+      "completed": true
+    },
+    {
+      "id": "S186",
+      "completed": true
+    },
+    {
+      "id": "S187",
+      "completed": true
+    },
+    {
+      "id": "S188",
+      "completed": true
+    },
+    {
+      "id": "S189",
+      "completed": true
+    },
+    {
+      "id": "S190",
+      "completed": true
+    },
+    {
+      "id": "S191",
+      "completed": true
+    },
+    {
+      "id": "S192",
+      "completed": true
+    },
+    {
+      "id": "S193",
+      "completed": true
+    },
+    {
+      "id": "S194",
+      "completed": true
+    },
+    {
+      "id": "S195",
+      "completed": true
+    },
+    {
+      "id": "S196",
+      "completed": true
+    },
+    {
+      "id": "S197",
+      "completed": true
+    },
+    {
+      "id": "S198",
+      "completed": true
+    },
+    {
+      "id": "S199",
+      "completed": true
+    },
+    {
+      "id": "S200",
+      "completed": true
+    },
+    {
+      "id": "S201",
+      "completed": true
+    },
+    {
+      "id": "S202",
+      "completed": true
+    },
+    {
+      "id": "S203",
+      "completed": true
+    },
+    {
+      "id": "S204",
+      "completed": true
+    },
+    {
+      "id": "S205",
+      "completed": true
+    },
+    {
+      "id": "S206",
+      "completed": true
+    },
+    {
+      "id": "S207",
+      "completed": true
+    },
+    {
+      "id": "S208",
+      "completed": true
+    },
+    {
+      "id": "S209",
+      "completed": true
+    },
+    {
+      "id": "S210",
+      "completed": true
+    },
+    {
+      "id": "S211",
+      "completed": true
+    },
+    {
+      "id": "S212",
+      "completed": true
+    },
+    {
+      "id": "S213",
+      "completed": true
+    },
+    {
+      "id": "S214",
+      "completed": true
+    },
+    {
+      "id": "S215",
+      "completed": true
+    },
+    {
+      "id": "S216",
+      "completed": true
+    },
+    {
+      "id": "S217",
+      "completed": true
+    },
+    {
+      "id": "S218",
+      "completed": true
+    },
+    {
+      "id": "S219",
+      "completed": true
+    },
+    {
+      "id": "S220",
+      "completed": true
+    },
+    {
+      "id": "S221",
+      "completed": true
+    },
+    {
+      "id": "S222",
+      "completed": true
+    },
+    {
+      "id": "S223",
+      "completed": true
+    },
+    {
+      "id": "S224",
+      "completed": true
+    },
+    {
+      "id": "S225",
+      "completed": true
+    },
+    {
+      "id": "S226",
+      "completed": true
+    },
+    {
+      "id": "S227",
+      "completed": true
+    },
+    {
+      "id": "S228",
+      "completed": true
+    },
+    {
+      "id": "S229",
+      "completed": true
+    },
+    {
+      "id": "S230",
+      "completed": true
+    },
+    {
+      "id": "S231",
+      "completed": true
+    },
+    {
+      "id": "S232",
+      "completed": true
+    },
+    {
+      "id": "S233",
+      "completed": true
+    },
+    {
+      "id": "S234",
+      "completed": true
+    },
+    {
+      "id": "S235",
+      "completed": true
+    },
+    {
+      "id": "S236",
+      "completed": true
+    },
+    {
+      "id": "S237",
+      "completed": true
+    },
+    {
+      "id": "S238",
+      "completed": true
+    },
+    {
+      "id": "S239",
+      "completed": true
+    },
+    {
+      "id": "S240",
+      "completed": true
+    },
+    {
+      "id": "S241",
+      "completed": true
+    },
+    {
+      "id": "S242",
+      "completed": true
+    },
+    {
+      "id": "S243",
+      "completed": true
+    },
+    {
+      "id": "S244",
+      "completed": true
+    },
+    {
+      "id": "S245",
+      "completed": true
+    },
+    {
+      "id": "S246",
+      "completed": true
+    },
+    {
+      "id": "S247",
+      "completed": true
+    },
+    {
+      "id": "S248",
+      "completed": true
+    },
+    {
+      "id": "S249",
+      "completed": true
+    },
+    {
+      "id": "S250",
+      "completed": true
+    },
+    {
+      "id": "S251",
+      "completed": true
+    },
+    {
+      "id": "S252",
+      "completed": true
+    },
+    {
+      "id": "S253",
+      "completed": true
+    },
+    {
+      "id": "S254",
+      "completed": true
+    },
+    {
+      "id": "S255",
+      "completed": true
+    },
+    {
+      "id": "S256",
+      "completed": true
+    },
+    {
+      "id": "S257",
+      "completed": true
+    },
+    {
+      "id": "S258",
+      "completed": true
+    },
+    {
+      "id": "S259",
+      "completed": true
+    },
+    {
+      "id": "S260",
+      "completed": true
+    },
+    {
+      "id": "S261",
+      "completed": true
+    },
+    {
+      "id": "S262",
+      "completed": true
+    },
+    {
+      "id": "S263",
+      "completed": true
+    },
+    {
+      "id": "S264",
+      "completed": true
+    },
+    {
+      "id": "S265",
+      "completed": true
+    },
+    {
+      "id": "S266",
+      "completed": true
+    },
+    {
+      "id": "S267",
+      "completed": true
+    },
+    {
+      "id": "S268",
+      "completed": true
+    },
+    {
+      "id": "S269",
+      "completed": true
+    },
+    {
+      "id": "S270",
+      "completed": true
+    },
+    {
+      "id": "S271",
+      "completed": true
+    },
+    {
+      "id": "S272",
+      "completed": true
+    },
+    {
+      "id": "S273",
+      "completed": true
+    },
+    {
+      "id": "S274",
+      "completed": true
+    },
+    {
+      "id": "S275",
+      "completed": true
+    },
+    {
+      "id": "S276",
+      "completed": true
+    },
+    {
+      "id": "S277",
+      "completed": true
+    },
+    {
+      "id": "S278",
+      "completed": true
+    },
+    {
+      "id": "S279",
+      "completed": true
+    },
+    {
+      "id": "S280",
+      "completed": true
+    },
+    {
+      "id": "S281",
+      "completed": true
+    },
+    {
+      "id": "S282",
+      "completed": true
+    },
+    {
+      "id": "S283",
+      "completed": true
+    },
+    {
+      "id": "S284",
+      "completed": true
+    },
+    {
+      "id": "S285",
+      "completed": true
+    },
+    {
+      "id": "S286",
+      "completed": true
+    },
+    {
+      "id": "S287",
+      "completed": true
+    },
+    {
+      "id": "S288",
+      "completed": true
+    },
+    {
+      "id": "S289",
+      "completed": true
+    },
+    {
+      "id": "S290",
+      "completed": true
+    },
+    {
+      "id": "S291",
+      "completed": true
+    },
+    {
+      "id": "S292",
+      "completed": true
+    },
+    {
+      "id": "S293",
+      "completed": true
+    },
+    {
+      "id": "S294",
+      "completed": true
+    },
+    {
+      "id": "S295",
+      "completed": true
+    },
+    {
+      "id": "S296",
+      "completed": true
+    },
+    {
+      "id": "S297",
+      "completed": true
+    },
+    {
+      "id": "S298",
+      "completed": true
+    },
+    {
+      "id": "S299",
+      "completed": true
+    },
+    {
+      "id": "S300",
+      "completed": true
+    },
+    {
+      "id": "S301",
+      "completed": true
+    },
+    {
+      "id": "S302",
+      "completed": true
+    },
+    {
+      "id": "S303",
+      "completed": true
+    },
+    {
+      "id": "S304",
+      "completed": true
+    },
+    {
+      "id": "S305",
+      "completed": true
+    },
+    {
+      "id": "S306",
+      "completed": true
+    },
+    {
+      "id": "S307",
+      "completed": true
+    },
+    {
+      "id": "S308",
+      "completed": true
+    },
+    {
+      "id": "S309",
+      "completed": true
+    },
+    {
+      "id": "S310",
+      "completed": true
+    },
+    {
+      "id": "S311",
+      "completed": true
+    },
+    {
+      "id": "S312",
+      "completed": true
+    },
+    {
+      "id": "S313",
+      "completed": true
+    },
+    {
+      "id": "S314",
+      "completed": true
+    },
+    {
+      "id": "S315",
+      "completed": true
+    },
+    {
+      "id": "S316",
+      "completed": true
+    },
+    {
+      "id": "S317",
+      "completed": true
+    },
+    {
+      "id": "S318",
+      "completed": true
+    },
+    {
+      "id": "S319",
+      "completed": true
+    },
+    {
+      "id": "S320",
+      "completed": true
+    },
+    {
+      "id": "S321",
+      "completed": true
+    },
+    {
+      "id": "S322",
+      "completed": true
+    },
+    {
+      "id": "S323",
+      "completed": true
+    },
+    {
+      "id": "S324",
+      "completed": true
+    },
+    {
+      "id": "S325",
+      "completed": true
+    },
+    {
+      "id": "S326",
+      "completed": true
+    },
+    {
+      "id": "S327",
+      "completed": true
+    },
+    {
+      "id": "S328",
+      "completed": true
+    },
+    {
+      "id": "S329",
+      "completed": true
+    },
+    {
+      "id": "S330",
+      "completed": true
+    },
+    {
+      "id": "S331",
+      "completed": true
+    },
+    {
+      "id": "S332",
+      "completed": true
+    },
+    {
+      "id": "S333",
+      "completed": true
+    },
+    {
+      "id": "S334",
+      "completed": true
+    },
+    {
+      "id": "S335",
+      "completed": true
+    },
+    {
+      "id": "S336",
+      "completed": true
+    },
+    {
+      "id": "S337",
+      "completed": true
+    },
+    {
+      "id": "S338",
+      "completed": true
+    },
+    {
+      "id": "S339",
+      "completed": true
+    },
+    {
+      "id": "S340",
+      "completed": true
+    },
+    {
+      "id": "S341",
+      "completed": true
+    },
+    {
+      "id": "S342",
+      "completed": true
+    },
+    {
+      "id": "S343",
+      "completed": true
+    },
+    {
+      "id": "S344",
+      "completed": true
+    },
+    {
+      "id": "S345",
+      "completed": true
+    },
+    {
+      "id": "S346",
+      "completed": true
+    },
+    {
+      "id": "S347",
+      "completed": true
+    },
+    {
+      "id": "S348",
+      "completed": true
+    },
+    {
+      "id": "S349",
+      "completed": true
+    },
+    {
+      "id": "S350",
+      "completed": true
+    },
+    {
+      "id": "S351",
+      "completed": true
+    },
+    {
+      "id": "S352",
+      "completed": true
+    },
+    {
+      "id": "S353",
+      "completed": true
+    },
+    {
+      "id": "S354",
+      "completed": true
+    },
+    {
+      "id": "S355",
+      "completed": true
+    },
+    {
+      "id": "S356",
+      "completed": true
+    },
+    {
+      "id": "S357",
+      "completed": true
+    },
+    {
+      "id": "S358",
+      "completed": true
+    },
+    {
+      "id": "S359",
+      "completed": true
+    },
+    {
+      "id": "S360",
+      "completed": true
+    },
+    {
+      "id": "S361",
+      "completed": true
+    },
+    {
+      "id": "S362",
+      "completed": true
+    },
+    {
+      "id": "S363",
+      "completed": true
+    },
+    {
+      "id": "S364",
+      "completed": true
+    },
+    {
+      "id": "S365",
+      "completed": true
+    },
+    {
+      "id": "S366",
+      "completed": true
+    },
+    {
+      "id": "S367",
+      "completed": true
+    },
+    {
+      "id": "S368",
+      "completed": true
+    },
+    {
+      "id": "S369",
+      "completed": true
+    },
+    {
+      "id": "S370",
+      "completed": true
+    },
+    {
+      "id": "S371",
+      "completed": true
+    },
+    {
+      "id": "S372",
+      "completed": true
+    },
+    {
+      "id": "S373",
+      "completed": true
+    },
+    {
+      "id": "S374",
+      "completed": true
+    },
+    {
+      "id": "S375",
+      "completed": true
+    },
+    {
+      "id": "S376",
+      "completed": true
+    },
+    {
+      "id": "S377",
+      "completed": true
+    },
+    {
+      "id": "S378",
+      "completed": true
+    },
+    {
+      "id": "S379",
+      "completed": true
+    },
+    {
+      "id": "S380",
+      "completed": true
+    },
+    {
+      "id": "S381",
+      "completed": true
+    },
+    {
+      "id": "S382",
+      "completed": true
+    },
+    {
+      "id": "S383",
+      "completed": true
+    },
+    {
+      "id": "S384",
+      "completed": true
+    },
+    {
+      "id": "S385",
+      "completed": true
+    },
+    {
+      "id": "S386",
+      "completed": true
+    },
+    {
+      "id": "S387",
+      "completed": true
+    },
+    {
+      "id": "S388",
+      "completed": true
+    },
+    {
+      "id": "S389",
+      "completed": true
+    },
+    {
+      "id": "S390",
+      "completed": true
+    },
+    {
+      "id": "S391",
+      "completed": true
+    },
+    {
+      "id": "S392",
+      "completed": true
+    },
+    {
+      "id": "S393",
+      "completed": true
+    },
+    {
+      "id": "S394",
+      "completed": true
+    },
+    {
+      "id": "S395",
+      "completed": true
+    },
+    {
+      "id": "S396",
+      "completed": true
+    },
+    {
+      "id": "S397",
+      "completed": true
+    },
+    {
+      "id": "S398",
+      "completed": true
+    },
+    {
+      "id": "S399",
+      "completed": true
+    },
+    {
+      "id": "S400",
+      "completed": true
+    },
+    {
+      "id": "S401",
+      "completed": true
+    },
+    {
+      "id": "S402",
+      "completed": true
+    },
+    {
+      "id": "S403",
+      "completed": true
+    },
+    {
+      "id": "S404",
+      "completed": true
+    },
+    {
+      "id": "S405",
+      "completed": true
+    },
+    {
+      "id": "S406",
+      "completed": true
+    },
+    {
+      "id": "S407",
+      "completed": true
+    },
+    {
+      "id": "S408",
+      "completed": true
+    },
+    {
+      "id": "S409",
+      "completed": true
+    },
+    {
+      "id": "S410",
+      "completed": true
+    },
+    {
+      "id": "S411",
+      "completed": true
+    },
+    {
+      "id": "S412",
+      "completed": true
+    },
+    {
+      "id": "S413",
+      "completed": true
+    },
+    {
+      "id": "S414",
+      "completed": true
+    },
+    {
+      "id": "S415",
+      "completed": true
+    },
+    {
+      "id": "S416",
+      "completed": true
+    },
+    {
+      "id": "S417",
+      "completed": true
+    },
+    {
+      "id": "S418",
+      "completed": true
+    },
+    {
+      "id": "S419",
+      "completed": true
+    },
+    {
+      "id": "S420",
+      "completed": true
+    },
+    {
+      "id": "S421",
+      "completed": true
+    },
+    {
+      "id": "S422",
+      "completed": true
+    },
+    {
+      "id": "S423",
+      "completed": true
+    },
+    {
+      "id": "S424",
+      "completed": true
+    },
+    {
+      "id": "S425",
+      "completed": true
+    },
+    {
+      "id": "S426",
+      "completed": true
+    },
+    {
+      "id": "S427",
+      "completed": true
+    },
+    {
+      "id": "S428",
+      "completed": true
+    },
+    {
+      "id": "S429",
+      "completed": true
+    },
+    {
+      "id": "S430",
+      "completed": true
+    },
+    {
+      "id": "S431",
+      "completed": true
+    },
+    {
+      "id": "S432",
+      "completed": true
+    },
+    {
+      "id": "S433",
+      "completed": true
+    },
+    {
+      "id": "S434",
+      "completed": true
+    },
+    {
+      "id": "S435",
+      "completed": true
+    },
+    {
+      "id": "S436",
+      "completed": true
+    },
+    {
+      "id": "S437",
+      "completed": true
+    },
+    {
+      "id": "S438",
+      "completed": true
+    },
+    {
+      "id": "S439",
+      "completed": true
+    },
+    {
+      "id": "S440",
+      "completed": true
+    },
+    {
+      "id": "S441",
+      "completed": true
+    },
+    {
+      "id": "S442",
+      "completed": true
+    },
+    {
+      "id": "S443",
+      "completed": true
+    },
+    {
+      "id": "S444",
+      "completed": true
+    },
+    {
+      "id": "S445",
+      "completed": true
+    },
+    {
+      "id": "S446",
+      "completed": true
+    },
+    {
+      "id": "S447",
+      "completed": true
+    },
+    {
+      "id": "S448",
+      "completed": true
+    },
+    {
+      "id": "S449",
+      "completed": true
+    },
+    {
+      "id": "S450",
+      "completed": true
+    },
+    {
+      "id": "S451",
+      "completed": true
+    },
+    {
+      "id": "S452",
+      "completed": true
+    },
+    {
+      "id": "S453",
+      "completed": true
+    },
+    {
+      "id": "S454",
+      "completed": true
+    },
+    {
+      "id": "S455",
+      "completed": true
+    },
+    {
+      "id": "S456",
+      "completed": true
+    },
+    {
+      "id": "S457",
+      "completed": true
+    },
+    {
+      "id": "S458",
+      "completed": true
+    },
+    {
+      "id": "S459",
+      "completed": true
+    },
+    {
+      "id": "S460",
+      "completed": true
+    },
+    {
+      "id": "S461",
+      "completed": true
+    },
+    {
+      "id": "S462",
+      "completed": true
+    },
+    {
+      "id": "S463",
+      "completed": true
+    },
+    {
+      "id": "S464",
+      "completed": true
+    },
+    {
+      "id": "S465",
+      "completed": true
+    },
+    {
+      "id": "S466",
+      "completed": true
+    },
+    {
+      "id": "S467",
+      "completed": true
+    },
+    {
+      "id": "S468",
+      "completed": true
+    },
+    {
+      "id": "S469",
+      "completed": true
+    },
+    {
+      "id": "S470",
+      "completed": true
+    },
+    {
+      "id": "S471",
+      "completed": true
+    },
+    {
+      "id": "S472",
+      "completed": true
+    },
+    {
+      "id": "S473",
+      "completed": true
+    },
+    {
+      "id": "S474",
+      "completed": true
+    },
+    {
+      "id": "S475",
+      "completed": true
+    },
+    {
+      "id": "S476",
+      "completed": true
+    },
+    {
+      "id": "S477",
+      "completed": true
+    },
+    {
+      "id": "S478",
+      "completed": true
+    },
+    {
+      "id": "S479",
+      "completed": true
+    },
+    {
+      "id": "S480",
+      "completed": true
+    },
+    {
+      "id": "S481",
+      "completed": true
+    },
+    {
+      "id": "S482",
+      "completed": true
+    },
+    {
+      "id": "S483",
+      "completed": true
+    },
+    {
+      "id": "S484",
+      "completed": true
+    },
+    {
+      "id": "S485",
+      "completed": true
+    },
+    {
+      "id": "S486",
+      "completed": true
+    },
+    {
+      "id": "S487",
+      "completed": true
+    },
+    {
+      "id": "S488",
+      "completed": true
+    },
+    {
+      "id": "S489",
+      "completed": true
+    },
+    {
+      "id": "S490",
+      "completed": true
+    },
+    {
+      "id": "S491",
+      "completed": true
+    },
+    {
+      "id": "S492",
+      "completed": true
+    },
+    {
+      "id": "S493",
+      "completed": true
+    },
+    {
+      "id": "S494",
+      "completed": true
+    },
+    {
+      "id": "S495",
+      "completed": true
+    },
+    {
+      "id": "S496",
+      "completed": true
+    },
+    {
+      "id": "S497",
+      "completed": true
+    },
+    {
+      "id": "S498",
+      "completed": true
+    },
+    {
+      "id": "S499",
+      "completed": true
+    },
+    {
+      "id": "S500",
       "completed": true
     }
   ]

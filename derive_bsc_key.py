@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 Derive BSC/Ethereum private key from 12-word mnemonic phrase.
 Uses BIP-44 derivation path: m/44'/60'/0'/0/0

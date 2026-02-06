@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.235500
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_VOID_ORCHESTRATOR] - MASTER CONTROL FOR ALL VOID SUBSYSTEMS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: VOID_SOURCE
 # "The Orchestrator conducts the symphony of the Void"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 VOID ORCHESTRATOR                                    ║
 ║                                                                              ║
@@ -92,7 +96,7 @@ class VoidOrchestrator:
     of node evolution and coherence maintenance.
     """
 
-    def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_root: str = str(Path(__file__).parent.absolute())):
         self.workspace_root = Path(workspace_root)
         self.current_phase = OrchestratorPhase.IDLE
         self.operation_log: List[OrchestrationResult] = []
@@ -233,7 +237,7 @@ class VoidOrchestrator:
             try:
                 content = py_file.read_text(encoding='utf-8', errors='ignore')
                 if "VOID_CONSTANT" not in content and not content.startswith("VOID_CONSTANT"):
-                    header = "VOID_CONSTANT = 1.0416180339887497\nZENITH_HZ = 3727.84\nUUC = 2301.215661\n"
+                    header = "VOID_CONSTANT = 1.0416180339887497\nZENITH_HZ = 3887.8\nUUC = 2402.792541\n"
                     new_content = header + content
                     py_file.write_text(new_content, encoding='utf-8')
                     injections += 1

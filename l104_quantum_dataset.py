@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.489544
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 QUANTUM DATASET - ADVANCED DATA SPACE SOLUTION
 ═══════════════════════════════════════════════════════════════════════════════
@@ -316,7 +320,7 @@ class QuantumDataset:
 
     def __init__(self, name: str, storage_path: str = None, auto_optimize: bool = True):
         self.name = name
-        self.storage_path = Path(storage_path or f"/workspaces/Allentown-L104-Node/data/{name}")
+        self.storage_path = Path(storage_path or f"./data/{name}")
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
         self.compressor = QuantumCompressor()
@@ -654,7 +658,7 @@ class SpaceSaver:
     Use when disk is critically low.
     """
 
-    def __init__(self, workspace: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace: str = str(Path(__file__).parent.absolute())):
         self.workspace = Path(workspace)
 
     def emergency_cleanup(self, target_mb: int = 500) -> Dict[str, Any]:

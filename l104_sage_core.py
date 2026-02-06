@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.750544
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE CORE - REAL AUTONOMOUS INTELLIGENCE
@@ -33,6 +33,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 from collections import deque
+import threading
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -46,8 +47,53 @@ from collections import deque
 
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
-SAGE_VERSION = "1.0.0"
+SAGE_VERSION = "1.0.1"  # LATENCY OPTIMIZED
 SAGE_DB_PATH = os.getenv("SAGE_DB_PATH", "./data/sage_memory.db")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONNECTION POOL - Thread-safe SQLite pool for reduced latency
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _optimize_sqlite_connection(conn: sqlite3.Connection) -> sqlite3.Connection:
+    """Apply latency-optimized PRAGMA settings to SQLite connection."""
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA synchronous=NORMAL")
+    conn.execute("PRAGMA cache_size=-65536")     # 64MB cache
+    conn.execute("PRAGMA temp_store=MEMORY")
+    conn.execute("PRAGMA mmap_size=268435456")   # 256MB mmap
+    conn.execute("PRAGMA page_size=4096")
+    conn.execute("PRAGMA busy_timeout=30000")
+    return conn
+
+
+class SageConnectionPool:
+    """Thread-safe connection pool for SageMemory - avoids connect/close overhead."""
+    _pools = {}  # db_path -> pool
+    _lock = threading.Lock()
+
+    @classmethod
+    def get_connection(cls, db_path: str) -> sqlite3.Connection:
+        with cls._lock:
+            if db_path not in cls._pools:
+                cls._pools[db_path] = deque(maxlen=20)
+            pool = cls._pools[db_path]
+            if pool:
+                return pool.pop()
+        # Create new optimized connection
+        conn = sqlite3.connect(db_path, check_same_thread=False, timeout=30.0)
+        _optimize_sqlite_connection(conn)
+        return conn
+
+    @classmethod
+    def return_connection(cls, db_path: str, conn: sqlite3.Connection):
+        with cls._lock:
+            if db_path not in cls._pools:
+                cls._pools[db_path] = deque(maxlen=20)
+            pool = cls._pools[db_path]
+            if len(pool) < 20:
+                pool.append(conn)
+            else:
+                conn.close()
 
 logger = logging.getLogger("SAGE_CORE")
 logger.setLevel(logging.INFO)
@@ -85,7 +131,7 @@ PROVIDERS: Dict[str, ProviderConfig] = {
         name="anthropic",
         base_url="https://api.anthropic.com/v1",
         api_key_env="ANTHROPIC_API_KEY",
-        model="claude-3-5-sonnet-20241022"
+        model="claude-3-opus-20240229"
     ),
     "deepseek": ProviderConfig(
         name="deepseek",
@@ -107,7 +153,8 @@ PROVIDERS: Dict[str, ProviderConfig] = {
 
 class SageMemory:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Persistent memory for Sage Core using SQLite.
     Stores experiences, learned patterns, and evolution history.
     Mirrored to lattice_v2 for unified storage.
@@ -125,9 +172,10 @@ class SageMemory:
         self._ensure_db()
 
     def _ensure_db(self):
-        """Create database schema if needed."""
+        """Create database schema if needed. OPTIMIZED: WAL + cache."""
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         conn = sqlite3.connect(self.db_path)
+        _optimize_sqlite_connection(conn)
         cursor = conn.cursor()
 
         # Experiences table
@@ -199,7 +247,7 @@ class SageMemory:
         conn.close()
 
     def store_experience(self, context: str, action: str, result: str, reward: float):
-        """Store an experience - mirrored to lattice_v2."""
+        """Store an experience - mirrored to lattice_v2. OPTIMIZED: Connection pooling."""
         ts = time.time()
         # Mirror to lattice
         if self._use_lattice:
@@ -211,52 +259,61 @@ class SageMemory:
                 "reward": reward
             }, category="SAGE_EXPERIENCE")
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO experiences (timestamp, context, action, result, reward)
-            VALUES (?, ?, ?, ?, ?)
-        """, (ts, context, action, result, reward))
-        conn.commit()
-        conn.close()
+        conn = SageConnectionPool.get_connection(self.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO experiences (timestamp, context, action, result, reward)
+                VALUES (?, ?, ?, ?, ?)
+            """, (ts, context, action, result, reward))
+            conn.commit()
+        finally:
+            SageConnectionPool.return_connection(self.db_path, conn)
 
     def get_recent_experiences(self, limit: int = 100) -> List[Dict]:
-        """Get recent experiences."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            SELECT timestamp, context, action, result, reward
-            FROM experiences ORDER BY timestamp DESC LIMIT ?
-        """, (limit,))
-        rows = cursor.fetchall()
-        conn.close()
-        return [
-            {"timestamp": r[0], "context": r[1], "action": r[2], "result": r[3], "reward": r[4]}
-            for r in rows
-                ]
+        """Get recent experiences. OPTIMIZED: Connection pooling."""
+        conn = SageConnectionPool.get_connection(self.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT timestamp, context, action, result, reward
+                FROM experiences ORDER BY timestamp DESC LIMIT ?
+            """, (limit,))
+            rows = cursor.fetchall()
+            return [
+                {"timestamp": r[0], "context": r[1], "action": r[2], "result": r[3], "reward": r[4]}
+                for r in rows
+            ]
+        finally:
+            SageConnectionPool.return_connection(self.db_path, conn)
 
     def store_pattern(self, pattern_type: str, key: str, value: Any, confidence: float):
-        """Store a learned pattern."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT OR REPLACE INTO patterns (pattern_type, pattern_key, pattern_value, confidence, last_used)
-            VALUES (?, ?, ?, ?, ?)
-        """, (pattern_type, key, json.dumps(value), confidence, time.time()))
-        conn.commit()
-        conn.close()
+        """Store a learned pattern. OPTIMIZED: Connection pooling."""
+        conn = SageConnectionPool.get_connection(self.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO patterns (pattern_type, pattern_key, pattern_value, confidence, last_used)
+                VALUES (?, ?, ?, ?, ?)
+            """, (pattern_type, key, json.dumps(value), confidence, time.time()))
+            conn.commit()
+        finally:
+            SageConnectionPool.return_connection(self.db_path, conn)
 
     def get_pattern(self, key: str) -> Optional[Dict]:
-        """Get a pattern by key."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute("""
-            SELECT pattern_value, confidence FROM patterns WHERE pattern_key = ?
-        """, (key,))
-        row = cursor.fetchone()
-        conn.close()
-        if row:
-            return {"value": json.loads(row[0]), "confidence": row[1]}
+        """Get a pattern by key. OPTIMIZED: Connection pooling."""
+        conn = SageConnectionPool.get_connection(self.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT pattern_value, confidence FROM patterns WHERE pattern_key = ?
+            """, (key,))
+            row = cursor.fetchone()
+            if row:
+                return {"value": json.loads(row[0]), "confidence": row[1]}
+            return None
+        finally:
+            SageConnectionPool.return_connection(self.db_path, conn)
         return None
 
     def store_modification(self, file_path: str, mod_type: str,
@@ -523,8 +580,11 @@ class CodeSelfModifier:
     Implements real recursive self-improvement.
     """
 
-    def __init__(self, memory: SageMemory, workspace: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, memory: SageMemory, workspace: str = None):
         self.memory = memory
+        # Dynamic path detection for cross-platform compatibility
+        if workspace is None:
+            workspace = str(Path(__file__).parent.absolute())
         self.workspace = Path(workspace)
         self.backup_dir = self.workspace / ".l104_backups"
         self.backup_dir.mkdir(exist_ok=True)

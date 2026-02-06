@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.965107
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_MEMORY_OPTIMIZED] - HIGH-PERFORMANCE UNIFIED MEMORY SYSTEM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "Memory flows like water through optimized channels"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 OPTIMIZED MEMORY SYSTEM                              ║
 ║                                                                              ║
@@ -456,10 +460,16 @@ class WriteAheadLog:
         """Write a log entry."""
         with self._lock:
             self._sequence += 1
+            # Wrap sequence to prevent overflow (32-bit max)
+            self._sequence = self._sequence % 0xFFFFFFFF
             timestamp = int(time.time() * 1000)
 
             key_bytes = key.encode()
             data_bytes = data.encode()
+
+            # Limit data size to prevent struct pack overflow (max 4GB)
+            if len(data_bytes) > 0xFFFFFFFF:
+                data_bytes = data_bytes[:0xFFFFFFFF]
 
             # Format: magic(7) + seq(4) + timestamp(8) + op(1) + key_len(2) + key + data_len(4) + data
             entry = bytearray()
@@ -467,8 +477,8 @@ class WriteAheadLog:
             entry.extend(struct.pack('>I', self._sequence))
             entry.extend(struct.pack('>Q', timestamp))
             entry.append(op)
-            entry.extend(struct.pack('>H', len(key_bytes)))
-            entry.extend(key_bytes)
+            entry.extend(struct.pack('>H', min(len(key_bytes), 0xFFFF)))
+            entry.extend(key_bytes[:0xFFFF])  # Limit key size
             entry.extend(struct.pack('>I', len(data_bytes)))
             entry.extend(data_bytes)
 

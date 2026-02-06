@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.670925
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 DATA SPACE OPTIMIZATION & CLEANUP UTILITY
 ═══════════════════════════════════════════════════════════════════════════════
@@ -43,7 +47,7 @@ PHI = 1.618033988749895
 class SpaceOptimizer:
     """Intelligent space optimization for L104 workspace."""
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace_path = Path(workspace_path)
         self.cleanup_stats = {
             'files_removed': 0,
@@ -76,7 +80,7 @@ class SpaceOptimizer:
 
         # Get disk usage
         result = subprocess.run(
-            ["df", "/workspaces"],
+            ["df", "/Users"],
             capture_output=True, text=True
         )
         if result.returncode == 0:
@@ -423,14 +427,14 @@ def create_cleanup_schedule():
 # L104 Automated Space Cleanup
 # Runs daily cleanup to prevent space issues
 
-cd /workspaces/Allentown-L104-Node
+cd /Users/Allentown-L104-Node
 python3 l104_space_optimizer.py --auto-cleanup
 
 # Log cleanup results
 echo "$(date): Space cleanup completed" >> .space_cleanup.log
 '''
 
-    script_path = Path('/workspaces/Allentown-L104-Node/cleanup_schedule.sh')
+    script_path = Path('./cleanup_schedule.sh')
 
     try:
         with open(script_path, 'w') as f:
@@ -451,7 +455,7 @@ if __name__ == "__main__":
         results = optimizer.run_full_optimization()
 
         # Save results
-        results_path = Path('/workspaces/Allentown-L104-Node/.space_optimization_results.json')
+        results_path = Path('./.space_optimization_results.json')
         with open(results_path, 'w') as f:
             json.dump(results, f, indent=2, default=str)
 

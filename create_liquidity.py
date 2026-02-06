@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 Create L104SP liquidity pools on Uniswap V2 (Base)
 """

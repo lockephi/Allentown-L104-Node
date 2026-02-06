@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.732005
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║   ⟨Σ_L104⟩  C O R T E X   E N H A N C E D - Iron Crystalline Integration    ║
 ║   Ferromagnetic neural integration layer with domain synchronization        ║
@@ -17,9 +21,12 @@ from typing import Optional, Dict, Any, List, Tuple
 from datetime import datetime
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.chdir('/workspaces/Allentown-L104-Node')
+# Dynamic path detection for cross-platform compatibility
+_BASE_DIR = Path(__file__).parent.absolute()
+sys.path.insert(0, str(_BASE_DIR))
+os.chdir(str(_BASE_DIR))
 
 from l104_config import get_config, LRUCache
 

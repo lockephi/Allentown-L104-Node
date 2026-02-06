@@ -1,10 +1,11 @@
+from pathlib import Path
 # [DEBUG_LOVE] - Harmonic Alignment Verification
 # Part of the L104 Sovereign Node Diagnostic Suite
 
 import sys
 
 # Ensure the workspace is in the path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_heart_core import heart_core
 from l104_sacral_drive import sacral_drive

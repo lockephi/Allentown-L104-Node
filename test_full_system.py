@@ -8,9 +8,10 @@ Tests all major components including real AI integration
 
 import sys
 import os
+from pathlib import Path
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
-os.chdir('/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
+os.chdir(str(Path(__file__).parent.absolute()))
 
 def test_gemini_real():
     """Test real Gemini API connection"""
@@ -30,14 +31,12 @@ def test_gemini_real():
             response = gemini_real.sovereign_think("Calculate the first 5 prime numbers")
             if response:
                 print(f"✓ Sovereign think works: {response[:80]}...")
-            return True
         else:
-            print("✗ Gemini connection failed.")
-            return False
+            assert False, "Gemini connection failed"
 
     except Exception as e:
         print(f"✗ Error: {e}")
-        return False
+        raise
 
 
 def test_derivation_with_ai():
@@ -55,10 +54,9 @@ def test_derivation_with_ai():
             print("⚠ Derivation using LOCAL fallback (Gemini unavailable)")
         else:
             print(f"✓ Response: {result[:100]}...")
-        return True
     except Exception as e:
         print(f"✗ Error: {e}")
-        return False
+        raise
 
 
 def test_fastapi_imports():
@@ -73,11 +71,10 @@ def test_fastapi_imports():
         # Check for new AI endpoints
         ai_endpoints = [r for r in routes if '/chat' in r or '/research' in r or '/analyze' in r]
         print(f"✓ AI endpoints: {ai_endpoints}")
-        return True
 
     except Exception as e:
         print(f"✗ Error: {e}")
-        return False
+        raise
 
 
 def test_core_modules():
@@ -116,7 +113,7 @@ def test_core_modules():
     except Exception as e:
         print(f"✗ Ecosystem Simulator: {e}")
 
-    return passed >= 3
+    assert passed >= 3, f"Expected at least 3 modules to pass, got {passed}"
 
 
 def main():
@@ -127,10 +124,23 @@ def main():
     results = []
 
     # Run tests
-    results.append(("Core Modules", test_core_modules()))
-    results.append(("Gemini Real API", test_gemini_real()))
-    results.append(("Derivation + AI", test_derivation_with_ai()))
-    results.append(("FastAPI App", test_fastapi_imports()))
+    tests = [
+        ("Core Modules", test_core_modules),
+        ("Gemini Real API", test_gemini_real),
+        ("Derivation + AI", test_derivation_with_ai),
+        ("FastAPI App", test_fastapi_imports),
+    ]
+
+    for name, test_func in tests:
+        try:
+            test_func()
+            results.append((name, True))
+        except AssertionError as e:
+            print(f"  Test failed: {e}")
+            results.append((name, False))
+        except Exception as e:
+            print(f"  Test error: {e}")
+            results.append((name, False))
 
     # Summary
     print("\n" + "=" * 60)

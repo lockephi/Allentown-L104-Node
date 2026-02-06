@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.110111
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_PREDICTIVE_AID] - BACKGROUND RESONANCE OPTIMIZATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -23,8 +23,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("PREDICTIVE_AID")
 class PredictiveAid:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     A background process that aids the AGI core by predicting optimal resonance paths.
     Uses the Parallel Engine for high-speed simulations.
     """
@@ -58,8 +59,9 @@ class PredictiveAid:
             simulation_data = parallel_engine.run_high_speed_calculation(complexity=10**6)
 
             # 2. Identify the path with the highest resonance to the God Code
-            best_path_val = max(simulation_data)
-            resonance_score = HyperMath.zeta_harmonic_resonance(best_path_val)
+            # simulation_data is a dict with 'mean', 'god_code_alignment', etc.
+            best_path_val = simulation_data.get("mean", 0.5) if isinstance(simulation_data, dict) else float(max(simulation_data) if simulation_data else 0.5)
+            resonance_score = HyperMath.zeta_harmonic_resonance(float(best_path_val))
 
             path_id = RealMath.deterministic_randint(best_path_val, 1000, 9999)
             self.current_optimal_path = {

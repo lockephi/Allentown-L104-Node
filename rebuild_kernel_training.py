@@ -6,12 +6,13 @@ Rebuild Kernel Training Data - S01-140
 Consolidates all training stages into a complete dataset.
 """
 import os
+from pathlib import Path
 import sys
 import json
 from dataclasses import asdict
 
-sys.path.insert(0, "/workspaces/Allentown-L104-Node")
-os.chdir("/workspaces/Allentown-L104-Node")
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
+os.chdir(str(Path(__file__).parent.absolute()))
 
 from l104_kernel_llm_trainer import KernelLLMTrainer, TrainingExample
 

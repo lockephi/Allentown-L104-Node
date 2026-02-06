@@ -4,14 +4,15 @@
 """L104 Core System Test - Tests all major components"""
 
 import os
+from pathlib import Path
 import sys
-os.chdir('/workspaces/Allentown-L104-Node')
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+os.chdir(str(Path(__file__).parent.absolute()))
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 passed = 0
 failed = 0
 
-def test(name, func):
+def run_test(name, func):
     global passed, failed
     try:
         result = func()
@@ -50,9 +51,9 @@ if __name__ == "__main__":
         print(f"    ANYON_BRAID_RATIO = {ManifoldMath.ANYON_BRAID_RATIO:.6f}")
         return True
 
-    test("HyperMath", test_hyper_math)
-    test("RealMath", test_real_math)
-    test("ManifoldMath", test_manifold_math)
+    run_test("HyperMath", test_hyper_math)
+    run_test("RealMath", test_real_math)
+    run_test("ManifoldMath", test_manifold_math)
 
     # Test 2: Resonance
     print("\n=== Resonance ===")
@@ -64,7 +65,7 @@ if __name__ == "__main__":
         print(f"    frequency = {freq:.4f}")
         return freq > 0
 
-    test("L104Resonance", test_resonance)
+    run_test("L104Resonance", test_resonance)
 
     # Test 3: Data Systems
     print("\n=== Data Systems ===")
@@ -90,9 +91,9 @@ if __name__ == "__main__":
         print(f"    DataMatrix initialized")
         return True
 
-    test("AlgorithmDatabase", test_algo_db)
-    test("L104Memory", test_memory)
-    test("DataMatrix", test_data_matrix)
+    run_test("AlgorithmDatabase", test_algo_db)
+    run_test("L104Memory", test_memory)
+    run_test("DataMatrix", test_data_matrix)
 
     # Test 4: Core Engines
     print("\n=== Core Engines ===")

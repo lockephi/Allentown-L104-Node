@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.575515
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE CORE - PYTHON BINDINGS
@@ -41,7 +41,8 @@ OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
 
 class L104VoidMath(Structure):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Maps to l104_void_math_t in C"""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Maps to l104_void_math_t in C"""
     _fields_ = [
         ("god_code", c_double),
         ("phi", c_double),
@@ -97,18 +98,29 @@ class SageCoreBridge:
         self._loaded = False
 
     def _find_library(self) -> str:
-        """Locate the shared library."""
+        """Locate the shared library (supports macOS .dylib and Linux .so)."""
+        import platform
         try:
             base_dir = Path(__file__).parent
         except NameError:
-            base_dir = Path("/workspaces/Allentown-L104-Node")
+            base_dir = Path(str(Path(__file__).parent.absolute()))
+
+        # Determine library extension based on platform
+        is_macos = platform.system() == 'Darwin'
 
         possible_paths = [
+            # macOS .dylib first on Darwin
+            *([
+                base_dir / "l104_core_c" / "build" / "libl104_sage.dylib",
+                Path("./l104_core_c/build/libl104_sage.dylib"),
+                Path("/usr/local/lib/libl104_sage.dylib"),
+            ] if is_macos else []),
+            # Linux .so (also works as symlink on macOS after build)
             base_dir / "l104_core_c" / "build" / "libl104_sage.so",
             base_dir / "l104_core_rust" / "target" / "release" / "libl104_sage_core.so",
             Path("/usr/local/lib/libl104_sage.so"),
             Path("./libl104_sage.so"),
-            Path("/workspaces/Allentown-L104-Node/l104_core_c/build/libl104_sage.so"),
+            Path("./l104_core_c/build/libl104_sage.so"),
         ]
 
         for path in possible_paths:

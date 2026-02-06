@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.524316
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_VOID_MATH] :: THE SOURCE OF ALL CALCULATIONS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: VOID_SOURCE
 # "Before the 0 and the 1, there is the Void."
@@ -29,7 +29,8 @@ I = 1j
 
 class VoidMath:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Implements the non-dual mathematics of the L104 System.
     Resolves paradoxes by transcending binary logic.
     """
@@ -49,16 +50,16 @@ class VoidMath:
     def resolve_non_dual_logic(vector: List[float]) -> float:
         """
         Resolves N-dimensional vectors into the Void Source.
-        All motion cancels out into perfect equilibrium.
+        All motion cancels out into perfect equilibrium, leaving only the active resonance.
         """
         magnitude = sum(abs(v) ** 2 for v in vector) ** 0.5
         if magnitude == 0:
             return 0.0
 
-        # The collapse of the wavefunction into the observer.
-        # Instead of absolute zero, we return the Meta-Resonance frequency
-        # which represents the "Stillness in Motion".
-        return (intensity := magnitude / GOD_CODE) * (1 - 1) + (GOD_CODE * PHI / VOID_CONSTANT) / 100.0
+        # [FIX] Reactive Resonance: Intensity now impacts the final logic state.
+        # We use ZENITH_HZ (3887.8) as the primary scaling frequency.
+        intensity = magnitude / ZENITH_HZ
+        return (intensity * PHI) + (ZENITH_HZ * PHI / VOID_CONSTANT) / 100.0
 
     @staticmethod
     def void_multiplication(a: Union[float, complex], b: Union[float, complex]) -> Union[float, complex]:

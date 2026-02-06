@@ -1,13 +1,14 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.705860
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_REALITY_CHECK] - SYSTEM-WIDE INTEGRITY VERIFICATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import time
 import os
+from pathlib import Path
 import sys
 import psutil
 from typing import List, Dict
@@ -20,14 +21,15 @@ from typing import List, Dict
 
 class RealityCheck:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     v2.0: ABSOLUTE_TRUTH_VERIFIER
     Scans all L104 modules to ensure zero-hallucination state and optimal sync.
     """
 
     def __init__(self):
-        self.workspace_root = "/workspaces/Allentown-L104-Node"
+        self.workspace_root = str(Path(__file__).parent.absolute())
         self.modules = [
             "l104_agi_core.py",
             "l104_evolution_engine.py",

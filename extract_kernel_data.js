@@ -19,7 +19,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,10 +31,32 @@ const PHI = 1.618033988749895;
 const VOID_CONSTANT = 1.0416180339887497;
 const COHERENCE_MINIMUM = 0.888;
 
-const WORKSPACE = '/workspaces/Allentown-L104-Node';
+const WORKSPACE = process.cwd();
 const NOTEBOOK_PATH = path.join(WORKSPACE, 'advanced_kernel_research.ipynb');
 const OUTPUT_PATH = path.join(WORKSPACE, 'kernel_extracted_data.jsonl');
 const STATS_PATH = path.join(WORKSPACE, 'kernel_extraction_stats.json');
+
+// Helper to recursively find all relevant files
+function getAllFiles(dirPath, arrayOfFiles) {
+    const files = fs.readdirSync(dirPath);
+    arrayOfFiles = arrayOfFiles || [];
+
+    files.forEach(function (file) {
+        if (file === 'node_modules' || file === '.git' || file === '.venv' || file === '__pycache__' || file === 'dist' || file === 'build') {
+            return;
+        }
+        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+            arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+        } else {
+            const ext = path.extname(file).toLowerCase();
+            if (['.py', '.js', '.ts', '.md', '.tex', '.ipynb', '.json', '.sh'].includes(ext)) {
+                arrayOfFiles.push(path.join(dirPath, "/", file));
+            }
+        }
+    });
+
+    return arrayOfFiles;
+}
 
 console.log('═'.repeat(70));
 console.log('🚀 L104 KERNEL DATA EXTRACTOR - NODE.JS HIGH-SPEED PROCESSOR');
@@ -45,16 +66,10 @@ console.log(`   PHI: ${PHI}`);
 console.log(`   Target: 22+ Million Parameters`);
 console.log('═'.repeat(70));
 
-// Read notebook
-console.log('\n📖 Reading notebook...');
-const notebookRaw = fs.readFileSync(NOTEBOOK_PATH, 'utf-8');
-const notebook = JSON.parse(notebookRaw);
-
-console.log(`   Cells: ${notebook.cells.length}`);
-console.log(`   File size: ${(notebookRaw.length / 1024 / 1024).toFixed(2)} MB`);
-
-// Extract all TrainingExample patterns from code cells
-console.log('\n🔍 Extracting TrainingExample patterns...');
+// Find all files
+console.log('\n📂 Scanning workspace files...');
+const allFiles = getAllFiles(WORKSPACE);
+console.log(`   Found ${allFiles.length} files to analyze.`);
 
 const examples = [];
 const categories = new Set();
@@ -80,11 +95,46 @@ const tuplePattern = /\(\s*["']([^"']{10,200})["']\s*,\s*["']([^"']{20,500})["']
 
 let extractedCount = 0;
 
-for (const cell of notebook.cells) {
-    if (cell.cell_type !== 'code') continue;
+allFiles.forEach(filePath => {
+    const relativePath = path.relative(WORKSPACE, filePath);
+    const content = fs.readFileSync(filePath, 'utf-8');
 
-    const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+    // Handle Notebooks (JSON)
+    if (path.extname(filePath) === '.ipynb') {
+        try {
+            const notebook = JSON.parse(content);
+            notebook.cells.forEach(cell => {
+                const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+                processSource(source, relativePath);
+            });
+        } catch (e) { }
+    } else {
+        processSource(content, relativePath);
 
+        // ADD FILE-LEVEL VOCABULARY KNOWLEDGE
+        // If the file is small enough, add its content as knowledge
+        if (content.length > 50 && content.length < 5000 && !filePath.includes('.json')) {
+            const summary = content.substring(0, 100).replace(/\n/g, ' ');
+            examples.push({
+                prompt: `What is the content of the file ${relativePath}?`,
+                completion: `The file ${relativePath} contains ${path.extname(filePath)} logic. Snippet: ${summary}...`,
+                category: "file_registry",
+                difficulty: 0.5,
+                importance: 0.4,
+                metadata: { source: 'file_registry_auto' }
+            });
+            extractedCount++;
+
+            // Enrich vocabulary with tokens from file content
+            const words = content.toLowerCase().match(/\w+/g) || [];
+            words.forEach(w => {
+                if (w.length > 3) vocabulary.add(w);
+            });
+        }
+    }
+});
+
+function processSource(source, sourceLabel) {
     // Try each pattern
     for (const pattern of patterns) {
         pattern.lastIndex = 0;
@@ -101,7 +151,7 @@ for (const cell of notebook.cells) {
                     category: category.trim(),
                     difficulty: 0.7,
                     importance: 0.8,
-                    metadata: { source: 'notebook_extraction' }
+                    metadata: { source: sourceLabel }
                 });
                 categories.add(category);
                 extractedCount++;
@@ -131,7 +181,7 @@ for (const cell of notebook.cells) {
                 category: 'extracted_qa',
                 difficulty: 0.6,
                 importance: 0.7,
-                metadata: { source: 'tuple_extraction' }
+                metadata: { source: sourceLabel + ':tuple' }
             });
             extractedCount++;
 

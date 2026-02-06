@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.460505
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ╔═══════════════════════════════════════════════════════════════════════════════╗
 # ║  L104 ADAPTIVE LEARNING ENGINE                                                ║
@@ -10,8 +10,9 @@ UUC = 2301.215661
 # ╚═══════════════════════════════════════════════════════════════════════════════╝
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Adaptive Learning Engine
 
 This module extends the L104 system with advanced adaptive learning capabilities:
@@ -380,7 +381,7 @@ class DeepResearchEngine:
     """
 
     def __init__(self, db_path: Path = None):
-        self.db_path = db_path or Path("/workspaces/Allentown-L104-Node/l104_research.db")
+        self.db_path = db_path or Path("./l104_research.db")
         self.findings: List[ResearchFinding] = []
         self.research_count = 0
         self._init_db()

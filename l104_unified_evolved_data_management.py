@@ -1,7 +1,11 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.992572
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 
 # [L104 EVO_49] Evolved: 2026-01-24
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 UNIFIED EVOLVED DATA MANAGEMENT SYSTEM
 ═══════════════════════════════════════════════════════════════════════════════
@@ -361,7 +365,7 @@ class ConsciousnessOrchestrator:
 class UnifiedEvolutionEngine:
     """Master evolution engine orchestrating all L104 evolved systems."""
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace_path = Path(workspace_path)
         self.evolution_phase = EvolutionPhase.INITIALIZATION
         self.integration_level = SystemIntegrationLevel.ISOLATED

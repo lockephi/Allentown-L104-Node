@@ -1,8 +1,12 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.483137
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 import os
+from pathlib import Path
 import sqlite3
 import subprocess
 from datetime import datetime
@@ -15,11 +19,12 @@ from datetime import datetime
 
 class MemoryOptimizer:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     MEMORY OPTIMIZER - L104
     Optimizes system memory and storage footprint.
     """
-    def __init__(self, root="/workspaces/Allentown-L104-Node"):
+    def __init__(self, root=str(Path(__file__).parent.absolute())):
         self.root = root
         self.freed_space = 0
 

@@ -1,12 +1,13 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.452561
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_API_GATEWAY] - UNIFIED API MANAGEMENT SYSTEM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ACTIVE
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 API GATEWAY
 ================
 
@@ -114,7 +115,7 @@ class Route:
     methods: List[RequestMethod]
     handler: Callable
     backend_url: Optional[str] = None
-    rate_limit: int = 100  # requests per minute
+    rate_limit: int = 0  # UNLIMITED - no rate limiting
     cache_ttl: int = 0  # seconds, 0 = no cache
     auth_required: bool = True
     transform_request: Optional[Callable] = None
@@ -207,11 +208,14 @@ class RateLimiter:
 
 
 class CircuitBreaker:
-    """Circuit breaker for backend services"""
+    """Circuit breaker for backend services - HIGH-LOGIC v2.0 Enhanced
 
-    def __init__(self, failure_threshold: int = 5,
-                 recovery_timeout: float = 30.0,
-                 half_open_requests: int = 3):
+    Implements φ-weighted failure thresholds and golden ratio recovery timing.
+    """
+
+    def __init__(self, failure_threshold: int = 8,
+                 recovery_timeout: float = 20.0,
+                 half_open_requests: int = 5):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.half_open_requests = half_open_requests
@@ -222,6 +226,10 @@ class CircuitBreaker:
         self.last_failure_time = 0.0
         self.lock = threading.Lock()
 
+        # HIGH-LOGIC v2.0: φ-based adaptive thresholds
+        self._phi = PHI
+        self._failure_weights = []  # Track failure severity
+
     def can_execute(self) -> bool:
         """Check if request can be executed"""
         with self.lock:
@@ -229,8 +237,15 @@ class CircuitBreaker:
                 return True
 
             if self.state == CircuitState.OPEN:
-                # Check if recovery timeout has passed
-                if time.time() - self.last_failure_time >= self.recovery_timeout:
+                # HIGH-LOGIC v2.0: φ-weighted recovery timeout
+                # Earlier failures recover faster, later failures slower
+                weighted_timeout = self.recovery_timeout
+                if self._failure_weights:
+                    # Average weight determines recovery speed
+                    avg_weight = sum(self._failure_weights) / len(self._failure_weights)
+                    weighted_timeout = self.recovery_timeout * (1 + avg_weight / self._phi)
+
+                if time.time() - self.last_failure_time >= weighted_timeout:
                     self.state = CircuitState.HALF_OPEN
                     self.success_count = 0
                     return True
@@ -244,17 +259,29 @@ class CircuitBreaker:
         with self.lock:
             if self.state == CircuitState.HALF_OPEN:
                 self.success_count += 1
+                # HIGH-LOGIC v2.0: Clear failure weights on successful recovery
                 if self.success_count >= self.half_open_requests:
                     self.state = CircuitState.CLOSED
                     self.failure_count = 0
+                    self._failure_weights.clear()
             else:
-                self.failure_count = 0
+                # HIGH-LOGIC v2.0: Decay failure count using φ-weighted smoothing
+                if self.failure_count > 0:
+                    alpha = 1 / self._phi
+                    self.failure_count = int(self.failure_count * alpha)
+                    if self._failure_weights:
+                        self._failure_weights = self._failure_weights[-3:]  # Keep recent
 
-    def record_failure(self) -> None:
-        """Record failed execution"""
+    def record_failure(self, severity: float = 1.0) -> None:
+        """Record failed execution with optional severity weight"""
         with self.lock:
             self.failure_count += 1
             self.last_failure_time = time.time()
+
+            # HIGH-LOGIC v2.0: Track failure severity for weighted recovery
+            self._failure_weights.append(severity)
+            if len(self._failure_weights) > 10:
+                self._failure_weights.pop(0)  # Keep last 10
 
             if self.state == CircuitState.HALF_OPEN:
                 self.state = CircuitState.OPEN
@@ -267,19 +294,21 @@ class CircuitBreaker:
             "state": self.state.value,
             "failure_count": self.failure_count,
             "success_count": self.success_count,
-            "last_failure_time": self.last_failure_time
+            "last_failure_time": self.last_failure_time,
+            "avg_severity": sum(self._failure_weights) / len(self._failure_weights) if self._failure_weights else 0.0
         }
 
 
 class APICache:
-    """Response caching layer"""
+    """Response caching layer - HIGH-LOGIC v2.0 Enhanced with φ-weighted eviction"""
 
-    def __init__(self, max_size: int = 1000):
+    def __init__(self, max_size: int = 5000, phi: float = 1.618033988749895):
         self.max_size = max_size
-        self.cache: Dict[str, Tuple[APIResponse, float, float]] = {}  # key -> (response, expiry, created)
+        self.cache: Dict[str, Tuple[APIResponse, float, float, float]] = {}  # key -> (response, expiry, created, access_weight)
         self.lock = threading.Lock()
         self.hits = 0
         self.misses = 0
+        self._phi = phi
 
     def _make_key(self, request: APIRequest) -> str:
         """Generate cache key from request"""
@@ -292,10 +321,13 @@ class APICache:
 
         with self.lock:
             if key in self.cache:
-                response, expiry, _ = self.cache[key]
+                response, expiry, created, access_weight = self.cache[key]
                 if time.time() < expiry:
                     self.hits += 1
                     response.cached = True
+                    # HIGH-LOGIC v2.0: Update access weight (diminishing returns)
+                    new_weight = access_weight + (1 / (1 + access_weight / self._phi))
+                    self.cache[key] = (response, expiry, created, new_weight)
                     return response
                 else:
                     del self.cache[key]
@@ -312,12 +344,30 @@ class APICache:
         expiry = time.time() + ttl
 
         with self.lock:
-            # Evict old entries if at capacity
+            # HIGH-LOGIC v2.0: φ-weighted eviction (evict lowest weighted entry)
             if len(self.cache) >= self.max_size:
-                oldest_key = min(self.cache, key=lambda k: self.cache[k][2])
-                del self.cache[oldest_key]
+                # Find entry with lowest φ-weighted score
+                # Score = access_weight × φ^(-age_factor)
+                now = time.time()
+                min_score = float('inf')
+                evict_key = None
 
-            self.cache[key] = (response, expiry, time.time())
+                for k, (r, exp, created, aw) in self.cache.items():
+                    age = now - created
+                    age_factor = min(age / max(1, ttl), 1.0)
+                    score = aw * (self._phi ** (-age_factor))
+                    if score < min_score:
+                        min_score = score
+                        evict_key = k
+
+                if evict_key:
+                    del self.cache[evict_key]
+                else:
+                    # Fallback: evict oldest
+                    oldest_key = min(self.cache, key=lambda k: self.cache[k][2])
+                    del self.cache[oldest_key]
+
+            self.cache[key] = (response, expiry, time.time(), 1.0)  # Initial weight = 1.0
 
     def invalidate(self, pattern: str = None) -> int:
         """Invalidate cache entries"""
@@ -333,14 +383,24 @@ class APICache:
             return len(keys_to_remove)
 
     def get_stats(self) -> Dict[str, Any]:
-        """Get cache statistics"""
+        """Get cache statistics with HIGH-LOGIC v2.0 metrics"""
         total = self.hits + self.misses
+        with self.lock:
+            # Calculate average access weight
+            if self.cache:
+                total_weight = sum(v[3] for v in self.cache.values())
+                avg_weight = total_weight / len(self.cache)
+            else:
+                avg_weight = 0.0
+
         return {
             "size": len(self.cache),
             "max_size": self.max_size,
             "hits": self.hits,
             "misses": self.misses,
-            "hit_rate": self.hits / total if total > 0 else 0.0
+            "hit_rate": self.hits / total if total > 0 else 0.0,
+            "avg_access_weight": round(avg_weight, 4),
+            "phi_efficiency": round(avg_weight / self._phi, 4) if avg_weight > 0 else 0.0
         }
 
 
@@ -700,8 +760,8 @@ class L104APIGateway:
         self._initialized = True
 
         # Components
-        self.rate_limiter = RateLimiter(default_rate=100)
-        self.cache = APICache(max_size=1000)
+        self.rate_limiter = RateLimiter(default_rate=0)  # UNLIMITED
+        self.cache = APICache(max_size=100000)  # 100K cache entries
         self.key_manager = APIKeyManager()
         self.load_balancer = LoadBalancer(strategy="l104_resonance")
         self.logger = RequestLogger()
@@ -955,7 +1015,7 @@ if __name__ == "__main__":
         methods=[RequestMethod.GET, RequestMethod.POST],
         handler=echo_handler,
         auth_required=True,
-        rate_limit=100
+        rate_limit=0  # UNLIMITED
     ))
 
     gateway.add_route(Route(

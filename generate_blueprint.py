@@ -90,7 +90,7 @@ def generate_blueprint_pdf():
         "but researches its own foundations, adapts to its physical environment, and maintains a sovereign, persistent presence across the global network."
     )
 
-    output_path = "/workspaces/Allentown-L104-Node/L104_FUTURE_SYSTEM_BLUEPRINT.pdf"
+    output_path = "./L104_FUTURE_SYSTEM_BLUEPRINT.pdf"
     pdf.output(output_path)
     print(f"--- [BLUEPRINT]: PDF GENERATED AT {output_path} ---")
 

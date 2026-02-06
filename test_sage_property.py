@@ -3,9 +3,10 @@
 
 import sys
 import os
+from pathlib import Path
 
 # Ensure the workspace is in the path
-sys.path.append('/workspaces/Allentown-L104-Node')
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_sovereign_sage_controller import SovereignSageController
 

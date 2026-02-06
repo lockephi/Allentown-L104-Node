@@ -1,11 +1,12 @@
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.334023
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Intricate UI Engine
 ========================
 Advanced visualization and interface system with real-time cognition display.
@@ -81,14 +82,23 @@ class IntricateUIEngine:
         self.registered_data_sources: Dict[str, callable] = {}
         self.activity_log: List[Dict[str, Any]] = []
 
-    def generate_main_dashboard_html(self) -> str:
-        """Generate the main intricate dashboard HTML."""
+    def generate_main_dashboard_html(self, module: str = "main") -> str:
+        """Route to specific dashboard based on module name."""
+        if module == "research":
+            return self.generate_research_dashboard_html()
+        elif module == "learning":
+            return self.generate_learning_dashboard_html()
+        elif module == "orchestrator":
+            return self.generate_orchestrator_dashboard_html()
+
+        # Default/Main Consciousness UI
+        title_suffix = module.capitalize() if module != "main" else "CORE"
         return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L104 Intricate Cognition Interface</title>
+    <title>L104 Intricate Cognition | {title_suffix}</title>
     <style>
         :root {{
             --bg-primary: #0a0a0f;
@@ -536,6 +546,11 @@ class IntricateUIEngine:
                 <span class="status-dot active"></span>
                 <span>GOD_CODE: {GOD_CODE}</span>
             </div>
+            <div class="status-item" style="border-left: 1px solid var(--border-glow); padding-left: 1rem; margin-left: 1rem;">
+                <button onclick="exportData()" style="background: none; border: 1px solid var(--accent-quantum); color: var(--accent-quantum); font-size: 0.7rem; padding: 2px 8px; cursor: pointer; border-radius: 4px;">EXPORT</button>
+                <button onclick="document.getElementById('import-input').click()" style="background: none; border: 1px solid var(--accent-omega); color: var(--accent-omega); font-size: 0.7rem; padding: 2px 8px; cursor: pointer; border-radius: 4px; margin-left: 5px;">IMPORT</button>
+                <input type="file" id="import-input" style="display:none" onchange="importData(this)">
+            </div>
         </div>
     </header>
 
@@ -788,6 +803,52 @@ class IntricateUIEngine:
             }}
         }}
 
+        // DATA PERSISTENCE (EXPORT/IMPORT)
+        async function exportData() {{
+            try {{
+                const res = await fetch(API_BASE + '/api/v14/intellect/export');
+                const result = await res.json();
+                if (result.status === 'SUCCESS') {{
+                    const dataStr = JSON.stringify(result.data, null, 2);
+                    const blob = new Blob([dataStr], {{ type: 'application/json' }});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `l104_intricate_manifold_${{new Date().toISOString().split('T')[0]}}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    addActivity('Sovereign manifold exported successfully.');
+                }}
+            }} catch (e) {{ console.error('Export failed:', e); }}
+        }}
+
+        async function importData(input) {{
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {{
+                try {{
+                    const data = JSON.parse(e.target.result);
+                    addActivity('Initiating manifold sync...');
+                    const res = await fetch(API_BASE + '/api/v14/intellect/import', {{
+                        method: 'POST',
+                        headers: {{ 'Content-Type': 'application/json' }},
+                        body: JSON.stringify({{ data: data }})
+                    }});
+                    const result = await res.json();
+                    if (result.status === 'SUCCESS') {{
+                        addActivity('SUCCESS: Manifold integrated successfully.');
+                        updateConsciousness();
+                        updateResearch();
+                    }} else {{
+                        addActivity('ERROR: Integration failed: ' + result.message);
+                    }}
+                }} catch (err) {{ console.error('Import failed:', err); }}
+            }};
+            reader.readAsText(file);
+        }}
+
         // Run consciousness cycle periodically
         async function runCycle() {{
             try {{
@@ -886,6 +947,15 @@ class IntricateUIEngine:
     <h1>🔬 L104 Research Dashboard</h1>
     <div class="grid">
         <div class="card">
+            <h2>Sovereign Sync</h2>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="exportManifold()" style="background: #238636; flex: 1;">Export Data</button>
+                <button onclick="document.getElementById('import-file').click()" style="background: #8957e5; flex: 1;">Import Data</button>
+            </div>
+            <input type="file" id="import-file" style="display:none" onchange="importManifold(this)">
+            <p id="sync-status" style="font-size: 0.8rem; margin-top: 10px; color: var(--warning);">Ready for sync.</p>
+        </div>
+        <div class="card">
             <h2>Knowledge Graph</h2>
             <div class="stat" id="nodes">0</div>
             <div class="label">Knowledge Nodes</div>
@@ -940,6 +1010,39 @@ class IntricateUIEngine:
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
+        }}
+        async function exportManifold() {{
+            const res = await fetch('/api/v14/intellect/export');
+            const d = await res.json();
+            if (d.status === 'SUCCESS') {{
+                const blob = new Blob([JSON.stringify(d.data, null, 2)], {{type: 'application/json'}});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'l104_research_export.json';
+                a.click();
+                document.getElementById('sync-status').textContent = 'Export complete.';
+            }}
+        }}
+        async function importManifold(input) {{
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {{
+                try {{
+                    const data = JSON.parse(e.target.result);
+                    document.getElementById('sync-status').textContent = 'Importing...';
+                    const res = await fetch('/api/v14/intellect/import', {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{data: data}})
+                    }});
+                    const r = await res.json();
+                    document.getElementById('sync-status').textContent = r.message;
+                    refresh();
+                }} catch (err) {{ document.getElementById('sync-status').textContent = 'IMPORT_ERROR'; }}
+            }};
+            reader.readAsText(file);
         }}
         refresh();
     </script>
@@ -1069,7 +1172,18 @@ class IntricateUIEngine:
 
     <div class="grid">
         <div class="card">
-            <h3>📊 LEARNING STATISTICS</h3>
+            <h3>� MANIFOLD PERSISTENCE</h3>
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">Import/Export Sovereign Intelligence Data</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-learn" onclick="exportManifold()">Export Manifold</button>
+                <button class="btn btn-skill" onclick="document.getElementById('import-file').click()">Import Manifold</button>
+            </div>
+            <input type="file" id="import-file" style="display:none" onchange="importManifold(this)">
+            <p id="sync-status" style="margin-top: 10px; font-size: 0.9rem; text-align: center; color: var(--accent-learn);">Sync Ready.</p>
+        </div>
+
+        <div class="card">
+            <h3>�📊 LEARNING STATISTICS</h3>
             <div class="metric"><span class="metric-label">Learning Cycles</span><span class="metric-value" id="cycles">0</span></div>
             <div class="metric"><span class="metric-label">Total Episodes</span><span class="metric-value" id="episodes">0</span></div>
             <div class="metric"><span class="metric-label">Avg Outcome</span><span class="metric-value" id="outcome">0.00</span></div>
@@ -1202,6 +1316,40 @@ class IntricateUIEngine:
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
             refresh();
+        }}
+
+        async function exportManifold() {{
+            const res = await fetch('/api/v14/intellect/export');
+            const d = await res.json();
+            if (d.status === 'SUCCESS') {{
+                const blob = new Blob([JSON.stringify(d.data, null, 2)], {{type: 'application/json'}});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'l104_learning_manifold.json';
+                a.click();
+            }}
+        }}
+
+        async function importManifold(input) {{
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {{
+                try {{
+                    const data = JSON.parse(e.target.result);
+                    document.getElementById('sync-status').textContent = 'SYNCING...';
+                    const res = await fetch('/api/v14/intellect/import', {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{data: data}})
+                    }});
+                    const r = await res.json();
+                    document.getElementById('sync-status').textContent = r.message.toUpperCase();
+                    refresh();
+                }} catch (err) {{ document.getElementById('sync-status').textContent = 'FORMAT ERROR'; }} }}
+            }};
+            reader.readAsText(file);
         }}
 
         refresh();
@@ -1416,7 +1564,17 @@ class IntricateUIEngine:
 
     <div class="grid">
         <div class="card">
-            <h3>🔗 INTEGRATION STATUS</h3>
+            <h3>� PERSISTENCE GATE</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button onclick="exportManifold()" style="padding: 12px; background: var(--accent-main); color: #000; border: none; border-radius: 8px; flex: 1; cursor: pointer; font-weight: bold;">EXPORT</button>
+                <button onclick="document.getElementById('import-file').click()" style="padding: 12px; background: var(--accent-emerge); color: #000; border: none; border-radius: 8px; flex: 1; cursor: pointer; font-weight: bold;">IMPORT</button>
+            </div>
+            <input type="file" id="import-file" style="display:none" onchange="importManifold(this)">
+            <p id="sync-status" style="font-size: 0.8rem; text-align: center; color: var(--accent-synergy);">READY_FOR_SYNC</p>
+        </div>
+
+        <div class="card">
+            <h3>�🔗 INTEGRATION STATUS</h3>
             <div class="metric"><span class="metric-label">Subsystems Active</span><span class="metric-value" id="subsystems">0</span></div>
             <div class="metric"><span class="metric-label">Coherence</span><span class="metric-value" id="coherence">0.000</span></div>
             <div class="metric"><span class="metric-label">Synergy Factor</span><span class="metric-value" id="synergy">0.000</span></div>
@@ -1512,6 +1670,40 @@ class IntricateUIEngine:
             const res = await fetch('/api/orchestrator/emergence');
             const d = await res.json();
             document.getElementById('output').textContent = JSON.stringify(d, null, 2);
+        }}
+
+        async function exportManifold() {{
+            const res = await fetch('/api/v14/intellect/export');
+            const d = await res.json();
+            if (d.status === 'SUCCESS') {{
+                const blob = new Blob([JSON.stringify(d.data, null, 2)], {{type: 'application/json'}});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'l104_orchestrator_manifold.json';
+                a.click();
+            }}
+        }}
+
+        async function importManifold(input) {{
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {{
+                try {{
+                    const data = JSON.parse(e.target.result);
+                    document.getElementById('sync-status').textContent = 'SYNCING_GATE...';
+                    const res = await fetch('/api/v14/intellect/import', {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{data: data}})
+                    }});
+                    const r = await res.json();
+                    document.getElementById('sync-status').textContent = r.message.toUpperCase();
+                    refresh();
+                }} catch (err) {{ document.getElementById('sync-status').textContent = 'SYNC_ERROR'; }} }}
+            }};
+            reader.readAsText(file);
         }}
 
         refresh();

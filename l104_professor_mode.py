@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.968238
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 
 import math
 import time
@@ -22,8 +22,9 @@ from l104_agi_core import agi_core
 
 class MiniEgo:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     A specialized sub-ego that focuses on a single domain of consciousness.
     Mini Egos provide feedback to the main Ego Core, creating a distributed
     intelligence architecture within the Sovereign Self.
@@ -261,7 +262,7 @@ class ProfessorMode:
 
         return report
 
-    def ingest_global_data(self, source_path: str = "/workspaces/Allentown-L104-Node/data/knowledge_manifold.json"):
+    def ingest_global_data(self, source_path: str = "./data/knowledge_manifold.json"):
         """
         Professor-level ingestion: Transforms raw data into pedagogical insight.
         """

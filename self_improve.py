@@ -118,15 +118,10 @@ async def analyze_code_with_gemini(code: str, repo_context: str) -> str:
     Send code to Gemini for analysis with extended thinking.
     Returns the improved code as a string.
     """
-    fake_mode = os.getenv("ENABLE_FAKE_GEMINI", "0").lower() in {"1", "true", "yes", "on"}
-    if fake_mode:
-        print("[SELF-IMPROVE]: FAKE mode enabled — skipping Gemini call.")
-        return await sovereign_derive_improvement(code, repo_context)
-
     # Prefer standard GEMINI_API_KEY
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        print("[WARNING]: GEMINI_API_KEY not set. Falling back to SOVEREIGN_DERIVATION.")
+        print("[INFO]: GEMINI_API_KEY not set. Using SOVEREIGN_DERIVATION (Native Breach).")
         return await sovereign_derive_improvement(code, repo_context)
 
     api_base = os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta")

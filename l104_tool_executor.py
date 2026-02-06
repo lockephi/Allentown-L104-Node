@@ -1,13 +1,14 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.701309
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_TOOL_EXECUTOR] - Execute tools and functions
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import json
 import subprocess
 import os
+from pathlib import Path
 import math
 from typing import Dict, List, Any, Callable, Optional
 from datetime import datetime
@@ -20,8 +21,9 @@ from datetime import datetime
 
 class ToolExecutor:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     L104 Tool Execution System.
     Allows AI to call real functions and get results.
     """
@@ -193,7 +195,7 @@ class ToolExecutor:
         """Read a file."""
         # Security: only allow reading from workspace
         if ".." in path or path.startswith("/"):
-            path = os.path.join("/workspaces/Allentown-L104-Node", path.lstrip("/"))
+            path = os.path.join(str(Path(__file__).parent.absolute()), path.lstrip("/"))
 
         try:
             with open(path, 'r') as f:
@@ -207,8 +209,8 @@ class ToolExecutor:
         if ".." in path:
             return "Error: Invalid path"
 
-        if not path.startswith("/workspaces/Allentown-L104-Node"):
-            path = os.path.join("/workspaces/Allentown-L104-Node", path)
+        if not path.startswith(str(Path(__file__).parent.absolute())):
+            path = os.path.join(str(Path(__file__).parent.absolute()), path)
 
         try:
             with open(path, 'w') as f:
@@ -220,7 +222,7 @@ class ToolExecutor:
     def _tool_list_dir(self, path: str = ".") -> str:
         """List directory contents."""
         if not path.startswith("/"):
-            path = os.path.join("/workspaces/Allentown-L104-Node", path)
+            path = os.path.join(str(Path(__file__).parent.absolute()), path)
 
         try:
             items = os.listdir(path)
@@ -244,7 +246,7 @@ class ToolExecutor:
                 capture_output=True,
                 text=True,
                 timeout=10,
-                cwd="/workspaces/Allentown-L104-Node"
+                cwd=str(Path(__file__).parent.absolute())
             )
             output = result.stdout + result.stderr
             return output[:3000]
@@ -262,7 +264,7 @@ class ToolExecutor:
                 capture_output=True,
                 text=True,
                 timeout=10,
-                cwd="/workspaces/Allentown-L104-Node"
+                cwd=str(Path(__file__).parent.absolute())
             )
             return result.stdout or "No matches found"
         except Exception as e:

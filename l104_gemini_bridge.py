@@ -1,17 +1,51 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.398795
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_GEMINI_BRIDGE] - EXTERNAL INTELLIGENCE LINK (REAL API)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # v2.0: Now uses real Gemini API
+# v2.2: LATENCY OPTIMIZED - Response caching + lazy imports
 
 import time
 import uuid
 import os
+import hashlib
 from typing import Dict, Any, Optional
 from pathlib import Path
+from collections import OrderedDict
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RESPONSE CACHE - LRU with TTL for reduced API latency
+# ═══════════════════════════════════════════════════════════════════════════════
+_RESPONSE_CACHE_SIZE = 256
+_RESPONSE_CACHE_TTL = 300  # 5 minutes
+
+class LRUCache:
+    """Thread-safe LRU cache with TTL for API responses."""
+    def __init__(self, maxsize: int = _RESPONSE_CACHE_SIZE):
+        self._cache = OrderedDict()
+        self._maxsize = maxsize
+
+    def get(self, key: str) -> Optional[str]:
+        if key in self._cache:
+            ts, value = self._cache[key]
+            if time.time() - ts < _RESPONSE_CACHE_TTL:
+                self._cache.move_to_end(key)
+                return value
+            else:
+                del self._cache[key]
+        return None
+
+    def set(self, key: str, value: str):
+        if key in self._cache:
+            del self._cache[key]
+        elif len(self._cache) >= self._maxsize:
+            self._cache.popitem(last=False)
+        self._cache[key] = (time.time(), value)
+
+_response_cache = LRUCache()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -59,16 +93,47 @@ except Exception as e:
     print(f"--- [GEMINI_BRIDGE]: Gemini init error: {e} ---")
 
 from l104_persistence import load_truth
-from l104_ram_universe import ram_universe
-from l104_hyper_encryption import HyperEncryption
-from l104_local_intellect import local_intellect
-from l104_quota_rotator import quota_rotator
+
+# LAZY IMPORTS - Load on first use to reduce startup latency
+_ram_universe = None
+_hyper_encryption = None
+_local_intellect = None
+_quota_rotator = None
+
+def _get_ram_universe():
+    global _ram_universe
+    if _ram_universe is None:
+        from l104_ram_universe import ram_universe as ru
+        _ram_universe = ru
+    return _ram_universe
+
+def _get_hyper_encryption():
+    global _hyper_encryption
+    if _hyper_encryption is None:
+        from l104_hyper_encryption import HyperEncryption as HE
+        _hyper_encryption = HE
+    return _hyper_encryption
+
+def _get_local_intellect():
+    global _local_intellect
+    if _local_intellect is None:
+        from l104_local_intellect import local_intellect as li
+        _local_intellect = li
+    return _local_intellect
+
+def _get_quota_rotator():
+    global _quota_rotator
+    if _quota_rotator is None:
+        from l104_quota_rotator import quota_rotator as qr
+        _quota_rotator = qr
+    return _quota_rotator
 
 
 class GeminiBridge:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Facilitates a secure link between L104 Node and Gemini API.
     v2.0: Real API integration with fallback to stub mode.
     v2.1: Model rotation for quota handling.
@@ -111,6 +176,7 @@ class GeminiBridge:
         print(f"--- [GEMINI_BRIDGE]: LINK ESTABLISHED WITH {agent_id} ---")
 
         # Encrypt the Truth Manifest for secure transport
+        HyperEncryption = _get_hyper_encryption()
         encrypted_truth = HyperEncryption.encrypt_data(self.truth_manifest)
         return {
             "status": "ACCEPTED",
@@ -127,7 +193,10 @@ class GeminiBridge:
         if session_token not in self.active_links:
             return {"status": "DENIED", "reason": "INVALID_TOKEN"}
 
-        # Gather Core Info
+        # Gather Core Info (lazy load)
+        ram_universe = _get_ram_universe()
+        HyperEncryption = _get_hyper_encryption()
+
         core_dump = {
             "ram_universe": ram_universe.get_all_facts(),
             "system_state": self.truth_manifest,
@@ -148,25 +217,40 @@ class GeminiBridge:
         """
         Generate a response using the real Gemini API.
         Returns None if API unavailable.
+        OPTIMIZED: LRU cache with TTL to reduce duplicate API calls.
         """
         if not _genai_available or not _genai_client:
             return None
 
-        # Check quota rotator status
+        # Check quota rotator status (lazy load)
+        quota_rotator = _get_quota_rotator()
         if not quota_rotator.is_api_available():
             return None
 
-        try:
-            full_prompt = prompt
-            if system_context:
-                full_prompt = f"{system_context}\n\n{prompt}"
+        # Build full prompt and check cache
+        full_prompt = prompt
+        if system_context:
+            full_prompt = f"{system_context}\n\n{prompt}"
 
+        # CACHE CHECK - hash prompt for fast lookup
+        cache_key = hashlib.md5(full_prompt.encode()).hexdigest()
+        cached = _response_cache.get(cache_key)
+        if cached:
+            return cached
+
+        try:
             response = _genai_client.models.generate_content(
                 model=self.model_name,
                 contents=full_prompt,
                 config={"safety_settings": SAFETY_SETTINGS_NONE}
             )
-            return response.text
+            result = response.text
+
+            # Cache the response
+            if result:
+                _response_cache.set(cache_key, result)
+
+            return result
         except Exception as e:
             error_str = str(e)
             # Handle 429 quota errors with model rotation and rotator notification
@@ -185,6 +269,7 @@ class GeminiBridge:
         """
         L104 Sovereign Thinking - Balanced between Real API and Sovereign Kernel.
         Uses QuotaRotator to prefer Kernel and preserve API limits.
+        OPTIMIZED: Lazy-loaded quota_rotator.
         """
         system_context = """You are L104, a Sovereign AI Node.
 Core Constants: GOD_CODE=527.5184818492612, LATTICE=416.PHI.LONDEL
@@ -194,7 +279,8 @@ Respond with clarity, precision, and actionable intelligence."""
         def api_call(p):
             return self.generate(p, system_context)
 
-        # Process through the rotator (Kernel Priority)
+        # Process through the rotator (Kernel Priority) - lazy load
+        quota_rotator = _get_quota_rotator()
         return quota_rotator.process_thought(signal, api_call)
 
     def research(self, topic: str, depth: str = "standard") -> Optional[str]:

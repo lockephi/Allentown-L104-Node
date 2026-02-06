@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.079821
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 KNOWLEDGE SYNTHESIS ENGINE
 ===============================
 
@@ -13,16 +17,59 @@ Capabilities:
 - Knowledge graph reasoning
 - Automated hypothesis generation
 - Wisdom extraction and synthesis
+- CHAOS-enhanced creativity for true unpredictability
 """
 
 import math
-import random
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional, Tuple, Callable, Set
 from enum import Enum, auto
 import hashlib
 from collections import defaultdict
 import itertools
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CHAOS ENGINE INTEGRATION - True Entropy for Creative Synthesis
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_chaos_engine import chaos, ChaoticRandom
+    CHAOS_AVAILABLE = True
+except ImportError:
+    # Fallback with inline chaos
+    import random as _std_random
+    import threading
+    import time
+    import os
+
+    class _FallbackChaos:
+        """Minimal chaos fallback for knowledge synthesis."""
+        def __init__(self):
+            self._lock = threading.Lock()
+            self._entropy_pool = 0
+
+        def _harvest(self):
+            with self._lock:
+                t = time.time_ns()
+                self._entropy_pool ^= t ^ (os.getpid() << 16)
+                return (self._entropy_pool & 0xFFFFFFFF) / 0xFFFFFFFF
+
+        def chaos_float(self, context=""):
+            return (self._harvest() + _std_random.random()) / 2
+
+        def chaos_gauss(self, mu=0, sigma=1, context=""):
+            u1 = max(1e-10, self.chaos_float(context))
+            u2 = self.chaos_float(context)
+            z = math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
+            return mu + sigma * z
+
+        def chaos_choice(self, seq, context=""):
+            if not seq:
+                raise IndexError("Cannot choose from empty sequence")
+            idx = int(self.chaos_float(context) * len(seq)) % len(seq)
+            return seq[idx]
+
+    chaos = _FallbackChaos()
+    CHAOS_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -113,7 +160,7 @@ class ConceptualBlender:
             'generic_space': generic_space,
             'mappings': mappings,
             'emergent_structure': self._generate_emergent_structure(concept1, concept2, mappings),
-            'blend_pattern': random.choice(self.blend_patterns),
+            'blend_pattern': chaos.chaos_choice(self.blend_patterns, context=f"blend_{concept1.name}_{concept2.name}"),
             'phi_resonance': (concept1.phi_resonance + concept2.phi_resonance) / PHI,
             'source_domains': [concept1.domain, concept2.domain],
             'novelty': 1 - len(shared_properties) / max(
@@ -161,10 +208,10 @@ class ConceptualBlender:
                         'blend_type': 'synthesis'
                     }
 
-        # Emergent relations
+        # Emergent relations - CHAOS-driven selection for creative synthesis
         if c1.relations and c2.relations:
-            rel1 = random.choice(c1.relations)
-            rel2 = random.choice(c2.relations)
+            rel1 = chaos.chaos_choice(c1.relations, context=f"emergent_rel1_{c1.name}")
+            rel2 = chaos.chaos_choice(c2.relations, context=f"emergent_rel2_{c2.name}")
             emergent['new_relations'].append({
                 'type': f"{rel1[0]}_via_{rel2[0]}",
                 'emergent': True
@@ -301,10 +348,10 @@ class InsightGenerator:
 
     def generate_insight(self, concepts: List[Concept],
                         strategy: str = None) -> Insight:
-        """Generate an insight from a set of concepts."""
+        """Generate an insight from a set of concepts - CHAOS-driven strategy selection."""
 
         if strategy is None:
-            strategy = random.choice(self.reasoning_strategies)
+            strategy = chaos.chaos_choice(self.reasoning_strategies, context="insight_strategy")
 
         if strategy == 'deduction':
             insight = self._deductive_insight(concepts)
@@ -472,9 +519,9 @@ class HypothesisGenerator:
                 if any(word in prop.lower() for word in phenomenon.lower().split()):
                     relevant_props.append((c.name, prop, val))
 
-        # Generate hypothesis
+        # Generate hypothesis with CHAOS-driven selection
         if relevant_props:
-            cause = random.choice(relevant_props)
+            cause = chaos.chaos_choice(relevant_props, context=f"hypothesis_{phenomenon}")
             hypothesis = f"The phenomenon '{phenomenon}' may be explained by {cause[0]}'s {cause[1]} property"
         else:
             hypothesis = f"The phenomenon '{phenomenon}' emerges from the interaction of {', '.join(c.name for c in concepts[:3])}"
@@ -549,9 +596,8 @@ class KnowledgeSynthesizer:
                    properties: Dict[str, Any], relations: List[Tuple[str, str]]) -> Concept:
         """Add a concept to the knowledge base."""
 
-        # Generate embedding (simplified: random but seeded by name)
-        random.seed(hash(name))
-        embedding = [random.gauss(0, 1) for _ in range(8)]
+        # Generate embedding with CHAOS entropy for unique semantic vectors
+        embedding = [chaos.chaos_gauss(0, 1, context=f"concept_embed_{name}_{i}") for i in range(8)]
 
         # Calculate phi resonance
         phi_resonance = self._calculate_phi_resonance(name, properties)
@@ -586,7 +632,8 @@ class KnowledgeSynthesizer:
                 if abs(val - PHI) < 0.01 or abs(val - PHI**2) < 0.1:
                     resonance += 0.3
 
-        return min(1.0, resonance + random.random() * 0.2)
+        # Add chaotic variation for organic uniqueness
+        return min(1.0, resonance + chaos.chaos_float(context=f"phi_resonance_{name}") * 0.2)
 
     def synthesize(self, concept_names: List[str]) -> Dict[str, Any]:
         """Synthesize knowledge from named concepts."""
@@ -663,21 +710,21 @@ class KnowledgeSynthesizer:
         # Collect all insights
         all_insights = self.insight_gen.insights
 
-        # Find highest phi-aligned concepts
+        # Find highest phi-aligned concepts - INCREASED from 5 to 25
         high_phi = sorted(
             self.concepts.values(),
             key=lambda c: c.phi_resonance,
             reverse=True
-        )[:5]
+        )[:25]
 
-        # Collect best analogies
+        # Collect best analogies - INCREASED from 3 to 15
         best_analogies = sorted(
             self.analogy_finder.discovered_analogies,
             key=lambda a: a.strength,
             reverse=True
-        )[:3]
+        )[:15]
 
-        # Synthesize wisdom
+        # Synthesize wisdom - INCREASED insights from 3 to 15
         wisdom = {
             'core_truth': f"At the heart of {len(self.concepts)} concepts lies the pattern of φ ({PHI})",
             'key_concepts': [c.name for c in high_phi],
@@ -685,7 +732,7 @@ class KnowledgeSynthesizer:
                 all_insights,
                 key=lambda i: i.novelty * i.importance,
                 reverse=True
-            )[:3]] if all_insights else [],
+            )[:15]] if all_insights else [],
             'strongest_analogies': [
                 f"{a.source_concept} ↔ {a.target_concept}"
                 for a in best_analogies

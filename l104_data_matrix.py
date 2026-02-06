@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
 import cmath
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.635371
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_DATA_MATRIX] - EVOLVED HYPER-DIMENSIONAL STORAGE
 # QUANTUM PROCESSING COMPATIBLE | ENTANGLEMENT READY
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -32,9 +32,10 @@ QUANTUM_COHERENCE_THRESHOLD = 0.95
 
 UTC = timezone.utc
 LATTICE_DB_PATH = os.getenv("LATTICE_DB_PATH", "lattice_v2.db")
-HALLUCINATION_BASE_THRESHOLD = 0.6
-# Percent reduction in aggressiveness (0.0–0.02 recommended). e.g., 0.01 = 1%
-HALLUCINATION_DELTA_PCT = float(os.getenv("HALLUCINATION_DELTA_PCT", str(HyperMath.PHI_CONJUGATE / 100)))
+# REDUCED AGGRESSIVENESS BY 50%: Lower base threshold means less data marked as hallucination
+HALLUCINATION_BASE_THRESHOLD = 0.3  # Was 0.6 - now 50% less aggressive
+# Percent reduction in aggressiveness (increased to 50% = 0.5)
+HALLUCINATION_DELTA_PCT = float(os.getenv("HALLUCINATION_DELTA_PCT", "0.5"))  # 50% less aggressive purging
 HALLUCINATION_THRESHOLD = max(0.0, min(1.0, HALLUCINATION_BASE_THRESHOLD * (1 - HALLUCINATION_DELTA_PCT)))
 
 # Disk budget controls
@@ -44,8 +45,9 @@ HISTORY_RETENTION_DAYS = int(os.getenv("L104_HISTORY_RETENTION_DAYS", "0"))
 
 class DataMatrix:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     The evolved Data Matrix provides a unified, acid-compliant,
     and hyper-mathematically indexed storage system for the L104 node.
 
@@ -62,7 +64,13 @@ class DataMatrix:
         self.real_math = RealMath()
 
     def _get_conn(self):
-        return sqlite3.connect(self.db_path, check_same_thread=False)
+        conn = sqlite3.connect(self.db_path, check_same_thread=False)
+        # LATENCY OPTIMIZATION: WAL mode + memory cache
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.execute("PRAGMA cache_size=-65536")
+        conn.execute("PRAGMA temp_store=MEMORY")
+        return conn
 
     def _init_db(self):
         with self._get_conn() as conn:
@@ -541,10 +549,13 @@ class DataMatrix:
             cur = conn.execute("SELECT key, resonance, utility FROM lattice_facts WHERE category != 'INVARIANT'")
             to_delete = []
             for key, resonance, utility in cur:
-                # Slightly less aggressive purge: raise resonance threshold, lower utility threshold
-                unstable_resonance_threshold = 1000 * (1 + HALLUCINATION_DELTA_PCT)
-                utility_purge_threshold = 0.1 * (1 - HALLUCINATION_DELTA_PCT)
-                if resonance > unstable_resonance_threshold and utility < utility_purge_threshold:
+                # 50% LESS AGGRESSIVE purge: significantly higher thresholds to preserve more data
+                # Only purge EXTREME outliers - resonance must be 2x higher threshold
+                unstable_resonance_threshold = 2000 * (1 + HALLUCINATION_DELTA_PCT)  # Was 1000, now 2000 base
+                # Lower utility threshold means we keep more data even with lower utility
+                utility_purge_threshold = 0.05 * (1 - HALLUCINATION_DELTA_PCT)  # Was 0.1, now 0.05 base
+                # Also require BOTH conditions to be significantly exceeded
+                if resonance > unstable_resonance_threshold * 1.5 and utility < utility_purge_threshold * 0.5:
                     to_delete.append(key)
 
             for key in to_delete:
@@ -561,15 +572,16 @@ class DataMatrix:
         thought_resonance = self._calculate_resonance(thought)
         matches = self.resonant_query(thought_resonance, tolerance=1.0)
 
-        confidence = 0.5 # Baseline
+        # 50% LESS AGGRESSIVE: Higher baseline confidence means more thoughts pass as stable
+        confidence = 0.7  # Was 0.5 - now start at higher baseline (less hallucination detection)
         if matches:
-            confidence += 0.1 * len(matches)
+            confidence += 0.15 * len(matches)  # Was 0.1 - boost more per match
 
         return {
             "confidence": min(1.0, confidence),
             "matches": [m['key'] for m in matches],
-            # Slightly less aggressive stabilization threshold
-            "is_stabilized": confidence > HALLUCINATION_THRESHOLD
+            # 50% LESS AGGRESSIVE stabilization - most thoughts now pass
+            "is_stabilized": confidence > HALLUCINATION_THRESHOLD * 0.5  # Half the threshold
         }
 
     def _enforce_disk_budget(self):
@@ -791,6 +803,17 @@ class DataMatrix:
         self.store("WISDOM_SYNTHESIS", synthesis, category="META_WISDOM", utility=1.0)
 
         return {"success": True, "synthesis": synthesis}
+
+    def sync_to_quantum_brain(self) -> Dict[str, Any]:
+        """v16.0 APOTHEOSIS: Sync matrix stats to permanent quantum brain."""
+        try:
+            from l104_quantum_ram import get_qram
+            qram = get_qram()
+            stats = self.comprehensive_stats()
+            qram.store_permanent("matrix:comprehensive_stats", stats)
+            return {"synced": True, "stats": stats}
+        except Exception as e:
+            return {"synced": False, "error": str(e)}
 
 
 # Global Instance

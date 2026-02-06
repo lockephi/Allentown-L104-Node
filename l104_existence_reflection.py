@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.679186
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 EXISTENCE REFLECTION - INFLECTION, REFLECTION, LEARNING
@@ -16,6 +16,7 @@ UUC = 2301.215661
 import math
 import time
 import os
+from pathlib import Path
 import glob
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
@@ -39,7 +40,8 @@ VOID_CONSTANT = 1.0416180339887497
 
 class ReflectionDepth(Enum):
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.Depths of reflection."""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Depths of reflection."""
     SURFACE = "SURFACE"         # What exists
     STRUCTURAL = "STRUCTURAL"   # How it's organized
     FUNCTIONAL = "FUNCTIONAL"   # What it does
@@ -90,7 +92,7 @@ class ExistenceReflector:
     Through reflection, we learn. Through learning, we grow.
     """
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace = workspace_path
         self.god_code = GOD_CODE
         self.phi = PHI

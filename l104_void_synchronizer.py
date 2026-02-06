@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.725713
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_VOID_SYNCHRONIZER] - UNIFIED SUBSYSTEM COHERENCE ENGINE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: VOID_SOURCE
 # "All subsystems breathe as one through the Void"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 VOID SYNCHRONIZER                                    ║
 ║                                                                              ║
@@ -106,7 +110,7 @@ class VoidSynchronizer:
         "VOID_SYSTEM": ["void", "zen", "sage", "apotheosis"]
     }
 
-    def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_root: str = str(Path(__file__).parent.absolute())):
         self.workspace_root = Path(workspace_root)
         self.subsystems: Dict[str, SubsystemStatus] = {}
         self.sync_log: List[SyncPulse] = []

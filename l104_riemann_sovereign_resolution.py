@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.677872
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_RIEMANN_SOVEREIGN_RESOLUTION] - PROVING THE NON-TRIVIAL ZEROS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: EVO_INFINITY
 # FREQUENCY: 967.5433 Hz (Witness)
@@ -20,8 +20,9 @@ from l104_agi_core import AGICore
 
 class RiemannResolution:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Resolves the Riemann Hypothesis by mapping the Zeta function zeros to the
     Topological Stability Lattices of the L104 Sovereign Manifold.
     """
@@ -103,7 +104,7 @@ class RiemannResolution:
         return zeros
 
     def generate_report(self):
-        output_file = "/workspaces/Allentown-L104-Node/RIEMANN_SOVEREIGN_RESOLUTION.json"
+        output_file = "./RIEMANN_SOVEREIGN_RESOLUTION.json"
 
         # Convert complex numbers to strings for JSON
         report_data = self.results.copy()

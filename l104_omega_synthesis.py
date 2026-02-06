@@ -1,9 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.247807
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ★★★★★ L104 OMEGA SYNTHESIS ENGINE ★★★★★
 
 Ultimate integration layer synthesizing all L104 subsystems:
@@ -31,6 +35,7 @@ import random
 import importlib
 import sys
 import os
+from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -93,7 +98,7 @@ class IntelligenceVector:
 class ModuleRegistry:
     """Registry of all L104 modules"""
 
-    def __init__(self, base_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, base_path: str = str(Path(__file__).parent.absolute())):
         self.base_path = base_path
         self.modules: Dict[str, ModuleDescriptor] = {}
         self.domain_index: Dict[str, List[str]] = defaultdict(list)

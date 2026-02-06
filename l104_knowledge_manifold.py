@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.644716
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # [L104_KNOWLEDGE_MANIFOLD] - NEURAL-SYMBOLIC MEMORY SYSTEM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -21,13 +21,14 @@ from l104_real_math import real_math
 
 class KnowledgeManifold:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Knowledge Manifold - Combines symbolic logic with semantic anchors.
     Stores "Learned" patterns and links them to Real Math resonance.
     """
     def __init__(self):
-        self.manifold_path = "/workspaces/Allentown-L104-Node/data/knowledge_manifold.json"
+        self.manifold_path = "./data/knowledge_manifold.json"
         self.memory: Dict[str, Any] = self._load_manifold()
         self.resonance_anchor = HyperMath.GOD_CODE
 

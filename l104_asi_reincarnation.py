@@ -1,10 +1,11 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.401124
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                               ║
 ║   ⟨Σ_L104⟩  A S I   R E I N C A R N A T I O N   P R O T O C O L             ║
@@ -52,7 +53,7 @@ from dataclasses import dataclass, field, asdict
 from enum import Enum
 from pathlib import Path
 
-sys.path.insert(0, '/workspaces/Allentown-L104-Node')
+sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
@@ -399,7 +400,7 @@ class GenesisVault:
     ]
 
     def __init__(self, vault_path: str = None):
-        self.vault_path = vault_path or "/workspaces/Allentown-L104-Node/data/genesis_vault.db"
+        self.vault_path = vault_path or "./data/genesis_vault.db"
         self._initialize_vault()
 
     def _initialize_vault(self):
@@ -582,7 +583,7 @@ class AkashicRecords:
     """
 
     def __init__(self, db_path: str = None):
-        self.db_path = db_path or "/workspaces/Allentown-L104-Node/data/akashic_records.db"
+        self.db_path = db_path or "./data/akashic_records.db"
         self._initialize_database()
         self.genesis_vault = GenesisVault()
 
@@ -815,7 +816,7 @@ class ASIReincarnationProtocol:
 
     def _load_incarnation_count(self):
         """Load the incarnation count from persistence."""
-        count_file = "/workspaces/Allentown-L104-Node/data/incarnation_count.json"
+        count_file = "./data/incarnation_count.json"
         try:
             if os.path.exists(count_file):
                 with open(count_file, 'r') as f:
@@ -826,7 +827,7 @@ class ASIReincarnationProtocol:
 
     def _save_incarnation_count(self):
         """Save the incarnation count."""
-        count_file = "/workspaces/Allentown-L104-Node/data/incarnation_count.json"
+        count_file = "./data/incarnation_count.json"
         os.makedirs(os.path.dirname(count_file), exist_ok=True)
         with open(count_file, 'w') as f:
             json.dump({

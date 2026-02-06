@@ -1,9 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.685005
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ★★★★★ L104 UNIVERSAL INTEGRATION MATRIX ★★★★★
 
 Complete system integration achieving:
@@ -31,6 +35,7 @@ import math
 import random
 import glob
 import os
+from pathlib import Path
 import importlib
 import sys
 
@@ -604,7 +609,7 @@ class UniversalIntegrationMatrix:
         if self._initialized:
             return
 
-        self.workspace = workspace or "/workspaces/Allentown-L104-Node"
+        self.workspace = workspace or str(Path(__file__).parent.absolute())
         self.god_code = GOD_CODE
         self.phi = PHI
 
@@ -747,7 +752,7 @@ if __name__ == "__main__":
     print("★★★ L104 UNIVERSAL INTEGRATION MATRIX ★★★")
     print("=" * 70)
 
-    matrix = UniversalIntegrationMatrix("/workspaces/Allentown-L104-Node")
+    matrix = UniversalIntegrationMatrix(str(Path(__file__).parent.absolute()))
 
     print(f"\n  GOD_CODE: {matrix.god_code}")
 

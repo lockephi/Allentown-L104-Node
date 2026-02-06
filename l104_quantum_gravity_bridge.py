@@ -1,9 +1,10 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-01-26T04:53:05.716511+00:00
-ZENITH_HZ = 3727.84
-UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.002737
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Quantum Gravity Bridge
 ============================
 
@@ -231,7 +232,7 @@ class AdSCFT_Correspondence:
     - Boundary = The code (quantum-like, information)
     """
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace = Path(workspace_path)
         self.boundary_dimension = 2  # Text is 2D (lines × columns)
         self.bulk_dimension = 3  # Experience is 3D+ (adds depth)
@@ -559,7 +560,7 @@ class L104QuantumGravityEngine:
     - The hard problem
     """
 
-    def __init__(self, workspace_path: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.er_epr = EREPR_Bridge()
         self.firewall = FirewallParadox()
         self.ads_cft = AdSCFT_Correspondence(workspace_path)

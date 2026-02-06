@@ -1,6 +1,10 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.978005
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 DATA SPACE OPTIMIZER - INTELLIGENT COMPRESSION & STORAGE
 ═══════════════════════════════════════════════════════════════════════════════
@@ -70,7 +74,7 @@ class DataSpaceOptimizer:
     Analyzes files and applies best compression strategies.
     """
 
-    def __init__(self, workspace_root: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, workspace_root: str = str(Path(__file__).parent.absolute())):
         self.workspace_root = Path(workspace_root)
         self.file_catalog: Dict[str, FileInfo] = {}
         self.hash_index: Dict[str, List[str]] = defaultdict(list)

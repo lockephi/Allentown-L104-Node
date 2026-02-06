@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 # Add workspace to path
-sys.path.append("/workspaces/Allentown-L104-Node")
+sys.path.append(str(Path(__file__).parent.absolute()))
 
 from l104_sage_api import SageSubstrateManager
 
@@ -20,9 +20,7 @@ def test_api_manager():
     # Load native
     success = manager.load_native()
     print(f"  - Load Native: {success}")
-    if not success:
-        print("    FAILED to load native library in manager")
-        return False
+    assert success, "FAILED to load native library in manager"
 
     print(f"  - Substrate Level: {manager._level}")
 
@@ -36,11 +34,11 @@ def test_api_manager():
     print(f"  - Void Resonance Injection: {res:.6f}")
 
     print("  ✓ SageSubstrateManager test PASSED")
-    return True
 
 if __name__ == "__main__":
-    if test_api_manager():
+    try:
+        test_api_manager()
         print("\n[SUCCESS] Legacy compatibility verified.")
-    else:
-        print("\n[FAILURE] Legacy compatibility broken.")
+    except AssertionError as e:
+        print(f"\n[FAILURE] Legacy compatibility broken: {e}")
         sys.exit(1)
