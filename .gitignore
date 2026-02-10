@@ -18,6 +18,11 @@ ramnode.db
 *.apk
 *.bin
 .venv/
+
+# Swift build artifacts
+L104SwiftApp/.build/
+*.xcodeproj/
+.swiftpm/
 .vscode/
 # Ghost Protocol: Never commit sensitive files
 *.key

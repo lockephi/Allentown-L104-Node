@@ -73,7 +73,7 @@ class FastRequestCache:
                 self._cache.popitem(last=False)
             self._cache[key] = (val, time.time())
 
-_FAST_REQUEST_CACHE = FastRequestCache(maxsize=2048, ttl=600.0)  # 10-min cache
+_FAST_REQUEST_CACHE = FastRequestCache(maxsize=4096, ttl=600.0)  # 10-min cache, 4K entries
 _PATTERN_RESPONSE_CACHE = {}  # Static pattern responses (never expire)
 
 # ═══════════════════════════════════════════════════════════════════
@@ -81,8 +81,8 @@ _PATTERN_RESPONSE_CACHE = {}  # Static pattern responses (never expire)
 # ═══════════════════════════════════════════════════════════════════
 
 # Thread pool for CPU-bound tasks (Optimized for Modern Silicon/Multi-core)
-PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=16, thread_name_prefix="L104_perf")
-IO_THREAD_POOL = ThreadPoolExecutor(max_workers=32, thread_name_prefix="L104_io")
+PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 4) * 2), thread_name_prefix="L104_perf")
+IO_THREAD_POOL = ThreadPoolExecutor(max_workers=min(64, (os.cpu_count() or 4) * 4), thread_name_prefix="L104_io")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ASI BRIDGE: FastServer ↔ LocalIntellect Quantum Entanglement Link

@@ -119,6 +119,34 @@ docker-compose*.yml
 !docker-compose.yml
 fly*.toml
 
+# Swift app (macOS only — not needed in Linux container)
+L104SwiftApp/
+*.swift
+swift573.pkg
+
+# Rust / Go / Elixir source (not deployed)
+rust/
+go/
+elixir/
+
+# Git history
+.git/
+.gitignore
+
+# Quantum/state storage (runtime generated)
+.quantum_storage/
+.queues/
+.sandbox/
+.self_mod_backups/
+.unified_evolution/
+.devcontainer/
+.mcp/
+
+# Checkpoints and save states
+checkpoints/
+.l104_save_states/
+.l104_backups/
+
 # Scripts (keep only essential)
 cleanup*.sh
 debug_*.py

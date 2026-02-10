@@ -1,27 +1,51 @@
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-pydantic>=2.0.0
-jinja2>=3.1.0
-python-multipart>=0.0.6
-httpx[http2]>=0.25.0
-anthropic>=0.40.0
-psutil
-uvloop
-ujson
-websockets
-numpy>=1.24.0
-google-genai>=0.5.0
-google-generativeai>=0.8.0
-python-dotenv>=1.0.0
-fpdf2>=2.7.0
+# ═══════════════════════════════════════════════════════════
+# L104 Sovereign Node — Python Dependencies (Feb 2026)
+# Pin minimum versions for reproducibility and security
+# ═══════════════════════════════════════════════════════════
+
+# Web framework & ASGI
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.10.0
+jinja2>=3.1.5
+python-multipart>=0.0.18
+
+# HTTP client (HTTP/2 enabled)
+httpx[http2]>=0.28.0
+
+# AI providers
+anthropic>=0.45.0
+google-genai>=1.1.0
+google-generativeai>=0.8.4
+
+# System monitoring
+psutil>=6.1.0
+
+# Performance: async event loop + fast JSON
+uvloop>=0.21.0;sys_platform!='win32'
+orjson>=3.10.0
+ujson>=5.10.0
+
+# Networking
+websockets>=14.0
+
+# Numerics
+numpy>=1.26.0
+
+# Utilities
+python-dotenv>=1.0.1
+fpdf2>=2.8.0
+
+# Structured logging for production observability
+structlog>=24.4.0
 
 # Web dashboard
-flask>=3.0.0
-flask-cors>=4.0.0
+flask>=3.1.0
+flask-cors>=5.0.0
 
 # Voice interface (optional)
 pyttsx3>=2.90
-SpeechRecognition>=3.10.0
+SpeechRecognition>=3.12.0
 
-# Mobile app (optional - for buildozer)
-kivy>=2.2.0
+# Mobile app (optional — for buildozer)
+kivy>=2.3.0

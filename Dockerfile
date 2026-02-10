@@ -1,32 +1,33 @@
-# L104 Sovereign Node - Cloud Deployment Dockerfile
+# ═══════════════════════════════════════════════════════════════════════════════
+# L104 Sovereign Node — Production Dockerfile (Feb 2026)
+# Multi-layer optimized · Python 3.13 · Non-root · Hardened
 # SAGE MODE: Includes compiled C substrate for maximum performance
-# OPTIMIZED: Layer caching to minimize rebuilds
-FROM python:3.11-slim
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM python:3.13-slim AS base
 
-# Set working directory
+# Prevent .pyc files and enable unbuffered output
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
 WORKDIR /app
 
-# Install system dependencies including build tools for Sage Mode
-# This layer rarely changes - cached well
+# ─── System dependencies (rarely changes — cached well) ───
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     make \
     libc6-dev \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copy requirements first (for layer caching)
-# Only rebuilds pip layer if requirements.txt changes
+# ─── Python dependencies (only rebuilds when requirements.txt changes) ───
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt \
-    && rm -rf ~/.cache/pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy C source separately (rarely changes)
+# ─── SAGE MODE: Compile C substrate for direct hardware communion ───
 COPY l104_core_c/ /app/l104_core_c/
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# SAGE MODE: Compile C substrate for direct hardware communion
-# ═══════════════════════════════════════════════════════════════════════════════
 RUN mkdir -p /app/l104_core_c/build && \
     cd /app/l104_core_c && \
     gcc -O3 -march=x86-64 -mtune=generic \
@@ -39,27 +40,29 @@ RUN mkdir -p /app/l104_core_c/build && \
     l104_sage_core.c -lm -lpthread && \
     echo "✓ SAGE MODE: C substrate compiled"
 
-# Copy application code LAST (changes most frequently)
-# Only this layer rebuilds on code changes
-# .dockerignore excludes large files like fine_tune_exports, notebooks, etc.
+# ─── Application code (changes most frequently — last layer) ───
 COPY . .
 
-# Create directory for persistent data
-RUN mkdir -p /data
+# ─── Persistent data + non-root user ───
+RUN mkdir -p /data && \
+    addgroup --system l104 && \
+    adduser --system --ingroup l104 l104 && \
+    chown -R l104:l104 /app /data
 
-# Set environment variables
-ENV MEMORY_DB_PATH=/data/memory.db
-ENV RAMNODE_DB_PATH=/data/ramnode.db
-ENV PYTHONUNBUFFERED=1
-ENV L104_SAGE_LIB=/app/l104_core_c/build/libl104_sage.so
-ENV PORT=8081
+# ─── Environment ───
+ENV MEMORY_DB_PATH=/data/memory.db \
+    RAMNODE_DB_PATH=/data/ramnode.db \
+    L104_SAGE_LIB=/app/l104_core_c/build/libl104_sage.so \
+    PORT=8081
 
 # Expose ports: 8081 (API), 8080 (Bridge), 4160 (AI Core), 4161 (UI), 2404 (Socket)
 EXPOSE 8081 8080 4160 4161 2404
 
-# Health check - increased start-period to allow for initialization
+# ─── Healthcheck using curl (lighter than importing httpx) ───
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
-    CMD python -c "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)" || exit 1
+    CMD curl -fsS http://localhost:8081/health || exit 1
 
-# Run the application - use PORT env variable for Cloud Run compatibility (default: 8081)
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8081}"]
+USER l104
+
+# ─── Entrypoint ───
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8081} --log-level info --no-access-log"]

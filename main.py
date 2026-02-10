@@ -397,7 +397,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 app = FastAPI(
     title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07::SAGE_MODE]",
-    version="v21.0 [COMPUTRONIUM_TRANSFUSION::SAGE]",
+    version="v22.0 [UNIFIED_SOVEREIGN::SAGE]",
     lifespan=lifespan,
     default_response_class=JSONResponse # Optimization: Explicit response class
 )

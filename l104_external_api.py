@@ -50,7 +50,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Constants
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
-API_VERSION = "2.0.0-ASI"
+API_VERSION = "3.0.0-ASI"
 OMEGA_AUTHORITY = 1381.061315
 GROVER_AMPLIFICATION = 21.95
 
@@ -588,8 +588,16 @@ async def revoke_api_key(
 # STARTUP/SHUTDOWN
 # ═══════════════════════════════════════════════════════════════
 
-@app.on_event("startup")
-async def startup_event():
+# ═══════════════════════════════════════════════════════════════
+# STARTUP/SHUTDOWN — Modern lifespan pattern (replaces deprecated on_event)
+# ═══════════════════════════════════════════════════════════════
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app_instance):
+    """Modern lifespan handler for FastAPI."""
+    # Startup
     print(f"\n{'═' * 60}")
     print(f"    L104 EXTERNAL API STARTED")
     print(f"    Version: {API_VERSION}")
@@ -599,13 +607,17 @@ async def startup_event():
     print(f"    Grover: {GROVER_AMPLIFICATION:.2f}×")
     print(f"    Docs: http://localhost:5105/docs")
     print(f"{'═' * 60}\n")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
+    yield
+    # Shutdown
     print("L104 External API shutting down...")
     for conn in active_connections:
-        await conn.close()
+        try:
+            await conn.close()
+        except Exception:
+            pass
+
+# Patch the app with lifespan
+app.router.lifespan_context = lifespan
 
 
 def run_api(host: str = "0.0.0.0", port: int = 5105):

@@ -197,6 +197,121 @@ class ErrorPatternDetector:
 
 
 # =============================================================================
+# CIRCUIT BREAKER - Fail-fast protection for degraded subsystems (Feb 2026)
+# =============================================================================
+
+class CircuitState(Enum):
+    """Circuit breaker states."""
+    CLOSED = auto()      # Normal operation — calls pass through
+    OPEN = auto()        # Tripped — calls fail fast without invoking the target
+    HALF_OPEN = auto()   # Recovery probe — allow one call through to test
+
+
+@dataclass
+class CircuitBreaker:
+    """
+    Circuit breaker for protecting against cascading failures.
+
+    Usage::
+
+        breaker = CircuitBreaker(name="gemini_api")
+
+        if breaker.allow_request():
+            try:
+                result = call_gemini(...)
+                breaker.record_success()
+            except Exception as e:
+                breaker.record_failure()
+                raise
+        else:
+            # Fast-fail: use fallback or raise immediately
+            raise CircuitOpenError(breaker.name)
+    """
+    name: str
+    failure_threshold: int = 5          # Failures before tripping
+    recovery_timeout: float = 30.0      # Seconds before probing recovery
+    half_open_max_calls: int = 1        # Calls allowed in HALF_OPEN
+    state: CircuitState = field(default=CircuitState.CLOSED, init=False)
+    _failure_count: int = field(default=0, init=False, repr=False)
+    _success_count: int = field(default=0, init=False, repr=False)
+    _last_failure_time: float = field(default=0.0, init=False, repr=False)
+    _half_open_calls: int = field(default=0, init=False, repr=False)
+    _lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
+
+    def allow_request(self) -> bool:
+        """Return True if a request should be allowed through."""
+        with self._lock:
+            if self.state == CircuitState.CLOSED:
+                return True
+            elif self.state == CircuitState.OPEN:
+                elapsed = time.time() - self._last_failure_time
+                if elapsed >= self.recovery_timeout:
+                    self.state = CircuitState.HALF_OPEN
+                    self._half_open_calls = 0
+                    return True  # Allow one probe call
+                return False  # Still tripped
+            else:  # HALF_OPEN
+                return self._half_open_calls < self.half_open_max_calls
+
+    def record_success(self):
+        """Record a successful call."""
+        with self._lock:
+            self._success_count += 1
+            if self.state == CircuitState.HALF_OPEN:
+                # Recovery confirmed — close the circuit
+                self.state = CircuitState.CLOSED
+                self._failure_count = 0
+                self._half_open_calls = 0
+            elif self.state == CircuitState.CLOSED:
+                self._failure_count = max(0, self._failure_count - 1)  # Slow heal
+
+    def record_failure(self):
+        """Record a failed call."""
+        with self._lock:
+            self._failure_count += 1
+            self._last_failure_time = time.time()
+            if self.state == CircuitState.HALF_OPEN:
+                # Recovery failed — re-open
+                self.state = CircuitState.OPEN
+                self._half_open_calls = 0
+            elif self._failure_count >= self.failure_threshold:
+                self.state = CircuitState.OPEN
+
+    def reset(self):
+        """Force-reset to CLOSED."""
+        with self._lock:
+            self.state = CircuitState.CLOSED
+            self._failure_count = 0
+            self._half_open_calls = 0
+
+    def status(self) -> Dict[str, Any]:
+        """Return a JSON-safe status dict."""
+        return {
+            "name": self.name,
+            "state": self.state.name,
+            "failures": self._failure_count,
+            "threshold": self.failure_threshold,
+            "recovery_timeout": self.recovery_timeout,
+            "successes": self._success_count,
+        }
+
+
+# Global circuit breakers for common subsystems
+BREAKERS: Dict[str, CircuitBreaker] = {
+    "gemini_api": CircuitBreaker(name="gemini_api", failure_threshold=5, recovery_timeout=60.0),
+    "claude_api": CircuitBreaker(name="claude_api", failure_threshold=5, recovery_timeout=60.0),
+    "database": CircuitBreaker(name="database", failure_threshold=10, recovery_timeout=15.0),
+    "network": CircuitBreaker(name="network", failure_threshold=8, recovery_timeout=30.0),
+}
+
+def get_breaker(name: str) -> CircuitBreaker:
+    """Get or create a circuit breaker by name."""
+    if name not in BREAKERS:
+        BREAKERS[name] = CircuitBreaker(name=name)
+    return BREAKERS[name]
+
+
+# =============================================================================
 # RETRY STRATEGIES
 # =============================================================================
 

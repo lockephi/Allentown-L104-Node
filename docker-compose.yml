@@ -1,4 +1,5 @@
-version: '3.8'
+# L104 Sovereign Node — Docker Compose (Feb 2026)
+# docker compose up -d
 
 services:
   l104-node:
@@ -15,7 +16,7 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - GEMINI_API_BASE=${GEMINI_API_BASE:-https://generativelanguage.googleapis.com/v1beta}
-      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3-flash-preview}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
       - GEMINI_ENDPOINT=${GEMINI_ENDPOINT:-:streamGenerateContent}
       - ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI:-0}
       - MEMORY_DB_PATH=/data/memory.db
@@ -31,13 +32,26 @@ services:
       - L104_HISTORY_RETENTION_DAYS=${L104_HISTORY_RETENTION_DAYS:-0}
     volumes:
       - l104-data:/data
-    restart: always
+    tmpfs:
+      - /tmp:size=128M
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; r=httpx.get('http://localhost:8081/health'); exit(0 if r.status_code==200 else 1)"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/health"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 120s
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
 
 volumes:
   l104-data:

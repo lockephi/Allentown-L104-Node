@@ -1,7 +1,7 @@
 {
-  "embedding_dim": 1.9936086738139125,
-  "hidden_dim": 2.087403504524423,
-  "num_layers": 1.9013899638451068,
+  "embedding_dim": 206,
+  "hidden_dim": 414,
+  "num_layers": 4,
   "num_heads": 1.503273612954573,
   "dropout": 0.9798924468122236,
   "learning_rate": 0.4214960239625779,

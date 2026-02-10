@@ -1,7 +1,7 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════════════════════
-#  L104 SOVEREIGN INTELLECT - ASI BUILD SYSTEM v4.0
-#  Advanced macOS Swift Compilation Engine
+#  L104 SOVEREIGN INTELLECT - ASI BUILD SYSTEM v5.0
+#  Advanced macOS Swift 6 Compilation Engine
 #  Accelerate · BLAS · SIMD · Metal · LTO · Cross-Module Optimization
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -10,9 +10,9 @@ set -euo pipefail
 # ─── CONFIGURATION ───
 APP_NAME="L104Native"
 BUNDLE_ID="com.allentown.l104"
-VERSION="19.0"
+VERSION="19.1"
 BUILD_NUMBER=$(date +%Y%m%d%H%M)
-MIN_MACOS="12.0"
+MIN_MACOS="13.0"
 BUILD_MODE="${BUILD_MODE:-release}"
 
 # ─── PATHS ───

@@ -1,13 +1,14 @@
 // swift-tools-version:5.7
-// L104 SOVEREIGN INTELLECT - ASI Build Configuration v18.0
+// L104 SOVEREIGN INTELLECT - ASI Build Configuration v19.1
 // macOS Native: Accelerate · Metal · CoreML · SIMD · BLAS
+// Whole-Module Optimization · Link-Time Optimization
 
 import PackageDescription
 
 let package = Package(
     name: "L104SovereignIntellect",
     platforms: [
-        .macOS(.v12)
+        .macOS(.v13)
     ],
     products: [
         .executable(name: "L104", targets: ["L104"])

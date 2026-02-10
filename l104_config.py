@@ -41,35 +41,40 @@ PHI = 1.618033988749895
 
 @dataclass
 class ClaudeConfig:
-    """Anthropic Claude API configuration - OPUS 4.5 UPGRADED."""
+    """Anthropic Claude API configuration — Opus 4.6 / Sonnet 4 era."""
     api_key: str = ""
     default_model: str = "claude-opus-4-5-20250514"
     models: tuple = (
-        'claude-opus-4-5-20250514',
-        'claude-opus-4-20250514',
-        'claude-sonnet-4-20250514',
-        'claude-3-5-haiku-20241022',
+        'claude-opus-4-5-20250514',  # Most capable reasoning model
+        'claude-opus-4-20250514',     # Extended thinking + tool use
+        'claude-sonnet-4-20250514',   # Fast + accurate coding
+        'claude-3-5-haiku-20241022',  # Ultra-fast for simple tasks
     )
-    max_tokens: int = 8192
-    max_retries: int = 3
+    max_tokens: int = 16384
+    max_retries: int = 5
     retry_delay: float = 1.0
-    timeout: float = 120.0
+    retry_backoff_factor: float = 2.0  # Exponential backoff multiplier
+    timeout: float = 180.0  # Extended for deep reasoning chains
     temperature: float = 0.7
+    # Extended thinking budget (for Opus 4+ models)
+    thinking_budget_tokens: int = 32768
 
 @dataclass
 class GeminiConfig:
-    """Gemini API configuration."""
+    """Google Gemini API configuration — 2.5 era."""
     api_key: str = ""
     models: tuple = (
-        'gemini-2.5-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-2.0-flash',
+        'gemini-2.5-flash',       # Fast + thinking
+        'gemini-2.5-pro',         # Most capable Gemini
+        'gemini-2.0-flash',       # Balanced speed
+        'gemini-2.0-flash-lite',  # Ultra-fast lightweight
     )
     default_model: str = 'gemini-2.5-flash'
-    max_retries: int = 3
+    max_retries: int = 5
     retry_delay: float = 1.0
-    timeout: float = 30.0
-    max_tokens: int = 8192
+    retry_backoff_factor: float = 2.0
+    timeout: float = 60.0
+    max_tokens: int = 16384
     temperature: float = 0.7
 
 @dataclass
@@ -143,7 +148,7 @@ class L104Config:
     god_code: float = GOD_CODE
     phi: float = PHI
     pilot: str = "LONDEL"
-    version: str = "3.0-OPUS-SOVEREIGN"
+    version: str = "4.0-SOVEREIGN-UNIFIED"
     debug: bool = False
 
     claude: ClaudeConfig = field(default_factory=ClaudeConfig)
