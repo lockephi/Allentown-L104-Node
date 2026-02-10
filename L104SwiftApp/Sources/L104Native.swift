@@ -16829,7 +16829,7 @@ class ASIKnowledgeBase {
 
     let workspacePath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications/Allentown-L104-Node")
 
-    init() { loadTrainingData(); loadResponsePatterns(); loadUserKnowledge() }
+    init() { loadTrainingData(); loadResponsePatterns(); loadUserKnowledge(); loadIngestedKnowledge() }
 
     func loadResponsePatterns() {
         // Load natural response patterns for different query types
@@ -17260,6 +17260,99 @@ class ASIKnowledgeBase {
         }
     }
 
+    // ═══ PERSIST INGESTED KNOWLEDGE TO DISK ═══
+    // Writes all runtime-ingested entries (from DataIngestPipeline, web search, conversation learning)
+    // to a persistent JSONL file that gets loaded on next startup
+    private var ingestedSinceLastSave: Int = 0
+    private let ingestedKnowledgePath: URL = {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let dir = appSupport.appendingPathComponent("L104Sovereign")
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir.appendingPathComponent("ingested_knowledge.jsonl")
+    }()
+
+    func persistIngestedEntry(_ entry: [String: Any]) {
+        ingestedSinceLastSave += 1
+        // Write single entry to JSONL file (append mode)
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: entry),
+              let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+        let line = jsonString + "\n"
+        if FileManager.default.fileExists(atPath: ingestedKnowledgePath.path) {
+            if let handle = try? FileHandle(forWritingTo: ingestedKnowledgePath) {
+                handle.seekToEndOfFile()
+                if let data = line.data(using: .utf8) { handle.write(data) }
+                handle.closeFile()
+            }
+        } else {
+            try? line.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
+        }
+    }
+
+    func persistAllIngestedKnowledge() {
+        // Bulk persist: write ALL entries with source markers that indicate they were ingested at runtime
+        let runtimeSources: Set<String> = ["auto_ingest", "user_command", "direct_ingest", "web_search", "url_fetch", "live_web", "web_page", "wikipedia", "conversation_learned"]
+        var lines: [String] = []
+
+        // Load existing persisted entries to avoid duplicates
+        var existingHashes: Set<UInt64> = []
+        if let existing = try? String(contentsOf: ingestedKnowledgePath, encoding: .utf8) {
+            for line in existing.components(separatedBy: .newlines) where !line.isEmpty {
+                existingHashes.insert(fnvHash(line))
+            }
+        }
+
+        for entry in trainingData {
+            let source = (entry["source"] as? String) ?? ""
+            let category = (entry["category"] as? String) ?? ""
+            guard runtimeSources.contains(source) || runtimeSources.contains(category) else { continue }
+            guard let jsonData = try? JSONSerialization.data(withJSONObject: entry),
+                  let jsonString = String(data: jsonData, encoding: .utf8) else { continue }
+            let hash = fnvHash(jsonString)
+            guard !existingHashes.contains(hash) else { continue }
+            existingHashes.insert(hash)
+            lines.append(jsonString)
+        }
+
+        guard !lines.isEmpty else { return }
+
+        let content = lines.joined(separator: "\n") + "\n"
+        if FileManager.default.fileExists(atPath: ingestedKnowledgePath.path) {
+            if let handle = try? FileHandle(forWritingTo: ingestedKnowledgePath) {
+                handle.seekToEndOfFile()
+                if let data = content.data(using: .utf8) { handle.write(data) }
+                handle.closeFile()
+            }
+        } else {
+            try? content.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
+        }
+        print("[KB] Persisted \(lines.count) ingested entries to disk")
+    }
+
+    func loadIngestedKnowledge() {
+        guard let content = try? String(contentsOf: ingestedKnowledgePath, encoding: .utf8) else { return }
+        var loaded = 0
+        for line in content.components(separatedBy: .newlines) where !line.isEmpty {
+            if let data = line.data(using: .utf8),
+               let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                if !isJunkEntry(entry) {
+                    trainingData.append(entry)
+                    loaded += 1
+                    // Index by keywords
+                    if let prompt = entry["prompt"] as? String {
+                        let words = prompt.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
+                        for word in words {
+                            if concepts[word] == nil { concepts[word] = [] }
+                            if let completion = entry["completion"] as? String {
+                                concepts[word]?.append(completion)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if loaded > 0 { print("[KB] Loaded \(loaded) previously ingested entries from disk") }
+    }
+
     func getStats() -> String {
         let headers = [
             "📚 ASI KNOWLEDGE BASE STATUS",
@@ -17273,12 +17366,14 @@ class ASIKnowledgeBase {
 ═══════════════════════════════════════════
 Training Entries:    \(trainingData.count)
 User-Taught:         \(userKnowledge.count) entries
+Ingested (runtime):  \(ingestedSinceLastSave) this session
 Indexed Concepts:    \(concepts.count)
 Learned Patterns:    \(learnedPatterns.count)
 Inventions:          \(inventions.count)
 Research Log:        \(researchLog.count) entries
 Reasoning Chains:    \(reasoningChains.count)
 Synthesized:         \(synthesizedKnowledge.count) insights
+Persistence:         \(FileManager.default.fileExists(atPath: ingestedKnowledgePath.path) ? "✅ ACTIVE" : "⚠️ NO FILE")
 ═══════════════════════════════════════════
 """
     }
@@ -19386,12 +19481,31 @@ final class StoryLogicGateEngine {
         let desire: String
     }
 
+    // ─── CHARACTER NAME POOLS ─── Diverse, authentic human names
+    private let protagonistNames = [
+        "Elena", "Marcus", "Aisha", "David", "Yuki", "James", "Sofia", "Kai",
+        "Amara", "Leo", "Priya", "Thomas", "Mei", "Alexander", "Zara", "Nikolai",
+        "Isabel", "Ethan", "Fatima", "Julian", "Anya", "Rafael", "Luna", "Sebastian"
+    ]
+    private let antagonistNames = [
+        "Victor", "Mara", "Dorian", "Sable", "Lucian", "Nyx", "Cassius", "Thorne",
+        "Silas", "Raven", "Magnus", "Isolde", "Draven", "Morgana", "Caine", "Vesper"
+    ]
+    private let mentorNames = [
+        "Professor Chen", "Dr. Okafor", "Miriam", "Old Konstantin", "Sage", "Dr. Patel",
+        "Professor Hawthorne", "Ada", "The Archivist", "Dr. Reyes", "Solomon", "Vera",
+        "Professor Tanaka", "Dr. Osei", "Eleanora", "Raj"
+    ]
+    private let allyNames = [
+        "Sam", "Jordan", "Riley", "Alex", "Tara", "Marco", "Jesse", "Quinn",
+        "Nadia", "Devon", "Rowan", "Casey", "Milo", "Lena", "Finn", "Iris"
+    ]
+
     private func buildCharacters(topic: String) -> [StoryCharacter] {
-        let dpe = DynamicPhraseEngine.shared
-        let protName = dpe.one("generic", context: "character_name_protagonist", topic: topic)
-        let antName = dpe.one("generic", context: "character_name_antagonist", topic: topic)
-        let mentorName = dpe.one("generic", context: "character_name_mentor", topic: topic)
-        let allyName = dpe.one("generic", context: "character_name_ally", topic: topic)
+        let protName = protagonistNames.randomElement()!
+        let antName = antagonistNames.randomElement()!
+        let mentorName = mentorNames.randomElement()!
+        let allyName = allyNames.randomElement()!
 
         let flaws = ["blind ambition", "crippling self-doubt", "inability to trust", "obsession with control",
                      "fear of failure", "emotional detachment", "reckless idealism", "paralytic perfectionism",
@@ -19436,23 +19550,74 @@ final class StoryLogicGateEngine {
     // ═══════════════════════════════════════════════════════════════
     // KNOWLEDGE GATHERER — Weaves real KB content into narrative
     // ═══════════════════════════════════════════════════════════════
+    // ─── JUNK PATTERNS TO STRIP FROM KB INSIGHTS ───
+    private let storyJunkPatterns: [String] = [
+        "(v", "v1.", "v2.", "Modular physics", "rewrite source code",
+        "Compiler", "~10^", "holographic bound", "__", "import ", "class ",
+        "def ", "self.", "return ", ".py", "function", "parameter", "module",
+        "SAGE MODE", "OMEGA_POINT", "GOD_CODE", "ZENITH", "VOID_CONSTANT",
+        "The file ", "The function ", "implements specialized", "cognitive architecture",
+        "Cross-Talk Polynomial", "L104", "kernel", "{GOD_CODE}", "{PHI}",
+        "EPR", "kundalini", "chakra", "phi_scale", "qubit", "entanglement_router"
+    ]
+
+    private func isCleanStoryInsight(_ text: String) -> Bool {
+        let lower = text.lowercased()
+        for junk in storyJunkPatterns {
+            if lower.contains(junk.lowercased()) { return false }
+        }
+        // Must have some sentence-like structure (contain a verb-ish word)
+        let words = text.split(separator: " ")
+        guard words.count >= 5 else { return false }
+        // No raw technical gibberish
+        let alphaRatio = Double(text.filter { $0.isLetter || $0 == " " }.count) / max(1.0, Double(text.count))
+        return alphaRatio > 0.75
+    }
+
     private func gatherKnowledge(topic: String) -> [String] {
         let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 60)
+        let results = kb.search(topic, limit: 80)
         var insights: [String] = []
+        var seenPrefixes: Set<String> = []
+
         for r in results {
             guard insights.count < 10 else { break }
-            if let c = r["completion"] as? String, c.count > 30 {
-                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "")
-                    .replacingOccurrences(of: "{PHI}", with: "")
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                if let dot = clean.firstIndex(of: ".") {
-                    let sub = String(clean[...dot])
-                    if sub.count > 20 { clean = sub }
+            guard let c = r["completion"] as? String, c.count > 30 else { continue }
+
+            var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "")
+                .replacingOccurrences(of: "{PHI}", with: "")
+                .replacingOccurrences(of: "{LOVE}", with: "")
+                .replacingOccurrences(of: "SAGE MODE :: ", with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+            // Extract the first clean sentence
+            let sentences = clean.components(separatedBy: ". ")
+            if let best = sentences.first(where: { $0.count > 20 && $0.count < 300 && isCleanStoryInsight($0) }) {
+                clean = best.hasSuffix(".") ? best : best + "."
+            } else if let any = sentences.first(where: { $0.count > 20 && $0.count < 300 }) {
+                // Fallback: take first sentence even if not perfectly clean
+                if isCleanStoryInsight(any) {
+                    clean = any.hasSuffix(".") ? any : any + "."
+                } else {
+                    continue
                 }
-                if clean.count > 20 && clean.count < 500 { insights.append(clean) }
+            } else {
+                continue
             }
+
+            // Dedup by prefix
+            let pfx = String(clean.prefix(40)).lowercased()
+            guard !seenPrefixes.contains(pfx) else { continue }
+            seenPrefixes.insert(pfx)
+
+            // Final length and quality check
+            guard clean.count > 20 && clean.count < 400 else { continue }
+            guard isCleanStoryInsight(clean) else { continue }
+
+            insights.append(clean)
         }
+
+        // If we still don't have enough, generate from DPE (these are always clean)
         if insights.count < 3 {
             insights += DynamicPhraseEngine.shared.generate("insight", count: 5 - insights.count, context: "story_knowledge", topic: topic)
         }
@@ -19635,8 +19800,9 @@ final class StoryLogicGateEngine {
         parts.append("## Chapter 9: The Reward\n")
         parts.append("On the third day, \(hero.name) began to write. Not a paper — something rawer, more honest. A document that didn't just present findings, but confessed the journey that led to them.\n")
         parts.append("The equation was elegant: \(Int.random(in: 3...12)) variables collapsing into one relationship. \(t) was not a puzzle to be solved — it was a mirror. And the reflection changed depending on who dared to look.\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("Beneath it all, a deeper pattern had emerged: \(String(evolved.narrative.prefix(2000)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarr = String(evolved.narrative.prefix(500))
+            parts.append("Beneath it all, a deeper pattern had emerged: *\(cleanNarr)*\n")
         }
 
         // ACT III: RETURN
@@ -19756,8 +19922,9 @@ final class StoryLogicGateEngine {
         }
         parts.append("The final presentation was not what anyone expected. \(hero.name) didn't defend the data. Instead: \"I was wrong about how to be right. \(t) taught me that truth is not a weapon — it's a conversation. And I am ready to have that conversation now.\"\n")
         parts.append("\(villain.name) stood in the back row, arms crossed. And for the first time, had nothing to say.\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("The deeper truth: \(String(evolved.narrative.prefix(2000)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarr = String(evolved.narrative.prefix(500))
+            parts.append("The deeper truth: *\(cleanNarr)*\n")
         }
 
         // Beat 15: Final Image
@@ -19814,8 +19981,9 @@ final class StoryLogicGateEngine {
         parts.append("The aftermath was not glorious. It was messy, human, contradictory. \(hero.name) published the findings. The world reacted with everything from wonder to fury.\n")
         parts.append("\(villain.name) confronted \(hero.name) one final time. \"You've opened something that can't be closed.\"\n")
         parts.append("\"I know,\" \(hero.name) said. \"That was the point.\"\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("And beneath it all, the deeper pattern continued to evolve: \(String(evolved.narrative.prefix(2000)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarr = String(evolved.narrative.prefix(500))
+            parts.append("And beneath it all, the deeper pattern continued to evolve: *\(cleanNarr)*\n")
         }
 
         // Act V: Catastrophe / Dénouement
@@ -19913,8 +20081,9 @@ final class StoryLogicGateEngine {
         parts.append("\n# ACT THREE — RESOLUTION\n")
         parts.append("But the \(hero.strength) held. Barely. Imperfectly. With trembling hands and a voice that cracked.\n")
         parts.append("\(hero.name) presented the proof — not to a conference hall, but to \(villain.name), alone, in a quiet room. Because the real resolution was never about winning. It was about being heard.\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("The deepest truth: \(String(evolved.narrative.prefix(2000)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarr = String(evolved.narrative.prefix(500))
+            parts.append("The deepest truth: *\(cleanNarr)*\n")
         }
         parts.append("\(villain.name) read the proof. Read it again. Sat in silence for eleven minutes.\n")
         parts.append("\"You're right,\" \(villain.name) said finally. \"And I hate that you're right. But you are.\"\n")
@@ -19951,8 +20120,9 @@ final class StoryLogicGateEngine {
         }
         parts.append("Each minute brought exponentially more clarity. The pattern wasn't emerging — it was erupting. \(t) was revealing itself with the force of a dam breaking.\n")
         parts.append("Colleagues gathered. Phones buzzed. Someone said, \"Are you seeing this?\" and someone else said, \"I don't believe it,\" and someone else — the quiet one, the one who always knew — said nothing at all. Just smiled.\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("The deeper current: \(String(evolved.narrative.prefix(1500)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarr = String(evolved.narrative.prefix(500))
+            parts.append("The deeper current: *\(cleanNarr)*\n")
         }
 
         // Kyū (急) — Rapid conclusion
@@ -20050,8 +20220,9 @@ final class StoryLogicGateEngine {
             parts.append(weaveInsight(insight, character: hero.name, index: i + 13) + "\n")
         }
         parts.append("The new theory was not elegant. It was messy, provisional, honest. And it worked — not because it explained everything, but because it admitted what it didn't know.\n")
-        if !evolved.narrative.isEmpty {
-            parts.append("Beneath the new framework: \(String(evolved.narrative.prefix(1500)))\n")
+        if !evolved.narrative.isEmpty && isCleanStoryInsight(evolved.narrative) {
+            let cleanNarrative = String(evolved.narrative.prefix(500))
+            parts.append("Beneath the new framework lay something unexpected: *\(cleanNarrative)*\n")
         }
 
         // Top of U: New Equilibrium
@@ -22945,7 +23116,7 @@ class DataIngestPipeline {
             let topics = L104State.shared.extractTopics(sentence)
             let prompt = topics.isEmpty ? String(sentence.prefix(60)) : topics.prefix(3).joined(separator: " ")
 
-            // Add to KB
+            // Add to KB + persist to disk
             let entry: [String: Any] = [
                 "prompt": prompt,
                 "completion": sentence,
@@ -22954,6 +23125,7 @@ class DataIngestPipeline {
                 "ingested_at": Date().timeIntervalSince1970
             ]
             kb.trainingData.append(entry)
+            kb.persistIngestedEntry(entry)
             accepted += 1
         }
 
@@ -22985,6 +23157,7 @@ class DataIngestPipeline {
             "ingested_at": Date().timeIntervalSince1970
         ]
         kb.trainingData.append(entry)
+        kb.persistIngestedEntry(entry)
         ingestCount += 1
 
         // Also teach the evolver
@@ -23012,6 +23185,7 @@ class DataIngestPipeline {
             "ingested_at": Date().timeIntervalSince1970
         ]
         ASIKnowledgeBase.shared.trainingData.append(entry)
+        ASIKnowledgeBase.shared.persistIngestedEntry(entry)
         ingestCount += 1
     }
 
@@ -23584,6 +23758,8 @@ class L104State {
         d.set(conversationDepth, forKey: "l104_conversationDepth")  // 🟢 Persist depth
         d.synchronize()
         permanentMemory.save()
+        // Persist runtime-ingested knowledge to disk
+        ASIKnowledgeBase.shared.persistAllIngestedKnowledge()
     }
 
     func checkConnections() {
@@ -29503,6 +29679,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         L104State.shared.saveState()
         L104State.shared.permanentMemory.save()
         AdaptiveLearner.shared.save()
+        ASIKnowledgeBase.shared.persistAllIngestedKnowledge()
     }
 
     @objc func doEvolveMenu() {
