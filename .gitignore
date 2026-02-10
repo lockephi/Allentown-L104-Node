@@ -48,6 +48,17 @@ node_modules/
 lattice_v2.db
 l104_intellect_memory.db
 memory_optimized.db
+
+# Dynamic ASI State files
+.l104_apotheosis_state.json
+.l104_evolution_state.json
+.l104_quantum_brain.json
+.l104_permanent_memory.json
+l104_quantum_recompiler.json
+.l104_save_states/
+.l104_backups/
+.mcp/
+state_*.json
 data/lattice_v2.db
 *.db-shm
 *.db-wal

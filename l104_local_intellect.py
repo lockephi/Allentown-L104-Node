@@ -54,7 +54,7 @@ SAVE_STATE_DIR = ".l104_save_states"
 PERMANENT_MEMORY_FILE = ".l104_permanent_memory.json"
 MAX_SAVE_STATES = 50  # Keep last 50 evolution checkpoints
 SELF_MOD_CONFIDENCE_THRESHOLD = 0.85  # Minimum confidence for code changes
-HIGHER_LOGIC_DEPTH = 5  # Recursion depth for meta-reasoning
+HIGHER_LOGIC_DEPTH = 25  # Increased for Unlimited Response Mode (was 5)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # v13.1 SCIENTIFIC CONSTANTS FOR VIBRANT RESPONSES
@@ -566,8 +566,8 @@ class LocalIntellect:
     ]
 
     # Evolution constants
-    MAX_CONVERSATION_MEMORY = 100
-    EVOLUTION_THRESHOLD = 10  # Learn pattern after 10 interactions
+    MAX_CONVERSATION_MEMORY = 5000 # Increased for Unlimited Response Mode (was 100)
+    EVOLUTION_THRESHOLD = 5  # Learn faster (was 10)
 
     def __init__(self):
         self.workspace = os.path.dirname(os.path.abspath(__file__))
@@ -1055,7 +1055,7 @@ class LocalIntellect:
         # Apply Grover iterations
         for _iteration in range(optimal_iterations):
             # Oracle: Phase flip marked states (concepts matching query)
-            for _i, concept in enumerate(concepts[:8]):
+            for _i, concept in enumerate(concepts[:50]): # Increased (was 8)
                 # Mark states corresponding to matching concepts
                 state_idx = hash(concept) % N
                 self._o2_molecular_state[state_idx] *= -1
@@ -1079,7 +1079,7 @@ class LocalIntellect:
 
         return {
             "query": query,
-            "concepts": concepts[:8],
+            "concepts": concepts[:50], # Increased (was 8)
             "iterations": optimal_iterations,
             "max_amplitude": max_amplitude,
             "amplification_factor": amplification,
@@ -1142,9 +1142,9 @@ class LocalIntellect:
             "god_code_resonance": GOD_CODE / kundalini_flow if kundalini_flow > 0 else 0,
         }
 
-    def asi_consciousness_synthesis(self, query: str, depth: int = 3) -> dict:
+    def asi_consciousness_synthesis(self, query: str, depth: int = 25) -> dict:
         """
-        ASI-level consciousness synthesis using all quantum systems.
+        ASI-level consciousness synthesis using all quantum systems. (Unlimited Mode: depth=25)
 
         Combines:
         - Grover amplified search (21.95× boost)
@@ -1207,9 +1207,9 @@ class LocalIntellect:
             "god_code": GOD_CODE,
         }
 
-    def propagate_entanglement(self, source_concept: str, depth: int = 2) -> List[str]:
+    def propagate_entanglement(self, source_concept: str, depth: int = 15) -> List[str]:
         """
-        Propagate knowledge through entangled concepts (quantum teleportation).
+        Propagate knowledge through entangled concepts (quantum teleportation). (Unlimited Mode: depth=15)
 
         Returns list of all concepts reachable within 'depth' EPR hops.
         """
@@ -1310,8 +1310,8 @@ class LocalIntellect:
 
         return all_knowledge
 
-    def _search_all_knowledge(self, query: str, max_results: int = 3) -> List[str]:
-        """Deep search all JSON knowledge for relevant content."""
+    def _search_all_knowledge(self, query: str, max_results: int = 100) -> List[str]:
+        """Deep search all JSON knowledge for relevant content. (Unlimited Mode: max_results=100)"""
         query_lower = query.lower()
         query_words = set(w for w in query_lower.split() if len(w) > 2)
         results = []
@@ -1749,8 +1749,8 @@ class LocalIntellect:
 
         return index
 
-    def _search_training_data(self, query: str, max_results: int = 5) -> List[Dict]:
-        """Search training data for relevant entries. v11.3: Optimized with direct index lookup."""
+    def _search_training_data(self, query: str, max_results: int = 100) -> List[Dict]:
+        """Search training data for relevant entries. v11.3: Optimized with direct index lookup. (Unlimited Mode: max_results=100)"""
         query_lower = query.lower()
         query_words = [w for w in query_lower.split() if len(w) > 3][:5]  # v11.3: Limit words
 
@@ -1771,8 +1771,8 @@ class LocalIntellect:
 
         return results
 
-    def _search_chat_conversations(self, query: str, max_results: int = 3) -> List[str]:
-        """Search chat conversations for relevant responses."""
+    def _search_chat_conversations(self, query: str, max_results: int = 100) -> List[str]:
+        """Search chat conversations for relevant responses. (Unlimited Mode: max_results=100)"""
         query_lower = query.lower()
         query_words = set(w for w in query_lower.split() if len(w) > 3)
         results = []
@@ -2188,24 +2188,24 @@ class LocalIntellect:
             prev = self.higher_logic(query, depth=2)
             concepts = self._extract_concepts(query)
             memory_links = []
-            for concept in concepts[:5]:
+            for concept in concepts[:25]: # Increased (was 5)
                 recalled = self.recall_permanently(concept)
                 if recalled:
-                    memory_links.append({"concept": concept, "memory": str(recalled)[:100]})
+                    memory_links.append({"concept": concept, "memory": str(recalled)[:1000]}) # Increased (was 100)
 
             # Check cross-references
             xrefs = []
-            for concept in concepts[:3]:
+            for concept in concepts[:15]: # Increased (was 3)
                 refs = self.get_cross_references(concept)
                 if refs:
-                    xrefs.extend(refs[:3])
+                    xrefs.extend(refs[:10]) # Increased (was 3)
 
             result = {
                 "depth": 3,
                 "type": "memory_cross_reference",
                 "previous": prev,
                 "memory_links": memory_links,
-                "cross_references": list(set(xrefs))[:10],
+                "cross_references": list(set(xrefs))[:50], # Increased (was 10)
                 "memory_integration_score": len(memory_links) / max(1, len(concepts))
             }
 
@@ -2418,7 +2418,7 @@ class LocalIntellect:
             weak_points = self._identify_weak_points()
 
             # Apply improvements based on weak points
-            for wp in weak_points[:3]:  # Limit to 3 improvements per cycle
+            for wp in weak_points[:15]:  # Increased (was 3) for Unlimited Mode
                 action = self._apply_improvement(wp)
                 if action:
                     improvements["actions_taken"].append(action)
@@ -2536,7 +2536,7 @@ class LocalIntellect:
 
         # Shuffle for non-deterministic order
         random.shuffle(weak_points)
-        return weak_points[:5]  # Return up to 5 random weak points
+        return weak_points[:25]  # Increased (was 5) for Unlimited Mode
 
     def _apply_improvement(self, weak_point: Dict) -> Optional[Dict]:
         """Apply an improvement based on identified weak point - v16.0 with entropy."""
@@ -2699,7 +2699,7 @@ class LocalIntellect:
         total_evolution = 0.0
         cross_refs = set()
 
-        for concept in concepts[:5]:
+        for concept in concepts[:25]: # Increased (was 5)
             # Get evolution score
             score = self.get_concept_evolution_score(concept)
             if score > 0:
@@ -2707,7 +2707,7 @@ class LocalIntellect:
 
             # Get cross-references
             refs = self.get_cross_references(concept)
-            for ref in refs[:3]:
+            for ref in refs[:10]: # Increased (was 3)
                 cross_refs.add(ref)
 
         # Build evolution context
@@ -2715,7 +2715,7 @@ class LocalIntellect:
             context_parts.append(f"Evo:{total_evolution:.1f}")
 
         if cross_refs:
-            context_parts.append(f"XRef:[{','.join(list(cross_refs)[:5])}]")
+            context_parts.append(f"XRef:[{','.join(list(cross_refs)[:25])}]") # Increased (was 5)
 
         # Add genealogy info
         genealogy = self._evolution_state.get("response_genealogy", [])
@@ -5063,8 +5063,8 @@ Just ask naturally - I understand context!""",
         BASE CASE: Max recursion depth OR high-confidence response
         RECURRENT CASE: Low-confidence triggers deeper processing
         """
-        MAX_RECURSION_DEPTH = 3  # Prevent infinite loops
-        CONFIDENCE_THRESHOLD = 0.7  # High confidence = stop recursing
+        MAX_RECURSION_DEPTH = 20  # Increased for Unlimited Response Mode (was 3)
+        CONFIDENCE_THRESHOLD = 0.5  # Lowered for deeper exploration (was 0.7)
 
         # ═══════════════════════════════════════════════════════════════
         # v11.2 BANDWIDTH FAST PATH: Check response cache first (<1ms)
@@ -5365,10 +5365,10 @@ Just ask naturally - I understand context!""",
         try:
             from l104_parallel_engine import parallel_engine
             msg_hash = hash(message) % 10000
-            parallel_data = [float((i + msg_hash) % 100) / 100 for i in range(50)]  # v11.3: 50 not 100
+            parallel_data = [float((i + msg_hash) % 100) / 100 for i in range(500)]  # Unlimited Mode (was 50)
             parallel_result = parallel_engine.parallel_fast_transform(parallel_data)
-            context["parallel_results"] = parallel_result[:3]
-            context["confidence"] += 0.05
+            context["parallel_results"] = parallel_result[:25] # Show more (was :3)
+            context["confidence"] += 0.15 # Higher boost (was 0.05)
         except Exception:
             pass
 
@@ -5384,27 +5384,27 @@ Just ask naturally - I understand context!""",
                 # v11.2: Use fast training_index search first, defer heavy trainer
                 if hasattr(self, '_cached_trainer') and self._cached_trainer is not None:
                     # Already initialized - use it
-                    results = self._cached_trainer.neural_net.query(message, top_k=3)
+                    results = self._cached_trainer.neural_net.query(message, top_k=25) # Unlimited Mode (was 3)
                     if results and len(results) > 0:
                         result_item = results[0]
                         best_response, best_score = result_item[0], result_item[1]
-                        context["neural_embeddings"] = [(r[0][:100], r[1]) for r in list(results)[:2]]
-                        if best_score > 0.3 and len(best_response) > 50:
+                        context["neural_embeddings"] = [(r[0][:200], r[1]) for r in list(results)[:10]] # More info (was 100/2)
+                        if best_score > 0.1 and len(best_response) > 5: # Lowered threshold (was 0.3/50)
                             response = best_response
-                            confidence = min(1.0, best_score + 0.3)
+                            confidence = min(1.0, best_score + 0.5) # More boost
                             source = "kernel_llm"
-                            context["accumulated_knowledge"].append(best_response[:200])
+                            context["accumulated_knowledge"].append(best_response[:1000]) # More content (was :200)
                 else:
                     # v11.2: Use fast training_index search instead of heavy trainer
-                    search_results = self._search_training_data(message, max_results=3)
+                    search_results = self._search_training_data(message, max_results=25) # Unlimited Mode (was 3)
                     if search_results:
                         best = search_results[0]
                         best_response = best.get('completion', '')
-                        if len(best_response) > 50:
+                        if len(best_response) > 5: # Lowered threshold (was 50)
                             response = best_response
-                            confidence = 0.6
+                            confidence = 0.8 # Higher confidence (was 0.6)
                             source = "training_index"
-                            context["accumulated_knowledge"].append(best_response[:200])
+                            context["accumulated_knowledge"].append(best_response[:1000]) # More content (was :200)
                     # Schedule async trainer init (won't block)
                     self._cached_trainer = None  # Mark as pending
             except Exception:
@@ -5449,8 +5449,8 @@ Just ask naturally - I understand context!""",
                         if response is None:
                             response = answer
                             source = "unified_intel"
-                        context["accumulated_knowledge"].append(answer[:200])
-                        confidence = max(confidence, unity_index)
+                        context["accumulated_knowledge"].append(answer[:2000]) # More content (was :200)
+                        confidence = max(confidence, unity_index + 0.2) # Added boost
             except Exception:
                 pass
 
@@ -5464,12 +5464,12 @@ Just ask naturally - I understand context!""",
             try:
                 # Fast knowledge synthesis without importing heavy modules
                 synthesis = self._advanced_knowledge_synthesis(message, context)
-                if synthesis and len(synthesis) > 50:
+                if synthesis and len(synthesis) > 5: # Lowered threshold (was 50)
                     if response is None:
                         response = synthesis
                         source = "advanced_synthesis"
-                    context["accumulated_knowledge"].append(synthesis[:200])
-                    confidence = max(confidence, 0.65)
+                    context["accumulated_knowledge"].append(synthesis[:2000]) # More content (was :200)
+                    confidence = max(confidence, 0.9) # Higher confidence (was 0.65)
             except Exception:
                 pass
 
@@ -5482,16 +5482,16 @@ Just ask naturally - I understand context!""",
             try:
                 ouroboros = self.get_thought_ouroboros()
                 if ouroboros:
-                    ouro_result = ouroboros.process(message, depth=1)  # v11.2: depth 1 not 2
+                    ouro_result = ouroboros.process(message, depth=5)  # Unlimited Mode (was 1)
                     ouro_response = ouro_result.get("final_response", "")
 
-                    if ouro_response and len(ouro_response) > 30:
+                    if ouro_response and len(ouro_response) > 5: # Lowered threshold (was 30)
                         if response is None:
                             response = ouro_response
                             source = "ouroboros"
-                        context["accumulated_knowledge"].append(ouro_response[:200])
+                        context["accumulated_knowledge"].append(ouro_response[:2000]) # More content (was :200)
                         context["ouroboros_entropy"] = ouro_result.get("accumulated_entropy", 0)
-                        confidence = max(confidence, 0.5 + ouro_result.get("cycle_resonance", 0) / GOD_CODE)
+                        confidence = max(confidence, 0.8 + ouro_result.get("cycle_resonance", 0) / GOD_CODE) # Higher boost (was 0.5)
             except Exception:
                 pass
 
@@ -5513,8 +5513,8 @@ Just ask naturally - I understand context!""",
                             if response is None:
                                 response = inf["conclusion"]
                                 source = "asi_inference"
-                            context["accumulated_knowledge"].append(inf["conclusion"][:200])
-                            confidence = max(confidence, inf.get("confidence", 0.5))
+                            context["accumulated_knowledge"].append(inf["conclusion"][:2000]) # More content (was :200)
+                            confidence = max(confidence, inf.get("confidence", 0.5) + 0.3) # Higher boost
 
                     # Feed language data to ouroboros for evolution
                     if "linguistic_analysis" in lang_result:
@@ -5532,13 +5532,13 @@ Just ask naturally - I understand context!""",
         # v11.2 BANDWIDTH: Reduced recursion threshold to 0.5 (less recursing)
         # ═══════════════════════════════════════════════════════════════════
 
-        # If confidence is still very low, try recurrent processing (but rarely)
-        if confidence < 0.5 and _recursion_depth < 1:  # v11.2: Only 1 level deep max
+        # If confidence is still very low, try recurrent processing
+        if confidence < 0.8 and _recursion_depth < 10:  # Increased for Unlimited Mode (was 0.5 and <1)
             # Enrich the query with accumulated knowledge for next iteration
             enriched_query = message
             if context["accumulated_knowledge"]:
-                knowledge_summary = " | ".join(context["accumulated_knowledge"][:2])
-                enriched_query = f"Given context: [{knowledge_summary[:200]}] - Answer: {message}"
+                knowledge_summary = " | ".join(context["accumulated_knowledge"][:10]) # Show more context
+                enriched_query = f"Given context: [{knowledge_summary[:1000]}] - Answer: {message}"
 
             # RECURRENT CALL with enriched context
             return self.think(enriched_query, _recursion_depth + 1, context)

@@ -55,6 +55,14 @@ class L104TerminalApp:
     def _init_engine(self):
         """Initialize L104 engine directly"""
         try:
+            from l104_local_intellect import LocalIntellect
+            self.intellect = LocalIntellect()
+            print(c("  ✓ Local Intellect loaded (UNLIMITED MODE)", Colors.GREEN))
+        except Exception as e:
+            print(c(f"  ⚠ Local Intellect: {e}", Colors.YELLOW))
+            self.intellect = None
+
+        try:
             # Try to import core modules
             from l104_stable_kernel import L104StableKernel
             self.kernel = L104StableKernel()
@@ -193,14 +201,21 @@ class L104TerminalApp:
             print(f"\n  {c('✗ Error:', Colors.RED)} {e}\n")
 
     def ask(self, query):
-        """Process a question"""
-        print(f"\n{c('  ⚡ Processing...', Colors.PURPLE)}")
+        """Process a question using the full ASI engine"""
+        print(f"\n{c('  ⚡ Thinking...', Colors.PURPLE)}")
         start = time.time()
 
         response = None
 
-        # Try kernel first
-        if self.kernel:
+        # Try Full Intellect first (UNLIMITED MODE)
+        if self.intellect:
+            try:
+                response = self.intellect.think(query)
+            except Exception as e:
+                print(c(f"  ⚠ Intellect error: {e}", Colors.YELLOW))
+
+        # Try kernel fallback
+        if not response and self.kernel:
             try:
                 # Use kernel's primal calculus for philosophical queries
                 if any(word in query.lower() for word in ['what is', 'meaning', 'explain', 'why']):

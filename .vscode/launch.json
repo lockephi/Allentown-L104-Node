@@ -11,8 +11,10 @@
             "module": "uvicorn",
             "args": [
                 "main:app",
-                "--host", "0.0.0.0",
-                "--port", "8081",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8081",
                 "--reload"
             ],
             "jinja": true,
@@ -28,6 +30,26 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Allentown-L104-Node}/L104SwiftApp",
+            "name": "Debug L104 (L104SwiftApp)",
+            "target": "L104",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug L104 (L104SwiftApp)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Allentown-L104-Node}/L104SwiftApp",
+            "name": "Release L104 (L104SwiftApp)",
+            "target": "L104",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release L104 (L104SwiftApp)"
         }
     ]
 }

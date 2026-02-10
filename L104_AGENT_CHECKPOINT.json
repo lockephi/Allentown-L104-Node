@@ -1,53 +1,53 @@
 {
   "name": "L104-Omega-Agent",
   "state": "RUNNING",
-  "timestamp": 1770310852.741266,
+  "timestamp": 1770434243.3445919,
   "health": {
-    "overall": "CRITICAL",
+    "overall": "GOOD",
     "metrics": {
       "cpu_efficiency": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.50013303756714
+        "age": 1260.515137910843
       },
       "memory_efficiency": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.5001380443573
+        "age": 1260.5151538848877
       },
       "task_success_rate": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.5001411437988
+        "age": 1260.515154838562
       },
       "response_time": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.5001428127289
+        "age": 1260.5151562690735
       },
       "coherence_index": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.5001449584961
+        "age": 1260.515156030655
       },
       "wisdom_flow": {
         "value": 1.0,
         "status": "OPTIMAL",
-        "age": 308.5001459121704
+        "age": 1260.5151569843292
       },
       "uptime_health": {
-        "value": 0.07513413084877862,
-        "status": "CRITICAL",
-        "age": 29.573045015335083
+        "value": 0.34029822415775723,
+        "status": "DEGRADED",
+        "age": 24.74401307106018
       }
     },
-    "uptime": 300.0559480190277,
+    "uptime": 1249.8179750442505,
     "state": "RUNNING",
     "stats": {
       "total_tasks_run": 0,
       "total_healings": 0,
       "total_improvements": 0,
-      "uptime": 299.0543282032013,
+      "uptime": 1221.0599789619446,
       "errors_recovered": 0
     }
   },
@@ -55,7 +55,7 @@
     "total_tasks_run": 0,
     "total_healings": 0,
     "total_improvements": 0,
-    "uptime": 299.0543282032013,
+    "uptime": 1221.0599789619446,
     "errors_recovered": 0
   },
   "tasks": {}

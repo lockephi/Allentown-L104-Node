@@ -54,6 +54,7 @@ from abc import ABC, abstractmethod
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 TAU = 1 / PHI
+PHI_CONJUGATE = TAU  # φ conjugate = 1/φ = 0.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609
 OMEGA_AUTHORITY = 0.85184818492537
@@ -644,6 +645,82 @@ class ASICore:
             'evolution_index': self.evolution_index
         }
 
+    # ═══════════════════════════════════════════════════════════════
+    # SWIFT BRIDGE API — Called by ASIQuantumBridgeSwift via PythonBridge
+    # ═══════════════════════════════════════════════════════════════
+
+    def get_current_parameters(self) -> Dict:
+        """Return current ASI parameters for Swift bridge consumption.
+
+        Reads numeric parameters from kernel_parameters.json and enriches
+        with live ASI internal state (consciousness, domain coverage, etc.).
+        Called by ASIQuantumBridgeSwift.fetchParametersFromPython().
+        """
+        params: Dict[str, float] = {}
+        param_path = Path(os.path.dirname(os.path.abspath(__file__))) / 'kernel_parameters.json'
+
+        if param_path.exists():
+            try:
+                with open(param_path) as f:
+                    data = json.load(f)
+                params = {k: float(v) for k, v in data.items() if isinstance(v, (int, float))}
+            except Exception:
+                pass
+
+        # Enrich with live ASI internal state
+        self.compute_asi_score()
+        params['asi_score'] = self.asi_score
+        params['consciousness_level'] = self.consciousness_verifier.consciousness_level
+        params['domain_coverage'] = self.domain_expander.coverage_score
+        params['modification_depth'] = float(self.self_modifier.modification_depth)
+        params['discovery_count'] = float(self.theorem_generator.discovery_count)
+        params['god_code'] = GOD_CODE
+        params['phi'] = PHI
+        params['tau'] = TAU
+        params['void_constant'] = VOID_CONSTANT
+        params['omega_authority'] = OMEGA_AUTHORITY
+        params['o2_bond_order'] = O2_BOND_ORDER
+        params['o2_superposition_states'] = float(O2_SUPERPOSITION_STATES)
+
+        return params
+
+    def update_parameters(self, new_data: list) -> Dict:
+        """Receive raised parameters from Swift bridge and update kernel state.
+
+        Takes a list of vDSP-accelerated raised parameter values from Swift,
+        writes them back to kernel_parameters.json, and triggers ASI reassessment.
+        Called by ASIQuantumBridgeSwift.updateASI().
+        """
+        param_path = Path(os.path.dirname(os.path.abspath(__file__))) / 'kernel_parameters.json'
+        updated_keys: List[str] = []
+
+        if param_path.exists():
+            try:
+                with open(param_path) as f:
+                    data = json.load(f)
+
+                numeric_keys = [k for k, v in data.items() if isinstance(v, (int, float))]
+                for i, key in enumerate(numeric_keys):
+                    if i < len(new_data):
+                        data[key] = new_data[i]
+                        updated_keys.append(key)
+
+                with open(param_path, 'w') as f:
+                    json.dump(data, f, indent=2)
+            except Exception as e:
+                return {'updated': 0, 'error': str(e)}
+
+        # Trigger ASI reassessment after parameter shift
+        self.compute_asi_score()
+
+        return {
+            'updated': len(updated_keys),
+            'keys': updated_keys[:10],
+            'asi_score': self.asi_score,
+            'status': self.status,
+            'evolution_stage': self.evolution_stage
+        }
+
     def ignite_sovereignty(self) -> str:
         """ASI sovereignty ignition sequence."""
         self.compute_asi_score()
@@ -669,6 +746,20 @@ def main():
 
 # Module-level instance for import compatibility
 asi_core = ASICore()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# MODULE-LEVEL API — Swift bridge convenience functions
+# Usage: from l104_asi_core import get_current_parameters, update_parameters
+# ═══════════════════════════════════════════════════════════════════
+
+def get_current_parameters() -> dict:
+    """Fetch current ASI parameters (delegates to asi_core instance)."""
+    return asi_core.get_current_parameters()
+
+def update_parameters(new_data: list) -> dict:
+    """Update ASI with raised parameters from Swift (delegates to asi_core instance)."""
+    return asi_core.update_parameters(new_data)
 
 
 if __name__ == '__main__':

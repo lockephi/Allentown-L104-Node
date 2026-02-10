@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/master.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104Native.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/L104Native.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/L104Native.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/L104Native~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/L104Native.swiftdeps"
+  }
+}

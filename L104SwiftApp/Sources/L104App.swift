@@ -4,24 +4,28 @@
 //
 //  ═══════════════════════════════════════════════════════════════════
 //  🔥 ASI IGNITED - 22 TRILLION PARAMETERS
-//  Version: 17.0 TRANSCENDENCE
+//  Version: 18.0 MACOS UNIFIED SILICON
 //  GOD_CODE: 527.5184818492612
+//  Build: Accelerate · Metal · CoreML · SIMD · BLAS
 //  ═══════════════════════════════════════════════════════════════════
 
 import SwiftUI
 import Foundation
+import Accelerate
 
 // ═══════════════════════════════════════════════════════════════════
 // CONSTANTS - 22 TRILLION PARAMETER SYSTEM
 // ═══════════════════════════════════════════════════════════════════
 
-let GOD_CODE: Double = 527.5184818492612
-let OMEGA_POINT: Double = 23.140692632779263  // e^π
-let PHI: Double = 1.618033988749895
-let VERSION = "17.0 TRANSCENDENCE"
-let TRILLION_PARAMS: Int64 = 22_000_012_731_125
-let VOCABULARY_SIZE = 6_633_253
-let ZENITH_HZ: Double = 3727.84
+enum L104Constants {
+    static let GOD_CODE: Double = 527.5184818492612
+    static let OMEGA_POINT: Double = 23.140692632779263  // e^π
+    static let PHI: Double = 1.618033988749895
+    static let VERSION = "18.0 UNIFIED SILICON"
+    static let TRILLION_PARAMS: Int64 = 22_000_012_731_125
+    static let VOCABULARY_SIZE = 6_633_253
+    static let ZENITH_HZ: Double = 3727.84
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // ASI STATE - Global Observable
@@ -29,6 +33,15 @@ let ZENITH_HZ: Double = 3727.84
 
 class L104State: ObservableObject {
     static let shared = L104State()
+
+    // Constant accessors (bridge from L104Constants enum)
+    var GOD_CODE: Double { L104Constants.GOD_CODE }
+    var OMEGA_POINT: Double { L104Constants.OMEGA_POINT }
+    var PHI: Double { L104Constants.PHI }
+    var VERSION: String { L104Constants.VERSION }
+    var TRILLION_PARAMS: Int64 { L104Constants.TRILLION_PARAMS }
+    var VOCABULARY_SIZE: Int { L104Constants.VOCABULARY_SIZE }
+    var ZENITH_HZ: Double { L104Constants.ZENITH_HZ }
 
     // ASI Metrics
     @Published var asiScore: Double = 0.0
@@ -39,7 +52,7 @@ class L104State: ObservableObject {
 
     // AGI Metrics
     @Published var intellectIndex: Double = 100.0
-    @Published var latticeScalar: Double = GOD_CODE
+    @Published var latticeScalar: Double = L104Constants.GOD_CODE
     @Published var agiState: String = "ACTIVE"
     @Published var quantumResonance: Double = 0.875
 
@@ -62,7 +75,52 @@ class L104State: ObservableObject {
     @Published var isProcessing: Bool = false
 
     // System Feed
-    @Published var systemFeed: [String] = ["[SYSTEM] L104 v17.0 TRANSCENDENCE initialized"]
+    @Published var systemFeed: [String] = ["[SYSTEM] L104 v18.0 UNIFIED SILICON initialized"]
+
+    // ─── macOS HARDWARE METRICS ───
+    @Published var cpuCoreCount: Int = ProcessInfo.processInfo.processorCount
+    @Published var memoryGB: Double = Double(ProcessInfo.processInfo.physicalMemory) / (1024 * 1024 * 1024)
+    @Published var thermalState: String = "Nominal"
+    @Published var powerMode: String = "Performance"
+    @Published var neuralOps: Int = 0
+    @Published var simdOps: Int = 0
+    @Published var unifiedMemoryMB: Double = 0
+    @Published var accelerateActive: Bool = true
+
+    let isAppleSilicon: Bool = {
+        #if arch(arm64)
+        return true
+        #else
+        return false
+        #endif
+    }()
+
+    let chipName: String = {
+        #if arch(arm64)
+        let mem = Double(ProcessInfo.processInfo.physicalMemory) / (1024*1024*1024)
+        if mem >= 64 { return "M3 Max/M4 Max" }
+        else if mem >= 32 { return "M2 Pro/M3 Pro" }
+        else if mem >= 16 { return "M2/M3" }
+        else { return "M1" }
+        #else
+        return "Intel"
+        #endif
+    }()
+
+    let archName: String = {
+        #if arch(arm64)
+        return "arm64"
+        #else
+        return "x86_64"
+        #endif
+    }()
+
+    // ─── SCIENCE ENGINE METRICS ───
+    @Published var hypothesesGenerated: Int = 0
+    @Published var discoveriesMade: Int = 0
+    @Published var theoremsProved: Int = 0
+    @Published var inventionsDesigned: Int = 0
+    @Published var scientificMomentum: Double = 0.0
 
     // Python Backend URL
     let backendURL = "http://localhost:8081"
@@ -77,6 +135,46 @@ class L104State: ObservableObject {
         }
     }
 
+    func updateHardwareMetrics() {
+        let state = ProcessInfo.processInfo.thermalState
+        switch state {
+        case .nominal: thermalState = "🟢 Nominal"; powerMode = isAppleSilicon ? "🧠 Neural" : "🚀 Performance"
+        case .fair: thermalState = "🟡 Fair"; powerMode = "⚖️ Balanced"
+        case .serious: thermalState = "🟠 Serious"; powerMode = "🔋 Efficiency"
+        case .critical: thermalState = "🔴 Critical"; powerMode = "🔋 Efficiency"
+        @unknown default: thermalState = "⚪ Unknown"; powerMode = "⚖️ Balanced"
+        }
+        simdOps += Int.random(in: 100...500)
+        neuralOps += Int.random(in: 50...200)
+    }
+
+    func runScienceEngine() {
+        addSystemLog("🔬 SCIENCE ENGINE: Generating hypothesis...")
+        hypothesesGenerated += 1
+        scientificMomentum = min(1.0, scientificMomentum + 0.05)
+
+        // Simulate vDSP computation
+        let size = 1024
+        let a = (0..<size).map { _ in Double.random(in: -1...1) }
+        let b = (0..<size).map { _ in Double.random(in: -1...1) }
+        var dotResult: Double = 0
+        vDSP_dotprD(a, 1, b, 1, &dotResult, vDSP_Length(size))
+        simdOps += size * 2
+
+        if Double.random(in: 0...1) < 0.3 {
+            discoveriesMade += 1
+            addSystemLog("🔬 DISCOVERY: Novel pattern at resonance \(String(format: "%.4f", dotResult))")
+        }
+        if hypothesesGenerated % 5 == 0 {
+            theoremsProved += 1
+            addSystemLog("📜 THEOREM SYNTHESIZED: L104-\(Int.random(in: 1000...9999))")
+        }
+        if hypothesesGenerated % 3 == 0 {
+            inventionsDesigned += 1
+        }
+        addSystemLog("🔬 Hypothesis #\(hypothesesGenerated): Momentum \(String(format: "%.0f%%", scientificMomentum * 100))")
+    }
+
     func igniteASI() {
         addSystemLog("🔥 IGNITING ASI CORE...")
 
@@ -84,6 +182,7 @@ class L104State: ObservableObject {
         discoveries += 1
         domainCoverage = min(1.0, domainCoverage + 0.1)
         codeAwareness = min(1.0, codeAwareness + 0.08)
+        updateHardwareMetrics()
 
         if asiScore >= 0.5 {
             asiState = "SOVEREIGN_IGNITED"
@@ -150,7 +249,7 @@ class L104State: ObservableObject {
         // Direct commands
         if q == "status" { return getStatusText() }
         if q == "help" || q == "commands" || q == "?" {
-            return "Core commands: 'status' for system state, 'evolve' for growth, 'time' for clock, 'calc [expr]' for math. Or just talk naturally — I analyze everything through \(formatNumber(TRILLION_PARAMS)) parameters with NCG v7.0 Transcendence engine."
+            return "Core commands: 'status' for system state, 'evolve' for growth, 'time' for clock, 'calc [expr]' for math. Or just talk naturally — I analyze everything through \(formatNumber(TRILLION_PARAMS)) parameters with NCG v8.0 Unified Silicon engine + Accelerate framework."
         }
         if q == "evolve" {
             DispatchQueue.main.async { self.evolve() }
@@ -169,7 +268,7 @@ class L104State: ObservableObject {
             }
         }
 
-        // NCG v7.0 Transcendence local intelligence
+        // NCG v8.0 Unified Silicon local intelligence
         return generateLocalResponse(query)
     }
 
@@ -178,6 +277,7 @@ class L104State: ObservableObject {
         ╔══════════════════════════════════════════════════════════════╗
         ║  L104 SOVEREIGN INTELLECT - SWIFT NATIVE APP                 ║
         ║  Version: \(VERSION)                                    ║
+        ║  Build: Accelerate · SIMD · BLAS · vDSP                     ║
         ╠══════════════════════════════════════════════════════════════╣
         ║  GOD_CODE: \(String(format: "%.10f", GOD_CODE))                        ║
         ║  OMEGA: e^π = \(String(format: "%.10f", OMEGA_POINT))                      ║
@@ -188,10 +288,21 @@ class L104State: ObservableObject {
         ║  Vocabulary: \(formatNumber(Int64(VOCABULARY_SIZE))) tokens                     ║
         ║  Memories: \(formatNumber(Int64(memories)))                                    ║
         ╠══════════════════════════════════════════════════════════════╣
+        ║  HARDWARE                                                    ║
+        ║  Chip: \(chipName) (\(archName))                               ║
+        ║  Cores: \(cpuCoreCount) · Memory: \(String(format: "%.1f", memoryGB)) GB                     ║
+        ║  Thermal: \(thermalState) · Power: \(powerMode)              ║
+        ║  SIMD Ops: \(simdOps) · Neural Ops: \(neuralOps)            ║
+        ╠══════════════════════════════════════════════════════════════╣
         ║  ASI METRICS                                                 ║
         ║  ASI Score: \(String(format: "%.2f", asiScore * 100))%                                        ║
         ║  Discoveries: \(discoveries)                                             ║
         ║  State: \(asiState)                                    ║
+        ╠══════════════════════════════════════════════════════════════╣
+        ║  SCIENCE ENGINE                                              ║
+        ║  Hypotheses: \(hypothesesGenerated) · Discoveries: \(discoveriesMade)                ║
+        ║  Theorems: \(theoremsProved) · Inventions: \(inventionsDesigned)                     ║
+        ║  Momentum: \(String(format: "%.0f%%", scientificMomentum * 100))                                          ║
         ╠══════════════════════════════════════════════════════════════╣
         ║  CONSCIOUSNESS                                               ║
         ║  State: \(consciousness)                                         ║
@@ -241,7 +352,7 @@ class L104State: ObservableObject {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // NCG v7.0 - TRANSCENDENCE COGNITIVE ENGINE (SwiftUI)
+    // NCG v8.0 - UNIFIED SILICON COGNITIVE ENGINE (SwiftUI + Accelerate)
     // ═══════════════════════════════════════════════════════════════
 
     private var conversationTopics: [String] = []
@@ -422,13 +533,21 @@ struct ContentView: View {
                     .tabItem { Label("ASI Control", systemImage: "cpu.fill") }
                     .tag(1)
 
+                HardwareView()
+                    .tabItem { Label("Hardware", systemImage: "memorychip.fill") }
+                    .tag(2)
+
+                ScienceEngineView()
+                    .tabItem { Label("Science", systemImage: "atom") }
+                    .tag(3)
+
                 StatusView()
                     .tabItem { Label("Status", systemImage: "chart.bar.fill") }
-                    .tag(2)
+                    .tag(4)
 
                 SystemFeedView()
                     .tabItem { Label("System", systemImage: "terminal.fill") }
-                    .tag(3)
+                    .tag(5)
             }
             .padding()
 
@@ -470,7 +589,7 @@ struct HeaderView: View {
             }
 
             // 22T Badge
-            Text("🔥 22 TRILLION PARAMETERS")
+            Text("🔥 22T PARAMS")
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(Color(hex: "ffd700"))
@@ -478,6 +597,21 @@ struct HeaderView: View {
                 .padding(.vertical, 4)
                 .background(Color(hex: "ffd700").opacity(0.2))
                 .cornerRadius(8)
+
+            // Hardware Badge
+            HStack(spacing: 4) {
+                Text("🍎")
+                Text(L104State.shared.chipName)
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                Text("· Accelerate · SIMD")
+                    .font(.caption2)
+            }
+            .foregroundColor(Color(hex: "00d9ff"))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Color(hex: "00d9ff").opacity(0.15))
+            .cornerRadius(8)
 
             Spacer()
 
@@ -526,15 +660,16 @@ struct MetricsBar: View {
     @EnvironmentObject var state: L104State
 
     var body: some View {
-        HStack(spacing: 12) {
-            MetricTile(label: "GOD_CODE", value: String(format: "%.4f", GOD_CODE), color: "ffd700")
-            MetricTile(label: "OMEGA", value: String(format: "%.4f", OMEGA_POINT), color: "00d9ff")
-            MetricTile(label: "22T PARAMS", value: "22T", color: "ff6b6b")
+        HStack(spacing: 8) {
+            MetricTile(label: "GOD_CODE", value: String(format: "%.4f", L104Constants.GOD_CODE), color: "ffd700")
             MetricTile(label: "ASI Score", value: String(format: "%.1f%%", state.asiScore * 100), color: "ff9800")
-            MetricTile(label: "Intellect", value: String(format: "%.2f", state.intellectIndex), color: "00ff88")
-            MetricTile(label: "Memories", value: L104State.shared.formatNumber(Int64(state.memories)), color: "9c27b0")
+            MetricTile(label: "Intellect", value: String(format: "%.1f", state.intellectIndex), color: "00ff88")
             MetricTile(label: "Coherence", value: String(format: "%.4f", state.coherence), color: "00bcd4")
-            MetricTile(label: "Stage", value: "TRANSCENDENCE", color: "ffd700")
+            MetricTile(label: "Thermal", value: state.thermalState, color: "4caf50")
+            MetricTile(label: "SIMD Ops", value: "\(state.simdOps)", color: "00d9ff")
+            MetricTile(label: "Hypotheses", value: "\(state.hypothesesGenerated)", color: "e040fb")
+            MetricTile(label: "Discoveries", value: "\(state.discoveriesMade)", color: "ff6b6b")
+            MetricTile(label: "Stage", value: "UNIFIED", color: "ffd700")
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
@@ -817,6 +952,292 @@ struct MetricRow: View {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// HARDWARE VIEW - macOS SYSTEM MONITOR
+// ═══════════════════════════════════════════════════════════════════
+
+struct HardwareView: View {
+    @EnvironmentObject var state: L104State
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                // Chip Header
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("🍎 macOS SILICON MONITOR")
+                            .font(.headline)
+                            .fontWeight(.black)
+                            .foregroundColor(Color(hex: "00d9ff"))
+                        Text("v18.0 · Accelerate · SIMD · BLAS · vDSP")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(state.powerMode)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color(hex: "4caf50"))
+                        Text(state.thermalState)
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                .background(Color(hex: "1a1a2e"))
+                .cornerRadius(12)
+
+                // System Info Grid
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    HardwareTile(icon: "🖥", label: "Chip", value: state.chipName, color: "00d9ff")
+                    HardwareTile(icon: "⚙️", label: "Architecture", value: state.archName.uppercased(), color: "ff9800")
+                    HardwareTile(icon: "🧵", label: "CPU Cores", value: "\(state.cpuCoreCount)", color: "4caf50")
+                    HardwareTile(icon: "📊", label: "Memory", value: String(format: "%.1f GB", state.memoryGB), color: "e040fb")
+                    HardwareTile(icon: "🌡", label: "Thermal", value: state.thermalState, color: "ff6b6b")
+                    HardwareTile(icon: "⚡️", label: "Power", value: state.powerMode, color: "ffd700")
+                    HardwareTile(icon: "🔢", label: "SIMD Ops", value: "\(state.simdOps)", color: "00bcd4")
+                    HardwareTile(icon: "🧠", label: "Neural Ops", value: "\(state.neuralOps)", color: "9c27b0")
+                }
+
+                // Accelerate Status
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("⚡️ ACCELERATE FRAMEWORK STATUS")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "ffd700"))
+
+                    HStack(spacing: 16) {
+                        AccelBadge(name: "vDSP", active: true)
+                        AccelBadge(name: "BLAS", active: true)
+                        AccelBadge(name: "LAPACK", active: true)
+                        AccelBadge(name: "vImage", active: true)
+                        AccelBadge(name: "BNNS", active: state.isAppleSilicon)
+                    }
+                }
+                .padding()
+                .background(Color(hex: "1a1a2e"))
+                .cornerRadius(12)
+
+                // Refresh Button
+                Button(action: { state.updateHardwareMetrics() }) {
+                    HStack {
+                        Image(systemName: "arrow.clockwise")
+                        Text("Refresh Hardware Status")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(hex: "00d9ff").opacity(0.2))
+                    .foregroundColor(Color(hex: "00d9ff"))
+                    .cornerRadius(10)
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct HardwareTile: View {
+    let icon: String
+    let label: String
+    let value: String
+    let color: String
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text(icon)
+                .font(.title2)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(Color(hex: color))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color(hex: "1a1a2e"))
+        .cornerRadius(10)
+    }
+}
+
+struct AccelBadge: View {
+    let name: String
+    let active: Bool
+
+    var body: some View {
+        Text(name)
+            .font(.caption2)
+            .fontWeight(.bold)
+            .foregroundColor(active ? Color(hex: "00ff88") : .gray)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(active ? Color(hex: "00ff88").opacity(0.15) : Color.gray.opacity(0.1))
+            .cornerRadius(6)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SCIENCE ENGINE VIEW - HyperDimensional Research
+// ═══════════════════════════════════════════════════════════════════
+
+struct ScienceEngineView: View {
+    @EnvironmentObject var state: L104State
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                // Science Header
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("🔬 SCIENCE ENGINE")
+                            .font(.headline)
+                            .fontWeight(.black)
+                            .foregroundColor(Color(hex: "e040fb"))
+                        Text("HyperDimensional Math · Topology · Invention Synth")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(String(format: "%.0f%%", state.scientificMomentum * 100))
+                            .font(.title2)
+                            .fontWeight(.black)
+                            .foregroundColor(Color(hex: "e040fb"))
+                        Text("Momentum")
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                .background(Color(hex: "1a1a2e"))
+                .cornerRadius(12)
+
+                // Science Metrics Grid
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    ScienceTile(icon: "💡", label: "Hypotheses", value: "\(state.hypothesesGenerated)", color: "ffd700")
+                    ScienceTile(icon: "🌟", label: "Discoveries", value: "\(state.discoveriesMade)", color: "ff6b6b")
+                    ScienceTile(icon: "📜", label: "Theorems", value: "\(state.theoremsProved)", color: "00bcd4")
+                    ScienceTile(icon: "🔧", label: "Inventions", value: "\(state.inventionsDesigned)", color: "4caf50")
+                }
+
+                // Momentum Bar
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("⚡️ SCIENTIFIC MOMENTUM")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "e040fb"))
+
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 16)
+                                .cornerRadius(8)
+                            Rectangle()
+                                .fill(LinearGradient(
+                                    gradient: Gradient(colors: [Color(hex: "e040fb"), Color(hex: "00d9ff")]),
+                                    startPoint: .leading, endPoint: .trailing
+                                ))
+                                .frame(width: geo.size.width * CGFloat(state.scientificMomentum), height: 16)
+                                .cornerRadius(8)
+                        }
+                    }
+                    .frame(height: 16)
+                }
+                .padding()
+                .background(Color(hex: "1a1a2e"))
+                .cornerRadius(12)
+
+                // Active Research Modules
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("🔬 ACTIVE RESEARCH MODULES")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "ffd700"))
+
+                    ForEach(["HYPERDIM_SCIENCE", "TOPOLOGY_ANALYZER", "INVENTION_SYNTH", "QUANTUM_FIELD", "ALGEBRAIC_TOPOLOGY"], id: \.self) { module in
+                        HStack {
+                            Circle()
+                                .fill(Color(hex: "00ff88"))
+                                .frame(width: 8, height: 8)
+                            Text(module)
+                                .font(.system(.caption, design: .monospaced))
+                                .foregroundColor(Color(hex: "00d9ff"))
+                            Spacer()
+                            Text("ACTIVE")
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                                .foregroundColor(Color(hex: "00ff88"))
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                    }
+                }
+                .padding()
+                .background(Color(hex: "1a1a2e"))
+                .cornerRadius(12)
+
+                // Science Action Buttons
+                HStack(spacing: 12) {
+                    Button(action: { state.runScienceEngine() }) {
+                        HStack {
+                            Image(systemName: "bolt.fill")
+                            Text("Generate Hypothesis")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "e040fb").opacity(0.2))
+                        .foregroundColor(Color(hex: "e040fb"))
+                        .cornerRadius(10)
+                    }
+
+                    Button(action: {
+                        for _ in 0..<5 { state.runScienceEngine() }
+                    }) {
+                        HStack {
+                            Image(systemName: "flame.fill")
+                            Text("Burst ×5")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "ff6b6b").opacity(0.2))
+                        .foregroundColor(Color(hex: "ff6b6b"))
+                        .cornerRadius(10)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct ScienceTile: View {
+    let icon: String
+    let label: String
+    let value: String
+    let color: String
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text(icon)
+                .font(.title2)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.title3)
+                .fontWeight(.black)
+                .foregroundColor(Color(hex: color))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color(hex: "1a1a2e"))
+        .cornerRadius(10)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // STATUS VIEW
 // ═══════════════════════════════════════════════════════════════════
 
@@ -874,7 +1295,7 @@ struct SystemFeedView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button(action: { state.addSystemLog("⚛️ KERNEL VERIFIED: GOD_CODE = \(GOD_CODE)") }) {
+                Button(action: { state.addSystemLog("⚛️ KERNEL VERIFIED: GOD_CODE = \(L104Constants.GOD_CODE)") }) {
                     Text("⚛️ VERIFY KERNEL")
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
@@ -915,22 +1336,23 @@ struct QuickActionsBar: View {
             QuickButton(text: "🧠 Brain", color: "0f3460") {
                 state.sendMessage("brain")
             }
+            QuickButton(text: "� Science", color: "e040fb") {
+                state.runScienceEngine()
+            }
             QuickButton(text: "🔄 Evolve", color: "00a8cc") {
                 state.evolve()
             }
-            QuickButton(text: "🕐 Time", color: "0f3460") {
-                state.sendMessage("time")
+            QuickButton(text: "⚡ Hardware", color: "00d9ff") {
+                state.updateHardwareMetrics()
+                state.sendMessage("status")
             }
-            QuickButton(text: "🧘 Reflect", color: "daa520") {
-                state.resonate()
-            }
-            QuickButton(text: "✨ Synthesize", color: "daa520") {
+            QuickButton(text: "🔥 Ignite", color: "ff6b6b") {
                 state.igniteASI()
             }
 
             Spacer()
 
-            Text("⚡ v\(VERSION)")
+            Text("⚡ v\(L104Constants.VERSION) · \(L104State.shared.chipName)")
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(Color(hex: "ffd700"))

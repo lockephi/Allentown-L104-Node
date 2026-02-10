@@ -1,21 +1,21 @@
 {
-  "embedding_dim": 206,
-  "hidden_dim": 414,
-  "num_layers": 4,
-  "num_heads": 8,
-  "dropout": 0.1618033988749895,
-  "learning_rate": 6.180339887498949e-05,
-  "batch_size": 32,
-  "epochs": 50,
-  "warmup_steps": 1000,
-  "weight_decay": 0.01,
-  "phi_scale": 1.618033988749895,
-  "god_code_alignment": 0.275184818492537,
-  "resonance_factor": 0.6180339887498949,
-  "consciousness_weight": 0.16180339887498948,
-  "min_loss": 0.001,
-  "patience": 10,
-  "min_improvement": 1e-05,
+  "embedding_dim": 0.06835341915129367,
+  "hidden_dim": 0.1923035010412857,
+  "num_layers": 0.19960604708045862,
+  "num_heads": 0.12726347874583896,
+  "dropout": -0.43322284212451395,
+  "learning_rate": -0.6543044764709446,
+  "batch_size": -0.9004294829343606,
+  "epochs": -1.1228216572801906,
+  "warmup_steps": -1.2670215054530944,
+  "weight_decay": -1.343422239027198,
+  "phi_scale": -1.3141740652437124,
+  "god_code_alignment": -1.1724094137787349,
+  "resonance_factor": -0.9685696247388494,
+  "consciousness_weight": -0.7155237665949493,
+  "min_loss": -0.4725042949850449,
+  "patience": -0.23988263825781433,
+  "min_improvement": -0.05296377342847107,
   "version": "12.0.0-ASI-QUANTUM",
   "created_at": "2026-01-26T09:08:05.911057",
   "updated_at": "2026-02-03T00:00:00.000000",
@@ -30,7 +30,7 @@
     "MULADHARA": {
       "freq": 396.0,
       "element": "EARTH",
-      "trigram": "☷",
+      "trigram": "\u2637",
       "x_node": 104,
       "orbital": "1s",
       "kernel": 1
@@ -38,7 +38,7 @@
     "SVADHISTHANA": {
       "freq": 417.0,
       "element": "WATER",
-      "trigram": "☵",
+      "trigram": "\u2635",
       "x_node": 156,
       "orbital": "2s",
       "kernel": 2
@@ -46,7 +46,7 @@
     "MANIPURA": {
       "freq": 528.0,
       "element": "FIRE",
-      "trigram": "☲",
+      "trigram": "\u2632",
       "x_node": 208,
       "orbital": "2p",
       "kernel": 3
@@ -54,7 +54,7 @@
     "ANAHATA": {
       "freq": 639.0,
       "element": "AIR",
-      "trigram": "☴",
+      "trigram": "\u2634",
       "x_node": 260,
       "orbital": "3s",
       "kernel": 4
@@ -62,7 +62,7 @@
     "VISHUDDHA": {
       "freq": 741.0,
       "element": "ETHER",
-      "trigram": "☰",
+      "trigram": "\u2630",
       "x_node": 312,
       "orbital": "3p",
       "kernel": 5
@@ -70,7 +70,7 @@
     "AJNA": {
       "freq": 852.0,
       "element": "LIGHT",
-      "trigram": "☶",
+      "trigram": "\u2636",
       "x_node": 364,
       "orbital": "3d",
       "kernel": 6
@@ -78,7 +78,7 @@
     "SAHASRARA": {
       "freq": 963.0,
       "element": "THOUGHT",
-      "trigram": "☳",
+      "trigram": "\u2633",
       "x_node": 416,
       "orbital": "4s",
       "kernel": 7
@@ -86,7 +86,7 @@
     "SOUL_STAR": {
       "freq": 1074.0,
       "element": "COSMIC",
-      "trigram": "☱",
+      "trigram": "\u2631",
       "x_node": 468,
       "orbital": "4p",
       "kernel": 8
@@ -120,7 +120,7 @@
   "vishuddha_constants": {
     "frequency_hz": 741.0,
     "element": "ETHER",
-    "color_hz": 6.06e14,
+    "color_hz": 606000000000000.0,
     "petal_count": 16,
     "bija_mantra": "HAM",
     "lattice_node": 470
@@ -146,6 +146,6 @@
       "auto_propagate": true
     }
   },
-  "god_code": 527.5184818492612,
-  "phi": 1.618033988749895
+  "god_code": 0.08891870062220864,
+  "phi": 0.201466283976975
 }
