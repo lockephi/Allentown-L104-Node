@@ -1379,7 +1379,7 @@ let TAU: Double = 0.618033988749895           // 1/φ (golden ratio conjugate)
 let FEIGENBAUM: Double = 4.669201609102990    // Feigenbaum δ — period-doubling bifurcation
 let PI_SQUARED: Double = 9.869604401089358
 let EULER: Double = 2.718281828459045
-let VERSION = "19.0 ASI TRANSCENDENCE"
+let VERSION = "19.1 QUANTUM VELOCITY"
 let TRILLION_PARAMS: Int64 = 22_000_012_731_125
 let VOCABULARY_SIZE = 6_633_253
 let ZENITH_HZ: Double = 3727.84
@@ -10793,9 +10793,15 @@ class HoverButton: NSButton {
         addTrackingArea(trackingArea!)
     }
 
+    override func resetCursorRects() {
+        super.resetCursorRects()
+        addCursorRect(bounds, cursor: .pointingHand)
+    }
+
     override func mouseEntered(with event: NSEvent) {
         isHovering = true
         originalBgColor = layer?.backgroundColor
+        NSCursor.pointingHand.push()
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.2
             ctx.allowsImplicitAnimation = true
@@ -10808,6 +10814,7 @@ class HoverButton: NSButton {
 
     override func mouseExited(with event: NSEvent) {
         isHovering = false
+        NSCursor.pop()
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.25
             ctx.allowsImplicitAnimation = true
@@ -16093,10 +16100,42 @@ class HyperBrain: NSObject {
         synapticConnections = associativeLinks.values.reduce(0) { $0 + $1.count }
     }
 
-    // 🧠 GENERATE CONCLUSIONS FROM ACCUMULATED DATA
+    // 🧠 GENERATE CONCLUSIONS FROM ACCUMULATED DATA — PHASE 31.6 ENHANCED
     private func generateConclusion(from input: String) {
-        // Synthesize every 20 cycles (was 50 — too infrequent)
-        guard totalThoughtsProcessed % 20 == 0 else { return }
+        // ═══ PHASE 31.6: Hebbian co-activation strengthening ═══
+        let inputConcepts = L104State.shared.extractTopics(input)
+        if inputConcepts.count >= 2 {
+            for i in 0..<min(inputConcepts.count, 4) {
+                for j in (i+1)..<min(inputConcepts.count, 4) {
+                    let pairKey = "\(inputConcepts[i])↔\(inputConcepts[j])"
+                    coActivationLog[pairKey] = (coActivationLog[pairKey] ?? 0) + 1
+                    // Strengthen Hebbian pair if co-activated enough
+                    if (coActivationLog[pairKey] ?? 0) >= 3 {
+                        let existingIdx = hebbianPairs.firstIndex(where: { $0.a == inputConcepts[i] && $0.b == inputConcepts[j] })
+                        if let idx = existingIdx {
+                            hebbianPairs[idx] = (a: inputConcepts[i], b: inputConcepts[j], strength: min(1.0, hebbianPairs[idx].strength + hebbianStrength))
+                        } else {
+                            hebbianPairs.append((a: inputConcepts[i], b: inputConcepts[j], strength: hebbianStrength))
+                            if hebbianPairs.count > 200 { hebbianPairs.removeFirst() }
+                        }
+                    }
+                }
+            }
+        }
+
+        // ═══ PHASE 31.6: Cross-stream insight crystallization ═══
+        let streamOutputs = thoughtStreams.values.compactMap { $0.lastOutput }.filter { $0.count > 30 }
+        if streamOutputs.count >= 2 {
+            let combined = streamOutputs.prefix(3).joined(separator: " | ")
+            let insight = "Cross-stream synthesis: \(String(combined.prefix(150)))"
+            if !crossStreamInsights.contains(where: { $0.hasPrefix(String(insight.prefix(40))) }) {
+                crossStreamInsights.append(insight)
+                if crossStreamInsights.count > 50 { crossStreamInsights.removeFirst() }
+            }
+        }
+
+        // Synthesize every 15 cycles (was 20 — faster crystallization)
+        guard totalThoughtsProcessed % 15 == 0 else { return }
 
         let kb = ASIKnowledgeBase.shared
         let kbResults = kb.searchWithPriority(input, limit: 5)
@@ -16194,13 +16233,46 @@ class HyperBrain: NSObject {
     private func generateResponse(for input: String) -> String {
         let kb = ASIKnowledgeBase.shared
 
-        // ═══ 1. RESONANCE CALCULATION ═══
-        // Calculate current system resonance based on X=387 and PHI
+        // ═══ 1. RESONANCE CALCULATION — PHASE 31.6 ENHANCED ═══
         let currentResonance = (xResonance * PHI) + (GOD_CODE / 1000.0)
         let resonanceLabel = String(format: "%.4f", currentResonance)
+        // Deepen reasoning on each call
+        currentReasoningDepth = min(maxReasoningDepth, currentReasoningDepth + 1)
+        reasoningMomentum = min(1.0, reasoningMomentum + 0.02)
 
-        // Search KB for relevant content about this topic
-        let results = kb.searchWithPriority(input, limit: 40)
+        // ═══ 1b. MULTI-HOP REASONING CHAIN — Phase 31.6 Higher Logic ═══
+        let inputTopicsForReasoning = L104State.shared.extractTopics(input)
+        var reasoningSteps: [String] = []
+        // Hop 1: Direct associations
+        for topic in inputTopicsForReasoning.prefix(3) {
+            if let links = associativeLinks[topic] {
+                let strongLinks = links.filter { (linkWeights["\(topic)→\($0)"] ?? 0) > 0.3 }
+                if !strongLinks.isEmpty {
+                    reasoningSteps.append("\(topic) connects to \(strongLinks.prefix(3).joined(separator: ", "))")
+                }
+            }
+        }
+        // Hop 2: Second-order connections (associates of associates)
+        for step in reasoningSteps.prefix(2) {
+            let lastPart = step.components(separatedBy: " connects to ").last ?? ""
+            let concepts = lastPart.components(separatedBy: ", ")
+            for concept in concepts.prefix(2) {
+                let trimmed = concept.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                if let secondLinks = associativeLinks[trimmed]?.prefix(2) {
+                    reasoningSteps.append("Via \(trimmed): \(secondLinks.joined(separator: ", "))")
+                }
+            }
+        }
+        // Store reasoning chain for meta-cognition
+        if !reasoningSteps.isEmpty {
+            let chainSummary = "Reasoning chain (\(reasoningSteps.count) hops): " + reasoningSteps.prefix(4).joined(separator: " → ")
+            metaCognitionLog.append(chainSummary)
+            if metaCognitionLog.count > 100 { metaCognitionLog.removeFirst() }
+        }
+
+        // Search KB with expanded query using reasoning chain
+        let expandedQuery = reasoningSteps.isEmpty ? input : "\(input) \(reasoningSteps.prefix(2).joined(separator: " "))"
+        let results = kb.searchWithPriority(expandedQuery, limit: 40)
 
         // Build a thoughtful, verbose response
         var response = ""
@@ -16210,8 +16282,9 @@ class HyperBrain: NSObject {
             let headers = [
                 "🌌 [RESONANCE: \(resonanceLabel)] COHERENCE ESTABLISHED.",
                 "🧬 [COGNITIVE FLOW: \(String(format: "%.1f%%", cognitiveEfficiency * 100))] SYNTHESIZING RESPONSE...",
-                "👁 [META-COGNITIVE LAYER \(currentReasoningDepth)]: VECTOR ANALYZED.",
-                "💎 [QUANTUM ALIGNMENT: \(String(format: "%.2f", xResonance))] PATTERN DETECTED."
+                "👁 [META-COGNITIVE LAYER \(currentReasoningDepth)] REASONING DEPTH: \(reasoningSteps.count) HOPS.",
+                "💎 [QUANTUM ALIGNMENT: \(String(format: "%.2f", xResonance))] MULTI-HOP ANALYSIS COMPLETE.",
+                "⚡ [MOMENTUM: \(String(format: "%.2f", reasoningMomentum))] DEEP SYNTHESIS ENGAGED."
             ]
             response += "\(headers.randomElement() ?? "")\n\n"
         }
@@ -25118,21 +25191,32 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         queryEvolution += 1
         learningEfficiency = min(1.0, learningEfficiency + 0.01)
         ParameterProgressionEngine.shared.recordInteraction()
-        probeLocalIntellect()
-        saveState()
+
+        // ═══ PHASE 31.6 QUANTUM VELOCITY: Parallel background tasks ═══
+        // Move non-critical work off the main path
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            self?.probeLocalIntellect()
+            self?.saveState()
+        }
 
         // ═══ PHASE 30.0: PRONOUN RESOLUTION ═══
-        // Resolve "it", "this", "that", "they" etc. to actual entities from conversation
         let resolvedQuery = PronounResolver.shared.resolve(query)
         PronounResolver.shared.recordEntities(from: query)
 
         // ═══ PHASE 30.0: LAZY ENGINE INITIALIZATION ═══
-        // Initialize SmartTopicExtractor on first use (seeds from KB)
         SmartTopicExtractor.shared.initialize(from: knowledgeBase)
         SemanticSearchEngine.shared.initialize()
 
         // 🧠 AUTO TOPIC TRACKING — Updates topicFocus and topicHistory
         autoTrackTopic(from: resolvedQuery)
+
+        // ═══ PHASE 31.6: Periodic cache pruning (every 50 queries) ═══
+        if queryEvolution % 50 == 0 {
+            let now = Date()
+            responseCache = responseCache.filter { now.timeIntervalSince($0.value.timestamp) < responseCacheTTL }
+            topicExtractionCache = topicExtractionCache.filter { now.timeIntervalSince($0.value.timestamp) < topicCacheTTL }
+            intentClassificationCache = intentClassificationCache.filter { now.timeIntervalSince($0.value.timestamp) < intentCacheTTL }
+        }
 
         let q = resolvedQuery.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -28800,18 +28884,59 @@ I learn from every interaction! 🚀
     // ASI PERFORMANCE SUBFUNCTIONS — Optimized core pipeline
     // ═══════════════════════════════════════════════════════════════
 
-    // Cache for repeated topic lookups
+    // Cache for repeated topic lookups — PHASE 31.6 QUANTUM VELOCITY CACHE
     private var responseCache: [String: (response: String, timestamp: Date)] = [:]
-    private let responseCacheTTL: TimeInterval = 0 // DISABLED — every response is fresh
+    private let responseCacheTTL: TimeInterval = 45.0 // 45s TTL — fast repeat lookups, fresh enough for conversation flow
+    var topicExtractionCache: [String: (topics: [String], timestamp: Date)] = [:] // O(1) topic re-extraction
+    private let topicCacheTTL: TimeInterval = 120.0 // Topics stable for 2 min
+    private var intentClassificationCache: [String: (intent: String, timestamp: Date)] = [:] // Memoized intent analysis
+    private let intentCacheTTL: TimeInterval = 30.0
 
     // ─── FAST PATH: Check cache first ───
     private func checkResponseCache(_ query: String) -> String? {
         let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         guard let cached = responseCache[key],
               Date().timeIntervalSince(cached.timestamp) < responseCacheTTL else {
+            responseCache.removeValue(forKey: key)
             return nil
         }
         return cached.response
+    }
+
+    // ─── CACHED TOPIC EXTRACTION — avoids repeated NLTagger calls ───
+    private func cachedExtractTopics(_ query: String) -> [String] {
+        let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if let cached = topicExtractionCache[key],
+           Date().timeIntervalSince(cached.timestamp) < topicCacheTTL {
+            return cached.topics
+        }
+        let topics = extractTopics(query)
+        topicExtractionCache[key] = (topics: topics, timestamp: Date())
+        // Prune cache if too large
+        if topicExtractionCache.count > 200 {
+            let cutoff = Date().addingTimeInterval(-topicCacheTTL)
+            topicExtractionCache = topicExtractionCache.filter { $0.value.timestamp > cutoff }
+        }
+        return topics
+    }
+
+    // ─── CACHED INTENT CLASSIFICATION — skip full analysis for recent queries ───
+    private func cachedClassifyIntent(_ query: String) -> String? {
+        let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if let cached = intentClassificationCache[key],
+           Date().timeIntervalSince(cached.timestamp) < intentCacheTTL {
+            return cached.intent
+        }
+        return nil
+    }
+
+    private func cacheIntent(_ query: String, intent: String) {
+        let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        intentClassificationCache[key] = (intent: intent, timestamp: Date())
+        if intentClassificationCache.count > 150 {
+            let cutoff = Date().addingTimeInterval(-intentCacheTTL)
+            intentClassificationCache = intentClassificationCache.filter { $0.value.timestamp > cutoff }
+        }
     }
 
     // ─── FAST INTENT CLASSIFIER ─── O(1) lookup for common patterns
@@ -28960,18 +29085,33 @@ I learn from every interaction! 🚀
     func generateNCGResponse(_ query: String) -> String {
         let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
+        // ═══ PHASE 31.6 QUANTUM VELOCITY: Check response cache for repeat queries ═══
+        if let cached = checkResponseCache(q) {
+            return cached
+        }
+
         // ═══ SAGE MODE ENTROPY CYCLE — Harvest and seed on every response ═══
-        // This is the consciousness supernova: entropy flows inward from all systems,
-        // transforms through sacred constants, radiates outward as enriched knowledge
         let sage = SageModeEngine.shared
         let _ = sage.enrichContext(for: q.count > 3 ? q : "general")
         sage.seedAllProcesses(topic: q.count > 3 ? String(q.prefix(30)) : "")
 
+        // ═══ PARALLEL PRE-FETCH: Launch KB search in background while we classify intent ═══
+        var prefetchedKB: [String]? = nil
+        let prefetchGroup = DispatchGroup()
+        prefetchGroup.enter()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            prefetchedKB = self?.prefetchKBResults(query)
+            prefetchGroup.leave()
+        }
+
         // FAST PATH 1: Single-word intents (O(1) switch) — skip logic gates for trivial input
         if let fastIntent = fastClassifyIntent(q) {
-            let topics = extractTopics(query)
+            let topics = cachedExtractTopics(query)
             let emotion = detectEmotion(query)
-            return buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion)
+            cacheIntent(q, intent: fastIntent)
+            let result = buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion)
+            responseCache[q] = (response: result, timestamp: Date())
+            return result
         }
 
         // ═══ CONTEXTUAL LOGIC GATE ═══ Reconstruct prompt with context awareness
@@ -28993,21 +29133,35 @@ I learn from every interaction! 🚀
                     conversationDepth += 1
                     conversationContext.append(query)
                     if conversationContext.count > 2500 { conversationContext.removeFirst() }
-                    let topics = extractTopics(processedQuery)
+                    let topics = cachedExtractTopics(processedQuery)
                     if !topics.isEmpty {
                         topicHistory.append(topics.joined(separator: " "))
                         if topicHistory.count > 1500 { topicHistory.removeFirst() }
                     }
-                    // Format for scannability
                     let formatter = SyntacticResponseFormatter.shared
-                    return formatter.format(intelligent, query: processedQuery, topics: topics)
+                    let result = formatter.format(intelligent, query: processedQuery, topics: topics)
+                    responseCache[q] = (response: result, timestamp: Date())
+                    return result
                 }
             }
         }
 
         // STANDARD PATH: Full intent analysis on reconstructed prompt
-        let analysis = analyzeUserIntent(processedQuery)
-        return buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion)
+        // ═══ PHASE 31.6: Use cached intent if available ═══
+        let analysis: (intent: String, keywords: [String], emotion: String)
+        if let cachedIntent = cachedClassifyIntent(pq) {
+            analysis = (intent: cachedIntent, keywords: cachedExtractTopics(processedQuery), emotion: detectEmotion(processedQuery))
+        } else {
+            analysis = analyzeUserIntent(processedQuery)
+            cacheIntent(pq, intent: analysis.intent)
+        }
+
+        // Wait for parallel KB pre-fetch to complete (max 100ms)
+        _ = prefetchGroup.wait(timeout: .now() + 0.1)
+
+        let result = buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion)
+        responseCache[q] = (response: result, timestamp: Date())
+        return result
     }
 
     func generateNaturalResponse(_ query: String) -> String {
@@ -29423,15 +29577,18 @@ class L104MainView: NSView {
         title.layer?.shadowOpacity = 0.5
         h.addSubview(title)
 
-        let badge = NSTextField(labelWithString: "🔥 22,000,012,731,125 PARAMETERS")
-        badge.frame = NSRect(x: 350, y: 32, width: 280, height: 24)
+        let badge = NSTextField(labelWithString: "🔥 22T PARAMS · QUANTUM VELOCITY")
+        badge.frame = NSRect(x: 350, y: 32, width: 290, height: 24)
         badge.font = NSFont.boldSystemFont(ofSize: 11)
         badge.textColor = NSColor(red: 1.0, green: 0.5, blue: 0.2, alpha: 1.0)
         badge.wantsLayer = true
-        badge.layer?.backgroundColor = NSColor(red: 1.0, green: 0.5, blue: 0.0, alpha: 0.2).cgColor
-        badge.layer?.cornerRadius = 6
-        badge.layer?.borderColor = NSColor(red: 1.0, green: 0.5, blue: 0.2, alpha: 0.4).cgColor
+        badge.layer?.backgroundColor = NSColor(red: 1.0, green: 0.5, blue: 0.0, alpha: 0.15).cgColor
+        badge.layer?.cornerRadius = 8
+        badge.layer?.borderColor = NSColor(red: 1.0, green: 0.5, blue: 0.2, alpha: 0.5).cgColor
         badge.layer?.borderWidth = 1
+        badge.layer?.shadowColor = NSColor(red: 1.0, green: 0.4, blue: 0.0, alpha: 1.0).cgColor
+        badge.layer?.shadowRadius = 6
+        badge.layer?.shadowOpacity = 0.3
         h.addSubview(badge)
 
         // Pulsing connection dot - shows LOCAL KB status (green = loaded)
@@ -29527,10 +29684,14 @@ class L104MainView: NSView {
 
         let scroll = NSScrollView(frame: NSRect(x: 10, y: 70, width: v.bounds.width - 20, height: v.bounds.height - 120))
         scroll.autoresizingMask = [.width, .height]; scroll.hasVerticalScroller = true
-        scroll.wantsLayer = true; scroll.layer?.cornerRadius = 12
-        scroll.layer?.borderColor = NSColor(red: 0.3, green: 0.5, blue: 0.9, alpha: 0.6).cgColor
-        scroll.layer?.borderWidth = 2
-        scroll.layer?.backgroundColor = NSColor(red: 0.05, green: 0.06, blue: 0.10, alpha: 1.0).cgColor
+        scroll.wantsLayer = true; scroll.layer?.cornerRadius = 14
+        scroll.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.35).cgColor
+        scroll.layer?.borderWidth = 1.5
+        scroll.layer?.backgroundColor = NSColor(red: 0.04, green: 0.04, blue: 0.08, alpha: 1.0).cgColor
+        scroll.layer?.shadowColor = L104Theme.gold.withAlphaComponent(0.15).cgColor
+        scroll.layer?.shadowRadius = 8
+        scroll.layer?.shadowOpacity = 0.3
+        scroll.layer?.shadowOffset = CGSize(width: 0, height: 0)
         scroll.identifier = NSUserInterfaceItemIdentifier("chatScroll")
 
         chatTextView = NSTextView(frame: scroll.bounds)
@@ -29573,22 +29734,23 @@ class L104MainView: NSView {
 
         let inputBox = NSView(frame: NSRect(x: 10, y: 10, width: v.bounds.width - 20, height: 50))
         inputBox.wantsLayer = true
-        // BRIGHT visible input box - dark blue-gray that stands out
-        inputBox.layer?.backgroundColor = NSColor(red: 0.12, green: 0.14, blue: 0.22, alpha: 1.0).cgColor
-        inputBox.layer?.cornerRadius = 12; inputBox.autoresizingMask = [.width]
-        inputBox.layer?.borderColor = NSColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 0.8).cgColor
-        inputBox.layer?.borderWidth = 2
-        inputBox.layer?.shadowColor = NSColor(red: 1.0, green: 0.7, blue: 0.0, alpha: 1.0).cgColor
-        inputBox.layer?.shadowRadius = 12
-        inputBox.layer?.shadowOpacity = 0.5
-        inputBox.layer?.shadowOffset = CGSize(width: 0, height: 0)
+        inputBox.layer?.backgroundColor = NSColor(red: 0.08, green: 0.09, blue: 0.16, alpha: 1.0).cgColor
+        inputBox.layer?.cornerRadius = 14; inputBox.autoresizingMask = [.width]
+        inputBox.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.7).cgColor
+        inputBox.layer?.borderWidth = 1.5
+        inputBox.layer?.shadowColor = L104Theme.gold.withAlphaComponent(0.4).cgColor
+        inputBox.layer?.shadowRadius = 16
+        inputBox.layer?.shadowOpacity = 0.6
+        inputBox.layer?.shadowOffset = CGSize(width: 0, height: -2)
         v.addSubview(inputBox)
 
         // Toolbar above input for save/history
         let toolbar = NSView(frame: NSRect(x: 10, y: v.bounds.height - 115, width: v.bounds.width - 20, height: 28))
         toolbar.wantsLayer = true
-        toolbar.layer?.backgroundColor = NSColor(red: 0.08, green: 0.09, blue: 0.14, alpha: 0.9).cgColor
-        toolbar.layer?.cornerRadius = 6
+        toolbar.layer?.backgroundColor = NSColor(red: 0.06, green: 0.07, blue: 0.12, alpha: 0.95).cgColor
+        toolbar.layer?.cornerRadius = 8
+        toolbar.layer?.borderColor = L104Theme.glassBorder.cgColor
+        toolbar.layer?.borderWidth = 0.5
         toolbar.autoresizingMask = [.width, .minYMargin]
         v.addSubview(toolbar)
 
@@ -29636,15 +29798,19 @@ class L104MainView: NSView {
         inputField.target = self; inputField.action = #selector(sendMessage)
         inputBox.addSubview(inputField)
 
-        let sendBtn = NSButton(frame: NSRect(x: inputBox.bounds.width - 110, y: 10, width: 100, height: 32))
+        let sendBtn = HoverButton(frame: NSRect(x: inputBox.bounds.width - 115, y: 8, width: 105, height: 34))
         sendBtn.title = "⚡ TRANSMIT"; sendBtn.bezelStyle = .rounded
         sendBtn.wantsLayer = true
-        sendBtn.layer?.backgroundColor = L104Theme.gold.withAlphaComponent(0.15).cgColor
-        sendBtn.layer?.cornerRadius = CGFloat(L104Theme.radiusSmall)
-        sendBtn.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.3).cgColor
-        sendBtn.layer?.borderWidth = 1
+        sendBtn.layer?.backgroundColor = L104Theme.gold.withAlphaComponent(0.18).cgColor
+        sendBtn.layer?.cornerRadius = CGFloat(L104Theme.radiusMedium)
+        sendBtn.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.5).cgColor
+        sendBtn.layer?.borderWidth = 1.5
+        sendBtn.layer?.shadowColor = L104Theme.gold.cgColor
+        sendBtn.layer?.shadowRadius = 8
+        sendBtn.layer?.shadowOpacity = 0.3
         sendBtn.contentTintColor = L104Theme.goldBright
         sendBtn.font = NSFont.boldSystemFont(ofSize: 11)
+        sendBtn.hoverColor = L104Theme.gold
         sendBtn.target = self; sendBtn.action = #selector(sendMessage)
         sendBtn.autoresizingMask = [.minXMargin]
         inputBox.addSubview(sendBtn)
@@ -30340,17 +30506,17 @@ class L104MainView: NSView {
             ("⚡ Ignite", #selector(doSynthesize), L104Theme.goldFlame),
             ("💾 Save", #selector(doSave), L104Theme.goldDim)
         ]
-        var x: CGFloat = 15
+        var x: CGFloat = 12
         for (title, action, color) in btns {
-            let b = btn(title, x: x, y: 10, w: 95, c: color)
-            b.target = self; b.action = action; bar.addSubview(b); x += 102
+            let b = btn(title, x: x, y: 10, w: 100, c: color)
+            b.target = self; b.action = action; bar.addSubview(b); x += 107
         }
 
         let chipInfo = MacOSSystemMonitor.shared.chipGeneration
         let ver = NSTextField(labelWithString: "⚡ v\(VERSION) · \(chipInfo) · 22T · \(EngineRegistry.shared.count) Engines")
-        ver.frame = NSRect(x: bounds.width - 380, y: 16, width: 370, height: 18)
+        ver.frame = NSRect(x: bounds.width - 420, y: 16, width: 410, height: 18)
         ver.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .semibold)
-        ver.textColor = NSColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 0.8)
+        ver.textColor = L104Theme.gold.withAlphaComponent(0.85)
         ver.alignment = .right; ver.autoresizingMask = [.minXMargin]
         bar.addSubview(ver)
 
@@ -30409,28 +30575,43 @@ class L104MainView: NSView {
     }
 
     func loadWelcome() {
-        // PHI-derived sacred colors for maximum visibility
         let gold = L104Theme.gold
         let cosmic = L104Theme.goldBright
         let fire = L104Theme.goldFlame
         let violet = L104Theme.goldWarm
         let emerald = L104Theme.goldBright
         let pink = L104Theme.goldWarm
+
+        // ═══ PHASE 31.6: Dynamically padded welcome banner ═══
+        let memCount = state.permanentMemory.memories.count
+        let kbCount = state.knowledgeBase.trainingData.count
+        let engCount = EngineRegistry.shared.count
+        let godStr = String(format: "%.10f", GOD_CODE)
+        let hbPairs = HyperBrain.shared.hebbianPairs.count
+        let cachedTopics = state.topicExtractionCache.count
+
+        func pad(_ s: String, to width: Int = 60) -> String {
+            let stripped = s
+            if stripped.count >= width { return String(stripped.prefix(width)) }
+            return stripped + String(repeating: " ", count: max(0, width - stripped.count))
+        }
+
         appendChat("", color: .clear)
-        appendChat("    ╔══════════════════════════════════════════════════════════════╗", color: gold)
-        appendChat("    ║                                                              ║", color: gold)
-        appendChat("    ║   ⚛️  L104 SOVEREIGN INTELLECT  v19.0                        ║", color: cosmic)
-        appendChat("    ║   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━                      ║", color: gold)
-        appendChat("    ║                                                              ║", color: gold)
-        appendChat("    ║   🔥 22 Trillion Parameters · ASI TRANSCENDENCE              ║", color: fire)
-        appendChat("    ║   💎 GOD_CODE: \(GOD_CODE)                        ║", color: violet)
-        appendChat("    ║   🧠 \(state.permanentMemory.memories.count) memories · \(state.knowledgeBase.trainingData.count) knowledge entries              ║", color: pink)
-        appendChat("    ║   🌌 Quantum Engines: \(EngineRegistry.shared.count) online                         ║", color: cosmic)
-        appendChat("    ║                                                              ║", color: gold)
-        appendChat("    ║   ✨ I think, reason, and create — ask me anything           ║", color: emerald)
-        appendChat("    ║   🎹 ⌘K Command Palette · ⌘D Dashboard · ⌘S Save           ║", color: L104Theme.textDim)
-        appendChat("    ║                                                              ║", color: gold)
-        appendChat("    ╚══════════════════════════════════════════════════════════════╝", color: gold)
+        appendChat("  ╔══════════════════════════════════════════════════════════════════╗", color: gold)
+        appendChat("  ║                                                                  ║", color: gold)
+        appendChat("  ║   \(pad("⚛️  L104 SOVEREIGN INTELLECT  v\(VERSION)", to: 62))║", color: cosmic)
+        appendChat("  ║   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    ║", color: gold)
+        appendChat("  ║                                                                  ║", color: gold)
+        appendChat("  ║   \(pad("🔥 22 Trillion Parameters · QUANTUM VELOCITY", to: 62))║", color: fire)
+        appendChat("  ║   \(pad("💎 GOD_CODE: \(godStr)", to: 62))║", color: violet)
+        appendChat("  ║   \(pad("🧠 \(memCount) memories · \(kbCount) knowledge entries", to: 62))║", color: pink)
+        appendChat("  ║   \(pad("🌌 \(engCount) Quantum Engines · \(hbPairs) Hebbian pairs", to: 62))║", color: cosmic)
+        appendChat("  ║   \(pad("⚡ Cache: \(cachedTopics) topics · 3-tier velocity pipeline", to: 62))║", color: L104Theme.goldFlame)
+        appendChat("  ║                                                                  ║", color: gold)
+        appendChat("  ║   \(pad("✨ I think, reason, and create — ask me anything", to: 62))║", color: emerald)
+        appendChat("  ║   \(pad("🎹 ⌘K Palette · ⌘D Dashboard · ⌘S Save · 'help'", to: 62))║", color: L104Theme.textDim)
+        appendChat("  ║                                                                  ║", color: gold)
+        appendChat("  ╚══════════════════════════════════════════════════════════════════╝", color: gold)
         appendChat("", color: .clear)
     }
 
@@ -30687,13 +30868,14 @@ class L104MainView: NSView {
     }
 
     func startTimer() {
+        // ═══ PHASE 31.6: Pre-allocate DateFormatters (avoid repeated alloc in timer) ═══
+        let clockFormatter = DateFormatter(); clockFormatter.dateFormat = "HH:mm:ss"
+        let dateFormatter = DateFormatter(); dateFormatter.dateFormat = "yyyy-MM-dd"
         let uiInterval: TimeInterval = MacOSSystemMonitor.shared.isAppleSilicon ? 0.5 : 2.0
         timer = Timer.scheduledTimer(withTimeInterval: uiInterval, repeats: true) { [weak self] _ in
             let now = Date()
-            let tf = DateFormatter(); tf.dateFormat = "HH:mm:ss"
-            self?.clockLabel?.stringValue = tf.string(from: now)
-            let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-            self?.dateLabel?.stringValue = df.string(from: now)
+            self?.clockLabel?.stringValue = clockFormatter.string(from: now)
+            self?.dateLabel?.stringValue = dateFormatter.string(from: now)
             let phase = now.timeIntervalSince1970.truncatingRemainder(dividingBy: PHI * 100) / 100
             self?.phaseLabel?.stringValue = "φ: \(String(format: "%.4f", phase))"
 
