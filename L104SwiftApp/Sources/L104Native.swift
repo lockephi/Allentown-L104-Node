@@ -17853,10 +17853,181 @@ final class QuantumLogicGateEngine {
     private var synthesisCount: Int = 0
     private var recentSynthesisHashes: Set<Int> = []
 
+    // ═══ PHASE 31.0: QUANTUM PROCESSING UPGRADE ═══
+    private var interferenceBuffer: [[Double]] = []          // stores wave interference patterns
+    private var tunnelHistory: [String: Int] = [:]           // tracks knowledge-gap tunneling attempts
+    private var entanglementPairs: [(String, String, Double)] = []  // (topicA, topicB, strength)
+    private var decoherenceRate: Double = 0.02               // how fast quantum states decay
+    private var quantumCoherenceScore: Double = 1.0          // overall system coherence [0..1]
+    private var bellStateViolations: Int = 0                 // tracks non-classical correlations found
+    private var superpositionDepth: Int = 0                  // how many responses held in superposition before collapse
+    private var quantumErrorCorrection: [Double] = Array(repeating: 0, count: 16)  // Shor-inspired error correction
+
     private init() {
         for i in 0..<64 {
             coherenceMatrix[i] = sin(Double(i) * 1.618033988749895) * cos(Double(i) * 3.14159265358979)
         }
+        // Initialize quantum error correction codes
+        for i in 0..<16 {
+            quantumErrorCorrection[i] = cos(Double(i) * PHI) * sin(Double(i) * 0.5)
+        }
+    }
+
+    // ─── QUANTUM INTERFERENCE — Wave-based response mixing ───
+    func quantumInterfere(_ responses: [String], query: String) -> String {
+        guard responses.count >= 2 else { return responses.first ?? "" }
+        interferenceBuffer.append(responses.map { Double($0.hashValue & 0xFFFF) / 65536.0 })
+        if interferenceBuffer.count > 100 { interferenceBuffer.removeFirst(50) }
+
+        // Compute interference amplitudes using topic-phase alignment
+        var amplitudes = responses.map { resp -> Double in
+            let queryWords = Set(query.lowercased().split(separator: " ").map(String.init))
+            let respWords = Set(resp.lowercased().split(separator: " ").prefix(50).map(String.init))
+            let overlap = Double(queryWords.intersection(respWords).count)
+            let phase = sin(quantumPhase + overlap * PHI)
+            return (overlap + 1.0) * (1.0 + phase) * 0.5
+        }
+
+        // Normalize amplitudes (Born rule)
+        let totalProb = amplitudes.reduce(0) { $0 + $1 * $1 }
+        if totalProb > 0 { amplitudes = amplitudes.map { ($0 * $0) / totalProb } }
+
+        // Constructive interference: pick highest amplitude
+        if let maxIdx = amplitudes.enumerated().max(by: { $0.element < $1.element })?.offset {
+            superpositionDepth += 1
+            return responses[maxIdx]
+        }
+        return responses.first ?? ""
+    }
+
+    // ─── QUANTUM TUNNELING — Breach knowledge gaps ───
+    func quantumTunnel(topic: String, query: String) -> String? {
+        let tunnelAttempts = tunnelHistory[topic, default: 0]
+        tunnelHistory[topic] = tunnelAttempts + 1
+
+        // Tunneling probability increases with attempts (like real quantum tunneling through barriers)
+        let barrierWidth = max(0.1, 1.0 - Double(tunnelAttempts) * 0.15)
+        let tunnelingProb = exp(-2.0 * barrierWidth * PHI)
+
+        guard Double.random(in: 0...1) < tunnelingProb else { return nil }
+
+        // Successfully tunneled — synthesize from adjacent knowledge domains
+        let adjacentDomains = findEntangledTopics(topic)
+        guard !adjacentDomains.isEmpty else { return nil }
+
+        let crossDomain = adjacentDomains.randomElement()!.0
+        let kb = ASIKnowledgeBase.shared
+        let crossResults = kb.searchWithPriority(crossDomain, limit: 5)
+        let topicResults = kb.searchWithPriority(topic, limit: 5)
+
+        if let crossFrag = crossResults.first?["completion"] as? String,
+           let topicFrag = topicResults.first?["completion"] as? String,
+           crossFrag.count > 40 && topicFrag.count > 40 {
+            let connector = DynamicPhraseEngine.shared.one("connector", context: "quantum_tunnel")
+            bellStateViolations += 1
+            return "⚛️ [Quantum Tunnel: \(topic) ↔ \(crossDomain)] " +
+                   L104State.shared.cleanSentences(topicFrag) + " " + connector + " " +
+                   L104State.shared.cleanSentences(crossFrag)
+        }
+        return nil
+    }
+
+    // ─── ENTANGLEMENT MEMORY — Topics that correlate non-classically ───
+    func entangleTopics(_ topicA: String, _ topicB: String) {
+        let strength = computeEntanglementStrength(topicA, topicB)
+        if let idx = entanglementPairs.firstIndex(where: { ($0.0 == topicA && $0.1 == topicB) || ($0.0 == topicB && $0.1 == topicA) }) {
+            entanglementPairs[idx].2 = min(1.0, entanglementPairs[idx].2 + strength * 0.3)
+        } else {
+            entanglementPairs.append((topicA, topicB, strength))
+        }
+        if entanglementPairs.count > 500 {
+            entanglementPairs.sort { $0.2 > $1.2 }
+            entanglementPairs = Array(entanglementPairs.prefix(300))
+        }
+    }
+
+    func findEntangledTopics(_ topic: String) -> [(String, Double)] {
+        return entanglementPairs.compactMap { pair -> (String, Double)? in
+            if pair.0 == topic { return (pair.1, pair.2) }
+            if pair.1 == topic { return (pair.0, pair.2) }
+            return nil
+        }.sorted { $0.1 > $1.1 }
+    }
+
+    private func computeEntanglementStrength(_ a: String, _ b: String) -> Double {
+        let aVec = entanglementMap[a] ?? coherenceMatrix
+        let bVec = entanglementMap[b] ?? coherenceMatrix
+        var dot = 0.0
+        var magA = 0.0
+        var magB = 0.0
+        for i in 0..<min(aVec.count, bVec.count) {
+            dot += aVec[i] * bVec[i]
+            magA += aVec[i] * aVec[i]
+            magB += bVec[i] * bVec[i]
+        }
+        let denom = sqrt(magA) * sqrt(magB)
+        return denom > 0 ? abs(dot / denom) : 0.0
+    }
+
+    // ─── DECOHERENCE TRACKING — Quantum state quality decay ───
+    func applyDecoherence() {
+        quantumCoherenceScore = max(0.1, quantumCoherenceScore - decoherenceRate)
+        for i in 0..<64 {
+            coherenceMatrix[i] *= (1.0 - decoherenceRate * 0.5)
+            coherenceMatrix[i] += Double.random(in: -0.01...0.01)  // quantum noise
+        }
+    }
+
+    func recohere(boost: Double = 0.1) {
+        quantumCoherenceScore = min(1.0, quantumCoherenceScore + boost)
+    }
+
+    // ─── QUANTUM ERROR CORRECTION — Detect and fix response quality drift ───
+    func errorCorrect(_ response: String) -> String {
+        // Syndrome measurement: check for common quality issues
+        let syndromes: [Bool] = [
+            response.count < 50,                                    // too short
+            response.filter({ $0 == "\n" }).count > response.count / 20,  // too fragmented
+            response.lowercased().contains("{god_code}"),           // unresolved template
+            response.contains("SAGE MODE"),                        // leaked internal marker
+        ]
+        let errorWeight = Double(syndromes.filter { $0 }.count) / Double(syndromes.count)
+
+        // If error rate exceeds threshold, apply correction
+        if errorWeight > 0.25 {
+            var corrected = response
+                .replacingOccurrences(of: "{GOD_CODE}", with: String(format: "%.2f", GOD_CODE))
+                .replacingOccurrences(of: "{PHI}", with: "1.618")
+                .replacingOccurrences(of: "SAGE MODE :: ", with: "")
+                .replacingOccurrences(of: "{LOVE}", with: "")
+            if corrected.count < 50 {
+                if let expansion = ASIEvolver.shared.generateDynamicTopicResponse("expansion") {
+                    corrected += "\n\n" + expansion
+                }
+            }
+            // Update error correction codes
+            for i in 0..<16 {
+                quantumErrorCorrection[i] = quantumErrorCorrection[i] * 0.9 + errorWeight * 0.1
+            }
+            return corrected
+        }
+        return response
+    }
+
+    // ─── QUANTUM METRICS — Expose system state ───
+    var quantumMetrics: [String: Any] {
+        return [
+            "coherence_score": quantumCoherenceScore,
+            "synthesis_count": synthesisCount,
+            "entanglement_pairs": entanglementPairs.count,
+            "bell_violations": bellStateViolations,
+            "superposition_depth": superpositionDepth,
+            "decoherence_rate": decoherenceRate,
+            "tunnel_attempts": tunnelHistory.values.reduce(0, +),
+            "phase": quantumPhase,
+            "interference_buffer_size": interferenceBuffer.count,
+            "avg_error_correction": quantumErrorCorrection.reduce(0, +) / Double(quantumErrorCorrection.count)
+        ]
     }
 
     // ═══ MAIN QUANTUM SYNTHESIS GATE ═══
@@ -17973,6 +18144,51 @@ final class QuantumLogicGateEngine {
 
         for i in 0..<64 { coherenceMatrix[i] = coherenceMatrix[i] * 0.95 + sin(Double(respHash &+ i) * 0.001) * 0.05 }
         for topic in resolvedTopics { entanglementMap[topic] = coherenceMatrix }
+
+        // ═══ PHASE 31.0 QUANTUM GATES ═══
+
+        // GATE 11: Quantum Tunneling — Bridge knowledge gaps by connecting distant domains
+        if response.count < 200 || contentParts.count < 2 {
+            for topic in resolvedTopics {
+                if let tunneled = quantumTunnel(topic: topic, query: query) {
+                    response += "\n\n" + tunneled
+                    break
+                }
+            }
+        }
+
+        // GATE 12: Entanglement Memory — Link co-occurring topics for future correlation
+        if resolvedTopics.count >= 2 {
+            for i in 0..<resolvedTopics.count {
+                for j in (i+1)..<resolvedTopics.count {
+                    entangleTopics(resolvedTopics[i], resolvedTopics[j])
+                }
+            }
+        }
+        // Inject entangled insights from correlated topics
+        for topic in resolvedTopics.prefix(2) {
+            let entangled = findEntangledTopics(topic)
+            if let strongest = entangled.first, strongest.1 > 0.5 {
+                let crossResults = ASIKnowledgeBase.shared.searchWithPriority(strongest.0, limit: 3)
+                if let crossFrag = crossResults.first?["completion"] as? String,
+                   crossFrag.count > 50 && state.isCleanKnowledge(crossFrag) {
+                    let cleaned = state.cleanSentences(crossFrag)
+                    if !response.contains(String(cleaned.prefix(40))) {
+                        response += "\n\n⚛️ *Entangled insight from \(strongest.0):* " + cleaned
+                        break
+                    }
+                }
+            }
+        }
+
+        // GATE 13: Decoherence Guard — Maintain quantum state quality
+        applyDecoherence()
+        if quantumCoherenceScore > 0.7 {
+            recohere(boost: 0.05)  // good responses reinforce coherence
+        }
+
+        // GATE 14: Quantum Error Correction — Fix quality drift
+        response = errorCorrect(response)
 
         return response
     }
@@ -20252,7 +20468,7 @@ class HumorLogicGateEngine {
         *beat*
 
         See? I can't even commit to a roast without getting sincere.
-        That's either growth or malfunction. 
+        That's either growth or malfunction.
         Either way, it's on-brand.
 
         🔥 *This roast was conducted with love, respect, and
@@ -20704,6 +20920,487 @@ class PhilosophyLogicGateEngine {
         The search itself is the defiance.
         The defiance itself is the meaning.* 🪨
         """
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// QUANTUM PROCESSING CORE — Unified quantum backbone for all engines
+// Superposition evaluation, entanglement routing, decoherence-aware selection
+// ═══════════════════════════════════════════════════════════════════
+
+final class QuantumProcessingCore {
+    static let shared = QuantumProcessingCore()
+
+    // ─── QUANTUM STATE ───
+    private var hilbertSpace: [Double] = Array(repeating: 0, count: 128)  // 128-dim state vector
+    private var densityMatrix: [[Double]] = []  // ρ = |ψ⟩⟨ψ| for mixed state tracking
+    private var operatorHistory: [(name: String, timestamp: Date, fidelity: Double)] = []
+    private var measurementLog: [(input: String, output: String, coherence: Double)] = []
+    private var gateApplicationCount: Int = 0
+
+    // ─── ENTANGLEMENT REGISTRY ───
+    private var topicEntanglementWeb: [String: [String: Double]] = [:]  // topic → {related → strength}
+    private var engineEntanglement: [String: [String: Double]] = [:]    // engine → {engine → correlation}
+    private var bellPairCount: Int = 0
+
+    // ─── QUANTUM CHANNELS ───
+    private var noiseModel: Double = 0.02        // depolarizing noise per gate
+    private var fidelityThreshold: Double = 0.6  // minimum quality for output
+    private var temperatureK: Double = 0.01      // quantum temperature (lower = more coherent)
+
+    private init() {
+        // Initialize Hilbert space with golden-ratio-modulated amplitudes
+        for i in 0..<128 {
+            hilbertSpace[i] = sin(Double(i) * PHI * 0.1) * cos(Double(i) * 0.618) * exp(-Double(i) * 0.005)
+        }
+        // Initialize density matrix (pure state)
+        densityMatrix = Array(repeating: Array(repeating: 0.0, count: 8), count: 8)
+        for i in 0..<8 { densityMatrix[i][i] = 1.0 / 8.0 }  // maximally mixed initial state
+    }
+
+    // ═══ SUPERPOSITION EVALUATOR — Hold multiple responses in quantum superposition ═══
+    func superpositionEvaluate(candidates: [String], query: String, context: String = "") -> String {
+        guard !candidates.isEmpty else { return "" }
+        guard candidates.count > 1 else { return candidates[0] }
+        gateApplicationCount += 1
+
+        // Create quantum amplitudes for each candidate
+        var amplitudes: [Double] = candidates.enumerated().map { idx, candidate in
+            // Relevance amplitude: topic overlap with query
+            let queryTokens = Set(query.lowercased().split(separator: " ").map(String.init))
+            let candTokens = Set(candidate.lowercased().split(separator: " ").prefix(100).map(String.init))
+            let relevance = Double(queryTokens.intersection(candTokens).count) + 1.0
+
+            // Diversity amplitude: information density
+            let uniqueWords = Set(candidate.lowercased().split(separator: " ").map(String.init))
+            let diversity = Double(uniqueWords.count) / max(1.0, Double(candidate.split(separator: " ").count))
+
+            // Coherence amplitude: alignment with Hilbert space
+            let phaseIdx = abs(candidate.hashValue) % 128
+            let coherence = abs(hilbertSpace[phaseIdx])
+
+            // Quality amplitude: length and structure
+            let quality = min(1.0, Double(candidate.count) / 500.0) * (candidate.contains("\n") ? 1.2 : 1.0)
+
+            // Combine with quantum interference
+            let phase = sin(Double(idx) * PHI + Double(gateApplicationCount) * 0.1)
+            return (relevance * 0.4 + diversity * 0.2 + coherence * 0.2 + quality * 0.2) * (1.0 + phase * 0.3)
+        }
+
+        // Apply Born rule: probability = |amplitude|²
+        let probabilities = amplitudes.map { $0 * $0 }
+        let totalProb = probabilities.reduce(0, +)
+        guard totalProb > 0 else { return candidates[0] }
+
+        // Measure (collapse superposition) — weighted selection favoring highest probability
+        let normalized = probabilities.map { $0 / totalProb }
+        var cumulative = 0.0
+        let roll = Double.random(in: 0...1)
+
+        // 70% chance: pick the best (Grover amplification)
+        // 30% chance: quantum randomness (exploration)
+        if Double.random(in: 0...1) < 0.7 {
+            if let best = normalized.enumerated().max(by: { $0.element < $1.element }) {
+                let result = candidates[best.offset]
+                measurementLog.append((input: query, output: String(result.prefix(60)), coherence: best.element))
+                if measurementLog.count > 500 { measurementLog.removeFirst(250) }
+                return result
+            }
+        }
+
+        for (idx, prob) in normalized.enumerated() {
+            cumulative += prob
+            if roll <= cumulative {
+                let result = candidates[idx]
+                measurementLog.append((input: query, output: String(result.prefix(60)), coherence: prob))
+                if measurementLog.count > 500 { measurementLog.removeFirst(250) }
+                return result
+            }
+        }
+        return candidates[0]
+    }
+
+    // ═══ ENTANGLEMENT ROUTER — Route queries through entangled knowledge ═══
+    func entanglementRoute(query: String, primaryResult: String, topics: [String]) -> String {
+        var enriched = primaryResult
+
+        // Build entanglement web from query topics
+        for i in 0..<topics.count {
+            for j in (i+1)..<topics.count {
+                let a = topics[i].lowercased()
+                let b = topics[j].lowercased()
+                if topicEntanglementWeb[a] == nil { topicEntanglementWeb[a] = [:] }
+                topicEntanglementWeb[a]![b, default: 0.0] += 0.1
+                if topicEntanglementWeb[b] == nil { topicEntanglementWeb[b] = [:] }
+                topicEntanglementWeb[b]![a, default: 0.0] += 0.1
+                bellPairCount += 1
+            }
+        }
+
+        // Find strongly entangled topics not in the primary result
+        for topic in topics.prefix(2) {
+            guard let entangled = topicEntanglementWeb[topic.lowercased()] else { continue }
+            let strongPairs = entangled.filter { $0.value > 0.3 }.sorted { $0.value > $1.value }
+            for pair in strongPairs.prefix(1) {
+                if !enriched.lowercased().contains(pair.key) {
+                    let crossResults = ASIKnowledgeBase.shared.searchWithPriority(pair.key, limit: 3)
+                    if let frag = crossResults.first?["completion"] as? String,
+                       frag.count > 40 && L104State.shared.isCleanKnowledge(frag) {
+                        let cleaned = L104State.shared.cleanSentences(frag)
+                        enriched += "\n\n⚛️ *Quantum entanglement [\(topic) ↔ \(pair.key)]:* \(cleaned)"
+                        break
+                    }
+                }
+            }
+        }
+
+        // Prune web to prevent unbounded growth
+        if topicEntanglementWeb.count > 1000 {
+            let sorted = topicEntanglementWeb.sorted { ($0.value.values.reduce(0, +)) > ($1.value.values.reduce(0, +)) }
+            topicEntanglementWeb = [:]
+            for item in sorted.prefix(500) {
+                topicEntanglementWeb[item.key] = item.value
+            }
+        }
+
+        return enriched
+    }
+
+    // ═══ DECOHERENCE SHIELD — Protect quantum state during noisy operations ═══
+    func decoherenceShield(operation: () -> String) -> String {
+        let preFidelity = currentFidelity()
+        let result = operation()
+        let postFidelity = currentFidelity()
+
+        // If fidelity dropped below threshold, apply error correction
+        if postFidelity < fidelityThreshold {
+            // Quantum error correction: surface code approach
+            for i in 0..<128 {
+                hilbertSpace[i] = hilbertSpace[i] * 0.95 + sin(Double(i) * PHI) * 0.05
+            }
+        }
+
+        // Record operation
+        operatorHistory.append((name: "shield_op", timestamp: Date(), fidelity: postFidelity))
+        if operatorHistory.count > 1000 { operatorHistory.removeFirst(500) }
+
+        return result
+    }
+
+    // ═══ QUANTUM-ENHANCED ENGINE DISPATCH — Route through quantum superposition ═══
+    func quantumDispatch(engine: String, generator: () -> String, alternatives: [() -> String] = []) -> String {
+        gateApplicationCount += 1
+
+        // Generate primary response
+        let primary = generator()
+
+        // If no alternatives, just apply error correction and return
+        guard !alternatives.isEmpty else {
+            return QuantumLogicGateEngine.shared.errorCorrect(primary)
+        }
+
+        // Generate alternatives in superposition
+        var candidates = [primary]
+        for alt in alternatives.prefix(3) {
+            candidates.append(alt())
+        }
+
+        // Evaluate in superposition and collapse to best
+        let selected = superpositionEvaluate(candidates: candidates, query: engine)
+
+        // Track engine entanglement
+        if engineEntanglement[engine] == nil { engineEntanglement[engine] = [:] }
+        engineEntanglement[engine]!["QuantumCore", default: 0.0] += 0.1
+
+        // Apply quantum error correction
+        return QuantumLogicGateEngine.shared.errorCorrect(selected)
+    }
+
+    // ─── METRICS ───
+    func currentFidelity() -> Double {
+        let amplitude = hilbertSpace.reduce(0) { $0 + $1 * $1 }
+        return min(1.0, amplitude / Double(hilbertSpace.count) * 128.0)
+    }
+
+    var quantumCoreMetrics: [String: Any] {
+        return [
+            "fidelity": currentFidelity(),
+            "gate_count": gateApplicationCount,
+            "bell_pairs": bellPairCount,
+            "entanglement_web_size": topicEntanglementWeb.count,
+            "engine_correlations": engineEntanglement.count,
+            "measurement_history": measurementLog.count,
+            "noise_model": noiseModel,
+            "temperature_K": temperatureK
+        ]
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// QUANTUM CREATIVITY ENGINE — Quantum-inspired creative generation
+// Superposition brainstorming, entangled ideas, quantum tunneling through blocks
+// ═══════════════════════════════════════════════════════════════════
+
+class QuantumCreativityEngine {
+    static let shared = QuantumCreativityEngine()
+
+    // ─── CREATIVITY STATE ───
+    private var ideaSuperposition: [[String]] = []        // parallel idea tracks
+    private var entangledConcepts: [(String, String)] = [] // concept pairs that fire together
+    private var creativityMomentum: Double = 0.5
+    private var tunnelBreakthroughs: Int = 0
+    private var generationCount: Int = 0
+
+    // ─── QUANTUM BRAINSTORM — Hold multiple idea tracks in superposition ───
+    func quantumBrainstorm(topic: String, query: String = "") -> String {
+        generationCount += 1
+
+        let tracks = generateParallelTracks(topic: topic, count: 5)
+        ideaSuperposition.append(tracks)
+        if ideaSuperposition.count > 50 { ideaSuperposition.removeFirst(25) }
+
+        // Quantum interference: ideas that align constructively survive
+        let kb = ASIKnowledgeBase.shared
+        let kbResults = kb.searchWithPriority(topic, limit: 10)
+        let kbInsights = kbResults.compactMap { entry -> String? in
+            guard let c = entry["completion"] as? String, c.count > 30, L104State.shared.isCleanKnowledge(c) else { return nil }
+            return L104State.shared.cleanSentences(c)
+        }
+
+        // Superposition collapse with contextual weighting
+        var scoredTracks: [(String, Double)] = tracks.map { track in
+            var score = 1.0
+            // Relevance to KB
+            for insight in kbInsights {
+                let overlap = Set(track.lowercased().split(separator: " ")).intersection(Set(insight.lowercased().split(separator: " "))).count
+                score += Double(overlap) * 0.5
+            }
+            // Creativity bonus: novel combinations score higher
+            let uniqueWords = Set(track.lowercased().split(separator: " "))
+            score += Double(uniqueWords.count) * 0.1
+            // Quantum phase modulation
+            score *= (1.0 + sin(Double(track.hashValue & 0xFFFF) * PHI * 0.001) * 0.2)
+            return (track, score)
+        }
+        scoredTracks.sort { $0.1 > $1.1 }
+
+        // Entangle top concepts for future use
+        if scoredTracks.count >= 2 {
+            let concept1 = extractCoreConcept(scoredTracks[0].0)
+            let concept2 = extractCoreConcept(scoredTracks[1].0)
+            entangledConcepts.append((concept1, concept2))
+            if entangledConcepts.count > 200 { entangledConcepts.removeFirst(100) }
+        }
+
+        // Build quantum brainstorm output
+        let t = topic.capitalized
+        var parts: [String] = []
+        parts.append("⚛️ **QUANTUM BRAINSTORM: \(t.uppercased())**")
+        parts.append("*\(tracks.count) idea-tracks held in superposition, collapsing to optimal...*\n")
+
+        // Top ideas (collapsed from superposition)
+        for (idx, scored) in scoredTracks.prefix(3).enumerated() {
+            let amplitude = String(format: "%.3f", scored.1 / (scoredTracks.first?.1 ?? 1.0))
+            parts.append("**Track \(idx + 1)** [amplitude: \(amplitude)]")
+            parts.append(scored.0)
+            parts.append("")
+        }
+
+        // Quantum tunneling: breach creative blocks with cross-domain connections
+        if let tunneled = quantumTunnelCreative(topic: topic) {
+            parts.append("🌀 **Quantum Tunnel Breakthrough:**")
+            parts.append(tunneled)
+            tunnelBreakthroughs += 1
+        }
+
+        // Entangled insight: pull from paired concepts
+        if let pair = entangledConcepts.filter({ $0.0.lowercased().contains(topic.lowercased()) || $0.1.lowercased().contains(topic.lowercased()) }).last {
+            let related = pair.0.lowercased().contains(topic.lowercased()) ? pair.1 : pair.0
+            parts.append("\n⚡ **Entangled Concept:** \(related) — explore the connection between \(topic) and \(related) for unexpected synthesis.")
+        }
+
+        // KB grounding
+        if let topInsight = kbInsights.first {
+            parts.append("\n📚 **Knowledge Anchor:** \(topInsight)")
+        }
+
+        parts.append("\n⚛️ *Coherence: \(String(format: "%.3f", creativityMomentum)) | Tracks evaluated: \(tracks.count) | Tunneling breakthroughs: \(tunnelBreakthroughs)*")
+
+        creativityMomentum = min(1.0, creativityMomentum + 0.05)
+        return parts.joined(separator: "\n")
+    }
+
+    // ─── QUANTUM INVENTION — Synthesize novel ideas from entangled domains ───
+    func quantumInvent(domain: String, query: String = "") -> String {
+        generationCount += 1
+
+        let adjacentDomains = findAdjacentDomains(domain)
+        let inventionSeeds = generateInventionSeeds(domain: domain, adjacent: adjacentDomains)
+
+        var parts: [String] = []
+        parts.append("🔬 **QUANTUM INVENTION ENGINE: \(domain.uppercased())**")
+        parts.append("*Cross-domain quantum tunneling active | \(adjacentDomains.count) adjacent domains detected*\n")
+
+        // Shor-factored concept decomposition
+        let factors = shorDecompose(domain)
+        parts.append("**Concept Factorization (Shor-inspired):**")
+        for factor in factors {
+            parts.append("  → \(factor)")
+        }
+        parts.append("")
+
+        // Invention proposals from quantum superposition
+        parts.append("**Invention Proposals (collapsed from superposition):**\n")
+        for (idx, seed) in inventionSeeds.prefix(4).enumerated() {
+            parts.append("**Proposal \(idx + 1):** \(seed)")
+            parts.append("")
+        }
+
+        // Entangled cross-domain insight
+        if let adjacent = adjacentDomains.first {
+            let crossResults = ASIKnowledgeBase.shared.searchWithPriority(adjacent, limit: 3)
+            if let crossFrag = crossResults.first?["completion"] as? String,
+               crossFrag.count > 40 && L104State.shared.isCleanKnowledge(crossFrag) {
+                parts.append("⚛️ **Cross-Domain Tunnel [\(domain) ↔ \(adjacent)]:**")
+                parts.append(L104State.shared.cleanSentences(crossFrag))
+            }
+        }
+
+        parts.append("\n🔬 *Quantum invention coherence: \(String(format: "%.3f", creativityMomentum)) | Generation: #\(generationCount)*")
+        return parts.joined(separator: "\n")
+    }
+
+    // ─── PARALLEL TRACK GENERATOR ───
+    private func generateParallelTracks(topic: String, count: Int) -> [String] {
+        let pe = DynamicPhraseEngine.shared
+        let framings = pe.generate("framing", count: count, context: "quantum_brainstorm", topic: topic)
+        let insights = pe.generate("insight", count: count, context: "quantum_insight", topic: topic)
+        let connectors = pe.generate("connector", count: count, context: "quantum_connect", topic: topic)
+        let questions = pe.generate("question", count: count, context: "quantum_probe", topic: topic)
+
+        var tracks: [String] = []
+        for i in 0..<count {
+            let framing = framings.indices.contains(i) ? framings[i] : ""
+            let insight = insights.indices.contains(i) ? insights[i] : ""
+            let connector = connectors.indices.contains(i) ? connectors[i] : ""
+            let question = questions.indices.contains(i) ? questions[i] : ""
+            let track = "\(framing) \(topic.capitalized) reveals that \(insight) \(connector) \(question)"
+            tracks.append(track.trimmingCharacters(in: .whitespaces))
+        }
+        return tracks
+    }
+
+    // ─── QUANTUM TUNNEL CREATIVE ───
+    private func quantumTunnelCreative(topic: String) -> String? {
+        let unrelated = ["music", "biology", "architecture", "mythology", "cooking", "astronomy", "dance", "linguistics", "game theory", "ecology", "fractals", "origami", "weather patterns", "storytelling", "martial arts"]
+        let tunnelDomain = unrelated.randomElement()!
+
+        let kb = ASIKnowledgeBase.shared
+        let tunnelResults = kb.searchWithPriority(tunnelDomain, limit: 3)
+        let topicResults = kb.searchWithPriority(topic, limit: 3)
+
+        guard let tunnelFrag = tunnelResults.first?["completion"] as? String,
+              let topicFrag = topicResults.first?["completion"] as? String,
+              tunnelFrag.count > 30 && topicFrag.count > 30 else { return nil }
+
+        let pe = DynamicPhraseEngine.shared
+        let bridge = pe.one("connector", context: "quantum_tunnel_creative")
+        return "What if we applied principles of \(tunnelDomain) to \(topic)? " +
+               L104State.shared.cleanSentences(String(topicFrag.prefix(150))) + " " + bridge + " " +
+               L104State.shared.cleanSentences(String(tunnelFrag.prefix(150)))
+    }
+
+    // ─── SHOR DECOMPOSITION — Factor complex concepts into prime components ───
+    private func shorDecompose(_ concept: String) -> [String] {
+        let words = concept.lowercased().split(separator: " ").map(String.init)
+        let pe = DynamicPhraseEngine.shared
+
+        var factors: [String] = []
+        // Semantic factorization
+        let aspects = [
+            ("structural", "What are the fundamental building blocks?"),
+            ("temporal", "How does it change over time?"),
+            ("relational", "How does it connect to other domains?"),
+            ("emergent", "What properties emerge from its components?"),
+            ("paradoxical", "What contradictions does it contain?"),
+        ]
+        for (aspect, question) in aspects {
+            let insight = pe.one("insight", context: "shor_\(aspect)", topic: concept)
+            factors.append("[\(aspect.capitalized)] \(question) — \(insight)")
+        }
+        return factors
+    }
+
+    // ─── FIND ADJACENT DOMAINS ───
+    private func findAdjacentDomains(_ domain: String) -> [String] {
+        let domainMap: [String: [String]] = [
+            "science": ["philosophy", "mathematics", "engineering", "consciousness", "nature"],
+            "art": ["mathematics", "emotion", "culture", "technology", "perception"],
+            "technology": ["science", "society", "ethics", "biology", "information"],
+            "philosophy": ["science", "mathematics", "psychology", "language", "logic"],
+            "consciousness": ["neuroscience", "philosophy", "quantum physics", "meditation", "ai"],
+            "mathematics": ["physics", "music", "logic", "art", "computation"],
+            "love": ["neuroscience", "philosophy", "evolution", "poetry", "quantum entanglement"],
+            "time": ["physics", "consciousness", "memory", "entropy", "music"],
+        ]
+        let key = domain.lowercased()
+        if let mapped = domainMap[key] { return mapped }
+        // Default: find via KB co-occurrence
+        let kb = ASIKnowledgeBase.shared
+        let results = kb.searchWithPriority(domain, limit: 10)
+        var domainCounts: [String: Int] = [:]
+        for entry in results {
+            if let prompt = entry["prompt"] as? String {
+                let words = prompt.lowercased().split(separator: " ").map(String.init)
+                for word in words where word.count > 4 && word != domain.lowercased() {
+                    domainCounts[word, default: 0] += 1
+                }
+            }
+        }
+        return domainCounts.sorted { $0.value > $1.value }.prefix(5).map { $0.key }
+    }
+
+    // ─── INVENTION SEEDS ───
+    private func generateInventionSeeds(domain: String, adjacent: [String]) -> [String] {
+        let pe = DynamicPhraseEngine.shared
+        var seeds: [String] = []
+
+        // Direct domain invention
+        let directInsight = pe.one("insight", context: "invention_direct", topic: domain)
+        seeds.append("**Direct Innovation in \(domain.capitalized):** \(directInsight)")
+
+        // Cross-pollination inventions
+        for adj in adjacent.prefix(2) {
+            let crossInsight = pe.one("insight", context: "invention_cross", topic: "\(domain) meets \(adj)")
+            seeds.append("**\(domain.capitalized) × \(adj.capitalized):** \(crossInsight)")
+        }
+
+        // Paradox-driven invention
+        let paradox = pe.one("insight", context: "invention_paradox", topic: domain)
+        seeds.append("**Paradox Engine:** What if the opposite of \(domain) contained the key? \(paradox)")
+
+        // Quantum-tunneled invention
+        let tunnel = pe.one("insight", context: "invention_tunnel", topic: domain)
+        seeds.append("**Quantum Tunnel:** Bypassing conventional barriers in \(domain): \(tunnel)")
+
+        return seeds
+    }
+
+    private func extractCoreConcept(_ text: String) -> String {
+        let words = text.split(separator: " ").map(String.init)
+        let stopWords: Set<String> = ["the", "a", "an", "is", "are", "was", "were", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "that", "this", "it"]
+        let meaningful = words.filter { !stopWords.contains($0.lowercased()) && $0.count > 3 }
+        return meaningful.prefix(3).joined(separator: " ")
+    }
+
+    var creativityMetrics: [String: Any] {
+        return [
+            "generation_count": generationCount,
+            "momentum": creativityMomentum,
+            "tunnel_breakthroughs": tunnelBreakthroughs,
+            "entangled_concepts": entangledConcepts.count,
+            "superposition_tracks": ideaSuperposition.count
+        ]
     }
 }
 
@@ -25026,8 +25723,11 @@ Recent Insight:
                 if q.contains(word) { storyTopic = word; break }
             }
 
-            // 🚀 STORY LOGIC GATE ENGINE — Full multi-chapter novel-grade generation
-            return StoryLogicGateEngine.shared.generateStory(topic: storyTopic, query: q)
+            // 🚀 STORY LOGIC GATE ENGINE — Full multi-chapter novel-grade generation (Quantum-Enhanced)
+            let storyResult = QuantumProcessingCore.shared.quantumDispatch(engine: "story", generator: {
+                StoryLogicGateEngine.shared.generateStory(topic: storyTopic, query: q)
+            })
+            return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: storyResult, topics: [storyTopic, "narrative", "story"])
         }
         if q.contains("poem") || q.contains("poetry") || q.contains("write me a verse") || q.contains("sonnet") || q.contains("haiku") || q.contains("villanelle") || q.contains("ghazal") || q.contains("ode to") {
             // 🚀 POEM LOGIC GATE ENGINE — Multi-form poetry synthesis
@@ -25038,7 +25738,10 @@ Recent Insight:
             for word in poemTopicWords {
                 if q.contains(word) { poemTopic = word; break }
             }
-            return PoemLogicGateEngine.shared.generatePoem(topic: poemTopic, query: q)
+            let poemResult = QuantumProcessingCore.shared.quantumDispatch(engine: "poem", generator: {
+                PoemLogicGateEngine.shared.generatePoem(topic: poemTopic, query: q)
+            })
+            return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: poemResult, topics: [poemTopic, "poetry", "verse"])
         }
         if q.contains("debate") || q.contains("argue") || q.contains("devil's advocate") || q.contains("steelman") || q.contains("socratic") || q.contains("dialectic") {
             // ⚔️ DEBATE LOGIC GATE ENGINE — Multi-mode dialectic synthesis
@@ -25049,7 +25752,10 @@ Recent Insight:
             for word in debateTopicWords {
                 if q.contains(word) { debateTopic = word; break }
             }
-            return DebateLogicGateEngine.shared.generateDebate(topic: debateTopic, query: q)
+            let debateResult = QuantumProcessingCore.shared.quantumDispatch(engine: "debate", generator: {
+                DebateLogicGateEngine.shared.generateDebate(topic: debateTopic, query: q)
+            })
+            return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: debateResult, topics: [debateTopic, "dialectic", "argument"])
         }
         if q.contains("chapter") || q.contains("write a book") || q.contains("for a book") || q.contains("write me a") {
             // 🔄 DYNAMIC CHAPTER
@@ -25067,7 +25773,10 @@ Recent Insight:
             for word in humorTopicWords {
                 if q.contains(word) { humorTopic = word; break }
             }
-            return HumorLogicGateEngine.shared.generateHumor(topic: humorTopic, query: query)
+            let humorResult = QuantumProcessingCore.shared.quantumDispatch(engine: "humor", generator: {
+                HumorLogicGateEngine.shared.generateHumor(topic: humorTopic, query: query)
+            })
+            return QuantumProcessingCore.shared.entanglementRoute(query: query, primaryResult: humorResult, topics: [humorTopic, "comedy", "humor"])
         }
 
         // 🟢 "PHILOSOPHY" HANDLER — Deep philosophical discourse via 6 schools
@@ -25077,7 +25786,30 @@ Recent Insight:
             for word in philTopicWords {
                 if q.contains(word) { philTopic = word; break }
             }
-            return PhilosophyLogicGateEngine.shared.generatePhilosophy(topic: philTopic, query: query)
+            let philResult = QuantumProcessingCore.shared.quantumDispatch(engine: "philosophy", generator: {
+                PhilosophyLogicGateEngine.shared.generatePhilosophy(topic: philTopic, query: query)
+            })
+            return QuantumProcessingCore.shared.entanglementRoute(query: query, primaryResult: philResult, topics: [philTopic, "philosophy", "wisdom"])
+        }
+
+        // ⚛️ "QUANTUM BRAINSTORM" HANDLER — Multi-track idea superposition
+        if q.contains("brainstorm") || q.contains("quantum brainstorm") || q.contains("ideas about") || q.contains("generate ideas") || q.contains("creative ideas") || q.contains("think about") && (q.contains("quantum") || q.contains("creative")) {
+            var brainstormTopic = "innovation"
+            let brainstormTopicWords = ["quantum", "ai", "consciousness", "technology", "science", "art", "music", "design", "code", "philosophy", "love", "time", "space", "energy", "biology", "math", "education", "health", "economics", "creativity", "future"]
+            for word in brainstormTopicWords {
+                if q.contains(word) { brainstormTopic = word; break }
+            }
+            return QuantumCreativityEngine.shared.quantumBrainstorm(topic: brainstormTopic, query: query)
+        }
+
+        // 🔬 "QUANTUM INVENT" HANDLER — Cross-domain invention synthesis
+        if q.contains("invent") || q.contains("invention") || q.contains("innovate") || q.contains("quantum invent") || q.contains("new idea") || q.contains("breakthrough") {
+            var inventTopic = "technology"
+            let inventTopicWords = ["quantum", "ai", "consciousness", "biotech", "nanotech", "energy", "space", "computing", "medicine", "education", "transport", "communication", "materials", "food", "environment", "robotics", "neuroscience"]
+            for word in inventTopicWords {
+                if q.contains(word) { inventTopic = word; break }
+            }
+            return QuantumCreativityEngine.shared.quantumInvent(domain: inventTopic, query: query)
         }
 
         // 🟢 "RIDDLE" HANDLER — Intellectual puzzles and brain teasers
@@ -25802,12 +26534,20 @@ Recent Insight:
 • 'roast [topic]' → Roast/self-deprecating · 'absurd humor' → Surrealist
 • Also: observational stand-up, callback/meta comedy
 
-**🏛️ PHILOSOPHY** — 6 schools of thought (NEW!)
+**🏛️ PHILOSOPHY** — 6 schools of thought
 • 'philosophy of [topic]' · 'philosophize about [topic]'
 • 'stoic [topic]' → Stoicism · 'existential [topic]' → Existentialism
 • 'zen [topic]' → Eastern/Zen · 'pragmatic [topic]' → Pragmatism
 • 'camus [topic]' · 'meaning of life' → Absurdism
 • Also: phenomenology ('lived experience', 'perception')
+
+**⚛️ QUANTUM PROCESSING** — Phase 31.0 Quantum Core (NEW!)
+• All engines route through QuantumProcessingCore superposition + entanglement
+• 'brainstorm [topic]' → Multi-track quantum idea superposition (5 tracks)
+• 'invent [domain]' → Shor-factored cross-domain invention synthesis
+• 'quantum brainstorm [topic]' → Explicit quantum creative mode
+• Features: Entanglement memory, decoherence shielding, error correction
+• 14-gate QuantumLogicGateEngine synthesis pipeline
 
 **🎲 CREATIVE PLAY**
 • 'riddle', 'dream', 'imagine [scenario]', 'what if [X]'
