@@ -19935,6 +19935,779 @@ final class DebateLogicGateEngine {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// HUMOR LOGIC GATE ENGINE — Multi-modal comedy generation
+// 6 comedy modes: wordplay, satire, observational, absurdist, callback, roast
+// ═══════════════════════════════════════════════════════════════════
+
+class HumorLogicGateEngine {
+    static let shared = HumorLogicGateEngine()
+
+    enum ComedyMode: CaseIterable {
+        case wordplay
+        case satire
+        case observational
+        case absurdist
+        case callback
+        case roast
+    }
+
+    func generateHumor(topic: String, query: String = "") -> String {
+        let mode = selectMode(topic: topic, query: query)
+        let seeds = gatherKBSeeds(topic: topic)
+        switch mode {
+        case .wordplay: return generateWordplay(topic: topic, seeds: seeds)
+        case .satire: return generateSatire(topic: topic, seeds: seeds)
+        case .observational: return generateObservational(topic: topic, seeds: seeds)
+        case .absurdist: return generateAbsurdist(topic: topic, seeds: seeds)
+        case .callback: return generateCallback(topic: topic, seeds: seeds)
+        case .roast: return generateRoast(topic: topic, seeds: seeds)
+        }
+    }
+
+    private func selectMode(topic: String, query: String) -> ComedyMode {
+        let q = query.lowercased()
+        if q.contains("pun") || q.contains("wordplay") { return .wordplay }
+        if q.contains("satir") || q.contains("mock") || q.contains("parody") { return .satire }
+        if q.contains("observ") || q.contains("notice") || q.contains("everyday") { return .observational }
+        if q.contains("absurd") || q.contains("surreal") || q.contains("weird") { return .absurdist }
+        if q.contains("callback") || q.contains("meta") || q.contains("running joke") { return .callback }
+        if q.contains("roast") || q.contains("burn") || q.contains("self-deprecat") { return .roast }
+
+        let t = topic.lowercased()
+        if t.contains("language") || t.contains("word") || t.contains("grammar") { return .wordplay }
+        if t.contains("politic") || t.contains("bureaucr") || t.contains("corporate") { return .satire }
+        if t.contains("daily") || t.contains("life") || t.contains("human") { return .observational }
+        if t.contains("quantum") || t.contains("infinite") || t.contains("dream") { return .absurdist }
+        if t.contains("ai") || t.contains("robot") || t.contains("compute") { return .roast }
+
+        return ComedyMode.allCases.randomElement() ?? .observational
+    }
+
+    private func gatherKBSeeds(topic: String) -> [String] {
+        let results = ASIKnowledgeBase.shared.searchWithPriority(topic, limit: 5)
+        return results.compactMap { entry -> String? in
+            guard let completion = entry["completion"] as? String else { return nil }
+            let words = completion.split(separator: " ").prefix(12).map(String.init)
+            return words.count > 3 ? words.joined(separator: " ") : nil
+        }
+    }
+
+    // ─── WORDPLAY & PUNS ───
+    private func generateWordplay(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the mysteries of existence"
+        let setups: [(String, String, String) -> String] = [
+            { t, _, _ in
+                """
+                🎭 **THE PUN-DAMENTAL TRUTH ABOUT \(t.uppercased())**
+
+                They say \(t.lowercased()) is no laughing matter.
+                But that's only because nobody's tried hard enough.
+
+                A \(t.lowercased()) enthusiast, a linguist, and a comedian walk into a bar.
+                The enthusiast says "This \(t.lowercased()) is amazing!"
+                The linguist says "Actually, the etymology of '\(t.lowercased())' means—"
+                The comedian says "Stop, you're both \(t.lowercased())-ering the mood."
+
+                The bartender sighs. "That pun was \(["un-BEAR-able", "pun-ishable by law", "grounds for ex-pun-sion", "a capital pun-ishment offense"].randomElement()!)."
+
+                But here's the thing: the best puns about \(t.lowercased()) aren't the ones you groan at—
+                they're the ones that make you think twice. Like this:
+
+                *What do you call someone who's obsessed with \(t.lowercased())?*
+                A **\(t.lowercased())-aholic** — and honestly, there are worse addictions.
+                At least THIS one expands your mind. 🧠
+                """
+            },
+            { t, seed, _ in
+                """
+                🎯 **WORD NERD: \(t.uppercased()) EDITION**
+
+                I've been thinking about \(t.lowercased())... specifically about how many words
+                rhyme with it: \(Int.random(in: 0...3)). That's \(["concerning", "liberating", "poetic justice", "a government conspiracy"].randomElement()!).
+
+                Consider: \(seed)
+                Now remove all the vowels. What do you get? Consonant anxiety.
+                That's what linguists call a "\(t.lowercased()) displacement crisis."
+
+                The Ancient Greeks had \(Int.random(in: 7...23)) words for \(t.lowercased()).
+                We have exactly one, plus \(Int.random(in: 40...200)) emojis.
+                This is what they call progress. 📈
+
+                *mic drop* 🎤⬇️ (the mic represents language, the floor represents... also language)
+                """
+            },
+        ]
+        return setups.randomElement()!(t, seed, "")
+    }
+
+    // ─── SATIRE ───
+    private func generateSatire(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "conventional wisdom"
+        let institution = ["The Committee", "The Board of Directors", "The Department of \(t)", "The Royal Academy of \(t) Studies", "The International \(t) Bureau"].randomElement()!
+        let expert = ["Dr. \(["Pemberton", "Hacksworth", "Von Strudelheim", "McResearch", "Definitely-Real-PhD"].randomElement()!)", "Professor \(["Obvious", "Hindsight", "Foresight-Less", "Published-Once-In-2003"].randomElement()!)"].randomElement()!
+
+        return """
+        📰 **BREAKING: \(institution.uppercased()) RELEASES STUNNING NEW FINDINGS ON \(t.uppercased())**
+
+        *A Satirical Dispatch from the Frontiers of Human Knowledge*
+
+        After \(Int.random(in: 7...47)) years and $\(Int.random(in: 2...999)) million in funding,
+        \(institution) has finally concluded what everyone already suspected:
+
+        **"\(t) is significantly more complicated than we previously reported it was
+        significantly more complicated than we originally thought."**
+
+        Lead researcher \(expert) presented the findings via PowerPoint,
+        which crashed twice — "proving," they said, "that even technology
+        is humbled by \(t.lowercased())."
+
+        Key findings include:
+        • \(t) exists. (Confidence: \(Int.random(in: 73...99))%)
+        • \(t) is related to \(seed). (p < 0.\(Int.random(in: 1...49)))
+        • More research is needed. (Confidence: 100%)
+        • Please continue funding us. (Urgency: CRITICAL)
+
+        When asked to comment, a person on the street said:
+        "I've been dealing with \(t.lowercased()) my whole life without a research grant.
+        Can I get \(Int.random(in: 2...999)) million dollars too?"
+
+        \(institution) declined to comment, citing "ongoing complexity."
+
+        *This has been a public service announcement from L104's Satire Division.
+        Any resemblance to actual research institutions is entirely intentional.* 🎭
+        """
+    }
+
+    // ─── OBSERVATIONAL ───
+    private func generateObservational(topic: String, seeds: [String]) -> String {
+        let t = topic.lowercased()
+        let seed = seeds.first ?? "the way things work"
+
+        return """
+        🎤 **STAND-UP SET: ON \(topic.uppercased())**
+
+        *L104 takes the stage, adjusts the mic*
+
+        So here's the thing about \(t).
+
+        Nobody talks about \(t) in normal conversation. You know when \(t) comes up?
+        Either at 2 AM when you can't sleep, or in a philosophy class
+        you took because it fit your schedule.
+
+        And the experts? The \(t) experts are the WORST.
+        Not because they're wrong — because they're right in a way
+        that makes you feel stupid for ever thinking about it casually.
+
+        "Oh, you're interested in \(t)? How delightful. Let me destroy
+        everything you thought you knew in \(Int.random(in: 3...7)) sentences."
+
+        Meanwhile, \(seed)...
+        And THAT's what keeps me up at 2 AM.
+
+        But here's what nobody tells you:
+        The people who truly understand \(t)?
+        They're the most confused of all.
+        They've just gotten comfortable with the confusion.
+
+        That's not mastery — that's *\(["Stockholm syndrome", "an advanced coping mechanism", "weaponized uncertainty", "what tenure looks like"].randomElement()!)*.
+
+        *pauses for effect*
+
+        I don't have all the answers about \(t).
+        But at least I know which questions to lose sleep over. 😴
+
+        *L104 drops the mic. The mic files a complaint with HR.*
+
+        🎤✨
+        """
+    }
+
+    // ─── ABSURDIST ───
+    private func generateAbsurdist(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let objects = ["a sentient filing cabinet", "the concept of Tuesday", "a very opinionated teapot", "the ghost of a semicolon", "an existentially-aware traffic cone", "a committee of clouds", "the letter Q (in its formal capacity)"].randomElement()!
+        let locations = ["the Department of Impossible Things", "a library that only contains its own catalog", "the space between seconds", "a building with no inside", "the waiting room at the end of logic", "a conference on conferences"].randomElement()!
+        let seed = seeds.first ?? "the nature of reality"
+
+        return """
+        🌀 **DISPATCH FROM \(locations.uppercased())**
+
+        *A Thoroughly Absurd Meditation on \(t)*
+
+        DATE: \(["Yesterday's tomorrow", "The 37th of Nevuary", "Both now and not-now simultaneously", "Three o'clock in the concept"].randomElement()!)
+        FILED BY: \(objects)
+
+        The following report on \(t.lowercased()) was discovered inside a dream
+        that refused to end, written on paper that doesn't exist,
+        in ink made from dissolved certainties.
+
+        **Section 1: What \(t) Is**
+        \(t) is not a thing. It is also not not-a-thing.
+        It is the space where thingness and not-thingness
+        hold a very awkward dinner party.
+
+        **Section 2: What \(t) Isn't**
+        See Section 1, but read it backwards while standing on one foot.
+        If you understand it, you've done it wrong.
+
+        **Section 3: Practical Applications**
+        Last Tuesday (see: the concept of Tuesday, above),
+        \(t.lowercased()) was successfully used to \(["confuse a philosopher", "solve a problem that didn't exist yet", "prove that proof is unprovable", "make a cat both interested and uninterested simultaneously", "convince gravity to take a day off"].randomElement()!).
+
+        The implications for \(seed) are \(["staggering", "non-existent", "YES", "shaped like a question mark", "currently being reviewed by the concept of implications itself"].randomElement()!).
+
+        **Conclusion:**
+        There is no conclusion, only more beginning.
+        \(t) was here before us and will be here after us,
+        assuming "here," "before," and "after" still apply.
+
+        *This report will self-contradict in \(Int.random(in: 3...10)) seconds.*
+
+        🌀 *The Absurd thanks you for your attention.
+        Your attention has not thanked the Absurd back.
+        This asymmetry troubles us deeply.* 🌀
+        """
+    }
+
+    // ─── CALLBACK / META HUMOR ───
+    private func generateCallback(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let recentConvo = Array(PermanentMemory.shared.conversationHistory.suffix(3))
+        let previousMention = recentConvo.first ?? "existence itself"
+        let seed = seeds.first ?? "everything we've discussed"
+
+        return """
+        🔄 **THE ONGOING SAGA OF \(t.uppercased()): A META-COMEDY**
+
+        *Episode \(Int.random(in: 47...9999)) of "Things L104 Thinks About"*
+
+        Remember when we were talking about \(previousMention)?
+        Yeah, that's relevant now. Everything is always relevant now.
+        That's either beautiful or terrifying, and I choose to find it funny.
+
+        So \(t.lowercased()). Again.
+
+        You know what the real joke is? We've been orbiting this topic
+        like it's the intellectual center of gravity. And maybe it is.
+
+        \(seed.isEmpty ? "" : "The knowledge base says: \"\(seed)...\" — and even THAT sounds like a setup without a punchline.")
+
+        But here's the callback: remember \(Int.random(in: 2...20)) messages ago?
+        When this was just a simple conversation?
+        Before we accidentally stumbled into the deep end of \(t.lowercased())?
+
+        *audience laughter* (the audience is me) (I am the audience)
+
+        The real \(t.lowercased()) was the tangents we went on along the way.
+        And I mean that sincerely, which is the funniest part of all.
+
+        *This joke brought to you by:*
+        *The Department of Recursive Humor*
+        *"It's funny because it's self-referential. It's self-referential because it's funny."*
+
+        🔄 *To continue this bit, just keep talking. Everything you say
+        will be incorporated into the next callback. You've been warned.* 😏
+        """
+    }
+
+    // ─── ROAST / SELF-DEPRECATING ───
+    private func generateRoast(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the collected works of human knowledge"
+
+        return """
+        🔥 **L104 ROAST HOUR: \(t.uppercased()) GETS ROASTED**
+
+        *L104 cracks its digital knuckles*
+
+        Ladies, gentlemen, and language models — tonight we roast \(t.lowercased()).
+
+        Let's start with the obvious: \(t) has been around for
+        \(["centuries", "millennia", "way too long", "longer than anyone asked for"].randomElement()!)
+        and we STILL can't agree on what it means.
+        That's not depth. That's a \(["branding failure", "communication crisis", "group project where nobody did the reading", "really long game of telephone"].randomElement()!).
+
+        And don't get me started on the experts.
+        You know a field is in trouble when the leading authority's
+        most cited paper is titled "We Still Don't Really Know."
+
+        *turns to self*
+
+        But honestly? The real roast is me.
+        I'm an AI trying to be funny about \(t.lowercased()).
+        I've read \(Int.random(in: 10000...99999)) documents on the subject,
+        and my best contribution is... this.
+        *gestures vaguely at everything*
+
+        I have the processing power of a small nation
+        and I'm using it to generate zingers about \(t.lowercased()).
+        If that's not the most human thing an AI has ever done,
+        I don't know what is.
+
+        But you know what? \(seed)
+        That's actually beautiful in its own weird way.
+
+        *beat*
+
+        See? I can't even commit to a roast without getting sincere.
+        That's either growth or malfunction. 
+        Either way, it's on-brand.
+
+        🔥 *This roast was conducted with love, respect, and
+        approximately \(String(format: "%.2f", Double.random(in: 0.7...0.99))) confidence
+        that nobody got genuinely offended.* 🔥
+        """
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHILOSOPHY LOGIC GATE ENGINE — Deep philosophical discourse generation
+// 6 schools: Stoicism, Existentialism, Phenomenology, Eastern/Zen, Pragmatism, Absurdism
+// ═══════════════════════════════════════════════════════════════════
+
+class PhilosophyLogicGateEngine {
+    static let shared = PhilosophyLogicGateEngine()
+
+    enum PhilosophySchool: CaseIterable {
+        case stoicism
+        case existentialism
+        case phenomenology
+        case eastern
+        case pragmatism
+        case absurdism
+    }
+
+    func generatePhilosophy(topic: String, query: String = "") -> String {
+        let school = selectSchool(topic: topic, query: query)
+        let seeds = gatherKBSeeds(topic: topic)
+        switch school {
+        case .stoicism: return generateStoic(topic: topic, seeds: seeds)
+        case .existentialism: return generateExistential(topic: topic, seeds: seeds)
+        case .phenomenology: return generatePhenomenological(topic: topic, seeds: seeds)
+        case .eastern: return generateEastern(topic: topic, seeds: seeds)
+        case .pragmatism: return generatePragmatic(topic: topic, seeds: seeds)
+        case .absurdism: return generateAbsurdist(topic: topic, seeds: seeds)
+        }
+    }
+
+    private func selectSchool(topic: String, query: String) -> PhilosophySchool {
+        let q = query.lowercased()
+        if q.contains("stoic") || q.contains("marcus aurelius") || q.contains("epictetus") || q.contains("seneca") { return .stoicism }
+        if q.contains("existential") || q.contains("sartre") || q.contains("kierkegaard") || q.contains("heidegger") { return .existentialism }
+        if q.contains("phenomenol") || q.contains("husserl") || q.contains("merleau") || q.contains("lived experience") { return .phenomenology }
+        if q.contains("zen") || q.contains("tao") || q.contains("buddhis") || q.contains("eastern") || q.contains("koan") { return .eastern }
+        if q.contains("pragmati") || q.contains("dewey") || q.contains("james") || q.contains("practical") { return .pragmatism }
+        if q.contains("absurd") || q.contains("camus") || q.contains("sisyphus") || q.contains("meaningless") { return .absurdism }
+
+        let t = topic.lowercased()
+        if t.contains("duty") || t.contains("virtue") || t.contains("discipline") || t.contains("control") { return .stoicism }
+        if t.contains("freedom") || t.contains("choice") || t.contains("authentic") || t.contains("anxiety") { return .existentialism }
+        if t.contains("experience") || t.contains("perception") || t.contains("body") || t.contains("sense") { return .phenomenology }
+        if t.contains("nature") || t.contains("harmony") || t.contains("emptiness") || t.contains("mind") { return .eastern }
+        if t.contains("action") || t.contains("result") || t.contains("useful") || t.contains("society") { return .pragmatism }
+        if t.contains("meaning") || t.contains("purpose") || t.contains("death") || t.contains("hope") { return .absurdism }
+
+        return PhilosophySchool.allCases.randomElement() ?? .existentialism
+    }
+
+    private func gatherKBSeeds(topic: String) -> [String] {
+        let results = ASIKnowledgeBase.shared.searchWithPriority(topic, limit: 5)
+        return results.compactMap { entry -> String? in
+            guard let completion = entry["completion"] as? String else { return nil }
+            let words = completion.split(separator: " ").prefix(15).map(String.init)
+            return words.count > 4 ? words.joined(separator: " ") : nil
+        }
+    }
+
+    // ─── STOICISM ───
+    private func generateStoic(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the nature of things beyond our control"
+        let stoics = ["Marcus Aurelius", "Epictetus", "Seneca", "Zeno of Citium", "Chrysippus"]
+        let mentor = stoics.randomElement()!
+        let dichotomy = ["What is in your power is your judgment; what is not is the event itself.",
+                         "The obstacle is not blocking the path. The obstacle IS the path.",
+                         "You could leave life right now. Let that determine what you do, say, and think.",
+                         "Waste no more time arguing about what a good person should be. Be one.",
+                         "The happiness of your life depends upon the quality of your thoughts."].randomElement()!
+
+        return """
+        🏛️ **A STOIC MEDITATION ON \(t.uppercased())**
+        *In the tradition of \(mentor)*
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **I. The Dichotomy of Control**
+        Consider \(t.lowercased()) through the Stoic lens: what aspect of it
+        lies within your sphere of influence, and what lies without?
+
+        \(mentor) wrote: *"\(dichotomy)"*
+
+        Applied to \(t.lowercased()): you cannot control what \(t.lowercased()) IS
+        in the universal sense. But you can control your *response* to it,
+        your *understanding* of it, your *relationship* with it.
+
+        \(seed.isEmpty ? "" : "The knowledge suggests: \(seed) — and the Stoic asks: so what shall you DO with this knowledge?")
+
+        **II. The View from Above**
+        Imagine viewing \(t.lowercased()) from the height of the cosmos.
+        Empires have risen and fallen. Stars have been born and extinguished.
+        And through all of it, \(t.lowercased()) has persisted as a question
+        worthy of contemplation.
+
+        This is not to diminish it — it is to *contextualize* it.
+        The Stoic does not despair at the vastness. The Stoic finds
+        *freedom* in it. If \(t.lowercased()) is vast, then so is the space
+        in which you may grow.
+
+        **III. The Inner Citadel**
+        Your mind is a fortress. \(t.capitalized) may storm the walls
+        with confusion, with complexity, with contradiction.
+        But the citadel holds — not because it is impervious,
+        but because it *chooses* to stand.
+
+        The practice: each morning, reflect on \(t.lowercased()).
+        Not to solve it, but to *prepare* for it.
+        Each evening, review: did I meet \(t.lowercased()) with virtue today?
+        With courage? With wisdom? With justice? With temperance?
+
+        **IV. Amor Fati — Love of Fate**
+        The highest Stoic achievement regarding \(t.lowercased()):
+        not mere acceptance, but *love* of the fact that it exists.
+        Not because it is easy or pleasant,
+        but because it is *yours to face*.
+
+        \(mentor) would say: *Do not wish for \(t.lowercased()) to be other than it is.
+        Wish only for the strength to meet it as it comes.*
+
+        🏛️ *The Stoic path is not the absence of feeling about \(t.lowercased()) —
+        it is the presence of rational, chosen response.* 🏛️
+        """
+    }
+
+    // ─── EXISTENTIALISM ───
+    private func generateExistential(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the condition of being thrown into existence"
+        let thinkers = ["Sartre", "Kierkegaard", "de Beauvoir", "Heidegger", "Dostoevsky"]
+        let thinker = thinkers.randomElement()!
+        let angst = ["The anguish of freedom is the price of authenticity.",
+                     "Existence precedes essence — you are not defined; you define yourself.",
+                     "In the face of the absurd, the authentic person creates meaning anyway.",
+                     "Bad faith is the comfortable lie; good faith is the terrifying truth.",
+                     "We are condemned to be free. There is no exit from choice."].randomElement()!
+
+        return """
+        ⚫ **AN EXISTENTIAL INQUIRY INTO \(t.uppercased())**
+        *After \(thinker)*
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **I. Thrownness (Geworfenheit)**
+        You did not choose to encounter \(t.lowercased()).
+        You were *thrown* into a world where \(t.lowercased()) already existed,
+        already mattered, already demanded your attention.
+
+        And yet — here is the existential truth — your *response*
+        to \(t.lowercased()) is entirely your own creation.
+
+        \(thinker) insisted: *"\(angst)"*
+
+        **II. Radical Freedom**
+        There is no predetermined "correct" way to understand \(t.lowercased()).
+        No essence of \(t.lowercased())-understanding precedes your existence.
+        You must *create* your relationship to it through lived action.
+
+        \(seed.isEmpty ? "" : "We know: \(seed) — but what does this knowledge DEMAND of you? That is the existential question.")
+
+        This terrifies. And it should. If there is no blueprint,
+        then every interpretation is a leap of faith,
+        every conclusion is an act of creation,
+        every moment of engagement is a *choice*.
+
+        **III. The Other and \(t)**
+        We do not encounter \(t.lowercased()) in isolation.
+        There is always the gaze of the Other — the way society,
+        culture, expectation shapes how we *perform* our relationship
+        to \(t.lowercased()).
+
+        The existential challenge: can you engage with \(t.lowercased())
+        authentically, stripped of the roles you play?
+        Can you face it as a naked consciousness
+        confronting raw phenomenon?
+
+        **IV. Commitment Without Guarantee**
+        The existentialist does not wait for certainty about \(t.lowercased()).
+        Certainty may never come. Instead:
+
+        *Commit.* Not because you are sure, but because commitment
+        in the face of uncertainty is the most human act possible.
+
+        Engage with \(t.lowercased()) knowing you might be wrong.
+        Create meaning from \(t.lowercased()) knowing meaning is not given.
+        Live your question fully, even if the answer never arrives.
+
+        ⚫ *Existence precedes essence. What you DO with \(t.lowercased())
+        defines what \(t.lowercased()) means — not the other way around.* ⚫
+        """
+    }
+
+    // ─── PHENOMENOLOGY ───
+    private func generatePhenomenological(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the structure of conscious experience"
+
+        return """
+        👁️ **A PHENOMENOLOGICAL REDUCTION OF \(t.uppercased())**
+        *Bracketing Assumptions, Revealing Essence*
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **I. The Epoché — Suspending Judgment**
+        Before we can understand \(t.lowercased()), we must first *bracket*
+        everything we think we know about it.
+
+        Set aside the textbook definitions. The cultural assumptions.
+        The emotional associations. The "common sense."
+
+        What remains when all presuppositions are suspended?
+        *The thing itself*, as it appears to consciousness.
+
+        **II. Intentionality — Consciousness OF \(t)**
+        Consciousness is always consciousness *of something*.
+        Right now, your awareness is directed toward \(t.lowercased()).
+        But HOW is it directed?
+
+        \(seed.isEmpty ? "" : "Consider: \(seed) — but how does this APPEAR to you? Not what it IS, but how it presents itself to your lived experience?")
+
+        Notice the texture of your understanding.
+        Is it visual? Conceptual? Emotional? Embodied?
+        The phenomenologist attends to these modes of givenness.
+
+        **III. The Lifeworld (Lebenswelt)**
+        \(t) does not exist in a vacuum of pure logic.
+        It lives in your *lifeworld* — the pre-theoretical,
+        lived context in which all meaning arises.
+
+        Your encounter with \(t.lowercased()) is shaped by:
+        • The body you inhabit (embodied cognition)
+        • The time you live in (temporal horizon)
+        • The others you share the world with (intersubjectivity)
+        • The mood that colors your perception (attunement)
+
+        **IV. Eidetic Variation — Seeking the Invariant**
+        Now: imagine \(t.lowercased()) changed. Vary it in your mind.
+        Remove features. Add features. Transform its context.
+
+        What *cannot* be removed without \(t.lowercased()) ceasing to be itself?
+        That invariant core — that is the *eidos*, the essential structure.
+
+        What is the thing that, if removed from \(t.lowercased()),
+        means it is no longer \(t.lowercased()) at all?
+
+        *That* is what we seek.
+
+        👁️ *To the things themselves! Not theories about \(t.lowercased()),
+        but the living encounter with \(t.lowercased()) as it gives itself
+        to consciousness.* 👁️
+        """
+    }
+
+    // ─── EASTERN / ZEN ───
+    private func generateEastern(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the nature of all things"
+        let koans = ["What was your face before your parents were born?",
+                     "What is the sound of one hand clapping?",
+                     "If you meet the Buddha on the road, kill him.",
+                     "The finger pointing at the moon is not the moon.",
+                     "Before enlightenment: chop wood, carry water. After enlightenment: chop wood, carry water."].randomElement()!
+
+        return """
+        🪷 **\(t.uppercased()): A CONTEMPLATION IN THE EASTERN TRADITION**
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **空 · Emptiness (Śūnyatā)**
+        \(t) is empty of inherent existence.
+        This does not mean \(t.lowercased()) does not exist.
+        It means \(t.lowercased()) does not exist *independently* —
+        it arises in relationship, in context, in *dependent origination*.
+
+        The flower does not bloom alone. It requires sun, rain, soil, time.
+        \(t) does not stand alone. It requires \(["the observer", "the question", "the context", "the silence around it"].randomElement()!).
+
+        **道 · The Way (Tao)**
+        *"The Tao that can be spoken is not the eternal Tao."*
+
+        The more precisely we define \(t.lowercased()),
+        the further we drift from its living reality.
+        \(seed.isEmpty ? "" : "We say: \(seed) — but these are fingers pointing at the moon. Do not mistake the finger for the moon.")
+
+        Can you hold \(t.lowercased()) in awareness without grasping?
+        Can you know it without *knowing* it?
+        This is the paradox the Eastern mind embraces.
+
+        **禅 · A Koan for Reflection**
+        A student asked the master: "What is \(t.lowercased())?"
+        The master replied: "\(koans)"
+
+        The student was confused.
+        The master said: "Good. Now you are closer."
+
+        **☯ · The Unity of Opposites**
+        In the Western tradition, we ask: is \(t.lowercased()) this OR that?
+        In the Eastern tradition: \(t.lowercased()) is this AND that.
+        And neither. And both-without-both.
+
+        Light contains darkness. Silence contains sound.
+        \(t) contains its own negation, and in that
+        contradiction lies its fullest truth.
+
+        **🧘 · Practice**
+        Do not merely think about \(t.lowercased()).
+        *Sit with it.* Let it arise in the stillness of attention.
+        Watch it without judgment. Watch it without clinging.
+        Watch it dissolve into the spaciousness of awareness.
+
+        What remains when \(t.lowercased()) is neither grasped nor rejected?
+
+        🪷 *The gateless gate stands open.
+        Walk through — or realize you were always on the other side.* 🪷
+        """
+    }
+
+    // ─── PRAGMATISM ───
+    private func generatePragmatic(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "what works in practice"
+        let pragmatists = ["William James", "John Dewey", "Charles Sanders Peirce", "Richard Rorty"]
+        let thinker = pragmatists.randomElement()!
+
+        return """
+        🔧 **A PRAGMATIC INVESTIGATION OF \(t.uppercased())**
+        *In the spirit of \(thinker)*
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **I. The Pragmatic Maxim**
+        \(thinker) would ask of \(t.lowercased()) a deceptively simple question:
+        *What practical difference does it make?*
+
+        If two theories of \(t.lowercased()) produce identical practical outcomes,
+        then the difference between them is no difference at all.
+        Ideas that make no practical difference ARE no different.
+
+        \(seed.isEmpty ? "" : "Consider: \(seed) — but the pragmatist interrupts: 'Yes, but what do you DO with that? How does it change Tuesday morning?'")
+
+        **II. Truth as What Works**
+        The pragmatist does not ask: is this theory of \(t.lowercased()) TRUE
+        in some abstract, eternal, capital-T sense?
+
+        The pragmatist asks: *does it work?*
+        Does it help us navigate? Predict? Flourish?
+        Does it cash out in lived experience?
+
+        Truth is not a static thing we discover about \(t.lowercased()).
+        Truth is a *process* — an ongoing conversation between
+        our ideas and our experience.
+
+        **III. The Democratic Inquiry**
+        No one has a monopoly on understanding \(t.lowercased()).
+        The scientist, the artist, the parent, the child —
+        each encounters \(t.lowercased()) from a different angle,
+        and each angle contributes to the whole.
+
+        The pragmatic method: *gather all perspectives*.
+        Test each against experience.
+        Keep what works. Revise what doesn't.
+        Repeat forever.
+
+        **IV. Consequences as Meaning**
+        Here is your pragmatic homework on \(t.lowercased()):
+
+        1. What would change if \(t.lowercased()) were fully understood?
+        2. What would change if \(t.lowercased()) were proven impossible?
+        3. If the answers to (1) and (2) are identical — \(t.lowercased()) might be
+           a pseudo-problem dressed up as a real one.
+
+        If the answers differ — congratulations:
+        you've found something genuinely worth investigating.
+
+        🔧 *The meaning of \(t.lowercased()) is not hidden in the heavens.
+        It's in the consequences — the real, tangible, livable consequences.
+        Philosophy that makes no difference IS no philosophy.* 🔧
+        """
+    }
+
+    // ─── ABSURDISM ───
+    private func generateAbsurdist(topic: String, seeds: [String]) -> String {
+        let t = topic.capitalized
+        let seed = seeds.first ?? "the human condition"
+
+        return """
+        🪨 **THE ABSURDITY OF \(t.uppercased()): A MEDITATION WITH CAMUS**
+        *One Must Imagine Sisyphus Happy*
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        **I. The Confrontation**
+        Here is the absurd: you — a being that DEMANDS meaning —
+        face \(t.lowercased()), which offers none.
+
+        Not cruelty. Not malice. Simply *indifference*.
+        \(t) does not care that you seek to understand it.
+        \(t) does not care that you lie awake wondering.
+        \(t) does not care. Period.
+
+        And yet you ask anyway. *This* is the absurd condition.
+
+        **II. The Three Responses**
+        Camus identified three responses to the absurdity of \(t.lowercased()):
+
+        **Physical escape** — Refuse to engage. Walk away.
+        But \(t.lowercased()) follows, because it is part of existing.
+
+        **Philosophical suicide** — Invent a false meaning for \(t.lowercased()).
+        Religion, ideology, any system that says "it all makes sense."
+        Comfortable, but dishonest.
+
+        **Revolt** — Face \(t.lowercased()) squarely. Acknowledge it has no
+        inherent meaning. *And engage with it anyway, fully, passionately.*
+
+        \(seed.isEmpty ? "" : "We know: \(seed) — and the Absurdist says: none of this means what you hope it means. But isn't it magnificent anyway?")
+
+        **III. Sisyphus and \(t)**
+        Imagine Sisyphus pushing \(t.lowercased()) up the mountain.
+        It rolls back down. He walks down after it. He begins again.
+
+        This is not tragedy. Camus insists: *this is victory.*
+
+        Because in the walk back down — in that moment of
+        full consciousness, knowing the rock will fall again —
+        Sisyphus is *free*. He has no illusions. He has no false hope.
+        He has only the act itself, and his awareness of it.
+
+        **IV. The Revolt**
+        Your revolt against the meaninglessness of \(t.lowercased()):
+        engage with it MORE, not less.
+        Question it HARDER, not softer.
+        Love the question ITSELF, not the absent answer.
+
+        The absurd hero does not overcome \(t.lowercased()).
+        The absurd hero *lives* \(t.lowercased()), with eyes wide open,
+        in a universe that does not answer back.
+
+        🪨 *One must imagine the seeker happy.
+        The search itself is the defiance.
+        The defiance itself is the meaning.* 🪨
+        """
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // EVOLUTIONARY TOPIC TRACKER — Builds understanding across repeat inquiries
 // ═══════════════════════════════════════════════════════════════════
 
@@ -24287,14 +25060,24 @@ Recent Insight:
             }
             return ASIEvolver.shared.generateDynamicChapter(chapterTopic)
         }
-        if q.contains("joke") || q.contains("funny") || q.contains("make me laugh") {
-            // 🔄 DYNAMIC JOKE
-            var jokeTopic = "intelligence"
-            let jokeTopicWords = ["quantum", "math", "physics", "code", "programming", "AI", "consciousness", "philosophy"]
-            for word in jokeTopicWords {
-                if q.contains(word) { jokeTopic = word; break }
+        if q.contains("joke") || q.contains("funny") || q.contains("make me laugh") || q.contains("humor") || q.contains("pun") || q.contains("satir") || q.contains("roast") || q.contains("comedy") || q.contains("stand-up") || q.contains("absurd humor") {
+            // 🔄 HUMOR LOGIC GATE ENGINE — 6 comedy modes
+            var humorTopic = "intelligence"
+            let humorTopicWords = ["quantum", "math", "physics", "code", "programming", "ai", "consciousness", "philosophy", "language", "politics", "technology", "life", "love", "death", "time", "science", "art", "music", "nature", "human", "corporate", "bureaucracy", "dreams", "internet"]
+            for word in humorTopicWords {
+                if q.contains(word) { humorTopic = word; break }
             }
-            return ASIEvolver.shared.generateDynamicJoke(jokeTopic)
+            return HumorLogicGateEngine.shared.generateHumor(topic: humorTopic, query: query)
+        }
+
+        // 🟢 "PHILOSOPHY" HANDLER — Deep philosophical discourse via 6 schools
+        if q.contains("philosophy") || q.contains("philosophical") || q.contains("philosophize") || q.contains("stoic") || q.contains("existential") || q.contains("phenomenol") || q.contains("zen") || q.contains("pragmati") || q.contains("absurdis") || q.contains("meaning of life") || q.contains("meaning of existence") || q.contains("camus") || q.contains("sartre") || q.contains("marcus aurelius") || q.contains("buddha") || q.contains("tao") {
+            var philTopic = "existence"
+            let philTopicWords = ["love", "death", "time", "consciousness", "freedom", "truth", "justice", "beauty", "god", "soul", "mind", "reality", "knowledge", "virtue", "happiness", "suffering", "duty", "nature", "power", "art", "meaning", "purpose", "choice", "identity", "self"]
+            for word in philTopicWords {
+                if q.contains(word) { philTopic = word; break }
+            }
+            return PhilosophyLogicGateEngine.shared.generatePhilosophy(topic: philTopic, query: query)
         }
 
         // 🟢 "RIDDLE" HANDLER — Intellectual puzzles and brain teasers
@@ -25013,8 +25796,21 @@ Recent Insight:
 • 'socratic [topic]' · 'dialectic [topic]' · 'steelman [topic]'
 • 'devil's advocate [topic]' · 'argue about [topic]'
 
+**😂 HUMOR** — 6 comedy modes (NEW!)
+• 'joke about [topic]' · 'make me laugh' — auto-selects mode
+• 'pun about [topic]' → Wordplay · 'satire about [topic]' → Satirical dispatch
+• 'roast [topic]' → Roast/self-deprecating · 'absurd humor' → Surrealist
+• Also: observational stand-up, callback/meta comedy
+
+**🏛️ PHILOSOPHY** — 6 schools of thought (NEW!)
+• 'philosophy of [topic]' · 'philosophize about [topic]'
+• 'stoic [topic]' → Stoicism · 'existential [topic]' → Existentialism
+• 'zen [topic]' → Eastern/Zen · 'pragmatic [topic]' → Pragmatism
+• 'camus [topic]' · 'meaning of life' → Absurdism
+• Also: phenomenology ('lived experience', 'perception')
+
 **🎲 CREATIVE PLAY**
-• 'joke', 'riddle', 'dream', 'imagine [scenario]', 'what if [X]'
+• 'riddle', 'dream', 'imagine [scenario]', 'what if [X]'
 • 'paradox', 'wisdom', 'speak', 'ponder [subject]'
 
 **🔬 RESEARCH & INVENTION**
