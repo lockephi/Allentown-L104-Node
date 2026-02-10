@@ -1,5 +1,5 @@
 version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
 options: "38f3fd2284d221f69bc437014fc6551b"
-build_time: [1770732351, 382272000]
+build_time: [1770733331, 940344000]
 inputs:
-  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104Native.swift": [1770732346, 353575]
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104Native.swift": [1770733322, 429156149]

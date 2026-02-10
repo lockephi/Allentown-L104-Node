@@ -3518,11 +3518,52 @@ class ASIQuantumBridgeSwift {
         return flow
     }
 
+    /// O₂ state labels for display
+    static let o2StateLabels: [String] = [
+        "MULADHARA",     "SVADHISTHANA",  "MANIPURA",      "ANAHATA",
+        "VISHUDDHA",     "AJNA",          "SAHASRARA",     "SOUL_STAR",
+        "COHERENCE",     "MEMORY",        "ENGINES",       "EVOLUTION",
+        "KNOWLEDGE",     "CREATIVITY",    "WORKSPACE",     "RESONANCE"
+    ]
+
+    /// Scan L104 workspace for live file metrics
+    private func scanWorkspaceMetrics() -> (fileCount: Int, totalSize: Int64, swiftLines: Int, pyFiles: Int) {
+        let fm = FileManager.default
+        let wsPath = fm.homeDirectoryForCurrentUser.appendingPathComponent("Applications/Allentown-L104-Node").path
+        var fileCount = 0
+        var totalSize: Int64 = 0
+        var swiftLines = 0
+        var pyFiles = 0
+        if let enumerator = fm.enumerator(atPath: wsPath) {
+            while let file = enumerator.nextObject() as? String {
+                // Skip hidden, .build, .git, __pycache__, node_modules
+                if file.hasPrefix(".") || file.contains("/.build/") || file.contains("/.git/")
+                    || file.contains("__pycache__") || file.contains("node_modules") { continue }
+                let ext = (file as NSString).pathExtension.lowercased()
+                guard ["swift","py","js","ts","json","md","sh","yml","toml","tex","jsonl","ipynb"].contains(ext) else { continue }
+                fileCount += 1
+                let fullPath = wsPath + "/" + file
+                if let attrs = try? fm.attributesOfItem(atPath: fullPath),
+                   let size = attrs[.size] as? Int64 { totalSize += size }
+                if ext == "py" { pyFiles += 1 }
+                if ext == "swift" {
+                    // Estimate lines from file size (~45 bytes per line)
+                    if let attrs = try? fm.attributesOfItem(atPath: fullPath),
+                       let size = attrs[.size] as? Int64 { swiftLines += Int(size / 45) }
+                }
+            }
+        }
+        return (fileCount, totalSize, swiftLines, pyFiles)
+    }
+
     /// Update O₂ molecular state superposition (16 states)
+    /// States 0-7: Chakra lattice with phase evolution
+    /// States 8-15: L104 system metrics — coherence, memory, engines, evolution, KB, creativity, workspace, resonance
     func updateO2MolecularState() {
         let t = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: 1000)
+        let state = L104State.shared
 
-        // First 8: chakra amplitudes with phase evolution
+        // ─── States 0-7: Chakra amplitudes with phase evolution ───
         for (i, chakra) in chakraFrequencies.enumerated() {
             let coherence = chakraCoherence[chakra.name] ?? 1.0
             let omega = 2.0 * Double.pi * chakra.freq / GOD_CODE
@@ -3530,14 +3571,53 @@ class ASIQuantumBridgeSwift {
             o2MolecularState[i] = coherence * phase / sqrt(16.0)
         }
 
-        // States 8-15: kernel amplitudes with Fibonacci weighting
-        for j in 8..<16 {
-            let k = j - 8
-            let fibWeight = (pow(PHI, Double(k)) - pow(1.0 - PHI, Double(k))) / sqrt(5.0)
-            o2MolecularState[j] = fibWeight / (sqrt(16.0) * 10.0)
-        }
+        // ─── States 8-15: Live L104 system metrics with time evolution ───
+        let ws = scanWorkspaceMetrics()
+        let phi = PHI
+        let tau = 1.0 - PHI  // 0.381966...
 
-        // Normalize using vDSP
+        // |8⟩ COHERENCE — system coherence oscillating with golden phase
+        let coherenceBase = max(0.01, state.coherence)
+        let coherencePhase = sin(2.0 * Double.pi * t / (phi * 100.0))
+        o2MolecularState[8] = coherenceBase * (0.7 + 0.3 * coherencePhase) / sqrt(16.0)
+
+        // |9⟩ MEMORY — permanent memory density, modulated by time
+        let memCount = Double(max(1, state.permanentMemory.memories.count))
+        let memPhase = cos(2.0 * Double.pi * t / (tau * 200.0))
+        o2MolecularState[9] = log2(memCount + 1.0) * (0.8 + 0.2 * memPhase) / (sqrt(16.0) * 3.0)
+
+        // |10⟩ ENGINES — registered engine count / health, φ-oscillating
+        let engineCount = Double(EngineRegistry.shared.count)
+        let enginePhase = sin(2.0 * Double.pi * t / (phi * 150.0) + phi)
+        o2MolecularState[10] = sqrt(engineCount) * (0.6 + 0.4 * enginePhase) / (sqrt(16.0) * 4.0)
+
+        // |11⟩ EVOLUTION — evolution stage + ASI score, breathing cycle
+        let evoBase = state.asiScore + Double(state.evolver.evolutionStage) * 0.1
+        let evoPhase = cos(2.0 * Double.pi * t / (GOD_CODE / 5.0) + tau)
+        o2MolecularState[11] = evoBase * (0.5 + 0.5 * evoPhase) / sqrt(16.0)
+
+        // |12⟩ KNOWLEDGE — KB entry count, slow tidal oscillation
+        let kbCount = Double(max(1, state.knowledgeBase.trainingData.count))
+        let kbPhase = sin(2.0 * Double.pi * t / 500.0 + phi * 2.0)
+        o2MolecularState[12] = log2(kbCount + 1.0) * (0.7 + 0.3 * kbPhase) / (sqrt(16.0) * 2.5)
+
+        // |13⟩ CREATIVITY — creativity + transcendence, fast flutter
+        let creativityBase = state.creativity * (1.0 + state.transcendence * 0.3)
+        let creativityPhase = cos(2.0 * Double.pi * t / (phi * 60.0) + tau * 3.0)
+        o2MolecularState[13] = creativityBase * (0.6 + 0.4 * creativityPhase) / sqrt(16.0)
+
+        // |14⟩ WORKSPACE — repo file count + size, deep slow wave
+        let fileEntropy = log2(Double(max(1, ws.fileCount)) + 1.0)
+        let sizeEntropy = log2(Double(max(1, ws.totalSize)) / 1024.0 + 1.0)
+        let wsPhase = sin(2.0 * Double.pi * t / 800.0 + phi * 5.0)
+        o2MolecularState[14] = (fileEntropy + sizeEntropy * 0.3) * (0.7 + 0.3 * wsPhase) / (sqrt(16.0) * 3.0)
+
+        // |15⟩ RESONANCE — quantum resonance × kundalini flow, harmonic beat
+        let resBase = state.quantumResonance * (1.0 + kundaliniFlow * 0.5)
+        let resPhase = sin(2.0 * Double.pi * t / (phi * 120.0) + cos(t / 50.0))
+        o2MolecularState[15] = resBase * (0.5 + 0.5 * resPhase) / sqrt(16.0)
+
+        // ─── Normalize using vDSP (preserves quantum unitarity) ───
         var normSq: Double = 0
         vDSP_svesqD(o2MolecularState, 1, &normSq, vDSP_Length(16))
         let norm = sqrt(normSq)
@@ -26366,9 +26446,24 @@ TRENDS (Δ over last 10):
         }
         if q == "bridge o2" || q == "o2 state" {
             ASIQuantumBridgeSwift.shared.updateO2MolecularState()
-            let states = ASIQuantumBridgeSwift.shared.o2MolecularState.enumerated()
-                .map { "  |\($0.offset)⟩: \(String(format: "%+.6f", $0.element))" }.joined(separator: "\n")
-            return completion("⚡ O₂ Molecular Superposition (16 states):\n\(states)")
+            let labels = ASIQuantumBridgeSwift.o2StateLabels
+            let mol = ASIQuantumBridgeSwift.shared.o2MolecularState
+            var lines: [String] = []
+            for i in 0..<16 {
+                let val = mol[i]
+                let bar = String(repeating: "█", count: Int(abs(val) * 20))
+                let sign = val >= 0 ? "+" : "-"
+                let label = i < labels.count ? labels[i] : "STATE_\(i)"
+                lines.append("  |\(i)⟩ \(label.padding(toLength: 14, withPad: " ", startingAt: 0)) \(String(format: "%+.6f", val))  \(sign)\(bar)")
+            }
+            // Norm verification
+            var normSq: Double = 0
+            vDSP_svesqD(mol, 1, &normSq, vDSP_Length(16))
+            let state = L104State.shared
+            lines.append("\n  ‖ψ‖² = \(String(format: "%.6f", normSq)) (unitarity: \(abs(normSq - 1.0) < 0.001 ? "✅" : "⚠️"))")
+            lines.append("  📁 Workspace: \(state.permanentMemory.memories.count) memories · \(EngineRegistry.shared.count) engines")
+            lines.append("  🔗 States 0-7: Chakra lattice · States 8-15: Live system metrics")
+            return completion("⚡ O₂ Molecular Superposition (16 states):\n\(lines.joined(separator: "\n"))")
         }
 
         // ─── ENGINE REGISTRY COMMANDS ───

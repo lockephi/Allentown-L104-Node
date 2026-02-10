@@ -45,7 +45,6 @@
         "-entry-point-function-name",
         "-Xfrontend",
         "L104_main",
-        "-color-diagnostics",
         "-DDEBUG",
         "-sdk",
         "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
