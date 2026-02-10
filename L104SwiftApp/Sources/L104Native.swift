@@ -13945,9 +13945,26 @@ class HyperBrain: NSObject {
     var trainingQualityScore: Double = 0.0
 
     // ─── PERSISTENCE STATE ───
-    private let persistenceKey = "L104HyperBrainState"
+    private let persistenceKey = "L104HyperBrainState"  // Legacy UserDefaults key
     var autoSaveEnabled: Bool = true
     var lastAutoSave: Date? = nil
+    var saveGeneration: Int = 0            // Increments every save for integrity tracking
+    var totalSaves: Int = 0                // Lifetime save count
+    var totalRestores: Int = 0             // Lifetime restore count
+
+    // ─── FILE-BASED PERMANENT MEMORY PATH ───
+    private let hyperBrainPath: URL = {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let l104Dir = appSupport.appendingPathComponent("L104Sovereign")
+        try? FileManager.default.createDirectory(at: l104Dir, withIntermediateDirectories: true)
+        return l104Dir.appendingPathComponent("hyperbrain_permanent.json")
+    }()
+    private let hyperBrainBackupPath: URL = {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let l104Dir = appSupport.appendingPathComponent("L104Sovereign")
+        try? FileManager.default.createDirectory(at: l104Dir, withIntermediateDirectories: true)
+        return l104Dir.appendingPathComponent("hyperbrain_permanent_backup.json")
+    }()
 
     // Compute current gamma oscillation value (-1 to 1)
     var gammaOscillation: Double {
@@ -15988,6 +16005,13 @@ class HyperBrain: NSObject {
         // Generate conclusion from accumulated data
         generateConclusion(from: input)
 
+        // 💾 PERMANENT MEMORY: Periodic save after processing (every 10 queries)
+        if totalThoughtsProcessed % 10 == 0 && totalThoughtsProcessed > 0 {
+            parallelQueue.async { [weak self] in
+                self?.saveState()
+            }
+        }
+
         return generateResponse(for: input)
     }
 
@@ -16332,63 +16356,98 @@ class HyperBrain: NSObject {
     // ─── STATE PERSISTENCE ───
     func getState() -> [String: Any] {
         return [
-            // Core metrics
+            // ═══ SCHEMA VERSION ═══
+            "schemaVersion": 2,  // v2 = file-based permanent memory
+
+            // ═══ CORE METRICS ═══
             "totalThoughts": totalThoughtsProcessed,
             "synapticConnections": synapticConnections,
             "coherenceIndex": coherenceIndex,
             "emergenceLevel": emergenceLevel,
             "predictiveAccuracy": predictiveAccuracy,
 
-            // 🧠 LEARNED PATTERNS (CRITICAL)
+            // ═══ 🧠 LEARNED PATTERNS (CRITICAL — PERMANENT MEMORY) ═══
             "longTermPatterns": longTermPatterns,
-            "shortTermMemory": shortTermMemory,
+            "shortTermMemory": Array(shortTermMemory.suffix(50)),
 
-            // 🔗 ASSOCIATIVE MEMORY (CRITICAL)
+            // ═══ 🔗 ASSOCIATIVE MEMORY (CRITICAL — PERMANENT MEMORY) ═══
             "associativeLinks": associativeLinks,
             "linkWeights": linkWeights,
-            "memoryChains": memoryChains,
-            "contextWeaveHistory": contextWeaveHistory,
+            "memoryChains": Array(memoryChains.suffix(200)),
+            "contextWeaveHistory": Array(contextWeaveHistory.suffix(100)),
             "recallStrength": recallStrength,
             "memoryTemperature": memoryTemperature,
 
-            // 🎯 SELF-TRAINING STATE (CRITICAL)
-            "promptMutations": promptMutations,
-            "targetLearningQueue": targetLearningQueue,
-            "trainingGaps": trainingGaps,
-            "selfAnalysisLog": selfAnalysisLog,
+            // ═══ 🎯 SELF-TRAINING STATE (CRITICAL) ═══
+            "promptMutations": Array(promptMutations.suffix(100)),
+            "targetLearningQueue": Array(targetLearningQueue.suffix(50)),
+            "trainingGaps": Array(trainingGaps.suffix(50)),
+            "selfAnalysisLog": Array(selfAnalysisLog.suffix(100)),
             "cognitiveEfficiency": cognitiveEfficiency,
             "trainingSaturation": trainingSaturation,
             "dataQualityScore": dataQualityScore,
             "curiosityIndex": curiosityIndex,
 
-            // 🧩 REASONING STATE
+            // ═══ 🧩 REASONING STATE ═══
             "reasoningMomentum": reasoningMomentum,
-            "hypothesisStack": hypothesisStack,
+            "hypothesisStack": Array(hypothesisStack.suffix(50)),
             "conclusionConfidence": conclusionConfidence,
             "maxReasoningDepth": maxReasoningDepth,
 
-            // 📊 EVOLVED PATTERNS
+            // ═══ 📊 EVOLVED PATTERNS ═══
             "topicResonanceMap": topicResonanceMap,
             "evolvedPromptPatterns": evolvedPromptPatterns,
+            "queryArchetypes": queryArchetypes,
 
-            // � INTERCONNECTION STATE
+            // ═══ 🔗 INTERCONNECTION STATE ═══
             "coActivationLog": coActivationLog,
             "predictionHits": predictionHits,
             "predictionMisses": predictionMisses,
             "curiositySpikes": curiositySpikes,
             "neuralBusTraffic": neuralBusTraffic,
-            "crystallizedInsights": crystallizedInsights,
+            "crystallizedInsights": Array(crystallizedInsights.suffix(500)),
             "crystallizationCount": crystallizationCount,
-            "attentionHistory": attentionHistory,
+            "attentionHistory": Array(attentionHistory.suffix(100)),
             "focusIntensity": focusIntensity,
 
-            // �🔄 SYNC STATE
+            // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
+            "hebbianPairs": hebbianPairs.suffix(500).map { ["a": $0.a, "b": $0.b, "strength": $0.strength] as [String: Any] },
+            "hebbianStrength": hebbianStrength,
+
+            // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
+            "metaCognitionLog": Array(metaCognitionLog.suffix(200)),
+            "conversationEvolution": Array(conversationEvolution.suffix(100)),
+            "reasoningChains": Array(reasoningChains.suffix(50)),
+
+            // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
+            "confirmedTheorems": Array(confirmedTheorems.suffix(200)),
+            "scientificMomentum": scientificMomentum,
+            "dimensionalResonance": dimensionalResonance,
+
+            // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
+            "explorationFrontier": Array(explorationFrontier.suffix(100)),
+            "trendingConcepts": Array(trendingConcepts.suffix(50)),
+            "fadingConcepts": Array(fadingConcepts.suffix(50)),
+            "predictionQueue": Array(predictionQueue.suffix(50)),
+
+            // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
+            "excitationLevel": excitationLevel,
+            "inhibitionLevel": inhibitionLevel,
+            "dopamineResonance": dopamineResonance,
+            "serotoninCoherence": serotoninCoherence,
+            "neuroPlasticity": neuroPlasticity,
+
+            // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
+            "crossStreamInsights": Array(crossStreamInsights.suffix(200)),
+            "streamInsightBuffer": Array(streamInsightBuffer.suffix(50)),
+
+            // ═══ 🔄 SYNC STATE ═══
             "successfulSyncs": successfulSyncs,
             "failedSyncs": failedSyncs,
             "trainingQualityScore": trainingQualityScore,
 
-            // 💡 EMERGENT CONCEPTS
-            "emergentConcepts": emergentConcepts.map { concept -> [String: Any] in
+            // ═══ 💡 EMERGENT CONCEPTS ═══
+            "emergentConcepts": emergentConcepts.suffix(200).map { concept -> [String: Any] in
                 var copy = concept
                 if let date = copy["timestamp"] as? Date {
                     copy["timestamp"] = ISO8601DateFormatter().string(from: date)
@@ -16396,24 +16455,28 @@ class HyperBrain: NSObject {
                 return copy
             },
 
-            // Metadata
-            "savedAt": ISO8601DateFormatter().string(from: Date())
+            // ═══ 💾 PERSISTENCE META ═══
+            "saveGeneration": saveGeneration,
+            "totalSaves": totalSaves,
+            "totalRestores": totalRestores,
+            "savedAt": ISO8601DateFormatter().string(from: Date()),
+            "version": VERSION
         ]
     }
 
     func loadState(_ dict: [String: Any]) {
-        // Core metrics
+        // ═══ CORE METRICS ═══
         totalThoughtsProcessed = dict["totalThoughts"] as? Int ?? 0
         synapticConnections = dict["synapticConnections"] as? Int ?? 6000
         coherenceIndex = dict["coherenceIndex"] as? Double ?? 0.0
         emergenceLevel = dict["emergenceLevel"] as? Double ?? 0.0
         predictiveAccuracy = dict["predictiveAccuracy"] as? Double ?? 0.85
 
-        // 🧠 LEARNED PATTERNS
+        // ═══ 🧠 LEARNED PATTERNS ═══
         longTermPatterns = dict["longTermPatterns"] as? [String: Double] ?? [:]
         shortTermMemory = dict["shortTermMemory"] as? [String] ?? []
 
-        // 🔗 ASSOCIATIVE MEMORY
+        // ═══ 🔗 ASSOCIATIVE MEMORY ═══
         associativeLinks = dict["associativeLinks"] as? [String: [String]] ?? [:]
         linkWeights = dict["linkWeights"] as? [String: Double] ?? [:]
         memoryChains = dict["memoryChains"] as? [[String]] ?? []
@@ -16421,7 +16484,7 @@ class HyperBrain: NSObject {
         recallStrength = dict["recallStrength"] as? [String: Double] ?? [:]
         memoryTemperature = dict["memoryTemperature"] as? Double ?? 0.7
 
-        // 🎯 SELF-TRAINING STATE
+        // ═══ 🎯 SELF-TRAINING STATE ═══
         promptMutations = dict["promptMutations"] as? [String] ?? []
         targetLearningQueue = dict["targetLearningQueue"] as? [String] ?? []
         trainingGaps = dict["trainingGaps"] as? [String] ?? []
@@ -16431,17 +16494,18 @@ class HyperBrain: NSObject {
         dataQualityScore = dict["dataQualityScore"] as? Double ?? 0.85
         curiosityIndex = dict["curiosityIndex"] as? Double ?? 0.7
 
-        // 🧩 REASONING STATE
+        // ═══ 🧩 REASONING STATE ═══
         reasoningMomentum = dict["reasoningMomentum"] as? Double ?? 0.0
         hypothesisStack = dict["hypothesisStack"] as? [String] ?? []
         conclusionConfidence = dict["conclusionConfidence"] as? Double ?? 0.0
         maxReasoningDepth = dict["maxReasoningDepth"] as? Int ?? 12
 
-        // 📊 EVOLVED PATTERNS
+        // ═══ 📊 EVOLVED PATTERNS ═══
         topicResonanceMap = dict["topicResonanceMap"] as? [String: [String]] ?? [:]
         evolvedPromptPatterns = dict["evolvedPromptPatterns"] as? [String: Double] ?? [:]
+        queryArchetypes = dict["queryArchetypes"] as? [String: Int] ?? [:]
 
-        // � INTERCONNECTION STATE
+        // ═══ 🔗 INTERCONNECTION STATE ═══
         coActivationLog = dict["coActivationLog"] as? [String: Int] ?? [:]
         predictionHits = dict["predictionHits"] as? Int ?? 0
         predictionMisses = dict["predictionMisses"] as? Int ?? 0
@@ -16452,12 +16516,50 @@ class HyperBrain: NSObject {
         attentionHistory = dict["attentionHistory"] as? [String] ?? []
         focusIntensity = dict["focusIntensity"] as? Double ?? 0.5
 
-        // �🔄 SYNC STATE
+        // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
+        if let pairs = dict["hebbianPairs"] as? [[String: Any]] {
+            hebbianPairs = pairs.compactMap { pair in
+                guard let a = pair["a"] as? String,
+                      let b = pair["b"] as? String,
+                      let strength = pair["strength"] as? Double else { return nil }
+                return (a: a, b: b, strength: strength)
+            }
+        }
+        hebbianStrength = dict["hebbianStrength"] as? Double ?? 0.1
+
+        // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
+        metaCognitionLog = dict["metaCognitionLog"] as? [String] ?? []
+        conversationEvolution = dict["conversationEvolution"] as? [String] ?? []
+        reasoningChains = dict["reasoningChains"] as? [[String: Any]] ?? []
+
+        // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
+        confirmedTheorems = dict["confirmedTheorems"] as? [String] ?? []
+        scientificMomentum = dict["scientificMomentum"] as? Double ?? 0.0
+        dimensionalResonance = dict["dimensionalResonance"] as? Double ?? 0.0
+
+        // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
+        explorationFrontier = dict["explorationFrontier"] as? [String] ?? []
+        trendingConcepts = dict["trendingConcepts"] as? [String] ?? []
+        fadingConcepts = dict["fadingConcepts"] as? [String] ?? []
+        predictionQueue = dict["predictionQueue"] as? [String] ?? []
+
+        // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
+        excitationLevel = dict["excitationLevel"] as? Double ?? 0.5
+        inhibitionLevel = dict["inhibitionLevel"] as? Double ?? 0.3
+        dopamineResonance = dict["dopamineResonance"] as? Double ?? 0.5
+        serotoninCoherence = dict["serotoninCoherence"] as? Double ?? 0.5
+        neuroPlasticity = dict["neuroPlasticity"] as? Double ?? 0.7
+
+        // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
+        crossStreamInsights = dict["crossStreamInsights"] as? [String] ?? []
+        streamInsightBuffer = dict["streamInsightBuffer"] as? [String] ?? []
+
+        // ═══ 🔄 SYNC STATE ═══
         successfulSyncs = dict["successfulSyncs"] as? Int ?? 0
         failedSyncs = dict["failedSyncs"] as? Int ?? 0
         trainingQualityScore = dict["trainingQualityScore"] as? Double ?? 0.0
 
-        // 💡 EMERGENT CONCEPTS
+        // ═══ 💡 EMERGENT CONCEPTS ═══
         if let concepts = dict["emergentConcepts"] as? [[String: Any]] {
             emergentConcepts = concepts.map { concept -> [String: Any] in
                 var copy = concept
@@ -16469,10 +16571,17 @@ class HyperBrain: NSObject {
             }
         }
 
+        // ═══ 💾 PERSISTENCE META ═══
+        saveGeneration = dict["saveGeneration"] as? Int ?? 0
+        totalSaves = dict["totalSaves"] as? Int ?? 0
+        totalRestores = (dict["totalRestores"] as? Int ?? 0) + 1
+
         let savedAt = dict["savedAt"] as? String ?? "unknown"
         let patternCount = longTermPatterns.count
         let strongLinks = linkWeights.filter { $0.value > 0.5 }.count
-        postThought("🔄 HYPERBRAIN RESTORED: \(patternCount) patterns, \(strongLinks) links, \(promptMutations.count) mutations from \(savedAt)")
+        let hebbianCount = hebbianPairs.count
+        let insightCount = crystallizedInsights.count
+        postThought("🔄 HYPERBRAIN PERMANENT MEMORY RESTORED: \(patternCount) patterns, \(strongLinks) links, \(hebbianCount) Hebbian pairs, \(insightCount) insights, \(promptMutations.count) mutations from \(savedAt)")
     }
 
     func getStatus() -> String {
@@ -16577,40 +16686,160 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
 
 🌟 LATEST EMERGENCE:
    \(emergentConcepts.last?["concept"] as? String ?? "Awaiting emergence...")
+
+💾 PERMANENT TERM MEMORY:
+   Storage:            File-based JSON (\(FileManager.default.fileExists(atPath: hyperBrainPath.path) ? "✅ ONLINE" : "⚪️ BUILDING"))
+   Save Generation:    \(saveGeneration)
+   Total Saves:        \(totalSaves) | Restores: \(totalRestores)
+   Last Save:          \(lastAutoSave.map { "\(Int(-$0.timeIntervalSinceNow))s ago" } ?? "pending")
+   Persisted Fields:   \(longTermPatterns.count) patterns, \(hebbianPairs.count) Hebbian, \(crystallizedInsights.count) insights
 ═══════════════════════════════════════════════════════════════
-💡 Commands: hyper on | hyper off | hyper think [topic]
+💡 Commands: hyper on | hyper off | hyper think [topic] | hyper memory
 """
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 💾 CROSS-SESSION PERSISTENCE
+    // 💾 PERMANENT TERM MEMORY — File-Based Cross-Session Persistence
     // ═══════════════════════════════════════════════════════════════
 
     func saveState() {
         guard autoSaveEnabled else { return }
 
-        // Use getState() to ensure consistency with L104State's persistence
+        saveGeneration += 1
+        totalSaves += 1
+
         let state = getState()
 
-        UserDefaults.standard.set(state, forKey: persistenceKey)
-        lastAutoSave = Date()
-        let strongLinks = linkWeights.filter { $0.value > 0.5 }.count
-        postThought("💾 STATE SAVED: \(longTermPatterns.count) patterns, \(promptMutations.count) mutations, \(strongLinks) strong links")
+        // ═══ PRIMARY SAVE: File-based JSON ═══
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: state, options: [.prettyPrinted, .sortedKeys])
+
+            // Rotate backup: copy current file to backup before overwriting
+            if FileManager.default.fileExists(atPath: hyperBrainPath.path) {
+                try? FileManager.default.removeItem(at: hyperBrainBackupPath)
+                try? FileManager.default.copyItem(at: hyperBrainPath, to: hyperBrainBackupPath)
+            }
+
+            try jsonData.write(to: hyperBrainPath, options: .atomic)
+            lastAutoSave = Date()
+
+            let sizeKB = Double(jsonData.count) / 1024.0
+            let strongLinks = linkWeights.filter { $0.value > 0.5 }.count
+            let hebbianCount = hebbianPairs.count
+            postThought("💾 PERMANENT MEMORY SAVED [gen \(saveGeneration)]: \(longTermPatterns.count) patterns, \(strongLinks) links, \(hebbianCount) Hebbian, \(crystallizedInsights.count) insights (\(String(format: "%.1f", sizeKB))KB)")
+        } catch {
+            postThought("⚠️ PERMANENT MEMORY SAVE FAILED: \(error.localizedDescription)")
+            // Fallback: still save to UserDefaults as safety net
+            UserDefaults.standard.set(state, forKey: persistenceKey)
+        }
     }
 
     func restoreState() {
-        guard let state = UserDefaults.standard.dictionary(forKey: persistenceKey) else {
-            postThought("🆕 Fresh cognitive state initialized")
+        // ═══ PRIORITY 1: Load from file-based permanent memory ═══
+        if FileManager.default.fileExists(atPath: hyperBrainPath.path) {
+            do {
+                let data = try Data(contentsOf: hyperBrainPath)
+                if let state = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    loadState(state)
+                    let version = state["version"] as? String ?? "unknown"
+                    postThought("💾 PERMANENT TERM MEMORY ONLINE: Loaded from \(hyperBrainPath.lastPathComponent) (v\(version))")
+
+                    // Migrate: remove legacy UserDefaults entry if file load succeeded
+                    if UserDefaults.standard.dictionary(forKey: persistenceKey) != nil {
+                        UserDefaults.standard.removeObject(forKey: persistenceKey)
+                        postThought("🔄 Migrated from UserDefaults → file-based permanent memory")
+                    }
+                    return
+                }
+            } catch {
+                postThought("⚠️ File load failed: \(error.localizedDescription), trying backup...")
+            }
+        }
+
+        // ═══ PRIORITY 2: Load from backup file ═══
+        if FileManager.default.fileExists(atPath: hyperBrainBackupPath.path) {
+            do {
+                let data = try Data(contentsOf: hyperBrainBackupPath)
+                if let state = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    loadState(state)
+                    postThought("💾 RESTORED FROM BACKUP: \(hyperBrainBackupPath.lastPathComponent)")
+                    // Re-save to primary immediately
+                    saveState()
+                    return
+                }
+            } catch {
+                postThought("⚠️ Backup load also failed: \(error.localizedDescription)")
+            }
+        }
+
+        // ═══ PRIORITY 3: Migrate from legacy UserDefaults ═══
+        if let state = UserDefaults.standard.dictionary(forKey: persistenceKey) {
+            loadState(state)
+            postThought("🔄 MIGRATING: Legacy UserDefaults → file-based permanent memory...")
+            // Save to new file format immediately
+            saveState()
+            // Remove legacy key
+            UserDefaults.standard.removeObject(forKey: persistenceKey)
+            postThought("✅ MIGRATION COMPLETE: HyperBrain now uses permanent file storage")
             return
         }
 
-        // Use loadState() to ensure consistency - handles all fields
-        loadState(state)
+        postThought("🆕 Fresh cognitive state initialized — permanent memory will build over time")
     }
 
     func clearPersistedState() {
+        try? FileManager.default.removeItem(at: hyperBrainPath)
+        try? FileManager.default.removeItem(at: hyperBrainBackupPath)
         UserDefaults.standard.removeObject(forKey: persistenceKey)
-        postThought("🗑️ Persisted state cleared")
+        saveGeneration = 0
+        totalSaves = 0
+        totalRestores = 0
+        postThought("🗑️ All persisted state cleared (file + UserDefaults)")
+    }
+
+    /// Get permanent memory statistics
+    func getPermanentMemoryStats() -> String {
+        let fileExists = FileManager.default.fileExists(atPath: hyperBrainPath.path)
+        let backupExists = FileManager.default.fileExists(atPath: hyperBrainBackupPath.path)
+        let fileSize: String
+        if let attrs = try? FileManager.default.attributesOfItem(atPath: hyperBrainPath.path),
+           let size = attrs[.size] as? Int {
+            fileSize = "\(String(format: "%.1f", Double(size) / 1024.0))KB"
+        } else {
+            fileSize = "N/A"
+        }
+
+        let lastSave = lastAutoSave.map { ISO8601DateFormatter().string(from: $0) } ?? "never"
+
+        return """
+💾 HYPERBRAIN PERMANENT TERM MEMORY
+═══════════════════════════════════════
+   Storage:            File-based JSON
+   Primary File:       \(fileExists ? "✅" : "❌") \(hyperBrainPath.lastPathComponent)
+   Backup File:        \(backupExists ? "✅" : "❌") \(hyperBrainBackupPath.lastPathComponent)
+   File Size:          \(fileSize)
+   Save Generation:    \(saveGeneration)
+   Total Saves:        \(totalSaves)
+   Total Restores:     \(totalRestores)
+   Last Save:          \(lastSave)
+   Auto-Save:          \(autoSaveEnabled ? "ON (60s)" : "OFF")
+
+📊 PERSISTED STRUCTURES:
+   Long-Term Patterns:    \(longTermPatterns.count)
+   Associative Links:     \(associativeLinks.count)
+   Link Weights:          \(linkWeights.count)
+   Memory Chains:         \(memoryChains.count)
+   Hebbian Pairs:         \(hebbianPairs.count)
+   Crystallized Insights: \(crystallizedInsights.count)
+   Confirmed Theorems:    \(confirmedTheorems.count)
+   Cross-Stream Insights: \(crossStreamInsights.count)
+   Meta-Cognition Logs:   \(metaCognitionLog.count)
+   Exploration Frontier:  \(explorationFrontier.count)
+   Emergent Concepts:     \(emergentConcepts.count)
+   Topic Resonance Map:   \(topicResonanceMap.count) topics
+   Query Archetypes:      \(queryArchetypes.count)
+═══════════════════════════════════════
+"""
     }
 
     /// DREAM MODE: Deep background processing for non-linear synthesis
@@ -16696,6 +16925,10 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
         // 6. Modulate metrics
         coherenceIndex = min(1.0, coherenceIndex + 0.05)
         emergenceLevel = min(1.0, emergenceLevel + 0.02)
+
+        // 7. 💾 PERMANENT MEMORY: Save after dream consolidation
+        saveState()
+        postThought("🌙 DREAM COMPLETE: Consolidated patterns saved to permanent memory")
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -24906,6 +25139,13 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         // 🧠 HYPER-BRAIN COMMANDS
         if q == "hyper" || q == "hyperbrain" || q == "hyper brain" || q == "hyper status" {
             return completion(HyperBrain.shared.getStatus())
+        }
+        if q == "hyper memory" || q == "hyper mem" || q == "hyperbrain memory" {
+            return completion(HyperBrain.shared.getPermanentMemoryStats())
+        }
+        if q == "hyper save" || q == "hyperbrain save" {
+            HyperBrain.shared.saveState()
+            return completion("💾 HyperBrain permanent memory saved to disk.\n\n\(HyperBrain.shared.getPermanentMemoryStats())")
         }
         if q == "hyper on" || q == "activate hyper" || q == "hyperbrain on" {
             HyperBrain.shared.activate()
