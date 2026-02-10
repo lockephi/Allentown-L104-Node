@@ -40,7 +40,7 @@ commands:
     import-paths: ["/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug"]
     temps-path: "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build"
     objects: ["/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/L104.build/L104Native.swift.o"]
-    other-args: ["-target","x86_64-apple-macosx12.0","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/index/store","-Onone","-enable-testing","-g","-j4","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","L104_main","-DDEBUG","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"]
+    other-args: ["-target","x86_64-apple-macosx12.0","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/index/store","-Onone","-enable-testing","-g","-j4","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","L104_main","-color-diagnostics","-DDEBUG","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"]
     sources: ["/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104Native.swift"]
     is-library: false
     enable-whole-module-optimization: false

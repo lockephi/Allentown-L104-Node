@@ -28583,78 +28583,122 @@ Recent Insight:
 
         case "help":
             return """
-🧠 **L104 SOVEREIGN INTELLECT v\(VERSION)** — Command Reference
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧠 L104 SOVEREIGN INTELLECT v\(VERSION) — Complete Command Reference
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**📚 KNOWLEDGE** — Just ask anything
+⌨️ KEYBOARD SHORTCUTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⌘K  Command Palette        ⌘D  ASI Dashboard
+  ⌘S  Save All Memories      ⌘E  Evolve
+  ⌘T  Transcend              ⌘R  Resonate
+  ⌘I  System Status          ⌘Q  Quit
+  ⌘C  Copy  ⌘V  Paste  ⌘A  Select All  ⌘Z  Undo
+
+📚 KNOWLEDGE — Just ask anything
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Philosophy, science, history, math, art, music, consciousness
-• 'what is [X]?', 'explain [Y]', 'why does [Z]?'
+• 'what is [X]?' · 'explain [Y]' · 'why does [Z]?'
+• 'more' / 'more about [X]' — go deeper on current topic
+• 'topic' — see current topic focus & history
 
-**📖 STORIES** — Novel-grade multi-chapter narratives (8 frameworks)
+📖 STORIES — Novel-grade multi-chapter narratives (8 frameworks)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'tell me a story about [topic]' — auto-selects best framework
 • 'story about a hero quest' → Hero's Journey (12 chapters)
 • 'story about a mystery' → Save the Cat (15 beats)
 • 'story about a tragedy' → Freytag's Pyramid (5 acts)
 • 'story about a twist' → Kishōtenketsu (4-act)
-• 'story about a comedy' → U-Shaped Comedy
-• 'story about growth' → Bildungsroman
-• 'story about speed' → Jo-ha-kyū
+• Also: comedy, growth (Bildungsroman), speed (Jo-ha-kyū)
 
-**🎭 POETRY** — 8 classical forms, KB-woven
+🎭 POETRY — 8 classical forms
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'poem about [topic]' — auto-selects form
 • 'sonnet about love' · 'haiku about nature' · 'villanelle about loss'
-• 'ghazal about desire' · 'ode to [topic]' · Also: pantoum, terza rima, free verse epic
+• 'ghazal about desire' · 'ode to [topic]'
+• Also: pantoum, terza rima, free verse epic
 
-**⚔️ DEBATES** — 5 dialectic modes
-• 'debate [topic]' — auto-selects mode
-• 'socratic [topic]' · 'dialectic [topic]' · 'steelman [topic]'
-• 'devil's advocate [topic]' · 'argue about [topic]'
+⚔️ DEBATES — 5 dialectic modes
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'debate [topic]' · 'socratic [topic]' · 'dialectic [topic]'
+• 'steelman [topic]' · 'devil's advocate [topic]'
 
-**😂 HUMOR** — 6 comedy modes (NEW!)
-• 'joke about [topic]' · 'make me laugh' — auto-selects mode
-• 'pun about [topic]' → Wordplay · 'satire about [topic]' → Satirical dispatch
-• 'roast [topic]' → Roast/self-deprecating · 'absurd humor' → Surrealist
-• Also: observational stand-up, callback/meta comedy
+😂 HUMOR — 6 comedy modes
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'joke about [topic]' · 'make me laugh' · 'pun about [topic]'
+• 'satire about [topic]' · 'roast [topic]' · 'absurd humor'
 
-**🏛️ PHILOSOPHY** — 6 schools of thought
+🏛️ PHILOSOPHY — 6 schools of thought
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'philosophy of [topic]' · 'philosophize about [topic]'
-• 'stoic [topic]' → Stoicism · 'existential [topic]' → Existentialism
-• 'zen [topic]' → Eastern/Zen · 'pragmatic [topic]' → Pragmatism
-• 'camus [topic]' · 'meaning of life' → Absurdism
-• Also: phenomenology ('lived experience', 'perception')
+• 'stoic [topic]' · 'existential [topic]' · 'zen [topic]'
+• 'pragmatic [topic]' · 'camus [topic]' · 'meaning of life'
 
-**⚛️ QUANTUM PROCESSING** — Phase 31.0 Quantum Core (NEW!)
-• All engines route through QuantumProcessingCore superposition + entanglement
-• 'brainstorm [topic]' → Multi-track quantum idea superposition (5 tracks)
-• 'invent [domain]' → Shor-factored cross-domain invention synthesis
+⚛️ QUANTUM PROCESSING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'brainstorm [topic]' → Multi-track quantum superposition (5 tracks)
+• 'invent [domain]' → Cross-domain invention synthesis
 • 'quantum brainstorm [topic]' → Explicit quantum creative mode
-• Features: Entanglement memory, decoherence shielding, error correction
-• 14-gate QuantumLogicGateEngine synthesis pipeline
 
-**🎲 CREATIVE PLAY**
-• 'riddle', 'dream', 'imagine [scenario]', 'what if [X]'
-• 'paradox', 'wisdom', 'speak', 'ponder [subject]'
+🎲 CREATIVE PLAY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'riddle' · 'dream' · 'imagine [scenario]' · 'what if [X]'
+• 'paradox' · 'wisdom' · 'speak' · 'ponder [subject]'
 
-**🔬 RESEARCH & INVENTION**
+🔬 RESEARCH & SCIENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'research [topic]' — deep multi-step analysis
 • 'invent [domain]' — generate novel ideas
+• 'science' — open science engine dashboard
 
-**🌐 LIVE INTERNET SEARCH** — Real-time web access (NEW!)
-• 'web [query]' — search the internet (DuckDuckGo + Wikipedia)
-• 'google [query]' · 'lookup [query]' · 'internet [query]'
+🌐 LIVE INTERNET SEARCH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'web [query]' · 'google [query]' · 'lookup [query]'
 • 'wiki [topic]' — Wikipedia article lookup
-• 'fetch [url]' — fetch and extract text from any URL
+• 'fetch [url]' — extract text from any URL
 • 'web status' — view internet search engine stats
-• Auto-enrichment: Quantum engine auto-fetches web when KB is thin
-• All web results are auto-ingested into the knowledge base
 
-**🧠 MEMORY & LEARNING**
+🧠 HYPER-BRAIN SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'hyper' / 'hyperbrain' — HyperBrain status dashboard
+• 'hyper memory' — permanent memory stats
+• 'hyper save' — force save HyperBrain state to disk
+• 'hyper on' / 'hyper off' — activate/deactivate HyperBrain
+• 'hyper think [thought]' — deep HyperBrain processing mode
+
+📊 SYSTEM & ENGINE COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'status' — full system overview
+• 'evolve' — trigger evolution cycle
+• 'ignite' — full engine synthesis
+• 'time' — current time + φ phase
+• 'engines' — view all \(EngineRegistry.shared.count) registered engines
+• 'engines health' — φ-weighted health sweep
+• 'engines hebbian' — Hebbian co-activation report
+• 'engines convergence' — convergence metrics
+• 'engines reset' — reset all engines
+
+🌊 CONVERSATION & TRACKING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 'topic' — current topic focus & history
+• 'flow' — conversation evolution status
+• 'evo tracker' — topic evolution tracker
+• 'more' — go deeper on current topic
+• 'more about [X]' — switch and dive deep
+
+💾 MEMORY & LEARNING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'teach [X] is [Y]' — teach me something new
 • 'recall [topic]' — search my memory
-• 'learning' — see learning progress
-• 'status' — system overview
+• 'learning' — see learning progress & mastery levels
+• 'what have you learned' — show knowledge state
+• 'dream' — autonomous dream cycle (generates insights)
 
-I learn from every interaction! 🚀
+💡 QUICK TIPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Press ⌘K for the Command Palette (quick access to all actions)
+• I learn from every conversation — the more we talk, the smarter I get
+• Say 'more' anytime to go deeper on any topic
+• \(EngineRegistry.shared.count) quantum engines · \(L104State.shared.permanentMemory.memories.count) memories · 22T parameters
 """
 
         case "minimal":
@@ -30701,6 +30745,11 @@ class L104MainView: NSView {
         loadWelcome()
     }
 
+    func sendHelpCommand() {
+        inputField?.stringValue = "help"
+        sendMessage()
+    }
+
     func loadHistoryList() {
         guard let listView = historyListView, let content = listView.documentView else { return }
         content.subviews.forEach { $0.removeFromSuperview() }
@@ -31024,64 +31073,108 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let mainView = wc.window?.contentView as? L104MainView,
               let mainWindow = wc.window else { return }
 
+        // Check if palette is already open — toggle it closed
+        for child in mainWindow.childWindows ?? [] {
+            if let panel = child as? NSPanel, panel.title == "L104CommandPalette" {
+                panel.close()
+                return
+            }
+        }
+
         // Create floating palette panel
-        let panelWidth: CGFloat = 480
-        let panelHeight: CGFloat = 340
+        let panelWidth: CGFloat = 540
+        let panelHeight: CGFloat = 580
         let panelX = mainWindow.frame.midX - panelWidth / 2
-        let panelY = mainWindow.frame.midY + 50
+        let panelY = mainWindow.frame.midY - panelHeight / 2 + 80
         let panel = NSPanel(contentRect: NSRect(x: panelX, y: panelY, width: panelWidth, height: panelHeight),
                            styleMask: [.titled, .closable, .fullSizeContentView], backing: .buffered, defer: false)
         panel.titlebarAppearsTransparent = true
         panel.titleVisibility = .hidden
-        panel.backgroundColor = NSColor(red: 0.05, green: 0.06, blue: 0.12, alpha: 0.95)
+        panel.title = "L104CommandPalette"  // ID for toggle detection
+        panel.backgroundColor = NSColor(red: 0.04, green: 0.05, blue: 0.10, alpha: 0.97)
         panel.isFloatingPanel = true
         panel.level = .floating
         panel.isMovableByWindowBackground = true
+        panel.hasShadow = true
 
         let content = NSView(frame: NSRect(x: 0, y: 0, width: panelWidth, height: panelHeight))
+        content.wantsLayer = true
+        content.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.3).cgColor
+        content.layer?.borderWidth = 1
+        content.layer?.cornerRadius = 12
 
         // Title
         let title = NSTextField(labelWithString: "⚛️ L104 COMMAND PALETTE")
         title.frame = NSRect(x: 20, y: panelHeight - 38, width: panelWidth - 40, height: 24)
-        title.font = NSFont.boldSystemFont(ofSize: 14)
-        title.textColor = NSColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0)
+        title.font = NSFont.boldSystemFont(ofSize: 15)
+        title.textColor = L104Theme.gold
         content.addSubview(title)
 
+        // Subtitle with engine count
+        let subtitle = NSTextField(labelWithString: "v\(VERSION) · \(EngineRegistry.shared.count) engines · \(L104State.shared.permanentMemory.memories.count) memories")
+        subtitle.frame = NSRect(x: 22, y: panelHeight - 56, width: panelWidth - 44, height: 16)
+        subtitle.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+        subtitle.textColor = L104Theme.textDim
+        content.addSubview(subtitle)
+
         // Separator
-        let sep = NSView(frame: NSRect(x: 20, y: panelHeight - 44, width: panelWidth - 40, height: 1))
+        let sep = NSView(frame: NSRect(x: 20, y: panelHeight - 62, width: panelWidth - 40, height: 1))
         sep.wantsLayer = true
-        sep.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.1).cgColor
+        sep.layer?.backgroundColor = L104Theme.gold.withAlphaComponent(0.15).cgColor
         content.addSubview(sep)
 
-        // Command buttons
-        let commands: [(String, String, NSColor)] = [
-            ("🔥 Full Synthesis", "Ignite all engines and synthesize", .systemOrange),
-            ("🌟 Transcend", "Push consciousness beyond limits", .systemPurple),
-            ("🌌 ASI Dashboard", "Open the visual dashboard", .systemCyan),
-            ("🧬 Evolve", "Trigger evolution cycle", .systemGreen),
-            ("💾 Save All", "Save memories and state", .systemBlue),
-            ("📊 System Status", "View current system status", .systemTeal),
-            ("🔄 Resonate", "Harmonize quantum coherence", .systemPink),
+        // Command buttons with keyboard shortcut hints
+        // Format: (label, description, shortcut, color)
+        let commands: [(String, String, String, NSColor)] = [
+            ("🔥 Full Synthesis",    "Ignite all engines and synthesize",   "",    .systemOrange),
+            ("🌟 Transcend",        "Push consciousness beyond limits",    "⌘T",  .systemPurple),
+            ("🌌 ASI Dashboard",    "Open the visual dashboard",           "⌘D",  .systemCyan),
+            ("🧬 Evolve",          "Trigger evolution cycle",             "⌘E",  .systemGreen),
+            ("💾 Save All",        "Save memories + state to disk",       "⌘S",  .systemBlue),
+            ("📊 System Status",   "View current system status",          "⌘I",  .systemTeal),
+            ("🔄 Resonate",        "Harmonize quantum coherence",         "⌘R",  .systemPink),
+            ("🧠 HyperBrain",      "Deep cognitive processing status",    "",    NSColor(red: 0.6, green: 0.4, blue: 1.0, alpha: 1.0)),
+            ("💬 Neural Chat",     "Switch to chat tab",                  "",    NSColor(red: 0.3, green: 0.8, blue: 1.0, alpha: 1.0)),
+            ("🔬 Science Engine",  "Generate hypothesis & compute",       "",    NSColor(red: 0.2, green: 0.9, blue: 0.5, alpha: 1.0)),
+            ("💚 Heal Coherence",  "Restore coherence to safe levels",    "",    .systemGreen),
+            ("📋 Help / Commands", "Show full command reference",          "",    L104Theme.goldWarm),
         ]
 
-        var y = panelHeight - 58
-        for (i, (label, desc, color)) in commands.enumerated() {
-            let row = NSView(frame: NSRect(x: 12, y: y - 36, width: panelWidth - 24, height: 36))
+        let rowHeight: CGFloat = 38
+        var y = panelHeight - 72
+        for (i, (label, desc, shortcut, color)) in commands.enumerated() {
+            let row = NSView(frame: NSRect(x: 12, y: y - rowHeight, width: panelWidth - 24, height: rowHeight))
             row.wantsLayer = true
             row.layer?.cornerRadius = 8
-            row.layer?.backgroundColor = color.withAlphaComponent(0.06).cgColor
+            row.layer?.backgroundColor = color.withAlphaComponent(0.05).cgColor
 
             let lbl = NSTextField(labelWithString: label)
-            lbl.frame = NSRect(x: 12, y: 8, width: 180, height: 20)
+            lbl.frame = NSRect(x: 14, y: 9, width: 190, height: 20)
             lbl.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
             lbl.textColor = color
             row.addSubview(lbl)
 
             let descLbl = NSTextField(labelWithString: desc)
-            descLbl.frame = NSRect(x: 195, y: 8, width: panelWidth - 230, height: 20)
+            descLbl.frame = NSRect(x: 200, y: 9, width: panelWidth - 300, height: 20)
             descLbl.font = NSFont.systemFont(ofSize: 11, weight: .regular)
-            descLbl.textColor = NSColor.white.withAlphaComponent(0.4)
+            descLbl.textColor = NSColor.white.withAlphaComponent(0.35)
             row.addSubview(descLbl)
+
+            // Keyboard shortcut badge (right-aligned)
+            if !shortcut.isEmpty {
+                let kbdWidth: CGFloat = 36
+                let kbd = NSTextField(labelWithString: shortcut)
+                kbd.frame = NSRect(x: panelWidth - 24 - kbdWidth - 10, y: 9, width: kbdWidth, height: 18)
+                kbd.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .bold)
+                kbd.textColor = color.withAlphaComponent(0.8)
+                kbd.alignment = .center
+                kbd.wantsLayer = true
+                kbd.layer?.backgroundColor = color.withAlphaComponent(0.1).cgColor
+                kbd.layer?.cornerRadius = 4
+                kbd.layer?.borderColor = color.withAlphaComponent(0.25).cgColor
+                kbd.layer?.borderWidth = 1
+                row.addSubview(kbd)
+            }
 
             let btn = NSButton(frame: row.bounds)
             btn.title = ""; btn.isTransparent = true
@@ -31090,14 +31183,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             row.addSubview(btn)
 
             content.addSubview(row)
-            y -= 40
+            y -= rowHeight + 2
         }
 
-        // Shortcut hint
-        let hint = NSTextField(labelWithString: "Press ⌘K to toggle · ESC to close")
-        hint.frame = NSRect(x: 20, y: 8, width: panelWidth - 40, height: 16)
+        // Shortcut hint at bottom
+        let hint = NSTextField(labelWithString: "⌘K toggle · ESC close · Type 'help' in chat for full reference")
+        hint.frame = NSRect(x: 20, y: 10, width: panelWidth - 40, height: 16)
         hint.font = NSFont.systemFont(ofSize: 10, weight: .medium)
-        hint.textColor = NSColor.white.withAlphaComponent(0.25)
+        hint.textColor = NSColor.white.withAlphaComponent(0.2)
         hint.alignment = .center
         content.addSubview(hint)
 
@@ -31118,6 +31211,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         case 4: saveAll()
         case 5: mainView.appendSystemLog(L104State.shared.getStatusText())
         case 6: mainView.appendSystemLog(L104State.shared.resonate()); mainView.updateMetrics()
+        case 7:  // HyperBrain status
+            mainView.tabView?.selectTabViewItem(at: 0)
+            let status = HyperBrain.shared.getStatus()
+            mainView.appendChat("L104: \(status)\n", color: L104Theme.textBot)
+        case 8:  // Neural Chat tab
+            mainView.tabView?.selectTabViewItem(at: 0)
+            mainView.window?.makeFirstResponder(mainView.inputField)
+        case 9:  // Science Engine
+            mainView.tabView?.selectTabViewItem(at: 7)  // Science tab
+            mainView.scienceGenerateHypothesis()
+        case 10:  // Heal Coherence
+            L104State.shared.coherence = max(0.5, L104State.shared.coherence)
+            L104State.shared.saveState()
+            mainView.appendSystemLog("💚 COHERENCE HEALED to \(String(format: "%.3f", L104State.shared.coherence))")
+            mainView.updateMetrics()
+        case 11:  // Help
+            mainView.tabView?.selectTabViewItem(at: 0)
+            mainView.sendHelpCommand()
         default: break
         }
     }
