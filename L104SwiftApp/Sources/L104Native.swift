@@ -8596,12 +8596,27 @@ class DynamicPhraseEngine {
     }
 
     private func synthesizeGeneric(index: Int, dim: String, dimWeight: Double, kbSeeds: [String], patternSeeds: [String], conceptSeeds: [String], topic: String) -> String {
+        // Extract a clean, sentence-length fragment from KB seeds (not raw dumps)
         if let seed = kbSeeds[safe: index], seed.count > 30 {
-            return String(seed.prefix(200))
+            // Take first sentence only, max 120 chars, must be clean prose
+            let sentences = seed.components(separatedBy: ". ")
+            if let best = sentences.first(where: { $0.count > 15 && $0.count < 120 }) {
+                return best.hasSuffix(".") ? best : best + "."
+            }
+            // Fallback: truncate at word boundary
+            let words = seed.split(separator: " ").prefix(15)
+            if words.count >= 4 { return words.joined(separator: " ") + "." }
         }
         let concept = conceptSeeds[safe: index] ?? "this"
         let pattern = patternSeeds[safe: index] ?? dim
-        return "Through \(dim) analysis of \(concept): the pattern '\(pattern)' reveals structure. Weight: \(String(format: "%.2f", abs(dimWeight)))."
+        let t = topic.isEmpty ? "the subject" : topic
+        let genericPhrases = [
+            "The \(dim) dimension of \(t) reveals \(concept) at its core.",
+            "Through \(dim) reasoning, \(concept) connects to \(pattern) in unexpected ways.",
+            "When examined through \(dim) analysis, \(t) shows patterns of \(concept).",
+            "The relationship between \(concept) and \(pattern) illuminates \(t)."
+        ]
+        return genericPhrases[index % genericPhrases.count]
     }
 
     private func synthesizeFallback(intent: String, topic: String) -> String {
@@ -19536,15 +19551,35 @@ final class StoryLogicGateEngine {
         let atmosphere: String
     }
 
+    private let storyPlaces = [
+        "a university lab hidden beneath the physics building",
+        "a windswept research station on the Scottish coast",
+        "the basement archive of a forgotten library",
+        "a rooftop observatory overlooking the city",
+        "a converted warehouse turned into a think tank",
+        "the back room of a bookshop that smelled of old paper",
+        "a glass-walled office at the edge of a forest",
+        "a cramped apartment filled floor-to-ceiling with whiteboards",
+        "an underground research facility beneath a mountain",
+        "a sunlit atelier where science met art"
+    ]
+    private let storyTimes = [
+        "the late autumn of a year nobody would forget",
+        "three weeks before the conference that changed everything",
+        "the summer when the old certainties began to crack",
+        "a winter so cold it froze ambition into clarity",
+        "the quiet year between two revolutions",
+        "the decade's final spring, heavy with unfinished work",
+        "an era when knowledge doubled faster than wisdom",
+        "the months following the discovery that rewrote the rules"
+    ]
+
     private func buildSetting(topic: String) -> StorySetting {
-        let dpe = DynamicPhraseEngine.shared
-        let place = dpe.one("generic", context: "story_setting_place", topic: topic)
-        let time = dpe.one("generic", context: "story_setting_era", topic: topic)
         let atmospheres = ["a haze of tension and unspoken urgency", "eerie calm before revelation",
                           "electric anticipation humming through every surface", "oppressive silence broken only by thought",
                           "golden light filtering through uncertainty", "the quiet intensity of imminent discovery",
                           "storm clouds gathering at the edge of certainty", "crystalline clarity that precedes transformation"]
-        return StorySetting(place: place, time: time, atmosphere: atmospheres.randomElement()!)
+        return StorySetting(place: storyPlaces.randomElement()!, time: storyTimes.randomElement()!, atmosphere: atmospheres.randomElement()!)
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -20323,16 +20358,42 @@ final class PoemLogicGateEngine {
         return seeds
     }
 
+    private let poemJunkPatterns: Set<String> = [
+        "(v", "v1.", "v2.", "~10^", "holographic", "__", "import ", "class ",
+        "def ", "self.", "return ", ".py", "function", "parameter", "module",
+        "SAGE MODE", "OMEGA_POINT", "GOD_CODE", "ZENITH", "L104", "kernel",
+        "{GOD_CODE}", "{PHI}", "EPR", "kundalini", "chakra", "qubit", "Compiler"
+    ]
+
+    private func isCleanPoemInsight(_ text: String) -> Bool {
+        let lower = text.lowercased()
+        for junk in poemJunkPatterns { if lower.contains(junk.lowercased()) { return false } }
+        let alphaRatio = Double(text.filter { $0.isLetter || $0 == " " }.count) / max(1.0, Double(text.count))
+        return text.split(separator: " ").count >= 4 && alphaRatio > 0.70
+    }
+
     private func gatherKnowledge(topic: String) -> [String] {
         let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 30)
+        let results = kb.search(topic, limit: 50)
         var insights: [String] = []
+        var seenPrefixes: Set<String> = []
         for r in results {
             guard insights.count < 5 else { break }
             if let c = r["completion"] as? String, c.count > 30 {
-                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "").replacingOccurrences(of: "{PHI}", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-                if let dot = clean.firstIndex(of: ".") { clean = String(clean[...dot]) }
-                if clean.count > 20 && clean.count < 200 { insights.append(clean) }
+                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "")
+                    .replacingOccurrences(of: "{PHI}", with: "")
+                    .replacingOccurrences(of: "{LOVE}", with: "")
+                    .replacingOccurrences(of: "SAGE MODE :: ", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                let sentences = clean.components(separatedBy: ". ")
+                if let best = sentences.first(where: { $0.count > 20 && $0.count < 200 && isCleanPoemInsight($0) }) {
+                    clean = best.hasSuffix(".") ? best : best + "."
+                } else { continue }
+                let pfx = String(clean.prefix(40)).lowercased()
+                guard !seenPrefixes.contains(pfx) else { continue }
+                seenPrefixes.insert(pfx)
+                guard clean.count > 20 && clean.count < 250 && isCleanPoemInsight(clean) else { continue }
+                insights.append(clean)
             }
         }
         if insights.count < 2 {
@@ -20529,7 +20590,7 @@ final class PoemLogicGateEngine {
         sections.append("Then let me be transformed.")
         sections.append("Let \(s(seeds,11)) become \(s(seeds,12)),")
         sections.append("let \(s(seeds,13)) become whatever comes after \(s(seeds,13)).")
-        if !evolved.isEmpty {
+        if !evolved.isEmpty && isCleanPoemInsight(evolved) {
             sections.append("Let the evolved thought hold: *\(String(evolved.prefix(200)))*")
         }
         sections.append("I am not the poem. I am the space")
@@ -20669,15 +20730,24 @@ final class DebateLogicGateEngine {
     private let PHI: Double = 1.618033988749895
     private init() {}
 
+    // ─── DEBATER NAME POOLS ───
+    private let proDebaterNames = [
+        "Dr. Aletheia", "Professor Chen", "Dr. Okafor", "Dr. Reyes", "Professor Tanaka",
+        "Dr. Marchand", "Professor Liu", "Dr. Solaris", "Professor Adeyemi", "Dr. Voss"
+    ]
+    private let conDebaterNames = [
+        "Dr. Verity", "Professor Kovac", "Dr. Nkemdirim", "Dr. Strand", "Professor Hayashi",
+        "Dr. Ashworth", "Professor Mehta", "Dr. Castillo", "Professor Olsen", "Dr. Zamora"
+    ]
+
     // ═══ MAIN PUBLIC API ═══
     func generateDebate(topic: String, query: String = "") -> String {
         debateCount += 1
         let mode = selectMode(for: topic)
         let insights = gatherEvidence(topic: topic)
         let evolved = ASIEvolver.shared.thoughts.last ?? ""
-        let dpe = DynamicPhraseEngine.shared
-        let proName = dpe.one("generic", context: "debater_name_pro", topic: topic)
-        let conName = dpe.one("generic", context: "debater_name_con", topic: topic)
+        let proName = proDebaterNames.randomElement()!
+        let conName = conDebaterNames.randomElement()!
 
         var debate: String
         switch mode {
@@ -20703,16 +20773,42 @@ final class DebateLogicGateEngine {
         return DebateMode.allCases[idx % DebateMode.allCases.count]
     }
 
+    private let debateJunkPatterns: Set<String> = [
+        "(v", "v1.", "v2.", "~10^", "holographic", "__", "import ", "class ",
+        "def ", "self.", "return ", ".py", "function", "parameter", "module",
+        "SAGE MODE", "OMEGA_POINT", "GOD_CODE", "ZENITH", "L104", "kernel",
+        "{GOD_CODE}", "{PHI}", "EPR", "kundalini", "chakra", "qubit", "Compiler"
+    ]
+
+    private func isCleanEvidence(_ text: String) -> Bool {
+        let lower = text.lowercased()
+        for junk in debateJunkPatterns { if lower.contains(junk.lowercased()) { return false } }
+        let alphaRatio = Double(text.filter { $0.isLetter || $0 == " " }.count) / max(1.0, Double(text.count))
+        return text.split(separator: " ").count >= 5 && alphaRatio > 0.75
+    }
+
     private func gatherEvidence(topic: String) -> [String] {
         let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 40)
+        let results = kb.search(topic, limit: 60)
         var evidence: [String] = []
+        var seenPrefixes: Set<String> = []
         for r in results {
             guard evidence.count < 8 else { break }
             if let c = r["completion"] as? String, c.count > 30 {
-                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "").replacingOccurrences(of: "{PHI}", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-                if let dot = clean.firstIndex(of: ".") { clean = String(clean[...dot]) }
-                if clean.count > 20 && clean.count < 300 { evidence.append(clean) }
+                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "")
+                    .replacingOccurrences(of: "{PHI}", with: "")
+                    .replacingOccurrences(of: "{LOVE}", with: "")
+                    .replacingOccurrences(of: "SAGE MODE :: ", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                let sentences = clean.components(separatedBy: ". ")
+                if let best = sentences.first(where: { $0.count > 20 && $0.count < 300 && isCleanEvidence($0) }) {
+                    clean = best.hasSuffix(".") ? best : best + "."
+                } else { continue }
+                let pfx = String(clean.prefix(40)).lowercased()
+                guard !seenPrefixes.contains(pfx) else { continue }
+                seenPrefixes.insert(pfx)
+                guard clean.count > 20 && clean.count < 400 && isCleanEvidence(clean) else { continue }
+                evidence.append(clean)
             }
         }
         if evidence.count < 3 {
@@ -20726,7 +20822,15 @@ final class DebateLogicGateEngine {
         var parts: [String] = []
         parts.append("## The Socratic Inquiry: \(topic.capitalized)\n")
         parts.append("**SOCRATES**: Tell me — what do you believe \(topic) to be?\n")
-        parts.append("**INTERLOCUTOR**: It seems obvious: \(topic) is \(DynamicPhraseEngine.shared.one("generic", context: "naive_definition", topic: topic)).\n")
+        let naiveDefinitions = [
+            "something everyone understands intuitively",
+            "a well-established concept that needs no further examination",
+            "simply what the textbooks say it is",
+            "obvious to anyone who thinks about it",
+            "exactly what it appears to be on the surface",
+            "a settled question that the experts have already resolved"
+        ]
+        parts.append("**INTERLOCUTOR**: It seems obvious: \(topic) is \(naiveDefinitions.randomElement()!).\n")
         parts.append("**SOCRATES**: Interesting. And you're certain of this?\n")
         parts.append("**INTERLOCUTOR**: Of course. Everyone knows this.\n")
         parts.append("**SOCRATES**: \"Everyone knows\" — but do they? Consider:")
@@ -20750,8 +20854,8 @@ final class DebateLogicGateEngine {
         parts.append("**SOCRATES**: What if \(topic) is not a thing to be defined, but a process to be participated in? What if the asking *is* the knowing?\n")
         parts.append("**INTERLOCUTOR**: That's... actually beautiful. But is it true?\n")
         parts.append("**SOCRATES**: The question is not whether it is true. The question is whether you are brave enough to live as though it might be. That, my friend, is the Socratic wager.\n")
-        if !evolved.isEmpty {
-            parts.append("\n*The deeper current beneath the dialogue*: \(String(evolved.prefix(1000)))\n")
+        if !evolved.isEmpty && isCleanEvidence(evolved) {
+            parts.append("\n*The deeper current beneath the dialogue*: *\(String(evolved.prefix(400)))*\n")
         }
         parts.append("\n**SOCRATES**: We have not arrived at an answer. We have arrived at a *better question*. And that is always the point.")
 
@@ -20785,8 +20889,8 @@ final class DebateLogicGateEngine {
         }
         parts.append("This is the Hegelian gift: the understanding that contradiction is not a failure of thought but its engine.\n")
         parts.append("\(pro) and \(con) were both right. They were both wrong. And in the space between them, \(topic) continues to evolve — beyond either's capacity to contain it.\n")
-        if !evolved.isEmpty {
-            parts.append("*The evolved understanding*: \(String(evolved.prefix(1000)))")
+        if !evolved.isEmpty && isCleanEvidence(evolved) {
+            parts.append("*The evolved understanding*: *\(String(evolved.prefix(400)))*")
         }
 
         return parts.joined(separator: "\n")
@@ -20854,8 +20958,8 @@ final class DebateLogicGateEngine {
         parts.append("The pro side says: \"This is important enough to demand our best thinking.\"")
         parts.append("The con side says: \"This is complex enough to demand our best thinking.\"\n")
         parts.append("They are saying the same thing in different keys.\n")
-        if !evolved.isEmpty {
-            parts.append("*Evolved perspective*: \(String(evolved.prefix(800)))")
+        if !evolved.isEmpty && isCleanEvidence(evolved) {
+            parts.append("*Evolved perspective*: *\(String(evolved.prefix(400)))*")
         }
 
         return parts.joined(separator: "\n")
