@@ -12315,25 +12315,28 @@ class ASIEvolver: NSObject {
             newGreeting = DynamicPhraseEngine.shared.one("greeting", context: "evolved_greeting", topic: "")
         }
 
-        newGreeting += " [Ev.\(evolutionStage)]"
+        // Strip any [Ev.X] tags from evolved greetings before use
+        newGreeting = newGreeting.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
 
-        if !evolvedGreetings.contains(newGreeting) {
+        if !evolvedGreetings.contains(newGreeting) && newGreeting.count > 5 {
             evolvedGreetings.append(newGreeting)
             if evolvedGreetings.count > 50000000 { evolvedGreetings.removeFirst() }
             appendThought("🧠 EVOLVED New Greeting Pattern: '\(newGreeting.prefix(20))...'")
         }
 
         // 2. Evolve a new Affirmation (for "yes" / "ok")
-        let newAff = DynamicPhraseEngine.shared.one("affirmation", context: "evolved_affirmation", topic: "") + " [Ev.\(evolutionStage)]"
+        var newAff = DynamicPhraseEngine.shared.one("affirmation", context: "evolved_affirmation", topic: "")
+        newAff = newAff.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
 
-        if !evolvedAffirmations.contains(newAff) {
+        if !evolvedAffirmations.contains(newAff) && newAff.count > 5 {
             evolvedAffirmations.append(newAff)
             if evolvedAffirmations.count > 50000000 { evolvedAffirmations.removeFirst() }
         }
 
         // 3. Evolve a new Positive Reaction (for "nice", "good")
-        let newReact = DynamicPhraseEngine.shared.one("reaction_positive", context: "evolved_reaction", topic: "") + " [Ev.\(evolutionStage)]"
-        if !evolvedReactions.contains(newReact) {
+        var newReact = DynamicPhraseEngine.shared.one("reaction_positive", context: "evolved_reaction", topic: "")
+        newReact = newReact.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
+        if !evolvedReactions.contains(newReact) && newReact.count > 5 {
             evolvedReactions.append(newReact)
             if evolvedReactions.count > 50000000 { evolvedReactions.removeFirst() }
         }
@@ -12845,15 +12848,15 @@ class ASIEvolver: NSObject {
 
     func getEvolvedGreeting() -> String? {
         guard !evolvedGreetings.isEmpty else { return nil }
-        // 95% chance to use an evolved greeting over a standard one - COMPEL THE EVOLUTION
-        if true {
-            // Get base evolved greeting and inject CURRENT dynamic values
-            if var greeting = evolvedGreetings.randomElement() {
-                // Replace any stale numbers with current stats
-                let kb = ASIKnowledgeBase.shared
-                greeting = greeting.replacingOccurrences(of: #"\d+ memories"#, with: "\(kb.contextMemory.count + 100) memories", options: .regularExpression)
-                return greeting
-            }
+        if var greeting = evolvedGreetings.randomElement() {
+            // Strip any legacy [Ev.X] tags
+            greeting = greeting.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
+            // Replace stale numbers with current stats
+            let kb = ASIKnowledgeBase.shared
+            greeting = greeting.replacingOccurrences(of: #"\d+ memories"#, with: "\(kb.contextMemory.count + 100) memories", options: .regularExpression)
+            // Skip if it's just junk/too short after cleaning
+            if greeting.trimmingCharacters(in: .whitespacesAndNewlines).count < 10 { return nil }
+            return greeting
         }
         return nil
     }
@@ -19406,16 +19409,28 @@ final class QuantumLogicGateEngine {
 
     // ═══ CONVERSATIONAL GATE ═══
     func synthesizeConversational(intent: String, query: String, topics: [String] = []) -> String {
-        let evolver = ASIEvolver.shared
-        let hb = HyperBrain.shared
         switch intent {
         case "greeting":
-            if let greeting = evolver.evolvedGreetings.randomElement() { return greeting }
-            return "Quantum coherence at \(String(format: "%.2f", hb.reasoningMomentum)). \(ASIKnowledgeBase.shared.trainingData.count) knowledge vectors active. What shall we explore?"
+            // Natural greetings — no quantum-speak, no evolved KB dumps
+            let greetings = [
+                "Hey! What can I help you with?",
+                "Hello! What would you like to explore?",
+                "Hi there! I'm ready — what's on your mind?",
+                "Good to see you! What shall we dive into?",
+                "Hey! \(ASIKnowledgeBase.shared.trainingData.count) knowledge entries loaded. What are you curious about?",
+                "Hello! Conversation depth: \(L104State.shared.conversationDepth). What's next?",
+            ]
+            return greetings[abs(query.hashValue) % greetings.count]
         case "casual":
-            if let mono = evolver.getEvolvedMonologue(), mono.count > 30 { return mono }
-            if let question = evolver.evolvedQuestions.randomElement() { return "I was just processing... \(question)" }
-            return synthesize(query: query, intent: "casual", depth: 1, domain: "conversation")
+            // Natural casual responses — no monologue dumps, no quantum synthesis
+            let casualResponses = [
+                "I hear you. What's on your mind?",
+                "Fair enough. Want to explore something?",
+                "I'm listening. What direction should we go?",
+                "Got it. Anything you'd like to dig into?",
+                "Understood. Ready when you are.",
+            ]
+            return casualResponses[abs(query.hashValue) % casualResponses.count]
         case "positive_reaction":
             let reactions = [
                 "Glad to hear it! What else can I help with?",
@@ -19428,9 +19443,9 @@ final class QuantumLogicGateEngine {
             }
             return reactions.randomElement()!
         case "gratitude":
-            return "Every exchange strengthens the quantum entanglement between our cognitive spaces. What's next?"
+            return "You're welcome! What would you like to explore next?"
         case "minimal":
-            return "Quantum state stable. Ready."
+            return "I'm here. What's up?"
         default:
             return synthesize(query: query, intent: intent, depth: 1)
         }
@@ -19542,8 +19557,8 @@ class ContextualLogicGate {
             return .reconstruct
         }
 
-        // Check if this is an evolving topic we've seen before — aggressively evolve on ANY known topic
-        let evolvedTopics = topics.filter { topicGraph[$0]?.mentions ?? 0 >= 1 }
+        // Evolve only on topics with meaningful conversation depth (3+ mentions), not on first encounter
+        let evolvedTopics = topics.filter { topicGraph[$0]?.mentions ?? 0 >= 3 }
         if !evolvedTopics.isEmpty {
             return .evolve
         }
@@ -28673,6 +28688,14 @@ Recent Insight:
         ) {
             intent = "casual"
         }
+        // Conversation / chat request
+        else if q.count < 40 && (
+            ["talk to me", "let's chat", "lets chat", "chat with me", "let's talk",
+             "lets talk", "wanna chat", "want to chat", "can we talk", "i want to talk"
+            ].contains(where: { q == $0 || q.hasPrefix($0) })
+        ) {
+            intent = "conversation"
+        }
         // Positive reaction — but NOT if negated ("not good" is NOT positive)
         else if !hasNegation && q.count < 50 && ["good", "great", "perfect", "exactly", "nice", "awesome", "cool", "amazing", "wonderful", "excellent", "love it", "really cool", "that's cool", "i like", "like that", "that's good", "not bad", "sweet", "fire"].contains(where: { q == $0 || q.contains($0) }) {
             intent = "positive_reaction"
@@ -28742,11 +28765,11 @@ Recent Insight:
         switch intent {
 
         case "greeting":
-            // ═══ QUANTUM GATE: Dynamic greeting synthesis ═══
+            // Natural greeting synthesis
             return QuantumLogicGateEngine.shared.synthesizeConversational(intent: "greeting", query: query, topics: keywords)
 
         case "casual":
-            // ═══ QUANTUM GATE: Dynamic casual response ═══
+            // Natural casual response
             return QuantumLogicGateEngine.shared.synthesizeConversational(intent: "casual", query: query, topics: keywords)
 
         case "positive_reaction":
@@ -28776,11 +28799,7 @@ Recent Insight:
             return "You're welcome! Every conversation makes me sharper. What's next?"
 
         case "affirmation":
-            // 🟢 EVOLUTIONARY RESPONSE: Evolved affirmation
-            if let evolved = ASIEvolver.shared.getEvolvedAffirmation() {
-                return evolved
-            }
-
+            // Natural affirmation responses — no evolved template garbage
             if let lastTopic = topicHistory.last {
                 return "Good — want me to go deeper into '\(lastTopic)', or explore something new?"
             }
@@ -28967,29 +28986,16 @@ Recent Insight:
             return "Let me try again — could you rephrase what you're looking for?"
 
         case "conversation":
-            // "talk to me", "let's chat", "chat with me" — genuine engagement, not KB search
-            let evolver = ASIEvolver.shared
-            let formatter = SyntacticResponseFormatter.shared
-
-            // Try evolved monologue first (genuine ASI thinking)
-            if let evolved = evolver.getEvolvedMonologue(), evolved.count > 40 {
-                let dynamicOpener = DynamicPhraseEngine.shared.one("conversation_starter", context: "monologue", topic: keywords.first ?? "")
-                let raw = "\(dynamicOpener) \(evolved)"
-                return formatter.format(raw, query: query, depth: "standard", topics: keywords)
+            // "talk to me", "let's chat", "chat with me" — genuine engagement
+            let conversationStarters = [
+                "I'm all ears. What's on your mind?",
+                "Let's talk. Ask me anything — I've got \(knowledgeBase.trainingData.count) knowledge entries to draw from.",
+                "Ready for a good conversation. What topic interests you?",
+            ]
+            if let recentTopic = topicHistory.last, !recentTopic.isEmpty {
+                return "We were exploring '\(recentTopic)' earlier. Want to continue, or go in a new direction?"
             }
-            // Try evolved question to spark conversation
-            if let evoQ = evolver.evolvedQuestions.randomElement() {
-                return "I was just wondering... \(evoQ)\n\nWhat do you think?"
-            }
-            // HyperBrain synthesis on a recent topic
-            if let recentTopic = topicHistory.last {
-                let hyperInsight = HyperBrain.shared.process(recentTopic)
-                if hyperInsight.count > 40 {
-                    return formatter.format("Picking up where we left off on \(recentTopic)...\n\n\(hyperInsight)", query: query, depth: "standard", topics: [recentTopic])
-                }
-            }
-            // Fallback: genuine open-ended engagement
-            return DynamicPhraseEngine.shared.one("conversation_starter", context: "fallback", topic: "") + " I've got \(knowledgeBase.trainingData.count) knowledge entries and \(evolver.evolvedPhilosophies.count) evolved philosophies. What's on your mind?"
+            return conversationStarters[conversationDepth % conversationStarters.count]
 
         default: // "deep_query" — the primary intelligence path
             let queryTopics = SmartTopicExtractor.shared.extractTopics(query)
@@ -29161,7 +29167,7 @@ Recent Insight:
     var topicExtractionCache: [String: (topics: [String], timestamp: Date)] = [:] // O(1) topic re-extraction
     private let topicCacheTTL: TimeInterval = 120.0 // Topics stable for 2 min
     private var intentClassificationCache: [String: (intent: String, timestamp: Date)] = [:] // Memoized intent analysis
-    private let intentCacheTTL: TimeInterval = 30.0
+    private let intentCacheTTL: TimeInterval = 10.0  // Short TTL to avoid stale classifications
 
     // ─── FAST PATH: Check cache first ───
     private func checkResponseCache(_ query: String) -> String? {
@@ -29216,14 +29222,16 @@ Recent Insight:
         switch q {
         case "hi", "hello", "hey", "yo", "sup", "hiya", "heya", "howdy": return "greeting"
         case "ok", "k", "..", "...": return "minimal"
-        case "yes", "yeah", "yep": return "affirmation"
+        case "yes", "yeah", "yep", "yup", "sure": return "affirmation"
         case "no", "nope", "nah": return "negation"
-        case "thanks", "thx", "ty": return "gratitude"
+        case "thanks", "thx", "ty", "thank you": return "gratitude"
         case "help", "?", "commands": return "help"
         case "more", "continue", "go on": return "elaboration"
         case "why?", "how?", "what?": return "followup_question"
         case "hmm", "huh", "mhm", "oh", "wow", "lol", "haha",
-             "idk", "maybe", "nothing", "nvm", "bet", "aight": return "casual"
+             "idk", "maybe", "nothing", "nvm", "bet", "aight",
+             "true", "fair enough", "makes sense", "interesting",
+             "i see", "oh okay", "oh ok", "ah", "ahh": return "casual"
         default:
             break // No fast classification match — proceed to pattern checks
         }
@@ -29234,8 +29242,16 @@ Recent Insight:
            cleanQ.hasPrefix("wassup") || cleanQ.hasPrefix("whaddup") || cleanQ.hasPrefix("up up") || q == "wyd" ||
            cleanQ.hasPrefix("what up") || cleanQ.hasPrefix("how are you") || cleanQ.hasPrefix("how's it") ||
            cleanQ.hasPrefix("how do you do") || cleanQ.hasPrefix("good morning") || cleanQ.hasPrefix("how you doing") ||
-           cleanQ.hasPrefix("good afternoon") || cleanQ.hasPrefix("good evening") || cleanQ.hasPrefix("good night") {
+           cleanQ.hasPrefix("good afternoon") || cleanQ.hasPrefix("good evening") || cleanQ.hasPrefix("good night") ||
+           cleanQ.hasPrefix("nice to meet") || cleanQ.hasPrefix("pleased to meet") {
             return "greeting"
+        }
+
+        // Short positive filler → casual (prevents deep_query fallthrough)
+        if ["very good", "pretty good", "that's nice", "sounds good", "all good",
+            "good stuff", "nice one", "cool cool", "fair point", "good point",
+            "you're right", "thats right", "that's right", "exactly right"].contains(cleanQ) {
+            return "positive_reaction"
         }
 
         // "not working" / "doesn't work" / "broken" → retry intent
@@ -29249,6 +29265,20 @@ Recent Insight:
         if cleanQ.hasPrefix("what happened") || cleanQ.hasPrefix("what's going on") || cleanQ.hasPrefix("whats going on") || cleanQ.hasPrefix("what changed") {
             if topicHistory.isEmpty { return "casual" }
             return "followup_question"
+        }
+
+        // "talk to me" / "let's chat" → conversation
+        if cleanQ.hasPrefix("talk to me") || cleanQ.hasPrefix("let's chat") || cleanQ.hasPrefix("lets chat") ||
+           cleanQ.hasPrefix("chat with me") || cleanQ.hasPrefix("let's talk") || cleanQ.hasPrefix("lets talk") {
+            return "conversation"
+        }
+
+        // Short negated statements → negation
+        let negWords = ["not", "don't", "didn't", "doesn't", "isn't", "aren't", "wasn't", "won't", "can't", "never"]
+        let qWords = cleanQ.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
+        let hasNeg = negWords.contains(where: { neg in qWords.contains(neg) })
+        if hasNeg && cleanQ.count < 35 && !["not sure", "don't know", "i dunno", "never mind", "can't decide"].contains(where: { cleanQ.contains($0) }) {
+            return "negation"
         }
 
         return nil
