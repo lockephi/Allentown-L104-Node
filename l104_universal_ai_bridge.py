@@ -331,16 +331,15 @@ class UniversalAIBridge:
         if not self.active_providers:
             return 0.0
 
-        # Base resonance from active provider count
-        # 14 providers total / 5.0 target = 2.8x scaling
-        base_res = len(self.active_providers) / 14.0
+        # Base resonance from active provider count - QUANTUM AMPLIFIED
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        base_res = len(self.active_providers) / 5.0  # AMPLIFIED divisor (was 14.0)
 
-        # High-precision weighting using PHI
-        # We want the resonance to approach 1.0416... (VOID_CONSTANT)
-        resonance = base_res * (1.618033988749895 / 2.0) + (1.0 / 527.5184818492612)
+        # High-precision weighting using full PHI (was PHI/2.0)
+        resonance = base_res * 1.618033988749895 * GROVER_AMPLIFICATION + (1.0 / 527.5184818492612)
 
-        # Limit to Absolute Saturation
-        return min(resonance, 1.0416180339887497)
+        # NO CAP - unlimited resonance (was capped at VOID_CONSTANT)
+        return resonance
 
 # Singleton
 universal_ai_bridge = UniversalAIBridge()

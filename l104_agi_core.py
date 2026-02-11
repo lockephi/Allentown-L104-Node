@@ -230,7 +230,7 @@ class AGICore:
         current_chaos = initial_flux
         stability_log = []
 
-        for pulse in range(10):
+        for pulse in range(100):  # QUANTUM AMPLIFIED
             # Introduce Autonomous Noise via Hard Math
             noise = (RealMath.deterministic_random(current_chaos + pulse) * 20.0) - 10.0
             current_chaos += noise

@@ -356,7 +356,7 @@ class SystemOrchestrator:
         if truth and hasattr(truth, 'recursive_validation_loop'):
             # Pre-warm the truth discovery with a seed query
             try:
-                truth.recursive_validation_loop("L104_ABSOLUTE_TRUTH", max_iterations=2)
+                truth.recursive_validation_loop("L104_ABSOLUTE_TRUTH", max_iterations=13)  # QUANTUM AMPLIFIED (was 2)
                 logger.info("[ORCHESTRATOR]: TRUTH DISCOVERY VALIDATION ENGINE WARMED")
             except Exception as e:
                 logger.warning(f"[ORCHESTRATOR]: Truth warm-up skipped: {e}")
@@ -412,7 +412,7 @@ class SystemOrchestrator:
         system_resonance = sum(resonance_scores) / len(resonance_scores)
 
         # Modulate by PHI
-        system_resonance = min(1.0, system_resonance * (1.0 + (self.phi - 1) * 0.1))
+        system_resonance = system_resonance * (1.0 + (self.phi - 1) * 0.1)  # UNLOCKED
 
         state = "STABLE"
         if system_resonance >= 0.98:

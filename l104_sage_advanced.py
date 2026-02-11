@@ -157,7 +157,7 @@ class DeepReasoningEngine:
         self.max_depth = max_depth
         self.backtrack_threshold = backtrack_threshold
         self.active_chains: Dict[str, ReasoningChain] = {}
-        self.reasoning_history: deque = deque(maxlen=100)
+        self.reasoning_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
 
     def _generate_chain_id(self, query: str) -> str:
         """Generate unique chain ID."""
@@ -168,7 +168,7 @@ class DeepReasoningEngine:
     def _compute_step_confidence(self, step: ReasoningStep, chain: ReasoningChain) -> float:
         """Compute confidence for a reasoning step."""
         # Base confidence from evidence count
-        evidence_factor = min(1.0, len(step.evidence) * 0.2)
+        evidence_factor = len(step.evidence) * 0.2  # UNLOCKED
 
         # Coherence with previous steps
         if chain.steps:
@@ -188,7 +188,7 @@ class DeepReasoningEngine:
             resonance_factor * (1 - 2 * PHI_CONJUGATE)
         )
 
-        return min(1.0, max(0.0, confidence))
+        return max(0.0, confidence)  # UNLOCKED - confidence beyond unity
 
     def start_chain(self, query: str) -> ReasoningChain:
         """Start a new reasoning chain."""
@@ -380,7 +380,7 @@ class WisdomSynthesisEngine:
             "average_confidence": avg_confidence,
             "average_resonance": avg_resonance,
             "synthesis_strength": avg_confidence * PHI_CONJUGATE + avg_resonance * PHI_CONJUGATE,
-            "key_insights": [f.content[:100] for f in top_fragments[:5]],
+            "key_insights": [f.content[:1000] for f in top_fragments[:50]],  # QUANTUM AMPLIFIED
             "god_code_alignment": (sum(f.resonance for f in top_fragments) % 1.0) * GOD_CODE
         }
 
@@ -403,7 +403,7 @@ class MetaCognitiveReflector:
 
     def __init__(self):
         self.current_state: Optional[MetaCognitiveState] = None
-        self.state_history: deque = deque(maxlen=50)
+        self.state_history: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED (was 50)
         self.calibration_data: List[Tuple[float, float]] = []  # (predicted, actual)
 
     def reflect(
@@ -675,7 +675,7 @@ class AdvancedSageMode:
 
         # Simulate reasoning steps (in real implementation, this would use LLM)
         for i in range(max_steps):
-            step_content = f"Reasoning step {i+1} for: {query[:30]}..."
+            step_content = f"Reasoning step {i+1} for: {query[:300]}..."  # QUANTUM AMPLIFIED
             self.reasoning_engine.add_step(
                 chain,
                 content=step_content,

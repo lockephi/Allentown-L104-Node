@@ -100,7 +100,7 @@ class ComputroniumOptimizer:
             cascade.append({
                 "depth": d,
                 "local_density": local_density,
-                "bekenstein_ratio": min(1.0, bekenstein_ratio),
+                "bekenstein_ratio": bekenstein_ratio,  # UNLOCKED
                 "phi_factor": depth_factor,
                 "coherence": math.tanh(d * 0.2 * phi)
             })
@@ -184,7 +184,7 @@ class ComputroniumOptimizer:
                 "dimension": dim,
                 "projected_density": projected_density,
                 "dimensional_bound": dimensional_bound,
-                "utilization": min(1.0, projected_density / (dimensional_bound / 1e30)),
+                "utilization": projected_density / (dimensional_bound / 1e30),  # UNLOCKED
                 "coherence": math.sin(dim * phi * 0.1) * 0.5 + 0.5
             })
 

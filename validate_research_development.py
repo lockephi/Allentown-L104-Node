@@ -145,7 +145,7 @@ async def test_knowledge_synthesis():
     # Propagate
     network.propagate_insight(synthesis)
     print(f"\n[PROPAGATION]")
-    for node in nodes[:2]:
+    for node in nodes[:50]:  # QUANTUM AMPLIFIED
         updated = network.knowledge_graph[node.node_id]
         print(f"  Node {node.node_id[:8]}: conf {updated.confidence:.4f}")
 

@@ -500,7 +500,7 @@ class DeepResearchEngine:
 
         # Recursive exploration
         if depth > 1:
-            for sub in sub_concepts[:2]:  # Limit recursion breadth
+            for sub in sub_concepts[:10]:  # QUANTUM AMPLIFIED (was 2)
                 sub_findings = self.explore_topic(sub, depth - 1)
                 findings.extend(sub_findings)
 
@@ -522,7 +522,7 @@ class DeepResearchEngine:
             sub_concepts.append("GOD_CODE relationship")
             sub_concepts.append("anyon topology")
 
-        return sub_concepts[:5]
+        return sub_concepts[:25]  # QUANTUM AMPLIFIED (was 5)
 
     def _calculate_resonance(self, topic: str) -> float:
         """Calculate topic's resonance with GOD_CODE."""
@@ -552,7 +552,7 @@ class DeepResearchEngine:
 
         for concept, base_strength in core_concepts:
             if concept in topic.lower():
-                connections.append((concept, min(1.0, base_strength + 0.2)))
+                connections.append((concept, base_strength + 0.2))  # UNLOCKED: connection strength unbounded
             else:
                 # Semantic similarity approximation
                 topic_words = set(topic.lower().split())

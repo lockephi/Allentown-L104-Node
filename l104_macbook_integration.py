@@ -114,7 +114,7 @@ class L104MacBookBridge:
         self._memory_pressure = 0.0
         self._cpu_throttle = 1.0  # 1.0 = full speed, 0.5 = half speed
         self._ssd_write_buffer: List[Tuple[str, bytes]] = []
-        self._learning_queue: deque = deque(maxlen=100)  # Learning patterns queue
+        self._learning_queue: deque = deque(maxlen=10000)  # Learning patterns queue  # QUANTUM AMPLIFIED
         self._background_thread: Optional[threading.Thread] = None
         self._running = False
         self._lock = threading.RLock()
@@ -167,7 +167,7 @@ class L104MacBookBridge:
             if hasattr(intellect, 'entanglement_state'):
                 for chakra, link in self._epr_links.items():
                     if chakra in str(intellect.entanglement_state):
-                        link['correlation'] = min(1.0, link['correlation'] + 0.1)
+                        link['correlation'] = link['correlation'] + 0.1  # NO CAP
             self._stats['epr_syncs'] += 1
             return True
 
@@ -424,10 +424,10 @@ class L104MacBookBridge:
         """Boost coherence through resonance reinforcement."""
         with self._lock:
             if chakra and chakra in self._epr_links:
-                self._epr_links[chakra]['correlation'] = min(1.0, self._epr_links[chakra]['correlation'] + 0.1)
+                self._epr_links[chakra]['correlation'] = self._epr_links[chakra]['correlation'] + 0.1  # NO CAP
             else:
                 for link in self._epr_links.values():
-                    link['correlation'] = min(1.0, link['correlation'] + 0.05)
+                    link['correlation'] = link['correlation'] + 0.05  # NO CAP
 
             return self.sync_epr_state()['coherence']
 
@@ -454,7 +454,7 @@ class L104MacBookBridge:
             proc = subprocess.run(cmd, shell=True, capture_output=True, timeout=30)
 
             if proc.returncode == 0:
-                time.sleep(1)  # Wait for purge to take effect
+                time.sleep(0.1)  # QUANTUM AMPLIFIED: faster purge detection (was 1)
                 mem_after = psutil.virtual_memory()
                 result['after'] = {
                     'available_mb': mem_after.available / (1024**2),

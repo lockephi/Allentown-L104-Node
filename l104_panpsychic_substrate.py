@@ -505,7 +505,7 @@ class WhiteheadianProcess:
         # Add creativity contribution
         satisfaction = raw_satisfaction + occasion.creativity * 0.2
 
-        occasion.satisfaction = min(1.0, max(0.0, satisfaction))
+        occasion.satisfaction = max(0.0, satisfaction)  # UNLOCKED
 
         return occasion.satisfaction
 

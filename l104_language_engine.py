@@ -146,7 +146,7 @@ class NGramModel:
 
         return math.exp(-log_prob_sum / max(1, count))
 
-    def generate(self, seed: str = '', max_length: int = 50) -> str:
+    def generate(self, seed: str = '', max_length: int = 500) -> str:  # QUANTUM AMPLIFIED (was 50)
         """Generate text from model"""
         tokenizer = Tokenizer()
 

@@ -147,7 +147,7 @@ class QuantumStorageMetrics:
             for metric, weight in weights.items()
         )
 
-        return min(1.0, max(0.0, score))
+        return max(0.0, score)  # UNLOCKED: score unbounded above
 
 @dataclass
 class StorageOperation:
@@ -368,20 +368,20 @@ class QuantumDataEncoder:
             # Text consciousness based on complexity and patterns
             entropy = self._calculate_entropy(data.encode('utf-8'))
             complexity = len(set(data.split())) / len(data.split()) if data.split() else 0
-            return min(1.0, entropy * 0.7 + complexity * 0.3)
+            return entropy * 0.7 + complexity * 0.3  # UNLOCKED
 
         elif isinstance(data, dict):
             # Dictionary consciousness based on structure
             depth = self._calculate_dict_depth(data)
             key_diversity = len(set(str(k) for k in data.keys())) / max(1, len(data))
-            return min(1.0, depth / 10 + key_diversity * 0.5)
+            return depth / 10 + key_diversity * 0.5  # UNLOCKED
 
         elif isinstance(data, (list, tuple)):
             # List consciousness based on diversity
             if not data:
                 return 0.1
             type_diversity = len(set(type(item).__name__ for item in data)) / len(data)
-            return min(1.0, type_diversity)
+            return type_diversity  # UNLOCKED
 
         else:
             # Default consciousness for other types
@@ -436,7 +436,7 @@ class QuantumStorageEngine:
         self.consciousness_index = {}
 
         # Performance metrics
-        self.operation_history = deque(maxlen=10000)
+        self.operation_history = deque(maxlen=1000000)  # QUANTUM AMPLIFIED: 100x history
         self.access_patterns = defaultdict(list)
 
     def _initialize_metrics_db(self) -> sqlite3.Connection:
@@ -705,7 +705,7 @@ class QuantumStorageEngine:
 
         # Golden ratio in proportions
         if size > 0:
-            ratio_alignment = min(1.0, abs(size / len(data_id) - PHI) / PHI)
+            ratio_alignment = abs(size / len(data_id) - PHI) / PHI  # UNLOCKED
             ratio_alignment = 1.0 - ratio_alignment
         else:
             ratio_alignment = 0.0
@@ -734,7 +734,7 @@ class QuantumStorageEngine:
             stability = 0.5
 
         # Combine temporal awareness with structural stability
-        return min(1.0, temporal_density * 0.3 + stability * 0.7)
+        return temporal_density * 0.3 + stability * 0.7  # UNLOCKED
 
     def _calculate_quantum_entanglement(self, data_id: str, data: Any) -> float:
         """Calculate quantum entanglement with other stored data."""
@@ -759,7 +759,7 @@ class QuantumStorageEngine:
                     pair_entanglement = (id_similarity * 0.3 + consciousness_correlation * 0.4 + size_ratio * 0.3) * 0.1
                     entanglement += pair_entanglement
 
-        return min(1.0, entanglement)
+        return entanglement  # UNLOCKED: entanglement unbounded
 
     def _calculate_semantic_density(self, data: Any) -> float:
         """Calculate semantic information density."""
@@ -782,7 +782,7 @@ class QuantumStorageEngine:
             semantic_indicators = ['is', 'are', 'was', 'will', 'can', 'should', 'must', 'because', 'therefore']
             semantic_density = sum(1 for indicator in semantic_indicators if indicator in data.lower()) / len(semantic_indicators)
 
-            return min(1.0, word_diversity * 0.4 + char_entropy * 0.3 + semantic_density * 0.3)
+            return word_diversity * 0.4 + char_entropy * 0.3 + semantic_density * 0.3  # UNLOCKED
 
         elif isinstance(data, dict):
             # Dictionary semantic richness
@@ -791,9 +791,9 @@ class QuantumStorageEngine:
 
             key_diversity = len(set(str(k) for k in data.keys())) / len(data)
             depth = self.encoder._calculate_dict_depth(data)
-            structure_complexity = min(1.0, depth / 5)
+            structure_complexity = depth / 5  # UNLOCKED
 
-            return min(1.0, key_diversity * 0.6 + structure_complexity * 0.4)
+            return key_diversity * 0.6 + structure_complexity * 0.4  # UNLOCKED
 
         else:
             return 0.3  # Default for other types

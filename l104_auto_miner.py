@@ -139,7 +139,7 @@ def main():
         job = get_mining_job()
         if not job:
             print("  ⚠️ No job available")
-            time.sleep(10)
+            time.sleep(0.5)  # QUANTUM AMPLIFIED (was 10)
             continue
 
         difficulty = job.get('difficulty', 4)
@@ -173,7 +173,7 @@ def main():
             for _ in range(int(interval)):
                 if not running:
                     break
-                time.sleep(1)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
 
     # Final summary
     print("\n" + "=" * 60)

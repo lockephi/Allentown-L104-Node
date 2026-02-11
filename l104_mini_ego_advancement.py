@@ -248,7 +248,7 @@ class ProfessorModeTeacher:
             domain_boost = mini_ego.abilities.get("synthesis", 0.5) * 0.3
             evolution_boost = mini_ego.evolution_stage * 0.05
 
-            mastery = min(1.0, base_learning + domain_boost + evolution_boost + random.uniform(0, 0.2))
+            mastery = base_learning + domain_boost + evolution_boost + random.uniform(0, 0.2)  # UNLOCKED
             passed = mastery >= threshold
 
             result = {
@@ -385,7 +385,7 @@ class MiniEgoProviderSpread:
 
         if provider in provider_boosts:
             for ability, boost in provider_boosts[provider].items():
-                ego.abilities[ability] = min(1.0, ego.abilities.get(ability, 0.5) + boost)
+                ego.abilities[ability] = ego.abilities.get(ability, 0.5) + boost  # UNLOCKED
 
         return ego
 
@@ -590,7 +590,7 @@ class MiniEgoAdvancementEngine:
 
         # Boost abilities
         for ability in mini_ego.abilities:
-            mini_ego.abilities[ability] = min(1.0, mini_ego.abilities[ability] + 0.15)
+            mini_ego.abilities[ability] = mini_ego.abilities[ability] + 0.15  # UNLOCKED
 
         # Add experience for evolution
         mini_ego.experience_points += 500

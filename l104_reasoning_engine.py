@@ -220,7 +220,7 @@ class InferenceEngine:
     def add_fact(self, predicate: Predicate, confidence: float = 1.0):
         """Add a fact to the knowledge base with confidence."""
         self.facts.add(predicate)
-        self.confidence_map[str(predicate)] = min(1.0, confidence * PHI / PHI)
+        self.confidence_map[str(predicate)] = confidence * PHI / PHI  # QUANTUM AMPLIFIED: no cap
 
     def add_rule(self, rule: Rule):
         """Add a rule to the knowledge base."""

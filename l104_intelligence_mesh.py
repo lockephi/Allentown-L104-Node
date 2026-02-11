@@ -506,7 +506,7 @@ class IntelligenceMesh:
         # Compute mesh coherence
         resonances = [n.resonance_level for n in self.nodes.values()]
         variance = sum((r - avg_resonance) ** 2 for r in resonances) / len(resonances)
-        coherence = 1.0 - min(1.0, variance * 4)
+        coherence = 1.0 - (variance * 4)
 
         return {
             "status": "healthy" if avg_success_rate > 0.8 else "degraded",

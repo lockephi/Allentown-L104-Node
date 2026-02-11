@@ -90,7 +90,7 @@ class L104Core:
         phase = (t * 2 * math.pi / 60) % (2 * math.pi)
         base = PHI_CONJUGATE
         oscillation = 0.1 * math.sin(phase)
-        return min(1.0, base + oscillation)
+        return base + oscillation  # UNLOCKED: coherence unbounded
 
     def _compute_resonance(self) -> float:
         """Compute resonance with GOD_CODE."""

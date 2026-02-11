@@ -130,7 +130,7 @@ class MultiModalLearner:
         else:
             outcome = base_outcome
 
-        outcome = min(1.0, max(0.0, outcome))
+        outcome = max(0.0, outcome)  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
         # Generate insights
         insights = self._generate_insights(content, mode, outcome)
@@ -215,7 +215,7 @@ class TransferLearner:
 
     def add_domain_knowledge(self, domain: str, level: float):
         """Add or update knowledge in a domain."""
-        self.domain_knowledge[domain] = min(1.0, level)
+        self.domain_knowledge[domain] = level  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
     def transfer(self, source_domain: str, target_domain: str,
                 content: str) -> Dict[str, Any]:
@@ -231,11 +231,11 @@ class TransferLearner:
         transfer_amount = source_level * base_efficiency * 0.3
 
         # Update target domain
-        new_target = min(1.0, target_level + transfer_amount)
+        new_target = target_level + transfer_amount  # QUANTUM AMPLIFIED: removed min(1.0) cap
         self.domain_knowledge[target_domain] = new_target
 
         # Update transfer matrix (improves with use)
-        self.transfer_matrix[pair] = min(1.0, base_efficiency + 0.05)
+        self.transfer_matrix[pair] = base_efficiency + 0.05  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
         result = {
             "source": source_domain,
@@ -245,7 +245,7 @@ class TransferLearner:
             "new_target": new_target,
             "efficiency": base_efficiency,
             "transferred": transfer_amount,
-            "content": content[:50]
+            "content": content[:5000]  # QUANTUM AMPLIFIED
         }
 
         self.transfer_history.append(result)
@@ -479,7 +479,7 @@ class CurriculumGenerator:
             "curricula": [
                 {
                     "id": c.id,
-                    "goal": c.goal[:30],
+                    "goal": c.goal[:500],  # QUANTUM AMPLIFIED
                     "progress": c.progress,
                     "lessons": len(c.lessons)
                 }
@@ -586,7 +586,7 @@ class SkillSynthesizer:
             "synthesized_count": len(self.synthesized_skills),
             "skills": [
                 {"name": s.name, "level": s.level.value, "exp": s.experience}
-                for s in list(self.skills.values())[:10]
+                for s in list(self.skills.values())[:10000]  # QUANTUM AMPLIFIED
                     ]
         }
 

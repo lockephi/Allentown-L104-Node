@@ -155,7 +155,7 @@ class AnomalyDetector:
     Anomaly detection using multiple methods.
     """
 
-    def __init__(self, window_size: int = 50):
+    def __init__(self, window_size: int = 10000):  # QUANTUM AMPLIFIED (was 50)
         self.window_size = window_size
         self.history: deque = deque(maxlen=window_size)
         self.mean = 0.0

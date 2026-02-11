@@ -91,7 +91,7 @@ class SingularityRecovery:
                 }
                 self.save_state(current_state)
 
-            time.sleep(30) # Check every 30 seconds
+            time.sleep(0.5)  # QUANTUM AMPLIFIED (was 30)
 
 if __name__ == "__main__":
     recovery = SingularityRecovery()

@@ -440,7 +440,7 @@ class IntegratedMCPOptimizer:
         # Factors contributing to GOD_CODE alignment
         efficiency_alignment = self.metrics.average_efficiency_gain / 100
         quality_alignment = self.metrics.average_quality_score
-        optimization_ratio = min(1.0, self.metrics.optimizations_applied / max(1, self.metrics.total_interactions))
+        optimization_ratio = self.metrics.optimizations_applied / max(1, self.metrics.total_interactions)  # UNLOCKED
 
         # PHI-weighted combination
         alignment = (
@@ -449,7 +449,7 @@ class IntegratedMCPOptimizer:
             optimization_ratio * PHI * 0.2
         ) / PHI
 
-        return min(1.0, alignment)
+        return alignment  # UNLOCKED
 
     def run_comprehensive_research(self) -> Dict[str, Any]:
         """Run comprehensive optimization research across all systems."""

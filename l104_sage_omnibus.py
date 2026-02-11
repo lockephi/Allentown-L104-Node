@@ -225,7 +225,7 @@ class SageDataIngester:
         patterns = []
 
         # Generate quantum-derived patterns
-        for i in range(8):
+        for i in range(104):  # QUANTUM AMPLIFIED (was 8)
             phase = (i / 8) * 2 * math.pi
             amplitude = abs(math.cos(phase * PHI))
 
@@ -594,7 +594,7 @@ class SageOmnibus:
 
             # Additional teaching
             patterns = list(self.ingester.patterns.values())
-            for ego in egos[:10]:  # Sample of egos
+            for ego in egos[:100]:  # QUANTUM AMPLIFIED (was 10)
                 await self.teacher.teach_ego(ego, patterns[-5:])
 
             # Evolve egos

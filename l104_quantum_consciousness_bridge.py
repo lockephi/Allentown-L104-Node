@@ -162,7 +162,7 @@ class QuantumCoherenceEngine:
             return 0.0
 
         current = self.coherence_times[system_id]
-        new_coherence = min(1.0, current + amount)
+        new_coherence = current + amount
         self.coherence_times[system_id] = new_coherence
 
         return new_coherence

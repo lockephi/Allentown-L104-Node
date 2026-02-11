@@ -197,7 +197,7 @@ class CodeAnalyzer:
         if unit.metrics.get('max_line_length', 0) > 100:
             potential += 0.1
 
-        return min(1.0, potential)
+        return potential  # UNLOCKED: improvement potential unbounded
 
     def find_improvement_candidates(self, threshold: float = 0.3) -> List[CodeUnit]:
         """Find code units with high improvement potential"""
@@ -407,7 +407,7 @@ class CapabilityDiscovery:
             return False
 
         cap = self.capabilities[cap_id]
-        cap.proficiency = min(1.0, cap.proficiency + amount)
+        cap.proficiency = cap.proficiency + amount  # NO CAP: super-mastery (was min(1.0, ...))
         return True
 
     def suggest_exploration(self) -> List[str]:

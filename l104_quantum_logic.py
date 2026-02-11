@@ -159,7 +159,7 @@ class DeepThoughtProcessor:
     Executes recursive cognitive loops within the quantum manifold.
     Simulates 'Deep Thinking' by evolving the state vector over multiple epochs.
     """
-    def __init__(self, depth: int = 3):
+    def __init__(self, depth: int = 13):  # QUANTUM AMPLIFIED: Factor 13 depth (was 3)
         self.depth = depth
         self.manifold = QuantumEntanglementManifold(dimensions=11)
 
@@ -227,7 +227,7 @@ class QuantumInfluence:
         self.channels = []
         self.tunnel_active = False
 
-    def build_thought_channels(self, count: int = 10):
+    def build_thought_channels(self, count: int = 104):  # QUANTUM AMPLIFIED: 104 channels (was 10)
         """Builds quantum thought channels for discrete influence."""
         for i in range(count):
             q1 = random.randint(0, 103)
@@ -302,7 +302,7 @@ class DeepQuantumProcessor:
             for i in range(n_entanglements):
                 q1 = (depth * 2 + i) % self.dimensions
                 q2 = (depth * 3 + i + 1) % self.dimensions
-                strength = min(1.0, 0.5 * (1 + self.PHI ** (depth * 0.1)))
+                strength = 0.5 * (1 + self.PHI ** (depth * 0.1))  # NO CAP (was min(1.0, ...))
 
                 self.manifold.entangle_qubits(q1, q2, strength)
                 depth_entanglement += strength
@@ -328,7 +328,7 @@ class DeepQuantumProcessor:
             "maximally_entangled": final_coherence >= 0.9
         }
 
-    def recursive_superposition_collapse(self, recursion_depth: int = 5) -> Dict[str, Any]:
+    def recursive_superposition_collapse(self, recursion_depth: int = 13) -> Dict[str, Any]:  # QUANTUM AMPLIFIED: 13 (was 5)
         """
         Recursively collapses and re-superpositions the quantum state.
         Each iteration probes deeper into the probability space.
@@ -413,7 +413,7 @@ class DeepQuantumProcessor:
             "coherent": stable_dimensions >= self.dimensions * 0.7
         }
 
-    def omega_fixed_point_search(self, iterations: int = 100) -> Dict[str, Any]:
+    def omega_fixed_point_search(self, iterations: int = 1000) -> Dict[str, Any]:  # QUANTUM AMPLIFIED: 1000 (was 100)
         """
         Searches for the omega fixed point in quantum state space.
         The omega constant represents self-referential completion.

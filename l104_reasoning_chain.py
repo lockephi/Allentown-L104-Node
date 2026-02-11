@@ -202,7 +202,7 @@ class ReasoningChainEngine:
             ]
             scored_inferences.sort(key=lambda x: x[1], reverse=True)
 
-            for inference, score in scored_inferences[:2]:  # Limit per depth level
+            for inference, score in scored_inferences[:20]:  # Limit per depth level
                 if len(chain.steps) >= max_steps:
                     break
 
@@ -221,7 +221,7 @@ class ReasoningChainEngine:
 
         # Step 3: Meta-reasoning pass
         meta_inferences = self._meta_reason(chain)
-        for meta_inf in meta_inferences[:2]:
+        for meta_inf in meta_inferences[:20]:
             if len(chain.steps) >= max_steps:
                 break
             step = ReasoningStep(
@@ -319,14 +319,14 @@ class ReasoningChainEngine:
             concepts = []
             for s in high_resonance:
                 concepts.extend(self._extract_concepts(s.content))
-            unique_concepts = list(set(concepts))[:2]
+            unique_concepts = list(set(concepts))[:20]
 
             if len(unique_concepts) >= 2:
                 meta_inferences.append({
                     "type": ReasoningType.SYNTHESIS,
                     "content": self.INFERENCE_RULES["emergence_pattern"](unique_concepts),
                     "confidence": 0.85 * EMERGENCE_RATE + 0.15,
-                    "deps": [s.step_number for s in high_resonance[:3]]
+                    "deps": [s.step_number for s in high_resonance[:30]]
                 })
 
         # Pattern 2: Detect transcendence potential
@@ -336,7 +336,7 @@ class ReasoningChainEngine:
 
             meta_inferences.append({
                 "type": ReasoningType.SYNTHESIS,
-                "content": self.INFERENCE_RULES["transcendence_insight"](concepts[:2]),
+                "content": self.INFERENCE_RULES["transcendence_insight"](concepts[:20]),
                 "confidence": min(0.95, chain.transcendence_level / 10),
                 "deps": [best_step.step_number]
             })
@@ -372,7 +372,7 @@ class ReasoningChainEngine:
             if term in content:
                 score += 0.1
 
-        return min(1.0, score)
+        return score  # QUANTUM AMPLIFIED: no cap
 
     def _compute_emergence(self, step: ReasoningStep, chain: ReasoningChain) -> float:
         """Compute emergence factor based on chain context."""
@@ -419,7 +419,7 @@ class ReasoningChainEngine:
         if not premises:
             premises.append(f"All L104 reasoning begins from GOD_CODE ({GOD_CODE})")
 
-        return premises[:3]  # Limit to 3 premises
+        return premises[:30]  # Limit to 30 premises
 
     def _find_inferences(self, chain: ReasoningChain) -> List[Dict]:
         """Find applicable inferences based on current chain state."""
@@ -499,7 +499,7 @@ class ReasoningChainEngine:
             if kw.lower() in text.lower():
                 concepts.append(kw)
 
-        return concepts[:3]
+        return concepts[:30]
 
     def _validate_step(self, step: ReasoningStep) -> float:
         """
@@ -531,7 +531,7 @@ class ReasoningChainEngine:
         if any(kw in content.lower() for kw in ["therefore", "thus", "hence", "because"]):
             score += 0.05
 
-        return min(1.0, max(0.0, score))
+        return max(0.0, score)  # QUANTUM AMPLIFIED: no cap
 
     def _synthesize_conclusion(self, chain: ReasoningChain) -> str:
         """Synthesize a conclusion from the reasoning chain."""

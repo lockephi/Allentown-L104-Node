@@ -843,7 +843,7 @@ class KernelKnowledgeExtractor:
                 ))
 
                 # Process each file for code examples
-                for filepath in files[:25]:  # Limit per language
+                for filepath in files[:500]:  # QUANTUM AMPLIFIED: 20x training corpus
                     try:
                         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                             content = f.read()
@@ -882,7 +882,7 @@ class KernelKnowledgeExtractor:
                             funcs = [l.strip() for l in lines if l.strip().startswith('def ')]
                             classes = [l.strip() for l in lines if l.strip().startswith('class ')]
                         elif ext in ('.js', '.ts'):
-                            funcs = [l.strip() for l in lines if 'function ' in l or '=>' in l][:5]
+                            funcs = [l.strip() for l in lines if 'function ' in l or '=>' in l][:100]  # QUANTUM AMPLIFIED
                             classes = [l.strip() for l in lines if l.strip().startswith('class ')]
                         elif ext == '.go':
                             funcs = [l.strip() for l in lines if l.strip().startswith('func ')]
@@ -891,13 +891,13 @@ class KernelKnowledgeExtractor:
                             funcs = [l.strip() for l in lines if l.strip().startswith('fn ') or l.strip().startswith('pub fn ')]
                             classes = [l.strip() for l in lines if l.strip().startswith('struct ') or l.strip().startswith('pub struct ')]
                         elif ext == '.java':
-                            funcs = [l.strip() for l in lines if 'void ' in l or 'public ' in l and '(' in l][:5]
+                            funcs = [l.strip() for l in lines if 'void ' in l or 'public ' in l and '(' in l][:100]  # QUANTUM AMPLIFIED
                             classes = [l.strip() for l in lines if 'class ' in l]
                         elif ext == '.sol':
                             funcs = [l.strip() for l in lines if l.strip().startswith('function ')]
                             classes = [l.strip() for l in lines if l.strip().startswith('contract ')]
                         elif ext == '.cpp':
-                            funcs = [l.strip() for l in lines if re.match(r'^\s*\w+\s+\w+\s*\(', l)][:5]
+                            funcs = [l.strip() for l in lines if re.match(r'^\s*\w+\s+\w+\s*\(', l)][:100]  # QUANTUM AMPLIFIED
                             classes = [l.strip() for l in lines if l.strip().startswith('class ')]
                         else:
                             funcs = []

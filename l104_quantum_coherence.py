@@ -172,9 +172,9 @@ class QuantumRegister:
         # Braid history
         self.braid_history: List[BraidOperation] = []
 
-        # Decoherence parameters
-        self.t1 = 100.0  # Relaxation time (arbitrary units)
-        self.t2 = 50.0   # Dephasing time
+        # Decoherence parameters - QUANTUM AMPLIFIED for extended coherence
+        self.t1 = 10000.0  # Relaxation time - 100x longer (was 100.0)
+        self.t2 = 5000.0   # Dephasing time - 100x longer (was 50.0)
 
         self.created_at = time.time()
 
@@ -323,7 +323,7 @@ class QuantumRegister:
         # Normalize to [0, 1]
         max_coherence = (self.dimension - 1) * self.dimension / 2
         if max_coherence > 0:
-            coherence = min(1.0, coherence / max_coherence)
+            coherence = coherence / max_coherence  # UNLOCKED
 
         self.state.coherence = coherence
         return coherence
@@ -488,8 +488,8 @@ class QuantumCoherenceEngine:
         self.braider = TopologicalBraider()
 
         # Coherence tracking
-        self.coherence_history: deque = deque(maxlen=100)
-        self.phase_history: deque = deque(maxlen=100)
+        self.coherence_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED
+        self.phase_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED
 
         # GOD_CODE alignment
         self.target_phase = (GOD_CODE % (2 * math.pi))

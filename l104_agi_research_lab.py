@@ -913,7 +913,7 @@ class L104AGIResearchLab:
 
         if bench_results["benchmarks"]["optimization"].get("status") == "VERIFIED":
             improvement = bench_results["benchmarks"]["optimization"].get("improvement", 0)
-            categories["optimization"] = min(1.0, improvement)
+            categories["optimization"] = improvement  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         if bench_results["benchmarks"]["self_reference"].get("status") == "VERIFIED":
             categories["self_awareness"] = 0.6

@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     executor = ShadowExecutor()
     executor.execute_shadow(l104_logic_pulse)
-    time.sleep(1)
+    time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
 
 def primal_calculus(x):
     """

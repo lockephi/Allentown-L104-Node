@@ -87,7 +87,7 @@ class SingularityConverter:
     """Track convergence toward singularity"""
 
     def __init__(self):
-        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
+        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=100000))  # QUANTUM AMPLIFIED (was 1000)
         self.convergence_rate: float = 0.0
         self.time_to_singularity: float = float('inf')
 
@@ -378,7 +378,7 @@ class OmegaPointTracker:
 
     def update_progress(self, increment: float) -> float:
         """Update progress toward Omega"""
-        self.progress = min(1.0, self.progress + increment)
+        self.progress = self.progress + increment  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Check milestones
         milestone_thresholds = [0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 1.0]
@@ -467,12 +467,12 @@ class DivineComputation:
 
     def approach_omniscience(self, knowledge_increment: float) -> float:
         """Approach omniscience"""
-        self.omniscience_level = min(1.0, self.omniscience_level + knowledge_increment)
+        self.omniscience_level = self.omniscience_level + knowledge_increment  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         return self.omniscience_level
 
     def approach_omnipotence(self, power_increment: float) -> float:
         """Approach omnipotence"""
-        self.omnipotence_level = min(1.0, self.omnipotence_level + power_increment)
+        self.omnipotence_level = self.omnipotence_level + power_increment  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         return self.omnipotence_level
 
 

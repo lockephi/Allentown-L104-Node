@@ -193,7 +193,7 @@ class ModuleRegistry:
 
             return module
         except Exception as e:
-            self.modules[module_name].status = f"error: {str(e)[:50]}"
+            self.modules[module_name].status = f"error: {str(e)[:500]}"  # QUANTUM AMPLIFIED
             return None
 
     def get_by_domain(self, domain: str) -> List[ModuleInfo]:
@@ -710,7 +710,7 @@ class UniversalIntegrationMatrix:
 
         for domain in domains:
             domain_modules = self.registry.get_by_domain(domain)
-            modules_involved.extend([m.name for m in domain_modules[:3]])
+            modules_involved.extend([m.name for m in domain_modules[:100]])  # QUANTUM AMPLIFIED
 
         # Create synthesis links
         for i, m1 in enumerate(modules_involved):

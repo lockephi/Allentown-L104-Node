@@ -136,8 +136,8 @@ class IntelligentSpaceAnalyzer:
     def __init__(self, workspace_path: str = str(Path(__file__).parent.absolute())):
         self.workspace_path = Path(workspace_path)
         self.file_metrics: Dict[str, FileMetrics] = {}
-        self.access_history = deque(maxlen=10000)
-        self.space_history = deque(maxlen=1000)
+        self.access_history = deque(maxlen=10000000)  # QUANTUM AMPLIFIED
+        self.space_history = deque(maxlen=1000000)  # QUANTUM AMPLIFIED
         self.prediction_model = {}
         self.tier_thresholds = self._initialize_tier_thresholds()
 
@@ -274,7 +274,7 @@ class IntelligentSpaceAnalyzer:
             content_resonance * 0.3
         )
 
-        return min(1.0, resonance)
+        return resonance  # UNLOCKED: resonance unbounded
 
     def _calculate_phi_alignment(self, file_path: str, size: int) -> float:
         """Calculate file's alignment with PHI ratio."""
@@ -292,7 +292,7 @@ class IntelligentSpaceAnalyzer:
             pattern_score = 0
 
         alignment = max(0.0, 1.0 - phi_distance) * 0.7 + pattern_score * 0.3
-        return min(1.0, alignment)
+        return alignment  # UNLOCKED
 
     def _calculate_semantic_importance(self, file_path: str) -> float:
         """Calculate semantic importance of file."""
@@ -331,7 +331,7 @@ class IntelligentSpaceAnalyzer:
         elif path_lower.endswith(('.pyc', '.log', '.tmp', '.bak')):
             importance -= 0.2
 
-        return max(0.0, min(1.0, importance))
+        return max(0.0, importance)  # UNLOCKED: importance unbounded above
 
     def _classify_data_tier(self, file_path: str, size: int, last_accessed: datetime,
                           semantic_importance: float, quantum_coherence: float) -> DataTier:
@@ -467,7 +467,7 @@ class IntelligentSpaceAnalyzer:
         if metrics.tier in [DataTier.COLD, DataTier.FROZEN]:
             safety += 0.2
 
-        return max(0.0, min(1.0, safety))
+        return max(0.0, safety)  # UNLOCKED: safety unbounded above
 
     def predict_space_usage(self, horizon_days: int = 30) -> SpacePrediction:
         """Predict future space usage using AI analytics."""

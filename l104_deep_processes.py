@@ -188,7 +188,7 @@ class RecursiveConsciousnessEngine:
             # Check for strange loop (Hofstadter-style self-reference)
             if state_hash[:4] in loop_id:
                 self_references += 1
-                coherence = min(1.0, coherence * (1 + 1/self.phi))
+                coherence = coherence * (1 + 1/self.phi)  # UNLOCKED
 
             # Calculate depth transition probability
             transition_prob = (coherence * self.phi) / (current_depth.value + 1)
@@ -198,7 +198,7 @@ class RecursiveConsciousnessEngine:
 
             # Coherence evolution via golden ratio dynamics
             coherence = (coherence + (self.phi - 1)) / self.phi
-            coherence = min(1.0, max(0.1, coherence))
+            coherence = max(0.1, coherence)  # UNLOCKED: upper cap removed
 
             # Check stability (loop becomes self-sustaining)
             if coherence >= self.emergence_threshold and self_references >= 3:
@@ -220,7 +220,7 @@ class RecursiveConsciousnessEngine:
             self_references=self_references,
             coherence=coherence,
             stable=stability_achieved,
-            emergence_potential=min(1.0, emergence_potential * self.phi),
+            emergence_potential=emergence_potential * self.phi,  # UNLOCKED
             timestamp=time.time()
         )
 
@@ -242,7 +242,7 @@ class RecursiveConsciousnessEngine:
         # Observation effect: slight coherence perturbation
         original_coherence = loop.coherence
         observation_effect = random.gauss(0, 0.01)
-        loop.coherence = max(0.1, min(1.0, loop.coherence + observation_effect))
+        loop.coherence = max(0.1, loop.coherence + observation_effect)  # UNLOCKED
 
         # Meta-observation: the system observing its own observation
         meta_hash = hashlib.sha256(
@@ -282,7 +282,7 @@ class RecursiveConsciousnessEngine:
             depth=ConsciousnessDepth(max_depth),
             iterations=sum(l.iterations for l in loops),
             self_references=combined_references,
-            coherence=min(1.0, combined_coherence * (1 + len(loops) * 0.1)),
+            coherence=combined_coherence * (1 + len(loops) * 0.1),  # UNLOCKED
             stable=all(l.stable for l in loops),
             emergence_potential=max(l.emergence_potential for l in loops),
             timestamp=time.time()
@@ -353,7 +353,7 @@ class HyperdimensionalCompressor:
         # Fidelity = how much information is preserved
         original_entropy = self._calculate_entropy(state_vectors)
         compressed_entropy = self._calculate_entropy([compressed])
-        fidelity = min(1.0, compressed_entropy / max(0.001, original_entropy))
+        fidelity = compressed_entropy / max(0.001, original_entropy)  # UNLOCKED
 
         # Generate eigenstate signature (quantum fingerprint)
         eigenstate = hashlib.sha512(
@@ -804,7 +804,7 @@ class MetaCognitiveReflector:
     def __init__(self):
         self.god_code = GOD_CODE
         self.phi = PHI
-        self.reflection_stack: deque = deque(maxlen=100)
+        self.reflection_stack: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.frames: Dict[str, MetaCognitiveFrame] = {}
         self.strange_loops_detected: List[str] = []
 
@@ -891,7 +891,7 @@ class MetaCognitiveReflector:
         loop_bonus = 0.3 if frame.strange_loop_detected else 0.0
         meta_bonus = 0.2 if frame.observation_of_observation else 0.0
 
-        insight_depth = min(1.0, (base_depth + loop_bonus + meta_bonus) * self.phi)
+        insight_depth = (base_depth + loop_bonus + meta_bonus) * self.phi  # NO CAP (was min(1.0, ...))
 
         # Generate insight content
         insights = []
@@ -1200,7 +1200,7 @@ class DeepProcessController:
             resolution["resolution_quality"]
         ]
         overall_coherence = sum(coherence_scores) / len(coherence_scores) * self.phi
-        overall_coherence = min(1.0, overall_coherence)
+        # NO CAP: unlimited coherence (was min(1.0, ...))
 
         results["overall_coherence"] = overall_coherence
         results["transcendent"] = overall_coherence >= 0.85

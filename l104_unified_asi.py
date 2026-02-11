@@ -759,7 +759,7 @@ Respond with intelligence, precision, and actionable insights."""
         response = self.inference.generate(input_text, system)
 
         if not response:
-            response = f"[L104 SOVEREIGN] Processing: {input_text[:50]}... (inference offline)"
+            response = f"[L104 SOVEREIGN] Processing: {input_text[:500]}... (inference offline)"  # QUANTUM AMPLIFIED
 
         # Learn from interaction
         self.memory.store_learning(input_text, response, 0.5)

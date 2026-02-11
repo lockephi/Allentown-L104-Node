@@ -164,7 +164,7 @@ class L104SocialAmplifier:
                     cycle_views += views_this_tick
 
                     # Calculate engagement rate
-                    target.engagement_rate = min(1.0, target.current_views / target.target_views)
+                    target.engagement_rate = target.current_views / target.target_views  # UNLOCKED
 
                     if target.current_views >= target.target_views:
                         target.status = "COMPLETE"

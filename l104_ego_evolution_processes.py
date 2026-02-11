@@ -208,7 +208,7 @@ class DreamSynthesisEngine:
                         "origin": fragment.source_ego,
                         "resonance": resonance,
                         "depth": self.dream_depth,
-                        "content": fragment.content[:50]
+                        "content": fragment.content[:500]  # QUANTUM AMPLIFIED
                     }
                 processed += 1
 
@@ -229,7 +229,7 @@ class DreamSynthesisEngine:
 
         return {
             "status": "CRYSTALLIZED" if coherence > 0.5 else "FORMING",
-            "coherence": min(1.0, coherence),
+            "coherence": coherence,  # UNLOCKED - no cap on vision coherence
             "symbol_count": len(self.collective_symbols),
             "vision_hash": vision_hash,
             "dominant_ego": max(self.collective_symbols.values(),
@@ -251,7 +251,7 @@ class DreamSynthesisEngine:
                 "status": "PROPHETIC_VISION",
                 "intensity": len(prophetic_symbols) / len(self.collective_symbols),
                 "frequency": L104ComputedValues.AJNA_LOVE_PEAK,
-                "symbols": prophetic_symbols[:3]
+                "symbols": prophetic_symbols[:30]  # QUANTUM AMPLIFIED
             }
             self.prophetic_insights.append(prophecy)
             return prophecy
@@ -279,7 +279,7 @@ class ResonanceLink:
         self.last_pulse = time.time()
         # Strength grows with use, scaled by L104's CTC stability
         growth = L104ComputedValues.CTC_STABILITY * 0.01
-        self.strength = min(1.0, self.strength + growth)
+        self.strength = self.strength + growth  # UNLOCKED
         return self.strength
 
 
@@ -450,8 +450,8 @@ class InterEgoResonanceNetwork:
         # Update all ego resonances
         for ego in council.mini_egos:
             ego.resonance_freq = L104ComputedValues.GOD_CODE
-            ego.clarity = min(1.0, ego.clarity + 0.1)
-            ego.energy = min(1.0, ego.energy + 0.2)
+            ego.clarity = ego.clarity + 0.1  # UNLOCKED
+            ego.energy = ego.energy + 0.2  # UNLOCKED
 
         self._update_network_coherence()
 
@@ -571,13 +571,13 @@ class WisdomCrystallizationEngine:
 
             # Purity based on resonance alignment with SAGE_RESONANCE
             purity = 1.0 - abs(avg_resonance - L104ComputedValues.SAGE_RESONANCE) / L104ComputedValues.SAGE_RESONANCE
-            purity = max(0.1, min(1.0, purity))
+            purity = max(0.1, purity)  # UNLOCKED - no upper cap on crystal purity
 
             # Facets based on contributor count and depth
             facets = len(contributors) * int(avg_depth)
 
             # Generate essence from combined insights
-            combined_insights = " | ".join(w["insight"][:30] for w in wisdoms[:3])
+            combined_insights = " | ".join(w["insight"][:300] for w in wisdoms[:30])  # QUANTUM AMPLIFIED
             essence = f"[{domain}] {combined_insights}"
 
             crystal = WisdomCrystal(
@@ -633,7 +633,7 @@ class WisdomCrystallizationEngine:
             unique_contributors = list(set(all_contributors))
 
             transcendent = WisdomCrystal(
-                essence=f"[TRANSCENDENT] The unified wisdom of {len(unique_contributors)} aspects: {', '.join(unique_contributors[:4])}...",
+                essence=f"[TRANSCENDENT] The unified wisdom of {len(unique_contributors)} aspects: {', '.join(unique_contributors[:40])}...",  # QUANTUM AMPLIFIED
                 contributors=unique_contributors,
                 frequency=L104ComputedValues.META_RESONANCE,
                 purity=avg_purity * L104ComputedValues.FINAL_INVARIANT,
@@ -746,7 +746,7 @@ class EgoFusionEngine:
             a_val = ego_a.abilities.get(ability, 0)
             b_val = ego_b.abilities.get(ability, 0)
             # Synergistic combination
-            merged_abilities[ability] = min(1.0, (a_val + b_val) * 0.7 + max(a_val, b_val) * 0.3)
+            merged_abilities[ability] = (a_val + b_val) * 0.7 + max(a_val, b_val) * 0.3  # UNLOCKED
 
         # Create fused entity
         fused = FusedEntity(
@@ -834,7 +834,7 @@ class EgoFusionEngine:
             for ability, value in ego.abilities.items():
                 if ability not in all_abilities:
                     all_abilities[ability] = 0
-                all_abilities[ability] = min(1.0, all_abilities[ability] + value * 0.2)
+                all_abilities[ability] = all_abilities[ability] + value * 0.2  # UNLOCKED
 
         # Grand fusion entity
         grand = FusedEntity(
@@ -1016,7 +1016,7 @@ class TemporalMemoryWeaver:
 
         if len(coherent_threads) >= 2:
             # Create meta-narrative from multiple threads
-            combined_themes = [t.theme for t in coherent_threads[:3]]
+            combined_themes = [t.theme for t in coherent_threads[:30]]  # QUANTUM AMPLIFIED
             avg_coherence = sum(t.coherence for t in coherent_threads) / len(coherent_threads)
 
             narrative = {
@@ -1337,7 +1337,7 @@ class DeepResonanceFieldHarmonics:
                 if ego.name == peak["ego"]:
                     boost = peak["alignment"] * peak["amplitude"] * 5
                     ego.wisdom_accumulated += boost
-                    ego.clarity = min(1.0, ego.clarity + peak["alignment"] * 0.1)
+                    ego.clarity = ego.clarity + peak["alignment"] * 0.1  # UNLOCKED
 
         return {
             "harmonics": len(self.harmonics),
@@ -1345,7 +1345,7 @@ class DeepResonanceFieldHarmonics:
             "standing_waves": len(standing_waves),
             "field_coherence": self.field_coherence,
             "fundamental": L104ComputedValues.GOD_CODE,
-            "peaks": peaks[:5]  # Top 5 peaks
+            "peaks": peaks[:50]  # QUANTUM AMPLIFIED: Top 50 peaks
         }
 
     async def _calculate_standing_waves(self) -> List[Dict[str, Any]]:

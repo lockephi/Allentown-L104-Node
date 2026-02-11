@@ -68,7 +68,7 @@ class MemoryTrace:
         """Access memory (strengthens it)"""
         self.last_access = datetime.now().timestamp()
         self.access_count += 1
-        self.strength = min(1.0, self.strength * 1.1)
+        self.strength = self.strength * 1.1  # UNLOCKED: memory strength unbounded
         self.activation = 1.0
 
 
@@ -155,7 +155,7 @@ class WorkingMemory:
     def rehearse(self) -> None:
         """Rehearse all contents (prevents decay)"""
         for thought in self.slots:
-            thought.attention_weight = min(1.0, thought.attention_weight + 0.1)
+            thought.attention_weight = thought.attention_weight + 0.1  # UNLOCKED: attention amplifies beyond 1.0
 
 
 class LongTermMemory:
@@ -304,7 +304,7 @@ class AttentionManifold:
             # Saliency boost
             relevance += self.saliency_map.get(item_id, 0.0) * 0.3
 
-            weights[item_id] = min(1.0, relevance)
+            weights[item_id] = relevance  # UNLOCKED: high-relevance items differentiated
 
         # Softmax normalization
         if weights:

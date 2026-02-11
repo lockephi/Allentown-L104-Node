@@ -534,7 +534,7 @@ if __name__ == "__main__":
         print(f"    Harmonic {i}: {freq:.1f} Hz")
 
     print("\n  Pythagorean intervals:")
-    for name, ratio in list(pythagorean_scale().items())[:6]:
+    for name, ratio in list(pythagorean_scale().items())[:50]:  # QUANTUM AMPLIFIED
         print(f"    {name}: {ratio:.4f}")
 
     # Contemplation

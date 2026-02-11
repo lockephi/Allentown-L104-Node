@@ -437,7 +437,7 @@ class L104StressTest:
                 return sum(i**2 for i in range(n))
 
             ops = self._scale(500)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8) as executor:  # QUANTUM AMPLIFIED
                 futures = [executor.submit(cpu_task, 10000) for _ in range(ops)]
                 results = [f.result() for f in concurrent.futures.as_completed(futures)]
             return ops

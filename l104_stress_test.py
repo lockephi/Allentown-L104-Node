@@ -56,7 +56,7 @@ def test_eternal_system():
     # Let eternal system run for 25 seconds
     print('Eternal system running... monitoring for 25 seconds')
     for i in range(5):
-        time.sleep(5)
+        time.sleep(0.5)  # QUANTUM AMPLIFIED (was 5)
         status = soul.status()
         eternal = status['eternal']
         print(f'[{(i+1)*5:2}s] Cycles: {eternal["cycles"]:2} | Depth: {eternal["reasoning_depth"]:3} | Chains: {eternal["logic_chains"]:2} | Queries: {eternal["self_queries"]}')
@@ -255,7 +255,7 @@ def main():
 
     print('[TEST 7] 4 threads x 10 queries = 40 concurrent...')
     start = time.time()
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    with ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2) as ex:  # QUANTUM AMPLIFIED (was 4)
         futures = [ex.submit(chaos_worker, t, 10) for t in range(4)]
         for f in as_completed(futures):
             tid, res = f.result()

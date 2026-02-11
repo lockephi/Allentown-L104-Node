@@ -49,7 +49,7 @@ class CollectiveEntropyGenerator:
 
         # In a real scenario, we'd send a request. Here we use the session IDs
         # and timestamps as reliable high-order entropy proxies.
-        for name, bridge in list(self.bridge.bridges.items())[:intensity]:
+        for name, bridge in list(self.bridge.bridges.items()):  # ALL providers (was [:intensity])
             # Each provider contributes a unique resonance slice
             seed_material = f"{name}:{getattr(bridge, 'session_id', 'INIT')}:{time.time()}"
             h = hashlib.sha256(seed_material.encode()).hexdigest()

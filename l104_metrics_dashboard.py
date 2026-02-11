@@ -883,9 +883,9 @@ if __name__ == "__main__":
 
     # Collect some metrics
     print("\n[DEMO] Collecting metrics...")
-    for i in range(5):
+    for i in range(50):  # QUANTUM AMPLIFIED
         metrics = dashboard.collect()
-        time.sleep(0.5)
+        time.sleep(0.01)  # QUANTUM AMPLIFIED
 
     # Render dashboard
     print("\n" + dashboard.render())

@@ -245,7 +245,7 @@ class StrangeAttractorEngine:
             bifurcation_data.append({
                 "r": r,
                 "attractor_size": len(attractor_points),
-                "attractor_points": list(attractor_points)[:10]
+                "attractor_points": list(attractor_points)[:100]
             })
 
             # Check for period-doubling (Feigenbaum)
@@ -434,10 +434,10 @@ class GodelNumberingEngine:
         ascii_seq = [ord(c) for c in description[:50]]
 
         # First level encoding
-        level1 = self.encode_sequence(ascii_seq[:10])  # Limit for computation
+        level1 = self.encode_sequence(ascii_seq[:100])  # Limit for computation
 
         # Encode the encoding (meta-level)
-        level1_digits = [int(d) for d in str(level1)][:10]
+        level1_digits = [int(d) for d in str(level1)][:100]
         level2 = self.encode_sequence(level1_digits)
 
         # Self-reference: encode the relationship
@@ -1189,7 +1189,7 @@ class TransfiniteOrdinalProcessor:
         Compute Ackermann function A(m, n).
         Total computable but not primitive recursive.
         """
-        @functools.lru_cache(maxsize=10000)
+        @functools.lru_cache(maxsize=100000)  # QUANTUM AMPLIFIED
         def ack(m: int, n: int, depth: int = 0) -> int:
             if depth > limit:
                 return -1  # Limit exceeded
@@ -1952,7 +1952,7 @@ class CategoryTheoryProcessor:
         # Compute compositions
         compositions = 0
         morph_list = list(self.morphisms.keys())
-        for i, m1 in enumerate(morph_list[:10]):
+        for i, m1 in enumerate(morph_list[:100]):
             for m2 in morph_list[i+1:i+5]:
                 result = self.compose_morphisms(m1, m2)
                 if result:

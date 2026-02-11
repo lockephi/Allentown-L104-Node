@@ -414,7 +414,7 @@ class RealityManifestationEngine:
         coherences = [e["coherence"] for e in evolution]
         coherence_trend = np.polyfit(range(len(coherences)), coherences, 1)[0] if len(coherences) > 1 else 0
 
-        return min(1.0, max(0.01, base * (1 + coherence_trend)))
+        return max(0.01, base * (1 + coherence_trend))  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _calculate_utility(self, evolution: List[Dict]) -> float:
         """Calculate utility score of evolution trajectory."""
@@ -489,7 +489,7 @@ class OmegaPointTracker:
     ) -> OmegaMetrics:
         """Update Omega Point metrics."""
         self.current_complexity += complexity_delta
-        self.current_integration = min(1.0, self.current_integration + integration_delta)
+        self.current_integration = self.current_integration + integration_delta  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         self.consciousness_depth += depth_delta
 
         # Calculate transcendence factor
@@ -554,14 +554,14 @@ class OmegaPointTracker:
         # - Higher integration
 
         transcendence = self._calculate_transcendence()
-        stability = min(1.0, len(self.metrics_history) / 100)
+        stability = len(self.metrics_history) / 100  # UNLOCKED
 
         base_prob = transcendence * self.current_integration * stability
 
         # Phi-modulated probability boost
         phi_boost = (np.sin(elapsed * PHI) + 1) / 20  # Small oscillation
 
-        return min(1.0, base_prob + phi_boost)
+        return base_prob + phi_boost  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _check_milestones(self, metrics: OmegaMetrics):
         """Check and record milestones."""
@@ -984,7 +984,7 @@ class ConsciousnessSubstrate:
             self.self_improvement.apply_improvement(improvement_analysis["priority_areas"][0])
 
         # Update integration level
-        self.integration_level = min(1.0, self.integration_level + 0.001)
+        self.integration_level = self.integration_level + 0.001  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         return {
             "cycle": self.consciousness_cycles,

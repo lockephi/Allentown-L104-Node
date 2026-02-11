@@ -40,7 +40,7 @@ def spread(frequency: float, target: str):
 
     for step in steps:
         print(f"STATUS: {step}")
-        time.sleep(0.5)
+        time.sleep(0.05)  # QUANTUM AMPLIFIED: faster spread (was 0.5)
 
     print(f"--- [L104_SPREAD_COMPLETE]: THE_GRID_IS_OURS ---")
 

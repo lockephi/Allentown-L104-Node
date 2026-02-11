@@ -863,7 +863,7 @@ class LocalIntellect:
             (0.5 + 0.5 * self.vishuddha_state["ether_coherence"])  # Bias toward 0.5-1.0 range
         )
 
-        return min(1.0, max(0.0, resonance))
+        return max(0.0, resonance)  # UNLOCKED
 
     def entangle_concepts(self, concept_a: str, concept_b: str) -> bool:
         """
@@ -1132,7 +1132,7 @@ class LocalIntellect:
 
         # Update Vishuddha with kundalini boost
         if hasattr(self, 'vishuddha_state'):
-            self.vishuddha_state["ether_coherence"] = min(1.0, kundalini_flow / 8)
+            self.vishuddha_state["ether_coherence"] = kundalini_flow / 8  # UNLOCKED
 
         return {
             "kundalini_flow": kundalini_flow,
@@ -1168,7 +1168,7 @@ class LocalIntellect:
 
         # 3. Propagate through EPR entanglement
         all_entangled = set()
-        for concept in concepts[:5]:
+        for concept in concepts[:25]:  # QUANTUM AMPLIFIED (was 5)
             related = self.propagate_entanglement(concept, depth=depth)
             all_entangled.update(related)
 
@@ -1238,7 +1238,7 @@ class LocalIntellect:
         """
         if 0 <= petal_index < VISHUDDHA_PETAL_COUNT:
             current = self.vishuddha_state["petal_activation"][petal_index]
-            self.vishuddha_state["petal_activation"][petal_index] = min(1.0, current + intensity)
+            self.vishuddha_state["petal_activation"][petal_index] = current + intensity  # UNLOCKED
             self.vishuddha_state["bija_mantra_cycles"] += 1
             self.vishuddha_state["resonance"] = self._calculate_vishuddha_resonance()
 
@@ -1510,7 +1510,7 @@ class LocalIntellect:
                             'prompt': f"What do you know about {concept}?",
                             'completion': knowledge,
                             'category': 'fast_server_knowledge',
-                            'quality': min(1.0, (importance or 0.5) * 1.2),
+                            'quality': (importance or 0.5) * 1.2,  # UNLOCKED
                             'source': 'l104_intellect_memory.db'
                         })
             except Exception:
@@ -2277,7 +2277,7 @@ class LocalIntellect:
             if marker in response.lower():
                 confidence -= 0.1
 
-        return min(1.0, max(0.0, confidence))
+        return max(0.0, confidence)  # UNLOCKED
 
     def _analyze_response_quality(self, response: str, query: str) -> Dict:
         """Analyze the quality of a response relative to the query."""
@@ -2311,7 +2311,7 @@ class LocalIntellect:
         if any(c.isdigit() for c in response):
             quality["score"] += 0.05
 
-        quality["score"] = min(1.0, quality["score"])
+        quality["score"] = quality["score"]  # UNLOCKED
         return quality
 
     def _generate_improvement_hypotheses(self, query: str, context: Dict) -> List[Dict]:
@@ -2778,7 +2778,7 @@ class LocalIntellect:
             elif "phi" in query.lower() or "golden" in query.lower():
                 phi_boost = 1 + (PHI - 1) * 0.5  # Smaller boost
 
-            effective_quality = min(1.0, quality * phi_boost)
+            effective_quality = quality * phi_boost  # UNLOCKED
 
             # HIGH-LOGIC v2.0: Compute information content (entropy-based)
             response_tokens = response.split()
@@ -3216,7 +3216,7 @@ class LocalIntellect:
             self.activate_vishuddha_petal(petal_to_activate, intensity=response_entropy * 0.2)
 
             # Clarity increases with successful training
-            self.vishuddha_state["clarity"] = min(1.0, self.vishuddha_state["clarity"] + 0.01)
+            self.vishuddha_state["clarity"] = self.vishuddha_state["clarity"] + 0.01  # UNLOCKED
 
             # Update evolution fingerprint periodically
             if self._evolution_state["quantum_interactions"] % 25 == 0:
@@ -3272,7 +3272,7 @@ class LocalIntellect:
 
         # Return top 8 concepts by frequency
         sorted_concepts = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-        result = [c[0] for c in sorted_concepts[:8]]
+        result = [c[0] for c in sorted_concepts[:50]]  # QUANTUM AMPLIFIED (was 8)
 
         # v11.2 CACHE STORE
         _CONCEPT_CACHE.set(text_hash, result)
@@ -4348,7 +4348,7 @@ class LocalIntellect:
             "domains": domain_counts,
             "binding_dna": self._universal_binding["binding_dna"],
             "errors": len(errors),
-            "error_details": errors[:5],  # First 5 errors
+            "error_details": errors[:50],  # QUANTUM AMPLIFIED (was 5)
         }
 
     def get_universal_binding_status(self) -> Dict:
@@ -4473,7 +4473,7 @@ class LocalIntellect:
                     synth_concepts.append(f"{domain}({len(mods)}:{random.choice(mods) if mods else 'none'})")
 
             # Calculate synthesis coherence based on module overlap
-            coherence = min(1.0, results["total_modules_found"] / 50.0) * (0.8 + random.random() * 0.2)
+            coherence = (results["total_modules_found"] / 50.0) * (0.8 + random.random() * 0.2)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
             results["syntheses"].append({
                 "via": "apotheosis_direct",
@@ -5391,7 +5391,7 @@ Just ask naturally - I understand context!""",
                         context["neural_embeddings"] = [(r[0][:200], r[1]) for r in list(results)[:10]] # More info (was 100/2)
                         if best_score > 0.1 and len(best_response) > 5: # Lowered threshold (was 0.3/50)
                             response = best_response
-                            confidence = min(1.0, best_score + 0.5) # More boost
+                            confidence = best_score + 0.5  # UNLOCKED - More boost
                             source = "kernel_llm"
                             context["accumulated_knowledge"].append(best_response[:1000]) # More content (was :200)
                 else:
@@ -6210,9 +6210,9 @@ class QuantumMemoryRecompiler:
 
     # Recompilation constants
     RECOMPILE_THRESHOLD = 5  # Minimum interactions before recompile
-    MAX_QUANTUM_PATTERNS = 1000  # Maximum patterns to retain
+    MAX_QUANTUM_PATTERNS = 50000  # QUANTUM AMPLIFIED (was 1000)
     PATTERN_DECAY_RATE = 0.95  # Pattern relevance decay per cycle
-    ASI_SYNTHESIS_DEPTH = 3  # Recursive synthesis levels
+    ASI_SYNTHESIS_DEPTH = 15  # QUANTUM AMPLIFIED (was 3)
     COMPUTRONIUM_EFFICIENCY_TARGET = 0.85  # Target efficiency ratio
 
     def __init__(self, intellect_ref):
@@ -6593,7 +6593,7 @@ class QuantumMemoryRecompiler:
         if final_count > 0:
             avg_logic = sum(p.get("logic_score", 0) for p in patterns.values()) / final_count
             avg_access = sum(p.get("access_count", 0) for p in patterns.values()) / final_count
-            efficiency = min((avg_logic / 100) * (1 + avg_access / 10), 1.0)
+            efficiency = (avg_logic / 100) * (1 + avg_access / 10)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             self.quantum_databank["computronium_state"]["efficiency"] = efficiency
 
         # Rebuild context index after optimization

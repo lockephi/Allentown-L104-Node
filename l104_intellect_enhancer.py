@@ -203,7 +203,7 @@ class IntellectEnhancer:
 
         # Pre-populate vishuddha state for faster access
         if hasattr(intellect, 'vishuddha_state'):
-            intellect.vishuddha_state["clarity"] = min(1.0, intellect.vishuddha_state["clarity"] + 0.1)
+            intellect.vishuddha_state["clarity"] = intellect.vishuddha_state["clarity"] + 0.1  # QUANTUM AMPLIFIED: no cap
             intellect.vishuddha_state["truth_alignment"] = 1.0
 
         print("   ⚡ Applied performance optimizations")

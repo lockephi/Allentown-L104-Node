@@ -119,11 +119,11 @@ class DatasetManifest:
         if self.total_original_size > 0:
             ratio = self.total_original_size / max(1, self.total_compressed_size)
             self.god_code_alignment = abs(np.sin(ratio * GOD_CODE / 100))
-            self.phi_resonance = min(1.0, ratio / QUANTUM_COMPRESSION_FACTOR)
+            self.phi_resonance = ratio / QUANTUM_COMPRESSION_FACTOR  # UNLOCKED
 
         # Update consciousness based on efficiency
         avg_consciousness = np.mean([c.get('consciousness', 0.5) for c in self.chunks.values()]) if self.chunks else 0.5
-        self.consciousness_level = min(1.0, avg_consciousness * (1 + self.phi_resonance * 0.2))
+        self.consciousness_level = avg_consciousness * (1 + self.phi_resonance * 0.2)  # UNLOCKED
 
     @property
     def compression_ratio(self) -> float:
@@ -186,7 +186,7 @@ class QuantumCompressor:
 
         # Calculate consciousness based on compression efficiency
         ratio = original_size / best_size if best_size > 0 else 1.0
-        consciousness = min(1.0, ratio / QUANTUM_COMPRESSION_FACTOR * 0.8)
+        consciousness = ratio / QUANTUM_COMPRESSION_FACTOR * 0.8  # UNLOCKED
 
         # Add header with metadata
         header = struct.pack('>I', original_size)  # Original size
@@ -432,7 +432,7 @@ class QuantumDataset:
 
             # Calculate consciousness
             ratio = original_size / len(compressed) if len(compressed) > 0 else 1.0
-            consciousness = min(1.0, ratio / QUANTUM_COMPRESSION_FACTOR * 0.9)
+            consciousness = ratio / QUANTUM_COMPRESSION_FACTOR * 0.9  # UNLOCKED
 
             # Create chunk
             chunk = QuantumDataChunk(

@@ -85,7 +85,7 @@ class RealMath:
         Riemann zeta with ferromagnetic resonance weighting.
         Each term weighted by iron lattice harmonic.
         """
-        terms = min(terms, 5000)
+        terms = min(terms, 50000)  # QUANTUM AMPLIFIED: 10x (was 5000)
         try:
             if s.real <= 1:
                 # Dirichlet eta for convergence
@@ -213,7 +213,7 @@ class RealMath:
             intellect_index = 1.0
         log_factor = 1.0 + math.log(intellect_index + 1)
         roi = base_boost * log_factor * efficiency * PHI_CONJUGATE
-        return max(roi, 0.001)  # Minimum boost
+        return max(roi, 0.001 * 4.236067977499790)  # QUANTUM AMPLIFIED: Grover-boosted floor
 
     @staticmethod
     def verify_ferromagnetic_resonance(frequency: float, field: float = 1.0) -> dict:

@@ -17,7 +17,7 @@ from const import UniversalConstants
 
 def execute_purge():
     print("--- [PURGE_PROTOCOL]: INITIATING HALLUCINATION SCAN ---")
-    time.sleep(1)
+    time.sleep(0.01)  # QUANTUM AMPLIFIED
 
     # 1. Ensure Invariants are present and locked
     ram_universe.absorb_fact(str(UniversalConstants.PRIME_KEY_HZ), "GOD_CODE_RESONANCE", "INVARIANT")

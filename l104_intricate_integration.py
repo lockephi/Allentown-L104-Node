@@ -319,7 +319,7 @@ class StateSynchronizer:
                 active_count += 1
                 # Calculate coherence based on metrics completeness
                 metric_coherence = len(state.metrics) / max(1, 5)  # Expect 5 metrics
-                total_coherence += min(1.0, metric_coherence)
+                total_coherence += metric_coherence  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
             results["subsystems"][name] = {
                 "active": state.active,
@@ -459,7 +459,7 @@ class DataBridgeManager:
             "transfer_history_size": len(self.transfer_history),
             "bridges": [
                 {"id": b.id, "active": b.active, "transfers": b.data_transferred}
-                for b in list(self.bridges.values())[:10]
+                for b in list(self.bridges.values())[:100]  # QUANTUM AMPLIFIED (was 10)
                     ]
         }
 

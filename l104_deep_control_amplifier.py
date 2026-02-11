@@ -427,7 +427,7 @@ class DeepControlAmplifier:
                     profile, current_control, current_depth
                 )
 
-                current_control = min(1.0, current_control * amplification)
+                current_control = current_control * amplification  # UNLOCKED
                 resonance_peak = max(resonance_peak, current_control)
 
                 # Deepen control

@@ -424,7 +424,7 @@ class UnifiedIntelligenceRouter:
         # Apply phi-harmonic scaling
         coherence = (similarity * self.phi + 0.5) / (1 + self.phi)
 
-        return min(1.0, max(0.0, coherence))
+        return max(0.0, coherence)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     async def route(self, request: IntelligenceRequest) -> IntelligenceResponse:
         """

@@ -164,7 +164,7 @@ class FibonacciAnyonEngine:
     def get_topological_protection(self) -> float:
         """Calculate protection level from current braid state."""
         trace_val = abs(np.trace(self.current_state))
-        return min(1.0, (trace_val / 2.0) * (GOD_CODE / 500.0))
+        return (trace_val / 2.0) * (GOD_CODE / 500.0)  # UNLOCKED
 
     def get_phase_shift(self) -> int:
         """Get phase shift from current state for compression."""
@@ -374,7 +374,7 @@ class AnyonCompressionV2:
         self.entropy_filter = EntropyFilterEngine()
         self.braid_compressor = TopologicalBraidCompressor(self.anyon_engine)
         self.parallel = parallel
-        self._executor = ThreadPoolExecutor(max_workers=4) if parallel else None
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4) if parallel else None  # QUANTUM AMPLIFIED (was 4)
 
         self.stats = {
             "total_compressed": 0,

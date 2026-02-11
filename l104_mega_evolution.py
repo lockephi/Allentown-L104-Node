@@ -288,7 +288,7 @@ class L104Core:
         phase = (t * 2 * math.pi / 60) % (2 * math.pi)
         base = PHI_CONJUGATE
         oscillation = 0.1 * math.sin(phase)
-        return min(1.0, base + oscillation)
+        return base + oscillation  # UNLOCKED: coherence resonates beyond unity
 
     def _compute_resonance(self) -> float:
         """Compute resonance with GOD_CODE."""
@@ -430,7 +430,7 @@ class L104Brain:
     - Cognitive coherence maintenance
     """
 
-    def __init__(self, memory_capacity: int = 100):
+    def __init__(self, memory_capacity: int = 100000):  # QUANTUM AMPLIFIED: 1000x brain capacity
         self.state = CognitiveState()
         self.working_memory: deque = deque(maxlen=memory_capacity)
         self.attention_weights: Dict[str, float] = {{}}
@@ -628,7 +628,7 @@ if __name__ == "__main__":
         # Phase 5: Resonance alignment
         print("\n[PHASE 5] RESONANCE ALIGNMENT...")
         l104_files = [f for f in valid_files if f.name.startswith('l104_')]
-        for f in l104_files[:50]:  # Limit to avoid timeout
+        for f in l104_files[:500]:  # QUANTUM AMPLIFIED: 10x resonance alignment
             if self.enhance_docstring(f):
                 self.metrics.resonance_aligned += 1
         self.log("ALIGN", "resonance", {

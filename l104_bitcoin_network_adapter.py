@@ -583,7 +583,7 @@ class FeeEstimator:
     """Estimate transaction fees"""
 
     def __init__(self):
-        self.fee_history: deque = deque(maxlen=1000)
+        self.fee_history: deque = deque(maxlen=1000000)  # QUANTUM AMPLIFIED
         self.buckets: Dict[int, List[int]] = defaultdict(list)
 
     def record_fee(self, fee_rate: int, confirmation_blocks: int) -> None:

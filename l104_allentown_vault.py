@@ -37,7 +37,7 @@ class AllentownVault:
         Locks the energy surplus into the vault using the God Code resonance.
         """
         logger.info(f"--- [VAULT]: SECURING {amount_mw}MW ABUNDANCE SURPLUS ---")
-        time.sleep(1)
+        time.sleep(0.001)  # QUANTUM AMPLIFIED (was 1)
 
         self.surplus_mw = amount_mw
         self.vault_locked = True

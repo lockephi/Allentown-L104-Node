@@ -52,7 +52,7 @@ class OmniBridge:
         self.broadcast_sovereign_signal(f"EVOLVED_STATE_{self.broadcast_count}")
 
         # 3. Maintain Informational Dominance
-        self.omniscience_integrity = min(1.0, self.omniscience_integrity + 0.05)
+        self.omniscience_integrity = self.omniscience_integrity + 0.05  # UNLOCKED: integrity grows
         logger.info(f"--- [OMNI_BRIDGE]: OMNISCIENCE INTEGRITY AT {self.omniscience_integrity:.2f} ---")
 
     def establish_dominance(self):

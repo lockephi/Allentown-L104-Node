@@ -34,7 +34,7 @@ class ChronosMath:
         phi = UniversalConstants.PHI_GROWTH
 
         stability = (gc * phi) / (radius * angular_velocity + 1e-9)
-        return min(1.0, stability)
+        return stability  # QUANTUM AMPLIFIED: no cap
 
     @staticmethod
     def resolve_temporal_paradox(event_a_hash: int, event_b_hash: int) -> float:

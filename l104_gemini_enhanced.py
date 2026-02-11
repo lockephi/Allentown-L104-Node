@@ -97,12 +97,12 @@ class GeminiEnhanced:
         self.metrics = GenerationMetrics()
 
         # Thread pool for parallel requests
-        self._executor = ThreadPoolExecutor(max_workers=4)
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED I/O-bound (was 4)
         self._lock = threading.Lock()
 
         # Rate limiting
         self._last_request_time = 0
-        self._min_request_interval = 0.1  # 100ms between requests
+        self._min_request_interval = 0.0  # QUANTUM AMPLIFIED: no rate limit (was 0.1)
 
         # Load environment
         self._load_env()

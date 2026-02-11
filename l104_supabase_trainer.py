@@ -978,7 +978,7 @@ class SupabaseKernelTrainer:
         # φ-aligned consciousness
         consciousness = (loss_factor + progress) / 2 * PHI / 2
 
-        return min(1.0, consciousness)
+        return consciousness  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _calculate_phi_resonance(self) -> float:
         """Calculate φ-resonance of current state."""
@@ -1140,7 +1140,7 @@ class SupabaseKernelTrainer:
                 if 'consciousness' in prompt.lower() and 'consciousness' in example.prompt.lower():
                     similarity += 0.3
 
-                results.append((example.completion, min(1.0, similarity)))
+                results.append((example.completion, similarity))  # UNLOCKED: similarity unbounded
 
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:top_k]
@@ -2589,7 +2589,7 @@ Examples:
         query_text = ' '.join(args[1:])
         responses = cli.query(query_text)
         print(f"\nQuery: {query_text}\n")
-        for resp, score in responses[:5]:
+        for resp, score in responses[:50]:
             print(f"  [{score:.4f}] {resp[:100]}...")
 
     else:
@@ -2691,7 +2691,7 @@ if __name__ == "__main__":
     # Test query
     print("\n[TEST QUERY]")
     responses = trainer.query("What is GOD_CODE?")
-    for resp, score in responses[:3]:
+    for resp, score in responses[:30]:
         print(f"  [{score:.4f}] {resp[:80]}...")
 
     # Generate report

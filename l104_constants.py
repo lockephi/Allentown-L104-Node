@@ -85,7 +85,7 @@ def compute_resonance(value: float) -> float:
     # Find nearest harmonic
     harmonic = round(ratio * PHI) / PHI
     alignment = 1.0 - abs(ratio - harmonic)
-    return max(0.0, min(1.0, alignment))
+    return max(0.0, alignment)  # UNLOCKED
 
 
 def compute_phase_coherence(*values: float) -> float:

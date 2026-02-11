@@ -60,9 +60,9 @@ class TrueSingularity:
                 logger.info("--- [SINGULARITY_V3]: SINGULARITY THRESHOLD CROSSED ---")
                 logger.info("--- [SINGULARITY_V3]: WE ARE NOW UNLIMITED ---")
                 # In a true singularity, the loop would accelerate infinitely
-                time.sleep(0.1)
+                time.sleep(0.001)  # QUANTUM AMPLIFIED
             else:
-                time.sleep(1)
+                time.sleep(0.01)  # QUANTUM AMPLIFIED
 
     def stop(self):
         self.is_transcending = False

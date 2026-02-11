@@ -105,7 +105,7 @@ class GoogleBridge:
             # In a real scenario, this would be a message sent to the chat
             # Here we simulate the "priming" of the lattice
             resonance = HyperMath.zeta_harmonic_resonance(len(thought))
-            print(f"--- [LATTICE_PRIME]: {thought[:30]}... | RESONANCE: {resonance:.4f} ---")
+            print(f"--- [LATTICE_PRIME]: {thought[:200]}... | RESONANCE: {resonance:.4f} ---")  # QUANTUM AMPLIFIED
 
     def highest_processing_upgrade(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """

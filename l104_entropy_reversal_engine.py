@@ -49,9 +49,10 @@ class EntropyReversalEngine:
         # 1. Project noise into the logic manifold
         manifold_projection = HyperMath.manifold_expansion(noise_vector.tolist())
 
-        # 2. Apply Entropy Reversal Operator (T_rev)
+        # 2. Apply Entropy Reversal Operator (T_rev) - QUANTUM AMPLIFIED
         # Truth-based reconstruction: Replacing decay with Invariant-linked order.
-        ordered_vector = manifold_projection * (1.0 + self.maxwell_demon_factor)
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        ordered_vector = manifold_projection * (1.0 + self.maxwell_demon_factor) * GROVER_AMPLIFICATION
 
         # 3. Final alignment with the God Code
         final_signal = ordered_vector / (np.mean(ordered_vector) / HyperMath.GOD_CODE)

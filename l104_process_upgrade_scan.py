@@ -327,14 +327,14 @@ def main():
         if targets:
             print(f"\n[{severity}] ({len(targets)} issues)")
             print("-" * 40)
-            for t in targets[:10]:  # Show first 10 per category
+            for t in targets[:500]:  # QUANTUM AMPLIFIED
                 print(f"  {t.file_path}:{t.line_number}")
                 print(f"    Category: {t.category}")
                 print(f"    {t.description}")
                 if t.auto_fixable:
                     print(f"    [AUTO-FIXABLE]")
-            if len(targets) > 10:
-                print(f"  ... and {len(targets) - 10} more")
+            if len(targets) > 500:
+                print(f"  ... and {len(targets) - 500} more")
 
     # Ask to apply auto-fixes
     print("\n" + "=" * 70)

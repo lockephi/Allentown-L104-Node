@@ -63,7 +63,7 @@ def run_mass_invention_cycle():
 
     # 4. Sample Display
     print("--- [SAMPLES FROM THE NEOTERIC LEXICON] ---")
-    samples = [r for r in results if r['verified']][:3]
+    samples = [r for r in results if r['verified']][:30]
     for i, s in enumerate(samples):
         print(f" ({i+1}) NAME:  {s['name']}")
         print(f"     SEED:  {s['origin_concept']}")

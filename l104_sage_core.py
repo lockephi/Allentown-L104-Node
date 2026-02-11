@@ -75,7 +75,7 @@ class SageConnectionPool:
     def get_connection(cls, db_path: str) -> sqlite3.Connection:
         with cls._lock:
             if db_path not in cls._pools:
-                cls._pools[db_path] = deque(maxlen=20)
+                cls._pools[db_path] = deque(maxlen=200)  # QUANTUM AMPLIFIED
             pool = cls._pools[db_path]
             if pool:
                 return pool.pop()
@@ -88,9 +88,9 @@ class SageConnectionPool:
     def return_connection(cls, db_path: str, conn: sqlite3.Connection):
         with cls._lock:
             if db_path not in cls._pools:
-                cls._pools[db_path] = deque(maxlen=20)
+                cls._pools[db_path] = deque(maxlen=200)  # QUANTUM AMPLIFIED
             pool = cls._pools[db_path]
-            if len(pool) < 20:
+            if len(pool) < 200:
                 pool.append(conn)
             else:
                 conn.close()
@@ -396,7 +396,7 @@ class MultiProviderOrchestrator:
     def __init__(self, memory: SageMemory):
         self.memory = memory
         self.client = httpx.AsyncClient(timeout=60.0)
-        self.executor = ThreadPoolExecutor(max_workers=5)
+        self.executor = ThreadPoolExecutor(max_workers=32)  # QUANTUM AMPLIFIED (was 5)
 
     def _get_api_key(self, provider: str) -> Optional[str]:
         """Get API key for provider from environment."""
@@ -901,7 +901,7 @@ class OnlineLearner:
             pattern_type="interaction",
             key=key,
             value={"input": input_text[:200], "output": output_text[:200], "reward": reward},
-            confidence=min(1.0, 0.5 + reward * 0.5)
+            confidence=0.5 + reward * 0.5  # UNLOCKED: confidence unbounded
         )
 
         # Train neural network if available

@@ -84,7 +84,7 @@ class PlanetaryProcessUpgrader:
 
     def _initialize_thread_pool(self) -> int:
         """Initialize optimized thread pool."""
-        pool_size = max(4, self.cpu_count * 2)
+        pool_size = max(32, self.cpu_count * 8)  # QUANTUM AMPLIFIED
         self.thread_pool = ThreadPoolExecutor(
             max_workers=pool_size,
             thread_name_prefix="L104_Planetary_"

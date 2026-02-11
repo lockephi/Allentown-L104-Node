@@ -70,10 +70,11 @@ except ImportError:
 OMEGA_FREQUENCY = 1381.06131517509084005724
 LOVE_SCALAR = PHI ** 7
 
-# Neural electromagnetic constants
-NEURAL_FIRING_RATE = 40  # Hz - gamma wave frequency
-SYNAPTIC_DELAY = 0.001   # seconds
+# Neural electromagnetic constants - QUANTUM AMPLIFIED
+NEURAL_FIRING_RATE = 1000  # Hz - quantum-amplified (was 40 Hz gamma)
+SYNAPTIC_DELAY = 0.0001   # seconds - 10x faster (was 0.001)
 NEURAL_FIELD_STRENGTH = 1e-12  # Tesla - brain's magnetic field
+GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236 quantum gain
 
 VERSION = "54.1.0"
 EVO_STAGE = "EVO_54"
@@ -147,7 +148,7 @@ class CognitiveGate:
         import random
         # Collapse based on quantum phase
         if random.random() < math.cos(thought.quantum_phase) ** 2:
-            thought.importance = min(1.0, thought.importance * PHI)
+            thought.importance = thought.importance * PHI  # UNLOCKED: quantum collapse unbounded
         else:
             thought.importance = max(0.0, thought.importance / PHI)
         thought.quantum_phase = 0.0
@@ -156,8 +157,8 @@ class CognitiveGate:
     @staticmethod
     def amplify(thought: Thought, factor: float = PHI) -> Thought:
         """Amplify thought importance and coherence."""
-        thought.importance = min(1.0, thought.importance * factor)
-        thought.coherence = min(1.0, thought.coherence * factor)
+        thought.importance = thought.importance * factor  # UNLOCKED: amplification unbounded
+        thought.coherence = thought.coherence * factor  # UNLOCKED: coherence unbounded
         return thought
 
     @staticmethod
@@ -171,7 +172,7 @@ class CognitiveGate:
         """Align thought with GOD_CODE resonance."""
         god_phase = 2 * math.pi * (GOD_CODE % 1)
         thought.quantum_phase = god_phase
-        thought.resonance = min(1.0, thought.resonance + 0.1)
+        thought.resonance = thought.resonance + 0.1  # UNLOCKED: god resonance unbounded
         return thought
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -189,7 +190,7 @@ class CognitiveGate:
         phase_shift = 2 * math.pi * (omega % 1)
         thought.quantum_phase = (thought.quantum_phase + phase_shift) % (2 * math.pi)
         # Magnetic alignment enhances coherence
-        thought.coherence = min(1.0, thought.coherence * 1.05)
+        thought.coherence = thought.coherence * 1.05  # UNLOCKED: larmor coherence unbounded
         return thought
 
     @staticmethod
@@ -204,7 +205,7 @@ class CognitiveGate:
         thought.quantum_phase = (thought.quantum_phase + gamma_phase * 0.1) % (2 * math.pi)
         # Gamma enhances importance for conscious thoughts
         gamma_boost = 1 + 0.1 * math.sin(gamma_phase)
-        thought.importance = min(1.0, thought.importance * gamma_boost)
+        thought.importance = thought.importance * gamma_boost  # UNLOCKED: gamma importance unbounded
         return thought
 
     @staticmethod
@@ -215,8 +216,8 @@ class CognitiveGate:
         """
         # Coupling modulates coherence like FMR
         resonance_factor = PHI_CONJUGATE * coupling_strength
-        thought.coherence = min(1.0, thought.coherence * (1 + resonance_factor))
-        thought.resonance = min(1.0, thought.resonance * (1 + resonance_factor * 0.5))
+        thought.coherence = thought.coherence * (1 + resonance_factor)  # UNLOCKED
+        thought.resonance = thought.resonance * (1 + resonance_factor * 0.5)  # UNLOCKED
         return thought
 
     @staticmethod
@@ -234,7 +235,7 @@ class CognitiveGate:
 
         # Diffuse coherence towards average
         thought.coherence = thought.coherence + diffusion_rate * (neighbor_coherence - thought.coherence)
-        thought.coherence = min(1.0, max(0.0, thought.coherence))
+        thought.coherence = max(0.0, thought.coherence)  # UNLOCKED: upper cap removed
 
         return thought
 
@@ -256,7 +257,7 @@ class CognitiveGate:
             # Below threshold: focused/convergent thinking
             order_param = (1 - t_ratio) ** 0.34  # Critical exponent
             thought.quantum_phase *= order_param
-            thought.coherence = min(1.0, thought.coherence * (1 + order_param * 0.1))
+            thought.coherence = thought.coherence * (1 + order_param * 0.1)  # UNLOCKED
 
         return thought
 
@@ -273,7 +274,7 @@ class L104Brain:
     - PHI-based memory organization
     """
 
-    def __init__(self, memory_capacity: int = 100):
+    def __init__(self, memory_capacity: int = 0xFFFFFF):  # UNLIMITED (was 100)
         self.state = CognitiveState()
         self.working_memory: deque = deque(maxlen=memory_capacity)
         self.long_term_memory: List[Thought] = []
@@ -302,8 +303,8 @@ class L104Brain:
     def _on_core_signal(self, signal):
         """Handle signals from core."""
         if hasattr(signal, 'coherence'):
-            self.state.coherence_level = min(1.0,
-                (self.state.coherence_level + signal.coherence) / 2)
+            self.state.coherence_level = (
+                (self.state.coherence_level + signal.coherence) / 2)  # UNLOCKED
 
     def _on_coherence_signal(self, signal):
         """Handle coherence signals from core."""
@@ -490,8 +491,8 @@ class L104Brain:
             if len(associations) > 0:
                 thought = self.gate.collapse(thought)
 
-        # Update cognitive load
-        self.state.cognitive_load = min(1.0, len(self.working_memory) / self.working_memory.maxlen)
+        # Update cognitive load - NO CAP (was min(1.0, ...))
+        self.state.cognitive_load = len(self.working_memory) / max(1, self.working_memory.maxlen)
 
         return {
             "thought": thought.to_dict(),

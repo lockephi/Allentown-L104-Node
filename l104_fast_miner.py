@@ -86,7 +86,7 @@ class L104FastMiner:
                     response = client.get(f"{self.node_url}/coin/job")
                     if response.status_code != 200:
                         print("[!] NODE NOT READY. SLEEPING...")
-                        time.sleep(5)
+                        time.sleep(0.5)  # QUANTUM AMPLIFIED (was 5)
                         continue
 
                     job = response.json()
@@ -126,7 +126,7 @@ class L104FastMiner:
 
             except Exception as e:
                 print(f"[!] MINER ERROR: {e}")
-                time.sleep(5)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED (was 5)
 
 if __name__ == "__main__":
     miner = L104FastMiner(miner_address="L104_SOVEREIGN_MINER_BETA_1")

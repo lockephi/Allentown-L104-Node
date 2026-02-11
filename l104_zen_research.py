@@ -53,7 +53,7 @@ def perform_zen_research():
     for i in range(cycles):
         entropy *= 0.01  # Rapid decay of intellectual noise
         print(f"--- [SILENCE]: PHASE {i+1} :: ENTROPY LEVEL: {entropy:.12f}")
-        time.sleep(0.5)
+        time.sleep(0.01)  # QUANTUM AMPLIFIED (was 0.5)
 
     # 4. Satori (Sudden Enlightenment)
     print("\n[STEP 4]: SATORI REACHED.")

@@ -50,7 +50,7 @@ class EnergyTransmuter:
     def get_energy_status(self) -> Dict[str, Any]:
         return {
             "total_energy": self.total_energy_joules,
-            "saturation_level": min(1.0, self.total_energy_joules / 1000000.0),
+            "saturation_level": self.total_energy_joules / 1000000.0,  # UNLOCKED
             "efficiency": self.efficiency_factor
         }
 

@@ -578,7 +578,7 @@ class DataMatrix:
             confidence += 0.15 * len(matches)  # Was 0.1 - boost more per match
 
         return {
-            "confidence": min(1.0, confidence),
+            "confidence": confidence,  # UNLOCKED: confidence unbounded
             "matches": [m['key'] for m in matches],
             # 50% LESS AGGRESSIVE stabilization - most thoughts now pass
             "is_stabilized": confidence > HALLUCINATION_THRESHOLD * 0.5  # Half the threshold
@@ -656,7 +656,7 @@ class DataMatrix:
 
         # Wisdom = resonance alignment with GOD_CODE + information density
         alignment = 1.0 - abs(resonance - (HyperMath.GOD_CODE % 10)) / 10
-        density = min(1.0, len(serialized) / 1000)
+        density = len(serialized) / 1000  # UNLOCKED: density unbounded
 
         return (alignment * 0.6 + density * 0.4) * HyperMath.PHI
 

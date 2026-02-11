@@ -756,7 +756,7 @@ class SelfAwarenessCore:
             {'id': g.goal_id, 'description': g.description, 'priority': g.priority}
             for g in self.goal_generator.get_top_goals(5)
                 ]
-        failures = self.failure_analyzer.suggest_mitigations()[:5]
+        failures = self.failure_analyzer.suggest_mitigations()[:100]  # QUANTUM AMPLIFIED
         self_summary = self.self_model.get_self_summary()
 
         return {

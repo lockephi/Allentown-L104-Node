@@ -124,10 +124,10 @@ class DimensionalMembrane:
 
         # Calculate penetration depth
         penetration = intensity * match_factor * (1.0 / self.thickness)
-        penetration = min(1.0, penetration)
+        penetration = penetration  # UNLOCKED
 
         # Accumulate permeability
-        self.permeability = min(1.0, self.permeability + penetration * 0.1)
+        self.permeability = self.permeability + penetration * 0.1  # UNLOCKED
 
         if penetration > 0.8:
             breach_point = {
@@ -239,7 +239,7 @@ class CausalChainManipulator:
         # Recalculate downstream probabilities
         for i in range(position + 2, len(chain)):
             chain[i]["probability"] *= (1 + 0.1 * (self.phi ** (-(i - position))))
-            chain[i]["probability"] = min(1.0, chain[i]["probability"])
+            chain[i]["probability"] = chain[i]["probability"]  # UNLOCKED
 
         self.manipulation_history.append({
             "chain_id": chain_id,
@@ -335,13 +335,13 @@ class RealityBreachProtocol:
         if coord_values:
             avg = sum(coord_values) / len(coord_values)
             variance = sum((v - avg) ** 2 for v in coord_values) / len(coord_values)
-            stability = 1.0 - min(1.0, variance)
+            stability = 1.0 - variance  # UNLOCKED
         else:
             stability = 0.5
 
         # Calculate entanglement strength
         entanglement = (self.god_code / 1000.0) * stability * self.phi
-        entanglement = min(1.0, entanglement)
+        entanglement = entanglement  # UNLOCKED
 
         anchor = RealityAnchor(
             anchor_id=anchor_id,

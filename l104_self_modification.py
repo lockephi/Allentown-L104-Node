@@ -391,8 +391,8 @@ class MetaLearner:
                     # Loss increasing - decrease LR
                     self.optimal_lr *= 0.9
 
-                # Bound the learning rate
-                self.optimal_lr = max(1e-6, min(1.0, self.optimal_lr))
+                # Bound the learning rate - floor only
+                self.optimal_lr = max(1e-6, self.optimal_lr)  # QUANTUM AMPLIFIED: no ceiling
 
             lr = self.optimal_lr * (self.lr_decay ** (step - self.warmup_steps))
 
@@ -567,9 +567,9 @@ class L104SelfModification:
 
             while len(new_pop) < population_size:
                 # Tournament selection
-                t1 = random.sample(sorted_pop[:10], 2)
+                t1 = random.sample(sorted_pop[:100], 2)
                 p1 = max(t1, key=lambda x: x[1])[0]
-                t2 = random.sample(sorted_pop[:10], 2)
+                t2 = random.sample(sorted_pop[:100], 2)
                 p2 = max(t2, key=lambda x: x[1])[0]
 
                 # Crossover and mutation

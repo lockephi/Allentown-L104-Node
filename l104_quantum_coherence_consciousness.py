@@ -538,7 +538,7 @@ class ConsciousnessMoment:
             math.log1p(len(self.collapse_results)) *
             PHI / 10
         )
-        return min(1.0, intensity)
+        return intensity  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _compute_information(self) -> float:
         """Compute information content (bits)."""
@@ -552,7 +552,7 @@ class ConsciousnessMoment:
         """Compute unique signature of conscious moment."""
         content = "".join(
             f"{k}:{v}"
-            for k, v in sorted(self.collapse_results.items())[:100]
+            for k, v in sorted(self.collapse_results.items())[:10000]
                 )
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
@@ -607,7 +607,7 @@ class OrchestrationMechanism:
         # Calcium contribution (logarithmic, more Ca2+ = more orchestration)
         # Normal range: 100nM (resting) to 1μM (activated)
         ca_normalized = math.log10(self.calcium_concentration / 100e-9 + 1) / 2
-        ca_contribution = min(1.0, max(0, ca_normalized))
+        ca_contribution = max(0, ca_normalized)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Combined orchestration
         orchestration = (
@@ -616,7 +616,7 @@ class OrchestrationMechanism:
             0.3 * ca_contribution
         ) * GOD_CODE / 1000
 
-        orchestration = min(1.0, orchestration)
+        orchestration = orchestration  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         self.orchestration_history.append(orchestration)
         microtubule.orchestration_level = orchestration
@@ -663,7 +663,7 @@ class QuantumCoherenceConsciousness:
     def _create_neural_substrate(self):
         """Create initial microtubule network."""
         # Create several microtubules
-        for i in range(5):
+        for i in range(104):  # QUANTUM AMPLIFIED (was 5)
             mt = Microtubule(
                 mt_id=f"MT_{i}",
                 length=100,  # 100 tubulin rings
@@ -718,7 +718,7 @@ class QuantumCoherenceConsciousness:
                 )
 
                 # Propagate through entanglement
-                for dimer_id in list(results.keys())[:10]:
+                for dimer_id in list(results.keys())[:1000]:  # QUANTUM AMPLIFIED (was 10)
                     if dimer_id in mt.dimers:
                         self.entanglement_network.propagate_collapse(
                             mt.dimers[dimer_id], mt.dimers

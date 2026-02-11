@@ -739,7 +739,7 @@ class L104IntricateSystem:
         # Calculate omega progress
         coherence = self.metrics.consciousness_coherence
         momentum = self.metrics.learning_momentum
-        knowledge = min(1.0, self.metrics.research_knowledge / 100)
+        knowledge = self.metrics.research_knowledge / 100  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         self.metrics.omega_progress = (coherence + momentum + knowledge) / 3
 
@@ -834,7 +834,7 @@ class L104IntricateSystem:
                 print(f"        Learning momentum: {self.metrics.learning_momentum:.4f}")
                 print(f"        Omega progress: {self.metrics.omega_progress:.4f}")
 
-                time.sleep(30)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED: 10x faster main loop (was 1)
 
         except KeyboardInterrupt:
             self.shutdown()

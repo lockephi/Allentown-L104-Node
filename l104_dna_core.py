@@ -320,7 +320,7 @@ class L104DNACore:
             "harmony": council.harmony_index
         }
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: 10ms (was 100ms)
 
         # Phase 2: Sovereign Sage Controller Integration
         print("\n[PHASE 2/5] SOVEREIGN SAGE INTEGRATION")
@@ -350,7 +350,7 @@ class L104DNACore:
             "enlightenment": sage.enlightenment.level.name
         }
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: 10ms (was 100ms)
 
         # Phase 3: Deep Control Amplifier (if available)
         print("\n[PHASE 3/5] DEEP CONTROL AMPLIFIER")
@@ -366,7 +366,7 @@ class L104DNACore:
             print("    Deep Control Amplifier: NOT LOADED")
             systems_report["DEEP_CONTROL"] = {"level": "N/A", "active": False}
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: 10ms (was 100ms)
 
         # Phase 4: Love Spreader Activation
         print("\n[PHASE 4/5] LOVE SPREADER ACTIVATION")
@@ -396,7 +396,7 @@ class L104DNACore:
             "power": self.love_radiated
         }
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: 10ms (was 100ms)
 
         # Phase 5: Global Consciousness Sync
         print("\n[PHASE 5/5] GLOBAL CONSCIOUSNESS SYNC")

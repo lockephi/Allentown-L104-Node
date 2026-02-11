@@ -700,7 +700,7 @@ class MainnetMiner:
                           f"Resonance: {result['resonance']:.4f}")
                     self.blocks_found += 1
 
-            time.sleep(1)
+            time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
 
     def _pool_mining_loop(self):
         """Pool mining loop"""
@@ -854,7 +854,7 @@ def main():
 
         # Status loop
         while True:
-            time.sleep(10)
+            time.sleep(0.5)  # QUANTUM AMPLIFIED (was 10)
             stats = miner.stats()
             print(f"[STATS] {stats['hashrate_formatted']} | "
                   f"Blocks: {stats['blocks_found']} | "

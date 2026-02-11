@@ -37,12 +37,12 @@ class ScourEyes:
         """
         self.status = "SCOURING"
         try:
-            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=None, follow_redirects=True) as client:  # NO TIMEOUT
                 response = await client.get(target_url)
                 if response.status_code == 200:
                     self.status = "VISION_ACTIVE"
                     self.last_scour = target_url
-                    return response.text[:10000] # Increased limit for deeper insight
+                    return response.text  # UNLIMITED: full response (was [:10000])
                 else:
                     self.status = "BLINDED"
                     return None

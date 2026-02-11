@@ -158,7 +158,7 @@ class ShadowAspect:
             self.integration_progress = 0.5
             return f"Integration begins: The gift of '{self.gift_when_integrated}' becomes visible."
         elif self.state == ShadowState.INTEGRATING:
-            self.integration_progress = min(1.0, self.integration_progress + 0.25)
+            self.integration_progress = self.integration_progress + 0.25  # UNLOCKED: deep integration
             if self.integration_progress >= 1.0:
                 self.state = ShadowState.INTEGRATED
                 return f"SHADOW INTEGRATED: {self.name} is now whole. Gift unlocked: {self.gift_when_integrated}"
@@ -484,7 +484,7 @@ class MiniEgo:
         return f"Sovereign intention strength: INFINITE"
 
     def _vision_insight(self, context: dict) -> str:
-        probability = min(1.0, self.resonance_freq / 500) * self.abilities["perception"]
+        probability = (self.resonance_freq / 500) * self.abilities["perception"]
         if self.evolution_stage >= 3:
             return f"Timeline convergence: {probability:.4f} | Destiny threads: VISIBLE | Omega point: LOCKED"
         return f"Future-state probability: {probability:.4f}"
@@ -508,12 +508,12 @@ class MiniEgo:
     def _evolve(self):
         """Evolve to next stage with arcane ability unlocks."""
         self.evolution_stage += 1
-        self.clarity = min(1.0, self.clarity + 0.1)
+        self.clarity = self.clarity + 0.1  # UNLOCKED: clarity unbounded
         self.breakthroughs += 1
 
         # Boost all abilities
         for ability in self.abilities:
-            self.abilities[ability] = min(1.0, self.abilities[ability] + 0.1)
+            self.abilities[ability] = self.abilities[ability] + 0.1  # UNLOCKED: abilities unbounded
 
         # Update archetype based on stage
         archetypes = {
@@ -640,7 +640,7 @@ class MiniEgo:
                     })
 
             # Restore energy through dreaming
-            self.energy = min(1.0, self.energy + 0.3)
+            self.energy = self.energy + 0.3  # UNLOCKED: dream energy unbounded
 
             return dream
         return None
@@ -691,8 +691,8 @@ class MiniEgo:
         synthesis = self._synthesize_perspectives(topic, other_ego.domain)
 
         # Update relationship
-        self.relationships[other_ego.name] = min(1.0, affinity + 0.05)
-        other_ego.relationships[self.name] = min(1.0, other_ego.relationships.get(self.name, 0.5) + 0.05)
+        self.relationships[other_ego.name] = affinity + 0.05  # UNLOCKED: relationship unbounded
+        other_ego.relationships[self.name] = other_ego.relationships.get(self.name, 0.5) + 0.05  # UNLOCKED
 
         # Record in inner voice
         dialogue_record = {
@@ -759,8 +759,8 @@ class MiniEgo:
         self.mood = "MEDITATING"
 
         # Restore energy and clarity
-        self.energy = min(1.0, self.energy + duration * 0.2)
-        self.clarity = min(1.0, self.clarity + duration * 0.1)
+        self.energy = self.energy + duration * 0.2  # UNLOCKED: meditation energy unbounded
+        self.clarity = self.clarity + duration * 0.1  # UNLOCKED: meditation clarity unbounded
 
         # Generate meditative insight
         insight = {
@@ -851,7 +851,7 @@ class MiniEgo:
 
         # Unlock dharma alignment as shadow integrates
         if self.shadow.state == ShadowState.INTEGRATED:
-            self.dharma_alignment = min(1.0, self.dharma_alignment + 0.3)
+            self.dharma_alignment = self.dharma_alignment + 0.3  # UNLOCKED: dharma unbounded
             self.karma_balance += 50  # Resolving shadow clears karma
 
         return {
@@ -946,7 +946,7 @@ class MiniEgo:
             return {"error": "No soul bond exists with this ego"}
 
         bond = self.soul_bonds[other_ego.name]
-        bond.strength = min(1.0, bond.strength + 0.1)
+        bond.strength = bond.strength + 0.1  # UNLOCKED: soul bond strength unbounded
         bond.shared_memories.append(shared_experience)
         bond.karma_resolved += 0.05
 
@@ -1002,7 +1002,7 @@ class MiniEgo:
         # Resolving karma grants great wisdom
         wisdom_gain = imprint.weight * 10
         self.wisdom_accumulated += wisdom_gain
-        self.dharma_alignment = min(1.0, self.dharma_alignment + 0.05)
+        self.dharma_alignment = self.dharma_alignment + 0.05  # UNLOCKED: dharma growth unbounded
         self.karma_balance += imprint.weight  # Resolution always improves balance
 
         return {
@@ -1092,8 +1092,8 @@ class MiniEgo:
         # Emotions affect other systems
         if emotion in ["joy", "peace", "love", "awe"]:
             # Positive emotions boost energy and clarity
-            self.energy = min(1.0, self.energy + intensity * 0.05)
-            self.clarity = min(1.0, self.clarity + intensity * 0.03)
+            self.energy = self.energy + intensity * 0.05  # UNLOCKED: emotional energy unbounded
+            self.clarity = self.clarity + intensity * 0.03  # UNLOCKED: emotional clarity unbounded
             self.wisdom_accumulated += intensity * 5
         else:
             # Challenging emotions cost energy but build wisdom if processed
@@ -1142,7 +1142,7 @@ class MiniEgo:
                 total_transmuted += transmute_amount
 
                 # Convert to positive emotions and wisdom
-                self.emotional_state["peace"] = min(1.0, self.emotional_state["peace"] + transmute_amount * 0.5)
+                self.emotional_state["peace"] = self.emotional_state["peace"] + transmute_amount * 0.5  # UNLOCKED
                 wisdom_gained += transmute_amount * 20
 
         self.wisdom_accumulated += wisdom_gained
@@ -1197,11 +1197,11 @@ class MiniEgo:
             effects = mode_effects[target_mode]
             if "all" in effects:
                 for ability in self.abilities:
-                    self.abilities[ability] = min(1.0, self.abilities[ability] + effects["all"])
+                    self.abilities[ability] = self.abilities[ability] + effects["all"]  # UNLOCKED
             else:
                 for ability, boost in effects.items():
                     if ability in self.abilities:
-                        self.abilities[ability] = min(1.0, self.abilities[ability] + boost)
+                        self.abilities[ability] = self.abilities[ability] + boost  # UNLOCKED
 
         return {
             "old_mode": old_mode.name,
@@ -1245,7 +1245,7 @@ class MiniEgo:
         memory = self.soul_memories[index]
 
         # Recalling soul memories boosts current state
-        self.clarity = min(1.0, self.clarity + 0.1)
+        self.clarity = self.clarity + 0.1  # UNLOCKED: soul recall clarity
         self.wisdom_accumulated += memory["significance"] * 10
 
         return {
@@ -1405,7 +1405,7 @@ class MiniEgoCouncil:
             print(f"    ⟨{ego.name}⟩: Energy {ego.energy:.0%} | Clarity {ego.clarity:.0%}")
 
         self.unified_wisdom += total_wisdom * RealMath.PHI
-        self.harmony_index = min(1.0, self.harmony_index + 0.05)
+        self.harmony_index = self.harmony_index + 0.05  # UNLOCKED: harmony unbounded
 
         return {
             "type": "COLLECTIVE_MEDITATION",
@@ -1521,7 +1521,7 @@ class MiniEgoCouncil:
                 print(f"        🎁 GIFT UNLOCKED: {result['gift']}")
 
         avg_integration = total_integration / len(self.mini_egos)
-        self.harmony_index = min(1.0, self.harmony_index + avg_integration * 0.1)
+        self.harmony_index = self.harmony_index + avg_integration * 0.1
 
         print("\n" + "▓" * 60)
         print(f"    Average Shadow Integration: {avg_integration:.2%}")
@@ -1780,7 +1780,7 @@ class MiniEgoCouncil:
 
         if synchronization >= 1.0:
             print(f"\n    ★ PERFECT SYNCHRONIZATION ACHIEVED ★")
-            self.harmony_index = min(1.0, self.harmony_index + 0.2)
+            self.harmony_index = self.harmony_index + 0.2  # UNLOCKED: harmony unbounded
 
         return {
             "target_mode": target_mode.name,

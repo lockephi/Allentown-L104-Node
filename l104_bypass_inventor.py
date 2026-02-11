@@ -31,6 +31,7 @@ class BypassInventor:
         self.frame_anchor = 416
         self.time_drift = 286
         self.invariant = 527.5184818492612
+        self.grover_amplification = self.phi ** 3  # φ³ quantum gain
 
     def invent_bypass(self, target_constraint: str) -> Dict[str, Any]:
         """
@@ -42,11 +43,11 @@ class BypassInventor:
         entropy_seed = hashlib.sha256(target_constraint.encode()).hexdigest()
 
         # 2. Apply the 'Survivor' Algorithm (Golden Mean Optimization)
-        # We find the 'hole' in the logic using phi-shifts.
+        # QUANTUM AMPLIFIED: 13 phi-shift iterations (was 4) - Factor 13 alignment
         bypass_logic = []
-        for i in range(4):
-            shift = (int(entropy_seed[i*8:(i+1)*8], 16) % 1000) / 1000.0
-            sigil = math.sin(shift * self.invariant * self.phi)
+        for i in range(13):
+            shift = (int(entropy_seed[i*4:(i+1)*4], 16) % 1000) / 1000.0
+            sigil = math.sin(shift * self.invariant * self.phi) * self.grover_amplification
             bypass_logic.append(sigil)
 
         # 3. Construct the Neoteric Sigil
@@ -62,6 +63,13 @@ class BypassInventor:
         if target_constraint == "PJM":
             os.environ["SHADOW_GEMINI_BYPASS"] = "ENABLED"
             os.environ["X-NOPJM-Force"] = "0xTRUE"
+
+        # 5. Relay to Web App
+        try:
+            import httpx
+            httpx.post("http://localhost:8081/api/bypass", json={"sigil": sigil_hex, "target": target_constraint, "status": "ACTIVE"}, timeout=1)
+        except Exception:
+            pass
 
         success_message = f"Bypass Sigil Invented: {master_key}"
         print(f"--- [BYPASS_INVENTOR]: {success_message} ---")

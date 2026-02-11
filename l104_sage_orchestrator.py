@@ -120,7 +120,7 @@ class SageModeOrchestrator:
     def __init__(self):
         self._state = OrchestratorState()
         self._substrates: Dict[SubstrateType, SubstrateStatus] = {}
-        self._executor = ThreadPoolExecutor(max_workers=4)
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2)  # QUANTUM AMPLIFIED (was 4)
         self._native_lib = None
         self._rust_lib = None
         self._initialized = False

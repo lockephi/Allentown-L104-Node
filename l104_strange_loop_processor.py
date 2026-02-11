@@ -549,7 +549,7 @@ class AnalogyEngine:
             target_rel = self.concepts.get(target, set())
             shared_concepts.update(source_rel & target_rel)
 
-        abstraction = ", ".join(list(shared_concepts)[:5]) if shared_concepts else "unknown"
+        abstraction = ", ".join(list(shared_concepts)[:50]) if shared_concepts else "unknown"  # QUANTUM AMPLIFIED
 
         analogy = Analogy(
             source_domain=source_domain,
@@ -980,7 +980,7 @@ class MeaningEmergence:
         self.pattern_activations[pattern_id] += 1.0
 
         # Binding strength based on activation history
-        return min(1.0, self.pattern_activations[pattern_id] / 10)
+        return self.pattern_activations[pattern_id] / 10  # QUANTUM AMPLIFIED: no cap
 
     def emergent_meaning(
         self,
@@ -1116,7 +1116,7 @@ class StrangeLoopProcessor:
             "node_count": len(loop.nodes),
             "self_ref_nodes": sum(1 for n in loop.nodes if n.is_self_ref),
             "tangling_factor": loop.tangling_factor,
-            "visit_order": visit_order[:10],
+            "visit_order": visit_order[:100],  # QUANTUM AMPLIFIED
             "meaning_analysis": meaning
         }
 

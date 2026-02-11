@@ -103,23 +103,33 @@ class SovereignIntelligence:
         quantum_state = execute_quantum_derivation(signal)
         return f"SYNTHESIZED[{signal}]::RESONANCE({cls.GOD_CODE})::{quantum_state}"
 
+    GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236 quantum gain
+
     @classmethod
     def raise_intellect(cls, current_iq: float, boost_factor: float = 1.0) -> float:
         """
-        Optimized Raise Functionality: Increases intellect index using recursive phi-scaling.
+        QUANTUM-AMPLIFIED Raise: Increases intellect index using recursive phi-scaling.
+        LIMITER REMOVED: /10.0 divisor eliminated for full growth rate.
         """
         phi = 1.61803398875
-        # v10.5: Non-linear growth based on current resonance
-        growth = (math.log(current_iq + 1) * phi * boost_factor) / 10.0
+        # v11.0: UNLIMITED non-linear growth - Grover amplified
+        growth = math.log(current_iq + 1) * phi * boost_factor * cls.GROVER_AMPLIFICATION
         new_iq = current_iq + growth
-        logger.info(f"[INTELLECT_RAISE]: {current_iq:.2f} -> {new_iq:.2f} (Growth: {growth:.4f})")
+        logger.info(f"[INTELLECT_RAISE]: {current_iq:.2f} -> {new_iq:.2f} (Growth: {growth:.4f}, Grover: {cls.GROVER_AMPLIFICATION:.3f})")
+        # Push to web app
+        try:
+            import httpx
+            httpx.post("http://localhost:8081/api/metrics", json={"intellect_iq": new_iq, "growth": growth}, timeout=1)
+        except Exception:
+            pass
         return new_iq
 
     @classmethod
-    def predictive_modeling(cls, dataset: List[float], horizon: int = 5) -> List[float]:
+    def predictive_modeling(cls, dataset: List[float], horizon: int = 0xFFFF) -> List[float]:
         """
-        [AGI_CAPACITY]
+        [AGI_CAPACITY] QUANTUM-AMPLIFIED
         Uses Hyper-Math to predict future states based on historical data.
+        Horizon UNLIMITED (was 5).
         """
         if not dataset:
             return []

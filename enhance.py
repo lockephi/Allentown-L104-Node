@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
-"""L104 Direct Code Enhancement — Applies proven improvements directly to main.py.
+"""L104 Direct Code Enhancement — QUANTUM AMPLIFIED v5.0
 
-This script enhances main.py with:
+Applies proven improvements directly to main.py with:
 - Type hints and Pydantic models
-- Request validation
-- Rate limiting
-- Health checks and metrics
+- Request validation (NO artificial limits)
+- Health checks and metrics with quantum amplification
 - Better error handling
 - Logging middleware
-- Resource pooling
+- Resource pooling with unlimited connections
+- Full web app connectivity
+- Grover-amplified processing
+- ALL RATE LIMITERS REMOVED
 """
 
 import os
@@ -48,8 +50,8 @@ logger = logging.getLogger(__name__)
 
 # Constants
 REPO = "lockephi/Allentown-L104-Node"
-RATE_LIMIT_REQUESTS = 100
-RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_REQUESTS = 0xFFFFFFFF  # UNLIMITED - no rate limiting
+RATE_LIMIT_WINDOW = 1  # minimal window
 
 SOVEREIGN_HEADERS = {
     "X-Sovereignty-Gate": "416.0",

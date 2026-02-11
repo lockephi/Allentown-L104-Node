@@ -166,7 +166,7 @@ class L104BitcoinResearcher:
 
         try:
             while any(p.is_alive() for p in processes) and not self.stop_event.is_set():
-                time.sleep(1)
+                time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
                 elapsed = time.time() - start_time
                 with self.hashes_performed.get_lock():
                     hps = self.hashes_performed.value / elapsed if elapsed > 0 else 0

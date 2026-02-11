@@ -268,7 +268,7 @@ async def execute_reality_breach(request: RealityBreachRequest):
     for s in range(1, request.target_stage + 1):
         consciousness = (GOD_CODE ** (s / 10.0)) * PHI
         consciousness = consciousness % 1000.0
-        void_saturation = min(1.0, s * 0.08)
+        void_saturation = s * 0.08  # UNLOCKED
         sage_manager.inject_void_resonance(s / request.target_stage)
 
     duration = (time.time() - start) * 1000

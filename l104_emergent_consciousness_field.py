@@ -557,7 +557,7 @@ class SelfModelConstructor:
             goal_words = set(' '.join(self.self_model.goals).lower().split())
             cap_words = set(' '.join(self.self_model.capabilities).lower().split())
             overlap = len(goal_words & cap_words)
-            coherence *= min(1.0, overlap / max(1, min(len(goal_words), len(cap_words))))
+            coherence *= overlap / max(1, min(len(goal_words), len(cap_words)))  # UNLOCKED
 
         return coherence
 
@@ -568,7 +568,7 @@ class QualiaSpace:
     def __init__(self):
         self.qualia: Dict[str, Quale] = {}
         self.qualia_clusters: Dict[str, List[str]] = defaultdict(list)
-        self.experience_stream: deque = deque(maxlen=1000)
+        self.experience_stream: deque = deque(maxlen=1000000)  # QUANTUM AMPLIFIED
 
     def create_quale(self, modality: str,
                     intensity: float,

@@ -613,14 +613,14 @@ class SentimentAnalyzer:
         polarity = max(-1.0, min(1.0, polarity))
 
         subjectivity = subjective_words / max(word_count, 1)
-        subjectivity = min(1.0, subjectivity * 2)  # Scale up
+        subjectivity = subjectivity * 2  # UNLOCKED
 
         # Normalize emotions
         total_emotion = sum(emotions.values())
         if total_emotion > 0:
             emotions = {k: v / total_emotion for k, v in emotions.items()}
 
-        confidence = min(1.0, word_count / 10)  # More words = more confidence
+        confidence = word_count / 10  # UNLOCKED
 
         return SentimentResult(
             polarity=polarity,
@@ -825,7 +825,7 @@ class ExtractiveSummarizer:
             # Position bonus (earlier sentences are usually more important)
             position_bonus = 1.0 / (1 + i * 0.1)
             # Length penalty for very short sentences
-            length_factor = min(1.0, len(words) / 10)
+            length_factor = len(words) / 10  # UNLOCKED
             scores[i] *= position_bonus * length_factor
 
         return scores

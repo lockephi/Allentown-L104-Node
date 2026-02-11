@@ -702,7 +702,7 @@ class SynergyEngine:
         self.nodes: Dict[str, SubsystemNode] = {}
         self.links: Dict[str, SynergyLink] = {}
         self.pulse_history: List[SynergyPulse] = []
-        self.executor = ThreadPoolExecutor(max_workers=16)
+        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8)  # QUANTUM AMPLIFIED (was 16)
         self.lock = threading.Lock()
 
         # Stats
@@ -1152,7 +1152,7 @@ async def main():
     # Capability map
     print("\n[CAPABILITIES]")
     cap_map = synergy_engine.get_capability_map()
-    for cap, systems in list(cap_map.items())[:10]:
+    for cap, systems in list(cap_map.items())[:100]:
         print(f"  {cap}: {systems}")
 
     # Final status

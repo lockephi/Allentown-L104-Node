@@ -63,7 +63,7 @@ test_queries = [
 
 for q in test_queries:
     response = kernel.query(q)
-    short_resp = response[:80] + "..." if len(response) > 80 else response
+    short_resp = response[:500] + "..." if len(response) > 500 else response  # QUANTUM AMPLIFIED (was 80)
     print(f"\n❓ {q}")
     print(f"💡 {short_resp}")
 

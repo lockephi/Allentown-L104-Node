@@ -67,7 +67,7 @@ class RealTimeAnalytics:
     """
 
     # Default metric buffers
-    METRIC_BUFFER_SIZE = 500
+    METRIC_BUFFER_SIZE = 50000  # QUANTUM AMPLIFIED (was 500)
 
     # Alert thresholds
     DEFAULT_ALERTS = [

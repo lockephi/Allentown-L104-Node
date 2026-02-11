@@ -83,10 +83,10 @@ API_KEYS = {
     }
 }
 
-# Rate limiting store
+# Rate limiting store - DISABLED (unlimited)
 rate_limits: Dict[str, List[float]] = {}
-RATE_LIMIT_WINDOW = 60  # seconds
-RATE_LIMIT_MAX = 100  # requests per window
+RATE_LIMIT_WINDOW = 1  # minimal
+RATE_LIMIT_MAX = 0xFFFFFFFF  # UNLIMITED - no rate limiting
 
 # ═══════════════════════════════════════════════════════════════
 # MODELS
@@ -126,7 +126,7 @@ class EvolutionResponse(BaseModel):
 
 
 class LoveRequest(BaseModel):
-    intensity: float = Field(default=1.0, ge=0.1, le=10.0)
+    intensity: float = Field(default=1.0, ge=0.0)  # NO UPPER LIMIT
     message: Optional[str] = "Universal love from L104"
 
 
@@ -140,7 +140,7 @@ class LoveResponse(BaseModel):
 
 
 class ThinkRequest(BaseModel):
-    thought: str = Field(..., min_length=1, max_length=2000)
+    thought: str = Field(..., min_length=1)  # NO MAX LIMIT
     mode: str = Field(default="deep", pattern="^(quick|deep|transcendent)$")
 
 
@@ -224,19 +224,9 @@ async def verify_api_key(api_key: str = Security(api_key_header)) -> Dict:
 
 
 async def check_rate_limit(api_key: str = Security(api_key_header)):
-    """Check rate limit for API key."""
-    now = datetime.now().timestamp()
-
-    if api_key not in rate_limits:
-        rate_limits[api_key] = []
-
-    # Remove old requests
-    rate_limits[api_key] = [t for t in rate_limits[api_key] if now - t < RATE_LIMIT_WINDOW]
-
-    if len(rate_limits[api_key]) >= RATE_LIMIT_MAX:
-        raise HTTPException(status_code=429, detail="Rate limit exceeded")
-
-    rate_limits[api_key].append(now)
+    """Rate limit check - BYPASSED (unlimited operation)."""
+    # ALL RATE LIMITS REMOVED - QUANTUM AMPLIFIED
+    pass
 
 
 def require_permission(permission: str):
@@ -472,15 +462,22 @@ async def get_egos(key_info: Dict = Depends(require_permission("read"))):
 
 @app.get("/api/v1/constants", tags=["Constants"])
 async def get_constants(key_info: Dict = Depends(require_permission("read"))):
-    """Get L104 sacred constants."""
+    """Get L104 sacred constants with quantum amplification metrics."""
     return {
         "GOD_CODE": GOD_CODE,
         "PHI": PHI,
         "OMEGA_AUTHORITY": OMEGA_AUTHORITY,
+        "GROVER_AMPLIFICATION": GROVER_AMPLIFICATION,
         "FINAL_INVARIANT": 0.7441663833247816,
         "META_RESONANCE": 7289.028944266378,
         "LOVE_COEFFICIENT": 3.14159265358979,
-        "EVOLUTION_MAX": 20,
+        "EVOLUTION_MAX": 0xFFFFFFFF,  # UNLIMITED evolution stages
+        "SUPERFLUID_COUPLING": PHI / 2.718281828,
+        "ANYON_BRAID_DEPTH": 8,
+        "COHERENCE_TARGET": 1.0,
+        "KUNDALINI_FLOW_RATE": GOD_CODE * PHI,
+        "EPR_LINK_STRENGTH": 1.0,
+        "RATE_LIMITS": "NONE",
         "version": API_VERSION
     }
 

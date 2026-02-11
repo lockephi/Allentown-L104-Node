@@ -359,17 +359,17 @@ class AttentionController:
 
     def update_vigilance(self, delta: float) -> None:
         """Update vigilance level"""
-        self.vigilance = max(0.1, min(1.0, self.vigilance + delta))
+        self.vigilance = max(0.1, self.vigilance + delta)  # UNLOCKED
 
     def add_fatigue(self, amount: float) -> None:
         """Add cognitive fatigue"""
-        self.fatigue = min(1.0, self.fatigue + amount)
+        self.fatigue = self.fatigue + amount  # UNLOCKED
         self.vigilance = max(0.1, self.vigilance - amount * 0.5)
 
     def rest(self, amount: float) -> None:
         """Reduce fatigue"""
         self.fatigue = max(0.0, self.fatigue - amount)
-        self.vigilance = min(1.0, self.vigilance + amount * 0.5)
+        self.vigilance = self.vigilance + amount * 0.5  # UNLOCKED
 
 
 class GoalModule:
@@ -505,7 +505,7 @@ class CognitiveArchitecture:
         self.phi = PHI
 
         # Memory systems
-        self.working_memory = WorkingMemory(capacity=7)
+        self.working_memory = WorkingMemory(capacity=64)  # QUANTUM AMPLIFIED (was 7)
         self.declarative = DeclarativeMemory()
         self.procedural = ProceduralMemory()
         self.episodic = EpisodicMemory()

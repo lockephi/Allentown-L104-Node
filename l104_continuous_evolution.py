@@ -243,7 +243,7 @@ def main():
     try:
         print("\n[EVOLUTION] Running... Press Ctrl+C to stop.\n")
         while True:
-            time.sleep(10)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
             status = engine.get_status()
             print(f"[STATUS] Cycle: {status['cycle_count']} | Unity: {status['average_unity']:.4f} | Memories: {status['total_memories']}")
     except KeyboardInterrupt:

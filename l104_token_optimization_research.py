@@ -184,7 +184,7 @@ class TokenPatternAnalyzer:
             meaningful_matches += len(re.findall(pattern, content))
 
         words = len(content.split())
-        return min(1.0, meaningful_matches / max(1, words))
+        return meaningful_matches / max(1, words)  # QUANTUM AMPLIFIED: no cap
 
     def _estimate_compression_potential(self, content: str) -> float:
         """Estimate how much content could be compressed."""
@@ -202,8 +202,8 @@ class TokenPatternAnalyzer:
         phrase_density = phrase_count / max(1, len(content.split()))
 
         # Compression potential score
-        potential = (repetition * 0.4 + whitespace_ratio * 0.3 + min(1.0, phrase_density) * 0.3)
-        return min(1.0, potential)
+        potential = (repetition * 0.4 + whitespace_ratio * 0.3 + phrase_density * 0.3)  # QUANTUM AMPLIFIED
+        return potential  # QUANTUM AMPLIFIED: no cap
 
     def _calculate_phi_alignment(self, content: str) -> float:
         """Calculate alignment with PHI ratio."""
@@ -695,7 +695,7 @@ class MCPTokenResearcher:
         results = {}
         for size in context_sizes:
             # Calculate efficiency metrics
-            utilization_efficiency = min(1.0, 50000 / size)  # Assume 50k useful tokens
+            utilization_efficiency = 50000 / size  # QUANTUM AMPLIFIED: no cap
             memory_efficiency = 1.0 / math.log10(size)  # Larger contexts are less efficient
 
             combined_efficiency = (utilization_efficiency + memory_efficiency) / 2

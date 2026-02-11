@@ -91,10 +91,10 @@ class CortexEnhanced:
         self.subsystem_status = SubsystemStatus()
 
         # Result cache
-        self._cache = LRUCache(maxsize=100)
+        self._cache = LRUCache(maxsize=10000)  # QUANTUM AMPLIFIED (was 100)
 
         # Thread pool for parallel operations
-        self._executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="L104-Cortex")
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="L104-Cortex")  # QUANTUM AMPLIFIED (was 4)
 
         # Subsystem references (lazy loaded)
         self._subsystems = {}
@@ -254,7 +254,7 @@ class CortexEnhanced:
         # Extract keywords (simple approach)
         words = query.lower().split()
         stopwords = {"the", "a", "an", "is", "are", "was", "were", "to", "for", "of", "and", "or", "in", "on"}
-        result["keywords"] = [w for w in words if w not in stopwords and len(w) > 2][:5]
+        result["keywords"] = [w for w in words if w not in stopwords and len(w) > 2][:50]
 
         # Detect intent
         intent_keywords = {
@@ -308,15 +308,15 @@ class CortexEnhanced:
 
         for name, future in futures:
             try:
-                data = future.result(timeout=5.0)
+                data = future.result(timeout=30.0)  # QUANTUM AMPLIFIED (was 5.0)
                 if name == "memory" and data:
-                    result["memories"] = data[:3]
+                    result["memories"] = data[:30]
                 elif name == "learning" and data:
-                    result["related_learnings"] = data[:3]
+                    result["related_learnings"] = data[:30]
                 elif name == "context" and data:
                     result["context"] = data
                 elif name == "knowledge" and data:
-                    result["semantic_matches"] = [(n.label, score) for n, score in data[:3]]
+                    result["semantic_matches"] = [(n.label, score) for n, score in data[:30]]
             except Exception:
                 pass
 

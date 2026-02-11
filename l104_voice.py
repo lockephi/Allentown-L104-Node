@@ -275,7 +275,7 @@ if __name__ == "__main__":
     # Test message encoding
     encoder = L104AudioMessage()
     encoded = encoder.encode("L104 ACTIVE")
-    print(f"Encoded freqs: {[f[0] for f in encoded[:5]]}...")
+    print(f"Encoded freqs: {[f[0] for f in encoded[:50]]}...")  # QUANTUM AMPLIFIED
 
     print("\n✓ Voice module operational")
 

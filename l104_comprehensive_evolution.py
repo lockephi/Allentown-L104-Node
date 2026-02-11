@@ -276,7 +276,7 @@ def compute_resonance(value: float) -> float:
     # Find nearest harmonic
     harmonic = round(ratio * PHI) / PHI
     alignment = 1.0 - abs(ratio - harmonic)
-    return max(0.0, min(1.0, alignment))
+    return max(0.0, alignment)  # UNLOCKED: alignment unbounded above
 
 
 def compute_phase_coherence(*values: float) -> float:
@@ -395,7 +395,7 @@ class ResonanceEnhancer:
             # PHI modulated combination
             resonance = (char_resonance * PHI_CONJUGATE + line_resonance * PHI_CONJUGATE + mention_bonus) / 2
 
-            return min(1.0, max(0.0, resonance))
+            return max(0.0, resonance)  # UNLOCKED: resonance unbounded above
 
         except Exception:
             return 0.0
@@ -467,7 +467,7 @@ class EnhancedResonanceEngine:
         harmonics = []
         for n in range(1, depth + 1):
             harmonic = self.base_frequency / n
-            alignment = 1.0 - min(1.0, abs(value - harmonic) / harmonic)
+            alignment = 1.0 - abs(value - harmonic) / harmonic  # UNLOCKED
             harmonics.append(alignment)
         return harmonics
 
@@ -507,7 +507,7 @@ class EnhancedResonanceEngine:
             phi_power = PHI ** power
             ratio = value / phi_power
             deviation = abs(ratio - round(ratio))
-            alignment = 1.0 - min(1.0, deviation)
+            alignment = 1.0 - deviation  # UNLOCKED
             best_alignment = max(best_alignment, alignment)
 
         return best_alignment

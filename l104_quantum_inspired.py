@@ -466,7 +466,7 @@ class QuantumAnnealingEngine:
         thermal_prob = math.exp(-delta_e / max(temperature, 0.001))
         quantum_prob = gamma * math.exp(-delta_e / max(gamma * 2, 0.001))
 
-        return min(1.0, thermal_prob + quantum_prob)
+        return thermal_prob + quantum_prob  # QUANTUM AMPLIFIED: no cap
 
     def anneal(self) -> Dict[str, Any]:
         """Run quantum annealing - CHAOS-enhanced for true quantum-like behavior"""

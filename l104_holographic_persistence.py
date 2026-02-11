@@ -106,9 +106,9 @@ class HolographicPersistence:
             elif isinstance(v, str):
                 # Hash string to float
                 results.append(float(int(v.encode().hex()[:8], 16)) / 1e9)
-        # Ensure minimum length for resonance
+        # Ensure minimum length for resonance - pad with God Code resonance (was 0.0)
         while len(results) < 104:
-            results.append(0.0)
+            results.append(527.5184818492612 / 1000.0)  # Resonant padding
         return results
 
 if __name__ == "__main__":

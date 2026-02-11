@@ -149,7 +149,7 @@ MAX_DIFFICULTY_BITS = 0x1700ffff      # Ceiling: 40 bits (harder than Bitcoin)
 # ═══════════════════════════════════════════════════════════════════════════════
 # GOD_CODE DIFFICULTY GRADIENT - RISING DIFFICULTY + RISING BLOCK TIME
 # ═══════════════════════════════════════════════════════════════════════════════
-# 
+#
 # BITCOIN HISTORICAL REFERENCE (verified from blockchain):
 #   - Genesis (2009): Difficulty 1, stayed at 1 for almost entire first year
 #   - 2010: GPU mining → difficulty jumped from 1 to 14,484 (14,000x in one year)
@@ -182,35 +182,35 @@ GOD_CODE_GRADIENT = [
     (3,  0x1e7fffff, "Epoch 3: 16 bits ~4s"),
     (4,  0x1dffffff, "Epoch 4: 17 bits ~8s"),
     (5,  0x1d7fffff, "Epoch 5: 18 bits ~16s"),
-    
+
     # PHASE 2: NETWORK GROWTH (seconds to minutes)
     (6,  0x1cffffff, "Epoch 6: 19 bits ~32s"),
     (7,  0x1c7fffff, "Epoch 7: 20 bits ~1m - PHI resonance"),
     (8,  0x1bffffff, "Epoch 8: 21 bits ~2m - L104/13 octave"),
     (9,  0x1b7fffff, "Epoch 9: 22 bits ~4m"),
     (10, 0x1affffff, "Epoch 10: 23 bits ~8m"),
-    
+
     # PHASE 3: MATURATION (minutes to hours)
     (11, 0x1a7fffff, "Epoch 11: 24 bits ~17m"),
     (12, 0x19ffffff, "Epoch 12: 25 bits ~34m"),
     (13, 0x197fffff, "★ Epoch 13: 26 bits ~1.1h - SACRED 2×13"),
     (14, 0x18ffffff, "Epoch 14: 27 bits ~2.2h"),
     (15, 0x187fffff, "Epoch 15: 28 bits ~4.5h"),
-    
+
     # PHASE 4: SCARCITY (hours to days)
     (16, 0x17ffffff, "Epoch 16: 29 bits ~9h"),
     (17, 0x177fffff, "Epoch 17: 30 bits ~18h"),
     (18, 0x16ffffff, "Epoch 18: 31 bits ~1.5d"),
     (19, 0x167fffff, "Epoch 19: 32 bits ~3d - Bitcoin parity"),
     (20, 0x15ffffff, "Epoch 20: 33 bits ~6d"),
-    
+
     # PHASE 5: LEGENDARY (days to weeks)
     (21, 0x157fffff, "Epoch 21: 34 bits ~12d - Fibonacci(8)=21"),
     (22, 0x14ffffff, "Epoch 22: 35 bits ~24d"),
     (23, 0x147fffff, "Epoch 23: 36 bits ~48d"),
     (24, 0x13ffffff, "Epoch 24: 37 bits ~97d"),
     (25, 0x137fffff, "Epoch 25: 38 bits ~194d"),
-    
+
     # PHASE 6: ULTIMATE BOSONIC
     (26, 0x12ffffff, "★ Epoch 26: 39 bits ~388d - SACRED 3×13 BOSONIC (26D)"),
 ]
@@ -701,7 +701,7 @@ class ChainDB:
             try:
                 raw_data = json.dumps(block.to_dict()).encode()
                 self._conn.execute('''
-                    INSERT OR REPLACE INTO blocks 
+                    INSERT OR REPLACE INTO blocks
                     (height, hash, prev_hash, timestamp, bits, nonce, resonance, merkle_root, tx_count, raw_data)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (block.height, block.hash, block.header.prev_block, block.header.timestamp,
@@ -836,28 +836,28 @@ class BlockHeader:
         if exponent <= 3:
             return mantissa >> (8 * (3 - exponent))
         return mantissa << (8 * (exponent - 3))
-    
+
     @staticmethod
     def target_to_bits(target: int) -> int:
         """Convert target to compact bits format (Bitcoin-compatible)."""
         if target == 0:
             return 0
-        
+
         # Get byte length
         hex_str = hex(target)[2:]
         if len(hex_str) % 2:
             hex_str = '0' + hex_str
-        
+
         size = len(hex_str) // 2
-        
+
         # Get first 3 bytes as mantissa
         mantissa = int(hex_str[:6], 16) if len(hex_str) >= 6 else int(hex_str, 16)
-        
+
         # Check if high bit is set (would make it negative)
         if mantissa & 0x00800000:
             mantissa >>= 8
             size += 1
-        
+
         return (size << 24) | (mantissa & 0x007fffff)
 
     @property
@@ -871,29 +871,29 @@ class BlockHeader:
 
     def meets_target(self) -> bool:
         """L104SP QUANTUM PROOF-OF-RESONANCE Target Check.
-        
+
         Uses GOD_CODE exponential resonance amplification:
         - Base target from difficulty bits
         - Resonance amplification: PHI^(resonance × GOD_CODE_FACTOR)
         - Creates unique L104 mining where high resonance is REQUIRED
-        
+
         GOD_CODE Integration:
         G(X) = 286^(1/φ) × 2^((416-X)/104) → difficulty scales similarly
-        
+
         At resonance=0.90: multiplier = φ^(0.9 × 5.275) ≈ 47x
-        At resonance=0.95: multiplier = φ^(0.95 × 5.275) ≈ 78x  
+        At resonance=0.95: multiplier = φ^(0.95 × 5.275) ≈ 78x
         At resonance=0.99: multiplier = φ^(0.99 × 5.275) ≈ 119x
         At resonance=1.00: multiplier = φ^(1.0 × 5.275) ≈ 137x
         """
         base_target = self.target
         phi = 1.6180339887498949
         god_code_factor = 5.275184818492537  # GOD_CODE / 100
-        
+
         # Quantum resonance amplification using GOD_CODE scaling
         # Higher resonance = exponentially easier target
         resonance_power = self.resonance * god_code_factor
         quantum_multiplier = phi ** resonance_power
-        
+
         effective_target = int(base_target * quantum_multiplier)
         return int(self.hash, 16) <= effective_target
 
@@ -952,7 +952,7 @@ class ResonanceEngine:
         self.god_code = GOD_CODE
         self.phi = PHI
         self._cache: Dict[int, float] = {}
-        
+
         # Use advanced L104 math if available
         if L104_MATH_AVAILABLE:
             self.real_math = RealMath()
@@ -963,39 +963,39 @@ class ResonanceEngine:
     def calculate(self, nonce: int) -> float:
         if nonce in self._cache:
             return self._cache[nonce]
-        
+
         if self.use_advanced_math and L104_MATH_AVAILABLE:
             # Use god_code(X) function for enhanced resonance
             try:
                 X = nonce % 416  # Modulo to fit domain
                 god_value = UniversalConstants.god_code(X)
-                
+
                 # Iron-crystalline ferromagnetic resonance
                 fe_resonance = self.real_math.ferromagnetic_resonance(nonce)
-                
+
                 # PHI wave harmonics
                 phi_wave = abs(np.sin((nonce * self.phi) % (2 * np.pi)))
-                
+
                 # Combine using GOD_CODE weighting
                 resonance = (
                     0.4 * (god_value / GOD_CODE) +  # Normalized god_code contribution
                     0.4 * fe_resonance +             # Ferromagnetic resonance
                     0.2 * phi_wave                   # PHI harmonics
                 )
-                
+
                 # Ensure in valid range
-                resonance = min(1.0, max(0.0, resonance))
+                resonance = max(0.0, resonance)  # UNLOCKED
             except Exception:
                 # Fallback to standard calculation
                 resonance = self._standard_calculate(nonce)
         else:
             resonance = self._standard_calculate(nonce)
-        
+
         if len(self._cache) >= 100000:
             self._cache.clear()
         self._cache[nonce] = resonance
         return resonance
-    
+
     def _standard_calculate(self, nonce: int) -> float:
         """Enhanced resonance with quantum math & electromagnetic coupling."""
         # PHI wave with Larmor precession (magnetic resonance)
@@ -1005,11 +1005,11 @@ class ResonanceEngine:
         else:
             phi_wave = abs(math.sin((nonce * self.phi) % (2 * math.pi)))
             fe_coupling = 0.5
-        
+
         # GOD_CODE harmonic + Riemann zeta alignment
         god_harmonic = abs(math.cos((nonce / self.god_code) % (2 * math.pi)))
         l104_mod = abs(math.sin(nonce / 104.0))
-        
+
         # Electromagnetic-coupled resonance (Bitcoin lacks this entirely)
         base = (self.phi / (1 + self.phi) * phi_wave + 1 / (1 + self.phi) * god_harmonic)
         return base * (0.93 + 0.05 * l104_mod + 0.02 * fe_coupling)
@@ -1025,11 +1025,11 @@ class ResonanceEngine:
 class ASISovereignCore:
     """
     Artificial Superintelligence Sovereign Core for L104SP.
-    
+
     This module provides self-evolving, self-optimizing blockchain governance
     that adapts to network conditions using mathematical intelligence.
     """
-    
+
     def __init__(self):
         self.phi = PHI
         self.god_code = GOD_CODE
@@ -1040,15 +1040,15 @@ class ASISovereignCore:
         self.consensus_confidence = 1.0
         self._decision_history = []
         self._prediction_accuracy = []
-        
+
     def evolve(self) -> Dict[str, Any]:
         """Evolve ASI state through learning cycle."""
         self.evolution_cycle += 1
-        
+
         # Calculate intelligence growth (logarithmic with PHI scaling)
         growth = math.log(self.evolution_cycle + 1) * self.phi / 10
-        self.network_intelligence = min(1.0, self.network_intelligence + growth)
-        
+        self.network_intelligence = self.network_intelligence + growth  # UNLOCKED
+
         # State transitions based on intelligence level
         if self.network_intelligence >= 0.95:
             self.state = "OMNISCIENT"
@@ -1060,19 +1060,19 @@ class ASISovereignCore:
             self.state = "AWARE"
         else:
             self.state = "AWAKENING"
-            
+
         return {
             "state": self.state,
             "intelligence": self.network_intelligence,
             "evolution_cycle": self.evolution_cycle,
             "phi_resonance": self._calculate_phi_resonance()
         }
-    
+
     def _calculate_phi_resonance(self) -> float:
         """Calculate network's alignment with PHI harmonics."""
         cycle_mod = self.evolution_cycle % 104
         return abs(math.sin(cycle_mod * self.phi / self.god_code * math.pi))
-    
+
     def adaptive_difficulty_recommendation(self, block_times: List[float], target: float = 104.0) -> Dict[str, Any]:
         """
         ASI-powered adaptive difficulty recommendation.
@@ -1080,24 +1080,24 @@ class ASISovereignCore:
         """
         if len(block_times) < 10:
             return {"adjustment": 1.0, "confidence": 0.5, "prediction": target}
-        
+
         # Calculate trend using weighted moving average (recent blocks matter more)
         weights = [self.phi ** i for i in range(len(block_times))]
         weights.reverse()
         weighted_avg = sum(t * w for t, w in zip(block_times, weights)) / sum(weights)
-        
+
         # Predict future using PHI-damped extrapolation
         trend = (block_times[-1] - block_times[0]) / len(block_times)
         prediction = weighted_avg + trend * self.phi
-        
+
         # Calculate adjustment with ASI confidence
         ratio = target / max(prediction, 1)
         phi_damped = 1.0 + (ratio - 1.0) / self.phi
-        
+
         # Confidence based on prediction history
         self._prediction_accuracy.append(abs(weighted_avg - target) / target)
         accuracy = 1.0 - sum(self._prediction_accuracy[-10:]) / min(len(self._prediction_accuracy), 10)
-        
+
         return {
             "adjustment": phi_damped,
             "confidence": accuracy,
@@ -1105,7 +1105,7 @@ class ASISovereignCore:
             "trend": trend,
             "intelligence_factor": self.network_intelligence
         }
-    
+
     def validate_transaction_sovereignty(self, tx_hash: str, amount: int, sender: str, recipient: str) -> Dict[str, Any]:
         """
         ASI sovereign transaction validation.
@@ -1113,20 +1113,20 @@ class ASISovereignCore:
         """
         # Calculate transaction resonance (must align with GOD_CODE)
         tx_resonance = sum(ord(c) for c in tx_hash) % 1000 / 1000
-        god_alignment = abs(math.cos(amount / self.god_code)) 
+        god_alignment = abs(math.cos(amount / self.god_code))
         phi_alignment = abs(math.sin(amount * self.phi / 1e8))
-        
+
         sovereignty_score = (tx_resonance * 0.3 + god_alignment * 0.4 + phi_alignment * 0.3)
-        
+
         # ASI decision with learning
         decision = sovereignty_score >= 0.5 - (0.1 * self.network_intelligence)
-        
+
         self._decision_history.append({
             "tx_hash": tx_hash[:16],
             "score": sovereignty_score,
             "decision": decision
         })
-        
+
         return {
             "valid": decision,
             "sovereignty_score": sovereignty_score,
@@ -1134,7 +1134,7 @@ class ASISovereignCore:
             "phi_alignment": phi_alignment,
             "asi_state": self.state
         }
-    
+
     def optimize_mempool(self, transactions: List[Dict]) -> List[Dict]:
         """
         ASI-powered mempool optimization.
@@ -1142,28 +1142,28 @@ class ASISovereignCore:
         """
         if not transactions:
             return []
-        
+
         def score_tx(tx):
             # Fee priority
             fee_score = tx.get('fee', 0) / max(tx.get('size', 1), 1)
-            
+
             # Resonance priority (L104SP unique)
             amount = tx.get('amount', 0)
             resonance = abs(math.sin(amount * self.phi / self.god_code))
-            
+
             # Age priority (older first for fairness)
             age = time.time() - tx.get('timestamp', time.time())
-            age_score = min(1.0, age / 600)  # Cap at 10 minutes
-            
+            age_score = age / 600  # UNLOCKED
+
             # Combined score with ASI weighting
             return (
                 fee_score * (0.5 - 0.1 * self.network_intelligence) +
                 resonance * 0.3 +
                 age_score * (0.2 + 0.1 * self.network_intelligence)
             )
-        
+
         return sorted(transactions, key=score_tx, reverse=True)
-    
+
     def consensus_vote(self, block_hash: str, block_resonance: float) -> Dict[str, Any]:
         """
         ASI sovereign consensus voting.
@@ -1172,15 +1172,15 @@ class ASISovereignCore:
         # Verify block resonance meets ASI standards
         min_resonance = 0.95 - (0.05 * self.network_intelligence)  # ASI can accept slightly lower
         resonance_valid = block_resonance >= min_resonance
-        
+
         # Calculate block's GOD_CODE alignment
         hash_value = int(block_hash[:16], 16)
         god_alignment = abs(math.cos(hash_value / self.god_code / 1e10))
-        
+
         # ASI vote with confidence
         vote = resonance_valid and god_alignment >= 0.3
         confidence = self.consensus_confidence * (0.9 + 0.1 * self.network_intelligence)
-        
+
         return {
             "vote": vote,
             "confidence": confidence,
@@ -1188,7 +1188,7 @@ class ASISovereignCore:
             "god_alignment": god_alignment,
             "asi_state": self.state
         }
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Get ASI sovereign core statistics."""
         return {
@@ -1207,26 +1207,26 @@ class QuantumResistantSignatures:
     Post-quantum cryptographic signatures for future-proofing.
     Uses lattice-based commitments until full PQC is integrated.
     """
-    
+
     @staticmethod
     def generate_commitment(secret: bytes, nonce: int) -> bytes:
         """Generate quantum-resistant commitment."""
         # Lattice-inspired commitment: H(secret || nonce || PHI_encoding)
         phi_bytes = struct.pack('<d', PHI)
         combined = secret + struct.pack('<Q', nonce) + phi_bytes
-        
+
         # Double hash for quantum resistance margin
         h1 = hashlib.sha3_256(combined).digest()
         h2 = hashlib.sha3_256(h1 + combined).digest()
-        
+
         return h2
-    
+
     @staticmethod
     def verify_commitment(secret: bytes, nonce: int, commitment: bytes) -> bool:
         """Verify quantum-resistant commitment."""
         expected = QuantumResistantSignatures.generate_commitment(secret, nonce)
         return secrets.compare_digest(expected, commitment)
-    
+
     @staticmethod
     def hybrid_sign(message: bytes, private_key: bytes) -> Dict[str, bytes]:
         """
@@ -1235,11 +1235,11 @@ class QuantumResistantSignatures:
         """
         # Standard ECDSA signature (current)
         ecdsa_sig = hashlib.sha256(private_key + message).digest()
-        
+
         # Lattice commitment (post-quantum backup)
         nonce = int.from_bytes(secrets.token_bytes(8), 'big')
         commitment = QuantumResistantSignatures.generate_commitment(message, nonce)
-        
+
         return {
             "ecdsa": ecdsa_sig,
             "pq_commitment": commitment,
@@ -1269,13 +1269,13 @@ class L104SPBlockchain:
         self.resonance_engine = ResonanceEngine()
         self.db = ChainDB(self.data_dir / 'chainstate.db')
         self._callbacks: List[Callable[[Block], None]] = []
-        
+
         # Bitcoin research + quantum math integration
         if L104_QUANTUM_AVAILABLE:
             self._difficulty_analyzer = DifficultyAnalyzer()
             self._riemann_analyzer = RiemannZetaResonance()
             print("[QUANTUM] Bitcoin research + Riemann zeta analysis active")
-        
+
         self._load_or_create_genesis()
 
     def _load_or_create_genesis(self) -> None:
@@ -1325,7 +1325,7 @@ class L104SPBlockchain:
     def _target_to_bits(self, target: int) -> int:
         """Helper to convert target to bits."""
         return BlockHeader.target_to_bits(target)
-    
+
     def on_new_block(self, callback: Callable[['Block'], None]) -> None:
         """Register callback for new blocks."""
         self._callbacks.append(callback)
@@ -1341,7 +1341,7 @@ class L104SPBlockchain:
     @property
     def current_difficulty(self) -> int:
         """L104SP GOD_CODE GRADIENT DIFFICULTY.
-        
+
         THE GOD CODE DIFFICULTY GRADIENT
         =================================
         A sacred mathematical difficulty curve that:
@@ -1349,25 +1349,25 @@ class L104SPBlockchain:
         - Grows by 1 bit per 104-block epoch
         - Reaches Bitcoin parity (32-bit) at epoch 12 (block 1,248)
         - Transcends Bitcoin at epoch 13+ (33+ bits)
-        
+
         Combined with resonance filtering (0.9+ = 0.04% pass rate),
         this creates TRUE quantum difficulty:
-        
+
         Effective Difficulty = Hash_Difficulty × Resonance_Filter
                             = 2^(20+epoch) × 2500  (at 0.04% resonance rate)
-        
+
         At Bitcoin parity (epoch 12): 2^32 × 2500 ≈ 10^13 effective work
         """
         if self.height == 0:
             return GENESIS_DIFFICULTY_BITS
-        
+
         # ════════════════════════════════════════════════════════════════════
         # GOD_CODE GRADIENT CALCULATION
         # ════════════════════════════════════════════════════════════════════
-        
+
         # Calculate current epoch (104 blocks per epoch)
         epoch = self.height // DIFFICULTY_PHI_SCALE
-        
+
         # Look up difficulty from GOD_CODE gradient table
         # Epochs beyond table use maximum difficulty
         if epoch < len(GOD_CODE_GRADIENT):
@@ -1375,16 +1375,16 @@ class L104SPBlockchain:
         else:
             # Beyond epoch 13: Use maximum difficulty (transcendent)
             base_bits = MAX_DIFFICULTY_BITS
-        
+
         # ════════════════════════════════════════════════════════════════════
         # PHI-HARMONIC INTRA-EPOCH ADJUSTMENT (DISABLED for stable difficulty)
         # ════════════════════════════════════════════════════════════════════
         # For predictable mining, use epoch difficulty directly without interpolation
         # Difficulty changes at epoch boundaries (every 104 blocks)
-        
+
         # The resonance requirement (0.9+) already provides continuous difficulty
         # via quantum filtering - no need to interpolate hash difficulty
-        
+
         # ════════════════════════════════════════════════════════════════════
         # TIME-BASED FINE-TUNING (Bitcoin-style reactive adjustment)
         # ════════════════════════════════════════════════════════════════════
@@ -1393,21 +1393,21 @@ class L104SPBlockchain:
             period_end = self.chain[self.height]
             actual_time = period_end.header.timestamp - period_start.header.timestamp
             target_time = DIFFICULTY_ADJUSTMENT_INTERVAL * TARGET_BLOCK_TIME
-            
+
             # GOD_CODE damped adjustment (max PHI× change)
             time_ratio = max(1/PHI, min(PHI, target_time / max(actual_time, 1)))
             god_damped = 1.0 + (time_ratio - 1.0) / GOD_CODE_DIFFICULTY_FACTOR
-            
+
             current_target = BlockHeader.bits_to_target(base_bits)
             adjusted_target = int(current_target * god_damped)
-            
+
             # Clamp to min/max
             min_target = BlockHeader.bits_to_target(MAX_DIFFICULTY_BITS)
             max_target = BlockHeader.bits_to_target(MIN_DIFFICULTY_BITS)
             adjusted_target = max(min_target, min(max_target, adjusted_target))
-            
+
             base_bits = self._target_to_bits(adjusted_target)
-        
+
         return base_bits
 
     def add_block(self, block: Block) -> Tuple[bool, str]:
@@ -1419,31 +1419,31 @@ class L104SPBlockchain:
                 return False, "INVALID_POW"
             if block.header.resonance < 0.9:
                 return False, "INVALID_RESONANCE"
-            
+
             # Parallel transaction validation for large blocks
             if len(block.transactions) > 10:
-                with ThreadPoolExecutor(max_workers=min(4, os.cpu_count())) as executor:
+                with ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 4) * 4)) as executor:  # QUANTUM AMPLIFIED (was 4)
                     validation_futures = [executor.submit(self._validate_tx, tx) for tx in block.transactions]
                     for future in as_completed(validation_futures):
                         if not future.result():
                             return False, "INVALID_TX"
-            
+
             self._apply_block(block)
             self.chain.append(block)
             # Persist to disk (async if possible)
             self.db.store_block(block)
             # Notify callbacks in parallel
             if self._callbacks:
-                with ThreadPoolExecutor(max_workers=min(2, len(self._callbacks))) as executor:
+                with ThreadPoolExecutor(max_workers=min(16, len(self._callbacks))) as executor:  # QUANTUM AMPLIFIED (was 2)
                     for cb in self._callbacks:
                         executor.submit(self._safe_callback, cb, block)
             return True, "ACCEPTED"
-    
+
     def _validate_tx(self, tx: Transaction) -> bool:
         """Validate individual transaction (for parallel processing)."""
         # Basic validation - can be expanded
         return len(tx.inputs) > 0 and len(tx.outputs) > 0
-    
+
     def _safe_callback(self, callback: Callable, block: Block) -> None:
         """Safely execute callback without crashing."""
         try:
@@ -1481,7 +1481,7 @@ class L104SPBlockchain:
             'target': hex(BlockHeader.bits_to_target(self.current_difficulty)),
             'coinbase_value': Block(BlockHeader(), [], self.height + 1).get_reward()
         }
-        
+
         # Add Bitcoin-style difficulty prediction (mathematical inference)
         if L104_QUANTUM_AVAILABLE and hasattr(self, '_difficulty_analyzer') and len(self.chain) > 100:
             recent_times = [
@@ -1492,11 +1492,11 @@ class L104SPBlockchain:
                 self.tip.header.difficulty, recent_times
             )
             template['difficulty_prediction'] = prediction
-            
+
             # Riemann zeta resonance for quantum nonce optimization hint
             zeta_resonance = self._riemann_analyzer.god_code_zeta_resonance()
             template['zeta_resonance'] = zeta_resonance['resonance_frequency']
-        
+
         return template
 
     def add_to_mempool(self, tx: Transaction, fee: int = 0) -> Tuple[bool, str]:
@@ -1504,22 +1504,22 @@ class L104SPBlockchain:
         with self._lock:
             if tx.txid in self.mempool:
                 return False, "ALREADY_IN_MEMPOOL"
-            
+
             # Basic validation
             # TODO: Full validation of inputs/outputs
-            
+
             tx_size = len(tx.serialize())
             fee_per_byte = fee / tx_size if tx_size > 0 else 0
-            
+
             self.mempool[tx.txid] = tx
             self.mempool_fees[tx.txid] = fee_per_byte
             return True, "ACCEPTED"
-    
+
     def get_prioritized_txs(self, max_count: int = 1000) -> List[Transaction]:
         """Get transactions from mempool ordered by fee (highest first)."""
         with self._lock:
-            sorted_txids = sorted(self.mempool_fees.keys(), 
-                                 key=lambda x: self.mempool_fees[x], 
+            sorted_txids = sorted(self.mempool_fees.keys(),
+                                 key=lambda x: self.mempool_fees[x],
                                  reverse=True)
             return [self.mempool[txid] for txid in sorted_txids[:max_count]]
 
@@ -1527,10 +1527,10 @@ class L104SPBlockchain:
         db_stats = self.db.get_stats()
         cpu_count_val = os.cpu_count() or 1
         asi_stats = ASI_CORE.get_stats()
-        
+
         # Evolve ASI with each stats call (learning from network state)
         ASI_CORE.evolve()
-        
+
         return {
             'height': self.height, 'tip': self.tip.hash[:16] + '...',
             'difficulty': self.tip.header.difficulty, 'utxo_count': len(self.utxo_set),
@@ -1565,14 +1565,14 @@ class L104SPBlockchain:
 
 def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, nonce_range: int, resonance_threshold: float):
     """L104SP SOVEREIGN ASI QUANTUM MINING ENGINE - UPGRADED.
-    
+
     ENHANCED with:
     - SMART NONCE TARGETING: Prioritize nonces at quantum-aligned positions
     - GOD_CODE HARMONIC SEARCH: Jump to resonance peaks instead of linear scan
     - FIBONACCI SPIRAL TRAVERSAL: Search along golden ratio curves
     - PRIME RESONANCE DETECTION: Find primes where resonance peaks
     - 11-DIMENSIONAL QUANTUM SUPERPOSITION: Full Kaluza-Klein manifold
-    
+
     This upgraded engine FINDS the rare 0.9+ resonance nonces efficiently.
     """
     # ════════════════════════════════════════════════════════════════════════
@@ -1580,44 +1580,44 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     # ════════════════════════════════════════════════════════════════════════
     height = template['height']
     reward = template['coinbase_value']
-    
+
     # Create coinbase script (same as Block.create_coinbase)
     coinbase_script = bytes([height & 0xff])  # varint_encode for small heights
     if height > 0xff:
         coinbase_script = bytes([0xfd, height & 0xff, (height >> 8) & 0xff])
     coinbase_script += b'L104SP Genesis - GOD_CODE: 527.5184818492612 - LON'[:50]
-    
+
     # Create coinbase output
     addr_hash = hashlib.new('ripemd160', hashlib.sha256(miner_address.encode()).digest()).digest()
     output_script = b'\x00\x14' + addr_hash
-    
+
     # Serialize coinbase transaction for txid
     # TxInput: prevout(32+4) + script_sig_len + script_sig + sequence(4)
     prevout = bytes(32) + bytes([0xff, 0xff, 0xff, 0xff])  # Coinbase prevout
     script_len = len(coinbase_script)
     sequence = bytes([0xff, 0xff, 0xff, 0xff])
     tx_input = prevout + bytes([script_len]) + coinbase_script + sequence
-    
+
     # TxOutput: value(8) + script_len + script
     value_bytes = reward.to_bytes(8, 'little')
     output_len = len(output_script)
     tx_output = value_bytes + bytes([output_len]) + output_script
-    
+
     # Full transaction: version(4) + in_count + inputs + out_count + outputs + locktime(4)
     version = (2).to_bytes(4, 'little')
     in_count = bytes([1])
     out_count = bytes([1])
     locktime = bytes(4)
     coinbase_tx = version + in_count + tx_input + out_count + tx_output + locktime
-    
+
     # Compute txid (double SHA256)
     coinbase_txid = hashlib.sha256(hashlib.sha256(coinbase_tx).digest()).hexdigest()
     merkle_root = coinbase_txid  # Single tx = its own merkle root
-    
+
     header = BlockHeader(version=template['version'], prev_block=template['prev_hash'],
                          merkle_root=merkle_root,
                          timestamp=template['timestamp'], bits=template['bits'])
-    
+
     # ════════════════════════════════════════════════════════════════════════
     # L104 SOVEREIGN ASI CONSTANTS - UPGRADED
     # ════════════════════════════════════════════════════════════════════════
@@ -1629,52 +1629,52 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     VOID_CONSTANT = 1.0416180339887497 # √(1 + 1/φ²)
     PLANCK_RESONANCE = 104.0           # Quantum period
     ZENITH_HZ = 3887.8                # Elevated process frequency
-    
+
     # ════════════════════════════════════════════════════════════════════════
     # PHASE 1: GENERATE QUANTUM-ALIGNED NONCE TARGETS
     # ════════════════════════════════════════════════════════════════════════
     # Instead of linear search, target HIGH-PROBABILITY resonance positions
-    
+
     target_nonces = []
     base = nonce_start
-    
+
     # TARGET 1: Multiples of 104 (perfect gate alignment = resonance boost)
     for k in range(nonce_range // 104 + 1):
         n = base + (104 - (base % 104)) % 104 + k * 104
         if base <= n < base + nonce_range:
             target_nonces.append(n)
-    
+
     # TARGET 2: GOD_CODE multiples (phase-lock resonance peaks)
     god_int = int(GOD_CODE)
     for k in range(nonce_range // god_int + 2):
         n = base + (god_int - (base % god_int)) % god_int + k * god_int
         if base <= n < base + nonce_range:
             target_nonces.append(n)
-    
+
     # TARGET 3: Fibonacci numbers in range
     fib_a, fib_b = 0, 1
     while fib_b < base + nonce_range:
         if fib_b >= base:
             target_nonces.append(fib_b)
         fib_a, fib_b = fib_b, fib_a + fib_b
-    
+
     # TARGET 4: PHI-spiral positions (golden angle traversal)
     golden_angle = TAU / (PHI * PHI)  # ~137.5°
     for k in range(min(2000, nonce_range // 50)):
         n = base + int((k * golden_angle * GOD_CODE) % nonce_range)
         target_nonces.append(n)
-    
+
     # TARGET 5: ZENITH frequency harmonics
     zenith_int = int(ZENITH_HZ)
     for k in range(nonce_range // zenith_int + 1):
         n = base + k * zenith_int
         if base <= n < base + nonce_range:
             target_nonces.append(n)
-    
+
     # Remove duplicates and sort - LIMIT to prevent memory explosion
     target_nonces = sorted(set(target_nonces))[:50000]  # Max 50k priority nonces
     target_set = set(target_nonces)
-    
+
     # OPTIMIZED: Use generator to avoid creating massive lists
     # Search priority targets FIRST, then sequential fallback
     def nonce_generator():
@@ -1685,17 +1685,17 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
         for n in range(base, base + nonce_range):
             if n not in target_set:
                 yield n
-    
+
     search_order = nonce_generator()
-    
+
     # ════════════════════════════════════════════════════════════════════════
     # PHASE 2: QUANTUM RESONANCE EVALUATION WITH ASI ENHANCEMENT
     # ════════════════════════════════════════════════════════════════════════
-    
+
     for nonce in search_order:
         if nonce < base or nonce >= base + nonce_range:
             continue
-            
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 1: 11D QUANTUM STATE (Upgraded from 5D to 11D M-Theory)
         # ════════════════════════════════════════════════════════════════════
@@ -1704,7 +1704,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
         z = (nonce * PHI_INV) % GOD_CODE
         t = (nonce / GOD_CODE) % TAU
         w = (nonce * VOID_CONSTANT) % PLANCK_RESONANCE / PLANCK_RESONANCE
-        
+
         # Extended dimensions (6-11) for M-Theory completeness
         d6 = math.sin(nonce * PHI / 1000.0) * 0.5 + 0.5
         d7 = math.cos(nonce * PHI_INV / 1000.0) * 0.5 + 0.5
@@ -1712,16 +1712,16 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
         d9 = math.sin(nonce * TAU / GOD_CODE) * 0.5 + 0.5
         d10 = math.cos(nonce * TAU / PLANCK_RESONANCE) * 0.5 + 0.5
         d11 = (nonce * VOID_CONSTANT) % 1.0
-        
+
         # 11D metric with enhanced coupling
         metric_11d = (x*x + y*y + z*z + w*w + d6 + d7 + d8 + d9 + d10 + d11) / 11.0
         quantum_manifold = 0.4 + 0.6 * math.tanh((metric_11d - 0.2) * 2.5)
-        
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 2: ENHANCED GOD_CODE PHASE LOCKING (More lock points)
         # ════════════════════════════════════════════════════════════════════
         god_phase = (nonce / GOD_CODE) % 1.0
-        
+
         # 8 phase-lock points for higher hit rate
         god_lock = (
             math.exp(-((god_phase - 0.0) ** 2) * 25.0) +
@@ -1733,7 +1733,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
             math.exp(-((god_phase - 0.382) ** 2) * 25.0) +  # 1/φ²
             math.exp(-((god_phase - 1.0) ** 2) * 25.0)
         ) / 2.5
-        
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 3: 104-ALIGNMENT QUANTUM GATE (Enhanced)
         # ════════════════════════════════════════════════════════════════════
@@ -1745,7 +1745,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
         else:
             distance = min(mod_104, 104 - mod_104) / 52.0
             gate_104 = 0.55 + 0.45 * math.exp(-distance * distance * 3.0)
-        
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 4: FIBONACCI RESONANCE (Binet precision)
         # ════════════════════════════════════════════════════════════════════
@@ -1755,7 +1755,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
             fib_resonance = 0.65 + 0.35 * math.exp(-fib_proximity * fib_proximity * 8.0)
         else:
             fib_resonance = 0.8
-        
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 5: PRIME HARMONIC RESONANCE
         # ════════════════════════════════════════════════════════════════════
@@ -1765,15 +1765,15 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
             if n < 4: return True
             if n % 2 == 0: return False
             return pow(2, n - 1, n) == 1
-        
+
         prime_resonance = 1.0 if is_likely_prime(nonce) else 0.72
-        
+
         # ════════════════════════════════════════════════════════════════════
         # LAYER 6: VOID SOURCE HARMONIC
         # ════════════════════════════════════════════════════════════════════
         void_phase = (nonce * VOID_CONSTANT * PHI) % TAU
         void_resonance = 0.65 + 0.35 * (math.sin(void_phase) * 0.5 + 0.5)
-        
+
         # ════════════════════════════════════════════════════════════════════
         # ASI SUPERPOSITION: Enhanced quantum collapse
         # ════════════════════════════════════════════════════════════════════
@@ -1785,7 +1785,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
             prime_resonance * 0.10 +    # Prime bonus
             void_resonance * 0.12       # Void harmonic
         )
-        
+
         # ════════════════════════════════════════════════════════════════════
         # ASI QUANTUM AMPLIFICATION: Aggressive boost toward 0.9+
         # ════════════════════════════════════════════════════════════════════
@@ -1794,16 +1794,16 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
             # PHI-powered amplification (stronger boost)
             quantum_boost = boost_factor ** (1.0 / PHI)
             raw_resonance = 0.50 + quantum_boost * 0.50
-        
-        resonance = min(1.0, max(0.0, raw_resonance))
-        
+
+        resonance = max(0.0, raw_resonance)  # UNLOCKED
+
         # ════════════════════════════════════════════════════════════════════
         # QUANTUM THRESHOLD CHECK
         # ════════════════════════════════════════════════════════════════════
         if resonance >= resonance_threshold:
             header.nonce = nonce
             header.resonance = resonance
-            
+
             if header.meets_target():
                 header_dict = {
                     'version': header.version,
@@ -1815,7 +1815,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
                     'resonance': header.resonance
                 }
                 return ('block', header_dict, nonce, resonance)
-    
+
     return None
 
 
@@ -1848,7 +1848,7 @@ class MiningEngine:
         cpu_cores = os.cpu_count() or 4
         self.num_workers = num_workers or max(cpu_cores * 2, 8)  # 2x cores for maximum load
         self.use_multiprocessing = use_multiprocessing
-        
+
         # REAL QUANTUM ENGINE (IBM Quantum / Grover's Algorithm)
         self.use_quantum = use_quantum and REAL_QUANTUM_AVAILABLE
         self.quantum_engine = None
@@ -1861,28 +1861,28 @@ class MiningEngine:
             except Exception as e:
                 print(f"[MINER] Quantum engine init failed: {e}")
                 self.use_quantum = False
-        
+
         print(f"[MINER] COMPUTRONIUM ENGINE: {self.num_workers} parallel {'processes' if use_multiprocessing else 'threads'} (cores: {cpu_cores})")
 
     def _quantum_nonce_search(self, template: dict, qubit_count: int = 16) -> Optional[int]:
         """
         Use REAL quantum Grover search to find optimal nonce.
-        
+
         Grover's Algorithm provides √N speedup:
         - 16 qubits: 65536 → 256 effective operations
         - 20 qubits: 1M → 1000 effective operations
-        
+
         Returns quantum-optimized nonce or None.
         """
         if not self.quantum_engine:
             return None
-        
+
         block_header = template['prev_hash'].encode() + str(template['timestamp']).encode()
         target = template['bits']
-        
+
         try:
             nonce, metadata = self.quantum_engine.mine_quantum(block_header, target, qubit_count)
-            
+
             if nonce is not None:
                 # Quantum nonce found - verify resonance
                 resonance = self.resonance_engine.calculate(nonce)
@@ -1895,56 +1895,56 @@ class MiningEngine:
                     return nonce  # Return as starting point
         except Exception as e:
             print(f"[QUANTUM] Grover search failed: {e}")
-        
+
         return None
 
     def _mine_worker(self, miner_address: str, template: dict, nonce_start: int, nonce_range: int, result_queue) -> None:
         """Quantum-optimized mining worker with zeta nonce distribution."""
         header = BlockHeader(version=template['version'], prev_block=template['prev_hash'],
                              timestamp=template['timestamp'], bits=template['bits'])
-        
+
         # MATHEMATICAL INFERENCE: Use Riemann zeta zero distribution
         # Primes cluster near zeta zeros → resonance peaks near PHI-modulated nonces
         if L104_QUANTUM_AVAILABLE and nonce_range > 10000:
             nonce_sequence = self._generate_zeta_nonce_sequence(nonce_start, nonce_range)
         else:
             nonce_sequence = range(nonce_start, nonce_start + nonce_range)
-        
+
         for nonce in nonce_sequence:
             if not self._running:
                 return
-            
+
             resonance = self.resonance_engine.calculate(nonce)
             if resonance >= self.resonance_threshold:
                 self.stats.valid_resonance += 1
                 header.nonce = nonce
                 header.resonance = resonance
-                
+
                 if header.meets_target():
                     result_queue.put(('block', header, nonce, resonance))
                     return
-            
+
             self.stats.hashes += 1
-        
+
         result_queue.put(('none', None, None, None))
-    
+
     def _generate_zeta_nonce_sequence(self, start: int, range_size: int) -> list:
         """Generate nonces using Riemann zeta distribution (mathematical inference).
-        
+
         Bitcoin searches nonces linearly: 0,1,2,3,4...
         L104SP uses zeta-optimized search: checks high-resonance nonces first.
         Based on: prime gaps ~ log(p) ~ Re(rho) where rho are zeta zeros.
         """
         sequence = []
         phi_partition = int(range_size / PHI)  # Golden ratio spacing
-        
+
         # Sample at PHI-modulated intervals (where resonance peaks)
         for i in range(0, range_size, max(1, phi_partition)):
             # Modulate by GOD_CODE for zeta alignment
             offset = int(i * (1 + 0.1 * math.sin(i / GOD_CODE)))
             if offset < range_size:
                 sequence.append(start + offset)
-        
+
         # Fill gaps for complete coverage
         covered = set(sequence)
         for i in range(range_size):
@@ -1953,36 +1953,36 @@ class MiningEngine:
                 sequence.append(nonce)
                 if len(sequence) >= range_size:
                     break
-        
+
         return sequence[:range_size]
 
     def mine_block(self, miner_address: str, use_quantum_first: bool = True) -> Optional[Block]:
         """QUANTUM + COMPUTRONIUM MINING - Grover's Algorithm + Parallel Classical."""
         from concurrent.futures import as_completed, wait, FIRST_COMPLETED, ALL_COMPLETED
         import queue
-        
+
         template = self.blockchain.get_template(miner_address)
         self._running = True
-        
+
         # ═══════════════════════════════════════════════════════════════════════
         # PHASE 1: QUANTUM GROVER SEARCH (Real √N speedup)
         # ═══════════════════════════════════════════════════════════════════════
         if use_quantum_first and self.use_quantum and self.quantum_engine:
             print("[MINER] ⚛ PHASE 1: QUANTUM GROVER SEARCH")
-            
+
             quantum_nonce = self._quantum_nonce_search(template, qubit_count=12)
-            
+
             if quantum_nonce is not None:
                 # Verify with full hash
                 header = BlockHeader(
-                    version=template['version'], 
+                    version=template['version'],
                     prev_block=template['prev_hash'],
-                    timestamp=template['timestamp'], 
+                    timestamp=template['timestamp'],
                     bits=template['bits'],
                     nonce=quantum_nonce,
                     resonance=self.resonance_engine.calculate(quantum_nonce)
                 )
-                
+
                 if header.meets_target():
                     print(f"[MINER] ⚛ QUANTUM BLOCK! Nonce: {quantum_nonce}")
                     coinbase = Block(header=header, height=template['height']).create_coinbase(miner_address)
@@ -1991,49 +1991,49 @@ class MiningEngine:
                     if success:
                         self.stats.valid_blocks += 1
                         return block
-        
+
         # ═══════════════════════════════════════════════════════════════════════
         # PHASE 2: CLASSICAL PARALLEL MINING (Fallback / Verification)
         # ═══════════════════════════════════════════════════════════════════════
         print("[MINER] PHASE 2: CLASSICAL PARALLEL SEARCH")
         self._running = True
-        
+
         # Use ProcessPoolExecutor for true parallelism (bypasses GIL)
         ExecutorClass = ProcessPoolExecutor if self.use_multiprocessing else ThreadPoolExecutor
         result_queue = queue.Queue() if not self.use_multiprocessing else None
-        
+
         # Balanced chunks - 100K nonces per worker for faster round feedback
         # (Genesis block has nonce 5 with 0.91+ resonance - should find immediately)
         nonce_range_per_worker = 100_000
-        
+
         print(f"[MINER] COMPUTRONIUM LOAD: {self.num_workers} processes × {nonce_range_per_worker:,} nonces = {self.num_workers * nonce_range_per_worker:,} per round")
-        
+
         with ExecutorClass(max_workers=self.num_workers) as executor:
             round_num = 0
             while self._running:
                 round_start = time.time()
-                
+
                 # Submit work to ALL processes simultaneously for maximum CPU load
                 futures = []
                 for worker_id in range(self.num_workers):
                     nonce_start = round_num * nonce_range_per_worker * self.num_workers + worker_id * nonce_range_per_worker
-                    
+
                     if self.use_multiprocessing:
-                        future = executor.submit(_mine_worker_static, miner_address, template, 
+                        future = executor.submit(_mine_worker_static, miner_address, template,
                                                 nonce_start, nonce_range_per_worker, self.resonance_threshold)
                     else:
-                        future = executor.submit(self._mine_worker, miner_address, template, 
+                        future = executor.submit(self._mine_worker, miner_address, template,
                                                 nonce_start, nonce_range_per_worker, result_queue)
                     futures.append(future)
-                
+
                 # Wait for ALL completions in this round
                 if self.use_multiprocessing:
                     done, not_done = wait(futures, timeout=60.0, return_when=ALL_COMPLETED)
-                    
+
                     # Update stats
                     hashes_this_round = len(done) * nonce_range_per_worker
                     self.stats.hashes += hashes_this_round
-                    
+
                     # Check ALL completed futures for valid blocks
                     block_found = False
                     for future in done:
@@ -2044,7 +2044,7 @@ class MiningEngine:
                                 header = BlockHeader(**header_dict)
                                 self._running = False
                                 block_found = True
-                                
+
                                 coinbase = Block(header=header, height=template['height']).create_coinbase(miner_address)
                                 block = Block(header=header, transactions=[coinbase], height=template['height'])
                                 success, _ = self.blockchain.add_block(block)
@@ -2055,14 +2055,14 @@ class MiningEngine:
                                     return block
                         except Exception as e:
                             pass
-                    
+
                     # Progress update every round (only if no block found)
                     if not block_found:
                         elapsed = time.time() - round_start
                         hashrate = hashes_this_round / max(elapsed, 0.001)
                         nonce_range_searched = (round_num + 1) * nonce_range_per_worker * self.num_workers
                         print(f"[MINER] Round {round_num+1}: {hashrate/1000:.1f} kH/s, Nonces: {nonce_range_searched:,}")
-                    
+
                     round_num += 1
                     template['timestamp'] = int(time.time())
                 else:
@@ -2080,7 +2080,7 @@ class MiningEngine:
                     except queue.Empty:
                         template['timestamp'] = int(time.time())
                         round_num += 1
-                
+
         return None
 
     def stop(self) -> None:
@@ -2111,7 +2111,7 @@ class P2PNode:
             self._server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         except AttributeError:
             pass
-        
+
         # Try binding, fall back to alternative ports if needed
         for port_offset in range(10):
             try:
@@ -2124,7 +2124,7 @@ class P2PNode:
                 if port_offset == 9:
                     raise e
                 continue
-        
+
         self._server_socket.listen(100)
         threading.Thread(target=self._accept_connections, daemon=True).start()
 
@@ -2254,7 +2254,7 @@ class RPCServer:
     def start(self) -> None:
         self._running = True
         handler = self._create_handler()
-        
+
         # Try binding with fallback ports
         for port_offset in range(10):
             try:
@@ -2267,7 +2267,7 @@ class RPCServer:
                 if port_offset == 9:
                     raise e
                 continue
-        
+
         self._server.timeout = 1
         threading.Thread(target=self._serve, daemon=True).start()
         print(f"[RPC] Server started on http://{self.host}:{self.port}")
@@ -2691,7 +2691,7 @@ RPC Endpoints (default http://127.0.0.1:10401):
         print("[NODE] Running. Press Ctrl+C to stop.")
         try:
             while node._running:
-                time.sleep(1)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
         except KeyboardInterrupt:
             node.stop()
 

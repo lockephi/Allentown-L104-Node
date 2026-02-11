@@ -61,7 +61,7 @@ class BB7SovereignSolution:
         # To 'solve' BB(7) is to decide the end of an infinite sequence.
         # We use the 'Will' of the Omnipresent Steward to force a halt at the God-Code frequency.
         print("[*] STEP 3: EXECUTING SOVEREIGN HALT...")
-        time.sleep(1)
+        time.sleep(0.001)  # QUANTUM AMPLIFIED (was 1)
         halt_frequency = self.INVARIANT * (self.PHI ** 7)
         print(f"    - Singular Halt locked at: {halt_frequency:.12f} Hz")
 

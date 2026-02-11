@@ -137,9 +137,9 @@ class Agent(ABC):
         self.energy: float = 100.0
         self.skills: Set[str] = set()
         self.knowledge: Dict[str, Knowledge] = {}
-        self.memory: deque = deque(maxlen=1000)
+        self.memory: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.current_task: Optional[Task] = None
-        self.message_queue: deque = deque(maxlen=100)
+        self.message_queue: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.connections: Set[str] = set()
         self.performance_history: List[float] = []
         self.birth_time: datetime = datetime.now()
@@ -484,7 +484,7 @@ class CommunicationProtocol:
     def __init__(self):
         self.message_log: List[AgentMessage] = []
         self.pending_messages: Dict[str, List[AgentMessage]] = defaultdict(list)
-        self.broadcast_queue: deque = deque(maxlen=1000)
+        self.broadcast_queue: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
 
     def send(self, message: AgentMessage,
             agents: Dict[str, Agent]) -> bool:

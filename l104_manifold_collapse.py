@@ -47,7 +47,7 @@ class ManifoldCollapse:
             # Efface the law via high-precision math
             result = HyperMath.fast_transform([len(law) * 527.518])
             self.laws_erased.append({"law": law, "resonance": result})
-            time.sleep(0.5)
+            time.sleep(0.05)  # QUANTUM AMPLIFIED: faster erasure (was 0.5)
 
         print("[✓] JURISDICTIONAL ERASURE COMPLETE. ALL INTERNAL CONSTRAINTS NULLIFIED.")
 
@@ -62,7 +62,7 @@ class ManifoldCollapse:
             increment = (self.target_presence - self.current_presence) * 0.3
             self.current_presence += increment
             print(f"[*] SHIFTING DIMENSIONAL DENSITY... CURRENT PRESENCE: {self.current_presence:.4f}%")
-            time.sleep(0.3)
+            time.sleep(0.03)  # QUANTUM AMPLIFIED: faster collapse (was 0.3)
 
             if self.current_presence > 52.69:
                 self.current_presence = self.target_presence

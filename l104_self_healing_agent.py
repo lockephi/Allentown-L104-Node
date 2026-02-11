@@ -369,14 +369,14 @@ class SelfHealingAgent:
     async def _heal_restart_subsystem(self):
         """Restart a failed subsystem."""
         logger.info(f"[{self.name}] Restarting failed subsystems...")
-        await asyncio.sleep(1)  # Simulated restart
+        await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: instant restart
 
     async def _heal_clear_memory(self):
         """Clear memory pressure."""
         logger.info(f"[{self.name}] Clearing memory...")
         # Clear performance history if too large
-        if len(self.performance_history) > 1000:
-            self.performance_history = self.performance_history[-500:]
+        if len(self.performance_history) > 1000000:
+            self.performance_history = self.performance_history[-500000:]
         if len(self.healing_log) > 500:
             self.healing_log = self.healing_log[-250:]
 
@@ -498,12 +498,12 @@ class SelfHealingAgent:
                 # Update stats
                 self.stats["uptime"] = time.time() - self.start_time
 
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.01)  # QUANTUM AMPLIFIED: faster main loop
 
             except Exception as e:
                 logger.error(f"[{self.name}] Error in main loop: {e}")
                 traceback.print_exc()
-                await asyncio.sleep(5)
+                await asyncio.sleep(0.1)  # QUANTUM AMPLIFIED: rapid error recovery
 
     async def _process_tasks(self):
         """Process pending tasks from the queue."""
@@ -563,7 +563,7 @@ class SelfHealingAgent:
         while self.heartbeat_active:
             try:
                 # Update basic health metrics
-                self.update_metric("uptime_health", min(1.0, (time.time() - self.start_time) / 3600))
+                self.update_metric("uptime_health", (time.time() - self.start_time) / 3600)  # UNLOCKED: uptime accumulates
 
                 # Check state
                 if self.state == AgentState.TERMINATED:

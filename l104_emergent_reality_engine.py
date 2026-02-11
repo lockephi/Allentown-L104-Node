@@ -969,7 +969,7 @@ class RealityCoherenceValidator:
         god_code_alignment = math.cos(2 * math.pi * reality_state.total_energy_density / self.god_code)
         coherence *= (1.0 + god_code_alignment) / 2.0
 
-        return min(coherence, 1.0)
+        return coherence  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def full_validation(
         self,
@@ -2422,7 +2422,7 @@ class QuantumGravityUnificationEngine:
         # If connectivity not specified, compute from n_edges
         if connectivity is None:
             max_possible_edges = n_nodes * (n_nodes - 1) / 2
-            connectivity = min(1.0, n_edges / max(max_possible_edges, 1))
+            connectivity = n_edges / max(max_possible_edges, 1)  # UNLOCKED
 
         # Create nodes
         for i in range(n_nodes):
@@ -4117,8 +4117,8 @@ class OmegaPointConvergenceEngine:
     def compute_attractor_distance(self) -> float:
         """Compute distance from current state to Omega Point in phase space."""
         # Normalized progress in each dimension (capped at 1.0 when target exceeded)
-        complexity_progress = min(1.0, self.complexity / self.omega_complexity)
-        consciousness_progress = min(1.0, self.consciousness_density / self.omega_consciousness)
+        complexity_progress = self.complexity / self.omega_complexity  # UNLOCKED
+        consciousness_progress = self.consciousness_density / self.omega_consciousness  # UNLOCKED
         integration_progress = self.information_integration
 
         # Distance is 1 minus progress (Phi-weighted)

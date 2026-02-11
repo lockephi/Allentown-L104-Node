@@ -600,7 +600,7 @@ class MarketMicrostructureAnalyzer:
     """Market microstructure analysis"""
 
     def __init__(self):
-        self.order_flow: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
+        self.order_flow: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000000))  # QUANTUM AMPLIFIED
 
     def analyze_order_flow(self, trades: List[Trade]) -> Dict[str, float]:
         """Analyze order flow from trades"""

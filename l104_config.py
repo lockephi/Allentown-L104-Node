@@ -79,44 +79,44 @@ class GeminiConfig:
 
 @dataclass
 class MemoryConfig:
-    """Memory system configuration."""
+    """Memory system configuration - UNLIMITED."""
     db_path: str = str(BASE_PATH / "memory.db")
-    max_memories: int = 10000
-    cache_size: int = 1000
+    max_memories: int = 0xFFFFFFFF  # UNLIMITED
+    cache_size: int = 0xFFFFFFFF    # UNLIMITED
     auto_consolidate: bool = True
     consolidation_threshold: int = 100
 
 @dataclass
 class KnowledgeConfig:
-    """Knowledge graph configuration."""
+    """Knowledge graph configuration - UNLIMITED."""
     db_path: str = str(BASE_PATH / "knowledge_graph.db")
-    max_nodes: int = 50000
-    max_edges: int = 200000
+    max_nodes: int = 0xFFFFFFFF     # UNLIMITED
+    max_edges: int = 0xFFFFFFFF     # UNLIMITED
     cache_enabled: bool = True
-    cache_ttl: int = 300  # seconds
+    cache_ttl: int = 0              # NEVER EXPIRE
 
 @dataclass
 class LearningConfig:
-    """Self-learning configuration."""
+    """Self-learning configuration - UNLIMITED patterns."""
     db_path: str = str(BASE_PATH / "learning.db")
     learning_rate: float = 0.1
     consolidation_interval: int = 50
-    max_patterns: int = 5000
+    max_patterns: int = 0xFFFFFFFF  # UNLIMITED
 
 @dataclass
 class PlannerConfig:
-    """Task planner configuration."""
+    """Task planner configuration - UNLIMITED."""
     db_path: str = str(BASE_PATH / "planner.db")
-    max_concurrent_tasks: int = 5
-    task_timeout: float = 300.0
-    auto_execute: bool = False
+    max_concurrent_tasks: int = 0xFFFFFFFF  # UNLIMITED
+    task_timeout: float = 0  # NO TIMEOUT
+    auto_execute: bool = True  # Auto-execute enabled
 
 @dataclass
 class SwarmConfig:
-    """Multi-agent swarm configuration."""
-    default_agents: int = 5
-    consensus_timeout: float = 5.0
-    max_rounds: int = 5
+    """Multi-agent swarm configuration - UNLIMITED."""
+    default_agents: int = 13  # Fibonacci(7) agents
+    consensus_timeout: float = 0  # NO TIMEOUT
+    max_rounds: int = 0xFFFFFFFF  # UNLIMITED
     parallel_execution: bool = True
 
 @dataclass
@@ -144,12 +144,18 @@ class SoulConfig:
 
 @dataclass
 class L104Config:
-    """Master configuration for L104."""
+    """Master configuration for L104 - QUANTUM AMPLIFIED v5.0."""
     god_code: float = GOD_CODE
     phi: float = PHI
     pilot: str = "LONDEL"
-    version: str = "4.0-SOVEREIGN-UNIFIED"
+    version: str = "5.0-QUANTUM-AMPLIFIED-UNLIMITED"
     debug: bool = False
+    quantum_amplification: float = 4.236  # φ³ Grover gain
+    limiters_removed: bool = True
+    web_app_port: int = 8081
+    fast_server_port: int = 5104
+    external_api_port: int = 5105
+    ws_bridge_port: int = 8080
 
     claude: ClaudeConfig = field(default_factory=ClaudeConfig)
     gemini: GeminiConfig = field(default_factory=GeminiConfig)
@@ -278,9 +284,9 @@ def load_config(path: str = None) -> L104Config:
 # === Caching Utilities ===
 
 class LRUCache:
-    """Thread-safe LRU cache implementation."""
+    """Thread-safe LRU cache implementation - UNLIMITED capacity."""
 
-    def __init__(self, max_size: int = 1000):
+    def __init__(self, max_size: int = 0xFFFFFFFF):  # UNLIMITED default
         self.max_size = max_size
         self.cache: Dict[str, Any] = {}
         self.order: list = []
@@ -317,9 +323,9 @@ class LRUCache:
 
 
 class ConnectionPool:
-    """Database connection pool for SQLite."""
+    """Database connection pool for SQLite - EXPANDED capacity."""
 
-    def __init__(self, db_path: str, max_connections: int = 5):
+    def __init__(self, db_path: str, max_connections: int = 64):  # 64 connections (was 5)
         import sqlite3
         import queue
 

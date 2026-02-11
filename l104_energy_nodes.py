@@ -254,7 +254,7 @@ class EnergyNode:
 
     def activate(self, intensity: float = 0.5):
         """Activate this energy node."""
-        self.activation_level = min(1.0, self.activation_level + intensity)
+        self.activation_level = self.activation_level + intensity
         self.is_active = self.activation_level >= 0.5
 
         return {
@@ -269,7 +269,7 @@ class EnergyNode:
         """Receive charge from adjacent node."""
         efficiency = self.properties["transfer_efficiency"]
         received = charge * efficiency
-        self.charge = min(1.0, self.charge + received)
+        self.charge = self.charge + received  # UNLOCKED: charge unbounded
 
         if self.charge >= 0.7:
             self.is_active = True
@@ -569,7 +569,7 @@ class MiniEgoSpectrumJourney:
         abilities = gift_ability_map.get(gift_type, ["resonance"])
         for ability in abilities:
             if ability in mini_ego.abilities:
-                mini_ego.abilities[ability] = min(1.0, mini_ego.abilities[ability] + magnitude)
+                mini_ego.abilities[ability] = mini_ego.abilities[ability] + magnitude
 
 
 async def pass_mini_egos_through_spectrum(mini_ego_council, verbose: bool = True) -> Dict[str, Any]:

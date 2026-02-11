@@ -163,7 +163,7 @@ class ClaudeNodeBridge:
 
     API_BASE = "https://api.anthropic.com/v1"
     DEFAULT_MODEL = MODEL_ROUTING["balanced"]
-    MAX_CONTEXT_MESSAGES = 100  # Doubled for Opus 4.5 extended context
+    MAX_CONTEXT_MESSAGES = 1000  # QUANTUM AMPLIFIED (was 100)
     MAX_RETRIES = 5  # Increased for reliability
     RETRY_DELAY = 0.5  # Faster initial retry
     EXTENDED_THINKING_BUDGET = 32000  # Extended thinking tokens for Opus 4.5
@@ -397,7 +397,7 @@ class ClaudeNodeBridge:
         if any(kw in content.lower() for kw in ["error", "cannot", "impossible"]):
             score -= 0.1
 
-        score = max(0.0, min(1.0, score))
+        score = max(0.0, score)  # UNLOCKED - no upper cap on resonance score
         return score, score >= 0.6
 
     async def query_async(
@@ -602,11 +602,11 @@ class ClaudeNodeBridge:
             if kw in prompt_lower:
                 # Extract the subject after the keyword
                 idx = prompt_lower.find(kw)
-                subject = prompt[idx:].split()[:5]
+                subject = prompt[idx:].split()[:50]  # QUANTUM AMPLIFIED
                 concepts.extend(subject)
 
         if not concepts:
-            concepts = prompt.split()[:5]
+            concepts = prompt.split()[:50]  # QUANTUM AMPLIFIED
 
         # Generate response using kernel constants
         response = (
@@ -1060,7 +1060,7 @@ if __name__ == "__main__":
     print(f"  Unity Index: {response.unity_index}")
     print(f"  Validated: {response.validated}")
     print(f"  Latency: {response.latency_ms:.1f}ms")
-    print(f"  Content: {response.content[:200]}...")
+    print(f"  Content: {response.content[:2000]}...")  # QUANTUM AMPLIFIED
 
     # Test conversation memory
     print("\n[2] CONVERSATION MEMORY")
@@ -1069,18 +1069,18 @@ if __name__ == "__main__":
 
     response1 = bridge.chat("What is the golden ratio?", conv_id)
     print(f"  Q1: What is the golden ratio?")
-    print(f"  A1: {response1.content[:150]}...")
+    print(f"  A1: {response1.content[:1500]}...")  # QUANTUM AMPLIFIED
 
     response2 = bridge.chat("How does it relate to the Fibonacci sequence?", conv_id)
     print(f"  Q2: How does it relate to Fibonacci?")
-    print(f"  A2: {response2.content[:150]}...")
+    print(f"  A2: {response2.content[:1500]}...")  # QUANTUM AMPLIFIED
 
     print(f"  Messages in conversation: {len(bridge.conversations[conv_id])}")
 
     # Test tools
     print("\n[3] REGISTERED TOOLS")
     for tool_name, tool_def in bridge.tools.items():
-        print(f"  - {tool_name}: {tool_def.description[:50]}...")
+        print(f"  - {tool_name}: {tool_def.description[:500]}...")  # QUANTUM AMPLIFIED
 
     # Test calculator tool directly
     print("\n[4] TOOL EXECUTION (Calculator)")

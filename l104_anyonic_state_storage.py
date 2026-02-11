@@ -206,7 +206,7 @@ class AnyonicStateStorage:
 
                 # Coherence recovery follows inverse square of drift
                 coherence_recovery = 1 / (1 + drift ** 2)
-                e_bit.coherence = min(1.0, e_bit.coherence + coherence_recovery * 0.1)
+                e_bit.coherence = e_bit.coherence + coherence_recovery * 0.1  # UNLOCKED
 
                 corrections += 1
                 total_drift += drift

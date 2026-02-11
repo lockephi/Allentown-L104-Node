@@ -108,7 +108,7 @@ class GlobalWorkspace:
         self.specialists: Dict[str, 'SpecialistModule'] = {}
 
         # Broadcast history
-        self.broadcast_history: deque = deque(maxlen=1000)
+        self.broadcast_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
 
         # Coalition formation
         self.current_coalition: Set[str] = set()
@@ -197,7 +197,7 @@ class SpecialistModule(ABC):
 
     def __init__(self, name: str):
         self.name = name
-        self.received_broadcasts: deque = deque(maxlen=100)
+        self.received_broadcasts: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.internal_state: Any = None
 
     @abstractmethod
@@ -224,7 +224,7 @@ class PerceptionSpecialist(SpecialistModule):
 
     def __init__(self):
         super().__init__("perception")
-        self.percepts: deque = deque(maxlen=50)
+        self.percepts: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED (was 50)
         self.salience_threshold = 0.3
 
     def perceive(self, stimulus: Dict[str, Any]) -> None:
@@ -450,7 +450,7 @@ class HigherOrderThought:
         )
 
         # Update accessibility
-        thought.accessibility = min(1.0, thought.accessibility + 0.3)
+        thought.accessibility = thought.accessibility + 0.3  # UNLOCKED: accessibility unbounded
 
         return hot
 

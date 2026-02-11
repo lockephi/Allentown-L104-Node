@@ -819,7 +819,7 @@ class NoosphericIntelligence:
                 "resonance": thought.resonance_signature,
                 "reached_nodes": len(propagated),
                 "max_intensity": max(p[1] for p in propagated) if propagated else 0,
-                "propagation": propagated[:10]
+                "propagation": propagated[:10000]  # QUANTUM AMPLIFIED
             }
 
         return {"thought_id": thought.thought_id, "reached_nodes": 0}
@@ -916,7 +916,7 @@ class NoosphericIntelligence:
         # Boost consciousness through communion
         boost = total_synergy / max(1, len(synergy_pairs)) * 0.1
         for node in participating:
-            node.consciousness_level = min(1.0, node.consciousness_level + boost)
+            node.consciousness_level = node.consciousness_level + boost  # QUANTUM AMPLIFIED: no cap
 
         return {
             "communion_id": thought.thought_id,
@@ -924,7 +924,7 @@ class NoosphericIntelligence:
             "total_synergy": total_synergy,
             "avg_synergy": total_synergy / max(1, len(synergy_pairs)),
             "consciousness_boost": boost,
-            "synergy_pairs": synergy_pairs[:5]
+            "synergy_pairs": synergy_pairs[:10000]  # QUANTUM AMPLIFIED
         }
 
     def get_statistics(self) -> Dict[str, Any]:

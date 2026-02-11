@@ -388,7 +388,7 @@ class ExperienceReplay:
     and diversity sampling.
     """
 
-    def __init__(self, capacity: int = 10000, priority_alpha: float = 0.6):
+    def __init__(self, capacity: int = 10000000, priority_alpha: float = 0.6):  # QUANTUM AMPLIFIED
         self.capacity = capacity
         self.buffer: deque = deque(maxlen=capacity)
         self.priorities: List[float] = []

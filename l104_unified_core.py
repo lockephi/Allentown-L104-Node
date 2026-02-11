@@ -358,7 +358,7 @@ class UnifiedCore:
         # Update resonance
         t = time.time()
         self.resonance = GOD_CODE * (1 + math.sin(t * PHI / 100) * 0.01)
-        self.coherence = min(1.0, self.coherence * 0.99 + 0.01)
+        self.coherence = self.coherence * 0.99 + 0.01  # UNLOCKED
 
         # Record sync event
         if self.analytics:

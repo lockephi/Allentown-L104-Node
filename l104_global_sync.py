@@ -305,7 +305,7 @@ class GlobalSync:
                 if isinstance(response, dict):
                     coherence = response.get("coherence", response.get("alignment", 0.5))
                     self._coherence_matrix[name] = coherence
-                    link.health = min(1.0, link.health + 0.05)
+                    link.health = link.health + 0.05  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
             except Exception as e:
                 results[name] = {

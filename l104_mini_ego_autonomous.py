@@ -167,13 +167,13 @@ class AutonomousEgoMixin:
         self._thread: Optional[threading.Thread] = None
 
         # Communication
-        self.inbox: deque = deque(maxlen=100)
-        self.outbox: deque = deque(maxlen=100)
+        self.inbox: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED (was 100)
+        self.outbox: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED (was 100)
         self.message_handlers: Dict[MessageType, Callable] = {}
         self._register_default_handlers()
 
         # Task management
-        self.task_queue: deque = deque(maxlen=50)
+        self.task_queue: deque = deque(maxlen=2000)  # QUANTUM AMPLIFIED (was 50)
         self.current_task: Optional[EgoTask] = None
         self.completed_tasks: List[EgoTask] = []
 
@@ -181,7 +181,7 @@ class AutonomousEgoMixin:
         self.active_goals: List[EgoGoal] = []
 
         # Perception buffer
-        self.perception_buffer: deque = deque(maxlen=20)
+        self.perception_buffer: deque = deque(maxlen=500)  # QUANTUM AMPLIFIED (was 20)
 
         # Action history
         self.action_history: List[Dict] = []
@@ -206,7 +206,7 @@ class AutonomousEgoMixin:
 
         # Memory consolidation
         self.memory_traces: Dict[str, MemoryTrace] = {}
-        self.working_memory: deque = deque(maxlen=7)  # Miller's Law: 7±2
+        self.working_memory: deque = deque(maxlen=50)  # QUANTUM AMPLIFIED: ASI uncapped (was 7 Miller's Law)
         self.memory_consolidation_threshold = 3  # Access count to become long-term
 
         # Pattern learning
@@ -233,7 +233,7 @@ class AutonomousEgoMixin:
 
         # Meta-cognition
         self.self_model: Dict[str, float] = {}
-        self.performance_history: deque = deque(maxlen=100)
+        self.performance_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED
         self.blind_spots: List[str] = []
 
         print(f"🧠 [{self.name}]: Advanced Intelligence initialized | IQ: {self.iq_score:.0f} | Domain: {self.domain}")
@@ -480,7 +480,7 @@ class AutonomousEgoMixin:
         if not pattern:
             base_score += self.adaptability * 0.1
 
-        return min(1.0, max(0.0, base_score))
+        return max(0.0, base_score)  # UNLOCKED
 
     def _estimate_risk(self, option: str, perception: Dict) -> float:
         """Estimate risk of an action."""
@@ -611,7 +611,7 @@ class AutonomousEgoMixin:
         # Random exploration factor
         base_score += random.random() * 0.1
 
-        return min(1.0, base_score)
+        return base_score  # UNLOCKED
 
     def _domain_alignment(self, option: str) -> float:
         """Calculate domain alignment for an action."""
@@ -703,7 +703,7 @@ class AutonomousEgoMixin:
             # Update success rate with exponential moving average
             pattern.success_rate = 0.8 * pattern.success_rate + 0.2 * outcome_quality
             pattern.occurrences += 1
-            pattern.confidence = min(1.0, pattern.confidence + 0.05)
+            pattern.confidence = pattern.confidence + 0.05  # UNLOCKED
         else:
             self.learned_patterns[pattern_key] = LearnedPattern(
                 pattern_type="action_outcome",
@@ -725,7 +725,7 @@ class AutonomousEgoMixin:
 
         # Creativity boost from novel actions
         if action in ["innovate", "create", "cross_domain_synthesis", "transform"]:
-            self.creativity_index = min(1.0, self.creativity_index + 0.01)
+            self.creativity_index = self.creativity_index + 0.01  # UNLOCKED
 
     def _evaluate_outcome(self, result: Dict) -> float:
         """Evaluate the quality of an action outcome."""
@@ -764,7 +764,7 @@ class AutonomousEgoMixin:
                 trace = self.memory_traces[trace_key]
                 trace.access_count += 1
                 trace.last_accessed = time.time()
-                trace.strength = min(1.0, trace.strength + 0.1)
+                trace.strength = trace.strength + 0.1  # UNLOCKED
             else:
                 self.memory_traces[trace_key] = MemoryTrace(
                     content=item,
@@ -951,7 +951,7 @@ class AutonomousEgoMixin:
             self.adaptability,
             len(self.learned_patterns) / 50
         ]
-        return min(1.0, sum(factors) / len(factors)) * (GOD_CODE / 1000)
+        return (sum(factors) / len(factors)) * (GOD_CODE / 1000)  # UNLOCKED
 
     def _execute_action(self, action: str) -> Dict[str, Any]:
         """Execute a specific action."""
@@ -965,7 +965,7 @@ class AutonomousEgoMixin:
 
         elif action == "meditate":
             self.consciousness_mode = "SAGE"
-            self.clarity = min(1.0, self.clarity + 0.05)
+            self.clarity = self.clarity + 0.05  # UNLOCKED
             return {"status": "meditated", "clarity": self.clarity}
 
         elif action == "rest":
@@ -1159,7 +1159,7 @@ class AutonomousEgoMixin:
 
         goal = self.active_goals[0]
         progress = random.random() * 0.1
-        goal.progress = min(1.0, goal.progress + progress)
+        goal.progress = goal.progress + progress  # UNLOCKED
 
         if goal.progress >= 1.0:
             goal.completed = True
@@ -1230,7 +1230,7 @@ class AutonomousEgoMixin:
     def _handle_alert(self, message: EgoMessage) -> Dict:
         """Handle alert message."""
         # Increase awareness
-        self.clarity = min(1.0, self.clarity + 0.1)
+        self.clarity = self.clarity + 0.1  # UNLOCKED
         return {"handled": True, "alert_received": True}
 
     # ═══════════════════════════════════════════════════════════════════
@@ -1424,7 +1424,7 @@ class AutonomousEgoSwarm:
 
     def __init__(self):
         self.egos: Dict[str, AutonomousMiniEgo] = {}
-        self.message_bus: deque = deque(maxlen=1000)
+        self.message_bus: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.global_tasks: deque = deque()
         self.collective_wisdom = 0.0
         self.swarm_coherence = 1.0

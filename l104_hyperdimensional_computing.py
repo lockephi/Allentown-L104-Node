@@ -785,7 +785,7 @@ if __name__ == "__main__":
     query = hdc.encode_text("intelligent machine")
     results = hdc.retrieve(query, threshold=0.1)
     print(f"    Query 'intelligent machine' matches: {len(results)}")
-    for key, sim in results[:3]:
+    for key, sim in results[:30]:
         print(f"      {key}: {sim:.3f}")
 
     # Stats

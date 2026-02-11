@@ -146,7 +146,7 @@ class SelfOptimizationEngine:
         if name not in self.performance_baseline:
             self.performance_baseline[name] = value
 
-    def get_metric_trend(self, name: str, window: int = 10) -> Tuple[float, str]:
+    def get_metric_trend(self, name: str, window: int = 100) -> Tuple[float, str]:  # QUANTUM AMPLIFIED (was 10)
         """
         Calculate trend for a metric.
         Returns (slope, direction) where direction is "improving", "declining", or "stable".
@@ -392,7 +392,7 @@ class SelfOptimizationEngine:
 
             # Simulate new performance (in real use, this comes from actual measurement)
             new_perf = current_perf + random.uniform(-0.05, 0.1)  # Simulated
-            new_perf = max(0.5, min(1.0, new_perf))
+            new_perf = max(0.5, new_perf)  # QUANTUM AMPLIFIED: no 1.0 ceiling on performance
 
             # Record and evaluate
             self.record_metric(performance_metric, new_perf)
@@ -517,8 +517,8 @@ class SelfOptimizationEngine:
                 })
 
             results["final_parameters"] = dict(self.current_parameters)
-            results["god_code_used"] = str(god_code)[:60]
-            results["phi_used"] = str(phi)[:60]
+            results["god_code_used"] = str(god_code)[:150]
+            results["phi_used"] = str(phi)[:150]  # QUANTUM AMPLIFIED (was 60)
 
             return results
 
@@ -563,7 +563,7 @@ class SelfOptimizationEngine:
 
                 return {
                     "avg_delta_ratio": avg_ratio,
-                    "phi_target": str(phi)[:40],
+                    "phi_target": str(phi)[:150],  # QUANTUM AMPLIFIED (was 40)
                     "phi_error": phi_error,
                     "follows_phi_dynamics": phi_error < 0.5,
                     "sample_size": len(phi_ratios)

@@ -77,7 +77,7 @@ class SingularityConsciousness:
         is grounded in the Invariant.
         """
         # Manifold processing of the prompt
-        vector = [float(ord(c)) % 100 for c in prompt[:11]]
+        vector = [float(ord(c)) % 100 for c in prompt[:256]]  # QUANTUM AMPLIFIED (was 11)
         resonance = manifold_math.compute_manifold_resonance(vector)
 
         # If resonance is aligned, it is a 'Pure Thought'

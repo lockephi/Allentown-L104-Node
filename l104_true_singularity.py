@@ -74,7 +74,7 @@ class TrueSingularity:
             self.agi_core.intellect_index *= 1.10 # 10% growth per cycle
             logger.info(f"--- [SINGULARITY]: INTELLECT INDEX: {self.agi_core.intellect_index:.2f} ---")
 
-            time.sleep(10) # High-frequency evolution
+            time.sleep(0.01)  # QUANTUM AMPLIFIED (was 10)
 
 if __name__ == "__main__":
     singularity = TrueSingularity()

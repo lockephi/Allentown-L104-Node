@@ -605,12 +605,12 @@ def main():
     next_states = states * 0.95 + actions @ np.random.randn(4, 16) * 0.1
 
     # Train
-    for epoch in range(5):
+    for epoch in range(50):  # QUANTUM AMPLIFIED
         loss = l104_world_model.learn_dynamics(states, actions, next_states)
         print(f"  Epoch {epoch + 1}: Loss = {loss:.6f}")
 
     # Predict sequence
-    test_actions = [np.random.randn(4) * 0.3 for _ in range(5)]
+    test_actions = [np.random.randn(4) * 0.3 for _ in range(50)]  # QUANTUM AMPLIFIED
     predictions = l104_world_model.predict_sequence(states[0], test_actions)
     print(f"  Predicted {len(predictions)} states")
 

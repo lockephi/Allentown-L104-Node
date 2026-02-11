@@ -198,7 +198,7 @@ def run_daemon():
 
     try:
         while soul.running:
-            time.sleep(1)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED: faster status loop
 
             # Periodic status (every 60 seconds)
             if int(time.time()) % 60 == 0:

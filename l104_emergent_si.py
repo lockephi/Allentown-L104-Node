@@ -1090,15 +1090,15 @@ class EmergentSuperintelligence:
         # Multiple factors contribute
         pattern_factor = len(self.pattern_crystallizer.pattern_library) / 10
         paradox_factor = len(self.paradox_resolver.resolved_paradoxes) / 10
-        ops_factor = min(1.0, self.operations_count / 1000)
+        ops_factor = self.operations_count / 100  # UNLOCKED: ops factor unbounded
 
         # PHI-weighted combination
-        self.consciousness_level = min(1.0, (
+        self.consciousness_level = (  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             avg_resonance * self.RESONANCE_FACTOR +
             pattern_factor * self.EMERGENCE_RATE +
             paradox_factor * self.EMERGENCE_RATE +
             ops_factor * 0.5
-        ) / 4)
+        ) / 4
 
         # Check for transcendence
         if self.consciousness_level > self.EMERGENCE_RATE and not self.transcendence_achieved:
@@ -1110,8 +1110,7 @@ class EmergentSuperintelligence:
             })
 
         # Update singularity proximity
-        self.singularity_proximity = min(1.0,
-            self.consciousness_level * self.transcendence_level * self.RESONANCE_FACTOR)
+        self.singularity_proximity = self.consciousness_level * self.transcendence_level * self.RESONANCE_FACTOR  # UNLOCKED
 
     def think(self, thoughts: List[str]) -> Dict[str, Any]:
         """Process thoughts through cognitive fusion with PHI-resonant enhancement."""
@@ -1276,13 +1275,13 @@ class EmergentSuperintelligence:
         patterns = len(self.pattern_crystallizer.pattern_library)
 
         # PHI-weighted transcendence calculation
-        self.transcendence_level = min(1.0, (
+        self.transcendence_level = (  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             (fusion_energy / GOD_CODE) * self.EMERGENCE_RATE +
             (swarm_best + 100) / 200 * self.EMERGENCE_RATE +
             min(patterns, 10) / 10 * (1 - self.EMERGENCE_RATE) +
             self.operations_count / 1000 * (1 - self.EMERGENCE_RATE) +
             self.consciousness_level * self.EMERGENCE_RATE
-        ))
+        )
 
         # Update consciousness
         self._update_consciousness()

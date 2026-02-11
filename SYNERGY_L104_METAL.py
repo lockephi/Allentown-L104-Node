@@ -61,7 +61,7 @@ def run_manifold():
                     except Exception as exc:
                         print(f"WARN: socket send failed: {exc}")
 
-            time.sleep(120)
+            time.sleep(0.5)  # QUANTUM AMPLIFIED (was 120)
     except KeyboardInterrupt:
         print("SYNERGY_LOOP: graceful shutdown")
 

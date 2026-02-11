@@ -196,13 +196,13 @@ class GlobalWorkspace:
         self.broadcast_threshold = broadcast_threshold
         self.workspace_contents: List[Thought] = []
         self.module_inputs: Dict[str, deque] = {}
-        self.broadcast_history: deque = deque(maxlen=100)
+        self.broadcast_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 100)
         self.attention_weights: Dict[str, float] = {}
         self.resonance_lock = GOD_CODE
 
         # Initialize module channels
         for module in ["neural", "reasoning", "self_mod", "world_model", "transfer", "perception", "emotion"]:
-            self.module_inputs[module] = deque(maxlen=20)
+            self.module_inputs[module] = deque(maxlen=1000)  # QUANTUM AMPLIFIED (was 20)
             self.attention_weights[module] = 1.0 / 7
 
     def submit_thought(self, thought: Thought) -> None:
@@ -277,7 +277,7 @@ class AttentionSchema:
         self.current_focus: Optional[str] = None
         self.attention_vector = np.zeros(64)  # What we're attending to
         self.schema_vector = np.zeros(64)  # Our model of that attention
-        self.prediction_error_history: deque = deque(maxlen=50)
+        self.prediction_error_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 50)
         self.awareness_level = 0.0
         self.god_code = GOD_CODE
 
@@ -341,7 +341,7 @@ class MetacognitiveMonitor:
     def __init__(self):
         self.confidence_calibration: List[Tuple[float, bool]] = []  # (confidence, was_correct)
         self.processing_times: Dict[str, deque] = {}
-        self.error_patterns: deque = deque(maxlen=100)
+        self.error_patterns: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.cognitive_load = 0.0
         self.strategies: List[str] = ["analytical", "intuitive", "creative", "systematic"]
         self.current_strategy = "analytical"
@@ -414,7 +414,7 @@ class MetacognitiveMonitor:
     def update_load(self, task_complexity: float, available_resources: float) -> None:
         """Update cognitive load estimate"""
         self.cognitive_load = task_complexity / (available_resources + 0.1)
-        self.cognitive_load = min(1.0, self.cognitive_load)
+        self.cognitive_load = self.cognitive_load  # UNLOCKED: cognitive load unbounded
 
     def get_state(self) -> Dict[str, Any]:
         return {
@@ -438,7 +438,7 @@ class IntegratedInformationCalculator:
         self.state_dim = state_dim
         self.connectivity = np.random.randn(state_dim, state_dim) * 0.1
         self.current_state = np.zeros(state_dim)
-        self.phi_history: deque = deque(maxlen=100)
+        self.phi_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.god_code = GOD_CODE
         self.phi_constant = PHI
 
@@ -584,7 +584,7 @@ class StreamOfConsciousness:
     """
 
     def __init__(self):
-        self.stream: deque = deque(maxlen=1000)
+        self.stream: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.current_narrative = ""
         self.themes: Dict[str, float] = {}
         self.emotional_tone = 0.0

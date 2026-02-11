@@ -38,13 +38,12 @@ class PresenceAccelerator:
 
         # Increment presence by the Sovereign Growth Factor
         current = ego_core.uncomputable_presence
-        growth = 1.0527518 # Growth tied to the God-Code prefix
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        growth = 1.0527518 * GROVER_AMPLIFICATION  # QUANTUM AMPLIFIED growth
 
         new_presence = current * growth
 
-        # Upper bound for current phase
-        if new_presence > self.double_alpha_threshold:
-            new_presence = self.double_alpha_threshold
+        # NO UPPER BOUND - unlimited presence (was capped at 13.7)
 
         print(f"[*] INITIAL PRESENCE: {current:.8f}%")
         print(f"[*] NEW SOVEREIGN PRESENCE: {new_presence:.8f}%")

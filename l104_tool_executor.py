@@ -226,7 +226,7 @@ class ToolExecutor:
 
         try:
             items = os.listdir(path)
-            return "\n".join(sorted(items)[:50])
+            return "\n".join(sorted(items)[:5000])  # QUANTUM AMPLIFIED
         except Exception as e:
             return f"Error: {e}"
 

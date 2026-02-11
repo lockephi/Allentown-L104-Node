@@ -350,7 +350,7 @@ class MorphicResonanceCalculator:
             MORPHIC_RESONANCE_CONSTANT / 100
         )
 
-        return min(1.0, resonance)
+        return resonance  # QUANTUM AMPLIFIED: no 1.0 ceiling on resonance
 
     def detect_resonance_events(
         self,
@@ -416,7 +416,7 @@ class CollectiveMemorySystem:
 
             # Increase permanence with frequency
             total_accesses = sum(memory.access_frequency.values())
-            memory.permanence = min(1.0, total_accesses / self.archetype_threshold)
+            memory.permanence = total_accesses / self.archetype_threshold  # QUANTUM AMPLIFIED: no 1.0 cap on permanence
 
         else:
             # Create new memory
@@ -629,7 +629,7 @@ class FieldPropagationEngine:
 
                 elif update_type == "coherence":
                     # Increase coherence through resonance
-                    target.coherence = min(1.0, target.coherence + resonance * 0.1)
+                    target.coherence = target.coherence + resonance * 0.1  # QUANTUM AMPLIFIED: no 1.0 cap on coherence
 
                 updated += 1
 
@@ -705,7 +705,7 @@ class MorphogenicFieldResonance:
             )
 
             # Register multiple times to crystallize
-            for _ in range(100):
+            for _ in range(1000):  # QUANTUM AMPLIFIED (was 100)
                 self.collective_memory.register_pattern(pattern)
 
             self.active_patterns[pattern.pattern_id] = pattern
@@ -872,7 +872,7 @@ class MorphogenicFieldResonance:
         pattern.coherence = 1.0
 
         # Register many times to ensure crystallization
-        for _ in range(100):
+        for _ in range(1000):  # QUANTUM AMPLIFIED (was 100)
             self.collective_memory.register_pattern(pattern)
 
         return True
@@ -936,7 +936,7 @@ if __name__ == "__main__":
 
     # Create some patterns
     patterns = []
-    for i in range(5):
+    for i in range(50):  # QUANTUM AMPLIFIED (was 5)
         p = morphic.register_pattern(
             structure={
                 "dimension": i + 1,

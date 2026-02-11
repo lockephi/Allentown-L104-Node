@@ -191,7 +191,7 @@ class L104SageDiffusion:
     def activate_sage_mode(self, wisdom_level: float = 0.8) -> Dict[str, Any]:
         """Activate Sage Mode for enhanced generation."""
         self.sage_active = True
-        self.resonance_level = min(1.0, max(0.0, wisdom_level))
+        self.resonance_level = max(0.0, wisdom_level)  # UNLOCKED
 
         logger.info(f"[SAGE DIFFUSION] SAGE MODE ACTIVATED")
         logger.info(f"[SAGE DIFFUSION] Resonance Level: {self.resonance_level}")

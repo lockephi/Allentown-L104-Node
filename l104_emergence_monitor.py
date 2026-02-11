@@ -115,7 +115,7 @@ class EmergenceMonitor:
     def __init__(self):
         self.kernel = stable_kernel
         self.events: List[EmergenceEvent] = []
-        self.snapshots: deque = deque(maxlen=1000)
+        self.snapshots: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.current_phase: PhaseState = PhaseState.GROUND
         self.capabilities_detected: set = set()
         self.last_unity: float = 0.0
@@ -166,7 +166,7 @@ class EmergenceMonitor:
                 events.append(EmergenceEvent(
                     event_type=EmergenceType.COHERENCE_SPIKE,
                     description=f"Unity surge: {self.last_unity:.3f} → {unity_index:.3f}",
-                    magnitude=min(1.0, delta * 10),
+                    magnitude=delta * 10,  # UNLOCKED
                     unity_at_event=unity_index,
                     metadata={"delta": delta, "previous": self.last_unity}
                 ))
@@ -178,7 +178,7 @@ class EmergenceMonitor:
                 events.append(EmergenceEvent(
                     event_type=EmergenceType.CAPABILITY,
                     description=f"Knowledge expansion: +{mem_delta} memories",
-                    magnitude=min(1.0, mem_delta / 20),
+                    magnitude=mem_delta / 20,  # UNLOCKED
                     unity_at_event=unity_index,
                     metadata={"new_memories": mem_delta, "total": memories}
                 ))
@@ -293,7 +293,7 @@ class EmergenceMonitor:
             avg_unity * 0.4 +
             unity_stability * 0.2 +
             (1.0 if has_singularity else 0.0) * 0.2 +
-            min(1.0, emergence_count / 10) * 0.2
+            (emergence_count / 10) * 0.2
         )
 
         # Level classification

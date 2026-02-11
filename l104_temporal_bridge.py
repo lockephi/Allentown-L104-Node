@@ -205,7 +205,7 @@ class TemporalBridge:
         if source == TemporalDimension.VOID or target == TemporalDimension.VOID:
             resonance *= VOID_CONSTANT  # Void dampens
 
-        return min(1.0, resonance)
+        return resonance  # UNLOCKED: temporal resonance unbounded
 
     def register_endpoint(self, endpoint_id: str, dimension: TemporalDimension,
                           handler: Optional[Callable] = None) -> BridgeEndpoint:

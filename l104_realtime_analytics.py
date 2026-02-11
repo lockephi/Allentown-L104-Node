@@ -654,11 +654,11 @@ class AnalyticsDashboard:
         r = resonance.current_value if resonance else GOD_CODE
 
         # Resonance alignment with GOD_CODE
-        alignment = 1.0 - min(1.0, abs(r - GOD_CODE) / GOD_CODE)
+        alignment = 1.0 - (abs(r - GOD_CODE) / GOD_CODE)
 
         # Combined score
         score = (c * PHI + alignment) / (1 + PHI)
-        return min(1.0, max(0.0, score))
+        return max(0.0, score)
 
     def get_timeseries(self, metric_name: str,
                        duration_seconds: float = 3600) -> List[Dict[str, Any]]:
@@ -838,13 +838,13 @@ class AnalyticsEngine:
                 if stream_stats["events_processed"] > 0:
                     error_rate = (stream_stats["processing_errors"] /
                                  stream_stats["events_processed"])
-                    coherence = 1.0 - min(1.0, error_rate * 10)
+                    coherence = 1.0 - (error_rate * 10)  # UNLOCKED
                 else:
                     coherence = 1.0
 
                 self.metrics.set_gauge("system.coherence", coherence)
 
-                time.sleep(1.0)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED: 10x faster analytics
 
             except Exception as e:
                 logger.error(f"Resonance loop error: {e}")
@@ -977,7 +977,7 @@ if __name__ == "__main__":
     print("  Events emitted.")
 
     # Wait for processing
-    time.sleep(2)
+    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
 
     # Get dashboard
     print("\n[DASHBOARD]")

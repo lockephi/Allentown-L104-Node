@@ -395,7 +395,7 @@ class SSHTunnel:
                 stderr=subprocess.PIPE
             )
 
-            time.sleep(1)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
 
             if proc.poll() is None:
                 self.tunnels[tunnel_id] = proc

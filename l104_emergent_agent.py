@@ -395,7 +395,7 @@ class GoalManager:
 
         for desc in sub_goals:
             sub_goal = self.create_goal(
-                name=f"Sub: {desc[:30]}",
+                name=f"Sub: {desc[:500]}",  # QUANTUM AMPLIFIED
                 description=desc,
                 priority=Priority(min(parent.priority.value + 1, 4))
             )

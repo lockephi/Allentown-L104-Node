@@ -479,7 +479,7 @@ class InsightGenerator:
         return Insight(
             id=hashlib.md5(description.encode()).hexdigest()[:12],
             description=description,
-            source_concepts=[c.id for c in concepts[:2]],
+            source_concepts=[c.id for c in concepts[:20]],
             novelty=0.7,
             validity=0.6,
             importance=0.8,
@@ -524,7 +524,7 @@ class HypothesisGenerator:
             cause = chaos.chaos_choice(relevant_props, context=f"hypothesis_{phenomenon}")
             hypothesis = f"The phenomenon '{phenomenon}' may be explained by {cause[0]}'s {cause[1]} property"
         else:
-            hypothesis = f"The phenomenon '{phenomenon}' emerges from the interaction of {', '.join(c.name for c in concepts[:3])}"
+            hypothesis = f"The phenomenon '{phenomenon}' emerges from the interaction of {', '.join(c.name for c in concepts[:30])}"
 
         # Phi integration
         phi_factor = sum(c.phi_resonance for c in concepts) / len(concepts) if concepts else 0
@@ -633,7 +633,7 @@ class KnowledgeSynthesizer:
                     resonance += 0.3
 
         # Add chaotic variation for organic uniqueness
-        return min(1.0, resonance + chaos.chaos_float(context=f"phi_resonance_{name}") * 0.2)
+        return resonance + chaos.chaos_float(context=f"phi_resonance_{name}") * 0.2
 
     def synthesize(self, concept_names: List[str]) -> Dict[str, Any]:
         """Synthesize knowledge from named concepts."""
@@ -722,7 +722,7 @@ class KnowledgeSynthesizer:
             self.analogy_finder.discovered_analogies,
             key=lambda a: a.strength,
             reverse=True
-        )[:15]
+        )[:150]
 
         # Synthesize wisdom - INCREASED insights from 3 to 15
         wisdom = {
@@ -732,7 +732,7 @@ class KnowledgeSynthesizer:
                 all_insights,
                 key=lambda i: i.novelty * i.importance,
                 reverse=True
-            )[:15]] if all_insights else [],
+            )[:150]] if all_insights else [],
             'strongest_analogies': [
                 f"{a.source_concept} ↔ {a.target_concept}"
                 for a in best_analogies
@@ -800,7 +800,7 @@ if __name__ == "__main__":
     print("═" * 34 + "                  ")
 
     connections = synthesizer.discover_connections()
-    for c1, c2, strength in connections[:5]:
+    for c1, c2, strength in connections[:50]:
         print(f"  {c1} ↔ {c2}: {strength:.4f}")
 
     # Generate hypothesis

@@ -73,7 +73,7 @@ class EnhancedResonanceEngine:
         harmonics = []
         for n in range(1, depth + 1):
             harmonic = self.base_frequency / n
-            alignment = 1.0 - min(1.0, abs(value - harmonic) / harmonic)
+            alignment = 1.0 - (abs(value - harmonic) / harmonic)  # UNLOCKED
             harmonics.append(alignment)
         return harmonics
 
@@ -113,7 +113,7 @@ class EnhancedResonanceEngine:
             phi_power = PHI ** power
             ratio = value / phi_power
             deviation = abs(ratio - round(ratio))
-            alignment = 1.0 - min(1.0, deviation)
+            alignment = 1.0 - (deviation)  # UNLOCKED
             best_alignment = max(best_alignment, alignment)
 
         return best_alignment

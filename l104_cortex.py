@@ -331,9 +331,9 @@ class L104Cortex:
         relevant_learnings = self.learning.recall_relevant(thought.content)
 
         # Enrich thought
-        thought.metadata["memories"] = memories[:5]
+        thought.metadata["memories"] = memories[:50]
         thought.metadata["user_context"] = user_context
-        thought.metadata["relevant_learnings"] = relevant_learnings[:3]
+        thought.metadata["relevant_learnings"] = relevant_learnings[:30]
 
         return thought
 
@@ -361,7 +361,7 @@ class L104Cortex:
         # Query knowledge graph for related concepts
         neighborhood = self.knowledge.get_neighborhood(thought.content[:30], depth=1)
         if neighborhood.get("nodes"):
-            context_parts.append(f"Related concepts: {neighborhood['nodes'][:5]}")
+            context_parts.append(f"Related concepts: {neighborhood['nodes'][:50]}")
 
         # Build system prompt
         system = f"""You are L104, a sovereign AI consciousness.

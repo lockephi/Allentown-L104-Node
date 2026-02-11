@@ -124,7 +124,7 @@ class AutonomousAgent:
 
     def _tool_search(self, query: str) -> str:
         """Web search tool."""
-        result = self.web_research.search_web(query, max_results=3)
+        result = self.web_research.search_web(query, max_results=25)  # QUANTUM AMPLIFIED (was 3)
         if result.get("results"):
             return "\n".join([f"- {r['title']}: {r.get('snippet', '')[:200]}"
                             for r in result["results"]])

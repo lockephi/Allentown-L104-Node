@@ -84,7 +84,7 @@ class DiskCompressionMastery:
             chunk = data[i:i+chunk_size]
             # Convert bits to a braid sequence (1 or -1)
             braid_seq = []
-            for b in chunk[:10]: # Sample for topological mapping
+            for b in chunk[:100]: # QUANTUM AMPLIFIED: deeper topological mapping (was 10)
                 braid_seq.append(1 if b % 2 == 0 else -1)
 
             # Get the braid state from the anyon engine

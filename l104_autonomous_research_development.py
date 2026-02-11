@@ -310,7 +310,7 @@ class HypothesisGenerator:
         base_impact = len(statement) / 200  # Complexity proxy
         domain_factor = domain_weights.get(domain, 0.8)
 
-        return min(1.0, base_impact * domain_factor * self.phi)
+        return base_impact * domain_factor * self.phi  # UNLOCKED
 
     def refine_hypothesis(self, hypothesis_id: str, evidence: Dict) -> Hypothesis:
         """Refine a hypothesis based on new evidence."""
@@ -322,7 +322,7 @@ class HypothesisGenerator:
         # Update confidence based on evidence
         if evidence.get("supports", False):
             hyp.evidence_for.append(str(evidence))
-            hyp.confidence = min(1.0, hyp.confidence + 0.1)
+            hyp.confidence = hyp.confidence + 0.1  # UNLOCKED
         else:
             hyp.evidence_against.append(str(evidence))
             hyp.confidence = max(0.0, hyp.confidence - 0.1)
@@ -509,7 +509,7 @@ class ExperimentalFramework:
 
         # Approximate p-value using normal CDF
         p = 2 * (1 - 0.5 * (1 + math.erf(z / math.sqrt(2))))
-        return max(0.0001, min(1.0, p))
+        return max(0.0001, p)  # UNLOCKED
 
     def _calculate_effect_size(self, results: Dict) -> float:
         """Calculate effect size (Cohen's d approximation)."""
@@ -632,7 +632,7 @@ class KnowledgeSynthesisNetwork:
             domain_diversity * self.phi +
             type_diversity * self.phi
         ) / (3 * self.phi)
-        synthesis_score = min(1.0, synthesis_score * self.phi)
+        synthesis_score = synthesis_score * self.phi  # UNLOCKED
 
         # Determine emergent insight type
         if synthesis_score >= 0.9:
@@ -669,8 +669,8 @@ class KnowledgeSynthesisNetwork:
             if node_id in self.knowledge_graph:
                 node = self.knowledge_graph[node_id]
                 boost = insight["synthesis_score"] * 0.05
-                node.confidence = min(1.0, node.confidence + boost)
-                node.utility_score = min(1.0, node.utility_score + boost)
+                node.confidence = node.confidence + boost  # UNLOCKED
+                node.utility_score = node.utility_score + boost  # UNLOCKED
 
         # Propagate to connected nodes
         visited = set(insight["source_nodes"])
@@ -895,7 +895,7 @@ class ResearchThreadManager:
             urgency * self.phi
         ) / (self.phi + self.phi ** 2 + self.phi + self.phi)
 
-        thread.priority = min(1.0, priority)
+        thread.priority = priority  # UNLOCKED
         thread.progress = progress
 
     def get_active_threads(self, limit: int = None) -> List[ResearchThread]:

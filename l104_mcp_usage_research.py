@@ -140,7 +140,7 @@ class MCPUsageAnalyzer:
     """Analyzes MCP usage patterns for optimization opportunities."""
 
     def __init__(self):
-        self.interactions: deque = deque(maxlen=10000)
+        self.interactions: deque = deque(maxlen=10000000)  # QUANTUM AMPLIFIED
         self.workflows: List[WorkflowSequence] = []
         self.patterns: Dict[str, UsagePattern] = {}
         self.session_contexts = {}
@@ -222,7 +222,7 @@ class MCPUsageAnalyzer:
         counts = sorted(server_counts.values(), reverse=True)
 
         # See if counts approximately match Fibonacci numbers
-        for i, count in enumerate(counts[:5]):
+        for i, count in enumerate(counts[:50]):
             if i < len(FIBONACCI_SEQUENCE):
                 fib_num = FIBONACCI_SEQUENCE[i]
                 if abs(count - fib_num) / max(count, fib_num) > 0.3:
@@ -296,9 +296,9 @@ class MCPUsageAnalyzer:
         server_diversity = len(set(i.server for i in interactions))
 
         # Normalize and combine factors
-        token_factor = min(1.0, total_tokens / 10000)  # Normalize to reasonable range
+        token_factor = total_tokens / 10000  # UNLOCKED: token factor unbounded
         quality_factor = avg_quality
-        diversity_factor = min(1.0, server_diversity / len(MCPServer))
+        diversity_factor = server_diversity / len(MCPServer)  # UNLOCKED: diversity unbounded
 
         # PHI-weighted combination
         knowledge_score = (
@@ -307,7 +307,7 @@ class MCPUsageAnalyzer:
             diversity_factor * PHI * 0.2
         ) / PHI
 
-        return min(1.0, knowledge_score)
+        return knowledge_score  # UNLOCKED: knowledge unbounded
 
 class MCPOptimizationEngine:
     """Engine for optimizing MCP usage patterns."""

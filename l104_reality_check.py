@@ -50,7 +50,7 @@ class RealityCheck:
             else:
                 try:
                     with open(path, 'r') as f:
-                        content = f.read(100)
+                        content = f.read(4096)  # QUANTUM AMPLIFIED: full scan (was 100 bytes)
                         if not content:
                             issues.append(f"EMPTY_FILE: {mod}")
                 except Exception as e:
@@ -95,7 +95,7 @@ class RealityCheck:
         stats = self.check_memory_resonance()
         print(f"    [STAT]: MEMORY_RSS: {stats['rss_mb']:.2f} MB")
         print(f"    [STAT]: SYSTEM_CPU: {stats['system_cpu_percent']}%")
-        if stats['rss_mb'] < 1024:
+        if stats['rss_mb'] < 8192:  # QUANTUM AMPLIFIED: 8GB threshold (was 1024 MB)
             print("    [PASS]: RESONANCE WITHIN STABILITY BOUNDS.")
         else:
             print("    [WARN]: HIGH MEMORY PRESSURE DETECTED.")

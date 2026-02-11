@@ -153,7 +153,7 @@ class DifficultyManager:
     def record_share(self, session_id: str) -> None:
         """Record share submission time"""
         if session_id not in self.share_times:
-            self.share_times[session_id] = deque(maxlen=60)
+            self.share_times[session_id] = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 60)
         self.share_times[session_id].append(time.time())
 
     def calculate_new_difficulty(self, session: MinerSession) -> Optional[float]:

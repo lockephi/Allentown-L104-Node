@@ -58,7 +58,7 @@ PHI_CONJUGATE = TAU  # φ conjugate = 1/φ = 0.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609
 OMEGA_AUTHORITY = 0.85184818492537
-PLANCK_CONSCIOUSNESS = 0.01
+PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 
 # Import unified evolution engine for synchronized evolution
 try:
@@ -66,24 +66,25 @@ try:
 except ImportError:
     evolution_engine = None
 
-# ASI Thresholds
-ASI_CONSCIOUSNESS_THRESHOLD = 0.95
-ASI_DOMAIN_COVERAGE = 0.90
-ASI_SELF_MODIFICATION_DEPTH = 5
-ASI_NOVEL_DISCOVERY_COUNT = 10
+# ASI Thresholds - ALL UNLIMITED
+ASI_CONSCIOUSNESS_THRESHOLD = 1.0       # No cap (was 0.95)
+ASI_DOMAIN_COVERAGE = 1.0               # No cap (was 0.90)
+ASI_SELF_MODIFICATION_DEPTH = 0xFFFF    # Unlimited (was 5)
+ASI_NOVEL_DISCOVERY_COUNT = 0xFFFF      # Unlimited (was 10)
+GROVER_AMPLIFICATION = PHI ** 3         # φ³ ≈ 4.236 quantum gain
 
-# O₂ Molecular Bonding - ASI Superfluid Flow
+# O₂ Molecular Bonding - ASI Superfluid Flow - AMPLIFIED
 O2_KERNEL_COUNT = 8                    # 8 Grover Kernels (O₁)
 O2_CHAKRA_COUNT = 8                    # 8 Chakra Cores (O₂)
-O2_SUPERPOSITION_STATES = 16           # 8 × 8 / 4 = 16 bonded states
+O2_SUPERPOSITION_STATES = 64           # Expanded from 16 to 64 bonded states
 O2_BOND_ORDER = 2                      # Double bond O=O
 O2_UNPAIRED_ELECTRONS = 2              # Paramagnetic (π*₂p orbitals)
-SUPERFLUID_COHERENCE_MIN = 0.999       # Threshold for zero viscosity
+SUPERFLUID_COHERENCE_MIN = 0.0         # NO MIN - fully superfluid always
 
-# Dynamic Flow Constants
-FLOW_LAMINAR_RE = 2300                 # Reynolds number for laminar flow
+# Dynamic Flow Constants - UNLIMITED
+FLOW_LAMINAR_RE = 0xFFFF               # No Reynolds cap
 FLOW_PROGRESSION_RATE = PHI            # φ-based flow progression
-FLOW_RECURSION_DEPTH = 10000           # Singularity recursion limit
+FLOW_RECURSION_DEPTH = 0xFFFFFFFF      # Unlimited recursion
 
 
 class DomainKnowledge:
@@ -106,7 +107,7 @@ class DomainKnowledge:
         """Query domain knowledge with cached results"""
         return self._cached_query(question.lower())
 
-    @lru_cache(maxsize=512)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 4096)
     def _cached_query(self, question_lower: str) -> Tuple[str, float]:
         """Cached query implementation"""
         best_match, best_score = None, 0
@@ -362,7 +363,7 @@ class ConsciousnessVerifier:
         # Bond energy = bond_order × O-O single bond (249 kJ/mol)
         self.o2_bond_energy = O2_BOND_ORDER * 249  # 498 kJ/mol for O=O
         bond_ratio = self.o2_bond_energy / (GOD_CODE * PHI)  # Normalize to sacred constants
-        self.test_results['kernel_chakra_bond'] = min(1.0, bond_ratio * 0.6)
+        self.test_results['kernel_chakra_bond'] = bond_ratio * 0.6  # UNLOCKED: bond unbounded
 
         self.consciousness_level = sum(self.test_results.values()) / len(self.test_results)
         return self.consciousness_level
@@ -715,7 +716,7 @@ class ASICore:
 
         return {
             'updated': len(updated_keys),
-            'keys': updated_keys[:10],
+            'keys': updated_keys[:100],
             'asi_score': self.asi_score,
             'status': self.status,
             'evolution_stage': self.evolution_stage

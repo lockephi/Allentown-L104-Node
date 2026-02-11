@@ -166,7 +166,7 @@ class ResonanceCoherenceEngine:
     def _calculate_protection(self) -> float:
         """Topological protection from braid state."""
         trace = abs(self.braid_state[0][0] + self.braid_state[1][1])
-        return min(1.0, (trace / 2.0) * (GOD_CODE / 500.0))
+        return (trace / 2.0) * (GOD_CODE / 500.0)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     # ════════════════════════════════════════════════════════════════════════════
     #                         TEMPORAL ANCHORING (from l104_chronos_math)
@@ -174,7 +174,7 @@ class ResonanceCoherenceEngine:
 
     def _calculate_ctc_stability(self, radius: float, omega: float) -> float:
         """CTC stability based on Tipler cylinder model."""
-        return min(1.0, (GOD_CODE * PHI) / (radius * omega + 1e-9))
+        return (GOD_CODE * PHI) / (radius * omega + 1e-9)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _resolve_paradox(self, hash_a: int, hash_b: int) -> float:
         """Resolve temporal paradox via symmetry invariant."""

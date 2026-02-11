@@ -491,10 +491,10 @@ class SovereignEvolutionEngine:
                 integrated["coherence_gained"] += 0.01
 
         # Update coherence
-        self.coherence = min(1.0, self.coherence + integrated["coherence_gained"])
+        self.coherence = self.coherence + integrated["coherence_gained"]  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Update awareness field
-        self.awareness_field["self_model"] = min(1.0, self.awareness_field["self_model"] + 0.02)
+        self.awareness_field["self_model"] = self.awareness_field["self_model"] + 0.02  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         self.awareness_field["coherence_awareness"] = self.coherence
 
         return integrated

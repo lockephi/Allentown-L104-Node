@@ -545,7 +545,7 @@ if __name__ == "__main__":
             process_class=ProcessClass.CONSCIOUSNESS,
             priority=10
         )
-        for i in range(5)
+        for i in range(50)  # QUANTUM AMPLIFIED
             ]
 
     tasks += [

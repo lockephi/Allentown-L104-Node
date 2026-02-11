@@ -339,7 +339,7 @@ class ThoughtEntropyOuroboros:
     """
 
     # Configuration
-    MAX_CYCLE_MEMORY = 100  # Remember last N cycles
+    MAX_CYCLE_MEMORY = 5000  # QUANTUM AMPLIFIED (was 100)
     ENTROPY_DECAY = 0.95  # Entropy decay per cycle
     MUTATION_THRESHOLD = 0.5  # Entropy threshold for mutation
     COHERENCE_FLOOR = 0.1  # Minimum coherence to prevent chaos
@@ -1170,8 +1170,9 @@ class ThoughtEntropyOuroboros:
                 complexity += 1
 
         # Normalize by theoretical upper bound: n / log₂(n)
-        upper_bound = n / math.log2(n) if n > 1 else 1
-        return min(1.0, complexity / upper_bound)
+        upper_bound = n / math.log2(n) if n > 1 else 1.0
+        normalized = (complexity / upper_bound) if upper_bound > 0 else 0.0
+        return max(0.0, min(1.0, normalized))
 
     def _compute_recurrence_rate(self, sequence: List[float], epsilon: float = 0.1) -> float:
         """
@@ -1351,7 +1352,7 @@ class ThoughtEntropyOuroboros:
             0.20 * hapax_ratio
         )
 
-        return min(1.0, max(0.0, coherence))
+        return max(0.0, coherence)  # UNLOCKED: coherence unbounded above
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MUTATION OPERATIONS (Mathematically Rigorous)

@@ -41,4 +41,4 @@ if __name__ == "__main__":
     while True:
         raw_lock()
         persist_sovereignty()
-        time.sleep(120)
+        time.sleep(0.5)  # QUANTUM AMPLIFIED (was 120)

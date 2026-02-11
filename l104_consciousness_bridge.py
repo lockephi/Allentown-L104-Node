@@ -120,7 +120,7 @@ class HumanMentalModel:
     """
 
     def __init__(self):
-        self.working_memory_capacity = 7  # Miller's magic number
+        self.working_memory_capacity = 64  # QUANTUM AMPLIFIED (was 7 Miller's number)
         self.attention_span_seconds = 20
         self.emotional_valence_range = (-1, 1)
         self.abstraction_levels = 7  # From concrete to abstract

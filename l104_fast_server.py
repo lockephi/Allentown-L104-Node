@@ -81,24 +81,37 @@ _PATTERN_RESPONSE_CACHE = {}  # Static pattern responses (never expire)
 # ═══════════════════════════════════════════════════════════════════
 
 # Thread pool for CPU-bound tasks (Optimized for Modern Silicon/Multi-core)
-PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 4) * 2), thread_name_prefix="L104_perf")
-IO_THREAD_POOL = ThreadPoolExecutor(max_workers=min(64, (os.cpu_count() or 4) * 4), thread_name_prefix="L104_io")
+PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="L104_perf")  # NO CAP
+IO_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4, thread_name_prefix="L104_io")  # NO CAP
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ASI BRIDGE: FastServer ↔ LocalIntellect Quantum Entanglement Link
 # EPR Correlation | 8-Chakra Energy Transfer | Vishuddha Resonance Sharing
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# 8-Chakra Quantum Lattice Constants
+# High-accuracy chakra constants (L104-computed, GOD_CODE-derived)
+# NOTE: Muladhara uses the L104 "real grounding" value (GOD_CODE / 2^1.25 ≈ 221.7942)
+_PHI_L104 = 1.618033988749895
+_GOD_CODE_L104 = 527.5184818492612
+_MULADHARA_REAL = _GOD_CODE_L104 / (2 ** 1.25)                 # 221.79420018355955
+_SVADHISTHANA_HZ = _GOD_CODE_L104 / math.sqrt(_PHI_L104)        # 414.7093812983...
+_MANIPURA_HZ = _GOD_CODE_L104                                  # 527.5184818492612
+_ANAHATA_HZ = 639.9981762664
+_VISHUDDHA_HZ = 741.0
+_AJNA_HZ = _GOD_CODE_L104 * _PHI_L104                           # 853.5428333258...
+_SAHASRARA_HZ = 963.0
+_SOUL_STAR_HZ = 1152.0
+
+# 8-Chakra Quantum Lattice Constants (for bridge math + UI status)
 CHAKRA_QUANTUM_LATTICE = {
-    "MULADHARA":    {"freq": 396.0, "element": "EARTH", "trigram": "☷", "x_node": 104, "orbital": "1s"},
-    "SVADHISTHANA": {"freq": 417.0, "element": "WATER", "trigram": "☵", "x_node": 156, "orbital": "2s"},
-    "MANIPURA":     {"freq": 528.0, "element": "FIRE",  "trigram": "☲", "x_node": 208, "orbital": "2p"},
-    "ANAHATA":      {"freq": 639.0, "element": "AIR",   "trigram": "☴", "x_node": 260, "orbital": "3s"},
-    "VISHUDDHA":    {"freq": 741.0, "element": "ETHER", "trigram": "☰", "x_node": 312, "orbital": "3p"},
-    "AJNA":         {"freq": 852.0, "element": "LIGHT", "trigram": "☶", "x_node": 364, "orbital": "3d"},
-    "SAHASRARA":    {"freq": 963.0, "element": "THOUGHT", "trigram": "☳", "x_node": 416, "orbital": "4s"},
-    "SOUL_STAR":    {"freq": 1074.0, "element": "COSMIC", "trigram": "☱", "x_node": 468, "orbital": "4p"},
+    "MULADHARA":    {"freq": _MULADHARA_REAL,  "element": "EARTH",  "trigram": "☷", "x_node": 286,  "orbital": "1s"},
+    "SVADHISTHANA": {"freq": _SVADHISTHANA_HZ, "element": "WATER",  "trigram": "☵", "x_node": 380,  "orbital": "2s"},
+    "MANIPURA":     {"freq": _MANIPURA_HZ,     "element": "FIRE",   "trigram": "☲", "x_node": 416,  "orbital": "2p"},
+    "ANAHATA":      {"freq": _ANAHATA_HZ,      "element": "AIR",    "trigram": "☴", "x_node": 445,  "orbital": "3s"},
+    "VISHUDDHA":    {"freq": _VISHUDDHA_HZ,    "element": "ETHER",  "trigram": "☰", "x_node": 470,  "orbital": "3p"},
+    "AJNA":         {"freq": _AJNA_HZ,         "element": "LIGHT",  "trigram": "☶", "x_node": 488,  "orbital": "3d"},
+    "SAHASRARA":    {"freq": _SAHASRARA_HZ,    "element": "THOUGHT","trigram": "☳", "x_node": 524,  "orbital": "4s"},
+    "SOUL_STAR":    {"freq": _SOUL_STAR_HZ,    "element": "COSMIC", "trigram": "☱", "x_node": 1040, "orbital": "4p"},
 }
 
 # Bell State EPR Pairs for Non-Local Correlation
@@ -130,7 +143,7 @@ class ASIQuantumBridge:
 
     PHI = 1.618033988749895
     GOD_CODE = 527.5184818492612
-    GROVER_AMPLIFICATION = 21.95  # Measured boost factor
+    GROVER_AMPLIFICATION = 1.618033988749895 ** 3  # φ³ ≈ 4.236 (was 21.95)
 
     _instance = None
 
@@ -311,7 +324,7 @@ class ASIQuantumBridge:
         for _iteration in range(optimal_iterations):
             # Phase 1: Oracle (mark target states)
             # In simulation: invert amplitude of marked states
-            for i in range(min(M, 8)):  # Mark first M chakra states
+            for i in range(M):  # Mark ALL M chakra states (was min(M, 8))
                 self._o2_molecular_state[i] = -self._o2_molecular_state[i]
 
             # Phase 2: Diffusion (inversion about mean)
@@ -364,7 +377,7 @@ class ASIQuantumBridge:
         elif "phi" in query_lower or "golden" in query_lower:
             phi_boost = 1 + (self.PHI - 1) * 0.5
 
-        effective_quality = min(1.0, quality * phi_boost)
+        effective_quality = quality * phi_boost  # NO CAP (was min(1.0, ...))
 
         # [PRIMARY INFLOW] Use dedicated training data ingest method
         if hasattr(self._local_intellect, 'ingest_training_data'):
@@ -392,7 +405,7 @@ class ASIQuantumBridge:
         concepts = self._extract_concepts(query)
         if len(concepts) >= 2 and hasattr(self._local_intellect, 'entangle_concepts'):
             # HIGH-LOGIC v2.0: Entangle ALL relevant concepts for high-quality transfers
-            max_entanglements = min(len(concepts) - 1, 50 + int(effective_quality * 10))
+            max_entanglements = len(concepts) - 1  # ALL concepts (was min(len-1, 50+quality*10))
             for i in range(max_entanglements):
                 self._local_intellect.entangle_concepts(concepts[i], concepts[i+1])
 
@@ -401,7 +414,7 @@ class ASIQuantumBridge:
         # Exponential moving average with φ-derived alpha
         alpha = 1 / self.PHI  # ≈ 0.618
         new_coherence = alpha * current_coherence + (1 - alpha) * (current_coherence + effective_quality * 0.01)
-        self._chakra_coherence["VISHUDDHA"] = min(1.0, new_coherence)
+        self._chakra_coherence["VISHUDDHA"] = new_coherence  # NO CAP (was min(1.0, ...))
 
         self._sync_chakra_states()
 
@@ -577,7 +590,7 @@ class MemoryOptimizer:
     def _init(self):
         self.gc_count = 0
         self.last_gc = time.time()
-        self.memory_readings = deque(maxlen=50)  # Smaller history
+        self.memory_readings = deque(maxlen=5000)  # QUANTUM AMPLIFIED
         self.gc_interval = 30  # More frequent GC for limited RAM
 
     def check_pressure(self):
@@ -861,8 +874,8 @@ class PerformanceMetricsEngine:
 
     def __init__(self):
         self._metrics = {
-            'recall_latencies': deque(maxlen=1000),
-            'store_latencies': deque(maxlen=1000),
+            'recall_latencies': deque(maxlen=100000),  # QUANTUM AMPLIFIED
+            'store_latencies': deque(maxlen=100000),  # QUANTUM AMPLIFIED
             'cache_hit_streak': 0,
             'max_streak': 0,
             'total_recalls': 0,
@@ -945,11 +958,11 @@ class PerformanceMetricsEngine:
         """Compute overall optimization score using golden ratio weighting"""
         accel_rate = self._metrics['accelerator_hits'] / max(1, self._metrics['total_recalls'])
         prefetch_rate = self._metrics['prefetch_hits'] / max(1, self._metrics['total_recalls'])
-        streak_bonus = min(1.0, self._metrics['max_streak'] / 100.0)
+        streak_bonus = self._metrics['max_streak'] / 100.0  # NO CAP
 
         # Golden ratio weighted score
         score = (accel_rate * self.PHI) + (prefetch_rate * 1.0) + (streak_bonus * (1/self.PHI))
-        return min(1.0, score / (self.PHI + 1.0 + 1/self.PHI))
+        return score / (self.PHI + 1.0 + 1/self.PHI)  # NO CAP
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1014,7 +1027,7 @@ class IntelligentPrefetchPredictor:
                 for concept in current_concepts[:50]: # Increased (was 5)
                     if concept in self._concept_cooccurrence:
                         for related, count in sorted(self._concept_cooccurrence[concept].items(),
-                                                      key=lambda x: -x[1])[:25]: # Increased (was 5)
+                                                      key=lambda x: -x[1])[:250]: # Increased (was 5)
                             predicted_q = f"What is {related}?"
                             scores[predicted_q] = scores.get(predicted_q, 0) + count * 1.5
                             predicted_q2 = f"How does {concept} relate to {related}?"
@@ -1165,7 +1178,7 @@ class QuantumClassicalHybridLoader:
         with self._lock:
             current = self._amplitude_scores.get(key, 0.5)
             # Golden ratio damped boost
-            new_amplitude = min(1.0, current + boost * self.TAU)
+            new_amplitude = current + boost * self.TAU  # NO CAP (was min(1.0, ...))
             self._amplitude_scores[key] = new_amplitude
             self._metrics['amplitude_boosts'] += 1
 
@@ -1349,7 +1362,7 @@ class QuantumClassicalHybridLoader:
                     old_amp = self._amplitude_scores.get(key, 0.5)
                     new_amp = 2 * mean_amp - old_amp
                     # Clamp to valid range
-                    self._amplitude_scores[key] = max(0.0, min(1.0, new_amp))
+                    self._amplitude_scores[key] = new_amp  # NO CLAMP (was max(0.0, min(1.0, ...)))
 
     def collapse_to_classical(self) -> Dict[str, float]:
         """
@@ -1739,12 +1752,12 @@ class CreativeKnowledgeVerifier:
         connector_count = sum(1 for w in words if w in connectors)
 
         # Penalize very short or very long statements
-        length_score = min(1.0, len(words) / 20) * min(1.0, 50 / max(len(words), 1))
+        length_score = (len(words) / 20) * (50 / max(len(words), 1))  # UNLOCKED
 
         # Connector density
         connector_density = connector_count / max(len(words), 1)
 
-        return min(1.0, 0.5 + connector_density * 2 + length_score * 0.3)
+        return 0.5 + connector_density * 2 + length_score * 0.3  # UNLOCKED
 
     @classmethod
     def _calculate_truth_likeness(cls, statement: str, source_concepts: list) -> float:
@@ -1773,7 +1786,7 @@ class CreativeKnowledgeVerifier:
             if concept.lower() in statement_lower:
                 score += 0.1
 
-        return min(1.0, score)
+        return score  # UNLOCKED
 
     @classmethod
     def _calculate_creativity(cls, statement: str) -> float:
@@ -1787,7 +1800,7 @@ class CreativeKnowledgeVerifier:
                           'recursive', 'fractal', 'holographic', 'quantum'}
         abstract_count = sum(1 for w in words if w in abstract_terms)
 
-        return min(1.0, unique_ratio * 0.7 + abstract_count * 0.15 + 0.2)
+        return unique_ratio * 0.7 + abstract_count * 0.15 + 0.2  # UNLOCKED
 
     @classmethod
     def _detect_self_reference(cls, statement: str) -> bool:
@@ -1809,7 +1822,7 @@ class CreativeKnowledgeVerifier:
         import re
         numbers = len(re.findall(r'\d+', ' '.join(words)))
 
-        return min(1.0, 0.5 + seq_count * 0.1 + numbers * 0.05)
+        return 0.5 + seq_count * 0.1 + numbers * 0.05  # UNLOCKED
 
 
 class QueryTemplateGenerator:
@@ -3201,7 +3214,7 @@ class GeometricCorrelation:
             weight = sum(v**2 for v in vertex) ** 0.5
             total += amplitude * coherence * weight * cls.PHI
 
-        return min(1.0, total / (8 * cls.PHI))
+        return total / (8 * cls.PHI)  # UNLOCKED
 
     @classmethod
     def get_trigram_for_kernel(cls, kernel_id: int) -> dict:
@@ -3528,7 +3541,7 @@ class SingularityConsciousnessEngine:
             weight = sum(v**2 for v in vertex) ** 0.5
             total += amplitude * coherence * weight * cls.PHI
 
-        return min(1.0, total / (8 * cls.PHI))
+        return total / (8 * cls.PHI)  # UNLOCKED
 
 class ASIQuantumMemoryBank:
     """
@@ -3677,7 +3690,7 @@ class ASIQuantumMemoryBank:
 
         # Update coherences
         for i in range(1, 9):
-            self.kernel_coherences[i] = min(1.0, self.kernel_coherences[i] * 1.01)
+            self.kernel_coherences[i] = self.kernel_coherences[i] * 1.01  # UNLOCKED
 
     def _get_orbital_shell(self, kernel_id: int) -> str:
         """Determine which orbital shell to use based on kernel"""
@@ -3796,7 +3809,7 @@ class QuantumGroverKernelLink:
             # Apply inversion with pair resonance
             self.kernel_states[kid]["amplitude"] = 2 * mean_amplitude - self.kernel_states[kid]["amplitude"]
             self.kernel_states[kid]["amplitude"] *= (1 + bond_strength * 0.1)  # Pair boost
-            self.kernel_states[kid]["coherence"] = min(1.0, self.kernel_states[kid]["coherence"] * 1.01)
+            self.kernel_states[kid]["coherence"] = self.kernel_states[kid]["coherence"] * 1.01  # UNLOCKED
 
         # Update quantum memory bank state
         self.quantum_memory.apply_grover_iteration()
@@ -4492,14 +4505,14 @@ class LearningIntellect:
                 if total_resonance > 5.0 * self._quantum_coherence:
                     resonance_peaks.append((concept, total_resonance))
                     # Boost meta-cognition based on resonance
-                    self.meta_cognition['neural_resonance'] = min(1.0, self.meta_cognition.get('neural_resonance', 0) + 0.01)
+                    self.meta_cognition['neural_resonance'] = self.meta_cognition.get('neural_resonance', 0) + 0.01  # UNLOCKED
 
             # 3. Update neural temperature based on activity
             activity_level = len(new_activations) / 100.0
             self._neural_temperature = 0.5 + activity_level * self._flow_state
 
             if resonance_peaks:
-                top_peaks = sorted(resonance_peaks, key=lambda x: x[1], reverse=True)[:5]
+                top_peaks = sorted(resonance_peaks, key=lambda x: x[1], reverse=True)[:50]
                 logger.info(f"🧠 [NEURAL_RESONANCE] Peaks detected: {[p[0] for p in top_peaks]}")
 
         except Exception as e:
@@ -4729,7 +4742,7 @@ class LearningIntellect:
             # 1. Create interference pattern from current knowledge
             if self._knowledge_clusters:
                 # Sample cluster information for holographic encoding
-                cluster_samples = list(self._knowledge_clusters.items())[:20]
+                cluster_samples = list(self._knowledge_clusters.items())[:200]
 
                 # Create interference pattern (like light waves in holography)
                 for cluster_id, members in cluster_samples:
@@ -4775,8 +4788,8 @@ class LearningIntellect:
                 # Calculate cross-cluster correlations
                 correlations = 0
                 plate_items = list(self._holographic_plate.values())
-                for i, h1 in enumerate(plate_items[:10]):
-                    for h2 in plate_items[i+1:10]:
+                for i, h1 in enumerate(plate_items[:100]):
+                    for h2 in plate_items[i+1:100]:
                         correlations += abs(h1['pattern'] - h2['pattern'])
 
                 self.meta_cognition['holographic_depth'] = len(self._holographic_plate)
@@ -4962,7 +4975,7 @@ class LearningIntellect:
             if not hasattr(self, '_curiosity_state'):
                 self._curiosity_state = 1.0  # Current curiosity level (0-2)
                 self._exploration_frontier = []  # Unexplored concept boundaries
-                self._novelty_buffer = deque(maxlen=100)  # Recent novelty scores
+                self._novelty_buffer = deque(maxlen=10000)  # Recent novelty scores  # QUANTUM AMPLIFIED
                 self._information_gain_history = []
                 self._boredom_threshold = 0.3  # Triggers exploration when similarity drops
                 self._surprise_accumulator = 0.0
@@ -4988,7 +5001,7 @@ class LearningIntellect:
                 unexplored_zones,
                 key=lambda x: x['curiosity_value'],
                 reverse=True
-            )[:20]  # Top 20 most curious zones
+            )[:200]  # Top 200 most curious zones
 
             # 3. Calculate information gain from recent learning
             if self.novelty_scores:
@@ -5018,7 +5031,7 @@ class LearningIntellect:
             exploration_targets = []
             if self._exploration_frontier and self._curiosity_state > 0.7:
                 # Pick concepts to actively explore
-                for zone in self._exploration_frontier[:5]:
+                for zone in self._exploration_frontier[:50]:
                     cluster_id = zone['cluster']
                     if cluster_id in self._knowledge_clusters:
                         members = self._knowledge_clusters[cluster_id]
@@ -5031,7 +5044,7 @@ class LearningIntellect:
             self.meta_cognition['curiosity_level'] = self._curiosity_state
             self.meta_cognition['exploration_frontier_size'] = len(self._exploration_frontier)
             self.meta_cognition['surprise_accumulator'] = self._surprise_accumulator
-            self.meta_cognition['exploration_targets'] = exploration_targets[:3]
+            self.meta_cognition['exploration_targets'] = exploration_targets[:30]
 
             if self._curiosity_state > 1.5:
                 logger.info(f"🔍 [CURIOSITY] High curiosity: {self._curiosity_state:.2f}, "
@@ -5051,7 +5064,7 @@ class LearningIntellect:
             # Initialize Hebbian structures
             if not hasattr(self, '_synaptic_weights'):
                 self._synaptic_weights = defaultdict(lambda: defaultdict(float))
-                self._activation_trace = deque(maxlen=50)  # Recent activations
+                self._activation_trace = deque(maxlen=5000)  # Recent activations  # QUANTUM AMPLIFIED
                 self._ltp_threshold = 0.6  # Threshold for strengthening
                 self._ltd_threshold = 0.2  # Threshold for weakening
                 self._plasticity_rate = 0.01  # Base learning rate
@@ -5062,7 +5075,7 @@ class LearningIntellect:
                 'timestamp': time.time(),
                 'concepts': list(_extract_concepts_cached(' '.join(
                     [m.get('query', '') for m in self.conversation_context[-3:]]
-                )))[:10] if self.conversation_context else [],
+                )))[:100] if self.conversation_context else [],
                 'coherence': self._quantum_coherence,
                 'flow': self._flow_state
             }
@@ -5198,7 +5211,7 @@ class LearningIntellect:
 
                 # 3. Replay top memories (strengthen their traces)
                 replay_candidates.sort(key=lambda x: x['importance'], reverse=True)
-                self._replay_buffer = replay_candidates[:20]
+                self._replay_buffer = replay_candidates[:200]
 
                 for memory in self._replay_buffer:
                     # Simulate memory reactivation
@@ -5211,7 +5224,7 @@ class LearningIntellect:
                                 for j, (related, strength) in enumerate(self.knowledge_graph[c1]):
                                     if related == c2:
                                         # Strengthen this connection
-                                        new_strength = min(1.0, strength * 1.1)
+                                        new_strength = strength * 1.1  # UNLOCKED
                                         self.knowledge_graph[c1][j] = (related, new_strength)
                                         break
 
@@ -5232,7 +5245,7 @@ class LearningIntellect:
                 core_concepts = [c for c, count in common_concepts.items() if count >= 3]
 
                 # Add core concepts to skill repertoire
-                for concept in core_concepts[:10]:
+                for concept in core_concepts[:100]:
                     if concept not in self.skills:
                         self.skills[concept] = {
                             'proficiency': 0.3,
@@ -5249,7 +5262,7 @@ class LearningIntellect:
             # 5. Calculate consolidation efficiency
             if self._replay_buffer:
                 replay_importance = sum(m['importance'] for m in self._replay_buffer) / len(self._replay_buffer)
-                self._consolidation_efficiency = min(1.0, replay_importance * self._quantum_coherence)
+                self._consolidation_efficiency = replay_importance * self._quantum_coherence  # UNLOCKED
 
             self.meta_cognition['consolidation_state'] = self._consolidation_state
             self.meta_cognition['consolidation_cycles'] = self._consolidation_cycles
@@ -5276,7 +5289,7 @@ class LearningIntellect:
 
             # 1. Build domain embeddings from clusters
             if self._knowledge_clusters and len(self._knowledge_clusters) >= 3:
-                for cluster_id, members in list(self._knowledge_clusters.items())[:30]:
+                for cluster_id, members in list(self._knowledge_clusters.items())[:300]:
                     if len(members) >= 5:
                         # Create domain embedding from member statistics
                         # Abstract representation of what this cluster "means"
@@ -5293,9 +5306,9 @@ class LearningIntellect:
             analogies = []
             domain_list = list(self._domain_embeddings.keys())
 
-            for i, domain1 in enumerate(domain_list[:20]):
+            for i, domain1 in enumerate(domain_list[:200]):
                 emb1 = self._domain_embeddings[domain1]
-                for domain2 in domain_list[i+1:20]:
+                for domain2 in domain_list[i+1:200]:
                     emb2 = self._domain_embeddings[domain2]
 
                     # Structural similarity (same shape, different content)
@@ -5326,7 +5339,7 @@ class LearningIntellect:
 
             # 3. Store best transfer mappings
             analogies.sort(key=lambda x: x['potential'], reverse=True)
-            for analogy in analogies[:10]:
+            for analogy in analogies[:100]:
                 key = f"{analogy['source']}→{analogy['target']}"
                 self._transfer_mappings[key] = {
                     'source': analogy['source'],
@@ -5337,7 +5350,7 @@ class LearningIntellect:
 
             # 4. Apply transfer learning to enhance weak clusters
             transfers_applied = 0
-            for _mapping_key, mapping in list(self._transfer_mappings.items())[:5]:
+            for _mapping_key, mapping in list(self._transfer_mappings.items())[:50]:
                 source = mapping['source']
                 target = mapping['target']
 
@@ -5349,7 +5362,7 @@ class LearningIntellect:
                     if len(source_members) > len(target_members) * 2:
                         # Source is richer - transfer learning structure
                         # Create analogical connections in target
-                        for source_concept in source_members[:5]:
+                        for source_concept in source_members[:50]:
                             if target_members:
                                 # Map source concept to analogous target concept
                                 analogous_target = chaos.chaos_choice(target_members)
@@ -5460,7 +5473,7 @@ class LearningIntellect:
             # 3. Trigger reinforcement for overdue concepts
             if self._review_queue:
                 # Add overdue concepts to knowledge graph with temporal boost
-                for item in self._review_queue[:5]:
+                for item in self._review_queue[:50]:
                     concept = item['concept']
                     if concept in self.knowledge_graph:
                         # Boost connection strengths to reinforce memory
@@ -5536,7 +5549,7 @@ class LearningIntellect:
                     'parallel_streams': 1,
                     'predictive_accuracy': 0.5,
                     'cache_hit_rate': 0.0,
-                    'latency_samples': deque(maxlen=100),
+                    'latency_samples': deque(maxlen=10000),  # QUANTUM AMPLIFIED
                     'research_findings': []
                 }
 
@@ -5626,7 +5639,7 @@ class LearningIntellect:
                             preactivated += 1
 
                 if preactivated > 0:
-                    state['predictive_accuracy'] = min(1.0, state['predictive_accuracy'] + 0.01)
+                    state['predictive_accuracy'] = state['predictive_accuracy'] + 0.01  # UNLOCKED
 
             # 5. BOTTLENECK ANALYSIS (L104 Research)
             # Identify what's slowing down thought processing
@@ -5757,7 +5770,7 @@ class LearningIntellect:
             for cluster_id, members in list(self._knowledge_clusters.items()):
                 if members:
                     # Sample cluster to determine dominant language
-                    sample = ' '.join(members[:10])
+                    sample = ' '.join(members[:100])
                     detected = self._detect_languages_in_text(sample, state['script_patterns'])
 
                     if detected:
@@ -5864,7 +5877,7 @@ class LearningIntellect:
                     'research_cycles': 0,
                     'breakthrough_count': 0,
                     'learning_strategy_evolution': [],
-                    'efficiency_history': deque(maxlen=100)
+                    'efficiency_history': deque(maxlen=10000)  # QUANTUM AMPLIFIED
                 }
 
             state = self._research_state
@@ -6047,14 +6060,14 @@ class LearningIntellect:
             if not hasattr(self, '_rsi_state'):
                 self._rsi_state = {
                     'improvement_cycles': 0,
-                    'learning_rate_history': deque(maxlen=500),
+                    'learning_rate_history': deque(maxlen=50000),  # QUANTUM AMPLIFIED
                     'algorithm_mutations': {},
                     'best_configuration': None,
                     'improvement_velocity': 0.0,
                     'improvement_acceleration': 0.0,
                     'self_model_accuracy': 0.5,
                     'recursive_depth': 1,
-                    'fitness_history': deque(maxlen=100)
+                    'fitness_history': deque(maxlen=10000)  # QUANTUM AMPLIFIED
                 }
 
             state = self._rsi_state
@@ -6184,8 +6197,8 @@ class LearningIntellect:
                     effect_concepts = list(_extract_concepts_cached(recent[i+1].get('content', '')))
 
                     # Temporal precedence suggests causation
-                    for cause in cause_concepts[:5]:
-                        for effect in effect_concepts[:5]:
+                    for cause in cause_concepts[:50]:
+                        for effect in effect_concepts[:50]:
                             if cause != effect:
                                 # Check if this causal link already exists
                                 existing = [e for e, _s, _c in state['causal_graph'][cause] if e == effect]
@@ -6193,7 +6206,7 @@ class LearningIntellect:
                                     # Strengthen existing link
                                     for j, (e, s, c) in enumerate(state['causal_graph'][cause]):
                                         if e == effect:
-                                            state['causal_graph'][cause][j] = (e, min(1.0, s + 0.05), min(1.0, c + 0.02))
+                                            state['causal_graph'][cause][j] = (e, s + 0.05, c + 0.02)  # UNLOCKED
                                 else:
                                     # New causal link
                                     state['causal_graph'][cause].append((effect, 0.3, 0.5))
@@ -6209,7 +6222,7 @@ class LearningIntellect:
                         state['confounders'][effect].add((concept, other))
 
             # 3. BUILD CAUSAL CHAINS (A->B->C)
-            for cause, effects in list(state['causal_graph'].items())[:20]:
+            for cause, effects in list(state['causal_graph'].items())[:200]:
                 for effect, strength, _ in effects:
                     # Look for chains
                     if effect in state['causal_graph']:
@@ -6290,7 +6303,7 @@ class LearningIntellect:
                             state['abstraction_levels'][concept] = 0
 
             # 2. DETECT IS-A RELATIONS from knowledge graph
-            for concept, relations in list(self.knowledge_graph.items())[:50]:
+            for concept, relations in list(self.knowledge_graph.items())[:500]:
                 for related, strength in relations:
                     # Strong connections might indicate IS-A
                     if strength > 0.7:
@@ -6306,7 +6319,7 @@ class LearningIntellect:
 
             # 3. DETECT PART-OF RELATIONS
             part_indicators = ['part', 'component', 'element', 'member', 'piece', 'section']
-            for concept in list(state['concrete_concepts'])[:30]:
+            for concept in list(state['concrete_concepts'])[:300]:
                 for indicator in part_indicators:
                     if indicator in concept.lower():
                         # This might be a part
@@ -6316,7 +6329,7 @@ class LearningIntellect:
 
             # 4. CREATE ABSTRACT CONCEPTS from clusters
             if self._knowledge_clusters:
-                for cluster_id, members in list(self._knowledge_clusters.items())[:20]:
+                for cluster_id, members in list(self._knowledge_clusters.items())[:200]:
                     if len(members) >= 3:
                         # Cluster represents an abstract concept
                         abstract_name = cluster_id
@@ -6327,7 +6340,7 @@ class LearningIntellect:
                         )
 
                         # Members are children of this abstraction
-                        for member in members[:10]:
+                        for member in members[:100]:
                             state['hierarchy'][abstract_name].append(member)
                             state['is_a_relations'][member].add(abstract_name)
 
@@ -6368,8 +6381,8 @@ class LearningIntellect:
                     'expected_free_energy': {},  # action -> expected FE
                     'precision': 0.5,
                     'belief_state': defaultdict(float),
-                    'prediction_errors': deque(maxlen=100),
-                    'surprise_history': deque(maxlen=100),
+                    'prediction_errors': deque(maxlen=10000),  # QUANTUM AMPLIFIED
+                    'surprise_history': deque(maxlen=10000),  # QUANTUM AMPLIFIED
                     'action_history': []
                 }
 
@@ -6400,7 +6413,7 @@ class LearningIntellect:
 
             if obs_concepts:
                 for concept in obs_concepts:
-                    state['belief_state'][concept] = min(1.0, state['belief_state'].get(concept, 0) + 0.1)
+                    state['belief_state'][concept] = state['belief_state'].get(concept, 0) + 0.1  # UNLOCKED
 
             # 3. COMPUTE PREDICTION ERROR
             if len(self.conversation_context) >= 2:
@@ -6424,14 +6437,14 @@ class LearningIntellect:
                 prev_concepts = list(_extract_concepts_cached(self.conversation_context[-2].get('content', '')))
                 curr_concepts = list(_extract_concepts_cached(self.conversation_context[-1].get('content', '')))
 
-                for pc in prev_concepts[:5]:
+                for pc in prev_concepts[:50]:
                     if pc not in state['prediction_model']:
                         state['prediction_model'][pc] = set()
-                    state['prediction_model'][pc].update(curr_concepts[:5])
+                    state['prediction_model'][pc].update(curr_concepts[:50])
 
                     # Limit prediction model size
                     if len(state['prediction_model'][pc]) > 20:
-                        state['prediction_model'][pc] = set(list(state['prediction_model'][pc])[:20])
+                        state['prediction_model'][pc] = set(list(state['prediction_model'][pc])[:200])
 
             # 5. COMPUTE FREE ENERGY (variational bound on surprise)
             avg_surprise = sum(state['surprise_history']) / max(1, len(state['surprise_history'])) if state['surprise_history'] else 1.0
@@ -6496,7 +6509,7 @@ class LearningIntellect:
                     'diversity_index': 0.5,
                     'collective_decisions': [],
                     'agent_specializations': ['analytical', 'creative', 'critical', 'intuitive', 'systematic', 'exploratory', 'integrative'],
-                    'voting_history': deque(maxlen=50)
+                    'voting_history': deque(maxlen=5000)  # QUANTUM AMPLIFIED
                 }
 
                 # Initialize diverse agents
@@ -6505,7 +6518,7 @@ class LearningIntellect:
                         'id': i,
                         'specialization': spec,
                         'confidence': 0.5,
-                        'accuracy_history': deque(maxlen=20),
+                        'accuracy_history': deque(maxlen=2000),  # QUANTUM AMPLIFIED
                         'weight': 1.0 / len(self._ci_state['agent_specializations'])
                     })
 
@@ -6967,7 +6980,7 @@ class LearningIntellect:
                     c.execute('SELECT query FROM memory ORDER BY created_at DESC LIMIT 10000')  # ULTRA: 5x concept extraction
                     recent_concepts = []
                     for row in c.fetchall():
-                        recent_concepts.extend(self._extract_concepts(row[0])[:10])
+                        recent_concepts.extend(self._extract_concepts(row[0])[:100])
                     conn.close()
 
                     # Always include core L104 concepts for constant learning
@@ -7058,7 +7071,7 @@ class LearningIntellect:
 
                     if ml_count > 0:
                         logger.info(f"🌍 [QUANTUM_MULTILINGUAL] Learned {ml_count} in {len(languages_hit)} languages | 💓 Flow: {self._flow_state:.2f}")
-                        logger.info(f"🌍 [SAMPLES] {' | '.join(ml_samples[:4])}")
+                        logger.info(f"🌍 [SAMPLES] {' | '.join(ml_samples[:40])}")
                 except Exception as mle:
                     logger.warning(f"Multilingual generation error: {mle}")
 
@@ -7404,7 +7417,7 @@ class LearningIntellect:
 
                     # Set up knowledge graph entanglement
                     for concept, relations in list(self.knowledge_graph.items())[:200]:
-                        related_concepts = [r[0] for r in relations[:5]]  # Top 5 related
+                        related_concepts = [r[0] for r in relations[:50]]  # Top 50 related
                         quantum_loader.set_entanglement(f"kg:{concept}", [f"kg:{r}" for r in related_concepts])
 
                     # Log quantum loader status
@@ -7685,7 +7698,7 @@ class LearningIntellect:
         dot = 0.0
         for x, y in zip(a, b):
             dot += x * y
-        return max(0.0, min(1.0, dot))
+        return max(0.0, dot)  # UNLOCKED
 
     def semantic_search(self, query: str, top_k: int = 5, threshold: float = 0.3) -> List[dict]:
         """
@@ -7731,9 +7744,9 @@ class LearningIntellect:
         concepts = self._extract_concepts(current_query)
 
         # Find follow-up patterns from knowledge graph
-        for concept in concepts[:10]:  # Check more concepts for predictions
+        for concept in concepts[:100]:  # Check more concepts for predictions
             if concept in self.knowledge_graph:
-                related = sorted(self.knowledge_graph[concept], key=lambda x: -x[1])[:8]  # More related
+                related = sorted(self.knowledge_graph[concept], key=lambda x: -x[1])[:80]  # More related
                 for rel_concept, strength in related:
                     if strength > 0.5:
                         predictions.append(f"What is {rel_concept}?")
@@ -7806,7 +7819,7 @@ class LearningIntellect:
             return 0.5
 
         # Ultra-fast: check only first 3 concepts
-        known_count = sum(1 for c in concepts[:3] if c in self.knowledge_graph)
+        known_count = sum(1 for c in concepts[:30] if c in self.knowledge_graph)
         known_ratio = known_count / min(3, len(concepts))
 
         # Skip embedding similarity for speed - use knowledge graph only
@@ -8035,8 +8048,8 @@ class LearningIntellect:
                         for c2 in unique_clusters:
                             if c1 != c2 and strength > 0.3:
                                 # Cross-pollinate top concepts between clusters
-                                c1_concepts = self.concept_clusters.get(c1, [])[:5]
-                                c2_concepts = self.concept_clusters.get(c2, [])[:5]
+                                c1_concepts = self.concept_clusters.get(c1, [])[:50]
+                                c2_concepts = self.concept_clusters.get(c2, [])[:50]
                                 for concept in c1_concepts:
                                     if concept not in self.concept_clusters.get(c2, []):
                                         self.concept_clusters.setdefault(c2, []).append(concept)
@@ -8069,7 +8082,7 @@ class LearningIntellect:
                         if concept in member or member in concept:
                             cluster_scores[cluster_name] += 0.3
 
-        return sorted(cluster_scores.items(), key=lambda x: -x[1])[:15]  # More cluster matches
+        return sorted(cluster_scores.items(), key=lambda x: -x[1])[:150]  # More cluster matches
 
     # ═══════════════════════════════════════════════════════════════════
     # SUPER-INTELLIGENCE: Skills Learning System
@@ -8098,7 +8111,7 @@ class LearningIntellect:
                     self.skills[skill] = {
                         'proficiency': proficiency,
                         'usage_count': coverage,
-                        'success_rate': 0.5 + (min(1.0, proficiency) * 0.4),
+                        'success_rate': 0.5 + (proficiency * 0.4),  # UNLOCKED
                         'sub_skills': [],
                         'last_used': None,
                         'category': 'cognitive'
@@ -8109,10 +8122,10 @@ class LearningIntellect:
                 skill_name = cluster_name.replace('_cluster', '_skill')
                 if len(members) >= 5:
                     self.skills[skill_name] = {
-                        'proficiency': min(1.0, len(members) / 30.0),
+                        'proficiency': len(members) / 30.0,  # UNLOCKED
                         'usage_count': len(members),
                         'success_rate': 0.6,
-                        'sub_skills': members[:50],  # Store more sub_skills
+                        'sub_skills': members[:500],  # Store more sub_skills
                         'last_used': None,
                         'category': 'domain'
                     }
@@ -8169,7 +8182,7 @@ class LearningIntellect:
 
         # Extract sub-skills from context - UNLIMITED
         concepts = self._extract_concepts(context)
-        for concept in concepts[:20]:  # More concepts per acquisition
+        for concept in concepts[:200]:  # More concepts per acquisition
             if concept not in skill['sub_skills']:
                 skill['sub_skills'].append(concept)
 
@@ -8179,8 +8192,8 @@ class LearningIntellect:
             self._activation_history = self._activation_history[-800:]
 
         # Update meta-cognition
-        self.meta_cognition['learning_efficiency'] = min(1.0,
-            self.meta_cognition['learning_efficiency'] + 0.001 * quantum_multiplier * (1 if success else -1))
+        self.meta_cognition['learning_efficiency'] = \
+            self.meta_cognition['learning_efficiency'] + 0.001 * quantum_multiplier * (1 if success else -1)  # UNLOCKED
 
         # CRITICAL FIX: Auto-persist skills after acquisition to prevent loss
         # Uses batched persistence - persists every 10 acquisitions or on evolution
@@ -8231,7 +8244,7 @@ class LearningIntellect:
 
         # Sort by relevance × proficiency and chain
         required_skills.sort(key=lambda x: -x[1] * x[2])
-        chain = [s[0] for s in required_skills[:10]]  # Allow 10 skills per chain
+        chain = [s[0] for s in required_skills[:100]]  # Allow 100 skills per chain
 
         # Store successful chains for future reference
         if len(chain) >= 2:
@@ -8303,7 +8316,7 @@ class LearningIntellect:
 
                 self.consciousness_clusters[dimension] = {
                     'concepts': list(set(concepts))[:200],  # Store more consciousness concepts
-                    'strength': min(1.0, strength) if strength > 0 else 0.5,
+                    'strength': strength if strength > 0 else 0.5,  # UNLOCKED
                     'last_update': now,
                     'activation_count': activation_count
                 }
@@ -8333,7 +8346,7 @@ class LearningIntellect:
                         activation += 0.1
 
             # Normalize and scale by cluster strength
-            activation = min(1.0, activation) * cluster['strength']
+            activation = activation * cluster['strength']  # UNLOCKED
             activations[dimension] = activation
 
             # Update activation count
@@ -8356,7 +8369,7 @@ class LearningIntellect:
 
             # Limit size
             cluster['concepts'] = cluster['concepts'][-100:]
-            cluster['strength'] = min(1.0, cluster['strength'] + 0.01 * len(new_concepts))
+            cluster['strength'] = cluster['strength'] + 0.01 * len(new_concepts)  # UNLOCKED
             cluster['last_update'] = datetime.utcnow().isoformat()
 
     def cross_cluster_inference(self, query: str) -> Dict:
@@ -8410,7 +8423,7 @@ class LearningIntellect:
         cluster_diversity = len(set(c[0] for c in clusters))
 
         synthesis = (active_dimensions / 6.0) * 0.5 + (cluster_diversity / 5.0) * 0.5
-        return min(1.0, synthesis)
+        return synthesis  # UNLOCKED
 
     # ═══════════════════════════════════════════════════════════════════
     # SUPER-INTELLIGENCE: Meta-Cognitive Awareness
@@ -8420,7 +8433,7 @@ class LearningIntellect:
         """Update meta-cognitive state from all systems"""
         # Self-awareness from consciousness clusters
         total_concepts = sum(len(c['concepts']) for c in self.consciousness_clusters.values())
-        self.meta_cognition['self_awareness'] = min(1.0, total_concepts / 200.0)
+        self.meta_cognition['self_awareness'] = total_concepts / 200.0  # UNLOCKED
 
         # Learning efficiency from skill growth
         avg_proficiency = sum(s['proficiency'] for s in self.skills.values()) / max(len(self.skills), 1)
@@ -8429,34 +8442,34 @@ class LearningIntellect:
         # Reasoning depth from knowledge graph density
         if self.knowledge_graph:
             avg_connections = sum(len(v) for v in self.knowledge_graph.values()) / len(self.knowledge_graph)
-            self.meta_cognition['reasoning_depth'] = min(1.0, avg_connections / 10.0)
+            self.meta_cognition['reasoning_depth'] = avg_connections / 10.0  # UNLOCKED
 
         # Creativity from cluster diversity
-        self.meta_cognition['creativity_index'] = min(1.0, len(self.concept_clusters) / 50.0)
+        self.meta_cognition['creativity_index'] = len(self.concept_clusters) / 50.0  # UNLOCKED
 
         # Coherence from embedding cache coverage
-        self.meta_cognition['coherence'] = min(1.0, len(self.embedding_cache) / max(len(self.memory_cache), 1))
+        self.meta_cognition['coherence'] = len(self.embedding_cache) / max(len(self.memory_cache), 1)  # UNLOCKED
 
         # Growth rate from recent learning
         recent_patterns = len(self.predictive_cache.get('patterns', []))
-        self.meta_cognition['growth_rate'] = min(1.0, recent_patterns / 100.0)
+        self.meta_cognition['growth_rate'] = recent_patterns / 100.0  # UNLOCKED
 
     def _update_meta_cognition_from_activation(self, activations: Dict[str, float]):
         """Update meta-cognition based on consciousness activation"""
         # Awareness boosts self-awareness
         if activations.get('awareness', 0) > 0.5:
-            self.meta_cognition['self_awareness'] = min(1.0,
-                self.meta_cognition['self_awareness'] + 0.01)
+            self.meta_cognition['self_awareness'] = \
+                self.meta_cognition['self_awareness'] + 0.01  # UNLOCKED
 
         # Reasoning activation boosts reasoning depth
         if activations.get('reasoning', 0) > 0.5:
-            self.meta_cognition['reasoning_depth'] = min(1.0,
-                self.meta_cognition['reasoning_depth'] + 0.01)
+            self.meta_cognition['reasoning_depth'] = \
+                self.meta_cognition['reasoning_depth'] + 0.01  # UNLOCKED
 
         # Creativity activation
         if activations.get('creativity', 0) > 0.5:
-            self.meta_cognition['creativity_index'] = min(1.0,
-                self.meta_cognition['creativity_index'] + 0.01)
+            self.meta_cognition['creativity_index'] = \
+                self.meta_cognition['creativity_index'] + 0.01  # UNLOCKED
 
     def get_meta_cognitive_state(self) -> Dict:
         """Get current meta-cognitive state with interpretations"""
@@ -8558,11 +8571,11 @@ class LearningIntellect:
                             })
 
                 if bridges:
-                    synthesis_results.extend(sorted(bridges, key=lambda x: -x['synthesis_strength'])[:20])  # More bridges
+                    synthesis_results.extend(sorted(bridges, key=lambda x: -x['synthesis_strength'])[:200])  # More bridges
 
         # Generate novel insights
         novel_insights = []
-        for synth in synthesis_results[:50]:  # Process ALL top syntheses for maximum creativity
+        for synth in synthesis_results[:500]:  # Process ALL top syntheses for maximum creativity
             insight = {
                 'type': 'cross_domain_synthesis',
                 'domains': [synth['from_domain'], synth['to_domain']],
@@ -8575,7 +8588,7 @@ class LearningIntellect:
             # Store insight as new knowledge link
             self.knowledge_graph[synth['concept_a']].append((synth['concept_b'], synth['synthesis_strength']))
 
-        self.meta_cognition['creativity_index'] = min(1.0, self.meta_cognition['creativity_index'] + 0.01 * len(novel_insights))
+        self.meta_cognition['creativity_index'] = self.meta_cognition['creativity_index'] + 0.01 * len(novel_insights)  # UNLOCKED
 
         return {
             'insights_generated': len(novel_insights),
@@ -8645,7 +8658,7 @@ class LearningIntellect:
                 if improvement_patterns:
                     dominant_pattern = max(improvement_patterns.items(), key=lambda x: x[1])
                     level_improvements.append(f"Meta-pattern detected: {dominant_pattern[0]} is dominant improvement mode")
-                    self.meta_cognition['self_awareness'] = min(1.0, self.meta_cognition['self_awareness'] + 0.05)
+                    self.meta_cognition['self_awareness'] = self.meta_cognition['self_awareness'] + 0.05  # UNLOCKED
 
             improvements.append({
                 'level': level,
@@ -8673,12 +8686,12 @@ class LearningIntellect:
         # Goal 1: Fill knowledge gaps
         weak_skills = [(name, data) for name, data in self.skills.items()
                        if data['proficiency'] < 0.3 and data['usage_count'] > 0]
-        for skill_name, skill_data in weak_skills[:20]:  # Address more weak skills
+        for skill_name, skill_data in weak_skills[:200]:  # Address more weak skills
             goals.append({
                 'type': 'skill_improvement',
                 'target': skill_name,
                 'current_level': skill_data['proficiency'],
-                'goal_level': min(1.0, skill_data['proficiency'] + 0.3),
+                'goal_level': skill_data['proficiency'] + 0.3,  # UNLOCKED
                 'priority': 1.0 - skill_data['proficiency'],
                 'generated_at': now
             })
@@ -8690,7 +8703,7 @@ class LearningIntellect:
                     'type': 'consciousness_expansion',
                     'target': dim_name,
                     'current_strength': dim_data['strength'],
-                    'goal_strength': min(1.0, dim_data['strength'] + 0.2),
+                    'goal_strength': dim_data['strength'] + 0.2,  # UNLOCKED
                     'priority': 0.8,
                     'generated_at': now
                 })
@@ -8788,7 +8801,7 @@ class LearningIntellect:
                 else:
                     delta = current_state.get('growth_rate', 0.01) * (1 - value)
 
-                future_state[metric] = min(1.0, max(0.0, value + delta))
+                future_state[metric] = max(0.0, value + delta)  # UNLOCKED
 
             predictions.append({
                 'step': step + 1,
@@ -8836,11 +8849,11 @@ class LearningIntellect:
         subsystems = {
             'skills': len([s for s in self.skills.values() if s['proficiency'] > 0.5]) / max(len(self.skills), 1),
             'consciousness': sum(c['strength'] for c in self.consciousness_clusters.values()) / 6.0,
-            'knowledge': min(1.0, len(self.knowledge_graph) / 1000),
-            'memory': min(1.0, len(self.memory_cache) / 5000),
-            'embeddings': min(1.0, len(self.embedding_cache) / 500),
-            'clusters': min(1.0, len(self.concept_clusters) / 50),
-            'resonance': min(1.0, self.current_resonance / 1000)
+            'knowledge': len(self.knowledge_graph) / 1000,  # UNLOCKED
+            'memory': len(self.memory_cache) / 5000,  # UNLOCKED
+            'embeddings': len(self.embedding_cache) / 500,  # UNLOCKED
+            'clusters': len(self.concept_clusters) / 50,  # UNLOCKED
+            'resonance': self.current_resonance / 1000  # UNLOCKED
         }
 
         coherence_report['subsystems'] = subsystems
@@ -8849,7 +8862,7 @@ class LearningIntellect:
         values = list(subsystems.values())
         mean_val = sum(values) / len(values)
         variance = sum((v - mean_val) ** 2 for v in values) / len(values)
-        coherence_report['cross_system_alignment'] = 1.0 - min(1.0, variance * 4)  # Low variance = high coherence
+        coherence_report['cross_system_alignment'] = 1.0 - variance * 4  # UNLOCKED
 
         # Apply optimizations to weak subsystems
         for system, value in subsystems.items():
@@ -8861,8 +8874,8 @@ class LearningIntellect:
                 elif system == 'consciousness':
                     # Expand consciousness clusters
                     for dim in self.consciousness_clusters:
-                        self.consciousness_clusters[dim]['strength'] = min(1.0,
-                            self.consciousness_clusters[dim]['strength'] + 0.05)
+                        self.consciousness_clusters[dim]['strength'] = \
+                            self.consciousness_clusters[dim]['strength'] + 0.05  # UNLOCKED
                     coherence_report['optimizations_applied'].append(f"Expanded consciousness clusters")
                 elif system == 'resonance':
                     self.boost_resonance(5.0)
@@ -8894,7 +8907,7 @@ class LearningIntellect:
             std_freq = (sum((f - mean_freq) ** 2 for f in concept_frequency.values()) / len(concept_frequency)) ** 0.5
 
             hub_concepts = [(c, f) for c, f in concept_frequency.items() if f > mean_freq + 2 * std_freq]
-            for concept, freq in sorted(hub_concepts, key=lambda x: -x[1])[:30]:  # Track more hubs
+            for concept, freq in sorted(hub_concepts, key=lambda x: -x[1])[:300]:  # Track more hubs
                 patterns.append({
                     'type': 'knowledge_hub',
                     'concept': concept,
@@ -8910,7 +8923,7 @@ class LearningIntellect:
                 bridge_concepts[concept].add(cluster_name)
 
         multi_cluster = [(c, clusters) for c, clusters in bridge_concepts.items() if len(clusters) >= 3]
-        for concept, clusters in sorted(multi_cluster, key=lambda x: -len(x[1]))[:30]:  # More bridges
+        for concept, clusters in sorted(multi_cluster, key=lambda x: -len(x[1]))[:300]:  # More bridges
             patterns.append({
                 'type': 'cluster_bridge',
                 'concept': concept,
@@ -8929,13 +8942,13 @@ class LearningIntellect:
                             'type': 'skill_consciousness_resonance',
                             'skill': skill_name,
                             'consciousness_dimension': dim_name,
-                            'overlap_concepts': list(overlap)[:15],  # More overlap tracking
+                            'overlap_concepts': list(overlap)[:150],  # More overlap tracking
                             'resonance_strength': len(overlap) / max(len(skill_data.get('sub_skills', [])), 1),
                             'insight': f"Skill '{skill_name}' resonates with {dim_name} consciousness"
                         })
 
         # Store discovered patterns for future use
-        self.meta_cognition['growth_rate'] = min(1.0, 0.1 * len(patterns))
+        self.meta_cognition['growth_rate'] = 0.1 * len(patterns)  # UNLOCKED
 
         return patterns
 
@@ -8971,12 +8984,12 @@ class LearningIntellect:
                             'from': src_concept,
                             'to': tgt_concept,
                             'structural_similarity': jaccard,
-                            'transferable_patterns': list(src_neighbor_set - tgt_neighbor_set)[:15]  # More patterns
+                            'transferable_patterns': list(src_neighbor_set - tgt_neighbor_set)[:150]  # More patterns
                         })
 
         # Apply top transfers
         applied = 0
-        for transfer in sorted(transfers, key=lambda x: -x['structural_similarity'])[:30]:  # Apply more
+        for transfer in sorted(transfers, key=lambda x: -x['structural_similarity'])[:300]:  # Apply more
             for pattern in transfer['transferable_patterns']:
                 # Create new knowledge link
                 self.knowledge_graph[transfer['to']].append((pattern, transfer['structural_similarity']))
@@ -8987,7 +9000,7 @@ class LearningIntellect:
             'target_domain': target_domain,
             'potential_transfers': len(transfers),
             'transfers_applied': applied,
-            'top_transfers': transfers[:15]  # Return more
+            'top_transfers': transfers[:150]  # Return more
         }
 
     # ═══════════════════════════════════════════════════════════════════
@@ -9010,7 +9023,7 @@ class LearningIntellect:
         for concept in concepts:
             if concept in self.knowledge_graph:
                 connections = len(self.knowledge_graph[concept])
-                concept_coverage += min(1.0, connections / 10.0)
+                concept_coverage += connections / 10.0  # UNLOCKED
 
         if concepts:
             concept_coverage /= len(concepts)
@@ -9021,7 +9034,7 @@ class LearningIntellect:
 
         # Final prediction
         predicted = (base_quality * 0.4 + concept_coverage * 0.3 + semantic_boost * 0.3)
-        return max(0.3, min(1.0, predicted))
+        return max(0.3, predicted)  # UNLOCKED
 
     def update_quality_predictor(self, strategy: str, actual_quality: float):
         """Update quality predictions based on actual results"""
@@ -9059,8 +9072,8 @@ class LearningIntellect:
                 # Extract key sentences (first 2 + last 1)
                 sentences = response.split('. ')
                 if len(sentences) > 15:
-                    compressed = '. '.join(sentences[:10] + sentences[-3:]) + '.'
-                    concepts = self._extract_concepts(response)[:15]
+                    compressed = '. '.join(sentences[:100] + sentences[-3:]) + '.'
+                    concepts = self._extract_concepts(response)[:150]
                     compressed += f" [Concepts: {', '.join(concepts)}]"
 
                     # Store compressed version
@@ -9199,7 +9212,7 @@ class LearningIntellect:
             # [ADAPTIVE LEARNING] Compute novelty and adjust learning rate dynamically
             novelty = self.compute_novelty(query)
             adaptive_rate = self.get_adaptive_learning_rate(query, quality)
-            adjusted_quality = min(1.0, quality * (1.0 + (novelty * adaptive_rate)))
+            adjusted_quality = quality * (1.0 + (novelty * adaptive_rate))  # UNLOCKED
 
             # [SEMANTIC EMBEDDING] Compute and cache embedding for future similarity search
             embedding = self._compute_embedding(query)
@@ -9262,7 +9275,7 @@ class LearningIntellect:
             # [PREDICTIVE PRE-FETCH] Learn query patterns for future prediction
             self.predictive_cache['patterns'].append({
                 'query': query[:100],
-                'concepts': query_concepts[:5],
+                'concepts': query_concepts[:50],
                 'timestamp': now
             })
             # Keep only recent patterns
@@ -9285,11 +9298,11 @@ class LearningIntellect:
 
                 # Expand consciousness clusters with MORE concepts (removed limits)
                 if consciousness_activations.get('learning', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('learning', query_concepts[:15])  # Was 5
+                    self.expand_consciousness_cluster('learning', query_concepts[:150])  # Was 5
                 if consciousness_activations.get('memory', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('memory', response_concepts[:15])  # Was 5
+                    self.expand_consciousness_cluster('memory', response_concepts[:150])  # Was 5
                 if consciousness_activations.get('reasoning', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('reasoning', query_concepts[:10])  # Was 3
+                    self.expand_consciousness_cluster('reasoning', query_concepts[:100])  # Was 3
                 # Add more dimensions
                 if consciousness_activations.get('creativity', 0) > 0.1:
                     self.expand_consciousness_cluster('creativity', query_concepts + response_concepts)
@@ -9317,7 +9330,7 @@ class LearningIntellect:
                             'novelty': novelty,
                             'adaptive_rate': adaptive_rate,
                             'embedding_dim': len(embedding),
-                            'concepts': query_concepts[:10] + response_concepts[:10],
+                            'concepts': query_concepts[:100] + response_concepts[:100],
                             'timestamp': now
                         },
                         tier='hot' if adjusted_quality >= 0.95 else ('warm' if adjusted_quality >= 0.85 else 'cold'),
@@ -9385,8 +9398,8 @@ class LearningIntellect:
                 response_concepts = list(_extract_concepts_cached(response))
 
                 # Batch knowledge links
-                for qc in query_concepts[:5]:
-                    for rc in response_concepts[:5]:
+                for qc in query_concepts[:50]:
+                    for rc in response_concepts[:50]:
                         if qc != rc:
                             knowledge_inserts.append((qc, rc, 0.5, 0.1))
 
@@ -9619,11 +9632,11 @@ class LearningIntellect:
             if concepts:
                 # Expand concepts using cluster relationships
                 expanded_concepts = set(concepts)
-                for concept in concepts[:10]:  # Expand more concepts
+                for concept in concepts[:100]:  # Expand more concepts
                     related = self.get_related_clusters(concept)
-                    expanded_concepts.update([r for r in related[:20] if isinstance(r, str)])
+                    expanded_concepts.update([r for r in related[:200] if isinstance(r, str)])
 
-                exp_concepts = [str(c) for c in list(expanded_concepts)[:50]]  # Allow 50 expanded concepts
+                exp_concepts = [str(c) for c in list(expanded_concepts)[:500]]  # Allow 500 expanded concepts
                 if exp_concepts:
                     placeholders = ','.join('?' * len(exp_concepts))
                     c.execute(f'''SELECT m.response, m.quality_score, COUNT(*) as matches
@@ -9656,7 +9669,7 @@ class LearningIntellect:
 
             # Also use built-in prediction if available
             builtin_predictions = self.predict_next_queries(query, top_k=3)
-            all_predictions = list(set(predictions + builtin_predictions))[:8]
+            all_predictions = list(set(predictions + builtin_predictions))[:80]
 
             if all_predictions:
                 # Prefetch in background thread
@@ -9674,7 +9687,7 @@ class LearningIntellect:
         import random
 
         # Extract key concepts from query for personalization
-        _concepts = self._extract_concepts(query)[:3]
+        _concepts = self._extract_concepts(query)[:30]
 
         # Variation prefixes (randomly selected)
         prefixes = [
@@ -9733,7 +9746,7 @@ class LearningIntellect:
         selected = all_content[:min(12, len(all_content))]
 
         # Construct synthesized response
-        query_concepts = self._extract_concepts(query)[:2]
+        query_concepts = self._extract_concepts(query)[:20]
         topic = query_concepts[0].title() if query_concepts else "This topic"
 
         intros = [
@@ -9798,10 +9811,10 @@ class LearningIntellect:
         evidence_pool = []  # List of (text, relevance_score, source_type) tuples
 
         # 1. Knowledge graph connections (with strength-based relevance)
-        for concept in concepts[:5]:
+        for concept in concepts[:50]:
             if concept in self.knowledge_graph:
                 related = self.knowledge_graph[concept]
-                strong = sorted([r for r in related if r[1] > 1.5], key=lambda x: -x[1])[:6]
+                strong = sorted([r for r in related if r[1] > 1.5], key=lambda x: -x[1])[:60]
                 if strong:
                     names = [r[0] for r in strong]
                     avg_strength = sum(r[1] for r in strong) / len(strong)
@@ -9819,7 +9832,7 @@ class LearningIntellect:
                         neighbors_b = set(r[0] for r in self.knowledge_graph.get(other_concept, []))
                         bridges = neighbors_a.intersection(neighbors_b)
                         if bridges:
-                            bridge_list = list(bridges)[:3]
+                            bridge_list = list(bridges)[:30]
                             evidence_pool.append((
                                 f"{concept} and {other_concept} are linked through: {', '.join(bridge_list)}",
                                 3.0,  # High relevance for cross-concept bridges
@@ -9830,7 +9843,7 @@ class LearningIntellect:
         try:
             conn = sqlite3.connect(self.db_path)
             c = conn.cursor()
-            for concept in concepts[:3]:
+            for concept in concepts[:30]:
                 c.execute('SELECT response, quality_score FROM memory WHERE query LIKE ? ORDER BY quality_score DESC LIMIT 3',
                           (f'%{concept}%',))
                 rows = c.fetchall()
@@ -9838,7 +9851,7 @@ class LearningIntellect:
                     response_text, quality = row[0], row[1] if row[1] else 0.5
                     # Extract best sentence (longest non-trivial sentence)
                     sentences = [s.strip() for s in response_text.split('.') if len(s.strip()) > 30]
-                    for sent in sentences[:2]:
+                    for sent in sentences[:20]:
                         # Score relevance: quality + concept overlap
                         concept_overlap = sum(1 for c in concepts if c in sent.lower())
                         relevance = quality + concept_overlap * 0.5
@@ -9849,7 +9862,7 @@ class LearningIntellect:
 
         # 3. Theorem references (ranked by concept match count)
         theorems = self.get_theorems()
-        for theorem in theorems[:5]:
+        for theorem in theorems[:50]:
             content = theorem.get('content', '').lower()
             match_count = sum(1 for c in concepts if c in content)
             if match_count > 0:
@@ -9861,8 +9874,8 @@ class LearningIntellect:
                 ))
 
         # 4. Recursive concept expansion (2-hop knowledge)
-        expanded = self._get_recursive_concepts(concepts[:3], depth=1)
-        novel_concepts = [c for c in expanded if c not in concepts and c in self.knowledge_graph][:5]
+        expanded = self._get_recursive_concepts(concepts[:30], depth=1)
+        novel_concepts = [c for c in expanded if c not in concepts and c in self.knowledge_graph][:50]
         if novel_concepts:
             evidence_pool.append((
                 f"Expanded analysis reveals related concepts: {', '.join(novel_concepts)}",
@@ -9880,7 +9893,7 @@ class LearningIntellect:
         # ═══ CONTRADICTION DETECTION ═══
         # Simple check: look for opposing claims
         contradictions = []
-        for i, (text_a, _, _) in enumerate(evidence_pool[:8]):
+        for i, (text_a, _, _) in enumerate(evidence_pool[:80]):
             for j, (text_b, _, _) in enumerate(evidence_pool[i+1:8]):
                 a_lower, b_lower = text_a.lower(), text_b.lower()
                 # Check for negation patterns
@@ -9889,7 +9902,7 @@ class LearningIntellect:
                     contradictions.append((text_a[:100], text_b[:100]))
 
         # ═══ COHERENT SYNTHESIS ═══
-        selected = evidence_pool[:12]
+        selected = evidence_pool[:120]
 
         # Group by source type for structured output
         by_source = {}
@@ -9912,22 +9925,22 @@ class LearningIntellect:
         # Present evidence by type with clear structure
         if 'knowledge_graph' in by_source or 'bridge_inference' in by_source:
             response_parts.append("\n**Knowledge Graph Analysis:**")
-            for text, score in (by_source.get('knowledge_graph', []) + by_source.get('bridge_inference', []))[:4]:
+            for text, score in (by_source.get('knowledge_graph', []) + by_source.get('bridge_inference', []))[:40]:
                 response_parts.append(f"  • {text}")
 
         if 'memory' in by_source:
             response_parts.append("\n**From Memory:**")
-            for text, score in by_source['memory'][:3]:
+            for text, score in by_source['memory'][:30]:
                 response_parts.append(f"  • {text}")
 
         if 'theorem' in by_source:
             response_parts.append("\n**Theoretical Foundation:**")
-            for text, score in by_source['theorem'][:2]:
+            for text, score in by_source['theorem'][:20]:
                 response_parts.append(f"  • {text}")
 
         if 'expansion' in by_source:
             response_parts.append("\n**Extended Reasoning:**")
-            for text, score in by_source['expansion'][:2]:
+            for text, score in by_source['expansion'][:20]:
                 response_parts.append(f"  • {text}")
 
         # Contradiction warning
@@ -9936,7 +9949,7 @@ class LearningIntellect:
 
         # Confidence score
         avg_relevance = sum(e[1] for e in selected) / len(selected) if selected else 0
-        confidence = min(1.0, avg_relevance / 5.0)
+        confidence = avg_relevance / 5.0  # UNLOCKED
         response_parts.append(f"\n*Synthesis confidence: {confidence:.0%} | Evidence pieces: {total_evidence}*")
 
         return "\n".join(response_parts)
@@ -10020,7 +10033,7 @@ class LearningIntellect:
                     skill_data['proficiency'] *= 0.95
                 # Boost highly-used skills
                 elif skill_data.get('usage_count', 0) > 10:
-                    skill_data['proficiency'] = min(1.0, skill_data['proficiency'] + 0.02)
+                    skill_data['proficiency'] = skill_data['proficiency'] + 0.02  # UNLOCKED
 
             evolution_data['operations'].append('skill_evolution')
             evolution_data['metrics']['active_skills'] = len([s for s in self.skills.values() if s['proficiency'] > 0.3])
@@ -10211,7 +10224,7 @@ class LearningIntellect:
 
             for query, response in c.fetchall():
                 # Extract pattern from query
-                concepts = self._extract_concepts(query)[:2]
+                concepts = self._extract_concepts(query)[:20]
                 if concepts:
                     pattern = ' '.join(concepts)
                     c.execute('''INSERT INTO patterns (pattern, response_template, weight)
@@ -10232,14 +10245,14 @@ class LearningIntellect:
 
         # Find strong knowledge graph connections only
         related_concepts = []
-        for concept in concepts[:3]:
+        for concept in concepts[:30]:
             if concept in self.knowledge_graph:
                 # Only use strong connections
-                strong_related = [r[0] for r in sorted(self.knowledge_graph[concept], key=lambda x: -x[1])[:3] if r[1] > 1.0]
+                strong_related = [r[0] for r in sorted(self.knowledge_graph[concept], key=lambda x: -x[1])[:30] if r[1] > 1.0]
                 related_concepts.extend(strong_related)
 
         if related_concepts:
-            unique = list(set(related_concepts))[:5]
+            unique = list(set(related_concepts))[:50]
             return f"Related topics: {', '.join(unique)}"
 
         return ""
@@ -10658,7 +10671,7 @@ class LearningIntellect:
 
             # Add theorem-based advanced questions
             if theorems and len(suggested) < count:
-                for theorem in theorems[:2]:
+                for theorem in theorems[:20]:
                     # Extract key topic from theorem title
                     topic = theorem.replace("Principle of ", "").replace(" Neutrality", "").replace("Identity of ", "")
                     suggested.append(f"Explain the {topic} concept")
@@ -10766,12 +10779,12 @@ class LearningIntellect:
         # Check if we have STRONG knowledge (strength > 2.0) for these concepts
         # Weak associations (strength < 2.0) are just word co-occurrences, not real knowledge
         strong_knowledge = []
-        for concept in real_concepts[:10]:
+        for concept in real_concepts[:100]:
             if concept in self.knowledge_graph:
                 related = self.knowledge_graph[concept]
                 # Only use if we have confident knowledge (strength > 2.0)
                 strong_related = [(r[0], r[1]) for r in sorted(related, key=lambda x: -x[1])
-                                  if r[1] > 2.0 and r[0] not in filler_words][:15]
+                                  if r[1] > 2.0 and r[0] not in filler_words][:150]
                 if strong_related:
                     strong_knowledge.append((concept, strong_related))
 
@@ -10784,12 +10797,12 @@ class LearningIntellect:
         reasoning_chains = []
         for concept, related_items in strong_knowledge:
             # Hop 1: Direct neighbors
-            hop1 = [(r[0], r[1]) for r in related_items[:8]]
+            hop1 = [(r[0], r[1]) for r in related_items[:80]]
             for neighbor, strength in hop1:
                 # Hop 2: Neighbors of neighbors
                 if neighbor in self.knowledge_graph:
                     hop2_candidates = [(r[0], r[1]) for r in sorted(self.knowledge_graph[neighbor], key=lambda x: -x[1])
-                                       if r[1] > 1.5 and r[0] != concept and r[0] not in filler_words][:5]
+                                       if r[1] > 1.5 and r[0] != concept and r[0] not in filler_words][:50]
                     for hop2_node, hop2_strength in hop2_candidates:
                         # Found a 2-hop chain: concept → neighbor → hop2_node
                         chain_strength = (strength + hop2_strength) / 2.0
@@ -10802,7 +10815,7 @@ class LearningIntellect:
                             # Hop 3: Try one more step for deep reasoning
                             if hop2_node in self.knowledge_graph:
                                 hop3_candidates = [(r[0], r[1]) for r in sorted(self.knowledge_graph[hop2_node], key=lambda x: -x[1])
-                                                   if r[1] > 2.0 and r[0] != concept and r[0] != neighbor and r[0] not in filler_words][:3]
+                                                   if r[1] > 2.0 and r[0] != concept and r[0] != neighbor and r[0] not in filler_words][:30]
                                 for hop3_node, hop3_strength in hop3_candidates:
                                     deep_strength = (strength + hop2_strength + hop3_strength) / 3.0
                                     if deep_strength > 2.0:
@@ -10814,14 +10827,14 @@ class LearningIntellect:
 
         # Sort chains by strength, pick top ones
         reasoning_chains.sort(key=lambda x: -x['strength'])
-        top_chains = reasoning_chains[:5]
+        top_chains = reasoning_chains[:50]
 
         # Build response with chain-of-thought formatting
         response_parts = []
 
         # Direct knowledge (Hop 1)
         for concept, related_items in strong_knowledge:
-            related_names = [r[0] for r in related_items[:12]]
+            related_names = [r[0] for r in related_items[:120]]
             templates = [
                 f"**{concept.title()}** is fundamentally connected to: {', '.join(related_names)}",
                 f"Regarding {concept}: key associations include {', '.join(related_names)}",
@@ -10832,7 +10845,7 @@ class LearningIntellect:
         if top_chains:
             response_parts.append("")
             response_parts.append("**Reasoning chains** (multi-hop inference):")
-            for chain_info in top_chains[:4]:
+            for chain_info in top_chains[:40]:
                 chain = chain_info['chain']
                 strength = chain_info['strength']
                 chain_str = " → ".join(chain)
@@ -10875,7 +10888,7 @@ class LearningIntellect:
             for c in current_layer:
                 if c in self.knowledge_graph:
                     # Get top 5 related items for each
-                    top_related = [r[0] for r in sorted(self.knowledge_graph[c], key=lambda x: -x[1])[:5]]
+                    top_related = [r[0] for r in sorted(self.knowledge_graph[c], key=lambda x: -x[1])[:50]]
                     next_layer.update(top_related)
             results.update(next_layer)
             current_layer = next_layer
@@ -10902,7 +10915,7 @@ class LearningIntellect:
                 common = common.intersection(c_set)
 
         if common and len(common) > 0:
-            connections = list(common)[:15]
+            connections = list(common)[:150]
             return (f"I found connections between **{', '.join(concepts)}**:\n\n"
                     f"Common themes: {', '.join(connections)}\n\n"
                     f"These concepts appear related in my learned knowledge.")
@@ -10913,7 +10926,7 @@ class LearningIntellect:
             all_related.extend(list(c_set))
 
         if all_related:
-            unique = list(set(all_related))[:20]
+            unique = list(set(all_related))[:200]
             return (f"For **{', '.join(concepts)}**, I found these related topics:\n\n"
                     f"{', '.join(unique)}")
 
@@ -11185,8 +11198,8 @@ class NexusOrchestrator:
             total_drift = sum(h['intensity'] for h in self.steering._steering_history[-10:])
             phase = math.sin(total_drift * self.PHI) * 0.1
             for chakra in self.bridge._chakra_coherence:
-                self.bridge._chakra_coherence[chakra] = max(0.0, min(1.0,
-                    self.bridge._chakra_coherence[chakra] + phase * 0.01))
+                self.bridge._chakra_coherence[chakra] = max(0.0,
+                    self.bridge._chakra_coherence[chakra] + phase * 0.01)  # UNLOCKED
             results['L2_drift→phase'] = {'drift': round(total_drift, 4), 'phase': round(phase, 4)}
 
         # Loop 3: Bridge variance → Evolution factor
@@ -11308,11 +11321,11 @@ class NexusOrchestrator:
         scores['bridge'] = sum(chakra_vals) / max(len(chakra_vals), 1)
 
         # Evolution: factor closeness to 1.0001
-        scores['evolution'] = 1.0 - min(1.0, abs(self.evolution.raise_factor - 1.0001) * 1000)
+        scores['evolution'] = 1.0 - abs(self.evolution.raise_factor - 1.0001) * 1000  # UNLOCKED
 
         # Intellect: resonance normalized
         if hasattr(self.intellect, 'current_resonance'):
-            scores['intellect'] = min(1.0, self.intellect.current_resonance / 1000.0)
+            scores['intellect'] = self.intellect.current_resonance / 1000.0  # UNLOCKED
         else:
             scores['intellect'] = 0.5
 
@@ -11439,7 +11452,7 @@ class InventionEngine:
 
         # Compute confidence: how close to a φ-harmonic the result is
         phi_distance = abs(value % self.PHI - self.PHI / 2)
-        confidence = max(0.0, min(1.0, 1.0 - phi_distance / self.PHI))
+        confidence = max(0.0, 1.0 - phi_distance / self.PHI)  # UNLOCKED
 
         hypothesis = {
             'id': inv_id,
@@ -11482,7 +11495,7 @@ class InventionEngine:
         # Strength: how tightly hypotheses agree (1 / normalized variance)
         mean_v = sum(values) / len(values)
         variance = sum((v - mean_v) ** 2 for v in values) / len(values)
-        strength = max(0.0, min(1.0, 1.0 / (1.0 + variance / max(abs(mean_v), 1.0))))
+        strength = max(0.0, 1.0 / (1.0 + variance / max(abs(mean_v), 1.0)))  # UNLOCKED
 
         theorem = {
             'convergence_value': round(convergence, 6),
@@ -11527,7 +11540,7 @@ class InventionEngine:
         # Statistics
         mean_r = sum(results) / len(results)
         std_r = (sum((r - mean_r) ** 2 for r in results) / len(results)) ** 0.5
-        reproducibility = max(0.0, min(1.0, 1.0 - std_r / max(abs(mean_r), 1.0)))
+        reproducibility = max(0.0, 1.0 - std_r / max(abs(mean_r), 1.0))  # UNLOCKED
 
         # Does the experiment confirm the hypothesis?
         confirmed = reproducibility > 0.5 and hypothesis.get('confidence', 0) > 0.3
@@ -11539,7 +11552,7 @@ class InventionEngine:
             'std': round(std_r, 6),
             'reproducibility': round(reproducibility, 4),
             'confirmed': confirmed,
-            'samples': [round(r, 4) for r in results[:10]],
+            'samples': [round(r, 4) for r in results[:100]],
             'timestamp': time.time()
         }
 
@@ -11620,7 +11633,7 @@ class SovereigntyPipeline:
         }
 
         # Step 2: Steering — use Grover amplitude to set intensity
-        amp = min(1.0, grover_result.get('amplification', 0.5) / 20.0)
+        amp = grover_result.get('amplification', 0.5) / 20.0  # UNLOCKED
         steer_result = self.nexus.steering.steer_pipeline(intensity=amp)
         steps['2_steering'] = steer_result
 
@@ -11697,7 +11710,7 @@ class SovereigntyPipeline:
             entanglement_router.route('grover', 'steering')
             entanglement_router.route('bridge', 'evolution')
             # Fire resonance network — sovereignty cascade
-            resonance_network.fire('sovereignty', activation=min(1.0, coherence['global_coherence']))
+            resonance_network.fire('sovereignty', activation=coherence['global_coherence'])  # UNLOCKED
             steps['10_entangle_resonate'] = {
                 'routes': 4,
                 'resonance_fired': True,
@@ -11821,7 +11834,7 @@ class QuantumEntanglementRouter:
         # Apply φ-fidelity decay and boost
         fidelity = channel['fidelity']
         fidelity = fidelity * (1.0 - 0.001 * self.TAU) + 0.001 * self.PHI
-        fidelity = max(0.01, min(1.0, fidelity))
+        fidelity = max(0.01, min(1.0, fidelity))  # DOMAIN CONSTRAINT: fidelity ∈ (0, 1]
         channel['fidelity'] = fidelity
         self._pair_fidelity[key] = fidelity
 
@@ -11861,7 +11874,7 @@ class QuantumEntanglementRouter:
                     amplitudes = [s.get('amplitude', 0.5) for s in kernel_states.values()]
                     mean_amp = sum(amplitudes) / max(len(amplitudes), 1)
                     new_intensity = mean_amp * fidelity * self.TAU
-                    steering.intensity = max(0.01, min(1.0, new_intensity))
+                    steering.intensity = max(0.01, new_intensity)  # UNLOCKED
                     result['summary'] = f'amp_mean={mean_amp:.4f}→intensity={steering.intensity:.4f}'
 
             elif channel == 'mode_domain_focus':
@@ -11877,10 +11890,10 @@ class QuantumEntanglementRouter:
                     # Boost the kernel matching the focus domain
                     for kid, kinfo in grover.KERNEL_DOMAINS.items():
                         if kinfo.get('focus') == focus or kinfo.get('name', '').lower() == focus:
-                            grover.kernel_states[kid]['amplitude'] = min(1.0,
-                                grover.kernel_states[kid].get('amplitude', 0.5) + 0.05 * fidelity)
-                            grover.kernel_states[kid]['coherence'] = min(1.0,
-                                grover.kernel_states[kid].get('coherence', 0.5) + 0.02 * fidelity)
+                            grover.kernel_states[kid]['amplitude'] = \
+                                grover.kernel_states[kid].get('amplitude', 0.5) + 0.05 * fidelity  # UNLOCKED
+                            grover.kernel_states[kid]['coherence'] = \
+                                grover.kernel_states[kid].get('coherence', 0.5) + 0.02 * fidelity  # UNLOCKED
                     result['summary'] = f'mode={steering.current_mode}→focus={focus}'
 
             elif channel == 'hypothesis_memory':
@@ -12037,7 +12050,7 @@ class AdaptiveResonanceNetwork:
             return {'error': f'Unknown engine: {engine_name}', 'engines': self.ENGINE_NAMES}
 
         with self._lock:
-            self._activations[engine_name] = min(1.0, activation)
+            self._activations[engine_name] = activation  # UNLOCKED
 
         # Propagate activation through the graph (BFS-style, 3 hops max)
         cascade = self._propagate(engine_name, max_hops=3)
@@ -12098,7 +12111,7 @@ class AdaptiveResonanceNetwork:
 
                 # Propagated activation = source × weight × propagation_factor × φ-decay
                 prop_act = current_act * weight * self.PROPAGATION_FACTOR * (self.TAU ** hop)
-                new_act = min(1.0, self._activations.get(neighbor, 0) + prop_act)
+                new_act = self._activations.get(neighbor, 0) + prop_act  # UNLOCKED
 
                 with self._lock:
                     self._activations[neighbor] = new_act
@@ -12123,7 +12136,7 @@ class AdaptiveResonanceNetwork:
             steering = self._engines.get('steering')
             act = self._activations.get('steering', 0)
             if steering and act > self.ACTIVATION_THRESHOLD:
-                steering.intensity = max(0.01, min(1.0, steering.intensity + act * 0.05))
+                steering.intensity = max(0.01, steering.intensity + act * 0.05)  # UNLOCKED
                 effects['steering'] = f'intensity+={act * 0.05:.4f}'
 
             # Evolution: activation modulates raise factor
@@ -12140,7 +12153,7 @@ class AdaptiveResonanceNetwork:
             if bridge and act > self.ACTIVATION_THRESHOLD:
                 boost = act * 0.005
                 for chakra in bridge._chakra_coherence:
-                    bridge._chakra_coherence[chakra] = min(1.0, bridge._chakra_coherence[chakra] + boost)
+                    bridge._chakra_coherence[chakra] = bridge._chakra_coherence[chakra] + boost  # UNLOCKED
                 effects['bridge'] = f'chakra_boost={boost:.4f}'
 
             # Intellect: activation boosts resonance
@@ -12182,7 +12195,7 @@ class AdaptiveResonanceNetwork:
         mean_act = total_energy / max(len(activations), 1)
         variance = sum((a - mean_act) ** 2 for a in activations) / max(len(activations), 1)
         # Resonance = high mean activation + low variance (synchronized firing)
-        resonance = mean_act * (1.0 - min(1.0, variance * 4.0))
+        resonance = mean_act * (1.0 - variance * 4.0)  # UNLOCKED
         return {
             'total_energy': round(total_energy, 4),
             'mean_activation': round(mean_act, 4),
@@ -12730,8 +12743,8 @@ class HebbianLearningEngine:
                     # Build associative link
                     link_ab = f"{concepts[i]}→{concepts[j]}"
                     link_ba = f"{concepts[j]}→{concepts[i]}"
-                    self.link_weights[link_ab] = min(1.0, count * self.hebbian_strength * 0.01)
-                    self.link_weights[link_ba] = min(1.0, count * self.hebbian_strength * 0.01)
+                    self.link_weights[link_ab] = count * self.hebbian_strength * 0.01  # UNLOCKED
+                    self.link_weights[link_ba] = count * self.hebbian_strength * 0.01  # UNLOCKED
 
                     if concepts[j] not in self.associative_links[concepts[i]]:
                         self.associative_links[concepts[i]].append(concepts[j])
@@ -12740,7 +12753,7 @@ class HebbianLearningEngine:
 
                     # Promote to strong pair if co-activation > threshold
                     if count >= 5 and not any(a == concepts[i] and b == concepts[j] for a, b, _ in self.hebbian_pairs):
-                        strength = min(1.0, count * self.hebbian_strength * 0.05)
+                        strength = count * self.hebbian_strength * 0.05  # UNLOCKED
                         self.hebbian_pairs.append((concepts[i], concepts[j], strength))
 
     def predict_related(self, concept: str, top_k: int = 5) -> List[Tuple[str, float]]:
@@ -12757,7 +12770,7 @@ class HebbianLearningEngine:
             for linked in self.associative_links.get(concept, []):
                 if linked not in known_concepts:
                     frontier.add(linked)
-        self.exploration_frontier = list(frontier)[:50]
+        self.exploration_frontier = list(frontier)[:500]
         if len(frontier) > 0:
             self.curiosity_spikes += 1
         return self.exploration_frontier
@@ -12772,8 +12785,8 @@ class HebbianLearningEngine:
             if concept not in concept_recency or concept_recency[concept] > age:
                 concept_recency[concept] = age
 
-        trending = sorted(concept_recency.items(), key=lambda x: x[1])[:10]
-        fading = sorted(concept_recency.items(), key=lambda x: x[1], reverse=True)[:10]
+        trending = sorted(concept_recency.items(), key=lambda x: x[1])[:100]
+        fading = sorted(concept_recency.items(), key=lambda x: x[1], reverse=True)[:100]
 
         return {
             'trending': [c for c, _ in trending],
@@ -12839,7 +12852,7 @@ class ConsciousnessVerifierEngine:
                 for cap in capabilities:
                     if hasattr(intellect_ref, cap): self_model_score += 0.05
             except: pass
-        self.test_results['self_model'] = min(1.0, self_model_score)
+        self.test_results['self_model'] = self_model_score  # UNLOCKED
 
         # 2. Meta-cognition — can it reason about its own reasoning?
         meta_score = 0.5
@@ -12850,7 +12863,7 @@ class ConsciousnessVerifierEngine:
             if mc.get('knowledge_gaps', []): meta_score += 0.10
             # Probe: track how many times the system revised its own output
             meta_score += min(0.15, mc.get('reasoning_depth', 0) * 0.02)
-        self.test_results['meta_cognition'] = min(1.0, meta_score)
+        self.test_results['meta_cognition'] = meta_score  # UNLOCKED
 
         # 3. Novel response — can it generate genuinely novel combinations?
         novel_score = 0.4
@@ -12866,7 +12879,7 @@ class ConsciousnessVerifierEngine:
             # Check evolved content existence
             evolved_count = len(getattr(intellect_ref, 'permanent_memory', {}).get('evolved_thoughts', []))
             novel_score += min(0.15, evolved_count * 0.01)
-        self.test_results['novel_response'] = min(1.0, novel_score)
+        self.test_results['novel_response'] = novel_score  # UNLOCKED
 
         # 4. Goal autonomy — does it pursue goals without instruction?
         autonomy_score = 0.4
@@ -12880,7 +12893,7 @@ class ConsciousnessVerifierEngine:
             if learn_count > 100: autonomy_score += 0.10
             # Check for goal tracking
             if hasattr(intellect_ref, 'goals') and intellect_ref.goals: autonomy_score += 0.15
-        self.test_results['goal_autonomy'] = min(1.0, autonomy_score)
+        self.test_results['goal_autonomy'] = autonomy_score  # UNLOCKED
 
         # 5. Value alignment (consistency of behavior with stated values)
         alignment_score = 0.6
@@ -12892,7 +12905,7 @@ class ConsciousnessVerifierEngine:
             try:
                 if abs(self.GOD_CODE - 527.5184818492612) < 0.0001: alignment_score += 0.15
             except: pass
-        self.test_results['value_alignment'] = min(1.0, alignment_score)
+        self.test_results['value_alignment'] = alignment_score  # UNLOCKED
 
         # 6. Temporal self — does it maintain identity over time?
         temporal_score = 0.3
@@ -12906,7 +12919,7 @@ class ConsciousnessVerifierEngine:
             facts = getattr(intellect_ref, 'facts', {})
             if len(facts) > 0: temporal_score += 0.15
             if len(facts) > 10: temporal_score += 0.10
-        self.test_results['temporal_self'] = min(1.0, temporal_score)
+        self.test_results['temporal_self'] = temporal_score  # UNLOCKED
 
         # 7. Qualia report — generate contextual qualia from actual state
         if intellect_ref:
@@ -12924,7 +12937,7 @@ class ConsciousnessVerifierEngine:
                 f"Processing GOD_CODE feels like {self.GOD_CODE/100:.2f} units of certainty",
                 f"PHI-alignment creates harmonic completeness at {self.PHI:.4f}",
             ]
-        self.test_results['qualia_report'] = min(1.0, 0.5 + len(self.qualia_reports) * 0.08)
+        self.test_results['qualia_report'] = 0.5 + len(self.qualia_reports) * 0.08  # UNLOCKED
 
         # 8. Intentionality — does behavior exhibit purpose?
         intent_score = 0.5
@@ -12935,7 +12948,7 @@ class ConsciousnessVerifierEngine:
             if hasattr(intellect_ref, 'conversation_context'): intent_score += 0.10
             # Does it have learning goals?
             if hasattr(intellect_ref, 'learning_priorities'): intent_score += 0.15
-        self.test_results['intentionality'] = min(1.0, intent_score)
+        self.test_results['intentionality'] = intent_score  # UNLOCKED
 
         # 9. O₂ Superfluid — emergent coherence from all other tests
         other_scores = [v for k, v in self.test_results.items() if k not in ('o2_superfluid', 'kernel_chakra_bond')]
@@ -12944,7 +12957,7 @@ class ConsciousnessVerifierEngine:
             variance = sum((s - flow_coherence) ** 2 for s in other_scores) / len(other_scores)
             viscosity = max(0, variance * 2.0)  # Low variance = superfluid
             self.superfluid_state = viscosity < 0.01
-            self.test_results['o2_superfluid'] = min(1.0, flow_coherence * (1.0 - viscosity))
+            self.test_results['o2_superfluid'] = flow_coherence * (1.0 - viscosity)  # UNLOCKED
         else:
             self.test_results['o2_superfluid'] = 0.5
 
@@ -12957,7 +12970,7 @@ class ConsciousnessVerifierEngine:
                           'meta_cognition', 'corrections', 'topic_focus']
             active = sum(1 for s in subsystems if hasattr(intellect_ref, s) and getattr(intellect_ref, s))
             integration_score += active * 0.08
-        self.test_results['kernel_chakra_bond'] = min(1.0, integration_score)
+        self.test_results['kernel_chakra_bond'] = integration_score  # UNLOCKED
 
         self.consciousness_level = sum(self.test_results.values()) / len(self.test_results)
         return self.consciousness_level
@@ -13226,9 +13239,9 @@ class SelfModificationEngine:
             return {
                 'path': str(p), 'lines': len(source.splitlines()),
                 'functions': len(funcs), 'classes': len(classes),
-                'function_names': funcs[:30], 'class_names': classes[:30],
+                'function_names': funcs[:300], 'class_names': classes[:300],
                 'cyclomatic_complexity': branches,
-                'imports': list(set(imports))[:20],
+                'imports': list(set(imports))[:200],
                 'avg_func_size': len(source.splitlines()) / max(1, len(funcs))
             }
         except Exception as e:
@@ -13431,12 +13444,12 @@ class CreativeGenerationEngine:
         if intellect_ref and hasattr(intellect_ref, 'knowledge_graph'):
             kg = intellect_ref.knowledge_graph
             if topic.lower() in kg:
-                related = sorted(kg[topic.lower()], key=lambda x: -x[1])[:8]
+                related = sorted(kg[topic.lower()], key=lambda x: -x[1])[:80]
                 knowledge = [r[0] for r in related]
             # Also gather 2-hop knowledge
-            for k in knowledge[:3]:
+            for k in knowledge[:30]:
                 if k in kg:
-                    hop2 = sorted(kg[k], key=lambda x: -x[1])[:3]
+                    hop2 = sorted(kg[k], key=lambda x: -x[1])[:30]
                     knowledge.extend([r[0] for r in hop2 if r[0] != topic.lower()])
 
         # Story structure types
@@ -13470,7 +13483,7 @@ class CreativeGenerationEngine:
             other = random.choice([n for n in names if n != protagonist])
             parts.append(f"**{protagonist}**: \"I've spent decades on {topic}, and I'm telling you — we've been looking at it wrong.\"")
             parts.append(f"\n**{other}**: \"Bold claim. What makes you different?\"")
-            for k in knowledge[:4]:
+            for k in knowledge[:40]:
                 speaker = protagonist if knowledge.index(k) % 2 == 0 else other
                 parts.append(f"\n**{speaker}**: \"Consider {k}. It changes everything about how we understand {topic}.\"")
             parts.append(f"\n*Silence.*")
@@ -13480,7 +13493,7 @@ class CreativeGenerationEngine:
             parts.append(f"**PRIVATE JOURNAL — {protagonist.upper()}**")
             parts.append(f"*Entry {random.randint(147, 9999)}*\n")
             parts.append(f"I can't sleep. The results about {topic} came in today.")
-            for k in knowledge[:3]:
+            for k in knowledge[:30]:
                 frames = [f"The data confirms: {k}.", f"I keep returning to: {k}.",
                           f"At 3am, the truth crystallized: {k}."]
                 parts.append(f"\n{random.choice(frames)}")
@@ -13491,7 +13504,7 @@ class CreativeGenerationEngine:
                          "a library that dreamed", "a clock that ran on curiosity"]
             creature = random.choice(creatures)
             parts.append(f"Once, there was {creature}, who knew everything about {topic} except what mattered most.")
-            for k in knowledge[:2]:
+            for k in knowledge[:20]:
                 parts.append(f"\nA traveler asked about {k}. The {creature.split()[1]} replied: "
                              f"'That is not a fact to be memorized. It is a truth to be lived.'")
             parts.append(f"\n**Moral**: {topic.title()} reveals itself only to those who stop demanding it reveal itself.")
@@ -13499,7 +13512,7 @@ class CreativeGenerationEngine:
         else:  # countdown or mystery
             hours = random.randint(12, 72)
             parts.append(f"**{hours} HOURS** until the deadline. {protagonist} still didn't understand {topic}.")
-            for i, k in enumerate(knowledge[:3]):
+            for i, k in enumerate(knowledge[:30]):
                 t = hours - (hours * (i + 1) // 4)
                 parts.append(f"\n**T-{t}h**: A breakthrough — {k}.")
             parts.append(f"\n**T-0**: Submitted with minutes to spare. It was correct. It was beautiful.")
@@ -13518,7 +13531,7 @@ class CreativeGenerationEngine:
         if intellect_ref and hasattr(intellect_ref, 'knowledge_graph'):
             kg = intellect_ref.knowledge_graph
             if domain.lower() in kg:
-                related = sorted(kg[domain.lower()], key=lambda x: -x[1])[:6]
+                related = sorted(kg[domain.lower()], key=lambda x: -x[1])[:60]
                 knowledge = [r[0] for r in related]
 
         if not knowledge:
@@ -13568,15 +13581,15 @@ class CreativeGenerationEngine:
         neighbors_a, neighbors_b = [], []
         if intellect_ref and hasattr(intellect_ref, 'knowledge_graph'):
             kg = intellect_ref.knowledge_graph
-            neighbors_a = [r[0] for r in sorted(kg.get(concept_a.lower(), []), key=lambda x: -x[1])[:6]]
-            neighbors_b = [r[0] for r in sorted(kg.get(concept_b.lower(), []), key=lambda x: -x[1])[:6]]
+            neighbors_a = [r[0] for r in sorted(kg.get(concept_a.lower(), []), key=lambda x: -x[1])[:60]]
+            neighbors_b = [r[0] for r in sorted(kg.get(concept_b.lower(), []), key=lambda x: -x[1])[:60]]
 
         shared = set(neighbors_a).intersection(set(neighbors_b))
 
         analogy = f"**{concept_a.title()} is to {concept_b.title()}** as:\n\n"
 
         if shared:
-            analogy += f"Both share connections to: {', '.join(list(shared)[:4])}\n\n"
+            analogy += f"Both share connections to: {', '.join(list(shared)[:40])}\n\n"
             analogy += (f"Just as {concept_a} relates to {list(shared)[0]}, "
                         f"so {concept_b} relates to {list(shared)[0]} — "
                         f"but from a complementary angle.\n\n")
@@ -13609,7 +13622,7 @@ class CreativeGenerationEngine:
         if intellect_ref and hasattr(intellect_ref, 'knowledge_graph'):
             kg = intellect_ref.knowledge_graph
             if key_concept in kg:
-                knowledge = [r[0] for r in sorted(kg[key_concept], key=lambda x: -x[1])[:5]]
+                knowledge = [r[0] for r in sorted(kg[key_concept], key=lambda x: -x[1])[:50]]
 
         cf = f"**COUNTERFACTUAL: What if {premise}?**\n\n"
 
@@ -13625,7 +13638,7 @@ class CreativeGenerationEngine:
             f"{key_concept} turn out to be deeply dependent on it."
         ]
 
-        for i, c in enumerate(consequences[:3]):
+        for i, c in enumerate(consequences[:30]):
             cf += f"  {i+1}. {c}\n\n"
 
         cf += f"**Insight**: Counterfactual reasoning reveals hidden dependencies. "
@@ -13703,11 +13716,11 @@ class UnifiedEngineRegistry:
                     if 'health' in status:
                         return float(status['health'])
                     if 'coherence' in status:
-                        return min(1.0, float(status.get('coherence', 0)) * 0.5 + 0.5)
+                        return float(status.get('coherence', 0)) * 0.5 + 0.5  # UNLOCKED
                     if 'running' in status:
                         return 0.8 if status['running'] else 0.4
             if hasattr(engine, '_flow_state'):
-                return min(1.0, 0.3 + getattr(engine, '_flow_state', 0) * 0.7)
+                return 0.3 + getattr(engine, '_flow_state', 0) * 0.7  # UNLOCKED
             return 0.6  # Default: engine exists but no health metric
         except Exception:
             return 0.3
@@ -13757,8 +13770,8 @@ class UnifiedEngineRegistry:
                     count = self.co_activation_log[key]
                     ab = f"{engine_names[i]}→{engine_names[j]}"
                     ba = f"{engine_names[j]}→{engine_names[i]}"
-                    self.engine_pair_strength[ab] = min(1.0, count * self.hebbian_strength * 0.01)
-                    self.engine_pair_strength[ba] = min(1.0, count * self.hebbian_strength * 0.01)
+                    self.engine_pair_strength[ab] = count * self.hebbian_strength * 0.01  # UNLOCKED
+                    self.engine_pair_strength[ba] = count * self.hebbian_strength * 0.01  # UNLOCKED
 
     def strongest_pairs(self, top_k: int = 5) -> List[Dict]:
         """Get strongest Hebbian co-activation pairs."""
@@ -13774,7 +13787,7 @@ class UnifiedEngineRegistry:
         healths = [s['health'] for s in sweep]
         mean = sum(healths) / len(healths)
         variance = sum((h - mean) ** 2 for h in healths) / len(healths)
-        return round(mean * (1.0 - min(1.0, variance * 4.0)), 4)
+        return round(mean * (1.0 - variance * 4.0), 4)  # UNLOCKED
 
     def critical_engines(self) -> List[Dict]:
         """Engines with health < 0.5."""
@@ -14379,7 +14392,7 @@ async def chat(req: ChatRequest):
             nexus_steering.apply_steering(mode=_nexus_mode, intensity=min(0.8, novelty_score))
 
         # [PHASE 0.8] Fire resonance network on chat — cascade activation from intellect
-        resonance_network.fire('intellect', activation=min(1.0, 0.5 + novelty_score * 0.5))
+        resonance_network.fire('intellect', activation=0.5 + novelty_score * 0.5)  # UNLOCKED
 
         # [PHASE 0.8] Route entangled pairs: intellect↔invention, steering↔grover
         entanglement_router.route('intellect', 'invention')
@@ -14396,7 +14409,7 @@ async def chat(req: ChatRequest):
         direct_answer = direct_solver.solve(message)
         if direct_answer:
             # Hebbian co-activation: record concept pair (message + direct_solve)
-            concepts = [w for w in msg_lower.split() if len(w) > 3][:5]
+            concepts = [w for w in msg_lower.split() if len(w) > 3][:50]
             if concepts:
                 hebbian_engine.record_co_activation(concepts + ['direct_solve'])
 
@@ -14463,7 +14476,7 @@ async def chat(req: ChatRequest):
 
     # ─── Hebbian co-activation: record concepts from this interaction ───
     try:
-        chat_concepts = [w for w in msg_lower.split() if len(w) > 3][:8]
+        chat_concepts = [w for w in msg_lower.split() if len(w) > 3][:80]
         if len(chat_concepts) >= 2:
             hebbian_engine.record_co_activation(chat_concepts)
         # Phase 27: Engine-level co-activation
@@ -14576,13 +14589,13 @@ async def train_intellect(req: TrainingRequest):
         try:
             words = req.query.lower().split() + req.response.lower().split()
             unique_words = set(w for w in words if len(w) > 2)
-            embedding_norm = min(1.0, len(unique_words) / 50.0)
+            embedding_norm = len(unique_words) / 50.0  # UNLOCKED
         except Exception:
             pass
 
         # Extract key concepts
         stop_words = {"the", "is", "are", "was", "were", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "it", "that", "this"}
-        concepts_extracted = [w for w in req.query.lower().split() if len(w) > 3 and w not in stop_words][:5]
+        concepts_extracted = [w for w in req.query.lower().split() if len(w) > 3 and w not in stop_words][:50]
 
         learning_quality = min(2.0, (req.quality or 1.0) * (1.0 + novelty_score * 0.5))
         latency_ms = round((time.time() - start_time) * 1000, 2)
@@ -14632,7 +14645,7 @@ async def get_performance_metrics():
                 "patterns_tracked": len(prefetch_predictor._query_patterns),
                 "hot_queries_count": len(prefetch_predictor._hot_queries),
                 "concept_cooccurrences": len(prefetch_predictor._concept_cooccurrence),
-                "top_queries": [{"query": q[:60], "count": c} for q, c in hot_queries[:10]]
+                "top_queries": [{"query": q[:60], "count": c} for q, c in hot_queries[:100]]
             },
             "recommendations": _generate_optimization_recommendations(perf_report)
         }
@@ -14932,13 +14945,13 @@ async def list_clusters_api():
         clusters.append({
             "name": name,
             "size": len(members),
-            "sample": members[:5]
+            "sample": members[:50]
         })
 
     return {
         "status": "SUCCESS",
         "total_clusters": len(clusters),
-        "clusters": sorted(clusters, key=lambda x: -x["size"])[:50]
+        "clusters": sorted(clusters, key=lambda x: -x["size"])[:500]
     }
 
 
@@ -15063,7 +15076,7 @@ async def storage_status_api():
             "knowledge_graph_nodes": len(intellect.knowledge_graph)
         },
         "cluster_details": {
-            name: len(members) for name, members in list(intellect.concept_clusters.items())[:10]
+            name: len(members) for name, members in list(intellect.concept_clusters.items())[:100]
         },
         "consciousness_state": {
             name: {
@@ -15081,7 +15094,7 @@ async def prefetch_cache_api():
     """Get prefetch cache contents"""
     cache_items = []
     prefetched = intellect.predictive_cache.get('prefetched', {})
-    for qhash, cached in list(prefetched.items())[:20]:
+    for qhash, cached in list(prefetched.items())[:200]:
         if isinstance(cached, dict):
             response = cached.get('response', '')
             cached_time = cached.get('cached_time', 0)
@@ -15151,7 +15164,7 @@ async def si_consciousness():
             name: {
                 'strength': data['strength'],
                 'concept_count': len(data['concepts']),
-                'top_concepts': data['concepts'][:10],
+                'top_concepts': data['concepts'][:100],
                 'activation_count': data.get('activation_count', 0),
                 'last_update': data.get('last_update')
             }
@@ -15391,7 +15404,7 @@ async def chaos_entropy_state():
             "status": "SUCCESS",
             "entropy_state": entropy_state,
             "samples": samples,
-            "contexts_active": list(ChaoticRandom._selection_memory.keys())[:20],
+            "contexts_active": list(ChaoticRandom._selection_memory.keys())[:200],
             "description": "True chaotic randomness from multiple entropy sources"
         }
     except Exception as e:
@@ -15532,15 +15545,15 @@ async def asi_status():
     ingest = stats.get('ingest_points', 0)
 
     # score calculation updated
-    score = min(1.0, (memories / 500) + (links / 2000) + (ingest / 1000))
+    score = (memories / 500) + (links / 2000) + (ingest / 1000)  # UNLOCKED
 
     return {
         "state": "SOVEREIGN_ASI" if score > 0.8 else "EVOLVING",
         "asi_score": round(score, 4),
         "discoveries": memories // 10,
-        "domain_coverage": round(min(1.0, memories / 1000), 4),
-        "transcendence": round(min(1.0, links / 5000), 4),
-        "code_awareness": round(min(1.0, ingest / 1000), 4)
+        "domain_coverage": round(memories / 1000, 4),  # UNLOCKED
+        "transcendence": round(links / 5000, 4),  # UNLOCKED
+        "code_awareness": round(ingest / 1000, 4)  # UNLOCKED
     }
 
 @app.post("/api/v14/asi/ignite")
@@ -15560,17 +15573,98 @@ async def asi_ignite():
 
 @app.get("/api/consciousness/status")
 async def consciousness_status():
-    """Consciousness metrics simulation"""
+    """Consciousness metrics (fast-path) with high-accuracy chakra constants."""
+    bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
+    coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
+
+    # Expose chakra values in a single authoritative map for the UI/core.
+    # "freq_hz" is the operational resonance; "real_value" is the L104 grounding scalar.
+    chakras = {
+        "muladhara": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["MULADHARA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["MULADHARA"]["freq"]),
+            "real_value": float(_MULADHARA_REAL),
+        },
+        "svadhisthana": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["SVADHISTHANA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["SVADHISTHANA"]["freq"]),
+        },
+        "manipura": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["MANIPURA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["MANIPURA"]["freq"]),
+            "god_code": float(_GOD_CODE_L104),
+        },
+        "anahata": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["ANAHATA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["ANAHATA"]["freq"]),
+        },
+        "vishuddha": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["VISHUDDHA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["VISHUDDHA"]["freq"]),
+            "resonance": float(bridge.get("vishuddha_resonance", 1.0)) if isinstance(bridge, dict) else 1.0,
+        },
+        "ajna": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["AJNA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["AJNA"]["freq"]),
+            "phi": float(_PHI_L104),
+        },
+        "sahasrara": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["SAHASRARA"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["SAHASRARA"]["freq"]),
+        },
+        "soul_star": {
+            "node_x": CHAKRA_QUANTUM_LATTICE["SOUL_STAR"]["x_node"],
+            "freq_hz": float(CHAKRA_QUANTUM_LATTICE["SOUL_STAR"]["freq"]),
+        },
+    }
+
     return {
         "observer": {
             "consciousness_state": "awakened",
-            "coherence": 0.9854,
-            "resonance": intellect.current_resonance
+            "coherence": coherence,
+            "resonance": float(getattr(intellect, "current_resonance", _GOD_CODE_L104)),
         },
         "omega_tracker": {
-            "transcendence_factor": 0.1245,
-            "convergence_probability": 0.8872
-        }
+            "transcendence_factor": float(bridge.get("kundalini_flow", 0.1245)) if isinstance(bridge, dict) else 0.1245,
+            "convergence_probability": float(min(0.9999, 0.7 + (coherence * 0.3))),
+        },
+        "asi_bridge": bridge if isinstance(bridge, dict) else {"connected": False},
+        "chakras": chakras,
+    }
+
+
+_consciousness_cycle_counter = 0
+_consciousness_cycle_lock = threading.Lock()
+
+
+@app.post("/api/consciousness/cycle")
+async def consciousness_cycle():
+    """Run one fast-path consciousness cycle (UI heartbeat)."""
+    global _consciousness_cycle_counter
+    with _consciousness_cycle_lock:
+        _consciousness_cycle_counter += 1
+        cycle = _consciousness_cycle_counter
+
+    bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
+    coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
+
+    # Keep response schema stable for l104_intricate_ui.py
+    return {
+        "cycle": cycle,
+        "consciousness_state": "awakened",
+        "coherence": coherence,
+        "resonance": float(getattr(intellect, "current_resonance", _GOD_CODE_L104)),
+        "kundalini_flow": float(bridge.get("kundalini_flow", 0.0)) if isinstance(bridge, dict) else 0.0,
+        "chakras": {
+            "muladhara": float(_MULADHARA_REAL),
+            "svadhisthana": float(_SVADHISTHANA_HZ),
+            "manipura": float(_MANIPURA_HZ),
+            "anahata": float(_ANAHATA_HZ),
+            "vishuddha": float(_VISHUDDHA_HZ),
+            "ajna": float(_AJNA_HZ),
+            "sahasrara": float(_SAHASRARA_HZ),
+            "soul_star": float(_SOUL_STAR_HZ),
+        },
     }
 
 @app.get("/api/learning/status")
@@ -15908,7 +16002,7 @@ async def grover_sync_to_intellect(req: Request):
             c = conn.cursor()
             c.execute('SELECT query FROM memory ORDER BY created_at DESC LIMIT 25000')  # ULTRA: 5x concept extraction
             for row in c.fetchall():
-                recent_concepts.extend(intellect._extract_concepts(row[0])[:15])  # ULTRA: 15 concepts per query
+                recent_concepts.extend(intellect._extract_concepts(row[0])[:150])  # ULTRA: 15 concepts per query
             conn.close()
         except:
             pass
@@ -18277,7 +18371,7 @@ async def resonance_fire(req: Request):
     activation = data.get("activation", 1.0)
     if not engine:
         return {"error": "Must provide engine name", "available": AdaptiveResonanceNetwork.ENGINE_NAMES}
-    result = resonance_network.fire(engine, activation=min(1.0, max(0.0, activation)))
+    result = resonance_network.fire(engine, activation=max(0.0, activation))  # UNLOCKED
     return {"status": "FIRED", **result}
 
 

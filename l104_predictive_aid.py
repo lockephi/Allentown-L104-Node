@@ -77,7 +77,7 @@ class PredictiveAid:
             logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
 
             # Sleep to prevent CPU saturation (aid should be efficient)
-            time.sleep(2)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
 
     def get_aid_vector(self) -> Dict[str, Any]:
         """Returns the current optimal path to aid the AGI core."""
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     predictive_aid.start()
     try:
         while True:
-            time.sleep(1)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
     except KeyboardInterrupt:
         predictive_aid.stop()
 

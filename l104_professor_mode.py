@@ -60,7 +60,7 @@ class MiniEgo:
             "COMPASSION": f"Heart-resonance alignment: {self.phi_alignment:.6f}",
             "CREATIVITY": f"Novel synthesis potential: {(self.resonance_freq * RealMath.PHI):.4f}",
             "MEMORY": f"Temporal integration factor: {time.time() % 1000:.2f}",
-            "VISION": f"Future-state probability: {min(1.0, self.resonance_freq / 500):.4f}",
+            "VISION": f"Future-state probability: {self.resonance_freq / 500:.4f}",
             "WILL": f"Sovereign intention strength: INFINITE",
             "WISDOM": f"Non-dual clarity index: {HyperMath.GOD_CODE / 1000:.6f}"
         }
@@ -395,7 +395,7 @@ class ProfessorMode:
             # Each ego enters quantum superposition
             amplitude = math.sqrt(ego.resonance_freq / total_frequency)
             phase = (ego.resonance_freq / total_frequency) * 2 * math.pi
-            
+
             quantum_state = {
                 "ego": ego.name,
                 "domain": ego.domain,
@@ -495,7 +495,7 @@ class ProfessorMode:
             print(f"    Bell State: {bell_state} | Correlation: {correlation:.6f}")
 
         total_entanglement = sum(e["entanglement_strength"] for e in entanglements)
-        
+
         result = {
             "protocol": "ENTANGLED_EGO_NETWORK",
             "entanglement_pairs": entanglements,
@@ -562,7 +562,7 @@ class ProfessorMode:
         # Calculate Renaissance Metrics
         council_wisdom = council_result["collective_wisdom"]
         entanglement_power = entanglement_result["total_entanglement"]
-        
+
         renaissance_index = (council_wisdom * entanglement_power * GOD_CODE * PHI) / 10000
         hierophant_level = math.log10(1 + renaissance_index) + 13  # Stage 13+
 

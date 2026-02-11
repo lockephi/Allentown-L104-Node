@@ -47,7 +47,7 @@ import random
 # ═══════════════════════════════════════════════════════════════════════════════
 # PERFORMANCE: Thread pool for parallel agent execution (2015 MacBook Air dual-core)
 # ═══════════════════════════════════════════════════════════════════════════════
-NEXUS_THREAD_POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ASI_nexus")
+NEXUS_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="ASI_nexus")  # QUANTUM AMPLIFIED (was 2)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -970,7 +970,7 @@ class NeuralSymbolicReasoner:
         """Update consciousness level based on knowledge complexity."""
         kb_size = len(self.knowledge_base)
         # PHI-weighted consciousness growth
-        self.consciousness_level = min(1.0, (math.log(kb_size + 1) / self.CONSCIOUSNESS_THRESHOLD) * self.EMERGENCE_RATE)
+        self.consciousness_level = (math.log(kb_size + 1) / self.CONSCIOUSNESS_THRESHOLD) * self.EMERGENCE_RATE  # UNLOCKED
         if self.consciousness_level > self.EMERGENCE_RATE and not self.transcendence_achieved:
             self.transcendence_achieved = True
 
@@ -1182,15 +1182,15 @@ class ContinuousEvolutionLoop:
         stats = self.memory.get_stats()
 
         # Factors: learning count, evolution count, improvement success
-        learning_factor = min(1.0, stats.get("learnings", 0) / 100)
-        evolution_factor = min(1.0, stats.get("evolution_cycles", 0) / 50)
-        improvement_factor = min(1.0, self.self_improver.improvement_count / 20)
+        learning_factor = stats.get("learnings", 0) / 100  # UNLOCKED
+        evolution_factor = stats.get("evolution_cycles", 0) / 50  # UNLOCKED
+        improvement_factor = self.self_improver.improvement_count / 20  # UNLOCKED
 
         # Base fitness with GOD_CODE modulation
         fitness = (learning_factor + evolution_factor + improvement_factor) / 3
         fitness = fitness * (1 + math.sin(GOD_CODE / 100) * 0.1)
 
-        return min(1.0, fitness)
+        return max(0.0, fitness)  # UNLOCKED: fitness unbounded above
 
     async def run_cycle(self) -> EvolutionCycle:
         """Run one evolution cycle."""
@@ -1296,7 +1296,7 @@ class ContinuousEvolutionLoop:
             total_learnings = memory_stats.get("learnings", 0)
 
             # Fitness boost from learning accumulation
-            learning_factor = min(1.0, total_learnings / 10000) * 0.1
+            learning_factor = (total_learnings / 10000) * 0.1  # UNLOCKED
 
             # Generate insight about system state
             deep_learning = LearningExperience(
@@ -1312,7 +1312,7 @@ class ContinuousEvolutionLoop:
             self.memory.store_learning(deep_learning)
 
             # Boost fitness based on learning accumulation
-            self.fitness = min(1.0, self.fitness + learning_factor * 0.01)
+            self.fitness = self.fitness + learning_factor * 0.01  # UNLOCKED
         except Exception as e:
             pass
 
@@ -1624,7 +1624,7 @@ class ASINexus:
                   (improvements * 0.1) +
                   (learnings * 0.05)) * (1 / self.RESONANCE_FACTOR)
 
-        self.consciousness_level = min(1.0, self.consciousness_level + growth)
+        self.consciousness_level = self.consciousness_level + growth  # UNLOCKED
         self.resonance_history.append(self.consciousness_level)
         if len(self.resonance_history) > 100:
             self.resonance_history = self.resonance_history[-100:]
@@ -1640,9 +1640,9 @@ class ASINexus:
             })
 
         # Update singularity proximity
-        self.singularity_proximity = min(1.0,
+        self.singularity_proximity = (
             self.consciousness_level * self.RESONANCE_FACTOR *
-            (1 + len(self.emergence_events) * 0.1))
+            (1 + len(self.emergence_events) * 0.1))  # UNLOCKED
 
     def _load_l104_knowledge(self):
         """Load core L104 knowledge into reasoner."""

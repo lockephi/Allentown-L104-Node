@@ -126,7 +126,7 @@ class TruthDiscovery:
             # Apply frame lock modulation
             modulated_value = layer_value * (1 + math.sin(self.frame_lock * i) * 0.1)
             current_confidence = (current_confidence + modulated_value) / 2 * (1 + 1/self.phi)
-            current_confidence = min(1.0, current_confidence)
+            current_confidence = current_confidence  # UNLOCKED: confidence grows beyond 1.0
 
             layers.append({
                 "layer": i + 1,
@@ -421,7 +421,7 @@ class TruthDiscovery:
 
         # Variance indicates dimensional stability
         variance = sum((c - avg_conf) ** 2 for c in confidences) / len(confidences)
-        stability = 1.0 - min(1.0, variance * 10)
+        stability = 1.0 - variance * 10  # UNLOCKED: stability metric unbounded
 
         # Unified truth: weighted by dimensional depth
         weighted_sum = sum(r["confidence"] * (self.phi ** (-r["dimension"] * 0.5)) for r in dimensional_results)
@@ -548,7 +548,7 @@ class TruthDiscovery:
         final_score = (weighted_sum / sum(self.phi ** (-i) for i in range(len(evidence_bits))))
 
         # Modulate by node's intrinsic harmonic weight
-        node.confidence = min(1.0, final_score * node.harmonic_weight)
+        node.confidence = final_score * node.harmonic_weight  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         return node.confidence
 
     def calculate_resonance_convergence(self, query: str) -> Dict:
@@ -765,8 +765,8 @@ class TruthDiscovery:
         consensus_strength = 1.0 / (1.0 + variance * 10)
 
         # Synthesized confidence: boosted by consensus
-        synthesized_confidence = min(1.0, avg_confidence * (1 + consensus_strength * 0.2) * self.phi)
-        synthesized_confidence = min(1.0, synthesized_confidence)
+        synthesized_confidence = avg_confidence * (1 + consensus_strength * 0.2) * self.phi  # QUANTUM AMPLIFIED: uncapped
+        # synthesized_confidence double-cap removed — QUANTUM AMPLIFIED
 
         return {
             "base_query": base_query,
@@ -809,7 +809,7 @@ class TruthDiscovery:
 
         # Final strengthened confidence
         strengthened = original["final_confidence"] * (1 + robustness * 0.1 + exclusivity * 0.1)
-        strengthened = min(1.0, strengthened)
+        strengthened = strengthened  # UNLOCKED: strengthened confidence grows
 
         return {
             "query": query,
@@ -854,7 +854,7 @@ class TruthDiscovery:
                 resonance = sum(1 for a, b in zip(hash_i[:16], hash_j[:16]) if a == b) / 16
 
                 entanglement_strength = (similarity + resonance) / 2 * self.phi
-                entanglement_strength = min(1.0, entanglement_strength)
+                entanglement_strength = entanglement_strength  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
                 entanglements.append({
                     "truth_a": i,
@@ -872,7 +872,7 @@ class TruthDiscovery:
             relevant = [e for e in entanglements if e["truth_a"] == i or e["truth_b"] == i]
             if relevant:
                 boost = sum(e["strength"] for e in relevant) / len(relevant) * 0.1
-                boosted = min(1.0, disc["final_confidence"] * (1 + boost))
+                boosted = disc["final_confidence"] * (1 + boost)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             else:
                 boosted = disc["final_confidence"]
             boosted_confidences.append(boosted)
@@ -1004,42 +1004,42 @@ class TruthDiscovery:
     def discover_absolute_truth(self, query: str) -> Dict:
         """
         Discover truth using SageMagicEngine for absolute precision.
-        
+
         Uses 150 decimal precision and the 13 Sacred Magics to validate
         truth against the deepest mathematical invariants.
         """
         if not SAGE_MAGIC_AVAILABLE:
             return self.discover_truth(query, depth=7)
-        
+
         try:
             # Standard discovery first
             base_result = self.discover_truth(query, depth=7)
-            
+
             # Get high precision constants
             god_code = SageMagicEngine.derive_god_code()
             phi = SageMagicEngine.derive_phi()
-            
+
             # Calculate magic resonance for this truth
             truth_hash = base_result["truth_hash"]
             hash_value = int(truth_hash[:8], 16)
             magic_resonance = float(god_code) % (hash_value % 1000 + 1) / float(god_code)
-            
+
             # Verify against PHI identity
             phi_identity = abs(phi * phi - phi - 1)
-            
+
             # Enhance result with magic validation
             base_result["magic_enhanced"] = True
             base_result["god_code_resonance"] = magic_resonance
             base_result["phi_identity_verified"] = float(phi_identity) < 1e-140
             base_result["absolute_confidence"] = base_result["final_confidence"] * (1 + magic_resonance * 0.1)
             base_result["god_code_used"] = str(god_code)[:60]
-            
+
             # Upgrade level if high magic resonance
             if magic_resonance > 0.7 and base_result["final_confidence"] > 0.9:
                 base_result["verdict"] = "TRANSCENDENT"
-            
+
             return base_result
-            
+
         except Exception as e:
             result = self.discover_truth(query, depth=7)
             result["magic_error"] = str(e)
@@ -1048,7 +1048,7 @@ class TruthDiscovery:
     def validate_mathematical_truth(self, expression: str) -> Dict:
         """
         Validate mathematical expressions using SageMagicEngine.
-        
+
         Can verify:
         - PHI identities (φ² = φ + 1)
         - GOD_CODE derivation (286^(1/φ) × 16)
@@ -1056,87 +1056,87 @@ class TruthDiscovery:
         """
         if not SAGE_MAGIC_AVAILABLE:
             return {"error": "SageMagicEngine not available", "expression": expression}
-        
+
         try:
             validations = []
-            
+
             # Check for PHI-related expressions
             if "phi" in expression.lower() or "φ" in expression:
                 phi = SageMagicEngine.derive_phi()
                 phi_sq = phi * phi
                 identity_error = abs(phi_sq - phi - 1)
-                
+
                 validations.append({
                     "check": "PHI_IDENTITY",
                     "expression": "φ² = φ + 1",
                     "error": str(identity_error),
                     "verified": float(identity_error) < 1e-140
                 })
-            
+
             # Check for GOD_CODE expressions
             if "god" in expression.lower() or "527" in expression or "286" in expression:
                 god_code = SageMagicEngine.derive_god_code()
-                
+
                 validations.append({
                     "check": "GOD_CODE_DERIVATION",
                     "expression": "286^(1/φ) × 16",
                     "result": str(god_code)[:80],
                     "verified": True
                 })
-            
+
             # Check for conservation law
             if "conservation" in expression.lower() or "104" in expression:
                 conservation = SageMagicEngine.magic_7_conservation_law()
-                
+
                 validations.append({
                     "check": "CONSERVATION_LAW",
                     "expression": "G(X) × 2^(X/104) = GOD_CODE",
                     "verified": conservation.get("all_conserved", False)
                 })
-            
+
             return {
                 "expression": expression,
                 "validations": validations,
                 "precision": "150 decimals",
                 "all_verified": all(v.get("verified", False) for v in validations) if validations else False
             }
-            
+
         except Exception as e:
             return {"error": str(e), "expression": expression}
 
     def invoke_13_magic_truths(self) -> Dict:
         """
         Invoke all 13 Sacred Magics and extract truth patterns.
-        
+
         Each magic reveals a different facet of mathematical truth.
         """
         if not SAGE_MAGIC_AVAILABLE:
             return {"error": "SageMagicEngine not available"}
-        
+
         try:
             all_magics = SageMagicEngine.invoke_all_13_magics()
-            
+
             magic_truths = []
             for i, magic in enumerate(all_magics.get("magics", []), 1):
                 magic_name = magic.get("magic", f"Magic_{i}")
-                
+
                 # Create truth node for each magic
                 truth_result = self.discover_truth(f"Sacred Magic {i}: {magic_name}", depth=3)
-                
+
                 magic_truths.append({
                     "magic_number": i,
                     "magic_name": magic_name,
                     "truth_node": truth_result["node_id"],
                     "confidence": truth_result["final_confidence"]
                 })
-            
+
             return {
                 "magic_count": len(magic_truths),
                 "magic_truths": magic_truths,
                 "total_confidence": sum(m["confidence"] for m in magic_truths) / len(magic_truths) if magic_truths else 0,
                 "god_code": str(all_magics.get("god_code", "unknown"))[:60]
             }
-            
+
         except Exception as e:
             return {"error": str(e)}
 

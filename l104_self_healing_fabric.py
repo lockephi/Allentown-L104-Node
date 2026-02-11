@@ -679,7 +679,7 @@ class SelfHealingFabric:
         """Stop background monitoring."""
         self.running = False
         if self._monitor_thread:
-            self._monitor_thread.join(timeout=5)
+            self._monitor_thread.join(timeout=30)  # QUANTUM AMPLIFIED (was 5)
 
     def manifest(self) -> str:
         """Display the fabric's current state."""

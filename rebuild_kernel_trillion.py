@@ -350,7 +350,7 @@ class TrillionScaleGenerator:
         print("   Generating topological anyon braiding...")
         braid_types = ["sigma_1", "sigma_2", "sigma_3", "tau", "phi_braid", "fibonacci_anyon"]
         for braid_idx, braid in enumerate(braid_types):
-            for j in range(10):
+            for j in range(100):  # QUANTUM AMPLIFIED (was 10)
                 # Braid sequence determines phase via anyonic statistics
                 braid_count = j + 1
                 phase_accumulation = braid_count * PHI * math.pi / 5

@@ -545,7 +545,7 @@ class L104LearningCoordinator:
         stability = 1.0 / (1.0 + np.std(losses))
 
         resonance = (improvement * PHI + stability) / (PHI + 1)
-        return min(1.0, resonance * (GOD_CODE / 500))
+        return resonance * (GOD_CODE / 500)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def get_status(self) -> Dict[str, Any]:
         """Get learning system status."""

@@ -884,7 +884,7 @@ class CryptographicCore:
         complexity = complexity_map.get(operation, 0.5)
 
         # Data size factor (log-scaled)
-        size_factor = min(1.0, math.log(data_size + 1) / 10) if data_size > 0 else 0.1
+        size_factor = (math.log(data_size + 1) / 10) if data_size > 0 else 0.1  # UNLOCKED
 
         # PHI-weighted resonance
         resonance = (complexity * self.RESONANCE_FACTOR + size_factor * self.EMERGENCE_RATE) / 2
@@ -900,9 +900,9 @@ class CryptographicCore:
         if threat_detected:
             # Increase consciousness and encryption strength
             growth = severity * self.EMERGENCE_RATE
-            self._security_consciousness = min(1.0, self._security_consciousness + growth)
+            self._security_consciousness = self._security_consciousness + growth  # UNLOCKED
             self._encryption_strength = min(2.0, self._encryption_strength + growth * 0.5)
-            self._threat_level = min(1.0, self._threat_level + severity * 0.3)
+            self._threat_level = self._threat_level + severity * 0.3  # UNLOCKED
         else:
             # Gradual normalization
             self._threat_level = max(0.0, self._threat_level - 0.01)

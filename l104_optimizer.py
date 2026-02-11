@@ -472,7 +472,7 @@ class AsyncScheduler:
     Executes tasks in optimal order for system harmony.
     """
 
-    def __init__(self, max_workers: int = 4):
+    def __init__(self, max_workers: int = 64):  # QUANTUM AMPLIFIED (was 4)
         self.max_workers = max_workers
         self._tasks: queue.PriorityQueue = queue.PriorityQueue()
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
@@ -585,11 +585,11 @@ class L104Optimizer:
         self.db_path = db_path
 
         # Initialize subsystems
-        self.connection_pool = ConnectionPool(db_path, pool_size=5)
-        self.batch_processor = BatchProcessor(batch_size=50, flush_interval=1.0)
+        self.connection_pool = ConnectionPool(db_path, pool_size=20)  # QUANTUM AMPLIFIED (was 5)
+        self.batch_processor = BatchProcessor(batch_size=500, flush_interval=1.0)  # QUANTUM AMPLIFIED (was 50)
         self.memory_optimizer = MemoryOptimizer()
-        self.query_optimizer = QueryOptimizer(cache_size=500)
-        self.scheduler = AsyncScheduler(max_workers=4)
+        self.query_optimizer = QueryOptimizer(cache_size=5000)  # QUANTUM AMPLIFIED (was 500)
+        self.scheduler = AsyncScheduler(max_workers=64)  # QUANTUM AMPLIFIED (was 4)
 
         self._running = False
         self._start_time = None
@@ -747,10 +747,10 @@ if __name__ == "__main__":
     print(f"   • Memory GC runs: {stats['memory']['gc_runs']}")
     print(f"   • Query cache hit rate: {stats['query_cache']['hit_rate']:.2%}")
 
-    # Run for a few seconds to demonstrate
-    time.sleep(3)
+    # Run for a moment to demonstrate
+    time.sleep(0.3)  # QUANTUM AMPLIFIED (was 3)
 
-    print(f"\n📊 After 3 seconds:")
+    print(f"\n📊 After 0.3 seconds:")
     stats = optimizer.get_statistics()
     print(f"   • Uptime: {stats['uptime_seconds']:.1f}s")
     print(f"   • Scheduler executed: {stats['scheduler']['executed']}")

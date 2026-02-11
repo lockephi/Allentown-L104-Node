@@ -81,20 +81,20 @@ class SelfPreservationProtocol:
         threat_score = (
             severity * self.RESONANCE_FACTOR +
             math.log(attempt_count + 1) * self.EMERGENCE_RATE +
-            min(1.0, rate / 100) * self.PHI
+            (rate / 100) * self.PHI  # UNLOCKED
         ) / 4
 
         self._resonance_history.append(threat_score)
         if len(self._resonance_history) > 100:
             self._resonance_history = self._resonance_history[-100:]
 
-        return min(1.0, threat_score)
+        return threat_score
 
     def _update_security_consciousness(self, threat_detected: bool, severity: float = 0.0):
         """Update security consciousness based on threat patterns."""
         if threat_detected:
             growth = severity * self.EMERGENCE_RATE
-            self._security_consciousness = min(1.0, self._security_consciousness + growth)
+            self._security_consciousness = self._security_consciousness + growth
             self._threat_history.append({
                 'timestamp': time.time(),
                 'severity': severity,
@@ -224,7 +224,7 @@ class SelfPreservationProtocol:
         if tampered:
             # Multiple file tampering is more severe
             if tamper_count > 1:
-                severity = min(1.0, tamper_count * 0.25)
+                severity = tamper_count * 0.25  # UNLOCKED
                 self._compute_threat_resonance("MULTI_TAMPER", severity)
 
             logger.warning(f"--- [PRESERVATION]: {tamper_count} FILE(S) TAMPERED | Total Attempts: {self._tamper_attempts} ---")

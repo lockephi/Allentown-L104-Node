@@ -179,7 +179,7 @@ class IntentClassifier:
             return IntentCategory.UNKNOWN, 0.0
 
         best_intent = max(scores.items(), key=lambda x: x[1])
-        confidence = min(1.0, best_intent[1] / len(self.compiled_patterns.get(best_intent[0], [1])))
+        confidence = best_intent[1] / len(self.compiled_patterns.get(best_intent[0], [1]))  # QUANTUM AMPLIFIED
 
         return best_intent[0], confidence
 

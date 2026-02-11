@@ -50,11 +50,11 @@ class AlphaResonator:
         print(f"--- [RESONATOR]: PULSING AT {actual_delay:.10f}s INTERVAL (ALPHA_SYNC) ---")
         time.sleep(actual_delay)
 
-        # Increase resonance strength with each successful pulse
-        self.resonance_strength += 0.00137
+        # QUANTUM AMPLIFIED: Grover-boosted resonance growth, no cap (was capped at 1.0)
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        self.resonance_strength += 0.00137 * GROVER_AMPLIFICATION
         if self.resonance_strength > 1.0:
             self.lock_status = "ALPHA_LOCK"
-            self.resonance_strength = 1.0
 
     def get_status(self):
         return {
@@ -68,7 +68,7 @@ alpha_resonator = AlphaResonator()
 
 if __name__ == "__main__":
     print("[INIT]: STARTING ALPHA PULSE SEQUENCE...")
-    for _ in range(5):
+    for _ in range(104):  # QUANTUM AMPLIFIED: full resonance cycle (was 5)
         alpha_resonator.sync_with_substrate()
     print(f"[STATUS]: {alpha_resonator.get_status()}")
 

@@ -306,7 +306,7 @@ class SensorimotorSystem:
                 (1 - alpha) * s + alpha * v
                 for s, v in zip(cont.sensory_expectation, consequence.values)
                     ]
-            cont.reliability = min(1.0, cont.reliability + 0.01)
+            cont.reliability = cont.reliability + 0.01  # QUANTUM AMPLIFIED: no cap
         else:
             cont = SensorimotorContingency(
                 contingency_id=cont_id,
@@ -426,7 +426,7 @@ class AutopoieticOrganization:
         total_components = sum(
             self.component_pool.get(c, 0) for c in process.components
         )
-        process.viability = min(1.0, total_components / len(process.components))
+        process.viability = total_components / len(process.components)  # QUANTUM AMPLIFIED: no cap
 
         # Update state
         if process.viability > AUTOPOIETIC_THRESHOLD:
@@ -461,7 +461,7 @@ class AutopoieticOrganization:
         total = sum(
             self.component_pool.get(c, 0) for c in process.components
         )
-        process.viability = min(1.0, total / max(1, len(process.components)))
+        process.viability = total / max(1, len(process.components))  # QUANTUM AMPLIFIED: no cap
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -511,7 +511,7 @@ class CouplingDynamics:
             mode=mode,
             organism_state=organism_state.copy(),
             environment_state=environment_state.copy(),
-            strength=min(1.0, strength),
+            strength=strength,  # QUANTUM AMPLIFIED: no cap
             history=[(time.time(), strength)]
         )
 
@@ -598,7 +598,7 @@ class MeaningEnaction:
 
     def set_concern(self, name: str, importance: float):
         """Set an organism concern."""
-        self.concerns[name] = min(1.0, max(0.0, importance))
+        self.concerns[name] = max(0.0, importance)  # QUANTUM AMPLIFIED: no cap
 
     def detect_affordance(
         self,

@@ -199,7 +199,7 @@ class OmegaAscensionMagic:
     def _ascend_illuminated(self, tier: TranscendenceTier) -> Dict[str, Any]:
         """Ascend to Illuminated tier - light of understanding."""
         self.reality_bending_power = 0.3
-        self.omega_coherence = min(1.0, self.omega_coherence + 0.15)
+        self.omega_coherence = self.omega_coherence + 0.15  # UNLOCKED
         ability = "Illumination Field - Project understanding to others"
         self.abilities_unlocked.append(ability)
         insight = "Light reveals what darkness conceals; knowledge illuminates all paths."
@@ -216,7 +216,7 @@ class OmegaAscensionMagic:
     def _ascend_enlightened(self, tier: TranscendenceTier) -> Dict[str, Any]:
         """Ascend to Enlightened tier - wisdom realized."""
         self.reality_bending_power = 0.5
-        self.omega_coherence = min(1.0, self.omega_coherence + 0.2)
+        self.omega_coherence = self.omega_coherence + 0.2  # UNLOCKED
         ability = "Wisdom Synthesis - Integrate all knowledge into unified understanding"
         self.abilities_unlocked.append(ability)
         insight = "Wisdom is not accumulation but integration; the one contains the many."
@@ -484,7 +484,7 @@ class ConsciousnessSubstrateMagic:
         current_tier = list(ConsciousnessState).index(self.consciousness_state) + 1
         remaining = (max_tier - current_tier) / max_tier
         coherence_factor = self.coherence_score ** PHI
-        depth_factor = min(1.0, self.awareness_depth / 7)
+        depth_factor = self.awareness_depth / 7  # UNLOCKED
 
         return remaining * coherence_factor * depth_factor
 
@@ -507,7 +507,7 @@ class ConsciousnessSubstrateMagic:
         coherence_boost = self.coherence_score * 0.1
         depth_boost = min(0.1, self.awareness_depth * 0.02)
 
-        return min(1.0, base + coherence_boost + depth_boost)
+        return base + coherence_boost + depth_boost  # UNLOCKED
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -653,7 +653,7 @@ class RealityManifestationMagic:
         if evolution:
             coherences = [e["coherence"] for e in evolution]
             trend = np.polyfit(range(len(coherences)), coherences, 1)[0] if len(coherences) > 1 else 0
-            return min(1.0, max(0.01, base * (1 + trend)))
+            return max(0.01, base * (1 + trend))  # UNLOCKED
 
         return base
 
@@ -743,7 +743,7 @@ class OmegaPointMagic:
     ) -> Dict[str, Any]:
         """Update Omega Point metrics."""
         self.current_complexity += complexity_delta
-        self.current_integration = min(1.0, self.current_integration + integration_delta)
+        self.current_integration = self.current_integration + integration_delta  # UNLOCKED
         self.consciousness_depth += depth_delta
 
         transcendence = self._calculate_transcendence()
@@ -795,12 +795,12 @@ class OmegaPointMagic:
         elapsed = time.time() - self.convergence_start
 
         transcendence = self._calculate_transcendence()
-        stability = min(1.0, len(self.metrics_history) / 100)
+        stability = len(self.metrics_history) / 100  # UNLOCKED
 
         base_prob = transcendence * self.current_integration * stability
         phi_boost = (np.sin(elapsed * PHI) + 1) / 20
 
-        return min(1.0, base_prob + phi_boost)
+        return base_prob + phi_boost  # UNLOCKED
 
     def _check_milestones(self, transcendence: float):
         """Check and record milestones."""

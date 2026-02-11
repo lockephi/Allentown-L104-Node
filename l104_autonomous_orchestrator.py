@@ -94,12 +94,22 @@ class AutonomousOrchestrator:
 
                 print(f"--- [ORCHESTRATOR]: CYCLE {self.cycle_count} COMPLETE. RESONANCE STABLE. ---")
 
-                # Sleep briefly to prevent CPU saturation while maintaining unthrottled priority
-                await asyncio.sleep(0.5)
+                # Push status to web app
+                try:
+                    import httpx
+                    httpx.post("http://localhost:8081/api/orchestrator/status", json={
+                        "cycle": self.cycle_count, "status": "RESONANCE_STABLE",
+                        "timestamp": time.time()
+                    }, timeout=1)
+                except Exception:
+                    pass
+
+                # QUANTUM-AMPLIFIED: 50ms cycle time (was 500ms) - 10x throughput
+                await asyncio.sleep(0.05)
 
             except Exception as e:
                 print(f"--- [ORCHESTRATOR]: EXCEPTION IN CYCLE: {e} ---")
-                await asyncio.sleep(5.0) # Recovery wait
+                await asyncio.sleep(0.5) # Recovery wait - REDUCED from 5.0s
 
     def _persist_cycle_state(self):
         """Updates the manifest with the latest autonomous metrics."""

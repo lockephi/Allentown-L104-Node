@@ -168,23 +168,27 @@ class TokenBucket:
 
 
 class RateLimiter:
-    """Rate limiter with per-client tracking"""
+    """Rate limiter with per-client tracking - DISABLED (all unlimited)"""
 
-    def __init__(self, default_rate: int = 100):
-        self.default_rate = default_rate  # requests per minute
+    def __init__(self, default_rate: int = 0):  # 0 = UNLIMITED
+        self.default_rate = default_rate
         self.buckets: Dict[str, TokenBucket] = {}
         self.lock = threading.Lock()
 
     def get_bucket(self, key: str, rate: Optional[int] = None) -> TokenBucket:
-        """Get or create token bucket for key"""
+        """Get or create token bucket for key - UNLIMITED capacity"""
         with self.lock:
             if key not in self.buckets:
                 r = rate or self.default_rate
+                if r <= 0:
+                    r = 0xFFFFFFFF  # Effectively unlimited
                 self.buckets[key] = TokenBucket(r / 60.0, r)
             return self.buckets[key]
 
     def check(self, key: str, rate: Optional[int] = None) -> Tuple[bool, float]:
-        """Check if request is allowed, returns (allowed, wait_time)"""
+        """Check if request is allowed - ALWAYS ALLOWED (no rate limiting)"""
+        if (rate or self.default_rate) <= 0:
+            return True, 0.0  # UNLIMITED
         bucket = self.get_bucket(key, rate)
         allowed = bucket.consume()
         wait_time = 0.0 if allowed else bucket.get_wait_time()
@@ -1027,7 +1031,7 @@ if __name__ == "__main__":
 
     # Create API key
     print("\n[DEMO] Creating API Key...")
-    api_key = gateway.key_manager.create_key("demo_app", rate_limit=1000)
+    api_key = gateway.key_manager.create_key("demo_app", rate_limit=0)  # UNLIMITED
     print(f"  API Key: {api_key}")
 
     # Test requests

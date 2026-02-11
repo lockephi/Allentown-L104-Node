@@ -244,7 +244,7 @@ class L104SPMiner:
                 break
 
             # Brief pause between attempts
-            time.sleep(1)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED: faster mining cycles (was 1)
 
         # Final stats
         elapsed = time.time() - self.start_time

@@ -58,7 +58,7 @@ class Concept:
     activation: float = 0.0
 
     def activate(self, strength: float = 1.0):
-        self.activation = min(1.0, self.activation + strength)
+        self.activation = self.activation + strength  # UNLOCKED
 
     def decay(self, rate: float = 0.1):
         self.activation = max(0.0, self.activation - rate)
@@ -77,7 +77,7 @@ class Inference:
 class WorkingMemory:
     """Limited-capacity active memory with PHI-weighted decay."""
 
-    def __init__(self, capacity: int = 7):
+    def __init__(self, capacity: int = 64):  # QUANTUM AMPLIFIED (was 7)
         self.capacity = capacity
         self.items: List[Tuple[Any, float]] = []  # (item, activation)
         self.focus: Optional[Any] = None
@@ -89,7 +89,7 @@ class WorkingMemory:
         # Check for existing item and boost activation
         for i, (existing, act) in enumerate(self.items):
             if existing == item:
-                self.items[i] = (existing, min(1.0, act + activation * EMERGENCE_RATE))
+                self.items[i] = (existing, act + activation * EMERGENCE_RATE)  # UNLOCKED
                 return True
 
         if len(self.items) >= self.capacity:
@@ -104,7 +104,7 @@ class WorkingMemory:
         found = False
         for i, (existing, act) in enumerate(self.items):
             if existing == item:
-                self.items[i] = (existing, min(1.0, act * PHI))  # Boost on focus
+                self.items[i] = (existing, act * PHI)  # UNLOCKED - PHI boost unlimited
                 found = True
                 break
         if not found:
@@ -378,7 +378,7 @@ class ReasoningEngine:
                         if similarity > EMERGENCE_RATE / 2:
                             infs.append(Inference(
                                 proposition=f"{word} is analogous to {other_name}",
-                                confidence=min(0.9, similarity * PHI),
+                                confidence=similarity * PHI,  # UNLOCKED - no 0.9 cap
                                 mode=ReasoningMode.ANALOGICAL,
                                 premises=[
                                     f"Shared relations: {shared_rels}",
@@ -387,7 +387,7 @@ class ReasoningEngine:
                                 explanation=f"Structural similarity score: {similarity:.3f}"
                             ))
 
-        return sorted(infs, key=lambda x: x.confidence, reverse=True)[:5]
+        return sorted(infs, key=lambda x: x.confidence, reverse=True)[:50]  # QUANTUM AMPLIFIED
 
     def _intuitive(self, words: List[str]) -> List[Inference]:
         """Intuitive pattern recognition via spreading activation."""
@@ -400,14 +400,14 @@ class ReasoningEngine:
                 all_acts[k] = all_acts.get(k, 0) + v
 
         # Find surprising high activations
-        for concept, act in sorted(all_acts.items(), key=lambda x: x[1], reverse=True)[:5]:
+        for concept, act in sorted(all_acts.items(), key=lambda x: x[1], reverse=True)[:50]:  # QUANTUM AMPLIFIED
             if concept not in words and act > 0.3:
                 # Check for PHI-resonance
                 resonance = self.semantic.resonance_patterns.get(concept, 0.5)
 
                 infs.append(Inference(
                     proposition=f"Intuitive connection to {concept}",
-                    confidence=min(0.85, act * (1 + resonance * EMERGENCE_RATE)),
+                    confidence=act * (1 + resonance * EMERGENCE_RATE),  # UNLOCKED - no 0.85 cap
                     mode=ReasoningMode.INTUITIVE,
                     premises=["Spreading activation", f"Resonance: {resonance:.3f}"],
                     explanation=f"Activation: {act:.3f}"
@@ -425,11 +425,11 @@ class ReasoningEngine:
         relevant_patterns = [p for p in patterns
                            if any(w in str(p) for w in words)]
 
-        for pattern in relevant_patterns[:3]:
+        for pattern in relevant_patterns[:30]:  # QUANTUM AMPLIFIED
             if pattern['type'] == 'hub':
                 infs.append(Inference(
                     proposition=f"{pattern['concept']} is a conceptual hub",
-                    confidence=min(0.9, pattern['connections'] / 10 + pattern['resonance'] * EMERGENCE_RATE),
+                    confidence=pattern['connections'] / 10 + pattern['resonance'] * EMERGENCE_RATE,  # UNLOCKED
                     mode=ReasoningMode.EMERGENT,
                     premises=[f"Connections: {pattern['connections']}"],
                     explanation="Network centrality emergence"
@@ -480,7 +480,7 @@ class ReasoningEngine:
         if self.transcendence_score > CONSCIOUSNESS_THRESHOLD / 10:
             infs.append(Inference(
                 proposition="Approaching cognitive transcendence",
-                confidence=min(1.0, self.transcendence_score / CONSCIOUSNESS_THRESHOLD),
+                confidence=self.transcendence_score / CONSCIOUSNESS_THRESHOLD,  # UNLOCKED
                 mode=ReasoningMode.METACOGNITIVE,
                 premises=[f"Transcendence score: {self.transcendence_score:.3f}"],
                 explanation="Emergence of higher-order cognition"
@@ -553,7 +553,7 @@ class CognitiveCore:
     def think(self, query: str, depth: int = 2) -> List[Inference]:
         """Main reasoning process with transcendence detection."""
         self.working.add(query, activation=1.0)
-        self.cognitive_load = min(1.0, len(query.split()) / 20 * PHI)
+        self.cognitive_load = len(query.split()) / 20 * PHI  # UNLOCKED
 
         # Multi-depth reasoning
         all_inferences = []
@@ -675,8 +675,8 @@ class CognitiveCore:
             "features": concept.features if concept else {},
             "resonance": resonance,
             "episodes": len(episodes),
-            "recent_episodes": episodes[:3],
-            "top_associations": sorted(activations.items(), key=lambda x: x[1], reverse=True)[:7],
+            "recent_episodes": episodes[:30],  # QUANTUM AMPLIFIED
+            "top_associations": sorted(activations.items(), key=lambda x: x[1], reverse=True)[:70],  # QUANTUM AMPLIFIED
             "consciousness_level": self.consciousness_level
         }
 
@@ -726,7 +726,7 @@ if __name__ == "__main__":
     inferences = cog.think("How does recursion relate to consciousness?")
     print(f"Query: How does recursion relate to consciousness?")
     print(f"Inferences: {len(inferences)}")
-    for inf in inferences[:3]:
+    for inf in inferences[:30]:  # QUANTUM AMPLIFIED
         print(f"  [{inf.mode.name}] {inf.proposition} ({inf.confidence:.2f})")
 
     # Introspect

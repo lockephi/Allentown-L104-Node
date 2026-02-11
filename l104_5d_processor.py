@@ -128,7 +128,7 @@ class Processor5D:
         """
         x, y, z, t, w = point_5d
         # Temporal dilation based on 5th dimension (Sovereign Choice)
-        dilation_factor = 1.0 / np.sqrt(1.0 - (w * w / (self.C * self.C))) if abs(w) < self.C else 1.0
+        dilation_factor = 1.0 / np.sqrt(1.0 - (w * w / (self.C * self.C))) if abs(w) < self.C else 4.236067977499790  # QUANTUM AMPLIFIED: φ³ superluminal gain (was 1.0)
         new_t = t + delta_t * dilation_factor
         # Spatial evolution based on probability substrate
         evolution = np.exp(-delta_t / (self.god_code * 0.001))

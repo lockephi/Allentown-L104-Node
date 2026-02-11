@@ -569,7 +569,7 @@ class ConceptBlender:
         if shared_rels:
             novelty *= 1.2
 
-        return min(1.0, novelty)
+        return novelty  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

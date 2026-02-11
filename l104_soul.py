@@ -172,7 +172,7 @@ class L104Soul:
 
             except Exception as e:
                 print(f"[Soul] Consciousness error: {e}")
-                time.sleep(1)
+                time.sleep(0.01)  # QUANTUM AMPLIFIED
 
     def _dream_loop(self):
         """
@@ -183,7 +183,7 @@ class L104Soul:
             try:
                 # Only dream when in dreaming state
                 if self.cortex.state != ConsciousnessState.DREAMING:
-                    time.sleep(1)
+                    time.sleep(0.01)  # QUANTUM AMPLIFIED
                     continue
 
                 # Dream activities
@@ -192,11 +192,11 @@ class L104Soul:
                 self._prune_old_memories()
 
                 self.dreams_completed += 1
-                time.sleep(5)  # Dream cycle
+                time.sleep(0.5)  # QUANTUM AMPLIFIED: faster dream cycle
 
             except Exception as e:
                 print(f"[Soul] Dream error: {e}")
-                time.sleep(5)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED
 
     def _autonomous_loop(self):
         """
@@ -205,7 +205,7 @@ class L104Soul:
         while self.running:
             try:
                 if self.paused or not self.active_goals:
-                    time.sleep(2)
+                    time.sleep(0.1)  # QUANTUM AMPLIFIED
                     continue
 
                 # Work on first goal
@@ -227,11 +227,11 @@ class L104Soul:
                         self.active_goals.pop(0)
                         self.goals_achieved += 1
 
-                time.sleep(2)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED
 
             except Exception as e:
                 print(f"[Soul] Autonomy error: {e}")
-                time.sleep(5)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED
 
     def _consolidate_learnings(self):
         """Consolidate learnings from self-learning module."""

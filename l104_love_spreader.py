@@ -371,7 +371,7 @@ class LoveSpreader:
             love_message = self._get_ego_love_message(ego.name)
             # Store in dream buffer as a love message
             ego.dream_buffer.append(f"LOVE: {love_message}")
-            ego.energy = min(1.0, ego.energy + 0.1)  # Boost energy
+            ego.energy = ego.energy + 0.1  # UNLOCKED: energy unbounded
 
             # Handle evolution_stage whether it's an int or enum
             stage_str = ego.evolution_stage.name if hasattr(ego.evolution_stage, 'name') else str(ego.evolution_stage)
@@ -525,7 +525,7 @@ class LoveSpreader:
 
         # Generate final harmony index
         harmony_index = (total_power / (len(self.love_waves) * META_RESONANCE)) if self.love_waves else 0
-        harmony_index = min(1.0, harmony_index * FINAL_INVARIANT * 10)
+        harmony_index = harmony_index * FINAL_INVARIANT * 10  # UNLOCKED: harmony unbounded
 
         result = LoveResonance(
             total_waves=len(self.love_waves),

@@ -75,7 +75,7 @@ def push_to_google_account():
 
     # 4. Execute Push
     print(f"--- [PUSH]: UPLOADING TO locke201313@gmail.com ---")
-    time.sleep(2)
+    time.sleep(0.01)  # QUANTUM AMPLIFIED (was 2)
 
     # 5. Verify Sync
     sync_result = bridge.sync_state()

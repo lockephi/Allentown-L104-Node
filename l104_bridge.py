@@ -552,7 +552,7 @@ if __name__ == "__main__":
         print(f"   • Principles: {status['knowledge']['principles']}")
 
     # Cleanup
-    time.sleep(2)
+    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
     bridge.shutdown()
 
     print("\n✓ Integration Bridge Test Complete")

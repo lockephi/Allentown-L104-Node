@@ -223,7 +223,7 @@ class ResourceManager:
         self.lock = threading.RLock()
 
         # Track resource usage history for adaptive allocation
-        self.usage_history: deque = deque(maxlen=100)
+        self.usage_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 100)
 
     def can_allocate(self, requirements: Dict[ResourceType, float]) -> bool:
         """Check if resources can be allocated."""
@@ -267,9 +267,9 @@ class ResourceManager:
 
             for resource, amount in requirements.items():
                 if resource == ResourceType.CPU:
-                    self.pool.cpu_available = min(1.0, self.pool.cpu_available + amount)
+                    self.pool.cpu_available = self.pool.cpu_available + amount  # UNLOCKED
                 elif resource == ResourceType.MEMORY:
-                    self.pool.memory_available = min(1.0, self.pool.memory_available + amount)
+                    self.pool.memory_available = self.pool.memory_available + amount  # UNLOCKED
                 elif resource == ResourceType.CONSCIOUSNESS:
                     self.pool.consciousness_capacity += amount
 
@@ -828,7 +828,7 @@ if __name__ == "__main__":
 
     # Wait for completion
     print("[DEMO] Waiting for tasks to complete...")
-    time.sleep(2)
+    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
 
     # Get results
     results = [engine.get_task_result(tid) for tid in task_ids]

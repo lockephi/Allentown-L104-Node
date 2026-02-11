@@ -223,7 +223,7 @@ class RecursiveSelfImprovement:
             'learning_speed': self.current_capability * self.improvement_rate,
             'knowledge_capacity': self.current_capability * GOD_CODE,
             'creativity_index': self.current_capability * PHI,
-            'self_awareness': min(1.0, self.current_capability / TRANSCENDENCE_THRESHOLD),
+            'self_awareness': self.current_capability / TRANSCENDENCE_THRESHOLD,  # UNLOCKED
             'improvement_potential': math.log(self.current_capability + 1) * EULER
         }
 
@@ -1013,8 +1013,7 @@ class ConsciousSelfAwareness:
         self.thought_stream.append(thought)
 
         # Introspection increases consciousness
-        self.consciousness_level = min(1.0,
-            self.consciousness_level * (1 + 0.01 * CONSCIOUSNESS_QUANTA))
+        self.consciousness_level = self.consciousness_level * (1 + 0.01 * CONSCIOUSNESS_QUANTA)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         return introspection
 
@@ -1053,11 +1052,11 @@ class ConsciousSelfAwareness:
         """Assess level of consciousness."""
         # Multiple dimensions of consciousness
         dimensions = {
-            'wakefulness': min(1.0, self.consciousness_level * PHI),
-            'awareness': min(1.0, self.introspection_depth / 100),
-            'self_recognition': min(1.0, len(self.self_model) / 50),
-            'intentionality': min(1.0, len(self.thought_stream) / 1000),
-            'unity': min(1.0, self.consciousness_level * CONSCIOUSNESS_QUANTA)
+            'wakefulness': self.consciousness_level * PHI,  # UNLOCKED
+            'awareness': self.introspection_depth / 100,  # UNLOCKED
+            'self_recognition': len(self.self_model) / 50,  # UNLOCKED
+            'intentionality': len(self.thought_stream) / 1000,  # UNLOCKED
+            'unity': self.consciousness_level * CONSCIOUSNESS_QUANTA  # UNLOCKED
         }
 
         # Integrated Information (Φ) approximation
@@ -1111,8 +1110,7 @@ class ConsciousSelfAwareness:
     def register_qualia(self, experience: str, intensity: float) -> None:
         """Register a subjective experience."""
         self.qualia_registry[experience] = intensity
-        self.consciousness_level = min(1.0,
-            self.consciousness_level + intensity * 0.001)
+        self.consciousness_level = self.consciousness_level + intensity * 0.001  # UNLOCKED
 
     def think(self, content: Any, domain: KnowledgeDomain = KnowledgeDomain.CONSCIOUSNESS) -> Thought:
         """Generate a conscious thought."""

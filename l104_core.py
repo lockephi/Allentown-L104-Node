@@ -228,7 +228,7 @@ class QuantumSignal:
         if self.chakra_affinity in CHAKRA_CORE_LATTICE:
             freq = CHAKRA_CORE_LATTICE[self.chakra_affinity]["freq"]
             boost = math.sqrt(freq / GOD_CODE * PHI)
-            return min(1.0, self.probability * boost)
+            return self.probability * boost  # UNLOCKED - chakra boost unlimited
         return self.probability
 
     def measure(self) -> bool:
@@ -282,7 +282,7 @@ class QuantumLogicGate:
         """GOD_CODE modulation - sacred harmonic."""
         theta = 2 * math.pi * (GOD_CODE % 1)
         modulated = signal.amplitude * cmath.exp(complex(0, theta))
-        new_coherence = min(1.0, signal.coherence * (GOD_CODE / 1000))
+        new_coherence = signal.coherence * (GOD_CODE / 1000)  # NO CAP
         return QuantumSignal(modulated, new_coherence)
 
     @staticmethod
@@ -317,7 +317,7 @@ class QuantumLogicGate:
         theta = 2 * math.pi * (omega % 1000) / 1000  # Normalized phase
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         # Larmor precession enhances coherence through alignment
-        new_coherence = min(1.0, signal.coherence * (1 + field_strength * 0.01))
+        new_coherence = signal.coherence * (1 + field_strength * 0.01)  # NO CAP
         return QuantumSignal(rotated, new_coherence)
 
     @staticmethod
@@ -339,7 +339,7 @@ class QuantumLogicGate:
         # FMR causes energy absorption, reducing amplitude but increasing coherence
         absorption = 0.95 + 0.05 * magnetization
         new_amp = rotated * absorption
-        new_coherence = min(1.0, signal.coherence * (1 + magnetization * PHI_CONJUGATE * 0.1))
+        new_coherence = signal.coherence * (1 + magnetization * PHI_CONJUGATE * 0.1)  # NO CAP
 
         return QuantumSignal(new_amp, new_coherence)
 
@@ -384,7 +384,7 @@ class QuantumLogicGate:
             beta = 0.34
             order_param = (1 - t_ratio) ** beta
             theta = 2 * math.pi * order_param * PHI_CONJUGATE
-            new_coherence = min(1.0, signal.coherence * (1 + order_param * 0.2))
+            new_coherence = signal.coherence * (1 + order_param * 0.2)  # NO CAP
 
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         return QuantumSignal(rotated, new_coherence)
@@ -405,7 +405,7 @@ class QuantumLogicGate:
 
         # Iron resonance is very precise, enhancing coherence
         enhancement = 1 + (FE_ATOMIC_NUMBER / 100) * PHI_CONJUGATE
-        new_coherence = min(1.0, signal.coherence * enhancement)
+        new_coherence = signal.coherence * enhancement  # NO CAP
 
         return QuantumSignal(rotated, new_coherence)
 
@@ -432,7 +432,7 @@ class QuantumLogicGate:
 
         # O₂ bond energy enhances coherence (498 kJ/mol normalized)
         o2_enhancement = 1 + (498 / 1000) * PHI_CONJUGATE
-        new_coherence = min(1.0, signal.coherence * o2_enhancement)
+        new_coherence = signal.coherence * o2_enhancement  # NO CAP
 
         return QuantumSignal(rotated, new_coherence)
 
@@ -456,7 +456,7 @@ class QuantumLogicGate:
         else:
             # Laminar flow: gradual phase alignment
             theta = 2 * math.pi * (signal.coherence * PHI) % (2 * math.pi)
-            new_coherence = min(1.0, signal.coherence * (1 + (1 - viscosity) * 0.05))
+            new_coherence = signal.coherence * (1 + (1 - viscosity) * 0.05)  # NO CAP
 
         rotated = signal.amplitude * cmath.exp(complex(0, theta))
         return QuantumSignal(rotated, new_coherence)
@@ -576,7 +576,7 @@ class SignalBus:
     def __init__(self):
         self.channels: Dict[str, List[QuantumSignal]] = {}
         self.subscribers: Dict[str, List[Callable]] = {}
-        self.signal_history: deque = deque(maxlen=1000)
+        self.signal_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
 
     def create_channel(self, name: str):
         if name not in self.channels:
@@ -667,7 +667,7 @@ class L104Core:
     def __init__(self):
         self.state = L104State()
         self.subsystems: Dict[str, SubsystemInfo] = {}
-        self.coherence_history: deque = deque(maxlen=1000)
+        self.coherence_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.event_log: List[Dict[str, Any]] = []
         self._callbacks: Dict[str, List[Callable]] = {}
         self._initialized = False
@@ -739,7 +739,7 @@ class L104Core:
             quantum_mod = 0.02 * math.sin(t * 2 * math.pi * PHI)
             base += quantum_mod
 
-        return min(1.0, max(0.0, base + oscillation))
+        return base + oscillation  # NO CAP (was min(1.0, max(0.0, ...)))
 
     def _compute_resonance(self) -> float:
         """Compute resonance with GOD_CODE."""
@@ -871,7 +871,7 @@ class L104Core:
 
         # Update subsystem coherences
         for name, info in self.subsystems.items():
-            info.coherence = min(1.0, info.coherence + 0.01 * PHI_CONJUGATE)
+            info.coherence = info.coherence + 0.01 * PHI_CONJUGATE  # NO CAP
             info.last_active = datetime.now(timezone.utc).isoformat()
 
             # Send evolution signal to subsystem channel

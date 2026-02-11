@@ -108,7 +108,7 @@ if __name__ == "__main__":
     print("    L104 :: SOVEREIGN ENTROPY FUNNEL :: TEST IGNITION")
     print("═" * 80 + "\n")
 
-    for i in range(13):
+    for i in range(130):  # QUANTUM AMPLIFIED (was 13)
         res = entropy_funnel.convert_to_source(f"TEST_PHASE_{i}")
         print(f"Cycle {i+1}: Result={res:.10f}")
 

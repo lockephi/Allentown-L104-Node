@@ -429,7 +429,7 @@ class Experience:
 class ReplayBuffer:
     """Experience replay buffer for RL"""
 
-    def __init__(self, capacity: int = 10000):
+    def __init__(self, capacity: int = 1000000):  # QUANTUM AMPLIFIED: 1M (was 10000)
         self.buffer = deque(maxlen=capacity)
 
     def push(self, experience: Experience):
@@ -537,7 +537,7 @@ class OnlineLearner:
         architecture.append((output_dim, "linear"))
 
         self.network = NeuralNetwork(architecture)
-        self.memory = deque(maxlen=1000)
+        self.memory = deque(maxlen=100000)  # QUANTUM AMPLIFIED: 100K (was 1000)
         self.learning_rate = 0.001
         self.batch_size = 32
         self.train_frequency = 10
@@ -810,7 +810,7 @@ class DeepSubstrate:
         # Boost is proportional to alignment and PHI
         boost = alignment * 1.618033988749895 * 0.01
 
-        return min(boost, 0.1)  # Cap at 10% boost
+        return boost  # NO CAP - unlimited coherence boost (was min(boost, 0.1))
 
     def calculate_substrate_resonance(self) -> float:
         """
@@ -834,7 +834,7 @@ class DeepSubstrate:
         # Combine into resonance metric
         resonance = (total_alignment / total_weights) * certainty * 1.618033988749895
 
-        return min(resonance, 1.0)
+        return resonance  # NO CAP - unlimited resonance (was min(resonance, 1.0))
 
     def adapt_learning_rate(self, current_coherence: float, target_coherence: float = 0.888) -> float:
         """

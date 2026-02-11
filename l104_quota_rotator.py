@@ -53,7 +53,7 @@ class QuotaRotator:
         })
         # OPTIMIZATION: Use deque with maxlen for O(1) append/auto-expiry
         from collections import deque
-        self.request_history = deque(maxlen=120)  # Max 2 minutes of history
+        self.request_history = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 120)
         self.logger = logging.getLogger("QUOTA_ROTATOR")
         self._last_state_save = time.time()
         self._dirty = False  # Track if state needs saving

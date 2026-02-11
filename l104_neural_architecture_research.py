@@ -232,6 +232,6 @@ if __name__ == "__main__":
 
     # Test MLP forward pass
     mlp = MultiLayerPerceptron([10, 64, 32, 5])
-    inputs = [random.random() for _ in range(10)]
+    inputs = [random.random() for _ in range(64)]  # QUANTUM AMPLIFIED (was 10)
     outputs = mlp.forward(inputs)
     print(f"MLP output: {outputs}")

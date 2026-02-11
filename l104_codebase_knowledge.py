@@ -893,7 +893,7 @@ if __name__ == "__main__":
 
     print(f"\n🔍 Pattern Search for 'consciousness':")
     results = codebase_knowledge.search_patterns("consciousness")
-    for name, pattern, score in results[:3]:
+    for name, pattern, score in results[:30]:
         print(f"   • {pattern.name} (score={score:.2f})")
 
     print(f"\n📄 Generated Module Template:")
@@ -902,7 +902,7 @@ if __name__ == "__main__":
         "Example module demonstrating learned conventions"
     )
     print("   [First 10 lines generated]")
-    for line in template.split('\n')[:10]:
+    for line in template.split('\n')[:100]:
         print(f"   {line}")
 
     print("\n✓ Codebase Knowledge Engine Operational")

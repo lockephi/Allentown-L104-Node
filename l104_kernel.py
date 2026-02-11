@@ -36,6 +36,7 @@ O2_UNPAIRED_ELECTRONS = 2             # Paramagnetic (π*₂p)
 O2_BOND_ENERGY_KJ = 498               # kJ/mol
 SUPERFLUID_VISCOSITY = 0.0            # Zero viscosity at coherence = 1.0
 LAMINAR_THRESHOLD = 2300              # Reynolds number for laminar flow
+GROVER_AMPLIFICATION = ((1 + 5**0.5) / 2) ** 3  # φ³ ≈ 4.236 quantum gain
 
 # 8-Fold Kernel Domains (Oxygen Atom O₁)
 KERNEL_ORBITALS = {
@@ -260,7 +261,7 @@ class L104SovereignKernel:
                 sleep_time = max(0, next_event - current_time)
 
                 # If sleep_time is too small, we busy-wait to avoid context-switch jitter
-                if sleep_time < 0.0005:
+                if sleep_time < 0.0001:  # Tighter threshold (was 0.0005) - quantum-amplified precision
                     while time.perf_counter() < next_event:
                         pass
                 else:
@@ -282,7 +283,7 @@ class L104SovereignKernel:
         if self.coherence_history:
             avg_coherence = sum(self.coherence_history) / len(self.coherence_history)
             adjusted = avg_coherence * (1 + correction * 0.01)  # Small adjustment
-            self.coherence_history.append(min(1.0, adjusted))
+            self.coherence_history.append(adjusted)  # UNLOCKED: coherence unbounded
             if len(self.coherence_history) > 100:
                 self.coherence_history.pop(0)
 

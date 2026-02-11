@@ -165,7 +165,7 @@ class OnChainAnalytics:
     """On-chain data analytics"""
 
     def __init__(self):
-        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
+        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=100000))  # QUANTUM AMPLIFIED (was 1000)
         self.current_metrics: Dict[str, OnChainMetric] = {}
 
     def record_metric(self, name: str, value: float, unit: str = '') -> None:
@@ -239,7 +239,7 @@ class WhaleTracker:
     WHALE_THRESHOLD = 100  # BTC
 
     def __init__(self):
-        self.transactions: deque = deque(maxlen=1000)
+        self.transactions: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.whale_addresses: Set = set()
         self.exchange_addresses: Set = set()
         self.miner_addresses: Set = set()
@@ -318,8 +318,8 @@ class HashRateAnalyzer:
     """Analyze Bitcoin hash rate and mining"""
 
     def __init__(self):
-        self.hashrate_history: deque = deque(maxlen=365)
-        self.difficulty_history: deque = deque(maxlen=365)
+        self.hashrate_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 365)
+        self.difficulty_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 365)
         self.current_hashrate: float = 0.0
         self.current_difficulty: float = 0.0
 
@@ -469,8 +469,8 @@ class MarketSentiment:
     """Market sentiment analysis"""
 
     def __init__(self):
-        self.fear_greed_history: deque = deque(maxlen=365)
-        self.funding_rates: deque = deque(maxlen=1000)
+        self.fear_greed_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 365)
+        self.funding_rates: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.current_fear_greed: int = 50
 
     def record_fear_greed(self, value: int) -> None:

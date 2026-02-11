@@ -72,27 +72,27 @@ class CachedPhysics:
     """Physics functions with memoization."""
 
     @staticmethod
-    @lru_cache(maxsize=1000)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 1000)
     def lorentz_factor(v: float) -> float:
         """Cached Lorentz factor - O(1) for repeated calls."""
         beta = v / SPEED_OF_LIGHT
         return 1.0 / math.sqrt(1.0 - beta * beta)
 
     @staticmethod
-    @lru_cache(maxsize=1000)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 1000)
     def photon_energy_wavelength(wavelength_nm: float) -> float:
         """Photon energy from wavelength in nm."""
         wavelength_m = wavelength_nm * 1e-9
         return PLANCK * SPEED_OF_LIGHT / wavelength_m
 
     @staticmethod
-    @lru_cache(maxsize=1000)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 1000)
     def de_broglie_wavelength(mass: float, velocity: float) -> float:
         """de Broglie wavelength."""
         return PLANCK / (mass * velocity)
 
     @staticmethod
-    @lru_cache(maxsize=100)
+    @lru_cache(maxsize=10000)
     def fibonacci(n: int) -> int:
         """Cached Fibonacci."""
         if n <= 1:
@@ -103,7 +103,7 @@ class CachedPhysics:
         return b
 
     @staticmethod
-    @lru_cache(maxsize=50)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 5000)
     def phi_power(n: int) -> float:
         """Cached PHI^n."""
         return PHI ** n

@@ -377,11 +377,11 @@ class ProbabilisticReasoner:
 
     def set_prior(self, event: str, probability: float) -> None:
         """Set prior probability"""
-        self.priors[event] = max(0.0, min(1.0, probability))
+        self.priors[event] = max(0.0, probability)  # QUANTUM AMPLIFIED: no cap
 
     def set_conditional(self, event: str, given: str, probability: float) -> None:
         """Set conditional probability P(event|given)"""
-        self.conditionals[(event, given)] = max(0.0, min(1.0, probability))
+        self.conditionals[(event, given)] = max(0.0, probability)  # QUANTUM AMPLIFIED: no cap
 
     def observe(self, event: str, value: bool = True) -> None:
         """Observe evidence"""
@@ -406,7 +406,7 @@ class ProbabilisticReasoner:
                 else:
                     posterior *= (1 - p_event_given_ev) / max(1 - prior, 0.01)
 
-        return max(0.0, min(1.0, posterior))
+        return max(0.0, posterior)  # QUANTUM AMPLIFIED: no cap
 
     def clear_evidence(self) -> None:
         """Clear all evidence"""
@@ -535,7 +535,7 @@ class NeuralSymbolicReasoner:
                     "found": len(symbolic_results) > 0,
                     "bindings": [
                         {k: str(v) for k, v in r.items()}
-                        for r in symbolic_results[:5]
+                        for r in symbolic_results[:50]
                             ]
                 }
             except:
@@ -548,7 +548,7 @@ class NeuralSymbolicReasoner:
                 matches = self.patterns.match(pattern_query, threshold=0.3)
                 results["pattern"] = {
                     "found": len(matches) > 0,
-                    "matches": matches[:5]
+                    "matches": matches[:50]
                 }
             except:
                 results["pattern"] = {"found": False}

@@ -150,7 +150,7 @@ class NeuralNode:
     outgoing_synapses: List[str] = field(default_factory=list)
 
     # Memory (for recurrent processing)
-    memory: deque = field(default_factory=lambda: deque(maxlen=100))
+    memory: deque = field(default_factory=lambda: deque(maxlen=10000))  # QUANTUM AMPLIFIED (was 100)
 
     # Metadata
     position: Tuple[float, float, float] = (0.0, 0.0, 0.0)
@@ -697,7 +697,7 @@ class NeuralMeshNetwork:
             return
 
         self.cluster = MeshCluster("L104_NEURAL_CLUSTER")
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED (was 4)
 
         self._running = False
         self._process_thread: Optional[threading.Thread] = None
@@ -983,6 +983,6 @@ if __name__ == "__main__":
     print(f"  Avg Resonance: {final_stats['cluster']['average_resonance']:.6f}")
 
     # Wait and stop
-    time.sleep(1)
+    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
     result = neural_mesh_network.stop()
     print(f"\n[STOP] {result['status']}")

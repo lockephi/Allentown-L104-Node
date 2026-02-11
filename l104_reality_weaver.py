@@ -185,7 +185,7 @@ class ProbabilityShaper:
             return 0.0
 
         # Increase target probability
-        self.outcomes[name] = min(1.0, self.outcomes[name] * (1 + strength))
+        self.outcomes[name] = self.outcomes[name] * (1 + strength)  # UNLOCKED
         self._normalize()
         self._calculate_entropy()
 

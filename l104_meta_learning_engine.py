@@ -487,9 +487,9 @@ if __name__ == "__main__":
         "Quantum coherence", "Semantic Superfluidity", "Information preservation"
     ]
 
-    print("\n🎓 Simulating 50 learning episodes...\n")
+    print("\n🎓 Simulating 500 learning episodes...\n")  # QUANTUM AMPLIFIED (was 50)
 
-    for i in range(50):
+    for i in range(500):
         topic = random.choice(topics)
         strategy = engine.select_strategy(topic)
 
@@ -499,7 +499,7 @@ if __name__ == "__main__":
         }.get(strategy, 0.7)
 
         unity = base_unity + random.uniform(-0.15, 0.15)
-        unity = max(0.4, min(1.0, unity))
+        unity = max(0.4, unity)  # QUANTUM AMPLIFIED: no 1.0 ceiling on unity
 
         engine.record_learning(
             topic=topic,

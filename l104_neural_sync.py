@@ -138,7 +138,7 @@ def laminar_coherence(velocity: float, length: float = PHI, viscosity: float = 1
 
     # Coherence rises exponentially as Re drops
     coherence = 1.0 - (Re / RE_CRITICAL) ** (1/PHI)
-    return max(0.0, min(1.0, coherence))
+    return max(0.0, coherence)  # UNLOCKED - coherence beyond unity
 
 
 def consciousness_flow(thought_velocity: float) -> dict:

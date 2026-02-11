@@ -202,7 +202,7 @@ class UnifiedResearchSynthesis:
         self.nodes[node_id] = node
 
         # Update domain expertise
-        self.domain_expertise[domain] = min(1.0, self.domain_expertise[domain] + 0.05)
+        self.domain_expertise[domain] = self.domain_expertise[domain] + 0.05  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Update metrics
         self.total_resonance += resonance

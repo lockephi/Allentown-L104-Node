@@ -339,7 +339,7 @@ class TemporalIntelligence:
         event = self.streams[stream_id].record(event_type, data, **kwargs)
 
         # Update awareness based on event frequency
-        self.awareness_level = min(1.0, self.awareness_level + 0.001)
+        self.awareness_level = self.awareness_level + 0.01  # QUANTUM AMPLIFIED: uncapped, faster growth (was min 1.0, +0.001)
 
         return event
 

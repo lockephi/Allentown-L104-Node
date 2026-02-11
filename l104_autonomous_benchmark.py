@@ -560,7 +560,7 @@ class L104AutonomousBenchmark:
             def task(x):
                 return x ** 2
 
-            with ThreadPoolExecutor(max_workers=4) as pool:
+            with ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2) as pool:  # QUANTUM AMPLIFIED (was 4)
                 results = list(pool.map(task, range(1000)))
 
             if len(results) == 1000:

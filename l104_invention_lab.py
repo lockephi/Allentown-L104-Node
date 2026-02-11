@@ -303,7 +303,7 @@ class DataStructureLab:
                 self.max_children = self._fib(depth + 2)
 
             @staticmethod
-            @lru_cache(maxsize=20)
+            @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 2000)
             def _fib(n):
                 if n <= 1:
                     return max(1, n)

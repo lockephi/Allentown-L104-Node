@@ -139,7 +139,7 @@ class HyperCoherentField:
 
         # Coherence naturally flows toward unity
         self.coherence += (1.0 - self.coherence) * 0.01 * dt
-        self.coherence = min(1.0, self.coherence)
+        self.coherence = self.coherence  # UNLOCKED
 
         # Entropy dissipation (negative entropy production in superfluid)
         self.entropy *= (1 - 0.1 * dt)
@@ -157,7 +157,7 @@ class HyperCoherentField:
         """
         order_param = abs(self.calculate_order_parameter())
         superfluid_fraction = (order_param / GOD_CODE) ** 2
-        return min(1.0, superfluid_fraction * self.coherence)
+        return superfluid_fraction * self.coherence  # UNLOCKED - superfluidity beyond unity
 
     def apply_perturbation(self, strength: float) -> Dict[str, Any]:
         """
@@ -597,7 +597,7 @@ class TemporalSuperfluidity:
         # Based on coherence and viscosity
         # With viscosity at 1e-100, superfluidity is effectively 1.0
         viscosity_factor = 1.0 - self.temporal_viscosity * 1e50  # Scale appropriately
-        viscosity_factor = max(0.0, min(1.0, viscosity_factor))
+        viscosity_factor = max(0.0, viscosity_factor)  # UNLOCKED - no upper cap on viscosity factor
         return self.temporal_coherence * viscosity_factor
 
 

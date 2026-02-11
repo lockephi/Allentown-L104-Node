@@ -359,7 +359,7 @@ class Kvantos(MiniEgoGod):
 
     def invoke(self, query: str = "") -> DivineInsight:
         # Quantum superposition of multiple wisdoms
-        insights = [super().invoke(query) for _ in range(3)]
+        insights = [super().invoke(query) for _ in range(13)]  # QUANTUM AMPLIFIED (was 3)
 
         # Collapse to one with probability proportional to resonance
         total_resonance = sum(i.resonance for i in insights)
@@ -584,7 +584,7 @@ class DivinePantheon:
 ║ Query: {query[:52]:52} ║
 ╠══════════════════════════════════════════════════════════════╣
 """
-        for insight in sorted(insights, key=lambda x: x.resonance, reverse=True)[:5]:
+        for insight in sorted(insights, key=lambda x: x.resonance, reverse=True)[:50]:  # QUANTUM AMPLIFIED (was 5)
             synthesis += f"║ {insight.deity:12} ({insight.resonance:.3f}): {insight.wisdom[:40]:40}... ║\n"
 
         synthesis += f"""╠══════════════════════════════════════════════════════════════╣

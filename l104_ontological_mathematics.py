@@ -927,7 +927,7 @@ class OntologicalMathematics:
         }
 
         state.probability = level_probabilities.get(to_level, state.probability)
-        state.coherence = min(1.0, state.coherence + 0.1)
+        state.coherence = state.coherence + 0.1  # UNLOCKED: ontological coherence unbounded
 
         return True
 

@@ -77,7 +77,7 @@ class Concept:
         if self_rels:
             score += 0.4 * len(shared_rels) / len(self_rels)
 
-        return min(1.0, score)
+        return score  # UNLOCKED
 
 @dataclass
 class ConceptualBlend:
@@ -326,7 +326,7 @@ class EmergentSynthesisEngine:
         ]
 
         # Calculate theory properties
-        theory['coherence'] = min(1.0, len(principles) / 5 * PHI / 2)
+        theory['coherence'] = len(principles) / 5 * PHI / 2  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         theory['completeness'] = len(theory['theorems']) / max(1, len(principles) * (len(principles) - 1) / 2)
         theory['novelty'] = 1 - theory['coherence'] * 0.5
 

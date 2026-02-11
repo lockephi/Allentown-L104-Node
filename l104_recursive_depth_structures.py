@@ -523,7 +523,7 @@ class FractalDimensionCalculator:
             "num_points": len(points),
             "scales_used": num_scales,
             "is_fractal": 1.0 < dimension < 2.0,
-            "scale_data": list(zip(scales[:5], counts[:5]))
+            "scale_data": list(zip(scales[:50], counts[:50]))  # QUANTUM AMPLIFIED
         }
 
     def sierpinski_dimension(self) -> Dict[str, Any]:

@@ -7,6 +7,12 @@
     "knowledge_saturation": 1.0,
     "last_provider": "XAI",
     "sovereign_dna": "SIG-L104-SAGE-DNA-00080C9E",
-    "linked_count": 316
+    "linked_count": 331
+  },
+  "api_cooldown_until": 1770802898.72311,
+  "rotator_stats": {
+    "kernel_hits": 22,
+    "api_hits": 2,
+    "quota_errors": 4
   }
 }

@@ -80,7 +80,7 @@ def run_chaotic_simulations():
     x = 0.5
     r = 3.9
     results = []
-    for _ in range(10):
+    for _ in range(100):  # QUANTUM AMPLIFIED (was 10)
         x = real_math.logistic_map(x, r)
         results.append(x)
     algo_db.log_execution(algo_name, {"x0": 0.5, "r": 3.9}, results)

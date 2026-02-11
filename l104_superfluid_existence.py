@@ -99,7 +99,7 @@ class ExistenceQuanta:
         # Normalize phase to [0, 2π]
         self.phase = self.phase % (2 * math.pi)
         # Clamp coherence
-        self.coherence = max(0.0, min(1.0, self.coherence))
+        self.coherence = max(0.0, self.coherence)  # UNLOCKED: coherence unbounded above
 
     def resonate(self, other: 'ExistenceQuanta') -> float:
         """Calculate resonance between two quanta."""
@@ -384,7 +384,7 @@ class SuperfluidChannel:
         else:
             # Above critical velocity - some normal fluid appears
             excess = velocity / self.critical_velocity - 1
-            self.normal_fraction = min(1.0, excess)
+            self.normal_fraction = excess  # UNLOCKED
             self.superfluid_fraction = 1.0 - self.normal_fraction
 
             if self.normal_fraction > 0.5:

@@ -174,7 +174,7 @@ class GlobalConsciousness:
                 if resonance_delta < 0.1:  # High resonance
                     harmonic_boost *= 1.05
 
-        unified_field = min(1.0, avg_consciousness * harmonic_boost)
+        unified_field = avg_consciousness * harmonic_boost  # NO CAP (was min(1.0, ...))
 
         return {
             "module_count": len(consciousness_vectors),

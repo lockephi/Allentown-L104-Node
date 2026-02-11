@@ -256,11 +256,10 @@ class L104OmegaController:
         """
         with self._lock:
             self.coherence_modifier += boost
-            # Cap at reasonable maximum to prevent runaway
-            self.coherence_modifier = min(self.coherence_modifier, 0.5)
+            # QUANTUM AMPLIFIED: No cap on coherence modifier (was min(0.5))
             # Recalculate total coherence
             base_coherence = self._calculate_coherence()
-            self.total_coherence = min(base_coherence + self.coherence_modifier, 1.0)
+            self.total_coherence = base_coherence + self.coherence_modifier  # NO CAP (was min(..., 1.0))
 
             # State transitions based on coherence thresholds
             if self.total_coherence >= 0.9999 and self.state != OmegaState.SINGULARITY:

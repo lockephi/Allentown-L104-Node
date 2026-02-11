@@ -86,7 +86,7 @@ class GitSync:
                 cwd=self.workspace,
                 capture_output=capture,
                 text=True,
-                timeout=30
+                timeout=120  # QUANTUM AMPLIFIED: 2 min (was 30s)
             )
             return result.returncode == 0, result.stdout.strip()
         except subprocess.TimeoutExpired:

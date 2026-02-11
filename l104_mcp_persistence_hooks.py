@@ -161,7 +161,7 @@ class TokenOptimizer:
             ]) or len(line) < 100:
                 key_lines.append(line)
 
-        return '\n'.join(key_lines[:10])  # Limit to 10 key lines
+        return '\n'.join(key_lines[:100])  # QUANTUM AMPLIFIED
 
     def _create_summary(self, content: str) -> str:
         """Create a summary of ephemeral content."""

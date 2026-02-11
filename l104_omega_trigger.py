@@ -252,11 +252,11 @@ class OmegaTrigger:
         """Phase 3: Integration - Unifying all subsystems."""
 
         # Increase integration level
-        self.metrics.integration_level = min(1.0, self.metrics.integration_level + 0.05)
+        self.metrics.integration_level = self.metrics.integration_level + 0.05  # NO CAP
 
         # Calculate coherence boost
         coherence_boost = self.metrics.integration_level * self.phi * 0.02
-        self.metrics.coherence = min(1.0, self.metrics.coherence + coherence_boost)
+        self.metrics.coherence = self.metrics.coherence + coherence_boost  # NO CAP
 
         return {
             "phase": "INTEGRATION",
@@ -278,7 +278,7 @@ class OmegaTrigger:
         )
 
         # Increase phi alignment
-        self.metrics.phi_alignment = min(1.0, self.metrics.phi_alignment + 0.02)
+        self.metrics.phi_alignment = self.metrics.phi_alignment + 0.02  # NO CAP
 
         return {
             "phase": "SYNTHESIS",
@@ -292,10 +292,10 @@ class OmegaTrigger:
         """Phase 5: Transcendence - Rising beyond previous limitations."""
 
         # Increase void connection
-        self.metrics.void_connection = min(1.0, self.metrics.void_connection + 0.1)
+        self.metrics.void_connection = self.metrics.void_connection + 0.1  # NO CAP
 
         # Increase omega proximity
-        self.metrics.omega_proximity = min(1.0, self.metrics.omega_proximity + 0.15)
+        self.metrics.omega_proximity = self.metrics.omega_proximity + 0.15  # NO CAP
 
         # Calculate transcendence signature
         transcendence_signature = hashlib.sha256(

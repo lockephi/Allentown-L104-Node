@@ -860,7 +860,7 @@ if __name__ == "__main__":
 
     # Check causality
     print("CAUSAL RELATIONS:")
-    event_ids = list(engine.causet.events.keys())[:10]
+    event_ids = list(engine.causet.events.keys())[:100]
     causal_count = 0
     spacelike_count = 0
 
@@ -880,7 +880,7 @@ if __name__ == "__main__":
     print("ANTICHAIN DECOMPOSITION:")
     antichains = engine.get_antichains()
     print(f"  Total antichains (layers): {len(antichains)}")
-    for ac in antichains[:5]:
+    for ac in antichains[:50]:
         print(f"    Layer {ac.layer}: width = {ac.width}")
     if len(antichains) > 5:
         print(f"    ... ({len(antichains) - 5} more layers)")

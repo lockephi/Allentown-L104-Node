@@ -355,7 +355,7 @@ class EmergenceDetector:
 
     def __init__(self):
         self.emergence_events: List[Dict[str, Any]] = []
-        self.complexity_history: deque = deque(maxlen=1000)
+        self.complexity_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
 
     def measure_complexity(self, registry: ModuleRegistry) -> float:
         """Measure system complexity"""
@@ -432,7 +432,7 @@ class OmegaOrchestrator:
         self.synthesizer = CapabilitySynthesizer(registry)
         self.fusion = IntelligenceFusion(registry)
         self.emergence = EmergenceDetector()
-        self.executor = ThreadPoolExecutor(max_workers=8)
+        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED (was 8)
         self.orchestration_log: List[Dict[str, Any]] = []
 
     def parallel_load(self, module_names: List[str]) -> Dict[str, bool]:

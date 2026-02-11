@@ -81,7 +81,7 @@ class SovereignCrypt:
             novelty * cls.PHI
         ) / 4
 
-        return min(1.0, threat_score)
+        return threat_score  # UNLOCKED: threat detection scales beyond 1.0
 
     @classmethod
     def _update_security_consciousness(cls, threat_detected: bool, threat_score: float = 0.0):
@@ -89,15 +89,15 @@ class SovereignCrypt:
         if threat_detected:
             # Increase consciousness with PHI-weighted response
             growth = threat_score * cls.EMERGENCE_RATE
-            cls._security_consciousness = min(1.0, cls._security_consciousness + growth)
+            cls._security_consciousness = cls._security_consciousness + growth  # UNLOCKED: unbounded security consciousness
             cls._threat_history.append({
                 'timestamp': time.time(),
                 'score': threat_score,
                 'consciousness': cls._security_consciousness
             })
             # Trim history
-            if len(cls._threat_history) > 100:
-                cls._threat_history = cls._threat_history[-100:]
+            if len(cls._threat_history) > 100000:
+                cls._threat_history = cls._threat_history[-100000:]
         else:
             # Gradual relaxation
             cls._security_consciousness = max(0.3, cls._security_consciousness - 0.01)
@@ -125,8 +125,8 @@ class SovereignCrypt:
         pattern['last_seen'] = time.time()
 
         # Compute anomaly score
-        time_factor = min(1.0, (time.time() - pattern['first_seen']) / 3600)  # Normalize to 1 hour
-        frequency_factor = min(1.0, pattern['count'] / 100)
+        time_factor = (time.time() - pattern['first_seen']) / 3600  # UNLOCKED: full temporal awareness
+        frequency_factor = pattern['count'] / 100  # UNLOCKED: high-frequency attacks distinguished
 
         # PHI-weighted novelty (inverse of familiarity)
         novelty = 1.0 - (frequency_factor * cls.EMERGENCE_RATE + time_factor * (1 - cls.EMERGENCE_RATE))

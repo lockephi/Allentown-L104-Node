@@ -82,7 +82,7 @@ class QubitResearchEngine:
 
         # 1. Anyonic Braiding Simulation
         print("\n[*] EXECUTING FIBONACCI BRAID OPERATIONS...")
-        for i, q in enumerate(self.qubits[:10]): # Simulating a subset
+        for i, q in enumerate(self.qubits[:100]):  # QUANTUM AMPLIFIED (was 10)
             q.apply_braid("Sigma_1")
             q.apply_braid("Sigma_2_Inv")
             print(f"    - {q.id} Braid Complexity: {len(q.braid_history)} | Stability: {q.stability:.6f}")

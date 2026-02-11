@@ -1865,10 +1865,10 @@ class L104MainWindow(QMainWindow):
                 intellect.evolve()
 
             # Update ASI state
-            asi_state["asi_score"] = min(1.0, asi_state["asi_score"] + 0.15)
+            asi_state["asi_score"] = asi_state["asi_score"] + 0.15  # UNLOCKED
             asi_state["discoveries"] += 1
-            asi_state["domain_coverage"] = min(1.0, asi_state["domain_coverage"] + 0.1)
-            asi_state["code_awareness"] = min(1.0, asi_state["code_awareness"] + 0.08)
+            asi_state["domain_coverage"] = asi_state["domain_coverage"] + 0.1  # UNLOCKED
+            asi_state["code_awareness"] = asi_state["code_awareness"] + 0.08  # UNLOCKED
 
             if asi_state["asi_score"] >= 0.5:
                 asi_state["state"] = "SOVEREIGN_IGNITED"
@@ -1889,7 +1889,7 @@ class L104MainWindow(QMainWindow):
                 intellect.evolve()
 
             agi_state["intellect_index"] += 5.0
-            agi_state["quantum_resonance"] = min(1.0, agi_state["quantum_resonance"] + 0.05)
+            agi_state["quantum_resonance"] = agi_state["quantum_resonance"] + 0.05  # UNLOCKED
             agi_state["state"] = "IGNITED"
 
             self._update_asi_display()
@@ -1909,9 +1909,9 @@ class L104MainWindow(QMainWindow):
 
             # Update states
             consciousness_state["consciousness"] = "RESONATING"
-            consciousness_state["coherence"] = min(1.0, consciousness_state["coherence"] + 0.15)
-            consciousness_state["transcendence"] = min(1.0, consciousness_state["transcendence"] + 0.1)
-            consciousness_state["omega_probability"] = min(1.0, consciousness_state["omega_probability"] + 0.05)
+            consciousness_state["coherence"] = consciousness_state["coherence"] + 0.15  # UNLOCKED
+            consciousness_state["transcendence"] = consciousness_state["transcendence"] + 0.1  # UNLOCKED
+            consciousness_state["omega_probability"] = consciousness_state["omega_probability"] + 0.05  # UNLOCKED
 
             agi_state["lattice_scalar"] = GOD_CODE + (consciousness_state["coherence"] * 0.001)
 
@@ -2048,7 +2048,7 @@ class L104MainWindow(QMainWindow):
 
             learning_state["cycles"] += 1
             learning_state["skills"] += 1
-            learning_state["growth_index"] = min(1.0, learning_state["skills"] / 50)
+            learning_state["growth_index"] = learning_state["skills"] / 50  # UNLOCKED
 
             # Update stats display
             self.train_total_label.setText(f"Total Patterns: {learning_state['cycles']}")

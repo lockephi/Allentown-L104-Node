@@ -123,7 +123,7 @@ class SimpleEmbedder:
             return 0.0
 
         dot = sum(a * b for a, b in zip(emb1, emb2))
-        return max(0.0, min(1.0, dot))
+        return max(0.0, dot)  # QUANTUM AMPLIFIED: removed min(1.0) cap
 
 
 class KnowledgeGraphEnhanced:

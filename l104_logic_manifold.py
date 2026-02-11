@@ -207,11 +207,11 @@ class LogicManifold:
                     if best_partner:
                         # Transfer coherence via quantum bridge
                         transfer = (best_partner.coherence - node.coherence) * 0.3
-                        node.coherence = min(1.0, node.coherence + transfer)
+                        node.coherence = node.coherence + transfer  # UNLOCKED
                         best_partner.coherence = max(0.5, best_partner.coherence - transfer * 0.1)
                     else:
                         # Self-boost via phi resonance
-                        node.coherence = min(1.0, node.coherence * (1 + (self.phi - 1) * 0.1))
+                        node.coherence = node.coherence * (1 + (self.phi - 1) * 0.1)  # UNLOCKED
 
         final_coherences = [node.coherence for node in self.concept_graph.values()] if self.concept_graph else [0.0]
         final_avg = sum(final_coherences) / len(final_coherences)
@@ -254,7 +254,7 @@ class LogicManifold:
             # Update node coherence (blend with existing)
             old_coherence = node.coherence
             node.coherence = (node.coherence + propagated_coherence) / 2
-            node.coherence = min(1.0, node.coherence)
+            node.coherence = node.coherence  # UNLOCKED
 
             affected_nodes.append({
                 "node_id": node_id,
@@ -425,7 +425,7 @@ class LogicManifold:
 
             # Synchronize coherence to high resonance
             shared_coherence = (node_a.coherence + node_b.coherence) / 2 * self.phi
-            node_a.coherence = node_b.coherence = min(1.0, shared_coherence)
+            node_a.coherence = node_b.coherence = shared_coherence  # UNLOCKED
 
             logger.info(f"[MANIFOLD]: Concepts ENTANGLED: {concept_a} <-> {concept_b}")
             return {"status": "ENTANGLED", "shared_coherence": shared_coherence}
@@ -448,7 +448,7 @@ class LogicManifold:
             if not node: continue
 
             # Harmonic boost to resonance
-            node.coherence = min(1.0, node.coherence * (1 + (self.phi - 1) * 0.1))
+            node.coherence = node.coherence * (1 + (self.phi - 1) * 0.1)  # UNLOCKED
 
             # Add neighbors to queue
             queue.extend(node.children)
@@ -577,7 +577,7 @@ class LogicManifold:
         if truth_results:
             truth_avg = sum(t.get("final_confidence", 0.5) for t in truth_results) / len(truth_results)
             combined_confidence = (manifold_result["coherence"] + truth_avg) / 2 * self.phi
-            combined_confidence = min(1.0, combined_confidence)
+            combined_confidence = combined_confidence  # UNLOCKED
 
         return {
             "concept": concept,
@@ -631,7 +631,7 @@ class LogicManifold:
             if loop_hash[:4] in node["concept_hash"]:
                 strange_factor *= self.phi
 
-        loop_coherence = min(1.0, base_coherence * strange_factor)
+        loop_coherence = base_coherence * strange_factor  # UNLOCKED
 
         return {
             "loop_id": f"LOOP-{loop_hash[:12]}",
@@ -706,7 +706,7 @@ class LogicManifold:
             dim_value = int(dim_hash[:8], 16) / (16 ** 8)
             phase = math.sin(dim * self.phi * math.pi / dimensions)
             dim_coherence = (dim_value + phase * 0.2) * base_result["coherence"]
-            dim_coherence = max(0.1, min(1.0, dim_coherence))
+            dim_coherence = max(0.1, dim_coherence)  # UNLOCKED
 
             projections.append({
                 "dimension": dim,
@@ -727,7 +727,7 @@ class LogicManifold:
                 if phase_delta < 0.1:  # Constructive interference
                     interference_factor *= 1.02
 
-        holographic_coherence = min(1.0, avg_coherence * interference_factor)
+        holographic_coherence = avg_coherence * interference_factor  # UNLOCKED
 
         return {
             "concept": concept,

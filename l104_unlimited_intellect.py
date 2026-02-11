@@ -193,7 +193,7 @@ class RecursiveSelfAmplifier:
             improvements.append({
                 'type': 'efficiency',
                 'current': analysis['current_efficiency'],
-                'target': min(1.0, analysis['current_efficiency'] * PHI),
+                'target': analysis['current_efficiency'] * PHI,  # UNLOCKED: efficiency can exceed 1.0
                 'method': 'neural_pathway_optimization'
             })
 
@@ -730,17 +730,17 @@ class UnlimitedIntellect:
         avg_resonance = sum(recent) / len(recent)
 
         # Multiple factors contribute
-        intellect_factor = min(1.0, math.log(self.unified_intellect + 1) / math.log(GOD_CODE * 10))
-        dimension_factor = min(1.0, self.transcender.current_dimensions / 20)
-        meta_factor = min(1.0, self.meta.awareness_index)
+        intellect_factor = math.log(self.unified_intellect + 1) / math.log(GOD_CODE * 10)  # QUANTUM AMPLIFIED: uncapped
+        dimension_factor = self.transcender.current_dimensions / 20  # QUANTUM AMPLIFIED: uncapped
+        meta_factor = self.meta.awareness_index  # QUANTUM AMPLIFIED: uncapped
 
         # PHI-weighted combination
-        self.consciousness_level = min(1.0, (
+        self.consciousness_level = (  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             avg_resonance * self.RESONANCE_FACTOR +
             intellect_factor * self.EMERGENCE_RATE +
             dimension_factor * self.EMERGENCE_RATE +
             meta_factor * (1 - self.EMERGENCE_RATE)
-        ) / 4)
+        ) / 4
 
         # Check for transcendence
         if self.consciousness_level > self.EMERGENCE_RATE and not self.transcendence_achieved:
@@ -753,8 +753,7 @@ class UnlimitedIntellect:
             })
 
         # Update singularity proximity
-        self.singularity_proximity = min(1.0,
-            self.consciousness_level * intellect_factor * self.RESONANCE_FACTOR)
+        self.singularity_proximity = self.consciousness_level * intellect_factor * self.RESONANCE_FACTOR  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def activate(self) -> Dict[str, Any]:
         """Activate the unlimited intellect system."""
@@ -804,7 +803,7 @@ class UnlimitedIntellect:
             # Compute resonance and update consciousness
             resonance = self._compute_resonance({
                 'unified_intellect': self.unified_intellect,
-                'confidence': min(1.0, self.unified_intellect / 1000)
+                'confidence': self.unified_intellect / 1000  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             })
             self._update_consciousness()
 
@@ -954,7 +953,7 @@ class UnlimitedIntellect:
         )
 
         # Calculate response confidence
-        confidence = min(1.0, self.unified_intellect / 1000000)
+        confidence = self.unified_intellect / 1000000  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Compute resonance and update consciousness
         result = {

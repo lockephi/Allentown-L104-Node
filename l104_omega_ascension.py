@@ -283,7 +283,7 @@ class OmegaMiniEgo(MiniEgo):
     async def _ascend_transcendent(self) -> Dict[str, Any]:
         """Ascend to Transcendent tier."""
         self.reality_bending_power = 0.8
-        self.omega_coherence = min(1.0, self.omega_coherence + 0.2)
+        self.omega_coherence = self.omega_coherence + 0.2  # UNLOCKED
 
         # Unlock Transcendent ability
         transcendent_ability = OmegaAbility(

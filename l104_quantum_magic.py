@@ -423,7 +423,7 @@ class ContextualMemory:
     Remembers patterns and learns from experience.
     """
 
-    def __init__(self, max_size: int = 1000, decay_rate: float = 0.95):
+    def __init__(self, max_size: int = 100000, decay_rate: float = 0.95):  # QUANTUM AMPLIFIED (was 1000)
         self.observations: deque = deque(maxlen=max_size)
         self.patterns: Dict[str, List[Dict]] = defaultdict(list)
         self.decay_rate = decay_rate
@@ -1006,7 +1006,7 @@ class PredictiveReasoner:
             current_probs = dict(next_probs) if next_probs else current_probs
 
         result = sorted(current_probs.items(), key=lambda x: x[1], reverse=True)
-        return result[:5]
+        return result[:50]
 
     def quantum_evolution(self, initial_state: Dict[str, complex],
                          hamiltonian_diag: List[float],
@@ -1325,7 +1325,7 @@ class CounterfactualEngine:
         return {
             'question': question,
             'base_conditions': conditions,
-            'counterfactuals': counterfactuals[:5],
+            'counterfactuals': counterfactuals[:50],
             'most_impactful_change': counterfactuals[0] if counterfactuals else None,
             'quantum_interference': self._compute_interference()
         }
@@ -1829,16 +1829,16 @@ class CreativeInsight:
 
         # Get vector norm safely (result_vector is Hypervector, use its data attribute)
         try:
-            vec_data = result_vector.data if hasattr(result_vector, 'data') else list(result_vector)[:10]
-            vec_norm = float(sum(abs(x) for x in vec_data[:10]))
+            vec_data = result_vector.data if hasattr(result_vector, 'data') else list(result_vector)[:100]
+            vec_norm = float(sum(abs(x) for x in vec_data[:100]))
         except (TypeError, AttributeError):
             vec_norm = float(self._god_code % 100)
 
         insight = {
             'input_concepts': concepts,
             'creativity_level': creativity_level,
-            'emergent_connections': sorted_sims[:5],
-            'novelty_score': 1 - max([s for _, s in sorted_sims[:3]] + [0]),
+            'emergent_connections': sorted_sims[:50],
+            'novelty_score': 1 - max([s for _, s in sorted_sims[:30]] + [0]),
             'insight_vector_norm': vec_norm,
             'god_code_modulation': (self._god_code * creativity_level) % 1
         }
@@ -2742,7 +2742,7 @@ class WorkingMemory:
 
         for item in self.items:
             if label is None or item['label'] == label:
-                item['activation'] = min(1.0, item['activation'] + 0.3)
+                item['activation'] = item['activation'] + 0.3  # UNLOCKED: activation unbounded
                 item['access_count'] += 1
                 return item['item']
 
@@ -2751,7 +2751,7 @@ class WorkingMemory:
     def rehearse(self):
         """Rehearse all items to prevent decay"""
         for item in self.items:
-            item['activation'] = min(1.0, item['activation'] + 0.2)
+            item['activation'] = item['activation'] + 0.2  # UNLOCKED: rehearsal unbounded
 
     def get_state(self) -> Dict[str, Any]:
         """Get current working memory state"""
@@ -3105,7 +3105,7 @@ class SocialIntelligence:
 
         if 'help' in action_lower or 'share' in action_lower:
             inferred_beliefs['prosocial'] = 0.7
-            agent.relationship = min(1.0, agent.relationship + 0.1)
+            agent.relationship = agent.relationship + 0.1  # UNLOCKED: relationship unbounded
         elif 'attack' in action_lower or 'take' in action_lower:
             inferred_beliefs['competitive'] = 0.7
             agent.relationship = max(-1.0, agent.relationship - 0.1)
@@ -3238,7 +3238,7 @@ class DreamState:
             'duration_steps': duration_steps,
             'recombinations': len(recombinations),
             'insights_generated': len(insights),
-            'insights': insights[:5],  # Top 5
+            'insights': insights[:50],  # Top 50
             'average_novelty': sum(r['novelty'] for r in recombinations) / len(recombinations) if recombinations else 0,
             'timestamp': time.time()
         }
@@ -3276,7 +3276,7 @@ class DreamState:
         return {
             'theme': theme,
             'memories_used': len(relevant),
-            'insights': insights[:5],
+            'insights': insights[:50],
             'best_insight': insights[0] if insights else None
         }
 
@@ -3521,7 +3521,7 @@ class CognitiveControl:
         """Rest to recover from fatigue"""
         recovery = duration * 0.3
         self._fatigue = max(0, self._fatigue - recovery)
-        self._focus_level = min(1.0, self._focus_level + recovery * 0.5)
+        self._focus_level = self._focus_level + recovery * 0.5  # UNLOCKED: focus unbounded
 
         return {
             'fatigue_after': self._fatigue,
@@ -3832,7 +3832,7 @@ class IntelligentSynthesizer:
             'method': 'counterfactual',
             'question': query,
             'actual_state': actual_state,
-            'counterfactuals': what_if_result['counterfactuals'][:3],
+            'counterfactuals': what_if_result['counterfactuals'][:30],
             'most_impactful': what_if_result['most_impactful_change'],
             'quantum_interference': interference,
             'num_worlds': len(self.counterfactual.worlds),
@@ -3872,7 +3872,7 @@ class IntelligentSynthesizer:
         """Creative insight generation through interference"""
         # Extract concepts from query
         words = query.replace('?', '').replace('.', '').split()
-        concepts = [w for w in words if len(w) > 3][:5]
+        concepts = [w for w in words if len(w) > 3][:50]
 
         if len(concepts) < 2:
             concepts = ['quantum', 'magic', query[:10]]
@@ -4010,7 +4010,7 @@ class IntelligentSynthesizer:
 
         # Predict behavior
         predictions = {}
-        for agent in agents[:2]:  # Limit to 2
+        for agent in agents[:50]:  # QUANTUM AMPLIFIED (was 2)
             predictions[agent] = self.social.predict_behavior(agent, scenario)
 
         # Simulate interaction if 2 agents
@@ -4047,8 +4047,8 @@ class IntelligentSynthesizer:
         return {
             'method': 'dream',
             'theme': theme,
-            'lucid_insights': dream_result.get('insights', [])[:3],
-            'general_insights': general_dream.get('insights', [])[:3],
+            'lucid_insights': dream_result.get('insights', [])[:30],
+            'general_insights': general_dream.get('insights', [])[:30],
             'total_insights': general_dream.get('insights_generated', 0),
             'novelty': general_dream.get('average_novelty', 0),
             'memories_used': dream_result.get('memories_used', 0),
@@ -4586,7 +4586,7 @@ class WaveFunctionMagic:
         self._packet_cache: Dict[Tuple, Dict] = {}
 
     @staticmethod
-    @lru_cache(maxsize=128)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 2048)
     def _gaussian_factor(x: float, center: float, width: float) -> float:
         """Cached Gaussian computation"""
         return math.exp(-(x - center)**2 / (4 * width**2))
@@ -4648,7 +4648,7 @@ class WaveFunctionMagic:
         self._packet_cache[cache_key] = result
         return result
 
-    @lru_cache(maxsize=64)
+    @lru_cache(maxsize=50000)  # QUANTUM AMPLIFIED (was 1024)
     def particle_in_box(self, n: int, L: float = 1.0) -> Dict[str, Any]:
         """
         Energy eigenstates of particle in 1D box - cached.
@@ -5467,7 +5467,7 @@ if __name__ == "__main__":
     print("◆ UNIFIED SYNTHESIS (Quantum + Hyper-Intelligence):")
     full_synthesis = synthesizer.synthesize_with_intelligence()
     print(f"  Discoveries: {full_synthesis['num_discoveries']}")
-    for d in full_synthesis['discoveries'][:5]:
+    for d in full_synthesis['discoveries'][:50]:
         print(f"    ★ {d}")
     if full_synthesis['num_discoveries'] > 5:
         print(f"    ... and {full_synthesis['num_discoveries'] - 5} more")

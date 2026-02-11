@@ -771,7 +771,7 @@ class ConsciousnessMatrix:
         self.qualia_buffer.append(quale)
 
         # Update awareness based on experience
-        self.awareness_level = min(1.0, self.awareness_level + 0.01)
+        self.awareness_level = self.awareness_level + 0.01  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         return quale
 

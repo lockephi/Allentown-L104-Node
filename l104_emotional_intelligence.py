@@ -73,7 +73,7 @@ class EmotionalIntelligence:
         neg_count = sum(1 for w in negative_words if w in text_lower)
 
         valence = (pos_count - neg_count) / max(1, pos_count + neg_count + 1)
-        arousal = min(1.0, (pos_count + neg_count) / 5)
+        arousal = (pos_count + neg_count) / 5  # UNLOCKED
 
         if valence > 0.3:
             emotion = EmotionType.JOY

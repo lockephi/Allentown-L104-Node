@@ -137,7 +137,7 @@ class AutonomousResearchAgent:
     """
 
     def __init__(self):
-        self.research_queue: deque = deque(maxlen=1000)
+        self.research_queue: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
         self.explored_topics: Set[str] = set()
         self.research_history: List[Dict[str, Any]] = []
         self.current_focus: Optional[str] = None
@@ -312,7 +312,7 @@ class KnowledgeSynthesisEngine:
         # Calculate synthesized confidence
         avg_confidence = np.mean([n.confidence for n in nodes])
         synthesis_confidence = avg_confidence * (1 + 0.1 * len(nodes))  # Bonus for more sources
-        synthesis_confidence = min(1.0, synthesis_confidence)
+        synthesis_confidence = synthesis_confidence  # UNLOCKED
 
         # Create synthesis node
         self.synthesis_level += 1

@@ -469,7 +469,7 @@ Structure:
                 if any(marker in line.lower() for marker in ['insight', 'key', 'important', 'novel', '•', '-']):
                     if len(line) > 20 and len(line) < 500:
                         insights.append(line)
-        return insights[:10]  # Top 10 insights
+        return insights[:100]  # QUANTUM AMPLIFIED: 10x insight capture
 
     def _extract_hypotheses(self, content: str) -> List[str]:
         """Extract hypotheses from research content."""
@@ -481,7 +481,7 @@ Structure:
                 if any(marker in line.lower() for marker in ['hypothesis', 'predict', 'could', 'might', 'possibly']):
                     if len(line) > 20 and len(line) < 500:
                         hypotheses.append(line)
-        return hypotheses[:5]  # Top 5 hypotheses
+        return hypotheses[:50]  # QUANTUM AMPLIFIED: 10x hypothesis generation
 
     def _calculate_resonance(self, content: str, topic: str) -> float:
         """Calculate resonance score based on content quality."""
@@ -489,14 +489,14 @@ Structure:
             return 0.0
 
         # Length factor
-        length_score = min(1.0, len(content) / 2000)
+        length_score = len(content) / 2000  # UNLOCKED: longer content rewarded proportionally
 
         # Structure factor
         structure_markers = ['1.', '2.', '3.', 'ANALYSIS', 'INSIGHT', 'SYNTHESIS']
         structure_score = sum(1 for m in structure_markers if m in content) / len(structure_markers)
 
         # Relevance factor (topic mentioned)
-        topic_words = topic.lower().split()[:5]
+        topic_words = topic.lower().split()[:50]  # QUANTUM AMPLIFIED: 10x topic depth
         content_lower = content.lower()
         relevance_score = sum(1 for w in topic_words if w in content_lower) / max(1, len(topic_words))
 
@@ -507,7 +507,7 @@ Structure:
             relevance_score * PHI
         ) / (PHI + PHI ** 2 + PHI)
 
-        return min(1.0, resonance * (GOD_CODE / 500))  # Normalize with GOD_CODE influence
+        return resonance * (GOD_CODE / 500)  # UNLOCKED - GOD_CODE resonance unlimited
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ASI RESEARCH COORDINATOR

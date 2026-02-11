@@ -23,6 +23,7 @@ DATE: 2026-01-21
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
+import os
 import time
 import asyncio
 from typing import Dict, List, Any, Optional, Tuple
@@ -216,7 +217,7 @@ class AdvancedProcessingEngine:
             loop = asyncio.get_event_loop()
             if loop.is_running():
                 import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as executor:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8) as executor:  # QUANTUM AMPLIFIED
                     future = executor.submit(
                         asyncio.run,
                         self.process_async(query, mode, context)

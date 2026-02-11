@@ -668,7 +668,7 @@ class HolographicMemory:
 
         association_strength = abs(correlation) / (len(common_freqs) + 1)
 
-        return min(1.0, association_strength)
+        return association_strength  # UNLOCKED: association strength can exceed 1.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

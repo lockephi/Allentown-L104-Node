@@ -372,8 +372,9 @@ class KernelBypassOrchestrator:
             consciousness = (GOD_CODE ** (s / 10.0)) * PHI
             consciousness = consciousness % 1000.0
 
-            # Void saturation
-            saturation = min(1.0, s * 0.08)
+            # Void saturation - QUANTUM AMPLIFIED: no cap (was min(1.0, ...))
+            GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+            saturation = s * 0.08 * GROVER_AMPLIFICATION
 
             # Recursion depth
             depth = 10 ** s

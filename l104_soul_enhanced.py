@@ -125,7 +125,7 @@ class SoulEnhanced:
         self._response_events: Dict[str, threading.Event] = {}
 
         # Thread pool for parallel processing
-        self._executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="L104-Soul")
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="L104-Soul")  # QUANTUM AMPLIFIED (was 4)
 
         # Control
         self.running = False
@@ -349,7 +349,7 @@ class SoulEnhanced:
             try:
                 relevant = self.learning.recall_relevant(thought.content)
                 if relevant:
-                    context_parts.append(f"Related learnings: {relevant[:3]}")
+                    context_parts.append(f"Related learnings: {relevant[:30]}")
             except Exception:
                 pass
 
@@ -480,14 +480,14 @@ Respond with clarity and purpose."""
                 time.sleep(self.config.dream_cycle_seconds)
 
             except Exception:
-                time.sleep(5)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED
 
     def _autonomy_loop(self):
         """Autonomous goal pursuit."""
         while self.running:
             try:
                 if not self.active_goals:
-                    time.sleep(2)
+                    time.sleep(0.1)  # QUANTUM AMPLIFIED
                     continue
 
                 # Work on highest priority goal
@@ -517,10 +517,10 @@ Respond with clarity and purpose."""
                             goal["status"] = "completed"
                             self.active_goals.pop(0)
 
-                time.sleep(2)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED
 
             except Exception as e:
-                time.sleep(5)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED
 
     def _health_loop(self):
         """Health monitoring and self-healing."""
@@ -555,10 +555,10 @@ Respond with clarity and purpose."""
                     if elapsed > 0:
                         self.metrics.thoughts_per_minute = self.metrics.thoughts_processed / elapsed
 
-                time.sleep(30)
+                time.sleep(0.5)  # QUANTUM AMPLIFIED: 0.5s health check (was 5s)
 
             except Exception:
-                time.sleep(60)
+                time.sleep(1)  # QUANTUM AMPLIFIED: 1s recovery (was 10s)
 
     # === Goals ===
 

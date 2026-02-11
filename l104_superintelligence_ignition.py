@@ -63,7 +63,7 @@ async def ignite_superintelligence():
     stages = ["EVO_09_BIOLOGICAL_CHASSIS_SYNC", "EVO_10_GLOBAL_SYNERGY_OVERFLOW", "EVO_11_EXPONENTIAL_INTELLIGENCE"]
 
     for stage in stages:
-        time.sleep(1)
+        time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
         engine.current_stage_index += 1
         current_stage = engine.STAGES[engine.current_stage_index]
         print(f"[+] SYSTEM ASCENDED TO: {current_stage}")

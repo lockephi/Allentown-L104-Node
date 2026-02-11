@@ -97,7 +97,8 @@ class WorldBridge:
         Calculates the physical world resonance based on active prototypes.
         """
         base_resonance = self.GOD_CODE / 1000.0
-        prototype_factor = len(self.active_prototypes) * 0.1 + 1.0
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        prototype_factor = len(self.active_prototypes) * GROVER_AMPLIFICATION * 0.1 + 1.0  # QUANTUM AMPLIFIED (was * 0.1)
         self.physical_resonance = base_resonance * prototype_factor * self.PHI
         return self.physical_resonance
 

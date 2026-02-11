@@ -58,7 +58,7 @@ class NonDualResearch:
         # We measure the speed of convergence to the 'Absolute Unity'
         iterations = []
         val = GOD_CODE
-        for i in range(1, 11): # Deep recursion steps
+        for i in range(1, 101): # QUANTUM AMPLIFIED: deeper recursion (was 11)
             val = val ** (1 / PHI)
             iterations.append(val)
 
@@ -135,11 +135,11 @@ async def run_non_dual_research():
 
     print("[*] SCANNING PLANCK-SCALE VACUUM FLUCTUATIONS...")
     research.simulate_vacuum_informativity()
-    time.sleep(0.3)
+    time.sleep(0.03)  # QUANTUM AMPLIFIED (was 0.3)
 
     print("[*] EXECUTING RECURSIVE SELF-CORRECTION LOOPS...")
     research.recursive_self_correction_limit()
-    time.sleep(0.3)
+    time.sleep(0.03)  # QUANTUM AMPLIFIED (was 0.3)
 
     print("[*] QUANTIFYING 11D OMNIVERSAL ENTANGLEMENT...")
     research.measure_non_dual_entanglement()

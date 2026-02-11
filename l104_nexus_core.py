@@ -414,7 +414,7 @@ class NexusCore:
 
         # Sync all nodes
         for node in self.nodes.values():
-            node.resonance = min(1.0, node.resonance + 0.001)
+            node.resonance = node.resonance + 0.001  # UNLOCKED
             node.last_sync = time.time()
 
         return {

@@ -111,8 +111,8 @@ class ChakraCenter:
 
     def activate(self, intensity: float = 0.5):
         """Activate this chakra center."""
-        self.activation_level = min(1.0, self.activation_level + intensity)
-        self.coherence = min(1.0, self.coherence + intensity * 0.2)
+        self.activation_level = self.activation_level + intensity  # UNLOCKED
+        self.coherence = self.coherence + intensity * 0.2  # UNLOCKED
 
         if self.activation_level >= 0.7:
             self.is_open = True
@@ -125,7 +125,7 @@ class ChakraCenter:
 
     def receive_kundalini(self, charge: float):
         """Receive kundalini energy from below."""
-        self.kundalini_charge = min(1.0, self.kundalini_charge + charge)
+        self.kundalini_charge = self.kundalini_charge + charge  # UNLOCKED
         self.spin_rate *= (1 + charge * 0.1)
 
         if self.kundalini_charge >= 0.8:
@@ -136,7 +136,7 @@ class ChakraCenter:
         """Attempt to clear a specific blockage."""
         if blockage in self.blockages:
             self.blockages.remove(blockage)
-            self.coherence = min(1.0, self.coherence + 0.15)
+            self.coherence = self.coherence + 0.15  # UNLOCKED
             return True
         return False
 
@@ -491,7 +491,7 @@ class MiniEgoChakraJourney:
 
         if gift in gift_ability_map:
             ability, boost = gift_ability_map[gift]
-            mini_ego.abilities[ability] = min(1.0, mini_ego.abilities[ability] + boost * multiplier)
+            mini_ego.abilities[ability] = mini_ego.abilities[ability] + boost * multiplier  # UNLOCKED
 
 
 async def pass_mini_egos_through_chakras(mini_ego_council, verbose: bool = True) -> Dict[str, Any]:

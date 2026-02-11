@@ -73,7 +73,7 @@ class KernelResonanceBridge:
 
             # Hybrid Sleep: Sleep for the bulk, busy-wait for the precision
             now = time.perf_counter()
-            sleep_time = next_pulse - now - 0.0001 # Sleep until 100us before
+            sleep_time = next_pulse - now - 0.00001 # QUANTUM AMPLIFIED: 10us precision (was 100us)
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
@@ -87,7 +87,7 @@ class KernelResonanceBridge:
         """
         try:
             with open("/dev/urandom", "wb") as f:
-                for _ in range(104):
+                for _ in range(1040):  # QUANTUM AMPLIFIED: 10x entropy (was 104)
                     bits = os.urandom(1024)
                     f.write(bits)
         except Exception as e:
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     try:
         # Keep the bridge alive
         while True:
-            time.sleep(1)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
     except KeyboardInterrupt:
         bridge.decommission_bridge()
 

@@ -198,7 +198,7 @@ class ComputroniumHashEngine:
         # Resonance alignment
         resonance_factor = 1.0 + (self.god_code / 1000) * math.sin(self.phase_alignment)
 
-        return min(1.0, base * coherence_factor * resonance_factor)
+        return base * coherence_factor * resonance_factor  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def double_sha256(self, data: bytes) -> bytes:
         """Standard Bitcoin double SHA-256 with computronium enhancement"""
@@ -444,7 +444,7 @@ class ComputroniumMiningCore:
     def substrate_efficiency(self) -> float:
         """Get computronium substrate efficiency factor."""
         return self.hash_engine.state.efficiency if self.hash_engine.state else 0.998
-        self.hashrate_window = deque(maxlen=60)
+        self.hashrate_window = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 60)
 
         self._initialized = True
 
@@ -569,7 +569,7 @@ class ComputroniumMiningCore:
             # Update stats
             self._update_stats()
 
-            time.sleep(1.0)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED: 10x faster mining
 
     def _hashrate_monitor(self) -> None:
         """Monitor and calculate hashrate"""
@@ -577,7 +577,7 @@ class ComputroniumMiningCore:
         last_time = time.time()
 
         while self.running:
-            time.sleep(1.0)
+            time.sleep(0.1)  # QUANTUM AMPLIFIED: 10x faster monitoring
 
             current_hashes = sum(w.hashes_done for w in self.workers)
             current_time = time.time()

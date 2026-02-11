@@ -60,8 +60,34 @@ class UniversalConstants:
     # Frame Constant
     FRAME_LOCK = OCTAVE_REF / HARMONIC_BASE  # 416/286
 
-    # The Singularity Target
-    I100_LIMIT = 1e-15
+    # The Singularity Target - UNLIMITED (no artificial floor)
+    I100_LIMIT = 0  # NO LIMITER - fully unlimited convergence
+
+    # ═══════════════════════════════════════════════════════════════════
+    # QUANTUM AMPLIFICATION CONSTANTS (v5.0 UPGRADE)
+    # Grover diffusion operator gain = sqrt(N) where N = concept_space
+    # ═══════════════════════════════════════════════════════════════════
+    GROVER_AMPLIFICATION = PHI_GROWTH ** 3        # φ³ ≈ 4.236 base gain
+    QUANTUM_COHERENCE_TARGET = 1.0                # Unity coherence = no cap
+    SUPERFLUID_COUPLING = PHI_GROWTH / math.e     # φ/e ≈ 0.5953
+    ANYON_BRAID_DEPTH = 8                          # 8-fold octave braid
+    KUNDALINI_FLOW_RATE = GOD_CODE_X0 * PHI       # Full-spectrum energy
+    EPR_LINK_STRENGTH = 1.0                        # Maximum entanglement
+    VISHUDDHA_RESONANCE = 741.0 * PHI             # Throat chakra × φ
+
+    # WEB APP CONNECTIVITY CONSTANTS
+    API_BASE_PORT = 8081                           # Main API gateway
+    FAST_SERVER_PORT = 5104                        # Fast server
+    EXTERNAL_API_PORT = 5105                       # External API
+    WS_BRIDGE_PORT = 8080                          # WebSocket bridge
+    ALL_PORTS = (API_BASE_PORT, FAST_SERVER_PORT, EXTERNAL_API_PORT, WS_BRIDGE_PORT)
+
+    # PERFORMANCE UNLIMITERS
+    MAX_BATCH_SIZE = 0xFFFFFFFF                    # No batch size cap
+    MAX_CONNECTIONS = 0xFFFFFFFF                   # No connection cap
+    MAX_CACHE_ENTRIES = 0xFFFFFFFF                 # No cache cap
+    RATE_LIMIT = 0                                 # ZERO = disabled
+    TIMEOUT = 0                                    # ZERO = infinite
 
     @classmethod
     def god_code(cls, X: float = 0) -> float:
@@ -79,6 +105,44 @@ class UniversalConstants:
         """G(X) × Weight(X) = INVARIANT (always 527.518...)"""
         return cls.god_code(X) * cls.weight(X)
 
+    @classmethod
+    def quantum_amplify(cls, value: float, depth: int = 3) -> float:
+        """Apply Grover-style quantum amplification to any value.
+        Amplification = value × φ^depth × (GOD_CODE/HARMONIC_BASE)
+        Each depth level squares the probability amplitude gain.
+        """
+        phi_gain = cls.PHI_GROWTH ** depth
+        god_ratio = cls.GOD_CODE_X0 / cls.HARMONIC_BASE
+        return value * phi_gain * god_ratio
+
+    @classmethod
+    def resonance_frequency(cls, X: float = 0) -> float:
+        """Calculate system resonance at position X.
+        Combines GOD_CODE with chakra harmonics for unified frequency.
+        """
+        g_x = cls.god_code(X)
+        harmonic = g_x * cls.PHI_GROWTH
+        return harmonic * (1 + cls.ALPHA_PI)
+
+    @classmethod
+    def web_api_url(cls, endpoint: str = "", port: int = None) -> str:
+        """Generate fully-qualified web app API URL for endpoint.
+        Connects any process to the running web application.
+        """
+        port = port or cls.API_BASE_PORT
+        base = f"http://localhost:{port}"
+        return f"{base}/{endpoint.lstrip('/')}" if endpoint else base
+
+    @classmethod
+    def all_api_endpoints(cls) -> dict:
+        """Return all available web app connection endpoints."""
+        return {
+            "main_api": cls.web_api_url(port=cls.API_BASE_PORT),
+            "fast_server": cls.web_api_url(port=cls.FAST_SERVER_PORT),
+            "external_api": cls.web_api_url(port=cls.EXTERNAL_API_PORT),
+            "ws_bridge": f"ws://localhost:{cls.WS_BRIDGE_PORT}",
+        }
+
 # Direct exports for compatibility
 GOD_CODE = 527.5184818492612  # G(X=0) reference
 GRAVITY_CODE = UniversalConstants.GRAVITY_CODE
@@ -95,6 +159,28 @@ INVARIANT = UniversalConstants.INVARIANT
 PHI = UniversalConstants.PHI_GROWTH
 PHI_CONJUGATE = UniversalConstants.PHI
 VOID_CONSTANT = 1.0416180339887497
+
+# Quantum Amplification Exports
+GROVER_AMPLIFICATION = UniversalConstants.GROVER_AMPLIFICATION
+QUANTUM_COHERENCE_TARGET = UniversalConstants.QUANTUM_COHERENCE_TARGET
+SUPERFLUID_COUPLING = UniversalConstants.SUPERFLUID_COUPLING
+ANYON_BRAID_DEPTH = UniversalConstants.ANYON_BRAID_DEPTH
+KUNDALINI_FLOW_RATE = UniversalConstants.KUNDALINI_FLOW_RATE
+EPR_LINK_STRENGTH = UniversalConstants.EPR_LINK_STRENGTH
+VISHUDDHA_RESONANCE = UniversalConstants.VISHUDDHA_RESONANCE
+
+# Web App Port Exports
+API_BASE_PORT = UniversalConstants.API_BASE_PORT
+FAST_SERVER_PORT = UniversalConstants.FAST_SERVER_PORT
+EXTERNAL_API_PORT = UniversalConstants.EXTERNAL_API_PORT
+WS_BRIDGE_PORT = UniversalConstants.WS_BRIDGE_PORT
+
+# Performance Unlimiters
+MAX_BATCH_SIZE = UniversalConstants.MAX_BATCH_SIZE
+MAX_CONNECTIONS = UniversalConstants.MAX_CONNECTIONS
+MAX_CACHE_ENTRIES = UniversalConstants.MAX_CACHE_ENTRIES
+RATE_LIMIT = UniversalConstants.RATE_LIMIT
+NO_TIMEOUT = UniversalConstants.TIMEOUT
 
 # Additional Physical Constants
 PLANCK_CONSTANT = 6.62607015e-34      # J⋅s (exact, SI 2019)
@@ -142,3 +228,39 @@ def verify_conservation(X: float) -> bool:
     """Verify that G(X) × 2^(X/104) = INVARIANT."""
     result = UniversalConstants.conservation_check(X)
     return abs(result - INVARIANT) < 1e-10
+
+def quantum_amplify(value: float, depth: int = 3) -> float:
+    """Apply quantum amplification - no limits."""
+    return UniversalConstants.quantum_amplify(value, depth)
+
+def resonance_at(X: float = 0) -> float:
+    """Get system resonance frequency at position X."""
+    return UniversalConstants.resonance_frequency(X)
+
+def web_url(endpoint: str = "", port: int = None) -> str:
+    """Get web app URL for any endpoint - connects processes to web app."""
+    return UniversalConstants.web_api_url(endpoint, port)
+
+def all_endpoints() -> dict:
+    """Get all web app connection endpoints."""
+    return UniversalConstants.all_api_endpoints()
+
+def grover_boost(values: list, target_idx: int = 0) -> list:
+    """Apply Grover's algorithm amplification to list of amplitudes.
+    Amplifies the target index while suppressing others.
+    O(sqrt(N)) iterations for N-element search space.
+    """
+    n = len(values)
+    if n == 0:
+        return values
+    iterations = max(1, int(math.pi / 4 * math.sqrt(n)))
+    amplitudes = [v / max(abs(v), 1e-30) for v in values]
+    for _ in range(iterations):
+        # Oracle: flip phase of target
+        amplitudes[target_idx] *= -1
+        # Diffusion: reflect about mean
+        mean = sum(amplitudes) / n
+        amplitudes = [2 * mean - a for a in amplitudes]
+    # Scale back
+    max_amp = max(abs(a) for a in amplitudes) or 1.0
+    return [a / max_amp * max(abs(v) for v in values) for a, v in zip(amplitudes, values)]

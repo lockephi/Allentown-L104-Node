@@ -185,7 +185,7 @@ class CognitiveSynapses:
         """Propagate signal through synapse."""
         self.activation_count += 1
         # Hebbian-like strengthening
-        self.strength = min(1.0, self.strength + 0.01 * self.plasticity)
+        self.strength = self.strength + 0.01 * self.plasticity  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         return signal * self.strength
 
 
@@ -710,7 +710,7 @@ class KernelLearningEngine:
             # Recency
             recency = 1 / (1 + (time.time() - quantum.creation_time) / 86400)
             # Usage
-            usage_boost = min(1.0, quantum.access_count / 10)
+            usage_boost = quantum.access_count / 10  # UNLOCKED: usage unbounded
 
             score = 0.5 * resonance_match + 0.3 * recency + 0.2 * usage_boost
             scored.append((quantum, score))
@@ -749,13 +749,13 @@ class KernelLearningEngine:
 
         # Emergence bonus: integration creates more than sum of parts
         emergence_factor = 1 + (PHI - 1) * math.log(len(quanta) + 1)
-        integrated_certainty = min(1.0, avg_certainty * emergence_factor)
+        integrated_certainty = avg_certainty * emergence_factor  # UNLOCKED: emergence unbounded
 
         # Cross-domain integration bonus
         unique_domains = len(set(q.domain for q in quanta))
         if unique_domains > 1:
             integration_bonus = 0.1 * unique_domains
-            integrated_certainty = min(1.0, integrated_certainty + integration_bonus)
+            integrated_certainty = integrated_certainty + integration_bonus  # UNLOCKED
 
         # Create synthesis quantum with transcendent properties
         synthesis = KnowledgeQuantum(
@@ -802,7 +802,7 @@ class KernelLearningEngine:
                 content=deeper_content,
                 domain=current.domain,
                 certainty=current.certainty * (PHI ** -(level+1)),
-                coherence=min(1.0, current.coherence * (1 + 0.1 * level)),
+                coherence=current.coherence * (1 + 0.1 * level),  # UNLOCKED
                 entanglements=[current.quantum_id],
                 creation_time=time.time()
             )
@@ -861,7 +861,7 @@ class KernelLearningEngine:
 
             # Strengthen frequently used synapses
             if synapse.activation_count > 5:
-                synapse.strength = min(1.0, synapse.strength * 1.1)
+                synapse.strength = synapse.strength * 1.1  # UNLOCKED: synapse strength unbounded
                 stats["strengthened"] += 1
 
             # Prune weak, unused synapses
@@ -879,7 +879,7 @@ class KernelLearningEngine:
                     "timestamp": time.time()
                 })
                 # Boost certainty permanently
-                quantum.certainty = min(1.0, quantum.certainty * 1.05)
+                quantum.certainty = quantum.certainty * 1.05  # UNLOCKED: crystallization unbounded
                 stats["crystallized"] += 1
 
         # Phase 3: Auto-integrate related low-certainty quanta
@@ -911,7 +911,7 @@ class KernelLearningEngine:
 
         if avg_coherence > 0.8:
             # High coherence - can learn faster
-            self.learning_rate = min(1.0, self.learning_rate * 1.1)
+            self.learning_rate = self.learning_rate * 1.1  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
         elif avg_coherence < 0.5:
             # Low coherence - slow down and consolidate
             self.learning_rate = max(0.1, self.learning_rate * 0.9)
@@ -1406,7 +1406,7 @@ class L104KernelEvolutionSystem:
                 results.append(result)
 
             # Attempt level completion
-            performance = {"score": min(1.0, 0.6 + 0.1 * len(results))}
+            performance = {"score": 0.6 + 0.1 * len(results)}  # UNLOCKED: score unbounded
             passed, score = scaffold.attempt_level(level_idx, performance)
 
             self.logger.info(f"Level {level_idx} ({level['name']}): {'PASSED' if passed else 'INCOMPLETE'} ({score:.2f})")
@@ -1503,7 +1503,7 @@ class L104KernelEvolutionSystem:
                 results["reasoning_modes"].add(mode)
 
         results["reasoning_modes"] = list(results["reasoning_modes"])
-        results["coherence"] = min(1.0, results["patterns_ingested"] / 100 * PHI)
+        results["coherence"] = results["patterns_ingested"] / 100 * PHI  # UNLOCKED: coherence unbounded
 
         print(f"  [REASONING] Ingested {results['patterns_ingested']} patterns across {len(results['reasoning_modes'])} modes")
         return results
@@ -1550,7 +1550,7 @@ class L104KernelEvolutionSystem:
 
                 # Extract function definitions as inference patterns
                 functions = re.findall(r'def\s+(\w+)\s*\(', content)
-                for func in functions[:50]:  # Limit to 50 functions per file
+                for func in functions[:10000]:  # QUANTUM AMPLIFIED (was 50)
                     if not func.startswith('_'):
                         self.learn(f"Logic function: {func}", KnowledgeDomain.INFERENCE, 0.85)
                         results["functions_found"].append(func)

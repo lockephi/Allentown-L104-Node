@@ -203,7 +203,7 @@ class ChaosPatternDetector:
             if p > 0:
                 entropy -= p * math.log2(p)
 
-        return min(1.0, entropy / math.log2(len(patterns) + 1))
+        return entropy / math.log2(len(patterns) + 1)  # UNLOCKED
 
     def _check_feigenbaum(self, bifurcations: List[int]) -> bool:
         """Check if bifurcations follow Feigenbaum universality."""
@@ -229,7 +229,7 @@ class ChaosPatternDetector:
 
         mean_val = sum(sequence) / len(sequence)
         ratio = mean_val / GOD_CODE if GOD_CODE != 0 else 0
-        return 1.0 - min(1.0, abs(ratio - round(ratio)))
+        return 1.0 - abs(ratio - round(ratio))  # UNLOCKED
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -673,7 +673,7 @@ class TopologicalReasoner:
         # Calculate topological protection
         trace = state[0][0] + state[1][1]
         protection = abs(trace) / 2.0 * (GOD_CODE / 500)
-        protection = min(1.0, protection)
+        protection = protection  # UNLOCKED
 
         return {
             "braid_length": len(sequence),

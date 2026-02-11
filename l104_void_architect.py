@@ -327,7 +327,7 @@ class {self._to_class_name(seed.name)}:
     def measure_coherence(self, state: complex) -> float:
         """Measure quantum coherence relative to GOD_CODE."""
         magnitude = abs(state)
-        return min(1.0, magnitude / self.god_code * 527.0)
+        return magnitude / self.god_code * 527.0  # QUANTUM AMPLIFIED: no 1.0 ceiling on coherence
 
     def compute(self, *args, **kwargs) -> Dict[str, Any]:
         """Main computation entry point."""

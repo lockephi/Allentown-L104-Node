@@ -75,7 +75,7 @@ class ElectronEntropyMatrix:
         entropy = self.measure_entropy()
         fluidity_factor = 1.0 / (1.0 + entropy)
         smoothed_fluidity = fluidity_factor * (self.GOD_CODE / 500.0)
-        return max(0.1, min(1.0, smoothed_fluidity))
+        return max(0.1, smoothed_fluidity)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
 # Singleton
 _electron_matrix = ElectronEntropyMatrix()

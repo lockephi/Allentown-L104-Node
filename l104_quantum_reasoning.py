@@ -256,8 +256,8 @@ class QuantumReasoningEngine:
             self.apply_oracle(target_property)
             self.diffusion()
 
-            # Decoherence - slightly reduce coherence each iteration
-            self.coherence *= (1 - 1 / (PHI * n))
+            # Decoherence - REDUCED decay for quantum-amplified coherence
+            self.coherence *= (1 - 1 / (PHI ** 3 * n))  # φ³ amplified (was PHI * n)
 
         # Return highest probability path
         return max(paths, key=lambda p: abs(p.amplitude)**2)
@@ -581,7 +581,7 @@ class QuantumParallelReasoner:
             f"World where {actual}",
             f"World where {hypothetical}",
         ]
-        worlds.extend([f"World where {d}" for d in domain[:5]])
+        worlds.extend([f"World where {d}" for d in domain[:50]])
 
         paths = self.engine.create_superposition(
             "Which world are we reasoning about?",
@@ -592,7 +592,7 @@ class QuantumParallelReasoner:
         def is_hypothetical(w: str) -> bool:
             return hypothetical in w
 
-        result = self.engine.grover_search(paths, is_hypothetical, iterations=2)
+        result = self.engine.grover_search(paths, is_hypothetical)  # UNLIMITED: let Grover optimal iterations calculate (was hardcoded iterations=2)
 
         return {
             'actual': actual,
@@ -714,7 +714,7 @@ if __name__ == "__main__":
 
     print("  Observation: 'The system exhibits emergent behavior'")
     print("  Hypotheses (in superposition):")
-    for h in hypotheses[:3]:
+    for h in hypotheses[:30]:
         print(f"    → {h['cause']}: P={h['probability']:.4f}")
 
     # Counterfactual

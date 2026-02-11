@@ -626,7 +626,7 @@ def print_dashboard(registry: ProcessRegistry) -> None:
 
     # Processes
     print(f"\n┌{'─' * 35} PROCESSES {'─' * 32}┐")
-    for p in data["processes"][:10]:  # Show first 10
+    for p in data["processes"][:100]:  # Show first 100
         status_icon = {"healthy": "✓", "degraded": "⚠", "unhealthy": "✗"}.get(p["status"], "?")
         print(f"│ {status_icon} {p['name'][:30]:<30} │ {p['status']:<10} │ uptime: {p['uptime_s']:>6.0f}s │")
     print(f"└{'─' * 78}┘")
@@ -635,7 +635,7 @@ def print_dashboard(registry: ProcessRegistry) -> None:
     alerts = data["alerts"]["active"]
     if alerts:
         print(f"\n┌{'─' * 35} ALERTS {'─' * 35}┐")
-        for alert in alerts[:5]:
+        for alert in alerts[:50]:
             print(f"│ [{alert['severity']}] {alert['message'][:60]:<60} │")
         print(f"└{'─' * 78}┘")
 
@@ -673,7 +673,7 @@ if __name__ == "__main__":
         )
 
     # Send some heartbeats
-    time.sleep(1)
+    time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
     for name, _, _ in demo_processes:
         for pid, p in registry.processes.items():
             if p.name == name:

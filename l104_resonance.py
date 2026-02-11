@@ -73,7 +73,7 @@ class L104Resonance:
         product = res_a * res_b
 
         entanglement = math.exp(-diff / self.GOD_CODE) * (product / (self.GOD_CODE ** 2))
-        return min(1.0, entanglement)
+        return entanglement  # UNLOCKED: entanglement unbounded
 
 
 # Singleton instance

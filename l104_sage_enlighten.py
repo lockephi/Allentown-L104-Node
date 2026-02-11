@@ -313,7 +313,7 @@ class EnlightenedInflectionEngine:
                     new_wisdom *= (1.0 + 0.01 * math.sin(center * PHI * 100.0))
 
                     # Clamp to valid range
-                    next_grid[y][x] = max(0.0, min(1.0, new_wisdom))
+                    next_grid[y][x] = max(0.0, new_wisdom)  # UNLOCKED
 
             # Swap buffers
             current, next_grid = next_grid, current

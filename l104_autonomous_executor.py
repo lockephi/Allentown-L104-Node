@@ -611,13 +611,13 @@ class ExecutorPool:
 
     def __init__(self, pool_sizes: Dict[TaskCategory, int] = None):
         default_sizes = {
-            TaskCategory.COMPUTATION: 4,
-            TaskCategory.IO: 8,
-            TaskCategory.NETWORK: 4,
-            TaskCategory.AI_INFERENCE: 2,
-            TaskCategory.MINING: 2,
-            TaskCategory.SYSTEM: 2,
-            TaskCategory.CUSTOM: 4
+            TaskCategory.COMPUTATION: (os.cpu_count() or 4) * 4,
+            TaskCategory.IO: (os.cpu_count() or 4) * 8,
+            TaskCategory.NETWORK: (os.cpu_count() or 4) * 4,
+            TaskCategory.AI_INFERENCE: (os.cpu_count() or 4) * 2,
+            TaskCategory.MINING: (os.cpu_count() or 4) * 2,
+            TaskCategory.SYSTEM: (os.cpu_count() or 4) * 2,
+            TaskCategory.CUSTOM: (os.cpu_count() or 4) * 4
         }
 
         sizes = pool_sizes or default_sizes
@@ -1094,7 +1094,7 @@ if __name__ == "__main__":
 
     # Wait for tasks to complete
     print("\n[WAITING FOR COMPLETION]")
-    time.sleep(3)
+    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 3)
 
     # Check results
     print("\n[TASK RESULTS]")

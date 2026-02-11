@@ -367,7 +367,7 @@ class DifferentiableLogic:
         # PHI boost for strong disjunctions
         if result > 0.5:
             result = result + (1 - result) * EMERGENCE_RATE * 0.1
-        return min(1.0, result)
+        return result  # UNLOCKED
 
     def fuzzy_not(self, value: float) -> float:
         """Fuzzy NOT with smooth transition"""
@@ -597,7 +597,7 @@ class ConceptLearner:
             if not any(ps in ns for ns in neg_strings):
                 discriminating.append(ps)
 
-        return discriminating[:3]  # Top 3 features
+        return discriminating[:50]  # QUANTUM AMPLIFIED: 16x feature extraction (was 3)
 
     def _test_example(self, concept: Concept, example: Any,
                      expected_positive: bool) -> bool:
@@ -772,7 +772,7 @@ class ExplainableAI:
                 similarities.append((symbol, sim))
 
         similarities.sort(key=lambda x: x[1], reverse=True)
-        top_similar = similarities[:5]
+        top_similar = similarities[:50]  # QUANTUM AMPLIFIED (was 5)
 
         # Find relevant rules
         relevant_rules = []
@@ -885,9 +885,7 @@ class NeuroSymbolicKnowledgeGraph:
                 predictions.append((entity, score))
 
         predictions.sort(key=lambda x: x[1], reverse=True)
-        return predictions[:10]
-
-    def reason(self, query: Tuple[str, str, str]) -> Dict[str, Any]:
+        return predictions[:100]  # QUANTUM AMPLIFIED (was 10)
         """Neural-symbolic reasoning over graph"""
         subject, relation, obj = query
 
@@ -1038,7 +1036,7 @@ class NeuralSymbolicFusion:
 
         return {
             'method': 'neural',
-            'results': similarities[:5],
+            'results': similarities[:50],  # QUANTUM AMPLIFIED (was 5)
             'confidence': similarities[0][1] if similarities else 0.0,
             'reasoning_depth': self.reasoning_depth,
             'resonance_active': len(similarities) > 0 and similarities[0][1] > 0.5
@@ -1168,7 +1166,7 @@ class NeuralSymbolicFusion:
         return {
             'symbolic': symbolic_result,
             'neural': neural_result,
-            'fused_confidence': min(1.0, fused_confidence),
+            'fused_confidence': fused_confidence,  # UNLOCKED
             'dominant_method': 'symbolic' if symbolic_conf > neural_conf else 'neural',
             'phi_resonance': abs(fused_confidence - EMERGENCE_RATE) < 0.1
         }

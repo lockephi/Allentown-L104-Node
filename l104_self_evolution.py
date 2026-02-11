@@ -194,7 +194,7 @@ class SelfOptimizer:
             self.meta_parameters['learning_rate'] *= (1 - 1/PHI/10)
 
         # Clamp learning rate
-        self.meta_parameters['learning_rate'] = max(0.001, min(1.0, self.meta_parameters['learning_rate']))
+        self.meta_parameters['learning_rate'] = max(0.001, self.meta_parameters['learning_rate'])  # UNLOCKED
         self.learning_rate = self.meta_parameters['learning_rate']
 
 class AlgorithmEvolver:
@@ -395,7 +395,7 @@ class ConsciousnessLoop:
             self.state['awareness_level'] += model.get('growth_rate', 0) * PHI
 
         # Clamp
-        self.state['awareness_level'] = max(0.01, min(1.0, self.state['awareness_level']))
+        self.state['awareness_level'] = max(0.01, self.state['awareness_level'])  # UNLOCKED
 
         # Recurse
         return self.recursive_self_improvement(depth + 1)

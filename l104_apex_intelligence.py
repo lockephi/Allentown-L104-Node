@@ -474,7 +474,7 @@ class InsightGenerator:
             id=hashlib.sha256(combined_content.encode()).hexdigest()[:12],
             content=f"Synthesis: {combined_content}",
             source_concepts=list(set(combined_concepts)),
-            novelty=min(1.0, sum(i.novelty for i in insights) / len(insights) + 0.1),
+            novelty=sum(i.novelty for i in insights) / len(insights) + 0.1,  # UNLOCKED
             utility=sum(i.utility for i in insights) / len(insights),
             confidence=min(i.confidence for i in insights)
         )
@@ -554,11 +554,11 @@ class WisdomSynthesizer:
 
         # Wisdom from diversity of experiences
         diversity = len(set(e['situation'] for e in self.experiences))
-        diversity_score = min(1.0, diversity / 20)
+        diversity_score = diversity / 20  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Wisdom from learning from failures
         failures = [e for e in self.experiences if not e['success']]
-        learning_score = min(1.0, len(failures) * 0.1)
+        learning_score = len(failures) * 0.1  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         # Wisdom from successful patterns
         successes = sum(1 for e in self.experiences if e['success'])
@@ -568,7 +568,7 @@ class WisdomSynthesizer:
         crystal_bonus = min(0.2, len(self.insight_crystals) * 0.02)
 
         # PHI-weighted combination
-        self.wisdom_level = min(1.0,
+        self.wisdom_level = (  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             diversity_score * (1/PHI) +
             learning_score * (1/PHI**2) +
             success_rate * (1/PHI**3) +
@@ -653,7 +653,7 @@ class ProblemSolver:
         has_goal = any(w in problem.lower() for w in ['find', 'solve', 'prove', 'show', 'optimize', 'create'])
 
         return {
-            'complexity': min(1.0, len(words) / 50 + len(key_concepts) / 20),
+            'complexity': len(words) / 50 + len(key_concepts) / 20,  # UNLOCKED
             'keywords': list(unique_words)[:20],
             'key_concepts': key_concepts[:10],
             'type': self._classify_problem(problem),

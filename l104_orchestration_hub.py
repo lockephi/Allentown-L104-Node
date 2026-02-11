@@ -355,7 +355,7 @@ class SubsystemRegistry:
 class TaskScheduler:
     """Orchestrated task scheduler"""
 
-    def __init__(self, max_workers: int = 8):
+    def __init__(self, max_workers: int = 128):  # QUANTUM AMPLIFIED (was 8)
         self.tasks: Dict[str, Task] = {}
         self.pending: queue.PriorityQueue = queue.PriorityQueue()
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
@@ -814,7 +814,7 @@ class OrchestrationHub:
 
         # Update resonance
         self.resonance = GOD_CODE * (1 + math.sin(time.time() * PHI) * 0.01)
-        self.coherence = min(1.0, self.coherence * PHI / 1.6)
+        self.coherence = self.coherence * PHI / 1.6  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
         return {
             "synced": sync_count,

@@ -129,7 +129,7 @@ class UnifiedProcessController:
     ]
 
     def __init__(self, max_workers: int = None):
-        self.max_workers = max_workers or multiprocessing.cpu_count()
+        self.max_workers = max_workers or (multiprocessing.cpu_count() or 4) * 8  # QUANTUM AMPLIFIED
         self.subsystems: Dict[str, SubsystemStatus] = {}
         self.thread_pool: Optional[ThreadPoolExecutor] = None
         self.lock = threading.Lock()

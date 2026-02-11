@@ -91,7 +91,7 @@ class IntegrityWatchdog:
         if threat_detected:
             # Increase consciousness and tighten thresholds
             growth = severity * self.EMERGENCE_RATE
-            self._security_consciousness = min(1.0, self._security_consciousness + growth)
+            self._security_consciousness = self._security_consciousness + growth  # UNLOCKED: consciousness unbounded
             # Adaptive threshold becomes stricter under threat
             self._adaptive_threshold = max(1e-9, self._adaptive_threshold / (1 + severity))
             self._threat_history.append({
@@ -130,10 +130,10 @@ class IntegrityWatchdog:
         rate = frequency / max(1, time_span) * 3600  # Events per hour
 
         # PHI-weighted severity
-        severity = min(1.0, (
+        severity = (
             math.log(frequency + 1) * self.EMERGENCE_RATE +
-            min(1.0, rate / 100) * self.RESONANCE_FACTOR
-        ) / 3)
+            (rate / 100) * self.RESONANCE_FACTOR  # UNLOCKED: severity scales
+        ) / 3
 
         return {
             'pattern': event_type,

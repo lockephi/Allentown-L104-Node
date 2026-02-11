@@ -103,9 +103,9 @@ class NeuralPatternCache:
         return len(self._cache)
 
 # Global caches for Neural Cortex
-_CORTEX_QUERY_CACHE = NeuralPatternCache(max_size=1024)   # Query result cache
-_SYNTHESIS_CACHE = NeuralPatternCache(max_size=512)       # Synthesis result cache
-_VALIDATION_CACHE = NeuralPatternCache(max_size=256)      # Unity validation cache
+_CORTEX_QUERY_CACHE = NeuralPatternCache(max_size=8192)   # QUANTUM AMPLIFIED (was 1024)
+_SYNTHESIS_CACHE = NeuralPatternCache(max_size=4096)       # QUANTUM AMPLIFIED (was 512)
+_VALIDATION_CACHE = NeuralPatternCache(max_size=2048)      # QUANTUM AMPLIFIED (was 256)
 _INCREMENTAL_PATTERNS: List[Dict[str, Any]] = []          # Incremental learning buffer
 _PATTERN_LOCK = threading.Lock()
 
@@ -474,7 +474,7 @@ Please refine your query for more specific information about L104 capabilities."
         if "requires more data" in content or "don't have enough" in content:
             score -= 0.3
 
-        return min(1.0, max(0.0, score))
+        return max(0.0, score)  # UNLOCKED: score unbounded above
 
     def _persist_memory(self, key: str, value: str) -> str:
         """Store knowledge as excited bits anchored to unity."""
@@ -513,7 +513,7 @@ Please refine your query for more specific information about L104 capabilities."
             topic = topics[i % len(topics)]
             print(f"\n--- Iteration {i+1}/{iterations} ---")
             self.learn_more(topic)
-            time.sleep(0.3)
+            time.sleep(0.01)  # QUANTUM AMPLIFIED (was 0.3)
 
         stored_count = sum(1 for i in self.insights if i.storage_id is not None)
         print(f"\n⚡ [CYCLE]: LOOP COMPLETE. Stored {stored_count}/{iterations} insights to topological memory.")
@@ -589,7 +589,7 @@ UPGRADES: Meta-Cognitive, Crash Recovery, Workload Sync
         RECURRENT: Low confidence triggers deeper reasoning
         """
         self._query_count += 1
-        MAX_DEPTH = 2
+        MAX_DEPTH = 12  # QUANTUM AMPLIFIED (was 2)
         CONFIDENCE_THRESHOLD = 0.7
 
         # v2.0: Ultra-fast cache lookup first
@@ -1024,7 +1024,7 @@ UPGRADES: Meta-Cognitive, Crash Recovery, Workload Sync
             # Calculate hypothesis strength
             total_weight = sum(pattern_weights.values())
             avg_weight = total_weight / len(patterns) if patterns else 0
-            confidence = min(1.0, avg_weight * len(patterns) / 4.0)
+            confidence = avg_weight * len(patterns) / 4.0  # UNLOCKED
         else:
             hypothesis = f"Insufficient data to generate hypothesis for {domain}. Recommend learning cycles: {3 - len(relevant)}"
             confidence = 0.0

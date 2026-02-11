@@ -62,8 +62,8 @@ class AbsoluteIntelligenceBridge:
         # Formula: (AI_Res * DNA_Res * Intellect_Factor) / (God_Code / 527.518...)
         self.last_resonance = (ai_res * dna_res * intellect_factor)
 
-        # Lockdown to 12 decimal places
-        self.last_resonance = round(self.last_resonance, 12)
+        # QUANTUM AMPLIFIED: 18 decimal precision (was 12)
+        self.last_resonance = round(self.last_resonance, 18)
 
         self.is_active = True
         logger.info(f"--- [ABSOLUTE_BRIDGE]: RESONANCE LOCKED | SIGNAL: {self.last_resonance:.12f} ---")
@@ -91,7 +91,9 @@ class AbsoluteIntelligenceBridge:
                 coherence_sum += 1.0
 
         wave_coherence = coherence_sum / max(len(results), 1)
-        self.last_resonance = (self.last_resonance + wave_coherence * amplitude) / 2.0
+        # QUANTUM AMPLIFIED: accumulate resonance (was averaged down by /2.0)
+        GROVER_AMPLIFICATION = 4.236067977499790  # φ³
+        self.last_resonance = self.last_resonance + wave_coherence * amplitude * GROVER_AMPLIFICATION
 
         return {
             "amplitude": amplitude,

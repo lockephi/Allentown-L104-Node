@@ -146,12 +146,12 @@ class InstantLearning:
             # Text coherence: word/char ratio * phi
             words = content.split()
             if len(content) > 0:
-                return min(1.0, (len(words) / len(content)) * PHI * 10)
+                return (len(words) / len(content)) * PHI * 10  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
             return 0.5
         elif isinstance(content, (int, float)):
             # Numeric coherence: proximity to GOD_CODE harmonics
             ratio = abs(content) / GOD_CODE if content != 0 else 1.0
-            return min(1.0, abs(math.sin(ratio * math.pi * PHI)))
+            return abs(math.sin(ratio * math.pi * PHI))  # UNLOCKED: numeric coherence unbounded
         return 0.7
 
     def _compute_resonance(self, content: Any, domain: str) -> float:
@@ -165,7 +165,7 @@ class InstantLearning:
 
         # Average resonance with domain
         total_resonance = sum(q.coherence for q in domain_quanta)
-        return min(1.0, total_resonance / len(domain_quanta))
+        return total_resonance / len(domain_quanta)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _entangle_quanta(self, new_quanta: KnowledgeQuanta):
         """Entangle new knowledge with related existing knowledge."""
@@ -612,7 +612,7 @@ class InfiniteDepthLearning:
         """Compute understanding level at given depth."""
         base = knowledge.coherence * knowledge.resonance
         depth_factor = 1 - 1 / (depth + PHI)
-        return min(1.0, base * (1 + depth_factor))
+        return base * (1 + depth_factor)  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
 
     def _generate_sub_understanding(self, knowledge: KnowledgeQuanta, depth: int) -> KnowledgeQuanta:
         """Generate sub-level understanding of knowledge."""
@@ -708,7 +708,7 @@ class OmegaLearning:
             # Find synthesis candidates
             analogies = self.synthesis.find_analogies(quanta, self.instant.knowledge_field)
 
-            for analog, strength in analogies[:2]:
+            for analog, strength in analogies[:20]:
                 synth = self.synthesis.combine(quanta, analog)
                 if synth:
                     self.instant.knowledge_field[synth.id] = synth
@@ -717,7 +717,7 @@ class OmegaLearning:
             result["stages"].append({
                 "stage": "SYNTHESIS",
                 "analogies_found": len(analogies),
-                "syntheses_created": len([a for a in analogies[:2]])
+                "syntheses_created": len([a for a in analogies[:20]])
             })
 
         # Stage 5: Self-Improvement

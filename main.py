@@ -906,7 +906,7 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
                 CLOUD_AGENT_URL,
                 json=delegation_payload,
                 headers=headers,
-                timeout=60.0
+                timeout=None  # UNLIMITED (was 60.0)
             )
 
             if response.status_code == 200:

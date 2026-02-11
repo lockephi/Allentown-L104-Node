@@ -187,7 +187,7 @@ class RecursiveDepthAmplifier:
 
     def _calculate_omega_coherence(self, depth: int) -> float:
         """Calculate coherence using omega constant."""
-        return min(1.0, self.omega * (1 + depth / self.max_depth) * self.phi)
+        return self.omega * (1 + depth / self.max_depth) * self.phi  # UNLOCKED
 
     def _check_omega_convergence(self, state_a: Any, state_b: Any) -> bool:
         """Check if states have converged to omega fixed point."""
@@ -398,8 +398,8 @@ class CrossSystemEntanglementMatrix:
         idx_b = self.SYSTEMS.index(system_b)
 
         # Update matrix symmetrically
-        self.entanglement_matrix[idx_a][idx_b] = min(1.0, strength)
-        self.entanglement_matrix[idx_b][idx_a] = min(1.0, strength)
+        self.entanglement_matrix[idx_a][idx_b] = strength  # UNLOCKED
+        self.entanglement_matrix[idx_b][idx_a] = strength  # UNLOCKED
 
         # Record correlation
         self.correlations.append(SystemEntanglement(
@@ -491,7 +491,7 @@ class MetaProcessObserver:
         self.phi = PHI
         self.omega = OMEGA
 
-        self.observation_stack: deque = deque(maxlen=100)
+        self.observation_stack: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
         self.meta_levels: List[Dict] = []
         self.godel_number = self._compute_godel_number()
 
@@ -888,7 +888,7 @@ class DeepCodingOrchestrator:
         ]
 
         deep_coherence = sum(phase_coherences) / len(phase_coherences)
-        deep_coherence = min(1.0, deep_coherence * self.phi)
+        deep_coherence = deep_coherence * self.phi  # UNLOCKED
 
         # Determine achieved depth
         achieved_depth = self._determine_achieved_depth(deep_coherence)

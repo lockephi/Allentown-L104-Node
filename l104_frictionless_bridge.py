@@ -80,7 +80,7 @@ class BridgeConnection:
         self.total_transfers += 1
         self.total_data += data_size
         # Coherence increases with use (learning)
-        self.coherence = min(1.0, self.coherence + 0.001)
+        self.coherence = self.coherence + 0.001  # UNLOCKED: coherence unbounded
 
 
 class FrictionlessBridge:

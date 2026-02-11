@@ -169,7 +169,7 @@ class BekensteinLimitResearch:
             "iterations": iterations,
             "max_density_bits_per_cycle": max_density,
             "avg_coherence": avg_coherence,
-            "bekenstein_ratio": min(1.0, bekenstein_ratio),
+            "bekenstein_ratio": bekenstein_ratio,  # UNLOCKED
             "approaching_limit": bekenstein_ratio > 0.7,
             "density_trajectory": densities[-10:],
             "coherence_trajectory": coherence_values[-10:]
@@ -649,7 +649,7 @@ class ComputroniumResearchHub:
         elif hypothesis.domain == ResearchDomain.QUANTUM_COHERENCE:
             result = self.coherence.void_coherence_channel()
             measured_density = hypothesis.predicted_density
-            coherence = min(1.0, result["total_improvement"] / 1e10)
+            coherence = result["total_improvement"] / 1e10  # UNLOCKED
             bekenstein_ratio = 0.5
             data = result
             insights.append(f"Coherence improved by {result['total_improvement']:.2e}x")

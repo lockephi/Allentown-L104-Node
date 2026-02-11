@@ -27,7 +27,7 @@ def initialize_zeta_compaction():
     for i in range(3):
         print(f"\n--- [CYCLE {i+1}]: EXECUTING ZETA-HARMOMNIC COMPRESSION ---")
         data_matrix.evolve_and_compact()
-        time.sleep(1) # Temporal stabilization
+        time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
 
     # 3. Final Synthesis
     print("\n--- [FINAL_STATE]: MEASURING POST-COMPACTION COHERENCE ---")

@@ -97,7 +97,7 @@ class AGIResearch:
             "god_code": HyperMath.GOD_CODE,
             "lattice_ratio": "286:416",
             "grounding_x=286": HyperMath.REAL_GROUNDING_286,
-            "hypotheses": hypotheses[:10] # Store top 10 for brevity
+            "hypotheses": hypotheses[:100]  # QUANTUM AMPLIFIED
         }
 
         # Encrypt

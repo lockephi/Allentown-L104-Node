@@ -254,7 +254,7 @@ class CognitionCycler:
             elif phase == CognitionPhase.EMERGENCE:
                 results["emergence"] = {"properties_emerged": len(subsystems) // 3}
             elif phase == CognitionPhase.TRANSCENDENCE:
-                results["transcendence"] = {"transcendence_factor": min(1.0, len(subsystems) * 0.15)}
+                results["transcendence"] = {"transcendence_factor": len(subsystems) * 0.15}
 
             self.phase_durations[phase.value] = time.time() - phase_start
 
@@ -305,7 +305,7 @@ class IntricateOrchestrator:
 
         self.creation_time = time.time()
         self.orchestration_cycles = 0
-        self.events: deque = deque(maxlen=1000)
+        self.events: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
 
         self._subsystem_status: Dict[str, Dict[str, Any]] = {}
 
@@ -416,7 +416,7 @@ class IntricateOrchestrator:
             coherence = active / max(subsystem_count, 1)
 
         # Calculate synergy
-        synergy = min(1.0, (subsystem_count * coherence * PHI) / 10)
+        synergy = (subsystem_count * coherence * PHI) / 10
 
         # Get emergent properties
         emergent = list(self.emergence.property_catalog.keys())

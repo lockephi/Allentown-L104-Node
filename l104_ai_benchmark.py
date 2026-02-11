@@ -163,7 +163,7 @@ class L104Kernel:
         best_match = None
         best_score = 0
 
-        for ex in self.examples[:500]:  # Limit for speed
+        for ex in self.examples[:5000]:  # QUANTUM AMPLIFIED (was 500)
             text = ''
             if 'messages' in ex:
                 for msg in ex.get('messages', []):
@@ -265,7 +265,7 @@ class OpenAIModel:
         if not self.available:
             # Native response based on patterns
             start = time.time()
-            time.sleep(random.uniform(0.05, 0.15))  # Operational latency
+            time.sleep(random.uniform(0.001, 0.005))  # QUANTUM AMPLIFIED (was 0.05-0.15)
 
             # Generate actual responses
             if 'god_code' in prompt.lower():
@@ -324,7 +324,7 @@ class ClaudeModel:
         if not self.available:
             # Native response
             start = time.time()
-            time.sleep(random.uniform(0.04, 0.12))
+            time.sleep(random.uniform(0.001, 0.005))  # QUANTUM AMPLIFIED (was 0.04-0.12)
 
             if 'god_code' in prompt.lower():
                 response = "I'm not familiar with a specific 'GOD_CODE' constant. Could you provide more context?"
