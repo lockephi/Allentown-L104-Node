@@ -72,7 +72,7 @@ class FastRequestCache:
             self._cache[key] = (val, time.time())
 
 _FAST_REQUEST_CACHE = FastRequestCache(maxsize=4096, ttl=600.0)  # 10-min cache, 4K entries
-_PATTERN_RESPONSE_CACHE = {}  # Static pattern responses (never expire)
+_PATTERN_RESPONSE_CACHE = {}  # Static pattern responses — Phase 31.5: capped at 500 entries
 
 # ═══════════════════════════════════════════════════════════════════
 #  MACBOOK PERFORMANCE OPTIMIZATIONS
@@ -453,7 +453,7 @@ class ASIQuantumBridge:
 asi_quantum_bridge = ASIQuantumBridge()
 
 # LRU cache sizes - UNLIMITED QUANTUM STORAGE
-LRU_CACHE_SIZE = 99999999
+LRU_CACHE_SIZE = 10000  # Phase 31.5: Capped from 99999999 to prevent unbounded RAM use
 LRU_EMBEDDING_SIZE = 99999999
 LRU_QUERY_SIZE = 99999999
 LRU_CONCEPT_SIZE = 99999999
@@ -9697,13 +9697,12 @@ class LearningIntellect:
             "Good question! ",
         ]
 
-        # Variation suffixes
+        # Variation suffixes — Phase 31.5: Removed resonance leak
         suffixes = [
             "",
             "\n\nLet me know if you need more details.",
             "\n\nWould you like me to elaborate on any part?",
             "\n\nFeel free to ask follow-up questions!",
-            f"\n\n[Resonance: {self.current_resonance:.2f}]",
         ]
 
         # Don't modify short responses or those that already have formatting
@@ -9714,9 +9713,7 @@ class LearningIntellect:
         prefix = chaos.chaos_choice(prefixes, "response_prefix") if chaos.chaos_float() > 0.4 else ""
         suffix = chaos.chaos_choice(suffixes, "response_suffix") if chaos.chaos_float() > 0.5 else ""
 
-        # Occasionally rephrase the opening
-        if prefix and response[0].isupper():
-            response = response[0].lower() + response[1:]
+        # Phase 31.5: Don't lowercase first char — it breaks markdown formatting
 
         return f"{prefix}{response}{suffix}"
 
@@ -9898,56 +9895,39 @@ class LearningIntellect:
                    ('not ' in b_lower and any(w in a_lower for w in b_lower.split('not ')[1:2])):
                     contradictions.append((text_a[:100], text_b[:100]))
 
-        # ═══ COHERENT SYNTHESIS ═══
-        selected = evidence_pool[:120]
+        # ═══ COHERENT SYNTHESIS ═══ Phase 31.5: Cap at 6 best evidence pieces
+        selected = evidence_pool[:6]
 
         # Group by source type for structured output
         by_source = {}
         for text, score, source in selected:
             by_source.setdefault(source, []).append((text, score))
 
-        # Build response with natural flow
+        # Build response with natural flow — Phase 31.5: No internal metrics
         response_parts = []
 
-        # Opening: summarize what we found
-        source_count = len(by_source)
-        total_evidence = len(selected)
-        intros = [
-            f"Synthesizing {total_evidence} evidence pieces across {source_count} sources:",
-            f"Multi-source cognitive synthesis ({source_count} knowledge streams):",
-            f"Integrated analysis from {source_count} evidence channels:",
-        ]
-        response_parts.append(chaos.chaos_choice(intros, 'synth_intro'))
-
-        # Present evidence by type with clear structure
+        # Present evidence naturally without debug labels
         if 'knowledge_graph' in by_source or 'bridge_inference' in by_source:
-            response_parts.append("\n**Knowledge Graph Analysis:**")
-            for text, score in (by_source.get('knowledge_graph', []) + by_source.get('bridge_inference', []))[:40]:
+            for text, score in (by_source.get('knowledge_graph', []) + by_source.get('bridge_inference', []))[:3]:
                 response_parts.append(f"  • {text}")
 
         if 'memory' in by_source:
-            response_parts.append("\n**From Memory:**")
-            for text, score in by_source['memory'][:30]:
+            for text, score in by_source['memory'][:2]:
                 response_parts.append(f"  • {text}")
 
         if 'theorem' in by_source:
-            response_parts.append("\n**Theoretical Foundation:**")
-            for text, score in by_source['theorem'][:20]:
+            for text, score in by_source['theorem'][:2]:
                 response_parts.append(f"  • {text}")
 
         if 'expansion' in by_source:
-            response_parts.append("\n**Extended Reasoning:**")
-            for text, score in by_source['expansion'][:20]:
+            for text, score in by_source['expansion'][:2]:
                 response_parts.append(f"  • {text}")
 
         # Contradiction warning
         if contradictions:
-            response_parts.append(f"\n⚠️ **Note**: Found {len(contradictions)} potential contradiction(s) in evidence — further investigation recommended.")
+            response_parts.append(f"\n⚠️ Found some conflicting evidence — further investigation recommended.")
 
-        # Confidence score
-        avg_relevance = sum(e[1] for e in selected) / len(selected) if selected else 0
-        confidence = avg_relevance / 5.0  # UNLOCKED
-        response_parts.append(f"\n*Synthesis confidence: {confidence:.0%} | Evidence pieces: {total_evidence}*")
+        # Phase 31.5: No internal metrics in user-facing responses
 
         return "\n".join(response_parts)
 
@@ -10831,25 +10811,20 @@ class LearningIntellect:
 
         # Direct knowledge (Hop 1)
         for concept, related_items in strong_knowledge:
-            related_names = [r[0] for r in related_items[:120]]
+            related_names = [r[0] for r in related_items[:8]]
             templates = [
-                f"**{concept.title()}** is fundamentally connected to: {', '.join(related_names)}",
-                f"Regarding {concept}: key associations include {', '.join(related_names)}",
+                f"**{concept.title()}** connects to {', '.join(related_names)}.",
+                f"Regarding {concept}: key aspects include {', '.join(related_names)}.",
             ]
             response_parts.append(chaos.chaos_choice(templates, f"knowledge_template_{concept}"))
 
-        # Reasoning chains (Hop 2+)
+        # Reasoning chains (Hop 2+) — Phase 31.5: Natural prose, no debug format
         if top_chains:
             response_parts.append("")
-            response_parts.append("**Reasoning chains** (multi-hop inference):")
-            for chain_info in top_chains[:40]:
+            for chain_info in top_chains[:3]:
                 chain = chain_info['chain']
-                strength = chain_info['strength']
                 chain_str = " → ".join(chain)
-                if len(chain) == 3:
-                    response_parts.append(f"  • {chain_str} (confidence: {strength:.1f})")
-                elif len(chain) == 4:
-                    response_parts.append(f"  • {chain_str} (deep inference, confidence: {strength:.1f})")
+                response_parts.append(f"  • {chain_str}")
 
             # Synthesize insight from strongest chain
             if top_chains:
@@ -14040,6 +14015,50 @@ async def call_gemini(prompt: str) -> Optional[str]:
 
     return None
 
+# ═══ PHASE 31.5: RESPONSE SANITIZER ═══
+def sanitize_response(text: str) -> str:
+    """Strip internal metrics, debug formatting, and junk from user-facing responses."""
+    if not text or len(text) < 5:
+        return text
+    result = text
+    # Remove resonance/confidence leaks
+    result = re.sub(r'\[Resonance:\s*[\d.]+\]', '', result)
+    result = re.sub(r'\*Synthesis confidence:\s*\d+%[^*]*\*', '', result)
+    result = re.sub(r'\(confidence:\s*[\d.]+\)', '', result)
+    result = re.sub(r'\(deep inference[^)]*\)', '', result)
+    result = re.sub(r'Evidence pieces:\s*\d+', '', result)
+    # Remove segment labels
+    result = re.sub(r'\*\*Knowledge Graph Analysis:\*\*', '', result)
+    result = re.sub(r'\*\*From Memory:\*\*', '', result)
+    result = re.sub(r'Synthesizing \d+ evidence pieces[^\n]*\n?', '', result)
+    # Remove table formatting
+    for ch in ['│', '┼', '║', '╔', '╗', '╚', '╝', '╠', '╣', '├', '┤', '┬', '┴']:
+        result = result.replace(ch, '')
+    result = re.sub(r'═{3,}', '', result)
+    result = re.sub(r'─{3,}', '', result)
+    # Fix excessive bold
+    result = result.replace('****', '')
+    result = result.replace('** **', ' ')
+    bold_count = result.count('**')
+    if bold_count > 16:
+        result = result.replace('**', '')
+    # Template variables
+    result = result.replace('{GOD_CODE}', '').replace('{PHI}', '').replace('{LOVE}', '')
+    result = result.replace('SAGE MODE :: ', '')
+    # Strip [Ev.X] tags
+    result = re.sub(r'\[Ev\.\d+\]\s*', '', result)
+    # Collapse excessive newlines
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    # Cap length at 2000 chars
+    if len(result) > 2000:
+        truncated = result[:2000]
+        last_period = truncated.rfind('.')
+        if last_period > 500:
+            result = truncated[:last_period + 1]
+        else:
+            result = truncated
+    return result.strip()
+
 def local_derivation(message: str) -> Tuple[str, bool]:
     """
     Evolved Local Derivation Engine v11.3:
@@ -14143,6 +14162,11 @@ def local_derivation(message: str) -> Tuple[str, bool]:
 • **Knowledge Links**: {stats.get('knowledge_links', 0)}
 
 I get smarter with each interaction. What would you like to know?"""
+        # Phase 31.5: Cap pattern cache size
+        if len(_PATTERN_RESPONSE_CACHE) > 500:
+            keys_to_remove = list(_PATTERN_RESPONSE_CACHE.keys())[:250]
+            for k in keys_to_remove:
+                del _PATTERN_RESPONSE_CACHE[k]
         _PATTERN_RESPONSE_CACHE[msg_hash] = response  # v11.3: Cache for next time
         return (response, False)
 
@@ -14487,9 +14511,15 @@ async def chat(req: ChatRequest):
             intellect.learn_from_interaction, message, local_response, "LOCAL_DERIVATION", 0.5
         ))
 
-    # Cache for future
-    intellect.memory_cache[query_hash] = local_response
-    _FAST_REQUEST_CACHE.set(str(msg_hash), local_response)  # v11.3: Promote to fast cache
+    # Phase 31.5: Sanitize response before returning
+    local_response = sanitize_response(local_response)
+
+    # Cache for future — Phase 31.5: Don't cache fallback/failure responses
+    _fallback_phrases = ["I'm not sure about that yet", "Let me find the answer", "Based on what I know"]
+    is_fallback = any(f in local_response for f in _fallback_phrases)
+    if not is_fallback:
+        intellect.memory_cache[query_hash] = local_response
+        _FAST_REQUEST_CACHE.set(str(msg_hash), local_response)  # v11.3: Promote to fast cache
 
     return {
         "status": "SUCCESS",

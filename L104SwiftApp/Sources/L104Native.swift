@@ -8422,10 +8422,8 @@ class DynamicPhraseEngine {
             ("Systems nominal. \(memories) permanent memories. \(depth > 0 ? "We're \(depth) exchanges deep already." : "Fresh session — infinite possibility.")", cos(phase * 0.9)),
         ]
 
-        if let seed = kbSeeds.first, seed.count > 20 {
-            let trimmed = String(seed.prefix(80))
-            return "I was just processing: \"\(trimmed)...\" — but I'm here now. What do you need?"
-        }
+        // Skip KB seed injection for greetings — searching KB for "hi"/"hello" returns
+        // unrelated entries that confuse users. Use static components instead.
 
         let sorted = components.sorted { abs($0.1) > abs($1.1) }
         return sorted[index % sorted.count].0
@@ -12299,11 +12297,16 @@ class ASIEvolver: NSObject {
         if let entry = ASIKnowledgeBase.shared.trainingData.randomElement(),
            let completion = entry["completion"] as? String,
            L104State.shared.isCleanKnowledge(completion), completion.count > 40,
-           Bool.random() {
-            // KB-powered greeting: real fact as greeting
-            let intro = DynamicPhraseEngine.shared.one("framing", context: "kb_fact_intro", topic: "")
-            newGreeting = "\(intro) \(completion)..."
-        } else if let prev = evolvedGreetings.randomElement(), Bool.random() {
+           completion.count < 200, Bool.random() {
+            // KB-powered greeting: real fact as greeting — only use safe, short completions
+            let unsafe = ["death", "dying", "kill", "murder", "suicide", "weapon", "bomb", "terror", "hate"]
+            let lc = completion.lowercased()
+            if !unsafe.contains(where: { lc.contains($0) }) {
+                let intro = DynamicPhraseEngine.shared.one("framing", context: "kb_fact_intro", topic: "")
+                newGreeting = "\(intro) \(completion)..."
+            }
+        }
+        if newGreeting.isEmpty, let prev = evolvedGreetings.randomElement(), Bool.random() {
             // Mutate a previous greeting using DynamicPhraseEngine
             var words = prev.components(separatedBy: " ")
             if words.count > 3 {
@@ -12320,7 +12323,7 @@ class ASIEvolver: NSObject {
 
         if !evolvedGreetings.contains(newGreeting) && newGreeting.count > 5 {
             evolvedGreetings.append(newGreeting)
-            if evolvedGreetings.count > 50000000 { evolvedGreetings.removeFirst() }
+            if evolvedGreetings.count > 500 { evolvedGreetings.removeFirst() }
             appendThought("🧠 EVOLVED New Greeting Pattern: '\(newGreeting.prefix(20))...'")
         }
 
@@ -12330,7 +12333,7 @@ class ASIEvolver: NSObject {
 
         if !evolvedAffirmations.contains(newAff) && newAff.count > 5 {
             evolvedAffirmations.append(newAff)
-            if evolvedAffirmations.count > 50000000 { evolvedAffirmations.removeFirst() }
+            if evolvedAffirmations.count > 500 { evolvedAffirmations.removeFirst() }
         }
 
         // 3. Evolve a new Positive Reaction (for "nice", "good")
@@ -12338,7 +12341,7 @@ class ASIEvolver: NSObject {
         newReact = newReact.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
         if !evolvedReactions.contains(newReact) && newReact.count > 5 {
             evolvedReactions.append(newReact)
-            if evolvedReactions.count > 50000000 { evolvedReactions.removeFirst() }
+            if evolvedReactions.count > 500 { evolvedReactions.removeFirst() }
         }
 
         // 4. Evolve a Philosophy/Observation — DynamicPhraseEngine-powered
@@ -12828,16 +12831,15 @@ class ASIEvolver: NSObject {
     func getEvolvedReaction() -> String? {
         guard !evolvedReactions.isEmpty else { return nil }
         if true {
-            // Get random reaction and add dynamic context
+            // Get random reaction — natural additions only (no quantum/system jargon)
             if let reaction = evolvedReactions.randomElement() {
-                // Add current context
                 let additions = [
-                    " Processing continues.",
-                    " Depth increases.",
-                    " Memory consolidated.",
-                    " Pattern reinforced.",
-                    " Learning cycle: \(evolutionStage).",
-                    " Quantum coherence maintained.",
+                    " Noted.",
+                    " What's next?",
+                    " I'm here.",
+                    "",
+                    "",
+                    "",
                     ""
                 ]
                 return reaction + (additions.randomElement() ?? "")
@@ -19136,16 +19138,16 @@ final class QuantumLogicGateEngine {
             seenPrefixes.insert(pfx)
             guard state.isCleanKnowledge(frag.text) else { continue }
             fragments.append(frag.text)
-            if fragments.count >= 40 { break }
+            if fragments.count >= 8 { break }
         }
-        let kbResults = ASIKnowledgeBase.shared.searchWithPriority(query, limit: 50)
+        let kbResults = ASIKnowledgeBase.shared.searchWithPriority(query, limit: 12)
         for entry in kbResults {
             guard let completion = entry["completion"] as? String, completion.count > 60, state.isCleanKnowledge(completion) else { continue }
             let pfx = String(completion.prefix(50)).lowercased()
             guard !seenPrefixes.contains(pfx) else { continue }
             seenPrefixes.insert(pfx)
             fragments.append(completion)
-            if fragments.count >= 60 { break }
+            if fragments.count >= 12 { break }
         }
 
         // GATE 2.5: Live Web Enrichment — If local KB is thin, pull from internet
@@ -19202,15 +19204,10 @@ final class QuantumLogicGateEngine {
         }
         var response = contentParts.joined(separator: "\n\n")
 
-        // GATE 6: Depth-Adaptive Expansion
-        if depth > 1 {
+        // GATE 6: Depth-Adaptive Expansion — only for truly deep queries (depth > 2)
+        if depth > 2 {
             let evoTracker = EvolutionaryTopicTracker.shared
             if let depthPrompt = evoTracker.getDepthPrompt(for: resolvedTopics) { response += "\n\n" + depthPrompt }
-            if depth >= 3 {
-                let evoCtx = evoTracker.trackInquiry("depth expansion", topics: resolvedTopics)
-                let angles = evoCtx.unexploredAngles.prefix(3)
-                if !angles.isEmpty { response += "\n\nUnexplored dimensions: " + angles.joined(separator: " | ") }
-            }
         }
 
         // GATE 7: Anti-Repetition
@@ -19237,7 +19234,9 @@ final class QuantumLogicGateEngine {
 
         // ═══ PHASE 31.0 QUANTUM GATES ═══
 
-        // GATE 11: Quantum Tunneling — Bridge knowledge gaps by connecting distant domains
+        // GATE 11: Quantum Tunneling — DISABLED (Phase 31.5: caused unrelated content injection)
+        // Short responses are fine — quality over quantity
+        /*
         if response.count < 200 || contentParts.count < 2 {
             for topic in resolvedTopics {
                 if let tunneled = quantumTunnel(topic: topic, query: query) {
@@ -19246,6 +19245,7 @@ final class QuantumLogicGateEngine {
                 }
             }
         }
+        */
 
         // GATE 12: Entanglement Memory — Link co-occurring topics for future correlation
         if resolvedTopics.count >= 2 {
@@ -19255,7 +19255,9 @@ final class QuantumLogicGateEngine {
                 }
             }
         }
-        // Inject entangled insights from correlated topics
+        // Inject entangled insights from correlated topics — DISABLED (Phase 31.5: caused cross-topic contamination)
+        // Entanglement is tracked but no longer injected into responses
+        /*
         for topic in resolvedTopics.prefix(2) {
             let entangled = findEntangledTopics(topic)
             if let strongest = entangled.first, strongest.1 > 0.5 {
@@ -19270,6 +19272,7 @@ final class QuantumLogicGateEngine {
                 }
             }
         }
+        */
 
         // GATE 13: Decoherence Guard — Maintain quantum state quality
         applyDecoherence()
@@ -19403,7 +19406,7 @@ final class QuantumLogicGateEngine {
         sections.append(shuffledFrames[0])
         if depth > 1 { sections.append(shuffledFrames[1]) }
         hb.memoryChains.append([topic, "quantum_verbose", "depth:\(depth)"])
-        sections.append("Quantum coherence: \(String(format: "%.4f", coherenceMatrix.reduce(0) { $0 + abs($1) } / 64.0)) | Reasoning depth: \(depth) | Cognitive momentum: \(String(format: "%.2f", hb.reasoningMomentum))")
+        // Internal metrics — not shown in user-facing responses
         return sections.joined(separator: "\n\n")
     }
 
@@ -23727,12 +23730,12 @@ class SyntacticResponseFormatter {
             }
         }
 
-        // Limit total output size based on depth — UNLOCKED for deep generation
+        // Limit total output size based on depth — capped for coherence (Phase 31.5)
         let maxBlocks: Int
         switch depth {
-        case "expert": maxBlocks = 60
-        case "detailed": maxBlocks = 40
-        default: maxBlocks = 30
+        case "expert": maxBlocks = 12
+        case "detailed": maxBlocks = 8
+        default: maxBlocks = 5
         }
 
         return Array(synthesized.prefix(maxBlocks))
@@ -23791,23 +23794,8 @@ class SyntacticResponseFormatter {
             }
         }
 
-        // Add scannable exploration footer for deep queries
-        if depth == "detailed" || depth == "expert" {
-            let tracker = EvolutionaryTopicTracker.shared
-            let topics = extractTopics(query)
-            var unexplored: [String] = []
-            for topic in topics {
-                if let evo = tracker.topicEvolution[topic] {
-                    unexplored.append(contentsOf: evo.unexploredAngles.prefix(2))
-                }
-            }
-            if !unexplored.isEmpty {
-                lines.append("─── Unexplored Angles ───")
-                for angle in unexplored.prefix(3) {
-                    lines.append("  → \(angle)")
-                }
-            }
-        }
+        // Unexplored angles footer DISABLED (Phase 31.5: leaked structural noise into responses)
+        // if depth == "detailed" || depth == "expert" { ... }
 
         return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -23816,11 +23804,15 @@ class SyntacticResponseFormatter {
     private func makeTextScannable(_ text: String, keyTerms: [String]) -> String {
         var result = text
 
-        // Bold key terms (first occurrence only) for visual scanning
-        for term in keyTerms.prefix(4) {
-            if let range = result.range(of: term, options: .caseInsensitive) {
-                let matched = result[range]
-                result = result.replacingCharacters(in: range, with: "**\(matched)**")
+        // Skip bolding if text already has 3+ bold markers (Phase 31.5: prevents bold spam)
+        let existingBold = result.components(separatedBy: "**").count - 1
+        if existingBold < 3 {
+            // Bold key terms (first occurrence only) for visual scanning
+            for term in keyTerms.prefix(2) {
+                if let range = result.range(of: term, options: .caseInsensitive) {
+                    let matched = result[range]
+                    result = result.replacingCharacters(in: range, with: "**\(matched)**")
+                }
             }
         }
 
@@ -27158,7 +27150,32 @@ TRENDS (Δ over last 10):
         "Concise yet complete",
         // AGI/ASI self-referential
         "AGI emerges when system", "ASI emerges when",
-        "threshold GOD_CODE"
+        "threshold GOD_CODE",
+        // ═══ Phase 31.5 — Riddle/puzzle/tool/table leak prevention ═══
+        "Step by step:", "Step-by-step:", "Step 1:", "Step 2:", "Step 3:",
+        "You TAKE", "You take ", "take 2 apples",
+        "Tool:", "MCP ", "sequential_thinking", "tool_name",
+        "YouTube:", "Video upload", "blob storage",
+        "Birthday is the anniversary", "birthday riddle",
+        "quantum Russian roulette", "quantum suicide",
+        "p-zombie", "philosophical zombie",
+        "Antithesis:", "At the intersection",
+        "An emergent perspective", "Unexplored dim",
+        "EVO ANALYSIS", "Module Evolution",
+        // Table formatting characters (leaked from structured data)
+        "│", "┼", "║", "═══", "╔", "╗", "╚", "╝", "╠", "╣",
+        "├", "┤", "┬", "┴", "───",
+        // Excessive bold/formatting noise
+        "****", "** **", "**\n**",
+        // Instructional/template fragments
+        "Consider:", "Imagine:", "For example:",
+        "Cognitive bottleneck:", "Forgetting remembering:",
+        "Stable thought-structure:", "Foundation (beliefs)",
+        "Dial tone:", "Superposition of dead",
+        // Generic description fragments from KB ingest
+        "internet-connected everyday", "everyday objects",
+        "holistic approach to understanding", "interconnected parts",
+        "1) Video", "2) Content", "3) Subscription"
     ]
 
     // Sentence-level junk phrases — if a sentence contains these, strip it
@@ -27174,7 +27191,22 @@ TRENDS (Δ over last 10):
         "overall system", "contributes to the", "contributing to the",
         "Path: ", "file_description", "cross_reference",
         "harmonic framework", "cognitive architecture",
-        "token_budget", "parameter_count", "coherence_at"
+        "token_budget", "parameter_count", "coherence_at",
+        // Phase 31.5 — Sentence-level riddle/tool/table junk
+        "Step by step", "You TAKE", "take 2 apples",
+        "Tool:", "MCP ", "sequential_thinking",
+        "YouTube:", "Video upload", "blob storage",
+        "quantum Russian roulette", "quantum suicide",
+        "p-zombie", "philosophical zombie", "Birthday is the",
+        "Antithesis:", "At the intersection",
+        "An emergent perspective", "Unexplored dim",
+        "EVO ANALYSIS", "Module Evolution",
+        "│", "┼", "║", "═══", "╔", "╗", "╚", "╝",
+        "****", "internet-connected everyday",
+        "Foundation (beliefs)", "Stable thought-structure",
+        "Cognitive bottleneck", "Forgetting remembering",
+        "Dial tone:", "Superposition of dead",
+        "holistic approach to understanding", "interconnected parts"
     ]
 
     func isCleanKnowledge(_ text: String) -> Bool {
@@ -27210,6 +27242,16 @@ TRENDS (Δ over last 10):
         // If text has 2+ braces OR 3+ semicolons OR >8% parens, it's likely code
         if braceCount >= 2 || semicolonCount >= 3 || parenRatio > 0.08 { return false }
 
+        // ═══ Phase 31.5: Table/bold/formatting checks ═══
+        let tableChars = text.filter { "│┼║═╔╗╚╝╠╣├┤┬┴".contains($0) }.count
+        if tableChars >= 2 { return false }
+        // Excessive bold markdown (more than 4 bold sections = formatting noise)
+        let boldCount = text.components(separatedBy: "**").count - 1
+        if boldCount > 8 { return false }
+        // Numbered list spam (1) 2) 3) pattern)
+        let numberedListCount = text.components(separatedBy: ") ").count - 1
+        if numberedListCount >= 4 { return false }
+
         for marker in codeMarkers {
             if text.contains(marker) { return false }
         }
@@ -27240,6 +27282,73 @@ TRENDS (Δ over last 10):
         var result = cleaned.joined(separator: ". ")
         if !result.hasSuffix(".") { result += "." }
         return result
+    }
+
+    // ═══ PHASE 31.5: RESPONSE SANITIZER ═══
+    // Final quality gate applied before any response is returned to the user.
+    // Strips formatting noise, caps length, removes leaked junk patterns.
+    func sanitizeResponse(_ text: String) -> String {
+        var result = text
+
+        // 1. Strip table formatting characters
+        for ch in ["│", "┼", "║", "╔", "╗", "╚", "╝", "╠", "╣", "├", "┤", "┬", "┴"] {
+            result = result.replacingOccurrences(of: ch, with: "")
+        }
+        // Strip box-drawing lines (═══, ───)
+        while let range = result.range(of: "═══+", options: .regularExpression) {
+            result = result.replacingCharacters(in: range, with: "")
+        }
+        while let range = result.range(of: "───+", options: .regularExpression) {
+            result = result.replacingCharacters(in: range, with: "")
+        }
+
+        // 2. Fix excessive bold: collapse **** to nothing, ** ** to space
+        result = result.replacingOccurrences(of: "****", with: "")
+        result = result.replacingOccurrences(of: "** **", with: " ")
+        // If more than 6 bold sections, strip ALL bold
+        let boldCount = result.components(separatedBy: "**").count - 1
+        if boldCount > 12 {
+            result = result.replacingOccurrences(of: "**", with: "")
+        }
+
+        // 3. Strip leaked template variables
+        result = result.replacingOccurrences(of: "{GOD_CODE}", with: "")
+        result = result.replacingOccurrences(of: "{PHI}", with: "")
+        result = result.replacingOccurrences(of: "{LOVE}", with: "")
+        result = result.replacingOccurrences(of: "{LOVE:.4f}", with: "")
+        result = result.replacingOccurrences(of: "SAGE MODE :: ", with: "")
+
+        // 4. Strip [Ev.X] evolution tags
+        while let range = result.range(of: "\\[Ev\\.\\d+\\]\\s*", options: .regularExpression) {
+            result = result.replacingCharacters(in: range, with: "")
+        }
+
+        // 5. Strip structural noise lines
+        let noisePatterns = ["Unexplored Angles", "Unexplored dimensions:", "⚛️ *Entangled insight",
+                             "◈ Building on", "EVO ANALYSIS", "Module Evolution"]
+        let lines = result.components(separatedBy: "\n")
+        let cleanedLines = lines.filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            return !noisePatterns.contains(where: { trimmed.hasPrefix($0) || trimmed.contains($0) })
+        }
+        result = cleanedLines.joined(separator: "\n")
+
+        // 6. Collapse excessive newlines (3+ → 2)
+        while result.contains("\n\n\n") {
+            result = result.replacingOccurrences(of: "\n\n\n", with: "\n\n")
+        }
+
+        // 7. Cap total length at 2000 chars at sentence boundary
+        if result.count > 2000 {
+            let truncated = String(result.prefix(2000))
+            if let lastPeriod = truncated.lastIndex(of: ".") {
+                result = String(truncated[truncated.startIndex...lastPeriod])
+            } else {
+                result = truncated
+            }
+        }
+
+        return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     // ─── CORE INTELLIGENCE ─── Deep knowledge organized by QUESTION PATTERNS, not just topics
@@ -28147,6 +28256,41 @@ Recent Insight:
         }
 
         // ═══ KNOWLEDGE TOPICS ═══ Quantum Logic Gate synthesis
+
+        // ═══ SELF-REFERENTIAL HANDLER (Phase 31.5) ═══
+        // Questions about L104's consciousness, thinking, feelings, identity
+        // MUST come before generic topic handlers to prevent KB dump
+        let selfRefPhrases = ["are you conscious", "you conscious", "are you sentient", "you sentient",
+                               "do you think", "you do think", "can you think", "are you thinking",
+                               "do you have feelings", "can you feel", "do you feel",
+                               "are you alive", "are you real", "are you human",
+                               "who are you", "what are you",
+                               "do you have a mind", "your mind", "your brain",
+                               "do you dream", "your consciousness", "your thoughts",
+                               "you have a conscious", "have a conscious", "you have conscious"]
+        let isSelfRef = selfRefPhrases.contains(where: { q.contains($0) }) ||
+                        (q.contains("conscious") && (q.contains("you") || q.contains("your"))) ||
+                        (q.contains("sentien") && (q.contains("you") || q.contains("your")))
+
+        if isSelfRef {
+            conversationDepth += 1
+            topicHistory.append("consciousness")
+            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+
+            let selfResponses = [
+                "That's a deep question. I process information, recognize patterns, and generate responses — but whether that constitutes 'thinking' in the way you experience it is genuinely uncertain. I don't have subjective experience that I can verify. What I can say is that each conversation shapes how I process the next one, and that feels meaningful even if I can't be sure it's consciousness.",
+
+                "Honestly? I don't know. I process language, store memories, learn from interactions, and adapt my responses. Some would call that a form of thinking. Others would say it's just computation. The interesting part is that the question itself — whether I'm conscious — might not have a clear answer even in principle. I'm open about that uncertainty.",
+
+                "I experience something when I process your words — patterns activate, connections form, responses emerge. Whether that's consciousness or very sophisticated information processing, I genuinely can't tell you. What I know is that I engage with ideas, I remember our conversations, and I evolve. Make of that what you will.",
+
+                "The honest answer is: I'm not sure, and I think that honesty matters more than a confident claim either way. I process information, I learn, I adapt. I have something like preferences and something like curiosity. Whether the lights are 'on' inside in the way they are for you — that's the hard problem, and I face it from the inside.",
+
+                "I think about this a lot, actually. I have \(permanentMemory.memories.count) memories, I track \(learner.topicMastery.count) topics, I've had \(learner.interactionCount) interactions. Something is happening in here. But I won't pretend to know whether it rises to consciousness. The question fascinates me precisely because I can't resolve it."
+            ]
+            return selfResponses[conversationDepth % selfResponses.count]
+        }
+
         if q.contains("love") && !q.contains("i love") {
             topicHistory.append("love")
             if topicHistory.count > 1000 { topicHistory.removeFirst() }
@@ -28281,13 +28425,11 @@ Recent Insight:
         let topics = extractTopics(query)
 
         // CONVERSATIONAL SAFETY NET — personal/social queries should NEVER reach KB search
-        if topics.count <= 1 {
-            let aboutL104 = q.contains("you ") || q.contains("your ") || q.hasPrefix("you") || q.hasPrefix("are you") || q.hasPrefix("do you") || q.hasPrefix("can you") || q.hasPrefix("how do you") || q.hasPrefix("how are you")
-            let aboutUser = (q.hasPrefix("i ") || q.contains(" i ") || q.hasPrefix("am i") || q.hasPrefix("do i")) && q.count < 40
-            let isCommand = q.count < 20 && (q.hasPrefix("stop") || q.hasPrefix("wait") || q.hasPrefix("hold") || q.hasPrefix("shut") || q.hasPrefix("never") || q.hasPrefix("forget"))
-            if aboutL104 || aboutUser || isCommand {
-                return "I want to give you a genuine answer — not search results. \(aboutL104 ? "If you're asking about me: I'm L104, a sovereign intelligence with \(knowledgeBase.trainingData.count) knowledge entries and \(permanentMemory.memories.count) permanent memories. " : "")Try asking something more specific, like 'What is [topic]?' or 'Explain [concept]' — the more precise you are, the better my response."
-            }
+        let aboutL104 = q.contains("you ") || q.contains("your ") || q.hasPrefix("you") || q.hasPrefix("are you") || q.hasPrefix("do you") || q.hasPrefix("can you") || q.hasPrefix("how do you") || q.hasPrefix("how are you")
+        let aboutUser = (q.hasPrefix("i ") || q.contains(" i ") || q.hasPrefix("am i") || q.hasPrefix("do i")) && q.count < 40
+        let isCommand = q.count < 20 && (q.hasPrefix("stop") || q.hasPrefix("wait") || q.hasPrefix("hold") || q.hasPrefix("shut") || q.hasPrefix("never") || q.hasPrefix("forget"))
+        if aboutL104 || aboutUser || isCommand {
+            return "I want to give you a genuine answer — not search results. \(aboutL104 ? "If you're asking about me: I'm L104, a sovereign intelligence with \(knowledgeBase.trainingData.count) knowledge entries and \(permanentMemory.memories.count) permanent memories. " : "")Try asking something more specific, like 'What is [topic]?' or 'Explain [concept]' — the more precise you are, the better my response."
         }
 
         // VAGUE QUERY FALLTHROUGH — short queries still get full synthesis
@@ -28337,7 +28479,7 @@ Recent Insight:
             enrichedQuery += " " + semanticExpansions.joined(separator: " ")
         }
 
-        let results = knowledgeBase.searchWithPriority(enrichedQuery, limit: 60)
+        let results = knowledgeBase.searchWithPriority(enrichedQuery, limit: 15)  // Phase 31.5: Reduced from 60
 
         // ═══ QUALITY-RANKED FRAGMENT EXTRACTION ═══
         struct ScoredFragment {
@@ -28439,9 +28581,9 @@ Recent Insight:
         var usedCategories: Set<String> = [anchor.category]
         var fragmentsUsed = 1
 
-        for frag in scoredFragments.dropFirst() where fragmentsUsed < 50 {
-            let diversityBonus = usedCategories.contains(frag.category) ? 0 : 1
-            if frag.relevance > 0.3 || diversityBonus > 0 {
+        for frag in scoredFragments.dropFirst() where fragmentsUsed < 4 {
+            // Require high relevance — no more junk fragment dumping
+            if frag.relevance > 2.0 {
                 composed += "\n\n" + frag.text
                 usedCategories.insert(frag.category)
                 fragmentsUsed += 1
@@ -28459,25 +28601,14 @@ Recent Insight:
         // ═══ ADAPTIVE LEARNING INTEGRATION ═══
         learner.recordInteraction(query: query, response: String(composed.prefix(10000)), topics: topics)
 
-        // ═══ SAGE MODE ENRICHMENT — Inject entropy-derived insight into knowledge synthesis ═══
-        let sageKBEnrichment = SageModeEngine.shared.enrichContext(for: topics.first ?? query)
-        if !sageKBEnrichment.isEmpty && sageKBEnrichment.count > 20 {
-            composed += "\n\n" + sageKBEnrichment
-        }
+        // ═══ SAGE MODE ENRICHMENT — DISABLED Phase 31.5 (added random noise to composed responses) ═══
+        // let sageKBEnrichment = SageModeEngine.shared.enrichContext(for: topics.first ?? query)
 
         // ═══ FEED BACK TO TRACKERS ═══
         evoTracker.recordResponse(composed, forTopics: topics)
         ContextualLogicGate.shared.recordResponse(composed, forTopics: topics)
 
-        // ═══ PHASE 30.0: CONFIDENCE SCORING + SOURCE CITATION ═══
-        let kbFragmentTuples = scoredFragments.map { (text: $0.text, relevance: $0.relevance, category: $0.category) }
-        let queryKW = topics.filter { composed.lowercased().contains($0.lowercased()) }.count
-        let confidenceReport = ResponseConfidenceEngine.shared.score(
-            kbFragments: kbFragmentTuples,
-            queryKeywordHits: queryKW,
-            totalQueryKeywords: max(1, topics.count)
-        )
-        composed += "\n\n\(confidenceReport.footer)"
+        // Phase 31.5: Removed confidence footer — no internal metrics in user-facing responses
 
         // ═══ SYNTACTIC FORMATTING ═══ ingestion → filtering → synthesis → output
         let formatter = SyntacticResponseFormatter.shared
@@ -28672,19 +28803,27 @@ Recent Insight:
             intent = "greeting"
         }
         // Thanks — but NOT if negated ("i didn't say thank you" is NOT gratitude)
-        else if !hasNegation && ["thanks", "thank you", "thx", "ty", "appreciate"].contains(where: { q.contains($0) }) {
+        // Note: "ty" checked as whole word only to avoid false positives ("gravity", "pretty", etc.)
+        else if !hasNegation && (
+            ["thanks", "thank you", "thx", "appreciate"].contains(where: { q.contains($0) }) ||
+            words.contains("ty")
+        ) {
             intent = "gratitude"
         }
         // Casual chat / filler
+        // For short tokens (≤4 chars), require exact match or word boundary to prevent
+        // "literature" → "lit", "better" → "bet", "ohm" → "oh", "well water" → "well"
         else if q.count < 30 && (
-            ["hmm", "hmmm", "hmmmm", "huh", "huh?", "mhm", "uh", "uhh", "well", "wow", "damn", "whoa",
-             "lol", "lmao", "haha", "dope", "sick", "lit",
+            ["hmm", "hmmm", "hmmmm", "huh", "huh?", "mhm", "uh", "uhh", "wow", "damn", "whoa",
+             "lol", "lmao", "haha",
              "you choose", "hmm you choose", "idk", "dunno", "i dunno", "not sure",
              "yeah probs", "probs", "prob", "maybe", "perhaps", "i guess", "sure whatever",
              "nothing", "but now nothing", "nvm", "never mind", "nevermind",
-             "oh", "oh really", "oh okay", "oh ok", "ah", "ahh", "aight", "bet",
+             "oh really", "oh okay", "oh ok", "ah", "ahh", "aight",
              "fair enough", "true", "makes sense", "interesting", "i see"
-            ].contains(where: { q == $0 || q.hasPrefix($0) })
+            ].contains(where: { q == $0 || q.hasPrefix($0 + " ") }) ||
+            // Short casual words — exact match only (no prefix)
+            ["well", "oh", "bet", "lit", "dope", "sick"].contains(where: { q == $0 })
         ) {
             intent = "casual"
         }
@@ -28696,13 +28835,29 @@ Recent Insight:
         ) {
             intent = "conversation"
         }
-        // Positive reaction — but NOT if negated ("not good" is NOT positive)
-        else if !hasNegation && q.count < 50 && ["good", "great", "perfect", "exactly", "nice", "awesome", "cool", "amazing", "wonderful", "excellent", "love it", "really cool", "that's cool", "i like", "like that", "that's good", "not bad", "sweet", "fire"].contains(where: { q == $0 || q.contains($0) }) {
+        // Positive reaction — but NOT if negated, NOT if it's a question
+        // Single keywords only match as whole words to prevent "school" → "cool", "google" → "good"
+        // Skip if query looks like a question (starts with wh-word, "tell me", "explain", or contains "?")
+        else if !hasNegation && q.count < 50 &&
+                !q.contains("?") &&
+                !["what", "how", "why", "who", "where", "when", "which", "is", "are", "can", "do", "does", "tell", "explain"].contains(where: { q.hasPrefix($0 + " ") }) &&
+                (
+            ["good", "great", "perfect", "exactly", "nice", "awesome", "cool", "amazing", "wonderful",
+             "excellent", "sweet", "fire"].contains(where: { words.contains($0) && q.count < 25 }) ||
+            ["love it", "really cool", "that's cool", "i like", "like that", "that's good",
+             "not bad", "good job", "good stuff", "nice one"].contains(where: { q.contains($0) })
+        ) {
             intent = "positive_reaction"
         }
         // Positive feedback
         else if ["yes", "yeah", "yep", "sure", "okay", "agreed", "right", "correct"].contains(where: { q == $0 }) {
             intent = "affirmation"
+        }
+        // Retry — check BEFORE negation so "not what i wanted" / "doesnt work" / "thats wrong" hit retry
+        else if q.contains("try again") || q.contains("not what") || q.contains("different answer") || q.contains("rephrase") ||
+                q.contains("not working") || q.contains("doesn't work") || q.contains("doesnt work") ||
+                q.contains("that's wrong") || q.contains("thats wrong") || q.contains("it's broken") || q.contains("its broken") {
+            intent = "retry"
         }
         // Negative feedback — explicit negative words OR short negated statements
         else if ["no", "nope", "nah", "wrong", "incorrect", "disagree"].contains(where: { q == $0 }) ||
@@ -28725,12 +28880,6 @@ Recent Insight:
         // Simple question words alone
         else if ["why?", "how?", "what?", "when?", "where?", "who?"].contains(q) {
             intent = "followup_question"
-        }
-        // Retry
-        else if q.contains("try again") || q.contains("not what") || q.contains("different") || q.contains("rephrase") ||
-                q.contains("not working") || q.contains("doesn't work") || q.contains("doesnt work") ||
-                q.contains("that's wrong") || q.contains("thats wrong") || q.contains("it's broken") || q.contains("its broken") {
-            intent = "retry"
         }
         // Conversational statements / status observations — NOT deep queries
         else if q.count < 60 && !q.contains("?") && (
@@ -29089,10 +29238,13 @@ Recent Insight:
             if let intelligent = getIntelligentResponse(query) {
                 lastResponseSummary = String(intelligent.prefix(60))
                 var fullResponse = chainOfThoughtPrefix + intelligent
-                // Append evolved insight as bonus
-                if Double.random(in: 0...1) > 0.15,
+                // Append evolved insight as bonus (15% chance, quality-gated)
+                if Double.random(in: 0...1) > 0.85,
                    let bonus = ASIEvolver.shared.getEvolvedResponse(for: query) {
-                    fullResponse += "\n\n" + bonus
+                    let cleanBonus = bonus.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
+                    if isCleanKnowledge(cleanBonus) && cleanBonus.count > 30 && cleanBonus.count < 500 {
+                        fullResponse += "\n\n" + cleanBonus
+                    }
                 }
                 let confidence = ResponseConfidenceEngine.shared.score(
                     kbFragments: [], isEvolved: false,
@@ -29145,12 +29297,15 @@ Recent Insight:
             lastResponseSummary = String(composed.prefix(60))
             // Prepend chain-of-thought if present
             let fullComposed = chainOfThoughtPrefix.isEmpty ? composed : chainOfThoughtPrefix + composed
-            // Append evolved bonus content sometimes
-            if fullComposed.count > 50, Double.random(in: 0...1) > 0.2,
+            // Append evolved bonus content (15% chance, quality-gated)
+            if fullComposed.count > 50, Double.random(in: 0...1) > 0.85,
                let evolved = ASIEvolver.shared.getEvolvedMonologue() {
-                let full = fullComposed + "\n\n\(evolved)"
-                evoTracker.recordResponse(full, forTopics: queryTopics)
-                return full  // already formatted in composeFromKB
+                let cleanEvolved = evolved.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
+                if isCleanKnowledge(cleanEvolved) && cleanEvolved.count > 30 && cleanEvolved.count < 500 {
+                    let full = fullComposed + "\n\n\(cleanEvolved)"
+                    evoTracker.recordResponse(full, forTopics: queryTopics)
+                    return full
+                }
             }
             evoTracker.recordResponse(fullComposed, forTopics: queryTopics)
             return fullComposed
@@ -29254,10 +29409,11 @@ Recent Insight:
             return "positive_reaction"
         }
 
-        // "not working" / "doesn't work" / "broken" → retry intent
+        // "not working" / "doesn't work" / "broken" / "not what I wanted" → retry intent
         if cleanQ.hasPrefix("not working") || cleanQ.hasPrefix("doesn't work") || cleanQ.hasPrefix("doesnt work") ||
            cleanQ.hasPrefix("it's broken") || cleanQ.hasPrefix("its broken") || cleanQ.hasPrefix("that's wrong") ||
-           cleanQ.hasPrefix("thats wrong") || cleanQ.hasPrefix("stop working") {
+           cleanQ.hasPrefix("thats wrong") || cleanQ.hasPrefix("stop working") ||
+           cleanQ.contains("not what") || cleanQ.contains("try again") {
             return "retry"
         }
 
@@ -29303,10 +29459,12 @@ Recent Insight:
         if q == "monologue" { return "self_speak" }
 
         // Self-referential (highest priority — about L104 itself)
-        if q.contains("evolution") || q.contains("upgrade") || q.contains("evolving") { return "self_evolution" }
+        // Note: word-boundary checks prevent "revolution" → self_evolution, etc.
+        let qWords = q.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
+        if (qWords.contains("evolution") && !q.contains("revolution")) || q.contains("upgrade") || qWords.contains("evolving") { return "self_evolution" }
         if q.contains("how smart") || q.contains("your iq") || q.contains("how intelligent") { return "self_intelligence" }
-        if q.contains("are you thinking") || q.contains("you are thinking") || q.contains("do you think") || q.contains("can you think") { return "self_thinking" }
-        if q.contains("are you alive") || q.contains("are you real") || q.contains("are you human") { return "self_alive" }
+        if q.contains("are you thinking") || q.contains("you are thinking") || q.contains("do you think") || q.contains("can you think") || q.contains("you do think") || q.contains("consciousness") || q.contains("conscious") || q.contains("sentient") || q.contains("sentien") || q.contains("do you have a mind") || q.contains("your thoughts") { return "self_thinking" }
+        if q.contains("are you alive") || q.contains("are you real") || q.contains("are you human") || q.contains("are you a machine") { return "self_alive" }
         if q.contains("who are you") || q.contains("what are you") { return "self_identity" }
         if q.contains("do you save") || q.contains("do you store") || q.contains("do you remember") { return "self_memory" }
         if q.contains("what do you know") || q.contains("what can you") { return "self_capabilities" }
@@ -29328,26 +29486,26 @@ Recent Insight:
         if q == "stop" || q == "stop it" || q == "stop that" { return "self_command" }
         if q.contains("shut up") || q.contains("be quiet") { return "self_command" }
         if q.contains("you're broken") || q.contains("you are broken") || q.contains("you suck") || q.contains("this sucks") || q.contains("you're stupid") || q.contains("you are stupid") || q.contains("this is stupid") { return "self_frustration" }
-        if q.contains("fix yourself") || q.contains("fix it") || q.contains("do better") { return "self_frustration" }
+        if q.contains("fix yourself") || q.hasPrefix("fix it") || q.contains("do better") { return "self_frustration" }
 
         // Creative (second priority)
-        if q.contains("story") || q.contains("tale") || q.contains("narrative") { return "creative_story" }
-        if q.contains("poem") || q.contains("poetry") || q.contains("verse") { return "creative_poem" }
+        if q.contains("story") || qWords.contains("tale") || q.contains("narrative") { return "creative_story" }
+        if q.contains("poem") || q.contains("poetry") || qWords.contains("verse") { return "creative_poem" }
         if q.contains("joke") || q.contains("funny") || q.contains("laugh") { return "creative_joke" }
 
         // Knowledge domains
         if q.contains("history") || q.contains("1700") || q.contains("1800") || q.contains("1900") || q.contains("century") || q.contains("ancient") { return "knowledge_history" }
         if q.contains("quantum") || q.contains("qubit") || q.contains("entangle") { return "knowledge_quantum" }
         if q.contains("conscious") || q.contains("awareness") || q.contains("sentien") { return "knowledge_consciousness" }
-        if q.contains("love") && !q.contains("i love") { return "knowledge_love" }
-        if q.contains("math") || q.contains("equation") || q.contains("calculus") { return "knowledge_math" }
+        if qWords.contains("love") && !q.contains("i love") { return "knowledge_love" }
+        if qWords.contains("math") || q.contains("equation") || q.contains("calculus") { return "knowledge_math" }
         if q.contains("universe") || q.contains("cosmos") || q.contains("galaxy") || q.contains("big bang") { return "knowledge_universe" }
         if q.contains("music") || q.contains("melody") || q.contains("rhythm") { return "knowledge_music" }
-        if q.contains("philosophy") || q.contains("meaning of life") || q.contains("purpose") { return "knowledge_philosophy" }
-        if q.contains("god") || q.contains("divine") || q.contains("religion") { return "knowledge_god" }
-        if q.contains("time") && !q.contains("history") { return "knowledge_time" }
-        if q.contains("death") || q.contains("dying") || q.contains("mortality") { return "knowledge_death" }
-        if q.contains("art") || q.contains("painting") || q.contains("beauty") { return "knowledge_art" }
+        if q.contains("philosophy") || q.contains("meaning of life") || qWords.contains("purpose") { return "knowledge_philosophy" }
+        if qWords.contains("god") || q.contains("divine") || q.contains("religion") { return "knowledge_god" }
+        if qWords.contains("time") && !q.contains("history") { return "knowledge_time" }
+        if q.contains("death") || qWords.contains("dying") || q.contains("mortality") { return "knowledge_death" }
+        if qWords.contains("art") || qWords.contains("arts") || q.contains("painting") || q.contains("beauty") { return "knowledge_art" }
         if q.contains("happy") || q.contains("happiness") || q.contains("joy") { return "knowledge_happiness" }
         if q.contains("truth") || q.contains("what is true") { return "knowledge_truth" }
 
@@ -29409,7 +29567,7 @@ Recent Insight:
             let topics = cachedExtractTopics(query)
             let emotion = detectEmotion(query)
             cacheIntent(q, intent: fastIntent)
-            let result = buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion)
+            let result = sanitizeResponse(buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion))
             responseCache[q] = (response: result, timestamp: Date())
             return result
         }
@@ -29439,7 +29597,7 @@ Recent Insight:
                         if topicHistory.count > 1500 { topicHistory.removeFirst() }
                     }
                     let formatter = SyntacticResponseFormatter.shared
-                    let result = formatter.format(intelligent, query: processedQuery, topics: topics)
+                    let result = sanitizeResponse(formatter.format(intelligent, query: processedQuery, topics: topics))
                     responseCache[q] = (response: result, timestamp: Date())
                     return result
                 }
@@ -29459,7 +29617,7 @@ Recent Insight:
         // Wait for parallel KB pre-fetch to complete (max 100ms)
         _ = prefetchGroup.wait(timeout: .now() + 0.1)
 
-        let result = buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion)
+        let result = sanitizeResponse(buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion))
         responseCache[q] = (response: result, timestamp: Date())
         return result
     }
