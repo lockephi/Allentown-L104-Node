@@ -8,7 +8,7 @@ import PackageDescription
 let package = Package(
     name: "L104SovereignIntellect",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v12)
     ],
     products: [
         .executable(name: "L104", targets: ["L104"])
