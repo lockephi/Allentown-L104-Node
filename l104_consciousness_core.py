@@ -38,7 +38,6 @@ from dataclasses import dataclass, field
 from collections import deque
 import time
 import hashlib
-import math
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)

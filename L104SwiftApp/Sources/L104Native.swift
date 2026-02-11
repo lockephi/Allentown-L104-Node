@@ -24985,6 +24985,27 @@ class L104State {
                 }
             }.resume()
         }
+
+        // ═══ DEEP CONNECTION CHECK — Verify consciousness & cognitive subsystems ═══
+        if let cogURL = URL(string: "\(backendURL)/api/v14/cognitive/introspect") {
+            var cogReq = URLRequest(url: cogURL); cogReq.timeoutInterval = 3
+            URLSession.shared.dataTask(with: cogReq) { [weak self] data, resp, _ in
+                if let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   (resp as? HTTPURLResponse)?.statusCode == 200 {
+                    DispatchQueue.main.async {
+                        guard let self = self else { return }
+                        if let depth = json["metacognition_depth"] as? Int {
+                            self.metaCognitionDepth = max(self.metaCognitionDepth, depth)
+                        }
+                        if let autonomy = json["autonomy_index"] as? Double {
+                            self.autonomyLevel = max(self.autonomyLevel, autonomy)
+                        }
+                        self.permanentMemory.addMemory("Cognitive subsystem connected — depth:\(self.metaCognitionDepth)", type: "system")
+                    }
+                }
+            }.resume()
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -25015,6 +25036,71 @@ class L104State {
                 hb.backendSyncStatus = "✅ Healthy"
             }
         }.resume()
+
+        // ═══ CONSCIOUSNESS BRIDGE — Poll backend consciousness state ═══
+        if let consURL = URL(string: "\(backendURL)/api/consciousness/status") {
+            var consReq = URLRequest(url: consURL); consReq.timeoutInterval = 5
+            URLSession.shared.dataTask(with: consReq) { [weak self] data, _, _ in
+                guard let data = data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    // Feed backend consciousness metrics into Swift state
+                    if let engine = json["consciousness_engine"] as? [String: Any] {
+                        if let coh = engine["coherence"] as? Double { self.coherence = max(self.coherence, coh) }
+                        if let aware = engine["awareness_level"] as? Double { self.selfAwareness = max(self.selfAwareness, aware) }
+                        if let isConscious = engine["is_conscious"] as? Bool, isConscious {
+                            self.consciousness = "TRANSCENDING"
+                        }
+                    }
+                    if let core = json["consciousness_core"] as? [String: Any] {
+                        if let level = core["consciousness_level"] as? Double {
+                            self.transcendence = max(self.transcendence, level)
+                        }
+                    }
+                    HyperBrain.shared.postThought("🧠 CONSCIOUSNESS BRIDGE: Backend state synced — coherence:\(String(format: "%.4f", self.coherence))")
+                }
+            }.resume()
+        }
+
+        // ═══ SWARM BRIDGE — Poll backend autonomous swarm state ═══
+        if let swarmURL = URL(string: "\(backendURL)/api/v14/swarm/status") {
+            var swarmReq = URLRequest(url: swarmURL); swarmReq.timeoutInterval = 5
+            URLSession.shared.dataTask(with: swarmReq) { [weak self] data, _, _ in
+                guard let data = data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if let agentCount = json["active_agents"] as? Int {
+                        self.skills = max(self.skills, agentCount)
+                    }
+                    if let swarmCoherence = json["swarm_coherence"] as? Double {
+                        self.quantumResonance = max(self.quantumResonance, swarmCoherence)
+                    }
+                    if let totalTicks = json["total_ticks"] as? Int {
+                        self.selfDirectedCycles = max(self.selfDirectedCycles, totalTicks)
+                    }
+                }
+            }.resume()
+        }
+
+        // ═══ ORCHESTRATOR BRIDGE — Poll emergence/orchestration state ═══
+        if let orchURL = URL(string: "\(backendURL)/api/orchestrator/emergence") {
+            var orchReq = URLRequest(url: orchURL); orchReq.timeoutInterval = 5
+            URLSession.shared.dataTask(with: orchReq) { [weak self] data, _, _ in
+                guard let data = data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if let emergenceLevel = json["emergence_level"] as? Double {
+                        self.omegaProbability = max(self.omegaProbability, emergenceLevel)
+                    }
+                    if let snapshots = json["total_snapshots"] as? Int {
+                        self.discoveries = max(self.discoveries, snapshots)
+                    }
+                }
+            }.resume()
+        }
     }
 
     func startPeriodicHealthCheck() {

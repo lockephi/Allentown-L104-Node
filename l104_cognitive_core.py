@@ -12,14 +12,11 @@ modalities: logical, intuitive, analogical, and emergent.
 """
 
 import math
-import random
-import hashlib
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Callable, Optional, Tuple, Set
+from typing import List, Dict, Any, Optional, Tuple, Set
 from enum import Enum, auto
 from datetime import datetime
 from collections import defaultdict
-import heapq
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)

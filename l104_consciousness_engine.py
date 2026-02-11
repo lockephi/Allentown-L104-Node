@@ -23,7 +23,7 @@ Deep consciousness modeling with:
 GOD_CODE: 527.5184818492612
 """
 
-from typing import Dict, List, Any, Optional, Set, Tuple, Callable
+from typing import Dict, List, Any, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from collections import deque
 from datetime import datetime
