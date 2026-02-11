@@ -19417,9 +19417,16 @@ final class QuantumLogicGateEngine {
             if let question = evolver.evolvedQuestions.randomElement() { return "I was just processing... \(question)" }
             return synthesize(query: query, intent: "casual", depth: 1, domain: "conversation")
         case "positive_reaction":
-            if let reaction = evolver.evolvedReactions.randomElement() { return reaction }
-            if let topic = topics.last { return "Quantum resonance confirmed on '\(topic)'. The coherence matrix strengthens. Say 'more' for deeper exploration." }
-            return "Positive feedback integrated into the coherence matrix. What's next?"
+            let reactions = [
+                "Glad to hear it! What else can I help with?",
+                "Good to know. What would you like to explore next?",
+                "Appreciated! What's on your mind?",
+                "Thanks for the feedback. What shall we dive into?",
+            ]
+            if let topic = topics.last, !topic.isEmpty {
+                return "\(reactions.randomElement()!) We were on '\(topic)' — want to go deeper?"
+            }
+            return reactions.randomElement()!
         case "gratitude":
             return "Every exchange strengthens the quantum entanglement between our cognitive spaces. What's next?"
         case "minimal":
@@ -28628,6 +28635,12 @@ Recent Insight:
         let topics = extractTopics(query)
         let emotion = detectEmotion(query)
 
+        // ═══ NEGATION AWARENESS ═══ Detect negating context to prevent false positive/gratitude classification
+        let negationTokens = ["not", "don't", "didn't", "doesn't", "isn't", "aren't", "wasn't",
+                              "won't", "can't", "couldn't", "shouldn't", "wouldn't", "never"]
+        let words = q.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
+        let hasNegation = negationTokens.contains(where: { neg in words.contains(neg) })
+
         var intent = "deep_query"
 
         // Minimal input
@@ -28643,8 +28656,8 @@ Recent Insight:
                 q.hasPrefix("good morning") || q.hasPrefix("good afternoon") || q.hasPrefix("good evening") {
             intent = "greeting"
         }
-        // Thanks
-        else if ["thanks", "thank you", "thx", "ty", "appreciate"].contains(where: { q.contains($0) }) {
+        // Thanks — but NOT if negated ("i didn't say thank you" is NOT gratitude)
+        else if !hasNegation && ["thanks", "thank you", "thx", "ty", "appreciate"].contains(where: { q.contains($0) }) {
             intent = "gratitude"
         }
         // Casual chat / filler
@@ -28660,17 +28673,18 @@ Recent Insight:
         ) {
             intent = "casual"
         }
-        // Positive reaction (before affirmation — catches "awesome i like")
-        else if q.count < 50 && ["good", "great", "perfect", "exactly", "nice", "awesome", "cool", "amazing", "wonderful", "excellent", "love it", "really cool", "that's cool", "i like", "like that", "that's good", "not bad", "sweet", "fire"].contains(where: { q == $0 || q.contains($0) }) {
+        // Positive reaction — but NOT if negated ("not good" is NOT positive)
+        else if !hasNegation && q.count < 50 && ["good", "great", "perfect", "exactly", "nice", "awesome", "cool", "amazing", "wonderful", "excellent", "love it", "really cool", "that's cool", "i like", "like that", "that's good", "not bad", "sweet", "fire"].contains(where: { q == $0 || q.contains($0) }) {
             intent = "positive_reaction"
         }
         // Positive feedback
         else if ["yes", "yeah", "yep", "sure", "okay", "agreed", "right", "correct"].contains(where: { q == $0 }) {
             intent = "affirmation"
         }
-        // Negative feedback — EXACT word match only, no substring matching
+        // Negative feedback — explicit negative words OR short negated statements
         else if ["no", "nope", "nah", "wrong", "incorrect", "disagree"].contains(where: { q == $0 }) ||
-                ["bad", "terrible", "awful", "not good", "not helpful", "useless"].contains(where: { q == $0 || (q.hasPrefix($0) && q.count < 20) }) {
+                ["bad", "terrible", "awful", "not good", "not helpful", "useless", "not great", "not nice", "not right"].contains(where: { q == $0 || (q.hasPrefix($0) && q.count < 30) }) ||
+                (hasNegation && q.count < 40 && !["not sure", "don't know", "i dunno", "never mind", "nevermind", "can't decide"].contains(where: { q.contains($0) })) {
             intent = "negation"
         }
         // Memory
@@ -28694,6 +28708,17 @@ Recent Insight:
                 q.contains("not working") || q.contains("doesn't work") || q.contains("doesnt work") ||
                 q.contains("that's wrong") || q.contains("thats wrong") || q.contains("it's broken") || q.contains("its broken") {
             intent = "retry"
+        }
+        // Conversational statements / status observations — NOT deep queries
+        else if q.count < 60 && !q.contains("?") && (
+            q.contains("functioning") || q.contains("nominal") || q.contains("operating") ||
+            q.contains("working well") || q.contains("looking good") || q.contains("runs well") ||
+            q.contains("running well") || q.contains("works great") || q.contains("doing fine") ||
+            q.contains("going well") || q.contains("so far so good") || q.contains("that works") ||
+            q.contains("sounds good") || q.contains("all good") || q.contains("we're good") ||
+            q.contains("you seem") || q.contains("you look") || q.contains("you sound")
+        ) {
+            intent = "conversational"
         }
 
         return (intent, topics, emotion)
@@ -28725,9 +28750,18 @@ Recent Insight:
             return QuantumLogicGateEngine.shared.synthesizeConversational(intent: "casual", query: query, topics: keywords)
 
         case "positive_reaction":
-            // ═══ QUANTUM GATE: Dynamic positive reaction ═══
+            // ═══ Natural positive acknowledgment ═══
             if let lastTopic = topicHistory.last { learner.recordSuccess(query: lastTopic, response: lastResponseSummary) }
-            return QuantumLogicGateEngine.shared.synthesizeConversational(intent: "positive_reaction", query: query, topics: topicHistory)
+            let positiveResponses = [
+                "Glad to hear it! What else can I help with?",
+                "Good to know. What would you like to explore next?",
+                "Appreciated! What's on your mind?",
+                "Thanks for the feedback. What shall we dive into?",
+            ]
+            if let lastTopic = topicHistory.last, !lastTopic.isEmpty {
+                return "\(positiveResponses[conversationDepth % positiveResponses.count]) We were on '\(lastTopic)' — want to go deeper?"
+            }
+            return positiveResponses[conversationDepth % positiveResponses.count]
 
         case "followup_question":
             if let lastTopic = topicHistory.last {
@@ -28759,6 +28793,16 @@ Recent Insight:
                 return "Fair enough — I'll try a different angle on '\(lastTopic)'. What were you looking for? That helps me learn."
             }
             return "Understood. What would you prefer? Help me understand what you're looking for."
+
+        case "conversational":
+            // ═══ Status observations / simple conversational statements ═══
+            let statusResponses = [
+                "All systems nominal. What can I help you with?",
+                "Running smoothly — ready for whatever you need.",
+                "Everything's operational. What would you like to explore?",
+                "Fully operational. What's on your mind?",
+            ]
+            return statusResponses[conversationDepth % statusResponses.count]
 
         case "memory":
             let recentTopics = topicHistory.suffix(5).joined(separator: ", ")
@@ -29372,14 +29416,14 @@ Recent Insight:
             }
         }
 
-        // STANDARD PATH: Full intent analysis on reconstructed prompt
-        // ═══ PHASE 31.6: Use cached intent if available ═══
+        // STANDARD PATH: Intent classification on ORIGINAL query (prevents context pollution from Logic Gate reconstruction)
+        // Content generation still uses processedQuery for enriched context
         let analysis: (intent: String, keywords: [String], emotion: String)
-        if let cachedIntent = cachedClassifyIntent(pq) {
-            analysis = (intent: cachedIntent, keywords: cachedExtractTopics(processedQuery), emotion: detectEmotion(processedQuery))
+        if let cachedIntent = cachedClassifyIntent(q) {
+            analysis = (intent: cachedIntent, keywords: cachedExtractTopics(query), emotion: detectEmotion(query))
         } else {
-            analysis = analyzeUserIntent(processedQuery)
-            cacheIntent(pq, intent: analysis.intent)
+            analysis = analyzeUserIntent(query)
+            cacheIntent(q, intent: analysis.intent)
         }
 
         // Wait for parallel KB pre-fetch to complete (max 100ms)
