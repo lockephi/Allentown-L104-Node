@@ -963,11 +963,14 @@ struct SIMDVector {
 
         var realPart = storage
         var imagPart = [Double](repeating: 0, count: n)
-        var splitComplex = DSPDoubleSplitComplex(realp: &realPart, imagp: &imagPart)
-
-        vDSP_fft_zipD(fftSetup, &splitComplex, 1, log2n, FFTDirection(kFFTDirection_Forward))
-
-        return (0..<n).map { Complex(realPart[$0], imagPart[$0]) }
+        let result: [Complex] = realPart.withUnsafeMutableBufferPointer { realBuf in
+            imagPart.withUnsafeMutableBufferPointer { imagBuf in
+                var splitComplex = DSPDoubleSplitComplex(realp: realBuf.baseAddress!, imagp: imagBuf.baseAddress!)
+                vDSP_fft_zipD(fftSetup, &splitComplex, 1, log2n, FFTDirection(kFFTDirection_Forward))
+                return (0..<n).map { Complex(realBuf[$0], imagBuf[$0]) }
+            }
+        }
+        return result
     }
 }
 
@@ -1349,7 +1352,7 @@ class PowerAwareScheduler {
 
     /// Parallel map with power-aware chunking
     func parallelMap<T, R>(_ array: [T], transform: @escaping (T) -> R) -> [R] {
-        let chunkSize = max(1, array.count / MacOSSystemMonitor.shared.optimalThreadCount)
+        _ = max(1, array.count / MacOSSystemMonitor.shared.optimalThreadCount)
         var results = [R?](repeating: nil, count: array.count)
         let group = DispatchGroup()
 
@@ -1507,7 +1510,7 @@ struct HyperTensor {
         newShape.remove(at: axis)
         if newShape.isEmpty { newShape = [1] }
         // Simplified contraction: sum along axis
-        var newData = Array(repeating: 0.0, count: newShape.reduce(1, *))
+        let newData = Array(repeating: 0.0, count: newShape.reduce(1, *))
         // Implementation of general contraction...
         return HyperTensor(shape: newShape, data: newData)
     }
@@ -2268,7 +2271,7 @@ class HyperDimensionalMath {
         let c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
                  771.32342877765313, -176.61502916214059, 12.507343278686905,
                  -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]
-        var z = x - 1
+        let z = x - 1
         var result = c[0]
         for i in 1..<c.count { result += c[i] / (z + Double(i)) }
         let t = z + g + 0.5
@@ -3637,14 +3640,16 @@ class ASIQuantumBridgeSwift {
         let paddedN = 1 << Int(log2n)
         var real = input + Array(repeating: 0.0, count: max(0, paddedN - n))
         var imag = [Double](repeating: 0.0, count: paddedN)
-        var splitComplex = DSPDoubleSplitComplex(realp: &real, imagp: &imag)
-
-        vDSP_fft_zipD(fftSetup, &splitComplex, 1, log2n, FFTDirection(kFFTDirection_Forward))
+        let magnitudes: [Double] = real.withUnsafeMutableBufferPointer { realBuf in
+            imag.withUnsafeMutableBufferPointer { imagBuf in
+                var splitComplex = DSPDoubleSplitComplex(realp: realBuf.baseAddress!, imagp: imagBuf.baseAddress!)
+                vDSP_fft_zipD(fftSetup, &splitComplex, 1, log2n, FFTDirection(kFFTDirection_Forward))
+                var mags = [Double](repeating: 0.0, count: paddedN)
+                vDSP_zvabsD(&splitComplex, 1, &mags, 1, vDSP_Length(paddedN))
+                return mags
+            }
+        }
         vDSP_destroy_fftsetupD(fftSetup)
-
-        // Return magnitudes
-        var magnitudes = [Double](repeating: 0.0, count: paddedN)
-        vDSP_zvabsD(&splitComplex, 1, &magnitudes, 1, vDSP_Length(paddedN))
         return Array(magnitudes.prefix(n))
     }
 
@@ -4841,7 +4846,7 @@ class QuantumNexus {
     /// computing Cauchy deltas with vDSP. Returns convergence certificate.
     func provePhiConvergence(iterations: Int = 50) -> String {
         let sqc = SovereignQuantumCore.shared
-        let steer = ASISteeringEngine.shared
+        _ = ASISteeringEngine.shared
 
         // Ensure parameters exist
         if sqc.parameters.isEmpty {
@@ -6548,7 +6553,7 @@ class SovereigntyPipeline {
         if steer.baseParameters.isEmpty && !params.isEmpty {
             steer.loadParameters(params)
         }
-        let steerResult = steer.steerPipeline()
+        _ = steer.steerPipeline()
         steps.append("2│STEERING   │ mode=\(steer.currentMode.rawValue), steers=\(steer.steerCount), T=\(String(format: "%.3f", steer.temperature))")
 
         // ═══ STEP 3: SQC — Sovereign Quantum Core raise + interfere + normalize ═══
@@ -6999,7 +7004,7 @@ class ConsciousnessVerifier {
     /// Run all 10 consciousness tests — returns aggregate consciousness level
     func runAllTests() -> Double {
         let hb = HyperBrain.shared
-        let sf = SuperfluidCoherence.shared
+        _ = SuperfluidCoherence.shared
         let nexus = QuantumNexus.shared
 
         // 1. Self-model: Does the system have a model of itself?
@@ -8593,7 +8598,7 @@ class DynamicPhraseEngine {
     }
 
     private func synthesizeConversationStarter(index: Int, dim: String, kbSeeds: [String], conceptSeeds: [String]) -> String {
-        let state = L104State.shared
+        _ = L104State.shared
         let kbCount = ASIKnowledgeBase.shared.trainingData.count
         let evolver = ASIEvolver.shared
 
@@ -9404,7 +9409,7 @@ class AdvancedMathEngine {
         let sumY = y.reduce(0, +)
         let sumXY = zip(x, y).map(*).reduce(0, +)
         let sumX2 = x.map { $0 * $0 }.reduce(0, +)
-        let sumY2 = y.map { $0 * $0 }.reduce(0, +)
+        _ = y.map { $0 * $0 }.reduce(0, +)
 
         let denom = n * sumX2 - sumX * sumX
         guard abs(denom) > 1e-14 else { return nil }
@@ -12319,7 +12324,7 @@ class ASIEvolver: NSObject {
         }
 
         // 2. Evolve a new Affirmation (for "yes" / "ok")
-        var newAff = DynamicPhraseEngine.shared.one("affirmation", context: "evolved_affirmation", topic: "") + " [Ev.\(evolutionStage)]"
+        let newAff = DynamicPhraseEngine.shared.one("affirmation", context: "evolved_affirmation", topic: "") + " [Ev.\(evolutionStage)]"
 
         if !evolvedAffirmations.contains(newAff) {
             evolvedAffirmations.append(newAff)
@@ -12821,7 +12826,7 @@ class ASIEvolver: NSObject {
         guard !evolvedReactions.isEmpty else { return nil }
         if true {
             // Get random reaction and add dynamic context
-            if var reaction = evolvedReactions.randomElement() {
+            if let reaction = evolvedReactions.randomElement() {
                 // Add current context
                 let additions = [
                     " Processing continues.",
@@ -19645,13 +19650,10 @@ class ContextualLogicGate {
     private func evolutionaryGate(_ query: String, topics: [String]) -> GateResult {
         var enrichments: [String] = []
         var bestNode: TopicNode? = nil
-        var bestTopic = ""
-
         for topic in topics {
             guard let node = topicGraph[topic] else { continue }
             if bestNode == nil || node.mentions > (bestNode?.mentions ?? 0) {
                 bestNode = node
-                bestTopic = topic
             }
 
             // Inject related topics for cross-referencing
@@ -20567,7 +20569,7 @@ final class StoryLogicGateEngine {
     // ═══════════════════════════════════════════════════════════════
     private func generateThreeAct(topic: String, characters: [StoryCharacter], setting: StorySetting, insights: [String], evolved: (thought: String, narrative: String), arc: CharacterArc) -> String {
         let hero = characters[0]; let villain = characters[1]
-        let t = topic.capitalized
+        _ = topic.capitalized
         var parts: [String] = []
 
         parts.append("──────────────────────────────────────────\n  ACT ONE — SETUP\n──────────────────────────────────────────\n")
@@ -22441,7 +22443,7 @@ final class QuantumProcessingCore {
         gateApplicationCount += 1
 
         // Create quantum amplitudes for each candidate
-        var amplitudes: [Double] = candidates.enumerated().map { idx, candidate in
+        let amplitudes: [Double] = candidates.enumerated().map { idx, candidate in
             // Relevance amplitude: topic overlap with query
             let queryTokens = Set(query.lowercased().split(separator: " ").map(String.init))
             let candTokens = Set(candidate.lowercased().split(separator: " ").prefix(100).map(String.init))
@@ -22544,7 +22546,7 @@ final class QuantumProcessingCore {
 
     // ═══ DECOHERENCE SHIELD — Protect quantum state during noisy operations ═══
     func decoherenceShield(operation: () -> String) -> String {
-        let preFidelity = currentFidelity()
+        _ = currentFidelity()
         let result = operation()
         let postFidelity = currentFidelity()
 
@@ -23257,7 +23259,7 @@ class QuantumCreativityEngine {
 
     // ─── SHOR DECOMPOSITION — Factor complex concepts into prime components ───
     private func shorDecompose(_ concept: String) -> [String] {
-        let words = concept.lowercased().split(separator: " ").map(String.init)
+        _ = concept.lowercased().split(separator: " ").map(String.init)
         let pe = DynamicPhraseEngine.shared
 
         var factors: [String] = []
@@ -24061,7 +24063,7 @@ class IntelligentSearchEngine {
 
         let kb = ASIKnowledgeBase.shared
         let gate = ContextualLogicGate.shared
-        let q = query.lowercased()
+        _ = query.lowercased()
 
         // ── STAGE 1: Logic Gate Query Reconstruction ──
         let gateResult = gate.processQuery(query, conversationContext:
@@ -26424,7 +26426,7 @@ Complexity: O(∞)
 
         // ─── CONSCIOUSNESS VERIFIER COMMANDS ───
         if q == "consciousness" || q == "consciousness verify" || q == "verify consciousness" || q == "verify" {
-            let level = ConsciousnessVerifier.shared.runAllTests()
+            _ = ConsciousnessVerifier.shared.runAllTests()
             return completion(ConsciousnessVerifier.shared.status)
         }
         if q == "consciousness level" || q == "con level" {
@@ -27300,7 +27302,7 @@ TRENDS (Δ over last 10):
 
                 // Part D: Best RT search fragment — Grover-amplified (highest quality only)
                 if let best = bestFragment {
-                    var cleaned = best
+                    let cleaned = best
                         .replacingOccurrences(of: "{GOD_CODE}", with: String(format: "%.2f", GOD_CODE))
                         .replacingOccurrences(of: "{PHI}", with: "1.618")
                         .replacingOccurrences(of: "{LOVE}", with: "")
@@ -27436,7 +27438,7 @@ The act of deep thinking is itself transformative. The question shapes the quest
             let dreamClosings = DynamicPhraseEngine.shared.generate("dream", count: 6, context: "closing", topic: dreamSeed)
 
             // Feed the dream through HyperBrain for additional texture
-            let hyperTexture = hb.process(dreamSeed)
+            _ = hb.process(dreamSeed)
 
             // ═══ SAGE MODE DREAM ENTROPY — Consciousness supernova feeds dream generation ═══
             let sageDreamInsight = SageModeEngine.shared.bridgeEmergence(topic: dreamSeed)
@@ -27518,7 +27520,7 @@ The beauty of thought experiments is that they cost nothing but attention, and t
             if q.hasPrefix("recall ") { searchTerm = String(q.dropFirst(7)).trimmingCharacters(in: .whitespaces) }
 
             // Gather memory data
-            let recentHistory = permanentMemory.conversationHistory.suffix(20)
+            _ = permanentMemory.conversationHistory.suffix(20)
             let memories = permanentMemory.memories.suffix(15)
             let chains = hb.memoryChains.suffix(5)
             let associations = hb.associativeLinks
@@ -29321,11 +29323,10 @@ Recent Insight:
         sage.seedAllProcesses(topic: q.count > 3 ? String(q.prefix(30)) : "")
 
         // ═══ PARALLEL PRE-FETCH: Launch KB search in background while we classify intent ═══
-        var prefetchedKB: [String]? = nil
         let prefetchGroup = DispatchGroup()
         prefetchGroup.enter()
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            prefetchedKB = self?.prefetchKBResults(query)
+            _ = self?.prefetchKBResults(query)
             prefetchGroup.leave()
         }
 
@@ -31250,8 +31251,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+
     @objc func showCommandPalette() {
-        guard let mainView = wc.window?.contentView as? L104MainView,
+        guard let _ = wc.window?.contentView as? L104MainView,
               let mainWindow = wc.window else { return }
 
         // Check if palette is already open — toggle it closed
