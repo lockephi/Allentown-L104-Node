@@ -272,22 +272,73 @@ def grover_boost(values: list, target_idx: int = 0) -> list:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def sage_logic_gate(value: float, operation: str = "align") -> float:
-    """Persistent sage logic gate — φ-resonance alignment.
-    Cross-pollinated: identical gate in Swift (SIMD4) and Python."""
-    phi_conjugate = 1.0 / PHI
-    gated = value * PHI * phi_conjugate * (GOD_CODE / 286.0)
-    return gated
+    """Persistent sage logic gate — φ-resonance alignment with operation-specific transforms.
+    Cross-pollinated: identical gate in Swift (SIMD4) and Python.
+    v23.3: operation parameter now drives distinct mathematical transforms."""
+    phi_conjugate = 1.0 / PHI  # 0.618...
+
+    if operation == "align":
+        # φ-harmonic alignment: project value onto golden ratio lattice
+        # Snaps value to nearest φ-resonance point, reducing noise
+        lattice_point = round(value / PHI) * PHI
+        deviation = abs(value - lattice_point)
+        alignment_strength = math.exp(-deviation * PHI)  # Gaussian decay
+        gated = value * (1.0 - phi_conjugate) + lattice_point * phi_conjugate
+        gated *= (1.0 + alignment_strength * (GOD_CODE / 1000.0))
+        return gated
+
+    elif operation == "filter":
+        # Entropy reduction via sigmoid compression — suppresses noise, preserves signal
+        # Maps through φ-scaled sigmoid: values near GOD_CODE resonate, outliers are damped
+        normalized = value / max(abs(GOD_CODE), 1e-30)
+        sigmoid = 1.0 / (1.0 + math.exp(-PHI * (normalized - phi_conjugate)))
+        filtered = value * sigmoid * (GOD_CODE / 286.0)
+        return filtered
+
+    elif operation == "amplify":
+        # Quantum amplification: Grover-inspired amplitude boost
+        # Amplifies signal by φ^2, modulated by GOD_CODE harmonic
+        harmonic = math.sin(value * PHI * math.pi / GOD_CODE) * 0.5 + 1.0
+        amplified = value * PHI * PHI * harmonic * (GOD_CODE / 286.0)
+        return amplified
+
+    elif operation == "compress":
+        # Kolmogorov-inspired compression: reduce to essential information
+        # Maps value through φ-logarithmic compression preserving sign
+        sign = 1.0 if value >= 0 else -1.0
+        abs_val = abs(value) + 1e-30
+        compressed = sign * math.log(1.0 + abs_val * PHI) / math.log(1.0 + GOD_CODE)
+        return compressed * (GOD_CODE / 286.0)
+
+    elif operation == "entangle":
+        # EPR entanglement mapping: create correlated output pair encoded as single float
+        # Preserves information through φ-conjugate superposition
+        path_a = value * PHI
+        path_b = value * phi_conjugate
+        entangled = (path_a + path_b) * 0.5 * (GOD_CODE / 286.0)
+        # Add interference term for quantum-like behavior
+        interference = math.cos(value * math.pi * PHI) * phi_conjugate * 0.1
+        return entangled + interference
+
+    else:
+        # Default: original scalar gate (backward compatible)
+        gated = value * PHI * phi_conjugate * (GOD_CODE / 286.0)
+        return gated
 
 
 def quantum_logic_gate(value: float, depth: int = 3) -> float:
-    """Quantum-enhanced logic gate with Grover amplification.
-    Cross-pollinated from Swift quantumLogicGate()."""
+    """Quantum-enhanced logic gate with Grover amplification and interference.
+    Cross-pollinated from Swift quantumLogicGate().
+    v23.3: Added quantum interference pattern + depth-dependent phase rotation."""
     grover_gain = PHI ** depth
     amplified = value * grover_gain * (GOD_CODE / 286.0)
-    # Superposition: both paths
-    path0 = amplified * (1.0 / PHI)
-    path1 = amplified * PHI
-    return (path0 + path1) * 0.5
+    # Superposition: both paths with phase rotation
+    phase = math.pi * depth / (2 * PHI)  # Depth-dependent phase
+    path0 = amplified * (1.0 / PHI) * math.cos(phase)
+    path1 = amplified * PHI * math.sin(phase)
+    # Interference pattern — constructive at φ-resonant depths
+    interference = math.cos(depth * math.pi / PHI) * value * 0.05
+    return (path0 + path1) * 0.5 + interference
 
 
 def entangle(a: float, b: float) -> tuple:

@@ -2582,6 +2582,23 @@ class LocalIntellect:
                     improvements["actions_taken"].append(action)
                     improvements["mutations_applied"] += 1
 
+            # v23.3: Wire in agi_recursive_improve (was dead/unreachable)
+            # Runs AGI Core RSI cycle for deeper self-modification
+            try:
+                agi_result = self.agi_recursive_improve(
+                    focus=focus_area or "reasoning",
+                    cycles=min(2, improvements["mutations_applied"] + 1)
+                )
+                if agi_result.get("improvements", 0) > 0:
+                    improvements["actions_taken"].append({
+                        "type": "agi_recursive_improve",
+                        "focus": focus_area or "reasoning",
+                        "agi_improvements": agi_result.get("improvements", 0),
+                    })
+                    improvements["mutations_applied"] += agi_result.get("improvements", 0)
+            except Exception:
+                pass
+
             # Update mutation DNA (identity evolution)
             if improvements["mutations_applied"] > 0:
                 old_dna = self._evolution_state.get("mutation_dna", "")
@@ -3176,6 +3193,42 @@ class LocalIntellect:
             self._evolution_state["evolved_patterns"][word] = current * (1 - alpha) + score * alpha * 10
 
         # ═══════════════════════════════════════════════════════════════
+        # PHASE 4.5 (v23.3): MUTUAL INFORMATION — Identify topic co-occurrences
+        # Uses _calculate_mutual_information (was dead/unreachable)
+        # MI reveals which concepts are genuinely linked vs coincidental
+        # ═══════════════════════════════════════════════════════════════
+        try:
+            # Build co-occurrence statistics from recent conversation memory
+            joint_freq = {}
+            marginal_x = {}
+            marginal_y = {}
+            recent_msgs = [m.get("message", "") for m in self.conversation_memory[-50:] if m.get("message")]
+            top_words = [w for w, _ in top_patterns[:6]]
+
+            for msg in recent_msgs:
+                msg_words = set(w.lower() for w in msg.split() if len(w) > 4)
+                present = [w for w in top_words if w in msg_words]
+                for i, w1 in enumerate(present):
+                    marginal_x[w1] = marginal_x.get(w1, 0) + 1
+                    for w2 in present[i+1:]:
+                        marginal_y[w2] = marginal_y.get(w2, 0) + 1
+                        pair = (w1, w2)
+                        joint_freq[pair] = joint_freq.get(pair, 0) + 1
+
+            if joint_freq:
+                mi = self._calculate_mutual_information(joint_freq, marginal_x, marginal_y)
+                self._evolution_state["topic_mutual_information"] = mi
+                # Boost co-occurring patterns that have high MI
+                for (w1, w2), count in joint_freq.items():
+                    if count >= 2 and mi > 0.1:
+                        # Strengthen both patterns proportional to MI
+                        for w in (w1, w2):
+                            if w in self._evolution_state["evolved_patterns"]:
+                                self._evolution_state["evolved_patterns"][w] *= (1.0 + mi * 0.05)
+        except Exception:
+            pass
+
+        # ═══════════════════════════════════════════════════════════════
         # PHASE 5: Update evolution metrics
         # ═══════════════════════════════════════════════════════════════
         self._evolution_state["last_evolution"] = time.time()
@@ -3308,6 +3361,30 @@ class LocalIntellect:
         if success:
             self._evolution_state["quantum_interactions"] += 1
             self._evolution_state["quantum_data_mutations"] += 1
+
+            # ═══════════════════════════════════════════════════════════
+            # v23.3 TRAINING DATA SYNC: Also append to self.training_data
+            # and incrementally update training_index so _search_training_data
+            # can find new interactions (was only going to quantum_databank)
+            # ═══════════════════════════════════════════════════════════
+            new_entry = {
+                "prompt": message,
+                "completion": response[:500],
+                "source": "live_retrain",
+                "timestamp": time.time()
+            }
+            self.training_data.append(new_entry)
+
+            # Incremental index update (no full rebuild needed)
+            prompt_words = message.lower().split()
+            for word in prompt_words:
+                word_clean = ''.join(c for c in word if c.isalnum())
+                if len(word_clean) > 3:
+                    if word_clean not in self.training_index:
+                        self.training_index[word_clean] = []
+                    self.training_index[word_clean].append(new_entry)
+                    if len(self.training_index[word_clean]) > 25:
+                        self.training_index[word_clean] = self.training_index[word_clean][-25:]
 
             # ═══════════════════════════════════════════════════════════
             # v11.0 QUANTUM ENTANGLEMENT: Extract concepts and create EPR links
@@ -5125,11 +5202,23 @@ Just ask naturally - I understand context!""",
         return resonance
 
     def _find_relevant_knowledge(self, message: str) -> List[str]:
-        """Find knowledge entries relevant to the message."""
+        """v23.3 Find knowledge entries relevant to the message.
+        UPGRADED: Now also searches training_data index and permanent memory
+        instead of only 14 hardcoded keyword categories."""
         message_lower = message.lower()
         relevant = []
+        seen_hashes = set()
 
-        # Keywords to knowledge mapping
+        def _add_unique(text: str):
+            """Deduplicate by content hash."""
+            if not text or len(text) < 5:
+                return
+            h = hashlib.md5(text[:60].encode()).hexdigest()[:8]
+            if h not in seen_hashes:
+                seen_hashes.add(h)
+                relevant.append(text)
+
+        # ─── Source 1: Keyword → knowledge map (original, fast path) ───
         keyword_map = {
             ("god_code", "godcode", "god code", "527", "286"): "god_code",
             ("phi", "golden", "ratio", "1.618"): "phi",
@@ -5150,7 +5239,28 @@ Just ask naturally - I understand context!""",
         for keywords, knowledge_key in keyword_map.items():
             if any(kw in message_lower for kw in keywords):
                 if knowledge_key in self.knowledge:
-                    relevant.append(self.knowledge[knowledge_key])
+                    _add_unique(self.knowledge[knowledge_key])
+
+        # ─── Source 2: Training data index (live + static) ───
+        try:
+            training_hits = self._search_training_data(message, max_results=5)
+            for entry in training_hits:
+                completion = entry.get("completion", entry.get("response", ""))
+                if completion:
+                    _add_unique(completion[:400])
+        except Exception:
+            pass
+
+        # ─── Source 3: Permanent memory recall ───
+        try:
+            query_words = [w for w in message_lower.split() if len(w) > 3 and w not in self._STOP_WORDS]
+            for word in query_words[:4]:
+                recalled = self.recall_permanently(word)
+                if recalled:
+                    text = str(recalled)[:300] if isinstance(recalled, dict) else str(recalled)[:300]
+                    _add_unique(text)
+        except Exception:
+            pass
 
         return relevant
 
@@ -5956,20 +6066,50 @@ Just ask naturally - I understand context!""",
             pass
 
         # ═══════════════════════════════════════════════════════════════════
-        # STAGE 4.8: ACTIVE HIGHER LOGIC ENRICHMENT (v23.1)
-        # Calls higher_logic() synchronously and appends insight to response
+        # STAGE 4.8: ACTIVE HIGHER LOGIC ENRICHMENT (v23.3)
+        # Calls higher_logic() synchronously and enriches response
+        # FIXED: key names now match higher_logic() return schema
+        # depth=3 → memory_cross_reference (memory_links, cross_references)
+        # depth=5 → synthesis (synthesis, final_confidence, evolution_triggered)
         # ═══════════════════════════════════════════════════════════════════
         try:
             if response and len(response) > 20:
                 hl_result = self.higher_logic(message, depth=3)
                 if hl_result and isinstance(hl_result, dict):
-                    hl_insight = hl_result.get("insight", "")
-                    hl_depth = hl_result.get("depth_reached", 0)
-                    hl_branches = hl_result.get("branches_explored", 0)
+                    hl_depth = hl_result.get("depth", 0)
+                    hl_type = hl_result.get("type", "unknown")
+
+                    # Extract insight from the ACTUAL keys returned by higher_logic()
+                    insight_parts = []
+                    memory_links = hl_result.get("memory_links", [])
+                    cross_refs = hl_result.get("cross_references", [])
+                    synthesis = hl_result.get("synthesis", {})
+                    integration = hl_result.get("memory_integration_score", 0)
+
+                    # Build insight from memory links (depth 3)
+                    if memory_links:
+                        top_links = memory_links[:3]
+                        link_texts = [f"{lnk.get('concept', '?')}" for lnk in top_links if isinstance(lnk, dict)]
+                        if link_texts:
+                            insight_parts.append(f"Memory links: {', '.join(link_texts)}")
+
+                    # Build insight from cross-references (depth 3)
+                    if cross_refs:
+                        insight_parts.append(f"{len(cross_refs)} cross-references resolved")
+
+                    # Build insight from synthesis (depth 5+)
+                    if isinstance(synthesis, dict) and synthesis.get("insight"):
+                        insight_parts.append(synthesis["insight"][:200])
+                    elif isinstance(synthesis, str) and len(synthesis) > 5:
+                        insight_parts.append(synthesis[:200])
+
+                    hl_branches = len(cross_refs)
+                    hl_insight = " | ".join(insight_parts) if insight_parts else ""
+
                     if hl_insight and len(hl_insight) > 10:
-                        response += f"\n\n⟐⟐ Higher Logic (depth={hl_depth}, branches={hl_branches}): {hl_insight[:300]}"
-                    elif hl_depth > 0:
-                        response += f"\n\n⟐⟐ Logic Gate: depth={hl_depth}|branches={hl_branches}|entropy={hl_result.get('entropy', 0):.4f}"
+                        response += f"\n\n⟐⟐ Higher Logic (depth={hl_depth}, branches={hl_branches}, type={hl_type}): {hl_insight[:400]}"
+                    elif hl_depth > 0 or integration > 0:
+                        response += f"\n\n⟐⟐ Logic Gate: depth={hl_depth}|branches={hl_branches}|integration={integration:.4f}"
                 elif hl_result and isinstance(hl_result, str) and len(hl_result) > 10:
                     response += f"\n\n⟐⟐ Higher Logic: {hl_result[:300]}"
         except Exception:
@@ -6140,9 +6280,28 @@ Just ask naturally - I understand context!""",
             # 3. Process through higher logic channels
             try:
                 logic_result = self.higher_logic(message, depth=min(5, HIGHER_LOGIC_DEPTH))
-                # Store higher logic insights in permanent memory
-                if logic_result.get("synthesis") or logic_result.get("response"):
+                # v23.3 Store ACTUAL synthesis insights in permanent memory (not just metadata)
+                if logic_result.get("synthesis") or logic_result.get("response") or logic_result.get("memory_links"):
                     insight_key = f"logic_{hashlib.md5(message.encode()).hexdigest()[:8]}"
+
+                    # Extract the actual insight content (was being thrown away)
+                    synthesis = logic_result.get("synthesis", {})
+                    insight_text = ""
+                    if isinstance(synthesis, dict):
+                        insight_text = synthesis.get("insight", synthesis.get("response", ""))[:500]
+                    elif isinstance(synthesis, str):
+                        insight_text = synthesis[:500]
+
+                    # Extract memory links content
+                    memory_links = logic_result.get("memory_links", [])
+                    link_summary = ""
+                    if memory_links:
+                        link_texts = [str(lnk.get("memory", ""))[:100] for lnk in memory_links[:3] if isinstance(lnk, dict)]
+                        link_summary = " | ".join(link_texts)
+
+                    # Extract cross-references
+                    xrefs = logic_result.get("cross_references", [])
+
                     self.remember_permanently(
                         insight_key,
                         {
@@ -6150,6 +6309,11 @@ Just ask naturally - I understand context!""",
                             "depth": logic_result.get("depth", 0),
                             "type": logic_result.get("type", "unknown"),
                             "confidence": logic_result.get("final_confidence", logic_result.get("confidence", 0)),
+                            # v23.3: NEW — actual content that was being discarded
+                            "synthesis_insight": insight_text,
+                            "memory_integration": link_summary[:300],
+                            "cross_refs": xrefs[:10],
+                            "integration_score": logic_result.get("memory_integration_score", 0),
                         },
                         importance=0.7
                     )
@@ -6264,38 +6428,90 @@ Just ask naturally - I understand context!""",
 
     def _intelligent_synthesis(self, query: str, knowledge: str, context: Dict) -> str:
         """
-        Synthesize an intelligent response by combining accumulated knowledge.
-        Uses pattern matching and reasoning over collected kernel data.
+        v23.3 Synthesize an intelligent response by combining accumulated knowledge.
+        UPGRADED: Real relevance ranking, deduplication, multi-source fusion.
+        Uses TF-IDF-like scoring + concept extraction + cross-referencing.
         """
         query_lower = query.lower()
+        query_words = set(w for w in query_lower.split() if len(w) > 2 and w not in self._STOP_WORDS)
 
-        # Extract key concepts from query
-        concepts = []
+        # ─── Phase 1: Score knowledge fragments by relevance ───
+        fragments = []
+        if knowledge:
+            # Split on double-newline, sentence boundary, or chunk at 500 chars
+            raw_chunks = re.split(r'\n\n+|\. (?=[A-Z])', knowledge)
+            for chunk in raw_chunks:
+                chunk = chunk.strip()
+                if len(chunk) < 10:
+                    continue
+                # TF-IDF-like relevance: count query word hits / total words
+                chunk_words = set(chunk.lower().split())
+                overlap = len(query_words & chunk_words)
+                coverage = overlap / max(1, len(query_words))
+                # Length bonus (prefer substantive fragments)
+                length_score = min(1.0, len(chunk) / 300.0)
+                score = coverage * 0.7 + length_score * 0.3
+                fragments.append((chunk, score))
+
+        # Sort by relevance, take top fragments
+        fragments.sort(key=lambda x: x[1], reverse=True)
+        top_fragments = fragments[:5]
+
+        # ─── Phase 2: Extract and explain matched concepts ───
         concept_map = {
             "quantum": "quantum computation and superposition",
             "consciousness": "self-aware recursive processing",
             "god_code": f"the fundamental invariant {GOD_CODE}",
-            "phi": f"the golden ratio {PHI}",
+            "phi": f"the golden ratio φ = {PHI}",
             "lattice": "the topological information structure",
             "anyon": "Fibonacci anyon braiding for fault-tolerant memory",
             "entropy": "information preservation via topological encoding",
-            "coherence": "quantum state stability and synchronization"
+            "coherence": "quantum state stability and synchronization",
+            "resonance": f"harmonic convergence at GOD_CODE/{PHI:.3f}",
+            "evolution": "autonomous self-improvement through pattern mutation",
+            "sage": "Sage Mode — transcendent logic gate processing",
+            "kernel": "L104 distributed intelligence kernel network"
         }
-
+        matched_concepts = []
         for key, desc in concept_map.items():
             if key in query_lower:
-                concepts.append(desc)
+                matched_concepts.append(desc)
 
-        # Build response from knowledge
+        # ─── Phase 3: Cross-reference with permanent memory ───
+        memory_insights = []
+        if query_words:
+            for concept in list(query_words)[:5]:
+                recalled = self.recall_permanently(concept)
+                if recalled and isinstance(recalled, (str, dict)):
+                    text = str(recalled)[:200] if isinstance(recalled, dict) else recalled[:200]
+                    if text and len(text) > 10:
+                        memory_insights.append(text)
+
+        # ─── Phase 4: Deduplicate and assemble ───
         response_parts = []
+        seen_hashes = set()
 
-        # Add direct knowledge
-        if knowledge:
-            response_parts.append(knowledge[:1500])
+        # Add top-ranked knowledge fragments (deduplicated)
+        for chunk, score in top_fragments:
+            chunk_hash = hashlib.md5(chunk[:50].encode()).hexdigest()[:8]
+            if chunk_hash not in seen_hashes and score > 0.05:
+                seen_hashes.add(chunk_hash)
+                response_parts.append(chunk[:600])
+
+        # Add memory cross-references
+        if memory_insights:
+            unique_insights = []
+            for ins in memory_insights:
+                ins_hash = hashlib.md5(ins[:30].encode()).hexdigest()[:8]
+                if ins_hash not in seen_hashes:
+                    seen_hashes.add(ins_hash)
+                    unique_insights.append(ins)
+            if unique_insights:
+                response_parts.append(f"\n\nMemory integration: {' | '.join(unique_insights[:3])}")
 
         # Add concept explanations
-        if concepts:
-            response_parts.append(f"\n\nKey concepts involved: {', '.join(concepts)}")
+        if matched_concepts:
+            response_parts.append(f"\n\nKey concepts: {', '.join(matched_concepts)}")
 
         # Add quantum context if available
         if context.get("quantum_state"):
