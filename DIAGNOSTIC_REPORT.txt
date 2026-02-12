@@ -1,154 +1,154 @@
 FAIL: l104_anyon_compression_v2 (Import error: name 'TAU' is not defined)
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_anyon_compression_v2.py", line 571, in <module>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 575, in <module>
     anyon_compression_v2 = AnyonCompressionV2()
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_anyon_compression_v2.py", line 363, in __init__
+                           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 367, in __init__
     self.anyon_engine = FibonacciAnyonEngine()
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_anyon_compression_v2.py", line 119, in __init__
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 123, in __init__
     self.f_matrix = self._compute_f_matrix()
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_anyon_compression_v2.py", line 128, in _compute_f_matrix
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/Allentown-L104-Node/l104_anyon_compression_v2.py", line 132, in _compute_f_matrix
     [TAU, math.sqrt(TAU)],
+     ^^^
 NameError: name 'TAU' is not defined
-
-FAIL: l104_asi_nexus (Import error: name 'Path' is not defined)
-Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
-    module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_asi_nexus.py", line 46, in <module>
-    sys.path.insert(0, str(Path(__file__).parent.absolute()))
-NameError: name 'Path' is not defined
-
-FAIL: l104_hyper_asi_functional (Import error: name 'Path' is not defined)
-Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
-    module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_hyper_asi_functional.py", line 63, in <module>
-    from l104_asi_nexus import asi_nexus
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_asi_nexus.py", line 46, in <module>
-    sys.path.insert(0, str(Path(__file__).parent.absolute()))
-NameError: name 'Path' is not defined
 
 FAIL: l104_media_generator (Import error: No module named 'cv2')
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_media_generator.py", line 10, in <module>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_media_generator.py", line 10, in <module>
     import cv2
 ModuleNotFoundError: No module named 'cv2'
 
+FAIL: l104_mobile_app (Import error: No module named 'kivy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_mobile_app.py", line 26, in <module>
+    from kivy.app import App
+ModuleNotFoundError: No module named 'kivy'
+
+FAIL: l104_mobile_sovereign (Import error: No module named 'kivy')
+Traceback (most recent call last):
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+    module = importlib.import_module(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_mobile_sovereign.py", line 9, in <module>
+    from kivy.app import App
+ModuleNotFoundError: No module named 'kivy'
+
 FAIL: l104_neuro_symbolic_integration (Import error: No module named 'sympy')
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_neuro_symbolic_integration.py", line 21, in <module>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_neuro_symbolic_integration.py", line 21, in <module>
     import sympy as sp
 ModuleNotFoundError: No module named 'sympy'
 
 FAIL: l104_physics_evaluation_suite (Import error: No module named 'sympy')
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_physics_evaluation_suite.py", line 21, in <module>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_physics_evaluation_suite.py", line 21, in <module>
     import sympy as sp
 ModuleNotFoundError: No module named 'sympy'
 
-FAIL: l104_pinn_demo (Import error: No module named 'sympy')
+FAIL: l104_pinn_demo (Import error: No module named 'scipy')
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_pinn_demo.py", line 18, in <module>
-    import sympy as sp
-ModuleNotFoundError: No module named 'sympy'
-
-FAIL: l104_supabase_trainer (Import error: unsupported operand type(s) for |: '_SpecialGenericAlias' and '_GenericAlias')
-Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
-    module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_supabase_trainer.py", line 49, in <module>
-    class SupabaseClient:
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_supabase_trainer.py", line 297, in SupabaseClient
-    def insert(self, table: str, data: Dict | List[Dict]) -> Dict[str, Any]:
-TypeError: unsupported operand type(s) for |: '_SpecialGenericAlias' and '_GenericAlias'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_pinn_demo.py", line 16, in <module>
+    from scipy.optimize import minimize
+ModuleNotFoundError: No module named 'scipy'
 
 FAIL: l104_universe_compiler (Import error: No module named 'sympy')
 Traceback (most recent call last):
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
+  File "/workspaces/Allentown-L104-Node/diagnose_l104.py", line 20, in check_l104_files
     module = importlib.import_module(module_name)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
     return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
-  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
-  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_universe_compiler.py", line 28, in <module>
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspaces/Allentown-L104-Node/l104_universe_compiler.py", line 28, in <module>
     import sympy as sp
 ModuleNotFoundError: No module named 'sympy'
 
@@ -215,6 +215,9 @@ OK: l104_asi_core.SelfModificationEngine
 OK: l104_asi_core.SelfModificationEngine
 OK: l104_asi_harness.AlmightyASICore
 OK: l104_asi_harness.AlmightyASICore
+OK: l104_asi_nexus.MetaLearningEngine
+OK: l104_asi_nexus.NexusAgent
+OK: l104_asi_nexus.SwarmOrchestrator
 OK: l104_asi_research_gemini.GeminiResearchEngine
 OK: l104_asi_research_gemini.GeminiResearchEngine
 OK: l104_asi_transcendence.ASITranscendenceCore
@@ -578,7 +581,6 @@ OK: l104_mini_ego_advancement.UniversalAIBridge
 OK: l104_mini_ego_advancement.UniversalAIBridge
 OK: l104_miracle_blueprint.UnifiedResearchEngine
 OK: l104_miracle_blueprint.UnifiedResearchEngine
-OK: l104_mobile_app.ScreenManager
 OK: l104_morphogenic_field_resonance.FieldPropagationEngine
 OK: l104_morphogenic_field_resonance.FieldPropagationEngine
 OK: l104_multidimensional_engine.HighPrecisionEngine

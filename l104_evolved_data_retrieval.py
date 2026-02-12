@@ -1,9 +1,5 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.361696
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 EVOLVED DATA RETRIEVAL SYSTEM
 ═══════════════════════════════════════════════════════════════════════════════
@@ -42,6 +38,11 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any, Union, Callable, AsyncGenerator, Set
 from dataclasses import dataclass, field, asdict
+
+# Dynamic core allocation with environment override
+# Set L104_CPU_CORES=64 to override auto-detection
+CPU_COUNT = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+OPTIMAL_WORKERS = max(4, CPU_COUNT * 2)  # I/O-bound: 2x cores
 from collections import defaultdict, deque, Counter
 from enum import Enum, auto
 import numpy as np
@@ -305,7 +306,7 @@ class ConsciousnessSearchEngine:
             special_bonus * 0.1
         )
 
-        return relevance  # UNLOCKED: relevance unbounded
+        return min(1.0, relevance)
 
     def _calculate_temporal_weight(self, metrics: QuantumStorageMetrics) -> float:
         """Calculate temporal weight for search results."""
@@ -317,7 +318,7 @@ class ConsciousnessSearchEngine:
         # Temporal stability bonus
         stability_bonus = metrics.temporal_stability * 0.5
 
-        return recency_weight + stability_bonus  # UNLOCKED: temporal weight unbounded
+        return min(1.0, recency_weight + stability_bonus)
 
     def _update_quantum_relationships(self, data_id: str, data: Any, metrics: QuantumStorageMetrics):
         """Update quantum entanglement relationships."""
@@ -451,7 +452,7 @@ class QuantumRetrievalEngine:
         self.quantum_index = {}
         self.temporal_cache = {}
         self.performance_metrics = defaultdict(list)
-        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED (was 8)
+        self.executor = ThreadPoolExecutor(max_workers=OPTIMAL_WORKERS)
 
     async def initialize(self):
         """Initialize quantum retrieval engine."""
@@ -961,7 +962,7 @@ class QuantumRetrievalEngine:
         consciousness_amplifier = 1.0 + metrics.consciousness_score
 
         score = (base_score * 0.4 + text_relevance * 0.4 + quantum_bonus * 0.2) * consciousness_amplifier
-        return score  # UNLOCKED: quantum amplified relevance
+        return min(1.0, score)
 
     def _calculate_reality_anchoring_score(self, query: str, data: Any, metrics: QuantumStorageMetrics) -> float:
         """Calculate reality anchoring relevance score."""
@@ -1066,7 +1067,7 @@ class QuantumRetrievalEngine:
         consciousness_factor = metrics.consciousness_score
 
         score = (fragment_score + holographic_bonus) * (1.0 + consciousness_factor)
-        return score  # UNLOCKED: holographic score unbounded
+        return min(1.0, score)
 
     def _extract_predictive_patterns(self, query: str) -> List[str]:
         """Extract predictive patterns from query."""
@@ -1099,7 +1100,7 @@ class QuantumRetrievalEngine:
         stability_bonus = metrics.temporal_stability * 0.3
 
         score = pattern_score + consciousness_bonus + stability_bonus
-        return score  # UNLOCKED: predictive score unbounded
+        return min(1.0, score)
 
     def _model_future_relevance(self, data: Any, metrics: QuantumStorageMetrics, depth: int) -> float:
         """Model future relevance using growth patterns."""
@@ -1115,7 +1116,7 @@ class QuantumRetrievalEngine:
         # Combine factors
         future_relevance = base_relevance * (1.0 + growth_factor * depth * 0.1 + temporal_evolution * 0.1)
 
-        return future_relevance  # UNLOCKED: future relevance unbounded
+        return min(1.0, future_relevance)
 
     async def _post_process_results(self, results: List[RetrievalResult], context: QueryContext) -> List[RetrievalResult]:
         """Post-process and enhance search results."""

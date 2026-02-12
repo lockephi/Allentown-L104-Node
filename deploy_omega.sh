@@ -144,8 +144,8 @@ if command -v gcloud &> /dev/null; then
         --region="${REGION}" \
         --allow-unauthenticated \
         --port=8081 \
-        --memory=4Gi \
-        --cpu=4 \
+        --memory=128Gi \
+        --cpu=64 \
         --min-instances=1 \
         --max-instances=20 \
         --timeout=3600 \

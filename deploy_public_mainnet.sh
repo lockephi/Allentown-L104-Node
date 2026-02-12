@@ -75,9 +75,9 @@ primary_region = 'iad'
     port = 10401
 
 [[vm]]
-  memory = '2gb'
-  cpu_kind = 'shared'
-  cpus = 2
+  memory = '128gb'
+  cpu_kind = 'performance'
+  cpus = 64
 EOF
 
 echo ""

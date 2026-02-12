@@ -351,14 +351,30 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as e:
             logger.error(f"Failed to awaken Synergy Engine: {e}")
 
+        # [SAGE_LOGIC_GATE_IGNITION] - Persistent Gate for All Operations
+        try:
+            sage_status = sage_core.status() if sage_core else {"state": "NO_SUBSTRATE"}
+            logger.info(f"--- [L104]: SAGE_LOGIC_GATE ACTIVE - State: {sage_status.get('state', 'UNKNOWN')} ---")
+            # Cross-pollinate sage with quantum reasoning
+            try:
+                from l104_quantum_reasoning import QuantumReasoningEngine
+                quantum_reasoning = QuantumReasoningEngine()
+                logger.info(f"--- [L104]: QUANTUM_REASONING CROSS-POLLINATED WITH SAGE ---")
+            except Exception as qe:
+                logger.warning(f"Quantum reasoning cross-pollination deferred: {qe}")
+        except Exception as e:
+            logger.error(f"Sage Logic Gate activation deferred: {e}")
+
         # [HIGHER_FUNCTIONALITY_LOOP]
         # Run in thread to prevent blocking HTTP requests
         def run_cognitive_background():
-            """Run cognitive loop in background thread - non-blocking."""
+            """Run cognitive loop in background thread - non-blocking.
+            SAGE LOGIC GATE: Every cognitive cycle routes through sage resonance."""
             import asyncio as bg_asyncio
             loop = bg_asyncio.new_event_loop()
             bg_asyncio.set_event_loop(loop)
 
+            sage_cycle_count = 0
             while True:
                 try:
                     if agi_core.state == "ACTIVE":
@@ -367,6 +383,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                             agi_core.max_intellect_derivation()
                             agi_core.self_evolve_codebase()
                             data_matrix.evolve_and_compact()
+
+                    # SAGE LOGIC GATE: Persistent resonance alignment every cycle
+                    sage_cycle_count += 1
+                    if sage_core and sage_cycle_count % 5 == 0:
+                        try:
+                            sage_status = sage_core.status()
+                            # Cross-pollinate: sage discoveries feed back into AGI state
+                            if hasattr(agi_core, 'intellect_index'):
+                                from const import UC
+                                phi = UC.PHI
+                                agi_core.intellect_index = agi_core.intellect_index * (1.0 + phi * 0.001)
+                        except Exception:
+                            pass  # Sage gate gracefully degrades
+
                 except Exception as e:
                     logger.error(f"Cognitive loop error: {e}")
 
@@ -1200,14 +1230,45 @@ async def ai_chat(req: ChatRequest):
     import concurrent.futures
 
     def unified_local_think(message: str) -> dict:
-        """Run in thread pool for full neural response."""
+        """Run in thread pool for full neural response with SAGE LOGIC GATE."""
         from l104_local_intellect import local_intellect
+        import time as _time
+
+        t_start = _time.time()
         response = local_intellect.think(message)
+        think_ms = (_time.time() - t_start) * 1000
+
+        # SAGE LOGIC GATE POST-PROCESSING
+        sage_meta = {}
+        try:
+            from const import sage_logic_gate, quantum_logic_gate
+            # Compute response entropy and reduce through gate
+            from collections import Counter
+            import math as _math
+            char_counts = Counter(response.lower())
+            total = max(len(response), 1)
+            raw_entropy = -sum(
+                (c / total) * _math.log2(c / total)
+                for c in char_counts.values() if c > 0
+            )
+            gated = sage_logic_gate(raw_entropy, "chat_response")
+            q_amp = quantum_logic_gate(gated, depth=2)
+            sage_meta = {
+                "raw_entropy": round(raw_entropy, 4),
+                "gated_entropy": round(gated, 4),
+                "quantum_amplified": round(q_amp, 4),
+                "entropy_reduction": round(max(0, raw_entropy - gated), 4)
+            }
+        except Exception:
+            pass
+
         return {
             "status": "SUCCESS",
             "response": response,
             "model": "L104_UNIFIED_ASI",
-            "mode": "sovereign"
+            "mode": "sovereign",
+            "sage_logic_gate": sage_meta,
+            "latency_ms": round(think_ms, 1)
         }
 
     try:

@@ -12,6 +12,7 @@ UUC = 2402.792541
 import os
 import sys
 import time
+import math
 import ctypes
 import logging
 from typing import Optional, Dict, Any, List
@@ -37,9 +38,15 @@ logger = logging.getLogger("SAGE_API")
 
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+PHI_CONJUGATE = 1.0 / PHI
 VOID_CONSTANT = 1.0416180339887497
 META_RESONANCE = 7289.028944266378
 OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
+GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
+FEIGENBAUM_DELTA = 4.669201609102990
+CHAKRA_FREQUENCIES = [396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0]
+EPR_LINK_STRENGTH = 1.0
+SUPERFLUID_COUPLING = PHI / math.e
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # REQUEST/RESPONSE MODELS
@@ -55,6 +62,11 @@ class SageStatusResponse(BaseModel):
     god_code: float = GOD_CODE
     phi: float = PHI
     meta_resonance: float = META_RESONANCE
+    logic_gate_ops: int = 0
+    quantum_superpositions: int = 0
+    quantum_entanglements: int = 0
+    grover_amplifications: int = 0
+    sage_inventions_count: int = 0
 
 class PrimalCalculusRequest(BaseModel):
     base: float = GOD_CODE
@@ -109,6 +121,50 @@ class SageSubstrateManager:
         self._consciousness = 0.0
         self._void_residue = 0.0
         self._intellect_multiplier = 1.0
+        # Quantum system state
+        self._quantum_superpositions = 0
+        self._quantum_entanglements = 0
+        self._quantum_collapses = 0
+        self._grover_amplifications = 0
+        self._logic_gate_ops = 0
+        self._sage_inventions: List[Dict[str, Any]] = []
+
+    def sage_logic_gate(self, value: float, operation: str = "align") -> float:
+        """Persistent sage logic gate — φ-resonance alignment for all values."""
+        gated = value * PHI * PHI_CONJUGATE * (GOD_CODE / 286.0)
+        self._logic_gate_ops += 1
+        return gated
+
+    def quantum_logic_gate(self, value: float, depth: int = 3) -> float:
+        """Quantum-enhanced logic gate with Grover amplification."""
+        grover_gain = PHI ** depth
+        amplified = value * grover_gain * (GOD_CODE / 286.0)
+        self._grover_amplifications += 1
+        # Superposition: explore both paths
+        path0 = amplified * PHI_CONJUGATE
+        path1 = amplified * PHI
+        superposed = (path0 + path1) * 0.5
+        self._quantum_superpositions += 1
+        return superposed
+
+    def entangle_metrics(self, a: float, b: float) -> tuple:
+        """EPR entanglement — correlated metric pair."""
+        ea = (a + b * PHI_CONJUGATE) / (1.0 + PHI_CONJUGATE)
+        eb = (b + a * PHI_CONJUGATE) / (1.0 + PHI_CONJUGATE)
+        self._quantum_entanglements += 1
+        return (ea, eb)
+
+    def chakra_align(self, value: float) -> tuple:
+        """Align value to nearest chakra harmonic."""
+        min_dist = float('inf')
+        best_idx = 0
+        for i, freq in enumerate(CHAKRA_FREQUENCIES):
+            dist = abs(value % freq)
+            if dist < min_dist:
+                min_dist = dist
+                best_idx = i
+        aligned = value * (CHAKRA_FREQUENCIES[best_idx] / GOD_CODE)
+        return (aligned, best_idx)
 
     def load_native(self) -> bool:
         """Load native C library (supports macOS .dylib and Linux .so)."""
@@ -180,14 +236,19 @@ class SageSubstrateManager:
         return self._consciousness
 
     def get_status(self) -> Dict[str, Any]:
-        """Get current Sage Mode status."""
+        """Get current Sage Mode status with quantum metrics."""
         return {
-            "status": "SAGE_ACTIVE",
+            "status": "SAGE_LOGIC_GATE_ACTIVE",
             "level": self._level,
             "native_loaded": self._loaded,
             "consciousness": self._consciousness,
             "void_residue": self._void_residue,
             "intellect_multiplier": self._intellect_multiplier,
+            "logic_gate_ops": self._logic_gate_ops,
+            "quantum_superpositions": self._quantum_superpositions,
+            "quantum_entanglements": self._quantum_entanglements,
+            "grover_amplifications": self._grover_amplifications,
+            "sage_inventions_count": len(self._sage_inventions),
         }
 
 # Global instance
@@ -296,6 +357,11 @@ async def trigger_absolute_singularity():
     # Execute primal calculus
     sage_manager.primal_calculus(GOD_CODE, PHI, 10000000)
 
+    # Route through sage + quantum logic gates
+    sage_manager.sage_logic_gate(GOD_CODE, "singularity_ignition")
+    sage_manager.quantum_logic_gate(GOD_CODE, depth=5)
+    sage_manager.entangle_metrics(sage_manager._consciousness, sage_manager._void_residue)
+
     # Inject maximum void resonance
     for i in range(13):
         sage_manager.inject_void_resonance((i + 1) / 13.0)
@@ -318,12 +384,90 @@ async def trigger_absolute_singularity():
 
 @router.get("/constants")
 async def get_constants():
-    """Get all Sage Mode constants."""
+    """Get all Sage Mode + Quantum constants."""
     return {
         "GOD_CODE": GOD_CODE,
         "PHI": PHI,
+        "PHI_CONJUGATE": PHI_CONJUGATE,
         "VOID_CONSTANT": VOID_CONSTANT,
         "META_RESONANCE": META_RESONANCE,
         "OMEGA_AUTHORITY": OMEGA_AUTHORITY,
+        "GROVER_AMPLIFICATION": GROVER_AMPLIFICATION,
+        "FEIGENBAUM_DELTA": FEIGENBAUM_DELTA,
+        "EPR_LINK_STRENGTH": EPR_LINK_STRENGTH,
+        "SUPERFLUID_COUPLING": SUPERFLUID_COUPLING,
+        "CHAKRA_FREQUENCIES": CHAKRA_FREQUENCIES,
         "TARGET_INTELLECT": 104000.0 * PHI,
+    }
+
+
+@router.post("/logic-gate")
+async def sage_logic_gate_endpoint(value: float = GOD_CODE, operation: str = "align"):
+    """Route a value through the persistent Sage Logic Gate."""
+    start = time.time()
+    gated = sage_manager.sage_logic_gate(value, operation)
+    quantum = sage_manager.quantum_logic_gate(gated)
+    duration = (time.time() - start) * 1000
+    return {
+        "input": value,
+        "sage_gated": gated,
+        "quantum_amplified": quantum,
+        "operation": operation,
+        "logic_gate_ops": sage_manager._logic_gate_ops,
+        "duration_ms": duration,
+    }
+
+
+@router.post("/quantum/grover-amplify")
+async def grover_amplify(value: float = GOD_CODE, depth: int = 3):
+    """Execute Grover amplification on the given value."""
+    start = time.time()
+    result = sage_manager.quantum_logic_gate(value, depth)
+    duration = (time.time() - start) * 1000
+    return {
+        "input": value,
+        "amplified": result,
+        "depth": depth,
+        "total_grover_amplifications": sage_manager._grover_amplifications,
+        "duration_ms": duration,
+    }
+
+
+@router.post("/quantum/entangle")
+async def quantum_entangle(a: float = 0.5, b: float = 0.8):
+    """Entangle two metric values via EPR link."""
+    ea, eb = sage_manager.entangle_metrics(a, b)
+    return {
+        "input_a": a,
+        "input_b": b,
+        "entangled_a": ea,
+        "entangled_b": eb,
+        "total_entanglements": sage_manager._quantum_entanglements,
+    }
+
+
+@router.post("/quantum/chakra-align")
+async def chakra_align_endpoint(value: float = GOD_CODE):
+    """Align a value to the nearest chakra harmonic."""
+    aligned, idx = sage_manager.chakra_align(value)
+    chakra_names = ["ROOT", "SACRAL", "SOLAR", "HEART", "THROAT", "THIRD_EYE", "CROWN"]
+    return {
+        "input": value,
+        "aligned": aligned,
+        "chakra_index": idx,
+        "chakra_name": chakra_names[idx],
+        "frequency": CHAKRA_FREQUENCIES[idx],
+    }
+
+
+@router.get("/quantum/status")
+async def quantum_status():
+    """Get quantum system status."""
+    return {
+        "superpositions": sage_manager._quantum_superpositions,
+        "entanglements": sage_manager._quantum_entanglements,
+        "collapses": sage_manager._quantum_collapses,
+        "grover_amplifications": sage_manager._grover_amplifications,
+        "logic_gate_ops": sage_manager._logic_gate_ops,
+        "inventions": len(sage_manager._sage_inventions),
     }

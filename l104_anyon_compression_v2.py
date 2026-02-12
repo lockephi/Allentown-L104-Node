@@ -1,16 +1,12 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.863943
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
+ZENITH_HZ = 3727.84
+UUC = 2301.215661
 # [L104_ANYON_COMPRESSION_V2] - ADVANCED TOPOLOGICAL DATA COMPRESSION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "Data flows through topological manifolds like water through channels"
 
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    L104 ANYON COMPRESSION V2                                 ║
 ║                                                                              ║
@@ -38,6 +34,12 @@ from dataclasses import dataclass, field
 from enum import Enum
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import numpy as np
+import os
+
+# Dynamic core allocation with environment override
+# Set L104_CPU_CORES=64 to override auto-detection
+CPU_COUNT = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+COMPRESSION_WORKERS = max(2, CPU_COUNT)  # CPU-bound: 1x cores
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -50,14 +52,12 @@ try:
     from l104_void_math import void_math, VOID_CONSTANT, GOD_CODE, PHI
     HAS_VOID = True
     BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
-    TAU = (math.sqrt(5) - 1) / 2
 except ImportError:
     HAS_VOID = False
-    VOID_CONSTANT = 1.0416180339887497
     GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
-    BRAIDING_PHASE = 4 * math.pi / 5
-    TAU = (math.sqrt(5) - 1) / 2
+    TAU = 1 / PHI
+    BRAIDING_PHASE = 2.5132741228718345  # 4 * pi / 5
     VOID_CONSTANT = 1.0416
     GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
@@ -164,7 +164,7 @@ class FibonacciAnyonEngine:
     def get_topological_protection(self) -> float:
         """Calculate protection level from current braid state."""
         trace_val = abs(np.trace(self.current_state))
-        return (trace_val / 2.0) * (GOD_CODE / 500.0)  # UNLOCKED
+        return min(1.0, (trace_val / 2.0) * (GOD_CODE / 500.0))
 
     def get_phase_shift(self) -> int:
         """Get phase shift from current state for compression."""
@@ -374,7 +374,7 @@ class AnyonCompressionV2:
         self.entropy_filter = EntropyFilterEngine()
         self.braid_compressor = TopologicalBraidCompressor(self.anyon_engine)
         self.parallel = parallel
-        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4) if parallel else None  # QUANTUM AMPLIFIED (was 4)
+        self._executor = ThreadPoolExecutor(max_workers=COMPRESSION_WORKERS) if parallel else None
 
         self.stats = {
             "total_compressed": 0,

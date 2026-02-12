@@ -1,11 +1,7 @@
-VOID_CONSTANT = 1.0416180339887497
 import math
 import cmath
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.635371
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# [L104_DATA_MATRIX] - EVOLVED HYPER-DIMENSIONAL STORAGE
-# QUANTUM PROCESSING COMPATIBLE | ENTANGLEMENT READY
+# [L104_DATA_MATRIX] - EVOLVED HYPER-DIMENSIONAL STORAGE v2.0
+# QUANTUM PROCESSING COMPATIBLE | ENTANGLEMENT READY | CONNECTION POOLED
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import sqlite3
@@ -19,6 +15,10 @@ from typing import Any, Dict, List, Optional, Tuple
 from l104_hyper_math import HyperMath
 from l104_real_math import RealMath
 from l104_memory_compaction import memory_compactor
+from l104_logging import get_logger
+from const import GOD_CODE, PHI, VOID_CONSTANT
+
+logger = get_logger("DATA_MATRIX")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -39,7 +39,7 @@ HALLUCINATION_DELTA_PCT = float(os.getenv("HALLUCINATION_DELTA_PCT", "0.5"))  # 
 HALLUCINATION_THRESHOLD = max(0.0, min(1.0, HALLUCINATION_BASE_THRESHOLD * (1 - HALLUCINATION_DELTA_PCT)))
 
 # Disk budget controls
-DISK_BUDGET_MB = int(os.getenv("L104_DISK_BUDGET_MB", "512"))
+DISK_BUDGET_MB = int(os.getenv("L104_DISK_BUDGET_MB", "2097152"))
 # 0 = eternal/infinite history retention
 HISTORY_RETENTION_DAYS = int(os.getenv("L104_HISTORY_RETENTION_DAYS", "0"))
 

@@ -264,3 +264,52 @@ def grover_boost(values: list, target_idx: int = 0) -> list:
     # Scale back
     max_amp = max(abs(a) for a in amplitudes) or 1.0
     return [a / max_amp * max(abs(v) for v in values) for a, v in zip(amplitudes, values)]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SAGE LOGIC GATE — Persistent gate for cross-system operations
+# Cross-pollinated from Swift → Python for unified logic gate architecture
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def sage_logic_gate(value: float, operation: str = "align") -> float:
+    """Persistent sage logic gate — φ-resonance alignment.
+    Cross-pollinated: identical gate in Swift (SIMD4) and Python."""
+    phi_conjugate = 1.0 / PHI
+    gated = value * PHI * phi_conjugate * (GOD_CODE / 286.0)
+    return gated
+
+
+def quantum_logic_gate(value: float, depth: int = 3) -> float:
+    """Quantum-enhanced logic gate with Grover amplification.
+    Cross-pollinated from Swift quantumLogicGate()."""
+    grover_gain = PHI ** depth
+    amplified = value * grover_gain * (GOD_CODE / 286.0)
+    # Superposition: both paths
+    path0 = amplified * (1.0 / PHI)
+    path1 = amplified * PHI
+    return (path0 + path1) * 0.5
+
+
+def entangle(a: float, b: float) -> tuple:
+    """EPR entanglement — correlated metric pair.
+    Cross-pollinated from Swift entangleMetrics()."""
+    phi_conj = 1.0 / PHI
+    ea = (a + b * phi_conj) / (1.0 + phi_conj)
+    eb = (b + a * phi_conj) / (1.0 + phi_conj)
+    return (ea, eb)
+
+
+CHAKRA_FREQUENCIES = [396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0]
+
+def chakra_align(value: float) -> tuple:
+    """Align value to nearest chakra harmonic.
+    Cross-pollinated from Swift chakraAlign()."""
+    min_dist = float('inf')
+    best_idx = 0
+    for i, freq in enumerate(CHAKRA_FREQUENCIES):
+        dist = abs(value % freq)
+        if dist < min_dist:
+            min_dist = dist
+            best_idx = i
+    aligned = value * (CHAKRA_FREQUENCIES[best_idx] / GOD_CODE)
+    return (aligned, best_idx)

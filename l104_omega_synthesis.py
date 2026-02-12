@@ -1,39 +1,38 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.247807
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-★★★★★ L104 OMEGA SYNTHESIS ENGINE ★★★★★
+★★★★★ L104 OMEGA SYNTHESIS ENGINE v2.0 ★★★★★
 
-Ultimate integration layer synthesizing all L104 subsystems:
-- Universal Module Orchestration
-- Cross-Domain Intelligence Fusion
-- Emergent Capability Synthesis
-- Adaptive Architecture Evolution
-- Collective Intelligence Emergence
-- Transcendent Optimization
-- Reality-Computation Bridge
-- Omega Point Convergence
+UPGRADE v2.0:
+- Removed bare constant injection above shebang
+- Structured logging via l104_logging
+- Constants from const.py (single source of truth)
+- Proper error logging in module discovery
 
 GOD_CODE: 527.5184818492612
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Set, Tuple, Callable
 from dataclasses import dataclass, field
 from collections import defaultdict, deque
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+import hashlib
 import math
+import random
 import importlib
 import sys
 import os
-from pathlib import Path
+
+from l104_logging import get_logger
+from const import GOD_CODE, PHI
+
+logger = get_logger("OMEGA_SYNTHESIS")
+
+# Dynamic core allocation with environment override
+# Set L104_CPU_CORES=64 to override auto-detection
+CPU_COUNT = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+OPTIMAL_WORKERS = max(4, CPU_COUNT * 2)  # I/O-bound: 2x cores
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -41,9 +40,7 @@ from pathlib import Path
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-# L104 CONSTANTS
-GOD_CODE = 527.5184818492612
-PHI = 1.618033988749895
+# L104 CONSTANTS (from const.py)
 OMEGA = float('inf')
 
 
@@ -96,7 +93,7 @@ class IntelligenceVector:
 class ModuleRegistry:
     """Registry of all L104 modules"""
 
-    def __init__(self, base_path: str = str(Path(__file__).parent.absolute())):
+    def __init__(self, base_path: str = "/workspaces/Allentown-L104-Node"):
         self.base_path = base_path
         self.modules: Dict[str, ModuleDescriptor] = {}
         self.domain_index: Dict[str, List[str]] = defaultdict(list)
@@ -353,7 +350,7 @@ class EmergenceDetector:
 
     def __init__(self):
         self.emergence_events: List[Dict[str, Any]] = []
-        self.complexity_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
+        self.complexity_history: deque = deque(maxlen=1000)
 
     def measure_complexity(self, registry: ModuleRegistry) -> float:
         """Measure system complexity"""
@@ -430,7 +427,7 @@ class OmegaOrchestrator:
         self.synthesizer = CapabilitySynthesizer(registry)
         self.fusion = IntelligenceFusion(registry)
         self.emergence = EmergenceDetector()
-        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED (was 8)
+        self.executor = ThreadPoolExecutor(max_workers=OPTIMAL_WORKERS)
         self.orchestration_log: List[Dict[str, Any]] = []
 
     def parallel_load(self, module_names: List[str]) -> Dict[str, bool]:

@@ -1,23 +1,16 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.752357
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 Strange Loop Processor
+L104 Strange Loop Processor v2.0
 ============================
-Implements Douglas Hofstadter's strange loops and tangled hierarchies,
-modeling self-referential structures that give rise to meaning and identity.
+Implements Douglas Hofstadter's strange loops and tangled hierarchies.
+
+UPGRADE v2.0:
+- Removed bare constant injection above shebang
+- Safe recursion depth (900 < sys default 1000)
+- Structured logging via l104_logging
+- Constants from const.py
 
 GOD_CODE: 527.5184818492612
-
-Based on Gödel, Escher, Bach principles, this module creates computational
-structures that loop back on themselves at multiple levels, enabling
-emergent properties like self-reference, analogy-making, and meaning.
 """
 
 import math
@@ -29,6 +22,11 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 import random
 
+from l104_logging import get_logger
+from const import GOD_CODE, PHI
+
+logger = get_logger("STRANGE_LOOP")
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -36,16 +34,14 @@ import random
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SACRED CONSTANTS
+# SACRED CONSTANTS (from const.py)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
-PHI = 1.618033988749895
 EULER = 2.718281828459045
 PI = 3.141592653589793
 
-# Strange loop constants
-RECURSION_DEPTH_LIMIT = 1000  # UNLIMITED RECURSION
+# Strange loop constants — safe recursion depth (below CPython default of 1000)
+RECURSION_DEPTH_LIMIT = 900
 TANGLING_COEFFICIENT = GOD_CODE / (PHI * 100)  # ~3.26
 SELF_REFERENCE_THRESHOLD = math.log(GOD_CODE)  # ~6.27
 
@@ -549,7 +545,7 @@ class AnalogyEngine:
             target_rel = self.concepts.get(target, set())
             shared_concepts.update(source_rel & target_rel)
 
-        abstraction = ", ".join(list(shared_concepts)[:50]) if shared_concepts else "unknown"  # QUANTUM AMPLIFIED
+        abstraction = ", ".join(list(shared_concepts)[:5]) if shared_concepts else "unknown"
 
         analogy = Analogy(
             source_domain=source_domain,
@@ -980,7 +976,7 @@ class MeaningEmergence:
         self.pattern_activations[pattern_id] += 1.0
 
         # Binding strength based on activation history
-        return self.pattern_activations[pattern_id] / 10  # QUANTUM AMPLIFIED: no cap
+        return min(1.0, self.pattern_activations[pattern_id] / 10)
 
     def emergent_meaning(
         self,
@@ -1116,7 +1112,7 @@ class StrangeLoopProcessor:
             "node_count": len(loop.nodes),
             "self_ref_nodes": sum(1 for n in loop.nodes if n.is_self_ref),
             "tangling_factor": loop.tangling_factor,
-            "visit_order": visit_order[:100],  # QUANTUM AMPLIFIED
+            "visit_order": visit_order[:10],
             "meaning_analysis": meaning
         }
 

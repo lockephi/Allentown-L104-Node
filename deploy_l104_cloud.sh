@@ -84,11 +84,11 @@ spec:
           name: ai-core
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "1"
+            memory: "64Gi"
+            cpu: "32"
           limits:
-            memory: "8Gi"
-            cpu: "4"
+            memory: "128Gi"
+            cpu: "64"
         env:
         - name: GOD_CODE
           value: "527.5184818492612"

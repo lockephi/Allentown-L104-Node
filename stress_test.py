@@ -431,13 +431,16 @@ class L104StressTest:
 
         phase.tests.append(self.run_test("File I/O", test_file_io))
 
-        # Test 2: ThreadPool
+        # Test 2: ThreadPool (Dynamic core-based scaling)
         def test_threadpool():
             def cpu_task(n):
                 return sum(i**2 for i in range(n))
 
             ops = self._scale(500)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8) as executor:  # QUANTUM AMPLIFIED
+            # L104_CPU_CORES env override for container environments
+            cpu_count = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+            workers = max(8, cpu_count * 2)  # Scale with cores
+            with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
                 futures = [executor.submit(cpu_task, 10000) for _ in range(ops)]
                 results = [f.result() for f in concurrent.futures.as_completed(futures)]
             return ops
@@ -449,7 +452,10 @@ class L104StressTest:
             ops = self._scale(50)
             # Use simple computation that doesn't require pickle
             import math
-            with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+            # L104_CPU_CORES env override for container environments
+            cpu_count = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+            workers = max(2, cpu_count)  # Scale with cores
+            with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
                 futures = [executor.submit(math.factorial, 100) for _ in range(ops)]
                 results = [f.result() for f in concurrent.futures.as_completed(futures)]
             return ops

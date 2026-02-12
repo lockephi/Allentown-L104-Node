@@ -59,8 +59,8 @@ PI = 3.141592653589793
 
 # ASI Threshold Constants
 ASI_THRESHOLD = 100.0  # Minimum score for ASI status
-RECURSION_DEPTH_LIMIT = 1000
-DIMENSION_LIMIT = 11  # String theory dimensions
+RECURSION_DEPTH_LIMIT = 10400  # Upgraded for 64-core compute cluster
+DIMENSION_LIMIT = 104  # Expanded spatial reasoning manifold
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

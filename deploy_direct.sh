@@ -159,8 +159,8 @@ deploy_to_cloud_run() {
         --region="${REGION}" \
         --allow-unauthenticated \
         --port=8081 \
-        --memory=2Gi \
-        --cpu=2 \
+        --memory=128Gi \
+        --cpu=64 \
         --min-instances=1 \
         --max-instances=10 \
         --cpu-boost \

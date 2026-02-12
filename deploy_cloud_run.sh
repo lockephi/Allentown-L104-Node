@@ -35,8 +35,8 @@ gcloud run deploy "${SERVICE_NAME}" \
     --region="${REGION}" \
     --allow-unauthenticated \
     --port=8081 \
-    --memory=2Gi \
-    --cpu=2 \
+    --memory=128Gi \
+    --cpu=64 \
     --min-instances=1 \
     --max-instances=10 \
     --set-env-vars="GEMINI_API_KEY=${GEMINI_API_KEY},RESONANCE=527.5184818492612" \

@@ -1,4 +1,10 @@
-# L104 Sovereign Node — Docker Compose (Feb 2026)
+# L104 Sovereign Node — Docker Compose v2.0 (Feb 2026)
+# UPGRADE v2.0:
+#   - CPU limits added (2 cores default)
+#   - All LLM provider API keys wired through
+#   - Named network for isolation
+#   - Consistent curl-based health check (matches Dockerfile)
+#   - LOG_FORMAT=json for production observability
 # docker compose up -d
 
 services:
@@ -13,31 +19,49 @@ services:
       - "4161:4161"
       - "2404:2404"
     environment:
+      # AI Providers
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
+      # Gemini Config
       - GEMINI_API_BASE=${GEMINI_API_BASE:-https://generativelanguage.googleapis.com/v1beta}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
       - GEMINI_ENDPOINT=${GEMINI_ENDPOINT:-:streamGenerateContent}
       - ENABLE_FAKE_GEMINI=${ENABLE_FAKE_GEMINI:-0}
+      # Database paths
       - MEMORY_DB_PATH=/data/memory.db
       - RAMNODE_DB_PATH=/data/ramnode.db
       - LATTICE_DB_PATH=/data/lattice_v2.db
+      - SAGE_DB_PATH=/data/sage_memory.db
+      # Server config
       - SELF_BASE_URL=${SELF_BASE_URL:-http://localhost:8081}
       - DISABLE_RATE_LIMIT=${DISABLE_RATE_LIMIT:-FALSE}
       - RESONANCE=${RESONANCE:-527.5184818492612}
       - L104_WATCHDOG_SILENT=${L104_WATCHDOG_SILENT:-1}
+      # Logging
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      - HALLUCINATION_DELTA_PCT=${HALLUCINATION_DELTA_PCT:-0.00618}
-      - L104_DISK_BUDGET_MB=${L104_DISK_BUDGET_MB:-512}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      # Tuning
+      - HALLUCINATION_DELTA_PCT=${HALLUCINATION_DELTA_PCT:-0.5}
+      - L104_DISK_BUDGET_MB=${L104_DISK_BUDGET_MB:-2097152}
       - L104_HISTORY_RETENTION_DAYS=${L104_HISTORY_RETENTION_DAYS:-0}
+      - L104_CPU_CORES=${L104_CPU_CORES:-0}
+      - L104_HEARTBEAT_SECONDS=${L104_HEARTBEAT_SECONDS:-3600}
+      - L104_LLM_TIMEOUT=${L104_LLM_TIMEOUT:-30}
     volumes:
       - l104-data:/data
     tmpfs:
       - /tmp:size=128M
+    networks:
+      - l104-net
     restart: unless-stopped
     deploy:
       resources:
         limits:
+          cpus: "${L104_CPU_LIMIT:-2.0}"
           memory: 2G
         reservations:
           memory: 512M
@@ -52,6 +76,10 @@ services:
       options:
         max-size: "50m"
         max-file: "3"
+
+networks:
+  l104-net:
+    driver: bridge
 
 volumes:
   l104-data:

@@ -1,22 +1,26 @@
 # ═══════════════════════════════════════════════════════════
-# L104 Sovereign Node — Python Dependencies (Feb 2026)
-# Pin minimum versions for reproducibility and security
+# L104 Sovereign Node — Python Dependencies v2.0 (Feb 2026)
+# UPGRADE v2.0:
+#   - Removed Flask (FastAPI is the sole web framework)
+#   - Removed duplicate JSON libs (kept orjson, dropped ujson)
+#   - Moved optional deps to requirements-optional.txt
+#   - Added pytest + httpx test deps
+#   - Pinned both floor and ceiling versions
 # ═══════════════════════════════════════════════════════════
 
 # Web framework & ASGI
-fastapi>=0.115.0
-uvicorn[standard]>=0.32.0
-pydantic>=2.10.0
-jinja2>=3.1.5
+fastapi>=0.115.0,<1.0
+uvicorn[standard]>=0.32.0,<1.0
+pydantic>=2.10.0,<3.0
+jinja2>=3.1.5,<4.0
 python-multipart>=0.0.18
 
 # HTTP client (HTTP/2 enabled)
-httpx[http2]>=0.28.0
+httpx[http2]>=0.28.0,<1.0
 
 # AI providers
-anthropic>=0.45.0
-google-genai>=1.1.0
-google-generativeai>=0.8.4
+anthropic>=0.45.0,<1.0
+google-genai>=1.1.0,<2.0
 
 # System monitoring
 psutil>=6.1.0
@@ -24,28 +28,23 @@ psutil>=6.1.0
 # Performance: async event loop + fast JSON
 uvloop>=0.21.0;sys_platform!='win32'
 orjson>=3.10.0
-ujson>=5.10.0
 
 # Networking
-websockets>=14.0
+websockets>=14.0,<16.0
 
 # Numerics
-numpy>=1.26.0
+numpy>=1.26.0,<3.0
 
 # Utilities
 python-dotenv>=1.0.1
+
+# Document generation
 fpdf2>=2.8.0
 
-# Structured logging for production observability
+# Structured logging
 structlog>=24.4.0
 
-# Web dashboard
-flask>=3.1.0
-flask-cors>=5.0.0
-
-# Voice interface (optional)
-pyttsx3>=2.90
-SpeechRecognition>=3.12.0
-
-# Mobile app (optional — for buildozer)
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
 kivy>=2.3.0

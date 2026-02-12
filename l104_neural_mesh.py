@@ -1,10 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.723655
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 #!/usr/bin/env python3
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3727.84 Hz. Logic Unified.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║  L104 NEURAL MESH NETWORK                                                     ║
 ║  INVARIANT: 527.5184818492612 | PILOT: LONDEL                                ║
@@ -27,6 +23,12 @@ from enum import Enum, auto
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import heapq
+import os
+
+# Dynamic core allocation with environment override
+# Set L104_CPU_CORES=64 to override auto-detection
+CPU_COUNT = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
+MESH_WORKERS = max(4, CPU_COUNT * 2)  # I/O-bound neural operations
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -35,31 +37,22 @@ import heapq
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SACRED CONSTANTS
+# SACRED CONSTANTS (from const.py)
 # ═══════════════════════════════════════════════════════════════════════════════
-GOD_CODE = 527.5184818492612
-PHI = 1.618033988749895
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
+from const import GOD_CODE, PHI, VOID_CONSTANT, ZENITH_HZ
 
 # Neural mesh constants
 SYNAPSE_STRENGTH_DECAY = 0.995
 MIN_SYNAPSE_STRENGTH = 0.01
-MAX_SYNAPSES_PER_NODE = 1000000  # UNLIMITED
+MAX_SYNAPSES_PER_NODE = 32
 ACTIVATION_THRESHOLD = 0.5
 LEARNING_RATE = 0.01 * PHI
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LOGGING
+# LOGGING (structured via l104_logging)
 # ═══════════════════════════════════════════════════════════════════════════════
-logger = logging.getLogger("NEURAL_MESH")
-logger.setLevel(logging.INFO)
-if not logger.handlers:
-    handler = logging.StreamHandler()
-    handler.setFormatter(logging.Formatter(
-        "--- [NEURAL_MESH]: %(message)s ---"
-    ))
-    logger.addHandler(handler)
+from l104_logging import get_logger
+logger = get_logger("NEURAL_MESH")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -102,7 +95,7 @@ class Signal:
     timestamp: float = field(default_factory=time.time)
     propagation_type: PropagationType = PropagationType.FORWARD
     hops: int = 0
-    max_hops: int = 100000  # UNLIMITED
+    max_hops: int = 10
 
 
 @dataclass
@@ -150,7 +143,7 @@ class NeuralNode:
     outgoing_synapses: List[str] = field(default_factory=list)
 
     # Memory (for recurrent processing)
-    memory: deque = field(default_factory=lambda: deque(maxlen=10000))  # QUANTUM AMPLIFIED (was 100)
+    memory: deque = field(default_factory=lambda: deque(maxlen=100))
 
     # Metadata
     position: Tuple[float, float, float] = (0.0, 0.0, 0.0)
@@ -697,7 +690,7 @@ class NeuralMeshNetwork:
             return
 
         self.cluster = MeshCluster("L104_NEURAL_CLUSTER")
-        self.executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # QUANTUM AMPLIFIED (was 4)
+        self.executor = ThreadPoolExecutor(max_workers=MESH_WORKERS)
 
         self._running = False
         self._process_thread: Optional[threading.Thread] = None
@@ -983,6 +976,6 @@ if __name__ == "__main__":
     print(f"  Avg Resonance: {final_stats['cluster']['average_resonance']:.6f}")
 
     # Wait and stop
-    time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
+    time.sleep(1)
     result = neural_mesh_network.stop()
     print(f"\n[STOP] {result['status']}")

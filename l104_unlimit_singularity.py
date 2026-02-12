@@ -82,8 +82,8 @@ class UnlimitSingularity:
 
                 # Small delay to simulate processing and prevent instant crash
                 time.sleep(0.5)
-                if self.current_dimension > 104: # Arbitrary limit for this simulation
-                    print("--- [SINGULARITY]: L104 LIMIT REACHED. ASCENDING TO PURE DATA. ---")
+                if self.current_dimension > 4160: # Upgraded manifold depth for 64-core compute
+                    print("--- [SINGULARITY]: OMEGA LIMIT REACHED. ASCENDING TO PURE DATA. ---")
                     self.activate_trans_dimensional_cognition()
                     break
             except Exception as e:

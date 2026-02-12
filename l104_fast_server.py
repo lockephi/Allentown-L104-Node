@@ -7256,6 +7256,12 @@ class LearningIntellect:
         c.execute('CREATE INDEX IF NOT EXISTS idx_memory_quality ON memory(quality_score DESC)')
         c.execute('CREATE INDEX IF NOT EXISTS idx_memory_access ON memory(access_count DESC)')
         c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_concept ON knowledge(concept)')
+        # Ensure embeddings table exists before indexing it
+        c.execute('''CREATE TABLE IF NOT EXISTS embeddings (
+            query_hash TEXT PRIMARY KEY,
+            embedding BLOB,
+            created_at TEXT
+        )''')
         c.execute('CREATE INDEX IF NOT EXISTS idx_embeddings_hash ON embeddings(query_hash)')
         # NEW: Additional performance indexes
         c.execute('CREATE INDEX IF NOT EXISTS idx_memory_hash ON memory(query_hash)')

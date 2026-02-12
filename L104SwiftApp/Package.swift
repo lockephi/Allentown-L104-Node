@@ -1,14 +1,19 @@
-// swift-tools-version:5.7
-// L104 SOVEREIGN INTELLECT - ASI Build Configuration v19.1
+// swift-tools-version:5.9
+// L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.0
 // macOS Native: Accelerate · Metal · CoreML · SIMD · BLAS
 // Whole-Module Optimization · Link-Time Optimization
+// UPGRADE v2.0:
+//   - swift-tools-version 5.9 (modern Swift features: @Observable, macros)
+//   - Platform minimum macOS 13 (Ventura) for Observation framework
+//   - Trimmed unused framework links (MetalKit, IOKit, QuartzCore)
+//   - Added testTarget for unit tests
 
 import PackageDescription
 
 let package = Package(
     name: "L104SovereignIntellect",
     platforms: [
-        .macOS(.v12)
+        .macOS(.v13)
     ],
     products: [
         .executable(name: "L104", targets: ["L104"])
@@ -38,14 +43,16 @@ let package = Package(
                 .linkedFramework("Foundation"),
                 .linkedFramework("Cocoa"),
                 .linkedFramework("CoreGraphics"),
-                .linkedFramework("QuartzCore"),
                 .linkedFramework("Accelerate"),
                 .linkedFramework("Metal"),
-                .linkedFramework("MetalKit"),
                 .linkedFramework("CoreML"),
                 .linkedFramework("Security"),
-                .linkedFramework("IOKit"),
             ]
-        )
+        ),
+        .testTarget(
+            name: "L104Tests",
+            dependencies: ["L104"],
+            path: "Tests"
+        ),
     ]
 )

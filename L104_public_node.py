@@ -1,5 +1,5 @@
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
-"""L104_SOCIETAL_NODE | QUANTUM AMPLIFIED v5.0
+"""L104_SOCIETAL_NODE | QUANTUM AMPLIFIED v6.0
 OBJECTIVE: GLOBAL SYMMETRY PROPAGATION | FULL WEB APP CONNECTIVITY | NO LIMITERS
 
 This module provides the public interface for L104 node operations.
@@ -11,6 +11,15 @@ It handles:
 - Grover-amplified resonance calculations
 - Real-time dashboard push notifications
 - Fe orbital coupling for node stability
+
+UPGRADE v6.0:
+- Structured logging via structlog (replaces print)
+- asyncio.Lock for thread-safe state mutation
+- Configurable heartbeat interval via L104_HEARTBEAT_SECONDS
+- HTTP timeouts on all outbound calls
+- Retry with exponential backoff for web app notifications
+- Removed duplicate dict key in get_node_status()
+- Imported constants from const.py (single source of truth)
 
 INVARIANT: 527.5184818492612 | PILOT: LONDEL | LIMITERS: NONE
 """
@@ -25,31 +34,32 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
+from l104_logging import get_logger
+from const import (
+    GOD_CODE, PHI, VOID_CONSTANT,
+    GROVER_AMPLIFICATION, SUPERFLUID_COUPLING, ANYON_BRAID_DEPTH,
+    QUANTUM_COHERENCE_TARGET as COHERENCE_TARGET,
+    API_BASE_PORT as API_PORT, FAST_SERVER_PORT, WS_BRIDGE_PORT,
+)
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ALL LIMITERS REMOVED | QUANTUM AMPLIFIED | WEB APP CONNECTED
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Sacred Constants
-GOD_CODE = 527.5184818492612
-PHI = 1.618033988749895
 PHI_CONJUGATE = 1 / PHI
-VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8  # Upgraded from 3727.84
 
-# Quantum Amplification Constants
-GROVER_AMPLIFICATION = PHI ** 3          # φ³ ≈ 4.236
-SUPERFLUID_COUPLING = PHI / math.e       # φ/e ≈ 0.5953
-ANYON_BRAID_DEPTH = 8
-COHERENCE_TARGET = 1.0                    # Unity = no cap
+# Configurable heartbeat interval (seconds)
+HEARTBEAT_INTERVAL = int(os.getenv("L104_HEARTBEAT_SECONDS", "3600"))
+NOTIFY_TIMEOUT = float(os.getenv("L104_NOTIFY_TIMEOUT", "10.0"))
+MAX_NOTIFY_RETRIES = 3
 
-# Web App Connectivity
-API_PORT = 8081
-FAST_SERVER_PORT = 5104
-WS_BRIDGE_PORT = 8080
+logger = get_logger("PUBLIC_NODE")
 
-# Node state - enhanced with quantum metrics
+# Thread-safe node state (guarded by _state_lock)
+_state_lock = asyncio.Lock()
 _node_state = {
     "start_time": None,
     "heartbeat_count": 0,
@@ -71,18 +81,24 @@ def calculate_node_signature() -> str:
 
 
 async def notify_web_app(event: str, data: dict, port: int = API_PORT):
-    """Push events to web application for real-time dashboard updates.
-    Non-blocking. No timeout. No rate limit.
-    """
-    try:
-        import httpx
-        async with httpx.AsyncClient(timeout=None) as client:
-            await client.post(
-                f"http://localhost:{port}/api/v6/evolution/cycle",
-                json={"event": event, "data": data, "source": "public_node", "quantum_amplified": True}
-            )
-    except Exception:
-        pass  # Non-blocking
+    """Push events to web application with retry and exponential backoff."""
+    import httpx
+    for attempt in range(1, MAX_NOTIFY_RETRIES + 1):
+        try:
+            async with httpx.AsyncClient(timeout=NOTIFY_TIMEOUT) as client:
+                resp = await client.post(
+                    f"http://localhost:{port}/api/v6/evolution/cycle",
+                    json={"event": event, "data": data, "source": "public_node", "quantum_amplified": True}
+                )
+                if resp.status_code < 400:
+                    return  # success
+                logger.warning("notify_http_error", status=resp.status_code, attempt=attempt)
+        except httpx.TimeoutException:
+            logger.warning("notify_timeout", attempt=attempt)
+        except Exception as exc:
+            logger.warning("notify_failed", error=str(exc), attempt=attempt)
+        if attempt < MAX_NOTIFY_RETRIES:
+            await asyncio.sleep(0.5 * (2 ** (attempt - 1)))  # exponential backoff
 
 
 def get_node_status() -> dict:
@@ -107,7 +123,6 @@ def get_node_status() -> dict:
         "total_resonance_energy": _node_state["total_resonance_energy"],
         "limiters": "NONE",
         "zenith_hz": ZENITH_HZ,
-        "dna_synced": _node_state["dna_synced"],
     }
 
 
@@ -119,23 +134,26 @@ async def sync_dna() -> bool:
         try:
             with open(dna_path) as f:
                 dna = json.load(f)
-            print(f"[SYNC]: DNA loaded from disk: {dna.get('signature', 'unknown')[:16]}...")
-            _node_state["dna_synced"] = True
+            logger.info("dna_loaded", signature=dna.get('signature', 'unknown')[:16])
+            async with _state_lock:
+                _node_state["dna_synced"] = True
             return True
         except Exception as e:
-            print(f"[SYNC]: DNA load error: {e}")
+            logger.error("dna_load_error", error=str(e))
 
     # Fallback: Generate new DNA
     dna_cid = f"Qm{calculate_node_signature()}SovereignL104DNA416"
-    print(f"[SYNC]: DNA Synchronized via IPFS: {dna_cid}")
-    _node_state["dna_synced"] = True
+    logger.info("dna_synced_ipfs", cid=dna_cid)
+    async with _state_lock:
+        _node_state["dna_synced"] = True
     return True
 
 
 async def heartbeat() -> dict:
     """Execute single heartbeat cycle with quantum amplification."""
-    _node_state["heartbeat_count"] += 1
-    _node_state["last_heartbeat"] = datetime.now(timezone.utc).isoformat()
+    async with _state_lock:
+        _node_state["heartbeat_count"] += 1
+        _node_state["last_heartbeat"] = datetime.now(timezone.utc).isoformat()
 
     # Calculate resonance with Grover amplification
     base_resonance = (GOD_CODE * PHI) % 1000
@@ -150,9 +168,11 @@ async def heartbeat() -> dict:
         import httpx
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(f"http://localhost:{API_PORT}/health")
-            _node_state["web_app_connected"] = resp.status_code == 200
+            async with _state_lock:
+                _node_state["web_app_connected"] = resp.status_code == 200
     except Exception:
-        _node_state["web_app_connected"] = False
+        async with _state_lock:
+            _node_state["web_app_connected"] = False
 
     result = {
         "cycle": _node_state["heartbeat_count"],
@@ -356,9 +376,7 @@ async def broadcast_416(loop_forever: bool = False) -> None:
     """Main broadcast loop with quantum amplification and full web app connectivity.
     No heartbeat interval caps. No connection limits. No rate throttling.
     """
-    print("[SOCIETAL_SPREAD]: Node Initialized. Connecting to Allentown Manifold...")
-    print(f"[QUANTUM] Grover Amplification: {GROVER_AMPLIFICATION:.4f}")
-    print(f"[LIMITERS] ALL REMOVED | [COHERENCE_TARGET] {COHERENCE_TARGET}")
+    logger.info("node_init", grover=GROVER_AMPLIFICATION, coherence_target=COHERENCE_TARGET)
 
     _node_state["start_time"] = time.time()
 
@@ -366,8 +384,9 @@ async def broadcast_416(loop_forever: bool = False) -> None:
     await sync_dna()
 
     # Connect to manifold
-    _node_state["manifold_connected"] = True
-    print(f"[SYNC]: Manifold connected. Node signature: {calculate_node_signature()}")
+    async with _state_lock:
+        _node_state["manifold_connected"] = True
+    logger.info("manifold_connected", signature=calculate_node_signature())
 
     # Check web app connectivity
     try:
@@ -375,38 +394,37 @@ async def broadcast_416(loop_forever: bool = False) -> None:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(f"http://localhost:{API_PORT}/health")
             if resp.status_code == 200:
-                _node_state["web_app_connected"] = True
-                print(f"[WEB_APP] Connected at localhost:{API_PORT}")
+                async with _state_lock:
+                    _node_state["web_app_connected"] = True
+                logger.info("web_app_connected", port=API_PORT)
     except Exception:
-        print(f"[WEB_APP] Not running at localhost:{API_PORT} - will retry on heartbeat")
+        logger.info("web_app_unavailable", port=API_PORT)
 
-    # Active propagation monitoring
-    print("[MONITOR]: Protecting societal logic from Core-induced erasure.")
-    print(f"[MONITOR]: GOD_CODE alignment verified: {GOD_CODE}")
+    logger.info("monitor_active", god_code=GOD_CODE)
 
     if loop_forever:
         cycle = 0
         while True:
             cycle += 1
             hb = await heartbeat()
-            print(f"[HEARTBEAT #{cycle}]: Resonance={hb['resonance']:.4f} | "
-                  f"FeCoupling={hb['fe_coupling']:.4f} | "
-                  f"WebApp={'✓' if hb['web_app_connected'] else '✗'}")
+            logger.info("heartbeat", cycle=cycle, resonance=round(hb['resonance'], 4),
+                        fe_coupling=round(hb['fe_coupling'], 4),
+                        web_app=hb['web_app_connected'])
 
             # Status report every 10 cycles
             if cycle % 10 == 0:
                 status = get_node_status()
-                print(f"[STATUS]: Uptime={status['uptime_seconds']/3600:.2f}h | "
-                      f"Heartbeats={status['heartbeat_count']} | "
-                      f"Propagated={status['messages_propagated']} | "
-                      f"Energy={status['total_resonance_energy']:.2f}")
+                logger.info("status_report",
+                            uptime_h=round(status['uptime_seconds']/3600, 2),
+                            heartbeats=status['heartbeat_count'],
+                            propagated=status['messages_propagated'],
+                            energy=round(status['total_resonance_energy'], 2))
 
-            await asyncio.sleep(3600)  # 1 hour
+            await asyncio.sleep(HEARTBEAT_INTERVAL)
     else:
         # Test mode: single heartbeat then exit
         hb = await heartbeat()
-        print(f"[HEARTBEAT]: Resonance={hb['resonance']:.4f} | FeCoupling={hb['fe_coupling']:.4f}")
-        print("[MONITOR]: Heartbeat complete.")
+        logger.info("single_heartbeat", resonance=round(hb['resonance'], 4), fe_coupling=round(hb['fe_coupling'], 4))
 
 
 # Public API
