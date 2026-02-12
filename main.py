@@ -1262,13 +1262,39 @@ async def ai_chat(req: ChatRequest):
         except Exception:
             pass
 
+        # v23.2 SWIFT SYNC — Include evolution metrics in chat response
+        metrics = {}
+        learned = False
+        novelty = 0.0
+        try:
+            if hasattr(local_intellect, '_last_response_metrics'):
+                m = local_intellect._last_response_metrics
+                metrics = {
+                    "qi": m.get("qi", 0),
+                    "auto_improvements": m.get("auto_improvements", 0),
+                    "mutations": m.get("mutations", 0),
+                    "training_count": m.get("training_count", 0),
+                    "ft_attn_patterns": m.get("ft_attn_patterns", 0),
+                    "ft_mem_stored": m.get("ft_mem_stored", 0),
+                    "ft_tfidf_vocab": m.get("ft_tfidf_vocab", 0),
+                    "permanent_memory_count": m.get("permanent_memory_count", 0),
+                    "latency_ms": round(think_ms, 1),
+                }
+                learned = m.get("learned", False)
+                novelty = m.get("novelty", 0.0)
+        except Exception:
+            pass
+
         return {
             "status": "SUCCESS",
             "response": response,
             "model": "L104_UNIFIED_ASI",
             "mode": "sovereign",
             "sage_logic_gate": sage_meta,
-            "latency_ms": round(think_ms, 1)
+            "latency_ms": round(think_ms, 1),
+            "learned": learned,
+            "novelty": round(novelty, 4),
+            "metrics": metrics,
         }
 
     try:
@@ -1436,17 +1462,23 @@ async def intellect_resonate(payload: Dict[str, Any] = None):
 async def intellect_train(payload: Dict[str, Any]):
     """
     Train the Local Intellect with new knowledge.
-    Accepts: {"topic": "...", "content": "..."}
+    v23.2: Accepts BOTH naming conventions:
+      - Server style: {"topic": "...", "content": "..."}
+      - Swift style:  {"query": "...", "response": "...", "quality": 2.0}
+    Now properly feeds into retrain_memory() + FT engine pipeline.
     """
     try:
         from l104_local_intellect import local_intellect
         from l104_quantum_ram import get_qram
+        import concurrent.futures
 
-        topic = payload.get("topic", "general")
-        content = payload.get("content", "")
+        # v23.2 Accept BOTH field naming conventions (Swift sends query/response)
+        topic = payload.get("topic") or payload.get("query", "general")
+        content = payload.get("content") or payload.get("response", "")
+        quality = payload.get("quality", 1.0)
 
         if not content:
-            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "Content required"})
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "Content required (use 'content' or 'response' field)"})
 
         qram = get_qram()
 
@@ -1454,10 +1486,12 @@ async def intellect_train(payload: Dict[str, Any]):
         qram.store(f"training_{topic}_{int(time.time())}", {
             "topic": topic,
             "content": content,
+            "quality": quality,
+            "source": "swift_sync" if "query" in payload else "api",
             "timestamp": datetime.now(UTC).isoformat()
         })
 
-        # Add to local intellect knowledge if possible
+        # Add to local intellect knowledge
         if hasattr(local_intellect, 'knowledge'):
             local_intellect.knowledge[topic] = content
 
@@ -1465,11 +1499,54 @@ async def intellect_train(payload: Dict[str, Any]):
         if hasattr(local_intellect, 'record_learning'):
             local_intellect.record_learning(topic, content)
 
+        # v23.2 CRITICAL: Feed into retrain_memory() + FT engine pipeline
+        # This is what was MISSING — Swift data never entered the active training loop
+        embedding_norm = 0.0
+        learning_quality = quality
+        try:
+            loop = asyncio.get_event_loop()
+            def _train_sync():
+                # Retrain memory with the new data
+                local_intellect.retrain_memory(topic, content)
+                # Feed into FT engine if available
+                if hasattr(local_intellect, '_ft_engine') and local_intellect._ft_init_done:
+                    try:
+                        vec = local_intellect._text_to_ft_vector(content[:500])
+                        local_intellect._ft_engine.attention.add_pattern(vec)
+                        local_intellect._ft_engine.memory.store(vec, label=topic[:30])
+                        tokens = [w.lower() for w in content.split() if len(w) > 2][:80]
+                        if tokens:
+                            local_intellect._ft_engine.tfidf.add_document(tokens)
+                    except Exception:
+                        pass
+                # Store in permanent memory for high-quality entries
+                if quality >= 1.5 and hasattr(local_intellect, 'remember_permanently'):
+                    local_intellect.remember_permanently(
+                        f"swift_train_{topic[:30]}",
+                        {"topic": topic, "content": content[:500], "quality": quality},
+                        importance=quality / 2.0
+                    )
+                return True
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                await loop.run_in_executor(pool, _train_sync)
+
+            # Calculate embedding quality metric
+            import math
+            embedding_norm = math.log2(max(1, len(content))) * quality / 10.0
+            learning_quality = quality * (1.0 + embedding_norm)
+        except Exception as train_err:
+            logger.warning(f"Training pipeline partial: {train_err}")
+
         return {
             "status": "SUCCESS",
             "topic": topic,
             "content_length": len(content),
             "stored": True,
+            "embedding_norm": round(embedding_norm, 4),
+            "learning_quality": round(learning_quality, 4),
+            "qi": local_intellect._evolution_state.get("quantum_interactions", 0),
+            "auto_improvements": local_intellect._evolution_state.get("autonomous_improvements", 0),
+            "training_count": len(local_intellect.training_data) if hasattr(local_intellect, 'training_data') else 0,
             "timestamp": datetime.now(UTC).isoformat()
         }
     except Exception as e:
@@ -1534,6 +1611,173 @@ async def intellect_import(payload: Dict[str, Any]):
         }
     except Exception as e:
         logger.error(f"Intellect import error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v23.2 UNIFIED SWIFT APP SYNC ENDPOINT
+# Bidirectional: Swift pushes its state, server returns its state + metrics
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v6/sync", tags=["Sync"])
+async def unified_sync(payload: Dict[str, Any] = None):
+    """
+    Unified bidirectional sync for Swift iOS app ↔ L104 Server.
+    
+    Swift sends (optional):
+      - swift_knowledge: [{prompt, completion, source}] — new training entries
+      - swift_conversations: [{query, response}] — recent conversation pairs
+      - swift_evolution: {qi, auto_improvements, ...} — Swift-side state
+      - swift_concepts: [str] — active concept list
+    
+    Server returns:
+      - evolution_state: full server evolution metrics
+      - training_count: total training patterns
+      - ft_status: fault tolerance engine status
+      - recent_insights: last N permanent memory insights
+      - sync_timestamp: ISO timestamp
+    """
+    try:
+        from l104_local_intellect import local_intellect
+        from l104_quantum_ram import get_qram
+        import concurrent.futures
+
+        qram = get_qram()
+        payload = payload or {}
+        ingested_count = 0
+
+        # ── INGEST Swift knowledge ──
+        swift_knowledge = payload.get("swift_knowledge", [])
+        if swift_knowledge:
+            def _ingest_knowledge():
+                count = 0
+                for entry in swift_knowledge[:50]:  # Cap at 50 per sync
+                    topic = entry.get("prompt", entry.get("topic", ""))
+                    content = entry.get("completion", entry.get("content", ""))
+                    if topic and content:
+                        # Full pipeline: retrain + FT engine + knowledge dict
+                        local_intellect.retrain_memory(topic, content)
+                        if hasattr(local_intellect, 'knowledge'):
+                            local_intellect.knowledge[topic] = content
+                        # Feed into FT engine
+                        if hasattr(local_intellect, '_ft_engine') and local_intellect._ft_init_done:
+                            try:
+                                vec = local_intellect._text_to_ft_vector(content[:500])
+                                local_intellect._ft_engine.attention.add_pattern(vec)
+                                local_intellect._ft_engine.memory.store(vec, label=topic[:30])
+                                tokens = [w.lower() for w in content.split() if len(w) > 2][:80]
+                                if tokens:
+                                    local_intellect._ft_engine.tfidf.add_document(tokens)
+                            except Exception:
+                                pass
+                        count += 1
+                return count
+
+            loop = asyncio.get_event_loop()
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                ingested_count = await loop.run_in_executor(pool, _ingest_knowledge)
+
+        # ── INGEST Swift conversations ──
+        swift_convos = payload.get("swift_conversations", [])
+        if swift_convos:
+            def _ingest_convos():
+                count = 0
+                for convo in swift_convos[:20]:
+                    q = convo.get("query", "")
+                    r = convo.get("response", "")
+                    if q and r:
+                        local_intellect.retrain_memory(q, r)
+                        count += 1
+                return count
+
+            loop = asyncio.get_event_loop()
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                ingested_count += await loop.run_in_executor(pool, _ingest_convos)
+
+        # ── MERGE Swift evolution state (max-merge for counters) ──
+        swift_evo = payload.get("swift_evolution", {})
+        if swift_evo:
+            # Take the MAX of Swift vs Server for counters (no data loss)
+            for key in ["quantum_interactions", "autonomous_improvements"]:
+                if key in swift_evo:
+                    server_val = local_intellect._evolution_state.get(key, 0)
+                    swift_val = swift_evo[key]
+                    if isinstance(swift_val, (int, float)) and swift_val > server_val:
+                        local_intellect._evolution_state[key] = int(swift_val)
+
+        # ── BUILD server response ──
+        evo = local_intellect._evolution_state
+        
+        # Get recent insights from permanent memory
+        recent_insights = []
+        try:
+            pm = evo.get("permanent_memory", {})
+            sorted_keys = sorted(pm.keys(), reverse=True)[:10]
+            for k in sorted_keys:
+                v = pm[k]
+                if isinstance(v, dict):
+                    recent_insights.append({"key": k, "value": str(v.get("value", v.get("insight", "")))[:200]})
+                elif isinstance(v, str):
+                    recent_insights.append({"key": k, "value": v[:200]})
+        except Exception:
+            pass
+
+        # FT engine status
+        ft_status = {}
+        try:
+            if hasattr(local_intellect, '_ft_engine') and local_intellect._ft_init_done:
+                ft_status = {
+                    "attn_patterns": local_intellect._ft_engine.attention.pattern_count if hasattr(local_intellect._ft_engine.attention, 'pattern_count') else 0,
+                    "mem_stored": local_intellect._ft_engine.memory.stored_count if hasattr(local_intellect._ft_engine.memory, 'stored_count') else 0,
+                    "tfidf_vocab": local_intellect._ft_engine.tfidf.vocab_size if hasattr(local_intellect._ft_engine.tfidf, 'vocab_size') else 0,
+                }
+        except Exception:
+            pass
+
+        return {
+            "status": "SUCCESS",
+            "ingested_count": ingested_count,
+            "evolution_state": {
+                "quantum_interactions": evo.get("quantum_interactions", 0),
+                "autonomous_improvements": evo.get("autonomous_improvements", 0),
+                "quantum_data_mutations": evo.get("quantum_data_mutations", 0),
+                "wisdom_quotient": evo.get("wisdom_quotient", 0),
+                "logic_depth_reached": evo.get("logic_depth_reached", 0),
+                "mutation_dna": evo.get("mutation_dna", "")[:16],
+                "total_runs": evo.get("total_runs", 0),
+                "cross_references": len(evo.get("cross_references", {})),
+                "concept_evolution_count": len(evo.get("concept_evolution", {})),
+                "permanent_memory_count": len(evo.get("permanent_memory", {})),
+            },
+            "training_count": len(local_intellect.training_data) if hasattr(local_intellect, 'training_data') else 0,
+            "conversation_memory_size": len(local_intellect.conversation_memory),
+            "ft_status": ft_status,
+            "recent_insights": recent_insights,
+            "resonance": local_intellect._calculate_resonance(),
+            "god_code": 527.5184818492612,
+            "sync_timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Unified sync error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/sync/status", tags=["Sync"])
+async def sync_status():
+    """Quick sync health check for Swift app — lightweight polling endpoint."""
+    try:
+        from l104_local_intellect import local_intellect
+        evo = local_intellect._evolution_state
+        return {
+            "status": "ONLINE",
+            "qi": evo.get("quantum_interactions", 0),
+            "auto": evo.get("autonomous_improvements", 0),
+            "training": len(local_intellect.training_data) if hasattr(local_intellect, 'training_data') else 0,
+            "dna": evo.get("mutation_dna", "")[:8],
+            "resonance": local_intellect._calculate_resonance(),
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
         return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 

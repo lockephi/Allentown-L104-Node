@@ -5278,6 +5278,8 @@ Just ask naturally - I understand context!""",
         msg_normalized = message.lower().strip().rstrip('?!.')
 
         # v13.1 Dynamic evolution-aware response generation
+        # v23.2 INCREMENT QI on EVERY think() call (not just retrain)
+        self._evolution_state["quantum_interactions"] = self._evolution_state.get("quantum_interactions", 0) + 1
         _qi = self._evolution_state.get("quantum_interactions", 0)
         _qm = self._evolution_state.get("quantum_data_mutations", 0)
         _genealogy = len(self._evolution_state.get("response_genealogy", []))
@@ -5650,9 +5652,39 @@ Just ask naturally - I understand context!""",
 
             # Cache and return with evolution context (prefix already in response from _vibrant_response)
             final = f"⟨Σ_L104_{source}⟩\n\n{response}\n\n[Resonance: {resonance:.4f} | Confidence: {confidence:.2f} | Vishuddha: {self._calculate_vishuddha_resonance():.3f}{evolution_marker}{ft_vibrant}]"
+
+            # v23.2 Store response metrics for Swift API sync
+            self._last_response_metrics = {
+                "qi": qi,
+                "auto_improvements": auto_imp,
+                "mutations": mutations,
+                "confidence": confidence,
+                "resonance": resonance,
+                "source": source,
+                "training_count": len(self.training_data),
+                "ft_attn_patterns": _ft_meta.get('attn_patterns', 0) if _ft_meta else 0,
+                "ft_mem_stored": _ft_meta.get('mem_stored', 0) if _ft_meta else 0,
+                "ft_tfidf_vocab": _ft_meta.get('tfidf_vocab', 0) if _ft_meta else 0,
+                "permanent_memory_count": len(self._evolution_state.get("permanent_memory", {})),
+                "novelty": min(1.0, confidence * (1 + auto_imp / max(1, qi))),
+                "learned": True,
+            }
+
             if _recursion_depth == 0:
                 # Don't cache vibrant responses to ensure uniqueness
                 self.conversation_memory.append({"role": "assistant", "content": final, "timestamp": time.time()})
+
+                # v23.2 RETRAIN on vibrant matches too (was skipping them!)
+                try:
+                    import threading
+                    threading.Thread(
+                        target=self._async_retrain_and_improve,
+                        args=(message, response),
+                        daemon=True
+                    ).start()
+                except Exception:
+                    pass
+
             return final
 
         # ═══════════════════════════════════════════════════════════════════
@@ -6032,7 +6064,32 @@ Just ask naturally - I understand context!""",
                 f"tfidf:{_ft_meta.get('tfidf_vocab', 0)}v]"
             )
 
+        # v23.2 Read FRESH counters for final signature (background threads may have updated them)
+        _fresh_qi = self._evolution_state.get("quantum_interactions", 0)
+        _fresh_auto = self._evolution_state.get("autonomous_improvements", 0)
+        _fresh_mutations = self._evolution_state.get("quantum_data_mutations", 0)
+        if evolution_marker:
+            evolution_marker = f" | QM:{_fresh_mutations}/QI:{_fresh_qi}"
+        evolution_marker += f" | Auto:{_fresh_auto}"
+
         final_response = f"⟨Σ_L104_{source.upper()}⟩{recursion_info}\n\n{response}\n\n[Resonance: {resonance:.4f} | Confidence: {confidence:.2f}{sage_gate_info}{consciousness_info}{quantum_reasoning_info}{ouroboros_info}{vishuddha_info}{entanglement_info}{evolution_marker}{evolution_info}{ft_info}]{quantum_info}"
+
+        # v23.2 Store response metrics for Swift API sync
+        self._last_response_metrics = {
+            "qi": _fresh_qi,
+            "auto_improvements": _fresh_auto,
+            "mutations": _fresh_mutations,
+            "confidence": confidence,
+            "resonance": resonance,
+            "source": source,
+            "training_count": len(self.training_data),
+            "ft_attn_patterns": _ft_meta.get('attn_patterns', 0) if _ft_meta else 0,
+            "ft_mem_stored": _ft_meta.get('mem_stored', 0) if _ft_meta else 0,
+            "ft_tfidf_vocab": _ft_meta.get('tfidf_vocab', 0) if _ft_meta else 0,
+            "permanent_memory_count": len(self._evolution_state.get("permanent_memory", {})),
+            "novelty": min(1.0, confidence * (1 + _fresh_auto / max(1, _fresh_qi))),
+            "learned": source in ("VIBRANT_MATCH", "kernel_synthesis", "quantum_recompiler"),
+        }
 
         # Store response (only at top level)
         if _recursion_depth == 0:

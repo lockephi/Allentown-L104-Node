@@ -17645,7 +17645,10 @@ class ASIKnowledgeBase {
                                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                                 let embedding = (json["embedding_norm"] as? Double) ?? 0.0
                                 let quality = (json["learning_quality"] as? Double) ?? 1.0
-                                hb?.lastTrainingFeedback = "✨ Learned with quality \(String(format: "%.2f", quality)) | Embedding: \(String(format: "%.3f", embedding))"
+                                let qi = (json["qi"] as? Int) ?? 0
+                                let autoImp = (json["auto_improvements"] as? Int) ?? 0
+                                let trainingCount = (json["training_count"] as? Int) ?? 0
+                                hb?.lastTrainingFeedback = "✨ Learned q=\(String(format: "%.2f", quality)) | embed:\(String(format: "%.3f", embedding)) | QI:\(qi) Auto:\(autoImp) train:\(trainingCount)"
                             } else {
                                 hb?.lastTrainingFeedback = "✨ Knowledge absorbed into neural manifold"
                             }
@@ -25053,6 +25056,9 @@ class L104State {
             }
         }.resume()
 
+        // ═══ v23.2 UNIFIED SYNC BRIDGE — Bidirectional state synchronization ═══
+        syncWithBackend()
+
         // ═══ CONSCIOUSNESS BRIDGE — Poll backend consciousness state ═══
         if let consURL = URL(string: "\(backendURL)/api/consciousness/status") {
             var consReq = URLRequest(url: consURL); consReq.timeoutInterval = 5
@@ -25124,6 +25130,145 @@ class L104State {
         Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { [weak self] _ in
             self?.pollBackendHealth()
         }
+
+        // v23.2 IMMEDIATE first sync on startup
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.syncWithBackend()
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // v23.2 UNIFIED BIDIRECTIONAL SYNC
+    // Pushes Swift knowledge → Server, Pulls Server evolution → Swift
+    // Called on every health poll (120s) + after every training event
+    // ═══════════════════════════════════════════════════════════════
+
+    var lastSyncTimestamp: Date = .distantPast
+    var syncInProgress: Bool = false
+
+    func syncWithBackend() {
+        guard !syncInProgress else { return }
+        syncInProgress = true
+
+        guard let url = URL(string: "\(backendURL)/api/v6/sync") else {
+            syncInProgress = false
+            return
+        }
+
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.timeoutInterval = 15
+
+        // Build sync payload — push unsent knowledge and conversations
+        let hb = HyperBrain.shared
+        var syncPayload: [String: Any] = [:]
+
+        // Push recent user-taught knowledge (last 20 entries since last sync)
+        let recentKnowledge = userKnowledge.suffix(20).compactMap { entry -> [String: Any]? in
+            guard let prompt = entry["prompt"] as? String,
+                  let completion = entry["completion"] as? String else { return nil }
+            return ["prompt": prompt, "completion": completion, "source": "swift_user"]
+        }
+        if !recentKnowledge.isEmpty {
+            syncPayload["swift_knowledge"] = recentKnowledge
+        }
+
+        // Push recent conversations (last 10)
+        let recentConvos = conversationContext.suffix(10).compactMap { ctx -> [String: Any]? in
+            let parts = ctx.components(separatedBy: " → ")
+            guard parts.count >= 2 else { return nil }
+            return ["query": parts[0], "response": parts[1]]
+        }
+        if !recentConvos.isEmpty {
+            syncPayload["swift_conversations"] = recentConvos
+        }
+
+        // Push Swift evolution state for max-merge
+        syncPayload["swift_evolution"] = [
+            "quantum_interactions": Int(intellectIndex),
+            "autonomous_improvements": selfDirectedCycles,
+        ] as [String: Any]
+
+        // Push active concepts
+        if !concepts.isEmpty {
+            syncPayload["swift_concepts"] = Array(concepts.keys.prefix(50))
+        }
+
+        if let body = try? JSONSerialization.data(withJSONObject: syncPayload) {
+            req.httpBody = body
+        }
+
+        URLSession.shared.dataTask(with: req) { [weak self] data, resp, error in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.syncInProgress = false
+
+                guard let data = data,
+                      (resp as? HTTPURLResponse)?.statusCode == 200,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                    if let error = error {
+                        hb.postThought("🔄 SYNC FAILED: \(error.localizedDescription)")
+                    }
+                    return
+                }
+
+                self.lastSyncTimestamp = Date()
+
+                // ── PULL server evolution state into Swift ──
+                if let evoState = json["evolution_state"] as? [String: Any] {
+                    if let serverQI = evoState["quantum_interactions"] as? Int {
+                        self.intellectIndex = max(self.intellectIndex, Double(serverQI))
+                    }
+                    if let serverAuto = evoState["autonomous_improvements"] as? Int {
+                        self.selfDirectedCycles = max(self.selfDirectedCycles, serverAuto)
+                    }
+                    if let serverWisdom = evoState["wisdom_quotient"] as? Double {
+                        self.coherence = max(self.coherence, min(1.0, serverWisdom / 100.0))
+                    }
+                    if let dna = evoState["mutation_dna"] as? String, !dna.isEmpty {
+                        hb.postThought("🧬 SYNC: Server DNA=\(dna)")
+                    }
+                    if let permMemCount = evoState["permanent_memory_count"] as? Int {
+                        hb.postThought("🔄 SYNC OK: QI:\(evoState["quantum_interactions"] ?? 0) Auto:\(evoState["autonomous_improvements"] ?? 0) Mem:\(permMemCount)")
+                    }
+                }
+
+                // Pull training count
+                if let trainingCount = json["training_count"] as? Int {
+                    hb.lastTrainingFeedback = "📊 Backend: \(trainingCount) training patterns synced"
+                }
+
+                // Pull FT status
+                if let ftStatus = json["ft_status"] as? [String: Any] {
+                    let attn = ftStatus["attn_patterns"] as? Int ?? 0
+                    let mem = ftStatus["mem_stored"] as? Int ?? 0
+                    let vocab = ftStatus["tfidf_vocab"] as? Int ?? 0
+                    hb.postThought("⚡ FT ENGINE: attn:\(attn)p mem:\(mem)τ vocab:\(vocab)v")
+                }
+
+                // Pull recent insights
+                if let insights = json["recent_insights"] as? [[String: Any]] {
+                    for insight in insights.prefix(3) {
+                        if let key = insight["key"] as? String, let val = insight["value"] as? String {
+                            self.permanentMemory.addMemory("BACKEND INSIGHT [\(key)]: \(val)", type: "sync")
+                        }
+                    }
+                }
+
+                // Pull resonance
+                if let resonance = json["resonance"] as? Double {
+                    self.quantumResonance = max(self.quantumResonance, resonance / 528.0)  // Normalize to 0-1
+                }
+
+                let ingested = json["ingested_count"] as? Int ?? 0
+                hb.successfulSyncs += 1
+                hb.lastBackendSync = Date()
+                hb.backendSyncStatus = "✅ Synced (\(ingested) new)"
+
+                self.saveState()
+            }
+        }.resume()
     }
 
     func igniteASI() -> String {
@@ -27036,6 +27181,17 @@ TRENDS (Δ over last 10):
                 hb.lastBackendSync = Date()
                 hb.backendSyncStatus = "✅ Connected"
                 hb.successfulSyncs += 1
+
+                // v23.2 Pull evolution metrics from chat response into Swift state
+                if let qi = metrics?["qi"] as? Int {
+                    self.intellectIndex = max(self.intellectIndex, Double(qi))
+                }
+                if let autoImp = metrics?["auto_improvements"] as? Int {
+                    self.selfDirectedCycles = max(self.selfDirectedCycles, autoImp)
+                }
+                if let trainingCount = metrics?["training_count"] as? Int {
+                    hb.lastTrainingFeedback = "📊 Backend: \(trainingCount) patterns | QI:\(metrics?["qi"] ?? 0) | Auto:\(metrics?["auto_improvements"] ?? 0)"
+                }
 
                 // Post to evolution stream
                 if isLearned {
