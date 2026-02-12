@@ -1,9 +1,6 @@
 {
     "name": "L104 Sovereign Node",
     "image": "mcr.microsoft.com/devcontainers/universal:2",
-    "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-    },
     "postCreateCommand": "docker compose up -d --build",
     "postStartCommand": "/workspaces/Allentown-L104-Node/.devcontainer/post-start.sh",
     "postAttachCommand": "/workspaces/Allentown-L104-Node/.devcontainer/ensure-node.sh",
@@ -24,19 +21,44 @@
             "onAutoForward": "silent"
         }
     },
+    "features": {
+        "ghcr.io/devcontainers/features/git-lfs:1": {
+            "autoPull": true,
+            "version": "latest"
+        }
+    },
     "customizations": {
         "vscode": {
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "bash"
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "github.codespaces.defaultMachineType": "premiumLinux",
+                "github.codespaces.useMaximumMachineType": true
             }
         },
         "codespaces": {
             "openFiles": [
                 "README.md"
-            ]
+            ],
+            "repositories": {
+                "lockephi/Allentown-L104-Node": {
+                    "permissions": {
+                        "contents": "write",
+                        "packages": "write"
+                    }
+                }
+            }
         }
     },
     "remoteEnv": {
-        "L104_AUTO_START": "true"
+        "L104_AUTO_START": "true",
+        "L104_CPU_CORES": "32",
+        "GIT_LFS_SKIP_SMUDGE": "0",
+        "CODESPACES_MACHINE_TYPE": "premiumLinux"
+    },
+    "hostRequirements": {
+        "cpus": 32,
+        "memory": "64gb",
+        "storage": "128gb",
+        "gpu": "optional"
     }
 }
