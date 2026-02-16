@@ -1,0 +1,479 @@
+{
+  "initialized": true,
+  "health_pct": 87.5,
+  "god_code_verified": true,
+  "modules_loaded": 8,
+  "total_modules": 8,
+  "databases_online": 5,
+  "environment": {
+    "python_version": "3.12.1",
+    "platform": "Linux-6.8.0-1030-azure-x86_64-with-glibc2.31",
+    "machine": "x86_64",
+    "node": "codespaces-46bfe0",
+    "workspace": "/workspaces/Allentown-L104-Node",
+    "pid": "95106",
+    "cwd": "/workspaces/Allentown-L104-Node",
+    "disk_total_gb": "31.3",
+    "disk_free_gb": "15.5",
+    "disk_used_pct": "45.4",
+    "memory_peak_mb": "0.4",
+    "workspace_size_mb": "1433.8"
+  },
+  "elapsed_s": 0.621,
+  "timestamp": "2026-02-16T22:58:35.481477",
+  "subsystems": [
+    {
+      "name": "GOD_CODE Invariant",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "expected": 527.5184818492612,
+        "computed_X0": 527.5184818493,
+        "max_delta": 2.2737367544323206e-13,
+        "checkpoints_verified": 6,
+        "phi": 1.618033988749895,
+        "omega_authority": 1381.0613151751,
+        "conservation_law": "G(X) \u00d7 2^(X/104) = 527.518... \u2200 X"
+      }
+    },
+    {
+      "name": "Sacred Constants",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.010251998901367188,
+      "error": "",
+      "details": {
+        "classes": [
+          "UniversalConstants"
+        ],
+        "functions": [
+          "hz_to_wavelength",
+          "god_code_at",
+          "verify_conservation",
+          "quantum_amplify",
+          "resonance_at",
+          "web_url",
+          "all_endpoints",
+          "grover_boost",
+          "sage_logic_gate",
+          "quantum_logic_gate"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/const.py"
+      }
+    },
+    {
+      "name": "Kernel Bootstrap",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.4355907440185547,
+      "error": "",
+      "details": {
+        "classes": [
+          "Path",
+          "datetime",
+          "L104KernelBootstrap"
+        ],
+        "functions": [],
+        "file": "/workspaces/Allentown-L104-Node/l104_kernel_bootstrap.py"
+      }
+    },
+    {
+      "name": "Fast Intelligence Server",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.005245208740234375,
+      "error": "",
+      "details": {
+        "classes": [
+          "ThreadPoolExecutor",
+          "Path",
+          "datetime",
+          "defaultdict",
+          "deque",
+          "OrderedDict",
+          "Any",
+          "FastRequestCache",
+          "ASIQuantumBridge",
+          "ConnectionPool"
+        ],
+        "functions": [
+          "lru_cache",
+          "Dict",
+          "List",
+          "Tuple",
+          "Optional",
+          "Callable",
+          "Set",
+          "optimize_sqlite_connection",
+          "execute_with_retry",
+          "run_in_executor"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_fast_server.py"
+      }
+    },
+    {
+      "name": "MacBook Integration",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0045299530029296875,
+      "error": "",
+      "details": {
+        "classes": [
+          "datetime",
+          "Path",
+          "Any",
+          "defaultdict",
+          "deque",
+          "ThreadPoolExecutor",
+          "ProcessPoolExecutor",
+          "L104MacBookBridge",
+          "ProcessState",
+          "AutoSaveRegistry"
+        ],
+        "functions": [
+          "Dict",
+          "List",
+          "Optional",
+          "Tuple",
+          "Callable",
+          "Union",
+          "dataclass",
+          "field",
+          "wraps",
+          "get_l104_macbook_bridge"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_macbook_integration.py"
+      }
+    },
+    {
+      "name": "API Gateway",
+      "available": true,
+      "version": "",
+      "latency_ms": 3.1452178955078125,
+      "error": "",
+      "details": {
+        "classes": [
+          "Any",
+          "Enum",
+          "defaultdict",
+          "RequestMethod",
+          "CircuitState",
+          "APIRequest",
+          "APIResponse",
+          "Route",
+          "BackendService",
+          "TokenBucket"
+        ],
+        "functions": [
+          "Dict",
+          "List",
+          "Optional",
+          "Callable",
+          "Tuple",
+          "dataclass",
+          "field",
+          "get_api_gateway",
+          "health_handler",
+          "echo_handler"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_api_gateway.py"
+      }
+    },
+    {
+      "name": "Workflow Stabilizer",
+      "available": true,
+      "version": "",
+      "latency_ms": 1.4300346374511719,
+      "error": "",
+      "details": {
+        "classes": [
+          "datetime",
+          "Path",
+          "Any",
+          "WorkflowState",
+          "GitSync",
+          "WorkflowStabilizer"
+        ],
+        "functions": [
+          "Dict",
+          "List",
+          "Optional",
+          "Tuple",
+          "dataclass",
+          "field",
+          "asdict",
+          "get_stabilizer",
+          "init",
+          "sync"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_workflow_stabilizer.py"
+      }
+    },
+    {
+      "name": "External API",
+      "available": true,
+      "version": "",
+      "latency_ms": 17.498016357421875,
+      "error": "",
+      "details": {
+        "classes": [
+          "FastAPI",
+          "HTTPException",
+          "WebSocket",
+          "WebSocketDisconnect",
+          "APIKeyHeader",
+          "CORSMiddleware",
+          "BaseModel",
+          "Enum",
+          "datetime",
+          "OmegaStateEnum"
+        ],
+        "functions": [
+          "Depends",
+          "Security",
+          "Field",
+          "Optional",
+          "List",
+          "Dict",
+          "app",
+          "api_key_header",
+          "verify_api_key",
+          "check_rate_limit"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_external_api.py"
+      }
+    },
+    {
+      "name": "Unified Intelligence API",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0209808349609375,
+      "error": "",
+      "details": {
+        "classes": [
+          "APIRouter",
+          "HTTPException",
+          "BaseModel",
+          "Any",
+          "datetime",
+          "UnifiedIntelligence",
+          "MetaLearningEngineV2",
+          "ReasoningChainEngine",
+          "SelfOptimizationEngine",
+          "ClaudeNodeBridge"
+        ],
+        "functions": [
+          "Optional",
+          "List",
+          "Dict",
+          "get_semantic_engine",
+          "get_cognitive_hub",
+          "router",
+          "get_asi_status",
+          "query_local_intellect",
+          "learn_to_subsystems",
+          "get_brain"
+        ],
+        "file": "/workspaces/Allentown-L104-Node/l104_unified_intelligence_api.py"
+      }
+    },
+    {
+      "name": "DB: l104_intellect_memory.db",
+      "available": true,
+      "version": "",
+      "latency_ms": 1.1518001556396484,
+      "error": "",
+      "details": {
+        "tables": [
+          "memory",
+          "patterns",
+          "knowledge",
+          "conversations",
+          "theorems",
+          "meta_learning",
+          "feedback",
+          "query_rewrites",
+          "concept_clusters",
+          "consciousness_state",
+          "skills",
+          "embeddings"
+        ],
+        "table_count": 12,
+        "size_mb": 0.16
+      }
+    },
+    {
+      "name": "DB: l104_asi_nexus.db",
+      "available": true,
+      "version": "",
+      "latency_ms": 6.125926971435547,
+      "error": "",
+      "details": {
+        "tables": [
+          "evolution_cycles",
+          "learnings",
+          "improvements",
+          "agent_performance",
+          "meta_learnings",
+          "init_check"
+        ],
+        "table_count": 6,
+        "size_mb": 3.39
+      }
+    },
+    {
+      "name": "DB: l104_lattice.db",
+      "available": false,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "File not found",
+      "details": {}
+    },
+    {
+      "name": "DB: lattice_v2.db",
+      "available": true,
+      "version": "",
+      "latency_ms": 357.8963279724121,
+      "error": "",
+      "details": {
+        "tables": [
+          "lattice_facts",
+          "sqlite_sequence",
+          "lattice_history"
+        ],
+        "table_count": 3,
+        "size_mb": 853.7
+      }
+    },
+    {
+      "name": "DB: api_keys.db",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.8094310760498047,
+      "error": "",
+      "details": {
+        "tables": [
+          "api_keys",
+          "key_usage",
+          "sqlite_sequence"
+        ],
+        "table_count": 3,
+        "size_mb": 0.02
+      }
+    },
+    {
+      "name": "DB: wallet_keys.db",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.7090568542480469,
+      "error": "",
+      "details": {
+        "tables": [
+          "keys",
+          "key_audit",
+          "sqlite_sequence"
+        ],
+        "table_count": 3,
+        "size_mb": 0.02
+      }
+    },
+    {
+      "name": "Data: kernel_full_merged.jsonl",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "size_mb": 0.59,
+        "lines": 2209
+      }
+    },
+    {
+      "name": "Data: kernel_extracted_data.jsonl",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "size_mb": 0.55,
+        "lines": 1600
+      }
+    },
+    {
+      "name": "Data: kernel_training_data.jsonl",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "size_mb": 0.43,
+        "lines": 1249
+      }
+    },
+    {
+      "name": "Data: KERNEL_MANIFEST.json",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "size_mb": 0.03,
+        "lines": "N/A"
+      }
+    },
+    {
+      "name": "Data: asi_knowledge_base.jsonl",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "size_mb": 0.02,
+        "lines": 29
+      }
+    },
+    {
+      "name": "Port: Fast Server (:8081)",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.10180473327636719,
+      "error": "",
+      "details": {}
+    },
+    {
+      "name": "Port: External API (:8082)",
+      "available": false,
+      "version": "",
+      "latency_ms": 0.046253204345703125,
+      "error": "Not listening",
+      "details": {}
+    },
+    {
+      "name": "Port: API Gateway (:8080)",
+      "available": false,
+      "version": "",
+      "latency_ms": 0.03147125244140625,
+      "error": "Not listening",
+      "details": {}
+    },
+    {
+      "name": "Swift App (L104SwiftApp)",
+      "available": true,
+      "version": "",
+      "latency_ms": 0.0,
+      "error": "",
+      "details": {
+        "package_swift": true,
+        "build_dir_exists": false,
+        "swift_files": 83
+      }
+    }
+  ],
+  "constants": {
+    "GOD_CODE": 527.5184818492612,
+    "PHI": 1.618033988749895,
+    "OMEGA_AUTHORITY": 1381.0613151751104
+  }
+}

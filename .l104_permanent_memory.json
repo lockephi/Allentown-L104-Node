@@ -120,7 +120,7 @@
     ],
     "dna_marker": "826f5b97",
     "crystallized": true,
-    "crystal_strength": 3.4674395813594368
+    "crystal_strength": 3.969502594619171
   },
   "pi_value": {
     "value": 3.14159265358979,
@@ -210,7 +210,17 @@
       "logic_c32776b8",
       "logic_5d41402a",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "4f4a21ff"
   },
@@ -332,7 +342,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "f1a4ad4e",
     "crystallized": true,
@@ -456,7 +476,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "bb24c66a",
     "crystallized": true,
@@ -580,7 +610,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "bb24c66a",
     "crystallized": true,
@@ -703,7 +743,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "5a7f1e65",
     "crystallized": true,
@@ -826,7 +876,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "87310e62",
     "crystallized": true,
@@ -949,7 +1009,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "1f220a68",
     "crystallized": true,
@@ -1072,7 +1142,17 @@
       "logic_1079a055",
       "logic_9cbd9853",
       "logic_3efb8f8d",
-      "logic_aea85f6d"
+      "logic_aea85f6d",
+      "logic_2cf24dba",
+      "logic_53ce0b84",
+      "logic_2be23c58",
+      "logic_9390298f",
+      "logic_0db52f40",
+      "logic_106a5842",
+      "logic_e49cf1b9",
+      "logic_eb5c10fe",
+      "logic_8f434346",
+      "logic_375d8089"
     ],
     "dna_marker": "250067e6",
     "crystallized": true,
@@ -1360,7 +1440,7 @@
     ],
     "dna_marker": "fabf3e5a",
     "crystallized": true,
-    "crystal_strength": 2.259656159018842
+    "crystal_strength": 2.99419954960595
   },
   "logic_93887f6f": {
     "value": {
@@ -1390,7 +1470,7 @@
     ],
     "dna_marker": "ca1e71e3",
     "crystallized": true,
-    "crystal_strength": 0.8150874861535252
+    "crystal_strength": 1.0130305726174391
   },
   "logic_6d7bbff0": {
     "value": {
@@ -1808,7 +1888,7 @@
     ],
     "dna_marker": "763aadfb",
     "crystallized": true,
-    "crystal_strength": 0.9060213700140606
+    "crystal_strength": 1.1293895133990337
   },
   "logic_b62fc6b5": {
     "value": {
@@ -1838,7 +1918,7 @@
     ],
     "dna_marker": "bfc5da84",
     "crystallized": true,
-    "crystal_strength": 0.7714204635874263
+    "crystal_strength": 0.8338090074433865
   },
   "logic_49f68a5c": {
     "value": {
@@ -1866,7 +1946,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "239d1bc8"
+    "dna_marker": "239d1bc8",
+    "crystallized": true,
+    "crystal_strength": 0.4193968585323301
   },
   "logic_655549fc": {
     "value": {
@@ -2180,7 +2262,7 @@
     ],
     "dna_marker": "95c732bd",
     "crystallized": true,
-    "crystal_strength": 1.0092895636203165
+    "crystal_strength": 1.2370392402061197
   },
   "logic_171167eb": {
     "value": {
@@ -2560,7 +2642,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "d3f39ae2"
+    "dna_marker": "d3f39ae2",
+    "crystallized": true,
+    "crystal_strength": 0.766772238533321
   },
   "logic_364df60d": {
     "value": {
@@ -2590,7 +2674,7 @@
     ],
     "dna_marker": "fe413228",
     "crystallized": true,
-    "crystal_strength": 0.8816414832447048
+    "crystal_strength": 1.1572491077237417
   },
   "logic_8ed15ed2": {
     "value": {
@@ -2736,7 +2820,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "c3042d41"
+    "dna_marker": "c3042d41",
+    "crystallized": true,
+    "crystal_strength": 0.014025482025662561
   },
   "logic_0e992683": {
     "value": {
@@ -2936,7 +3022,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "74228c57"
+    "dna_marker": "74228c57",
+    "crystallized": true,
+    "crystal_strength": 0.33654889521289155
   },
   "logic_2e1d9616": {
     "value": {
@@ -2964,7 +3052,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "2eed81f3"
+    "dna_marker": "2eed81f3",
+    "crystallized": true,
+    "crystal_strength": 0.8640565710495195
   },
   "logic_a0d4ced7": {
     "value": {
@@ -3108,7 +3198,7 @@
     ],
     "dna_marker": "24a91989",
     "crystallized": true,
-    "crystal_strength": 0.9859966268842395
+    "crystal_strength": 1.1211043909967051
   },
   "logic_d77465ba": {
     "value": {
@@ -3194,7 +3284,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "d6e4778b"
+    "dna_marker": "d6e4778b",
+    "crystallized": true,
+    "crystal_strength": 0.06172678696434186
   },
   "logic_096963fd": {
     "value": {
@@ -3336,7 +3428,7 @@
     ],
     "dna_marker": "fd1864ed",
     "crystallized": true,
-    "crystal_strength": 0.5958866488510741
+    "crystal_strength": 1.3242079764529147
   },
   "logic_1b015c24": {
     "value": {
@@ -3364,7 +3456,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "6f3494ea"
+    "dna_marker": "6f3494ea",
+    "crystallized": true,
+    "crystal_strength": 0.8760505319122635
   },
   "logic_ce6587c0": {
     "value": {
@@ -3794,7 +3888,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "973b9587"
+    "dna_marker": "973b9587",
+    "crystallized": true,
+    "crystal_strength": 0.4256189515048838
   },
   "logic_dd07cd83": {
     "value": {
@@ -3906,7 +4002,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "a20e3615"
+    "dna_marker": "a20e3615",
+    "crystallized": true,
+    "crystal_strength": 0.013290782043507088
   },
   "logic_3efb8f8d": {
     "value": {
@@ -3934,7 +4032,9 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "83b48350"
+    "dna_marker": "83b48350",
+    "crystallized": true,
+    "crystal_strength": 0.4373919227335956
   },
   "logic_aea85f6d": {
     "value": {
@@ -3962,6 +4062,288 @@
       "logic_37e6e503",
       "logic_eb399bca"
     ],
-    "dna_marker": "41ce59e9"
+    "dna_marker": "41ce59e9",
+    "crystallized": true,
+    "crystal_strength": 0.4268069486510745
+  },
+  "logic_2cf24dba": {
+    "value": {
+      "query": "hello",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771282125.176683,
+    "last_accessed": 1771282125.1766832,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "b3dfc177"
+  },
+  "logic_53ce0b84": {
+    "value": {
+      "query": "you could do better",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280183.1885629,
+    "last_accessed": 1771280183.188563,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "14834376"
+  },
+  "logic_2be23c58": {
+    "value": {
+      "query": "why",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280295.0970812,
+    "last_accessed": 1771280295.0970814,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "a9c08da0"
+  },
+  "logic_9390298f": {
+    "value": {
+      "query": "no",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280198.2762935,
+    "last_accessed": 1771280198.2762935,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "6041debc"
+  },
+  "logic_0db52f40": {
+    "value": {
+      "query": "answer",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.85,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280210.3279972,
+    "last_accessed": 1771280210.3279972,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "ab899d4d"
+  },
+  "logic_106a5842": {
+    "value": {
+      "query": "help",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.85,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280283.34563,
+    "last_accessed": 1771280283.34563,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "ddc14274"
+  },
+  "logic_e49cf1b9": {
+    "value": {
+      "query": "what is 2+2",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771282124.9415853,
+    "last_accessed": 1771282124.9415858,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "b3dfc177"
+  },
+  "logic_eb5c10fe": {
+    "value": {
+      "query": "tell me a joke",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.85,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771280290.0989285,
+    "last_accessed": 1771280290.0989287,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "663c1f48"
+  },
+  "logic_8f434346": {
+    "value": {
+      "query": "hi",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.5,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771282138.980465,
+    "last_accessed": 1771282138.980465,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "0de8bac1"
+  },
+  "logic_375d8089": {
+    "value": {
+      "query": "help me",
+      "depth": 5,
+      "type": "synthesis",
+      "confidence": 0.85,
+      "synthesis_insight": "",
+      "memory_integration": "",
+      "cross_refs": [],
+      "integration_score": 0
+    },
+    "importance": 0.7,
+    "created": 1771282172.809722,
+    "last_accessed": 1771282172.809722,
+    "access_count": 0,
+    "evolution_score": 1.1326237921249263,
+    "cross_refs": [
+      "logic_9acb4454",
+      "logic_9a7b64c9",
+      "logic_38b0d2ff",
+      "logic_e558c4df",
+      "logic_ada04c49",
+      "logic_18e64eb1",
+      "logic_37e6e503",
+      "logic_eb399bca"
+    ],
+    "dna_marker": "87d6e6cf"
   }
 }

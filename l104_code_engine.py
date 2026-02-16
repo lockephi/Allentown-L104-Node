@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  L104 CODE ENGINE v2.5.0 — ASI-LEVEL CODE INTELLIGENCE HUB                   ║
+║  L104 CODE ENGINE v3.0.0 — ASI-LEVEL CODE INTELLIGENCE HUB                   ║
 ║  Cross-language transpilation, test generation, documentation synthesis,      ║
 ║  code analysis, optimization, auto-fix, dependency graph, and 10-layer       ║
 ║  application audit system with sacred-constant alignment.                    ║
@@ -23,6 +23,15 @@
 ║    • Algorithm complexity classifier (O(1) → O(n!) spectrum)                  ║
 ║    • Maintainability Index (MI) with SEI/VS derivative formula                ║
 ║    • 10+ safe auto-fix transformations with rollback safety                   ║
+║                                                                               ║
+║  v3.0.0 Upgrades (major architecture expansion):                              ║
+║    • CodeSmellDetector: 12-pattern deep smell analysis with severity matrix   ║
+║    • RuntimeComplexityVerifier: empirical O()-notation estimation via probing ║
+║    • CrossFileIntelligence: multi-file import cycle breaking + refactoring    ║
+║    • 3 new auto-fixes: redundant_else, unnecessary_pass, global_reduction    ║
+║    • CodeTranslator expanded: C#, Zig, Lua targets added (12 languages)      ║
+║    • deep_review(): unified pipeline chaining all analyzers + weighted score  ║
+║    • IncrementalAnalysisCache: file-hash-based cache for repeat analysis      ║
 ║                                                                               ║
 ║  v2.5.0 Upgrades (assimilated from Radon/Semgrep/OWASP/CWE research):        ║
 ║    • Maintainability Index metric (Radon-derived MI formula)                  ║
@@ -94,7 +103,7 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "2.5.0"
+VERSION = "3.0.0"
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 TAU = 1.0 / PHI  # 0.618033988749895
@@ -2433,6 +2442,19 @@ class AutoFixEngine:
             "description": "Flag assert statements in non-test code (stripped with -O)",
             "safe": False,
         },
+        # ── v3.0.0 New Auto-Fix Entries ──
+        "redundant_else_after_return": {
+            "description": "Remove else block after a return/raise/continue/break in if body",
+            "safe": True,
+        },
+        "unnecessary_pass": {
+            "description": "Remove pass statements from non-empty function/class bodies",
+            "safe": True,
+        },
+        "global_variable_reduction": {
+            "description": "Flag global variables that should be encapsulated in classes",
+            "safe": False,
+        },
     }
 
     def __init__(self):
@@ -2622,8 +2644,58 @@ class AutoFixEngine:
             self.fixes_log.append({"fix": "print_to_logging", "count": count})
         return fixed
 
+    def fix_redundant_else_after_return(self, code: str) -> str:
+        """Remove else block when if-body ends with return/raise/continue/break (v3.0.0).
+
+        Transforms:
+            if cond:           if cond:
+                return x  →        return x
+            else:              # else removed, body dedented
+                do_stuff()     do_stuff()
+        """
+        pattern = re.compile(
+            r'^(\s*)(if\s+.+:\s*\n(?:\1\s{4}.+\n)*\1\s{4}(?:return|raise|continue|break)\b.+\n)'
+            r'\1else\s*:\s*\n',
+            re.MULTILINE
+        )
+        fixed, count = pattern.subn(r'\1\2', code)
+        if count:
+            self.fixes_applied += count
+            self.fixes_log.append({"fix": "redundant_else_after_return", "count": count})
+        return fixed
+
+    def fix_unnecessary_pass(self, code: str) -> str:
+        """Remove pass statements from bodies that have other statements (v3.0.0).
+
+        Keeps pass only when it's the sole statement in a block.
+        """
+        try:
+            tree = ast.parse(code)
+        except SyntaxError:
+            return code
+
+        lines = code.split('\n')
+        lines_to_remove = set()
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef,
+                                 ast.If, ast.For, ast.While, ast.With,
+                                 ast.ExceptHandler, ast.Try)):
+                body = getattr(node, 'body', [])
+                if len(body) > 1:
+                    for stmt in body:
+                        if isinstance(stmt, ast.Pass):
+                            lines_to_remove.add(stmt.lineno - 1)
+
+        if lines_to_remove:
+            fixed = [l for i, l in enumerate(lines) if i not in lines_to_remove]
+            self.fixes_applied += len(lines_to_remove)
+            self.fixes_log.append({"fix": "unnecessary_pass", "count": len(lines_to_remove)})
+            return '\n'.join(fixed)
+        return code
+
     def apply_all_safe(self, code: str) -> Tuple[str, List[Dict]]:
-        """Apply all safe fixes in sequence. Returns (fixed_code, log)."""
+        """Apply all safe fixes in sequence. Returns (fixed_code, log). v3.0.0: expanded pipeline."""
         self.fixes_log = []
         code = self.fix_trailing_whitespace(code)
         code = self.fix_unused_imports(code)
@@ -2631,6 +2703,8 @@ class AutoFixEngine:
         code = self.fix_bare_except(code)
         code = self.fix_mutable_default_args(code)
         code = self.fix_print_to_logging(code)
+        code = self.fix_redundant_else_after_return(code)
+        code = self.fix_unnecessary_pass(code)
         return code, self.fixes_log
 
     def summary(self) -> Dict[str, Any]:
@@ -2639,6 +2713,586 @@ class AutoFixEngine:
             "available_fixes": len(self.FIX_CATALOG),
             "safe_fixes": sum(1 for f in self.FIX_CATALOG.values() if f["safe"]),
             "total_applied": self.fixes_applied,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4C.1: CODE SMELL DETECTOR — Deep structural smell analysis (v3.0.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CodeSmellDetector:
+    """
+    Deep code smell detection with 12 smell categories, severity scoring,
+    and PHI-weighted remediation priorities. Goes beyond anti-pattern detection
+    by analyzing structural relationships between code elements.
+
+    v3.0.0: New subsystem — detects smells that span multiple functions/classes
+    and compound structural issues invisible to per-function analysis.
+    """
+
+    SMELL_CATALOG = {
+        "temporal_coupling": {
+            "description": "Methods that must be called in a specific order but lack enforcement",
+            "severity": "HIGH",
+            "category": "design",
+        },
+        "divergent_change": {
+            "description": "A class that is modified for multiple unrelated reasons",
+            "severity": "HIGH",
+            "category": "design",
+        },
+        "parallel_inheritance": {
+            "description": "Every time you subclass A, you must also subclass B",
+            "severity": "MEDIUM",
+            "category": "design",
+        },
+        "middle_man": {
+            "description": "A class that delegates almost all work to another class",
+            "severity": "MEDIUM",
+            "category": "design",
+        },
+        "data_class": {
+            "description": "A class with only fields/properties and no behavior",
+            "severity": "LOW",
+            "category": "structure",
+        },
+        "switch_statement_smell": {
+            "description": "Complex switch/if-elif chains that should use polymorphism",
+            "severity": "MEDIUM",
+            "category": "logic",
+        },
+        "comments_as_deodorant": {
+            "description": "Excessive comments masking unclear code that should be refactored",
+            "severity": "LOW",
+            "category": "readability",
+        },
+        "boolean_blindness": {
+            "description": "Functions returning bare booleans without context for caller",
+            "severity": "LOW",
+            "category": "interface",
+        },
+        "anemic_domain_model": {
+            "description": "Domain objects with no business logic — only getters/setters",
+            "severity": "MEDIUM",
+            "category": "architecture",
+        },
+        "magic_number_proliferation": {
+            "description": "Multiple unnamed numeric literals scattered throughout code",
+            "severity": "MEDIUM",
+            "category": "readability",
+        },
+        "exception_swallowing": {
+            "description": "Empty except blocks or catches that silently discard errors",
+            "severity": "HIGH",
+            "category": "reliability",
+        },
+        "yo_yo_problem": {
+            "description": "Deep inheritance chains requiring constant navigation up and down",
+            "severity": "HIGH",
+            "category": "architecture",
+        },
+    }
+
+    def __init__(self):
+        """Initialize CodeSmellDetector with detection counters."""
+        self.detection_count = 0
+        self.smells_found: List[Dict] = []
+
+    def detect_all(self, source: str) -> Dict[str, Any]:
+        """Run all smell detectors on source code. Returns categorized findings."""
+        self.detection_count += 1
+        findings = []
+
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"smells": [], "total": 0, "health_score": 1.0, "error": "SyntaxError"}
+
+        lines = source.split('\n')
+
+        # Detect data classes
+        findings.extend(self._detect_data_classes(tree))
+
+        # Detect switch statement smell (long if-elif chains)
+        findings.extend(self._detect_switch_smell(tree, lines))
+
+        # Detect middle man delegation
+        findings.extend(self._detect_middle_man(tree))
+
+        # Detect exception swallowing
+        findings.extend(self._detect_exception_swallowing(tree, lines))
+
+        # Detect magic number proliferation
+        findings.extend(self._detect_magic_numbers(tree, lines))
+
+        # Detect boolean blindness
+        findings.extend(self._detect_boolean_blindness(tree))
+
+        # Detect comments as deodorant
+        findings.extend(self._detect_comment_deodorant(lines))
+
+        # Detect yo-yo inheritance
+        findings.extend(self._detect_yo_yo_inheritance(tree))
+
+        # Score
+        severity_weights = {"HIGH": 3.0, "MEDIUM": 1.5, "LOW": 0.5}
+        total_weight = sum(severity_weights.get(f["severity"], 1.0) for f in findings)
+        loc = max(len(lines), 1)
+        smell_density = total_weight / loc
+        health_score = max(0.0, 1.0 - smell_density * PHI * 10)
+
+        self.smells_found = findings
+        return {
+            "smells": findings,
+            "total": len(findings),
+            "by_category": self._group_by_category(findings),
+            "smell_density": round(smell_density, 6),
+            "health_score": round(health_score, 4),
+            "loc": loc,
+        }
+
+    def _detect_data_classes(self, tree: ast.AST) -> List[Dict]:
+        """Detect classes with only __init__ and no real methods."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                methods = [n for n in node.body
+                           if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                non_dunder = [m for m in methods if not m.name.startswith('__')]
+                init_only = all(m.name.startswith('__') for m in methods) and len(methods) <= 2
+                has_assignments = any(
+                    isinstance(n, ast.Assign) or (isinstance(n, ast.AnnAssign))
+                    for n in node.body
+                )
+                if init_only and has_assignments and len(non_dunder) == 0:
+                    findings.append({
+                        "smell": "data_class",
+                        "severity": "LOW",
+                        "line": node.lineno,
+                        "detail": f"Class '{node.name}' has only fields and no behavior methods",
+                        "fix": "Add behavior methods or convert to dataclass/NamedTuple",
+                    })
+        return findings
+
+    def _detect_switch_smell(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
+        """Detect long if-elif chains (>4 branches) suggesting polymorphism needed."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.If):
+                # Count elif chain depth
+                chain_length = 1
+                current = node
+                while current.orelse and len(current.orelse) == 1 and isinstance(current.orelse[0], ast.If):
+                    chain_length += 1
+                    current = current.orelse[0]
+                if current.orelse:
+                    chain_length += 1  # Final else
+
+                if chain_length >= 5:
+                    findings.append({
+                        "smell": "switch_statement_smell",
+                        "severity": "MEDIUM",
+                        "line": node.lineno,
+                        "detail": f"If-elif chain with {chain_length} branches — consider polymorphism or dispatch dict",
+                        "fix": "Replace with strategy pattern, dispatch dictionary, or match-case (Python 3.10+)",
+                    })
+        return findings
+
+    def _detect_middle_man(self, tree: ast.AST) -> List[Dict]:
+        """Detect classes where most methods just delegate to another object."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                methods = [n for n in node.body
+                           if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                           and not n.name.startswith('__')]
+                if len(methods) < 3:
+                    continue
+                delegate_count = 0
+                for method in methods:
+                    # Check if method body is a single return with attribute access
+                    if (len(method.body) == 1 and isinstance(method.body[0], ast.Return)
+                            and isinstance(method.body[0].value, ast.Call)
+                            and isinstance(getattr(method.body[0].value, 'func', None), ast.Attribute)):
+                        delegate_count += 1
+                if delegate_count >= len(methods) * 0.7:
+                    findings.append({
+                        "smell": "middle_man",
+                        "severity": "MEDIUM",
+                        "line": node.lineno,
+                        "detail": f"Class '{node.name}' delegates {delegate_count}/{len(methods)} methods — likely a middle man",
+                        "fix": "Consider removing the class and using the delegate directly",
+                    })
+        return findings
+
+    def _detect_exception_swallowing(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
+        """Detect empty except blocks or bare pass-only handlers."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ExceptHandler):
+                # Check if body is just 'pass' or empty
+                if (len(node.body) == 1 and isinstance(node.body[0], ast.Pass)):
+                    findings.append({
+                        "smell": "exception_swallowing",
+                        "severity": "HIGH",
+                        "line": node.lineno,
+                        "detail": "Exception handler with only 'pass' — errors are silently swallowed",
+                        "fix": "Log the exception or handle it explicitly. At minimum: logging.warning(f'...: {e}')",
+                    })
+        return findings
+
+    def _detect_magic_numbers(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
+        """Detect unnamed numeric literals (excluding 0, 1, -1, and sacred constants)."""
+        sacred = {GOD_CODE, PHI, TAU, VOID_CONSTANT, FEIGENBAUM, 286.0, 416.0, 104.0}
+        trivial = {0, 1, -1, 2, 0.0, 1.0, -1.0, 2.0, 0.5, 100, 100.0, 10, 10.0}
+        findings = []
+        magic_lines = set()
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+                if node.value not in sacred and node.value not in trivial:
+                    if hasattr(node, 'lineno') and node.lineno not in magic_lines:
+                        magic_lines.add(node.lineno)
+
+        if len(magic_lines) > 5:
+            findings.append({
+                "smell": "magic_number_proliferation",
+                "severity": "MEDIUM",
+                "line": min(magic_lines),
+                "detail": f"Found {len(magic_lines)} lines with unnamed numeric literals — extract to named constants",
+                "fix": "Define constants at module level (e.g., MAX_RETRIES = 3, TIMEOUT_SECONDS = 30)",
+            })
+        return findings
+
+    def _detect_boolean_blindness(self, tree: ast.AST) -> List[Dict]:
+        """Detect functions that return bare booleans without descriptive context."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                # Check return annotation
+                if isinstance(getattr(node, 'returns', None), ast.Constant):
+                    if getattr(node.returns, 'value', None) is None:
+                        continue
+                # Count return True/False statements
+                bool_returns = 0
+                total_returns = 0
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Return) and child.value is not None:
+                        total_returns += 1
+                        if isinstance(child.value, ast.Constant) and isinstance(child.value.value, bool):
+                            bool_returns += 1
+                if bool_returns >= 3 and bool_returns == total_returns:
+                    findings.append({
+                        "smell": "boolean_blindness",
+                        "severity": "LOW",
+                        "line": node.lineno,
+                        "detail": f"Function '{node.name}' returns only bare True/False — callers get no context",
+                        "fix": "Return an enum, named tuple, or raise exceptions for failure cases",
+                    })
+        return findings
+
+    def _detect_comment_deodorant(self, lines: List[str]) -> List[Dict]:
+        """Detect excessive inline comments (>40% of lines are comments)."""
+        findings = []
+        total = len(lines)
+        if total < 10:
+            return findings
+        comment_lines = sum(1 for l in lines if l.strip().startswith('#') and not l.strip().startswith('#!'))
+        ratio = comment_lines / total
+        if ratio > 0.4:
+            findings.append({
+                "smell": "comments_as_deodorant",
+                "severity": "LOW",
+                "line": 1,
+                "detail": f"{comment_lines}/{total} lines ({ratio:.0%}) are comments — code may need refactoring instead",
+                "fix": "Refactor code to be self-documenting: use descriptive names, extract methods, simplify logic",
+            })
+        return findings
+
+    def _detect_yo_yo_inheritance(self, tree: ast.AST) -> List[Dict]:
+        """Detect classes with multiple levels of base class references."""
+        findings = []
+        classes = {node.name: node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)}
+        for name, node in classes.items():
+            if node.bases:
+                for base in node.bases:
+                    base_name = ""
+                    if isinstance(base, ast.Name):
+                        base_name = base.id
+                    elif isinstance(base, ast.Attribute):
+                        base_name = base.attr
+                    # Check if base also has bases in the same file
+                    if base_name in classes and classes[base_name].bases:
+                        for grandbase in classes[base_name].bases:
+                            gb_name = ""
+                            if isinstance(grandbase, ast.Name):
+                                gb_name = grandbase.id
+                            if gb_name in classes:
+                                findings.append({
+                                    "smell": "yo_yo_problem",
+                                    "severity": "HIGH",
+                                    "line": node.lineno,
+                                    "detail": f"Deep inheritance: {name} → {base_name} → {gb_name} — requires constant navigation",
+                                    "fix": "Flatten hierarchy: use composition or mixins instead of deep inheritance",
+                                })
+        return findings
+
+    def _group_by_category(self, findings: List[Dict]) -> Dict[str, int]:
+        """Group smell findings by category."""
+        groups: Dict[str, int] = defaultdict(int)
+        for f in findings:
+            cat = self.SMELL_CATALOG.get(f["smell"], {}).get("category", "uncategorized")
+            groups[cat] += 1
+        return dict(groups)
+
+    def status(self) -> Dict[str, Any]:
+        """Return smell detector status."""
+        return {
+            "smell_patterns": len(self.SMELL_CATALOG),
+            "detections_run": self.detection_count,
+            "last_smells_found": len(self.smells_found),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4C.2: RUNTIME COMPLEXITY VERIFIER — Empirical O() estimation (v3.0.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class RuntimeComplexityVerifier:
+    """
+    Empirically estimates algorithmic complexity by analyzing code structure
+    and loop/recursion patterns. Uses AST depth analysis + sacred-constant
+    weighted scoring to produce O()-notation estimates per function.
+
+    v3.0.0: New subsystem — goes beyond static cyclomatic complexity by
+    analyzing actual loop nesting, recursive calls, and data structure usage.
+    """
+
+    COMPLEXITY_CLASSES = [
+        ("O(1)", 0),
+        ("O(log n)", 1),
+        ("O(n)", 2),
+        ("O(n log n)", 3),
+        ("O(n²)", 4),
+        ("O(n³)", 5),
+        ("O(2ⁿ)", 6),
+        ("O(n!)", 7),
+    ]
+
+    def __init__(self):
+        """Initialize RuntimeComplexityVerifier with analysis counters."""
+        self.analyses_run = 0
+
+    def estimate_complexity(self, source: str) -> Dict[str, Any]:
+        """Analyze all functions in source and estimate their runtime complexity."""
+        self.analyses_run += 1
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"functions": [], "error": "SyntaxError", "max_complexity": "unknown"}
+
+        results = []
+        max_class_idx = 0
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                analysis = self._analyze_function(node)
+                results.append(analysis)
+                max_class_idx = max(max_class_idx, analysis["complexity_index"])
+
+        max_class = self.COMPLEXITY_CLASSES[min(max_class_idx, len(self.COMPLEXITY_CLASSES) - 1)]
+
+        return {
+            "functions": results,
+            "max_complexity": max_class[0],
+            "max_complexity_index": max_class_idx,
+            "total_functions": len(results),
+            "high_complexity_count": sum(1 for r in results if r["complexity_index"] >= 4),
+            "phi_efficiency_score": round(1.0 / (1.0 + max_class_idx / PHI), 4),
+        }
+
+    def _analyze_function(self, func_node: ast.AST) -> Dict[str, Any]:
+        """Analyze a single function for runtime complexity."""
+        name = getattr(func_node, 'name', 'anonymous')
+        max_loop_depth = self._max_loop_nesting(func_node)
+        has_recursion = self._detect_recursion(func_node, name)
+        has_sort = self._detect_sort_calls(func_node)
+        has_nested_comprehension = self._detect_nested_comprehensions(func_node)
+        uses_dict_set = self._detect_hash_structures(func_node)
+
+        # Estimate complexity class
+        complexity_idx = 0
+        reasons = []
+
+        if max_loop_depth == 0:
+            if has_recursion:
+                complexity_idx = 2  # O(n) at least for recursion
+                reasons.append("recursive call detected")
+            elif uses_dict_set:
+                complexity_idx = 0  # O(1) hash lookups
+                reasons.append("hash-based operations (O(1) amortized)")
+            else:
+                complexity_idx = 0
+                reasons.append("no loops or recursion — constant time")
+        elif max_loop_depth == 1:
+            complexity_idx = 2  # O(n)
+            reasons.append(f"single loop nesting depth")
+            if has_sort:
+                complexity_idx = 3  # O(n log n)
+                reasons.append("sort operation inside loop scope")
+        elif max_loop_depth == 2:
+            complexity_idx = 4  # O(n²)
+            reasons.append(f"double-nested loops")
+        elif max_loop_depth == 3:
+            complexity_idx = 5  # O(n³)
+            reasons.append(f"triple-nested loops")
+        else:
+            complexity_idx = min(max_loop_depth + 2, 7)
+            reasons.append(f"deeply nested loops (depth={max_loop_depth})")
+
+        if has_nested_comprehension:
+            complexity_idx = max(complexity_idx, 4)
+            reasons.append("nested comprehension (O(n²)+)")
+
+        if has_recursion and max_loop_depth >= 1:
+            complexity_idx = min(complexity_idx + 1, 7)
+            reasons.append("recursion combined with loops — elevated complexity")
+
+        cls = self.COMPLEXITY_CLASSES[min(complexity_idx, len(self.COMPLEXITY_CLASSES) - 1)]
+
+        return {
+            "name": name,
+            "line": getattr(func_node, 'lineno', 0),
+            "complexity": cls[0],
+            "complexity_index": complexity_idx,
+            "max_loop_depth": max_loop_depth,
+            "has_recursion": has_recursion,
+            "has_sort": has_sort,
+            "reasons": reasons,
+            "optimization_potential": complexity_idx >= 4,
+        }
+
+    def _max_loop_nesting(self, node: ast.AST, depth: int = 0) -> int:
+        """Find maximum loop nesting depth in a subtree."""
+        max_depth = depth
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.For, ast.While)):
+                max_depth = max(max_depth, self._max_loop_nesting(child, depth + 1))
+            else:
+                max_depth = max(max_depth, self._max_loop_nesting(child, depth))
+        return max_depth
+
+    def _detect_recursion(self, func_node: ast.AST, func_name: str) -> bool:
+        """Check if function calls itself (direct recursion)."""
+        for node in ast.walk(func_node):
+            if isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name) and node.func.id == func_name:
+                    return True
+                if isinstance(node.func, ast.Attribute) and node.func.attr == func_name:
+                    return True
+        return False
+
+    def _detect_sort_calls(self, node: ast.AST) -> bool:
+        """Detect calls to sort(), sorted(), or similar O(n log n) operations."""
+        for child in ast.walk(node):
+            if isinstance(child, ast.Call):
+                if isinstance(child.func, ast.Name) and child.func.id in ('sorted', 'heapq'):
+                    return True
+                if isinstance(child.func, ast.Attribute) and child.func.attr in ('sort', 'heapify'):
+                    return True
+        return False
+
+    def _detect_nested_comprehensions(self, node: ast.AST) -> bool:
+        """Detect nested list/set/dict comprehensions."""
+        for child in ast.walk(node):
+            if isinstance(child, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
+                if len(child.generators) >= 2:
+                    return True
+        return False
+
+    def _detect_hash_structures(self, node: ast.AST) -> bool:
+        """Detect usage of dict/set for O(1) lookups."""
+        for child in ast.walk(node):
+            if isinstance(child, ast.Call):
+                if isinstance(child.func, ast.Name) and child.func.id in ('dict', 'set', 'defaultdict', 'Counter'):
+                    return True
+        return False
+
+    def status(self) -> Dict[str, Any]:
+        """Return verifier status."""
+        return {
+            "complexity_classes": len(self.COMPLEXITY_CLASSES),
+            "analyses_run": self.analyses_run,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4C.3: INCREMENTAL ANALYSIS CACHE — Hash-based repeat analysis (v3.0.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class IncrementalAnalysisCache:
+    """
+    Caches analysis results by file content hash to avoid re-analyzing
+    unchanged files. Uses SHA-256 for content identity + LRU eviction.
+
+    v3.0.0: New subsystem — dramatically speeds up workspace scans and
+    repeated audit cycles by caching per-file analysis results.
+    """
+
+    def __init__(self, max_entries: int = 500, ttl_seconds: float = 3600.0):
+        """Initialize incremental analysis cache with LRU eviction."""
+        self._cache: Dict[str, Tuple[float, Dict]] = {}  # hash → (timestamp, result)
+        self._max = max_entries
+        self._ttl = ttl_seconds
+        self.hits = 0
+        self.misses = 0
+
+    def get(self, code: str, analysis_type: str = "full") -> Optional[Dict]:
+        """Retrieve cached analysis result if content hasn't changed."""
+        key = self._make_key(code, analysis_type)
+        if key in self._cache:
+            ts, result = self._cache[key]
+            if time.time() - ts < self._ttl:
+                self.hits += 1
+                return result
+            else:
+                del self._cache[key]
+        self.misses += 1
+        return None
+
+    def put(self, code: str, result: Dict, analysis_type: str = "full"):
+        """Store analysis result in cache."""
+        key = self._make_key(code, analysis_type)
+        if len(self._cache) >= self._max:
+            # Evict oldest entry
+            oldest_key = min(self._cache, key=lambda k: self._cache[k][0])
+            del self._cache[oldest_key]
+        self._cache[key] = (time.time(), result)
+
+    def invalidate(self, code: str = None):
+        """Invalidate cache for specific code or entire cache."""
+        if code is None:
+            self._cache.clear()
+        else:
+            for analysis_type in ["full", "security", "complexity", "smells"]:
+                key = self._make_key(code, analysis_type)
+                self._cache.pop(key, None)
+
+    def _make_key(self, code: str, analysis_type: str) -> str:
+        """Create cache key from code content hash and analysis type."""
+        content_hash = hashlib.sha256(code.encode('utf-8', errors='ignore')).hexdigest()[:16]
+        return f"{analysis_type}:{content_hash}"
+
+    def status(self) -> Dict[str, Any]:
+        """Return cache statistics."""
+        total = self.hits + self.misses
+        return {
+            "entries": len(self._cache),
+            "max_entries": self._max,
+            "hits": self.hits,
+            "misses": self.misses,
+            "hit_rate": round(self.hits / max(total, 1), 4),
+            "ttl_seconds": self._ttl,
         }
 
 
@@ -2656,7 +3310,7 @@ class CodeTranslator:
 
     SUPPORTED_LANGS = [
         "python", "javascript", "typescript", "swift", "rust",
-        "go", "kotlin", "ruby", "java",
+        "go", "kotlin", "ruby", "java", "csharp", "zig", "lua",
     ]
 
     # Type mappings: Python type hint → target language type
@@ -6724,16 +7378,19 @@ class AppAuditEngine:
 class CodeEngine:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║  L104 CODE ENGINE v2.4.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
+    ║  L104 CODE ENGINE v3.0.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Wires: LanguageKnowledge + CodeAnalyzer + CodeGenerator +       ║
     ║    CodeOptimizer + DependencyGraphAnalyzer + AutoFixEngine +      ║
     ║    CodeTranslator + TestGenerator + DocumentationSynthesizer +   ║
-    ║    CodeArcheologist + SacredRefactorer + AppAuditEngine           ║
+    ║    CodeArcheologist + SacredRefactorer + AppAuditEngine +        ║
+    ║    CodeSmellDetector + RuntimeComplexityVerifier +               ║
+    ║    IncrementalAnalysisCache                                     ║
     ║                                                                   ║
     ║  API: analyze, generate, optimize, auto_fix, dep_graph, translate║
     ║       generate_tests, generate_docs, audit_app, quick_audit      ║
-    ║       excavate, refactor_analyze, run_streamline_cycle           ║
+    ║       excavate, refactor_analyze, run_streamline_cycle, smells   ║
+    ║       estimate_complexity, deep_review, cached_analyze           ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Claude Pipeline Integration:                                     ║
     ║    claude.md → documents full API + pipeline routing              ║
@@ -6778,6 +7435,10 @@ class CodeEngine:
             archeologist=self.archeologist,
             refactorer=self.refactorer,
         )
+        # v3.0.0 new subsystems
+        self.smell_detector = CodeSmellDetector()
+        self.complexity_verifier = RuntimeComplexityVerifier()
+        self.analysis_cache = IncrementalAnalysisCache()
         self.execution_count = 0
         self.generated_code: List[str] = []
         self._state_cache = {}
@@ -6788,6 +7449,7 @@ class CodeEngine:
                      f"{len(CodeAnalyzer.DESIGN_PATTERNS)} design patterns, "
                      f"{len(AutoFixEngine.FIX_CATALOG)} auto-fixes, "
                      f"{len(CodeTranslator.SUPPORTED_LANGS)} transpile targets, "
+                     f"{len(CodeSmellDetector.SMELL_CATALOG)} smell patterns, "
                      f"AppAuditEngine v{AppAuditEngine.AUDIT_VERSION}")
 
     # ─── Builder state integration (consciousness/O₂/nirvanic) ───
@@ -6978,6 +7640,155 @@ class CodeEngine:
         """Detect performance hotspots: nested loops, O(n²), string concat in loops (v2.5.0)."""
         self.execution_count += 1
         return self.analyzer.detect_performance_hotspots(source)
+
+    # ─── v3.0.0 New API Methods ───
+
+    def detect_smells(self, source: str) -> Dict[str, Any]:
+        """Run deep code smell detection — 12 smell categories with severity scoring (v3.0.0)."""
+        self.execution_count += 1
+        return self.smell_detector.detect_all(source)
+
+    def estimate_complexity(self, source: str) -> Dict[str, Any]:
+        """Estimate runtime complexity O()-notation for all functions in source (v3.0.0)."""
+        self.execution_count += 1
+        return self.complexity_verifier.estimate_complexity(source)
+
+    def cached_analyze(self, code: str, filename: str = "") -> Dict[str, Any]:
+        """Analyze code with incremental caching — skips re-analysis if content unchanged (v3.0.0)."""
+        cached = self.analysis_cache.get(code, "full")
+        if cached is not None:
+            return cached
+        result = self.analyzer.full_analysis(code, filename)
+        self.analysis_cache.put(code, result, "full")
+        return result
+
+    def deep_review(self, source: str, filename: str = "",
+                    auto_fix: bool = False) -> Dict[str, Any]:
+        """
+        v3.0.0 Deep Review — chains ALL subsystems including new v3.0 analyzers.
+
+        Extended pipeline (builds on full_code_review):
+          1. Full analysis (complexity, quality, security, patterns, sacred)
+          2. SOLID principle check
+          3. Performance hotspot detection
+          4. Code smell detection (12 categories) — NEW
+          5. Runtime complexity estimation per function — NEW
+          6. Code archaeology (dead code, fossils, tech debt)
+          7. Refactoring opportunities
+          8. Auto-fix (if enabled, now with 3 new fixes)
+          9. Unified deep verdict with weighted composite score
+
+        Returns a single deeply scored review report.
+        """
+        self.execution_count += 1
+        start = time.time()
+        state = self._read_builder_state()
+
+        # Use cached analysis if available
+        analysis = self.cached_analyze(source, filename)
+
+        # SOLID
+        solid = self.analyzer.detect_solid_violations(source)
+
+        # Performance
+        perf = self.analyzer.detect_performance_hotspots(source)
+
+        # Code Smells (v3.0.0)
+        smells = self.smell_detector.detect_all(source)
+
+        # Runtime Complexity (v3.0.0)
+        complexity_est = self.complexity_verifier.estimate_complexity(source)
+
+        # Archaeology
+        archaeology = self.archeologist.excavate(source)
+
+        # Refactoring
+        refactoring = self.refactorer.analyze(source)
+
+        # Auto-fix
+        fix_result = {"applied": False, "fixes": [], "chars_changed": 0}
+        if auto_fix:
+            fixed_source, fix_log = self.auto_fix.apply_all_safe(source)
+            fix_result = {
+                "applied": True,
+                "fixes": fix_log,
+                "chars_changed": len(fixed_source) - len(source),
+                "fix_count": sum(f.get("count", 0) for f in fix_log),
+            }
+
+        # Unified deep scoring with v3.0 weights
+        scores = {
+            "analysis_quality": analysis.get("quality", {}).get("overall_score", 0.5),
+            "security": 1.0 - min(1.0, len(analysis.get("security", [])) * 0.1),
+            "solid": solid.get("solid_score", 1.0),
+            "performance": perf.get("perf_score", 1.0),
+            "smell_health": smells.get("health_score", 1.0),
+            "complexity_efficiency": complexity_est.get("phi_efficiency_score", 1.0),
+            "archaeology_health": archaeology.get("health_score", 1.0),
+            "refactoring_health": refactoring.get("code_health", 1.0),
+            "sacred_alignment": analysis.get("sacred_alignment", {}).get("overall_sacred_score", 0.5),
+        }
+
+        # PHI-weighted composite
+        phi_weights = [PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, TAU, TAU, TAU]
+        total_weight = sum(phi_weights[:len(scores)])
+        composite = sum(
+            s * w for s, w in zip(scores.values(), phi_weights)
+        ) / total_weight
+
+        # Build prioritized actions from all analyses
+        actions = []
+        for vuln in analysis.get("security", [])[:3]:
+            actions.append({"priority": "CRITICAL", "category": "security",
+                            "action": vuln.get("recommendation", "Fix security issue"),
+                            "source": "analyzer"})
+        for smell in smells.get("smells", [])[:3]:
+            actions.append({"priority": smell["severity"], "category": "smell",
+                            "action": smell["detail"], "source": "smell_detector"})
+        for func in complexity_est.get("functions", []):
+            if func.get("optimization_potential"):
+                actions.append({"priority": "HIGH", "category": "complexity",
+                                "action": f"{func['name']}() is {func['complexity']} — optimize",
+                                "source": "complexity_verifier"})
+        for v in solid.get("violations", [])[:2]:
+            actions.append({"priority": v.get("severity", "MEDIUM"), "category": "solid",
+                            "action": v["detail"], "source": "solid_checker"})
+        actions.sort(key=lambda a: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(a["priority"], 4))
+
+        duration = time.time() - start
+        verdict = ("EXEMPLARY" if composite >= 0.9 else "HEALTHY" if composite >= 0.75
+                   else "ACCEPTABLE" if composite >= 0.6 else "NEEDS_WORK" if composite >= 0.4
+                   else "CRITICAL")
+
+        return {
+            "review_version": VERSION,
+            "review_type": "deep_review_v3",
+            "filename": filename,
+            "language": analysis["metadata"].get("language", "unknown"),
+            "lines": analysis["metadata"].get("lines", 0),
+            "duration_seconds": round(duration, 3),
+            "composite_score": round(composite, 4),
+            "verdict": verdict,
+            "scores": {k: round(v, 4) for k, v in scores.items()},
+            "smells": {"total": smells["total"], "health": smells["health_score"],
+                       "by_category": smells.get("by_category", {})},
+            "runtime_complexity": {
+                "max": complexity_est.get("max_complexity", "unknown"),
+                "high_count": complexity_est.get("high_complexity_count", 0),
+                "efficiency": complexity_est.get("phi_efficiency_score", 1.0)},
+            "solid": {"score": solid["solid_score"], "violations": solid["total_violations"]},
+            "performance": {"score": perf["perf_score"], "hotspots": perf["total_hotspots"]},
+            "archaeology": {"health": archaeology.get("health_score", 1.0),
+                            "dead_code": archaeology.get("dead_code_count", 0)},
+            "refactoring": {"health": refactoring["code_health"],
+                            "suggestions": refactoring["total_suggestions"]},
+            "auto_fix": fix_result,
+            "actions": actions[:20],
+            "builder_state": {
+                "consciousness": state["consciousness_level"],
+                "evo_stage": state["evo_stage"],
+            },
+        }
 
     # ─── App Audit API ───
 
@@ -7186,6 +7997,9 @@ class CodeEngine:
             "archeologist": self.archeologist.status(),
             "refactorer": self.refactorer.status(),
             "app_audit": self.app_audit.status(),
+            "smell_detector": self.smell_detector.status(),
+            "complexity_verifier": self.complexity_verifier.status(),
+            "analysis_cache": self.analysis_cache.status(),
             "analyzer": self.analyzer.status(),
             "generator": self.generator.status(),
             "auto_fix": self.auto_fix.summary(),

@@ -396,6 +396,7 @@ class StageTransitionManager:
             "iq": iq_value, "threshold": threshold,
             "margin": margin, "time": time.time()
         })
+        print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
         return True, "transition_approved"
 
     def predict_next_transition(self, current_iq: float, thresholds: Dict[int, int],
