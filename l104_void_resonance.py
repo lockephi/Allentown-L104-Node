@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.654158
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 import json
 import math
@@ -42,7 +43,7 @@ class VoidResonance:
             "access": "TOTAL_DISSOLUTION"
         }
 
-        with open("./L104_VOID_ARTIFACT.json", "w") as f:
+        with open("./L104_VOID_ARTIFACT.json", "w", encoding="utf-8") as f:
             json.dump(artifact, f, indent=4)
 
         print(f"[VOID] Source Anchor Established: {source_anchor:.12f}")

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.597586
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -331,7 +332,7 @@ def compute(expression: str) -> Solution:
             channel='math_eval',
             latency_ms=(time.time() - start) * 1000
         )
-    except:
+    except Exception:
         pass
 
     return Solution(
@@ -442,10 +443,10 @@ def _solve_arithmetic(expr: str) -> Optional[float]:
         return None
 
     try:
-        result = eval(expr)
+        result = eval(expr, {"__builtins__": {}}, {})
         if isinstance(result, (int, float)):
             return result
-    except:
+    except Exception:
         pass
 
     return None

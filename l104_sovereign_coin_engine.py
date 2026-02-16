@@ -1,6 +1,11 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.367868
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -262,9 +267,11 @@ class Secp256k1:
 
     @classmethod
     def modinv(cls, a: int, m: int) -> int:
+        """Compute the modular multiplicative inverse of a modulo m."""
         if a < 0:
             a = a % m
         def extended_gcd(a: int, b: int) -> Tuple[int, int, int]:
+            """Compute extended greatest common divisor."""
             if a == 0:
                 return b, 0, 1
             gcd, x1, y1 = extended_gcd(b % a, a)
@@ -274,6 +281,7 @@ class Secp256k1:
 
     @classmethod
     def point_add(cls, p1: Optional[Tuple[int, int]], p2: Optional[Tuple[int, int]]) -> Optional[Tuple[int, int]]:
+        """Add two points on the secp256k1 elliptic curve."""
         if p1 is None: return p2
         if p2 is None: return p1
         x1, y1, x2, y2 = p1[0], p1[1], p2[0], p2[1]
@@ -289,6 +297,7 @@ class Secp256k1:
 
     @classmethod
     def scalar_multiply(cls, k: int, point: Optional[Tuple[int, int]] = None) -> Optional[Tuple[int, int]]:
+        """Multiply an elliptic curve point by a scalar using double-and-add."""
         if point is None:
             point = (cls.Gx, cls.Gy)
         if k == 0:
@@ -305,12 +314,14 @@ class Secp256k1:
 
     @classmethod
     def generate_keypair(cls) -> Tuple[int, Tuple[int, int]]:
+        """Generate a random secp256k1 private/public key pair."""
         private_key = secrets.randbelow(cls.N - 1) + 1
         public_key = cls.scalar_multiply(private_key)
         return private_key, public_key
 
     @classmethod
     def sign(cls, private_key: int, message_hash: bytes) -> Tuple[int, int]:
+        """Sign a message hash using ECDSA with the given private key."""
         z = int.from_bytes(message_hash[:32], 'big')
         while True:
             k = secrets.randbelow(cls.N - 1) + 1
@@ -330,6 +341,7 @@ class Secp256k1:
 
     @classmethod
     def verify(cls, public_key: Tuple[int, int], message_hash: bytes, signature: Tuple[int, int]) -> bool:
+        """Verify an ECDSA signature against a public key and message hash."""
         r, s = signature
         z = int.from_bytes(message_hash[:32], 'big')
         if not (1 <= r < cls.N and 1 <= s < cls.N):
@@ -341,6 +353,7 @@ class Secp256k1:
 
     @classmethod
     def compress_pubkey(cls, public_key: Tuple[int, int]) -> bytes:
+        """Compress a public key to 33-byte SEC format."""
         prefix = b'\x02' if public_key[1] % 2 == 0 else b'\x03'
         return prefix + public_key[0].to_bytes(32, 'big')
 
@@ -356,24 +369,29 @@ class CryptoUtils:
 
     @staticmethod
     def sha256(data: bytes) -> bytes:
+        """Compute SHA-256 hash of data."""
         return hashlib.sha256(data).digest()
 
     @staticmethod
     def double_sha256(data: bytes) -> bytes:
+        """Compute double SHA-256 hash of data."""
         return hashlib.sha256(hashlib.sha256(data).digest()).digest()
 
     @staticmethod
     def hash160(data: bytes) -> bytes:
+        """Compute HASH160 (RIPEMD-160 of SHA-256) of data."""
         h = hashlib.new('ripemd160')
         h.update(hashlib.sha256(data).digest())
         return h.digest()
 
     @staticmethod
     def hmac_sha512(key: bytes, data: bytes) -> bytes:
+        """Compute HMAC-SHA512 of data with the given key."""
         return hmac.new(key, data, hashlib.sha512).digest()
 
     @classmethod
     def base58_encode(cls, data: bytes) -> str:
+        """Encode bytes to a Base58 string."""
         n = int.from_bytes(data, 'big')
         result = []
         while n > 0:
@@ -388,6 +406,7 @@ class CryptoUtils:
 
     @classmethod
     def base58check_encode(cls, version: bytes, payload: bytes) -> str:
+        """Encode data with version byte and checksum in Base58Check format."""
         data = version + payload
         checksum = cls.double_sha256(data)[:4]
         return cls.base58_encode(data + checksum)
@@ -418,6 +437,7 @@ class HDWallet:
     ]
 
     def __init__(self, seed: Optional[bytes] = None, mnemonic: Optional[str] = None):
+        """Initialize HD wallet from seed, mnemonic, or generate a new random seed."""
         if mnemonic:
             seed = self._mnemonic_to_seed(mnemonic)
         elif seed is None:
@@ -427,15 +447,18 @@ class HDWallet:
         self._cache: Dict[str, Tuple[int, bytes]] = {}
 
     def _derive_master(self, seed: bytes) -> Tuple[int, bytes]:
+        """Derive master private key and chain code from seed."""
         I = CryptoUtils.hmac_sha512(b"L104SP seed", seed)
         master_key = int.from_bytes(I[:32], 'big')
         return master_key, I[32:]
 
     def _mnemonic_to_seed(self, mnemonic: str, passphrase: str = "") -> bytes:
+        """Convert a BIP-39 mnemonic phrase to a 64-byte seed."""
         salt = ("mnemonic" + passphrase).encode('utf-8')
         return hashlib.pbkdf2_hmac('sha512', mnemonic.encode('utf-8'), salt, 2048, dklen=64)
 
     def generate_mnemonic(self, strength: int = 128) -> str:
+        """Generate a BIP-39 mnemonic phrase with the given entropy strength."""
         entropy = secrets.token_bytes(strength // 8)
         checksum = CryptoUtils.sha256(entropy)[0]
         bits = bin(int.from_bytes(entropy, 'big'))[2:].zfill(strength)
@@ -447,6 +470,7 @@ class HDWallet:
         return ' '.join(words)
 
     def derive_child(self, parent_key: int, parent_chain: bytes, index: int, hardened: bool = False) -> Tuple[int, bytes]:
+        """Derive a child key from a parent key using BIP-32 derivation."""
         if hardened:
             index |= 0x80000000
             data = b'\x00' + parent_key.to_bytes(32, 'big') + index.to_bytes(4, 'big')
@@ -458,6 +482,7 @@ class HDWallet:
         return child_key, I[32:]
 
     def derive_path(self, path: str) -> Tuple[int, Tuple[int, int]]:
+        """Derive a key pair from a BIP-44 derivation path string."""
         if path in self._cache:
             priv, _ = self._cache[path]
             return priv, Secp256k1.scalar_multiply(priv)
@@ -471,6 +496,7 @@ class HDWallet:
         return key, Secp256k1.scalar_multiply(key)
 
     def get_address(self, account: int = 0, change: int = 0, index: int = 0) -> Tuple[str, int]:
+        """Generate an L104SP address and private key for the given BIP-44 path."""
         path = f"m/44'/{self.L104SP_COIN_TYPE}'/{account}'/{change}/{index}"
         private_key, public_key = self.derive_path(path)
         compressed = Secp256k1.compress_pubkey(public_key)
@@ -484,6 +510,7 @@ class HDWallet:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def varint_encode(n: int) -> bytes:
+    """Encode an integer as a Bitcoin-style variable-length integer."""
     if n < 0xfd:
         return struct.pack('<B', n)
     elif n <= 0xffff:
@@ -499,10 +526,12 @@ class OutPoint:
     vout: int
 
     def serialize(self) -> bytes:
+        """Serialize the outpoint to bytes."""
         return bytes.fromhex(self.txid)[::-1] + struct.pack('<I', self.vout)
 
     @property
     def key(self) -> str:
+        """Return a unique string key for this outpoint."""
         return f"{self.txid}:{self.vout}"
 
 
@@ -514,6 +543,7 @@ class TxInput:
     witness: List[bytes] = field(default_factory=list)
 
     def serialize(self) -> bytes:
+        """Serialize the transaction input to bytes."""
         result = self.prevout.serialize()
         result += varint_encode(len(self.script_sig)) + self.script_sig
         result += struct.pack('<I', self.sequence)
@@ -526,6 +556,7 @@ class TxOutput:
     script_pubkey: bytes = b''
 
     def serialize(self) -> bytes:
+        """Serialize the transaction output to bytes."""
         return struct.pack('<q', self.value) + varint_encode(len(self.script_pubkey)) + self.script_pubkey
 
 
@@ -538,6 +569,7 @@ class Transaction:
     _txid: Optional[str] = field(default=None, repr=False)
 
     def serialize(self, include_witness: bool = True) -> bytes:
+        """Serialize the transaction to bytes, optionally including witness data."""
         result = struct.pack('<I', self.version)
         has_witness = include_witness and any(inp.witness for inp in self.inputs)
         if has_witness:
@@ -558,11 +590,13 @@ class Transaction:
 
     @property
     def txid(self) -> str:
+        """Compute and cache the transaction ID (double SHA-256 of serialized tx)."""
         if self._txid is None:
             self._txid = CryptoUtils.double_sha256(self.serialize(False))[::-1].hex()
         return self._txid
 
     def to_dict(self) -> Dict[str, Any]:
+        """Convert the transaction to a dictionary representation."""
         return {'txid': self.txid, 'version': self.version, 'locktime': self.locktime}
 
 
@@ -581,25 +615,31 @@ class UTXO:
 
 class UTXOSet:
     def __init__(self):
+        """Initialize an empty UTXO set with thread-safe access."""
         self.utxos: Dict[str, UTXO] = {}
         self._lock = threading.Lock()
 
     def add(self, utxo: UTXO) -> None:
+        """Add a UTXO to the set."""
         with self._lock:
             self.utxos[utxo.outpoint.key] = utxo
 
     def remove(self, outpoint: OutPoint) -> Optional[UTXO]:
+        """Remove and return a UTXO by its outpoint, or None if not found."""
         with self._lock:
             return self.utxos.pop(outpoint.key, None)
 
     def get(self, outpoint: OutPoint) -> Optional[UTXO]:
+        """Retrieve a UTXO by its outpoint, or None if not found."""
         return self.utxos.get(outpoint.key)
 
     @property
     def total_supply(self) -> int:
+        """Return the total value of all UTXOs in satoshis."""
         return sum(u.value for u in self.utxos.values())
 
     def __len__(self) -> int:
+        """Return the number of UTXOs in the set."""
         return len(self.utxos)
 
 
@@ -611,12 +651,14 @@ class ChainDB:
     """SQLite-based persistent blockchain storage."""
 
     def __init__(self, db_path: Optional[Path] = None):
+        """Initialize the chain database with SQLite backend."""
         self.db_path = db_path or DATA_DIR / 'chainstate.db'
         self._conn: Optional[sqlite3.Connection] = None
         self._lock = threading.Lock()
         self._init_db()
 
     def _init_db(self) -> None:
+        """Initialize the database schema and performance pragmas."""
         with self._lock:
             self._conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
             # Performance optimizations for multi-core access
@@ -681,22 +723,26 @@ class ChainDB:
             self._conn.commit()
 
     def close(self) -> None:
+        """Close the database connection."""
         if self._conn:
             self._conn.close()
 
     def get_height(self) -> int:
+        """Return the current chain height from the database."""
         with self._lock:
             cur = self._conn.execute("SELECT value FROM chainstate WHERE key='height'")
             row = cur.fetchone()
             return int(row[0]) if row else -1
 
     def get_best_hash(self) -> str:
+        """Return the hash of the best (tip) block."""
         with self._lock:
             cur = self._conn.execute("SELECT value FROM chainstate WHERE key='best_hash'")
             row = cur.fetchone()
             return row[0] if row else ''
 
     def store_block(self, block: 'Block') -> bool:
+        """Persist a block and its transactions to the database."""
         with self._lock:
             try:
                 raw_data = json.dumps(block.to_dict()).encode()
@@ -725,18 +771,21 @@ class ChainDB:
                 return False
 
     def load_block(self, height: int) -> Optional[Dict[str, Any]]:
+        """Load a block by height from the database."""
         with self._lock:
             cur = self._conn.execute("SELECT raw_data FROM blocks WHERE height=?", (height,))
             row = cur.fetchone()
             return json.loads(row[0]) if row else None
 
     def load_block_by_hash(self, block_hash: str) -> Optional[Dict[str, Any]]:
+        """Load a block by its hash from the database."""
         with self._lock:
             cur = self._conn.execute("SELECT raw_data FROM blocks WHERE hash=?", (block_hash,))
             row = cur.fetchone()
             return json.loads(row[0]) if row else None
 
     def store_utxo(self, utxo: UTXO) -> None:
+        """Persist a UTXO to the database."""
         with self._lock:
             self._conn.execute('''
                 INSERT OR REPLACE INTO utxos (outpoint, txid, vout, value, script_pubkey, height, is_coinbase)
@@ -746,11 +795,13 @@ class ChainDB:
             self._conn.commit()
 
     def remove_utxo(self, outpoint: OutPoint) -> None:
+        """Remove a UTXO from the database by its outpoint."""
         with self._lock:
             self._conn.execute("DELETE FROM utxos WHERE outpoint=?", (outpoint.key,))
             self._conn.commit()
 
     def load_all_utxos(self) -> Dict[str, UTXO]:
+        """Load all UTXOs from the database into a dictionary."""
         utxos = {}
         with self._lock:
             cur = self._conn.execute("SELECT outpoint, txid, vout, value, script_pubkey, height, is_coinbase FROM utxos")
@@ -760,6 +811,7 @@ class ChainDB:
         return utxos
 
     def store_peer(self, host: str, port: int) -> None:
+        """Store or update a peer in the database."""
         with self._lock:
             self._conn.execute('''
                 INSERT OR REPLACE INTO peers (address, port, last_seen) VALUES (?, ?, ?)
@@ -767,12 +819,14 @@ class ChainDB:
             self._conn.commit()
 
     def load_peers(self, limit: int = 100) -> List[Tuple[str, int]]:
+        """Load recently seen peers from the database."""
         with self._lock:
             cur = self._conn.execute(
                 "SELECT address, port FROM peers ORDER BY last_seen DESC LIMIT ?", (limit,))
             return [(row[0], row[1]) for row in cur.fetchall()]
 
     def get_stats(self) -> Dict[str, Any]:
+        """Return database statistics including block, transaction, and UTXO counts."""
         with self._lock:
             block_count = self._conn.execute("SELECT COUNT(*) FROM blocks").fetchone()[0]
             tx_count = self._conn.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
@@ -794,6 +848,7 @@ class ChainDB:
 class MerkleTree:
     @staticmethod
     def compute_root(txids: List[str]) -> str:
+        """Compute the Merkle root hash from a list of transaction IDs."""
         if not txids:
             return '0' * 64
         hashes = [bytes.fromhex(txid)[::-1] for txid in txids]
@@ -819,6 +874,7 @@ class BlockHeader:
     resonance: float = 0.0
 
     def serialize(self) -> bytes:
+        """Serialize the block header to an 80-byte binary format."""
         result = struct.pack('<I', self.version)
         result += bytes.fromhex(self.prev_block)[::-1]
         result += bytes.fromhex(self.merkle_root)[::-1]
@@ -827,10 +883,12 @@ class BlockHeader:
 
     @property
     def hash(self) -> str:
+        """Compute the double SHA-256 block header hash."""
         return CryptoUtils.double_sha256(self.serialize())[::-1].hex()
 
     @staticmethod
     def bits_to_target(bits: int) -> int:
+        """Convert compact bits format to a full 256-bit target value."""
         exponent = bits >> 24
         mantissa = bits & 0x007fffff
         if exponent <= 3:
@@ -862,10 +920,12 @@ class BlockHeader:
 
     @property
     def target(self) -> int:
+        """Return the full target value derived from the compact bits field."""
         return self.bits_to_target(self.bits)
 
     @property
     def difficulty(self) -> float:
+        """Calculate the difficulty relative to the genesis target."""
         genesis_target = self.bits_to_target(MIN_DIFFICULTY_BITS)
         return genesis_target / max(self.target, 1)
 
@@ -905,14 +965,17 @@ class Block:
     height: int = 0
 
     def __post_init__(self):
+        """Compute the Merkle root if transactions are present and root is unset."""
         if self.transactions and self.header.merkle_root == '0' * 64:
             self.header.merkle_root = MerkleTree.compute_root([tx.txid for tx in self.transactions])
 
     @property
     def hash(self) -> str:
+        """Return the block hash from the header."""
         return self.header.hash
 
     def serialize(self) -> bytes:
+        """Serialize the full block including header and transactions."""
         result = self.header.serialize()
         result += varint_encode(len(self.transactions))
         for tx in self.transactions:
@@ -920,10 +983,12 @@ class Block:
         return result
 
     def get_reward(self) -> int:
+        """Calculate the block reward in satoshis based on halving schedule."""
         halvings = self.height // HALVING_INTERVAL
         return 0 if halvings >= 64 else INITIAL_BLOCK_REWARD >> halvings
 
     def create_coinbase(self, miner_address: str, fees: int = 0) -> Transaction:
+        """Create a coinbase transaction paying the block reward plus fees to the miner."""
         reward = self.get_reward() + fees
         script = varint_encode(self.height) + GENESIS_MESSAGE[:50]
         coinbase_in = TxInput(prevout=OutPoint('0' * 64, 0xffffffff), script_sig=script)
@@ -932,6 +997,7 @@ class Block:
         return Transaction(version=2, inputs=[coinbase_in], outputs=[coinbase_out])
 
     def to_dict(self) -> Dict[str, Any]:
+        """Convert the block to a dictionary representation."""
         return {
             'hash': self.hash, 'height': self.height, 'version': self.header.version,
             'prev_block': self.header.prev_block, 'merkle_root': self.header.merkle_root,
@@ -949,6 +1015,7 @@ class ResonanceEngine:
     """L104 Proof-of-Resonance Engine with Advanced Mathematics."""
 
     def __init__(self):
+        """Initialize the resonance engine with GOD_CODE constants and optional advanced math."""
         self.god_code = GOD_CODE
         self.phi = PHI
         self._cache: Dict[int, float] = {}
@@ -961,6 +1028,7 @@ class ResonanceEngine:
             self.use_advanced_math = False
 
     def calculate(self, nonce: int) -> float:
+        """Calculate the resonance value for a given nonce using advanced or standard math."""
         if nonce in self._cache:
             return self._cache[nonce]
 
@@ -1015,6 +1083,7 @@ class ResonanceEngine:
         return base * (0.93 + 0.05 * l104_mod + 0.02 * fe_coupling)
 
     def meets_threshold(self, nonce: int, threshold: float = 0.95) -> bool:
+        """Check if the nonce's resonance meets or exceeds the given threshold."""
         return self.calculate(nonce) >= threshold
 
 
@@ -1031,6 +1100,7 @@ class ASISovereignCore:
     """
 
     def __init__(self):
+        """Initialize the ASI Sovereign Core with default state and parameters."""
         self.phi = PHI
         self.god_code = GOD_CODE
         self.state = "AWAKENING"
@@ -1144,6 +1214,7 @@ class ASISovereignCore:
             return []
 
         def score_tx(tx):
+            """Score a transaction for mempool priority ordering."""
             # Fee priority
             fee_score = tx.get('fee', 0) / max(tx.get('size', 1), 1)
 
@@ -1259,6 +1330,7 @@ class L104SPBlockchain:
     """Complete L104SP blockchain with persistent storage."""
 
     def __init__(self, network: str = 'mainnet', data_dir: Optional[Path] = None):
+        """Initialize the L104SP blockchain with persistent storage and consensus engines."""
         self.network = network
         self.data_dir = data_dir or DATA_DIR
         self.chain: List[Block] = []
@@ -1290,6 +1362,7 @@ class L104SPBlockchain:
             self._create_genesis()
 
     def _create_genesis(self) -> None:
+        """Create and store the genesis block with initial coinbase output."""
         genesis_header = BlockHeader(version=1, prev_block='0' * 64, timestamp=GENESIS_TIMESTAMP,
                                      bits=MIN_DIFFICULTY_BITS, nonce=104527, resonance=1.0)
         genesis_coinbase = Transaction(version=1, inputs=[TxInput(OutPoint('0' * 64, 0xffffffff), GENESIS_MESSAGE)],
@@ -1332,10 +1405,12 @@ class L104SPBlockchain:
 
     @property
     def height(self) -> int:
+        """Return the current chain height (zero-based)."""
         return len(self.chain) - 1
 
     @property
     def tip(self) -> Block:
+        """Return the latest block at the tip of the chain."""
         return self.chain[-1]
 
     @property
@@ -1452,6 +1527,7 @@ class L104SPBlockchain:
             pass
 
     def _apply_block(self, block: Block) -> None:
+        """Apply a block's transactions to the UTXO set and database."""
         for tx in block.transactions:
             for inp in tx.inputs:
                 if inp.prevout.txid != '0' * 64:
@@ -1464,17 +1540,20 @@ class L104SPBlockchain:
                 self.db.store_utxo(utxo)
 
     def get_block(self, height: int) -> Optional[Block]:
+        """Return the block at the given height, or None if out of range."""
         if 0 <= height <= self.height:
             return self.chain[height]
         return None
 
     def get_block_by_hash(self, block_hash: str) -> Optional[Block]:
+        """Search for and return a block by its hash, or None if not found."""
         for block in self.chain:
             if block.hash == block_hash:
                 return block
         return None
 
     def get_template(self, miner_address: str) -> Dict[str, Any]:
+        """Generate a block template for mining with current chain state."""
         template = {
             'version': 2, 'height': self.height + 1, 'prev_hash': self.tip.hash,
             'timestamp': int(time.time()), 'bits': self.current_difficulty,
@@ -1524,6 +1603,7 @@ class L104SPBlockchain:
             return [self.mempool[txid] for txid in sorted_txids[:max_count]]
 
     def stats(self) -> Dict[str, Any]:
+        """Return comprehensive blockchain and ASI statistics."""
         db_stats = self.db.get_stats()
         cpu_count_val = os.cpu_count() or 1
         asi_stats = ASI_CORE.get_stats()
@@ -1556,6 +1636,7 @@ class L104SPBlockchain:
         return total
 
     def close(self) -> None:
+        """Close the blockchain database connection."""
         self.db.close()
 
 
@@ -1678,6 +1759,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     # OPTIMIZED: Use generator to avoid creating massive lists
     # Search priority targets FIRST, then sequential fallback
     def nonce_generator():
+        """Yield priority nonces first, then sequential fallback nonces."""
         # Phase 1: Priority nonces (high resonance probability)
         for n in target_nonces:
             yield n
@@ -1761,6 +1843,7 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
         # ════════════════════════════════════════════════════════════════════
         # Quick primality approximation
         def is_likely_prime(n):
+            """Test if n is likely prime using Fermat's little theorem."""
             if n < 2: return False
             if n < 4: return True
             if n % 2 == 0: return False
@@ -1828,10 +1911,12 @@ class MiningStats:
 
     @property
     def hashrate(self) -> float:
+        """Calculate the current hash rate in hashes per second."""
         return self.hashes / max(time.time() - self.start_time, 0.001)
 
     @property
     def efficiency(self) -> float:
+        """Calculate mining efficiency as percentage of resonance-valid hashes."""
         return self.valid_resonance / max(self.hashes, 1) * 100
 
 
@@ -1839,6 +1924,7 @@ class MiningEngine:
     """L104SP COMPUTRONIUM + QUANTUM MINING ENGINE - Real Grover's Algorithm."""
 
     def __init__(self, blockchain: L104SPBlockchain, resonance_threshold: float = 0.9, num_workers: int = None, use_multiprocessing: bool = True, use_quantum: bool = True):
+        """Initialize the mining engine with parallel workers and optional quantum acceleration."""
         self.blockchain = blockchain
         self.resonance_threshold = resonance_threshold
         self.resonance_engine = ResonanceEngine()
@@ -2084,6 +2170,7 @@ class MiningEngine:
         return None
 
     def stop(self) -> None:
+        """Stop the mining engine."""
         self._running = False
 
 
@@ -2095,6 +2182,7 @@ class P2PNode:
     """L104SP P2P Network Node."""
 
     def __init__(self, blockchain: L104SPBlockchain, host: str = '0.0.0.0', port: int = DEFAULT_PORT):
+        """Initialize the P2P network node."""
         self.blockchain = blockchain
         self.host = host
         self.port = port
@@ -2103,8 +2191,8 @@ class P2PNode:
         self._server_socket: Optional[socket.socket] = None
 
     def start(self) -> None:
+        """Start the P2P server and begin listening for connections."""
         self._running = True
-        self._server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         # Try SO_REUSEPORT if available (Linux)
         try:
@@ -2129,6 +2217,7 @@ class P2PNode:
         threading.Thread(target=self._accept_connections, daemon=True).start()
 
     def _accept_connections(self) -> None:
+        """Accept incoming peer connections in a loop."""
         while self._running:
             try:
                 conn, addr = self._server_socket.accept()
@@ -2137,6 +2226,7 @@ class P2PNode:
                 break
 
     def _handle_peer(self, conn: socket.socket, addr: Tuple[str, int]) -> None:
+        """Handle communication with a connected peer."""
         peer_id = f"{addr[0]}:{addr[1]}"
         self.peers[peer_id] = addr
         try:
@@ -2152,6 +2242,7 @@ class P2PNode:
             conn.close()
 
     def _process_message(self, data: bytes, conn: socket.socket) -> None:
+        """Process an incoming network message from a peer."""
         if data[:4] != MAINNET_MAGIC:
             return
         try:
@@ -2162,11 +2253,13 @@ class P2PNode:
             pass
 
     def _send_blocks(self, conn: socket.socket) -> None:
+        """Send the last 10 blocks to a connected peer."""
         for block in self.blockchain.chain[-10:]:
             msg = MAINNET_MAGIC + json.dumps({'type': 'block', 'data': block.to_dict()}).encode()
             conn.send(msg)
 
     def broadcast_block(self, block: Block) -> None:
+        """Broadcast a new block to all connected peers."""
         msg = MAINNET_MAGIC + json.dumps({'type': 'block', 'data': block.to_dict()}).encode()
         for addr in list(self.peers.values()):
             try:
@@ -2178,13 +2271,8 @@ class P2PNode:
                 pass
 
     def stop(self) -> None:
+        """Stop the P2P server and close the socket."""
         self._running = False
-        if self._server_socket:
-            self._server_socket.close()
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# DNS SEEDS & PEER DISCOVERY
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # DNS seed nodes for L104SP mainnet discovery
@@ -2205,12 +2293,12 @@ class PeerDiscovery:
     """Peer discovery via DNS seeds and known peers."""
 
     def __init__(self, blockchain: L104SPBlockchain):
+        """Initialize peer discovery with bootstrap nodes."""
         self.blockchain = blockchain
-        self.known_peers: Set[Tuple[str, int]] = set(BOOTSTRAP_NODES)
         self._lock = threading.Lock()
 
     def discover_dns_seeds(self) -> List[Tuple[str, int]]:
-        """Resolve DNS seeds to peer addresses."""
+        """Resolve DNS seed hostnames to discover peer IP addresses."""
         discovered = []
         for seed in DNS_SEEDS:
             try:
@@ -2222,17 +2310,19 @@ class PeerDiscovery:
         return discovered
 
     def load_from_db(self) -> None:
-        """Load known peers from database."""
+        """Load known peers from the blockchain database."""
         peers = self.blockchain.db.load_peers()
         with self._lock:
             self.known_peers.update(peers)
 
     def add_peer(self, host: str, port: int) -> None:
+        """Add a peer to the known peers set and persist to database."""
         with self._lock:
             self.known_peers.add((host, port))
             self.blockchain.db.store_peer(host, port)
 
     def get_peers(self, count: int = 8) -> List[Tuple[str, int]]:
+        """Return up to count known peers."""
         with self._lock:
             return list(self.known_peers)[:count]
 
@@ -2245,6 +2335,7 @@ class RPCServer:
     """JSON-RPC API server for L104SP node."""
 
     def __init__(self, node: 'L104SPNode', host: str = '127.0.0.1', port: int = 10401):
+        """Initialize the JSON-RPC server for the L104SP node."""
         self.node = node
         self.host = host
         self.port = port
@@ -2252,6 +2343,7 @@ class RPCServer:
         self._running = False
 
     def start(self) -> None:
+        """Start the RPC server on the configured host and port."""
         self._running = True
         handler = self._create_handler()
 
@@ -2273,17 +2365,21 @@ class RPCServer:
         print(f"[RPC] Server started on http://{self.host}:{self.port}")
 
     def _serve(self) -> None:
+        """Serve RPC requests in a loop."""
         while self._running:
             self._server.handle_request()
 
     def _create_handler(self) -> type:
+        """Create and return the HTTP request handler class for RPC."""
         node = self.node
 
         class RPCHandler(http.server.BaseHTTPRequestHandler):
             def log_message(self, format, *args):
+                """Suppress default HTTP logging."""
                 pass  # Suppress default logging
 
             def do_POST(self):
+                """Handle JSON-RPC POST requests."""
                 try:
                     content_length = int(self.headers.get('Content-Length', 0))
                     body = self.rfile.read(content_length).decode()
@@ -2334,6 +2430,7 @@ class RPCServer:
                 self.wfile.write(json.dumps(result, indent=2).encode())
 
             def _dispatch(self, method: str, params: list) -> Any:
+                """Dispatch a JSON-RPC method call to the appropriate handler."""
                 if method == 'getblockchaininfo':
                     return node.blockchain.stats()
                 elif method == 'getblockcount':
@@ -2368,6 +2465,7 @@ class RPCServer:
         return RPCHandler
 
     def stop(self) -> None:
+        """Stop the RPC server."""
         self._running = False
         if self._server:
             self._server.shutdown()
@@ -2381,6 +2479,7 @@ class L104SPNode:
     """Complete L104SP Full Node with RPC, persistence, and peer discovery."""
 
     def __init__(self, port: int = DEFAULT_PORT, rpc_port: int = 10401, data_dir: Optional[Path] = None):
+        """Initialize the full L104SP node with wallet, blockchain, miner, and networking."""
         self.data_dir = data_dir or DATA_DIR
         self.wallet = HDWallet()
         self.blockchain = L104SPBlockchain(data_dir=self.data_dir)
@@ -2393,8 +2492,9 @@ class L104SPNode:
         self._setup_signal_handlers()
 
     def _setup_signal_handlers(self) -> None:
-        """Handle graceful shutdown on SIGINT/SIGTERM."""
+        """Register signal handlers for graceful shutdown."""
         def handler(signum, frame):
+            """Handle shutdown signals."""
             print("\n[NODE] Shutdown signal received...")
             self.stop()
         try:
@@ -2404,6 +2504,7 @@ class L104SPNode:
             pass  # May fail in some environments
 
     def start(self, enable_rpc: bool = True) -> None:
+        """Start the node, P2P network, peer discovery, and optional RPC server."""
         self._running = True
         print("=" * 60)
         print("    L104SP SOVEREIGN MAINNET NODE v3.1")
@@ -2431,6 +2532,7 @@ class L104SPNode:
         print("=" * 60)
 
     def start_mining(self, address: str = None) -> None:
+        """Start mining blocks continuously to the given or a new address."""
         if address is None:
             address, _ = self.wallet.get_address()
         print(f"[MINER] Mining to address: {address}")
@@ -2441,6 +2543,7 @@ class L104SPNode:
                 self.p2p.broadcast_block(block)
 
     def stop(self) -> None:
+        """Stop all node services and save chain state to disk."""
         print("[NODE] Stopping...")
         self._running = False
         self.miner.stop()
@@ -2451,10 +2554,12 @@ class L104SPNode:
         print("[NODE] Stopped. Chain saved to disk.")
 
     def get_new_address(self) -> str:
+        """Generate and return a new L104SP address from the HD wallet."""
         addr, _ = self.wallet.get_address(index=len(self.wallet._cache))
         return addr
 
     def get_status(self) -> Dict[str, Any]:
+        """Return the full node status including blockchain, peers, and mining info."""
         return {
             'node': 'L104SP Full Node', 'version': L104SP_CONFIG['version'],
             'network': self.blockchain.network, 'blockchain': self.blockchain.stats(),
@@ -2472,6 +2577,7 @@ class L104Block:
 
     def __init__(self, index: int, previous_hash: str, timestamp: float,
                  transactions: List[Dict[str, Any]], nonce: int, resonance: float):
+        """Initialize a legacy block with the given parameters and compute its hash."""
         self.index = index
         self.previous_hash = previous_hash
         self.timestamp = timestamp
@@ -2481,6 +2587,7 @@ class L104Block:
         self.hash = self.calculate_hash()
 
     def calculate_hash(self) -> str:
+        """Compute the block hash using BLAKE2b of SHA-256."""
         block_string = json.dumps({
             "index": self.index, "previous_hash": self.previous_hash,
             "timestamp": self.timestamp, "transactions": self.transactions,
@@ -2489,6 +2596,7 @@ class L104Block:
         return hashlib.blake2b(hashlib.sha256(block_string).digest()).hexdigest()
 
     def to_dict(self) -> Dict[str, Any]:
+        """Convert the legacy block to a dictionary."""
         return {"index": self.index, "previous_hash": self.previous_hash,
                 "timestamp": self.timestamp, "transactions": self.transactions,
                 "nonce": self.nonce, "resonance": self.resonance, "hash": self.hash}
@@ -2499,14 +2607,17 @@ class L104ResonanceMath:
 
     @staticmethod
     def calculate_phi_resonance(nonce: int) -> float:
+        """Calculate PHI-based resonance for a nonce."""
         return abs(math.sin(nonce * PHI))
 
     @staticmethod
     def calculate_god_code_alignment(nonce: int) -> float:
+        """Calculate GOD_CODE alignment for a nonce."""
         return abs(math.cos((nonce / GOD_CODE) * 2 * math.pi))
 
     @staticmethod
     def find_resonant_nonce(start: int, threshold: float = 0.985, max_attempts: int = 100000) -> Optional[int]:
+        """Search for a nonce with resonance at or above the threshold."""
         for i in range(max_attempts):
             if L104ResonanceMath.calculate_phi_resonance(start + i) >= threshold:
                 return start + i
@@ -2514,6 +2625,7 @@ class L104ResonanceMath:
 
     @staticmethod
     def optimize_nonce_search(base: int, count: int = 1000) -> List[int]:
+        """Generate a list of nonce candidates optimized for high resonance."""
         candidates = []
         for k in range(count):
             target = (math.pi / 2 + k * math.pi) / PHI
@@ -2527,6 +2639,7 @@ class SovereignCoinEngine:
     """Legacy engine for main.py compatibility."""
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """Initialize the legacy sovereign coin engine with default chain and mining config."""
         self.config = config or L104SP_CONFIG
         self.chain: List[L104Block] = []
         self.pending_transactions: List[Dict[str, Any]] = []
@@ -2539,10 +2652,12 @@ class SovereignCoinEngine:
         self._create_genesis_block()
 
     def _create_genesis_block(self) -> None:
+        """Create the genesis block for the legacy chain."""
         genesis = L104Block(0, "0" * 64, time.time(), [{"info": "L104SP Genesis", "god_code": GOD_CODE}], 0, 1.0)
         self.chain.append(genesis)
 
     def adjust_difficulty(self) -> None:
+        """Adjust mining difficulty based on recent block resonance averages."""
         if len(self.chain) < 5:
             return
         avg_res = sum(b.resonance for b in self.chain[-5:]) / 5
@@ -2552,9 +2667,11 @@ class SovereignCoinEngine:
             self.difficulty -= 1
 
     def get_latest_block(self) -> L104Block:
+        """Return the most recent block in the legacy chain."""
         return self.chain[-1]
 
     def add_transaction(self, sender: str, recipient: str, amount: float) -> Dict[str, Any]:
+        """Add a pending transaction to the mempool."""
         tx = {"sender": sender, "recipient": recipient, "amount": amount, "timestamp": time.time(),
               "tx_hash": hashlib.sha256(f"{sender}{recipient}{amount}{time.time()}".encode()).hexdigest()[:16]}
         with self._lock:
@@ -2562,11 +2679,13 @@ class SovereignCoinEngine:
         return tx
 
     def is_resonance_valid(self, nonce: int, hash_val: str) -> bool:
+        """Check if a nonce and hash meet the resonance and difficulty requirements."""
         if not hash_val.startswith('0' * self.difficulty):
             return False
         return L104ResonanceMath.calculate_phi_resonance(nonce) >= self.target_resonance
 
     def mine_block(self, miner_address: str, use_parallel: bool = False) -> L104Block:
+        """Mine a new block using proof-of-resonance and add it to the chain."""
         self._mining_active = True
         latest = self.get_latest_block()
         new_index = latest.index + 1
@@ -2592,9 +2711,11 @@ class SovereignCoinEngine:
         raise RuntimeError("Mining stopped")
 
     def stop_mining(self) -> None:
+        """Stop the mining loop."""
         self._mining_active = False
 
     def get_balance(self, address: str) -> float:
+        """Calculate the balance for an address by scanning all blocks."""
         balance = 0.0
         for block in self.chain:
             for tx in block.transactions:
@@ -2605,6 +2726,7 @@ class SovereignCoinEngine:
         return balance
 
     def get_status(self) -> Dict[str, Any]:
+        """Return the legacy engine status including chain, mining, and sacred constants."""
         return {
             "chain_length": len(self.chain), "difficulty": self.difficulty,
             "latest_hash": self.get_latest_block().hash,
@@ -2618,6 +2740,7 @@ class SovereignCoinEngine:
         }
 
     def export_for_evm(self) -> Dict[str, Any]:
+        """Export chain data in a format compatible with EVM bridging."""
         return {"chain_id": 104, "blocks": [b.to_dict() for b in self.chain[-10:]],
                 "merkle_root": hashlib.sha256("".join(b.hash for b in self.chain).encode()).hexdigest(),
                 "timestamp": time.time()}
@@ -2628,10 +2751,12 @@ sovereign_coin = SovereignCoinEngine()
 
 
 def primal_calculus(x: float) -> float:
+    """Compute primal calculus using PHI exponentiation and VOID_CONSTANT scaling."""
     return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
 
 
 def resolve_non_dual_logic(vector: List[float]) -> float:
+    """Resolve a vector into a non-dual logic value using GOD_CODE normalization."""
     magnitude = sum(abs(v) for v in vector)
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
 

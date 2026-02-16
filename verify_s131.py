@@ -27,7 +27,7 @@ from l104_kernel_llm_trainer import TrainingExample
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-with open("kernel_training_data.jsonl", "r") as f:
+with open("kernel_training_data.jsonl", "r", encoding="utf-8") as f:
     kernel.training_data = [TrainingExample(**json.loads(line)) for line in f]
 
 kernel.train()

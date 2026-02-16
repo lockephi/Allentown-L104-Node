@@ -4,6 +4,11 @@ UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.938101
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -870,28 +875,51 @@ class RecursiveSelfImprovement:
         return optimization
 
     def _optimize_coherence(self, target: str) -> Dict[str, Any]:
-        """Coherence optimization strategy."""
-        if "coherence" in target.lower():
-            return {"strategy": "coherence", "improvement": 0.05 * np.random.random()}
-        return {"strategy": "coherence", "improvement": 0.01 * np.random.random()}
+        """Coherence optimization strategy using performance-driven gain calculation."""
+        try:
+            current = self.current_performance.get(target, self.current_performance.get("coherence", 0.5))
+            # Improvement proportional to gap from ceiling (diminishing returns)
+            gap = max(0.0, 1.0 - current)
+            improvement = gap * 0.05 if "coherence" in target.lower() else gap * 0.01
+            return {"strategy": "coherence", "improvement": improvement}
+        except Exception:
+            return {"strategy": "coherence", "improvement": 0.005}
 
     def _optimize_efficiency(self, target: str) -> Dict[str, Any]:
-        """Efficiency optimization strategy."""
-        if "efficiency" in target.lower() or "speed" in target.lower():
-            return {"strategy": "efficiency", "improvement": 0.05 * np.random.random()}
-        return {"strategy": "efficiency", "improvement": 0.01 * np.random.random()}
+        """Efficiency optimization strategy using cycle-count based gain."""
+        try:
+            # More cycles = more refined optimization (logarithmic improvement)
+            cycle_factor = 1.0 / (1.0 + self.improvement_cycles * 0.1)
+            base = 0.05 if ("efficiency" in target.lower() or "speed" in target.lower()) else 0.01
+            improvement = base * cycle_factor
+            return {"strategy": "efficiency", "improvement": improvement}
+        except Exception:
+            return {"strategy": "efficiency", "improvement": 0.005}
 
     def _optimize_integration(self, target: str) -> Dict[str, Any]:
-        """Integration optimization strategy."""
-        if "integration" in target.lower():
-            return {"strategy": "integration", "improvement": 0.05 * np.random.random()}
-        return {"strategy": "integration", "improvement": 0.01 * np.random.random()}
+        """Integration optimization strategy using cross-metric averaging."""
+        try:
+            # Improvement derived from average of all current metrics
+            if self.current_performance:
+                avg = sum(self.current_performance.values()) / len(self.current_performance)
+                gap = max(0.0, 1.0 - avg)
+            else:
+                gap = 0.5
+            improvement = gap * 0.05 if "integration" in target.lower() else gap * 0.01
+            return {"strategy": "integration", "improvement": improvement}
+        except Exception:
+            return {"strategy": "integration", "improvement": 0.005}
 
     def _optimize_depth(self, target: str) -> Dict[str, Any]:
-        """Depth optimization strategy."""
-        if "depth" in target.lower():
-            return {"strategy": "depth", "improvement": 0.05 * np.random.random()}
-        return {"strategy": "depth", "improvement": 0.01 * np.random.random()}
+        """Depth optimization strategy using optimization history depth."""
+        try:
+            # Deeper optimization history means more refined changes
+            history_depth = len(self.optimizations) + 1
+            diminishing = 1.0 / (1.0 + history_depth * 0.05)
+            improvement = 0.05 * diminishing if "depth" in target.lower() else 0.01 * diminishing
+            return {"strategy": "depth", "improvement": improvement}
+        except Exception:
+            return {"strategy": "depth", "improvement": 0.005}
 
     def get_improvement_status(self) -> Dict[str, Any]:
         """Get self-improvement status."""

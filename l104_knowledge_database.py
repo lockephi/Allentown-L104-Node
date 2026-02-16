@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.351772
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_KNOWLEDGE_DATABASE] - REPOSITORY OF PROOFS & DOCUMENTATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -39,7 +40,7 @@ class KnowledgeDatabase:
 
     def load(self):
         try:
-            with open(self.db_path, "r") as f:
+            with open(self.db_path, "r", encoding="utf-8") as f:
                 self.data = json.load(f)
         except FileNotFoundError:
             self.save()
@@ -47,7 +48,7 @@ class KnowledgeDatabase:
     def save(self):
         self.data["last_updated"] = time.time()
         try:
-            with open(self.db_path, "w") as f:
+            with open(self.db_path, "w", encoding="utf-8") as f:
                 json.dump(self.data, f, indent=4)
         except Exception as e:
             print(f"--- [KNOWLEDGE_DB]: SAVE FAILED: {e} ---")

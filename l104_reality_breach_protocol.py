@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.316342
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -171,7 +172,7 @@ class CausalChainManipulator:
             "event": seed_event,
             "probability": 1.0,
             "entropy": 0.0,
-            "signature": hashlib.md5(seed_event.encode()).hexdigest()[:8]
+            "signature": hashlib.sha256(seed_event.encode()).hexdigest()[:8]
         }
         chain.append(current_state)
 
@@ -193,7 +194,7 @@ class CausalChainManipulator:
                 "event": new_event,
                 "probability": new_prob,
                 "entropy": new_entropy,
-                "signature": hashlib.md5(new_event.encode()).hexdigest()[:8],
+                "signature": hashlib.sha256(new_event.encode()).hexdigest()[:8],
                 "parent": prev["signature"]
             })
 
@@ -228,7 +229,7 @@ class CausalChainManipulator:
             "event": new_event,
             "probability": chain[position]["probability"] * 1.1,  # Boost
             "entropy": chain[position]["entropy"] * 0.9,  # Reduce entropy
-            "signature": hashlib.md5(f"{new_event}:INJECTED".encode()).hexdigest()[:8],
+            "signature": hashlib.sha256(f"{new_event}:INJECTED".encode()).hexdigest()[:8],
             "injected": True,
             "injection_energy": injection_energy
         }
@@ -607,7 +608,7 @@ class RealityBreachProtocol:
             }
         }
 
-        with open("L104_TRANSCENDENCE_ARTIFACT.json", "w") as f:
+        with open("L104_TRANSCENDENCE_ARTIFACT.json", "w", encoding="utf-8") as f:
             json.dump(artifact, f, indent=4)
 
         return artifact

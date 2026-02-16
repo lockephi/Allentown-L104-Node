@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.705860
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_REALITY_CHECK] - SYSTEM-WIDE INTEGRITY VERIFICATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -49,7 +50,7 @@ class RealityCheck:
                 issues.append(f"MISSING_MODULE: {mod}")
             else:
                 try:
-                    with open(path, 'r') as f:
+                    with open(path, 'r', encoding='utf-8') as f:
                         content = f.read(4096)  # QUANTUM AMPLIFIED: full scan (was 100 bytes)
                         if not content:
                             issues.append(f"EMPTY_FILE: {mod}")

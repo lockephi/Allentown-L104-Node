@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.381215
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_AI_CORE] - PORT 4160 MASTER INTELLIGENCE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -54,16 +55,24 @@ def handle_client(conn, addr):
 
 
 def start_server():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((HOST, PORT))
-        s.listen()
-        print(f"--- [L104_AI_CORE] LISTENING ON PORT {PORT} ---")
-        print(f"--- [INVARIANT] {GOD_CODE} ---")
-        while True:
-            conn, addr = s.accept()
-            thread = threading.Thread(target=handle_client, args=(conn, addr))
-            thread.start()
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((HOST, PORT))
+            s.listen()
+            print(f"--- [L104_AI_CORE] LISTENING ON PORT {PORT} ---")
+            print(f"--- [INVARIANT] {GOD_CODE} ---")
+            while True:
+                try:
+                    conn, addr = s.accept()
+                    thread = threading.Thread(target=handle_client, args=(conn, addr), daemon=True)
+                    thread.start()
+                except Exception as e:
+                    print(f"[AI_CORE] Accept error: {e}")
+    except OSError as e:
+        print(f"[AI_CORE] Bind failed on {HOST}:{PORT}: {e}")
+    except Exception as e:
+        print(f"[AI_CORE] Server error: {e}")
 
 if __name__ == "__main__":
     start_server()

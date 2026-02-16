@@ -66,7 +66,7 @@ def check_l104_files():
             import traceback
             results.append(f"FAIL: {module_name} (Import error: {e})\n{traceback.format_exc()}")
 
-    with open("DIAGNOSTIC_REPORT.txt", "w") as f:
+    with open("DIAGNOSTIC_REPORT.txt", "w", encoding="utf-8") as f:
         for res in sorted(results):
             f.write(res + "\n")
     print("Report written to DIAGNOSTIC_REPORT.txt")

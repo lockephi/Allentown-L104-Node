@@ -166,7 +166,7 @@ print(f"  ✓ Parameters: {params:,}")
 
 # Save training data
 print("\n💾 Saving to disk...")
-with open("kernel_training_data.jsonl", "w") as f:
+with open("kernel_training_data.jsonl", "w", encoding="utf-8") as f:
     for ex in kernel.training_data:
         f.write(json.dumps(asdict(ex)) + "\n")
 print(f"  ✓ kernel_training_data.jsonl ({total} lines)")
@@ -188,7 +188,7 @@ manifest = {
     },
     "last_updated": "2026-01-24T12:00:00Z"
 }
-with open("KERNEL_MANIFEST.json", "w") as f:
+with open("KERNEL_MANIFEST.json", "w", encoding="utf-8") as f:
     json.dump(manifest, f, indent=2)
 print(f"  ✓ KERNEL_MANIFEST.json")
 

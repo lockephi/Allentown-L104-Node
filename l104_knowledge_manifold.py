@@ -3,6 +3,11 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.644716
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_KNOWLEDGE_MANIFOLD] - NEURAL-SYMBOLIC MEMORY SYSTEM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -35,7 +40,7 @@ class KnowledgeManifold:
     def _load_manifold(self) -> Dict[str, Any]:
         if os.path.exists(self.manifold_path):
             try:
-                with open(self.manifold_path, "r") as f:
+                with open(self.manifold_path, "r", encoding="utf-8") as f:
                     return json.load(f)
             except Exception:
                 return {"patterns": {}, "anchors": []}
@@ -43,7 +48,7 @@ class KnowledgeManifold:
 
     def save_manifold(self):
         os.makedirs(os.path.dirname(self.manifold_path), exist_ok=True)
-        with open(self.manifold_path, "w") as f:
+        with open(self.manifold_path, "w", encoding="utf-8") as f:
             json.dump(self.memory, f, indent=2)
 
     def ingest_pattern(self, key: str, data: Any, tags: List[str]):

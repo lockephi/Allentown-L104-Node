@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.051938
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -123,9 +124,9 @@ class L104Kernel:
                             try:
                                 obj = json.loads(line.strip())
                                 self.examples.append(obj)
-                            except:
+                            except Exception:
                                 pass
-                except:
+                except Exception:
                     pass
 
         # Load embeddings
@@ -762,7 +763,7 @@ class BenchmarkSuite:
         # Save report
         _base_dir = Path(__file__).parent.absolute()
         report_path = _base_dir / 'benchmark_report.json'
-        with open(report_path, 'w') as f:
+        with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2)
         print(f"\n  Report saved: {report_path.name}")
 

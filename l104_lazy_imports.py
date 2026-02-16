@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.667182
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
@@ -260,7 +261,7 @@ class ImportOptimizer:
         """Analyze imports in a Python file."""
         import ast
 
-        with open(filepath, 'r') as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
         tree = ast.parse(content)

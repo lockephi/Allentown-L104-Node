@@ -24,7 +24,7 @@ from typing import List
 
 async def read_current_main():
     """Read the current main.py file."""
-    with open("main.py", "r") as f:
+    with open("main.py", "r", encoding="utf-8") as f:
         return f.read()
 
 
@@ -268,7 +268,7 @@ async def update_main_via_api(improved_code: str) -> bool:
 
     # For now, save locally for review
     backup_path = "main.improved.py"
-    with open(backup_path, "w") as f:
+    with open(backup_path, "w", encoding="utf-8") as f:
         f.write(improved_code)
 
     print(f"\n[SUCCESS]: Improved code saved to {backup_path}")

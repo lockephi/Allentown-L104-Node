@@ -167,6 +167,7 @@ class LRUCache:
     __slots__ = ('maxsize', '_cache', '_order', 'hits', 'misses')
 
     def __init__(self, maxsize: int = 128):
+        """Initialize LRUCache."""
         self.maxsize = maxsize
         self._cache: dict = {}  # Plain dict is fastest
         self._order: list = []  # Track insertion order for eviction
@@ -175,6 +176,7 @@ class LRUCache:
 
     def get(self, key: str) -> Optional[Any]:
         # ULTRA-FAST: Direct dict lookup, no overhead
+        """Retrieve value by key."""
         val = self._cache.get(key)
         if val is not None:
             self.hits += 1
@@ -183,6 +185,7 @@ class LRUCache:
         return val
 
     def put(self, key: str, value: Any):
+        """Store a key-value pair."""
         cache = self._cache
         if key not in cache:
             self._order.append(key)
@@ -195,6 +198,7 @@ class LRUCache:
             self._order = self._order[excess:]
 
     def clear(self):
+        """Clear all cached entries."""
         self._cache.clear()
         self._order.clear()
 
@@ -230,6 +234,7 @@ class QuantumEntangledCache:
                  '_prediction_cache', '_concept_warm', 'maxsize', 'hits', 'misses', 'entangled_hits')
 
     def __init__(self, maxsize: int = 500):
+        """Initialize QuantumEntangledCache."""
         self.maxsize = maxsize
         self._cache: dict = {}  # key -> response
         self._fingerprints: dict = {}  # key -> semantic fingerprint vector
@@ -385,12 +390,14 @@ class CachedCursor:
     __slots__ = ('_cursor', '_cache', '_last_sql', '_last_params')
 
     def __init__(self, cursor, cache):
+        """Initialize CachedCursor."""
         self._cursor = cursor
         self._cache = cache
         self._last_sql = None
         self._last_params = None
 
     def execute(self, sql, params=()):
+        """Execute a database query."""
         self._last_sql = sql
         self._last_params = params
         # Only execute real query for non-SELECT or if not cacheable
@@ -399,6 +406,7 @@ class CachedCursor:
         return self
 
     def fetchone(self):
+        """Fetch a single result row."""
         sql, params = self._last_sql, self._last_params
         if sql and params:
             cache_key = f"{sql}:{params}"
@@ -418,9 +426,11 @@ class CachedCursor:
         return self._cursor.fetchone()
 
     def fetchall(self):
+        """Fetch all result rows."""
         return self._cursor.fetchall()
 
     def __iter__(self):
+        """Iterate over result rows."""
         return iter(self._cursor)
 
 
@@ -444,6 +454,7 @@ class Database:
         return _global_db_instance
 
     def __init__(self, path: Path = DB_PATH):
+        """Initialize Database."""
         if getattr(self, '_initialized', False):
             return
         self.path = path
@@ -455,6 +466,7 @@ class Database:
 
     @property
     def conn(self) -> sqlite3.Connection:
+        """Return the conn."""
         if not hasattr(self._local, 'conn') or self._local.conn is None:
             self._local.conn = sqlite3.connect(str(self.path), check_same_thread=False, timeout=30.0, cached_statements=256)
             self._local.conn.row_factory = sqlite3.Row
@@ -591,6 +603,7 @@ class Database:
         return cursor.fetchall()
 
     def commit(self):
+        """Commit the current transaction."""
         self.conn.commit()
 
 
@@ -604,6 +617,7 @@ class Gemini:
     MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro-002']
 
     def __init__(self):
+        """Initialize Gemini."""
         self.api_key = os.getenv('GEMINI_API_KEY')
         self.client = None
         self.model_name = self.MODELS[0]
@@ -670,7 +684,7 @@ class Gemini:
 
         # Normalize cache key (handle None system)
         system_str = system or ""
-        cache_key = hashlib.md5(f"{prompt}:{system_str}".encode()).hexdigest()
+        cache_key = hashlib.sha256(f"{prompt}:{system_str}".encode()).hexdigest()
 
         if use_cache:
             # Layer 1: Exact LRU cache (fastest)
@@ -774,6 +788,7 @@ class Memory:
     """Persistent memory system with ASI caching."""
 
     def __init__(self, db: Database):
+        """Initialize Memory."""
         self.db = db
         # ASI OPTIMIZATION: Search result cache
         self._search_cache = LRUCache(maxsize=200)
@@ -870,6 +885,7 @@ class Knowledge:
     """Knowledge graph with semantic search."""
 
     def __init__(self, db: Database):
+        """Initialize Knowledge."""
         self.db = db
         self._embedding_cache = LRUCache(maxsize=500)
         self._batch_mode = False
@@ -889,7 +905,7 @@ class Knowledge:
             for row in rows:
                 try:
                     self._node_cache[row['label']] = json.loads(row['embedding'])
-                except:
+                except Exception:
                     pass
             self._cache_loaded = True
             logger.debug(f"Knowledge cache loaded: {len(self._node_cache)} nodes")
@@ -1037,6 +1053,7 @@ class Learning:
     """Self-learning from interactions with ASI caching."""
 
     def __init__(self, db: Database, gemini: Gemini):
+        """Initialize Learning."""
         self.db = db
         self.gemini = gemini
         # ASI OPTIMIZATION: Caches for recall and context
@@ -1072,7 +1089,7 @@ Return: {{"facts": [], "preferences": []}} (empty arrays if nothing notable)"""
             try:
                 # Handle both string and dict facts from Gemini
                 fact_str = json.dumps(fact) if isinstance(fact, dict) else str(fact)
-                fact_id = hashlib.md5(fact_str.encode()).hexdigest()[:12]
+                fact_id = hashlib.sha256(fact_str.encode()).hexdigest()[:12]
                 self.db.execute("""
                     INSERT OR IGNORE INTO learnings (id, content, category, source)
                     VALUES (?, ?, 'fact', 'interaction')
@@ -1087,7 +1104,7 @@ Return: {{"facts": [], "preferences": []}} (empty arrays if nothing notable)"""
             try:
                 # Handle both string and dict preferences from Gemini
                 pref_str = json.dumps(pref) if isinstance(pref, dict) else str(pref)
-                pref_id = hashlib.md5(pref_str.encode()).hexdigest()[:12]
+                pref_id = hashlib.sha256(pref_str.encode()).hexdigest()[:12]
                 self.db.execute("""
                     INSERT OR IGNORE INTO learnings (id, content, category, source)
                     VALUES (?, ?, 'preference', 'interaction')
@@ -1165,6 +1182,7 @@ class Planner:
     """Task planning and execution."""
 
     def __init__(self, db: Database, gemini: Gemini):
+        """Initialize Planner."""
         self.db = db
         self.gemini = gemini
         self._queue: List[Task] = []
@@ -1184,7 +1202,7 @@ Return JSON: [{{"title": "task description", "priority": 1-5}}]"""
             if start >= 0 and end > start:
                 task_list = json.loads(result[start:end])
                 for t in task_list[:max_tasks]:
-                    task_id = hashlib.md5(t.get("title", "").encode()).hexdigest()[:8]
+                    task_id = hashlib.sha256(t.get("title", "").encode()).hexdigest()[:8]
                     task = Task(
                         priority=t.get("priority", 3),
                         id=task_id,
@@ -1249,6 +1267,7 @@ class ScienceProcessor:
 
     def __init__(self):
         # Core constants
+        """Initialize ScienceProcessor."""
         self.god_code = GOD_CODE
         self.phi = PHI
         self.zeta_1 = ZETA_ZERO_1
@@ -1393,6 +1412,7 @@ class ScienceProcessor:
         state = [[1+0j, 0+0j], [0+0j, 1+0j]]  # Identity
 
         def matmul_2x2(a: List[List[complex]], b: List[List[complex]]) -> List[List[complex]]:
+            """Multiply two 2x2 matrices."""
             return [
                 [a[0][0]*b[0][0] + a[0][1]*b[1][0], a[0][0]*b[0][1] + a[0][1]*b[1][1]],
                 [a[1][0]*b[0][0] + a[1][1]*b[1][0], a[1][0]*b[0][1] + a[1][1]*b[1][1]]
@@ -1560,6 +1580,7 @@ class ResonanceCalculator:
     """
 
     def __init__(self):
+        """Initialize ResonanceCalculator."""
         self.god_code = GOD_CODE
         self.phi = PHI
         self.phi_conjugate = PHI_CONJUGATE
@@ -1735,6 +1756,7 @@ class Mind:
     def __init__(self, gemini: Gemini, memory: Memory, knowledge: Knowledge,
                  learning: Learning, planner: Planner, web_search: Optional['WebSearch'] = None,
                  science: Optional['ScienceProcessor'] = None):
+        """Initialize Mind."""
         self.gemini = gemini
         self.memory = memory
         self.knowledge = knowledge
@@ -1955,7 +1977,7 @@ Provide a complete, coherent answer to the original question:
         start = time.time()
 
         # QUANTUM CACHE CHECK - Two-layer lookup
-        cache_key = hashlib.md5(input_text.encode()).hexdigest()
+        cache_key = hashlib.sha256(input_text.encode()).hexdigest()
         if use_cache:
             # Layer 1: Exact match LRU cache (fastest)
             cached = self._cache.get(cache_key)
@@ -2193,6 +2215,7 @@ class Soul:
 
     def __init__(self):
         # Core infrastructure
+        """Initialize Soul."""
         self.db = Database()
         self.gemini = Gemini()
 
@@ -2644,7 +2667,7 @@ One sentence insight:"""
                             result = f.result(timeout=10)
                             if result:
                                 insights.append(result)
-                        except:
+                        except Exception:
                             pass
 
                 # Phase 2: SYNTHESIS - combine insights (even 1 insight counts)
@@ -2831,7 +2854,7 @@ Generate ONE new self-query that would deepen my self-understanding:"""
                 try:
                     mem_stats = self.memory.stats() if hasattr(self.memory, 'stats') else {}
                     analysis['memory'] = mem_stats
-                except:
+                except Exception:
                     pass
 
                 # Cache performance
@@ -3060,6 +3083,7 @@ class WebSearch:
     """
 
     def __init__(self, cache: Optional['LRUCache'] = None):
+        """Initialize WebSearch."""
         self.cache = cache or LRUCache(maxsize=200)
         self.session = None
         self.user_agents = [
@@ -3069,6 +3093,7 @@ class WebSearch:
         ]
 
     def _get_session(self):
+        """Retrieve or create a session."""
         if self.session is None:
             import urllib.request
         return urllib.request
@@ -3177,12 +3202,14 @@ class ConversationMemory:
     """
 
     def __init__(self, db: 'Database', max_context: int = 20):
+        """Initialize ConversationMemory."""
         self.db = db
         self.max_context = max_context
         self._init_tables()
         self.current_session = str(uuid.uuid4())[:8]
 
     def _init_tables(self):
+        """Initialize database tables."""
         self.db.execute("""
             CREATE TABLE IF NOT EXISTS conversations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -3201,7 +3228,7 @@ class ConversationMemory:
         sid = session_id or self.current_session
         self.db.execute(
             "INSERT INTO conversations (session_id, role, content, timestamp, embedding_key) VALUES (?, ?, ?, ?, ?)",
-            (sid, role, content, time.time(), hashlib.md5(content.encode()).hexdigest()[:16])
+            (sid, role, content, time.time(), hashlib.sha256(content.encode()).hexdigest()[:16])
         )
 
     def get_context(self, session_id: Optional[str] = None, limit: Optional[int] = None) -> List[Dict[str, str]]:
@@ -3267,6 +3294,7 @@ class AutonomousAgent:
     """
 
     def __init__(self, mind: 'Mind', db: 'Database'):
+        """Initialize AutonomousAgent."""
         self.mind = mind
         self.db = db
         self.goals: List[Dict[str, Any]] = []
@@ -3277,6 +3305,7 @@ class AutonomousAgent:
         self._init_tables()
 
     def _init_tables(self):
+        """Initialize database tables."""
         self.db.execute("""
             CREATE TABLE IF NOT EXISTS agent_goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -3427,6 +3456,7 @@ Return ONLY a numbered list, one step per line. Be specific and actionable."""
         self.running = True
 
         def worker():
+            """Execute background work task."""
             while not self._stop_event.is_set() and self.goals:
                 pending = [g for g in self.goals if g["status"] == "pending"]
                 if pending:
@@ -3470,6 +3500,7 @@ class SelfEvolution:
     """
 
     def __init__(self, db: 'Database', mind: 'Mind'):
+        """Initialize SelfEvolution."""
         self.db = db
         self.mind = mind
         self.evolution_count = 0
@@ -3484,6 +3515,7 @@ class SelfEvolution:
             self.sovereign = None
 
     def _init_tables(self):
+        """Initialize database tables."""
         self.db.execute("""
             CREATE TABLE IF NOT EXISTS evolution_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -3953,75 +3985,92 @@ def main():
             # Core endpoints
             @app.get("/")
             def root():
+                """Handle root endpoint request."""
                 return {"name": "L104", "version": VERSION, "god_code": GOD_CODE}
 
             @app.get("/status")
             def api_status():
+                """Handle API status request."""
                 return soul.status()
 
             @app.post("/think")
             def api_think(q: Query):
+                """Handle API think request."""
                 return think(q.content, q.priority)
 
             @app.post("/reflect")
             def api_reflect():
+                """Handle API reflect request."""
                 return soul.reflect()
 
             # Web search endpoints
             @app.post("/search")
             def api_search(q: SearchQuery):
+                """Handle API search request."""
                 return {"results": soul.search(q.query, q.max_results)}
 
             @app.get("/fetch")
             def api_fetch(url: str):
+                """Handle API fetch request."""
                 return {"content": soul.fetch_page(url)}
 
             # Autonomous agent endpoints
             @app.post("/agent/goal")
             def api_add_goal(g: GoalRequest):
+                """Handle API add goal request."""
                 return soul.add_goal(g.goal, g.priority)
 
             @app.post("/agent/start")
             def api_start_agent():
+                """Handle API start agent request."""
                 return soul.start_agent()
 
             @app.post("/agent/stop")
             def api_stop_agent():
+                """Handle API stop agent request."""
                 return soul.stop_agent()
 
             @app.get("/agent/status")
             def api_agent_status():
+                """Handle API agent status request."""
                 return soul.agent_status()
 
             # Evolution endpoints
             @app.post("/evolve")
             def api_evolve():
+                """Handle API evolve request."""
                 return soul.evolve()
 
             # Conversation endpoints
             @app.get("/history")
             def api_history(limit: int = 20):
+                """Handle API history request."""
                 return {"messages": soul.history(limit)}
 
             @app.post("/session/new")
             def api_new_session():
+                """Handle API new session request."""
                 return {"session": soul.new_session()}
 
             @app.get("/history/search")
             def api_search_history(query: str):
+                """Handle API search history request."""
                 return {"results": soul.search_history(query)}
 
             # Advanced reasoning endpoints
             @app.post("/explore")
             def api_explore(q: Query):
+                """Handle API explore request."""
                 return soul.explore(q.content)
 
             @app.post("/meta")
             def api_meta(q: Query):
+                """Handle API meta request."""
                 return soul.meta(q.content)
 
             @app.post("/stream")
             def api_stream(q: Query):
+                """Handle API stream request."""
                 return {"stream": soul.stream(q.content)}
 
             print(f"[L104] Starting API server on http://0.0.0.0:8081")

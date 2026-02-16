@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.295983
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SELF_HEALING_AGENT] :: AUTONOMOUS SELF-SUSTAINING OPERATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "The Agent that heals itself, improves itself, and perpetuates itself."
@@ -588,7 +589,7 @@ class SelfHealingAgent:
         }
 
         try:
-            with open(f"L104_AGENT_CHECKPOINT.json", "w") as f:
+            with open(f"L104_AGENT_CHECKPOINT.json", "w", encoding="utf-8") as f:
                 json.dump(checkpoint, f, indent=2, default=str)
             logger.info(f"[{self.name}] Checkpoint saved")
         except Exception as e:

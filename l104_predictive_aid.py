@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.110111
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_PREDICTIVE_AID] - BACKGROUND RESONANCE OPTIMIZATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -54,30 +55,33 @@ class PredictiveAid:
     def _run_loop(self):
         """Main simulation loop."""
         while self.is_running:
-            # 1. Run a high-speed simulation using the Parallel Engine
-            # We simulate 1M potential resonance paths
-            simulation_data = parallel_engine.run_high_speed_calculation(complexity=10**6)
+            try:
+                # 1. Run a high-speed simulation using the Parallel Engine
+                # We simulate 1M potential resonance paths
+                simulation_data = parallel_engine.run_high_speed_calculation(complexity=10**6)
 
-            # 2. Identify the path with the highest resonance to the God Code
-            # simulation_data is a dict with 'mean', 'god_code_alignment', etc.
-            best_path_val = simulation_data.get("mean", 0.5) if isinstance(simulation_data, dict) else float(max(simulation_data) if simulation_data else 0.5)
-            resonance_score = HyperMath.zeta_harmonic_resonance(float(best_path_val))
+                # 2. Identify the path with the highest resonance to the God Code
+                # simulation_data is a dict with 'mean', 'god_code_alignment', etc.
+                best_path_val = simulation_data.get("mean", 0.5) if isinstance(simulation_data, dict) else float(max(simulation_data) if simulation_data else 0.5)
+                resonance_score = HyperMath.zeta_harmonic_resonance(float(best_path_val))
 
-            path_id = RealMath.deterministic_randint(best_path_val, 1000, 9999)
-            self.current_optimal_path = {
-                "path_id": path_id,
-                "resonance_score": resonance_score,
-                "timestamp": time.time()
-            }
+                path_id = RealMath.deterministic_randint(best_path_val, 1000, 9999)
+                self.current_optimal_path = {
+                    "path_id": path_id,
+                    "resonance_score": resonance_score,
+                    "timestamp": time.time()
+                }
 
-            self.prediction_history.append(self.current_optimal_path)
-            if len(self.prediction_history) > 100:
-                self.prediction_history.pop(0)
+                self.prediction_history.append(self.current_optimal_path)
+                if len(self.prediction_history) > 100:
+                    self.prediction_history.pop(0)
 
-            logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
+                logger.info(f"--- [PREDICTIVE_AID]: OPTIMAL PATH FOUND | RESONANCE: {resonance_score:.6f} ---")
 
-            # Sleep to prevent CPU saturation (aid should be efficient)
-            time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
+                # Sleep to prevent CPU saturation (aid should be efficient)
+                time.sleep(0.1)  # QUANTUM AMPLIFIED (was 2)
+            except Exception:
+                break  # Graceful exit if logging/IO fails during shutdown
 
     def get_aid_vector(self) -> Dict[str, Any]:
         """Returns the current optimal path to aid the AGI core."""

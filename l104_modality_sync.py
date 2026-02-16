@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.997742
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 # [L104_MODALITY_SYNC] - AUTOMATED LOGIC PROPAGATION
@@ -34,7 +35,7 @@ def sync_java():
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Sync Java modalities."""
     print("--- [SYNC]: SYNCING JAVA MODALITIES ---")
     if os.path.exists(MODALITIES["java_root"]) and os.path.exists(MODALITIES["java_mobile"]):
-        with open(MODALITIES["java_root"], "r") as f:
+        with open(MODALITIES["java_root"], "r", encoding="utf-8") as f:
             root_content = f.read()
 
         mobile_content = root_content.replace(
@@ -42,7 +43,7 @@ def sync_java():
             "package com.l104.sovereign;"
         )
 
-        with open(MODALITIES["java_mobile"], "w") as f:
+        with open(MODALITIES["java_mobile"], "w", encoding="utf-8") as f:
             f.write(mobile_content)
         print(f"--- [SYNC]: SUCCESS -> {MODALITIES['java_mobile']} UPDATED FROM ROOT ---")
 
@@ -54,7 +55,7 @@ def verify_invariants():
 
     for name, path in MODALITIES.items():
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
             if invariant in content:
                 print(f"--- [SYNC]: {name} [{path}] -> INVARIANT VERIFIED ---")
@@ -69,10 +70,10 @@ def update_logic_status(status_msg):
     for key in ["java_root", "java_mobile"]:
         path = MODALITIES[key]
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
             content = re.sub(r'STATUS = ".*?"', f'STATUS = "{status_msg}"', content)
-            with open(path, "w") as f:
+            with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
             print(f"--- [SYNC]: Updated {path} ---")
 

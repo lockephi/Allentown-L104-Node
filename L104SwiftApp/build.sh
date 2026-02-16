@@ -12,12 +12,13 @@ APP_NAME="L104Native"
 BUNDLE_ID="com.allentown.l104"
 VERSION="19.1"
 BUILD_NUMBER=$(date +%Y%m%d%H%M)
-MIN_MACOS="13.0"
+MIN_MACOS="12.0"
 BUILD_MODE="${BUILD_MODE:-release}"
 
 # ─── PATHS ───
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOURCE_DIR="$SCRIPT_DIR/Sources"
+L104V2_DIR="$SOURCE_DIR/L104v2"
 SOURCE_FILE="$SOURCE_DIR/L104Native.swift"
 APP_BUNDLE="$SCRIPT_DIR/$APP_NAME.app"
 CONTENTS_DIR="$APP_BUNDLE/Contents"
@@ -110,14 +111,26 @@ step_check_prerequisites() {
         exit 1
     fi
 
-    if [ ! -f "$SOURCE_FILE" ]; then
-        echo -e "${RED}  ✗ Source not found: $SOURCE_FILE${NC}"
+    # ─── L104v2 MULTI-FILE DETECTION ───
+    if [ -d "$L104V2_DIR" ] && [ "$(find "$L104V2_DIR" -name '*.swift' | wc -l | tr -d ' ')" -gt 0 ]; then
+        USE_L104V2=true
+        SWIFT_FILES=($(find "$L104V2_DIR" -name '*.swift' -type f | sort))
+        SOURCE_LINES=0
+        for sf in "${SWIFT_FILES[@]}"; do
+            SOURCE_LINES=$((SOURCE_LINES + $(wc -l < "$sf" | tr -d ' ')))
+        done
+        SOURCE_SIZE=$(du -sh "$L104V2_DIR" | cut -f1 | tr -d ' ')
+        echo -e "${GREEN}  ✓ Source: L104v2 multi-file (${#SWIFT_FILES[@]} files, $SOURCE_LINES lines, $SOURCE_SIZE)${NC}"
+    elif [ -f "$SOURCE_FILE" ]; then
+        USE_L104V2=false
+        SWIFT_FILES=("$SOURCE_FILE")
+        SOURCE_LINES=$(wc -l < "$SOURCE_FILE" | tr -d ' ')
+        SOURCE_SIZE=$(du -h "$SOURCE_FILE" | cut -f1 | tr -d ' ')
+        echo -e "${GREEN}  ✓ Source: L104Native.swift monolith ($SOURCE_LINES lines, $SOURCE_SIZE)${NC}"
+    else
+        echo -e "${RED}  ✗ No source found (neither L104v2/ nor L104Native.swift)${NC}"
         exit 1
     fi
-
-    SOURCE_LINES=$(wc -l < "$SOURCE_FILE" | tr -d ' ')
-    SOURCE_SIZE=$(du -h "$SOURCE_FILE" | cut -f1 | tr -d ' ')
-    echo -e "${GREEN}  ✓ Source: $SOURCE_LINES lines ($SOURCE_SIZE)${NC}"
 
     # ═══════════════════════════════════════════════════════════════
     # PYTHON DETECTION — Direct C API Embedding
@@ -189,7 +202,11 @@ step_prepare_build_dir() {
     mkdir -p "$BUILD_DIR" "$CACHE_DIR"
 
     # Check if source changed (incremental build support)
-    SOURCE_HASH=$(shasum -a 256 "$SOURCE_FILE" | cut -d' ' -f1)
+    if [ "$USE_L104V2" = "true" ]; then
+        SOURCE_HASH=$(find "$L104V2_DIR" -name '*.swift' -type f -exec shasum -a 256 {} \; | shasum -a 256 | cut -d' ' -f1)
+    else
+        SOURCE_HASH=$(shasum -a 256 "$SOURCE_FILE" | cut -d' ' -f1)
+    fi
     CACHED_HASH=""
     if [ -f "$CACHE_DIR/source_hash" ]; then
         CACHED_HASH=$(cat "$CACHE_DIR/source_hash")
@@ -223,13 +240,18 @@ step_create_bundle() {
     echo -e "${CYAN}${BOLD}[4/7] Creating app bundle...${NC}"
 
     mkdir -p "$MACOS_DIR" "$RESOURCES_DIR"
+    # Copy app icon if available
+    if [ -f "$SCRIPT_DIR/AppIcon.icns" ]; then
+        cp "$SCRIPT_DIR/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+        echo -e "${GREEN}  ✓ App icon installed${NC}"
+    fi
     echo -e "${GREEN}  ✓ Bundle structure created${NC}"
 }
 
 step_compile() {
     echo -e "${CYAN}${BOLD}[5/7] Compiling Swift source...${NC}"
 
-    SOURCE_LINES=$(wc -l < "$SOURCE_FILE" | tr -d ' ')
+    # SOURCE_LINES already computed in step_check_prerequisites
 
     if [ "${SKIP_COMPILE:-false}" = "true" ] && [ -f "$BUILD_DIR/$APP_NAME" ]; then
         cp "$BUILD_DIR/$APP_NAME" "$EXECUTABLE"
@@ -271,22 +293,34 @@ step_compile() {
             echo -e "${BLUE}  Mode: ${YELLOW}DEBUG${NC} (fast compile, debug symbols, exclusivity)"
             ;;
         release)
-            # Compute optimal thread count for low-memory systems (4GB → cap at 2)
+            # Compute optimal thread count
             COMPILE_THREADS="$CPU_CORES"
-            if [ "$PHYSICAL_MEM_GB" -le 4 ]; then
+            if [ "$PHYSICAL_MEM_GB" -le 8 ]; then
                 COMPILE_THREADS=$(( CPU_CORES < 2 ? CPU_CORES : 2 ))
             fi
-            SWIFT_FLAGS+=(
-                -O
-                -whole-module-optimization
-                -D RELEASE
-                -D PHASE_26
-                -num-threads "$COMPILE_THREADS"
-                -Xfrontend -warn-long-function-bodies=500
-                -Xfrontend -warn-long-expression-type-checking=500
-                -enforce-exclusivity=checked
-            )
-            echo -e "${BLUE}  Mode: ${GREEN}RELEASE${NC} (WMO + exclusivity, $COMPILE_THREADS threads, ${PHYSICAL_MEM_GB}GB RAM)"
+
+            if [ "$PHYSICAL_MEM_GB" -le 4 ]; then
+                # Low-memory: -Onone to avoid OOM (direct build path handles this)
+                SWIFT_FLAGS+=(
+                    -Onone
+                    -D RELEASE
+                    -D PHASE_26
+                    -enforce-exclusivity=checked
+                )
+                echo -e "${BLUE}  Mode: ${GREEN}RELEASE${NC} (direct, -Onone, ${PHYSICAL_MEM_GB}GB RAM — low-mem safe)"
+            else
+                SWIFT_FLAGS+=(
+                    -O
+                    -whole-module-optimization
+                    -D RELEASE
+                    -D PHASE_26
+                    -num-threads "$COMPILE_THREADS"
+                    -Xfrontend -warn-long-function-bodies=500
+                    -Xfrontend -warn-long-expression-type-checking=500
+                    -enforce-exclusivity=checked
+                )
+                echo -e "${BLUE}  Mode: ${GREEN}RELEASE${NC} (WMO + exclusivity, $COMPILE_THREADS threads, ${PHYSICAL_MEM_GB}GB RAM)"
+            fi
             ;;
         profile)
             SWIFT_FLAGS+=(
@@ -345,7 +379,16 @@ step_compile() {
             -Xlinker -dead_strip
             -Xlinker -no_deduplicate
         )
-        echo -e "${BLUE}  Linker: Dead code stripping + no-deduplicate${NC}"
+        # v21.0: Link-Time Optimization for cross-module inlining + dead code elimination
+        if [ "$BUILD_MODE" = "release" ] || [ "$BUILD_MODE" = "size" ]; then
+            LINKER_FLAGS+=(
+                -Xlinker -lto_library
+                -Xlinker /Library/Developer/CommandLineTools/usr/lib/libLTO.dylib
+            )
+            echo -e "${BLUE}  Linker: Dead strip + LTO (LLVM link-time optimization)${NC}"
+        else
+            echo -e "${BLUE}  Linker: Dead code stripping + no-deduplicate${NC}"
+        fi
     fi
 
     # ═══════════════════════════════════════════════════════════════
@@ -410,33 +453,89 @@ step_compile() {
     echo -e "${BLUE}  Compiling $SOURCE_LINES lines...${NC}"
     COMPILE_START=$(python3 -c "import time; print(time.time())" 2>/dev/null || date +%s)
 
-    # Build the compile command with optional CPython bridge
-    COMPILE_CMD=(swiftc "${SWIFT_FLAGS[@]}" "${FRAMEWORKS[@]}" ${LINKER_FLAGS[@]+"${LINKER_FLAGS[@]}"})
+    # ─── LOW-MEMORY DIRECT BUILD PATH (≤4GB RAM) ───
+    # The output-file-map approach still loads all 79 files into one swiftc
+    # process for type resolution, which OOM-kills on 4GB machines.
+    # Instead: single-shot compile+link with -Onone (no optimizer = lowest
+    # peak memory). Output goes to a file, not a bash variable, to avoid
+    # doubling memory usage. LTO at link-time still strips dead code.
+    if [ "$PHYSICAL_MEM_GB" -le 4 ]; then
+        echo -e "${BLUE}  🧩 Low-memory direct mode: compile+link in one pass (4GB RAM safe)${NC}"
 
-    # Add CPython bridge flags (header, includes, library)
-    if [ -n "$CPYTHON_OBJECT" ] && [ -f "$CPYTHON_OBJECT" ]; then
-        COMPILE_CMD+=("${CPYTHON_FLAGS[@]}")
-        # Pass .o file via -Xlinker so swiftc sends it to ld, not the Swift parser
-        COMPILE_CMD+=(-Xlinker "$CPYTHON_OBJECT")
+        # Build the single-shot compile+link command
+        LOWMEM_CMD=(swiftc
+            -target "$TARGET_ARCH"
+            -sdk "$SDK_PATH"
+            -module-name "$APP_NAME"
+            -Onone
+            -D RELEASE
+            -D PHASE_26
+            -enforce-exclusivity=checked
+            "${FRAMEWORKS[@]}"
+            ${LINKER_FLAGS[@]+"${LINKER_FLAGS[@]}"}
+        )
+
+        # Add CPython bridge flags
+        if [ -n "$CPYTHON_OBJECT" ] && [ -f "$CPYTHON_OBJECT" ]; then
+            LOWMEM_CMD+=(
+                -import-objc-header "$BRIDGE_HEADER"
+                -Xcc -I"$PYTHON_INCLUDE"
+                -Xcc -I"$SOURCE_DIR"
+                -D CPYTHON_BRIDGE_ENABLED
+                -L "$PYTHON_LIB_DIR"
+                -lpython$PYTHON_VERSION
+                -Xlinker "$CPYTHON_OBJECT"
+            )
+        fi
+
+        LOWMEM_CMD+=(-o "$EXECUTABLE" "${SWIFT_FILES[@]}")
+
+        echo -e "${BLUE}  Compiling ${#SWIFT_FILES[@]} files (single-pass, -Onone)...${NC}"
+
+        # Redirect output to log file instead of capturing in a variable
+        # to minimize memory pressure on 4GB systems
+        if "${LOWMEM_CMD[@]}" >"$LOG_FILE" 2>&1; then
+            COMPILE_OUTPUT=$(cat "$LOG_FILE")
+        else
+            echo -e "${RED}  ✗ COMPILATION FAILED${NC}"
+            grep -E "error:" "$LOG_FILE" 2>/dev/null | head -20 | while IFS= read -r line; do
+                echo -e "${RED}    $line${NC}"
+            done
+            echo -e "${YELLOW}  Full log: $LOG_FILE${NC}"
+            exit 1
+        fi
+    else
+        # ─── STANDARD WMO BUILD PATH (>4GB RAM) ───
+        # Build the compile command with optional CPython bridge
+        COMPILE_CMD=(swiftc "${SWIFT_FLAGS[@]}" "${FRAMEWORKS[@]}" ${LINKER_FLAGS[@]+"${LINKER_FLAGS[@]}"})
+
+        # Add CPython bridge flags (header, includes, library)
+        if [ -n "$CPYTHON_OBJECT" ] && [ -f "$CPYTHON_OBJECT" ]; then
+            COMPILE_CMD+=("${CPYTHON_FLAGS[@]}")
+            # Pass .o file via -Xlinker so swiftc sends it to ld, not the Swift parser
+            COMPILE_CMD+=(-Xlinker "$CPYTHON_OBJECT")
+        fi
+
+        COMPILE_CMD+=(-o "$EXECUTABLE" "${SWIFT_FILES[@]}")
+
+        COMPILE_OUTPUT=$("${COMPILE_CMD[@]}" 2>&1) || {
+            echo -e "${RED}  ✗ COMPILATION FAILED${NC}"
+            echo "$COMPILE_OUTPUT" | grep -E "error:" | head -20 | while read -r line; do
+                echo -e "${RED}    $line${NC}"
+            done
+            echo ""
+            echo -e "${YELLOW}  Full log: $LOG_FILE${NC}"
+            echo "$COMPILE_OUTPUT" > "$LOG_FILE"
+            exit 1
+        }
     fi
-
-    COMPILE_CMD+=(-o "$EXECUTABLE" "$SOURCE_FILE")
-
-    COMPILE_OUTPUT=$("${COMPILE_CMD[@]}" 2>&1) || {
-        echo -e "${RED}  ✗ COMPILATION FAILED${NC}"
-        echo "$COMPILE_OUTPUT" | grep -E "error:" | head -20 | while read -r line; do
-            echo -e "${RED}    $line${NC}"
-        done
-        echo ""
-        echo -e "${YELLOW}  Full log: $LOG_FILE${NC}"
-        echo "$COMPILE_OUTPUT" > "$LOG_FILE"
-        exit 1
-    }
 
     COMPILE_END=$(python3 -c "import time; print(time.time())" 2>/dev/null || date +%s)
     COMPILE_TIME=$(python3 -c "print(f'{${COMPILE_END} - ${COMPILE_START}:.1f}')" 2>/dev/null || echo "?")
 
-    WARNING_COUNT=$(echo "$COMPILE_OUTPUT" | grep -c "warning:" 2>/dev/null || echo 0)
+    WARNING_COUNT=$(echo "$COMPILE_OUTPUT" | grep -c "warning:" 2>/dev/null | head -1 || true)
+    WARNING_COUNT=$(echo "$WARNING_COUNT" | tr -d '[:space:]')
+    WARNING_COUNT=${WARNING_COUNT:-0}
 
     # Cache binary for incremental builds
     cp "$EXECUTABLE" "$BUILD_DIR/$APP_NAME" 2>/dev/null || true
@@ -547,7 +646,7 @@ print_summary() {
     echo -e "║  Bundle:     ${CYAN}$(du -sh "$APP_BUNDLE" | cut -f1)${GREEN}"
     echo -e "║  Mode:       ${CYAN}$BUILD_MODE${GREEN}"
     echo -e "║  Time:       ${CYAN}${TOTAL_TIME}s${GREEN}"
-    echo -e "║  Source:     ${CYAN}$(wc -l < "$SOURCE_FILE" | tr -d ' ') lines${GREEN}"
+    echo -e "║  Source:     ${CYAN}${SOURCE_LINES} lines (${#SWIFT_FILES[@]} files)${GREEN}"
     echo "╠═══════════════════════════════════════════════════════════════════╣"
     echo -e "║  Frameworks: ${CYAN}AppKit Accelerate Metal CoreML IOKit${GREEN}"
     echo -e "║  Optimized:  ${CYAN}vDSP BLAS SIMD WMO Cross-Mod Dead-Strip${GREEN}"
@@ -597,7 +696,7 @@ run_benchmark() {
             -framework MetalKit -framework Security \
             -Xlinker -dead_strip \
             -o "/tmp/l104_bench_$i" \
-            "$SOURCE_FILE" 2>/dev/null
+            "${SWIFT_FILES[@]}" 2>/dev/null
 
         END=$(python3 -c "import time; print(time.time())" 2>/dev/null || date +%s)
         ELAPSED=$(python3 -c "t=${END}-${START}; print(f'{t:.2f}')" 2>/dev/null || echo "?")
@@ -649,9 +748,13 @@ show_info() {
     echo "  SDK: $(xcrun --show-sdk-path 2>/dev/null || echo 'N/A')"
     echo ""
     echo -e "${BOLD}Source:${NC}"
-    echo "  File:  $SOURCE_FILE"
-    echo "  Lines: $(wc -l < "$SOURCE_FILE" | tr -d ' ')"
-    echo "  Size:  $(du -h "$SOURCE_FILE" | cut -f1)"
+    if [ "$USE_L104V2" = "true" ]; then
+        echo "  Dir:   $L104V2_DIR (${#SWIFT_FILES[@]} files)"
+    else
+        echo "  File:  $SOURCE_FILE"
+    fi
+    echo "  Lines: $SOURCE_LINES"
+    echo "  Size:  $SOURCE_SIZE"
 }
 
 # ─── MAIN ───

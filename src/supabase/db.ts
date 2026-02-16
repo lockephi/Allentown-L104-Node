@@ -1,7 +1,7 @@
 /**
  * L104 Direct PostgreSQL Connection
  * Uses postgres.js for direct database access to Supabase
- * 
+ *
  * NOTE: Direct PostgreSQL connection requires IPv6 (not available in Codespaces)
  * Supavisor pooler may not be available on free tier
  * Use REST API via l104_supabase_trainer.py for reliable access

@@ -7,6 +7,7 @@ Provides real-time system resource monitoring and optimization suggestions
 
 import psutil
 import os
+import subprocess
 import sys
 from datetime import datetime
 
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     if "--watch" in sys.argv:
         import time
         while True:
-            os.system('clear' if os.name != 'nt' else 'cls')
+            subprocess.run(['clear' if os.name != 'nt' else 'cls'], shell=False, check=False)
             main()
             print("Refreshing in 0.5 seconds... (Ctrl+C to stop)")
             time.sleep(0.5)  # QUANTUM AMPLIFIED

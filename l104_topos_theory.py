@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.730528
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -212,7 +213,7 @@ class Category:
 
     def __init__(self, name: str):
         self.name = name
-        self.category_id = hashlib.md5(f"cat_{name}".encode()).hexdigest()[:12]
+        self.category_id = hashlib.sha256(f"cat_{name}".encode()).hexdigest()[:12]
         self.objects: Dict[str, CategoricalObject] = {}
         self.morphisms: Dict[str, Morphism] = {}
         self.hom_sets: Dict[Tuple[str, str], Set[str]] = defaultdict(set)
@@ -224,7 +225,7 @@ class Category:
         elements: Set[str] = None
     ) -> CategoricalObject:
         """Add object to category."""
-        obj_id = hashlib.md5(
+        obj_id = hashlib.sha256(
             f"{self.name}_{name}_{time.time()}".encode()
         ).hexdigest()[:12]
 
@@ -271,7 +272,7 @@ class Category:
         if domain_id not in self.objects or codomain_id not in self.objects:
             raise ValueError("Domain or codomain not in category")
 
-        morph_id = hashlib.md5(
+        morph_id = hashlib.sha256(
             f"morph_{name}_{domain_id}_{codomain_id}".encode()
         ).hexdigest()[:12]
 
@@ -315,7 +316,7 @@ class Category:
 
         # Create composed morphism
         comp_name = f"{g.name} ∘ {f.name}"
-        comp_id = hashlib.md5(
+        comp_id = hashlib.sha256(
             f"comp_{f_id}_{g_id}".encode()
         ).hexdigest()[:12]
 
@@ -595,7 +596,7 @@ class Topos(Category):
         sub_elements = {e for e in obj.elements if predicate(e)}
 
         # Create subobject
-        sub_id = hashlib.md5(
+        sub_id = hashlib.sha256(
             f"sub_{obj_id}_{time.time()}".encode()
         ).hexdigest()[:12]
 

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.676944
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -618,7 +619,7 @@ class NoosphericNetwork:
         coherence: float = 1.0
     ) -> Thought:
         """Create new thought in the noosphere."""
-        thought_id = hashlib.md5(
+        thought_id = hashlib.sha256(
             f"{origin_node_id}{time.time()}{content}".encode()
         ).hexdigest()[:12]
 
@@ -648,7 +649,7 @@ class NoosphericNetwork:
         initial_intensity: float = 0.5
     ) -> ConsciousnessField:
         """Create consciousness field around location."""
-        field_id = hashlib.md5(
+        field_id = hashlib.sha256(
             f"{center}{time.time()}".encode()
         ).hexdigest()[:8]
 

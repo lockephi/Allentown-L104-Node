@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.640048
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -345,7 +346,7 @@ class SelfModifier:
                     if mod_fitness > best_fitness:
                         best_fitness = mod_fitness
                         best_mod = mod
-                except:
+                except Exception:
                     pass
 
             if best_mod:
@@ -726,7 +727,7 @@ class InfiniteRecursion:
                 sequence.append(current)
                 self.total_recursions += 1
                 self.max_depth_reached = max(self.max_depth_reached, i + 1)
-            except:
+            except Exception:
                 break
 
         return sequence

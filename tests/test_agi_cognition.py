@@ -65,12 +65,12 @@ class TestAGICognition(unittest.TestCase):
                 return True
             try:
                 return float(iq) > 0
-            except:
+            except (ValueError, TypeError):
                 return False
-        
+
         # Both initial and new IQ should be valid
         self.assertTrue(is_valid_iq(new_iq), f"New IQ should be valid, got: {new_iq}")
-        
+
         # Status can be OPTIMIZED or FAILED (due to hallucination filtering) - both are valid behaviors
         self.assertIn(result['status'], ["OPTIMIZED", "FAILED"],
                       "Status should be either OPTIMIZED or FAILED")
@@ -107,6 +107,57 @@ class TestAGICognition(unittest.TestCase):
         # Check if it ran without error.
         self.assertTrue(streamline.iteration_count >= 0)
         print("[TEST] Streamline Cycle Complete.")
+
+    def test_multi_domain_research(self):
+        """
+        Verifies that the research engine generates validated hypotheses across multiple domains.
+        """
+        print("\n[TEST] Testing Multi-Domain Research...")
+        result = agi_research.conduct_deep_research(cycles=200)
+
+        if result['status'] == "EMPTY":
+            self.skipTest("No resonant truths in this cycle")
+            return
+
+        self.assertEqual(result['status'], "COMPILED")
+        meta = result.get('meta', {})
+        self.assertEqual(meta.get('integrity'), "LATTICE_VERIFIED")
+        self.assertGreater(meta.get('domains_active', 0), 1, "Should have multiple active domains")
+        print(f"[TEST] Research: {meta.get('domains_active')} domains active, "
+              f"{meta.get('cross_domain_links', 0)} cross-domain links")
+
+    def test_autonomous_agi_cycle(self):
+        """
+        Verifies that the autonomous AGI engine can execute a governance cycle.
+        """
+        from l104_autonomous_agi import autonomous_agi
+        print("\n[TEST] Testing Autonomous AGI Cycle...")
+
+        # Register subsystems
+        for sub in ["evolution_engine", "sage_core", "adaptive_learning"]:
+            autonomous_agi.register_subsystem(sub, healthy=True)
+
+        result = autonomous_agi.run_autonomous_cycle()
+        self.assertIn(result.get("status"), ["CYCLE_COMPLETE", "IDLE"],
+                      "Autonomous cycle should complete or idle")
+        self.assertGreater(result.get("coherence", -1), 0, "Coherence should be positive")
+        print(f"[TEST] Autonomous cycle: status={result['status']}, coherence={result.get('coherence', 0):.4f}")
+
+    def test_pipeline_sync(self):
+        """
+        Verifies that pipeline state synchronization works across subsystems.
+        """
+        print("\n[TEST] Testing Pipeline Sync...")
+        sync = agi_core.sync_pipeline_state()
+
+        self.assertIn("subsystems", sync)
+        self.assertIn("health_score", sync)
+        self.assertGreater(sync["health_score"], 0, "Pipeline health should be positive")
+
+        # Verify at least some subsystems are reporting
+        subsystems = sync.get("subsystems", {})
+        self.assertGreater(len(subsystems), 0, "Should have subsystems reporting")
+        print(f"[TEST] Pipeline sync: {len(subsystems)} subsystems, health={sync['health_score']:.2f}")
 
 if __name__ == '__main__':
     unittest.main()

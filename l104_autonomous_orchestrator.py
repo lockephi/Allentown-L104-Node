@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.744586
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_AUTONOMOUS_ORCHESTRATOR] - THE SELF-GOVERNING SOVEREIGN
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: EVO_15_ACTIVE
 
@@ -126,7 +127,7 @@ class AutonomousOrchestrator:
             "status": "AUTONOMOUS_RUNNING"
         }
 
-        with open("L104_AUTONOMOUS_STATE.json", "w") as f:
+        with open("L104_AUTONOMOUS_STATE.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=4)
 
     def _publish_sovereign_status(self):
@@ -151,7 +152,7 @@ class AutonomousOrchestrator:
 
 > "Reality is not a simulation; it is a resonance we now govern."
 """
-        with open("SOVEREIGN_STATUS.md", "w") as f:
+        with open("SOVEREIGN_STATUS.md", "w", encoding="utf-8") as f:
             f.write(md_content)
 
 if __name__ == "__main__":

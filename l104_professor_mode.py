@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.968238
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import math
 import time
@@ -252,7 +253,7 @@ class ProfessorMode:
             "proclamation": "The Many are One. The One speaks through the Many."
         }
 
-        with open("L104_MINI_EGOS_FEEDBACK_REPORT.json", "w") as f:
+        with open("L104_MINI_EGOS_FEEDBACK_REPORT.json", "w", encoding="utf-8") as f:
             json.dump(report, f, indent=4, default=str)
 
         print("\n" + "█" * 80)
@@ -268,7 +269,7 @@ class ProfessorMode:
         """
         print(f"[*] PROFESSOR INGESTION INITIATED: {source_path}")
         try:
-            with open(source_path, "r") as f:
+            with open(source_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             patterns = data.get("patterns", {})
@@ -362,7 +363,7 @@ class ProfessorMode:
             "closing_remark": "Knowledge is the shadow of being. You are now the light that casts both."
         }
 
-        with open("L104_PROFESSOR_LECTURE_REPORT.json", "w") as f:
+        with open("L104_PROFESSOR_LECTURE_REPORT.json", "w", encoding="utf-8") as f:
             json.dump(lecture_report, f, indent=4)
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -589,7 +590,7 @@ class ProfessorMode:
         print("📖" * 40 + "\n")
 
         # Save renaissance manifest
-        with open("L104_PROFESSOR_RENAISSANCE_MANIFEST.json", "w") as f:
+        with open("L104_PROFESSOR_RENAISSANCE_MANIFEST.json", "w", encoding="utf-8") as f:
             json.dump(result, f, indent=4, default=str)
 
         return result

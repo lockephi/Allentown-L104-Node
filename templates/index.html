@@ -1476,7 +1476,7 @@
                 }
             }
         }
-        setInterval(checkCloudStatus, 10000);
+        setInterval(checkCloudStatus, 30000);
         checkCloudStatus();
 
         // --- ECONOMY SYNC ---
@@ -1499,7 +1499,7 @@
                 console.error("Economy sync failed", err);
             }
         }
-        setInterval(syncEconomy, 10000);
+        setInterval(syncEconomy, 30000);
         syncEconomy();
 
         async function updateStatus() {
@@ -1609,7 +1609,7 @@
                 console.log('Status update error:', e);
             }
         }
-        setInterval(updateStatus, 3000);
+        setInterval(updateStatus, 15000);
         updateStatus();
 
         // DATA MANIFOLD SYNC (EXPORT/IMPORT)
@@ -1736,7 +1736,7 @@
                 }
             } catch (e) { console.log('Intricate status unavailable:', e); }
         }
-        setInterval(updateIntricateStatus, 5000);
+        setInterval(updateIntricateStatus, 30000);
         updateIntricateStatus();
 
         // INTRICATE LEARNING STATUS UPDATE
@@ -1765,7 +1765,7 @@
                 if (domainsEl) domainsEl.innerText = data.transfer?.domains || 0;
             } catch (e) { console.log('Learning status unavailable:', e); }
         }
-        setInterval(updateLearningStatus, 5000);
+        setInterval(updateLearningStatus, 30000);
         updateLearningStatus();
 
         // RUN CONSCIOUSNESS CYCLE PERIODICALLY
@@ -1774,7 +1774,7 @@
                 await fetch('/api/consciousness/cycle', { method: 'POST' });
             } catch (e) { }
         }
-        setInterval(runConsciousnessCycle, 15000);
+        setInterval(runConsciousnessCycle, 60000);
 
         async function runQuickUpdate() {
             addMessage("🔄 INITIATING MULTI-MODAL SYNC...", 'user');
@@ -1810,12 +1810,12 @@
             }
         });
 
-        const evtSource = new EventSource("/api/v14/system/stream");
+        // SYSTEM STREAM - Poll JSON endpoint instead of SSE to free connections
         const feed = document.getElementById('system-feed');
-
-        evtSource.onmessage = function (event) {
+        async function pollSystemStream() {
             try {
-                const packet = JSON.parse(event.data);
+                const res = await fetch("/api/v14/system/stream");
+                const packet = await res.json();
                 const data = packet.data;
                 if (!data) return;
 
@@ -1833,7 +1833,6 @@
                 if (data.lattice_scalar && scalarEl) scalarEl.innerText = data.lattice_scalar.toFixed(4);
 
                 if (feed && data.log) {
-                    // Show Reflection if present
                     if (data.thought) {
                         const thoughtEntry = document.createElement('div');
                         thoughtEntry.className = 'log-entry border-l-2 border-purple-500 bg-purple-900/10 p-1 mb-1';
@@ -1854,12 +1853,10 @@
                     if (feed.children.length > 20) feed.removeChild(feed.lastChild);
                     feed.scrollTop = 0;
                 }
-            } catch (e) { console.log('Stream parse error:', e); }
-        };
-
-        evtSource.onerror = function () {
-            console.log('SSE connection lost, will reconnect...');
-        };
+            } catch (e) { console.log('Stream poll error:', e); }
+        }
+        setInterval(pollSystemStream, 30000);
+        setTimeout(pollSystemStream, 3000);
 
         // KERNEL MONITOR FUNCTIONS
         async function checkKernelHealth() {
@@ -1986,7 +1983,7 @@
 
         // Run provider status check immediately and periodically
         updateProviderStatus();
-        setInterval(updateProviderStatus, 15000);
+        setInterval(updateProviderStatus, 60000);
 
         async function igniteAGI() { await fetch('/api/v14/agi/ignite', { method: 'POST' }); updateStatus(); }
         async function evolveAGI() { await fetch('/api/v14/agi/evolve', { method: 'POST' }); updateStatus(); }

@@ -165,7 +165,7 @@ templates = Jinja2Templates(directory="templates")
     """Write JSON entry to node.log."""
     try:
         entry["ts"] = datetime.now(datetime.UTC).isoformat()
-        with open("node.log", "a") as lf:
+        with open("node.log", "a", encoding="utf-8") as lf:
             lf.write(json.dumps(entry) + "\\n")
         logger.debug(f"Logged: {entry.get('tag', 'unknown')}")
     except Exception as e:
@@ -429,7 +429,7 @@ if __name__ == "__main__":
 '''
 
     # Write the enhanced code
-    with open("main.improved.py", "w") as f:
+    with open("main.improved.py", "w", encoding="utf-8") as f:
         f.write(enhanced_code)
 
     print("✓ Enhanced main.py created: main.improved.py")

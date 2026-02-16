@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.963870
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -367,7 +368,7 @@ class TrainingDataManager:
     def add_example(self, user_input: str, expected_response: str,
                    intent: IntentCategory, entities: Dict = None) -> str:
         """Add training example"""
-        example_id = hashlib.md5(
+        example_id = hashlib.sha256(
             f"{user_input}{time.time()}".encode()
         ).hexdigest()[:12]
 
@@ -423,7 +424,7 @@ class TrainingDataManager:
         data = self.export_training_data()
 
         filepath = os.path.join(self.data_dir, "training_data.json")
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
     def load(self) -> bool:
@@ -434,7 +435,7 @@ class TrainingDataManager:
             return False
 
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             for ex_data in data.get("examples", []):
@@ -609,7 +610,7 @@ class AppResponseTrainer:
 
         # Create feedback record
         feedback = TrainingFeedback(
-            response_id=hashlib.md5(last["assistant"].encode()).hexdigest()[:12],
+            response_id=hashlib.sha256(last["assistant"].encode()).hexdigest()[:12],
             user_input=last["user"],
             response_given=last["assistant"],
             rating=ResponseQuality(rating),

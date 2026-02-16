@@ -36,7 +36,7 @@ for fname in ["kernel_trillion_data.jsonl", "kernel_training_data.jsonl", "kerne
                 if ".py" in prompt: continue
 
                 all_clean.append(e)
-    except: pass
+    except Exception: pass
 
 print(f"Total clean entries that pass ALL filters: {len(all_clean)}")
 print()

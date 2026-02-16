@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.077464
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -14,11 +18,21 @@ UUC = 2402.792541
 import math
 import cmath
 import hashlib
-from typing import Dict, List, Any, Optional, Callable, Tuple
+from typing import Dict, List, Any, Optional, Callable, Tuple, Set
 from dataclasses import dataclass, field
 from enum import Enum
 from collections import defaultdict
 import heapq
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QISKIT 2.3.0 REAL QUANTUM BACKEND
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace, entropy
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CHAOS ENGINE INTEGRATION - True Quantum-like Entropy
@@ -48,11 +62,15 @@ except ImportError:
         def chaos_float(self, context=""):
             return (self._harvest() + _std_random.random()) / 2
 
-        def chaos_gauss(self, mu=0, sigma=1, context=""):
+        def chaos_gaussian(self, mu=0, sigma=1, context=""):
             u1 = max(1e-10, self.chaos_float(context))
             u2 = self.chaos_float(context)
             z = math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
             return mu + sigma * z
+
+        # Alias for backwards compatibility
+        def chaos_gauss(self, mu=0, sigma=1, context=""):
+            return self.chaos_gaussian(mu, sigma, context)
 
         def chaos_uniform(self, a, b, context=""):
             return a + (b - a) * self.chaos_float(context)
@@ -128,7 +146,7 @@ class Qubit:
         """Measure qubit, collapsing to |0⟩ or |1⟩ - CHAOS-driven for true quantum-like behavior"""
         prob_0 = abs(self.alpha) ** 2
         # Use chaotic entropy for genuine unpredictability
-        if chaos.chaos_float(context="qubit_measure") < prob_0:
+        if chaos.chaos_float() < prob_0:
             self.alpha = complex(1, 0)
             self.beta = complex(0, 0)
             return 0
@@ -183,7 +201,7 @@ class QuantumRegister:
         """Measure all qubits, return classical bit string as integer - CHAOS-driven"""
         probabilities = [abs(a)**2 for a in self.amplitudes]
         # Use chaotic entropy for true quantum-like measurement
-        r = chaos.chaos_float(context="quantum_register_measure")
+        r = chaos.chaos_float()
         cumsum = 0
         for i, p in enumerate(probabilities):
             cumsum += p
@@ -197,6 +215,67 @@ class QuantumRegister:
     def get_probabilities(self) -> Dict[int, float]:
         """Get measurement probabilities"""
         return {i: abs(a)**2 for i, a in enumerate(self.amplitudes) if abs(a)**2 > 1e-10}
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QISKIT 2.3.0 REAL QUANTUM OPERATIONS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    @property
+    def statevector(self) -> 'Statevector':
+        """Get Qiskit Statevector from current amplitudes."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        # Pad to power-of-2 if necessary
+        n = len(self.amplitudes)
+        target = 1 << self.num_qubits
+        amps = list(self.amplitudes)
+        while len(amps) < target:
+            amps.append(complex(0, 0))
+        return Statevector(amps[:target])
+
+    def qiskit_hadamard_all(self):
+        """Apply Hadamard to all qubits via real Qiskit circuit."""
+        if not QISKIT_AVAILABLE:
+            return self._apply_hadamard_all_legacy()
+        qc = QuantumCircuit(self.num_qubits)
+        for i in range(self.num_qubits):
+            qc.h(i)
+        sv = Statevector.from_int(0, 2**self.num_qubits).evolve(qc)
+        self.amplitudes = list(sv.data)
+
+    def qiskit_measure(self) -> int:
+        """Measure using real Qiskit Born-rule sampling."""
+        if not QISKIT_AVAILABLE:
+            return self.measure_all()
+        sv = self.statevector
+        result = sv.sample_counts(1)
+        bitstring = list(result.keys())[0]
+        return int(bitstring, 2)
+
+    def qiskit_apply_circuit(self, qc: 'QuantumCircuit'):
+        """Apply an arbitrary Qiskit QuantumCircuit to the register."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        sv = self.statevector.evolve(qc)
+        self.amplitudes = list(sv.data)
+
+    def entanglement_entropy(self, qubit_indices: List[int] = None) -> float:
+        """Compute real entanglement entropy via Qiskit partial_trace."""
+        if not QISKIT_AVAILABLE:
+            return 0.0
+        if qubit_indices is None:
+            qubit_indices = list(range(self.num_qubits // 2))
+        sv = self.statevector
+        dm = DensityMatrix(sv)
+        trace_out = [i for i in range(self.num_qubits) if i not in qubit_indices]
+        reduced = partial_trace(dm, trace_out)
+        return float(entropy(reduced, base=2))
+
+    def _apply_hadamard_all_legacy(self):
+        """Legacy Hadamard (used when Qiskit unavailable)."""
+        n = self.num_states
+        h = 1 / math.sqrt(n)
+        self.amplitudes = [complex(h, 0)] * n
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -276,7 +355,7 @@ class QuantumGates:
         t_ratio = temperature / FE_CURIE_TEMP
         if t_ratio >= 1.0:
             # Paramagnetic - chaotic phase for genuine randomness
-            rand_phase = chaos.chaos_uniform(0, 2 * math.pi, context="curie_gate_phase")
+            rand_phase = chaos.chaos_uniform(0, 2 * math.pi)
             return Qubit(qubit.alpha, qubit.beta * cmath.exp(complex(0, rand_phase)))
         else:
             # Ferromagnetic order - enhance coherence
@@ -322,7 +401,7 @@ class QuantumInspiredOptimizer:
         for pop_idx in range(self.population_size):
             # Initialize angles near π/4 (equal superposition) with chaotic perturbation
             thetas = [
-                math.pi/4 + chaos.chaos_gauss(0, 0.1, context=f"qopt_init_{pop_idx}_{d}")
+                math.pi/4 + chaos.chaos_gaussian(0, 0.1)
                 for d in range(self.dimensions)
             ]
             self.population.append(thetas)
@@ -350,12 +429,12 @@ class QuantumInspiredOptimizer:
             low, high = self.bounds[i]
 
             # Use chaotic entropy for genuine quantum-like measurement
-            if chaos.chaos_float(context=f"qmeasure_{i}") < prob_1:
+            if chaos.chaos_float() < prob_1:
                 # Collapse to "1" side
-                value = low + 0.5 * (high - low) + chaos.chaos_uniform(0, 0.5 * (high - low), context=f"qmeasure_1_{i}")
+                value = low + 0.5 * (high - low) + chaos.chaos_uniform(0, 0.5 * (high - low))
             else:
                 # Collapse to "0" side
-                value = low + chaos.chaos_uniform(0, 0.5 * (high - low), context=f"qmeasure_0_{i}")
+                value = low + chaos.chaos_uniform(0, 0.5 * (high - low))
 
             solution.append(value)
 
@@ -471,7 +550,7 @@ class QuantumAnnealingEngine:
     def anneal(self) -> Dict[str, Any]:
         """Run quantum annealing - CHAOS-enhanced for true quantum-like behavior"""
         # Initialize with chaotic random solution
-        current = [chaos.chaos_int(0, 1, context=f"qanneal_init_{i}") for i in range(self.num_variables)]
+        current = [chaos.chaos_int(0, 1) for i in range(self.num_variables)]
         current_energy = self._energy(current)
 
         self.best_solution = list(current)
@@ -492,7 +571,7 @@ class QuantumAnnealingEngine:
                 delta_e = new_energy - current_energy
 
                 # Accept with quantum-inspired probability using chaotic entropy
-                if chaos.chaos_float(context=f"qanneal_tunnel_{step}_{i}") < self._quantum_tunneling_probability(delta_e, gamma, temperature):
+                if chaos.chaos_float() < self._quantum_tunneling_probability(delta_e, gamma, temperature):
                     current = new_solution
                     current_energy = new_energy
 
@@ -557,7 +636,90 @@ class GroverInspiredSearch:
         self.register.amplitudes = [2 * mean - a for a in self.register.amplitudes]
 
     def search(self, num_iterations: int = None) -> Dict[str, Any]:
-        """Run Grover-inspired search"""
+        """Run Grover-inspired search (uses Qiskit if available)."""
+        if QISKIT_AVAILABLE:
+            return self._qiskit_grover(num_iterations)
+        return self._legacy_grover(num_iterations)
+
+    def _qiskit_grover(self, num_iterations: int = None) -> Dict[str, Any]:
+        """Run real Grover's algorithm via Qiskit 2.3.0."""
+        if not self.oracle:
+            return {"error": "No oracle set"}
+        if not self.marked_items:
+            return {"found": False, "reason": "No marked items"}
+
+        n = self.num_qubits
+        m = len(self.marked_items)
+        if num_iterations is None:
+            num_iterations = max(1, int(math.pi / 4 * math.sqrt(2**n / max(1, m))))
+            num_iterations = min(num_iterations, 100)
+
+        # Build Grover circuit
+        qc = QuantumCircuit(n)
+
+        # Initial superposition
+        for i in range(n):
+            qc.h(i)
+
+        for _ in range(num_iterations):
+            # Oracle: phase-flip marked items
+            for marked in self.marked_items:
+                if marked < 2**n:
+                    # Encode the marked state: flip bits that are 0
+                    binary = format(marked, f'0{n}b')
+                    for bit_idx, bit in enumerate(binary):
+                        if bit == '0':
+                            qc.x(n - 1 - bit_idx)
+                    # Multi-controlled Z (via H-MCX-H on last qubit)
+                    if n == 1:
+                        qc.z(0)
+                    else:
+                        qc.h(n - 1)
+                        qc.mcx(list(range(n - 1)), n - 1)
+                        qc.h(n - 1)
+                    # Undo X flips
+                    for bit_idx, bit in enumerate(binary):
+                        if bit == '0':
+                            qc.x(n - 1 - bit_idx)
+
+            # Diffusion operator: 2|s⟩⟨s| - I
+            for i in range(n):
+                qc.h(i)
+                qc.x(i)
+            qc.h(n - 1)
+            qc.mcx(list(range(n - 1)), n - 1)
+            qc.h(n - 1)
+            for i in range(n):
+                qc.x(i)
+                qc.h(i)
+
+        # Get statevector and measure
+        sv = Statevector.from_int(0, 2**n).evolve(qc)
+        counts = sv.sample_counts(1)
+        result_bitstring = list(counts.keys())[0]
+        result = int(result_bitstring, 2)
+
+        # Get probability of the result
+        probs = sv.probabilities_dict()
+        result_prob = probs.get(result_bitstring, 0.0)
+
+        found = result in self.marked_items
+
+        # Also sync back to legacy register for compatibility
+        self.register.amplitudes = list(sv.data)
+
+        return {
+            "found": found,
+            "result": result,
+            "iterations": num_iterations,
+            "probability": result_prob,
+            "qiskit_backend": True,
+            "statevector_dim": 2**n,
+            "marked_count": m
+        }
+
+    def _legacy_grover(self, num_iterations: int = None) -> Dict[str, Any]:
+        """Legacy Grover search (fallback without Qiskit)."""
         if not self.oracle:
             return {"error": "No oracle set"}
 
@@ -654,7 +816,7 @@ class GroverInspiredSearch:
             try:
                 god_code = SageMagicEngine.derive_god_code()
                 result["god_code_infinite"] = str(god_code)[:80]
-            except:
+            except Exception:
                 pass
 
         return result
@@ -738,6 +900,7 @@ __all__ = [
 if __name__ == "__main__":
     print("=" * 70)
     print("L104 QUANTUM-INSPIRED ENGINE - SELF TEST")
+    print(f"  Qiskit Available: {QISKIT_AVAILABLE}")
     print("=" * 70)
 
     engine = QuantumInspiredEngine()

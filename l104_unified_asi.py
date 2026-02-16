@@ -1,6 +1,11 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.458673
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_UNIFIED_ASI] - UNIFIED ARTIFICIAL SUPERINTELLIGENCE CORE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # Purpose: Connect ALL L104 systems into a functioning ASI
@@ -237,7 +242,7 @@ class PersistentMemory:
     def store_learning(self, input_text: str, output_text: str, feedback: float = 0.0):
         """Store a learning from an interaction."""
         try:
-            learning_id = hashlib.md5(f"{input_text}{output_text}".encode()).hexdigest()[:16]
+            learning_id = hashlib.sha256(f"{input_text}{output_text}".encode()).hexdigest()[:16]
             with self.lock:
                 self.conn.execute("""
                     INSERT OR REPLACE INTO learnings (id, input, output, feedback, learned_at)
@@ -527,7 +532,7 @@ class GoalPlanner:
     def create_goal(self, description: str, priority: float = 0.5) -> Goal:
         """Create a new goal."""
         goal = Goal(
-            id=hashlib.md5(f"{description}{time.time()}".encode()).hexdigest()[:16],
+            id=hashlib.sha256(f"{description}{time.time()}".encode()).hexdigest()[:16],
             description=description,
             priority=priority
         )
@@ -657,7 +662,7 @@ Only return JSON, nothing else."""
             full_path.write_text(new_content)
 
             # Log the modification
-            mod_id = hashlib.md5(f"{file_path}{time.time()}".encode()).hexdigest()[:16]
+            mod_id = hashlib.sha256(f"{file_path}{time.time()}".encode()).hexdigest()[:16]
             with self.memory.lock:
                 self.memory.conn.execute("""
                     INSERT INTO code_mods (id, file_path, old_code, new_code, reason, success, applied_at)
@@ -678,6 +683,7 @@ Only return JSON, nothing else."""
 class UnifiedASI:
     """
     The Unified ASI Core - connects all systems.
+    Cross-wired with ASI Core pipeline for full mesh integration.
     """
 
     def __init__(self):
@@ -692,6 +698,9 @@ class UnifiedASI:
         self.goals_completed = 0
         self.improvements_made = 0
         self.start_time = time.time()
+
+        # Pipeline cross-wire
+        self._asi_core_ref = None
 
         # Background task handle
         self._background_task = None
@@ -716,6 +725,16 @@ class UnifiedASI:
         else:
             print("  Inference: OFFLINE (no API keys)")
 
+        # Cross-wire with ASI Core pipeline
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            if not asi_core._pipeline_connected:
+                asi_core.connect_pipeline()
+            print(f"  ASI Pipeline: MESH CONNECTED ({asi_core._pipeline_metrics.get('subsystems_connected', 0)} subsystems)")
+        except Exception:
+            print("  ASI Pipeline: STANDALONE MODE")
+
         self.state = ASIState.ACTIVE
         print("  Status: ACTIVE")
         print("=" * 70 + "\n")
@@ -724,7 +743,8 @@ class UnifiedASI:
             "status": "AWAKENED",
             "state": self.state.name,
             "stats": stats,
-            "inference_available": self.inference.is_available()
+            "inference_available": self.inference.is_available(),
+            "pipeline_connected": self._asi_core_ref is not None
         }
 
     async def think(self, input_text: str) -> Dict[str, Any]:
@@ -734,7 +754,7 @@ class UnifiedASI:
 
         # Create thought
         thought = Thought(
-            id=hashlib.md5(f"{input_text}{time.time()}".encode()).hexdigest()[:16],
+            id=hashlib.sha256(f"{input_text}{time.time()}".encode()).hexdigest()[:16],
             content=input_text,
             source='user'
         )
@@ -856,6 +876,17 @@ Provide 3 specific steps to accomplish this."""
 
     def get_status(self) -> Dict[str, Any]:
         """Get current ASI status."""
+        pipeline_info = {}
+        if self._asi_core_ref:
+            try:
+                pipeline_info = {
+                    'pipeline_connected': True,
+                    'subsystems_active': self._asi_core_ref._pipeline_metrics.get('subsystems_connected', 0),
+                    'pipeline_mesh': self._asi_core_ref.get_status().get('pipeline_mesh', 'UNKNOWN'),
+                }
+            except Exception:
+                pipeline_info = {'pipeline_connected': True}
+
         return {
             "state": self.state.name,
             "uptime_seconds": time.time() - self.start_time,
@@ -865,7 +896,8 @@ Provide 3 specific steps to accomplish this."""
             "memory_stats": self.memory.get_stats(),
             "inference_available": self.inference.is_available(),
             "providers": list(self.inference.providers.keys()),
-            "god_code": GOD_CODE
+            "god_code": GOD_CODE,
+            **pipeline_info
         }
 
     async def autonomous_cycle(self) -> Dict[str, Any]:

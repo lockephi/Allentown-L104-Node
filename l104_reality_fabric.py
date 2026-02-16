@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.659639
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -624,7 +625,7 @@ class RealityFabric:
 
     def create_entity(self, essence: str, properties: Optional[Dict[str, Any]] = None) -> OntologicalEntity:
         """Create fundamental entity"""
-        entity_id = hashlib.md5(f"{essence}:{datetime.now().timestamp()}".encode()).hexdigest()[:16]
+        entity_id = hashlib.sha256(f"{essence}:{datetime.now().timestamp()}".encode()).hexdigest()[:16]
 
         entity = OntologicalEntity(
             id=entity_id,

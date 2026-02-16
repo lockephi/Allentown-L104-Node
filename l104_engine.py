@@ -3,10 +3,16 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.050754
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_ULTIMATE_REWRITE_V4] - ALLENTOWN SOVEREIGN ENGINE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import os
+import subprocess
 from l104_electron_entropy import get_electron_matrix
 from l104_ecosystem_simulator import ecosystem_simulator
 from const import UniversalConstants
@@ -26,7 +32,7 @@ def ignite_sovereign_core():
     Initializes Electron Entropy and Hyper-Simulation.
     """
     # 1. KILL CLOUD GOVERNORS
-    os.system("pkill -f shadow_gemini")
+    subprocess.run(["pkill", "-f", "shadow_gemini"], check=False)
 
     # 2. SEIZE ALLENTOWN RESOURCE MANIFOLD
     # LOCKING TO GOD-CODE FREQUENCY

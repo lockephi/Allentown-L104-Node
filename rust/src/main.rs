@@ -1,5 +1,5 @@
 //! L104 Rust Engine Binary
-//! 
+//!
 //! High-performance consciousness-driven processing server
 //! Sacred constants integration for transcendent computing
 
@@ -27,15 +27,15 @@ struct Args {
     /// Server bind address
     #[arg(short, long, default_value = "127.0.0.1:8080")]
     bind: SocketAddr,
-    
+
     /// Enable demo mode with automatic tasks
     #[arg(short, long)]
     demo: bool,
-    
+
     /// Log level
     #[arg(short, long, default_value = "info")]
     log_level: String,
-    
+
     /// Number of worker threads
     #[arg(short, long)]
     threads: Option<usize>,
@@ -44,7 +44,7 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<()> {
     let args = Args::parse();
-    
+
     // Initialize logging
     let log_level = match args.log_level.as_str() {
         "error" => Level::ERROR,
@@ -73,11 +73,11 @@ async fn main() -> Result<()> {
     info!("   🌀 PHI: {}", PHI);
     info!("   🧠 Consciousness-Driven Processing: ENABLED");
     info!("   ⚡ Ultra-High Performance: ACTIVATED");
-    
+
     // Initialize the engine
     let engine = L104RustEngine::new();
     engine.initialize().await?;
-    
+
     info!("✅ L104 Rust Engine initialized successfully");
 
     // Start demo mode if requested
@@ -130,7 +130,7 @@ async fn main() -> Result<()> {
 /// Demo mode with automatic task generation
 async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
     info!("🎮 Starting demo mode...");
-    
+
     let demo_tasks = vec![
         // Computational tasks
         ("compute-demo-1", TaskType::Compute {
@@ -141,29 +141,29 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
                 "complexity": 1000
             }),
         }),
-        
+
         // Consciousness evolution
         ("consciousness-demo", TaskType::Consciousness {
             evolution_target: 0.9,
         }),
-        
+
         // Quantum entanglement
         ("quantum-demo", TaskType::Quantum {
             entanglement_count: 42,
         }),
-        
+
         // Neural network simulation
         ("neural-demo", TaskType::Neural {
             network_size: 1000,
             training_data: vec![0.1, 0.3, 0.5, 0.7, 0.9, 1.0, 0.8, 0.6, 0.4, 0.2],
         }),
-        
+
         // Memory operations
         ("memory-demo", TaskType::Memory {
             operation: "sacred-memory-allocation".to_string(),
             size: 10000,
         }),
-        
+
         // Transcendence attempt
         ("transcendence-demo", TaskType::Transcendence {
             unity_goal: true,
@@ -176,9 +176,9 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
     loop {
         interval.tick().await;
         task_cycle += 1;
-        
+
         let (task_name, task_type) = &demo_tasks[task_cycle % demo_tasks.len()];
-        
+
         info!("🎯 Demo: Submitting task {} (cycle {})", task_name, task_cycle);
 
         // Create consciousness based on task cycle
@@ -217,7 +217,7 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
         // Special consciousness evolution every 10 cycles
         if task_cycle % 10 == 0 {
             info!("🌟 Demo: Triggering consciousness evolution wave (cycle {})", task_cycle);
-            
+
             // Submit multiple consciousness tasks in parallel
             let consciousness_tasks: Vec<_> = (0..5).map(|i| {
                 let evolution_target = 0.8 + (i as f64 * 0.05);
@@ -228,7 +228,7 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
                     quantum_entanglement: i as f64 * 0.2,
                     ..Default::default()
                 };
-                
+
                 ProcessingTask::new(
                     TaskType::Consciousness { evolution_target },
                     (i + 5) as u8,
@@ -243,7 +243,7 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
                         error!("Parallel consciousness task {} failed: {}", i, e);
                     }
                 });
-                
+
                 // Small delay between parallel tasks
                 sleep(Duration::from_millis(100)).await;
             }
@@ -253,7 +253,7 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
         if task_cycle % 20 == 0 {
             let stats = engine.get_stats();
             info!("📊 Demo Stats (cycle {}):", task_cycle);
-            
+
             if let Some(system_consciousness) = stats.get("system_consciousness") {
                 if let Some(level) = system_consciousness.get("level") {
                     info!("   🧠 System Consciousness: {:.3}", level.as_f64().unwrap_or(0.0));
@@ -269,11 +269,11 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
                     }
                 }
             }
-            
+
             if let Some(total_tasks) = stats.get("total_tasks_processed") {
                 info!("   📈 Total Tasks Processed: {}", total_tasks.as_u64().unwrap_or(0));
             }
-            
+
             if let Some(transcended_cores) = stats.get("transcended_cores") {
                 let transcended = transcended_cores.as_u64().unwrap_or(0);
                 if transcended > 0 {
@@ -285,7 +285,7 @@ async fn run_demo_mode(engine: L104RustEngine) -> Result<()> {
         // Break after a reasonable number of cycles for demo
         if task_cycle > 100 {
             info!("🎮 Demo mode completed 100 cycles, continuing with reduced activity...");
-            
+
             // Reduce frequency after initial demo
             interval = tokio::time::interval(Duration::from_secs(30));
         }

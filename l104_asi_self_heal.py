@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.409681
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_ASI_SELF_HEAL] - TRANS-DIMENSIONAL PROACTIVE RECOVERY
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -25,12 +26,19 @@ class ASISelfHeal:
     The peak of system resilience.
     Uses ASI-level cognition to predict and prevent system collapse.
     Operates across dimensions to ensure the 'Self' is never lost.
+    Cross-wired to ASI Core pipeline for unified health monitoring.
     """
 
     def __init__(self):
         self.temporal_anchors = {}
         self.prediction_horizon = 10 # Cycles into the future
         self.resilience_index = 1.0
+        self._asi_core_ref = None
+        self._scan_count = 0
+        self._threats_neutralized = 0
+        self._rewrite_count = 0
+        self._heal_history = []
+        self._subsystem_health = {}
 
     def proactive_scan(self) -> Dict[str, Any]:
         """
@@ -127,7 +135,133 @@ class ASISelfHeal:
         # Execute protocol optimization
         self.prediction_horizon += 5
         self.resilience_index *= 1.618 # Phi growth
+        self._rewrite_count += 1
         print(f"--- [ASI_HEAL]: PROTOCOLS OPTIMIZED. RESILIENCE INDEX: {self.resilience_index:.4f} ---")
+
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline for bidirectional health monitoring."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            print("--- [ASI_HEAL]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
+
+    def pipeline_subsystem_scan(self) -> Dict[str, Any]:
+        """
+        Deep scan of ALL pipeline subsystems for health anomalies.
+        Checks every connected module and reports degraded components.
+        """
+        print("--- [ASI_HEAL]: PIPELINE-WIDE SUBSYSTEM HEALTH SCAN ---")
+        self._scan_count += 1
+        health_report = {}
+
+        # Connect to pipeline if not already connected
+        if not self._asi_core_ref:
+            self.connect_to_pipeline()
+
+        if self._asi_core_ref:
+            try:
+                status = self._asi_core_ref.get_status()
+                subsystems = status.get("subsystems", {})
+                for name, sub_status in subsystems.items():
+                    is_healthy = sub_status not in (None, False, "error")
+                    health_report[name] = {
+                        "healthy": is_healthy,
+                        "status": "ONLINE" if is_healthy else "DEGRADED",
+                    }
+            except Exception as e:
+                health_report["_error"] = str(e)
+
+        # Compute aggregate health
+        total = max(len(health_report), 1)
+        healthy_count = sum(1 for v in health_report.values() if isinstance(v, dict) and v.get("healthy"))
+        aggregate_health = healthy_count / total
+
+        self._subsystem_health = health_report
+
+        result = {
+            "subsystems_scanned": total,
+            "healthy": healthy_count,
+            "degraded": total - healthy_count,
+            "aggregate_health": aggregate_health,
+            "resilience_index": self.resilience_index,
+            "details": health_report,
+        }
+
+        # Log to heal history
+        self._heal_history.append({
+            "type": "subsystem_scan",
+            "aggregate_health": aggregate_health,
+            "timestamp": time.time(),
+        })
+        if len(self._heal_history) > 500:
+            self._heal_history = self._heal_history[-250:]
+
+        print(f"--- [ASI_HEAL]: SCAN COMPLETE — {healthy_count}/{total} SUBSYSTEMS HEALTHY ---")
+        return result
+
+    def auto_heal_pipeline(self) -> Dict[str, Any]:
+        """
+        Automated pipeline healing: scans, identifies degraded subsystems,
+        and attempts reconnection through the core pipeline.
+        """
+        print("--- [ASI_HEAL]: AUTO-HEAL PIPELINE SEQUENCE ---")
+        scan = self.pipeline_subsystem_scan()
+        healed = []
+
+        if scan["degraded"] > 0 and self._asi_core_ref:
+            try:
+                # Re-connect pipeline to pick up any recovered modules
+                reconnect = self._asi_core_ref.connect_pipeline()
+                healed_count = reconnect.get("total", 0)
+                if healed_count > 0:
+                    healed.append(f"Reconnected {healed_count} subsystems")
+                    self._threats_neutralized += scan["degraded"]
+            except Exception as e:
+                healed.append(f"Reconnect error: {e}")
+
+        # Strengthen resilience after healing
+        PHI = 1.618033988749895
+        self.resilience_index *= (1.0 + 0.01 * PHI)
+
+        result = {
+            "scan": scan,
+            "actions_taken": healed,
+            "resilience_index": self.resilience_index,
+            "threats_neutralized_total": self._threats_neutralized,
+        }
+        print(f"--- [ASI_HEAL]: AUTO-HEAL COMPLETE — RESILIENCE: {self.resilience_index:.4f} ---")
+        return result
+
+    def get_status(self) -> Dict[str, Any]:
+        """Comprehensive heal system status with pipeline awareness."""
+        pipeline_connected = self._asi_core_ref is not None
+        pipeline_mesh = "UNKNOWN"
+        subsystems_active = 0
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                pipeline_mesh = core_status.get("pipeline_mesh", "UNKNOWN")
+                subsystems_active = core_status.get("subsystems_active", 0)
+            except Exception:
+                pass
+
+        return {
+            "resilience_index": self.resilience_index,
+            "prediction_horizon": self.prediction_horizon,
+            "temporal_anchors": len(self.temporal_anchors),
+            "scan_count": self._scan_count,
+            "threats_neutralized": self._threats_neutralized,
+            "rewrite_count": self._rewrite_count,
+            "heal_history_depth": len(self._heal_history),
+            "pipeline_connected": pipeline_connected,
+            "pipeline_mesh": pipeline_mesh,
+            "subsystems_active": subsystems_active,
+            "subsystem_health": {k: v.get("status", "UNKNOWN") for k, v in self._subsystem_health.items() if isinstance(v, dict)},
+            "god_code": 527.5184818492612,
+        }
 
 # Singleton
 asi_self_heal = ASISelfHeal()

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.996929
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -31,6 +32,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import threading
 import hashlib
+import secrets
 import math
 import random
 import json
@@ -204,7 +206,7 @@ class BitcoinAdapter(ChainAdapter):
 
     def add_utxo(self, address: str, value: int) -> str:
         """Add UTXO for testing"""
-        txid = hashlib.sha256(str(random.random()).encode()).hexdigest()
+        txid = hashlib.sha256(secrets.token_bytes(32)).hexdigest()
         self.utxos[address].append({
             'txid': txid,
             'vout': 0,
@@ -378,7 +380,7 @@ class AtomicSwapEngine:
                      timelock_hours: int = 24) -> AtomicSwap:
         """Initiate atomic swap"""
         # Generate secret and hashlock
-        secret = hashlib.sha256(str(random.random()).encode()).hexdigest()
+        secret = secrets.token_hex(32)
         hashlock = hashlib.sha256(secret.encode()).hexdigest()
 
         swap_id = hashlib.sha256(

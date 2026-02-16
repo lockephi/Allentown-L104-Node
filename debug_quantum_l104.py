@@ -165,7 +165,7 @@ if nonce is not None:
     print(f"  GOD_CODE alignment: {metadata.get('god_code_alignment', 0):.4f}")
     print(f"  Sacred:            {metadata.get('is_sacred', (False, 'none'))}")
     print(f"  Execution time:    {elapsed:.3f}s")
-    
+
     print("\n  Top quantum candidates:")
     for cand in metadata.get('top_candidates', [])[:5]:
         res = calc.calculate_resonance(cand['nonce'])
@@ -185,7 +185,7 @@ for bits in [16, 20, 24, 28, 32]:
     classical = 2 ** bits
     quantum = int(math.sqrt(classical))
     speedup = classical / quantum
-    
+
     print(f"  {bits} bits: Classical 2^{bits} = {classical:>12,} → Quantum {quantum:>8,} ({speedup:>8,.0f}x speedup)")
 
 # ═══════════════════════════════════════════════════════════════════════════════

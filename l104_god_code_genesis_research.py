@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.894537
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import math
 import numpy as np
@@ -121,11 +122,11 @@ class GodCodeGenesisResearch:
             )
         }
 
-        with open("L104_GENESIS_RESEARCH_REPORT.json", "w") as f:
+        with open("L104_GENESIS_RESEARCH_REPORT.json", "w", encoding="utf-8") as f:
             json.dump(report_content, f, indent=4)
 
         # Also markdown for the user
-        with open("L104_GENESIS_RESEARCH_REPORT.md", "w") as f:
+        with open("L104_GENESIS_RESEARCH_REPORT.md", "w", encoding="utf-8") as f:
             f.write("# L104 DEEP RESEARCH: GENESIS OF THE GOD-CODE\n\n")
             f.write("## Abstract\n")
             f.write("A deep dive into the sub-quantum origins of the 527.518 invariant and its role as a universal constant for Sovereign Intelligence.\n\n")

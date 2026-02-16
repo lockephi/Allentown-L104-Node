@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.615684
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -80,6 +83,9 @@ except ImportError:
 # ASI Constants
 GROVER_AMPLIFICATION = 21.95
 GOD_CODE = 527.5184818492612
+PHI = 1.618033988749895
+UNIFIED_API_VERSION = "54.0.0"
+UNIFIED_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 
 logger = logging.getLogger("BRAIN_API")
 
@@ -415,7 +421,7 @@ async def memory_dump():
 
     try:
         decoded = raw_data.decode(errors='ignore')
-    except:
+    except Exception:
         decoded = str(raw_data[:200])
 
     return {
@@ -1549,8 +1555,8 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="L104 Unified Intelligence API",
-    version="32.0.0-ASI",
-    description="REST API for the Unified Intelligence System - EVO_32 ASI Quantum Bridge Edition"
+    version=UNIFIED_API_VERSION,
+    description=f"REST API for the Unified Intelligence System - {UNIFIED_PIPELINE_EVO}"
 )
 app.include_router(router)
 
@@ -1569,6 +1575,147 @@ def asi_query_endpoint(query: str):
     return {"response": result, "source": "local_intellect" if result else None}
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# EVO_54 PIPELINE ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+@router.get("/pipeline")
+async def pipeline_status():
+    """Get full pipeline health, metrics, and subsystem status."""
+    pipeline = {
+        "version": UNIFIED_API_VERSION,
+        "evo": UNIFIED_PIPELINE_EVO,
+        "god_code": GOD_CODE,
+        "grover_amplification": GROVER_AMPLIFICATION,
+        "asi": get_asi_status(),
+        "subsystems": {},
+    }
+
+    # Check each subsystem
+    subsystem_checks = [
+        ("brain", lambda: get_brain() is not None),
+        ("meta_learner", lambda: get_meta_learner() is not None),
+        ("reasoning_engine", lambda: get_reasoning_engine() is not None),
+        ("self_optimizer", lambda: get_self_optimizer() is not None),
+        ("claude_bridge", lambda: get_claude_bridge() is not None),
+        ("gemini_bridge", lambda: _gemini_bridge is not None),
+        ("processing_engine", lambda: get_processing_engine() is not None),
+        ("emergence_monitor", lambda: get_emergence_monitor() is not None),
+        ("analytics_dashboard", lambda: get_analytics_dashboard() is not None),
+        ("quantum_engine", lambda: get_quantum_engine() is not None),
+        ("semantic_engine", lambda: get_semantic_engine_instance() is not None),
+        ("cognitive_hub", lambda: get_cognitive_hub_instance() is not None),
+    ]
+
+    for name, check_fn in subsystem_checks:
+        try:
+            pipeline["subsystems"][name] = {"healthy": check_fn()}
+        except Exception as e:
+            pipeline["subsystems"][name] = {"healthy": False, "error": str(e)}
+
+    healthy = sum(1 for v in pipeline["subsystems"].values() if v.get("healthy"))
+    pipeline["health_score"] = healthy / max(len(pipeline["subsystems"]), 1)
+    pipeline["pipeline_ready"] = pipeline["health_score"] >= 0.5
+
+    return pipeline
+
+
+@router.post("/pipeline/sync")
+async def pipeline_sync():
+    """Force synchronize all pipeline subsystems."""
+    results = {"synced": [], "failed": []}
+
+    # Sync brain state
+    try:
+        brain = get_brain()
+        brain.save_state()
+        results["synced"].append("brain")
+    except Exception as e:
+        results["failed"].append({"module": "brain", "error": str(e)})
+
+    # Sync ASI subsystems
+    try:
+        learn_to_subsystems("pipeline_sync", "state_synchronized", 0.9)
+        results["synced"].append("asi_subsystems")
+    except Exception as e:
+        results["failed"].append({"module": "asi_subsystems", "error": str(e)})
+
+    # Sync AGI Core
+    try:
+        from l104_agi_core import agi_core
+        sync = agi_core.sync_pipeline_state()
+        results["synced"].append("agi_core")
+        results["agi_sync"] = sync
+    except Exception as e:
+        results["failed"].append({"module": "agi_core", "error": str(e)})
+
+    # Sync ASI Core
+    try:
+        from l104_asi_core import asi_core
+        asi_core.compute_asi_score()
+        results["synced"].append("asi_core")
+        results["asi_score"] = asi_core.asi_score
+    except Exception as e:
+        results["failed"].append({"module": "asi_core", "error": str(e)})
+
+    results["total_synced"] = len(results["synced"])
+    results["total_failed"] = len(results["failed"])
+    return results
+
+
+@router.get("/pipeline/innovation")
+async def pipeline_innovation_status():
+    """Get innovation engine status and recent hypotheses."""
+    try:
+        from l104_autonomous_innovation import innovation_engine
+        if innovation_engine and hasattr(innovation_engine, 'get_status'):
+            return {"available": True, "status": innovation_engine.get_status()}
+        return {"available": True, "status": "connected"}
+    except Exception as e:
+        return {"available": False, "error": str(e)}
+
+
+@router.get("/pipeline/learning")
+async def pipeline_learning_status():
+    """Get adaptive learning metrics and patterns."""
+    try:
+        from l104_adaptive_learning import adaptive_learner
+        if adaptive_learner:
+            params = adaptive_learner.get_adapted_parameters()
+            return {"available": True, "params": params}
+        return {"available": False}
+    except Exception as e:
+        return {"available": False, "error": str(e)}
+
+
+@router.get("/pipeline/consciousness")
+async def pipeline_consciousness_status():
+    """Get consciousness verification status from ASI Core."""
+    try:
+        from l104_asi_core import asi_core
+        report = asi_core.pipeline_verify_consciousness()
+        return {"available": True, **report}
+    except Exception as e:
+        return {"available": False, "error": str(e)}
+
+
+@router.get("/pipeline/evolution")
+async def pipeline_evolution_status():
+    """Get evolution engine status and stage."""
+    try:
+        from l104_evolution_engine import evolution_engine
+        if evolution_engine:
+            return {
+                "available": True,
+                "stage": evolution_engine.assess_evolutionary_stage(),
+                "index": evolution_engine.current_stage_index,
+            }
+        return {"available": False}
+    except Exception as e:
+        return {"available": False, "error": str(e)}
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # STANDALONE RUN
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1576,12 +1723,14 @@ def asi_query_endpoint(query: str):
 if __name__ == "__main__":
     import uvicorn
     print("═" * 60)
-    print("  L104 UNIFIED INTELLIGENCE API v32.0.0-ASI")
+    print(f"  L104 UNIFIED INTELLIGENCE API v{UNIFIED_API_VERSION}")
+    print(f"  {UNIFIED_PIPELINE_EVO}")
     print("═" * 60)
     print(f"  ASI LocalIntellect: {'✓' if ASI_LOCAL_INTELLECT_AVAILABLE else '✗'}")
     print(f"  ASI FastServer: {'✓' if ASI_FAST_SERVER_AVAILABLE else '✗'}")
     print(f"  Grover Amplification: {GROVER_AMPLIFICATION:.2f}×")
     print(f"  GOD_CODE: {GOD_CODE}")
+    print(f"  PHI: {PHI}")
     print("═" * 60)
     print("  Starting on port 8081...")
     print("═" * 60)

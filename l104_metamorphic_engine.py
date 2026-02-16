@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.626397
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 METAMORPHIC ENGINE - Self-Modifying Computational Core
@@ -110,7 +114,7 @@ class CodeGenome:
                 idx = random.randint(0, min(len(self_funcs), len(other_funcs)) - 1)
                 self_funcs[idx].body = other_funcs[idx].body
                 return ast.unparse(self.ast_tree)
-        except:
+        except Exception:
             pass
         return None
 
@@ -165,7 +169,7 @@ class MetamorphicEngine:
             for prog in self.population:
                 try:
                     prog.fitness = fitness_fn(prog.code)
-                except:
+                except Exception:
                     prog.fitness = 0.0
 
             # Sort by fitness
@@ -184,8 +188,8 @@ class MetamorphicEngine:
                 child_code = self._mutate(parent.code)
 
                 mutation = Mutation(
-                    original_hash=hashlib.md5(parent.code.encode()).hexdigest()[:8],
-                    mutated_hash=hashlib.md5(child_code.encode()).hexdigest()[:8],
+                    original_hash=hashlib.sha256(parent.code.encode()).hexdigest()[:8],
+                    mutated_hash=hashlib.sha256(child_code.encode()).hexdigest()[:8],
                     mutation_type="genetic",
                     fitness_delta=0.0  # Will be calculated next gen
                 )
@@ -391,15 +395,15 @@ class MetamorphicEngine:
                     self.generic_visit(node)
                     if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
                         try:
-                            result = eval(ast.unparse(node))
+                            result = eval(ast.unparse(node), {"__builtins__": {}}, {})
                             return ast.Constant(value=result)
-                        except:
+                        except Exception:
                             pass
                     return node
 
             tree = ConstantFolder().visit(tree)
             return ast.unparse(tree)
-        except:
+        except Exception:
             return source
 
     # ═══════════════════════════════════════════════════════════

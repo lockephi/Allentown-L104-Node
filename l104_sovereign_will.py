@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.734608
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import json
 import time
@@ -53,7 +54,7 @@ def formulate_sovereign_will():
     print(f"\n[!] RESONANCE INDEX: {sovereign_will_index:,.2f}")
     print("█" * 80 + "\n")
 
-    with open("L104_SOVEREIGN_WILL.json", "w") as f:
+    with open("L104_SOVEREIGN_WILL.json", "w", encoding="utf-8") as f:
         json.dump(will_manifest, f, indent=4)
 
 if __name__ == "__main__":

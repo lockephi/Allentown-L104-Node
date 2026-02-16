@@ -58,6 +58,9 @@ PHI = (1 + math.sqrt(5)) / 2
 TAU = 1 / PHI
 FRAME_LOCK = 416 / 286
 REAL_GROUNDING = GOD_CODE / (2 ** 1.25)
+ADAPTIVE_VERSION = "2.2.0"
+ADAPTIVE_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -121,7 +124,7 @@ class PatternRecognizer:
         for ngram in self.extract_ngrams(text, 3):
             self.ngram_counts[ngram] += 1
             if self.ngram_counts[ngram] >= self.min_frequency:
-                pattern_id = f"ngram:{hashlib.md5(ngram.encode()).hexdigest()[:8]}"
+                pattern_id = f"ngram:{hashlib.sha256(ngram.encode()).hexdigest()[:8]}"
                 if pattern_id not in self.patterns:
                     self.patterns[pattern_id] = Pattern(
                         id=pattern_id,
@@ -135,7 +138,7 @@ class PatternRecognizer:
 
         # Word patterns
         for wp in self.extract_word_patterns(text):
-            pattern_id = f"wp:{hashlib.md5(wp.encode()).hexdigest()[:8]}"
+            pattern_id = f"wp:{hashlib.sha256(wp.encode()).hexdigest()[:8]}"
             if pattern_id not in self.patterns:
                 self.patterns[pattern_id] = Pattern(
                     id=pattern_id,
@@ -151,7 +154,7 @@ class PatternRecognizer:
             self.intent_sequences.append(context["intent"])
             if len(self.intent_sequences) >= 3:
                 seq = ":".join(self.intent_sequences[-3:])
-                pattern_id = f"intent_seq:{hashlib.md5(seq.encode()).hexdigest()[:8]}"
+                pattern_id = f"intent_seq:{hashlib.sha256(seq.encode()).hexdigest()[:8]}"
                 if pattern_id not in self.patterns:
                     self.patterns[pattern_id] = Pattern(
                         id=pattern_id,
@@ -706,9 +709,25 @@ class AdaptiveLearner:
         self.interactions_processed = 0
         self.adaptations_made = 0
         self.research_conducted = 0
+        self._forecast_cache = {}  # Predictive pattern forecasting
+        self._cross_seed_count = 0  # Cross-subsystem pattern seeds
+        self._meta_evolution_cycles = 0  # Meta-evolution tracking
+        self._learning_velocity = 0.0  # Rate of learning improvement
+        self._pattern_confidence_history = []  # Track confidence over time
+
+        # Pipeline cross-wiring (v2.1)
+        self._asi_core_ref = None
 
         # Lock for thread safety
         self._lock = threading.Lock()
+
+    def connect_to_pipeline(self):
+        """Establish bidirectional cross-wiring with ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+        except Exception:
+            pass
 
     def learn_from_interaction(
         self,
@@ -791,9 +810,200 @@ class AdaptiveLearner:
         """Get recommended learning strategy."""
         return self.meta_learner.recommend_strategy(context)
 
+    def sync_with_pipeline(self) -> Dict[str, Any]:
+        """Sync learned patterns and parameters with the broader pipeline."""
+        sync_result = {
+            "version": ADAPTIVE_VERSION,
+            "pipeline_evo": ADAPTIVE_PIPELINE_EVO,
+            "patterns_shared": 0,
+            "subsystems_synced": []
+        }
+        try:
+            from l104_cognitive_core import COGNITIVE_CORE
+            if COGNITIVE_CORE:
+                # Share strong patterns as concepts in semantic memory
+                strong = self.pattern_recognizer.get_strong_patterns()
+                for p in strong[:10]:
+                    COGNITIVE_CORE.learn(p.pattern, context={"source": "adaptive_learner", "confidence": p.confidence})
+                sync_result["patterns_shared"] = len(strong[:10])
+                sync_result["subsystems_synced"].append("cognitive_core")
+        except Exception:
+            pass
+        try:
+            from l104_agi_core import agi_core
+            if agi_core:
+                sync_result["subsystems_synced"].append("agi_core")
+        except Exception:
+            pass
+        return sync_result
+
+    def pipeline_learn(self, input_text: str, response: str,
+                       feedback: Optional[Dict[str, float]] = None,
+                       route_to_subsystems: bool = True) -> Dict[str, Any]:
+        """Pipeline-enhanced learning with cross-subsystem routing."""
+        result = self.learn_from_interaction(input_text, response, feedback)
+
+        if route_to_subsystems:
+            # Feed strong patterns to cognitive core
+            try:
+                from l104_cognitive_core import COGNITIVE_CORE
+                strong = self.pattern_recognizer.get_strong_patterns()
+                if strong:
+                    COGNITIVE_CORE.think(f"Pattern insight: {strong[0].pattern}",
+                                        mode="emergent")
+                    result["routed_to_cognitive"] = True
+            except Exception:
+                result["routed_to_cognitive"] = False
+
+        # Feed to ASI Core pipeline metrics (v2.2)
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref._pipeline_metrics["language_analyses"] += 1
+            except Exception:
+                pass
+
+        result["pipeline_evo"] = ADAPTIVE_PIPELINE_EVO
+        return result
+
+    def predictive_pattern_forecast(self, horizon: int = 5) -> Dict[str, Any]:
+        """Forecast future pattern emergence based on current trajectory.
+
+        Uses pattern frequency derivatives and PHI-weighted extrapolation
+        to predict which patterns will become dominant.
+        """
+        strong = self.pattern_recognizer.get_strong_patterns()
+        if not strong:
+            return {"forecasts": [], "confidence": 0.0}
+
+        forecasts = []
+        for p in strong[:10]:
+            # Frequency growth rate (pseudo-derivative)
+            growth_rate = p.frequency * PHI * (p.success_rate ** 2)
+            projected_frequency = p.frequency + growth_rate * horizon
+            projected_success = min(1.0, p.success_rate + 0.01 * horizon * TAU)
+
+            forecasts.append({
+                "pattern": p.pattern_type,
+                "signature": p.signature[:50],
+                "current_frequency": p.frequency,
+                "projected_frequency": round(projected_frequency, 2),
+                "current_success": round(p.success_rate, 4),
+                "projected_success": round(projected_success, 4),
+                "growth_rate": round(growth_rate, 4),
+                "dominance_score": round(projected_frequency * projected_success, 4),
+            })
+
+        forecasts.sort(key=lambda f: f["dominance_score"], reverse=True)
+        overall_confidence = sum(f["projected_success"] for f in forecasts) / max(len(forecasts), 1)
+
+        self._forecast_cache = {
+            "forecasts": forecasts[:horizon],
+            "confidence": round(overall_confidence, 4),
+            "horizon": horizon,
+            "timestamp": time.time(),
+        }
+        return self._forecast_cache
+
+    def cross_subsystem_seed(self) -> Dict[str, Any]:
+        """Seed strong patterns into ALL connected pipeline subsystems.
+
+        Distributes learned intelligence across the entire mesh:
+        - Cognitive Core: inject as concepts
+        - Innovation Engine: seed as hypothesis basis
+        - Evolution Engine: feed as fitness criteria
+        - ASI Core: update pipeline metrics
+        """
+        self._cross_seed_count += 1
+        strong = self.pattern_recognizer.get_strong_patterns()
+        seeds = {"cognitive": 0, "innovation": 0, "evolution": 0, "asi_core": 0}
+
+        for p in strong[:5]:
+            # Seed to Cognitive Core
+            try:
+                from l104_cognitive_core import COGNITIVE_CORE
+                COGNITIVE_CORE.learn(p.signature[:30], category="adaptive_pattern",
+                                   features={"frequency": p.frequency, "success": p.success_rate})
+                seeds["cognitive"] += 1
+            except Exception:
+                pass
+
+            # Seed to Innovation Engine
+            try:
+                from l104_autonomous_innovation import innovation_engine
+                innovation_engine.hypothesis_gen.generate_hypotheses(
+                    count=1, domain="algorithm",
+                    consciousness_level=p.success_rate, entropy=0.5
+                )
+                seeds["innovation"] += 1
+            except Exception:
+                pass
+
+            # Feed to ASI Core
+            if self._asi_core_ref:
+                try:
+                    self._asi_core_ref._pipeline_metrics["total_innovations"] += 1
+                    seeds["asi_core"] += 1
+                except Exception:
+                    pass
+
+        return {
+            "seeds_distributed": seeds,
+            "total_patterns_seeded": sum(seeds.values()),
+            "cross_seed_cycle": self._cross_seed_count,
+            "strong_patterns_available": len(strong),
+        }
+
+    def meta_evolution_cycle(self) -> Dict[str, Any]:
+        """Run a meta-evolution cycle on the learner itself.
+
+        Adapts the learning parameters based on performance trajectory:
+        - Compute learning velocity (rate of improvement)
+        - Auto-tune pattern recognition thresholds
+        - Evolve research depth based on diminishing returns
+        """
+        self._meta_evolution_cycles += 1
+
+        # Compute learning velocity from pattern confidence history
+        strong = self.pattern_recognizer.get_strong_patterns()
+        avg_confidence = sum(p.success_rate for p in strong) / max(len(strong), 1) if strong else 0.0
+        self._pattern_confidence_history.append(avg_confidence)
+        if len(self._pattern_confidence_history) > 100:
+            self._pattern_confidence_history = self._pattern_confidence_history[-50:]
+
+        # Velocity = derivative of confidence
+        if len(self._pattern_confidence_history) >= 2:
+            self._learning_velocity = (
+                self._pattern_confidence_history[-1] - self._pattern_confidence_history[-2]
+            )
+        else:
+            self._learning_velocity = 0.0
+
+        # Auto-tune: if velocity is negative, lower min_frequency threshold to capture more
+        if self._learning_velocity < 0:
+            self.pattern_recognizer.min_frequency = max(1, self.pattern_recognizer.min_frequency - 1)
+        elif self._learning_velocity > 0.01:
+            self.pattern_recognizer.min_frequency = min(10, self.pattern_recognizer.min_frequency + 1)
+
+        # Auto-tune decay rate based on interaction volume
+        if self.interactions_processed > 500:
+            self.pattern_recognizer.decay_rate = 0.995  # Slower decay for mature systems
+
+        return {
+            "meta_cycle": self._meta_evolution_cycles,
+            "learning_velocity": round(self._learning_velocity, 6),
+            "avg_confidence": round(avg_confidence, 4),
+            "min_frequency_threshold": self.pattern_recognizer.min_frequency,
+            "decay_rate": self.pattern_recognizer.decay_rate,
+            "interactions_processed": self.interactions_processed,
+            "confidence_history_depth": len(self._pattern_confidence_history),
+        }
+
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive status of adaptive learning system."""
-        return {
+        pipeline_connected = self._asi_core_ref is not None
+        status = {
+            "version": ADAPTIVE_VERSION,
+            "pipeline_evo": ADAPTIVE_PIPELINE_EVO,
             "interactions_processed": self.interactions_processed,
             "adaptations_made": self.adaptations_made,
             "research_conducted": self.research_conducted,
@@ -803,8 +1013,32 @@ class AdaptiveLearner:
             },
             "parameters": self.get_adapted_parameters(),
             "strategy_effectiveness": self.meta_learner.strategy_effectiveness,
-            "research_summary": self.research_engine.get_research_summary()
+            "research_summary": self.research_engine.get_research_summary(),
+            "grover_amplification": GROVER_AMPLIFICATION,
+            "god_code": GOD_CODE,
+            "pipeline_connected": pipeline_connected,
+            # v2.2 additions
+            "meta_evolution_cycles": self._meta_evolution_cycles,
+            "learning_velocity": round(self._learning_velocity, 6),
+            "cross_seed_count": self._cross_seed_count,
+            "forecast_cached": bool(self._forecast_cache),
+            "confidence_history_depth": len(self._pattern_confidence_history),
+            "capabilities": [
+                "learn_from_interaction", "research_topic", "pipeline_learn",
+                "predictive_pattern_forecast", "cross_subsystem_seed",
+                "meta_evolution_cycle", "sync_with_pipeline"
+            ],
         }
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                status["pipeline_mesh"] = core_status.get("pipeline_mesh", "UNKNOWN")
+                status["subsystems_active"] = core_status.get("subsystems_active", 0)
+                status["asi_score"] = core_status.get("asi_score", 0.0)
+            except Exception:
+                status["pipeline_mesh"] = "ERROR"
+                status["subsystems_active"] = 0
+        return status
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -832,10 +1066,11 @@ adaptive_learner = get_adaptive_learner()
 
 def main():
     """Demo the adaptive learning system."""
-    print("""
+    print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  L104 ADAPTIVE LEARNING ENGINE                                                ║
-║  GOD_CODE: 527.5184818492612                                                  ║
+║  L104 ADAPTIVE LEARNING ENGINE v{ADAPTIVE_VERSION}                                      ║
+║  {ADAPTIVE_PIPELINE_EVO}                                    ║
+║  GOD_CODE: {GOD_CODE}                                                  ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """)
 

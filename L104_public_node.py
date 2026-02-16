@@ -59,7 +59,14 @@ MAX_NOTIFY_RETRIES = 3
 logger = get_logger("PUBLIC_NODE")
 
 # Thread-safe node state (guarded by _state_lock)
-_state_lock = asyncio.Lock()
+# Lazy-init to avoid RuntimeError when no event loop exists at import time (Python 3.9)
+_state_lock = None
+
+def _get_state_lock():
+    global _state_lock
+    if _state_lock is None:
+        _state_lock = asyncio.Lock()
+    return _state_lock
 _node_state = {
     "start_time": None,
     "heartbeat_count": 0,
@@ -135,7 +142,7 @@ async def sync_dna() -> bool:
             with open(dna_path) as f:
                 dna = json.load(f)
             logger.info("dna_loaded", signature=dna.get('signature', 'unknown')[:16])
-            async with _state_lock:
+            async with _get_state_lock():
                 _node_state["dna_synced"] = True
             return True
         except Exception as e:
@@ -144,14 +151,14 @@ async def sync_dna() -> bool:
     # Fallback: Generate new DNA
     dna_cid = f"Qm{calculate_node_signature()}SovereignL104DNA416"
     logger.info("dna_synced_ipfs", cid=dna_cid)
-    async with _state_lock:
+    async with _get_state_lock():
         _node_state["dna_synced"] = True
     return True
 
 
 async def heartbeat() -> dict:
     """Execute single heartbeat cycle with quantum amplification."""
-    async with _state_lock:
+    async with _get_state_lock():
         _node_state["heartbeat_count"] += 1
         _node_state["last_heartbeat"] = datetime.now(timezone.utc).isoformat()
 
@@ -168,10 +175,10 @@ async def heartbeat() -> dict:
         import httpx
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(f"http://localhost:{API_PORT}/health")
-            async with _state_lock:
+            async with _get_state_lock():
                 _node_state["web_app_connected"] = resp.status_code == 200
     except Exception:
-        async with _state_lock:
+        async with _get_state_lock():
             _node_state["web_app_connected"] = False
 
     result = {
@@ -384,7 +391,7 @@ async def broadcast_416(loop_forever: bool = False) -> None:
     await sync_dna()
 
     # Connect to manifold
-    async with _state_lock:
+    async with _get_state_lock():
         _node_state["manifold_connected"] = True
     logger.info("manifold_connected", signature=calculate_node_signature())
 
@@ -394,7 +401,7 @@ async def broadcast_416(loop_forever: bool = False) -> None:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(f"http://localhost:{API_PORT}/health")
             if resp.status_code == 200:
-                async with _state_lock:
+                async with _get_state_lock():
                     _node_state["web_app_connected"] = True
                 logger.info("web_app_connected", port=API_PORT)
     except Exception:

@@ -12,7 +12,7 @@ L104 Dynamic Transformation Phase 2
 import re
 
 FILE = "L104Native.swift"
-with open(FILE, "r") as f:
+with open(FILE, "r", encoding='utf-8') as f:
     code = f.read()
 
 original_len = len(code)
@@ -1005,7 +1005,7 @@ else:
 # PHASE 13: Expand evolveFromKnowledgeBase with more templates
 # ═══════════════════════════════════════════════════════════════
 
-old_evo_templates = '''            let templates = [
+old_evo_templates = r'''            let templates = [
                 "KNOWLEDGE[\(topic)]: \(completionStr). [Evolved from KB entry #\(Int.random(in: 1...9999))]",
                 "SYNTHESIS[\(topic)]: Cross-referencing data suggests \(completionStr). [Confidence: \(Int.random(in: 60...99))%]",
                 "DEEP_ANALYSIS[\(topic)]: \(completionStr) — This connects to \(Int.random(in: 2...8)) adjacent domains.",
@@ -1041,7 +1041,7 @@ else:
 # FINAL: Write output
 # ═══════════════════════════════════════════════════════════════
 
-with open(FILE, "w") as f:
+with open(FILE, "w", encoding='utf-8') as f:
     f.write(code)
 
 new_len = len(code)

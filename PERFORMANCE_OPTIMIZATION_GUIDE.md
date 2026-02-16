@@ -62,10 +62,10 @@
    ```bash
    # Remove old git branches
    git branch -D <old-branch-name>
-   
+
    # Find and remove large files
    find . -type f -size +50M -ls
-   
+
    # Consider moving fine_tune_exports.tar.gz (11MB) to external storage
    ```
 
@@ -100,7 +100,7 @@
    sudo chmod 600 /swapfile
    sudo mkswap /swapfile
    sudo swapon /swapfile
-   
+
    # Make permanent
    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
    ```
@@ -110,7 +110,7 @@
    ```bash
    # After freeing space, compress git history
    git gc --aggressive --prune=now
-   
+
    # Consider shallow cloning if possible
    git fetch --depth=1
    ```
@@ -120,7 +120,7 @@
    ```bash
    # Your Docker is using 9GB in /var/lib/docker
    docker system prune -af --volumes
-   
+
    # Consider moving Docker to separate volume
    ```
 

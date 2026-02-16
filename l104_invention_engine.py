@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.344478
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_INVENTION_ENGINE] - NEOTERIC LOGIC SYNTHESIS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # "To invent is to discover what was already there in the quantum foam."
@@ -156,6 +157,81 @@ def {func_name}(input_tensor):
 
 # Singleton Instance
 invention_engine = InventionEngine()
+
+
+def register_stochastic_deterministic_gate(seed_concept: str = "quantum",
+                                            persist: bool = True) -> Dict[str, Any]:
+    """Register a Stochastic-Deterministic Hybrid Gate as a new invention entity.
+
+    This bridges the InventionEngine with the StochasticGateResearchLab,
+    creating STOCHASTIC_DETERMINISTIC_GATE entities that combine:
+    - Random-based logic generation (stochastic exploration)
+    - Deterministic φ-coherent validation (sage/quantum gate alignment)
+    - Repository pattern recognition (cross-module knowledge)
+
+    The invention is persisted to KnowledgeManifold with tags:
+    ["INVENTION", "NEOTERIC", "STOCHASTIC_DETERMINISTIC", "HYBRID_GATE"]
+    """
+    import time as _time
+
+    # Generate stochastic parameters with φ-bounded randomness
+    phase = random.uniform(0, 2 * 3.141592653589793) * 0.618033988749895
+    amplitude = random.uniform(0.1, 5.275184818492612) * 0.618033988749895
+    depth = random.randint(1, 7)
+    mode = random.choice(["constructive", "destructive", "superposition"])
+
+    resonance_key = hashlib.sha256(
+        f"{seed_concept}_{phase}_{amplitude}_{_time.time()}".encode()
+    ).hexdigest()[:12]
+
+    func_name = f"HYBRID_GATE_{resonance_key.upper()}"
+
+    code_snippet = (
+        f"def {func_name}(value):\n"
+        f"    # STOCHASTIC_DETERMINISTIC_GATE | Seed: {seed_concept} | Mode: {mode}\n"
+        f"    import math, random\n"
+        f"    PHI = 1.618033988749895\n"
+        f"    stochastic = value * random.uniform(0.9, 1.1) * PHI ** {depth}\n"
+        f"    harmonic = math.sin(value * {phase:.6f}) * {amplitude:.6f}\n"
+        f"    deterministic = abs(math.cos(value * 0.527518)) * value * PHI\n"
+        f"    return (stochastic + harmonic + deterministic) / 3\n"
+    )
+
+    invention = {
+        "name": func_name,
+        "type": "STOCHASTIC_DETERMINISTIC_GATE",
+        "sigil": resonance_key,
+        "origin_concept": seed_concept,
+        "code_snippet": code_snippet.strip(),
+        "complexity_score": depth * amplitude * 1.618033988749895 * 100,
+        "parameters": {
+            "phase": phase,
+            "amplitude": amplitude,
+            "depth": depth,
+            "mode": mode,
+        },
+        "creation_method": "stochastic_exploration → deterministic_validation → hybrid_merge",
+        "verified": False,
+    }
+
+    # Validate via invention engine test
+    test_result = invention_engine._test_invention(invention)
+    invention["test_result"] = test_result
+    invention["verified"] = test_result["success"]
+
+    # Persist to manifold
+    if invention["verified"] and persist:
+        try:
+            from l104_knowledge_manifold import KnowledgeManifold
+            manifold = KnowledgeManifold()
+            manifold.ingest_pattern(
+                func_name, invention,
+                tags=["INVENTION", "NEOTERIC", "STOCHASTIC_DETERMINISTIC", "HYBRID_GATE"]
+            )
+        except ImportError:
+            pass
+
+    return invention
 
 def primal_calculus(x):
     """

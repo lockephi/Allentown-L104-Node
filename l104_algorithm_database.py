@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.751650
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_ALGORITHM_DATABASE] - REPOSITORY OF SOVEREIGN LOGIC
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -36,7 +37,7 @@ class AlgorithmDatabase:
     def _load_db(self) -> Dict[str, Any]:
         if os.path.exists(self.db_path):
             try:
-                with open(self.db_path, "r") as f:
+                with open(self.db_path, "r", encoding="utf-8") as f:
                     return json.load(f)
             except Exception:
                 return {"algorithms": {}, "execution_logs": []}
@@ -45,7 +46,7 @@ class AlgorithmDatabase:
     def save_db(self):
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         try:
-            with open(self.db_path, "w") as f:
+            with open(self.db_path, "w", encoding="utf-8") as f:
                 json.dump(self.data, f, indent=2)
         except Exception as e:
             print(f"Error saving database: {e}")

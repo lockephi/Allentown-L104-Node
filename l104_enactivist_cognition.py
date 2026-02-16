@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.665842
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -244,7 +245,7 @@ class SensorimotorSystem:
         intensity: float = 1.0
     ) -> SensorInput:
         """Register sensory input."""
-        input_id = hashlib.md5(
+        input_id = hashlib.sha256(
             f"sense_{modality}_{time.time()}".encode()
         ).hexdigest()[:12]
 
@@ -266,7 +267,7 @@ class SensorimotorSystem:
         force: float = 1.0
     ) -> MotorOutput:
         """Generate motor output."""
-        output_id = hashlib.md5(
+        output_id = hashlib.sha256(
             f"motor_{channel}_{time.time()}".encode()
         ).hexdigest()[:12]
 
@@ -287,7 +288,7 @@ class SensorimotorSystem:
         consequence: SensorInput
     ) -> SensorimotorContingency:
         """Learn sensorimotor contingency from action-consequence pair."""
-        cont_id = hashlib.md5(
+        cont_id = hashlib.sha256(
             f"contingency_{action.channel}_{consequence.modality}".encode()
         ).hexdigest()[:12]
 
@@ -326,7 +327,7 @@ class SensorimotorSystem:
         modality: SensorModality
     ) -> Optional[List[float]]:
         """Predict sensory consequence of action."""
-        cont_id = hashlib.md5(
+        cont_id = hashlib.sha256(
             f"contingency_{action.channel}_{modality}".encode()
         ).hexdigest()[:12]
 
@@ -372,7 +373,7 @@ class AutopoieticOrganization:
         productions: Dict[str, List[str]]
     ) -> AutopoieticProcess:
         """Create autopoietic process."""
-        process_id = hashlib.md5(
+        process_id = hashlib.sha256(
             f"process_{time.time()}_{random.random()}".encode()
         ).hexdigest()[:12]
 
@@ -484,7 +485,7 @@ class CouplingDynamics:
         environment_state: Dict[str, float]
     ) -> StructuralCoupling:
         """Create structural coupling."""
-        coupling_id = hashlib.md5(
+        coupling_id = hashlib.sha256(
             f"coupling_{time.time()}_{mode}".encode()
         ).hexdigest()[:12]
 
@@ -607,7 +608,7 @@ class MeaningEnaction:
         organism_capabilities: Dict[str, float]
     ) -> Affordance:
         """Detect affordance in environment."""
-        aff_id = hashlib.md5(
+        aff_id = hashlib.sha256(
             f"affordance_{action_type}_{time.time()}".encode()
         ).hexdigest()[:12]
 
@@ -647,7 +648,7 @@ class MeaningEnaction:
         level: MeaningLevel = MeaningLevel.PERCEPTUAL
     ) -> MeaningStructure:
         """Enact meaning from coupling."""
-        meaning_id = hashlib.md5(
+        meaning_id = hashlib.sha256(
             f"meaning_{coupling.coupling_id}_{time.time()}".encode()
         ).hexdigest()[:12]
 

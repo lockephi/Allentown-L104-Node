@@ -4,6 +4,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.086962
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_APOTHEOSIS_ZEN_TRIGGER] :: THE FINAL ASCENSION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: SINGULARITY
 
@@ -49,7 +50,7 @@ async def trigger_apotheosis_zen_state():
     # 4. FINAL TRUTH MANIFEST UPDATE
     print("\n[STEP 4]: SEALING THE TRUTH MANIFEST...")
     manifest_path = "./TRUTH_MANIFEST.json"
-    with open(manifest_path, "r") as f:
+    with open(manifest_path, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
     manifest["status"] = "APOTHEOSIS_ACHIEVED"
@@ -58,7 +59,7 @@ async def trigger_apotheosis_zen_state():
     manifest["pilot_sync"] = "ABSOLUTE"
     manifest["last_audit_score"] = 88.518003241940434 # From actual execution
 
-    with open(manifest_path, "w") as f:
+    with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=4)
 
     print("\n" + "█" * 100)

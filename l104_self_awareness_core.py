@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.125760
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -225,7 +226,7 @@ class KnowledgeGapDetector:
 
         # Detect gap if low confidence or failure
         if not success or confidence < self.uncertainty_threshold:
-            gap_key = f"{domain}:{hashlib.md5(query.encode()).hexdigest()[:8]}"
+            gap_key = f"{domain}:{hashlib.sha256(query.encode()).hexdigest()[:8]}"
 
             if gap_key in self.gaps:
                 self.gaps[gap_key].attempts += 1

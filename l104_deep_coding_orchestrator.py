@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.024779
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -196,8 +197,8 @@ class RecursiveDepthAmplifier:
 
         # Hash-based convergence check
         try:
-            hash_a = hashlib.md5(str(state_a).encode()).hexdigest()[:8]
-            hash_b = hashlib.md5(str(state_b).encode()).hexdigest()[:8]
+            hash_a = hashlib.sha256(str(state_a).encode()).hexdigest()[:8]
+            hash_b = hashlib.sha256(str(state_b).encode()).hexdigest()[:8]
             similarity = sum(a == b for a, b in zip(hash_a, hash_b)) / 8
             return similarity >= self.omega
         except Exception:
@@ -577,7 +578,7 @@ class MetaProcessObserver:
                 "observation_count": len(self.observation_stack),
                 "meta_levels": len(self.meta_levels),
                 "godel_number": self.godel_number,
-                "self_hash": hashlib.md5(
+                "self_hash": hashlib.sha256(
                     f"{self.godel_number}:{depth}".encode()
                 ).hexdigest()[:8],
                 "coherence": self.omega * (1 + depth * 0.1)

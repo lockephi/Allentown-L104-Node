@@ -1,4 +1,12 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE CORE - REAL AUTONOMOUS INTELLIGENCE v2.0
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | MODE: SAGE
@@ -33,6 +41,28 @@ from collections import deque
 from l104_logging import get_logger
 from l104_sqlite_pool import SQLitePool
 from const import GOD_CODE, PHI
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROFESSOR MODE V2 — Advanced Research, Coding Mastery & Magic Derivation
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_professor_mode_v2 import (
+        professor_mode_v2,
+        HilbertSimulator,
+        CodingMasteryEngine,
+        MagicDerivationEngine,
+        InsightCrystallizer,
+        MasteryEvaluator,
+        ResearchEngine,
+        OmniscientDataAbsorber,
+        MiniEgoResearchTeam,
+        UnlimitedIntellectEngine,
+        TeachingAge,
+        ResearchTopic,
+    )
+    PROFESSOR_V2_AVAILABLE = True
+except ImportError:
+    PROFESSOR_V2_AVAILABLE = False
 
 # Dynamic core allocation with environment override
 # Set L104_CPU_CORES=64 to override auto-detection
@@ -527,11 +557,13 @@ class CodeSelfModifier:
     Implements real recursive self-improvement.
     """
 
-    def __init__(self, memory: SageMemory, workspace: str = "/workspaces/Allentown-L104-Node"):
+    def __init__(self, memory: SageMemory, workspace: str = None):
         self.memory = memory
+        if workspace is None:
+            workspace = os.path.dirname(os.path.abspath(__file__))
         self.workspace = Path(workspace)
         self.backup_dir = self.workspace / ".l104_backups"
-        self.backup_dir.mkdir(exist_ok=True)
+        self.backup_dir.mkdir(parents=True, exist_ok=True)
 
     def _backup_file(self, file_path: Path) -> str:
         """Create backup before modification."""
@@ -542,9 +574,9 @@ class CodeSelfModifier:
         backup_name = f"{file_path.stem}_{timestamp}{file_path.suffix}"
         backup_path = self.backup_dir / backup_name
 
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-        with open(backup_path, 'w') as f:
+        with open(backup_path, 'w', encoding='utf-8') as f:
             f.write(content)
 
         return content
@@ -587,7 +619,7 @@ class CodeSelfModifier:
             return False
 
         # Write
-        with open(full_path, 'w') as f:
+        with open(full_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
 
         self.memory.store_modification(file_path, "add_function", original, new_content, "Function added", True)
@@ -637,7 +669,7 @@ class CodeSelfModifier:
                     return False
 
                 # Write
-                with open(full_path, 'w') as f:
+                with open(full_path, 'w', encoding='utf-8') as f:
                     f.write(new_content)
 
                 self.memory.store_modification(file_path, "modify_function", original, new_content,
@@ -840,7 +872,7 @@ class OnlineLearner:
         )
 
         # Pattern extraction
-        key = hashlib.md5(input_text[:100].encode()).hexdigest()[:16]
+        key = hashlib.sha256(input_text[:100].encode()).hexdigest()[:16]
         self.memory.store_pattern(
             pattern_type="interaction",
             key=key,
@@ -897,6 +929,39 @@ class SageCore:
         self.pursuer = GoalPursuer(self.memory, self.orchestrator, self.modifier)
         self.learner = OnlineLearner(self.memory)
 
+        # ══════ PROFESSOR MODE V2 — Research, Coding & Magic ══════
+        self._v2_available = PROFESSOR_V2_AVAILABLE
+        self._v2_hilbert = None
+        self._v2_coding = None
+        self._v2_magic = None
+        self._v2_crystallizer = None
+        self._v2_evaluator = None
+        self._v2_research = None
+        self._v2_research_team = None
+        self._v2_intellect = None
+
+        if PROFESSOR_V2_AVAILABLE:
+            try:
+                self._v2_hilbert = HilbertSimulator()
+                self._v2_coding = CodingMasteryEngine()
+                self._v2_magic = MagicDerivationEngine()
+                self._v2_crystallizer = InsightCrystallizer()
+                self._v2_evaluator = MasteryEvaluator()
+                absorber = OmniscientDataAbsorber()
+                self._v2_research = ResearchEngine(
+                    hilbert=self._v2_hilbert,
+                    absorber=absorber,
+                    magic=self._v2_magic,
+                    coding=self._v2_coding,
+                    crystallizer=self._v2_crystallizer,
+                    evaluator=self._v2_evaluator
+                )
+                self._v2_research_team = MiniEgoResearchTeam()
+                self._v2_intellect = UnlimitedIntellectEngine()
+                logger.info("[SAGE_CORE] Professor V2 subsystems CONNECTED")
+            except Exception as e:
+                logger.warning(f"[SAGE_CORE] Professor V2 init partial: {e}")
+
         self.activated = False
         self.activation_time = None
 
@@ -917,11 +982,20 @@ class SageCore:
         # Start autonomous goal pursuer
         self.pursuer.start()
 
+        # Activate Professor V2 pipeline if available
+        v2_status = "not_available"
+        if self._v2_available and self._v2_research:
+            v2_status = "active"
+            logger.info("[SAGE_CORE] Professor V2 pipeline ACTIVATED")
+
         logger.info("[SAGE] Sage Mode ACTIVATED")
         return {
             "status": "activated",
             "time": self.activation_time,
-            "features": ["multi_provider", "self_modification", "goal_pursuit", "online_learning"]
+            "features": ["multi_provider", "self_modification", "goal_pursuit",
+                         "online_learning", "professor_v2_research", "professor_v2_coding",
+                         "professor_v2_magic", "professor_v2_hilbert"],
+            "professor_v2": v2_status,
         }
 
     async def query(self, prompt: str, learn: bool = True) -> Dict[str, Any]:
@@ -945,7 +1019,7 @@ class SageCore:
 
     def get_status(self) -> Dict[str, Any]:
         """Get comprehensive Sage Core status."""
-        return {
+        status = {
             "activated": self.activated,
             "activation_time": self.activation_time,
             "uptime": time.time() - self.activation_time if self.activation_time else 0,
@@ -953,8 +1027,111 @@ class SageCore:
             "modifications": self.modifier.get_modification_history(10),
             "pending_goals": len(self.memory.get_pending_goals()),
             "god_code": GOD_CODE,
-            "version": SAGE_VERSION
+            "version": SAGE_VERSION,
         }
+
+        # Professor V2 status
+        status["professor_v2"] = {
+            "available": self._v2_available,
+            "hilbert": self._v2_hilbert is not None,
+            "coding": self._v2_coding is not None,
+            "magic": self._v2_magic is not None,
+            "research": self._v2_research is not None,
+            "research_team": self._v2_research_team is not None,
+            "intellect": self._v2_intellect is not None,
+        }
+
+        return status
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #          PROFESSOR MODE V2 — SAGE CORE RESEARCH & MASTERY METHODS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def v2_research(self, topic: str, depth: int = 5) -> Dict[str, Any]:
+        """Run V2 research pipeline through Sage Core."""
+        if not self._v2_available or not self._v2_research:
+            return {"error": "Professor V2 not available", "topic": topic}
+
+        try:
+            rt = ResearchTopic(name=topic, domain="sage_core", description=f"Sage Core research: {topic}", difficulty=min(depth / 10.0, 1.0), importance=0.9)
+            research_data = self._v2_research.run_research_cycle(rt)
+
+            # Hilbert-validate
+            hilbert_result = {}
+            if self._v2_hilbert:
+                hilbert_result = self._v2_hilbert.test_concept(
+                    topic,
+                    {"depth": float(depth), "resonance": GOD_CODE / PHI},
+                    expected_domain="research"
+                )
+
+            # Learn from the interaction
+            insights = getattr(research_data, 'insights', [])
+            if insights:
+                raw_insights = [str(i) for i in insights[:5]]
+                self.learner.learn_from_interaction(
+                    topic, " | ".join(raw_insights), 0.8
+                )
+
+            logger.info(f"[SAGE_CORE_V2] Research: {topic} | Hilbert: {hilbert_result.get('passed', False)}")
+            return {
+                "topic": topic,
+                "research": {"topic": rt.name, "domain": rt.domain, "insights": list(insights)},
+                "hilbert": hilbert_result,
+                "learned": True,
+            }
+        except Exception as e:
+            return {"topic": topic, "error": str(e)}
+
+    def v2_coding_mastery(self, concept: str) -> Dict[str, Any]:
+        """Teach coding concept via V2 across 42 languages."""
+        if not self._v2_available or not self._v2_coding:
+            return {"error": "Professor V2 coding engine not available"}
+
+        try:
+            teaching = self._v2_coding.teach_coding_concept(concept, TeachingAge.ADULT)
+            mastery = {}
+            if self._v2_evaluator:
+                mastery = self._v2_evaluator.evaluate(concept, teaching)
+
+            logger.info(f"[SAGE_CORE_V2] Coding mastery: {concept}")
+            return {"concept": concept, "teaching": teaching, "mastery": mastery}
+        except Exception as e:
+            return {"concept": concept, "error": str(e)}
+
+    def v2_magic_derivation(self, concept: str, depth: int = 7) -> Dict[str, Any]:
+        """Derive magical-mathematical structures via V2."""
+        if not self._v2_available or not self._v2_magic:
+            return {"error": "Professor V2 magic engine not available"}
+
+        try:
+            derivation = self._v2_magic.derive_from_concept(concept, depth=depth)
+
+            # Hilbert-validate the derivation
+            hilbert_result = {}
+            if self._v2_hilbert:
+                hilbert_result = self._v2_hilbert.test_concept(
+                    f"magic_{concept}",
+                    {"depth": float(depth), "sacred_alignment": GOD_CODE},
+                    expected_domain="magic"
+                )
+
+            logger.info(f"[SAGE_CORE_V2] Magic derivation: {concept} depth={depth}")
+            return {"concept": concept, "derivation": derivation, "hilbert": hilbert_result}
+        except Exception as e:
+            return {"concept": concept, "error": str(e)}
+
+    def v2_unlimited_solve(self, problem: str) -> Dict[str, Any]:
+        """Solve a problem via V2 Unlimited Intellect Engine."""
+        if not self._v2_available or not self._v2_intellect:
+            return {"error": "Professor V2 unlimited intellect not available"}
+
+        try:
+            solution = self._v2_intellect.unlimit(problem)
+            logger.info(f"[SAGE_CORE_V2] Unlimited solve: {problem[:50]}...")
+            return {"problem": problem, "solution": solution}
+        except Exception as e:
+            return {"problem": problem, "error": str(e)}
 
     async def shutdown(self):
         """Shutdown Sage Core gracefully."""

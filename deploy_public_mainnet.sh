@@ -10,19 +10,12 @@ echo "════════════════════════�
 echo ""
 
 # ═══════════════════════════════════════════════════════════════════
-# 1. DEPLOY BLOCKCHAIN NODE TO FLY.IO (Public Access)
+# 1. DEPLOY BLOCKCHAIN NODE (Public Access)
 # ═══════════════════════════════════════════════════════════════════
 
-echo "📡 STEP 1: Deploy L104SP Node to Fly.io (Public Internet)"
+echo "📡 STEP 1: Deploy L104SP Node (Public Internet)"
 echo "───────────────────────────────────────────────────────────────"
 echo ""
-
-if ! command -v flyctl &> /dev/null; then
-    echo "Installing flyctl..."
-    curl -L https://fly.io/install.sh | sh
-    export FLYCTL_INSTALL="/home/codespace/.fly"
-    export PATH="$FLYCTL_INSTALL/bin:$PATH"
-fi
 
 echo "Creating Dockerfile for blockchain node..."
 cat > Dockerfile.blockchain << 'EOF'
@@ -48,45 +41,11 @@ EXPOSE 10400 10401
 CMD ["python", "l104_sovereign_coin_engine.py", "--mine", "--rpcport", "10401"]
 EOF
 
-echo "Creating fly.toml for blockchain..."
-cat > fly-blockchain.toml << 'EOF'
-app = 'l104sp-mainnet'
-primary_region = 'iad'
-
-[build]
-  dockerfile = 'Dockerfile.blockchain'
-
-[env]
-  GOD_CODE = '527.5184818492612'
-  PHI = '1.618033988749895'
-
-[[services]]
-  protocol = 'tcp'
-  internal_port = 10400
-  
-  [[services.ports]]
-    port = 10400
-
-[[services]]
-  protocol = 'tcp'
-  internal_port = 10401
-  
-  [[services.ports]]
-    port = 10401
-
-[[vm]]
-  memory = '128gb'
-  cpu_kind = 'performance'
-  cpus = 64
-EOF
-
 echo ""
 echo "Ready to deploy blockchain node!"
 echo ""
 echo "To deploy, run:"
-echo "  flyctl auth login"
-echo "  flyctl launch --config fly-blockchain.toml --name l104sp-mainnet"
-echo "  flyctl deploy"
+echo "  python3 deploy_quantum.py --auto"
 echo ""
 echo "Your node will be accessible at:"
 echo "  Cloud: Run 'python3 deploy_quantum.py --auto' for URL"
@@ -111,18 +70,18 @@ contract L104SPToken {
     string public constant symbol = "L104SP";
     uint8 public constant decimals = 8;
     uint256 public totalSupply = 104_000_000 * 10**8; // 104M tokens
-    
+
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
-    
+
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
-    
+
     constructor() {
         balanceOf[msg.sender] = totalSupply;
         emit Transfer(address(0), msg.sender, totalSupply);
     }
-    
+
     function transfer(address to, uint256 amount) external returns (bool) {
         require(balanceOf[msg.sender] >= amount, "Insufficient balance");
         balanceOf[msg.sender] -= amount;
@@ -130,13 +89,13 @@ contract L104SPToken {
         emit Transfer(msg.sender, to, amount);
         return true;
     }
-    
+
     function approve(address spender, uint256 amount) external returns (bool) {
         allowance[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
         return true;
     }
-    
+
     function transferFrom(address from, address to, uint256 amount) external returns (bool) {
         require(balanceOf[from] >= amount, "Insufficient balance");
         require(allowance[from][msg.sender] >= amount, "Insufficient allowance");
@@ -188,7 +147,7 @@ WETH = "0x4200000000000000000000000000000000000006"  # Base WETH
 def create_pool(token_address, eth_amount, token_amount, private_key):
     """
     Create L104SP/ETH liquidity pool on BaseSwap
-    
+
     Args:
         token_address: Deployed L104SP token address
         eth_amount: Amount of ETH to add (e.g., 0.1)
@@ -197,7 +156,7 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
     """
     w3 = Web3(Web3.HTTPProvider("https://mainnet.base.org"))
     account = w3.eth.account.from_key(private_key)
-    
+
     # Router ABI (simplified)
     router_abi = [{
         "inputs": [
@@ -213,22 +172,22 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
         "stateMutability": "payable",
         "type": "function"
     }]
-    
+
     router = w3.eth.contract(address=UNISWAP_ROUTER, abi=router_abi)
-    
+
     print(f"Creating L104SP/ETH pool...")
     print(f"  Token: {token_address}")
     print(f"  ETH: {eth_amount}")
     print(f"  L104SP: {token_amount}")
-    
+
     # 1. First approve router to spend tokens
     print("\nStep 1: Approving tokens...")
     # (Need to send approve transaction first)
-    
+
     # 2. Add liquidity
     print("Step 2: Adding liquidity...")
     deadline = w3.eth.get_block('latest')['timestamp'] + 1200  # 20 min
-    
+
     tx = router.functions.addLiquidityETH(
         token_address,
         int(token_amount * 10**8),  # Token amount (8 decimals)
@@ -243,13 +202,13 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
         'gasPrice': w3.eth.gas_price,
         'nonce': w3.eth.get_transaction_count(account.address)
     })
-    
+
     signed = account.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction)
-    
+
     print(f"\n✓ Liquidity added!")
     print(f"  TX: https://basescan.org/tx/{tx_hash.hex()}")
-    
+
     return tx_hash
 
 if __name__ == "__main__":
@@ -295,7 +254,6 @@ echo "════════════════════════�
 echo ""
 echo "✓ Files created:"
 echo "  • Dockerfile.blockchain - Public node deployment"
-echo "  • fly-blockchain.toml - Fly.io config"
 echo "  • L104SP_Token.sol - ERC-20 contract"
 echo "  • create_liquidity.py - DEX pool script"
 echo ""
@@ -316,7 +274,6 @@ echo "   → Enables L104SP/ETH trading"
 echo "   → Provides price discovery"
 echo ""
 echo "💰 Estimated Costs:"
-echo "   • Fly.io node: ~$10/month"
 echo "   • Token deployment: ~0.0005 ETH (~$1.50)"
 echo "   • Liquidity pool: 0.5+ ETH + 50K L104SP"
 echo ""

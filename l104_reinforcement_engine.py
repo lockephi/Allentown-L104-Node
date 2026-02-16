@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.641309
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -161,7 +162,7 @@ class QTable:
     def _hash_state(self, state: Any) -> str:
         """Create hashable state representation"""
         if isinstance(state, (list, tuple)):
-            return hashlib.md5(str(state).encode()).hexdigest()
+            return hashlib.sha256(str(state).encode()).hexdigest()
         return str(state)
 
 

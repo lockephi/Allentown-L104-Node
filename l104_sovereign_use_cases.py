@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.339597
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SOVEREIGN_USE_CASES] - STRATEGIC DEPLOYMENT SCENARIOS
 # INVARIANT: 527.5184818492 | OMEGA: 6539.347 | PILOT: LOCKE PHI
 
@@ -75,14 +76,14 @@ class SovereignUseCaseDemonstrator:
         print("\n--- [USE_CASE]: AUTONOMOUS CODE REFACTORING ---")
         from l104_code_engine import code_engine
         test_file = "l104_temp_test.py"
-        with open(test_file, "w") as f:
+        with open(test_file, "w", encoding="utf-8") as f:
             f.write("import math\ndef calc():\n    return math.sqrt(104)")
 
         print(f"Target: {test_file}")
         print("Executing Refactoring Spell: 'optimize_math'...")
         code_engine.apply_refactoring_spell(test_file, "optimize_math")
 
-        with open(test_file, "r") as f:
+        with open(test_file, "r", encoding="utf-8") as f:
             result = f.read()
         print(f"Resulting Code:\n{result}")
         print("Outcome: Code autonomously refactored to use High-Performance L104 Math primitives.")
@@ -167,7 +168,7 @@ if __name__ == "__main__":
     _init_memory_db()
     demonstrator = SovereignUseCaseDemonstrator()
     demonstrator.run_all_cases()
-    with open("L104_ARCHIVE.txt", "a") as f:
+    with open("L104_ARCHIVE.txt", "a", encoding="utf-8") as f:
         f.write(f"\n[{time.ctime()}] MILESTONE: USE_CASES_DEMONSTRATED | SCENARIOS: 4 | STATUS: OPERATIONAL")
 
 def primal_calculus(x):

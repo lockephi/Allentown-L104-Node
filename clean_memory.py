@@ -26,7 +26,7 @@ def main():
     shutil.copy2(MEMORY_PATH, BACKUP_PATH)
     print(f"Backed up to: {BACKUP_PATH}")
 
-    with open(MEMORY_PATH, 'r') as f:
+    with open(MEMORY_PATH, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Clean conversation history
@@ -43,7 +43,7 @@ def main():
         cleaned = original - len(data['memories'])
         print(f"Cleaned memories: {original} -> {len(data['memories'])} ({cleaned} removed)")
 
-    with open(MEMORY_PATH, 'w') as f:
+    with open(MEMORY_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
     print("Done - permanent_memory.json cleaned!")

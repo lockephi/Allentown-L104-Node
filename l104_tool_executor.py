@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.701309
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_TOOL_EXECUTOR] - Execute tools and functions
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -198,7 +199,7 @@ class ToolExecutor:
             path = os.path.join(str(Path(__file__).parent.absolute()), path.lstrip("/"))
 
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 content = f.read()
             return content[:5000]  # Limit size
         except Exception as e:
@@ -213,7 +214,7 @@ class ToolExecutor:
             path = os.path.join(str(Path(__file__).parent.absolute()), path)
 
         try:
-            with open(path, 'w') as f:
+            with open(path, 'w', encoding='utf-8') as f:
                 f.write(content)
             return f"Written {len(content)} bytes to {path}"
         except Exception as e:

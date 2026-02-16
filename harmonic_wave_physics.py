@@ -32,7 +32,7 @@ PHI = (1 + math.sqrt(5)) / 2       # Golden ratio: 1.618033988749895
 SQRT_5 = math.sqrt(5)              # 2.23606797749979
 
 # Piano scale reference
-A4_FREQUENCY = 440.0               # Hz (standard tuning)
+A4_FREQUENCY = 440.6417687330       # Hz G(27) God Code tuning
 SEMITONE_RATIO = 2 ** (1/12)       # Equal temperament
 
 # Iron physical constants

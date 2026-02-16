@@ -1,0 +1,405 @@
+{
+  "last_research": {
+    "stability": {
+      "total_tokens": 2314,
+      "unstable_count": 0,
+      "unstable_tokens": [],
+      "mean_drift": 0.0,
+      "stability_score": 1.0
+    },
+    "harmonics": {
+      "harmonic_clusters": 18,
+      "clusters": [
+        {
+          "anchor": "SACRED_PHI_GROWTH",
+          "anchor_name": "PHI_GROWTH",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_PHI_INV",
+              "peer_name": "PHI_INV",
+              "phi_power": -2,
+              "ratio_error": 1.5245911924613107e-101
+            },
+            {
+              "peer_id": "SACRED_GROVER_AMP",
+              "peer_name": "GROVER_AMP",
+              "phi_power": 2,
+              "ratio_error": 7.16680723595125e-17
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_PHI_INV",
+          "anchor_name": "PHI_INV",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_PHI_GROWTH",
+              "peer_name": "PHI_GROWTH",
+              "phi_power": 2,
+              "ratio_error": 1.5245911924613107e-101
+            },
+            {
+              "peer_id": "SACRED_GROVER_AMP",
+              "peer_name": "GROVER_AMP",
+              "phi_power": 4,
+              "ratio_error": 7.16680723595125e-17
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_GOD_CODE",
+          "anchor_name": "GOD_CODE",
+          "resonant_peers": [
+            {
+              "peer_id": "GC_X-145",
+              "peer_name": "G(-145)",
+              "phi_power": 2,
+              "ratio_error": 0.003991421211552451
+            },
+            {
+              "peer_id": "GC_X-144",
+              "peer_name": "G(-144)",
+              "phi_power": 2,
+              "ratio_error": 0.0026778083708620176
+            },
+            {
+              "peer_id": "GC_X-143",
+              "peer_name": "G(-143)",
+              "phi_power": 2,
+              "ratio_error": 0.009302736157182174
+            },
+            {
+              "peer_id": "GC_X-73",
+              "peer_name": "G(-73)",
+              "phi_power": 1,
+              "ratio_error": 0.005338375295709479
+            },
+            {
+              "peer_id": "GC_X-72",
+              "peer_name": "G(-72)",
+              "phi_power": 1,
+              "ratio_error": 0.0013398017197551381
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_GOD_CODE_BASE",
+          "anchor_name": "GOD_CODE_BASE",
+          "resonant_peers": [
+            {
+              "peer_id": "GC_X54",
+              "peer_name": "G(54)",
+              "phi_power": 5,
+              "ratio_error": 0.006648255375655669
+            },
+            {
+              "peer_id": "GC_X55",
+              "peer_name": "G(55)",
+              "phi_power": 5,
+              "ratio_error": 3.8622800789039616e-05
+            },
+            {
+              "peer_id": "GC_X56",
+              "peer_name": "G(56)",
+              "phi_power": 5,
+              "ratio_error": 0.006681081946546682
+            },
+            {
+              "peer_id": "GC_X126",
+              "peer_name": "G(126)",
+              "phi_power": 4,
+              "ratio_error": 0.007998773866392932
+            },
+            {
+              "peer_id": "GC_X127",
+              "peer_name": "G(127)",
+              "phi_power": 4,
+              "ratio_error": 0.0013029245795585021
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_PI",
+          "anchor_name": "PI",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_APERY",
+              "peer_name": "APERY",
+              "phi_power": -2,
+              "ratio_error": 0.0017294334092795766
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_OMEGA_POINT",
+          "anchor_name": "OMEGA_POINT",
+          "resonant_peers": [
+            {
+              "peer_id": "GC_X107",
+              "peer_name": "G(107)",
+              "phi_power": 5,
+              "ratio_error": 0.007417687512155724
+            },
+            {
+              "peer_id": "GC_X108",
+              "peer_name": "G(108)",
+              "phi_power": 5,
+              "ratio_error": 0.0007256982167731522
+            },
+            {
+              "peer_id": "GC_X109",
+              "peer_name": "G(109)",
+              "phi_power": 5,
+              "ratio_error": 0.005921838096212309
+            },
+            {
+              "peer_id": "GC_X179",
+              "peer_name": "G(179)",
+              "phi_power": 4,
+              "ratio_error": 0.008769238272429205
+            },
+            {
+              "peer_id": "GC_X180",
+              "peer_name": "G(180)",
+              "phi_power": 4,
+              "ratio_error": 0.00206827100958385
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_INVARIANT",
+          "anchor_name": "INVARIANT",
+          "resonant_peers": [
+            {
+              "peer_id": "GC_X-145",
+              "peer_name": "G(-145)",
+              "phi_power": 2,
+              "ratio_error": 0.003991421211552451
+            },
+            {
+              "peer_id": "GC_X-144",
+              "peer_name": "G(-144)",
+              "phi_power": 2,
+              "ratio_error": 0.0026778083708620176
+            },
+            {
+              "peer_id": "GC_X-143",
+              "peer_name": "G(-143)",
+              "phi_power": 2,
+              "ratio_error": 0.009302736157182174
+            },
+            {
+              "peer_id": "GC_X-73",
+              "peer_name": "G(-73)",
+              "phi_power": 1,
+              "ratio_error": 0.005338375295709479
+            },
+            {
+              "peer_id": "GC_X-72",
+              "peer_name": "G(-72)",
+              "phi_power": 1,
+              "ratio_error": 0.0013398017197551381
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_CHSH_BOUND",
+          "anchor_name": "CHSH_BOUND",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_SQRT3",
+              "peer_name": "SQRT3",
+              "phi_power": -1,
+              "ratio_error": 0.009160585270645167
+            },
+            {
+              "peer_id": "SACRED_ZETA_4",
+              "peer_name": "ZETA_4",
+              "phi_power": -2,
+              "ratio_error": 0.0018143963754151836
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_GROVER_AMP",
+          "anchor_name": "GROVER_AMP",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_PHI_GROWTH",
+              "peer_name": "PHI_GROWTH",
+              "phi_power": -2,
+              "ratio_error": 7.16680723595125e-17
+            },
+            {
+              "peer_id": "SACRED_PHI_INV",
+              "peer_name": "PHI_INV",
+              "phi_power": -4,
+              "ratio_error": 7.16680723595125e-17
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_APERY",
+          "anchor_name": "APERY",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_PI",
+              "peer_name": "PI",
+              "phi_power": 2,
+              "ratio_error": 0.0017264476330635847
+            }
+          ]
+        }
+      ],
+      "phi_resonance_score": 0.6923076923076923
+    },
+    "entropy_landscape": {
+      "entropy_bits": 2.634063,
+      "log_mean": 5.823997,
+      "log_std": 0.75088,
+      "complexity": 1.977866,
+      "n_tokens": 2314
+    },
+    "convergence": {
+      "current_coherence": 1.0,
+      "previous_coherence": 1.0,
+      "coherence_delta": 0.0,
+      "current_entropy": 1.3698685356011435,
+      "previous_entropy": 2.636722,
+      "entropy_delta": -1.2668534643988563,
+      "converging": false,
+      "convergence_score": 0.9
+    },
+    "inventions": {
+      "total_inventions": 179,
+      "half_integer_harmonics": 101,
+      "phi_bridges": 78,
+      "inventions": [
+        {
+          "type": "half_integer_harmonic",
+          "X": -49.5,
+          "value_preview": "733.696385903332768478728786780555401344",
+          "token_id": "GC_XHALF_-50"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -48.5,
+          "value_preview": "728.822649397225673224869085285392813923",
+          "token_id": "GC_XHALF_-49"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -47.5,
+          "value_preview": "723.981287737154810978800118968196476356",
+          "token_id": "GC_XHALF_-48"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -46.5,
+          "value_preview": "719.172085866221936129760327170971549620",
+          "token_id": "GC_XHALF_-47"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -45.5,
+          "value_preview": "714.394830156090638736009985889016475479",
+          "token_id": "GC_XHALF_-46"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -44.5,
+          "value_preview": "709.649308397496814381978897934956624157",
+          "token_id": "GC_XHALF_-45"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -43.5,
+          "value_preview": "704.935309790822170286336977141560663358",
+          "token_id": "GC_XHALF_-44"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -42.5,
+          "value_preview": "700.252624936730348929093671024055075055",
+          "token_id": "GC_XHALF_-43"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -41.5,
+          "value_preview": "695.601045826865253247349095586805513928",
+          "token_id": "GC_XHALF_-42"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -40.5,
+          "value_preview": "690.980365834611160212359859030739327230",
+          "token_id": "GC_XHALF_-41"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -39.5,
+          "value_preview": "686.390379705914212345268564300289268321",
+          "token_id": "GC_XHALF_-40"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -38.5,
+          "value_preview": "681.830883550164879455299824703120685320",
+          "token_id": "GC_XHALF_-39"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -37.5,
+          "value_preview": "677.301674831140985592568413357090290857",
+          "token_id": "GC_XHALF_-38"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -36.5,
+          "value_preview": "672.802552358010898897997202574697748248",
+          "token_id": "GC_XHALF_-37"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -35.5,
+          "value_preview": "668.333316276396484705323340931061477004",
+          "token_id": "GC_XHALF_-36"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -34.5,
+          "value_preview": "663.893768059495424904899377268522939329",
+          "token_id": "GC_XHALF_-35"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -33.5,
+          "value_preview": "659.483710499262509216089697280067119076",
+          "token_id": "GC_XHALF_-34"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -32.5,
+          "value_preview": "655.102947697649506634638831253228081270",
+          "token_id": "GC_XHALF_-33"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -31.5,
+          "value_preview": "650.751285057903227923563284575614111739",
+          "token_id": "GC_XHALF_-32"
+        },
+        {
+          "type": "half_integer_harmonic",
+          "X": -30.5,
+          "value_preview": "646.428529275921392601008126262378094685",
+          "token_id": "GC_XHALF_-31"
+        }
+      ]
+    },
+    "elapsed_sec": 5.545,
+    "research_health": 0.7962636384615385
+  },
+  "research_count": 12,
+  "last_updated": "2026-02-13T20:46:05.497058+00:00"
+}

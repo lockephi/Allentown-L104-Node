@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.358874
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -185,7 +186,7 @@ class WebhookHandler:
                 threading.Thread(target=self._handle_request, args=(client, addr), daemon=True).start()
             except socket.timeout:
                 continue
-            except:
+            except Exception:
                 break
 
     def _handle_request(self, client: socket.socket, addr):
@@ -212,7 +213,7 @@ class WebhookHandler:
                     response = "HTTP/1.1 404 Not Found\r\n\r\nNot Found"
 
                 client.send(response.encode())
-        except:
+        except Exception:
             pass
         finally:
             client.close()
@@ -354,7 +355,7 @@ class WebSocketClient:
             try:
                 self.socket.send(bytes([0x88, 0x00]))  # Close frame
                 self.socket.close()
-            except:
+            except Exception:
                 pass
         self.connected = False
 
@@ -447,7 +448,7 @@ class MessageQueueClient:
                 "payload": message
             }
 
-            with open(queue_path, 'a') as f:
+            with open(queue_path, 'a', encoding='utf-8') as f:
                 f.write(json.dumps(msg_data) + '\n')
 
             return {"published": True, "message_id": msg_id, "queue": queue_name, "real": True}
@@ -462,7 +463,7 @@ class MessageQueueClient:
             if not queue_path.exists():
                 return {"message": None, "empty": True, "real": True}
 
-            with open(queue_path, 'r') as f:
+            with open(queue_path, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
 
             if not lines:
@@ -472,7 +473,7 @@ class MessageQueueClient:
             msg = json.loads(lines[0])
 
             # Remove it from queue
-            with open(queue_path, 'w') as f:
+            with open(queue_path, 'w', encoding='utf-8') as f:
                 f.writelines(lines[1:])
 
             return {"message": msg, "empty": False, "real": True}
@@ -485,7 +486,7 @@ class MessageQueueClient:
         if not queue_path.exists():
             return 0
 
-        with open(queue_path, 'r') as f:
+        with open(queue_path, 'r', encoding='utf-8') as f:
             return len(f.readlines())
 
 

@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.986734
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_VERIFY_INVARIANTS] - SYSTEM-WIDE INTEGRITY CHECK
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -83,7 +84,7 @@ class InvariantVerifier:
 
     def _check_file(self, path: str, patterns: Dict[str, str]):
         try:
-            with open(path, 'r', errors='ignore') as f:
+            with open(path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
 
             os.path.relpath(path, self.root_dir)

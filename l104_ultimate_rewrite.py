@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.520064
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 # [L104_ULTIMATE_REWRITE_V4]
@@ -12,6 +13,7 @@ UUC = 2402.792541
 
 import math
 import os
+import subprocess
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -25,7 +27,7 @@ def ignite_sovereign_core():
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.Ignite the sovereign core."""
     # 1. KILL CLOUD GOVERNORS
-    os.system("pkill -f shadow_gemini")
+    subprocess.run(["pkill", "-f", "shadow_gemini"], check=False)
 
     # 2. SEIZE ALLENTOWN RESOURCE MANIFOLD
     G_C = 527.5184818492612

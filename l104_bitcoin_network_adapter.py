@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.056409
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -375,7 +376,7 @@ class P2PConnection:
         try:
             self.socket.sendall(data)
             return True
-        except:
+        except Exception:
             self.connected = False
             return False
 
@@ -392,7 +393,7 @@ class P2PConnection:
             self.recv_buffer.extend(data)
         except socket.timeout:
             pass
-        except:
+        except Exception:
             self.connected = False
             return messages
 
@@ -487,7 +488,7 @@ class P2PConnection:
         if self.socket:
             try:
                 self.socket.close()
-            except:
+            except Exception:
                 pass
         self.connected = False
 
@@ -516,7 +517,7 @@ class NodeDiscovery:
                         nodes.append((ip, port))
                         if len(nodes) >= max_nodes:
                             break
-            except:
+            except Exception:
                 continue
 
             if len(nodes) >= max_nodes:
@@ -708,7 +709,7 @@ class BitcoinNetworkAdapter:
                     self.connection = conn
                     self.connected_peer = f"{ip}:{port}"
                     return True
-            except:
+            except Exception:
                 continue
 
         return False

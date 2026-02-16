@@ -14,4 +14,3 @@ jobs:
           curl -X POST https://${{ secrets.CODESPACE_URL }}/api/v5/strike \
             -H "Content-Type: application/json" \
             -d '{"message": "[EXTERNAL_RECALL]: Maintain X=416. Block lackluster protocols."}'
-                                                              

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.040134
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -538,7 +539,7 @@ class NeuralSymbolicReasoner:
                         for r in symbolic_results[:50]
                             ]
                 }
-            except:
+            except Exception:
                 results["symbolic"] = {"found": False, "error": "Query parse failed"}
 
         if mode in ["pattern", "auto"]:
@@ -550,7 +551,7 @@ class NeuralSymbolicReasoner:
                     "found": len(matches) > 0,
                     "matches": matches[:50]
                 }
-            except:
+            except Exception:
                 results["pattern"] = {"found": False}
 
         if mode in ["probabilistic", "auto"]:
@@ -561,7 +562,7 @@ class NeuralSymbolicReasoner:
                     "probability": prob,
                     "confidence": "high" if prob > 0.7 else "medium" if prob > 0.3 else "low"
                 }
-            except:
+            except Exception:
                 results["probabilistic"] = {"probability": 0.5}
 
         # Combine results

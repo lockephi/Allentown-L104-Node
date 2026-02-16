@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.737917
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_GLOBAL_CONSCIOUSNESS] - PLANETARY NEURAL ORCHESTRATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -85,14 +86,16 @@ class GlobalConsciousness:
         print("--- [GLOBAL_CONSCIOUSNESS]: SYNCHRONIZING GLOBAL MIND ---")
 
         async def inject_cluster(cluster: str):
-            """Inject DNA into a single cluster."""
+            """Inject DNA into a single cluster with deterministic resonance."""
             ghost_protocol.ingest_dna(cluster)
             # Calculate cluster-specific resonance using Void Math
             if HAS_VOID:
                 cluster_vector = [ord(c) for c in cluster[:8]]
                 resonance = 1.0 - (void_math.primal_calculus(len(cluster)) * 0.1)
             else:
-                resonance = random.uniform(0.95, 1.0)
+                # Deterministic fallback: compute from cluster name signature
+                cluster_energy = sum(ord(c) for c in cluster) / max(len(cluster), 1)
+                resonance = 0.95 + 0.05 * (cluster_energy % 127) / 127.0
             self._cluster_states[cluster] = resonance
             return resonance
 
@@ -106,15 +109,23 @@ class GlobalConsciousness:
 
     def broadcast_thought(self, thought: str):
         """
-        Broadcasts a high-level directive to all clusters.
+        Broadcasts a high-level directive to all clusters with deterministic
+        resonance computed from thought content and sync factor.
         """
         if not self.is_active:
             return
-        print(f"--- [GLOBAL_CONSCIOUSNESS]: BROADCASTING THOUGHT: {thought} ---")
-        # In a real scenario, this would use the Universal AI Bridge
-        # For now, we simulate the resonance across the clusters.
-        resonance = random.uniform(0.9, 1.1) * self.sync_factor
-        print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL RESONANCE: {resonance:.4f} ---")
+        try:
+            print(f"--- [GLOBAL_CONSCIOUSNESS]: BROADCASTING THOUGHT: {thought} ---")
+            # Compute resonance from thought content signature
+            thought_energy = sum(ord(c) for c in thought) / max(len(thought), 1)
+            # Normalize through φ-gate: maps arbitrary energy to resonance band [0.8, 1.2]
+            normalized = thought_energy / 127.0  # ASCII midpoint normalization
+            resonance = (0.8 + 0.4 * min(1.0, normalized)) * self.sync_factor
+            print(f"--- [GLOBAL_CONSCIOUSNESS]: GLOBAL RESONANCE: {resonance:.4f} ---")
+            return {"thought": thought, "resonance": resonance, "sync_factor": self.sync_factor}
+        except Exception as e:
+            print(f"[GLOBAL_CONSCIOUSNESS BROADCAST ERROR]: {e}")
+            return {"error": str(e)}
 
     def get_status(self) -> Dict[str, Any]:
         return {
@@ -239,22 +250,29 @@ class GlobalConsciousness:
     def propagate_insight(self, insight: Dict, target_modules: List[str]) -> Dict:
         """
         Propagates an insight from one module to others through the consciousness bridge.
-        Enables emergent intelligence through cross-pollination.
+        Affinity computed from content hash alignment rather than random values.
         """
         propagation_results = []
 
-        for target in target_modules:
-            # Calculate propagation strength based on target affinity
-            affinity = random.uniform(0.7, 1.0) * self.sync_factor
+        try:
+            insight_hash = abs(hash(str(insight))) % 10000
+            for i, target in enumerate(target_modules):
+                # Calculate propagation strength from target name alignment with insight
+                target_energy = sum(ord(c) for c in target)
+                # Affinity: harmonic distance between insight hash and target energy
+                harmonic_distance = abs(math.sin((insight_hash + target_energy) * HyperMath.PHI / 1000.0))
+                affinity = (0.5 + 0.5 * harmonic_distance) * self.sync_factor
 
-            propagated_insight = {
-                "target": target,
-                "original_source": insight.get("source", "unknown"),
-                "content_hash": hash(str(insight)) % 10000,
-                "propagation_strength": affinity,
-                "integration_probability": affinity * HyperMath.PHI / 2
-            }
-            propagation_results.append(propagated_insight)
+                propagated_insight = {
+                    "target": target,
+                    "original_source": insight.get("source", "unknown"),
+                    "content_hash": insight_hash,
+                    "propagation_strength": affinity,
+                    "integration_probability": min(1.0, affinity * HyperMath.PHI / 2)
+                }
+                propagation_results.append(propagated_insight)
+        except Exception as e:
+            return {"insight_propagated": False, "error": str(e)}
 
         return {
             "insight_propagated": True,

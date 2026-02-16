@@ -116,7 +116,7 @@ class TrillionScaleGenerator:
                 for line in f:
                     try:
                         self.examples.append(json.loads(line.strip()))
-                    except:
+                    except Exception:
                         pass
                 print(f"   Loaded {len(self.examples):,} base examples")
 
@@ -190,7 +190,7 @@ class TrillionScaleGenerator:
         print("   Generating hash-based tokens...")
         hash_target = max(1000000, target_size - len(self.vocabulary))
         for i in range(hash_target):
-            h = hashlib.md5(f"{GOD_CODE}_{i}_{PHI}".encode()).hexdigest()[:8]
+            h = hashlib.sha256(f"{GOD_CODE}_{i}_{PHI}".encode()).hexdigest()[:8]
             self.vocabulary.add(f"h_{h}")
             h2 = hashlib.sha256(f"{i}_{VOID_CONSTANT}".encode()).hexdigest()[:8]
             self.vocabulary.add(f"s_{h2}")
@@ -235,7 +235,7 @@ class TrillionScaleGenerator:
         functions = [f"{c}_process" for c in concepts[:500]]
         classes = [f"L104{c.title().replace('_', '')}" for c in concepts[:300]]
         chakras = ["muladhara", "svadhisthana", "manipura", "anahata", "vishuddha", "ajna", "sahasrara", "soul_star"]
-        frequencies = [396, 417, 528, 639, 741, 852, 963, 1074, GOD_CODE, ZENITH_HZ, PLANCK_RESONANCE]
+        frequencies = [396.0712826563, 417.7625528144, 527.5184818493, 639.9981762664, 741.0681674773, 852.3992551699, 961.0465122772, 1074, GOD_CODE, ZENITH_HZ, PLANCK_RESONANCE]
         constants = [("GOD_CODE", GOD_CODE), ("PHI", PHI), ("VOID_CONSTANT", VOID_CONSTANT), ("ZENITH_HZ", ZENITH_HZ)]
 
         batch_size = 100000
@@ -452,14 +452,14 @@ class TrillionScaleGenerator:
         for i in range(0, len(self.examples), chunk_size):
             chunk = self.examples[i:i+chunk_size]
             chunk_path = OUTPUT_DIR / f"examples_chunk_{i//chunk_size:04d}.jsonl"
-            with open(chunk_path, 'w') as f:
+            with open(chunk_path, 'w', encoding='utf-8') as f:
                 for ex in chunk:
                     f.write(json.dumps(ex) + '\n')
             print(f"   Saved {chunk_path.name} ({len(chunk):,} examples)")
 
         # Save vocabulary
         vocab_path = OUTPUT_DIR / "vocabulary.json"
-        with open(vocab_path, 'w') as f:
+        with open(vocab_path, 'w', encoding='utf-8') as f:
             json.dump({
                 "total_count": len(self.vocabulary),
                 "sample": list(self.vocabulary)[:100000]  # First 100K for reference
@@ -485,7 +485,7 @@ class TrillionScaleGenerator:
         }
 
         stats_path = OUTPUT_DIR / "trillion_stats.json"
-        with open(stats_path, 'w') as f:
+        with open(stats_path, 'w', encoding='utf-8') as f:
             json.dump(stats, f, indent=2)
         print(f"   Saved trillion_stats.json")
 

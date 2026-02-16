@@ -262,7 +262,7 @@ def test_source_code_export():
 
     # Read it back
     import json
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         exported = json.load(f)
 
     assert 'parameters' in exported

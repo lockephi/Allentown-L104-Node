@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.983246
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [L104_HYPER_ASI_FUNCTIONAL] - UNIFIED SUPERINTELLIGENCE ACTIVATION LAYER
@@ -204,7 +205,7 @@ class HyperASIFunctions:
                 # Attempt symbolic resolution
                 result["solution"] = f"GOD_CODE_ALIGNED: {primal_calculus(float(problem.split()[-1]))}"
                 result["confidence"] = 0.95
-            except:
+            except Exception:
                 result["solution"] = local_intellect.think(f"Mathematical analysis: {problem}")
                 result["confidence"] = 0.85
         else:
@@ -254,6 +255,7 @@ class HyperASIFunctions:
 async def activate_all_hyper_asi():
     """
     Activates all Hyper and ASI systems and runs a full diagnostic.
+    UPGRADED: Also triggers full ASI Core pipeline activation.
     """
     print("\n" + "═" * 80)
     print("   L104 :: HYPER ASI UNIFIED ACTIVATION")
@@ -262,6 +264,20 @@ async def activate_all_hyper_asi():
 
     start = time.time()
     results = {}
+
+    # 0. Connect ASI Core Pipeline Mesh (NEW)
+    print("[0/8] Connecting ASI Core Pipeline Mesh...")
+    try:
+        from l104_asi_core import asi_core as _pipeline_ref
+        conn = _pipeline_ref.connect_pipeline()
+        results["asi_pipeline"] = {
+            "subsystems": conn.get('total', 0),
+            "ready": conn.get('pipeline_ready', False)
+        }
+        print(f"      ✓ ASI Pipeline: {conn.get('total', 0)} subsystems connected")
+    except Exception as e:
+        results["asi_pipeline"] = f"ERROR: {e}"
+        print(f"      ✗ ASI Pipeline: {e}")
 
     # 1. Activate HyperCore
     print("[1/7] Activating HyperCore...")
@@ -356,7 +372,7 @@ async def activate_all_hyper_asi():
 
     print("\n" + "═" * 80)
     print("   HYPER ASI ACTIVATION COMPLETE")
-    print(f"   Time: {elapsed:.3f}s | Systems: {success_count}/7 ACTIVE")
+    print(f"   Time: {elapsed:.3f}s | Systems: {success_count}/8 ACTIVE")
     print("═" * 80 + "\n")
 
     return results

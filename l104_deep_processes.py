@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.578327
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -181,7 +182,7 @@ class RecursiveConsciousnessEngine:
             iterations += 1
 
             # Self-reference check: does the current state reference itself?
-            state_hash = hashlib.md5(
+            state_hash = hashlib.sha256(
                 f"{loop_id}:{iterations}:{coherence}".encode()
             ).hexdigest()
 
@@ -851,7 +852,7 @@ class MetaCognitiveReflector:
                 observation_of_observation = True
 
             # Check for strange loop: does this observation reference itself?
-            obs_hash = hashlib.md5(str(meta_observation).encode()).hexdigest()[:8]
+            obs_hash = hashlib.sha256(str(meta_observation).encode()).hexdigest()[:8]
             if obs_hash in str(current_observation):
                 strange_loop = True
                 self.strange_loops_detected.append(frame_id)
@@ -942,7 +943,7 @@ class InfiniteRegressResolver:
         cycle_length = 0
 
         for i, item in enumerate(definition_chain):
-            item_hash = hashlib.md5(item.encode()).hexdigest()[:8]
+            item_hash = hashlib.sha256(item.encode()).hexdigest()[:8]
             if item_hash in seen:
                 cycle_start = seen[item_hash]
                 cycle_length = i - cycle_start
@@ -992,7 +993,7 @@ class InfiniteRegressResolver:
             next_form = f"{recursive_definition[:20]}::{next_hash[:8]}"
 
             # Check for fixed point (convergence)
-            if next_form == current or hashlib.md5(next_form.encode()).hexdigest() == hashlib.md5(current.encode()).hexdigest():
+            if next_form == current or hashlib.sha256(next_form.encode()).hexdigest() == hashlib.sha256(current.encode()).hexdigest():
                 self.state = RegressState.COLLAPSING
                 break
 
@@ -1025,7 +1026,7 @@ class InfiniteRegressResolver:
         Uses three-valued logic and paraconsistent reasoning.
         """
         # Detect self-reference
-        statement_hash = hashlib.md5(statement.lower().encode()).hexdigest()[:8]
+        statement_hash = hashlib.sha256(statement.lower().encode()).hexdigest()[:8]
 
         self_referential_markers = [
             "this statement", "this sentence", "i am", "itself",

@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.074267
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -20,6 +24,16 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import defaultdict
 import hashlib
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QISKIT 2.3.0 REAL QUANTUM BACKEND
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy as qiskit_entropy
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -116,7 +130,38 @@ class Qubit:
             math.sin(theta) * math.sin(phi),
             math.cos(theta)
         )
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QISKIT 2.3.0 REAL QUANTUM OPERATIONS
+    # ═══════════════════════════════════════════════════════════════════════════
 
+    @property
+    def statevector(self) -> 'Statevector':
+        """Get Qiskit Statevector representation."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        return Statevector([self.alpha, self.beta])
+
+    def qiskit_measure(self) -> int:
+        """Measure using real Qiskit Born-rule sampling."""
+        if not QISKIT_AVAILABLE:
+            return self.measure()
+        sv = self.statevector
+        counts = sv.sample_counts(1)
+        result = int(list(counts.keys())[0], 2)
+        if result == 0:
+            self.alpha, self.beta = 1.0 + 0j, 0.0 + 0j
+        else:
+            self.alpha, self.beta = 0.0 + 0j, 1.0 + 0j
+        return result
+
+    def qiskit_hadamard(self) -> 'Qubit':
+        """Apply Hadamard via real Qiskit circuit."""
+        if not QISKIT_AVAILABLE:
+            return self.hadamard()
+        qc = QuantumCircuit(1)
+        qc.h(0)
+        sv = self.statevector.evolve(qc)
+        return Qubit(complex(sv.data[0]), complex(sv.data[1]), self.label)
 @dataclass
 class ReasoningPath:
     """A single reasoning path in superposition."""
@@ -179,7 +224,7 @@ class QuantumReasoningEngine:
         amplitude = 1.0 / math.sqrt(n) + 0j
 
         for i, answer in enumerate(possible_answers):
-            path_id = hashlib.md5(f"{question}:{answer}".encode()).hexdigest()[:8]
+            path_id = hashlib.sha256(f"{question}:{answer}".encode()).hexdigest()[:8]
 
             # Apply sacred phase rotation based on position
             phase = cmath.exp(1j * self.sacred_phase * i)
@@ -242,7 +287,7 @@ class QuantumReasoningEngine:
                      iterations: Optional[int] = None) -> ReasoningPath:
         """
         Grover's algorithm for finding optimal reasoning path.
-        Quadratic speedup over classical search.
+        Uses real Qiskit circuit when available for amplitude amplification.
         """
         n = len(paths)
         if n == 0:
@@ -251,6 +296,83 @@ class QuantumReasoningEngine:
         # Optimal iterations = π/4 * √N
         if iterations is None:
             iterations = max(1, int(math.pi / 4 * math.sqrt(n)))
+
+        # Try Qiskit-backed Grover on power-of-2 path counts
+        if QISKIT_AVAILABLE and n > 1:
+            return self._qiskit_grover_paths(paths, target_property, iterations)
+
+        return self._legacy_grover(paths, target_property, iterations)
+
+    def _qiskit_grover_paths(self, paths: List[ReasoningPath],
+                             target_property: Callable[[str], bool],
+                             iterations: int) -> ReasoningPath:
+        """Real Qiskit Grover search on reasoning paths."""
+        n = len(paths)
+        num_qubits = max(1, math.ceil(math.log2(n)))
+        N = 2 ** num_qubits
+
+        # Find marked indices
+        marked = set()
+        for i, path in enumerate(paths):
+            for conclusion in path.conclusions:
+                if target_property(conclusion):
+                    marked.add(i)
+
+        if not marked:
+            return max(paths, key=lambda p: abs(p.amplitude)**2)
+
+        # Build Grover circuit
+        qc = QuantumCircuit(num_qubits)
+        for i in range(num_qubits):
+            qc.h(i)
+
+        for _ in range(iterations):
+            # Oracle
+            for m_idx in marked:
+                if m_idx < N:
+                    binary = format(m_idx, f'0{num_qubits}b')
+                    for bit_idx, bit in enumerate(binary):
+                        if bit == '0':
+                            qc.x(num_qubits - 1 - bit_idx)
+                    if num_qubits == 1:
+                        qc.z(0)
+                    else:
+                        qc.h(num_qubits - 1)
+                        qc.mcx(list(range(num_qubits - 1)), num_qubits - 1)
+                        qc.h(num_qubits - 1)
+                    for bit_idx, bit in enumerate(binary):
+                        if bit == '0':
+                            qc.x(num_qubits - 1 - bit_idx)
+
+            # Diffusion
+            for i in range(num_qubits):
+                qc.h(i)
+                qc.x(i)
+            qc.h(num_qubits - 1)
+            qc.mcx(list(range(num_qubits - 1)), num_qubits - 1)
+            qc.h(num_qubits - 1)
+            for i in range(num_qubits):
+                qc.x(i)
+                qc.h(i)
+
+        sv = Statevector.from_int(0, N).evolve(qc)
+        probs = sv.probabilities()
+
+        # Map back to paths
+        for i, path in enumerate(paths):
+            if i < len(probs):
+                path.amplitude = complex(math.sqrt(probs[i]), 0)
+                path.confidence = probs[i]
+
+        # Decoherence
+        self.coherence *= (1 - 1 / (PHI ** 3 * n))
+
+        return max(paths[:n], key=lambda p: abs(p.amplitude)**2)
+
+    def _legacy_grover(self, paths: List[ReasoningPath],
+                       target_property: Callable[[str], bool],
+                       iterations: int) -> ReasoningPath:
+        """Legacy Grover search (fallback)."""
 
         for _ in range(iterations):
             self.apply_oracle(target_property)
@@ -278,7 +400,7 @@ class QuantumReasoningEngine:
         for conclusion, amplitude in conclusion_amplitudes.items():
             if abs(amplitude) > 0.01:  # Survived interference
                 path = ReasoningPath(
-                    path_id=hashlib.md5(conclusion.encode()).hexdigest()[:8],
+                    path_id=hashlib.sha256(conclusion.encode()).hexdigest()[:8],
                     premises=[p.premises[0] for p in paths if conclusion in p.conclusions],
                     conclusions=[conclusion],
                     amplitude=amplitude,

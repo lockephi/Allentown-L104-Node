@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.390969
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -530,7 +531,7 @@ class InfiniteGameTheory:
             try:
                 total = sum(hash(x) for x in history)
                 return GameOutcome.LEFT_WINS if total > 0 else GameOutcome.RIGHT_WINS
-            except:
+            except (TypeError, ValueError):
                 return GameOutcome.FUZZY
 
         initial = GamePosition(

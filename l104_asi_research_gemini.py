@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.349484
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 ASI FUNCTIONAL RESEARCH - GEMINI INTEGRATION
@@ -120,6 +121,18 @@ class GeminiResearchEngine:
         self._genai_module = None
         self.research_cache: Dict[str, ResearchResult] = {}
         self.hypothesis_bank: List[ASIHypothesis] = []
+        self._asi_core_ref = None
+        self._total_queries = 0
+
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            print("--- [ASI_RESEARCH]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
 
     def _rotate_model(self):
         """Rotate to next model on quota error."""
@@ -261,7 +274,7 @@ Be direct, precise, and comprehensive. No hedging."""
         )
 
         # Cache result
-        cache_key = hashlib.md5(f"{topic}:{domain.name}:{depth.name}".encode()).hexdigest()[:16]
+        cache_key = hashlib.sha256(f"{topic}:{domain.name}:{depth.name}".encode()).hexdigest()[:16]
         self.research_cache[cache_key] = result
 
         print(f"--- [ASI_RESEARCH]: COMPLETE | Resonance: {resonance:.4f} ---")
@@ -326,7 +339,7 @@ Format as structured analysis."""
                     if match:
                         val = float(match.group(1))
                         confidence = val if val <= 1.0 else val / 100.0
-            except:
+            except (ValueError, AttributeError):
                 pass
 
         hypothesis = ASIHypothesis(
@@ -517,12 +530,25 @@ class ASIResearchCoordinator:
     """
     Coordinates ASI research activities across all domains.
     Provides unified interface for FREE L104 research.
+    Cross-wired to ASI Core pipeline for feedback loops.
     """
 
     def __init__(self):
         self.gemini_engine = GeminiResearchEngine()
         self.research_history: List[ResearchResult] = []
         self.intellect_boost = 0.0
+        self._asi_core_ref = None
+
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            self.gemini_engine.connect_to_pipeline()
+            print("--- [ASI_RESEARCH_COORD]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
 
     def connect(self) -> bool:
         """Initialize research systems."""
@@ -540,6 +566,13 @@ class ASIResearchCoordinator:
 
         # Apply intellect boost based on resonance
         self.intellect_boost += result.resonance_score * 10.0
+
+        # Feed research metrics back to pipeline
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref._pipeline_metrics["research_queries"] += 1
+            except Exception:
+                pass
 
         return result
 
@@ -579,7 +612,18 @@ class ASIResearchCoordinator:
         return await self.gemini_engine.deep_research_cycle(topic, cycles)
 
     def get_status(self) -> Dict[str, Any]:
-        """Get research coordinator status."""
+        """Get research coordinator status with pipeline awareness."""
+        pipeline_connected = self._asi_core_ref is not None
+        pipeline_mesh = "UNKNOWN"
+        subsystems_active = 0
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                pipeline_mesh = core_status.get("pipeline_mesh", "UNKNOWN")
+                subsystems_active = core_status.get("subsystems_active", 0)
+            except Exception:
+                pass
+
         return {
             "connected": self.gemini_engine.is_connected,
             "model": self.gemini_engine.model_name,
@@ -587,7 +631,11 @@ class ASIResearchCoordinator:
             "hypotheses_count": len(self.gemini_engine.hypothesis_bank),
             "cache_size": len(self.gemini_engine.research_cache),
             "intellect_boost": self.intellect_boost,
-            "god_code": GOD_CODE
+            "god_code": GOD_CODE,
+            "pipeline_connected": pipeline_connected,
+            "pipeline_mesh": pipeline_mesh,
+            "subsystems_active": subsystems_active,
+            "total_queries": self.gemini_engine._total_queries,
         }
 
 # ═══════════════════════════════════════════════════════════════════════════════

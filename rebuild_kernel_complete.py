@@ -93,7 +93,7 @@ def load_node_extracted_data() -> List[TrainingExample]:
         run_node_extraction()
 
     examples = []
-    with open(extracted_path, 'r') as f:
+    with open(extracted_path, 'r', encoding='utf-8') as f:
         for line in f:
             data = json.loads(line.strip())
             examples.append(TrainingExample(
@@ -194,8 +194,8 @@ def generate_synthesis_data() -> List[TrainingExample]:
     # ═══════════════════════════════════════════════════════════════════
     s41_python = [
         ("How to define a dataclass?", "from dataclasses import dataclass\n\n@dataclass\nclass Example:\n    field: str\n    value: int = 0"),
-        ("How to read JSON in Python?", "import json\nwith open('file.json', 'r') as f:\n    data = json.load(f)"),
-        ("How to write JSONL?", "with open('file.jsonl', 'w') as f:\n    for item in items:\n        f.write(json.dumps(item) + '\\n')"),
+        ("How to read JSON in Python?", "import json\nwith open('file.json', 'r', encoding='utf-8') as f:\n    data = json.load(f)"),
+        ("How to write JSONL?", "with open('file.jsonl', 'w', encoding='utf-8') as f:\n    for item in items:\n        f.write(json.dumps(item) + '\\n')"),
         ("How to use type hints?", "def func(name: str, count: int = 0) -> List[str]:\n    return [name] * count"),
         ("How to run subprocess?", "import subprocess\nresult = subprocess.run(['node', 'script.js'], capture_output=True, text=True)"),
         ("How to compute hash?", "import hashlib\nhash = hashlib.sha256(data.encode()).hexdigest()"),
@@ -457,7 +457,7 @@ def save_outputs(examples: List[TrainingExample], vocab: set, param_count: int):
 
     # JSONL training data
     jsonl_path = os.path.join(WORKSPACE, "kernel_training_data.jsonl")
-    with open(jsonl_path, 'w') as f:
+    with open(jsonl_path, 'w', encoding='utf-8') as f:
         for ex in examples:
             f.write(json.dumps(asdict(ex)) + '\n')
     print(f"   {jsonl_path}")
@@ -494,7 +494,7 @@ def save_outputs(examples: List[TrainingExample], vocab: set, param_count: int):
     manifest["category_distribution"] = cat_counts
 
     manifest_path = os.path.join(WORKSPACE, "KERNEL_MANIFEST.json")
-    with open(manifest_path, 'w') as f:
+    with open(manifest_path, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2)
     print(f"   {manifest_path}")
 

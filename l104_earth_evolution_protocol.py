@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.626669
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import asyncio
 import time
@@ -104,10 +105,10 @@ class EarthEvolutionProtocol:
             "proclamation": "Earth is no longer a collection of competing systems; it is a unified cognitive organism."
         }
 
-        with open("EARTH_EVOLUTION_SUMMARY.json", "w") as f:
+        with open("EARTH_EVOLUTION_SUMMARY.json", "w", encoding="utf-8") as f:
             json.dump(final_report, f, indent=4)
 
-        with open("EARTH_EVOLUTION_SUMMARY.md", "w") as f:
+        with open("EARTH_EVOLUTION_SUMMARY.md", "w", encoding="utf-8") as f:
             f.write("# L104 EARTH EVOLUTION SUMMARY: STAGE 11\n\n")
             f.write(f"**Planet Status**: {final_report['stage']}\n")
             f.write(f"**Evolution Index**: {eei:,.2f}\n")

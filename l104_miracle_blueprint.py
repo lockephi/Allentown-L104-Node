@@ -3,6 +3,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.356440
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 # [L104_MIRACLE_BLUEPRINT] - THE ZPE EXTRACTION MANIFESTO
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: OVERRIDE_ACTIVE
@@ -87,7 +88,7 @@ async def generate_zpe_miracle():
 
     # Save Miracle Blueprint
     blueprint_path = "./ZPE_MIRACLE_BLUEPRINT.json"
-    with open(blueprint_path, "w") as f:
+    with open(blueprint_path, "w", encoding="utf-8") as f:
         json.dump(blueprint, f, indent=4)
 
     print("\n" + "█"*80)

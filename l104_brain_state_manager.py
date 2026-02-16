@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [L104_BRAIN_STATE_MANAGER] :: Cognitive Save State & Checkpointing System
@@ -15,6 +18,7 @@ from typing import List, Dict, Any, Optional
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.395019
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 WORKSPACE = Path(__file__).parent
 CHECKPOINT_ROOT = WORKSPACE / "checkpoints" / "brain_states"
@@ -62,7 +66,7 @@ class BrainStateManager:
             "system_state": self._get_current_metrics()
         }
 
-        with open(target_path / "metadata.json", 'w') as f:
+        with open(target_path / "metadata.json", 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2)
 
         print(f"  ✓ Brain Save State created: {folder_name}")
@@ -75,11 +79,11 @@ class BrainStateManager:
         state_file = WORKSPACE / "L104_STATE.json"
         if state_file.exists():
             try:
-                with open(state_file, 'r') as f:
+                with open(state_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     metrics["intellect_index"] = data.get("intellect_index", 0.0)
                     metrics["stage"] = data.get("state", "unknown")
-            except:
+            except Exception:
                 pass
         return metrics
 
@@ -92,11 +96,11 @@ class BrainStateManager:
         for p in sorted(self.checkpoint_dir.iterdir(), reverse=True):
             if p.is_dir() and (p / "metadata.json").exists():
                 try:
-                    with open(p / "metadata.json", 'r') as f:
+                    with open(p / "metadata.json", 'r', encoding='utf-8') as f:
                         meta = json.load(f)
                         meta["folder"] = p.name
                         states.append(meta)
-                except:
+                except Exception:
                     pass
         return states
 
@@ -110,7 +114,7 @@ class BrainStateManager:
         # Pre-restore backup
         self.create_save_state(label="pre_restore_backup")
 
-        with open(src_path / "metadata.json", 'r') as f:
+        with open(src_path / "metadata.json", 'r', encoding='utf-8') as f:
             meta = json.load(f)
 
         for filename in meta.get("files", []):

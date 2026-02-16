@@ -241,7 +241,7 @@ for q, a in synthesis_wisdom:
     })
 
 # Write JSONL
-with open("invention_training_data.jsonl", "w") as f:
+with open("invention_training_data.jsonl", "w", encoding="utf-8") as f:
     for ex in training_examples:
         f.write(json.dumps(ex) + "\n")
 
@@ -252,10 +252,10 @@ print(f"Categories: metamorphic({len(metamorphic_wisdom)}), cognitive({len(cogni
 
 # Update brain state
 try:
-    with open("l104_brain_state.json", "r") as f:
+    with open("l104_brain_state.json", "r", encoding="utf-8") as f:
         brain = json.load(f)
     current_memories = len(brain.get("insights", []))
-except:
+except Exception:
     brain = {"insights": [], "version": "22.0.0-STABLE"}
     current_memories = 0
 
@@ -287,7 +287,7 @@ brain["invention_training"] = {
 }
 
 new_total = len(brain.get("insights", []))
-with open("l104_brain_state.json", "w") as f:
+with open("l104_brain_state.json", "w", encoding="utf-8") as f:
     json.dump(brain, f, indent=2)
 
 print(f"\n🧠 Brain updated: {current_memories} → {new_total} memories at {brain['evolution']}")

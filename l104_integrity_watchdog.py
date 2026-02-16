@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.526435
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -198,7 +199,7 @@ class IntegrityWatchdog:
 
         # 2. Heuristic Check with PHI-resonant analysis
         try:
-            with open(TRUTH_MANIFEST_PATH, 'r') as f:
+            with open(TRUTH_MANIFEST_PATH, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 resonance = data.get("meta", {}).get("resonance", 0)
                 deviation = abs(resonance - self.GOD_CODE)

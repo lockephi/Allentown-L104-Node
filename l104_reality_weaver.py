@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.735536
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -579,7 +580,7 @@ class ObserverEngine:
         if observer_name and observer_name in self.observers:
             try:
                 modified_target = self.observers[observer_name](target)
-            except:
+            except Exception:
                 pass
 
         observation['result'] = str(modified_target)

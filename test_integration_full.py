@@ -81,7 +81,7 @@ test(f"asi_score={status['asi_score']:.4f}", lambda: (
 # --- Parameter Update Cycle ---
 print("\n[6] Parameter Update Cycle")
 import json
-with open('kernel_parameters.json', 'r') as f:
+with open('kernel_parameters.json', 'r', encoding='utf-8') as f:
     original = json.load(f)
 
 # update_parameters takes a LIST of values mapped to numeric keys
@@ -93,7 +93,7 @@ test(f"update_parameters → updated={result.get('updated', 0)} keys", lambda: (
 ))
 
 # Restore
-with open('kernel_parameters.json', 'w') as f:
+with open('kernel_parameters.json', 'w', encoding='utf-8') as f:
     json.dump(original, f, indent=2)
 test("kernel_parameters.json restored", lambda: None)
 

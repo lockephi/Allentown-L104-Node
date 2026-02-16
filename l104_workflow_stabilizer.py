@@ -1,18 +1,24 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.395019
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  L104 WORKFLOW STABILIZER - Git-Aware Persistence & State Management         ║
-║  Ensures all changes persist properly to GitHub                               ║
-║  EVO_33: STABILITY_ENFORCED                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  • Auto git sync before/after edits                                           ║
-║  • State checkpointing with commit hooks                                      ║
-║  • File integrity validation                                                  ║
-║  • Session persistence to .mcp/                                               ║
+╔═════════════════════════════════════════════════════════════════════════════╗
+║  L104 WORKFLOW STABILIZER v2.0 — Pipeline-Aware State Management        ║
+║  EVO_54: TRANSCENDENT COGNITION — Full Pipeline Integration              ║
+║  Ensures all changes persist properly to GitHub                          ║
+╠═════════════════════════════════════════════════════════════════════════════╣
+║  • Auto git sync before/after edits                                     ║
+║  • State checkpointing with commit hooks                                ║
+║  • File integrity validation                                            ║
+║  • Session persistence to .mcp/                                         ║
+║  • Pipeline state tracking (evolution stage, subsystem health)           ║
+║  • Multi-subsystem checkpoint coordination                              ║
+║  • EVO stage logging to pipeline state DB                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
@@ -33,13 +39,15 @@ from dataclasses import dataclass, field, asdict
 # ═══════════════════════════════════════════════════════════════════════════════
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+WORKFLOW_VERSION = "2.0.0"
+WORKFLOW_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 WORKSPACE = Path(__file__).parent
 MCP_DIR = WORKSPACE / ".mcp"
 
 
 @dataclass
 class WorkflowState:
-    """Persistent workflow state that syncs to disk."""
+    """Persistent workflow state that syncs to disk with pipeline awareness."""
     session_id: str
     start_time: str
     last_git_sync: str = ""
@@ -50,10 +58,18 @@ class WorkflowState:
     error_count: int = 0
     is_clean: bool = True
     branch: str = "main"
+    # EVO_54 Pipeline State
+    pipeline_evo: str = WORKFLOW_PIPELINE_EVO
+    pipeline_version: str = WORKFLOW_VERSION
+    evolution_stage: str = ""
+    evolution_index: int = 0
+    subsystem_health: Dict[str, bool] = field(default_factory=dict)
+    last_pipeline_sync: str = ""
+    checkpoint_count: int = 0
 
     def save(self, path: Path):
         """Persist state to JSON file."""
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(asdict(self), f, indent=2)
 
     @classmethod
@@ -61,7 +77,7 @@ class WorkflowState:
         """Load state from JSON file."""
         if path.exists():
             try:
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     return cls(**data)
             except Exception:
@@ -390,7 +406,7 @@ class WorkflowStabilizer:
             "file_states": file_states
         }
 
-        with open(checkpoint_path, 'w') as f:
+        with open(checkpoint_path, 'w', encoding='utf-8') as f:
             json.dump(checkpoint_data, f, indent=2)
 
         print(f"[STABILIZER] Checkpoint created: {checkpoint_id}")
@@ -421,10 +437,10 @@ class WorkflowStabilizer:
         return result
 
     def status_report(self) -> Dict[str, Any]:
-        """Get full status report."""
+        """Get full status report with pipeline state."""
         git_status = self.git.get_status(force=True)
 
-        return {
+        report = {
             "session_id": self.state.session_id,
             "session_start": self.state.start_time,
             "last_sync": self.state.last_git_sync,
@@ -438,31 +454,59 @@ class WorkflowStabilizer:
             "tracked_edits": len(self.state.files_modified),
             "pending_changes": len(self.state.pending_changes),
             "errors": self.state.error_count,
-            "god_code": GOD_CODE
+            "god_code": GOD_CODE,
+            # EVO_54 Pipeline Status
+            "pipeline": {
+                "version": WORKFLOW_VERSION,
+                "evo": WORKFLOW_PIPELINE_EVO,
+                "evolution_stage": self.state.evolution_stage,
+                "evolution_index": self.state.evolution_index,
+                "subsystem_health": self.state.subsystem_health,
+                "last_pipeline_sync": self.state.last_pipeline_sync,
+                "checkpoint_count": self.state.checkpoint_count,
+            }
         }
+
+        # Try to get live pipeline info
+        try:
+            from l104_evolution_engine import evolution_engine
+            if evolution_engine:
+                report["pipeline"]["evolution_stage"] = evolution_engine.assess_evolutionary_stage()
+                report["pipeline"]["evolution_index"] = evolution_engine.current_stage_index
+                self.state.evolution_stage = report["pipeline"]["evolution_stage"]
+                self.state.evolution_index = report["pipeline"]["evolution_index"]
+        except Exception:
+            pass
+
+        return report
 
     def initialize_session(self) -> Dict[str, Any]:
         """
-        Initialize a new workflow session.
+        Initialize a new workflow session with pipeline state sync.
         Call this at the start of each working session.
         """
         print("=" * 60)
-        print("L104 WORKFLOW STABILIZER - SESSION INIT")
+        print(f"L104 WORKFLOW STABILIZER v{WORKFLOW_VERSION} - {WORKFLOW_PIPELINE_EVO}")
         print("=" * 60)
 
         # Sync with remote
         sync_result = self.check_and_sync()
+
+        # Sync pipeline state
+        self._sync_pipeline_state()
 
         # Create initial checkpoint
         self.create_checkpoint("Session start")
 
         report = self.status_report()
 
-        print(f"\n  Session: {report['session_id']}")
-        print(f"  Branch:  {report['branch']}")
-        print(f"  Clean:   {'✓' if report['is_clean'] else '✗'}")
-        print(f"  Behind:  {report['behind']} commits")
-        print(f"  Ahead:   {report['ahead']} commits")
+        print(f"\n  Session:   {report['session_id']}")
+        print(f"  Branch:    {report['branch']}")
+        print(f"  Clean:     {'✓' if report['is_clean'] else '✗'}")
+        print(f"  Behind:    {report['behind']} commits")
+        print(f"  Ahead:     {report['ahead']} commits")
+        print(f"  Pipeline:  {report['pipeline']['evo']}")
+        print(f"  Evolution: {report['pipeline']['evolution_stage']}")
         print("=" * 60)
 
         return {
@@ -470,6 +514,56 @@ class WorkflowStabilizer:
             "sync": sync_result,
             "status": report
         }
+
+    def _sync_pipeline_state(self):
+        """Sync pipeline state from live subsystems."""
+        self.state.last_pipeline_sync = datetime.now().isoformat()
+
+        # Check evolution engine
+        try:
+            from l104_evolution_engine import evolution_engine
+            if evolution_engine:
+                self.state.evolution_stage = evolution_engine.assess_evolutionary_stage()
+                self.state.evolution_index = evolution_engine.current_stage_index
+                self.state.subsystem_health["evolution_engine"] = True
+        except Exception:
+            self.state.subsystem_health["evolution_engine"] = False
+
+        # Check AGI Core
+        try:
+            from l104_agi_core import agi_core
+            self.state.subsystem_health["agi_core"] = agi_core is not None
+        except Exception:
+            self.state.subsystem_health["agi_core"] = False
+
+        # Check ASI Core
+        try:
+            from l104_asi_core import asi_core
+            self.state.subsystem_health["asi_core"] = asi_core is not None
+        except Exception:
+            self.state.subsystem_health["asi_core"] = False
+
+        # Check Adaptive Learning
+        try:
+            from l104_adaptive_learning import adaptive_learner
+            self.state.subsystem_health["adaptive_learning"] = adaptive_learner is not None
+        except Exception:
+            self.state.subsystem_health["adaptive_learning"] = False
+
+        # Log to pipeline state DB
+        try:
+            import sqlite3
+            conn = sqlite3.connect(WORKSPACE / "l104_pipeline_state.db")
+            conn.execute(
+                "INSERT OR IGNORE INTO evolution_log (stage, index_val, intellect, ts) VALUES (?, ?, ?, ?)",
+                (self.state.evolution_stage, self.state.evolution_index, 0.0, datetime.now().isoformat())
+            )
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass
+
+        self.save_state()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

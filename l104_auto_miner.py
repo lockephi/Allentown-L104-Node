@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.618038
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -13,6 +14,7 @@ Intervals: PHI-based timing (30s base, golden ratio adjustment)
 """
 
 import hashlib
+import secrets
 import json
 import time
 import random
@@ -82,7 +84,7 @@ def mine_block(job: dict, max_attempts: int = 100000):
     difficulty = job.get('difficulty', 4)
     target_prefix = '0' * difficulty
 
-    nonce = random.randint(0, 10_000_000)
+    nonce = secrets.randbelow(10_000_000)
 
     for attempt in range(max_attempts):
         resonance = calculate_resonance(nonce)

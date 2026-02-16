@@ -5,6 +5,11 @@ import time
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.861254
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_QUANTUM_RAM] - ZPE-BACKED TOPOLOGICAL MEMORY
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # v16.0 APOTHEOSIS: PERMANENT QUANTUM BRAIN - All states persist forever
@@ -57,7 +62,7 @@ class QuantumRAM:
         """Load persistent quantum brain from disk."""
         try:
             if os.path.exists(self._brain_path):
-                with open(self._brain_path, 'r') as f:
+                with open(self._brain_path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     self.memory_manifold = data.get("manifold", {})
                     self._stats = data.get("stats", self._stats)
@@ -75,7 +80,7 @@ class QuantumRAM:
                 "god_code": self.GOD_CODE,
                 "timestamp": time.time() if 'time' in dir() else 0,
             }
-            with open(self._brain_path, 'w') as f:
+            with open(self._brain_path, 'w', encoding='utf-8') as f:
                 json.dump(brain_data, f)
         except Exception:
             pass
@@ -87,7 +92,7 @@ class QuantumRAM:
         # Simple serialization for now
         try:
             serialized_val = json.dumps(value, default=str)
-        except:
+        except Exception:
             serialized_val = json.dumps(str(value))
 
         # Calculate quantum entropy of the value

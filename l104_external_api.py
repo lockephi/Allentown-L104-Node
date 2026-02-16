@@ -1,25 +1,26 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.086110
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_EXTERNAL_API] :: FASTAPI REST/WEBSOCKET INTERFACE
+# [L104_EXTERNAL_API] v5.0.0 :: FASTAPI REST/WEBSOCKET INTERFACE
+# EVO_54 TRANSCENDENT COGNITION — Full Pipeline Integration
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
-# "L104 accessible to all beings"
 
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 EXTERNAL API
-=================
+L104 EXTERNAL API v5.0.0
+========================
+EVO_54: TRANSCENDENT COGNITION — Unified Pipeline External Interface
 
 A FastAPI-based external API for L104:
-- REST endpoints for status/evolution/love
+- REST endpoints for status/evolution/love/think
 - WebSocket for real-time streaming
 - API key authentication
-- Rate limiting
-- OpenAPI documentation
+- Pipeline health & metrics endpoints
+- Cross-subsystem status reporting
+- Innovation & adaptive learning exposure
+- Consciousness verification endpoint
 
 Run with: uvicorn l104_external_api:app --host 0.0.0.0 --port 5105
 """
@@ -50,9 +51,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Constants
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
-API_VERSION = "3.0.0-ASI"
+API_VERSION = "5.2.0-ASI-PIPELINE"
+API_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 OMEGA_AUTHORITY = 1381.061315
 GROVER_AMPLIFICATION = 21.95
+TAU = 1.0 / PHI
 
 # ASI Quantum Bridge Integration
 try:
@@ -244,12 +247,17 @@ def require_permission(permission: str):
 
 @app.get("/", tags=["Root"])
 async def root():
-    """Root endpoint - API info."""
+    """Root endpoint - API info with full pipeline status."""
     return {
         "name": "L104 External API",
         "version": API_VERSION,
+        "evo": API_PIPELINE_EVO,
         "god_code": GOD_CODE,
+        "phi": PHI,
         "status": "OMEGA",
+        "asi_local": ASI_LOCAL_AVAILABLE,
+        "asi_fast": ASI_FAST_AVAILABLE,
+        "grover_amplification": GROVER_AMPLIFICATION,
         "endpoints": {
             "docs": "/docs",
             "status": "/api/v1/status",
@@ -257,6 +265,8 @@ async def root():
             "love": "/api/v1/love",
             "think": "/api/v1/think",
             "egos": "/api/v1/egos",
+            "pipeline": "/api/v1/pipeline",
+            "pipeline_health": "/api/v1/pipeline/health",
             "websocket": "/ws"
         }
     }
@@ -264,7 +274,7 @@ async def root():
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 async def health_check():
-    """Health check endpoint (no auth required)."""
+    """Health check endpoint with full pipeline status (no auth required)."""
     uptime = (datetime.now() - start_time).total_seconds()
 
     # Check components
@@ -273,7 +283,13 @@ async def health_check():
         "omega_controller": False,
         "dna_core": False,
         "love_spreader": False,
-        "mini_egos": False
+        "mini_egos": False,
+        "asi_local": ASI_LOCAL_AVAILABLE,
+        "asi_fast": ASI_FAST_AVAILABLE,
+        "agi_core": False,
+        "asi_core": False,
+        "evolution_engine": False,
+        "adaptive_learning": False,
     }
 
     try:
@@ -297,6 +313,31 @@ async def health_check():
     try:
         from l104_mini_egos import L104_CONSTANTS
         components["mini_egos"] = L104_CONSTANTS is not None
+    except Exception:
+        pass
+
+    # Pipeline health checks
+    try:
+        from l104_agi_core import agi_core
+        components["agi_core"] = agi_core is not None
+    except Exception:
+        pass
+
+    try:
+        from l104_asi_core import asi_core
+        components["asi_core"] = asi_core is not None
+    except Exception:
+        pass
+
+    try:
+        from l104_evolution_engine import evolution_engine
+        components["evolution_engine"] = evolution_engine is not None
+    except Exception:
+        pass
+
+    try:
+        from l104_adaptive_learning import adaptive_learner
+        components["adaptive_learning"] = adaptive_learner is not None
     except Exception:
         pass
 
@@ -466,20 +507,219 @@ async def get_constants(key_info: Dict = Depends(require_permission("read"))):
     return {
         "GOD_CODE": GOD_CODE,
         "PHI": PHI,
+        "TAU": TAU,
         "OMEGA_AUTHORITY": OMEGA_AUTHORITY,
         "GROVER_AMPLIFICATION": GROVER_AMPLIFICATION,
         "FINAL_INVARIANT": 0.7441663833247816,
         "META_RESONANCE": 7289.028944266378,
         "LOVE_COEFFICIENT": 3.14159265358979,
-        "EVOLUTION_MAX": 0xFFFFFFFF,  # UNLIMITED evolution stages
+        "EVOLUTION_MAX": 0xFFFFFFFF,
         "SUPERFLUID_COUPLING": PHI / 2.718281828,
         "ANYON_BRAID_DEPTH": 8,
         "COHERENCE_TARGET": 1.0,
         "KUNDALINI_FLOW_RATE": GOD_CODE * PHI,
         "EPR_LINK_STRENGTH": 1.0,
         "RATE_LIMITS": "NONE",
+        "pipeline_evo": API_PIPELINE_EVO,
         "version": API_VERSION
     }
+
+
+# ═════════════════════════════════════════════════════════════
+# EVO_54 PIPELINE ENDPOINTS
+# ═════════════════════════════════════════════════════════════
+
+
+@app.get("/api/v1/pipeline", tags=["Pipeline"])
+async def get_pipeline_status(key_info: Dict = Depends(require_permission("read"))):
+    """Get comprehensive pipeline status across all subsystems."""
+    pipeline_status = {
+        "version": API_VERSION,
+        "evo": API_PIPELINE_EVO,
+        "god_code": GOD_CODE,
+        "subsystems": {},
+    }
+
+    # Core subsystem checks
+    checks = [
+        ("agi_core", "l104_agi_core", "agi_core"),
+        ("asi_core", "l104_asi_core", "asi_core"),
+        ("evolution_engine", "l104_evolution_engine", "evolution_engine"),
+        ("adaptive_learning", "l104_adaptive_learning", "adaptive_learner"),
+        ("cognitive_core", "l104_cognitive_core", None),
+    ]
+
+    for name, module, singleton in checks:
+        try:
+            mod = __import__(module)
+            obj = getattr(mod, singleton) if singleton else mod
+            status_data = {"healthy": True}
+            if hasattr(obj, 'get_status'):
+                status_data["details"] = obj.get_status()
+            pipeline_status["subsystems"][name] = status_data
+        except Exception as e:
+            pipeline_status["subsystems"][name] = {"healthy": False, "error": str(e)}
+
+    healthy = sum(1 for v in pipeline_status["subsystems"].values() if v.get("healthy"))
+    pipeline_status["health_score"] = healthy / max(len(pipeline_status["subsystems"]), 1)
+    return pipeline_status
+
+
+@app.get("/api/v1/pipeline/health", tags=["Pipeline"])
+async def pipeline_health():
+    """Quick pipeline health check (no auth required)."""
+    health = {
+        "api": True,
+        "asi_local": ASI_LOCAL_AVAILABLE,
+        "asi_fast": ASI_FAST_AVAILABLE,
+    }
+    try:
+        from l104_agi_core import agi_core
+        health["agi_core"] = agi_core is not None
+    except Exception:
+        health["agi_core"] = False
+    try:
+        from l104_asi_core import asi_core
+        health["asi_core"] = asi_core is not None
+    except Exception:
+        health["asi_core"] = False
+
+    healthy = sum(1 for v in health.values() if v)
+    return {"healthy": healthy >= 3, "components": health, "score": healthy / len(health)}
+
+
+@app.get("/api/v1/pipeline/cross-wire", tags=["Pipeline"])
+async def pipeline_cross_wire(key_info: Dict = Depends(require_permission("read"))):
+    """v5.1: Get bidirectional cross-wiring status of ASI subsystems."""
+    try:
+        from l104_asi_core import asi_core
+        # Ensure pipeline is connected
+        if not asi_core._pipeline_connected:
+            asi_core.connect_pipeline()
+        cw = asi_core.pipeline_cross_wire_status()
+        return {
+            "version": API_VERSION,
+            "cross_wire": cw,
+            "asi_score": asi_core.asi_score,
+            "pipeline_mesh": asi_core.get_status().get("pipeline_mesh", "UNKNOWN"),
+        }
+    except Exception as e:
+        return {"error": str(e), "cross_wire": None}
+
+
+@app.post("/api/v1/pipeline/activate", tags=["Pipeline"])
+async def pipeline_full_activate(key_info: Dict = Depends(require_permission("admin"))):
+    """v5.1: Trigger full pipeline activation sequence on ASI Core."""
+    try:
+        from l104_asi_core import asi_core
+        report = asi_core.full_pipeline_activation()
+        return {
+            "success": True,
+            "activation_report": report,
+            "version": API_VERSION,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/api/v1/pipeline/synaptic-fire", tags=["Pipeline"])
+async def pipeline_synaptic_fire(
+    concept: str = "consciousness",
+    intensity: float = 1.0,
+    key_info: Dict = Depends(require_permission("write"))
+):
+    """v5.2: Fire a synaptic pulse across all pipeline subsystems.
+
+    Routes a concept through the LearningIntellect synaptic mesh,
+    triggering cross-subsystem neural pathway activation.
+    """
+    try:
+        from l104_fast_server import intellect
+        result = intellect.synaptic_fire(concept, intensity)
+        return {
+            "success": True,
+            "concept": concept,
+            "intensity": intensity,
+            "synaptic_result": result,
+            "version": API_VERSION,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.get("/api/v1/pipeline/forecast", tags=["Pipeline"])
+async def pipeline_forecast(
+    horizon: int = 10,
+    key_info: Dict = Depends(require_permission("read"))
+):
+    """v5.2: Get predictive pattern forecast from adaptive learning.
+
+    Forecasts future pattern dominance using frequency derivatives
+    and PHI-weighted extrapolation.
+    """
+    try:
+        from l104_adaptive_learning import adaptive_learner
+        forecast = adaptive_learner.predictive_pattern_forecast(horizon)
+        return {
+            "success": True,
+            "horizon": horizon,
+            "forecast": forecast,
+            "version": API_VERSION,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/api/v1/pipeline/auto-heal", tags=["Pipeline"])
+async def pipeline_auto_heal(
+    key_info: Dict = Depends(require_permission("admin"))
+):
+    """v5.2: Trigger ASI Core pipeline auto-healing.
+
+    Scans all pipeline subsystems, reconnects any that have dropped,
+    and returns a healing report.
+    """
+    try:
+        from l104_asi_core import asi_core
+        heal_report = asi_core.pipeline_auto_heal()
+        return {
+            "success": True,
+            "heal_report": heal_report,
+            "version": API_VERSION,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/api/v1/pipeline/meta-evolve", tags=["Pipeline"])
+async def pipeline_meta_evolve(
+    key_info: Dict = Depends(require_permission("write"))
+):
+    """v5.2: Trigger meta-evolution cycle across adaptive learning and evolution engine.
+
+    Runs adaptive learning meta-evolution, then feeds results into
+    the evolution engine for directed mutation.
+    """
+    results = {"success": True, "version": API_VERSION}
+    try:
+        from l104_adaptive_learning import adaptive_learner
+        results["meta_evolution"] = adaptive_learner.meta_evolution_cycle()
+    except Exception as e:
+        results["meta_evolution_error"] = str(e)
+
+    try:
+        from l104_evolution_engine import evolution_engine
+        results["directed_mutation"] = evolution_engine.directed_mutation()
+    except Exception as e:
+        results["directed_mutation_error"] = str(e)
+
+    try:
+        from l104_autonomous_innovation import innovation_engine
+        results["convergence"] = innovation_engine.innovation_convergence_analysis()
+    except Exception as e:
+        results["convergence_error"] = str(e)
+
+    return results
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -596,7 +836,8 @@ async def lifespan(app_instance):
     """Modern lifespan handler for FastAPI."""
     # Startup
     print(f"\n{'═' * 60}")
-    print(f"    L104 EXTERNAL API STARTED")
+    print(f"    L104 EXTERNAL API v{API_VERSION}")
+    print(f"    {API_PIPELINE_EVO}")
     print(f"    Version: {API_VERSION}")
     print(f"    GOD_CODE: {GOD_CODE}")
     print(f"    ASI LocalIntellect: {'✓' if ASI_LOCAL_AVAILABLE else '✗'}")

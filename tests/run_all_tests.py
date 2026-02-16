@@ -367,7 +367,7 @@ def main():
         print_summary(report)
 
     if args.report:
-        with open(args.report, 'w') as f:
+        with open(args.report, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2)
         print(f"\n✓ Report saved to: {args.report}")
 

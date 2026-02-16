@@ -190,7 +190,7 @@ class MegaEvolutionEngine:
         core_path = self.root / "l104_core.py"
         if not core_path.exists():
             core_content = self._generate_core_module()
-            with open(core_path, 'w') as f:
+            with open(core_path, 'w', encoding='utf-8') as f:
                 f.write(core_content)
             created.append("l104_core.py")
 
@@ -198,7 +198,7 @@ class MegaEvolutionEngine:
         brain_path = self.root / "l104_brain.py"
         if not brain_path.exists():
             brain_content = self._generate_brain_module()
-            with open(brain_path, 'w') as f:
+            with open(brain_path, 'w', encoding='utf-8') as f:
                 f.write(brain_content)
             created.append("l104_brain.py")
 
@@ -651,7 +651,7 @@ if __name__ == "__main__":
 
         # Save report
         report_path = self.root / "MEGA_EVOLUTION_REPORT.json"
-        with open(report_path, 'w') as f:
+        with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2)
 
         print("\n" + "═" * 70)

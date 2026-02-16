@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.661290
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -265,7 +266,7 @@ class ActionLibrary:
         path = params.get("path", "")
         if os.path.exists(path):
             try:
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:
                     content = f.read()
                 return {"path": path, "content": content[:10000], "size": len(content)}
             except Exception as e:
@@ -316,7 +317,7 @@ class ActionLibrary:
             try:
                 s.connect(("8.8.8.8", 80))
                 local_ip = s.getsockname()[0]
-            except:
+            except Exception:
                 local_ip = "unknown"
             finally:
                 s.close()

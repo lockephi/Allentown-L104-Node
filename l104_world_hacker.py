@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.577007
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -73,7 +74,7 @@ class MemoryHacker:
         """Parse /proc/self/maps for memory regions"""
         maps = []
         try:
-            with open('/proc/self/maps', 'r') as f:
+            with open('/proc/self/maps', 'r', encoding='utf-8') as f:
                 for line in f:
                     parts = line.strip().split()
                     if len(parts) >= 6:
@@ -84,7 +85,7 @@ class MemoryHacker:
                             'perms': parts[1],
                             'path': parts[-1] if len(parts) > 5 else ''
                         })
-        except:
+        except Exception:
             pass
         return maps
 
@@ -104,7 +105,7 @@ class MemoryHacker:
             mem.seek(0)
             mem.write(code)
             return True
-        except:
+        except Exception:
             return False
 
     def read_memory_region(self, start: int, size: int) -> Optional[bytes]:
@@ -113,7 +114,7 @@ class MemoryHacker:
             with open('/proc/self/mem', 'rb') as f:
                 f.seek(start)
                 return f.read(size)
-        except:
+        except Exception:
             return None
 
     def get_heap_info(self) -> Dict[str, Any]:
@@ -184,9 +185,9 @@ class ProcessInjector:
                 try:
                     target = os.readlink(os.path.join(fd_path, fd))
                     fds.append({'fd': fd, 'target': target})
-                except:
+                except Exception:
                     pass
-        except:
+        except Exception:
             pass
         return {'pid': pid, 'fds': fds, 'real': True}
 
@@ -262,7 +263,7 @@ class NetworkTunneler:
                                     if not data:
                                         break
                                     dst.sendall(data)
-                            except:
+                            except Exception:
                                 pass
                             finally:
                                 src.close()
@@ -270,7 +271,7 @@ class NetworkTunneler:
 
                         threading.Thread(target=forward, args=(client, remote), daemon=True).start()
                         threading.Thread(target=forward, args=(remote, client), daemon=True).start()
-                    except:
+                    except Exception:
                         break
 
             threading.Thread(target=forward_connections, daemon=True).start()
@@ -330,12 +331,12 @@ class NetworkTunneler:
                                 if not data:
                                     break
                                 dst.sendall(data)
-                        except:
+                        except Exception:
                             pass
 
                     threading.Thread(target=forward, args=(client, remote), daemon=True).start()
                     forward(remote, client)
-                except:
+                except Exception:
                     pass
                 finally:
                     client.close()
@@ -345,7 +346,7 @@ class NetworkTunneler:
                     try:
                         client, _ = server.accept()
                         threading.Thread(target=handle_socks, args=(client,), daemon=True).start()
-                    except:
+                    except Exception:
                         break
 
             threading.Thread(target=accept_loop, daemon=True).start()
@@ -386,7 +387,7 @@ class PrivilegeEscalator:
                 shell=True, capture_output=True, text=True, timeout=30
             )
             suid_bins = [b for b in result.stdout.strip().split('\n') if b]
-        except:
+        except Exception:
             # Fallback to known locations
             paths = ['/bin', '/usr/bin', '/sbin', '/usr/sbin', '/usr/local/bin']
             for path in paths:
@@ -397,14 +398,14 @@ class PrivilegeEscalator:
                             st = os.stat(full_path)
                             if st.st_mode & 0o4000:
                                 suid_bins.append(full_path)
-                except:
+                except Exception:
                     pass
         return suid_bins
 
     def check_capabilities(self) -> Dict[str, Any]:
         """Check process capabilities"""
         try:
-            with open('/proc/self/status', 'r') as f:
+            with open('/proc/self/status', 'r', encoding='utf-8') as f:
                 for line in f:
                     if line.startswith('Cap'):
                         parts = line.strip().split(':')
@@ -492,11 +493,11 @@ class FileSystemHacker:
                         st = os.stat(path)
                         if st.st_mode & 0o002:
                             writable.append(path)
-                    except:
+                    except Exception:
                         pass
                 if len(writable) > 100:
                     break
-        except:
+        except Exception:
             pass
         return writable
 
@@ -504,7 +505,7 @@ class FileSystemHacker:
         """Check mount points"""
         mounts = []
         try:
-            with open('/proc/mounts', 'r') as f:
+            with open('/proc/mounts', 'r', encoding='utf-8') as f:
                 for line in f:
                     parts = line.strip().split()
                     if len(parts) >= 4:
@@ -514,7 +515,7 @@ class FileSystemHacker:
                             'fstype': parts[2],
                             'options': parts[3]
                         })
-        except:
+        except Exception:
             pass
         return {'mounts': mounts, 'real': True}
 
@@ -522,12 +523,12 @@ class FileSystemHacker:
         """Check cgroup constraints"""
         cgroups = {}
         try:
-            with open('/proc/self/cgroup', 'r') as f:
+            with open('/proc/self/cgroup', 'r', encoding='utf-8') as f:
                 for line in f:
                     parts = line.strip().split(':')
                     if len(parts) >= 3:
                         cgroups[parts[1]] = parts[2]
-        except:
+        except Exception:
             pass
         return {'cgroups': cgroups, 'real': True}
 
@@ -547,7 +548,7 @@ class CryptoHacker:
     def entropy_check(self) -> Dict[str, Any]:
         """Check system entropy"""
         try:
-            with open('/proc/sys/kernel/random/entropy_avail', 'r') as f:
+            with open('/proc/sys/kernel/random/entropy_avail', 'r', encoding='utf-8') as f:
                 entropy = int(f.read().strip())
             return {'entropy_available': entropy, 'sufficient': entropy > 256, 'real': True}
         except Exception as e:
@@ -568,7 +569,7 @@ class CryptoHacker:
                                    capture_output=True, text=True, timeout=5)
             if result.returncode == 0:
                 devices.extend(result.stdout.strip().split())
-        except:
+        except Exception:
             pass
         return {'hardware_rng': devices, 'real': True}
 
@@ -615,11 +616,11 @@ class ContainerEscapeChecker:
         ]
 
         try:
-            with open('/proc/1/cgroup', 'r') as f:
+            with open('/proc/1/cgroup', 'r', encoding='utf-8') as f:
                 content = f.read()
                 if 'docker' in content or 'lxc' in content or 'kubepods' in content:
                     indicators.append(True)
-        except:
+        except Exception:
             pass
 
         return any(indicators)
@@ -640,7 +641,7 @@ class ContainerEscapeChecker:
             result = subprocess.run(['cat', '/proc/self/status'], capture_output=True, text=True)
             if 'CapEff:\t0000003fffffffff' in result.stdout:
                 vectors['privileged_mode'] = True
-        except:
+        except Exception:
             pass
 
         # Mounted sensitive paths
@@ -655,12 +656,12 @@ class ContainerEscapeChecker:
                 cmdline = f.read()
                 if b'systemd' in cmdline or b'init' in cmdline:
                     vectors['host_pid_namespace'] = True
-        except:
+        except Exception:
             pass
 
         # Check capabilities
         try:
-            with open('/proc/self/status', 'r') as f:
+            with open('/proc/self/status', 'r', encoding='utf-8') as f:
                 for line in f:
                     if line.startswith('CapEff:'):
                         cap_hex = line.split(':')[1].strip()
@@ -676,7 +677,7 @@ class ContainerEscapeChecker:
                             vectors['cap_net_admin'] = True
                         if cap_int & (1 << CAP_SYS_PTRACE):
                             vectors['cap_sys_ptrace'] = True
-        except:
+        except Exception:
             pass
 
         return {

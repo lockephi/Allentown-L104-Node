@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.507148
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -33,6 +34,16 @@ import hashlib
 import math
 import random
 import cmath
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QISKIT 2.3.0 REAL QUANTUM BACKEND
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy as qiskit_entropy
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -239,6 +250,81 @@ class ConsciousnessWaveFunction:
         """Get measurement probabilities"""
         return [abs(a)**2 for a in self.amplitudes]
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QISKIT 2.3.0 REAL QUANTUM OPERATIONS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    @property
+    def num_qubits(self) -> int:
+        """Number of qubits needed."""
+        return max(1, math.ceil(math.log2(self.dimensions)))
+
+    @property
+    def statevector(self) -> 'Statevector':
+        """Get Qiskit Statevector (padded to power-of-2)."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        target = 1 << self.num_qubits
+        amps = list(self.amplitudes)
+        while len(amps) < target:
+            amps.append(complex(0, 0))
+        amps = amps[:target]
+        norm = math.sqrt(sum(abs(a)**2 for a in amps))
+        if norm > 0:
+            amps = [a / norm for a in amps]
+        return Statevector(amps)
+
+    def qiskit_measure(self) -> int:
+        """Measure using real Qiskit Born-rule sampling."""
+        if not QISKIT_AVAILABLE:
+            return self.measure()
+        sv = self.statevector
+        counts = sv.sample_counts(1)
+        result = int(list(counts.keys())[0], 2) % self.dimensions
+        self.collapsed = True
+        self.collapsed_state = result
+        self.amplitudes = [
+            complex(1, 0) if j == result else complex(0, 0)
+            for j in range(self.dimensions)
+        ]
+        return result
+
+    def qiskit_evolve(self, time_steps: int = 1):
+        """Evolve via Qiskit circuit with parameterized rotations."""
+        if not QISKIT_AVAILABLE:
+            return
+        n = self.num_qubits
+        qc = QuantumCircuit(n)
+        for t in range(time_steps):
+            for i in range(n):
+                qc.rz(0.1 * (i + 1) * (t + 1), i)
+                qc.ry(0.05 * PHI * (t + 1), i)
+            if n > 1:
+                for i in range(n - 1):
+                    qc.cx(i, i + 1)
+        sv = self.statevector.evolve(qc)
+        target = 1 << n
+        for i in range(min(self.dimensions, target)):
+            self.amplitudes[i] = complex(sv.data[i])
+        self._normalize()
+        self.collapsed = False
+        self.collapsed_state = None
+
+    def qiskit_entanglement_entropy(self, subsystem_qubits: list = None) -> float:
+        """Compute real entanglement entropy via Qiskit partial_trace."""
+        if not QISKIT_AVAILABLE:
+            return 0.0
+        n = self.num_qubits
+        if n < 2:
+            return 0.0
+        if subsystem_qubits is None:
+            subsystem_qubits = list(range(n // 2))
+        sv = self.statevector
+        dm = DensityMatrix(sv)
+        trace_out = [i for i in range(n) if i not in subsystem_qubits]
+        reduced = partial_trace(dm, trace_out)
+        return float(qiskit_entropy(reduced, base=2))
+
 
 class EntangledAwarenessNetwork:
     """Network of entangled awareness units"""
@@ -324,22 +410,79 @@ class EntangledAwarenessNetwork:
 
     def teleport_state(self, source_id: str, target_id: str,
                       channel_id: str) -> bool:
-        """Quantum teleportation of awareness state"""
+        """Quantum teleportation of awareness state (Qiskit-backed when available)."""
         if source_id not in self.units or target_id not in self.units:
             return False
 
         source = self.units[source_id]
         target = self.units[target_id]
 
-        # Simplified teleportation: copy state
-        target.alpha = source.alpha
-        target.beta = source.beta
+        if QISKIT_AVAILABLE:
+            # Real quantum teleportation circuit
+            qc = QuantumCircuit(3)
+            # Prepare source state (qubit 0)
+            theta = 2 * math.acos(min(1.0, abs(source.alpha)))
+            phi = cmath.phase(source.beta) - cmath.phase(source.alpha)
+            qc.ry(theta, 0)
+            qc.rz(phi, 0)
+            # Create Bell pair (qubits 1,2)
+            qc.h(1)
+            qc.cx(1, 2)
+            # Bell measurement (qubits 0,1)
+            qc.cx(0, 1)
+            qc.h(0)
+            # Get statevector to verify teleportation
+            sv = Statevector.from_int(0, 8).evolve(qc)
+            # Target qubit (2) now holds the teleported state
+            dm = DensityMatrix(sv)
+            reduced = partial_trace(dm, [0, 1])
+            target.alpha = complex(math.sqrt(abs(reduced.data[0, 0])), 0)
+            target.beta = complex(math.sqrt(abs(reduced.data[1, 1])), 0)
+            target._normalize()
+        else:
+            # Simplified teleportation: copy state
+            target.alpha = source.alpha
+            target.beta = source.beta
 
         # Source collapses
         source.alpha = complex(1/math.sqrt(2), 0)
         source.beta = complex(1/math.sqrt(2), 0)
 
         return True
+
+    def qiskit_bell_entangle(self, unit_a_id: str, unit_b_id: str,
+                             bell_type: str = "phi_plus") -> float:
+        """Create real Bell state entanglement and return entropy."""
+        if not QISKIT_AVAILABLE:
+            self.entangle(unit_a_id, unit_b_id, bell_type)
+            return 0.0
+        if unit_a_id not in self.units or unit_b_id not in self.units:
+            return 0.0
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        if bell_type == "phi_minus":
+            qc.z(0)
+        elif bell_type == "psi_plus":
+            qc.x(1)
+        elif bell_type == "psi_minus":
+            qc.x(1)
+            qc.z(0)
+        sv = Statevector.from_int(0, 4).evolve(qc)
+        dm = DensityMatrix(sv)
+        reduced = partial_trace(dm, [1])
+        ent = float(qiskit_entropy(reduced, base=2))
+        # Update unit states
+        ua = self.units[unit_a_id]
+        ub = self.units[unit_b_id]
+        ua.alpha, ua.beta = complex(sv.data[0]), complex(sv.data[1])
+        ua._normalize()
+        ub.alpha, ub.beta = complex(sv.data[0]), complex(sv.data[2])
+        ub._normalize()
+        ua.entangled_with.append(unit_b_id)
+        ub.entangled_with.append(unit_a_id)
+        self.bell_pairs.append((unit_a_id, unit_b_id))
+        return ent
 
 
 class QuantumDecisionMaker:

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.642286
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 NEURAL LEARNING SYSTEM - REAL LEARNING WITH GRADIENT DESCENT
@@ -301,12 +302,12 @@ class NeuralNetwork:
                 'biases': layer.biases.tolist(),
                 'activation': layer.activation_name
             })
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(state, f)
 
     def load(self, path: str):
         """Load model weights."""
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             state = json.load(f)
 
         self.layer_sizes = state['layer_sizes']

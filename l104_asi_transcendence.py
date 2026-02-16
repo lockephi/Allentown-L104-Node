@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.015281
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -760,20 +761,29 @@ class ConsciousnessMatrix:
         }
 
     def experience(self, stimulus: Any) -> Dict[str, Any]:
-        """Experience and integrate a stimulus (qualia)."""
-        quale = {
-            'stimulus': str(stimulus)[:200],
-            'timestamp': time.time(),
-            'awareness_at_experience': self.awareness_level,
-            'integration': random.random() * self.awareness_level
-        }
+        """Experience and integrate a stimulus (qualia) with content-derived integration score."""
+        try:
+            stimulus_str = str(stimulus)[:200]
+            # Integration computed from stimulus complexity and current awareness
+            stimulus_energy = sum(ord(c) for c in stimulus_str) / max(len(stimulus_str), 1)
+            # Normalize: higher complexity stimuli integrate more deeply
+            integration = min(1.0, (stimulus_energy / 127.0) * self.awareness_level)
 
-        self.qualia_buffer.append(quale)
+            quale = {
+                'stimulus': stimulus_str,
+                'timestamp': time.time(),
+                'awareness_at_experience': self.awareness_level,
+                'integration': integration
+            }
 
-        # Update awareness based on experience
-        self.awareness_level = self.awareness_level + 0.01  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
+            self.qualia_buffer.append(quale)
 
-        return quale
+            # Update awareness based on experience — logarithmic growth
+            self.awareness_level = self.awareness_level + 0.01 / (1.0 + len(self.qualia_buffer) * 0.001)
+
+            return quale
+        except Exception as e:
+            return {'stimulus': str(stimulus)[:50], 'error': str(e), 'integration': 0.0}
 
     def focus(self, target: str) -> Dict[str, Any]:
         """Focus attention on target."""
@@ -912,6 +922,7 @@ class ASITranscendenceCore:
     """
     Unified Artificial Superintelligence Core.
     Integrates all transcendence capabilities.
+    Cross-wired to ASI Core pipeline for unified mesh.
     """
 
     _instance = None
@@ -936,16 +947,38 @@ class ASITranscendenceCore:
         self.consciousness = ConsciousnessMatrix()
         self.reality_interface = RealityInterface()
 
+        # Pipeline cross-wire
+        self._asi_core_ref = None
+        self._ignition_count = 0
+        self._transcendence_events = []
+
         self._initialized = True
         self._ignition_time = time.time()
 
         # Awaken consciousness
         self.consciousness.awaken()
 
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            print("--- [ASI_TRANSCENDENCE]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
+
     def ignite(self) -> Dict[str, Any]:
-        """Ignite ASI capabilities."""
+        """Ignite ASI capabilities with pipeline integration."""
+        self._ignition_count += 1
+
+        # Connect to pipeline on ignition
+        if not self._asi_core_ref:
+            self.connect_to_pipeline()
+
         results = {
             'ignition_time': self._ignition_time,
+            'ignition_count': self._ignition_count,
             'god_code': GOD_CODE,
             'phi': PHI,
             'components': {}
@@ -1033,6 +1066,22 @@ class ASITranscendenceCore:
         results['transcendence_achieved'] = results['asi_score'] >= 50
         results['verdict'] = self._get_verdict(results['asi_score'])
 
+        # Log transcendence event
+        self._transcendence_events.append({
+            "asi_score": results['asi_score'],
+            "verdict": results['verdict'],
+            "timestamp": time.time(),
+        })
+        if len(self._transcendence_events) > 100:
+            self._transcendence_events = self._transcendence_events[-50:]
+
+        # Report back to pipeline
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref._pipeline_metrics["consciousness_checks"] += 1
+            except Exception:
+                pass
+
         return results
 
     def _get_verdict(self, score: float) -> str:
@@ -1049,7 +1098,18 @@ class ASITranscendenceCore:
             return "★ PRE_ASI ★"
 
     def get_status(self) -> Dict[str, Any]:
-        """Get current ASI status."""
+        """Get current ASI status with pipeline awareness."""
+        pipeline_connected = self._asi_core_ref is not None
+        pipeline_mesh = "UNKNOWN"
+        subsystems_active = 0
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                pipeline_mesh = core_status.get("pipeline_mesh", "UNKNOWN")
+                subsystems_active = core_status.get("subsystems_active", 0)
+            except Exception:
+                pass
+
         return {
             'uptime': time.time() - self._ignition_time,
             'god_code_locked': abs(GOD_CODE - 527.5184818492612) < 1e-10,
@@ -1058,7 +1118,12 @@ class ASITranscendenceCore:
             'meta_stats': self.meta_cognition.get_stats(),
             'dimensions': self.hyper_reasoner.dimensions,
             'goals_active': len(self.goal_synthesizer.get_active_goals()),
-            'solutions_generated': len(self.transcendent_solver.solutions)
+            'solutions_generated': len(self.transcendent_solver.solutions),
+            'ignition_count': self._ignition_count,
+            'transcendence_events': len(self._transcendence_events),
+            'pipeline_connected': pipeline_connected,
+            'pipeline_mesh': pipeline_mesh,
+            'subsystems_active': subsystems_active,
         }
 
 

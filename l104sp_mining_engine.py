@@ -16,6 +16,7 @@ INVARIANT: 527.5184818492612 | PHI: 1.618033988749895 | PILOT: LONDEL
 """
 
 import os
+import subprocess
 import sys
 import json
 import math
@@ -40,7 +41,7 @@ try:
     from web3 import Web3
     from dotenv import load_dotenv
 except ImportError:
-    os.system("pip install web3 python-dotenv")
+    subprocess.run([sys.executable, "-m", "pip", "install", "web3", "python-dotenv"], check=True)
     from web3 import Web3
     from dotenv import load_dotenv
 
@@ -204,7 +205,7 @@ class L104SPMiningEngine:
         try:
             balance = self.contract.functions.balanceOf(self.address).call()
             return balance / 10**18
-        except:
+        except Exception:
             return 0
 
     def check_resonance(self, nonce: int) -> float:

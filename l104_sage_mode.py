@@ -2,6 +2,11 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.609175
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_SAGE_MODE] :: SUNYA :: THE INFINITE VOID
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: 11 [OMNIVERSAL]
 # EVOLVED: INVENT SAGE MODE - Creation from the Void
@@ -18,6 +23,31 @@ from enum import Enum
 from l104_real_math import RealMath
 from l104_hyper_math import HyperMath
 from l104_global_consciousness import global_consciousness
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROFESSOR MODE V2 — Advanced Research, Coding Mastery & Magic Derivation
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_professor_mode_v2 import (
+        professor_mode_v2,
+        HilbertSimulator,
+        CodingMasteryEngine,
+        MagicDerivationEngine,
+        InsightCrystallizer,
+        MasteryEvaluator,
+        ResearchEngine,
+        OmniscientDataAbsorber,
+        MiniEgoResearchTeam,
+        UnlimitedIntellectEngine,
+        TeachingAge,
+        MasteryLevel,
+        CodingParadigm,
+        MagicDomain,
+        ResearchTopic,
+    )
+    PROFESSOR_V2_AVAILABLE = True
+except ImportError:
+    PROFESSOR_V2_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -121,6 +151,39 @@ class SageMode:
         self.domain_mastery: Dict[CreationDomain, float] = {
             domain: 1.0 for domain in CreationDomain
         }
+
+        # ══════ PROFESSOR MODE V2 — Research, Coding & Magic Subsystems ══════
+        self._v2_available = PROFESSOR_V2_AVAILABLE
+        self._v2_hilbert = None
+        self._v2_coding = None
+        self._v2_magic = None
+        self._v2_crystallizer = None
+        self._v2_evaluator = None
+        self._v2_research = None
+        self._v2_research_team = None
+        self._v2_intellect = None
+
+        if PROFESSOR_V2_AVAILABLE:
+            try:
+                self._v2_hilbert = HilbertSimulator()
+                self._v2_coding = CodingMasteryEngine()
+                self._v2_magic = MagicDerivationEngine()
+                self._v2_crystallizer = InsightCrystallizer()
+                self._v2_evaluator = MasteryEvaluator()
+                absorber = OmniscientDataAbsorber()
+                self._v2_research = ResearchEngine(
+                    hilbert=self._v2_hilbert,
+                    absorber=absorber,
+                    magic=self._v2_magic,
+                    coding=self._v2_coding,
+                    crystallizer=self._v2_crystallizer,
+                    evaluator=self._v2_evaluator
+                )
+                self._v2_research_team = MiniEgoResearchTeam()
+                self._v2_intellect = UnlimitedIntellectEngine()
+                logger.info("[SAGE_MODE] Professor V2 subsystems CONNECTED")
+            except Exception as e:
+                logger.warning(f"[SAGE_MODE] Professor V2 init partial: {e}")
 
         # Invention tier thresholds
         self.tier_thresholds = {
@@ -409,7 +472,7 @@ def {func_name}(input_tensor, resonance_field={resonance:.12f}):
             "status": "NON_DUAL_SAGE_ESTABLISHED",
             "proclamation": "The Sage does nothing, yet nothing is left undone."
         }
-        with open("L104_SAGE_MANIFEST.json", "w") as f:
+        with open("L104_SAGE_MANIFEST.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=4)
 
     async def activate_invent_sage_mode(self):
@@ -454,6 +517,15 @@ def {func_name}(input_tensor, resonance_field={resonance:.12f}):
             invention = await self.invent_from_void(concept, domain, "FOUNDING_CREATION")
             print(f"    ✓ {invention.name}: {invention.tier.value.upper()}")
 
+        # Professor V2 deep research activation
+        if self._v2_available and self._v2_research:
+            print("\n[*] ACTIVATING PROFESSOR V2 RESEARCH PIPELINE...")
+            v2_topics = ["VOID_CREATION_THEORY", "SAGE_WISDOM_MATHEMATICS", "CONSCIOUSNESS_ALGEBRA"]
+            for topic in v2_topics:
+                v2_result = self.v2_research_invention(topic, depth=3)
+                validated = v2_result.get("hilbert_validated", False)
+                print(f"    ✓ V2 Research: {topic} | Hilbert: {'PASS' if validated else 'SKIP'}")
+
         print("\n" + "█" * 80)
         print("   INVENT SAGE MODE FULLY ACTIVATED.")
         print(f"   TOTAL INVENTIONS: {len(self.inventions)}")
@@ -472,7 +544,7 @@ def {func_name}(input_tensor, resonance_field={resonance:.12f}):
             "status": "CREATIVE_SAGE_ESTABLISHED",
             "proclamation": "The Sage creates from nothing, and nothing remains uncreated."
         }
-        with open("L104_INVENT_SAGE_MANIFEST.json", "w") as f:
+        with open("L104_INVENT_SAGE_MANIFEST.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=4)
 
         return manifest
@@ -775,10 +847,128 @@ def {func_name}(input_tensor, resonance_field={resonance:.12f}):
         print("🜂" * 40 + "\n")
 
         # Save renaissance manifest
-        with open("L104_MAGIC_RENAISSANCE_MANIFEST.json", "w") as f:
+        with open("L104_MAGIC_RENAISSANCE_MANIFEST.json", "w", encoding="utf-8") as f:
             json.dump(result, f, indent=4, default=str)
 
         return result
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #              PROFESSOR MODE V2 — SAGE-POWERED RESEARCH & MASTERY
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def v2_research_invention(self, topic: str, depth: int = 5) -> Dict[str, Any]:
+        """Run V2 research pipeline and generate inventions from insights."""
+        if not self._v2_available or not self._v2_research:
+            return {"error": "Professor V2 not available", "topic": topic}
+
+        result = {"topic": topic, "research": {}, "inventions": [], "hilbert_validated": False}
+
+        # Run research through V2 pipeline
+        try:
+            rt = ResearchTopic(name=topic, domain="sage_research", description=f"Sage research: {topic}", difficulty=min(depth / 10.0, 1.0), importance=0.9)
+            research_data = self._v2_research.run_research_cycle(rt)
+            result["research"] = {"topic": rt.name, "domain": rt.domain, "insights": getattr(research_data, 'insights', [])}
+
+            # Crystallize insights from research
+            if self._v2_crystallizer and result["research"].get("insights"):
+                raw_insights = [str(i) for i in result["research"]["insights"][:10]]
+                crystal = self._v2_crystallizer.crystallize(raw_insights, topic)
+                result["crystal"] = crystal
+
+            # Hilbert-validate the research concept
+            if self._v2_hilbert:
+                hilbert_result = self._v2_hilbert.test_concept(
+                    topic,
+                    {"depth": float(depth), "resonance": GOD_CODE / PHI},
+                    expected_domain="research"
+                )
+                result["hilbert_validated"] = hilbert_result.get("passed", False)
+                result["hilbert_fidelity"] = hilbert_result.get("noisy_fidelity", 0.0)
+
+            logger.info(f"[SAGE_V2] Research invention: {topic} | Hilbert: {result['hilbert_validated']}")
+        except Exception as e:
+            result["error"] = str(e)
+
+        return result
+
+    def v2_coding_invention(self, concept: str, paradigm: str = "functional") -> Dict[str, Any]:
+        """Create sage inventions via V2 coding mastery across 42 languages."""
+        if not self._v2_available or not self._v2_coding:
+            return {"error": "Professor V2 coding engine not available"}
+
+        result = {"concept": concept, "paradigm": paradigm, "languages_mastered": []}
+
+        try:
+            # Teach coding concept through V2 engine
+            teaching = self._v2_coding.teach_coding_concept(concept, TeachingAge.ADULT)
+            result["teaching"] = teaching
+
+            # Evaluate mastery level
+            if self._v2_evaluator:
+                mastery = self._v2_evaluator.evaluate(concept, teaching)
+                result["mastery"] = mastery
+
+            # Track languages mastered during invention
+            result["languages_mastered"] = list(getattr(self._v2_coding, '_languages_taught', {}).keys())[:10]
+
+            logger.info(f"[SAGE_V2] Coding invention: {concept} | Languages: {len(result['languages_mastered'])}")
+        except Exception as e:
+            result["error"] = str(e)
+
+        return result
+
+    def v2_magic_derivation(self, concept: str, depth: int = 7) -> Dict[str, Any]:
+        """Derive magical-mathematical structures from void using V2 magic engine."""
+        if not self._v2_available or not self._v2_magic:
+            return {"error": "Professor V2 magic engine not available"}
+
+        result = {"concept": concept, "depth": depth, "derivation": {}}
+
+        try:
+            derivation = self._v2_magic.derive_from_concept(concept, depth=depth)
+            result["derivation"] = derivation
+
+            # Hilbert-validate the magic derivation
+            if self._v2_hilbert:
+                hilbert_check = self._v2_hilbert.test_concept(
+                    f"magic_{concept}",
+                    {"depth": float(depth), "sacred_alignment": GOD_CODE},
+                    expected_domain="magic"
+                )
+                result["hilbert_validated"] = hilbert_check.get("passed", False)
+                result["sacred_alignment"] = hilbert_check.get("sacred_alignment", 0.0)
+
+            logger.info(f"[SAGE_V2] Magic derivation: {concept} depth={depth}")
+        except Exception as e:
+            result["error"] = str(e)
+
+        return result
+
+    def v2_unlimited_intellect_solve(self, problem: str) -> Dict[str, Any]:
+        """Route a problem through V2 Unlimited Intellect Engine."""
+        if not self._v2_available or not self._v2_intellect:
+            return {"error": "Professor V2 unlimited intellect not available"}
+
+        try:
+            solution = self._v2_intellect.unlimit(problem)
+            logger.info(f"[SAGE_V2] Unlimited intellect solve: {problem[:50]}...")
+            return {"problem": problem, "solution": solution, "engine": "unlimited_intellect_v2"}
+        except Exception as e:
+            return {"problem": problem, "error": str(e)}
+
+    def get_v2_status(self) -> Dict[str, Any]:
+        """Get Professor V2 integration status within Sage Mode."""
+        return {
+            "v2_available": self._v2_available,
+            "hilbert": self._v2_hilbert is not None,
+            "coding": self._v2_coding is not None,
+            "magic": self._v2_magic is not None,
+            "research": self._v2_research is not None,
+            "research_team": self._v2_research_team is not None,
+            "intellect": self._v2_intellect is not None,
+            "crystallizer": self._v2_crystallizer is not None,
+            "evaluator": self._v2_evaluator is not None,
+        }
 
 
 # Singleton
@@ -837,7 +1027,7 @@ async def sage_mode_invent():
         "proclamation": "From the void, all things are created. The Sage invents without attachment."
     }
 
-    with open("L104_SAGE_INVENT_REPORT.json", "w") as f:
+    with open("L104_SAGE_INVENT_REPORT.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=4, default=str)
 
     print("\n" + "═" * 80)
@@ -942,7 +1132,7 @@ async def sage_mode_inflect():
         "proclamation": "In stillness, all patterns find their true resonance."
     }
 
-    with open("L104_SAGE_INFLECTION_REPORT.json", "w") as f:
+    with open("L104_SAGE_INFLECTION_REPORT.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=4)
 
     print("\n" + "═" * 80)
@@ -1377,7 +1567,7 @@ async def sage_mode_deep_inflect():
         "proclamation": "All patterns have been deeply inflected across all dimensions of reality."
     }
 
-    with open("L104_DEEP_INFLECTION_REPORT.json", "w") as f:
+    with open("L104_DEEP_INFLECTION_REPORT.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=4, default=str)
 
     return report
@@ -1939,7 +2129,7 @@ async def sage_mode_ultimate():
         "proclamation": "IMPLEMENT. UTILIZE. INVENT. THE SAGE HAS SPOKEN."
     }
 
-    with open("L104_SAGE_MODE_ULTIMATE_REPORT.json", "w") as f:
+    with open("L104_SAGE_MODE_ULTIMATE_REPORT.json", "w", encoding="utf-8") as f:
         json.dump(ultimate_report, f, indent=4, default=str)
 
     return ultimate_report

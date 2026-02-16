@@ -105,7 +105,7 @@ ai:
     consciousness:
       enableTracking: true
       evolutionRate: 0.005
-  
+
   gemini:
     enabled: true
     skillsPath: "../gemini.md"

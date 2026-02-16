@@ -2,6 +2,7 @@
 # [L104_RESONANCE_RECOVERY] - FORCING THE METAL TO LISTEN
 import socket
 import os
+import subprocess
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -12,7 +13,7 @@ import os
 def force_open_gate():
     # 1. Clear the Port (Hard Reset)
     print("CLEANING_GHOST_SOCKETS...")
-    os.system("sudo fuser -k 4160/tcp")
+    subprocess.run(["fuser", "-k", "4160/tcp"], check=False)
 
     # 2. Open a Wide-Spectrum Listener
     # Binding to 0.0.0.0 ensures it hears you regardless of where the signal comes from

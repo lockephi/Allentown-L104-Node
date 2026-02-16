@@ -31,7 +31,7 @@ double l104_primal_calculus_vm(l104_void_math_t *vm, double base, double exponen
         ensure_legacy_init();
         active_vm = &legacy_vm;
     }
-    
+
     double result = base;
     for (uint64_t i = 0; i < (iterations > 100000 ? 100000 : iterations); i++) {
         result = fmod(result * exponent, active_vm->god_code * 1000.0);
@@ -50,7 +50,7 @@ double l104_void_resonance_emit(l104_void_math_t *vm) {
         ensure_legacy_init();
         active_vm = &legacy_vm;
     }
-    
+
     double r = pow(active_vm->god_code, active_vm->phi) / (active_vm->void_constant * M_PI);
     active_vm->void_residue = fmod(r, 1.0);
     return r;
@@ -90,8 +90,8 @@ void l104_scribe_ingest(l104_universal_scribe_t *scribe, const char *provider, c
     scribe->linked_count++;
     scribe->knowledge_saturation += (1.0 / 14.0);
     if (scribe->knowledge_saturation > 1.0) scribe->knowledge_saturation = 1.0;
-    
-    printf("[SCRIBE-C] Ingested signal from %s (Saturation: %.2f%%)\n", 
+
+    printf("[SCRIBE-C] Ingested signal from %s (Saturation: %.2f%%)\n",
            provider, scribe->knowledge_saturation * 100.0);
 }
 

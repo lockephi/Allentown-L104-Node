@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.172720
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
@@ -46,7 +50,7 @@ class AdvancedReasoningGenerator:
         """Extract proofs and derivations from LaTeX source."""
         print(f"📄 Extracting from {file_path}...")
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
             sections = re.findall(r'\\section\{(.*?)\}(.*?)(?=\\section|\%|\n\n\n|\\end\{document\})', content, re.DOTALL)
@@ -151,7 +155,7 @@ class AdvancedReasoningGenerator:
 
     def save(self, output_path: str):
         """Save examples to JSONL."""
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             for ex in self.examples:
                 f.write(json.dumps(ex) + '\n')
         print(f"✅ Saved {len(self.examples)} examples to {output_path}")

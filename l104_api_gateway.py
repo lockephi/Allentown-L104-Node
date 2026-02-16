@@ -1,14 +1,14 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.452561
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_API_GATEWAY] - UNIFIED API MANAGEMENT SYSTEM
+# [L104_API_GATEWAY] - UNIFIED API MANAGEMENT SYSTEM v2.0
+# EVO_54: TRANSCENDENT COGNITION — Pipeline-Integrated Routing
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ACTIVE
 
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 API GATEWAY
+L104 API GATEWAY v2.0 — EVO_54 Pipeline-Integrated
 ================
 
 Unified API gateway with:
@@ -21,10 +21,13 @@ Unified API gateway with:
 - Request logging and analytics
 - WebSocket support
 - L104 resonance-enhanced routing
+- Pipeline health routing (AGI/ASI/Cognitive/Adaptive/Innovation)
+- Cross-subsystem status aggregation
 """
 
 import asyncio
 import hashlib
+import secrets
 import json
 import time
 import threading
@@ -45,6 +48,10 @@ import re
 # Sacred Constants
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+TAU = 1.0 / PHI
+GATEWAY_VERSION = "2.0.0"
+GATEWAY_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
 
 
 class RequestMethod(Enum):
@@ -453,7 +460,7 @@ class APIKeyManager:
                    scopes: List[str] = None, expires_in: float = None) -> str:
         """Create new API key"""
         # Generate key with L104 signature
-        random_part = hashlib.sha256(str(time.time() + random.random()).encode()).hexdigest()[:24]
+        random_part = secrets.token_hex(12)
         api_key = f"l104_{random_part}"
 
         key_hash = self._hash_key(api_key)
@@ -946,16 +953,31 @@ class L104APIGateway:
             raise
 
     def get_status(self) -> Dict[str, Any]:
-        """Get gateway status"""
-        return {
+        """Get gateway status with pipeline integration."""
+        base = {
+            "version": GATEWAY_VERSION,
+            "pipeline_evo": GATEWAY_PIPELINE_EVO,
             "total_requests": self.total_requests,
             "total_errors": self.total_errors,
             "error_rate": self.total_errors / self.total_requests if self.total_requests > 0 else 0,
             "routes": len(self.routes),
             "cache_stats": self.cache.get_stats(),
             "resonance": self.resonance,
+            "grover_amplification": GROVER_AMPLIFICATION,
             "god_code": GOD_CODE
         }
+        # Pipeline subsystem health
+        pipeline = {}
+        for mod_name in ["l104_agi_core", "l104_asi_core", "l104_evolution_engine",
+                         "l104_adaptive_learning", "l104_cognitive_core",
+                         "l104_autonomous_innovation"]:
+            try:
+                __import__(mod_name)
+                pipeline[mod_name] = "reachable"
+            except Exception:
+                pipeline[mod_name] = "unreachable"
+        base["pipeline_health"] = pipeline
+        return base
 
     def get_analytics(self, time_range: float = 3600) -> Dict[str, Any]:
         """Get gateway analytics"""
@@ -1000,7 +1022,7 @@ async def echo_handler(request: APIRequest, params: Dict) -> APIResponse:
 # Main execution
 if __name__ == "__main__":
     print("=" * 70)
-    print("  L104 API GATEWAY - DEMONSTRATION")
+    print(f"  L104 API GATEWAY v{GATEWAY_VERSION} — {GATEWAY_PIPELINE_EVO}")
     print("=" * 70)
 
     gateway = get_api_gateway()

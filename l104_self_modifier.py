@@ -5,6 +5,7 @@ UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.701962
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -95,7 +96,7 @@ class CodeAnalyzer(ast.NodeVisitor):
                 imports=self.imports,
                 global_vars=self.global_vars,
                 total_lines=len(self.source.splitlines()),
-                hash=hashlib.md5(self.source.encode()).hexdigest()
+                hash=hashlib.sha256(self.source.encode()).hexdigest()
             )
         except SyntaxError as e:
             logger.error(f"Syntax error in code: {e}")
@@ -114,7 +115,7 @@ class CodeAnalyzer(ast.NodeVisitor):
         # Get source
         try:
             source = ast.unparse(node)
-        except:
+        except Exception:
             source = ""
 
         self.functions.append(FunctionInfo(
@@ -421,7 +422,7 @@ class SelfModifier:
 
         with open(path) as f:
             content = f.read()
-        with open(backup_file, "w") as f:
+        with open(backup_file, "w", encoding="utf-8") as f:
             f.write(content)
 
         return str(backup_file)
@@ -430,7 +431,7 @@ class SelfModifier:
         """Restore file from backup"""
         with open(backup_path) as f:
             content = f.read()
-        with open(self.workspace / filepath, "w") as f:
+        with open(self.workspace / filepath, "w", encoding="utf-8") as f:
             f.write(content)
 
     def _test_module(self, filepath: str) -> Tuple[bool, Optional[str]]:
@@ -491,7 +492,7 @@ class SelfModifier:
         # Read original
         with open(path) as f:
             original = f.read()
-        original_hash = hashlib.md5(original.encode()).hexdigest()
+        original_hash = hashlib.sha256(original.encode()).hexdigest()
 
         # Backup
         backup = self._backup_file(filepath)
@@ -510,10 +511,10 @@ class SelfModifier:
                 error="No mutations applied"
             )
 
-        new_hash = hashlib.md5(mutated.encode()).hexdigest()
+        new_hash = hashlib.sha256(mutated.encode()).hexdigest()
 
         # Write mutated code
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write(mutated)
 
         # Test

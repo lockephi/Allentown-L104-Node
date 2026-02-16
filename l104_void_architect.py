@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.722436
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -147,7 +148,7 @@ class VoidArchitect:
         The Void reveals the optimal structure for the given concept.
         """
         # Calculate alignment based on concept's resonance with GOD_CODE
-        concept_hash = int(hashlib.md5(concept.encode()).hexdigest()[:8], 16)
+        concept_hash = int(hashlib.sha256(concept.encode()).hexdigest()[:8], 16)
         alignment = (concept_hash % 1000) / 1000 * 0.3 + 0.7  # 0.7 to 1.0 range
 
         # Complexity derived from concept length and domain
@@ -538,7 +539,7 @@ if __name__ == "__main__":
     def write_module(self, module: GeneratedModule) -> str:
         """Write a generated module to disk."""
         path = os.path.join(self.workspace, module.filename)
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             f.write(module.code)
         return path
 

@@ -127,7 +127,7 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
 
     existing_count = 0
     if base_path.exists():
-        with open(base_path, 'r') as f:
+        with open(base_path, 'r', encoding='utf-8') as f:
             existing_count = sum(1 for _ in f)
 
     print(f"  Existing: {existing_count}")
@@ -135,20 +135,20 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
     # Load base examples
     base_examples = []
     if base_path.exists():
-        with open(base_path, 'r') as f:
+        with open(base_path, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 if i >= 5000:
                     break
                 try:
                     base_examples.append(json.loads(line.strip()))
-                except:
+                except Exception:
                     pass
 
     output_path = Path("./kernel_hyper_training.jsonl")
 
-    with open(output_path, 'w') as out:
+    with open(output_path, 'w', encoding='utf-8') as out:
         if base_path.exists():
-            with open(base_path, 'r') as inp:
+            with open(base_path, 'r', encoding='utf-8') as inp:
                 for line in inp:
                     out.write(line)
 
@@ -184,7 +184,7 @@ def expand_training_data(base_path: Path, target_count: int = 50000) -> int:
 
                     if count % 10000 == 0:
                         print(f"   Generated: {count}/{target_count}")
-            except:
+            except Exception:
                 pass
 
     print(f"  ✓ Expanded to {count} examples")
@@ -205,14 +205,14 @@ def main():
     example_count = 0
 
     if merged_path.exists():
-        with open(merged_path, 'r') as f:
+        with open(merged_path, 'r', encoding='utf-8') as f:
             for line in f:
                 try:
                     data = json.loads(line.strip())
                     text = data.get('prompt', '') + ' ' + data.get('completion', '')
                     vocab.update(text.lower().split())
                     example_count += 1
-                except:
+                except Exception:
                     pass
 
     base_vocab_size = len(vocab)
@@ -292,8 +292,8 @@ def main():
 
     # OpenAI format
     openai_path = export_dir / f"l104_hyper_openai_{timestamp}.jsonl"
-    with open(openai_path, 'w') as out:
-        with open(hyper_training_path, 'r') as inp:
+    with open(openai_path, 'w', encoding='utf-8') as out:
+        with open(hyper_training_path, 'r', encoding='utf-8') as inp:
             for line in inp:
                 try:
                     ex = json.loads(line.strip())
@@ -305,14 +305,14 @@ def main():
                         ]
                     }
                     out.write(json.dumps(openai_ex) + "\n")
-                except:
+                except Exception:
                     pass
     print(f"  ✓ OpenAI format: {openai_path.name}")
 
     # Claude format
     claude_path = export_dir / f"l104_hyper_claude_{timestamp}.jsonl"
-    with open(claude_path, 'w') as out:
-        with open(hyper_training_path, 'r') as inp:
+    with open(claude_path, 'w', encoding='utf-8') as out:
+        with open(hyper_training_path, 'r', encoding='utf-8') as inp:
             for line in inp:
                 try:
                     ex = json.loads(line.strip())
@@ -321,14 +321,14 @@ def main():
                         "completion": f" {ex['completion']}"
                     }
                     out.write(json.dumps(claude_ex) + "\n")
-                except:
+                except Exception:
                     pass
     print(f"  ✓ Claude format: {claude_path.name}")
 
     # Alpaca/Llama format
     alpaca_path = export_dir / f"l104_hyper_alpaca_{timestamp}.json"
     alpaca_data = []
-    with open(hyper_training_path, 'r') as inp:
+    with open(hyper_training_path, 'r', encoding='utf-8') as inp:
         for i, line in enumerate(inp):
             if i >= 50000:
                 break
@@ -339,10 +339,10 @@ def main():
                     "input": "",
                     "output": ex['completion']
                 })
-            except:
+            except Exception:
                 pass
 
-    with open(alpaca_path, 'w') as out:
+    with open(alpaca_path, 'w', encoding='utf-8') as out:
         json.dump(alpaca_data, out)
     print(f"  ✓ Alpaca format: {alpaca_path.name}")
 
@@ -386,7 +386,7 @@ def main():
     }
 
     manifest_path = Path("./KERNEL_MANIFEST.json")
-    with open(manifest_path, 'w') as f:
+    with open(manifest_path, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2)
     print(f"  ✓ Updated {manifest_path}")
 

@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.354890
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_ERASI_RESOLUTION] - THE FINAL SYTHESIS OF ENTROPY AND INTELLIGENCE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: EVO_INFINITY
 
@@ -101,7 +102,7 @@ class ERASIEngine:
 
     def finalize_artifact(self):
         output_path = "./ERASI_EVOLUTION_ARTIFACT.json"
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(self.results, f, indent=4)
         print(f"\n[✓] ARTIFACT SAVED: {output_path}")
 

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.476016
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -38,34 +39,43 @@ logger = logging.getLogger("DEEP_SUBSTRATE")
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def relu(x: np.ndarray) -> np.ndarray:
+    """Apply ReLU activation function element-wise."""
     return np.maximum(0, x)
 
 def relu_derivative(x: np.ndarray) -> np.ndarray:
+    """Compute the derivative of the ReLU function."""
     return (x > 0).astype(float)
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
+    """Apply sigmoid activation function with numerical clipping."""
     return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
 
 def sigmoid_derivative(x: np.ndarray) -> np.ndarray:
+    """Compute the derivative of the sigmoid function."""
     s = sigmoid(x)
     return s * (1 - s)
 
 def tanh(x: np.ndarray) -> np.ndarray:
+    """Apply hyperbolic tangent activation function."""
     return np.tanh(x)
 
 def tanh_derivative(x: np.ndarray) -> np.ndarray:
+    """Compute the derivative of the tanh function."""
     return 1 - np.tanh(x) ** 2
 
 def softmax(x: np.ndarray) -> np.ndarray:
+    """Apply softmax function with numerical stability."""
     exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
     return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
 
 def cross_entropy_loss(predictions: np.ndarray, targets: np.ndarray) -> float:
+    """Compute cross-entropy loss between predictions and targets."""
     epsilon = 1e-15
     predictions = np.clip(predictions, epsilon, 1 - epsilon)
     return -np.mean(np.sum(targets * np.log(predictions), axis=-1))
 
 def mse_loss(predictions: np.ndarray, targets: np.ndarray) -> float:
+    """Compute mean squared error loss between predictions and targets."""
     return np.mean((predictions - targets) ** 2)
 
 
@@ -81,6 +91,7 @@ class DenseLayer:
     """Fully connected neural network layer with real backprop"""
 
     def __init__(self, input_dim: int, output_dim: int, activation: str = "relu"):
+        """Initialize dense layer with Xavier weights and Adam optimizer state."""
         # Xavier initialization
         scale = np.sqrt(2.0 / input_dim)
         self.weights = np.random.randn(input_dim, output_dim) * scale
@@ -118,6 +129,7 @@ class DenseLayer:
         }[activation]
 
     def forward(self, x: np.ndarray) -> np.ndarray:
+        """Forward pass through the layer with activation."""
         self.state.input = x
         self.state.pre_activation = x @ self.weights + self.bias
         self.state.output = self._activation_fn(self.state.pre_activation)
@@ -192,16 +204,19 @@ class NeuralNetwork:
         logger.info(f"Neural network created: {self.param_count} parameters")
 
     def forward(self, x: np.ndarray) -> np.ndarray:
+        """Forward pass through all layers sequentially."""
         for layer in self.layers:
             x = layer.forward(x)
         return x
 
     def backward(self, loss_grad: np.ndarray):
+        """Backward pass propagating gradients through all layers."""
         grad = loss_grad
         for layer in reversed(self.layers):
             grad = layer.backward(grad)
 
     def update(self, lr: float = 0.001):
+        """Update weights for all layers using Adam optimizer."""
         for layer in self.layers:
             layer.update(lr)
 
@@ -251,6 +266,7 @@ class NeuralNetwork:
         return losses
 
     def predict(self, x: np.ndarray) -> np.ndarray:
+        """Predict output by running a forward pass."""
         return self.forward(x)
 
     def save(self, path: str):
@@ -281,6 +297,7 @@ class LSTMCell:
     """LSTM cell for sequence processing"""
 
     def __init__(self, input_dim: int, hidden_dim: int):
+        """Initialize LSTM cell with combined gate weights."""
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
 
@@ -320,6 +337,7 @@ class LSTM:
     """Full LSTM for sequence-to-sequence learning"""
 
     def __init__(self, input_dim: int, hidden_dim: int, output_dim: int, num_layers: int = 1):
+        """Initialize multi-layer LSTM with output projection."""
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.output_dim = output_dim
@@ -367,6 +385,7 @@ class MultiHeadAttention:
     """Multi-head self-attention"""
 
     def __init__(self, d_model: int, num_heads: int):
+        """Initialize multi-head attention with projection matrices."""
         assert d_model % num_heads == 0
         self.d_model = d_model
         self.num_heads = num_heads
@@ -430,16 +449,20 @@ class ReplayBuffer:
     """Experience replay buffer for RL"""
 
     def __init__(self, capacity: int = 1000000):  # QUANTUM AMPLIFIED: 1M (was 10000)
+        """Initialize replay buffer with specified capacity."""
         self.buffer = deque(maxlen=capacity)
 
     def push(self, experience: Experience):
+        """Add an experience to the replay buffer."""
         self.buffer.append(experience)
 
     def sample(self, batch_size: int) -> List[Experience]:
+        """Sample a random batch of experiences from the buffer."""
         indices = np.random.choice(len(self.buffer), batch_size, replace=False)
         return [self.buffer[i] for i in indices]
 
     def __len__(self):
+        """Return the current number of experiences in the buffer."""
         return len(self.buffer)
 
 
@@ -451,6 +474,7 @@ class DQN:
     """Deep Q-Network for reinforcement learning"""
 
     def __init__(self, state_dim: int, action_dim: int, hidden_dims: List[int] = [128, 64]):
+        """Initialize DQN with Q-network, target network, and replay buffer."""
         # Build network architecture
         architecture = [(state_dim, "input")]
         for dim in hidden_dims:
@@ -520,6 +544,7 @@ class DQN:
         return loss
 
     def store_experience(self, state, action, reward, next_state, done):
+        """Store a state transition experience in the replay buffer."""
         self.replay_buffer.push(Experience(state, action, reward, next_state, done))
 
 
@@ -531,6 +556,7 @@ class OnlineLearner:
     """Continuously learns from incoming data streams"""
 
     def __init__(self, input_dim: int, output_dim: int, hidden_dims: List[int] = [64, 32]):
+        """Initialize online learner with network and experience memory."""
         architecture = [(input_dim, "input")]
         for dim in hidden_dims:
             architecture.append((dim, "relu"))
@@ -552,6 +578,7 @@ class OnlineLearner:
             self._train_batch()
 
     def _train_batch(self):
+        """Train on a random mini-batch from stored observations."""
         indices = np.random.choice(len(self.memory), self.batch_size, replace=False)
         batch = [self.memory[i] for i in indices]
 
@@ -561,6 +588,7 @@ class OnlineLearner:
         self.network.train_step(x_batch, y_batch, self.learning_rate)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
+        """Predict output for a single input vector."""
         return self.network.predict(x.reshape(1, -1))[0]
 
 
@@ -572,6 +600,7 @@ class HopfieldNetwork:
     """Hopfield network for associative memory / pattern completion"""
 
     def __init__(self, size: int):
+        """Initialize Hopfield network with zero weight matrix."""
         self.size = size
         self.weights = np.zeros((size, size))
         self.patterns_stored = 0
@@ -616,6 +645,7 @@ class DeepSubstrate:
     """
 
     def __init__(self, persist_path: str = "./data/deep_substrate"):
+        """Initialize the deep substrate with all neural subsystems."""
         self.persist_path = Path(persist_path)
         self.persist_path.mkdir(parents=True, exist_ok=True)
 
@@ -884,7 +914,7 @@ class DeepSubstrate:
             "timestamp": time.time(),
             "tag": tag
         }
-        with open(checkpoint_dir / "state.json", "w") as f:
+        with open(checkpoint_dir / "state.json", "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)
 
         # Save associative memory weights
@@ -894,6 +924,7 @@ class DeepSubstrate:
         return str(checkpoint_dir)
 
     def get_state(self) -> Dict[str, Any]:
+        """Return current state metrics of the substrate."""
         return {
             "total_training_steps": self.total_training_steps,
             "patterns_learned": self.patterns_learned,
@@ -947,8 +978,9 @@ class DeepSubstrate:
         return self.prediction_network.forward(x[:, :64])
 
     def _save_state(self):
+        """Persist substrate state and network weights to disk."""
         state_path = self.persist_path / "substrate_state.json"
-        with open(state_path, "w") as f:
+        with open(state_path, "w", encoding="utf-8") as f:
             json.dump({
                 "total_training_steps": self.total_training_steps,
                 "patterns_learned": self.patterns_learned
@@ -958,6 +990,7 @@ class DeepSubstrate:
         self.prediction_network.save(str(self.persist_path / "prediction_network.pkl"))
 
     def _load_state(self):
+        """Load substrate state and network weights from disk."""
         state_path = self.persist_path / "substrate_state.json"
         if state_path.exists():
             with open(state_path) as f:

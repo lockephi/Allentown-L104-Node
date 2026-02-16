@@ -6,7 +6,7 @@ import os
 
 FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'L104Native.swift')
 
-with open(FILEPATH, 'r') as f:
+with open(FILEPATH, 'r', encoding='utf-8') as f:
     content = f.read()
 
 original_len = len(content)
@@ -578,7 +578,7 @@ replace_all(old_track, new_track)
 print(f"\nPhase 7 total: {total_replacements - p7_start} replacements")
 
 # Write the modified content
-with open(FILEPATH, 'w') as f:
+with open(FILEPATH, 'w', encoding='utf-8') as f:
     f.write(content)
 
 new_len = len(content)

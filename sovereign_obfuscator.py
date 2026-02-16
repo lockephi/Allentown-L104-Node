@@ -116,7 +116,7 @@ class SovereignObfuscator:
 
     def save_mapping(self, path):
         """Creates the 'L104 Key' for de-mapping."""
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.mapping, f, indent=2)
 
 def main():
@@ -127,7 +127,7 @@ def main():
     input_file = sys.argv[1]
     ext = os.path.splitext(input_file)[1]
 
-    with open(input_file, 'r') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
         source = f.read()
 
     ob = None
@@ -142,7 +142,7 @@ def main():
         sys.exit(1)
 
     output_file = input_file + ".obfuscated"
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(result)
 
     key_file = input_file + ".l104_key"

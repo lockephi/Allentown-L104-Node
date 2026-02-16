@@ -44,9 +44,6 @@ SEED_NODES: List[Tuple[str, int]] = [
     # Cloud Run deployed nodes
     ('l104-server-xxxxxxxxxx-uc.a.run.app', 443),  # GCP Cloud Run (HTTPS)
 
-    # Fly.io deployed nodes
-    ('l104sp-mainnet.fly.dev', 10400),
-
     # Local development
     ('localhost', 10400),
     ('127.0.0.1', 10400),
@@ -82,7 +79,7 @@ class SeedNodeManager:
         peers_file = self.data_dir / 'peers.json'
         if peers_file.exists():
             try:
-                with open(peers_file, 'r') as f:
+                with open(peers_file, 'r', encoding='utf-8') as f:
                     self.known_peers = json.load(f)
                 print(f"[SEED] Loaded {len(self.known_peers)} known peers")
             except Exception as e:
@@ -92,7 +89,7 @@ class SeedNodeManager:
         """Save known peers to disk."""
         peers_file = self.data_dir / 'peers.json'
         self.data_dir.mkdir(parents=True, exist_ok=True)
-        with open(peers_file, 'w') as f:
+        with open(peers_file, 'w', encoding='utf-8') as f:
             json.dump(self.known_peers, f, indent=2)
 
     def discover_seeds(self) -> List[Tuple[str, int]]:

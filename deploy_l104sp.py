@@ -19,6 +19,7 @@ Usage:
 """
 
 import os
+import subprocess
 import sys
 import json
 import argparse
@@ -31,7 +32,7 @@ try:
     from web3 import Web3
     from dotenv import load_dotenv
 except ImportError:
-    os.system("pip install web3 python-dotenv")
+    subprocess.run([sys.executable, "-m", "pip", "install", "web3", "python-dotenv"], check=True)
     from web3 import Web3
     from dotenv import load_dotenv
 
@@ -187,7 +188,7 @@ def create_deployment_config(treasury: str, network: str = "base"):
     }
 
     config_path = Path("l104sp_deployment_config.json")
-    with open(config_path, "w") as f:
+    with open(config_path, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=2)
 
     print(f"✓ Config saved to {config_path}")

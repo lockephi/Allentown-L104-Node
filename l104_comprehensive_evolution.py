@@ -968,7 +968,7 @@ class L104VectorStore:
 
     def add(self, text: str, metadata: Optional[Dict[str, Any]] = None) -> str:
         """Add text to vector store."""
-        entry_id = hashlib.md5(text.encode()).hexdigest()[:12]
+        entry_id = hashlib.sha256(text.encode()).hexdigest()[:12]
         embedding = self._compute_embedding(text)
 
         self.entries[entry_id] = VectorEntry(

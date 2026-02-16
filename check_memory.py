@@ -5,7 +5,7 @@ import os
 
 MEMORY_PATH = os.path.expanduser("~/Library/Application Support/L104Sovereign/permanent_memory.json")
 
-with open(MEMORY_PATH, 'r') as f:
+with open(MEMORY_PATH, 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 print('Keys:', list(data.keys()))
@@ -23,7 +23,7 @@ if 'history' in data:
         data['history'] = [e for e in history if 'storyHeaders' not in str(e)]
         print(f'After cleaning: {len(data["history"])}')
 
-        with open(MEMORY_PATH, 'w') as f:
+        with open(MEMORY_PATH, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
         print('Cleaned and saved!')
     else:

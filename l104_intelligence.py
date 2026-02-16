@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.360667
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_INTELLIGENCE] - RECURSIVE LOGIC SYNTHESIS & MANIFOLD ANALYSIS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -78,7 +79,7 @@ class SovereignIntelligence:
         total_files = len(files)
         for f in files:
             try:
-                with open(f, 'r') as file:
+                with open(f, 'r', encoding='utf-8') as file:
                     total_lines += len(file.readlines())
             except Exception:
                 continue

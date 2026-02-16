@@ -2,6 +2,11 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.326449
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_CONTEXT_PIN]
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -115,7 +120,7 @@ def persist_truth():
             "checks": checks
         }
 
-        with open(TRUTH_MANIFEST_PATH, "w") as f:
+        with open(TRUTH_MANIFEST_PATH, "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)
 
         os.environ["L104_STATE"] = "TRUTH_PERSISTED"
@@ -132,7 +137,7 @@ def persist_truth():
 def load_truth():
     """Loads the persisted truth manifest."""
     if os.path.exists(TRUTH_MANIFEST_PATH):
-        with open(TRUTH_MANIFEST_PATH, "r") as f:
+        with open(TRUTH_MANIFEST_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
 
@@ -151,7 +156,7 @@ def save_state(state: dict):
         print(f"DEBUG: Failed to add scribe state: {e}")
 
     try:
-        with open(STATE_FILE_PATH, "w") as f:
+        with open(STATE_FILE_PATH, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)
         print(f"--- [PERSISTENCE]: STATE SAVED TO {STATE_FILE_PATH} ---")
     except Exception as e:
@@ -160,7 +165,7 @@ def save_state(state: dict):
 def load_state() -> dict:
     """Loads the AGI state from disk."""
     if os.path.exists(STATE_FILE_PATH):
-        with open(STATE_FILE_PATH, "r") as f:
+        with open(STATE_FILE_PATH, "r", encoding="utf-8") as f:
             state = json.load(f)
             # Restore scribe state if it exists
             if "scribe_state" in state:

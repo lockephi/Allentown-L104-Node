@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.704479
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_METRICS_DASHBOARD] - REAL-TIME SYSTEM MONITORING
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ACTIVE
 
@@ -254,7 +255,7 @@ class SystemMetricsCollector:
     def collect_cpu(self) -> Dict[str, float]:
         """Collect CPU metrics"""
         try:
-            with open('/proc/stat', 'r') as f:
+            with open('/proc/stat', 'r', encoding='utf-8') as f:
                 line = f.readline()
                 cpu_times = list(map(int, line.split()[1:8]))
 
@@ -293,7 +294,7 @@ class SystemMetricsCollector:
     def collect_memory(self) -> Dict[str, float]:
         """Collect memory metrics"""
         try:
-            with open('/proc/meminfo', 'r') as f:
+            with open('/proc/meminfo', 'r', encoding='utf-8') as f:
                 meminfo = {}
                 for line in f:
                     parts = line.split()
@@ -351,7 +352,7 @@ class SystemMetricsCollector:
     def collect_network(self) -> Dict[str, float]:
         """Collect network I/O metrics"""
         try:
-            with open('/proc/net/dev', 'r') as f:
+            with open('/proc/net/dev', 'r', encoding='utf-8') as f:
                 lines = f.readlines()[2:]  # Skip headers
 
             total_rx = 0

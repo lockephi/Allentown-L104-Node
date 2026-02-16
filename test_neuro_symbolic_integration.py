@@ -166,7 +166,7 @@ def test_latex_export():
     integrator.export_latex_document(output_file)
 
     # Verify file exists and has content
-    with open(output_file, 'r') as f:
+    with open(output_file, 'r', encoding='utf-8') as f:
         content = f.read()
 
     print(f"✓ LaTeX file created: {output_file}")

@@ -1,0 +1,72 @@
+{"timestamp": "2026-02-15T10:25:16.731451", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 1, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:25:33.439002", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 1, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:25:35.987042", "event": "AUDIT_COMPLETE", "score": 0.8495, "verdict": "HEALTHY", "duration": 2.548517942428589, "files": 1}
+{"timestamp": "2026-02-15T10:25:47.206119", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 1, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:25:47.425829", "event": "AUDIT_COMPLETE", "score": 0.8949, "verdict": "HEALTHY", "duration": 0.22056293487548828, "files": 1}
+{"timestamp": "2026-02-15T10:34:34.603649", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 1, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:34:34.828217", "event": "AUDIT_COMPLETE", "score": 0.7766, "verdict": "HEALTHY", "duration": 0.22206497192382812, "files": 1}
+{"timestamp": "2026-02-15T10:39:00.040257", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:40:31.739932", "event": "AUDIT_COMPLETE", "score": 0.5095, "verdict": "NEEDS_ATTENTION", "duration": 104.13193130493164, "files": 200}
+{"timestamp": "2026-02-15T10:46:02.326228", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T10:47:27.853799", "event": "AUDIT_COMPLETE", "score": 0.6427, "verdict": "ACCEPTABLE", "duration": 94.84912204742432, "files": 200}
+{"timestamp": "2026-02-15T11:38:39.551795", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T11:40:29.395721", "event": "AUDIT_COMPLETE", "score": 0.6466, "verdict": "ACCEPTABLE", "duration": 123.603346824646, "files": 200}
+{"timestamp": "2026-02-15T11:53:25.355141", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T11:54:50.797849", "event": "AUDIT_COMPLETE", "score": 0.6468, "verdict": "ACCEPTABLE", "duration": 93.22776579856873, "files": 200}
+{"timestamp": "2026-02-15T11:57:30.613960", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T11:59:11.106700", "event": "AUDIT_COMPLETE", "score": 0.6471, "verdict": "ACCEPTABLE", "duration": 108.91958093643188, "files": 200}
+{"timestamp": "2026-02-15T12:06:30.937341", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:08:39.012806", "event": "AUDIT_COMPLETE", "score": 0.7308, "verdict": "ACCEPTABLE", "duration": 138.63049602508545, "files": 200}
+{"timestamp": "2026-02-15T12:10:39.789228", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:12:17.507632", "event": "AUDIT_COMPLETE", "score": 0.7391, "verdict": "ACCEPTABLE", "duration": 105.18842387199402, "files": 200}
+{"timestamp": "2026-02-15T12:13:20.527033", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:15:18.613324", "event": "AUDIT_COMPLETE", "score": 0.7489, "verdict": "ACCEPTABLE", "duration": 127.55473303794861, "files": 200}
+{"timestamp": "2026-02-15T12:19:33.720549", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:21:54.393642", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:23:57.321032", "event": "AUDIT_COMPLETE", "score": 0.7486, "verdict": "ACCEPTABLE", "duration": 130.55860090255737, "files": 200}
+{"timestamp": "2026-02-15T12:41:00.240982", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:42:34.373999", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 101.56507277488708, "files": 200}
+{"timestamp": "2026-02-15T12:42:54.253462", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:44:26.979363", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 100.03691792488098, "files": 200}
+{"timestamp": "2026-02-15T12:44:42.564693", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:46:15.953154", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 100.31001377105713, "files": 200}
+{"timestamp": "2026-02-15T12:46:36.264492", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:48:02.848095", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 97.11149311065674, "files": 200}
+{"timestamp": "2026-02-15T12:49:31.928428", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:51:05.016531", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 100.21314263343811, "files": 200}
+{"timestamp": "2026-02-15T12:51:37.100899", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:53:29.487319", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 120.10786199569702, "files": 200}
+{"timestamp": "2026-02-15T12:53:47.345080", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:55:51.864249", "event": "AUDIT_COMPLETE", "score": 0.7547, "verdict": "HEALTHY", "duration": 133.75725388526917, "files": 200}
+{"timestamp": "2026-02-15T12:58:05.855022", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T12:59:57.275015", "event": "AUDIT_COMPLETE", "score": 0.7763, "verdict": "HEALTHY", "duration": 119.97370791435242, "files": 200}
+{"timestamp": "2026-02-15T13:00:38.201585", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:02:36.063805", "event": "AUDIT_COMPLETE", "score": 0.7762, "verdict": "HEALTHY", "duration": 126.91001510620117, "files": 200}
+{"timestamp": "2026-02-15T13:04:36.191791", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:06:41.056125", "event": "AUDIT_COMPLETE", "score": 0.8059, "verdict": "HEALTHY", "duration": 132.94355607032776, "files": 200}
+{"timestamp": "2026-02-15T13:12:52.321816", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:15:10.074573", "event": "AUDIT_COMPLETE", "score": 0.8059, "verdict": "HEALTHY", "duration": 147.6237587928772, "files": 200}
+{"timestamp": "2026-02-15T13:17:18.454212", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:19:55.921336", "event": "AUDIT_COMPLETE", "score": 0.8107, "verdict": "HEALTHY", "duration": 174.48769402503967, "files": 200}
+{"timestamp": "2026-02-15T13:21:24.589910", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:24:36.443108", "event": "AUDIT_COMPLETE", "score": 0.8117, "verdict": "HEALTHY", "duration": 203.2258858680725, "files": 200}
+{"timestamp": "2026-02-15T13:26:32.778090", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:26:39.043443", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:28:56.674425", "event": "AUDIT_COMPLETE", "score": 0.8117, "verdict": "HEALTHY", "duration": 151.31830406188965, "files": 200}
+{"timestamp": "2026-02-15T13:29:03.915433", "event": "AUDIT_COMPLETE", "score": 0.8117, "verdict": "HEALTHY", "duration": 152.64880418777466, "files": 200}
+{"timestamp": "2026-02-15T13:29:41.449530", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:31:29.929783", "event": "AUDIT_COMPLETE", "score": 0.8117, "verdict": "HEALTHY", "duration": 117.85759902000427, "files": 200}
+{"timestamp": "2026-02-15T13:34:16.222666", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:36:05.063321", "event": "AUDIT_COMPLETE", "score": 0.8192, "verdict": "HEALTHY", "duration": 120.5942530632019, "files": 200}
+{"timestamp": "2026-02-15T13:47:32.680820", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T13:49:16.435322", "event": "AUDIT_COMPLETE", "score": 0.8192, "verdict": "HEALTHY", "duration": 112.67549991607666, "files": 200}
+{"timestamp": "2026-02-15T14:05:49.968211", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T14:07:43.099636", "event": "AUDIT_COMPLETE", "score": 0.8192, "verdict": "HEALTHY", "duration": 125.66963005065918, "files": 200}
+{"timestamp": "2026-02-15T14:10:17.362165", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T14:12:41.883368", "event": "AUDIT_COMPLETE", "score": 0.8466, "verdict": "HEALTHY", "duration": 155.1539750099182, "files": 200}
+{"timestamp": "2026-02-15T14:48:53.685378", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T14:51:03.448040", "event": "AUDIT_COMPLETE", "score": 0.8466, "verdict": "HEALTHY", "duration": 139.4174780845642, "files": 200}
+{"timestamp": "2026-02-15T14:53:39.260053", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T14:56:20.365230", "event": "AUDIT_COMPLETE", "score": 0.8525, "verdict": "HEALTHY", "duration": 172.76932191848755, "files": 200}
+{"timestamp": "2026-02-15T15:10:50.086747", "event": "AUDIT_START", "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node", "files": 200, "auto_remediate": false}
+{"timestamp": "2026-02-15T15:13:05.149009", "event": "AUDIT_COMPLETE", "score": 0.8525, "verdict": "HEALTHY", "duration": 144.90805315971375, "files": 200}

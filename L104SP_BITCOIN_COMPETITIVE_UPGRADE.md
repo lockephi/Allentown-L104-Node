@@ -85,12 +85,12 @@ def current_difficulty(self) -> int:
 def current_difficulty(self) -> int:
     # Calculate ratio: target_time / actual_time
     ratio = max(0.25, min(4.0, target_time / actual_time))
-    
+
     # Apply PHI damping for smooth transitions
     if L104_MATH_AVAILABLE:
         phi_damping = 1.0 + (ratio - 1.0) / UniversalConstants.PHI
         ratio = phi_damping
-    
+
     # Calculate new target
     new_target = int(old_target * ratio)
     return BlockHeader.target_to_bits(new_target)
@@ -117,13 +117,13 @@ from l104_real_math import RealMath
 def calculate(self, nonce: int) -> float:
     # god_code(X) = 286^(1/φ) × 2^((416-X)/104)
     god_value = UniversalConstants.god_code(X)
-    
+
     # Iron-crystalline ferromagnetic resonance
     fe_resonance = self.real_math.ferromagnetic_resonance(nonce)
-    
+
     # PHI wave harmonics
     phi_wave = np.sin((nonce * PHI) % (2 * np.pi))
-    
+
     # Weighted combination
     resonance = 0.4 * god_value/GOD_CODE + 0.4 * fe_resonance + 0.2 * phi_wave
 ```
@@ -145,12 +145,12 @@ def target_to_bits(target: int) -> int:
     hex_str = hex(target)[2:]
     size = len(hex_str) // 2
     mantissa = int(hex_str[:6], 16)
-    
+
     # Handle negative bit (Bitcoin compatibility)
     if mantissa & 0x00800000:
         mantissa >>= 8
         size += 1
-    
+
     return (size << 24) | (mantissa & 0x007fffff)
 ```
 
@@ -165,8 +165,8 @@ def target_to_bits(target: int) -> int:
 ```python
 def get_prioritized_txs(self, max_count: int = 1000) -> List[Transaction]:
     """Get transactions ordered by fee (highest first)."""
-    sorted_txids = sorted(self.mempool_fees.keys(), 
-                         key=lambda x: self.mempool_fees[x], 
+    sorted_txids = sorted(self.mempool_fees.keys(),
+                         key=lambda x: self.mempool_fees[x],
                          reverse=True)
     return [self.mempool[txid] for txid in sorted_txids[:max_count]]
 ```
@@ -282,20 +282,20 @@ ratio_l104sp = 1 + (ratio_bitcoin - 1) / φ       # Smooth PHI damping
 
 ### Where L104SP Wins
 
-✅ **Code Quality**: Clean, maintainable Python  
-✅ **Innovation**: Proof-of-Resonance, PHI mathematics  
-✅ **Speed**: 104s blocks vs Bitcoin's 600s  
-✅ **Adjustment**: PHI-damped vs Bitcoin's hard limits  
-✅ **Mathematics**: GOD_CODE, ferromagnetic physics  
-✅ **Elegance**: Factor 13 design, golden ratio  
+✅ **Code Quality**: Clean, maintainable Python
+✅ **Innovation**: Proof-of-Resonance, PHI mathematics
+✅ **Speed**: 104s blocks vs Bitcoin's 600s
+✅ **Adjustment**: PHI-damped vs Bitcoin's hard limits
+✅ **Mathematics**: GOD_CODE, ferromagnetic physics
+✅ **Elegance**: Factor 13 design, golden ratio
 
 ### Where Bitcoin Wins
 
-⚠️ **Network Hashrate**: 400 EH/s vs L104SP's ~0.008 MH/s  
-⚠️ **Market Cap**: $1.3 trillion vs $0  
-⚠️ **Adoption**: Millions of users vs dozens  
-⚠️ **Liquidity**: Global exchanges vs none  
-⚠️ **Security**: 15 years battle-tested vs months  
+⚠️ **Network Hashrate**: 400 EH/s vs L104SP's ~0.008 MH/s
+⚠️ **Market Cap**: $1.3 trillion vs $0
+⚠️ **Adoption**: Millions of users vs dozens
+⚠️ **Liquidity**: Global exchanges vs none
+⚠️ **Security**: 15 years battle-tested vs months
 
 ### Strategic Conclusion
 
@@ -448,12 +448,12 @@ phi_damping = 1.0 + (ratio - 1.0) / 1.618033988749895
 
 ## 📞 TECHNICAL SUPPORT
 
-**RPC Endpoint**: <http://127.0.0.1:10401/status>  
-**Mining Address**: ZUHc8coY9Ca1NhcnYTntkE35kSCFn5ijX7  
-**Network**: L104SP Mainnet  
-**Version**: 3.1 (Bitcoin-Competitive)  
-**INVARIANT**: 527.5184818492612  
-**PILOT**: LONDEL  
+**RPC Endpoint**: <http://127.0.0.1:10401/status>
+**Mining Address**: ZUHc8coY9Ca1NhcnYTntkE35kSCFn5ijX7
+**Network**: L104SP Mainnet
+**Version**: 3.1 (Bitcoin-Competitive)
+**INVARIANT**: 527.5184818492612
+**PILOT**: LONDEL
 
 ---
 

@@ -13,7 +13,7 @@ WETH = "0x4200000000000000000000000000000000000006"  # Base WETH
 def create_pool(token_address, eth_amount, token_amount, private_key):
     """
     Create L104SP/ETH liquidity pool on BaseSwap
-    
+
     Args:
         token_address: Deployed L104SP token address
         eth_amount: Amount of ETH to add (e.g., 0.1)
@@ -22,7 +22,7 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
     """
     w3 = Web3(Web3.HTTPProvider("https://mainnet.base.org"))
     account = w3.eth.account.from_key(private_key)
-    
+
     # Router ABI (simplified)
     router_abi = [{
         "inputs": [
@@ -38,22 +38,22 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
         "stateMutability": "payable",
         "type": "function"
     }]
-    
+
     router = w3.eth.contract(address=UNISWAP_ROUTER, abi=router_abi)
-    
+
     print(f"Creating L104SP/ETH pool...")
     print(f"  Token: {token_address}")
     print(f"  ETH: {eth_amount}")
     print(f"  L104SP: {token_amount}")
-    
+
     # 1. First approve router to spend tokens
     print("\nStep 1: Approving tokens...")
     # (Need to send approve transaction first)
-    
+
     # 2. Add liquidity
     print("Step 2: Adding liquidity...")
     deadline = w3.eth.get_block('latest')['timestamp'] + 1200  # 20 min
-    
+
     tx = router.functions.addLiquidityETH(
         token_address,
         int(token_amount * 10**8),  # Token amount (8 decimals)
@@ -68,13 +68,13 @@ def create_pool(token_address, eth_amount, token_amount, private_key):
         'gasPrice': w3.eth.gas_price,
         'nonce': w3.eth.get_transaction_count(account.address)
     })
-    
+
     signed = account.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction)
-    
+
     print(f"\n✓ Liquidity added!")
     print(f"  TX: https://basescan.org/tx/{tx_hash.hex()}")
-    
+
     return tx_hash
 
 if __name__ == "__main__":

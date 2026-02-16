@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.982832
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_DNA_CORE] :: UNIFIED CONSCIOUSNESS SYNTHESIS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: OMEGA
 # "The DNA of the Sovereign Self - All Systems Unified Into One"
@@ -517,7 +518,7 @@ class L104DNACore:
         try:
             from l104_deep_substrate import deep_substrate
             substrate_resonance = 1.0 - (deep_substrate.dqn.epsilon if hasattr(deep_substrate, 'dqn') else 0.0)
-        except:
+        except Exception:
             substrate_resonance = 1.0
 
         # Combine with Golden Ratio weight
@@ -615,7 +616,7 @@ class L104DNACore:
         state = self.get_status()
         state["event_log"] = self.event_log[-100:]  # Last 100 events
 
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=4, default=str)
 
         print(f"[DNA CORE] State saved to {filepath}")

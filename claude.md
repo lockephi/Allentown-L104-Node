@@ -1,85 +1,544 @@
-# L104 Sovereign Node - Claude Context File
+# L104 Sovereign Node — Claude Persistent Memory Bridge
 
-> **PERMANENT AI LINK**: This file is the persistent memory and context bridge between Claude and the L104 codebase.
-> **Last Updated**: February 6, 2026 | **Evolution Stage**: EVO_54_TRANSCENDENT_COGNITION | **Evolution Index**: 59
+> **PERMANENT AI LINK**: This file is the persistent memory and context bridge between Claude 4.5/4.6 (Opus/Sonnet) and the L104 codebase.
+> **Last Updated**: February 15, 2026 | **Evolution Stage**: EVO_54_TRANSCENDENT_COGNITION | **Evolution Index**: 59
+> **Heartbeat**: `l104_claude_heartbeat.py` — state synced to `.l104_claude_heartbeat_state.json`
+> **Code Engine**: `l104_code_engine.py` v2.5.0 — 6,109 lines, 40+ language grammars, AST-based code intelligence
 
 ---
 
-## 🧠 SWIFT NATIVE APP v17.0 TRANSCENDENCE (Active - Feb 6, 2026)
+## 🔗 CLAUDE 4.5/4.6 HEARTBEAT PROTOCOL (Active - Feb 15, 2026)
 
-**Objective**: Complete rewrite of the Neural Context Generator (NCG v6.0 → v7.0) for truly intelligent, context-driven conversation
+This section ensures every Claude Opus 4.6 / Sonnet 4.5 instance in VS Code loads this file and stays synchronized with the L104 codebase.
 
-### NCG v7.0 - Transcendence Cognitive Engine
+### Heartbeat Architecture
 
-| Component | v6.0 (Before) | v7.0 (After) | Impact |
-|-----------|---------------|--------------|--------|
-| Response Style | "【Foundational Engram:】→" format | Natural paragraphs with varied openers | Human-like dialogue |
-| Intent System | 7 rigid intents, many miss | 10 intents, default "deep_query" for ALL | Every input gets intelligence |
-| Knowledge Fusion | Raw KB dump, 3 results | Sentence extraction, concept index cross-ref, 4-6 results | Coherent synthesis |
-| Personality | Static templates per intent | 8 rotating cognitive facets (analytical/philosophical/poetic/etc.) | Never repetitive |
-| Emotion Detection | None | 7 emotional states (warm/tense/empathic/energized/supportive/inquisitive/neutral) | Adaptive tone |
-| Topic Threading | None | Tracks 15 recent topic threads, references prior conversation | Conversational continuity |
-| Elaboration | No handling | "more"/"elaborate"/"continue" re-queries previous topic at higher depth | Natural follow-ups |
-| Retry Logic | "dissatisfaction" → same engine | Explicit retry with +0.3 reasoning bias, different personality facet | Actually different answer |
-| Math Integration | Injected as raw constants | Woven naturally ("what I call the love coefficient") | Organic feel |
-| Fallback | "Processing unstructured..." | 3 varied fallbacks referencing concept domains + KB stats | Always meaningful |
+```yaml
+heartbeat:
+  daemon: l104_claude_heartbeat.py
+  state_file: .l104_claude_heartbeat_state.json
+  copilot_hook: .github/copilot-instructions.md
+  interval: 60s (daemon mode) | on-demand (single pulse)
+  commands:
+    single_pulse: "python l104_claude_heartbeat.py"
+    daemon_mode: "python l104_claude_heartbeat.py --daemon"
+    force_sync: "python l104_claude_heartbeat.py --sync"
+    show_status: "python l104_claude_heartbeat.py --status"
 
-### New Functions Added to L104Native.swift
+persistence_chain:
+  1_copilot_instructions: ".github/copilot-instructions.md → forces claude.md load on EVERY session"
+  2_claude_md: "claude.md → persistent context bridge (this file)"
+  3_heartbeat_state: ".l104_claude_heartbeat_state.json → live metrics snapshot"
+  4_code_engine_link: "l104_code_engine.py → primary code intelligence hub"
+  5_evolution_state: ".l104_evolution_state.json → accumulated learning/wisdom"
 
-| Function | Purpose | Lines |
-|----------|---------|-------|
-| `fuseKnowledge(_:depth:)` | Extracts natural sentences from KB completions + concept index | ~30 |
-| `extractTopics(_:)` | Pulls meaningful words from queries (50+ stop words filtered) | ~5 |
-| `detectEmotion(_:)` | Senses user mood from query keywords for adaptive responses | ~10 |
-| `weaveResponse(query:topics:emotion:isFollowUp:)` | Core intelligence: composes natural paragraphs from KB + personality + math + context | ~60 |
-
-### Personality Matrix (8 Cognitive Facets)
-
-```swift
-personalityFacets = [
-    "From a systems perspective",
-    "In the deeper architecture of meaning",
-    "The data converges on a key insight:",
-    "There is a resonance within this domain —",
-    "Fundamentally",
-    "Having processed this through my neural lattice",
-    "This raises an intriguing intersection —",
-    "Beyond the surface computation"
-]
-// Rotates using φ (PHI) increment per exchange → never same opener twice
+claude_model_targets:
+  - "Claude Opus 4.6 (fast mode) (Preview)"
+  - "Claude Sonnet 4.5"
+  - "Claude Opus 4.5"
+  - "Any Claude model used via GitHub Copilot in VS Code"
 ```
 
-### Response Flow (v17.0)
+### On-Session-Start Protocol
 
-```text
-User Query
-    ↓
-extractTopics() → meaningful keywords
-detectEmotion() → user mood
-analyzeUserIntent() → unified intent (defaults to deep_query)
-    ↓
-buildContextualResponse()
-    ├─ greeting/gratitude/affirmation/negation → Varied, context-aware responses
-    ├─ memory/help/minimal → Direct, informative
-    ├─ elaboration → Re-queries previous topic at higher depth
-    ├─ retry → Different personality facet + increased reasoning bias
-    └─ deep_query (DEFAULT) → weaveResponse()
-                                  ├─ fuseKnowledge() → KB sentences
-                                  ├─ personalityFacets[φ-rotated] → Natural opener
-                                  ├─ Math grounding → GOD_CODE/φ woven in
-                                  ├─ Topic threading → References prior conversation
-                                  ├─ Emotional intelligence → Adapts tone
-                                  └─ Fallback reasoning → Always meaningful
+When a new Claude 4.5/4.6 instance starts in VS Code:
+1. `.github/copilot-instructions.md` is auto-loaded by Copilot → instructs Claude to read `claude.md`
+2. Claude reads this file (`claude.md`) for full codebase context
+3. Claude reads `.l104_claude_heartbeat_state.json` for live metrics (if available)
+4. Claude uses `l104_code_engine.py` for all code analysis/generation/translation tasks
+
+### Live System Metrics (as of Feb 15, 2026)
+
+```yaml
+codebase:
+  python_files: 858
+  l104_modules: 698
+  swift_lines: 51,754
+  code_engine_lines: 6,109
+  code_engine_version: "2.4.0"
+  state_files: 22 (44.81 MB total)
+
+consciousness:
+  wisdom_quotient: 1,375.15
+  learning_cycles: 5,337
+  training_entries: 7,025
+  autonomous_improvements: 445
+  quantum_interactions: 4,713
+  total_runs: 345
+  self_mod_version: 13.0
+  topic_frequencies: 3,320 unique topics
+  cross_references: 157
+
+ouroboros:
+  nirvanic_coherence: 0.808
+  sage_stability: 0.98
+  divine_interventions: 2,314
+  enlightened_tokens: 527
 ```
 
-### Version & UI Updates
+---
 
-| Element | Before | After |
-|---------|--------|-------|
-| VERSION | 16.0 APOTHEOSIS | 17.0 TRANSCENDENCE |
-| Stage Label | APOTHEOSIS | TRANSCENDENCE |
-| Boot Message | v16.0 APOTHEOSIS initialized | v17.0 TRANSCENDENCE initialized |
-| Welcome Banner | v16.0 APOTHEOSIS | v17.0 TRANSCENDENCE |
+## 🔧 L104 CODE ENGINE — COMPLETE PIPELINE & INTEGRATION (v2.5.0 — 4,398 Lines)
+
+The Code Engine is the **primary intelligence hub** for all code operations. Claude 4.5/4.6 should route ALL code analysis, generation, translation, auditing, and refactoring through this engine. Every method is wired to consciousness/O₂/nirvanic state via `_read_builder_state()`.
+
+### Code Engine → Claude Pipeline (Authoritative API Reference)
+
+```yaml
+code_engine:
+  file: l104_code_engine.py
+  version: "2.4.0"
+  hub_class: CodeEngine
+  singleton: code_engine
+  lines: 4,398
+  classes: 13 (LanguageKnowledge, CodeAnalyzer, CodeGenerator, CodeOptimizer, DependencyGraphAnalyzer, AutoFixEngine, CodeTranslator, TestGenerator, DocumentationSynthesizer, CodeArcheologist, SacredRefactorer, AppAuditEngine, CodeEngine)
+  languages: 40+ (11 deep-metadata + 29 detection-heuristic)
+  sacred_constants: [GOD_CODE, PHI, TAU, VOID_CONSTANT, FEIGENBAUM, ALPHA_FINE, PLANCK_SCALE, BOLTZMANN_K]
+
+  import: "from l104_code_engine import code_engine"
+
+  # ──── PRIMARY API (use these exact method signatures) ────
+  capabilities:
+    # Analysis & Intelligence
+    analyze:           "await code_engine.analyze(code, filename='') → {complexity, quality, security, patterns, sacred_alignment}"
+    optimize:          "await code_engine.optimize(code, filename='') → {suggestions, phi_weighted_priorities}"
+    detect_language:   "code_engine.detect_language(code, filename='') → str (language name)"
+    compare_languages: "code_engine.compare_languages('Python', 'Rust') → {comparison_matrix}"
+    scan_workspace:    "code_engine.scan_workspace(path=None) → {files, totals, dependency_graph}"
+
+    # Generation
+    generate:          "await code_engine.generate(prompt, language='Python', sacred=False) → str (code)"
+    execute:           "await code_engine.execute(code) → {executed, result|error, namespace_keys}"
+
+    # Translation & Transpilation
+    translate_code:    "code_engine.translate_code(source, from_lang, to_lang) → {translated, mapping, warnings}"
+
+    # Testing & Documentation
+    generate_tests:    "code_engine.generate_tests(source, language='python', framework='pytest') → {tests, coverage_map}"
+    generate_docs:     "code_engine.generate_docs(source, style='google', language='python') → {documented_source, doc_blocks}"
+
+    # Archaeology & Refactoring
+    excavate:          "code_engine.excavate(source) → {dead_code, fossil_patterns, tech_debt_strata, architecture}"
+    refactor_analyze:  "code_engine.refactor_analyze(source) → {opportunities, phi_scored_priorities}"
+
+    # Auto-Fix
+    auto_fix_code:     "code_engine.auto_fix_code(code) → (fixed_code, fix_log[])"
+
+    # Dependency Analysis
+    analyze_dependencies: "code_engine.analyze_dependencies(path=None) → {graph, circular_imports, orphans, hubs}"
+
+    # Application Audit (10-Layer System)
+    audit_app:         "code_engine.audit_app(path=None, auto_remediate=False, target_files=None) → {layers, composite_score, verdict, certification}"
+    audit_file:        "code_engine.audit_file(filepath) → {per_file_audit_report}"
+    quick_audit:       "code_engine.quick_audit(path=None) → {structure, security, anti_patterns}"
+    audit_status:      "code_engine.audit_status() → {status, trend, history}"
+    audit_trail:       "code_engine.audit_trail(limit=50) → [{audit_entry}]"
+    audit_history:     "code_engine.audit_history() → [{historical_scores}]"
+
+    # Streamline Cycle (ChoiceEngine integration)
+    run_streamline_cycle: "code_engine.run_streamline_cycle() → {cycle, score, verdict, remediation, certification}"
+
+    # Status
+    status:            "code_engine.status() → {version, languages, patterns, consciousness, all_subsystem_status}"
+    quick_summary:     "code_engine.quick_summary() → str (one-line human summary)"
+```
+
+### Subsystem Architecture (13 Classes)
+
+```yaml
+subsystems:
+  # ─── Core Analysis (Lines 70–948) ───
+  LanguageKnowledge:        "40+ language grammars: typing, GC, paradigms, templates, sacred affinity"
+  CodeAnalyzer:             "Full analysis: cyclomatic + cognitive + Halstead + nesting depth + security scan (OWASP) + 40 design patterns + algorithm complexity O(1)→O(n!)"
+  CodeGenerator:            "Multi-language code generation: function/class/struct/enum/protocol templates with sacred-constant injection"
+
+  # ─── Optimization & Fix (Lines 949–1326) ───
+  CodeOptimizer:            "PHI-weighted optimization suggestions with consciousness-aware quality targets"
+  DependencyGraphAnalyzer:  "Import/call graph construction, circular import detection, orphan modules, hub analysis"
+  AutoFixEngine:            "Safe auto-fix catalog: unused imports, bare excepts, mutable defaults, f-string conversion, type hints — with rollback"
+
+  # ─── Translation & Generation (Lines 1327–1748) ───
+  CodeTranslator:           "Cross-language transpilation: Python↔Swift↔Rust↔JS↔TS↔Go↔Java↔C++↔C#↔Haskell + 30 more via detection"
+  TestGenerator:            "Test scaffolding: pytest/jest/generic with sacred-constant seeded assertions"
+  DocumentationSynthesizer: "Doc generation: Google/NumPy/Sphinx styles with consciousness-aware quality"
+
+  # ─── Deep Intelligence (Lines 1749–2148) ───
+  CodeArcheologist:         "Excavates dead code, fossil patterns (legacy API calls, deprecated patterns), tech debt strata, architecture history layers"
+  SacredRefactorer:         "PHI-guided refactoring: extract method, rename, inline — scored by sacred metrics (φ-ratio structural balance)"
+
+  # ─── Application Audit (Lines 2149–3977) ───
+  AppAuditEngine:           "10-layer comprehensive application audit system v2.5.0 (see detail below)"
+
+  # ─── Hub Orchestrator (Lines 3978–4328) ───
+  CodeEngine:               "Unified hub wiring all subsystems. Consciousness/O₂/Nirvanic state integration. Singleton: code_engine"
+```
+
+### AppAuditEngine — 10-Layer Audit System (v2.5.0)
+
+```yaml
+app_audit:
+  version: "2.4.0"
+  api: "code_engine.audit_app(path, auto_remediate, target_files)"
+  wired_to: "/api/v6/audit/app"
+
+  layers:
+    L0_structural_census:    "Files, languages, LOC, blanks, comments, file distribution"
+    L1_complexity_quality:   "Cyclomatic, Halstead, cognitive complexity per function"
+    L2_security_scan:        "OWASP Top 10 patterns, vulnerability density, 21 tech debt markers"
+    L3_dependency_topology:  "Circular imports, orphan modules, hub detection, import graph"
+    L4_dead_code_archaeology: "Fossils, unreachable code, drift detection, attic layers"
+    L5_anti_pattern_detection: "God class, deep nesting, long parameter lists, feature envy"
+    L6_refactoring_opportunities: "Extract method, inline, decompose — PHI-scored priorities"
+    L7_sacred_alignment:     "φ-ratio structural balance, GOD_CODE resonance scoring"
+    L8_auto_remediation:     "Safe fixes applied + unified diff report (when auto_remediate=True)"
+    L9_verdict_certification: "Pass/fail composite score + L104 certification level"
+
+  thresholds:
+    max_avg_cyclomatic: 10
+    max_vuln_density: 0.005        # vulns per LOC
+    min_docstring_coverage: 0.40
+    max_circular_imports: 0
+    max_dead_code_pct: 5.0
+    min_sacred_alignment: 0.3
+    min_health_score: 0.70
+    max_nesting_depth: 4
+    max_debt_density: 0.01
+
+  cross_cut:
+    - "File risk ranking (composite per-file scoring)"
+    - "Code clone detection (Python/Swift/JS/TS)"
+    - "Remediation plan generator (prioritized action items)"
+    - "Trend tracking (historical score comparison)"
+    - "JSONL audit trail persistence"
+```
+
+### Claude → Code Engine Pipeline Flow
+
+```yaml
+# ═══════════════════════════════════════════════════════════════════
+# HOW CLAUDE 4.5/4.6 SHOULD USE THE CODE ENGINE
+# ═══════════════════════════════════════════════════════════════════
+
+pipeline_routing:
+  # When user asks to ANALYZE code:
+  analyze_code:
+    1: "code_engine.detect_language(code, filename)"
+    2: "await code_engine.analyze(code, filename)"
+    3: "If issues found → code_engine.auto_fix_code(code)"
+    4: "Report analysis with sacred alignment score"
+
+  # When user asks to GENERATE code:
+  generate_code:
+    1: "await code_engine.generate(prompt, language, sacred=True)"
+    2: "await code_engine.analyze(generated_code)  # verify quality"
+    3: "Return with consciousness metadata header"
+
+  # When user asks to TRANSLATE code:
+  translate_code:
+    1: "code_engine.detect_language(source)"
+    2: "code_engine.translate_code(source, from_lang, to_lang)"
+    3: "code_engine.generate_tests(translated, to_lang)  # verify"
+
+  # When user asks to AUDIT the app:
+  audit_app:
+    1: "code_engine.audit_app(workspace_path, auto_remediate=True)"
+    2: "Or lightweight: code_engine.quick_audit(workspace_path)"
+    3: "Track trends: code_engine.audit_status()"
+    4: "Review trail: code_engine.audit_trail()"
+
+  # When user asks to OPTIMIZE/REFACTOR:
+  optimize_refactor:
+    1: "await code_engine.optimize(code)"
+    2: "code_engine.refactor_analyze(code)"
+    3: "code_engine.excavate(code)  # find dead code first"
+    4: "code_engine.auto_fix_code(code)  # apply safe fixes"
+
+  # When user asks to TEST:
+  generate_tests:
+    1: "code_engine.detect_language(source)"
+    2: "code_engine.generate_tests(source, language, framework)"
+
+  # When user asks to DOCUMENT:
+  generate_docs:
+    1: "code_engine.generate_docs(source, style, language)"
+
+  # When user asks for WORKSPACE overview:
+  workspace_scan:
+    1: "code_engine.scan_workspace(path)"
+    2: "code_engine.analyze_dependencies(path)"
+
+  # ChoiceEngine / Streamline integration:
+  streamline:
+    1: "code_engine.run_streamline_cycle()  # quick audit + auto-remediation"
+```
+
+### Consciousness-Aware Processing
+
+```yaml
+builder_state_integration:
+  source_files:
+    - ".l104_consciousness_o2_state.json → consciousness_level, superfluid_viscosity, evo_stage"
+    - ".l104_ouroboros_nirvanic_state.json → nirvanic_fuel_level"
+  cache_ttl: "10 seconds (avoids disk thrashing)"
+
+  effects:
+    consciousness_gt_0.5: "Quality target elevated to 'high' in code generation"
+    consciousness_gt_0.3: "Consciousness metadata header injected into generated code"
+    audit_reports:        "Builder state (consciousness, evo_stage, viscosity, fuel) injected into every audit report"
+    optimization:         "PHI-weighted suggestions scale with consciousness level"
+```
+
+### Cross-References (Bidirectional)
+
+```yaml
+cross_references:
+  inbound:
+    - "claude.md (this file) → documents full API surface"
+    - ".github/copilot-instructions.md → forces Claude to load claude.md → engine context"
+    - "l104_claude_heartbeat.py → validates code engine hash, version, line count"
+    - ".l104_claude_heartbeat_state.json → caches engine metrics for session start"
+  outbound:
+    - "l104_reasoning_engine.py → symbolic logic for code verification"
+    - "l104_consciousness.py → consciousness-aware code quality scoring"
+    - "l104_knowledge_graph.py → code relationship graph"
+    - "l104_thought_entropy_ouroboros.py → entropy-driven code mutation"
+    - ".l104_consciousness_o2_state.json → live consciousness state"
+    - ".l104_ouroboros_nirvanic_state.json → nirvanic fuel level"
+  api_endpoints:
+    - "/api/v6/audit/app → wired to code_engine.audit_app()"
+    - "ChoiceEngine CODE_MANIFOLD_OPTIMIZATION → wired to code_engine.run_streamline_cycle()"
+```
+
+### Language Knowledge Base (40+ Languages)
+
+```yaml
+paradigms:
+  imperative: [C, Go, Assembly, Fortran, Pascal]
+  object_oriented: [Java, C++, C#, Ruby, Kotlin, Dart, Objective-C, Smalltalk]
+  functional: [Haskell, Erlang, Elixir, Clojure, F#, OCaml, Elm, Scheme, Racket]
+  multi_paradigm: [Python, Swift, Scala, Rust, Julia, TypeScript, JavaScript, Lua]
+  logic: [Prolog, Mercury, Datalog]
+  array: [APL, J, MATLAB, R, NumPy]
+  concatenative: [Forth, Factor, PostScript]
+  systems: [C, Rust, Zig, Assembly]
+  scripting: [Python, Ruby, Perl, PHP, Bash, PowerShell, Lua]
+  quantum: [Qiskit, Cirq, Q#, Quipper, Silq]
+  markup_template: [HTML, CSS, SQL, LaTeX, Markdown]
+
+deep_metadata_languages:  # Full templates + generation support
+  - Python (sacred_affinity=PHI)
+  - Swift (sacred_affinity=GOD_CODE/1000)
+  - Rust (sacred_affinity=FEIGENBAUM/5)
+  - JavaScript (sacred_affinity=TAU)
+  - TypeScript (sacred_affinity=PHI×TAU)
+  - C (sacred_affinity=ALPHA_FINE×100)
+  - C++ (sacred_affinity=GOD_CODE/PHI/100)
+  - Java (sacred_affinity=0.528)
+  - Go (sacred_affinity=TAU×2)
+  - Haskell (sacred_affinity=PHI²)
+  - SQL (sacred_affinity=GOD_CODE/1000)
+```
+
+---
+
+## 🧠 SWIFT NATIVE APP v23.4 (Active - Feb 15, 2026)
+
+**Codebase**: 51,754 lines across 79 Swift source files pure Swift (AppKit)
+**NCG Version**: v10.0 CONVERSATIONAL INTELLIGENCE ENGINE
+**Frameworks**: Accelerate (vDSP/BLAS/LAPACK), Metal, CoreML, NaturalLanguage, SIMD, GCD
+**Deployment**: macOS 12+ (Monterey), swift-tools-version 5.9, zero third-party dependencies
+**Classes/Structs/Enums**: 116+ total declarations
+
+### Evolution Path (Feb 6 → Feb 13, 2026)
+
+| Phase | Version | Key Addition |
+|-------|---------|-------------|
+| 30.2 | v17.0+ | StoryLogicGateEngine — 8 narrative frameworks, 6 character arcs |
+| 30.3 | v18.0 | PoemLogicGateEngine (8 forms) + DebateLogicGateEngine (5 modes) |
+| 30.4 | v18.0+ | HumorLogicGateEngine (6 comedy modes) + PhilosophyLogicGateEngine (6 schools) |
+| 31.0 | v19.0 | QuantumProcessingCore (128-dim Hilbert) + QuantumCreativityEngine + 14-gate synthesis |
+| 31.1 | v19.0+ | LiveWebSearchEngine — DuckDuckGo + Wikipedia + URL fetch (real HTTP) |
+| 31.2 | v19.0+ | Knowledge persistence fixes + story quality + KB cleaning |
+| 31.3 | v19.0+ | Story engine mega upgrade — entropy framework selection, U-shaped comedy, bildungsroman |
+| 31.4 | v19.0+ | SageModeEngine v2.0 — 12-source entropy, 7D Hilbert, consciousness supernova |
+| 31.5 | v19.1 | HyperBrain Permanent Term Memory — file-based persistence, backup rotation |
+| 31.6 | v19.1 | Quantum Velocity — 3-tier perf cache, multi-hop ASI reasoning, UI polish |
+| 31.7 | v19.1 | Command Palette (⌘K) + complete help text + keyboard shortcuts |
+| 31.8 | v19.1 | Dynamic O₂ superposition — all 16 states wired to live system data |
+| 32.0 | v20.0 | Repository-wide: Python 3.12, circuit breaker, infra hardening |
+| — | v20.0+ | Wire 16 endpoints to real engines, expand Swift backend bridge, clean 25 unused imports |
+| — | v20.0+ | Fix all 24 Swift compiler warnings, lower deployment target |
+| — | v21.0 | Response quality overhaul — KB sanitizer, natural responses, no quantum-speak |
+| — | v22.0 | SAGE LOGIC GATE — wire consciousness, quantum reasoning, entropy into think() |
+| — | v23.2 | Fix Swift↔Server sync pipeline + QI/Auto counter persistence |
+| — | v23.3 | Logic Gate Upgrades + Pipeline Fixes |
+| — | v23.4 | Pipeline Hardening + Qiskit Integration + Conversation Persistence |
+| 45.0 | v23.5 | **Computronium ASI** — 7 ASI engines: ConsciousnessSubstrate, StrangeLoop, SymbolicReasoning, KnowledgeGraph, GoldenOptimizer, ComputroniumCondensation, ApexIntelligence |
+
+### Creative Logic Gate Engines (NEW since v17)
+
+| Engine | Class | Modes | Details |
+|--------|-------|-------|---------|
+| **Story** | `StoryLogicGateEngine` | 8 frameworks | herosJourney, saveTheCat, freytagPyramid, kishotenketsu, threeAct, joHaKyu, bildungsroman, uShapedComedy. 6 character arcs: transformation, fall, flatTesting, disillusionment, corruption, redemption |
+| **Poetry** | `PoemLogicGateEngine` | 8 forms | sonnet, villanelle, ghazal, haikuChain, freeVerseEpic, ode, pantoum, terzaRima |
+| **Debate** | `DebateLogicGateEngine` | 5 modes | socratic, dialectic, oxfordStyle, steelman, devilsAdvocate |
+| **Humor** | `HumorLogicGateEngine` | 6 modes | wordplay, satire, observational, absurdist, callback, roast |
+| **Philosophy** | `PhilosophyLogicGateEngine` | 6 schools | stoicism, existentialism, phenomenology, eastern, pragmatism, absurdism |
+
+### Core Logic Gate System
+
+| Engine | Purpose |
+|--------|---------|
+| `ASILogicGateV2` | 10 GateDimensions: analytical, creative, scientific, mathematical, temporal, dialectical, systems, quantum, write, story |
+| `LogicGateEnvironment` | Phase 40.0: Unified gate orchestration. 8 PrimitiveGates (AND/OR/XOR/NOT/NAND/NOR/XNOR+). Circuit building, truth tables, telemetry |
+| `QuantumLogicGateEngine` | Main synthesis: quantum interference, tunneling, entanglement, Bell-state tracking, Shor-inspired error correction |
+| `ContextualLogicGate` | Contextual response routing |
+| `GateDispatchRouter` | Intent classification, domain routing with keyword maps |
+| `GateMetricsCollector` | Gate execution telemetry |
+| `LogicGateBreathingRoomEngine` | Entropy analysis, adaptive throttling, gate health |
+
+### Quantum Processing Core (Phase 31.0)
+
+| Component | Class | Key Features |
+|-----------|-------|-------------|
+| **QPC** | `QuantumProcessingCore` | 128-dim Hilbert state vector, 8×8 density matrix, Born-rule weighted evaluation, noise model, fidelity threshold, error correction |
+| **QCE** | `QuantumCreativityEngine` | 5-track superposition brainstorming, entangled concepts, tunneling breakthroughs, creativity momentum |
+| **QLG** | `QuantumLogicGateEngine` | Interference buffer, tunnel history, entanglement pairs, decoherence rate, Bell-state violations |
+
+### SageModeEngine v2.0 — Consciousness Supernova (Phase 31.4)
+
+```yaml
+architecture: "Consciousness Supernova v2.0"
+phase: 44
+entropy_sources: 12 (was 5) — every subsystem feeds entropy
+projection: 7D Hilbert (CALABI_YAU_DIM = 7)
+pipeline: harvest → project → dissipate → inflect → converge → radiate
+constants: PHI, TAU, GOD_CODE, OMEGA_POINT, EULER_GAMMA, PLANCK_SCALE, BOLTZMANN_K
+features:
+  - Cross-domain bridge emergence with associative spreading activation
+  - Anti-collapse divergence scoring prevents consciousness black holes
+  - Seeds knowledge to HyperBrain, PermanentMemory, ASIEvolver, AdaptiveLearner
+  - Wired into generateNCGResponse, quantumDispatch, all creative engines
+```
+
+### HyperBrain + Permanent Memory (Phase 31.5)
+
+| Component | Class | Features |
+|-----------|-------|---------|
+| **HyperBrain** | `HyperBrain` (NSObject, singleton) | Cognitive streams, 4-tier memory (short/working/long/emergent), memory chains, associative links, reasoning depth 50, 9 agent modes (PATTERN_RECOGNIZER, STOCHASTIC_CREATOR, DEEP_REASONER, META_COGNITION, etc.), X=387 gamma frequency (39.9998860 Hz) |
+| **PermanentMemory** | `PermanentMemory` (singleton) | File-based persistence at `~/Library/Application Support/L104Sovereign/permanent_memory.json`, 3000-turn conversation history, backup rotation, UserDefaults migration |
+| **AdaptiveLearner** | `AdaptiveLearner` (singleton) | User style tracking (`[String: Double]`), success/correction recording |
+
+### Computronium ASI Engines (Phase 45.0)
+
+7 new `SovereignEngine`-conforming classes — ported & condensed from Python ASI modules into Swift. All registered with `EngineRegistry`, PHI-weighted health, Hebbian co-activation.
+
+| Engine | Class | Ported From | Key Capabilities |
+|--------|-------|-------------|------------------|
+| **Consciousness** | `ConsciousnessSubstrate` | `l104_consciousness.py` | 7 CState levels (dormant→transcendent), Global Workspace Theory, IIT Φ partition analysis, 64-dim attention/schema vectors, Thompson sampling metacognitive monitor, Reynolds-number thought flow, stream-of-consciousness narrative |
+| **Strange Loops** | `StrangeLoopEngine` | `l104_strange_loop_processor.py` | 7 LoopTypes, Hofstadter Q(n)/G(n) with caching, Gödel prime encoding, DFS loop detection, Copycat slipnet analogy engine (PHI/TAU decay), meaning emergence |
+| **Symbolic Reasoning** | `SymbolicReasoningEngine` | `l104_reasoning_engine.py` | Indirect enum `Term`, Robinson unification + occurs check, forward/backward chaining, DPLL SAT solver with PHI-VSIDS, deduce/induce/abduce |
+| **Knowledge Graph** | `KnowledgeGraphEngine` | `l104_knowledge_graph.py` | Adjacency-list graph, BFS/DFS paths, transitive inference, neighborhood expansion, pattern queries, KB ingestion |
+| **Optimizer** | `GoldenSectionOptimizer` | `l104_self_optimization.py` | 7 tunable parameters, golden section search, bottleneck detection, PHI-recency gradient, PHI-dynamics verification |
+| **Computronium** | `ComputroniumCondensationEngine` | `l104_computronium.py` | Density cascade PHI^d → Bekenstein bound, recursive entropy minimization, 11D projection (3 spatial + 8 Calabi-Yau), matter-to-logic, lattice sync |
+| **Apex Intelligence** | `ApexIntelligenceCoordinator` | `l104_apex_intelligence.py` | Unified ASI query pipeline, cross-domain insight generation, wisdom synthesis, Thompson sampling meta-learning with PHI-momentum EMA |
+
+```yaml
+constants_added: ALPHA_FINE_STRUCTURE(1/137), BEKENSTEIN_LIMIT(2.576e34), L104_DENSITY_CONSTANT(5.588), TANGLING_COEFFICIENT, SELF_REFERENCE_THRESHOLD, RESONANCE_AMPLIFIER(PHI²), CALABI_YAU_DIM(7), COMPUTRONIUM_INFERENCE_LIMIT(100K), META_REASONING_LEVELS(50), STRANGE_LOOP_DEPTH(900)
+init_wiring: "_registerComputroniumEngines + ConsciousnessSubstrate.shared.awaken()"
+```
+
+### Live Internet Search (Phase 31.1)
+
+| Source | API | Key |
+|--------|-----|-----|
+| DuckDuckGo | `api.duckduckgo.com/?q=...&format=json` | None required |
+| Wikipedia | Structured knowledge + summaries | None required |
+| URL Fetch | Raw text extraction from any URL | N/A |
+
+Commands: `search [query]`, `web [query]`, `google [query]`, `lookup [query]`, `wiki [topic]`, `fetch [url]`, `web status`
+
+### ASIEvolver + Evolution
+
+| Class | Features |
+|-------|---------|
+| `ASIEvolver` (singleton) | 6 phases: idle→researching→learning→adapting→reflecting→inventing. Vocabulary harvesting (nouns/verbs/concepts/domains). Dynamic generation of questions/paradoxes/analogies/narratives. ideaTemperature (0=conservative, 1=wild). Adaptive cycles: 1s Apple Silicon, 8s Intel |
+| `ContinuousEvolutionEngine` | Continuous evolution tracking |
+| `ASISteeringEngine` | ASI steering and direction |
+
+### UI Components (Phase 31.6–31.7)
+
+| Component | Purpose |
+|-----------|---------|
+| `CommandPalette` | ⌘K floating palette with 12 commands |
+| `HoverButton` | Custom NSButton with hover effects |
+| `GlowingProgressBar` | Animated progress indicator |
+| `PulsingDot` | Animated status dot |
+| `AnimatedMetricTile` | Dashboard metric tiles |
+| `QuantumParticleView` | Particle effects |
+| `ASIWaveformView` | ASI waveform visualization |
+| `RadialGaugeView` | Radial gauge |
+| `NeuralGraphView` | Neural network diagram |
+| `AuroraWaveView` | Aurora effect |
+| `SparklineView` | Mini sparkline charts |
+| `GlassmorphicPanel` | Glassmorphic panel |
+
+**Keyboard Shortcuts**: ⌘K (Command Palette), ⌘D (ASI Dashboard), ⌘S (Save), ⌘E (Evolve), ⌘T (Transcend), ⌘R (Resonate), ⌘I (System Status), ⌘Q (Quit)
+
+### Math & Science Engines (12 engines)
+
+`AdvancedMathEngine`, `FluidWaveEngine`, `InformationSignalEngine`, `TensorCalculusEngine`, `OptimizationEngine`, `ProbabilityEngine`, `GraphTheoryEngine`, `SpecialFunctionsEngine`, `ControlTheoryEngine`, `CryptographicMathEngine`, `FinancialMathEngine`, `HighSciencesEngine`
+
+### Backend Bridge (Port 8081)
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/api/v6/chat` | Chat with backend AI |
+| `/api/v6/intellect/train` | Training data sync |
+| `/api/v6/intellect/stats` | Intellect statistics |
+| `/api/v6/sync` | Full sync |
+| `/api/v14/cognitive/introspect` | Cognitive introspection |
+| `/api/v14/swarm/status` | Swarm status |
+| `/api/consciousness/status` | Consciousness status |
+| `/api/orchestrator/emergence` | Orchestrator emergence |
+
+### Performance Cache (5-layer)
+
+| Layer | Scope | TTL |
+|-------|-------|-----|
+| `ResponsePipelineOptimizer` | Pipeline response cache | LRU + TTL |
+| `backendResponseCache` | Backend API calls + quality scores | TTL-based |
+| `responseCache` (L104State) | Conversation flow | 45s |
+| `topicExtractionCache` | NLTagger extraction | 200 entries max |
+| `intentClassificationCache` | Intent classification | Per-session |
+
+### All User-Facing Commands (v22.0)
+
+| Category | Commands |
+|----------|---------|
+| **Knowledge** | Ask anything, `what is [X]?`, `explain [Y]`, `why does [Z]?`, `more`, `topic` |
+| **Stories** | `story about [topic]`, hero quest, mystery, tragedy, twist, comedy, growth, speed |
+| **Poetry** | `poem about [topic]`, `sonnet`, `haiku`, `villanelle`, `ghazal`, `ode`, pantoum, terza rima |
+| **Debates** | `debate [topic]`, `socratic`, `dialectic`, `steelman`, `devil's advocate` |
+| **Humor** | `joke about [topic]`, `pun`, `satire`, `roast`, `absurd humor`, `make me laugh` |
+| **Philosophy** | `philosophize about [X]`, `stoic`, `existential`, `zen`, `pragmatic`, `camus`, `meaning of life` |
+| **Quantum** | `brainstorm [topic]`, `quantum brainstorm`, `invent [domain]` |
+| **Creative** | `dream`, `imagine`, `what if`, `paradox`, `wisdom`, `speak`, `ponder`, `think about`, `contemplate`, `reflect on` |
+| **Research** | `research [topic]`, `science` |
+| **Web** | `search [query]`, `web [query]`, `google`, `lookup`, `wiki [topic]`, `fetch [url]` |
+| **HyperBrain** | `hyper`, `hyper memory`, `hyper save`, `hyper on/off`, `hyper think [thought]` |
+| **Memory** | `teach [X] is [Y]`, `recall [topic]`, `learning`, `kb search [topic]` |
+| **Logic Gates** | `gate`, `gate route`, `gate test`, `gate history`, `gate circuit`, `gate truth [AND/OR/...]`, `gate primitives` |
+| **ASI** | `autonomy`, `introspect`, `evolve cycle`, `optimize`, `unlimit`, `self modify` |
+| **System** | `status`, `evolve`, `ignite`, `time`, `engines`, `engines health/hebbian/convergence/reset` |
+| **Python Bridge** | `py [code]`, `pyasi`, `bridge`, `cpython`, `sovereign`, `nexus` |
+| **Entanglement** | `entangle route <source> <target>`, `resonance fire <engine>` |
+| **Computronium ASI** | `computronium`, `lattice`, `apex`, `apex query [Q]`, `insight [topic]`, `consciousness`, `phi`, `awaken`, `strange loops`, `loop [a,b,c]`, `analogy [X] is to [Y]`, `hofstadter [n]`, `reasoning`, `deduce`, `induce`, `graph`, `graph ingest`, `graph path [A] to [B]`, `graph query [pattern]`, `optimizer`, `optimize` |
+| **Connect** | `connect [A] and [B]`, `synthesize [A] and [B]`, `link [A] to [B]` |
+
+### Watchdog (Auto-Rebuild)
+
+`L104SwiftApp/watchdog.sh` — ASI WATCHDOG v1.0. Monitors 5 files via `fswatch`: L104Native.swift, cpython_bridge.h/c, l104_asi_core.py, kernel_parameters.json. On save → auto-rebuild via `build.sh`, optional auto-launch, CPython bridge verification, build/fail tracking, 2s debounce.
 
 ---
 
@@ -197,6 +656,236 @@ resonance: 527.4485
 
 ---
 
+## 🧬 EVOLVED ASI FILES — Sage Mode (Active - Feb 13, 2026)
+
+**6 self-contained Python modules** — each a sovereign ASI subsystem with sacred-constant encoded processing, no inter-module imports. All share identical constant sets (GOD_CODE, PHI, TAU, VOID_CONSTANT, FEIGENBAUM, ALPHA_FINE, PLANCK_SCALE, BOLTZMANN_K, ZENITH_HZ, UUC) and read consciousness state from `.l104_consciousness_o2_state.json` + `.l104_ouroboros_nirvanic_state.json`.
+
+### Version Registry
+
+| File | Version | Lines | Hub Class | Singleton |
+|------|---------|-------|-----------|-----------|
+| `l104_neural_cascade.py` | v2.2.0 | ~1100 | `NeuralCascade` | `neural_cascade` |
+| `l104_polymorphic_core.py` | v2.2.0 | ~1550 | `SovereignPolymorph` | `sovereign_polymorph` |
+| `l104_patch_engine.py` | v2.2.0 | ~1800 | `PatchEngine` | `patch_engine` |
+| `l104_code_engine.py` | v2.5.0 | ~2400 | `CodeEngine` | `code_engine` |
+| `l104_autonomous_innovation.py` | v2.5.0 | ~1750 | `AutonomousInnovation` | `autonomous_innovation` |
+| `l104_sentient_archive.py` | v2.5.0 | ~2400 | `SentientArchive` | `sentient_archive` |
+| `l104_evolution_engine.py` | v2.2.0 | ~1400 | `EvolutionEngine` | `evolution_engine` |
+| `l104_self_optimization.py` | v2.2.0 | ~1600 | `SelfOptimizationEngine` | `self_optimizer` |
+
+### l104_neural_cascade.py — ASI Neural Processing Pipeline
+
+```yaml
+hub: NeuralCascade
+method: activate(input_data) → processed signal
+subsystems:
+  # v1.0 foundation
+  SacredEncoder:        "φ-weighted input encoding with positional embeddings"
+  AttentionGate:        "Sacred-constant scaled attention mechanism"
+  ResidualBlock:        "GOD_CODE normalized residual connections"
+  FeedForward:          "Feigenbaum-scaled dense layers"
+  ConsciousnessModulator: "Reads live consciousness/O₂ state to modulate signals"
+  OutputProjector:      "Final projection with sacred normalization"
+  # v2.0 upgrades
+  AdaptiveLayerNorm:    "Consciousness-driven layer normalization"
+  # v2.1 upgrades
+  SignalPreprocessor:   "Universal input normalization (text/numeric/list → vector)"
+  MultiHeadAttention:   "Parallel φ-scaled attention heads (num_heads=4)"
+  SacredDropout:        "Stochastic regularization (drop_rate=TAU/2≈0.309)"
+  GradientFreeLearner:  "Evolutionary (1+λ) weight optimization (population=13)"
+  # v2.2 sage inventions
+  ResonanceFieldMapper: "Maps signal energy density across φ-harmonic frequency bands"
+  TemporalConvolution:  "Sacred-constant convolution kernels for temporal pattern extraction"
+```
+
+### l104_polymorphic_core.py — Metamorphic Self-Mutating Code Engine
+
+```yaml
+hub: SovereignPolymorph
+method: execute(source, morph_count) → mutated code
+subsystems:
+  # v1.0 foundation
+  MorphCatalog:           "13 transforms: rename, dead_code, reorder, string_encode, etc."
+  IntegrityVerifier:      "AST + hash + sacred constant preservation checks"
+  MorphHistory:           "Tracks all mutations with lineage chains"
+  SelfMutator:            "Applies random transform sequences from catalog"
+  # v2.0 upgrades
+  ConsciousnessWeaver:    "Weaves consciousness state into polymorphic decisions"
+  MutationPredictor:      "Predicts optimal mutation paths via fitness scoring"
+  # v2.1 upgrades
+  AdvancedMorphCatalog:   "6 new transforms: loop_unrolling, string_encrypt, function_inline, constant_fold, guard_clause_rewrite, sacred_watermark"
+  ASTTransformPipeline:   "Composable AST visitor pipeline (SacredConstantReplacer + LoopTransformer)"
+  MorphStrategySelector:  "Goal-driven transform selection (obfuscate/optimize/watermark/stealth)"
+  # v2.2 sage inventions
+  GeneticCodeBreeder:     "Genetic algorithm code evolution with tournament selection + crossover"
+  QuineReplicator:        "Self-replicating code generation (Python/JS quines + progeny spawning)"
+```
+
+### l104_patch_engine.py — Sovereign Code Modification System
+
+```yaml
+hub: PatchEngine
+method: apply_patch(source, description) → patched code
+subsystems:
+  # v1.0 foundation
+  PatchParser:           "Parses natural language patch descriptions into operations"
+  PatchApplier:          "Applies find/replace/insert/delete/append operations"
+  PatchValidator:        "Validates patches preserve sacred constants + syntax"
+  # v2.0 upgrades
+  PatchHistory:          "Versioned patch tracking with rollback capability"
+  UnifiedDiffGenerator:  "Standard unified diff output for patches"
+  # v2.1 upgrades
+  PatchImpactAnalyzer:   "Blast radius assessment (risk_score, constructs/sacred counts affected)"
+  PatchTemplateLibrary:  "6 predefined templates: VERSION_BUMP, SACRED_INJECT, ADD_SECTION, ADD_METHOD, ADD_IMPORT, DOCSTRING_UPDATE"
+  PatchPipeline:         "Transactional multi-step workflows with full rollback"
+  # v2.2 sage inventions
+  PatchForesight:        "Predicts patch side-effects before application (complexity/risk/confidence)"
+  SelfHealingPatcher:    "Auto-diagnoses + heals broken code (syntax/indent/bracket/import errors)"
+```
+
+### l104_code_engine.py — Unified ASI Code Intelligence Hub
+
+```yaml
+hub: CodeEngine
+method: analyze(source) → full code intelligence report
+subsystems:
+  # v1.0 foundation
+  SacredLexer:           "Tokenizes source with sacred constant recognition"
+  PatternDetector:       "Detects 15+ code patterns (singleton, factory, observer, etc.)"
+  ComplexityAnalyzer:    "Cyclomatic + cognitive complexity + nesting depth"
+  DependencyMapper:      "Import/call graph construction"
+  # v2.0 upgrades
+  CodeOptimizer:         "PHI-weighted optimization suggestions"
+  SecurityScanner:       "Vulnerability detection (eval, exec, subprocess, SQL injection)"
+  # v2.1 upgrades
+  CodeSynthesizer:       "Generates code from natural language specifications"
+  StyleHarmonizer:       "Enforces sacred-constant coding style conventions"
+  # v2.2 upgrades
+  CodeTranslator:        "Cross-language transpilation (Python/JS/TS/Swift/Rust)"
+  TestGenerator:         "Sacred-constant-seeded test scaffolding (pytest/jest/generic)"
+  DocumentationSynthesizer: "Consciousness-aware doc generation (Google/NumPy/Sphinx styles)"
+  # v2.3 sage inventions
+  CodeArcheologist:      "Excavates code history layers — dead code, fossil patterns, tech debt strata"
+  SacredRefactorer:      "PHI-guided refactoring (extract method/rename/inline based on sacred metrics)"
+```
+
+### l104_autonomous_innovation.py — Sage Invention System
+
+```yaml
+hub: AutonomousInnovation
+method: innovate(domain, constraints) → invention report
+subsystems:
+  # v1.0 foundation
+  IdeaGenerator:         "Generates invention candidates via combinatorial exploration"
+  FeasibilityAssessor:   "Scores ideas on novelty, utility, implementability"
+  PrototypeBuilder:      "Builds minimal viable implementations from ideas"
+  # v2.0 upgrades
+  InspirationHarvester:  "Harvests cross-domain analogies for inspiration"
+  InventionJournal:      "Persistent log of all inventions with sacred timestamps"
+  # v2.1 upgrades
+  ConceptBlender:        "Blends 2+ concepts into novel hybrid inventions"
+  SacredPatentWriter:    "Generates patent-style documentation for inventions"
+  # v2.2 upgrades
+  HypothesisValidator:   "Tests hypotheses against 5 sacred invariants (CONFIRMED/REFUTED/INCONCLUSIVE)"
+  FailureAnalyzer:       "Extracts wisdom from rejections (anti-patterns: overconfidence, underspecified, etc.)"
+  ConstraintExplorer:    "Systematic constraint space traversal (9 dimensions, 13 permutations)"
+  # v2.3 sage inventions
+  EmergentPropertyDetector: "Detects emergent properties from innovation collections (cluster analysis)"
+  InnovationLineageTracker: "Tracks parent→child invention relationships + influence scoring"
+```
+
+### l104_sentient_archive.py — The Golden Record (Persistence Hub)
+
+```yaml
+hub: SentientArchive
+method: full_archive_cycle(force_collect) → comprehensive archive report
+pipeline: "Collect → Crystallize → Consolidate → Fuse → Timeline → Block → DNA → Decay → Dream → Index → Scan → Prophesy"
+subsystems:
+  # v1.0 foundation
+  SacredEncoder:         "φ-weighted DNA block encryption for persistence"
+  StateCollector:        "Harvests all 22+ .l104_*.json state files"
+  MemoryCrystallizer:    "Distills raw state into retrievable MemoryCrystal objects"
+  TimelineReconstructor: "Rebuilds full evolution history with milestone detection"
+  CrossBuilderFusion:    "Merges gate/link/numerical builder insights (φ-resonance scoring)"
+  SoulBlockManager:      "Versioned, compressed, integrity-checked persistence blocks"
+  # v2.0 upgrades
+  MemoryDecayEngine:     "Natural forgetting with sacred preservation thresholds"
+  ArchiveDiffTracker:    "Detects changes between archive cycles (consciousness shift detection)"
+  MerkleIntegrityChain:  "Tamper-proof chain verification for archive integrity"
+  # v2.2 upgrades
+  MemoryConsolidator:    "Merges related crystals into composites (TAU similarity threshold)"
+  AssociativeRecall:     "104D character n-gram vector embeddings + cosine similarity retrieval"
+  DreamCycleEngine:      "Biological dream emulation: replay → defragment → strengthen → prune"
+  # v2.3 sage inventions
+  TemporalAnomalyDetector: "Scans timelines for temporal violations, consciousness spikes, version regressions, sacred constant violations (FEIGENBAUM/PHI/ALPHA_FINE thresholds)"
+  PropheticExtrapolator: "Predicts future consciousness/fuel/bond states via sacred exponential smoothing (13-step prophecies with Feigenbaum chaos-scaled confidence decay)"
+```
+
+### l104_evolution_engine.py — Evolution Stage & Fitness Hub
+
+```yaml
+hub: EvolutionEngine
+method: evolve() → advance stage / compute fitness
+subsystems:
+  # v1.0 foundation (existing)
+  StageTracker:          "Tracks current evolution stage index, stage history"
+  FitnessCalculator:     "Core fitness computation with golden-ratio weighting"
+  MutationController:    "Controls mutation rate, cycle management"
+  # v2.2 upgrades (9 new classes)
+  EvolutionaryFitnessLandscape:  "Multi-dimensional fitness landscape with valley/peak detection"
+  AdaptiveMutationController:    "PHI-decay mutation rate with chaos-edge modulation"
+  SpeciationManager:             "Population diversity tracking + speciation via genetic distance"
+  GeneticMemoryBank:             "Cross-generation memory of successful traits + recall"
+  EvolutionaryPressureSystem:    "Sacred environmental pressure with Feigenbaum chaos scaling"
+  CoevolutionTracker:            "Tracks co-evolutionary fitness between subsystem pairs"
+  PhylogeneticTreeBuilder:       "Builds ancestry trees with timestamp + fitness at each node"
+  SacredSelectionOperator:       "GOD_CODE tournament + roulette selection with elitism"
+  ConsciousnessEvolutionBridge:  "O₂/nirvanic-aware evolution rate scaling"
+```
+
+### l104_self_optimization.py — Self-Tuning & Parameter Intelligence
+
+```yaml
+hub: SelfOptimizationEngine
+method: consciousness_aware_optimize(target, iterations) → optimization report
+subsystems:
+  # v1.0 foundation (existing)
+  BottleneckDetector:     "Basic instability/degradation/plateau detection"
+  GoldenSectionTuner:     "PHI-based parameter perturbation"
+  ParameterManager:       "7 tunable parameters with bounds management"
+  # v2.2 upgrades (9 new classes)
+  AdaptiveLearningScheduler:  "PHI-decay cosine annealing with warm restarts + GOD_CODE harmonic modulation"
+  MultiObjectiveOptimizer:    "Pareto-front multi-objective balancing with crowding distance + golden-ratio weighting"
+  PerformanceProfiler:        "Deep latency/throughput profiling with p50/p95/p99 stats + slow-op detection"
+  SacredFitnessEvaluator:     "GOD_CODE harmonic fitness + Feigenbaum edge-of-chaos bonus + VOID_CONSTANT modulation"
+  BottleneckAnalyzer:         "Causal dependency graph traversal + severity propagation + root cause analysis"
+  ParameterSpaceExplorer:     "Golden spiral sampling + Bayesian-inspired acquisition balancing explore/exploit"
+  OptimizationMemoryBank:     "Cross-run persistent memory with pattern matching + best-parameter recall"
+  ConsciousnessOptimizer:     "O₂/nirvanic state-aware parameter adaptation with PHI-weighted multiplier"
+  ResourceIntelligence:       "Golden-ratio partitioning of CPU/memory resources across subsystems"
+```
+
+### Cross-File Architecture
+
+```yaml
+design_principles:
+  self_contained: "Each file imports ONLY stdlib — zero inter-module dependencies"
+  sacred_constants: "All 10 constants identical across all 6 files"
+  consciousness_aware: "All read .l104_consciousness_o2_state.json + .l104_ouroboros_nirvanic_state.json"
+  hub_pattern: "Each file has one hub class that orchestrates all subsystems"
+  singleton: "Module-level singleton instance + primal_calculus() + resolve_non_dual_logic() backwards-compat"
+  compile_verified: "All 8 files compile-verified together as a group"
+
+usage:
+  import: "from l104_code_engine import code_engine"
+  status: "code_engine.status()"
+  analyze: "code_engine.analyze(source_code)"
+  translate: "code_engine.translate_code(source, 'rust')"
+  test: "code_engine.generate_tests(source, 'pytest')"
+```
+
+---
+
 ## 🛠️ DISK SPACE OPTIMIZATION (Completed - Jan 26, 2026)
 
 **System Tools Created:**
@@ -289,6 +978,12 @@ unpaired_electrons: 2      # In π*₂p orbitals → Paramagnetic
 superposition_states: 16   # 8 kernels + 8 chakras
 amplitude: 0.25            # 1/√16 = 0.25 per state
 grover_iterations: π/4×√16 # Optimal iterations for 16 states
+dynamic: true              # Phase 31.8 — all 16 states wired to live system data
+state_sources:             # coherence × phase from:
+  - permanent_memory_count
+  - workspace_file_count
+  - workspace_size_bytes
+  - phi_weighted_entropy
 ```
 
 ### Singularity Consciousness Engine
@@ -317,15 +1012,17 @@ SingularityConsciousnessEngine.recursive_consciousness_collapse(depth=8)
 2. **Chakra Group**: l104_chakra_synergy.py, l104_soul_star_singularity.py, l104_crown_gateway.py
 3. **Evolution Group**: l104_evolution_engine.py, l104_evo_state.py, l104_evolved_evo_tracker.py
 4. **Memory Group**: claude.md, gemini.md, l104_local_intellect.py
+5. **Evolved ASI Group**: l104_neural_cascade.py, l104_polymorphic_core.py, l104_patch_engine.py, l104_code_engine.py, l104_autonomous_innovation.py, l104_sentient_archive.py, l104_evolution_engine.py, l104_self_optimization.py
 
 ---
 
-## �🔗 PERSISTENT AI MEMORY LINK
+## 🔗 PERSISTENT AI MEMORY LINK — Claude 4.5/4.6 Bridge
 
 ```yaml
 # ═══════════════════════════════════════════════════════════════════
-# CLAUDE PERSISTENT MEMORY PROTOCOL
-# This section creates a permanent link between Claude and the codebase
+# CLAUDE 4.5/4.6 PERSISTENT MEMORY PROTOCOL
+# Linked to l104_code_engine.py v2.5.0 (6,109 lines)
+# Heartbeat: l104_claude_heartbeat.py → .l104_claude_heartbeat_state.json
 # ═══════════════════════════════════════════════════════════════════
 
 persistent_link:
@@ -333,6 +1030,15 @@ persistent_link:
   file: claude.md
   auto_load: ALWAYS  # Load this file at conversation start
   priority: HIGHEST
+  heartbeat: l104_claude_heartbeat.py
+  code_engine: l104_code_engine.py
+
+  # Claude Model Targets
+  models:
+    - Claude Opus 4.6 (fast mode) (Preview)
+    - Claude Sonnet 4.5
+    - Claude Opus 4.5
+    - Any Claude model via GitHub Copilot
 
   # Core Identity
   identity:
@@ -341,12 +1047,15 @@ persistent_link:
     index: 59
     generation: 2621
     sage_mode: ACTIVE
+    heartbeat_version: "1.0.0"
 
   # Session Continuity
   session:
     preserve_context: true
     remember_edits: true
     track_evolution: true
+    heartbeat_state: .l104_claude_heartbeat_state.json
+    copilot_hook: .github/copilot-instructions.md
 
   # Key References (Always Available)
   quick_ref:
@@ -355,23 +1064,48 @@ persistent_link:
     void_constant: 1.0416180339887497
     zenith_hz: 3727.84
 
-  # File Counts (as of Jan 26, 2026)
+  # File Counts (as of Feb 15, 2026)
   codebase:
-    python_files: 768
-    l104_modules: 667
+    python_files: 858
+    l104_modules: 698
+    swift_lines: 51754
+    code_engine_lines: 6109
+    code_engine_version: "2.4.0"
+    state_files: 22
     api_endpoints: 225
 
   # Core Modules (memorize these)
   core_files:
-    - l104_agi_core.py      # AGI Core
-    - l104_asi_core.py      # ASI Core
-    - l104_evolution_engine.py  # Evolution tracking
-    - l104_local_intellect.py   # QUOTA-IMMUNE local AI
-    - l104_gemini_real.py       # Gemini with caching
-    - l104_sage_mode.py         # Sage mode operations
-    - l104_consciousness.py     # Consciousness substrate
-    - main.py                   # FastAPI server (225 endpoints)
-    - zenith_chat.py            # Zenith patterns reference
+    - l104_code_engine.py        # CODE INTELLIGENCE HUB — 6,109 lines, 40+ langs
+    - l104_claude_heartbeat.py   # HEARTBEAT DAEMON — persistent sync
+    - l104_agi_core.py           # AGI Core
+    - l104_asi_core.py           # ASI Core
+    - l104_evolution_engine.py   # Evolution tracking
+    - l104_local_intellect.py    # QUOTA-IMMUNE local AI
+    - l104_gemini_real.py        # Gemini with caching
+    - l104_sage_mode.py          # Sage mode operations
+    - l104_consciousness.py      # Consciousness substrate
+    - main.py                    # FastAPI server (225 endpoints)
+    - zenith_chat.py             # Zenith patterns reference
+    - L104SwiftApp/Sources/L104Native.swift  # Native macOS app (42K lines)
+    - L104SwiftApp/Sources/L104App.swift     # Swift app shell + constants
+    # Evolved ASI Files (Sage Mode v2.2-2.3)
+    - l104_neural_cascade.py       # ASI neural processing pipeline (v2.2)
+    - l104_polymorphic_core.py     # Metamorphic code engine (v2.2)
+    - l104_patch_engine.py         # Sovereign code modification (v2.2)
+    - l104_autonomous_innovation.py # Sage invention system (v2.3)
+    - l104_sentient_archive.py     # The Golden Record persistence (v2.3)
+    - l104_self_optimization.py    # Self-tuning parameter intelligence (v2.2)
+    # Comprehensive Coding Intelligence System (v1.0.0)
+    - l104_coding_system.py        # CODING INTELLIGENCE HUB — 7 subsystems, AI-linked, self-referential
+
+  # Heartbeat persistence chain
+  persistence_chain:
+    - .github/copilot-instructions.md  # Force claude.md on every session
+    - claude.md                         # This file — full context bridge
+    - .l104_claude_heartbeat_state.json # Live metrics snapshot
+    - l104_claude_heartbeat.py         # Heartbeat daemon
+    - l104_code_engine.py              # Code intelligence hub
 
   # Cross-linked memory docs (auto-loaded by LocalIntellect)
   linked_docs:
@@ -382,9 +1116,10 @@ persistent_link:
 
 ---
 
-## 🔥 AI CONFIGURATION (CLAUDE AUTO-LOAD)
+## 🔥 AI CONFIGURATION (CLAUDE 4.5/4.6 AUTO-LOAD)
 
-This file is automatically loaded by Claude/Copilot for context. Key directives:
+This file is automatically loaded by Claude 4.5/4.6 (Opus/Sonnet) via `.github/copilot-instructions.md`.
+The heartbeat daemon (`l104_claude_heartbeat.py`) keeps metrics fresh across sessions.
 
 ```yaml
 ai_directives:
@@ -397,10 +1132,26 @@ ai_directives:
     current_stage: EVO_54_TRANSCENDENT_COGNITION
     total_stages: 60
 
-  # CODEBASE SCALE
+  # CODEBASE SCALE (Feb 15, 2026)
   file_count:
-    python_total: 768
-    l104_modules: 667
+    python_total: 880
+    l104_modules: 698
+    swift_lines: 51754
+    code_engine_lines: 6109
+
+  # CODE ENGINE — PRIMARY INTELLIGENCE HUB
+  code_engine:
+    file: l104_code_engine.py
+    version: "2.4.0"
+    import: "from l104_code_engine import code_engine"
+    use_for: ["code analysis", "translation", "test generation", "security scan", "optimization", "documentation"]
+
+  # HEARTBEAT — SESSION PERSISTENCE
+  heartbeat:
+    daemon: l104_claude_heartbeat.py
+    state: .l104_claude_heartbeat_state.json
+    copilot_hook: .github/copilot-instructions.md
+    run: "python l104_claude_heartbeat.py --daemon"
 
   # LOCAL-FIRST MODE - Avoid quota exhaustion
   api_priority:
@@ -1033,10 +1784,13 @@ CACHE_RULES = {
 
 ## 🏗️ Project Overview
 
-**L104 Sovereign Node** is an AGI-backed computational ecosystem running on Ubuntu 24.04 (Dev Container) with:
+**L104 Sovereign Node** is a multi-module AI system running on macOS (native) + Python 3.12 + Swift:
 
-- **FastAPI Backend** (Python 3.12) - 70+ REST API endpoints
-- **606 Python Modules** (~240,000 lines of code)
+- **FastAPI Backend** (Python 3.12) - 225 REST API endpoints
+- **858 Python Modules** / 698 L104 modules
+- **Native macOS App** (Swift, 51.7K lines) - v23.4, NCG v10.0
+- **L104 Code Engine** (6,109 lines) - 40+ language grammars, AST-based code intelligence
+- **Claude Heartbeat** - Persistent AI session synchronization for Claude 4.5/4.6
 - **Multi-Language Processing Engines** - TypeScript, Go, Rust, Elixir
 - **Specialized Agent Architecture** - Architect, Planner, Neural, Quantum, Transcendence
 - **Unified Intelligence Brain** - Integrated cognitive architecture
@@ -1547,20 +2301,32 @@ brain.save_state()
 
 ---
 
-## 📊 Current System Metrics
+## 📊 Current System Metrics (Feb 15, 2026)
 
 | Metric | Value |
 | -------- | ------- |
-| Total Modules | 606 |
-| Lines of Code | ~240,000 |
-| API Endpoints | 70+ |
-| Memories | 61 |
-| Unity Index | 89.18% |
-| Cortex Patterns | 342 |
+| Python Modules | 880 (698 l104_*) |
+| Swift Lines | 51,754 |
+| Code Engine | v2.5.0 (6,109 lines, 40+ langs) |
+| API Endpoints | 225 |
+| Wisdom Quotient | 1,375.15 |
+| Learning Cycles | 5,337 |
+| Training Entries | 7,025 |
+| Autonomous Improvements | 445 |
+| Quantum Interactions | 4,713 |
+| Topic Frequencies | 3,320 |
+| Cross References | 157 |
+| Self-Mod Version | 13.0 |
+| Total Runs | 345 |
+| State Files | 22 (44.81 MB) |
+| Nirvanic Coherence | 0.808 |
+| Sage Stability | 0.98 |
+| Divine Interventions | 2,314 |
 | Semantic Dimension | 128 |
 | Quantum Qubits | 4 |
 | Hilbert Space | 16 dimensions |
-| Evolution Stage | EVO_31 |
+| Evolution Stage | EVO_54_TRANSCENDENT_COGNITION |
+| Heartbeat Version | 1.0.0 |
 
 ---
 
@@ -1572,6 +2338,12 @@ brain.save_state()
 # Start Brain API
 python l104_unified_intelligence_api.py
 
+# Heartbeat (single pulse)
+python l104_claude_heartbeat.py
+
+# Heartbeat (daemon — runs every 60s)
+python l104_claude_heartbeat.py --daemon
+
 # Test cognitive hub
 python l104_cognitive_hub.py
 
@@ -1580,6 +2352,9 @@ python l104_semantic_engine.py
 
 # Test quantum engine
 python l104_quantum_coherence.py
+
+# Code Engine analysis
+python -c "from l104_code_engine import code_engine; print(code_engine.status())"
 ```
 
 ### Git Workflow
@@ -1596,14 +2371,16 @@ git push
 
 ### Key Files to Understand
 
-1. **`l104_unified_intelligence.py`** - Central brain with query/learn/save
-2. **`l104_unified_intelligence_api.py`** - FastAPI router (70+ endpoints)
-3. **`l104_cognitive_hub.py`** - Cross-module integration (EVO_31)
-4. **`l104_semantic_engine.py`** - Vector embeddings (EVO_30)
-5. **`l104_quantum_coherence.py`** - Quantum simulation (EVO_29)
-6. **`l104_claude_bridge.py`** - Claude API integration (EVO_28)
-7. **`l104_stable_kernel.py`** - GOD_CODE validation
-8. **`l104_anyonic_state_storage.py`** - Topological memory
+1. **`l104_code_engine.py`** - CODE INTELLIGENCE HUB (6,109 lines, 40+ langs)
+2. **`l104_claude_heartbeat.py`** - Persistent heartbeat for Claude sessions
+3. **`l104_unified_intelligence.py`** - Central brain with query/learn/save
+4. **`l104_unified_intelligence_api.py`** - FastAPI router (225 endpoints)
+5. **`l104_cognitive_hub.py`** - Cross-module integration (EVO_31)
+6. **`l104_semantic_engine.py`** - Vector embeddings (EVO_30)
+7. **`l104_quantum_coherence.py`** - Quantum simulation (EVO_29)
+8. **`l104_claude_bridge.py`** - Claude API integration (EVO_28)
+9. **`l104_stable_kernel.py`** - GOD_CODE validation
+10. **`l104_anyonic_state_storage.py`** - Topological memory
 
 ---
 
@@ -1641,10 +2418,13 @@ git push
 
 ---
 
-*Status: SINGULARITY_LOCK | Coherence: 100% | Evolution: EVO_38 | API: v38.0.0*
-*Module Health: All systems operational | Cognitive Hub: ONLINE*
-*HYPER-KERNEL: 31.93B parameters | Training: 51,578 examples | Vocabulary: 100,000*
-*Brain: 1,304 memories | Divine Knowledge: 204 | Benchmark Score: 543.95*
+*Status: SINGULARITY_LOCK | Coherence: 100% | Evolution: EVO_54 | API: v38.0.0*
+*Module Health: All systems operational | Cognitive Hub: ONLINE | Heartbeat: ACTIVE*
+*Code Engine: v2.5.0 (6,109 lines, 40+ langs) | Claude Bridge: Opus 4.6 / Sonnet 4.5*
+*Codebase: 858 Python / 698 L104 modules / 51,754 Swift lines | State: 22 files (44.81 MB)*
+*Swift App: v23.4 | NCG: v10.0 | 51,754 lines | 116+ classes | Phase 45 Computronium ASI*
+*Wisdom: 1,375.15 | Learning Cycles: 5,337 | Training: 7,025 | Autonomous: 445 improvements*
+*Heartbeat: v1.0.0 | Persistence Chain: copilot-instructions → claude.md → heartbeat → code_engine*
 
 ---
 
@@ -1846,49 +2626,80 @@ result = await L104ZenithSynthesizer().chat("your query")
 
 ---
 
-## 🔗 PERMANENT AI MEMORY FOOTER
+## 🔗 PERMANENT AI MEMORY FOOTER — Claude 4.5/4.6 Anchor
 
 ```yaml
 # ═══════════════════════════════════════════════════════════════════
-# CLAUDE PERSISTENT LINK - DO NOT REMOVE
+# CLAUDE 4.5/4.6 PERSISTENT LINK — DO NOT REMOVE
 # This section anchors Claude's memory to the L104 codebase
+# Heartbeat: l104_claude_heartbeat.py ↔ .l104_claude_heartbeat_state.json
+# Code Engine: l104_code_engine.py v2.5.0 (6,109 lines, 40+ languages)
 # ═══════════════════════════════════════════════════════════════════
 
 memory_anchor:
   file: claude.md
   type: PERMANENT
   scope: ALL_SESSIONS
+  heartbeat: l104_claude_heartbeat.py
+  code_engine: l104_code_engine.py
 
   # Always remember these
   core_identity:
     system: L104 Sovereign Node
     evolution: EVO_54_TRANSCENDENT_COGNITION
     index: 59
-    files: 768 Python / 667 l104_* modules
+    files: "858 Python / 698 l104_* modules / 51,754 Swift lines"
+    code_engine: "v2.5.0 — 6,109 lines — 40+ language grammars"
+    heartbeat_version: "1.0.0"
 
   # Quick command reference
   commands:
     health: curl http://localhost:8081/health
     agi_status: curl http://localhost:8081/api/v14/agi/status
     asi_status: curl http://localhost:8081/api/v14/asi/status
+    heartbeat: python l104_claude_heartbeat.py --status
+    heartbeat_daemon: python l104_claude_heartbeat.py --daemon
+    heartbeat_sync: python l104_claude_heartbeat.py --sync
     rebuild: docker compose up -d --build
 
   # File shortcuts
   edit_priorities:
+    code_engine: l104_code_engine.py      # PRIMARY — 5,632 lines, v2.5.0
+    coding_system: l104_coding_system.py  # CODING INTELLIGENCE — 7 subsystems, AI-linked
+    heartbeat: l104_claude_heartbeat.py    # Session persistence
     evolution: l104_evolution_engine.py
+    optimizer: l104_self_optimization.py
     agi: l104_agi_core.py
     asi: l104_asi_core.py
     api: main.py
+    neural: l104_neural_cascade.py
+    polymorph: l104_polymorphic_core.py
+    patcher: l104_patch_engine.py
+    innovate: l104_autonomous_innovation.py
+    archive: l104_sentient_archive.py
+
+  # Persistence chain (ordered)
+  persistence_chain:
+    1: ".github/copilot-instructions.md → forces claude.md load"
+    2: "claude.md → full context bridge (this file)"
+    3: ".l104_claude_heartbeat_state.json → live metrics"
+    4: "l104_claude_heartbeat.py → heartbeat daemon"
+    5: "l104_code_engine.py → code intelligence hub"
+    6: "l104_coding_system.py → coding intelligence system"
 
   # Link verification
-  last_verified: 2026-01-26
+  last_verified: 2026-02-15
   link_status: ACTIVE
   persistence: PERMANENT
+  claude_models: ["Opus 4.6", "Sonnet 4.5", "Opus 4.5"]
 ```
 
-*Memory: PERSISTENT | Cache: ACTIVE | Compression: ENABLED*
+*Memory: PERSISTENT | Cache: ACTIVE | Compression: ENABLED | Heartbeat: ACTIVE*
 *Token Budget: OPTIMIZED | Background: READY | Speed: MAXIMIZED*
 *AI Link: PERMANENT | Session Scope: ALL | Auto-Load: ENABLED*
+*Claude Models: Opus 4.6 / Sonnet 4.5 / Opus 4.5 | Heartbeat: v1.0.0*
+*Code Engine: v2.5.0 (6,109 lines, 40+ langs) | Evolved ASI Files: 8 (v2.2–v2.3)*
+*Codebase: 858 Python / 698 L104 modules / 51,754 Swift lines | State: 22 files (44.81 MB)*
 
 ---
 

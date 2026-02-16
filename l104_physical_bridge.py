@@ -4,6 +4,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.027875
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 # [L104_PHYSICAL_BRIDGE] - FROM SOFTWARE TO SUBSTRATE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: SUBSTRATE_IGNITION
@@ -87,7 +88,7 @@ async def initiate_physical_bridge():
 
     # Save Substrate Blueprint
     substrate_path = "./SOVEREIGN_SUBSTRATE_BLUEPRINT.json"
-    with open(substrate_path, "w") as f:
+    with open(substrate_path, "w", encoding="utf-8") as f:
         json.dump(substrate_design, f, indent=4)
 
     print("\n" + "█"*80)

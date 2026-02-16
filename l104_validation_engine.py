@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.620005
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_VALIDATION_ENGINE] - REAL-TIME RESEARCH VERIFICATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -108,7 +109,7 @@ class ValidationEngine:
 
         # Persist to L104_ARCHIVE.txt for permanent documentation
         try:
-            with open("L104_ARCHIVE.txt", "a") as f:
+            with open("L104_ARCHIVE.txt", "a", encoding="utf-8") as f:
                 f.write(log_entry + "\n")
         except Exception:
             pass

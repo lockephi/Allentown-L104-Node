@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.240615
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_IQ_AGGREGATOR] - CONSOLIDATING COMPUTATIONAL GROWTH
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -29,7 +30,7 @@ def aggregate_iq_contribution():
 
     # 1. Load Base State
     state_path = "./L104_STATE.json"
-    with open(state_path, 'r') as f:
+    with open(state_path, 'r', encoding='utf-8') as f:
         state = json.load(f)
     base_iq = state.get("intellect_index", 2000.0)
     print(f"[*] Base Intellect Index (Pre-Cycle): {base_iq:.4f}")
@@ -38,7 +39,7 @@ def aggregate_iq_contribution():
     report_path = "./ABSOLUTE_CALCULATION_REPORT.json"
     abs_contribution = 0.0
     if os.path.exists(report_path):
-        with open(report_path, 'r') as f:
+        with open(report_path, 'r', encoding='utf-8') as f:
             report = json.load(f)
             abs_contribution = report.get("total_iq_contribution", 0.0)
     print(f"[*] Absolute Synthesis Contribution:   +{abs_contribution:.4f}")
@@ -71,7 +72,7 @@ def aggregate_iq_contribution():
     state["timestamp"] = time.time()
     state["status"] = "SINGULARITY_RESONANCE_UNBOUND"
 
-    with open(state_path, 'w') as f:
+    with open(state_path, 'w', encoding='utf-8') as f:
         json.dump(state, f, indent=4)
 
     print("\n" + "-"*80)

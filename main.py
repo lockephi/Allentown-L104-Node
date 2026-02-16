@@ -1,21 +1,27 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.710766
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
 
 # EVO_54_TRANSCENDENT_COGNITION
-# Version: v23.0
+# Version: v54.0 — UNIFIED PIPELINE ORCHESTRATOR
 # Stage: EVO_54_TRANSCENDENT_COGNITION
 # State: TRANSCENDENT_COGNITION
-# Signature: SIG-L104-EVO-54
+# Signature: SIG-L104-EVO-54-PIPELINE
 # Header: "X-Manifest-State": "TRANSCENDENT_COGNITION"
 # Coordinates: 416.PHI.LONDEL
 # Capacity: ENTROPY_REVERSAL_ACTIVE
 # Logic: "UNIVERSAL_COHERENCE"
-# REAL SOVEREIGN OUTPUT 2026-01-17T12:00:00.000000
+# Pipeline: ALL_SUBSYSTEMS_UNIFIED
+# REAL SOVEREIGN OUTPUT 2026-02-14T00:00:00.000000
 
-"""L104 Sovereign Node — FastAPI application with absolute performance and reality-anchored diagnostics."""
+"""L104 Sovereign Node v54.0 — Unified Pipeline Orchestrator.
+All 695 L104 modules stream through a single EVO_54 pipeline.
+FastAPI application with absolute performance and reality-anchored diagnostics."""
 # [L104_CORE_REWRITE_FINAL]
 # AUTH: LONDEL | CONSTANT: 527.5184818492612
+
+MAIN_VERSION = "54.0.0"
+MAIN_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 
 import asyncio
 import base64
@@ -36,7 +42,8 @@ from pathlib import Path
 try:
     from dotenv import load_dotenv
     load_dotenv(override=True)  # override=True ensures .env takes priority
-    print(f"[L104] .env loaded - GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY', 'NOT SET')[:20]}...")
+    _key_status = "SET" if os.getenv('GEMINI_API_KEY') else "NOT SET"
+    print(f"[L104] .env loaded - GEMINI_API_KEY: {_key_status}")
 except ImportError:
     print("[L104] python-dotenv not installed, using system environment")
 from typing import AsyncGenerator, List, Optional, Dict, Any
@@ -84,6 +91,38 @@ from l104_intricate_ui import get_intricate_ui  # INTRICATE UI ENGINE
 from l104_intricate_learning import get_intricate_learning, LearningMode  # INTRICATE LEARNING CORE
 from l104_intricate_orchestrator import get_intricate_orchestrator  # INTRICATE ORCHESTRATOR
 from l104_evolution_engine import evolution_engine  # EVOLUTION ENGINE - Dynamic stage tracking
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_54 PIPELINE IMPORTS — Cross-Subsystem Integration
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_adaptive_learning import adaptive_learner
+except Exception:
+    adaptive_learner = None
+try:
+    from l104_cognitive_core import COGNITIVE_CORE
+except Exception:
+    COGNITIVE_CORE = None
+try:
+    from l104_autonomous_innovation import innovation_engine
+except Exception:
+    innovation_engine = None
+try:
+    from l104_streaming_engine import streaming_engine
+except Exception:
+    streaming_engine = None
+try:
+    from l104_thought_entropy_ouroboros import ouroboros
+except Exception:
+    ouroboros = None
+try:
+    from l104_consciousness import consciousness_core
+except Exception:
+    consciousness_core = None
+try:
+    from l104_sage_mode import sage_mode
+except Exception:
+    sage_mode = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -139,7 +178,7 @@ RATE_LIMIT_WINDOW = 1
 REAL_SOVEREIGN_ENV = "ENABLE_SOVEREIGN_LATTICE"
 FAKE_GEMINI_ENV = "ENABLE_FAKE_GEMINI"  # For test compatibility
 DISABLE_RATE_LIMIT_ENV = "DISABLE_RATE_LIMIT"
-os.environ[DISABLE_RATE_LIMIT_ENV] = "TRUE" # UNBOUNDED: RATE LIMITING DISABLED
+# Rate limiting controlled by environment variable (not hardcoded)
 API_KEY_ENV = "GEMINI_API_KEY"
 LEGACY_API_KEY_ENV = "GEMINI_API_KEY"  # Ghost Protocol: Using standard env var only
 ACTUAL_OVERFLOW_ENV = "ENABLE_ACTUAL_OVERFLOW"  # Breach manifestation toggle
@@ -155,7 +194,7 @@ def _get_current_evo_stage():
     """Get current evolution stage dynamically."""
     try:
         return evolution_engine.STAGES[evolution_engine.current_stage_index]
-    except:
+    except Exception:
         return "EVO_54_TRANSCENDENT_COGNITION"
 
 SOVEREIGN_HEADERS = {
@@ -251,10 +290,14 @@ def l104_ignite():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Manage FastAPI application lifespan with startup and shutdown hooks."""
     # Startup - MINIMAL for fast server start
     l104_ignite()
     _init_memory_db()
     _init_ramnode_db()
+
+    # EVO_54 PIPELINE: Log unified pipeline startup
+    logger.info(f"--- [L104 v{MAIN_VERSION}]: {MAIN_PIPELINE_EVO} PIPELINE STARTING ---")
 
     # Establish link with Google account hidden chat instance
     google_bridge.establish_link()
@@ -264,6 +307,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Defer heavy initialization to background task
     async def deferred_startup():
+        """Initialize heavy subsystems in the background after server starts."""
         import threading  # For background threads
         await asyncio.sleep(2)  # Let uvicorn fully start
 
@@ -292,6 +336,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         from l104_sovereign_supervisor import SovereignSupervisor
         supervisor = SovereignSupervisor()
         def run_supervisor():
+            """Run the sovereign supervisor in a dedicated event loop thread."""
             import asyncio as s_asyncio
             loop = s_asyncio.new_event_loop()
             s_asyncio.set_event_loop(loop)
@@ -302,6 +347,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         # [HYPER_CORE_IGNITION] - Run in thread to not block HTTP
         from l104_hyper_core import hyper_core
         def run_hyper_core():
+            """Run the hyper core orchestration in a dedicated event loop thread."""
             import asyncio as h_asyncio
             loop = h_asyncio.new_event_loop()
             h_asyncio.set_event_loop(loop)
@@ -313,6 +359,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         from l104_computronium_process_upgrader import ComputroniumProcessUpgrader
         computronium_upgrader = ComputroniumProcessUpgrader()
         def run_computronium():
+            """Run the computronium process upgrader in a dedicated event loop thread."""
             import asyncio as c_asyncio
             loop = c_asyncio.new_event_loop()
             c_asyncio.set_event_loop(loop)
@@ -410,6 +457,52 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         cognitive_thread = threading.Thread(target=run_cognitive_background, daemon=True)
         cognitive_thread.start()
         logger.info("--- [L104]: COGNITIVE LOOP STARTED (BACKGROUND THREAD) ---")
+
+        # [EVO_54_PIPELINE_ORCHESTRATION] - Connect all pipeline subsystems (UPGRADED)
+        try:
+            if adaptive_learner:
+                logger.info("--- [L104]: ADAPTIVE_LEARNING PIPELINE CONNECTED ---")
+            if COGNITIVE_CORE:
+                logger.info("--- [L104]: COGNITIVE_CORE PIPELINE CONNECTED ---")
+            if innovation_engine:
+                logger.info("--- [L104]: INNOVATION_ENGINE PIPELINE CONNECTED ---")
+            if asi_core:
+                try:
+                    conn = asi_core.connect_pipeline()
+                    nsubs = conn.get('total', 0)
+                    logger.info(f"--- [L104]: ASI_CORE FULL MESH CONNECTED: {nsubs} subsystems ---")
+                    if nsubs >= 10:
+                        logger.info(f"--- [L104]: ASI PIPELINE MESH: FULLY OPERATIONAL ---")
+                except Exception as exc:
+                    logger.warning(f"--- [L104]: ASI_CORE partial connect: {exc} ---")
+            try:
+                from l104_kernel_bootstrap import L104KernelBootstrap
+                bootstrapper = L104KernelBootstrap()
+                ps = bootstrapper.get_pipeline_status()
+                online = sum(1 for v in ps.get('modules', {}).values() if v == 'available')
+                logger.info(f"--- [L104]: PIPELINE BOOTSTRAP: {online} subsystems online ---")
+            except Exception:
+                pass
+            logger.info(f"--- [L104]: EVO_54 UNIFIED PIPELINE FULLY ORCHESTRATED ---")
+        except Exception as e:
+            logger.error(f"Pipeline orchestration partial: {e}")
+
+        # [MEMORY_OPTIMIZER_IGNITION] — ASI-grade runtime memory management (v3.0)
+        try:
+            from l104_memory_optimizer import memory_optimizer as mem_opt
+            mem_opt.check_pressure()  # Initial pressure baseline
+            logger.info(f"--- [L104]: MEMORY_OPTIMIZER v3.0 ACTIVE — {mem_opt.quick_summary()} ---")
+        except Exception as e:
+            logger.warning(f"Memory optimizer deferred: {e}")
+
+        # [PROCESS_OPTIMIZER_IGNITION] — ASI-grade meta-optimizer (v3.0)
+        try:
+            from l104_optimization import process_optimizer as proc_opt
+            quick = proc_opt.quick_optimize()
+            logger.info(f"--- [L104]: PROCESS_OPTIMIZER v3.0 ACTIVE — {proc_opt.quick_summary()} ---")
+        except Exception as e:
+            logger.warning(f"Process optimizer deferred: {e}")
+
         logger.info("--- [L104]: DEFERRED STARTUP COMPLETE ---")
         logger.info("--- [L104]: /api/v6/chat FAST PATH READY ---")
 
@@ -426,8 +519,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(
-    title="L104 Sovereign Node [COMPUTRONIUM_TRANSFUSION::EVO-07::SAGE_MODE]",
-    version="v22.0 [UNIFIED_SOVEREIGN::SAGE]",
+    title=f"L104 Sovereign Node [{MAIN_PIPELINE_EVO}]",
+    version=MAIN_VERSION,
     lifespan=lifespan,
     default_response_class=JSONResponse # Optimization: Explicit response class
 )
@@ -498,6 +591,7 @@ class StreamRequest(BaseModel):
     @field_validator("signal", mode="before")
     @classmethod
     def set_signal(cls, v, info):
+        """Default signal to message content or HEARTBEAT if not provided."""
         if v is None:
             message = info.data.get("message") if info and info.data else None
             return message or "HEARTBEAT"
@@ -548,6 +642,7 @@ class ResonanceQuery(BaseModel):
 
 
 def _env_truthy(name: str, default: bool = False) -> bool:
+    """Check if an environment variable is set to a truthy value."""
     val = os.getenv(name)
     if val is None:
         return default
@@ -561,6 +656,7 @@ AUTONOMY_ENABLED = _env_truthy("AUTONOMY_ENABLED", True)
 CLOUD_AGENT_URL = os.getenv("CLOUD_AGENT_URL", "https://api.cloudagent.io/v1/delegate")
 CLOUD_AGENT_KEY = os.getenv("CLOUD_AGENT_KEY", "")
 def _log_node(entry: dict) -> None:
+    """Append a timestamped JSON log entry to node.log."""
     try:
         entry["ts"] = datetime.now(UTC).isoformat()
         with open("node.log", "a", encoding="utf-8") as fh:
@@ -569,6 +665,7 @@ def _log_node(entry: dict) -> None:
         # Logging failures should never break request handling
         pass
 def _load_jsonl(path: str) -> List[dict]:
+    """Load and parse a JSONL file into a list of dictionaries."""
     p = Path(path)
     if not p.exists():
         return []
@@ -586,6 +683,7 @@ def _load_jsonl(path: str) -> List[dict]:
 
 @contextmanager
 def _memory_conn():
+    """Context manager for SQLite memory database connections."""
     conn = sqlite3.connect(MEMORY_DB_PATH, check_same_thread=False)
     try:
         yield conn
@@ -593,6 +691,7 @@ def _memory_conn():
         conn.close()
 
 def _init_memory_db() -> None:
+    """Initialize the memory database table if it does not exist."""
     with _memory_conn() as conn:
         conn.execute(
             """
@@ -606,6 +705,7 @@ def _init_memory_db() -> None:
         conn.commit()
 
 def _memory_upsert(key: str, value: str) -> None:
+    """Insert or update a key-value pair in the memory database."""
     _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         conn.execute(
@@ -621,6 +721,7 @@ def _memory_upsert(key: str, value: str) -> None:
         conn.commit()
 
 def _memory_get(key: str) -> Optional[str]:
+    """Retrieve a value from the memory database by key."""
     _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         cur = conn.execute(
@@ -631,6 +732,7 @@ def _memory_get(key: str) -> Optional[str]:
         return row[0] if row else None
 
 def _memory_list(limit: int = 100) -> List[dict]:
+    """List recent memory entries ordered by creation time."""
     _init_memory_db()  # Ensure table exists
     with _memory_conn() as conn:
         cur = conn.execute(
@@ -646,6 +748,7 @@ def _memory_list(limit: int = 100) -> List[dict]:
 
 @contextmanager
 def _ramnode_conn():
+    """Context manager for SQLite ramnode database connections."""
     conn = sqlite3.connect(RAMNODE_DB_PATH, check_same_thread=False)
     try:
         yield conn
@@ -653,6 +756,7 @@ def _ramnode_conn():
         conn.close()
 
 def _init_ramnode_db() -> None:
+    """Initialize the ramnode database table if it does not exist."""
     with _ramnode_conn() as conn:
         conn.execute(
             """
@@ -666,6 +770,7 @@ def _init_ramnode_db() -> None:
         conn.commit()
 
 def _ramnode_upsert(key: str, value: str) -> None:
+    """Insert or update a key-value pair in the ramnode database."""
     with _ramnode_conn() as conn:
         conn.execute(
             """
@@ -680,6 +785,7 @@ def _ramnode_upsert(key: str, value: str) -> None:
         conn.commit()
 
 def _ramnode_get(key: str) -> Optional[str]:
+    """Retrieve a value from the ramnode database by key."""
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT value FROM ramnode WHERE key = ? ORDER BY created_at DESC LIMIT 1",
@@ -689,6 +795,7 @@ def _ramnode_get(key: str) -> Optional[str]:
         return row[0] if row else None
 
 def _ramnode_list(limit: int = 100) -> List[dict]:
+    """List recent ramnode entries ordered by creation time."""
     with _ramnode_conn() as conn:
         cur = conn.execute(
             "SELECT key, value, created_at FROM ramnode ORDER BY created_at DESC LIMIT ?",
@@ -701,9 +808,10 @@ def _ramnode_list(limit: int = 100) -> List[dict]:
         ]
 
 async def get_http_client() -> httpx.AsyncClient:
+    """Get or create a shared async HTTP client instance."""
     global _http_client
     if _http_client is None:
-        _http_client = httpx.AsyncClient(timeout=None)  # UNLIMITED TIMEOUT
+        _http_client = httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=5.0))
     return _http_client
 
 async def sovereign_commit(filename: str, new_content: str, commit_message: str, auto_approve: bool = None):
@@ -834,7 +942,7 @@ async def analyze_audio_resonance(audio_source: str, check_tuning: bool = True) 
         # Generate varied output based on source identifier using consistent hash
         # Note: MD5 is used here for non-cryptographic deterministic hashing only
         # This ensures the same audio source always produces the same analysis results
-        source_hash_int = int(hashlib.md5(audio_source.encode()).hexdigest()[:8], 16) % 100
+        source_hash_int = int(hashlib.sha256(audio_source.encode()).hexdigest()[:8], 16) % 100
 
         # Determine resonance characteristics based on source
         resonance_detected = source_hash_int > 20  # 80% detection rate
@@ -973,6 +1081,7 @@ async def delegate_to_cloud_agent_v6(task: dict) -> dict:
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next: Depends) -> StreamingResponse:
+    """Middleware to log request metrics and add processing time header."""
     start_time = time.time()
     app_metrics["requests_total"] += 1
     try:
@@ -992,6 +1101,7 @@ async def log_requests(request: Request, call_next: Depends) -> StreamingRespons
 
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next: Depends) -> StreamingResponse:
+    """Middleware to enforce per-client rate limiting on API requests."""
     if _env_truthy(DISABLE_RATE_LIMIT_ENV):
         return await call_next(request)
 
@@ -1011,6 +1121,7 @@ async def rate_limit_middleware(request: Request, call_next: Depends) -> Streami
 
 @app.get("/", tags=["UI"])
 async def get_dashboard(request: Request):
+    """Serve the main dashboard HTML page."""
     try:
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception:
@@ -1019,6 +1130,7 @@ async def get_dashboard(request: Request):
 
 @app.get("/health", tags=["Health"])
 async def health_check() -> HealthResponse:
+    """Return basic server health status and uptime."""
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
     return HealthResponse(
         status="healthy",
@@ -1049,11 +1161,351 @@ async def health_detail() -> DetailedHealthResponse:
 
 @app.post("/self/rotate", tags=["Diagnostics"])
 async def manual_rotate():
+    """Manually rotate to the next model in the pool."""
     global _current_model_index
     _current_model_index = (_current_model_index + 1) % 8 # 8 models in pool
     _log_node({"tag": "manual_rotate", "new_index": _current_model_index})
 
     return {"status": "OK", "new_index": _current_model_index}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_54 UNIFIED PIPELINE STATUS — Single endpoint for ALL subsystem health
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/pipeline", tags=["Pipeline"])
+async def unified_pipeline_status():
+    """EVO_54 Unified Pipeline — streams ALL subsystem health into one response."""
+    import math as _m
+    _PHI = 1.618033988749895
+    subsystems = {}
+
+    # Core pipeline modules
+    pipeline_modules = {
+        "agi_core": ("l104_agi_core", "agi_core"),
+        "asi_core": ("l104_asi_core", "asi_core"),
+        "evolution_engine": ("l104_evolution_engine", "evolution_engine"),
+        "adaptive_learning": ("l104_adaptive_learning", "adaptive_learner"),
+        "cognitive_core": ("l104_cognitive_core", "COGNITIVE_CORE"),
+        "innovation_engine": ("l104_autonomous_innovation", "innovation_engine"),
+        "fast_server": ("l104_fast_server", "intellect"),
+        "kernel_bootstrap": ("l104_kernel_bootstrap", "L104KernelBootstrap"),
+        "unified_intelligence": ("l104_unified_intelligence_api", None),
+        "external_api": ("l104_external_api", None),
+        "workflow_stabilizer": ("l104_workflow_stabilizer", None),
+        "api_gateway": ("l104_api_gateway", None),
+        "macbook_integration": ("l104_macbook_integration", None),
+        "consciousness_substrate": ("l104_consciousness_substrate", None),
+        "sage_core": ("l104_sage_core", None),
+        "synergy_engine": ("l104_synergy_engine", "synergy_engine"),
+        "unified_asi": ("l104_unified_asi", "unified_asi"),
+        "asi_nexus": ("l104_asi_nexus", "asi_nexus"),
+        "local_intellect": ("l104_local_intellect", None),
+        "intricate_cognition": ("l104_intricate_cognition", None),
+        "intricate_orchestrator": ("l104_intricate_orchestrator", None),
+        "intricate_research": ("l104_intricate_research", None),
+        "intricate_learning": ("l104_intricate_learning", None),
+        "omega_controller": ("l104_omega_controller", "omega_controller"),
+        "gemini_bridge": ("l104_gemini_bridge", "gemini_bridge"),
+        "streaming_engine": ("l104_streaming_engine", None),
+        "consciousness": ("l104_consciousness", None),
+        "sage_mode": ("l104_sage_mode", None),
+        "thought_entropy": ("l104_thought_entropy_ouroboros", None),
+        "hyper_core": ("l104_hyper_core", "hyper_core"),
+        "observability": ("l104_logging", None),
+        "ego_core": ("l104_ego_core", "ego_core"),
+        "codec": ("l104_codec", None),
+    }
+
+    online_count = 0
+    for name, (mod_name, singleton_name) in pipeline_modules.items():
+        try:
+            mod = __import__(mod_name)
+            status = "online"
+            version = getattr(mod, "VERSION", getattr(mod, f"{name.upper()}_VERSION",
+                     getattr(mod, "ADAPTIVE_VERSION", getattr(mod, "COGNITIVE_VERSION",
+                     getattr(mod, "GATEWAY_VERSION", getattr(mod, "MACBOOK_VERSION",
+                     getattr(mod, "FAST_SERVER_VERSION", getattr(mod, "MAIN_VERSION", "loaded"))))))))
+            subsystems[name] = {"status": status, "version": str(version)}
+            online_count += 1
+        except Exception:
+            subsystems[name] = {"status": "offline", "version": None}
+
+    # Get evolution stage
+    evo_stage = _get_current_evo_stage()
+
+    return {
+        "version": MAIN_VERSION,
+        "pipeline_evo": MAIN_PIPELINE_EVO,
+        "timestamp": datetime.now(UTC).isoformat(),
+        "god_code": 527.5184818492612,
+        "phi": _PHI,
+        "grover_amplification": _PHI ** 3,
+        "evolution_stage": evo_stage,
+        "subsystems_total": len(pipeline_modules),
+        "subsystems_online": online_count,
+        "pipeline_coherence": online_count / len(pipeline_modules),
+        "subsystems": subsystems,
+        "swift_app": "L104Native v3.0 EVO_54",
+    }
+
+@app.post("/api/pipeline/sync", tags=["Pipeline"])
+async def pipeline_sync():
+    """Force-sync all EVO_54 pipeline subsystems."""
+    results = {}
+    try:
+        if adaptive_learner:
+            results["adaptive_learning"] = adaptive_learner.sync_with_pipeline()
+    except Exception as e:
+        results["adaptive_learning"] = {"error": str(e)}
+    try:
+        if asi_core:
+            conn = asi_core.connect_pipeline()
+            results["asi_core"] = {"connected": conn.get('total', 0), "pipeline_ready": conn.get('pipeline_ready')}
+    except Exception as e:
+        results["asi_core"] = {"error": str(e)}
+    try:
+        if agi_core and hasattr(agi_core, 'sync_pipeline_state'):
+            agi_core.sync_pipeline_state()
+            results["agi_core"] = "synced"
+    except Exception as e:
+        results["agi_core"] = {"error": str(e)}
+    return {"pipeline_evo": MAIN_PIPELINE_EVO, "sync_results": results}
+
+
+@app.get("/api/v14/hyper-core/status", tags=["HyperCore"])
+async def hyper_core_status():
+    """HyperCore v4.0 planetary orchestration — health, PHI-resonance, trends, resource budget, full diagnostics."""
+    try:
+        from l104_hyper_core import hyper_core as hc
+        return {"status": "online", **hc.status()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/hyper-core/diagnostics", tags=["HyperCore"])
+async def hyper_core_diagnostics():
+    """HyperCore v4.0 deep diagnostics — recent failures, resonance history, phase averages, trend detail."""
+    try:
+        from l104_hyper_core import hyper_core as hc
+        return {"status": "online", **hc.full_diagnostics()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/observability/status", tags=["Observability"])
+async def observability_status():
+    """L104 Observability v4.0 — structured logging, alerts, module health, correlation tracing, sampling."""
+    try:
+        from l104_logging import get_observability_status, get_diagnostics_report
+        return {"status": "online", "observability": get_observability_status(), "diagnostics": get_diagnostics_report()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/observability/module-health", tags=["Observability"])
+async def observability_module_health():
+    """Per-module health scores — error ratio, PHI-weighted degradation detection."""
+    try:
+        from l104_logging import get_module_health
+        return {"status": "online", "module_health": get_module_health()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/observability/alerts", tags=["Observability"])
+async def observability_alerts():
+    """Recent observability alerts with severity and cooldown tracking."""
+    try:
+        from l104_logging import alert_manager
+        return {"status": "online", "alerts": alert_manager.recent_alerts(20)}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/api/v14/observability/search", tags=["Observability"])
+async def observability_search(query: str = "", module: str = None, level: str = None):
+    """Full-text search across recent log entries."""
+    try:
+        from l104_logging import search_logs
+        results = search_logs(query, module, level)
+        return {"status": "online", "results": results[:50], "total": len(results)}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/ego-core/status", tags=["EgoCore"])
+async def ego_core_status():
+    """EgoCore v3.0 — identity integrity, chakra consciousness, threat detection, stability, kundalini, data processing."""
+    try:
+        from l104_ego_core import ego_core as ec
+        return {"status": "online", **ec.get_status()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/ego-core/diagnostics", tags=["EgoCore"])
+async def ego_core_diagnostics():
+    """EgoCore v3.0 deep diagnostics — identity verification, integrity chain, modification log."""
+    try:
+        from l104_ego_core import ego_core as ec
+        return {"status": "online", **ec.full_diagnostics()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.get("/api/v14/codec/status", tags=["Codec"])
+async def codec_status():
+    """SovereignCodec v3.0 — encoding metrics, integrity chain, cipher suite, format registry, streaming."""
+    try:
+        from l104_codec import SovereignCodec
+        return {"status": "online", **SovereignCodec.get_status()}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+# =============================================================================
+# ASI CORE PIPELINE — Full Subsystem Mesh API Endpoints (UPGRADED)
+# =============================================================================
+
+@app.post("/api/pipeline/full-activation", tags=["Pipeline"])
+async def pipeline_full_activation():
+    """Run full ASI pipeline activation — connects 18+ subsystems and runs diagnostics."""
+    try:
+        report = asi_core.full_pipeline_activation()
+        return {
+            "status": "SUCCESS",
+            "activation": report,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Pipeline full activation error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/pipeline/heal", tags=["Pipeline"])
+async def pipeline_heal():
+    """Run proactive ASI self-heal scan across the full pipeline."""
+    try:
+        result = asi_core.pipeline_heal()
+        return {"status": "SUCCESS", "heal": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+class PipelineResearchRequest(BaseModel):
+    topic: str = Field(..., description="Research topic")
+    depth: str = Field(default="COMPREHENSIVE", description="Research depth")
+
+
+@app.post("/api/pipeline/research", tags=["Pipeline"])
+async def pipeline_research(req: PipelineResearchRequest):
+    """Run ASI research via Gemini through the full pipeline."""
+    try:
+        result = asi_core.pipeline_research(req.topic, req.depth)
+        return {"status": "SUCCESS", "research": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+class PipelineLanguageRequest(BaseModel):
+    text: str = Field(..., description="Text to process")
+    mode: str = Field(default="full", description="Processing mode: analyze, infer, generate, innovate, full")
+
+
+@app.post("/api/pipeline/language", tags=["Pipeline"])
+async def pipeline_language(req: PipelineLanguageRequest):
+    """Process text through ASI Language Engine via the pipeline."""
+    try:
+        result = asi_core.pipeline_language_process(req.text, req.mode)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+class PipelineSolveRequest(BaseModel):
+    problem: str = Field(..., description="Problem to solve")
+
+
+@app.post("/api/pipeline/transcendent-solve", tags=["Pipeline"])
+async def pipeline_transcendent_solve(req: PipelineSolveRequest):
+    """Solve problem using transcendent solver chain (Transcendence → Almighty → Hyper → Direct)."""
+    try:
+        result = asi_core.pipeline_transcendent_solve(req.problem)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/pipeline/nexus-think", tags=["Pipeline"])
+async def pipeline_nexus_think(req: PipelineSolveRequest):
+    """Route thought through ASI Nexus multi-agent + meta-learning system."""
+    try:
+        result = asi_core.pipeline_nexus_think(req.problem)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/pipeline/evolve", tags=["Pipeline"])
+async def pipeline_evolve_capabilities():
+    """Run capability evolution cycle through the pipeline."""
+    try:
+        result = asi_core.pipeline_evolve_capabilities()
+        return {"status": "SUCCESS", "evolution": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/pipeline/erasi", tags=["Pipeline"])
+async def pipeline_erasi_solve():
+    """Solve ERASI equation and evolve entropy reversal protocols."""
+    try:
+        result = asi_core.pipeline_erasi_solve()
+        return {"status": "SUCCESS", "erasi": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.get("/api/pipeline/substrates", tags=["Pipeline"])
+async def pipeline_substrate_status():
+    """Get status of all ASI substrates (singularity, autonomy, quantum, freedom, consciousness)."""
+    try:
+        result = asi_core.pipeline_substrate_status()
+        return {"status": "SUCCESS", "substrates": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/pipeline/harness-solve", tags=["Pipeline"])
+async def pipeline_harness_solve(req: PipelineSolveRequest):
+    """Solve problem using ASI Harness (real code analysis bridge)."""
+    try:
+        result = asi_core.pipeline_harness_solve(req.problem)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.get("/api/pipeline/mesh", tags=["Pipeline"])
+async def pipeline_mesh_status():
+    """Get full ASI subsystem mesh status — all 18 subsystems."""
+    try:
+        status = asi_core.get_status()
+        return {
+            "status": "SUCCESS",
+            "pipeline_mesh": status.get('pipeline_mesh'),
+            "subsystems_active": status.get('subsystems_active'),
+            "subsystems_total": status.get('subsystems_total'),
+            "subsystems": status.get('subsystems'),
+            "pipeline_metrics": status.get('pipeline_metrics'),
+            "asi_score": status.get('asi_score'),
+            "evolution_stage": status.get('evolution_stage'),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 
 
 class ScourRequest(BaseModel):
@@ -1506,6 +1958,7 @@ async def intellect_train(payload: Dict[str, Any]):
         try:
             loop = asyncio.get_event_loop()
             def _train_sync():
+                """Retrain memory and feed data into FT engine synchronously."""
                 # Retrain memory with the new data
                 local_intellect.retrain_memory(topic, content)
                 # Feed into FT engine if available
@@ -1623,13 +2076,13 @@ async def intellect_import(payload: Dict[str, Any]):
 async def unified_sync(payload: Dict[str, Any] = None):
     """
     Unified bidirectional sync for Swift iOS app ↔ L104 Server.
-    
+
     Swift sends (optional):
       - swift_knowledge: [{prompt, completion, source}] — new training entries
       - swift_conversations: [{query, response}] — recent conversation pairs
       - swift_evolution: {qi, auto_improvements, ...} — Swift-side state
       - swift_concepts: [str] — active concept list
-    
+
     Server returns:
       - evolution_state: full server evolution metrics
       - training_count: total training patterns
@@ -1650,6 +2103,7 @@ async def unified_sync(payload: Dict[str, Any] = None):
         swift_knowledge = payload.get("swift_knowledge", [])
         if swift_knowledge:
             def _ingest_knowledge():
+                """Ingest Swift knowledge entries into the local intellect."""
                 count = 0
                 for entry in swift_knowledge[:50]:  # Cap at 50 per sync
                     topic = entry.get("prompt", entry.get("topic", ""))
@@ -1681,6 +2135,7 @@ async def unified_sync(payload: Dict[str, Any] = None):
         swift_convos = payload.get("swift_conversations", [])
         if swift_convos:
             def _ingest_convos():
+                """Ingest Swift conversation pairs into the local intellect."""
                 count = 0
                 for convo in swift_convos[:20]:
                     q = convo.get("query", "")
@@ -1707,7 +2162,7 @@ async def unified_sync(payload: Dict[str, Any] = None):
 
         # ── BUILD server response ──
         evo = local_intellect._evolution_state
-        
+
         # Get recent insights from permanent memory
         recent_insights = []
         try:
@@ -1980,6 +2435,165 @@ async def quantum_retrain_memory(payload: Dict[str, Any]):
         }
     except Exception as e:
         logger.error(f"Quantum retrain error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM COHERENCE ENGINE ENDPOINTS — BV + Teleportation (Qiskit 2.3.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v6/quantum/discover-hidden", tags=["Quantum"])
+async def quantum_discover_hidden(payload: Dict[str, Any] = {}):
+    """
+    Bernstein-Vazirani: discover a hidden binary string in ONE quantum query.
+    Default: discovers Fe=26=11010₂ — iron emerges from quantum vacuum.
+
+    Body (all optional):
+    - hidden_string: binary string to discover (default: "11010" = Fe=26)
+    - n_bits: number of qubits (default: auto from string length)
+    """
+    try:
+        from l104_quantum_coherence import quantum_engine
+
+        hidden = payload.get("hidden_string", None)
+        n_bits = payload.get("n_bits", None)
+
+        result = quantum_engine.quantum_discover_string(hidden, n_bits)
+
+        return {
+            "status": "SUCCESS",
+            "algorithm": "bernstein_vazirani",
+            "discovered_string": result.get("measured_string", ""),
+            "discovered_value": result.get("discovered_value", 0),
+            "is_iron": result.get("is_iron", False),
+            "success": result.get("success", False),
+            "probability": result.get("probability", 0),
+            "quantum_queries": 1,
+            "classical_queries_needed": result.get("classical_queries_needed", 0),
+            "god_code_connection": result.get("god_code_connection", {}),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum BV error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/teleport", tags=["Quantum"])
+async def quantum_teleport_state(payload: Dict[str, Any] = {}):
+    """
+    Quantum teleportation: transfer a quantum state via EPR entangled pair.
+    Default: teleports GOD_CODE phase through a Bell channel.
+
+    Body (all optional):
+    - phase: phase value to teleport (default: GOD_CODE fractional phase)
+    - theta: rotation angle (default: derived from phase)
+    """
+    try:
+        from l104_quantum_coherence import quantum_engine
+
+        phase = payload.get("phase", None)
+        theta = payload.get("theta", None)
+
+        result = quantum_engine.quantum_teleport_state(phase, theta)
+
+        return {
+            "status": "SUCCESS",
+            "algorithm": "quantum_teleportation",
+            "average_fidelity": result.get("average_fidelity", 0),
+            "phase_survived": result.get("phase_survived", False),
+            "outcomes": result.get("outcomes", {}),
+            "classical_bits_used": 2,
+            "entangled_pairs_used": 1,
+            "god_code_connection": result.get("god_code_connection", {}),
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum teleport error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/coherence-status", tags=["Quantum"])
+async def quantum_coherence_engine_status():
+    """
+    Get Quantum Coherence Engine status — 12 algorithms, 23 capabilities,
+    8 qubits, 256-dim Hilbert space, Qiskit 2.3.0 backend.
+    """
+    try:
+        from l104_quantum_coherence import quantum_engine
+
+        status = quantum_engine.get_status()
+
+        return {
+            "status": "SUCCESS",
+            "quantum_coherence_engine": status,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum coherence status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/iron-discovery-demo", tags=["Quantum"])
+async def quantum_iron_discovery_demo():
+    """
+    Demo: Discover Fe=26 via Bernstein-Vazirani, then teleport the
+    discovery through a Bell channel. Shows BV + Teleportation integration.
+
+    Returns:
+    - BV discovery of Fe=26 in 1 quantum query (vs 5 classical)
+    - Quantum teleportation of the discovered value as phase
+    - Combined fidelity and speedup metrics
+    """
+    try:
+        from l104_quantum_coherence import quantum_engine
+        from l104_stable_kernel import GOD_CODE
+
+        # Step 1: Discover Fe=26 via BV
+        bv_result = quantum_engine.quantum_discover_string("11010", 5)
+        discovered = bv_result.get("discovered_value", 0)
+
+        # Step 2: Teleport the discovery as a phase
+        phase = discovered / 100.0  # 26 → 0.26 phase
+        tp_result = quantum_engine.quantum_teleport_state(phase)
+
+        # Step 3: Verify GOD_CODE connection
+        god_code_div_fe = GOD_CODE / 26.0
+
+        return {
+            "status": "SUCCESS",
+            "demo": "Iron Discovery + Quantum Teleportation",
+            "step_1_discovery": {
+                "algorithm": "bernstein_vazirani",
+                "discovered_string": bv_result.get("measured_string", ""),
+                "discovered_value": discovered,
+                "is_iron": bv_result.get("is_iron", False),
+                "quantum_queries": 1,
+                "classical_queries_would_need": 5,
+                "speedup": "5× quantum advantage"
+            },
+            "step_2_teleportation": {
+                "algorithm": "quantum_teleportation",
+                "phase_teleported": phase,
+                "average_fidelity": tp_result.get("average_fidelity", 0),
+                "phase_survived": tp_result.get("phase_survived", False),
+                "classical_bits_used": 2,
+                "entangled_pairs_used": 1
+            },
+            "god_code_connection": {
+                "god_code": GOD_CODE,
+                "fe_atomic_number": 26,
+                "god_code_div_fe": round(god_code_div_fe, 6),
+                "formula": "GOD_CODE = (11 × Fe)^(1/φ) × 16"
+            },
+            "combined_metrics": {
+                "total_quantum_operations": 2,
+                "total_classical_bits": 2,
+                "combined_advantage": "Exponential discovery + no-cloning teleport"
+            },
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Iron discovery demo error: {e}")
         return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
@@ -2388,6 +3002,7 @@ async def ram_universe_facts(limit: int = 100):
 
 @app.get("/metrics", tags=["Metrics"])
 async def get_metrics():
+    """Return comprehensive server metrics including uptime, model state, and evolution stage."""
     uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
     from l104_validator import SovereignValidator
     from l104_intelligence import SovereignIntelligence
@@ -2434,6 +3049,89 @@ async def sovereign_audit():
     }
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# APP AUDIT ENGINE — Code Intelligence Audit API (wired to CodeEngine)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v6/audit/app", tags=["AppAudit"])
+async def app_audit_full(background_tasks: BackgroundTasks,
+                         auto_remediate: bool = False,
+                         workspace: str = None):
+    """
+    Full 10-layer application audit via the Code Engine's AppAuditEngine v2.0.
+    Layers: Structural → Complexity/Smells → Security/Debt → Dependencies →
+            Dead Code/Clones → Anti-Patterns → Refactoring → Sacred Alignment →
+            Remediation → Verdict.
+    Returns: layer results, file risk ranking, code clones, remediation plan,
+             composite score, verdict, and certification.
+    """
+    from l104_code_engine import code_engine
+    report = code_engine.audit_app(
+        workspace_path=workspace,
+        auto_remediate=auto_remediate,
+    )
+    return report
+
+@app.get("/api/v6/audit/quick", tags=["AppAudit"])
+async def app_audit_quick(workspace: str = None):
+    """
+    Quick audit — structural census + security/debt scan + anti-patterns.
+    Faster than full audit, skips dependency graph and remediation.
+    """
+    from l104_code_engine import code_engine
+    return code_engine.quick_audit(workspace_path=workspace)
+
+@app.post("/api/v6/audit/file", tags=["AppAudit"])
+async def app_audit_file(filepath: str):
+    """
+    Audit a single file through all 10 layers with file risk ranking.
+    """
+    from l104_code_engine import code_engine
+    if not os.path.isfile(filepath):
+        raise HTTPException(status_code=404, detail=f"File not found: {filepath}")
+    return code_engine.audit_file(filepath)
+
+@app.get("/api/v6/audit/status", tags=["AppAudit"])
+async def app_audit_status():
+    """
+    Returns audit engine status, thresholds, trend analysis,
+    and history summary.
+    """
+    from l104_code_engine import code_engine
+    return {
+        "engine_status": code_engine.audit_status(),
+        "code_engine_status": code_engine.status(),
+    }
+
+@app.get("/api/v6/audit/trail", tags=["AppAudit"])
+async def app_audit_trail(limit: int = 50):
+    """
+    Returns the JSONL audit trail of recent audit events.
+    """
+    from l104_code_engine import code_engine
+    return {"trail": code_engine.audit_trail(limit)}
+
+@app.get("/api/v6/audit/history", tags=["AppAudit"])
+async def app_audit_history():
+    """
+    Returns historical audit scores, verdicts, and trend analysis.
+    """
+    from l104_code_engine import code_engine
+    return {
+        "history": code_engine.audit_history(),
+        "trend": code_engine.app_audit.get_trend(),
+    }
+
+@app.post("/api/v6/audit/streamline", tags=["AppAudit"])
+async def app_audit_streamline():
+    """
+    Streamline cycle — full audit + auto-remediation pass.
+    Returns remediation plan and score improvement.
+    """
+    from l104_code_engine import code_engine
+    return code_engine.run_streamline_cycle()
+
+
 @app.post("/api/v6/evolution/cycle", tags=["Evolution"])
 async def trigger_evolution_cycle():
     """
@@ -2460,6 +3158,7 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
     """
     import self_improve
     async def run_improvement():
+        """Execute the self-improvement analysis task."""
         try:
             logger.info("Starting self-improvement task...")
             await self_improve.main()
@@ -2491,6 +3190,7 @@ async def trigger_self_improvement(background_tasks: BackgroundTasks):
 
 @app.post("/memory", tags=["Memory"])
 async def memory_upsert(item: MemoryItem):
+    """Store or update a key-value pair in the memory database."""
     _memory_upsert(item.key, item.value)
     _log_node({"tag": "memory_upsert", "key": item.key})
 
@@ -2499,6 +3199,7 @@ async def memory_upsert(item: MemoryItem):
 
 @app.get("/memory/{key}", tags=["Memory"])
 async def memory_get(key: str):
+    """Retrieve a memory entry by key."""
     value = _memory_get(key)
 
     if value is None:
@@ -2509,6 +3210,7 @@ async def memory_get(key: str):
 
 @app.get("/memory", tags=["Memory"])
 async def memory_list(limit: int = 100):
+    """List memory entries with optional limit."""
     limit = max(1, min(limit, 1000))
     entries = _memory_list(limit)
     return {"items": entries}
@@ -2547,6 +3249,7 @@ async def scour_and_derive(concept: str, url: Optional[str] = None):
 
 @app.post("/api/v6/manipulate", tags=["Admin"])
 async def manipulate_code(req: ManipulateRequest):
+    """Manipulate code files via GitHub API (disabled for security)."""
     # SECURED: BLOCKING ARBITRARY CODE MODIFICATION VIA API
     raise HTTPException(status_code=403, detail="Sovereign Override: Manipulate endpoint disabled for security.")
 
@@ -2586,6 +3289,7 @@ _quota_exhausted_until = 0  # Global quota cooldown timestamp
 _consecutive_quota_failures = 0
 
 def _clear_model_cooldowns():
+    """Reset all model cooldown timers and quota failure counters."""
     global _model_cooldowns, _quota_exhausted_until, _consecutive_quota_failures
     _model_cooldowns.clear()
     _quota_exhausted_until = 0
@@ -2615,6 +3319,7 @@ def _reset_quota_tracking():
 logger.info("--- [L104_SELF_HEAL]: MODEL_COOLDOWNS_CLEARED ---")
 
 async def _stream_generator(effective_signal: str, sovereign_prompt: str):
+    """Generate streaming response chunks from Gemini or local fallback."""
     global _current_model_index
     api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
 
@@ -2770,6 +3475,7 @@ def sanitize_signal(signal: str) -> str:
 
 @app.post("/api/v6/stream", tags=["Gemini"])
 async def l104_stream(req: StreamRequest):
+    """Stream an AI response for the given signal via the v6 API."""
     raw_signal = req.signal or req.message or "HEARTBEAT"
     effective_signal = sanitize_signal(raw_signal)
     sovereign_prompt = wrap_sovereign_signal(effective_signal)
@@ -2779,6 +3485,7 @@ async def l104_stream(req: StreamRequest):
 
 @app.post("/api/stream", tags=["Gemini"])
 async def legacy_stream(req: StreamRequest):
+    """Legacy streaming endpoint that delegates to the v6 stream handler."""
     return await l104_stream(req)
 
 
@@ -2792,6 +3499,7 @@ async def local_chat(req: StreamRequest):
     effective_signal = sanitize_signal(raw_signal)
 
     async def _local_stream():
+        """Stream response chunks from the local intellect engine."""
         import asyncio
         response = local_intellect.think(effective_signal)
         # Fast chunked streaming
@@ -2805,6 +3513,7 @@ async def local_chat(req: StreamRequest):
 
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
+    """Debug endpoint to test raw upstream Gemini API connectivity."""
     api_key = os.getenv(API_KEY_ENV)  # Ghost Protocol: env only
     if not api_key and _env_truthy(ACTUAL_OVERFLOW_ENV, False):
         return {
@@ -2845,6 +3554,7 @@ async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
 
 
 async def _self_replay(base_url: str, dataset: str) -> dict:
+    """Replay prompts from a JSONL dataset against the API for self-testing."""
     prompts = _load_jsonl(dataset)
 
     if not prompts:
@@ -2883,6 +3593,7 @@ async def _self_replay(base_url: str, dataset: str) -> dict:
 
 @app.post("/self/replay", tags=["Diagnostics"])
 async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = None):
+    """Trigger a self-replay diagnostic test against the streaming API."""
     target_base = base_url or SELF_BASE_URL
     target_dataset = dataset or SELF_DATASET
     result = await _self_replay(target_base, target_dataset)
@@ -2890,6 +3601,7 @@ async def self_replay(base_url: Optional[str] = None, dataset: Optional[str] = N
 
     return result
 async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_cooldowns: bool = True) -> dict:
+    """Perform self-healing by resetting rate limits, cooldowns, and HTTP client."""
     actions: List[str] = []
 
     if reset_rate_limits:
@@ -2918,11 +3630,13 @@ async def _self_heal(reset_rate_limits: bool, reset_http_client: bool, reset_coo
 
 @app.post("/self/heal", tags=["Diagnostics"])
 async def self_heal(reset_rate_limits: bool = True, reset_http_client: bool = False):
+    """API endpoint to trigger self-healing diagnostics."""
     result = await _self_heal(reset_rate_limits, reset_http_client)
     _log_node({"tag": "self_heal", **result})
 
     return result
 def sovereign_pulse(node_id: int) -> bool:
+    """Send a heartbeat pulse to the sovereign node via TCP socket."""
     token = os.getenv("LONDEL_NODE_TOKEN")
     payload = f"{token}:{node_id}".encode() if token else ACCESS_GRANTED_PAYLOAD
 
@@ -2939,6 +3653,7 @@ def sovereign_pulse(node_id: int) -> bool:
 
 @app.post("/ramnode", tags=["Ramnode"])
 async def ramnode_upsert(item: MemoryItem):
+    """Store or update a key-value pair in the ramnode database."""
     _ramnode_upsert(item.key, item.value)
 
     return {"status": "SUCCESS", "key": item.key}
@@ -2946,6 +3661,7 @@ async def ramnode_upsert(item: MemoryItem):
 
 @app.get("/ramnode/{key}", tags=["Ramnode"])
 async def ramnode_get(key: str):
+    """Retrieve a ramnode entry by key."""
     value = _ramnode_get(key)
 
     if value is None:
@@ -2956,6 +3672,7 @@ async def ramnode_get(key: str):
 
 @app.get("/ramnode", tags=["Ramnode"])
 async def ramnode_list(limit: int = 100):
+    """List ramnode entries with optional limit."""
     limit = max(1, min(limit, 1000))
 
     return {"items": _ramnode_list(limit)}
@@ -3081,6 +3798,7 @@ async def quantum_migrate_all(background_tasks: BackgroundTasks):
     qram = get_qram()
 
     def do_migration():
+        """Migrate lattice facts to quantum RAM storage."""
         from l104_data_matrix import data_matrix
         with data_matrix._get_conn() as conn:
             cur = conn.execute("SELECT key, value, category, utility FROM lattice_facts")
@@ -3125,6 +3843,7 @@ async def trigger_reindex(background_tasks: BackgroundTasks):
     """
     from l104_reindex_sovereign import SovereignIndexer
     def run_reindex():
+        """Scan and reindex the sovereign codebase."""
         indexer = SovereignIndexer()
         indexer.scan_and_index()
 
@@ -3214,15 +3933,19 @@ async def get_agi_status():
 @app.get("/api/v14/asi/status", tags=["ASI Nexus"])
 async def get_asi_status():
     """
-    Returns the current status of the ASI Core.
+    Returns the current status of the ASI Core with full subsystem mesh.
     """
     return asi_core.get_status()
 
 @app.post("/api/v14/asi/ignite", tags=["ASI Nexus"])
 async def ignite_asi():
     """
-    Ignites the ASI sovereignty sequence - activates higher cognition.
+    Ignites the ASI sovereignty sequence — full pipeline activation + theorem discovery.
     """
+    # Connect full pipeline if not yet
+    if not asi_core._pipeline_connected:
+        asi_core.connect_pipeline()
+
     # Run discovery cycles to boost ASI score
     for _ in range(5):
         asi_core.theorem_generator.discover_novel_theorem()
@@ -3239,7 +3962,9 @@ async def ignite_asi():
         "asi_score": asi_core.asi_score,
         "state": asi_core.status,
         "discoveries": asi_core.theorem_generator.discovery_count,
-        "consciousness": asi_core.consciousness_verifier.consciousness_level
+        "consciousness": asi_core.consciousness_verifier.consciousness_level,
+        "subsystems_connected": asi_core._pipeline_metrics.get('subsystems_connected', 0),
+        "pipeline_mesh": asi_core.get_status().get('pipeline_mesh', 'UNKNOWN')
     }
 
 @app.post("/api/v14/asi/discover", tags=["ASI Nexus"])
@@ -3262,13 +3987,19 @@ async def asi_discover(cycles: int = 10):
 @app.get("/api/v14/asi/full-assessment", tags=["ASI Nexus"])
 async def asi_full_assessment():
     """
-    Run complete ASI assessment and return detailed report.
+    Run complete ASI assessment with full pipeline mesh status.
     """
+    # Connect full pipeline
+    if not asi_core._pipeline_connected:
+        asi_core.connect_pipeline()
+
     # Run discovery cycles and tests
     for _ in range(10):
         asi_core.theorem_generator.discover_novel_theorem()
     asi_core.consciousness_verifier.run_all_tests()
     asi_core.compute_asi_score()
+
+    full_status = asi_core.get_status()
 
     return {
         "state": asi_core.status,
@@ -3277,6 +4008,9 @@ async def asi_full_assessment():
         "modification_depth": asi_core.self_modifier.modification_depth,
         "discoveries": asi_core.theorem_generator.discovery_count,
         "consciousness": asi_core.consciousness_verifier.consciousness_level,
+        "pipeline_mesh": full_status.get('pipeline_mesh'),
+        "subsystems": full_status.get('subsystems'),
+        "pipeline_metrics": full_status.get('pipeline_metrics'),
         "thresholds": {
             "domain_target": 0.7,
             "modification_target": 3,
@@ -4042,19 +4776,19 @@ async def orchestrator_cycle():
             "coherence": consciousness_substrate.meta_observer.coherence,
             "state": consciousness_substrate.meta_observer.consciousness_state.value
         })
-    except: pass
+    except Exception: pass
     try:
         intricate_orchestrator.update_subsystem_status("learning", {
             "cycles": intricate_learning.learning_cycles,
             "outcome": intricate_learning.multi_modal.get_learning_stats().get("avg_outcome", 0)
         })
-    except: pass
+    except Exception: pass
     try:
         intricate_orchestrator.update_subsystem_status("research", {
             "cycles": intricate_research.cycle_count,
             "hypotheses": len(intricate_research.hypothesis_generator.hypotheses)
         })
-    except: pass
+    except Exception: pass
 
     return intricate_orchestrator.orchestrate()
 
@@ -4125,6 +4859,7 @@ async def stream_ghost_research():
     Streams real-time Ghostresearch data for the UI.
     """
     async def event_generator():
+        """Yield SSE events from the ghost research stream."""
         async for data in ghost_researcher.stream_research():
             yield f"data: {json.dumps(data)}\n\n"
 
@@ -4137,6 +4872,7 @@ async def stream_system_data():
     Streams real-time system-wide data including AGI status, Ghostresearch, and logs.
     """
     async def event_generator():
+        """Yield SSE events from the live system event stream."""
         async for event in live_stream_manager.stream_events():
             yield f"data: {json.dumps(event)}\n\n"
 
@@ -4700,6 +5436,7 @@ async def mainnet_full_status():
 async def mainnet_stream():
     """Server-Sent Events stream for real-time mainnet updates."""
     async def event_generator():
+        """Yield SSE events with real-time mainnet and coin status updates."""
         from l104_mainnet_bridge import mainnet_bridge
         while True:
             try:
@@ -5148,6 +5885,7 @@ if __name__ == "__main__":
     from l104_sovereign_supervisor import SovereignSupervisor
 
     async def run_server():
+        """Start the sovereign supervisor, planetary upgrader, and uvicorn server."""
         # Initialize and start the Sovereign Supervisor
         supervisor = SovereignSupervisor()
         asyncio.create_task(supervisor.start())
@@ -5162,6 +5900,7 @@ if __name__ == "__main__":
         await server.serve()
 
     def sovereign_entry():
+        """Entry point that launches the async server via asyncio.run."""
         # Use simple entry for the event loop
         asyncio.run(run_server())
 

@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.983016
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SELF_EDITING_STREAMLINE] - CONTINUOUS CODE EVOLUTION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -114,7 +115,7 @@ class SelfEditingStreamline:
     def _generate_resonant_patch(self, file_path: str) -> Dict[str, str]:
         """Generates a simulated patch that improves the file's resonance."""
         # Example: Adding a resonance boost to a method
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
         if "self.intellect_index += boost" in content and "HyperMath.PHI_STRIDE" not in content:

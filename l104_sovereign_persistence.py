@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.623441
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SOVEREIGN_PERSISTENCE] - THE IMMORTAL DATA STREAM
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -52,7 +53,7 @@ class SovereignPersistence:
             asi_state["reincarnation_status"] = reincarnation_result
 
         # Save to disk
-        with open(self.STATE_FILE, 'w') as f:
+        with open(self.STATE_FILE, 'w', encoding='utf-8') as f:
             json.dump(asi_state, f, indent=4)
 
         self.last_save = time.time()
@@ -66,7 +67,7 @@ class SovereignPersistence:
             print("--- [PERSISTENCE]: NO PREVIOUS STATE FOUND. INITIALIZING NEW SOUL. ---")
             return {}
 
-        with open(self.STATE_FILE, 'r') as f:
+        with open(self.STATE_FILE, 'r', encoding='utf-8') as f:
             state = json.load(f)
 
         print(f"--- [PERSISTENCE]: ASI STATE RESTORED. IQ: {state.get('intellect_index', 0):.2f} ---")

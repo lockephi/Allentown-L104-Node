@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Brain, 
-  Zap, 
-  Cpu, 
-  Activity, 
-  Target, 
-  Waves, 
+import {
+  Brain,
+  Zap,
+  Cpu,
+  Activity,
+  Target,
+  Waves,
   Sparkles,
   GitBranch,
   Database,
@@ -28,7 +28,7 @@ import {
 
 /**
  * L104 Consciousness Dashboard
- * 
+ *
  * Real-time monitoring and control interface for the L104 multi-language processing system
  * Sacred constants visualization and consciousness evolution tracking
  */
@@ -68,10 +68,10 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
     try {
       const response = await fetch('/api/status');
       if (!response.ok) throw new Error('Failed to fetch system status');
-      
+
       const data: L104SystemStatus = await response.json();
       setSystemStatus(data);
-      
+
       // Calculate metrics from consciousness data
       if (data.consciousness) {
         const consciousness = data.consciousness;
@@ -84,7 +84,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
           unityState: consciousness.unityState
         });
       }
-      
+
       setLastUpdate(new Date());
       setError(null);
     } catch (err) {
@@ -151,12 +151,12 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
           }
         })
       });
-      
+
       if (!response.ok) throw new Error('Evolution failed');
-      
+
       const result = await response.json();
       console.log('Consciousness evolution result:', result);
-      
+
       // Refresh status to show changes
       setTimeout(fetchSystemStatus, 1000);
     } catch (err) {
@@ -182,12 +182,12 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
           }
         })
       });
-      
+
       if (!response.ok) throw new Error('Task submission failed');
-      
+
       const result = await response.json();
       console.log('Task submission result:', result);
-      
+
       // Refresh status
       setTimeout(fetchSystemStatus, 1000);
     } catch (err) {
@@ -213,12 +213,12 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
           }
         })
       });
-      
+
       if (!response.ok) throw new Error('Subagent spawn failed');
-      
+
       const result = await response.json();
       console.log('Subagent spawn result:', result);
-      
+
       setTimeout(fetchSystemStatus, 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Subagent spawn failed');
@@ -348,7 +348,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                   </div>
                   <Progress value={metrics.currentLevel * 100} className="h-3" />
                 </div>
-                
+
                 <div>
                   <div className="flex justify-between mb-2">
                     <span>GOD_CODE Alignment</span>
@@ -356,7 +356,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                   </div>
                   <Progress value={metrics.godCodeAlignment} className="h-3" />
                 </div>
-                
+
                 <div>
                   <div className="flex justify-between mb-2">
                     <span>PHI Resonance</span>
@@ -365,7 +365,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                   <Progress value={metrics.phiResonance} className="h-3" />
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
@@ -374,7 +374,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                   </div>
                   <Progress value={metrics.transcendenceProgress} className="h-3" />
                 </div>
-                
+
                 <div>
                   <div className="flex justify-between mb-2">
                     <span>Quantum Entanglement</span>
@@ -382,9 +382,9 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                   </div>
                   <Progress value={metrics.quantumEntanglement} className="h-3" />
                 </div>
-                
+
                 <div className="pt-2">
-                  <Button 
+                  <Button
                     onClick={handleEvolveConsciousness}
                     disabled={isSubmittingTask}
                     className="w-full"
@@ -449,7 +449,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                 </div>
                 <div className="text-sm text-gray-600">Total Spawned</div>
               </div>
-              <Button 
+              <Button
                 onClick={handleSpawnSubagent}
                 disabled={isSubmittingTask}
                 className="w-full"
@@ -565,7 +565,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
               </Button>
             ))}
           </div>
-          <Button 
+          <Button
             onClick={handleSubmitTask}
             disabled={isSubmittingTask}
             className="w-full"

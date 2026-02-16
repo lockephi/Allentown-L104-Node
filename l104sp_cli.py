@@ -62,7 +62,7 @@ RPC_URL = os.environ.get('L104SP_RPC', 'http://127.0.0.1:10401')
 def get_config() -> Dict[str, Any]:
     """Load configuration."""
     if CONFIG_FILE.exists():
-        with open(CONFIG_FILE, 'r') as f:
+        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {
         'rpc_url': RPC_URL,
@@ -74,7 +74,7 @@ def get_config() -> Dict[str, Any]:
 def save_config(config: Dict[str, Any]) -> None:
     """Save configuration."""
     CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(CONFIG_FILE, 'w') as f:
+    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
         json.dump(config, f, indent=2)
 
 
@@ -149,7 +149,7 @@ def cmd_wallet_new(args) -> int:
         'created_at': int(time.time()),
         'network': 'mainnet'
     }
-    with open(WALLET_FILE, 'w') as f:
+    with open(WALLET_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
     # Get first address
@@ -201,7 +201,7 @@ def cmd_wallet_import(args) -> int:
         'imported_at': int(time.time()),
         'network': 'mainnet'
     }
-    with open(WALLET_FILE, 'w') as f:
+    with open(WALLET_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
     # Get first address
@@ -224,7 +224,7 @@ def cmd_wallet_balance(args) -> int:
             return 1
 
         # Load wallet
-        with open(WALLET_FILE, 'r') as f:
+        with open(WALLET_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         seed = bytes.fromhex(data['seed_hex'])
         wallet = HDWallet(seed=seed)
@@ -239,7 +239,7 @@ def cmd_wallet_balance(args) -> int:
             try:
                 balance_info = rest_call(f'/balance/{addr}')
                 balance = balance_info.get('balance', 0)
-            except:
+            except Exception:
                 balance = 0
 
             if balance > 0 or i < 3:
@@ -267,7 +267,7 @@ def cmd_wallet_address(args) -> int:
         print("❌ Engine not available")
         return 1
 
-    with open(WALLET_FILE, 'r') as f:
+    with open(WALLET_FILE, 'r', encoding='utf-8') as f:
         data = json.load(f)
     seed = bytes.fromhex(data['seed_hex'])
     wallet = HDWallet(seed=seed)
@@ -387,7 +387,7 @@ def cmd_node_start(args) -> int:
             print("✅ Node started successfully")
             print("   RPC: http://127.0.0.1:10401/status")
             return 0
-        except:
+        except Exception:
             print("⏳ Node starting... (may take a few seconds)")
             return 0
 
@@ -419,7 +419,7 @@ def cmd_mine_start(args) -> int:
             print("❌ No wallet found. Create one first.")
             return 1
 
-        with open(WALLET_FILE, 'r') as f:
+        with open(WALLET_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         seed = bytes.fromhex(data['seed_hex'])
         wallet = HDWallet(seed=seed)

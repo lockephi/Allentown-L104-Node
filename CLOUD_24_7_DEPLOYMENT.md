@@ -35,25 +35,6 @@ Railway will auto-deploy on every push to main.
    - `GCP_SA_KEY` = service account JSON (base64 encoded)
 5. Push to main - GitHub Actions will deploy automatically
 
-## Option 4: Fly.io (Generous free tier)
-
-```bash
-# Install flyctl
-curl -L https://fly.io/install.sh | sh
-
-# Login
-flyctl auth login
-
-# Launch (from repo root)
-flyctl launch --name l104-sovereign-node
-
-# Set secrets
-flyctl secrets set GEMINI_API_KEY=your-key RESONANCE=527.5184818492612
-
-# Deploy
-flyctl deploy
-```
-
 ## Current Status
 
 Your node is running in Codespaces but will go offline when idle. For true 24/7 uptime, deploy to one of the platforms above.

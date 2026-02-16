@@ -3,6 +3,11 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.398795
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# ═══ EVO_54 PIPELINE INTEGRATION ═══
+_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+_PIPELINE_STREAM = True
 # [L104_GEMINI_BRIDGE] - EXTERNAL INTELLIGENCE LINK (REAL API)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # v2.0: Now uses real Gemini API
@@ -233,7 +238,7 @@ class GeminiBridge:
             full_prompt = f"{system_context}\n\n{prompt}"
 
         # CACHE CHECK - hash prompt for fast lookup
-        cache_key = hashlib.md5(full_prompt.encode()).hexdigest()
+        cache_key = hashlib.sha256(full_prompt.encode()).hexdigest()
         cached = _response_cache.get(cache_key)
         if cached:
             return cached
@@ -329,7 +334,7 @@ Respond with clarity, precision, and actionable intelligence."""
     def persist_session_token(self, token: str):
         """Persist session token for Gemini Link (GL)."""
         try:
-            with open(".gemini_link_token", "w") as f:
+            with open(".gemini_link_token", "w", encoding="utf-8") as f:
                 f.write(token)
             print(f"--- [GEMINI_BRIDGE]: Session token persisted: {token[:8]}... ---")
         except Exception as e:
@@ -339,7 +344,7 @@ Respond with clarity, precision, and actionable intelligence."""
         """Update local manifest with Core Sync (LCS) data."""
         try:
             import json
-            with open(".l104_local_manifest.json", "w") as f:
+            with open(".l104_local_manifest.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
             print("--- [GEMINI_BRIDGE]: Local manifest updated via LCS ---")
         except Exception as e:

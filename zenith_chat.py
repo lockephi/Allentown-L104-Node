@@ -121,7 +121,7 @@ class ToolRegistry:
 
         # Check cache
         if tool.cache_results:
-            cache_key = f"{name}:{hashlib.md5(json.dumps(kwargs, sort_keys=True).encode()).hexdigest()}"
+            cache_key = f"{name}:{hashlib.sha256(json.dumps(kwargs, sort_keys=True).encode()).hexdigest()}"
             if cache_key in self._cache:
                 return self._cache[cache_key]
 
@@ -168,7 +168,7 @@ class ConversationManager:
         self.messages: List[Message] = []
         self.max_context_tokens = max_context_tokens
         self.system_prompt: str = ""
-        self.session_id: str = hashlib.md5(
+        self.session_id: str = hashlib.sha256(
             f"{time.time()}{random.random()}".encode()
         ).hexdigest()[:12]
         self.variables: Dict[str, Any] = {}
@@ -334,7 +334,7 @@ Speed and effectiveness over perfection.
     def _read_file_handler(self, path: str) -> str:
         """Handler for reading files."""
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 return f.read()
         except Exception as e:
             raise Exception(f"Failed to read {path}: {e}")

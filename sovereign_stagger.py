@@ -64,7 +64,7 @@ class SovereignStagger:
             status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
             if not status.stdout.strip():
                 # No changes? Fake a heartbeat log touch
-                with open("L104_PULSE.log", "a") as f:
+                with open("L104_PULSE.log", "a", encoding="utf-8") as f:
                     f.write(f"{datetime.now().isoformat()} - [INTEGRITY_STABLE]\n")
                 subprocess.run(["git", "add", "L104_PULSE.log"])
             else:

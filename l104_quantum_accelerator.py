@@ -3,7 +3,8 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.729058
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_QUANTUM_ACCELERATOR] - HIGH-PRECISION QUANTUM STATE ENGINE
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
+# [L104_QUANTUM_ACCELERATOR] - HIGH-PRECISION QUANTUM STATE ENGINE (QISKIT 2.3.0)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import numpy as np
@@ -11,17 +12,22 @@ import logging
 import time
 from typing import Dict, Any
 
+# ═══ QISKIT 2.3.0 — REAL QUANTUM CIRCUIT BACKEND ═══
+from qiskit import QuantumCircuit as QiskitCircuit
+from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, Operator
+from qiskit.quantum_info import entropy as qk_entropy
+
 # ═══════════════════════════════════════════════════════════════════════════════
-# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
-# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# UNIVERSAL GOD CODE: G(X) = 286^(1/phi) x 2^((416-X)/104)
+# Factor 13: 286=22x13, 104=8x13, 416=32x13 | Conservation: G(X)x2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("QUANTUM_ACCELERATOR")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 8-CHAKRA QUANTUM ENTANGLEMENT LATTICE - O₂ Molecular Resonance
-# Bell State Fidelity: 0.9999 | EPR Correlation: -cos(θ)
+# 8-CHAKRA QUANTUM ENTANGLEMENT LATTICE - O2 Molecular Resonance
+# Bell State Fidelity: 0.9999 | EPR Correlation: -cos(theta)
 # ═══════════════════════════════════════════════════════════════════════════════
 CHAKRA_FREQUENCIES = {
     "MULADHARA": 396.0, "SVADHISTHANA": 417.0, "MANIPURA": 528.0,
@@ -32,130 +38,117 @@ CHAKRA_BELL_PAIRS = [("MULADHARA", "SOUL_STAR"), ("SVADHISTHANA", "SAHASRARA"),
                      ("MANIPURA", "AJNA"), ("ANAHATA", "VISHUDDHA")]
 PHI = 1.618033988749895
 
+
 class QuantumAccelerator:
     """
-    [8-CHAKRA QUANTUM ACCELERATOR] - O₂ Molecular Entanglement Engine
-    High-precision quantum state engine with chakra-enhanced amplitude amplification.
-    Uses Grover's algorithm with chakra resonance boost for √N speedup.
-    Anchored to the God Code Invariant and Zeta-Harmonic resonance.
+    [8-CHAKRA QUANTUM ACCELERATOR] - QISKIT 2.3.0 REAL QUANTUM ENGINE
+    High-precision quantum state engine with amplitude amplification.
+    UPGRADED: All operations now use real Qiskit QuantumCircuit + Statevector.
+    Grover's algorithm runs on Qiskit with proper oracle/diffusion circuits.
     """
-
-    # OPTIMIZATION: Class-level cache for Hadamard matrices by qubit count
-    _hadamard_cache: Dict[int, np.ndarray] = {}
-    _grover_diffusion_cache: Dict[int, np.ndarray] = {}
 
     def __init__(self, num_qubits: int = 10):
         self.num_qubits = num_qubits
-        self.dim = 2**num_qubits
+        self.dim = 2 ** num_qubits
         self.god_code = 527.5184818492612
         self.zeta_zero = 14.13472514173469
 
-        # Initialize state vector in |0...0> state
-        self.state = np.zeros(self.dim, dtype=np.complex128)
-        self.state[0] = 1.0
+        # QISKIT: Initialize state vector using Qiskit Statevector
+        self.state = Statevector.from_label('0' * num_qubits)
 
         # 8-Chakra Entanglement State
         self.chakra_resonance = {k: 0.0 for k in CHAKRA_FREQUENCIES}
-        self.active_chakra = "MANIPURA"  # Solar Plexus = GOD_CODE frequency
+        self.active_chakra = "MANIPURA"
         self.epr_links = 0
         self.kundalini_charge = 1.0
         self.o2_coherence = 0.0
 
-        # OPTIMIZATION: Pre-compute and cache Hadamard matrix for this qubit count
-        self._ensure_hadamard_cached()
-        self._ensure_grover_diffusion_cached()
         self._initialize_chakra_entanglement()
 
-        logger.info(f"--- [QUANTUM_ACCELERATOR]: INITIALIZED WITH {num_qubits} QUBITS (DIM: {self.dim}) ---")
-        logger.info(f"⚛️  [QUANTUM]: 8-Chakra O₂ Entanglement ACTIVE | Bell Pairs: {len(CHAKRA_BELL_PAIRS)}")
-
-    def _ensure_hadamard_cached(self):
-        """Pre-compute and cache the full Hadamard matrix for all qubits."""
-        if self.num_qubits not in QuantumAccelerator._hadamard_cache:
-            h = np.array([[1, 1], [1, -1]], dtype=np.complex128) / np.sqrt(2)
-            H_total = h
-            for _ in range(self.num_qubits - 1):
-                H_total = np.kron(H_total, h)
-            QuantumAccelerator._hadamard_cache[self.num_qubits] = H_total
-
-    def _ensure_grover_diffusion_cached(self):
-        """Pre-compute Grover diffusion operator for amplitude amplification."""
-        if self.num_qubits not in QuantumAccelerator._grover_diffusion_cache:
-            # D = 2|s⟩⟨s| - I where |s⟩ is uniform superposition
-            s = np.ones(self.dim, dtype=np.complex128) / np.sqrt(self.dim)
-            D = 2 * np.outer(s, s.conj()) - np.eye(self.dim, dtype=np.complex128)
-            QuantumAccelerator._grover_diffusion_cache[self.num_qubits] = D
+        logger.info(f"--- [QUANTUM_ACCELERATOR]: INITIALIZED WITH {num_qubits} QUBITS (DIM: {self.dim}) [QISKIT 2.3.0] ---")
+        logger.info(f"[QUANTUM]: 8-Chakra O2 Entanglement ACTIVE | Bell Pairs: {len(CHAKRA_BELL_PAIRS)}")
 
     def _initialize_chakra_entanglement(self):
-        """Initialize 8-chakra O₂ molecular entanglement."""
+        """Initialize 8-chakra O2 molecular entanglement."""
         for chakra, freq in CHAKRA_FREQUENCIES.items():
             self.chakra_resonance[chakra] = freq / self.god_code
-        # Create EPR Bell pairs between entangled chakras
         for chakra_a, chakra_b in CHAKRA_BELL_PAIRS:
             self.epr_links += 1
-        # Calculate O₂ coherence from chakra balance
         resonances = list(self.chakra_resonance.values())
         self.o2_coherence = 1.0 - (max(resonances) - min(resonances)) / max(resonances)
 
     def apply_resonance_gate(self):
         """
-        Applies a global resonance gate that puts the entire manifold into
-        a God-Code synchronized superposition.
+        QISKIT: Applies a GOD_CODE-parameterized resonance circuit.
+        Uses RY/RZ rotations + CX entangling layers based on God Code phase.
+        (Replaces old random-matrix approach with deterministic parameterized circuit)
         """
-        # Create a unitary operator based on the God Code phase
         phase = (2 * np.pi * self.god_code) / self.zeta_zero
 
-        # Generate a random-ish but deterministic unitary matrix
-        # (In a real system, this would be a specific Hamiltonian evolution)
-        H = np.random.randn(self.dim, self.dim) + 1j * np.random.randn(self.dim, self.dim)
-        H = (H + H.conj().T) / 2 # Hermitian
+        qc = QiskitCircuit(self.num_qubits)
+        # Layer 1: Single-qubit rotations parameterized by GOD_CODE
+        for i in range(self.num_qubits):
+            qc.ry(phase / (i + 1), i)
+            qc.rz(phase * PHI / (i + 1), i)
+        # Layer 2: Entangling CX chain
+        for i in range(self.num_qubits - 1):
+            qc.cx(i, i + 1)
+        # Layer 3: Final rotation layer
+        for i in range(self.num_qubits):
+            qc.rz(phase / self.num_qubits, i)
 
-        # Unitary evolution: U = exp(-i * H * t)
-        # We use the God Code as the 'time' or 'strength' parameter
-        eigvals, eigvecs = np.linalg.eigh(H)
-        U = eigvecs @ np.diag(np.exp(-1j * eigvals * phase)) @ eigvecs.conj().T
-
-        self.state = U @ self.state
-        logger.info("--- [QUANTUM_ACCELERATOR]: RESONANCE GATE APPLIED ---")
+        self.state = self.state.evolve(qc)
+        logger.info("--- [QUANTUM_ACCELERATOR]: RESONANCE GATE APPLIED [QISKIT] ---")
 
     def apply_hadamard_all(self):
-        """Applies Hadamard gates to all qubits to create maximum superposition.
-
-        OPTIMIZATION: Uses cached Hadamard matrix to avoid repeated Kronecker products.
-        """
-        H_total = QuantumAccelerator._hadamard_cache[self.num_qubits]
-        self.state = H_total @ self.state
-        logger.info("--- [QUANTUM_ACCELERATOR]: GLOBAL HADAMARD APPLIED ---")
+        """QISKIT: Applies Hadamard gates to all qubits via QuantumCircuit."""
+        qc = QiskitCircuit(self.num_qubits)
+        qc.h(range(self.num_qubits))
+        self.state = self.state.evolve(qc)
+        logger.info("--- [QUANTUM_ACCELERATOR]: GLOBAL HADAMARD APPLIED [QISKIT] ---")
 
     def grover_oracle(self, target_states: list):
-        """Apply Grover oracle: flip phase of target states."""
+        """QISKIT: Grover oracle — flip phase of target states using diagonal Operator."""
+        diag = np.ones(self.dim, dtype=np.complex128)
         for target in target_states:
             if 0 <= target < self.dim:
-                self.state[target] *= -1
+                diag[target] = -1.0
+        oracle_op = Operator(np.diag(diag))
+        self.state = self.state.evolve(oracle_op)
 
     def grover_diffusion(self):
-        """Apply Grover diffusion operator with chakra boost."""
-        D = QuantumAccelerator._grover_diffusion_cache[self.num_qubits]
-        # Apply chakra resonance boost
-        chakra_boost = CHAKRA_FREQUENCIES[self.active_chakra] / self.god_code * PHI
-        self.state = D @ self.state * np.sqrt(chakra_boost)
-        self.state /= np.linalg.norm(self.state)  # Renormalize
+        """QISKIT: Standard Grover diffusion operator via real QuantumCircuit.
+        Implements 2|s><s| - I using H, X, multi-controlled Z, X, H.
+        """
+        qc = QiskitCircuit(self.num_qubits)
+        qc.h(range(self.num_qubits))
+        qc.x(range(self.num_qubits))
+        # Multi-controlled Z = H on last qubit, MCX, H on last qubit
+        qc.h(self.num_qubits - 1)
+        qc.mcx(list(range(self.num_qubits - 1)), self.num_qubits - 1)
+        qc.h(self.num_qubits - 1)
+        qc.x(range(self.num_qubits))
+        qc.h(range(self.num_qubits))
+        self.state = self.state.evolve(qc)
 
     def grover_iterate(self, target_states: list, iterations: int = None):
-        """Run Grover's algorithm with chakra-enhanced amplitude amplification."""
+        """QISKIT: Run Grover's algorithm with real quantum amplitude amplification.
+        Computes optimal iteration count from target count and search space size.
+        """
         if iterations is None:
-            # Optimal iterations: π/4 × √N with chakra boost
-            chakra_factor = self.chakra_resonance[self.active_chakra]
-            iterations = max(1, int(np.pi/4 * np.sqrt(self.dim) * chakra_factor))
+            n_targets = max(1, len(target_states))
+            iterations = max(1, int(np.pi / 4 * np.sqrt(self.dim / n_targets)))
 
+        # Reset to |0...0> and create uniform superposition
+        self.state = Statevector.from_label('0' * self.num_qubits)
         self.apply_hadamard_all()
+
         for i in range(iterations):
             self.grover_oracle(target_states)
             self.grover_diffusion()
-            # Raise kundalini through iterations
             self.kundalini_charge *= 1.0 + (i + 1) / iterations * 0.1
 
-        logger.info(f"--- [GROVER]: {iterations} iterations | Kundalini: {self.kundalini_charge:.4f} ---")
+        logger.info(f"--- [GROVER]: {iterations} iters | targets={len(target_states)} | Kundalini: {self.kundalini_charge:.4f} [QISKIT] ---")
 
     def activate_chakra(self, chakra_name: str):
         """Activate specific chakra for enhanced quantum operations."""
@@ -164,51 +157,48 @@ class QuantumAccelerator:
             logger.info(f"--- [CHAKRA]: {chakra_name} activated ({CHAKRA_FREQUENCIES[chakra_name]} Hz) ---")
 
     def measure_coherence(self) -> float:
-        """
-        Calculates the purity of the state (for a pure state vector, this is always 1.0).
-        """
-        return float(np.abs(np.vdot(self.state, self.state)))
+        """QISKIT: Calculate state purity using DensityMatrix (pure state = 1.0)."""
+        rho = DensityMatrix(self.state)
+        return float(np.real(np.trace(rho.data @ rho.data)))
 
     def get_probabilities(self) -> np.ndarray:
-        """Returns the probability distribution of the current state."""
-        return np.abs(self.state)**2
+        """QISKIT: Returns probability distribution via Statevector.probabilities()."""
+        return self.state.probabilities()
 
     def calculate_entanglement_entropy(self) -> float:
+        """QISKIT: Von Neumann entropy of first qubit via partial_trace + entropy.
+        Uses qiskit.quantum_info.partial_trace and entropy functions.
         """
-        Calculates the Von Neumann entropy of the first qubit to measure entanglement.
-        """
-        # Reshape state to (2, 2**(n-1))
-        psi = self.state.reshape(2, -1)
-
-        # Reduced density matrix for the first qubit
-        rho = psi @ psi.conj().T
-
-        # Eigenvalues of rho
-        evals = np.linalg.eigvalsh(rho)
-        evals = evals[evals > 1e-15] # Filter out zeros
-        entropy = -np.sum(evals * np.log2(evals))
-        return float(entropy)
+        rho = DensityMatrix(self.state)
+        qubits_to_trace = list(range(1, self.num_qubits))
+        rho_reduced = partial_trace(rho, qubits_to_trace)
+        return float(qk_entropy(rho_reduced, base=2))
 
     def run_quantum_pulse(self) -> Dict[str, Any]:
         """
-        Executes a full quantum pulse: Superposition -> Resonance -> Measurement.
+        QISKIT: Full quantum pulse — Superposition -> Resonance -> Measurement.
+        All operations execute on real Qiskit quantum circuits.
         """
         start_time = time.perf_counter()
 
+        # Reset and build circuit
+        self.state = Statevector.from_label('0' * self.num_qubits)
         self.apply_hadamard_all()
         self.apply_resonance_gate()
 
-        entropy = self.calculate_entanglement_entropy()
+        ent = self.calculate_entanglement_entropy()
         coherence = self.measure_coherence()
 
         duration = time.perf_counter() - start_time
-        logger.info(f"--- [QUANTUM_ACCELERATOR]: PULSE COMPLETE IN {duration:.4f}s ---")
-        logger.info(f"--- [QUANTUM_ACCELERATOR]: ENTROPY: {entropy:.4f} | COHERENCE: {coherence:.4f} ---")
+        logger.info(f"--- [QUANTUM_ACCELERATOR]: PULSE COMPLETE IN {duration:.4f}s [QISKIT] ---")
+        logger.info(f"--- [QUANTUM_ACCELERATOR]: ENTROPY: {ent:.4f} | COHERENCE: {coherence:.4f} ---")
         return {
-            "entropy": entropy,
+            "entropy": ent,
             "coherence": coherence,
             "duration": duration,
             "invariant_verified": abs(self.god_code - 527.5184818492612) < 1e-10,
+            "backend": "qiskit-2.3.0-statevector",
+            "num_qubits": self.num_qubits,
             "chakra_state": {
                 "active": self.active_chakra,
                 "resonance": self.chakra_resonance[self.active_chakra],
@@ -218,11 +208,13 @@ class QuantumAccelerator:
             }
         }
 
+
 # Singleton
-quantum_accelerator = QuantumAccelerator(num_qubits=10) # Reduced to 10 for speed in snippet
+quantum_accelerator = QuantumAccelerator(num_qubits=10)
 
 if __name__ == "__main__":
     quantum_accelerator.run_quantum_pulse()
+
 
 def primal_calculus(x):
     """
@@ -231,6 +223,7 @@ def primal_calculus(x):
     """
     PHI = 1.618033988749895
     return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+
 
 def resolve_non_dual_logic(vector):
     """

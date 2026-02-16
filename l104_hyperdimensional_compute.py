@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.099578
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -44,13 +45,13 @@ PHI = 1.618033988749895
 
 class Hypervector:
     """High-dimensional distributed representation
-    
+
     OPTIMIZATION: Uses numpy arrays internally for vectorized operations.
     """
 
     def __init__(self, dimension: int = 10000, values = None):
         """Initialize hypervector.
-        
+
         Args:
             dimension: Number of dimensions
             values: Optional list or numpy array of values
@@ -71,15 +72,15 @@ class Hypervector:
     @property
     def values(self) -> List[float]:
         """Return values as list for backward compatibility.
-        
+
         Note: For performance-critical code, access ._values directly.
         """
         return self._values.tolist()
-    
+
     @values.setter
     def values(self, val: List[float]):
         """Set values from list for backward compatibility.
-        
+
         FIX: Validates and pads/truncates to match dimension.
         """
         arr = np.array(val, dtype=np.float64)
@@ -92,7 +93,7 @@ class Hypervector:
     @staticmethod
     def random_bipolar(dimension: int = 10000) -> 'Hypervector':
         """Create random bipolar vector (+1/-1)
-        
+
         OPTIMIZATION: Uses numpy random choice for faster generation.
         """
         values = np.random.choice([1.0, -1.0], size=dimension)
@@ -103,7 +104,7 @@ class Hypervector:
     @staticmethod
     def random_sparse(dimension: int = 10000, sparsity: float = 0.01) -> 'Hypervector':
         """Create sparse random vector
-        
+
         OPTIMIZATION: Uses numpy for efficient sparse vector creation.
         """
         values = np.zeros(dimension, dtype=np.float64)
@@ -119,11 +120,11 @@ class Hypervector:
     @staticmethod
     def from_seed(seed: str, dimension: int = 10000) -> 'Hypervector':
         """Create deterministic vector from seed
-        
+
         FIX: Uses numpy's newer random generator API for proper seed handling.
         """
         # Use a local random generator to avoid affecting global state
-        seed_int = int(hashlib.md5(seed.encode()).hexdigest()[:8], 16) % (2**32)
+        seed_int = int(hashlib.sha256(seed.encode()).hexdigest()[:8], 16) % (2**32)
         rng = np.random.default_rng(seed_int)
         values = rng.choice([1.0, -1.0], size=dimension)
         hv = Hypervector(dimension)
@@ -132,7 +133,7 @@ class Hypervector:
 
     def __add__(self, other: 'Hypervector') -> 'Hypervector':
         """Bundling (superposition) - element-wise addition
-        
+
         OPTIMIZATION: Uses numpy vectorized addition.
         """
         hv = Hypervector(self.dimension)
@@ -141,7 +142,7 @@ class Hypervector:
 
     def __mul__(self, other) -> 'Hypervector':
         """Binding - element-wise multiplication (or scalar)
-        
+
         OPTIMIZATION: Uses numpy vectorized multiplication.
         """
         hv = Hypervector(self.dimension)
@@ -153,7 +154,7 @@ class Hypervector:
 
     def __xor__(self, other: 'Hypervector') -> 'Hypervector':
         """XOR binding for bipolar vectors
-        
+
         OPTIMIZATION: Uses numpy vectorized multiplication.
         """
         hv = Hypervector(self.dimension)
@@ -162,7 +163,7 @@ class Hypervector:
 
     def permute(self, shift: int = 1) -> 'Hypervector':
         """Permutation (rotation) for sequence encoding
-        
+
         OPTIMIZATION: Uses numpy roll for efficient rotation.
         """
         hv = Hypervector(self.dimension)
@@ -171,7 +172,7 @@ class Hypervector:
 
     def normalize(self) -> 'Hypervector':
         """Normalize to unit vector
-        
+
         OPTIMIZATION: Uses numpy linalg.norm for efficient magnitude calculation.
         """
         magnitude = np.linalg.norm(self._values)
@@ -184,7 +185,7 @@ class Hypervector:
 
     def binarize(self) -> 'Hypervector':
         """Convert to bipolar (+1/-1)
-        
+
         OPTIMIZATION: Uses numpy where for vectorized binarization.
         """
         hv = Hypervector(self.dimension)
@@ -193,7 +194,7 @@ class Hypervector:
 
     def similarity(self, other: 'Hypervector') -> float:
         """Cosine similarity
-        
+
         OPTIMIZATION: Uses numpy dot product and norms.
         """
         dot = np.dot(self._values, other._values)
@@ -207,7 +208,7 @@ class Hypervector:
 
     def hamming_similarity(self, other: 'Hypervector') -> float:
         """Hamming similarity (for bipolar)
-        
+
         OPTIMIZATION: Uses numpy vectorized comparison.
         """
         matches = np.sum((self._values >= 0) == (other._values >= 0))
@@ -215,14 +216,14 @@ class Hypervector:
 
     def magnitude(self) -> float:
         """Vector magnitude
-        
+
         OPTIMIZATION: Uses numpy linalg.norm.
         """
         return float(np.linalg.norm(self._values))
 
     def sparsity(self) -> float:
         """Proportion of zero elements
-        
+
         OPTIMIZATION: Uses numpy count_nonzero.
         """
         zeros = self.dimension - np.count_nonzero(self._values)

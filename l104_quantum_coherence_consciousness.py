@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.191871
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -29,6 +30,16 @@ from enum import Enum, auto
 from abc import ABC, abstractmethod
 from collections import defaultdict
 import time
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QISKIT 2.3.0 REAL QUANTUM BACKEND
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy as qiskit_entropy
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -148,6 +159,39 @@ class Qubit:
     def apply_phase(self, phi: float):
         """Apply phase rotation."""
         self.beta *= cmath.exp(1j * phi)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # QISKIT 2.3.0 REAL QUANTUM OPERATIONS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    @property
+    def statevector(self) -> 'Statevector':
+        """Get Qiskit Statevector representation."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        return Statevector([self.alpha, self.beta])
+
+    def qiskit_measure(self) -> int:
+        """Measure using real Qiskit Born-rule sampling."""
+        if not QISKIT_AVAILABLE:
+            return self.measure()
+        sv = self.statevector
+        counts = sv.sample_counts(1)
+        result = int(list(counts.keys())[0], 2)
+        if result == 0:
+            self.alpha, self.beta = 1 + 0j, 0 + 0j
+        else:
+            self.alpha, self.beta = 0 + 0j, 1 + 0j
+        self.state = QuantumState.COLLAPSED
+        return result
+
+    def qiskit_apply_circuit(self, qc: 'QuantumCircuit'):
+        """Apply arbitrary single-qubit Qiskit circuit."""
+        if not QISKIT_AVAILABLE:
+            raise RuntimeError("Qiskit not available")
+        sv = self.statevector.evolve(qc)
+        self.alpha, self.beta = complex(sv.data[0]), complex(sv.data[1])
+        self.state = QuantumState.SUPERPOSITION
 
 
 @dataclass
@@ -487,7 +531,19 @@ class EntanglementNetwork:
         self,
         dimer: TubulinDimer
     ) -> float:
-        """Compute von Neumann entanglement entropy."""
+        """Compute von Neumann entanglement entropy (Qiskit-backed when available)."""
+        if QISKIT_AVAILABLE:
+            return self._qiskit_entropy(dimer)
+        return self._legacy_entropy(dimer)
+
+    def _qiskit_entropy(self, dimer: TubulinDimer) -> float:
+        """Real von Neumann entropy via Qiskit DensityMatrix."""
+        sv = Statevector([dimer.qubit.alpha, dimer.qubit.beta])
+        dm = DensityMatrix(sv)
+        return float(qiskit_entropy(dm, base=2))
+
+    def _legacy_entropy(self, dimer: TubulinDimer) -> float:
+        """Legacy entropy calculation."""
         p0 = dimer.qubit.probability_0()
         p1 = dimer.qubit.probability_1()
 
@@ -496,6 +552,38 @@ class EntanglementNetwork:
 
         entropy = -p0 * math.log2(p0) - p1 * math.log2(p1)
         return entropy
+
+    def qiskit_bell_state(self, dimer_a: TubulinDimer, dimer_b: TubulinDimer,
+                          bell_type: str = "phi_plus") -> float:
+        """Create real Bell state via Qiskit circuit and return entropy."""
+        if not QISKIT_AVAILABLE:
+            self.create_entanglement(dimer_a, dimer_b, bell_type)
+            return 0.0
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        if bell_type == "phi_minus":
+            qc.z(0)
+        elif bell_type == "psi_plus":
+            qc.x(1)
+        elif bell_type == "psi_minus":
+            qc.x(1)
+            qc.z(0)
+        sv = Statevector.from_int(0, 4).evolve(qc)
+        # Update dimer states from Bell state
+        dimer_a.qubit.alpha = complex(sv.data[0] + sv.data[2]) / math.sqrt(2) if abs(sv.data[0] + sv.data[2]) > 1e-10 else sv.data[0]
+        dimer_a.qubit.beta = complex(sv.data[1] + sv.data[3]) / math.sqrt(2) if abs(sv.data[1] + sv.data[3]) > 1e-10 else sv.data[1]
+        dimer_a.qubit.normalize()
+        # Compute entanglement entropy
+        dm = DensityMatrix(sv)
+        reduced = partial_trace(dm, [1])
+        ent = float(qiskit_entropy(reduced, base=2))
+        # Record entanglement
+        self.entanglements[dimer_a.dimer_id].add(dimer_b.dimer_id)
+        self.entanglements[dimer_b.dimer_id].add(dimer_a.dimer_id)
+        dimer_a.qubit.state = QuantumState.ENTANGLED
+        dimer_b.qubit.state = QuantumState.ENTANGLED
+        return ent
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

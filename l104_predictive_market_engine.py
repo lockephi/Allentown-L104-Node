@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.570947
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -91,14 +92,17 @@ class OHLCV:
 
     @property
     def range(self) -> float:
+        """Return the price range (high minus low)."""
         return self.high - self.low
 
     @property
     def body(self) -> float:
+        """Return the candle body size."""
         return abs(self.close - self.open)
 
     @property
     def is_bullish(self) -> bool:
+        """Return True if the candle closed above its open."""
         return self.close > self.open
 
 
@@ -120,12 +124,14 @@ class OrderBook:
 
     @property
     def spread(self) -> float:
+        """Return the bid-ask spread."""
         if self.bids and self.asks:
             return self.asks[0].price - self.bids[0].price
         return 0.0
 
     @property
     def mid_price(self) -> float:
+        """Return the mid-point between best bid and ask."""
         if self.bids and self.asks:
             return (self.asks[0].price + self.bids[0].price) / 2
         return 0.0
@@ -180,6 +186,7 @@ class TechnicalIndicator(ABC):
 
     @abstractmethod
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate indicator values from OHLCV data."""
         pass
 
 
@@ -187,9 +194,11 @@ class MovingAverageIndicator(TechnicalIndicator):
     """Moving average indicators"""
 
     def __init__(self, periods: List[int] = None):
+        """Initialize moving average indicator with period list."""
         self.periods = periods or [7, 20, 50, 200]
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate SMA and EMA for each configured period."""
         results = {}
         closes = [c.close for c in data]
 
@@ -212,9 +221,11 @@ class RSIIndicator(TechnicalIndicator):
     """Relative Strength Index"""
 
     def __init__(self, period: int = 14):
+        """Initialize RSI indicator with the given period."""
         self.period = period
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate the Relative Strength Index."""
         if len(data) < self.period + 1:
             return {"rsi": 50.0}
 
@@ -246,11 +257,13 @@ class MACDIndicator(TechnicalIndicator):
     """MACD indicator"""
 
     def __init__(self, fast: int = 12, slow: int = 26, signal: int = 9):
+        """Initialize MACD indicator with fast, slow, and signal periods."""
         self.fast = fast
         self.slow = slow
         self.signal = signal
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate MACD line, signal line, and histogram."""
         if len(data) < self.slow:
             return {"macd": 0, "signal": 0, "histogram": 0}
 
@@ -284,10 +297,12 @@ class BollingerBandsIndicator(TechnicalIndicator):
     """Bollinger Bands"""
 
     def __init__(self, period: int = 20, std_dev: float = 2.0):
+        """Initialize Bollinger Bands with period and standard deviation."""
         self.period = period
         self.std_dev = std_dev
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate upper, middle, lower bands and bandwidth."""
         if len(data) < self.period:
             return {"bb_upper": 0, "bb_middle": 0, "bb_lower": 0, "bb_width": 0}
 
@@ -314,9 +329,11 @@ class ATRIndicator(TechnicalIndicator):
     """Average True Range"""
 
     def __init__(self, period: int = 14):
+        """Initialize ATR indicator with the given period."""
         self.period = period
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate the Average True Range."""
         if len(data) < 2:
             return {"atr": 0}
 
@@ -341,9 +358,11 @@ class VolumeProfileIndicator(TechnicalIndicator):
     """Volume Profile Analysis"""
 
     def __init__(self, bins: int = 20):
+        """Initialize volume profile analyzer with bin count."""
         self.bins = bins
 
     def calculate(self, data: List[OHLCV]) -> Dict[str, float]:
+        """Calculate POC, VAH, and VAL from volume distribution."""
         if not data:
             return {"poc": 0, "vah": 0, "val": 0}
 
@@ -393,6 +412,7 @@ class SentimentAnalyzer:
     """Market sentiment analysis"""
 
     def __init__(self):
+        """Initialize sentiment analyzer with score tracking."""
         self.sentiment_scores: Dict[str, List[Tuple[datetime, float]]] = defaultdict(list)
         self.fear_greed_index: float = 50.0
 
@@ -480,6 +500,7 @@ class RegimeClassifier:
     """Market regime classification"""
 
     def __init__(self, lookback: int = 50):
+        """Initialize regime classifier with lookback window."""
         self.lookback = lookback
         self.current_regime: Dict[str, MarketRegime] = {}
 
@@ -534,6 +555,7 @@ class VolatilityForecaster:
     """Volatility forecasting models"""
 
     def __init__(self):
+        """Initialize volatility forecaster."""
         self.forecasts: Dict[str, List[float]] = {}
 
     def realized_volatility(self, data: List[OHLCV], window: int = 20) -> float:
@@ -600,6 +622,7 @@ class MarketMicrostructureAnalyzer:
     """Market microstructure analysis"""
 
     def __init__(self):
+        """Initialize market microstructure analyzer."""
         self.order_flow: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000000))  # QUANTUM AMPLIFIED
 
     def analyze_order_flow(self, trades: List[Trade]) -> Dict[str, float]:
@@ -679,10 +702,12 @@ class PredictiveModel(ABC):
 
     @abstractmethod
     def fit(self, data: List[OHLCV]) -> None:
+        """Fit the predictive model on historical data."""
         pass
 
     @abstractmethod
     def predict(self, horizon: int) -> Prediction:
+        """Generate a price prediction for the given horizon."""
         pass
 
 
@@ -690,12 +715,14 @@ class MomentumModel(PredictiveModel):
     """Momentum-based prediction"""
 
     def __init__(self, symbol: str, lookback: int = 20):
+        """Initialize momentum model for the given symbol."""
         self.symbol = symbol
         self.lookback = lookback
         self.momentum: float = 0.0
         self.last_price: float = 0.0
 
     def fit(self, data: List[OHLCV]) -> None:
+        """Fit momentum model by calculating recent price momentum."""
         if len(data) < self.lookback:
             return
 
@@ -706,6 +733,7 @@ class MomentumModel(PredictiveModel):
         self.last_price = new_price
 
     def predict(self, horizon: int) -> Prediction:
+        """Predict price based on projected momentum."""
         # Project momentum forward
         predicted_return = self.momentum * (horizon / self.lookback)
         predicted_price = self.last_price * (1 + predicted_return)
@@ -738,6 +766,7 @@ class MeanReversionModel(PredictiveModel):
     """Mean reversion prediction"""
 
     def __init__(self, symbol: str, period: int = 50):
+        """Initialize mean reversion model for the given symbol."""
         self.symbol = symbol
         self.period = period
         self.mean: float = 0.0
@@ -745,6 +774,7 @@ class MeanReversionModel(PredictiveModel):
         self.last_price: float = 0.0
 
     def fit(self, data: List[OHLCV]) -> None:
+        """Fit mean reversion model with price mean and standard deviation."""
         if len(data) < self.period:
             return
 
@@ -755,6 +785,7 @@ class MeanReversionModel(PredictiveModel):
         self.last_price = data[-1].close
 
     def predict(self, horizon: int) -> Prediction:
+        """Predict price based on z-score mean reversion."""
         if self.std == 0:
             return Prediction(
                 symbol=self.symbol,
@@ -795,6 +826,7 @@ class EnsemblePredictor:
     """Ensemble of predictive models"""
 
     def __init__(self, symbol: str):
+        """Initialize ensemble predictor for the given symbol."""
         self.symbol = symbol
         self.models: Dict[str, PredictiveModel] = {}
         self.weights: Dict[str, float] = {}
@@ -865,6 +897,7 @@ class SignalGenerator:
     """Trading signal generation"""
 
     def __init__(self):
+        """Initialize the signal generator."""
         self.signals: Dict[str, List[Signal]] = defaultdict(list)
 
     def generate(self, symbol: str, data: List[OHLCV],
@@ -937,12 +970,14 @@ class PredictiveMarketEngine:
     _instance = None
 
     def __new__(cls):
+        """Create or return the singleton PredictiveMarketEngine instance."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
     def __init__(self):
+        """Initialize the predictive market engine with all components."""
         if self._initialized:
             return
 

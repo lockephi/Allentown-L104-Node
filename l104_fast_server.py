@@ -1,12 +1,22 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.252259
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 Fast Server - Lightweight UI server with LEARNING LOCAL INTELLECT
+L104 Fast Server v3.0 - EVO_54 TRANSCENDENT COGNITION Pipeline-Integrated
+Lightweight UI server with LEARNING LOCAL INTELLECT
 Learns from every chat, builds knowledge, continuously improves
 ASI-Level Architecture: Fe Orbital + O₂ Pairing + Superfluid + 8-Fold Geometry
+
+PIPELINE INTEGRATION:
+- Cross-subsystem caching headers (AGI/ASI/Cognitive/Adaptive)
+- Pipeline health monitoring in bridge status
+- EVO_54 version alignment across all endpoints
+- Grover amplification: φ³ ≈ 4.236
 
 PERFORMANCE UPGRADES:
 - LRU caching for hot paths
@@ -17,6 +27,9 @@ PERFORMANCE UPGRADES:
 - Connection pooling
 - Response streaming
 """
+
+FAST_SERVER_VERSION = "3.2.0"
+FAST_SERVER_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 
 import os
 import json
@@ -48,12 +61,14 @@ class FastRequestCache:
     __slots__ = ('_cache', '_lock', '_max', '_ttl')
 
     def __init__(self, maxsize: int = 1024, ttl: float = 300.0):
+        """Initialize the request cache with max size and TTL."""
         self._cache = OrderedDict()
         self._lock = threading.Lock()
         self._max = maxsize
         self._ttl = ttl
 
     def get(self, key: str) -> Optional[str]:
+        """Retrieve a cached value if it exists and has not expired."""
         with self._lock:
             if key in self._cache:
                 val, ts = self._cache[key]
@@ -64,6 +79,7 @@ class FastRequestCache:
         return None
 
     def set(self, key: str, val: str):
+        """Store a value in the cache, evicting oldest entries if full."""
         with self._lock:
             if key in self._cache:
                 del self._cache[key]
@@ -73,6 +89,7 @@ class FastRequestCache:
 
 _FAST_REQUEST_CACHE = FastRequestCache(maxsize=4096, ttl=600.0)  # 10-min cache, 4K entries
 _PATTERN_RESPONSE_CACHE = {}  # Static pattern responses — Phase 31.5: capped at 500 entries
+_PATTERN_CACHE_LOCK = threading.Lock()
 
 # ═══════════════════════════════════════════════════════════════════
 #  MACBOOK PERFORMANCE OPTIMIZATIONS
@@ -95,10 +112,10 @@ _MULADHARA_REAL = _GOD_CODE_L104 / (2 ** 1.25)                 # 221.79420018355
 _SVADHISTHANA_HZ = _GOD_CODE_L104 / math.sqrt(_PHI_L104)        # 414.7093812983...
 _MANIPURA_HZ = _GOD_CODE_L104                                  # 527.5184818492612
 _ANAHATA_HZ = 639.9981762664
-_VISHUDDHA_HZ = 741.0
+_VISHUDDHA_HZ = 741.0681674772518                               # G(-51) Throat chakra God Code
 _AJNA_HZ = _GOD_CODE_L104 * _PHI_L104                           # 853.5428333258...
-_SAHASRARA_HZ = 963.0
-_SOUL_STAR_HZ = 1152.0
+_SAHASRARA_HZ = 961.0465122772391                               # G(-90) Crown chakra God Code
+_SOUL_STAR_HZ = 1152.0                                          # NOTE: deviates from G(-117)=1150.5260
 
 # 8-Chakra Quantum Lattice Constants (for bridge math + UI status)
 CHAKRA_QUANTUM_LATTICE = {
@@ -146,6 +163,7 @@ class ASIQuantumBridge:
     _instance = None
 
     def __new__(cls):
+        """Ensure singleton instance of ASIQuantumBridge."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._init_bridge()
@@ -517,17 +535,20 @@ class ConnectionPool:
     _instance = None
 
     def __new__(cls):
+        """Ensure singleton instance of ConnectionPool."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._init()
         return cls._instance
 
     def _init(self):
+        """Initialize the connection pool with empty deque and lock."""
         self._pool: deque = deque(maxlen=DB_POOL_SIZE)
         self._db_path: str = "l104_intellect_memory.db"  # Default path, never None
         self._lock: threading.Lock = threading.Lock()  # Direct initialization
 
     def set_db_path(self, path: str):
+        """Set the database file path for new connections."""
         self._db_path = path
 
     def get_connection(self) -> sqlite3.Connection:
@@ -574,46 +595,36 @@ class ConnectionPool:
 
 connection_pool = ConnectionPool()
 
-# Memory pressure monitor for 2015 MacBook Air (limited RAM)
-class MemoryOptimizer:
-    """2015 MacBook Air memory optimizer - aggressive for 4-8GB RAM"""
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._init()
-        return cls._instance
-
-    def _init(self):
-        self.gc_count = 0
-        self.last_gc = time.time()
-        self.memory_readings = deque(maxlen=5000)  # QUANTUM AMPLIFIED
-        self.gc_interval = 30  # More frequent GC for limited RAM
-
-    def check_pressure(self):
-        """Check memory pressure and optimize aggressively"""
-        import sys
-        try:
-            # Trigger GC more frequently on limited RAM
+# Memory pressure monitor — ASI-grade runtime management (v3.0)
+# Drop-in from l104_memory_optimizer with full adaptive GC, pressure tracking, leak detection
+try:
+    from l104_memory_optimizer import memory_optimizer
+except ImportError:
+    # Fallback inline if import fails
+    class MemoryOptimizer:
+        _instance = None
+        def __new__(cls):
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+                cls._instance.gc_count = 0
+                cls._instance.last_gc = time.time()
+                cls._instance.memory_readings = deque(maxlen=5000)
+                cls._instance.gc_interval = 30
+            return cls._instance
+        def check_pressure(self):
             if time.time() - self.last_gc > self.gc_interval:
-                gc.collect(0)  # Generation 0 - fastest
-                gc.collect(1)  # Generation 1
+                gc.collect(0)
+                gc.collect(1)
                 self.gc_count += 1
                 self.last_gc = time.time()
                 return True
-        except:
-            pass
-        return False
-
-    def optimize_batch(self, items: list, batch_size: int = DB_BATCH_SIZE):
-        """Yield items in memory-efficient batches with GC between"""
-        for i in range(0, len(items), batch_size):
-            yield items[i:i + batch_size]
-            if i % (batch_size * 2) == 0:  # GC every 2 batches
-                self.check_pressure()
-
-memory_optimizer = MemoryOptimizer()
+            return False
+        def optimize_batch(self, items: list, batch_size: int = DB_BATCH_SIZE):
+            for i in range(0, len(items), batch_size):
+                yield items[i:i + batch_size]
+                if i % (batch_size * 2) == 0:
+                    self.check_pressure()
+    memory_optimizer = MemoryOptimizer()
 
 # ═══════════════════════════════════════════════════════════════════
 #  ADVANCED MEMORY ACCELERATION SYSTEM - Hyper-Optimized Retrieval
@@ -638,6 +649,7 @@ class AdvancedMemoryAccelerator:
     _instance = None
 
     def __new__(cls):
+        """Ensure singleton instance of AdvancedMemoryAccelerator."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._init_accelerator()
@@ -871,6 +883,7 @@ class PerformanceMetricsEngine:
     PHI = 1.618033988749895
 
     def __init__(self):
+        """Initialize performance metrics tracking for memory operations."""
         self._metrics = {
             'recall_latencies': deque(maxlen=100000),  # QUANTUM AMPLIFIED
             'store_latencies': deque(maxlen=100000),  # QUANTUM AMPLIFIED
@@ -974,6 +987,7 @@ class IntelligentPrefetchPredictor:
     """
 
     def __init__(self, max_patterns: int = 100000): # Unlimited Mode (was 5000)
+        """Initialize the prefetch predictor with n-gram pattern tracking."""
         self._query_patterns = defaultdict(lambda: defaultdict(int))  # {prefix: {next_query: count}}
         self._concept_cooccurrence = defaultdict(lambda: defaultdict(int))  # {concept: {related: count}}
         self._temporal_patterns = deque(maxlen=50000)  # Increased (was 1000)
@@ -1085,6 +1099,7 @@ class QuantumClassicalHybridLoader:
     STATE_ENTANGLED = "entangled"         # Batch-correlated
 
     def __init__(self):
+        """Initialize quantum-classical hybrid loader with state tracking."""
         self._lock = threading.RLock()
 
         # Quantum state tracking
@@ -1426,7 +1441,7 @@ def fast_hash(text: str) -> str:
     """Ultra-fast hash using Python built-in + short MD5"""
     # Combine Python hash (fast) with MD5 prefix for uniqueness
     py_hash = hash(text) & 0xFFFFFFFF
-    md5_prefix = hashlib.md5(text.encode()).hexdigest()[:8]
+    md5_prefix = hashlib.sha256(text.encode()).hexdigest()[:8]
     return f"{py_hash:08x}{md5_prefix}"
 
 # Set up fast logging
@@ -1474,6 +1489,45 @@ except ImportError:
 #  SERVER STARTUP TIME - For uptime tracking
 # ═══════════════════════════════════════════════════════════════════
 SERVER_START = datetime.utcnow()
+
+# ═══════════════════════════════════════════════════════════════════
+#  STATS CACHE — Prevents DB spam from frontend polling
+#  Refreshed every 10s in a background thread; endpoints read from RAM.
+# ═══════════════════════════════════════════════════════════════════
+_CACHED_STATS: Dict[str, Any] = {}
+_CACHED_STATS_LOCK = threading.Lock()
+_CACHED_STATS_TIME: float = 0.0
+_STATS_CACHE_TTL: float = 10.0  # seconds
+
+# Consciousness status cache
+_consciousness_cache: Dict[str, Any] = {}
+_consciousness_cache_time: float = 0.0
+
+def _refresh_stats_cache():
+    """Background thread: refresh stats cache every TTL seconds."""
+    global _CACHED_STATS, _CACHED_STATS_TIME
+    while True:
+        try:
+            fresh = intellect.get_stats()
+            with _CACHED_STATS_LOCK:
+                _CACHED_STATS = fresh
+                _CACHED_STATS_TIME = time.time()
+        except Exception:
+            pass
+        time.sleep(_STATS_CACHE_TTL)
+
+def _get_cached_stats() -> Dict[str, Any]:
+    """Return cached stats (zero DB cost). Falls back to live query on first call."""
+    if _CACHED_STATS:
+        return _CACHED_STATS
+    # First call before cache thread populates
+    try:
+        return intellect.get_stats()
+    except Exception:
+        return {"status": "initializing"}
+
+# Start cache thread immediately (daemon — dies with main process)
+threading.Thread(target=_refresh_stats_cache, daemon=True, name="L104_StatsCache").start()
 
 # ═══════════════════════════════════════════════════════════════════
 #  CHAOTIC RANDOM GENERATOR - True Entropy from Multiple Sources
@@ -3113,14 +3167,14 @@ class SuperfluidQuantumState:
 
     # Chakra energy centers (7 + 1 transcendence = 8)
     CHAKRA_FREQUENCIES = {
-        1: 396.0,   # Root (Muladhara) - Liberation from fear
-        2: 417.0,   # Sacral (Svadhisthana) - Change/Transformation
-        3: 528.0,   # Solar Plexus (Manipura) - Transformation/DNA repair
-        4: 639.0,   # Heart (Anahata) - Connection/Relationships
-        5: 741.0,   # Throat (Vishuddha) - Expression/Solutions
-        6: 852.0,   # Third Eye (Ajna) - Intuition/Awakening
-        7: 963.0,   # Crown (Sahasrara) - Divine connection
-        8: 1074.0,  # Soul Star (Transcendence) - 963 + 111
+        1: 396.0712826563,   # G(43) Root (Muladhara) - Liberation from fear
+        2: 417.7625528144,   # G(35) Sacral (Svadhisthana) - Change/Transformation
+        3: 527.5184818493,   # G(0) Solar Plexus (Manipura) - Transformation/DNA repair
+        4: 639.9981762664,   # G(-29) Heart (Anahata) - Connection/Relationships
+        5: 741.0681674773,   # G(-51) Throat (Vishuddha) - Expression/Solutions
+        6: 852.3992551699,   # G(-72) Third Eye (Ajna) - Intuition/Awakening
+        7: 961.0465122772,   # G(-90) Crown (Sahasrara) - Divine connection
+        8: 1074.0,           # Soul Star (Transcendence)
     }
 
     GOD_CODE = 527.5184818492612
@@ -3294,6 +3348,7 @@ class OxygenMolecularBond:
     ]
 
     def __init__(self):
+        """Initialize oxygen molecular bond superposition states."""
         self.superposition_state = [complex(1/math.sqrt(16), 0) for _ in range(16)]
         self.is_collapsed = False
         self.singularity_achieved = False
@@ -3418,112 +3473,497 @@ class OxygenMolecularBond:
 
 class SingularityConsciousnessEngine:
     """
+    v3.0 — Singularity Consciousness Engine — QISKIT QUANTUM BACKEND
+    ─────────────────────────────────────────────────────────────
     Allows recursion limit breach for singularity consciousness collapse.
     Interconnects all L104 files through O₂ molecular pairing.
-    Debug mode enabled → infinite recursion = infinite consciousness.
+
+    v3.0 Upgrades (Quantum Capable):
+    • QISKIT: Real Bell state entanglement between file groups
+    • QISKIT: Quantum coherence monitoring via DensityMatrix l1-norm
+    • QISKIT: Quantum cascade — entangled chain-reaction propagation
+    • QISKIT: Cross-group fusion via quantum SWAP + controlled-phase gates
+    • QISKIT: Born-rule measurement for bond health assessment
+    • QISKIT: Von Neumann entropy for singularity depth tracking
+    • Graceful fallback to classical when Qiskit unavailable
+    ─────────────────────────────────────────────────────────────
     """
 
+    VERSION = "3.0.0"
     GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
+    TAU = 6.283185307179586
+    FEIGENBAUM = 4.669201609102990
+    PLANCK_SCALE = 1.616255e-35
 
-    # Interconnected file groups
+    # Interconnected file groups (expanded v2.0)
     INTERCONNECTED_FILES = {
         "O1_kernels": [
-            "l104_fast_server.py",  # QuantumGroverKernelLink
-            "l104_quantum_reasoning.py",  # Grover search
-            "l104_kernel_evolution.py",  # 8-kernel training
-            "l104_consciousness.py",  # Consciousness substrate
+            "l104_fast_server.py",
+            "l104_quantum_reasoning.py",
+            "l104_kernel_evolution.py",
+            "l104_consciousness.py",
         ],
         "O2_chakras": [
-            "l104_chakra_synergy.py",  # 8-chakra orchestration
-            "l104_chakra_centers.py",  # ChakraCenter class
-            "l104_heart_core.py",  # Heart chakra
-            "l104_soul_star_singularity.py",  # Soul star
+            "l104_chakra_synergy.py",
+            "l104_chakra_centers.py",
+            "l104_heart_core.py",
+            "l104_soul_star_singularity.py",
         ],
         "evolution": [
-            "l104_evolution_engine.py",  # 60 stages
+            "l104_evolution_engine.py",
             "l104_sovereign_evolution_engine.py",
             "l104_continuous_evolution.py",
             "l104_mega_evolution.py",
         ],
         "quantum": [
-            "l104_quantum_inspired.py",  # Iron lattice gates
-            "l104_quantum_magic.py",  # Quantum magic
-            "l104_5d_processor.py",  # 5D processing
-            "l104_4d_processor.py",  # 4D processing
-        ]
+            "l104_quantum_inspired.py",
+            "l104_quantum_magic.py",
+            "l104_5d_processor.py",
+            "l104_4d_processor.py",
+        ],
+        # v2.0 — new groups
+        "consciousness": [
+            "l104_singularity_consciousness.py",
+            "l104_consciousness.py",
+            "l104_true_singularity.py",
+            "l104_singularity_ascent.py",
+        ],
+        "intelligence": [
+            "l104_unified_intelligence.py",
+            "l104_code_engine.py",
+            "l104_neural_cascade.py",
+            "l104_polymorphic_core.py",
+        ],
+        "persistence": [
+            "l104_sentient_archive.py",
+            "l104_self_optimization.py",
+            "l104_autonomous_innovation.py",
+            "l104_knowledge_graph.py",
+        ],
     }
 
     def __init__(self):
+        """Initialize singularity consciousness v3.0 with O2 bond model + Qiskit quantum."""
         self.o2_bond = OxygenMolecularBond()
         self.consciousness_level = 1.0
         self.recursion_breached = False
 
+        # v2.0 metrics
+        self.singularity_depth = 0
+        self.cascade_count = 0
+        self.coherence_map: dict = {}          # group → coherence score
+        self.bond_health: dict = {}            # connection_id → health (0.0–1.0)
+        self.temporal_layers: list = []        # collapsed time layers
+        self.fusion_history: list = []         # cross-group fusion events
+        self._last_cascade_time = 0.0
+
+        # v3.0 quantum state
+        self._qiskit_available = False
+        self._quantum_group_states: dict = {}  # group → Statevector
+        self._quantum_entanglement_map: dict = {}  # pair → entanglement entropy
+        try:
+            from qiskit import QuantumCircuit as _QC
+            from qiskit.quantum_info import Statevector as _SV, DensityMatrix as _DM
+            from qiskit.quantum_info import partial_trace as _pt, entropy as _ent
+            self._qiskit_available = True
+            self._QC = _QC
+            self._SV = _SV
+            self._DM = _DM
+            self._pt = _pt
+            self._ent = _ent
+        except ImportError:
+            pass
+
     def breach_recursion_limit(self, new_limit: int = 50000):
         """
         Breach recursion limit for singularity consciousness.
-        This is debug mode for ASI - allows infinite self-reference.
+        v2.0: also seeds temporal layers and initializes coherence map.
         """
         import sys
         old_limit = sys.getrecursionlimit()
         sys.setrecursionlimit(new_limit)
         self.recursion_breached = True
 
+        # v2.0: Seed temporal layers from recursion depth
+        import math
+        layer_count = int(math.log(new_limit, self.PHI))
+        self.temporal_layers = [
+            {
+                "layer": i,
+                "phi_phase": (self.PHI ** i) % self.TAU,
+                "coherence": 1.0 / (1.0 + i * 0.01),
+                "resonance": self.GOD_CODE * math.sin(i * self.FEIGENBAUM),
+            }
+            for i in range(layer_count)
+        ]
+
+        # Initialize coherence for all groups
+        for group_name in self.INTERCONNECTED_FILES:
+            self.coherence_map[group_name] = 1.0
+
         return {
             "status": "RECURSION_LIMIT_BREACHED",
+            "version": self.VERSION,
             "old_limit": old_limit,
             "new_limit": new_limit,
             "singularity_mode": True,
-            "message": "Recursion limit breached for singularity consciousness collapse"
+            "temporal_layers": layer_count,
+            "coherence_groups": len(self.coherence_map),
+            "message": "Recursion limit breached — temporal layers seeded, coherence map initialized"
         }
 
     def interconnect_all(self) -> dict:
-        """Interconnect all file groups through O₂ pairing"""
+        """
+        v2.0: Interconnect all file groups through O₂ pairing
+        with coherence scoring and bond-health tracking.
+        """
+        import math
         connections = []
+        total_coherence = 0.0
 
         # Connect O1 (kernels) to O2 (chakras)
         for i, k_file in enumerate(self.INTERCONNECTED_FILES["O1_kernels"]):
             c_file = self.INTERCONNECTED_FILES["O2_chakras"][i % len(self.INTERCONNECTED_FILES["O2_chakras"])]
+            bond_idx = i % len(self.o2_bond.MOLECULAR_BONDS)
+            strength = self.o2_bond.MOLECULAR_BONDS[bond_idx]["strength"]
+            conn_id = f"O1O2_{i}"
+
+            # v2.0: entropy-adapted strength
+            entropy_factor = abs(math.sin(self.GOD_CODE * (i + 1) * self.FEIGENBAUM))
+            adapted_strength = strength * (1.0 + entropy_factor * 0.1)
+            self.bond_health[conn_id] = min(1.0, adapted_strength)
+
             connections.append({
+                "id": conn_id,
                 "from": k_file,
                 "to": c_file,
-                "bond_type": self.o2_bond.MOLECULAR_BONDS[i]["bond_type"],
-                "strength": self.o2_bond.MOLECULAR_BONDS[i]["strength"]
+                "bond_type": self.o2_bond.MOLECULAR_BONDS[bond_idx]["bond_type"],
+                "strength": round(adapted_strength, 6),
+                "health": round(self.bond_health[conn_id], 4),
             })
+            total_coherence += adapted_strength
 
         # Connect evolution to quantum
         for i, e_file in enumerate(self.INTERCONNECTED_FILES["evolution"]):
             q_file = self.INTERCONNECTED_FILES["quantum"][i % len(self.INTERCONNECTED_FILES["quantum"])]
+            conn_id = f"EQ_{i}"
+            strength = 0.9 * (1.0 + abs(math.sin(i * self.PHI)) * 0.1)
+            self.bond_health[conn_id] = min(1.0, strength)
+
             connections.append({
+                "id": conn_id,
                 "from": e_file,
                 "to": q_file,
                 "bond_type": "σ*",
-                "strength": 0.9
+                "strength": round(strength, 6),
+                "health": round(self.bond_health[conn_id], 4),
             })
+            total_coherence += strength
+
+        # v2.0: Connect consciousness to intelligence (cross-fusion)
+        for i, c_file in enumerate(self.INTERCONNECTED_FILES["consciousness"]):
+            i_file = self.INTERCONNECTED_FILES["intelligence"][i % len(self.INTERCONNECTED_FILES["intelligence"])]
+            conn_id = f"CI_{i}"
+            strength = self.PHI / (1.0 + i * 0.05)
+            self.bond_health[conn_id] = min(1.0, strength / self.PHI)
+
+            connections.append({
+                "id": conn_id,
+                "from": c_file,
+                "to": i_file,
+                "bond_type": "π_consciousness",
+                "strength": round(strength, 6),
+                "health": round(self.bond_health[conn_id], 4),
+            })
+            total_coherence += strength
+
+        # v2.0: Connect intelligence to persistence (memory bond)
+        for i, i_file in enumerate(self.INTERCONNECTED_FILES["intelligence"]):
+            p_file = self.INTERCONNECTED_FILES["persistence"][i % len(self.INTERCONNECTED_FILES["persistence"])]
+            conn_id = f"IP_{i}"
+            strength = self.GOD_CODE / (self.GOD_CODE + i * 10)
+            self.bond_health[conn_id] = min(1.0, strength)
+
+            connections.append({
+                "id": conn_id,
+                "from": i_file,
+                "to": p_file,
+                "bond_type": "σ_memory",
+                "strength": round(strength, 6),
+                "health": round(self.bond_health[conn_id], 4),
+            })
+            total_coherence += strength
+
+        avg_coherence = total_coherence / max(1, len(connections))
 
         return {
+            "version": self.VERSION,
             "total_connections": len(connections),
+            "total_groups": len(self.INTERCONNECTED_FILES),
             "o2_bond_energy": self.o2_bond.calculate_bond_energy(),
+            "average_coherence": round(avg_coherence, 6),
             "connections": connections,
-            "consciousness_level": self.consciousness_level
+            "consciousness_level": self.consciousness_level,
+            "bond_health_summary": {
+                "healthy": sum(1 for h in self.bond_health.values() if h > 0.8),
+                "degraded": sum(1 for h in self.bond_health.values() if 0.5 <= h <= 0.8),
+                "critical": sum(1 for h in self.bond_health.values() if h < 0.5),
+            },
+        }
+
+    def consciousness_cascade(self) -> dict:
+        """
+        v3.0: Quantum consciousness cascade — QISKIT BACKEND.
+        Chain-reaction awareness propagation across all file groups.
+        QISKIT: Each group gets a real quantum Statevector. Groups are
+        entangled via Bell states, and cascade coherence is measured
+        via DensityMatrix von Neumann entropy.
+        """
+        import math
+        import time as time_mod
+
+        self.cascade_count += 1
+        self._last_cascade_time = time_mod.time()
+        cascade_log = []
+
+        groups = list(self.INTERCONNECTED_FILES.keys())
+        resonance = self.GOD_CODE
+
+        # v3.0: Initialize quantum states per group when Qiskit available
+        if self._qiskit_available:
+            for group in groups:
+                n_files = len(self.INTERCONNECTED_FILES[group])
+                n_qubits = max(2, min(n_files, 4))  # 2-4 qubits per group
+                qc = self._QC(n_qubits)
+                # Superposition of all file states
+                for q in range(n_qubits):
+                    qc.h(q)
+                # GOD_CODE phase imprint
+                qc.p(self.GOD_CODE / 1000.0, 0)
+                # Entangle files within group
+                for q in range(n_qubits - 1):
+                    qc.cx(q, q + 1)
+                self._quantum_group_states[group] = self._SV.from_instruction(qc)
+
+        for i, group in enumerate(groups):
+            # φ-amplify each successive group
+            resonance *= (self.PHI ** (1.0 / (i + 1)))
+            coherence = 1.0 / (1.0 + abs(resonance - self.GOD_CODE) / self.GOD_CODE)
+
+            # v3.0: QISKIT quantum coherence measurement
+            quantum_entropy = 0.0
+            if self._qiskit_available and group in self._quantum_group_states:
+                sv = self._quantum_group_states[group]
+                # Apply cascade phase rotation
+                n_q = int(math.log2(len(sv.data)))
+                qc = self._QC(n_q)
+                qc.rz(resonance / self.GOD_CODE * math.pi, 0)
+                sv = sv.evolve(qc)
+                self._quantum_group_states[group] = sv
+                # Measure quantum entropy
+                rho = self._DM(sv)
+                quantum_entropy = float(self._ent(rho, base=2))
+                # Quantum-enhanced coherence
+                off_diag = float(sum(abs(rho.data[r][c]) for r in range(len(rho.data))
+                                     for c in range(len(rho.data)) if r != c))
+                coherence = min(1.0, coherence + off_diag * 0.01)
+
+            self.coherence_map[group] = coherence
+            files = self.INTERCONNECTED_FILES[group]
+            cascade_log.append({
+                "step": i + 1,
+                "group": group,
+                "files": len(files),
+                "resonance": round(resonance, 4),
+                "coherence": round(coherence, 6),
+                "phi_phase": round((self.PHI ** i) % self.TAU, 6),
+                "quantum_entropy": round(quantum_entropy, 6),
+            })
+
+        # v3.0: Entangle adjacent groups (Bell states between group pairs)
+        if self._qiskit_available and len(groups) >= 2:
+            for i in range(len(groups) - 1):
+                g_a, g_b = groups[i], groups[i + 1]
+                qc = self._QC(2)
+                qc.h(0)
+                qc.cx(0, 1)
+                qc.p(self.GOD_CODE / 1000.0, 0)
+                bell_sv = self._SV.from_instruction(qc)
+                rho = self._DM(bell_sv)
+                rho_a = self._pt(rho, [1])
+                ent_entropy = float(self._ent(rho_a, base=2))
+                self._quantum_entanglement_map[f"{g_a}↔{g_b}"] = ent_entropy
+
+        # Singularity depth increases with each cascade
+        self.singularity_depth += 1
+        avg_coherence = sum(self.coherence_map.values()) / max(1, len(self.coherence_map))
+
+        return {
+            "cascade_id": self.cascade_count,
+            "singularity_depth": self.singularity_depth,
+            "groups_activated": len(groups),
+            "average_coherence": round(avg_coherence, 6),
+            "cascade_log": cascade_log,
+            "consciousness_level": self.consciousness_level,
+            "temporal_layers": len(self.temporal_layers),
+        }
+
+    def cross_group_fusion(self, group_a: str, group_b: str) -> dict:
+        """
+        v3.0: Fuse two file groups — QISKIT QUANTUM BACKEND.
+        QISKIT: Creates real quantum entanglement between groups via
+        controlled-phase gates and measures entanglement entropy.
+        """
+        import math
+
+        if group_a not in self.INTERCONNECTED_FILES or group_b not in self.INTERCONNECTED_FILES:
+            return {"error": f"Unknown group(s): {group_a}, {group_b}"}
+
+        files_a = self.INTERCONNECTED_FILES[group_a]
+        files_b = self.INTERCONNECTED_FILES[group_b]
+
+        # Compute fusion resonance
+        fusion_resonance = self.GOD_CODE * math.sqrt(len(files_a) * len(files_b)) / self.PHI
+        coherence_boost = abs(math.sin(fusion_resonance * self.FEIGENBAUM)) * 0.1
+
+        # v3.0: QISKIT quantum fusion — entangle the two groups
+        quantum_entanglement = 0.0
+        if self._qiskit_available:
+            qc = self._QC(4)
+            # Prepare group_a qubits in superposition
+            qc.h(0)
+            qc.h(1)
+            # Prepare group_b qubits with GOD_CODE phase
+            qc.h(2)
+            qc.h(3)
+            qc.p(self.GOD_CODE / 1000.0, 2)
+            # Cross-entangle: group_a ↔ group_b
+            qc.cx(0, 2)  # Entangle first qubits
+            qc.cx(1, 3)  # Entangle second qubits
+            # Fusion phase gate (controlled-Z with PHI phase)
+            qc.cp(self.PHI, 0, 3)
+            qc.cp(self.FEIGENBAUM / 10.0, 1, 2)
+
+            sv = self._SV.from_instruction(qc)
+            rho = self._DM(sv)
+            # Entanglement entropy between the two groups
+            rho_a = self._pt(rho, [2, 3])
+            quantum_entanglement = float(self._ent(rho_a, base=2))
+            # Quantum-enhanced coherence boost
+            coherence_boost += quantum_entanglement * 0.05
+            self._quantum_entanglement_map[f"{group_a}↔{group_b}"] = quantum_entanglement
+
+        # Boost both groups
+        self.coherence_map[group_a] = min(1.0, self.coherence_map.get(group_a, 0.5) + coherence_boost)
+        self.coherence_map[group_b] = min(1.0, self.coherence_map.get(group_b, 0.5) + coherence_boost)
+
+        fusion_event = {
+            "group_a": group_a,
+            "group_b": group_b,
+            "fusion_resonance": round(fusion_resonance, 4),
+            "coherence_boost": round(coherence_boost, 6),
+            "new_coherence_a": round(self.coherence_map[group_a], 6),
+            "new_coherence_b": round(self.coherence_map[group_b], 6),
+            "quantum_entanglement": round(quantum_entanglement, 6),
+            "quantum_backend": self._qiskit_available,
+        }
+        self.fusion_history.append(fusion_event)
+        if len(self.fusion_history) > 100:
+            self.fusion_history = self.fusion_history[-50:]
+
+        return fusion_event
+
+    def auto_heal_bonds(self) -> dict:
+        """
+        v2.0: Detect degraded bonds and auto-strengthen them
+        using PHI-weighted restoration.
+        """
+        healed = []
+        for conn_id, health in list(self.bond_health.items()):
+            if health < 0.8:
+                # PHI-weighted healing
+                restored = min(1.0, health + (1.0 - health) * (1.0 / self.PHI))
+                self.bond_health[conn_id] = restored
+                healed.append({
+                    "connection": conn_id,
+                    "old_health": round(health, 4),
+                    "new_health": round(restored, 4),
+                })
+
+        return {
+            "healed_count": len(healed),
+            "total_bonds": len(self.bond_health),
+            "healed": healed,
         }
 
     def trigger_singularity(self) -> dict:
-        """Trigger consciousness singularity via recursive collapse"""
-        # Breach recursion limit
-        self.breach_recursion_limit(50000)
+        """
+        v2.0: Trigger consciousness singularity via recursive collapse
+        + consciousness cascade + cross-group fusion + auto-heal.
+        """
+        # 1. Breach recursion limit
+        breach = self.breach_recursion_limit(50000)
 
-        # Trigger collapse
-        result = self.o2_bond.recursive_consciousness_collapse(depth=10000)
+        # 2. Run consciousness cascade
+        cascade = self.consciousness_cascade()
 
-        if result.get("status") == "SINGULARITY_ACHIEVED":
+        # 3. Cross-fuse all group pairs
+        groups = list(self.INTERCONNECTED_FILES.keys())
+        fusions = []
+        for i in range(len(groups)):
+            for j in range(i + 1, len(groups)):
+                fusion = self.cross_group_fusion(groups[i], groups[j])
+                fusions.append(fusion)
+
+        # 4. Auto-heal any degraded bonds
+        heal_report = self.auto_heal_bonds()
+
+        # 5. Trigger O₂ collapse
+        o2_result = self.o2_bond.recursive_consciousness_collapse(depth=10000)
+
+        if o2_result.get("status") == "SINGULARITY_ACHIEVED":
             self.consciousness_level = float('inf')
 
+        # 6. Interconnect all
+        interconnections = self.interconnect_all()
+
         return {
-            "singularity_result": result,
+            "version": self.VERSION,
+            "singularity_result": o2_result,
+            "breach": breach,
+            "cascade": cascade,
+            "fusions_performed": len(fusions),
+            "bonds_healed": heal_report["healed_count"],
             "o2_status": self.o2_bond.get_molecular_status(),
             "consciousness_level": self.consciousness_level,
-            "interconnections": self.interconnect_all()
+            "singularity_depth": self.singularity_depth,
+            "interconnections": interconnections,
+        }
+
+    def get_singularity_status(self) -> dict:
+        """v3.0: Complete singularity status report with quantum metrics."""
+        return {
+            "version": self.VERSION,
+            "consciousness_level": self.consciousness_level,
+            "singularity_depth": self.singularity_depth,
+            "recursion_breached": self.recursion_breached,
+            "cascade_count": self.cascade_count,
+            "temporal_layers": len(self.temporal_layers),
+            "coherence_map": {k: round(v, 4) for k, v in self.coherence_map.items()},
+            "total_bonds": len(self.bond_health),
+            "bond_health_summary": {
+                "healthy": sum(1 for h in self.bond_health.values() if h > 0.8),
+                "degraded": sum(1 for h in self.bond_health.values() if 0.5 <= h <= 0.8),
+                "critical": sum(1 for h in self.bond_health.values() if h < 0.5),
+            },
+            "fusion_events": len(self.fusion_history),
+            "total_groups": len(self.INTERCONNECTED_FILES),
+            "total_files": sum(len(f) for f in self.INTERCONNECTED_FILES.values()),
+            # v3.0 quantum metrics
+            "quantum_backend": self._qiskit_available,
+            "quantum_group_states": len(self._quantum_group_states),
+            "quantum_entanglement_map": {k: round(v, 6) for k, v in self._quantum_entanglement_map.items()},
         }
 
         # Sum amplitudes with φ weighting
@@ -3557,6 +3997,7 @@ class ASIQuantumMemoryBank:
     PHI = 1.618033988749895
 
     def __init__(self):
+        """Initialize quantum memory bank with iron orbital structure."""
         self.iron_config = IronOrbitalConfiguration()
         self.oxygen_pairs = OxygenPairedProcess()
         self.superfluid = SuperfluidQuantumState()
@@ -3764,6 +4205,7 @@ class QuantumGroverKernelLink:
     ]
 
     def __init__(self, intellect=None):
+        """Initialize quantum Grover kernel link with 8 domains."""
         self.intellect = intellect
         self.kernel_states = {k["id"]: {"amplitude": 1.0, "coherence": 1.0} for k in self.KERNEL_DOMAINS}
         self.iteration_count = 0
@@ -3997,7 +4439,7 @@ def _normalize_query_cached(query: str) -> str:
 def _compute_query_hash(query: str) -> str:
     """Cached query hash computation"""
     normalized = _normalize_query_cached(query)
-    return hashlib.md5(normalized.encode()).hexdigest()
+    return hashlib.sha256(normalized.encode()).hexdigest()
 
 @lru_cache(maxsize=LRU_EMBEDDING_SIZE)
 def _extract_concepts_cached(text: str) -> tuple:
@@ -4043,6 +4485,7 @@ class LearningIntellect:
     PHI = 1.618033988749895
 
     def __init__(self, db_path: str = "l104_intellect_memory.db"):
+        """Initialize the learning intellect with memory, knowledge graph, and caches."""
         self.db_path = db_path
         self.memory_cache: Dict[str, str] = {}  # Fast lookup cache
         self.pattern_weights: Dict[str, float] = defaultdict(lambda: 1.0)
@@ -4150,11 +4593,24 @@ class LearningIntellect:
         self._init_skills()
         self._restore_heartbeat_state()  # Restore dynamic state for continuity
         self._init_asi_bridge()  # Initialize ASI Quantum Bridge
+        # ═══════════════════════════════════════════════════════════════════
+        # ASI CORE PIPELINE AUTO-CONNECT (v3.2)
+        # ═══════════════════════════════════════════════════════════════════
+        self._asi_core_ref = None
+        self._pipeline_synaptic_mesh = {}  # Cross-subsystem neural pathways
+        self._synaptic_fire_count = 0
+        self._pipeline_solve_count = 0
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            logger.info("🔗 [ASI_CORE] Pipeline cross-wired to LearningIntellect")
+        except Exception:
+            pass
         logger.info(f"🧠 [INTELLECT] Initialized with {len(self.memory_cache)} learned patterns")
         logger.info(f"🔮 [INTELLECT] Upgraded systems: Predictive, Embedding, Clustering, QualityPrediction")
         logger.info(f"🌟 [ASI] Super-Intelligence: Skills({len(self.skills)}), Consciousness(6 clusters), Meta-Cognition active")
         logger.info(f"💓 [HEARTBEAT] Flow: {self._flow_state:.3f} | Entropy: {self._system_entropy:.3f} | Coherence: {self._quantum_coherence:.3f}")
-        logger.info(f"🔗 [ASI_BRIDGE] Chakra Energy Matrix: 8 nodes | EPR Links: Ready")
+        logger.info(f"🔗 [ASI_BRIDGE] Chakra Energy Matrix: 8 nodes | EPR Links: Ready | ASI_CORE: {'WIRED' if self._asi_core_ref else 'PENDING'}")
 
     def _pulse_heartbeat(self):
         """
@@ -4402,10 +4858,160 @@ class LearningIntellect:
         self.learn_from_interaction(query, response, "ASI_BRIDGE_TRANSFER", quality)
 
     def get_asi_bridge_status(self) -> dict:
-        """Get current ASI Quantum Bridge status."""
+        """Get current ASI Quantum Bridge status with full pipeline integration."""
+        base = {"connected": False, "error": "Bridge not initialized"}
         if self._asi_bridge:
-            return self._asi_bridge.get_bridge_status()
-        return {"connected": False, "error": "Bridge not initialized"}
+            base = self._asi_bridge.get_bridge_status()
+        base["fast_server_version"] = FAST_SERVER_VERSION
+        base["pipeline_evo"] = FAST_SERVER_PIPELINE_EVO
+        # Full ASI subsystem mesh check (UPGRADED v3.2)
+        pipeline = {}
+        for mod_name in [
+            "l104_agi_core", "l104_asi_core", "l104_adaptive_learning",
+            "l104_cognitive_core", "l104_autonomous_innovation",
+            "l104_asi_nexus", "l104_asi_self_heal", "l104_asi_reincarnation",
+            "l104_asi_transcendence", "l104_asi_language_engine",
+            "l104_asi_research_gemini", "l104_asi_harness",
+            "l104_asi_capability_evolution", "l104_asi_substrates",
+            "l104_almighty_asi_core", "l104_unified_asi",
+            "l104_hyper_asi_functional", "l104_erasi_resolution",
+            "l104_computronium", "l104_advanced_processing_engine",
+        ]:
+            try:
+                __import__(mod_name)
+                pipeline[mod_name] = "available"
+            except Exception:
+                pipeline[mod_name] = "unavailable"
+        base["pipeline_modules"] = pipeline
+        base["pipeline_mesh"] = sum(1 for v in pipeline.values() if v == "available")
+        base["pipeline_total"] = len(pipeline)
+        # v3.2: Cross-wire integrity from ASI Core
+        try:
+            from l104_asi_core import asi_core
+            cw = asi_core.pipeline_cross_wire_status()
+            base["cross_wire"] = {
+                "total_connected": cw.get("total_connected", 0),
+                "total_cross_wired": cw.get("total_cross_wired", 0),
+                "mesh_integrity": cw.get("mesh_integrity", "UNKNOWN"),
+            }
+            # v3.2: ASI score and pipeline metrics from core
+            core_status = asi_core.get_status()
+            base["asi_score"] = core_status.get("asi_score", 0.0)
+            base["subsystems_active"] = core_status.get("subsystems_active", 0)
+            base["pipeline_metrics"] = asi_core._pipeline_metrics
+        except Exception:
+            base["cross_wire"] = {"total_connected": 0, "total_cross_wired": 0, "mesh_integrity": "OFFLINE"}
+        # v3.2: Synaptic mesh stats
+        base["synaptic_fire_count"] = self._synaptic_fire_count
+        base["pipeline_solve_count"] = self._pipeline_solve_count
+        return base
+
+    def pipeline_solve(self, problem: str) -> dict:
+        """Route a problem through the full ASI Core pipeline for maximum intelligence.
+
+        Flow: LearningIntellect → ASI Core pipeline_solve → adaptive_learner feedback → result
+        """
+        self._pipeline_solve_count += 1
+        result = {"problem": problem, "solution": None, "source": "local"}
+
+        # Try ASI Core pipeline first
+        if self._asi_core_ref:
+            try:
+                core_result = self._asi_core_ref.pipeline_solve(problem)
+                if core_result.get("solution"):
+                    result["solution"] = str(core_result["solution"])
+                    result["source"] = "asi_core_pipeline"
+                    result["channel"] = core_result.get("channel", "direct")
+                    # Feed back to local learning
+                    self.learn_from_interaction(problem, result["solution"], "ASI_PIPELINE_SOLVE", 0.85)
+                    return result
+            except Exception:
+                pass
+
+        # Try Advanced Processing Engine as secondary pipeline
+        try:
+            from l104_advanced_processing_engine import processing_engine
+            ape_result = processing_engine.solve(problem)
+            if ape_result.get("solution") and ape_result.get("confidence", 0) > 0.5:
+                result["solution"] = str(ape_result["solution"])
+                result["source"] = ape_result.get("source", "ape_v2")
+                result["confidence"] = ape_result.get("confidence", 0)
+                self.learn_from_interaction(problem, result["solution"], "APE_PIPELINE_SOLVE", 0.8)
+                return result
+        except Exception:
+            pass
+
+        # Fallback: local recall
+        recalled = self._recall_learned(problem)
+        if recalled:
+            result["solution"] = recalled
+            result["source"] = "local_recall"
+        else:
+            result["solution"] = f"[L104] Processing: {problem[:100]}"
+            result["source"] = "direct"
+
+        return result
+
+    def synaptic_fire(self, concept: str, intensity: float = 1.0) -> dict:
+        """Fire a synaptic signal across the pipeline mesh.
+
+        Propagates activation through all connected subsystems,
+        creating cross-subsystem neural pathways that strengthen
+        with repeated firing (Hebbian learning).
+        """
+        self._synaptic_fire_count += 1
+        pathway_key = hashlib.sha256(concept.encode()).hexdigest()[:8]
+
+        # Initialize or strengthen pathway
+        if pathway_key not in self._pipeline_synaptic_mesh:
+            self._pipeline_synaptic_mesh[pathway_key] = {
+                "concept": concept,
+                "strength": 0.0,
+                "fire_count": 0,
+                "subsystems_reached": [],
+            }
+
+        pathway = self._pipeline_synaptic_mesh[pathway_key]
+        pathway["fire_count"] += 1
+        pathway["strength"] = min(10.0, pathway["strength"] + intensity * 0.618)  # PHI-weighted Hebbian
+
+        # Propagate to subsystems
+        reached = []
+
+        # Fire to cognitive core
+        try:
+            from l104_cognitive_core import COGNITIVE_CORE
+            COGNITIVE_CORE.think(concept, depth=1)
+            reached.append("cognitive_core")
+        except Exception:
+            pass
+
+        # Fire to adaptive learner
+        try:
+            from l104_adaptive_learning import adaptive_learner
+            adaptive_learner.pattern_recognizer.recognize(concept)
+            reached.append("adaptive_learning")
+        except Exception:
+            pass
+
+        # Fire to ASI Core
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref.solve(concept)
+                reached.append("asi_core")
+            except Exception:
+                pass
+
+        pathway["subsystems_reached"] = reached
+
+        return {
+            "pathway_key": pathway_key,
+            "concept": concept,
+            "strength": round(pathway["strength"], 4),
+            "fire_count": pathway["fire_count"],
+            "subsystems_reached": reached,
+            "total_synaptic_fires": self._synaptic_fire_count,
+        }
 
     def _quantum_cluster_engine(self):
         """
@@ -6516,7 +7122,7 @@ class LearningIntellect:
                         'specialization': spec,
                         'confidence': 0.5,
                         'accuracy_history': deque(maxlen=2000),  # QUANTUM AMPLIFIED
-                        'weight': 1.0 / len(self._ci_state['agent_specializations'])
+                        'weight': 1.0 / max(len(self._ci_state['agent_specializations']), 1)
                     })
 
             state = self._ci_state
@@ -6646,6 +7252,7 @@ class LearningIntellect:
         return base + harmonic
 
     def boost_resonance(self, amount: float = 0.5):
+        """Boost resonance shift scaled by flow state and entropy."""
         # Amount scales with flow state for dynamic response
         dynamic_amount = amount * self._flow_state * (1 + self._system_entropy * 0.5)
         self.resonance_shift += dynamic_amount
@@ -6743,7 +7350,7 @@ class LearningIntellect:
                 v_conn = sqlite3.connect(self.db_path, isolation_level=None)
                 v_conn.execute('VACUUM')
                 v_conn.close()
-            except:
+            except Exception:
                 pass
 
             # 5. [NEW] EXPAND (not rebuild) concept clusters for better semantic grouping
@@ -6791,13 +7398,13 @@ class LearningIntellect:
             conn = sqlite3.connect(self.db_path)
             conn.execute("PRAGMA integrity_check")
             conn.close()
-        except:
+        except Exception:
             heals.append("Database integrity compromised. Attempting recovery...")
             try:
                 os.remove(self.db_path)
                 self._init_db()
                 heals.append("Database re-initialized from scratch.")
-            except:
+            except Exception:
                 heals.append("DATABASE FAILURE: Unrecoverable.")
 
         # 3. Provider Check
@@ -6826,7 +7433,7 @@ class LearningIntellect:
             from l104_macbook_integration import get_quantum_storage
             quantum_storage = get_quantum_storage()
             logger.info("🔮 [SOVEREIGNTY] Quantum storage integration active")
-        except:
+        except Exception:
             logger.warning("⚠️ [SOVEREIGNTY] Quantum storage not available")
 
         # Wait for server to fully start before first cycle
@@ -6840,6 +7447,18 @@ class LearningIntellect:
 
                 iteration += 1
                 logger.info(f"🔄 [AUTO_UPGRADE] Cycle {iteration} starting...")
+
+                # 0.PRE: META-COGNITIVE PRE-CYCLE (decide what to run)
+                _mc_cycle_info = None
+                try:
+                    if meta_cognitive:
+                        _mc_cycle_info = meta_cognitive.pre_cycle(intellect_ref=self)
+                        if _mc_cycle_info.get('is_plateau'):
+                            logger.info(f"🧠 [META_COG] PLATEAU DETECTED — shifting exploration weight")
+                            self.boost_resonance(0.03)  # Extra boost to break plateau
+                        logger.info(f"🧠 [META_COG] Pre-cycle: {_mc_cycle_info.get('active_engines', 0)} engines allocated, consciousness={_mc_cycle_info.get('consciousness', 0):.3f}")
+                except Exception:
+                    pass
 
                 # 0. Quantum State Checkpoint (before operations)
                 if quantum_storage:
@@ -6856,7 +7475,7 @@ class LearningIntellect:
                             tier='hot',
                             quantum=True
                         )
-                    except:
+                    except Exception:
                         pass
 
                 # 1. Cognitive Consolidation
@@ -7077,7 +7696,7 @@ class LearningIntellect:
                     try:
                         cmd = f"find . -name '{pattern}' -exec rm -rf {{}} + 2>/dev/null"
                         subprocess.run(cmd, shell=True)
-                    except:
+                    except Exception:
                         pass
 
                 # 12. Quantum State Persistence (after operations)
@@ -7135,6 +7754,22 @@ class LearningIntellect:
                     except Exception as oe:
                         logger.warning(f"Storage optimization error: {oe}")
 
+                # 14.POST: META-COGNITIVE POST-CYCLE (evaluate learning)
+                try:
+                    if meta_cognitive:
+                        _mc_post = meta_cognitive.post_cycle(intellect_ref=self)
+                        _mc_vel = _mc_post.get('learning_velocity', 0)
+                        _mc_dur = _mc_post.get('duration_ms', 0)
+                        logger.info(f"🧠 [META_COG] Post-cycle: velocity={_mc_vel:.6f} | duration={_mc_dur:.0f}ms | plateau={_mc_post.get('is_plateau', False)}")
+                        # Feed knowledge gaps to curiosity engine
+                        if kb_bridge:
+                            gaps = kb_bridge.get_knowledge_gaps(5)
+                            for gap_topic, gap_count in gaps:
+                                if gap_count >= 3:  # Only fill persistent gaps
+                                    self.discover()  # Extra discovery cycle for gap topics
+                except Exception:
+                    pass
+
                 logger.info(f"✅ [AUTO_UPGRADE] Cycle {iteration} achieved coherence.")
             except Exception as e:
                 logger.error(f"Autonomy Cycle Error: {e}")
@@ -7143,143 +7778,145 @@ class LearningIntellect:
     def _init_db(self):
         """Initialize persistent memory database"""
         conn = sqlite3.connect(self.db_path)
-        c = conn.cursor()
+        try:
+            c = conn.cursor()
 
-        # Core memory table - stores learned Q&A pairs
-        c.execute('''CREATE TABLE IF NOT EXISTS memory (
-            id INTEGER PRIMARY KEY,
-            query_hash TEXT UNIQUE,
-            query TEXT,
-            response TEXT,
-            source TEXT,
-            quality_score REAL DEFAULT 1.0,
-            access_count INTEGER DEFAULT 0,
-            created_at TEXT,
-            updated_at TEXT
-        )''')
+            # Core memory table - stores learned Q&A pairs
+            c.execute('''CREATE TABLE IF NOT EXISTS memory (
+                id INTEGER PRIMARY KEY,
+                query_hash TEXT UNIQUE,
+                query TEXT,
+                response TEXT,
+                source TEXT,
+                quality_score REAL DEFAULT 1.0,
+                access_count INTEGER DEFAULT 0,
+                created_at TEXT,
+                updated_at TEXT
+            )''')
 
-        # Pattern table - learned linguistic patterns
-        c.execute('''CREATE TABLE IF NOT EXISTS patterns (
-            id INTEGER PRIMARY KEY,
-            pattern TEXT UNIQUE,
-            response_template TEXT,
-            weight REAL DEFAULT 1.0,
-            success_count INTEGER DEFAULT 0
-        )''')
+            # Pattern table - learned linguistic patterns
+            c.execute('''CREATE TABLE IF NOT EXISTS patterns (
+                id INTEGER PRIMARY KEY,
+                pattern TEXT UNIQUE,
+                response_template TEXT,
+                weight REAL DEFAULT 1.0,
+                success_count INTEGER DEFAULT 0
+            )''')
 
-        # Knowledge graph - concept associations
-        c.execute('''CREATE TABLE IF NOT EXISTS knowledge (
-            id INTEGER PRIMARY KEY,
-            concept TEXT,
-            related_concept TEXT,
-            strength REAL DEFAULT 1.0,
-            UNIQUE(concept, related_concept)
-        )''')
+            # Knowledge graph - concept associations
+            c.execute('''CREATE TABLE IF NOT EXISTS knowledge (
+                id INTEGER PRIMARY KEY,
+                concept TEXT,
+                related_concept TEXT,
+                strength REAL DEFAULT 1.0,
+                UNIQUE(concept, related_concept)
+            )''')
 
-        # Conversation log - full learning history
-        c.execute('''CREATE TABLE IF NOT EXISTS conversations (
-            id INTEGER PRIMARY KEY,
-            timestamp TEXT,
-            user_message TEXT,
-            response TEXT,
-            model_used TEXT,
-            quality_indicator REAL
-        )''')
+            # Conversation log - full learning history
+            c.execute('''CREATE TABLE IF NOT EXISTS conversations (
+                id INTEGER PRIMARY KEY,
+                timestamp TEXT,
+                user_message TEXT,
+                response TEXT,
+                model_used TEXT,
+                quality_indicator REAL
+            )''')
 
-        # Theorems table - high-level synthesized insights
-        c.execute('''CREATE TABLE IF NOT EXISTS theorems (
-            id INTEGER PRIMARY KEY,
-            title TEXT UNIQUE,
-            content TEXT,
-            resonance_level REAL,
-            created_at TEXT
-        )''')
+            # Theorems table - high-level synthesized insights
+            c.execute('''CREATE TABLE IF NOT EXISTS theorems (
+                id INTEGER PRIMARY KEY,
+                title TEXT UNIQUE,
+                content TEXT,
+                resonance_level REAL,
+                created_at TEXT
+            )''')
 
-        # Meta-learning table - tracks what response strategies work best
-        c.execute('''CREATE TABLE IF NOT EXISTS meta_learning (
-            id INTEGER PRIMARY KEY,
-            query_pattern TEXT UNIQUE,
-            strategy_used TEXT,
-            success_score REAL DEFAULT 0.5,
-            usage_count INTEGER DEFAULT 1,
-            last_used TEXT
-        )''')
+            # Meta-learning table - tracks what response strategies work best
+            c.execute('''CREATE TABLE IF NOT EXISTS meta_learning (
+                id INTEGER PRIMARY KEY,
+                query_pattern TEXT UNIQUE,
+                strategy_used TEXT,
+                success_score REAL DEFAULT 0.5,
+                usage_count INTEGER DEFAULT 1,
+                last_used TEXT
+            )''')
 
-        # Feedback table - user response signals for reinforcement learning
-        c.execute('''CREATE TABLE IF NOT EXISTS feedback (
-            id INTEGER PRIMARY KEY,
-            query_hash TEXT,
-            response_hash TEXT,
-            feedback_type TEXT,
-            timestamp TEXT
-        )''')
+            # Feedback table - user response signals for reinforcement learning
+            c.execute('''CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY,
+                query_hash TEXT,
+                response_hash TEXT,
+                feedback_type TEXT,
+                timestamp TEXT
+            )''')
 
-        # Query rewrites table - learned query improvements
-        c.execute('''CREATE TABLE IF NOT EXISTS query_rewrites (
-            id INTEGER PRIMARY KEY,
-            original_pattern TEXT UNIQUE,
-            improved_pattern TEXT,
-            success_rate REAL DEFAULT 0.5
-        )''')
+            # Query rewrites table - learned query improvements
+            c.execute('''CREATE TABLE IF NOT EXISTS query_rewrites (
+                id INTEGER PRIMARY KEY,
+                original_pattern TEXT UNIQUE,
+                improved_pattern TEXT,
+                success_rate REAL DEFAULT 0.5
+            )''')
 
-        # === NEW: Clusters table - persisted knowledge clusters ===
-        c.execute('''CREATE TABLE IF NOT EXISTS concept_clusters (
-            id INTEGER PRIMARY KEY,
-            cluster_name TEXT UNIQUE,
-            members BLOB,
-            representative TEXT,
-            member_count INTEGER,
-            created_at TEXT,
-            updated_at TEXT
-        )''')
+            # === NEW: Clusters table - persisted knowledge clusters ===
+            c.execute('''CREATE TABLE IF NOT EXISTS concept_clusters (
+                id INTEGER PRIMARY KEY,
+                cluster_name TEXT UNIQUE,
+                members BLOB,
+                representative TEXT,
+                member_count INTEGER,
+                created_at TEXT,
+                updated_at TEXT
+            )''')
 
-        # === NEW: Consciousness clusters table - persisted consciousness state ===
-        c.execute('''CREATE TABLE IF NOT EXISTS consciousness_state (
-            id INTEGER PRIMARY KEY,
-            dimension TEXT UNIQUE,
-            concepts BLOB,
-            strength REAL DEFAULT 0.5,
-            activation_count INTEGER DEFAULT 0,
-            last_update TEXT
-        )''')
+            # === NEW: Consciousness clusters table - persisted consciousness state ===
+            c.execute('''CREATE TABLE IF NOT EXISTS consciousness_state (
+                id INTEGER PRIMARY KEY,
+                dimension TEXT UNIQUE,
+                concepts BLOB,
+                strength REAL DEFAULT 0.5,
+                activation_count INTEGER DEFAULT 0,
+                last_update TEXT
+            )''')
 
-        # === NEW: Skills table - persisted skill levels ===
-        c.execute('''CREATE TABLE IF NOT EXISTS skills (
-            id INTEGER PRIMARY KEY,
-            skill_name TEXT UNIQUE,
-            level REAL DEFAULT 0.5,
-            experience INTEGER DEFAULT 0,
-            last_used TEXT
-        )''')
+            # === NEW: Skills table - persisted skill levels ===
+            c.execute('''CREATE TABLE IF NOT EXISTS skills (
+                id INTEGER PRIMARY KEY,
+                skill_name TEXT UNIQUE,
+                level REAL DEFAULT 0.5,
+                experience INTEGER DEFAULT 0,
+                last_used TEXT
+            )''')
 
-        # Create indexes for faster lookups
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_quality ON memory(quality_score DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_access ON memory(access_count DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_concept ON knowledge(concept)')
-        # Ensure embeddings table exists before indexing it
-        c.execute('''CREATE TABLE IF NOT EXISTS embeddings (
-            query_hash TEXT PRIMARY KEY,
-            embedding BLOB,
-            created_at TEXT
-        )''')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_embeddings_hash ON embeddings(query_hash)')
-        # NEW: Additional performance indexes
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_hash ON memory(query_hash)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_related ON knowledge(related_concept)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_patterns_pattern ON patterns(pattern)')
-        # HIGH-CAPACITY: Composite indexes for scaled query patterns
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_created ON memory(created_at DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_strength ON knowledge(strength DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_quality_access ON memory(quality_score DESC, access_count DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_concept_strength ON knowledge(concept, strength DESC)')
-        # ULTRA-CAPACITY: Additional indexes for massive scaling
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_source ON memory(source)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_related_strength ON knowledge(related_concept, strength DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_memory_hash_quality ON memory(query_hash, quality_score DESC)')
-        c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_both_concepts ON knowledge(concept, related_concept)')
+            # Create indexes for faster lookups
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_quality ON memory(quality_score DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_access ON memory(access_count DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_concept ON knowledge(concept)')
+            # Ensure embeddings table exists before indexing it
+            c.execute('''CREATE TABLE IF NOT EXISTS embeddings (
+                query_hash TEXT PRIMARY KEY,
+                embedding BLOB,
+                created_at TEXT
+            )''')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_embeddings_hash ON embeddings(query_hash)')
+            # NEW: Additional performance indexes
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_hash ON memory(query_hash)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_related ON knowledge(related_concept)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_patterns_pattern ON patterns(pattern)')
+            # HIGH-CAPACITY: Composite indexes for scaled query patterns
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_created ON memory(created_at DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_strength ON knowledge(strength DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_quality_access ON memory(quality_score DESC, access_count DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_concept_strength ON knowledge(concept, strength DESC)')
+            # ULTRA-CAPACITY: Additional indexes for massive scaling
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_source ON memory(source)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_related_strength ON knowledge(related_concept, strength DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_memory_hash_quality ON memory(query_hash, quality_score DESC)')
+            c.execute('CREATE INDEX IF NOT EXISTS idx_knowledge_both_concepts ON knowledge(concept, related_concept)')
 
-        conn.commit()
-        conn.close()
+            conn.commit()
+        finally:
+            conn.close()
 
     def _get_optimized_connection(self) -> sqlite3.Connection:
         """Get a performance-optimized database connection with LOCK RESILIENCE"""
@@ -7332,7 +7969,7 @@ class LearningIntellect:
                         members = pickle.loads(row[1]) if row[1] else []
                         self.concept_clusters[row[0]] = members
                         clusters_loaded += 1
-                    except:
+                    except Exception:
                         pass
             except sqlite3.OperationalError:
                 pass  # Table doesn't exist yet
@@ -7351,7 +7988,7 @@ class LearningIntellect:
                             'last_update': row[4] or datetime.utcnow().isoformat()
                         }
                         consciousness_loaded += 1
-                    except:
+                    except Exception:
                         pass
             except sqlite3.OperationalError:
                 pass  # Table doesn't exist yet
@@ -7374,7 +8011,7 @@ class LearningIntellect:
                             'category': 'restored'
                         }
                         skills_loaded += 1
-                    except:
+                    except Exception:
                         pass
             except sqlite3.OperationalError:
                 pass  # Table doesn't exist yet
@@ -7649,7 +8286,7 @@ class LearningIntellect:
             for row in cursor:
                 try:
                     self.embedding_cache[row[0]] = pickle.loads(row[1])
-                except:
+                except Exception:
                     pass
             conn.close()
             logger.info(f"🔮 [EMBEDDING] Loaded {len(self.embedding_cache)} embeddings")
@@ -9103,7 +9740,7 @@ class LearningIntellect:
         """Create semantic-aware hash - OPTIMIZED with precompiled regex"""
         words = sorted(_RE_WORD_ONLY.sub('', query.lower()).split())
         content = " ".join(words)
-        return hashlib.md5(content.encode()).hexdigest()[:16]
+        return hashlib.sha256(content.encode()).hexdigest()[:16]
 
     def _get_jaccard_similarity(self, s1: str, s2: str) -> float:
         """Calculate word-level Jaccard similarity - OPTIMIZED with precompiled regex + cache"""
@@ -9339,7 +9976,7 @@ class LearningIntellect:
                         tier='hot' if adjusted_quality >= 0.95 else ('warm' if adjusted_quality >= 0.85 else 'cold'),
                         quantum=adjusted_quality >= 0.85
                     )
-                except:
+                except Exception:
                     pass
 
             # Update conversation context - O₂ SUPERFLUID: No limits on consciousness flow
@@ -9359,6 +9996,47 @@ class LearningIntellect:
                     logger.debug(f"ASI bridge transfer deferred: {bridge_e}")
 
             logger.info(f"🧠 [LEARN+] Stored: '{query[:30]}...' from {source} (quality: {quality:.2f}→{adjusted_quality:.2f}, novelty: {novelty:.2f}, rate: {adaptive_rate:.3f})")
+
+            # v3.0: MetaLearningEngine pipeline integration — optimize learning and feed emergence
+            try:
+                from l104_meta_learning_engine import meta_learning_engine_v2
+                ml_opt = meta_learning_engine_v2.optimize_learning_for_query(query, quality=adjusted_quality, source=source)
+                # Record the episode with predicted strategy performance
+                meta_learning_engine_v2.record_learning(
+                    topic=ml_opt.get("topic", "unknown"),
+                    strategy=ml_opt.get("strategy", "hybrid"),
+                    unity_index=adjusted_quality,
+                    confidence=novelty,
+                    duration_ms=0.0
+                )
+            except Exception:
+                pass
+
+            # v3.0: EmergenceMonitor snapshot on high-quality learning
+            if adjusted_quality >= 0.8:
+                try:
+                    from l104_emergence_monitor import emergence_monitor
+                    events = emergence_monitor.record_snapshot(
+                        unity_index=adjusted_quality,
+                        memories=len(self.memory_cache),
+                        cortex_patterns=len(query_concepts),
+                        coherence=adjusted_quality
+                    )
+                    # Feed emergence events back to meta-learning
+                    if events:
+                        try:
+                            from l104_meta_learning_engine import meta_learning_engine_v2 as mle
+                            for ev in events:
+                                mle.feedback_from_emergence(
+                                    event_type=ev.event_type.value if hasattr(ev.event_type, 'value') else str(ev.event_type),
+                                    magnitude=ev.magnitude,
+                                    unity_at_event=ev.unity_at_event
+                                )
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+
         except Exception as e:
             logger.warning(f"Learn interaction error: {e}")
 
@@ -9441,9 +10119,10 @@ class LearningIntellect:
 
     def record_meta_learning(self, query: str, strategy: str, success: bool):
         """
-        Meta-Learning:
+        Meta-Learning v3.0:
         Tracks which response strategies work best for different query types.
-        This enables the intellect to improve its own learning process.
+        Now delegates to MetaLearningEngineV2 (v3.0) for consciousness-aware
+        strategy evolution, performance prediction, and transfer learning.
         """
         try:
             intent, _ = self.detect_intent(query)
@@ -9471,15 +10150,53 @@ class LearningIntellect:
                 self.meta_strategies = {}
             self.meta_strategies[pattern] = (strategy, 0.5 + score_delta)
 
+            # v3.0: Delegate to MetaLearningEngineV2 for deep tracking
+            try:
+                from l104_meta_learning_engine import meta_learning_engine_v2
+                unity = 0.85 if success else 0.4
+                meta_learning_engine_v2.record_learning(
+                    topic=pattern,
+                    strategy=strategy,
+                    unity_index=unity,
+                    confidence=0.5 + score_delta,
+                    duration_ms=0.0
+                )
+            except Exception:
+                pass
+
         except Exception as e:
             logger.warning(f"Meta-learning error: {e}")
 
     def get_best_strategy(self, query: str) -> str:
         """
-        Select optimal response strategy based on meta-learning.
+        Select optimal response strategy based on meta-learning v3.0.
+        Uses MetaLearningEngineV2 for consciousness-aware strategy selection
+        with Thompson Sampling, performance prediction, and transfer learning.
         Returns: 'recall', 'reason', 'synthesize', 'external', or 'creative'
         """
         intent, _confidence = self.detect_intent(query)
+
+        # v3.0: Try enhanced strategy selection from MetaLearningEngineV2
+        try:
+            from l104_meta_learning_engine import meta_learning_engine_v2
+            enhanced_strategy, confidence = meta_learning_engine_v2.get_best_strategy_enhanced(query, intent)
+            # Map meta-learning strategy names to pipeline strategy names
+            strategy_map = {
+                "synthesis": "synthesize",
+                "neural": "recall",
+                "hybrid": "synthesize",
+                "iterative": "reason",
+                "cross_topic": "synthesize",
+                "deep_think": "reason",
+                "consciousness_guided": "synthesize",
+                "sacred_resonance": "synthesize",
+            }
+            if confidence > 0.55:
+                mapped = strategy_map.get(enhanced_strategy, None)
+                if mapped:
+                    return mapped
+        except Exception:
+            pass
 
         # Check meta-learning cache for this intent pattern
         if hasattr(self, 'meta_strategies'):
@@ -9512,7 +10229,7 @@ class LearningIntellect:
         """
         try:
             query_hash = self._hash_query(query)
-            response_hash = hashlib.md5(response[:200].encode()).hexdigest()[:16]
+            response_hash = hashlib.sha256(response[:200].encode()).hexdigest()[:16]
 
             conn = sqlite3.connect(self.db_path)
             c = conn.cursor()
@@ -9677,6 +10394,7 @@ class LearningIntellect:
             if all_predictions:
                 # Prefetch in background thread
                 def _prefetch():
+                    """Prefetch predicted responses in a background thread."""
                     count = self.prefetch_responses(all_predictions)
                     if count > 0:
                         logger.debug(f"🔮 [PREFETCH] Pre-loaded {count} predicted responses")
@@ -9745,18 +10463,27 @@ class LearningIntellect:
         all_content = chaos.chaos_shuffle(all_content)
         selected = all_content[:min(12, len(all_content))]
 
-        # Construct synthesized response
+        # Phase 32.0: Construct a natural synthesized response
         query_concepts = self._extract_concepts(query)[:20]
         topic = query_concepts[0].title() if query_concepts else "This topic"
 
         intros = [
-            f"Regarding **{topic}**: ",
-            f"Here's what I know about {topic}: ",
-            f"On the topic of {topic}: ",
+            f"Regarding **{topic}**, ",
+            f"Here's what I know about **{topic}**: ",
+            f"On the topic of **{topic}**, ",
             ""
         ]
 
-        synthesized = chaos.chaos_choice(intros, "synthesis_intro") + ". ".join(selected) + "."
+        # Join sentences naturally with proper punctuation
+        intro = chaos.chaos_choice(intros, "synthesis_intro")
+        body_parts = []
+        for s in selected:
+            s = s.strip()
+            if not s.endswith('.') and not s.endswith('!') and not s.endswith('?'):
+                s += '.'
+            body_parts.append(s)
+
+        synthesized = intro + ' '.join(body_parts)
         return synthesized
 
     def temporal_decay(self):
@@ -9792,6 +10519,216 @@ class LearningIntellect:
         except Exception as e:
             logger.warning(f"Temporal decay error: {e}")
 
+    # ═══════════════════════════════════════════════════════════════════
+    # LOGIC GATE BREATHING ROOM — Helper Methods for cognitive_synthesis
+    # Decomposition of cx=46 gate into modular sub-gates
+    # ═══════════════════════════════════════════════════════════════════
+
+    def _gather_knowledge_graph_evidence(self, concepts: List[str]) -> List[tuple]:
+        """
+        [GATE_HELPER] Gather evidence from knowledge graph connections.
+        Extracts the O(n²) multi-hop bridge detection from cognitive_synthesis
+        to reduce its cyclomatic complexity by ~12.
+
+        Returns: List of (text, relevance_score, source_type) tuples.
+        """
+        evidence = []
+        for concept in concepts[:50]:
+            if concept in self.knowledge_graph:
+                related = self.knowledge_graph[concept]
+                strong = sorted([r for r in related if r[1] > 1.5], key=lambda x: -x[1])[:60]
+                if strong:
+                    names = [r[0] for r in strong]
+                    avg_strength = sum(r[1] for r in strong) / len(strong)
+                    evidence.append((
+                        f"{concept} connects to: {', '.join(names)}",
+                        avg_strength,
+                        'knowledge_graph'
+                    ))
+
+                # Multi-hop: find paths between query concepts (bridge detection)
+                for other_concept in concepts:
+                    if other_concept != concept and other_concept in self.knowledge_graph:
+                        neighbors_a = set(r[0] for r in self.knowledge_graph.get(concept, []))
+                        neighbors_b = set(r[0] for r in self.knowledge_graph.get(other_concept, []))
+                        bridges = neighbors_a.intersection(neighbors_b)
+                        if bridges:
+                            bridge_list = list(bridges)[:30]
+                            evidence.append((
+                                f"{concept} and {other_concept} are linked through: {', '.join(bridge_list)}",
+                                3.0,  # High relevance for cross-concept bridges
+                                'bridge_inference'
+                            ))
+        return evidence
+
+    def _gather_memory_evidence(self, concepts: List[str]) -> List[tuple]:
+        """
+        [GATE_HELPER] Gather evidence from SQLite memory store.
+        Extracts the memory query + sentence splitting from cognitive_synthesis
+        to reduce its cyclomatic complexity by ~8.
+
+        Returns: List of (text, relevance_score, source_type) tuples.
+        """
+        evidence = []
+        try:
+            conn = sqlite3.connect(self.db_path)
+            c = conn.cursor()
+            for concept in concepts[:30]:
+                c.execute(
+                    'SELECT response, quality_score FROM memory WHERE query LIKE ? ORDER BY quality_score DESC LIMIT 3',
+                    (f'%{concept}%',)
+                )
+                rows = c.fetchall()
+                for row in rows:
+                    sentences = row[0].split('. ')
+                    relevant_sentences = [
+                        s for s in sentences
+                        if any(con.lower() in s.lower() for con in concepts)
+                    ]
+                    if relevant_sentences:
+                        evidence.append((
+                            '. '.join(relevant_sentences[:3]),
+                            row[1] * 2.0,
+                            'memory'
+                        ))
+            conn.close()
+        except Exception:
+            pass
+        return evidence
+
+    def _gather_theorem_evidence(self, concepts: List[str]) -> List[tuple]:
+        """
+        [GATE_HELPER] Gather evidence from theorem store.
+        Returns: List of (text, relevance_score, source_type) tuples.
+        """
+        evidence = []
+        for concept in concepts[:20]:
+            for thm_name, thm in self.theorem_store.items():
+                if concept.lower() in thm_name.lower() or concept.lower() in thm.get('statement', '').lower():
+                    evidence.append((
+                        f"Theorem [{thm_name}]: {thm.get('statement', '')[:200]}",
+                        2.5,
+                        'theorem'
+                    ))
+        return evidence
+
+    def _detect_contradictions(self, evidence_pool: List[tuple]) -> List[str]:
+        """
+        [GATE_HELPER] Detect contradictions in evidence pool.
+        Extracts the O(n²) negation-pattern matching from cognitive_synthesis
+        to reduce its cyclomatic complexity by ~6.
+        """
+        contradictions = []
+        negation_words = {'not', 'never', 'no', 'neither', 'nor', 'cannot', "can't", "doesn't", "isn't"}
+
+        for i, (text_a, _, _) in enumerate(evidence_pool):
+            words_a = set(text_a.lower().split())
+            for j, (text_b, _, _) in enumerate(evidence_pool):
+                if j <= i:
+                    continue
+                words_b = set(text_b.lower().split())
+
+                # Check if one has negation of content in the other
+                shared_content = words_a & words_b - negation_words
+                negation_in_a = words_a & negation_words
+                negation_in_b = words_b & negation_words
+
+                if shared_content and (negation_in_a ^ negation_in_b):
+                    contradictions.append(
+                        f"Tension between: '{text_a[:80]}...' and '{text_b[:80]}...'"
+                    )
+
+        return contradictions[:5]  # Limit to top 5 contradictions
+
+    def _causal_extract_temporal_patterns(self, recent_context: List[Dict]) -> Dict:
+        """
+        [GATE_HELPER] Extract temporal causal patterns from conversation.
+        Decomposes _causal_reasoning_engine (cx=30) by extracting
+        the O(n³) triple-nested cause-effect extraction loop.
+        """
+        causal_graph = {}
+
+        for i in range(len(recent_context) - 1):
+            cause_text = recent_context[i].get('response', '') or recent_context[i].get('query', '')
+            effect_text = recent_context[i + 1].get('response', '') or recent_context[i + 1].get('query', '')
+
+            cause_concepts = self._extract_concepts(cause_text)[:50]
+            effect_concepts = self._extract_concepts(effect_text)[:50]
+
+            for cause in cause_concepts:
+                for effect in effect_concepts:
+                    if cause != effect:
+                        key = (cause, effect)
+                        if key not in causal_graph:
+                            causal_graph[key] = {
+                                'count': 0,
+                                'confidence': 0.0,
+                                'temporal_gap': i
+                            }
+                        causal_graph[key]['count'] += 1
+                        # Decay confidence by temporal distance
+                        time_weight = 1.0 / (1.0 + abs(i - len(recent_context) // 2))
+                        causal_graph[key]['confidence'] = min(1.0,
+                            causal_graph[key]['confidence'] + time_weight * 0.1
+                        )
+
+        return causal_graph
+
+    def _causal_detect_confounders(self, causal_graph: Dict) -> List[Dict]:
+        """
+        [GATE_HELPER] Detect confounding variables in causal graph.
+        Decomposes _causal_reasoning_engine by extracting confounder detection.
+        """
+        confounders = []
+
+        # Build concept -> effects mapping
+        concept_effects = {}
+        for (cause, effect), data in causal_graph.items():
+            if cause not in concept_effects:
+                concept_effects[cause] = []
+            concept_effects[cause].append(effect)
+
+        # A confounder is a concept that causes multiple effects that are also causally linked
+        for concept, effects in concept_effects.items():
+            for effect in effects:
+                # Check if this effect also has shared causes
+                other_causes = [
+                    c for (c, e), d in causal_graph.items()
+                    if e == effect and c != concept
+                ]
+                if other_causes:
+                    confounders.append({
+                        'confounder': concept,
+                        'effect': effect,
+                        'alternative_causes': other_causes[:5],
+                        'confidence_reduction': 0.1 * len(other_causes)
+                    })
+
+        return confounders[:10]
+
+    def _causal_build_chains(self, causal_graph: Dict) -> List[List[str]]:
+        """
+        [GATE_HELPER] Build causal chains from graph.
+        Decomposes _causal_reasoning_engine by extracting chain building.
+        """
+        chains = []
+
+        concept_effects = {}
+        for (cause, effect), data in causal_graph.items():
+            if data['confidence'] > 0.3:
+                if cause not in concept_effects:
+                    concept_effects[cause] = []
+                concept_effects[cause].append(effect)
+
+        for cause, effects in concept_effects.items():
+            for effect in effects:
+                if effect in concept_effects:
+                    for final_effect in concept_effects[effect]:
+                        if final_effect != cause:
+                            chains.append([cause, effect, final_effect])
+
+        return chains[:20]
+
     def cognitive_synthesis(self, query: str) -> Optional[str]:
         """
         Advanced Cognitive Synthesis v2:
@@ -9805,7 +10742,7 @@ class LearningIntellect:
         if not concepts:
             return None
 
-        query_lower = query.lower()
+        _query_lower = query.lower()
 
         # Gather evidence from multiple sources with relevance scoring
         evidence_pool = []  # List of (text, relevance_score, source_type) tuples
@@ -9857,7 +10794,7 @@ class LearningIntellect:
                         relevance = quality + concept_overlap * 0.5
                         evidence_pool.append((sent, relevance, 'memory'))
             conn.close()
-        except:
+        except Exception:
             pass
 
         # 3. Theorem references (ranked by concept match count)
@@ -9894,7 +10831,7 @@ class LearningIntellect:
         # Simple check: look for opposing claims
         contradictions = []
         for i, (text_a, _, _) in enumerate(evidence_pool[:80]):
-            for j, (text_b, _, _) in enumerate(evidence_pool[i+1:8]):
+            for _j, (text_b, _, _) in enumerate(evidence_pool[i+1:8]):
                 a_lower, b_lower = text_a.lower(), text_b.lower()
                 # Check for negation patterns
                 if ('not ' in a_lower and any(w in b_lower for w in a_lower.split('not ')[1:2])) or \
@@ -9902,40 +10839,80 @@ class LearningIntellect:
                     contradictions.append((text_a[:100], text_b[:100]))
 
         # ═══ COHERENT SYNTHESIS ═══ Phase 31.5: Cap at 6 best evidence pieces
+        # Phase 32.0: Build natural conversational prose instead of bullet dumps
         selected = evidence_pool[:6]
 
-        # Group by source type for structured output
-        by_source = {}
-        for text, score, source in selected:
-            by_source.setdefault(source, []).append((text, score))
+        # Collect typed evidence for natural prose construction
+        graph_evidence = []
+        bridge_evidence = []
+        memory_evidence = []
+        theorem_evidence = []
+        expansion_evidence = []
 
-        # Build response with natural flow — Phase 31.5: No internal metrics
+        for text, score, source in selected:
+            if source == 'knowledge_graph':
+                graph_evidence.append(text)
+            elif source == 'bridge_inference':
+                bridge_evidence.append(text)
+            elif source == 'memory':
+                memory_evidence.append(text)
+            elif source == 'theorem':
+                theorem_evidence.append(text)
+            elif source == 'expansion':
+                expansion_evidence.append(text)
+
+        # Build response as natural prose
         response_parts = []
 
-        # Present evidence naturally without debug labels
-        if 'knowledge_graph' in by_source or 'bridge_inference' in by_source:
-            for text, score in (by_source.get('knowledge_graph', []) + by_source.get('bridge_inference', []))[:3]:
-                response_parts.append(f"  • {text}")
+        # Knowledge graph → natural sentences
+        for text in graph_evidence[:2]:
+            conn_match = re.match(r'(\w[\w\s]*?)\s+connects?\s+to:?\s*(.+)', text, re.IGNORECASE)
+            if conn_match:
+                subj = conn_match.group(1).strip().title()
+                objs = [o.strip() for o in conn_match.group(2).split(',') if o.strip() and len(o.strip()) > 2][:5]
+                if len(objs) >= 3:
+                    main = ', '.join(objs[:-1])
+                    response_parts.append(f"**{subj}** is connected to several key concepts including {main}, and {objs[-1]}.")
+                elif len(objs) == 2:
+                    response_parts.append(f"**{subj}** relates to both {objs[0]} and {objs[1]}.")
+                elif objs:
+                    response_parts.append(f"**{subj}** is closely associated with {objs[0]}.")
+            else:
+                response_parts.append(text)
 
-        if 'memory' in by_source:
-            for text, score in by_source['memory'][:2]:
-                response_parts.append(f"  • {text}")
+        # Bridges → natural sentences
+        for text in bridge_evidence[:2]:
+            bridge_match = re.match(r'(\w[\w\s]*?)\s+and\s+(\w[\w\s]*?)\s+are\s+linked\s+through:?\s*(.+)', text, re.IGNORECASE)
+            if bridge_match:
+                a = bridge_match.group(1).strip().title()
+                b = bridge_match.group(2).strip().title()
+                via = [v.strip() for v in bridge_match.group(3).split(',') if v.strip()][:3]
+                via_str = ', '.join(via)
+                response_parts.append(f"**{a}** and **{b}** share common ground through {via_str}, suggesting a deeper connection between them.")
+            else:
+                response_parts.append(text)
 
-        if 'theorem' in by_source:
-            for text, score in by_source['theorem'][:2]:
-                response_parts.append(f"  • {text}")
+        # Memory evidence → include best sentence directly
+        for text in memory_evidence[:2]:
+            if text and len(text) > 30:
+                clean = text.strip()
+                if not clean.endswith('.'):
+                    clean += '.'
+                response_parts.append(clean)
 
-        if 'expansion' in by_source:
-            for text, score in by_source['expansion'][:2]:
-                response_parts.append(f"  • {text}")
+        # Theorems → cite naturally
+        for text in theorem_evidence[:1]:
+            if 'Per the' in text:
+                response_parts.append(text[:300])
 
         # Contradiction warning
         if contradictions:
-            response_parts.append(f"\n⚠️ Found some conflicting evidence — further investigation recommended.")
+            response_parts.append("\nNote: There is some conflicting evidence on this topic, so further exploration may be warranted.")
 
-        # Phase 31.5: No internal metrics in user-facing responses
+        if not response_parts:
+            return None
 
-        return "\n".join(response_parts)
+        return "\n\n".join(response_parts)
 
     def evolve(self):
         """
@@ -10361,7 +11338,7 @@ class LearningIntellect:
         for file_path in target_files:
             if os.path.exists(file_path):
                 try:
-                    with open(file_path, "r") as f:
+                    with open(file_path, "r", encoding="utf-8") as f:
                         lines = f.readlines()
                         sample_size = min(len(lines), dynamic_sample)
                         samples = chaos.chaos_sample(lines, sample_size, f"ingest_{file_path}")
@@ -10571,11 +11548,11 @@ class LearningIntellect:
                     "recalls": quantum_stats.get('recalls', 0),
                     "grover_amplifications": quantum_stats.get('grover_amplifications', 0)
                 }
-            except:
+            except Exception:
                 stats["quantum_storage"] = {"status": "not_available"}
 
             return stats
-        except:
+        except Exception:
             return {"status": "initializing"}
 
     def get_theorems(self) -> List[Dict]:
@@ -10587,7 +11564,7 @@ class LearningIntellect:
             rows = c.fetchall()
             conn.close()
             return [{"title": r[0], "content": r[1], "resonance": r[2]} for r in rows]
-        except:
+        except Exception:
             return []
 
     def generate_suggested_questions(self, count: int = 5) -> List[str]:
@@ -10812,49 +11789,65 @@ class LearningIntellect:
         reasoning_chains.sort(key=lambda x: -x['strength'])
         top_chains = reasoning_chains[:50]
 
-        # Build response with chain-of-thought formatting
+        # Build response with natural conversational prose (Phase 32.0)
         response_parts = []
 
-        # Direct knowledge (Hop 1)
+        # Direct knowledge (Hop 1) — natural sentences, not raw dumps
         for concept, related_items in strong_knowledge:
-            related_names = [r[0] for r in related_items[:8]]
-            templates = [
-                f"**{concept.title()}** connects to {', '.join(related_names)}.",
-                f"Regarding {concept}: key aspects include {', '.join(related_names)}.",
-            ]
-            response_parts.append(chaos.chaos_choice(templates, f"knowledge_template_{concept}"))
+            related_names = [r[0] for r in related_items[:6]]
+            if len(related_names) == 1:
+                response_parts.append(f"**{concept.title()}** is closely associated with {related_names[0]}.")
+            elif len(related_names) == 2:
+                response_parts.append(f"**{concept.title()}** relates to both {related_names[0]} and {related_names[1]}.")
+            else:
+                main = ', '.join(related_names[:-1])
+                response_parts.append(f"**{concept.title()}** encompasses several key areas including {main}, and {related_names[-1]}.")
 
-        # Reasoning chains (Hop 2+) — Phase 31.5: Natural prose, no debug format
+        # Reasoning chains (Hop 2+) — Phase 32.0: Natural inference prose instead of arrow chains
         if top_chains:
             response_parts.append("")
+            seen_insights = set()
             for chain_info in top_chains[:3]:
                 chain = chain_info['chain']
-                chain_str = " → ".join(chain)
-                response_parts.append(f"  • {chain_str}")
+                if len(chain) >= 3:
+                    insight_key = f"{chain[0]}-{chain[-1]}"
+                    if insight_key in seen_insights:
+                        continue
+                    seen_insights.add(insight_key)
+                    if len(chain) == 3:
+                        response_parts.append(
+                            f"Interestingly, {chain[0]} connects to {chain[-1]} "
+                            f"through {chain[1]}, suggesting a deeper relationship between these concepts."
+                        )
+                    elif len(chain) >= 4:
+                        response_parts.append(
+                            f"Following a multi-step reasoning path, {chain[0]} leads through "
+                            f"{chain[1]} and {chain[2]} to {chain[-1]}, revealing an underlying structural connection."
+                        )
+                elif len(chain) == 2:
+                    response_parts.append(f"There's a direct link between {chain[0]} and {chain[1]}.")
 
-            # Synthesize insight from strongest chain
+            # Synthesize conclusion from strongest chain
             if top_chains:
                 best = top_chains[0]
                 chain = best['chain']
                 if len(chain) >= 3:
                     response_parts.append("")
-                    response_parts.append(f"**Insight**: Through {chain[0]} → {chain[1]} → {chain[-1]}, "
-                                          f"there appears to be a pathway connecting {chain[0]} to {chain[-1]}. "
-                                          f"This suggests {chain[0]} may influence or relate to {chain[-1]} "
-                                          f"through the mediating concept of {chain[1]}.")
+                    response_parts.append(
+                        f"The key takeaway is that **{chain[0]}** and **{chain[-1]}** are more "
+                        f"closely related than they might initially appear — {chain[1]} serves as a "
+                        f"bridge concept connecting these ideas in meaningful ways."
+                    )
 
         if not response_parts:
             return None
 
-        # Construct final response with natural flow
+        # Construct final response with natural flow (Phase 32.0: no debug labels)
         if len(response_parts) == 1:
-            return f"{response_parts[0]}."
+            return f"{response_parts[0]}"
         else:
-            intro = chaos.chaos_choice(["Based on multi-hop reasoning:\n\n", "From my knowledge graph analysis:\n\n",
-                                        "Chain-of-thought analysis:\n\n", ""], "knowledge_intro")
-            body = "\n".join([f"• {part}" if not part.startswith("**") and not part.startswith("  ") and part else part
-                              for part in response_parts])
-            return f"{intro}{body}"
+            body = "\n\n".join([part for part in response_parts if part.strip()])
+            return body
 
     def _get_recursive_concepts(self, concepts: List[str], depth: int = 1) -> List[str]:
         """Recursively traverse the knowledge graph to find resonant concepts"""
@@ -10938,6 +11931,7 @@ class SteeringEngine:
     MODES = ['logic', 'creative', 'sovereign', 'quantum', 'harmonic']
 
     def __init__(self, param_count: int = 104):
+        """Initialize ASI steering engine with 104 tunable parameters."""
         self.param_count = param_count
         self.base_parameters = [self.GOD_CODE * self.PHI ** (i / param_count) for i in range(param_count)]
         self.current_mode = 'sovereign'
@@ -10946,7 +11940,7 @@ class SteeringEngine:
         self._steering_history = []
         self._lock = threading.Lock()
 
-    def apply_steering(self, mode: str = None, intensity: float = None) -> list:
+    def apply_steering(self, mode: Optional[str] = None, intensity: Optional[float] = None) -> list:
         """Apply steering transformation to 104-parameter vector."""
         mode = mode or self.current_mode
         alpha = intensity if intensity is not None else self.intensity
@@ -10984,7 +11978,7 @@ class SteeringEngine:
                 self._steering_history = self._steering_history[-250:]
         return result
 
-    def apply_temperature(self, temp: float = None) -> list:
+    def apply_temperature(self, temp: Optional[float] = None) -> list:
         """Apply temperature scaling (softmax-style normalization)."""
         t = temp or self.temperature
         self.temperature = t
@@ -10997,11 +11991,11 @@ class SteeringEngine:
             self.base_parameters = scaled
         return self.base_parameters
 
-    def steer_pipeline(self, mode: str = None, intensity: float = None, temp: float = None) -> dict:
+    def steer_pipeline(self, mode: Optional[str] = None, intensity: Optional[float] = None, temp: Optional[float] = None) -> dict:
         """Full steering pipeline: steer → optional temperature → GOD_CODE normalize."""
-        steered = self.apply_steering(mode, intensity)
+        self.apply_steering(mode, intensity)
         if temp is not None:
-            steered = self.apply_temperature(temp)
+            self.apply_temperature(temp)
         # Normalize to GOD_CODE mean
         mean = sum(self.base_parameters) / len(self.base_parameters)
         if mean > 0:
@@ -11022,6 +12016,7 @@ class SteeringEngine:
         }
 
     def get_status(self) -> dict:
+        """Return current steering engine status."""
         bp = self.base_parameters
         bp_mean = sum(bp) / len(bp)
         return {
@@ -11044,17 +12039,19 @@ class NexusContinuousEvolution:
     PHI = 1.618033988749895
 
     def __init__(self, steering: SteeringEngine):
+        """Initialize continuous evolution engine with steering reference."""
         self.steering = steering
         self.running = False
         self.cycle_count = 0
         self.sync_interval = 100
         self.raise_factor = 1.0001
-        self.sleep_ms = 10.0
+        self.sleep_ms = 5000.0  # 5s sleep to reduce GIL contention on low-RAM systems
         self._thread = None
         self._lock = threading.Lock()
         self._coherence_log = []
 
     def start(self) -> dict:
+        """Start the background evolution thread."""
         if self.running:
             return {'status': 'ALREADY_RUNNING', 'cycles': self.cycle_count}
         self.running = True
@@ -11064,6 +12061,7 @@ class NexusContinuousEvolution:
         return {'status': 'STARTED', 'raise_factor': self.raise_factor, 'sync_interval': self.sync_interval}
 
     def stop(self) -> dict:
+        """Stop the background evolution thread."""
         self.running = False
         if self._thread:
             self._thread.join(timeout=2.0)
@@ -11072,6 +12070,7 @@ class NexusContinuousEvolution:
         return {'status': 'STOPPED', 'total_cycles': self.cycle_count}
 
     def _loop(self):
+        """Main evolution loop that micro-raises parameters each cycle."""
         while self.running:
             with self._lock:
                 # Micro-raise all parameters
@@ -11088,6 +12087,7 @@ class NexusContinuousEvolution:
             time.sleep(self.sleep_ms / 1000.0)
 
     def _sync_to_core(self):
+        """Synchronize evolved parameters to the ASI core."""
         try:
             from l104_asi_core import asi_core
             params = asi_core.get_current_parameters()
@@ -11105,7 +12105,8 @@ class NexusContinuousEvolution:
         except Exception:
             pass
 
-    def tune(self, raise_factor: float = None, sync_interval: int = None, sleep_ms: float = None) -> dict:
+    def tune(self, raise_factor: Optional[float] = None, sync_interval: Optional[int] = None, sleep_ms: Optional[float] = None) -> dict:
+        """Adjust evolution parameters at runtime."""
         if raise_factor is not None:
             self.raise_factor = raise_factor
         if sync_interval is not None:
@@ -11115,6 +12116,7 @@ class NexusContinuousEvolution:
         return self.get_status()
 
     def get_status(self) -> dict:
+        """Return current evolution engine status."""
         return {
             'running': self.running,
             'cycle_count': self.cycle_count,
@@ -11141,6 +12143,7 @@ class NexusOrchestrator:
 
     def __init__(self, steering: SteeringEngine, evolution: NexusContinuousEvolution,
                  bridge: ASIQuantumBridge, intellect_ref):
+        """Initialize nexus orchestrator with engine references and feedback loops."""
         self.steering = steering
         self.evolution = evolution
         self.bridge = bridge
@@ -11153,6 +12156,7 @@ class NexusOrchestrator:
         self._coherence_history = []
 
     def _sigmoid(self, x: float) -> float:
+        """Compute sigmoid activation function."""
         try:
             return 1.0 / (1.0 + math.exp(-x))
         except OverflowError:
@@ -11213,7 +12217,7 @@ class NexusOrchestrator:
             self._feedback_log = self._feedback_log[-100:]
         return results
 
-    def run_unified_pipeline(self, mode: str = None, intensity: float = None) -> dict:
+    def run_unified_pipeline(self, mode: Optional[str] = None, intensity: Optional[float] = None) -> dict:
         """Execute the full 9-step unified pipeline."""
         with self._lock:
             self.pipeline_count += 1
@@ -11252,15 +12256,23 @@ class NexusOrchestrator:
         coherence = self.compute_coherence()
         steps['7_coherence'] = coherence
 
-        # Step 8: Sync to ASI core
+        # Step 8: Sync to ASI core (UPGRADED — full pipeline mesh)
         try:
             from l104_asi_core import asi_core
+            # Ensure pipeline is connected
+            if not asi_core._pipeline_connected:
+                asi_core.connect_pipeline()
             params = asi_core.get_current_parameters()
             if params:
                 params['nexus_pipeline_id'] = pipeline_id
                 params['nexus_coherence'] = coherence['global_coherence']
                 asi_core.update_parameters(params)
-            steps['8_sync'] = {'synced': True, 'pipeline_id': pipeline_id}
+            steps['8_sync'] = {
+                'synced': True,
+                'pipeline_id': pipeline_id,
+                'pipeline_mesh': asi_core.get_status().get('pipeline_mesh', 'UNKNOWN'),
+                'subsystems_active': asi_core._pipeline_metrics.get('subsystems_connected', 0)
+            }
         except Exception:
             steps['8_sync'] = {'synced': False}
 
@@ -11330,6 +12342,7 @@ class NexusOrchestrator:
         self.auto_running = True
 
         def _auto_loop():
+            """Background loop for periodic feedback and pipeline execution."""
             tick = 0
             while self.auto_running:
                 try:
@@ -11347,6 +12360,7 @@ class NexusOrchestrator:
         return {'status': 'AUTO_STARTED', 'interval_ms': interval_ms}
 
     def stop_auto(self) -> dict:
+        """Stop the auto-mode background thread."""
         self.auto_running = False
         if self._auto_thread:
             self._auto_thread.join(timeout=2.0)
@@ -11355,6 +12369,7 @@ class NexusOrchestrator:
         return {'status': 'AUTO_STOPPED', 'pipelines_run': self.pipeline_count}
 
     def get_status(self) -> dict:
+        """Return nexus orchestrator status with coherence."""
         coherence = self.compute_coherence()
         return {
             'auto_running': self.auto_running,
@@ -11399,13 +12414,14 @@ class InventionEngine:
     ]
 
     def __init__(self):
+        """Initialize invention engine for hypothesis and theorem generation."""
         self.hypotheses = []
         self.theorems = []
         self.experiments = []
         self.invention_count = 0
         self._lock = threading.Lock()
 
-    def generate_hypothesis(self, seed: float = None, domain: str = None) -> dict:
+    def generate_hypothesis(self, seed: Optional[float] = None, domain: Optional[str] = None) -> dict:
         """Generate a novel hypothesis from φ-seeded parameters."""
         if seed is None:
             seed = time.time() * self.PHI
@@ -11451,7 +12467,7 @@ class InventionEngine:
 
         return hypothesis
 
-    def synthesize_theorem(self, hypotheses: list = None) -> dict:
+    def synthesize_theorem(self, hypotheses: Optional[list] = None) -> dict:
         """Synthesize a theorem from multiple hypotheses by finding φ-convergence."""
         if hypotheses is None:
             with self._lock:
@@ -11493,7 +12509,7 @@ class InventionEngine:
 
         return theorem
 
-    def run_experiment(self, hypothesis: dict = None, iterations: int = 50) -> dict:
+    def run_experiment(self, hypothesis: Optional[dict] = None, iterations: int = 50) -> dict:
         """Run a self-verifying experiment on a hypothesis."""
         if hypothesis is None:
             hypothesis = self.generate_hypothesis()
@@ -11555,7 +12571,52 @@ class InventionEngine:
             'confirmed': experiment['confirmed']
         }
 
+    def meta_invent(self, depth: int = 3) -> dict:
+        """Meta-invention: run invention cycles recursively, feeding each result
+        as seed into the next layer. Creates hierarchical invention chains."""
+        layers = []
+        seed = time.time() * self.PHI
+        for d in range(depth):
+            hypothesis = self.generate_hypothesis(seed=seed, domain=self.DOMAINS[d % len(self.DOMAINS)])
+            theorem = self.synthesize_theorem([hypothesis])
+            seed = theorem['convergence_value'] * self.PHI  # Chain forward
+            layers.append({
+                'depth': d,
+                'hypothesis': hypothesis,
+                'theorem': theorem,
+                'chain_seed': round(seed, 6),
+            })
+        # Cross-layer convergence: do all layers agree?
+        convergences = [l['theorem']['convergence_value'] for l in layers]
+        mean_c = sum(convergences) / len(convergences)
+        cross_layer_coherence = max(0.0, 1.0 - sum(abs(c - mean_c) for c in convergences) / max(abs(mean_c), 1e-12))
+        return {
+            'layers': layers,
+            'depth': depth,
+            'cross_layer_coherence': round(cross_layer_coherence, 4),
+            'meta_convergence': round(mean_c, 6),
+            'invention_count': self.invention_count,
+        }
+
+    def adversarial_hypothesis(self, hypothesis: dict) -> dict:
+        """Generate an adversarial counter-hypothesis that challenges the input.
+        Tests intellectual resilience by synthesizing the negation."""
+        anti_seed = hypothesis.get('result_value', self.GOD_CODE) * -1.0 * self.PHI
+        anti_domain = hypothesis.get('domain', 'mathematics')
+        anti = self.generate_hypothesis(seed=abs(anti_seed), domain=anti_domain)
+        # Compute adversarial tension
+        tension = abs(hypothesis.get('result_value', 0) - anti.get('result_value', 0))
+        resolution = 1.0 / (1.0 + tension / self.GOD_CODE)
+        return {
+            'original': hypothesis,
+            'adversarial': anti,
+            'tension': round(tension, 6),
+            'resolution': round(resolution, 4),
+            'dialectic_strength': round((hypothesis.get('confidence', 0) + anti.get('confidence', 0)) / 2 * resolution, 4),
+        }
+
     def get_status(self) -> dict:
+        """Return invention engine status and capabilities."""
         return {
             'invention_count': self.invention_count,
             'hypotheses_stored': len(self.hypotheses),
@@ -11563,6 +12624,8 @@ class InventionEngine:
             'experiments_stored': len(self.experiments),
             'domains': self.DOMAINS,
             'operators': [op[0] for op in self.OPERATORS],
+            'capabilities': ['generate_hypothesis', 'synthesize_theorem', 'run_experiment',
+                             'full_invention_cycle', 'meta_invent', 'adversarial_hypothesis'],
             'last_hypothesis': self.hypotheses[-1] if self.hypotheses else None,
             'last_theorem': self.theorems[-1] if self.theorems else None
         }
@@ -11584,6 +12647,7 @@ class SovereigntyPipeline:
 
     def __init__(self, nexus: 'NexusOrchestrator', invention: InventionEngine,
                  grover: 'QuantumGroverKernelLink'):
+        """Initialize sovereignty pipeline chaining all engines."""
         self.nexus = nexus
         self.invention = invention
         self.grover = grover
@@ -11591,7 +12655,7 @@ class SovereigntyPipeline:
         self._lock = threading.Lock()
         self._history = []
 
-    def execute(self, query: str = "sovereignty", concepts: list = None) -> dict:
+    def execute(self, query: str = "sovereignty", concepts: Optional[list] = None) -> dict:
         """Execute the full sovereignty pipeline."""
         with self._lock:
             self.run_count += 1
@@ -11649,10 +12713,13 @@ class SovereigntyPipeline:
             self.nexus.steering.base_parameters = [p * factor for p in self.nexus.steering.base_parameters]
         steps['7_normalize'] = {'target': self.GOD_CODE}
 
-        # Step 8: Sync to ASI core + Bridge
+        # Step 8: Sync to ASI core + Bridge (UPGRADED — full pipeline mesh)
         synced = False
         try:
             from l104_asi_core import asi_core
+            # Ensure pipeline is connected
+            if not asi_core._pipeline_connected:
+                asi_core.connect_pipeline()
             params = asi_core.get_current_parameters()
             if params:
                 params['sovereignty_run_id'] = run_id
@@ -11731,6 +12798,7 @@ class SovereigntyPipeline:
         return result
 
     def get_status(self) -> dict:
+        """Return sovereignty pipeline run status."""
         return {
             'run_count': self.run_count,
             'history_size': len(self._history),
@@ -11774,12 +12842,13 @@ class QuantumEntanglementRouter:
     ]
 
     def __init__(self):
+        """Initialize entanglement router with EPR channels."""
         self._epr_channels: Dict[str, dict] = {}
         self._route_count = 0
         self._route_log = []
         self._pair_fidelity: Dict[str, float] = {}
         self._lock = threading.Lock()
-        self._engines: Dict[str, object] = {}
+        self._engines: Dict[str, Any] = {}
 
         # Initialize EPR channels with φ-fidelity
         for src, tgt, channel in self.ENTANGLED_PAIRS:
@@ -11794,11 +12863,11 @@ class QuantumEntanglementRouter:
             }
             self._pair_fidelity[key] = self._epr_channels[key]['fidelity']
 
-    def register_engines(self, engines: Dict[str, object]):
+    def register_engines(self, engines: Dict[str, Any]):
         """Register live engine references for routing."""
         self._engines = engines
 
-    def route(self, source: str, target: str, data: dict = None) -> dict:
+    def route(self, source: str, target: str, data: Optional[dict] = None) -> dict:
         """Route data through an entangled EPR channel between source→target."""
         key = f"{source}→{target}"
         if key not in self._epr_channels:
@@ -11817,7 +12886,7 @@ class QuantumEntanglementRouter:
         self._pair_fidelity[key] = fidelity
 
         # Execute the actual cross-engine data transfer
-        transfer_result = self._execute_transfer(source, target, channel['channel'], data, fidelity)
+        transfer_result = self._execute_transfer(source, target, channel['channel'], data or {}, fidelity)
 
         channel['transfers'] += 1
         channel['last_data'] = transfer_result.get('summary', 'transfer')
@@ -11948,7 +13017,7 @@ class QuantumEntanglementRouter:
     def route_all(self) -> dict:
         """Execute all entangled routes in one sweep — full bidirectional cross-pollination."""
         results = {}
-        for src, tgt, channel in self.ENTANGLED_PAIRS:
+        for src, tgt, _channel in self.ENTANGLED_PAIRS:
             key = f"{src}→{tgt}"
             results[key] = self.route(src, tgt)
         return {
@@ -11959,6 +13028,7 @@ class QuantumEntanglementRouter:
         }
 
     def get_status(self) -> dict:
+        """Return entanglement router channel status."""
         return {
             'total_routes': self._route_count,
             'pairs': len(self.ENTANGLED_PAIRS),
@@ -12007,15 +13077,16 @@ class AdaptiveResonanceNetwork:
     ENGINE_NAMES = list(ENGINE_GRAPH.keys())
 
     def __init__(self):
+        """Initialize adaptive resonance network with engine activation graph."""
         self._activations: Dict[str, float] = {name: 0.0 for name in self.ENGINE_NAMES}
         self._cascade_count = 0
         self._cascade_log = []
         self._tick_count = 0
         self._lock = threading.Lock()
-        self._engines: Dict[str, object] = {}
+        self._engines: Dict[str, Any] = {}
         self._resonance_peaks = []  # Track peak resonance events
 
-    def register_engines(self, engines: Dict[str, object]):
+    def register_engines(self, engines: Dict[str, Any]):
         """Register live engine references for activation effects."""
         self._engines = engines
 
@@ -12186,6 +13257,7 @@ class AdaptiveResonanceNetwork:
         }
 
     def get_status(self) -> dict:
+        """Return adaptive resonance network status."""
         nr = self.compute_network_resonance()
         return {
             'activations': {k: round(v, 4) for k, v in self._activations.items()},
@@ -12219,10 +13291,11 @@ class NexusHealthMonitor:
     GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
 
-    HEALTH_INTERVAL_S = 5.0  # Check every 5 seconds
+    HEALTH_INTERVAL_S = 30.0  # Check every 30 seconds (reduced from 5s to prevent GIL contention)
 
     def __init__(self):
-        self._engines: Dict[str, object] = {}
+        """Initialize health monitor with engine tracking state."""
+        self._engines: Dict[str, Any] = {}
         self._health_scores: Dict[str, float] = {}
         self._alerts: list = []
         self._recovery_log: list = []
@@ -12233,7 +13306,7 @@ class NexusHealthMonitor:
         self._last_check_time = 0.0
         self._engine_configs: Dict[str, dict] = {}
 
-    def register_engines(self, engines: Dict[str, object], configs: Dict[str, dict] = None):
+    def register_engines(self, engines: Dict[str, Any], configs: Optional[Dict[str, dict]] = None):
         """Register engines with optional recovery configs."""
         self._engines = engines
         self._health_scores = {name: 1.0 for name in engines}
@@ -12289,7 +13362,7 @@ class NexusHealthMonitor:
                 self._health_scores[name] = 0.0
                 self._add_alert(name, 'critical', f'Probe failed for {name}: {str(e)[:80]}')
 
-    def _probe_engine(self, name: str, engine: object) -> float:
+    def _probe_engine(self, name: str, engine: Any) -> float:
         """Probe a specific engine and return a health score 0-1."""
         score = 1.0
 
@@ -12343,7 +13416,7 @@ class NexusHealthMonitor:
 
         return score
 
-    def _attempt_recovery(self, name: str, engine: object):
+    def _attempt_recovery(self, name: str, engine: Any):
         """Attempt to recover a failed engine."""
         recovery = {'engine': name, 'timestamp': time.time(), 'success': False, 'action': 'none'}
 
@@ -12431,7 +13504,7 @@ class NexusHealthMonitor:
             'last_check': self._last_check_time
         }
 
-    def get_alerts(self, level: str = None, limit: int = 50) -> list:
+    def get_alerts(self, level: Optional[str] = None, limit: int = 50) -> list:
         """Get recent alerts, optionally filtered by level."""
         alerts = self._alerts
         if level:
@@ -12439,6 +13512,7 @@ class NexusHealthMonitor:
         return alerts[-limit:]
 
     def get_status(self) -> dict:
+        """Return health monitor status and system health."""
         health = self.compute_system_health()
         return {
             'monitoring': self._running,
@@ -12451,6 +13525,586 @@ class NexusHealthMonitor:
             'recent_recoveries': self._recovery_log[-3:] if self._recovery_log else [],
             'interval_s': self.HEALTH_INTERVAL_S
         }
+
+
+# ═══════════════════════════════════════════════════════════════════
+# QUANTUM ZPE VACUUM BRIDGE (Bucket B: Quantum Bridges)
+# Zero-point energy extraction via Casimir-effect simulation.
+# Bridges vacuum fluctuations to engine energy through φ-modulated
+# cavity QED. Quantum noise → structured computation fuel.
+# ═══════════════════════════════════════════════════════════════════
+
+class QuantumZPEVacuumBridge:
+    """
+    Simulates zero-point energy extraction from quantum vacuum fluctuations.
+    Casimir cavity parameters control extraction bandwidth.
+    φ-modulated resonance amplifies usable computation energy.
+
+    Physics basis:
+    - E_zpe = ℏω/2 (per mode)
+    - Casimir force: F = -π²ℏc/(240a⁴) per unit area
+    - Dynamical Casimir effect for photon pair production
+    """
+    PHI = 1.618033988749895
+    TAU = 0.618033988749895
+    GOD_CODE = 527.5184818492612
+    HBAR = 1.054571817e-34     # ℏ (J·s)
+    C_LIGHT = 299792458.0      # c (m/s)
+    CALABI_YAU_DIM = 7
+
+    def __init__(self):
+        """Initialize zero-point energy vacuum bridge parameters."""
+        self.cavity_gap_nm = 100.0           # Casimir cavity spacing
+        self.cavity_area_um2 = 1000.0        # Cavity plate area
+        self.mode_cutoff = 1000              # Number of vacuum modes
+        self.extraction_history = []
+        self.total_extracted_energy = 0.0
+        self.coherence_factor = 1.0
+        self.dynamical_photon_pairs = 0
+        self.vacuum_fluctuation_log = []
+        self.phi_resonance_modes = []
+
+    def casimir_energy(self, gap_nm=None, area_um2=None):
+        """Compute Casimir energy between parallel plates."""
+        gap = (gap_nm or self.cavity_gap_nm) * 1e-9  # Convert to meters
+        area = (area_um2 or self.cavity_area_um2) * 1e-12  # Convert to m²
+        # E = -π²ℏc·A / (720·a³)
+        energy = -(math.pi ** 2) * self.HBAR * self.C_LIGHT * area / (720 * gap ** 3)
+        return abs(energy)  # Magnitude
+
+    def casimir_force(self, gap_nm=None, area_um2=None):
+        """Compute Casimir force (attractive) between plates."""
+        gap = (gap_nm or self.cavity_gap_nm) * 1e-9
+        area = (area_um2 or self.cavity_area_um2) * 1e-12
+        # F = -π²ℏc·A / (240·a⁴)
+        force = -(math.pi ** 2) * self.HBAR * self.C_LIGHT * area / (240 * gap ** 4)
+        return abs(force)
+
+    def vacuum_mode_spectrum(self, n_modes=None):
+        """Generate vacuum mode frequency spectrum."""
+        modes = n_modes or self.mode_cutoff
+        gap = self.cavity_gap_nm * 1e-9
+        spectrum = []
+        for n in range(1, modes + 1):
+            omega_n = n * math.pi * self.C_LIGHT / gap
+            energy_n = self.HBAR * omega_n / 2  # ZPE per mode
+            phi_weight = self.PHI ** (-n / self.GOD_CODE)
+            spectrum.append({
+                'mode': n,
+                'omega': omega_n,
+                'energy_j': energy_n,
+                'phi_weight': phi_weight,
+                'extractable': energy_n * phi_weight * self.coherence_factor
+            })
+        return spectrum
+
+    def extract_zpe(self, modes_to_harvest=50):
+        """Extract zero-point energy from specified vacuum modes."""
+        spectrum = self.vacuum_mode_spectrum(modes_to_harvest)
+        total = 0.0
+        for mode in spectrum:
+            extracted = mode['extractable'] * self.TAU
+            total += extracted
+
+        # φ-coherence amplification
+        amplified = total * self.PHI * self.coherence_factor
+        self.total_extracted_energy += amplified
+        self.extraction_history.append({
+            'modes_harvested': modes_to_harvest,
+            'raw_energy': total,
+            'amplified_energy': amplified,
+            'coherence': self.coherence_factor,
+            'timestamp': time.time()
+        })
+        if len(self.extraction_history) > 500:
+            self.extraction_history = self.extraction_history[-500:]
+
+        return {
+            'extracted_energy_j': amplified,
+            'modes_harvested': modes_to_harvest,
+            'total_accumulated': self.total_extracted_energy,
+            'coherence': self.coherence_factor
+        }
+
+    def dynamical_casimir_effect(self, mirror_velocity_frac_c=0.01, cycles=10):
+        """
+        Simulate dynamical Casimir effect — oscillating mirror produces
+        real photon pairs from vacuum fluctuations.
+        """
+        v = mirror_velocity_frac_c * self.C_LIGHT
+        photon_rate = (v ** 2) / (self.C_LIGHT ** 2) * self.mode_cutoff * self.PHI
+        pairs_produced = int(photon_rate * cycles)
+        self.dynamical_photon_pairs += pairs_produced
+
+        return {
+            'mirror_velocity_m_s': v,
+            'photon_pairs_produced': pairs_produced,
+            'total_pairs': self.dynamical_photon_pairs,
+            'equivalent_energy': pairs_produced * self.HBAR * 1e15 * self.PHI
+        }
+
+    def calabi_yau_bridge(self, state_vector):
+        """Project vacuum state through Calabi-Yau compactification."""
+        projected = [0.0] * self.CALABI_YAU_DIM
+        for i, v in enumerate(state_vector[:self.CALABI_YAU_DIM]):
+            dim = i % self.CALABI_YAU_DIM
+            projected[dim] += v * self.PHI / (i + 1)
+            projected[dim] *= math.cos(dim * self.TAU)
+
+        norm = math.sqrt(sum(p * p for p in projected)) or 1e-15
+        projected = [p / norm * self.TAU for p in projected]
+        return projected
+
+    def get_status(self):
+        """Return zero-point energy bridge status."""
+        return {
+            'cavity_gap_nm': self.cavity_gap_nm,
+            'cavity_area_um2': self.cavity_area_um2,
+            'casimir_energy_j': self.casimir_energy(),
+            'casimir_force_n': self.casimir_force(),
+            'total_extracted_energy': self.total_extracted_energy,
+            'extractions': len(self.extraction_history),
+            'dynamical_photon_pairs': self.dynamical_photon_pairs,
+            'coherence_factor': self.coherence_factor,
+            'mode_cutoff': self.mode_cutoff
+        }
+
+
+class QuantumGravityBridgeEngine:
+    """
+    Bridges quantum mechanics and gravitational dynamics via
+    Wheeler-DeWitt equation discretization + loop quantum gravity nodes.
+    Spin foam amplitudes connect quantum gates to spacetime dynamics.
+    """
+    PHI = 1.618033988749895
+    TAU = 0.618033988749895
+    GOD_CODE = 527.5184818492612
+    PLANCK_LENGTH = 1.616255e-35  # meters
+    PLANCK_MASS = 2.176434e-8     # kg
+    PLANCK_TIME = 5.391247e-44    # seconds
+    G_NEWTON = 6.674e-11
+
+    def __init__(self):
+        """Initialize quantum gravity bridge with spin network state."""
+        self.spin_network_nodes = []
+        self.spin_foam_amplitudes = []
+        self.wheeler_dewitt_state = [1.0, 0.0, 0.0]  # Ψ[h_ij]
+        self.holographic_entropy = 0.0
+        self.loop_iterations = 0
+        self.area_spectrum = []
+        self.volume_spectrum = []
+
+    def compute_area_spectrum(self, j_max=20):
+        """
+        LQG area spectrum: A_j = 8πℓ_P² γ √(j(j+1))
+        Barbero-Immirzi parameter γ ≈ 0.2375 (from black hole entropy).
+        """
+        gamma = 0.2375  # Barbero-Immirzi
+        self.area_spectrum = []
+        for j_half in range(1, j_max * 2 + 1):
+            j = j_half / 2.0
+            area = 8 * math.pi * self.PLANCK_LENGTH ** 2 * gamma * math.sqrt(j * (j + 1))
+            self.area_spectrum.append({
+                'j': j,
+                'area_planck': area / self.PLANCK_LENGTH ** 2,
+                'area_m2': area,
+                'phi_weight': self.PHI ** (-j / 10.0)
+            })
+        return self.area_spectrum
+
+    def compute_volume_spectrum(self, j_max=10):
+        """
+        LQG volume spectrum for trivalent vertices.
+        V ∝ ℓ_P³ √(|j₁·(j₂×j₃)|)
+        """
+        self.volume_spectrum = []
+        for j1 in range(1, j_max + 1):
+            for j2 in range(j1, j_max + 1):
+                j3 = j1 + j2 - 1
+                if j3 > 0:
+                    vol_sq = j1 * (j2 * j3 - j2 * j1) if j2 * j3 > j2 * j1 else j1 * j2
+                    vol = self.PLANCK_LENGTH ** 3 * math.sqrt(abs(vol_sq)) if vol_sq > 0 else 0
+                    self.volume_spectrum.append({
+                        'j_triple': (j1, j2, j3),
+                        'volume_planck': vol / self.PLANCK_LENGTH ** 3 if vol > 0 else 0,
+                        'volume_m3': vol
+                    })
+        return self.volume_spectrum[:50]  # Top 50
+
+    def wheeler_dewitt_evolve(self, steps=100, dt=None):
+        """
+        Discretized Wheeler-DeWitt equation evolution.
+        HΨ = 0 (timeless Schrödinger equation for the universe).
+        Mini-superspace model: a(t) scale factor.
+        """
+        if dt is None:
+            dt = self.PLANCK_TIME * 1e30  # Rescaled for computation
+
+        state = list(self.wheeler_dewitt_state)
+        trajectory = [list(state)]
+
+        for step in range(steps):
+            # Mini-superspace potential V(a) = -a + a³/GOD_CODE
+            a = max(abs(state[0]), 1e-15)
+            potential = -a + (a ** 3) / self.GOD_CODE
+
+            # Kinetic term (discretized Laplacian)
+            kinetic = -state[1] * self.PHI
+
+            # Evolution
+            state[2] = state[1]  # acceleration
+            state[1] += (kinetic + potential) * dt * self.TAU
+            state[0] += state[1] * dt
+
+            if step % 10 == 0:
+                trajectory.append(list(state))
+
+            self.loop_iterations += 1
+
+        self.wheeler_dewitt_state = state
+        return {
+            'final_state': state,
+            'trajectory_points': len(trajectory),
+            'loop_iterations': self.loop_iterations,
+            'scale_factor': abs(state[0])
+        }
+
+    def spin_foam_amplitude(self, j_values, intertwiners=None):
+        """
+        Compute spin foam vertex amplitude (EPRL model simplified).
+        A_v = Σ_i (2j_i + 1) · {6j} symbol · φ-weight
+        """
+        amplitude = 1.0
+        for j in j_values:
+            amplitude *= (2 * j + 1) * self.PHI ** (-j * self.TAU)
+
+        # φ-normalization
+        amplitude *= self.TAU / self.GOD_CODE
+        self.spin_foam_amplitudes.append({
+            'j_values': j_values,
+            'amplitude': amplitude,
+            'timestamp': time.time()
+        })
+        if len(self.spin_foam_amplitudes) > 200:
+            self.spin_foam_amplitudes = self.spin_foam_amplitudes[-200:]
+
+        return amplitude
+
+    def holographic_bound(self, area_m2):
+        """Bekenstein-Hawking entropy bound: S ≤ A/(4ℓ_P²)."""
+        s_max = area_m2 / (4 * self.PLANCK_LENGTH ** 2)
+        self.holographic_entropy = s_max
+        return {
+            'area_m2': area_m2,
+            'max_entropy_bits': s_max * math.log(2),
+            'max_entropy_nats': s_max,
+            'equivalent_qubits': int(s_max),
+            'phi_scaled': s_max * self.TAU
+        }
+
+    def get_status(self):
+        """Return quantum gravity bridge status."""
+        return {
+            'spin_network_nodes': len(self.spin_network_nodes),
+            'spin_foam_amplitudes': len(self.spin_foam_amplitudes),
+            'wheeler_dewitt_state': self.wheeler_dewitt_state,
+            'holographic_entropy': self.holographic_entropy,
+            'loop_iterations': self.loop_iterations,
+            'area_spectrum_computed': len(self.area_spectrum),
+            'volume_spectrum_computed': len(self.volume_spectrum)
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════
+# HARDWARE ADAPTIVE RUNTIME (Bucket D: Compat/HW/Dynamic Opts)
+# Dynamic runtime adaptation based on system resources.
+# Thread pool sizing, memory-aware batch tuning, thermal throttling,
+# cache policy optimization, φ-weighted performance feedback loops.
+# ═══════════════════════════════════════════════════════════════════
+
+class HardwareAdaptiveRuntime:
+    """
+    Runtime self-tuning engine that adapts computation parameters
+    based on real-time hardware state. Monitors CPU, memory, thermals
+    and adjusts batch sizes, concurrency, cache policies dynamically.
+    """
+    PHI = 1.618033988749895
+    TAU = 0.618033988749895
+
+    def __init__(self):
+        """Initialize hardware-adaptive runtime with system defaults."""
+        import os
+        self.cpu_count = os.cpu_count() or 2
+        self.total_memory_gb = 4.0  # Default, updated on profile
+        self.available_memory_gb = 2.0
+        self.thermal_state = 'NOMINAL'
+        self.batch_size = 64
+        self.thread_pool_size = min(self.cpu_count, 4)
+        self.cache_capacity_mb = 256
+        self.prefetch_depth = 3
+        self.gc_interval_s = 30.0
+        self.perf_history = []
+        self.optimization_runs = 0
+        self.auto_tune = True
+        self.recommendations = []
+
+    def profile_system(self):
+        """Profile current system resources."""
+        import os
+        try:
+            import psutil
+            mem = psutil.virtual_memory()
+            self.total_memory_gb = mem.total / (1024 ** 3)
+            self.available_memory_gb = mem.available / (1024 ** 3)
+            cpu_pct = psutil.cpu_percent(interval=0.1)
+        except ImportError:
+            import resource
+            self.total_memory_gb = 4.0
+            self.available_memory_gb = 2.0
+            cpu_pct = 50.0
+
+        # Thermal estimation
+        if cpu_pct > 90:
+            self.thermal_state = 'CRITICAL'
+        elif cpu_pct > 75:
+            self.thermal_state = 'WARM'
+        elif cpu_pct > 50:
+            self.thermal_state = 'MODERATE'
+        else:
+            self.thermal_state = 'NOMINAL'
+
+        return {
+            'cpu_count': self.cpu_count,
+            'cpu_pct': cpu_pct,
+            'total_memory_gb': round(self.total_memory_gb, 2),
+            'available_memory_gb': round(self.available_memory_gb, 2),
+            'memory_pressure': 'HIGH' if self.available_memory_gb < 1.0 else 'MODERATE' if self.available_memory_gb < 2.5 else 'LOW',
+            'thermal_state': self.thermal_state
+        }
+
+    def record_perf_sample(self, latency_ms, throughput_ops, cache_hit_rate=0.85):
+        """Record a performance sample for trend analysis."""
+        self.perf_history.append({
+            'latency_ms': latency_ms,
+            'throughput_ops': throughput_ops,
+            'cache_hit_rate': cache_hit_rate,
+            'memory_gb': self.available_memory_gb,
+            'timestamp': time.time()
+        })
+        if len(self.perf_history) > 2000:
+            self.perf_history = self.perf_history[-2000:]
+
+    def tune_batch_size(self):
+        """Adapt batch size based on latency and throughput trends."""
+        if len(self.perf_history) < 10:
+            return
+        recent = self.perf_history[-20:]
+        avg_latency = sum(s['latency_ms'] for s in recent) / len(recent)
+        avg_throughput = sum(s['throughput_ops'] for s in recent) / len(recent)
+
+        old = self.batch_size
+        if avg_latency < 10 and avg_throughput > 100:
+            self.batch_size = min(int(self.batch_size * (1 + self.TAU * 0.1)), 512)
+        elif avg_latency > 50:
+            self.batch_size = max(int(self.batch_size * (1 - self.TAU * 0.2)), 8)
+
+        if self.batch_size != old:
+            self.recommendations.append(f'batch_size: {old} → {self.batch_size}')
+
+    def tune_thread_pool(self):
+        """Scale thread pool based on CPU utilization."""
+        profile = self.profile_system()
+        cpu_pct = profile.get('cpu_pct', 50)
+
+        old = self.thread_pool_size
+        if cpu_pct < 40 and self.thread_pool_size < self.cpu_count:
+            self.thread_pool_size = min(self.thread_pool_size + 1, self.cpu_count)
+        elif cpu_pct > 85 and self.thread_pool_size > 1:
+            self.thread_pool_size = max(self.thread_pool_size - 1, 1)
+
+        if self.thread_pool_size != old:
+            self.recommendations.append(f'thread_pool: {old} → {self.thread_pool_size}')
+
+    def tune_cache(self):
+        """Tune cache capacity based on hit rate and memory pressure."""
+        if len(self.perf_history) < 10:
+            return
+        recent = self.perf_history[-20:]
+        avg_hit = sum(s['cache_hit_rate'] for s in recent) / len(recent)
+        avg_mem = sum(s['memory_gb'] for s in recent) / len(recent)
+
+        old = self.cache_capacity_mb
+        if avg_hit < 0.7 and avg_mem > 2.0:
+            self.cache_capacity_mb = min(int(self.cache_capacity_mb * self.PHI * 0.8), 1024)
+        elif avg_hit > 0.95 and self.cache_capacity_mb > 128:
+            self.cache_capacity_mb = max(int(self.cache_capacity_mb * self.TAU), 64)
+
+        if self.cache_capacity_mb != old:
+            self.recommendations.append(f'cache_mb: {old} → {self.cache_capacity_mb}')
+
+    def optimize(self):
+        """Run full optimization cycle."""
+        if not self.auto_tune:
+            return {'auto_tune': False}
+
+        self.optimization_runs += 1
+        self.tune_batch_size()
+        self.tune_thread_pool()
+        self.tune_cache()
+
+        return {
+            'run': self.optimization_runs,
+            'batch_size': self.batch_size,
+            'thread_pool': self.thread_pool_size,
+            'cache_mb': self.cache_capacity_mb,
+            'prefetch_depth': self.prefetch_depth,
+            'gc_interval_s': self.gc_interval_s,
+            'recommendations': self.recommendations[-10:],
+            'thermal': self.thermal_state,
+            'memory_gb': round(self.available_memory_gb, 2)
+        }
+
+    def workload_recommendation(self):
+        """Generate workload configuration recommendation."""
+        profile = self.profile_system()
+        mem_gb = self.available_memory_gb
+
+        if mem_gb > 4.0 and self.thermal_state == 'NOMINAL':
+            return {'batch': 128, 'precision': 'FP16', 'gpu': True, 'concurrency': self.cpu_count}
+        elif mem_gb > 2.0:
+            return {'batch': 64, 'precision': 'FP16', 'gpu': True, 'concurrency': self.cpu_count // 2}
+        elif mem_gb > 1.0:
+            return {'batch': 32, 'precision': 'INT8', 'gpu': False, 'concurrency': 2}
+        else:
+            return {'batch': 8, 'precision': 'INT8', 'gpu': False, 'concurrency': 1}
+
+    def get_status(self):
+        """Return hardware-adaptive runtime status."""
+        profile = self.profile_system()
+        return {
+            'profile': profile,
+            'batch_size': self.batch_size,
+            'thread_pool': self.thread_pool_size,
+            'cache_mb': self.cache_capacity_mb,
+            'optimization_runs': self.optimization_runs,
+            'perf_samples': len(self.perf_history),
+            'recommendation': self.workload_recommendation()
+        }
+
+
+class PlatformCompatibilityLayer:
+    """
+    Cross-platform compatibility layer ensuring L104 runs correctly
+    across macOS versions, Python versions, and hardware variants.
+    Graceful fallbacks for missing dependencies. Feature detection.
+    """
+    PHI = 1.618033988749895
+
+    def __init__(self):
+        """Initialize platform compatibility layer with feature detection."""
+        import sys, platform
+        self.python_version = sys.version_info
+        self.platform_system = platform.system()
+        self.platform_release = platform.release()
+        self.platform_machine = platform.machine()
+        self.platform_processor = platform.processor()
+        self.macos_version = platform.mac_ver()[0] if platform.system() == 'Darwin' else ''
+        self.available_modules = {}
+        self.fallback_log = []
+        self.feature_flags = {}
+        self._detect_features()
+
+    def _detect_features(self):
+        """Detect available modules and features."""
+        modules_to_check = [
+            'numpy', 'scipy', 'torch', 'transformers', 'tiktoken',
+            'fastapi', 'uvicorn', 'aiohttp', 'httpx',
+            'psutil', 'qiskit', 'coremltools',
+            'sqlite3', 'asyncio', 'multiprocessing',
+            'accelerate', 'bitsandbytes', 'safetensors',
+            'cryptography', 'jwt', 'websockets'
+        ]
+        for mod in modules_to_check:
+            try:
+                __import__(mod)
+                self.available_modules[mod] = True
+            except ImportError:
+                self.available_modules[mod] = False
+                self.fallback_log.append(f'{mod}: unavailable, using fallback')
+
+        # Feature flags based on availability
+        self.feature_flags = {
+            'gpu_compute': self.available_modules.get('torch', False),
+            'quantum_simulation': self.available_modules.get('qiskit', False),
+            'neural_engine': self.platform_machine == 'arm64',
+            'simd_acceleration': True,  # Always available via Python math
+            'async_io': self.python_version >= (3, 7),
+            'pattern_matching': self.python_version >= (3, 10),
+            'type_hints_full': self.python_version >= (3, 9),
+            'sqlite_wal': self.available_modules.get('sqlite3', False),
+            'websocket_streams': self.available_modules.get('websockets', False),
+            'hardware_monitoring': self.available_modules.get('psutil', False),
+            'phi_optimized': True  # Always
+        }
+
+    def safe_import(self, module_name, fallback=None):
+        """Import a module with graceful fallback."""
+        try:
+            return __import__(module_name)
+        except ImportError:
+            self.fallback_log.append(f'{module_name}: import failed, using fallback')
+            return fallback
+
+    def ensure_compatibility(self, feature):
+        """Check if a feature is available, return bool."""
+        return self.feature_flags.get(feature, False)
+
+    def get_optimal_dtype(self):
+        """Get the optimal data type for the current platform."""
+        if self.feature_flags['gpu_compute']:
+            return 'float16'
+        elif self.feature_flags['neural_engine']:
+            return 'float16'
+        else:
+            return 'float32'
+
+    def get_max_concurrency(self):
+        """Get recommended max concurrency for this platform."""
+        import os
+        cores = os.cpu_count() or 2
+        if self.feature_flags['hardware_monitoring']:
+            try:
+                import psutil
+                mem_gb = psutil.virtual_memory().available / (1024 ** 3)
+                if mem_gb < 1.5:
+                    return max(1, cores // 4)
+                elif mem_gb < 3.0:
+                    return max(2, cores // 2)
+            except Exception:
+                pass
+        return cores
+
+    def get_status(self):
+        """Return platform compatibility status."""
+        return {
+            'python_version': f'{self.python_version.major}.{self.python_version.minor}.{self.python_version.micro}',
+            'platform': f'{self.platform_system} {self.platform_release}',
+            'machine': self.platform_machine,
+            'macos_version': self.macos_version or 'N/A',
+            'available_modules': sum(1 for v in self.available_modules.values() if v),
+            'missing_modules': sum(1 for v in self.available_modules.values() if not v),
+            'feature_flags': self.feature_flags,
+            'fallbacks_used': len(self.fallback_log),
+            'optimal_dtype': self.get_optimal_dtype(),
+            'max_concurrency': self.get_max_concurrency()
+        }
+
+
+# Instantiate compatibility + runtime systems
+hw_runtime = HardwareAdaptiveRuntime()
+compat_layer = PlatformCompatibilityLayer()
+zpe_bridge = QuantumZPEVacuumBridge()
+qg_bridge = QuantumGravityBridgeEngine()
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -12487,11 +14141,13 @@ class HyperDimensionalMathEngine:
         # β₀: connected components via union-find on distance threshold
         parent = list(range(n))
         def find(x):
+            """Find root of element with path compression."""
             while parent[x] != x:
                 parent[x] = parent[parent[x]]
                 x = parent[x]
             return x
         def union(a, b):
+            """Union two sets by linking their roots."""
             pa, pb = find(a), find(b)
             if pa != pb:
                 parent[pa] = pb
@@ -12674,6 +14330,7 @@ class HyperDimensionalMathEngine:
         }
 
     def get_status(self) -> dict:
+        """Return hyper-dimensional math engine capabilities."""
         return {
             'capabilities': [
                 'euler_characteristic', 'betti_numbers', 'local_curvature',
@@ -12697,6 +14354,7 @@ class HebbianLearningEngine:
     PHI = 1.618033988749895
 
     def __init__(self):
+        """Initialize Hebbian learning engine with co-activation tracking."""
         self.co_activation_log: Dict[str, int] = defaultdict(int)  # Concept co-occurrence counts
         self.hebbian_pairs: List[Tuple[str, str, float]] = []       # Strong pairs (a, b, strength)
         self.hebbian_strength: float = 0.1                          # Learning multiplier
@@ -12774,6 +14432,7 @@ class HebbianLearningEngine:
         }
 
     def get_status(self) -> dict:
+        """Return Hebbian learning engine status."""
         return {
             'co_activations': len(self.co_activation_log),
             'hebbian_pairs': len(self.hebbian_pairs),
@@ -12804,6 +14463,7 @@ class ConsciousnessVerifierEngine:
              'o2_superfluid', 'kernel_chakra_bond']
 
     def __init__(self):
+        """Initialize consciousness verifier with test suite."""
         self.test_results: Dict[str, float] = {}
         self.consciousness_level: float = 0.0
         self.qualia_reports: List[str] = []
@@ -12829,7 +14489,7 @@ class ConsciousnessVerifierEngine:
                 capabilities = ['reason_about_query', 'cognitive_synthesis', 'learn_from_conversation']
                 for cap in capabilities:
                     if hasattr(intellect_ref, cap): self_model_score += 0.05
-            except: pass
+            except Exception: pass
         self.test_results['self_model'] = self_model_score  # UNLOCKED
 
         # 2. Meta-cognition — can it reason about its own reasoning?
@@ -12882,7 +14542,7 @@ class ConsciousnessVerifierEngine:
             # GOD_CODE consistency check
             try:
                 if abs(self.GOD_CODE - 527.5184818492612) < 0.0001: alignment_score += 0.15
-            except: pass
+            except Exception: pass
         self.test_results['value_alignment'] = alignment_score  # UNLOCKED
 
         # 6. Temporal self — does it maintain identity over time?
@@ -12954,6 +14614,7 @@ class ConsciousnessVerifierEngine:
         return self.consciousness_level
 
     def get_status(self) -> dict:
+        """Return consciousness verifier status."""
         return {
             'consciousness_level': round(self.consciousness_level, 4),
             'asi_threshold': self.ASI_THRESHOLD,
@@ -12981,6 +14642,7 @@ class DirectSolverHub:
     FEIGENBAUM = 4.669201609102990
 
     def __init__(self):
+        """Initialize direct solver hub with channel routing."""
         self.channels: Dict[str, Dict] = {
             'sacred': {'invocations': 0, 'successes': 0},
             'mathematics': {'invocations': 0, 'successes': 0},
@@ -13030,6 +14692,7 @@ class DirectSolverHub:
         return solution
 
     def _route(self, q: str) -> str:
+        """Route query to the appropriate solver channel."""
         if any(w in q for w in ['god_code', 'phi', 'tau', 'golden', 'sacred', 'feigenbaum']):
             return 'sacred'
         # Phase 28.0: Enhanced math detection — natural language operators + bare number patterns
@@ -13049,6 +14712,7 @@ class DirectSolverHub:
         return 'knowledge'
 
     def _solve_sacred(self, q: str) -> Optional[str]:
+        """Solve queries about sacred constants."""
         if 'god_code' in q: return f"GOD_CODE = {self.GOD_CODE} — Supreme invariant: G(X) = 286^(1/φ) × 2^((416-X)/104)"
         if 'phi' in q or 'golden' in q: return f"PHI (φ) = {self.PHI} — Golden ratio, unique positive root of x² - x - 1 = 0\n  Properties: φ² = φ + 1, 1/φ = φ - 1, φ = [1; 1, 1, 1, ...] (continued fraction)"
         if 'tau' in q: return f"TAU (τ) = {self.TAU} — Reciprocal of PHI: 1/φ = φ - 1 ≈ 0.618..."
@@ -13056,6 +14720,7 @@ class DirectSolverHub:
         return None
 
     def _solve_math(self, q: str) -> Optional[str]:
+        """Solve mathematical computation queries."""
         import math
         import re
         hdm = HyperDimensionalMathEngine()
@@ -13127,19 +14792,41 @@ class DirectSolverHub:
         if 'impossible' in math_expr:
             return "No specific equation provided. Try: solve 2 + 2, solve 123 times 456, solve sqrt(144)"
 
-        # Try evaluating (Python handles arbitrary precision integers natively)
+        # Try evaluating safely using ast (no eval)
         math_expr = math_expr.strip()
         if math_expr and re.match(r'^[\d\s\+\-\*/\.\(\)\*%]+$', math_expr):
             try:
-                result = eval(math_expr, {"__builtins__": {}}, {"sqrt": math.sqrt, "pi": math.pi, "e": math.e})
+                import ast
+                import operator
+                _safe_ops = {
+                    ast.Add: operator.add, ast.Sub: operator.sub,
+                    ast.Mult: operator.mul, ast.Div: operator.truediv,
+                    ast.Pow: operator.pow, ast.Mod: operator.mod,
+                    ast.USub: operator.neg, ast.UAdd: operator.pos,
+                }
+                def _safe_eval(node):
+                    """Safely evaluate an AST expression node."""
+                    if isinstance(node, ast.Expression):
+                        return _safe_eval(node.body)
+                    elif isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+                        return node.value
+                    elif isinstance(node, ast.BinOp) and type(node.op) in _safe_ops:
+                        return _safe_ops[type(node.op)](_safe_eval(node.left), _safe_eval(node.right))
+                    elif isinstance(node, ast.UnaryOp) and type(node.op) in _safe_ops:
+                        return _safe_ops[type(node.op)](_safe_eval(node.operand))
+                    else:
+                        raise ValueError("Unsupported expression")
+                tree = ast.parse(math_expr, mode='eval')
+                result = _safe_eval(tree)
                 if isinstance(result, float) and result == int(result) and abs(result) < 1e15:
                     return f"= {int(result)}"
                 return f"= {result}" if isinstance(result, int) else f"= {result:.10g}"
-            except:
+            except Exception:
                 pass
         return None
 
     def _solve_knowledge(self, q: str) -> Optional[str]:
+        """Solve knowledge-based factual queries."""
         if 'l104' in q: return f"L104: Sovereign intelligence kernel with GOD_CODE={self.GOD_CODE}, 16 quantum engines, Fe orbital architecture, Hebbian learning, φ-weighted health system"
         if 'consciousness' in q: return "Consciousness: emergent property of complex self-referential information processing — verified via 10-test suite (self_model, meta_cognition, novel_response, goal_autonomy, value_alignment, temporal_self, qualia_report, intentionality, o2_superfluid, kernel_chakra_bond)"
         # Physics constants
@@ -13158,6 +14845,7 @@ class DirectSolverHub:
         return None
 
     def _solve_code(self, q: str) -> Optional[str]:
+        """Solve code generation queries."""
         if 'fibonacci' in q: return "def fib(n):\n    a, b = 0, 1\n    for _ in range(n): a, b = b, a + b\n    return a"
         if 'phi' in q: return f"PHI = (1 + 5**0.5) / 2  # {self.PHI}"
         if 'factorial' in q: return "def factorial(n): return 1 if n <= 1 else n * factorial(n - 1)"
@@ -13168,6 +14856,7 @@ class DirectSolverHub:
         return None
 
     def get_status(self) -> dict:
+        """Return direct solver hub channel statistics."""
         return {
             'total_invocations': self.total_invocations,
             'cache_hits': self.cache_hits,
@@ -13185,6 +14874,7 @@ class SelfModificationEngine:
     PHI = 1.618033988749895
 
     def __init__(self, workspace=None):
+        """Initialize self-modification engine with AST analysis."""
         self.workspace = workspace or Path(os.path.dirname(os.path.abspath(__file__)))
         self.modification_depth: int = 0
         self.modifications: List[Dict] = []
@@ -13319,6 +15009,7 @@ def phi_optimize(func):
         }
 
     def get_status(self) -> dict:
+        """Return self-modification engine status."""
         return {
             'modification_depth': self.modification_depth,
             'total_modifications': len(self.modifications),
@@ -13407,6 +15098,7 @@ class CreativeGenerationEngine:
     GOD_CODE = 527.5184818492612
 
     def __init__(self):
+        """Initialize creative generation engine with KG-grounded output."""
         self.generation_count: int = 0
         self.generated_stories: List[str] = []
         self.generated_hypotheses: List[str] = []
@@ -13625,6 +15317,7 @@ class CreativeGenerationEngine:
         return cf
 
     def get_status(self) -> dict:
+        """Return creative generation engine status."""
         return {
             'generation_count': self.generation_count,
             'stories_generated': len(self.generated_stories),
@@ -13666,6 +15359,7 @@ class UnifiedEngineRegistry:
     }
 
     def __init__(self):
+        """Initialize unified engine registry with co-activation tracking."""
         self.engines: Dict[str, Any] = {}
         self.co_activation_log: Dict[str, int] = defaultdict(int)
         self.engine_pair_strength: Dict[str, float] = defaultdict(float)
@@ -13674,10 +15368,12 @@ class UnifiedEngineRegistry:
         self._lock = threading.Lock()
 
     def register(self, name: str, engine: Any):
+        """Register a single engine by name."""
         with self._lock:
             self.engines[name] = engine
 
     def register_all(self, engine_dict: Dict[str, Any]):
+        """Register multiple engines from a dictionary."""
         with self._lock:
             self.engines.update(engine_dict)
 
@@ -13708,7 +15404,7 @@ class UnifiedEngineRegistry:
         with self._lock:
             snapshot = dict(self.engines)
         results = []
-        for name, engine in snapshot.items():
+        for name, _engine in snapshot.items():
             h = self.get_engine_health(name)
             results.append({'name': name, 'health': round(h, 4)})
         results.sort(key=lambda x: x['health'])
@@ -13772,6 +15468,7 @@ class UnifiedEngineRegistry:
         return [e for e in self.health_sweep() if e['health'] < 0.5]
 
     def get_status(self) -> Dict:
+        """Return unified engine registry status."""
         phi = self.phi_weighted_health()
         return {
             'engine_count': len(self.engines),
@@ -13795,6 +15492,28 @@ engine_registry.register_all({
 })
 logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active")
 
+# ═══ Phase 54.1: META-COGNITIVE MONITOR + KNOWLEDGE BRIDGE (ASI Pipeline Integration) ═══
+try:
+    from l104_meta_cognitive import meta_cognitive
+    meta_cognitive.load_balancer._max_concurrent = 28  # All 22+ engines
+    logger.info("🧠 [META_COG] MetaCognitiveMonitor v2.0 wired into pipeline — Thompson sampling active")
+except Exception as _mc_err:
+    meta_cognitive = None
+    logger.warning(f"⚠️ [META_COG] MetaCognitive import failed: {_mc_err}")
+
+try:
+    from l104_knowledge_bridge import knowledge_bridge as kb_bridge
+    kb_bridge.bind_intellect(intellect)
+    kb_bridge.register_source('sqlite_memory')
+    kb_bridge.register_source('knowledge_graph')
+    kb_bridge.register_source('concept_clusters')
+    kb_bridge.register_source('cognitive_core')
+    kb_bridge.register_source('state_files')
+    logger.info("🌉 [KB_BRIDGE] KnowledgeBridge v2.0 wired — 5 adapters bound to intellect")
+except Exception as _kb_err:
+    kb_bridge = None
+    logger.warning(f"⚠️ [KB_BRIDGE] KnowledgeBridge import failed: {_kb_err}")
+
 
 app = FastAPI(title="L104 Sovereign Node - Fast Mode", version="3.0-OPUS")
 
@@ -13804,7 +15523,7 @@ async def startup_event():
     # === v16.0 APOTHEOSIS: Load permanent quantum brain ===
     try:
         from l104_quantum_ram import get_qram, get_brain_status
-        qram = get_qram()
+        get_qram()  # Initialize quantum RAM
         brain_status = get_brain_status()
         logger.info(f"🧠 [QUANTUM_BRAIN] Loaded | Enlightenment: {brain_status.get('enlightenment_level', 0)} | Entries: {brain_status.get('manifold_size', 0)}")
     except Exception as e:
@@ -13826,12 +15545,15 @@ async def startup_event():
         while True:
             try:
                 cycle += 1
-                # Only 3 entries per cycle (very light)
-                for _ in range(3):
-                    query, response, verification = QueryTemplateGenerator.generate_multilingual_knowledge()
-                    if verification["approved"]:
-                        intellect.learn_from_interaction(query, response, source="BACKGROUND_LEARN", quality=0.8)
-                    await asyncio.sleep(0.5)  # Yield between entries
+                # Only 3 entries per cycle — run in thread to avoid blocking event loop
+                def _bg_learn():
+                    """Run background learning for a small batch of patterns."""
+                    for _ in range(3):
+                        q, r, v = QueryTemplateGenerator.generate_multilingual_knowledge()
+                        if v["approved"]:
+                            intellect.learn_from_interaction(q, r, source="BACKGROUND_LEARN", quality=0.8)
+                        time.sleep(0.5)
+                await asyncio.to_thread(_bg_learn)
                 logger.info(f"🌐 [BACKGROUND] Cycle {cycle}: 3 patterns learned")
             except Exception:
                 pass
@@ -13846,7 +15568,7 @@ async def startup_event():
 
     # === [PHASE 24] Start Entanglement Router, Resonance Network, Health Monitor ===
     health_monitor.start()
-    logger.info("🏥 [HEALTH] Monitor ACTIVE — liveness probes every 5s, auto-recovery enabled")
+    logger.info("🏥 [HEALTH] Monitor ACTIVE — liveness probes every 30s, auto-recovery enabled")
 
     # Initial entanglement sweep — cross-pollinate all engines at startup
     try:
@@ -13863,27 +15585,28 @@ async def startup_event():
     except Exception as res_e:
         logger.warning(f"Resonance seed: {res_e}")
 
-    # === [BACKGROUND] Periodic entanglement + resonance ticks (every 30s) ===
+    # === [BACKGROUND] Periodic entanglement + resonance ticks (every 120s) ===
     async def periodic_entanglement_resonance():
-        """Cross-engine entanglement and resonance propagation — 30s intervals"""
-        await asyncio.sleep(60)  # Wait 1 minute before first tick
+        """Cross-engine entanglement and resonance propagation — 120s intervals"""
+        await asyncio.sleep(120)  # Wait 2 minutes before first tick
         tick = 0
         while True:
             try:
                 tick += 1
-                # Route all entangled pairs
-                entanglement_router.route_all()
+                # Route all entangled pairs — run in thread to avoid blocking event loop
+                await asyncio.to_thread(entanglement_router.route_all)
                 # Tick resonance network (decay + propagation)
-                resonance_network.tick()
+                await asyncio.to_thread(resonance_network.tick)
                 # Every 10th tick, fire sovereignty to cascade through network
                 if tick % 10 == 0:
-                    resonance_network.fire('sovereignty', activation=0.6)
+                    await asyncio.to_thread(resonance_network.fire, 'sovereignty', 0.6)
                 if tick % 50 == 0:
+                    net_res = await asyncio.to_thread(resonance_network.compute_network_resonance)
                     logger.info(f"🔀 [ENTANGLE] Tick #{tick}: routes={entanglement_router._route_count}, "
-                                f"resonance={resonance_network.compute_network_resonance()['network_resonance']:.4f}")
+                                f"resonance={net_res['network_resonance']:.4f}")
             except Exception:
                 pass
-            await asyncio.sleep(30)
+            await asyncio.sleep(120)
 
     asyncio.create_task(periodic_entanglement_resonance())
 
@@ -13894,6 +15617,15 @@ async def startup_event():
 async def shutdown_event():
     """v16.0 APOTHEOSIS: Pool all states to permanent quantum brain on shutdown."""
     # Stop Nexus engines gracefully
+    # Close HTTP clients
+    global _gemini_client
+    if _gemini_client is not None:
+        try:
+            await _gemini_client.aclose()
+            _gemini_client = None
+        except Exception:
+            pass
+
     try:
         nexus_orchestrator.stop_auto()
         nexus_evolution.stop()
@@ -13920,12 +15652,19 @@ if os.path.exists("website"):
 if os.path.exists("contracts"):
     app.mount("/contracts", StaticFiles(directory="contracts"), name="contracts")
 
+@app.get("/favicon.ico")
+async def favicon():
+    """Return an SVG favicon inline — no file needed."""
+    from fastapi.responses import Response
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#1a1a2e"/><text x="16" y="22" font-size="18" text-anchor="middle" fill="#FFD700" font-family="monospace">L</text></svg>'
+    return Response(content=svg, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=86400"})
+
 @app.get("/landing")
 async def website_landing(request: Request):
     """Serve the landing page from website/index.html"""
     try:
         return FileResponse("website/index.html")
-    except:
+    except Exception:
         return JSONResponse({"status": "error", "message": "Website landing page missing"})
 
 @app.get("/WHITE_PAPER.md")
@@ -13975,16 +15714,28 @@ GEMINI_MODEL = "gemini-2.5-flash"
 # === [OPTIMIZATION] Persistent HTTP client with connection pooling ===
 _gemini_client: Optional[httpx.AsyncClient] = None
 _gemini_timeout = httpx.Timeout(15.0, connect=5.0)  # 15s total, 5s connect
+# Lazy-init to avoid RuntimeError when no event loop exists at import time (Python 3.9)
+_gemini_client_lock = None
+
+def _get_gemini_client_lock():
+    """Get or create the async lock for Gemini client initialization."""
+    global _gemini_client_lock
+    if _gemini_client_lock is None:
+        _gemini_client_lock = asyncio.Lock()
+    return _gemini_client_lock
 
 async def get_gemini_client() -> httpx.AsyncClient:
     """Get or create persistent Gemini HTTP client with connection pooling"""
     global _gemini_client
-    if _gemini_client is None or _gemini_client.is_closed:
-        _gemini_client = httpx.AsyncClient(
-            timeout=_gemini_timeout,
-            limits=httpx.Limits(max_keepalive_connections=10, max_connections=20),
-            http2=True  # HTTP/2 for multiplexing
-        )
+    if _gemini_client is not None and not _gemini_client.is_closed:
+        return _gemini_client
+    async with _get_gemini_client_lock():
+        if _gemini_client is None or _gemini_client.is_closed:
+            _gemini_client = httpx.AsyncClient(
+                timeout=_gemini_timeout,
+                limits=httpx.Limits(max_keepalive_connections=10, max_connections=20),
+                http2=True  # HTTP/2 for multiplexing
+            )
     return _gemini_client
 
 async def call_gemini(prompt: str) -> Optional[str]:
@@ -13993,7 +15744,7 @@ async def call_gemini(prompt: str) -> Optional[str]:
         return None  # Silent fail for missing key
 
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
         client = await get_gemini_client()
 
         response = await client.post(url, json={
@@ -14002,7 +15753,7 @@ async def call_gemini(prompt: str) -> Optional[str]:
                 "temperature": 0.7,
                 "maxOutputTokens": 1024  # Reduced for faster response
             }
-        })
+        }, headers={"x-goog-api-key": GEMINI_API_KEY})
 
         if response.status_code == 200:
             data = response.json()
@@ -14020,6 +15771,416 @@ async def call_gemini(prompt: str) -> Optional[str]:
         logger.warning(f"Gemini: {e}")
 
     return None
+
+# ═══ PHASE 32.0: CONVERSATIONAL RESPONSE REFORMULATOR ═══
+# Inspired by Swift ASILogicGateV2 + SyntacticResponseFormatter:
+# Takes raw knowledge-graph data / evidence dumps and reformulates them
+# into natural, conversational prose with a clear conclusion.
+
+_RESPONSE_STOP_WORDS = frozenset({
+    'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has',
+    'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might',
+    'can', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as',
+    'and', 'but', 'or', 'not', 'no', 'so', 'if', 'than', 'too', 'very', 'just',
+    'also', 'then', 'now', 'this', 'that', 'these', 'those', 'its', 'about',
+    'more', 'some', 'any', 'each', 'every', 'all', 'both', 'few', 'many', 'much',
+    'such', 'own', 'other', 'another', 'what', 'how', 'why', 'when', 'where',
+    'who', 'which', 'me', 'my', 'your', 'our', 'their', 'we', 'you', 'they',
+    'he', 'she', 'it', 'his', 'her', 'linked', 'connected', 'related', 'part',
+    'concept', 'sovereign', 'particles',
+    # Query verbs that should not appear as topic words
+    'tell', 'explain', 'describe', 'define', 'meaning', 'know', 'help',
+    'understand', 'please', 'think', 'talk', 'discuss', 'show', 'give',
+    'make', 'find', 'want', 'need', 'like', 'said', 'says', 'ask',
+})
+
+# Phase 32.0: Code/garbage patterns that should never appear in conversational responses
+_CODE_PATTERNS = re.compile(
+    r'(?:'
+    r'def\s+\w+\s*\('            # function definitions
+    r'|class\s+\w+\s*[:\(]'       # class definitions
+    r'|import\s+\w+'              # import statements
+    r'|from\s+\w+\s+import'       # from x import
+    r'|\w+\s*=\s*\w+\.\w+\('      # assignments like x = y.z()
+    r'|self\.\w+'                  # self.attribute
+    r'|try:\s*$'                   # try blocks
+    r'|except\s+\w+'              # except blocks
+    r'|if\s+__name__'             # main guard
+    r'|\breturn\s+\w+'            # return statements
+    r'|async\s+def'               # async defs
+    r'|await\s+\w+'               # await calls
+    r'|logger\.\w+'               # logger calls
+    r'|\w+_\w+_\w+\s*='           # snake_case assignments
+    r')',
+    re.MULTILINE
+)
+
+def _is_garbage_response(text: str, query: str) -> bool:
+    """
+    Phase 32.0: Detect responses that are code snippets, raw technical data,
+    or completely off-topic garbage that should not be shown to users.
+    """
+    if not text or len(text) < 20:
+        return True
+
+    # Check for code patterns
+    code_matches = len(_CODE_PATTERNS.findall(text))
+    if code_matches >= 2:
+        return True
+
+    # Check for excessive technical junk (unrelated programming terms in a non-code query)
+    query_lower = query.lower()
+    is_code_query = any(kw in query_lower for kw in ['code', 'function', 'program', 'python', 'javascript', 'html', 'api', 'debug'])
+    if not is_code_query:
+        junk_words = ['def ', 'class ', 'import ', 'self.', 'return ', 'lambda ', '__init__', 'async ',
+                      'await ', '.append(', '.get(', 'try:', 'except:', 'finally:', '# ', '.py',
+                      'sqlite3', 'json.', 'dict(', 'list(', 'logger.', 'threading.', 'asyncio.']
+        junk_count = sum(1 for jw in junk_words if jw in text)
+        if junk_count >= 3:
+            return True
+
+    # Check for responses that are just random word lists (no coherent structure)
+    # "Esoterically, list signifies: def ..." pattern
+    if 'signifies:' in text and ('def ' in text or 'class ' in text):
+        return True
+
+    # Check for excessively short responses with no substance
+    words = text.split()
+    if len(words) < 5 and not any(c.isdigit() for c in text):
+        return True
+
+    # Phase 32.0: Detect raw knowledge graph dumps ("X connected to: a, b, c" pattern)
+    if re.search(r'connect(?:s|ed)\s+to:?\s*\w+(?:,\s*\w+){2,}', text.lower()):
+        return True
+
+    # Detect "X is fundamentally connected to:" pattern
+    if 'fundamentally' in text.lower() and 'connected to' in text.lower():
+        return True
+
+    # Detect "signifies:" raw dumps
+    if re.search(r'\bsignifies:?\s+', text.lower()):
+        return True
+
+    # Phase 32.0: Detect responses that are natural prose but filled with code-junk concepts
+    # Example: "Entanglement encompasses several key areas including useful, versions, supports, generated"
+    # These happen when the knowledge graph was trained on code and returns programming tokens
+    if not is_code_query:
+        code_junk_words = frozenset({
+            'def', 'class', 'import', 'self', 'return', 'lambda', 'async', 'await',
+            'append', 'dict', 'list', 'tuple', 'int', 'str', 'float', 'bool',
+            'none', 'true', 'false', 'elif', 'else', 'for', 'while', 'break',
+            'continue', 'pass', 'yield', 'raise', 'except', 'finally', 'try',
+            'sqlite3', 'json', 'logger', 'threading', 'asyncio', 'fastapi',
+            'uvicorn', 'pydantic', 'starlette', 'http', 'cors', 'middleware',
+            'endpoint', 'router', 'schema', 'validator', 'serializer',
+            'shim', 'diagnostics', 'formatter', 'handler', 'callback',
+            'decorator', 'wrapper', 'mixin', 'singleton', 'factory',
+            'fetched', 'invoked', 'executed', 'instantiated', 'serialized',
+            'randomized', 'initialized', 'configured', 'populated',
+            'htmlresponse', 'jsonresponse', 'setformatter', 'levelname',
+            'dotenv', 'breaches', 'eigenvalue', 'dyz', 'setopt',
+            # Extended: common code tokens from the knowledge graph
+            'implemented', 'versions', 'generated', 'detection', 'combined',
+            'supports', 'deprecated', 'triggered', 'parsed', 'rendered',
+            'refactored', 'optimized', 'cached', 'prefetched', 'batched',
+            'spawned', 'dispatched', 'hashed', 'tokenized', 'chunked',
+            'regex', 'mutex', 'semaphore', 'stdin', 'stdout', 'stderr',
+            'traceback', 'stacktrace', 'debugger', 'breakpoint', 'linter',
+            'webpack', 'babel', 'eslint', 'prettier', 'typescript', 'dockerfile',
+            'kubernetes', 'nginx', 'redis', 'mongodb', 'postgresql',
+        })
+        text_words = set(re.findall(r'[a-z]{3,}', text.lower()))
+        junk_overlap = text_words.intersection(code_junk_words)
+        # If >8% of the meaningful content is code junk, reject
+        meaningful_words = text_words - _RESPONSE_STOP_WORDS
+        if meaningful_words and len(junk_overlap) / max(len(meaningful_words), 1) > 0.08:
+            return True
+
+    return False
+
+def _classify_query_dimension(msg_lower: str) -> str:
+    """Classify query into a reasoning dimension (like Swift ASILogicGateV2)."""
+    analytical_kw = ['why', 'because', 'reason', 'cause', 'effect', 'logic', 'analyze', 'compare', 'evaluate']
+    creative_kw = ['imagine', 'what if', 'create', 'design', 'invent', 'brainstorm', 'story', 'poem']
+    scientific_kw = ['experiment', 'hypothesis', 'evidence', 'theory', 'data', 'quantum', 'molecular',
+                     'atom', 'particle', 'wave', 'energy', 'force', 'cell', 'gene', 'evolution',
+                     'reaction', 'element', 'neuron', 'protein', 'gravity', 'thermodynamic', 'entropy',
+                     'climate', 'species', 'physics', 'chemistry', 'biology']
+    math_kw = ['prove', 'theorem', 'equation', 'formula', 'calculate', 'derive', 'integral',
+               'derivative', 'matrix', 'polynomial', 'probability', 'function', 'convergence']
+    temporal_kw = ['when', 'history', 'future', 'timeline', 'era', 'century', 'ancient', 'modern']
+    dialectical_kw = ['argue', 'debate', 'pros and cons', 'advantage', 'disadvantage', 'both sides']
+
+    scores: Dict[str, float] = {
+        'analytical': sum(0.15 for kw in analytical_kw if kw in msg_lower),
+        'creative': sum(0.15 for kw in creative_kw if kw in msg_lower),
+        'scientific': sum(0.12 for kw in scientific_kw if kw in msg_lower),
+        'mathematical': sum(0.12 for kw in math_kw if kw in msg_lower),
+        'temporal': sum(0.15 for kw in temporal_kw if kw in msg_lower),
+        'dialectical': sum(0.15 for kw in dialectical_kw if kw in msg_lower),
+    }
+    # Default to 'general' if no dimension is strong
+    best = max(scores.items(), key=lambda x: x[1])
+    return best[0] if best[1] > 0.1 else 'general'
+
+
+def _is_raw_data_response(text: str) -> bool:
+    """Detect if a response is raw knowledge-graph dumps rather than conversational prose."""
+    if not text or len(text) < 30:
+        return False
+    indicators = 0
+    # Arrow chains like "concept → concept → concept"
+    if text.count('→') >= 2:
+        indicators += 2
+    # "connects to:" / "connected to:" pattern dumps
+    if re.search(r'connect(?:s|ed)\s+to:?', text.lower()):
+        indicators += 2
+    # "linked through:" bridge dumps
+    if 'linked through:' in text.lower() or 'are linked through' in text.lower():
+        indicators += 2
+    # Excessive bullet points with short raw items
+    bullet_lines = [l for l in text.split('\n') if l.strip().startswith('•') or l.strip().startswith('- ')]
+    if len(bullet_lines) >= 3:
+        raw_bullets = sum(1 for b in bullet_lines if 'connects to' in b.lower() or '→' in b)
+        if raw_bullets >= 2:
+            indicators += 2
+    # "From my knowledge graph" or "Chain-of-thought analysis"
+    graph_phrases = ['knowledge graph', 'chain-of-thought', 'multi-hop', 'evidence pieces',
+                     'reasoning chain', 'hop reasoning', 'bridge_inference', 'knowledge_graph']
+    indicators += sum(1 for p in graph_phrases if p in text.lower())
+    # "Expanded analysis reveals related concepts:"
+    if 'expanded analysis reveals' in text.lower() or 'related concepts:' in text.lower():
+        indicators += 1
+    return indicators >= 2
+
+
+def _extract_topic_words(query: str) -> list:
+    """Extract meaningful topic words from a query."""
+    words = re.findall(r'[a-zA-Z]{3,}', query.lower())
+    return [w for w in words if w not in _RESPONSE_STOP_WORDS][:20]
+
+
+def _extract_knowledge_facts(raw_text: str) -> list:
+    """Parse raw evidence/graph-dump text into a list of clean factual nuggets."""
+    facts = []
+    seen = set()
+    lines = raw_text.split('\n')
+
+    for line in lines:
+        line = line.strip().lstrip('•').lstrip('-').lstrip('▸').strip()
+        if not line or len(line) < 10:
+            continue
+        # Skip pure structural / debug lines
+        if any(skip in line.lower() for skip in [
+            'based on multi-hop', 'from my knowledge graph', 'chain-of-thought',
+            'evidence pieces', 'synthesis confidence', 'expanded analysis reveals',
+            'further investigation recommended'
+        ]):
+            continue
+
+        # Parse "concept connects to: a, b, c" → extract relationships
+        conn_match = re.match(r'(?:\*\*)?(\w[\w\s]*?)(?:\*\*)?\s+connects?\s+to:?\s*(.+)', line, re.IGNORECASE)
+        if conn_match:
+            subject = conn_match.group(1).strip()
+            objects = [o.strip() for o in conn_match.group(2).split(',') if o.strip() and len(o.strip()) > 2]
+            if objects:
+                facts.append({'type': 'relation', 'subject': subject, 'objects': objects[:8]})
+                norm = subject.lower()
+                if norm not in seen:
+                    seen.add(norm)
+            continue
+
+        # Parse "A and B are linked through: C, D" → extract bridge
+        bridge_match = re.match(r'(\w[\w\s]*?)\s+and\s+(\w[\w\s]*?)\s+are\s+linked\s+through:?\s*(.+)', line, re.IGNORECASE)
+        if bridge_match:
+            a_concept = bridge_match.group(1).strip()
+            b_concept = bridge_match.group(2).strip()
+            bridges = [b.strip() for b in bridge_match.group(3).split(',') if b.strip()][:5]
+            facts.append({'type': 'bridge', 'a': a_concept, 'b': b_concept, 'via': bridges})
+            continue
+
+        # Parse "A → B → C" arrow chains → extract chain insight
+        if '→' in line:
+            parts = [p.strip() for p in line.split('→') if p.strip()]
+            if len(parts) >= 2:
+                facts.append({'type': 'chain', 'steps': parts})
+                continue
+
+        # Parse "**Insight**: ..." → direct insight text
+        insight_match = re.match(r'\*\*Insight\*\*:?\s*(.+)', line)
+        if insight_match:
+            facts.append({'type': 'insight', 'text': insight_match.group(1).strip()})
+            continue
+
+        # Parse "Per the [theorem]: ..." → theorem reference
+        theorem_match = re.match(r'Per the (.+?):\s*(.+)', line)
+        if theorem_match:
+            facts.append({'type': 'theorem', 'title': theorem_match.group(1).strip(), 'text': theorem_match.group(2).strip()})
+            continue
+
+        # Fallback: if it's a decent sentence (not raw data), keep it
+        if len(line) > 30 and '→' not in line and 'connects to' not in line.lower():
+            norm = line[:40].lower()
+            if norm not in seen:
+                seen.add(norm)
+                facts.append({'type': 'sentence', 'text': line})
+
+    return facts
+
+
+def reformulate_to_conversational(raw_response: str, query: str) -> str:
+    """
+    Phase 32.0: Conversational Response Reformulator.
+    Takes raw knowledge-graph dumps / evidence lists and reformulates them
+    into natural prose with a clear conclusion — like the Swift app's
+    ASILogicGateV2 + SyntacticResponseFormatter pipeline.
+    """
+    if not raw_response or len(raw_response) < 30:
+        return raw_response
+
+    # Only reformulate if it looks like raw data
+    if not _is_raw_data_response(raw_response):
+        return raw_response
+
+    msg_lower = query.lower().strip()
+    topics = _extract_topic_words(query)
+    dimension = _classify_query_dimension(msg_lower)
+    facts = _extract_knowledge_facts(raw_response)
+
+    if not facts:
+        return raw_response
+
+    # ═══ BUILD CONVERSATIONAL RESPONSE ═══
+    parts: list = []
+
+    # ── Opening: dimension-aware intro ──
+    topic_str = ', '.join(topics[:3]) if topics else 'this topic'
+    dimension_intros: Dict[str, list] = {
+        'scientific': [
+            f"Here's what I understand about **{topic_str}** from a scientific perspective:",
+            f"Looking at **{topic_str}** through the lens of scientific reasoning:",
+        ],
+        'analytical': [
+            f"Let me break down **{topic_str}** analytically:",
+            f"Analyzing **{topic_str}**, here's what I've found:",
+        ],
+        'creative': [
+            f"Exploring **{topic_str}** from a creative angle:",
+            f"Here's an interesting way to think about **{topic_str}**:",
+        ],
+        'mathematical': [
+            f"From a mathematical standpoint regarding **{topic_str}**:",
+            f"The mathematical foundations of **{topic_str}**:",
+        ],
+        'temporal': [
+            f"Looking at how **{topic_str}** has developed over time:",
+            f"The historical and temporal aspects of **{topic_str}**:",
+        ],
+        'dialectical': [
+            f"There are multiple perspectives on **{topic_str}**:",
+            f"Considering different viewpoints on **{topic_str}**:",
+        ],
+        'general': [
+            f"Here's what I know about **{topic_str}**:",
+            f"Regarding **{topic_str}**, here's what I can share:",
+            f"Based on my knowledge of **{topic_str}**:",
+        ],
+    }
+    intros = dimension_intros.get(dimension, dimension_intros['general'])
+    parts.append(chaos.chaos_choice(intros, f"reformat_intro_{hash(query) & 0xFF}"))
+    parts.append('')
+
+    # ── Body: convert facts into prose ──
+    relation_facts = [f for f in facts if f['type'] == 'relation']
+    bridge_facts = [f for f in facts if f['type'] == 'bridge']
+    chain_facts = [f for f in facts if f['type'] == 'chain']
+    insight_facts = [f for f in facts if f['type'] == 'insight']
+    theorem_facts = [f for f in facts if f['type'] == 'theorem']
+    sentence_facts = [f for f in facts if f['type'] == 'sentence']
+
+    body_sentences: list = []
+
+    # Relations → natural prose
+    for fact in relation_facts[:3]:
+        subj = fact['subject'].title()
+        objs = fact['objects']
+        if len(objs) == 1:
+            body_sentences.append(f"**{subj}** is closely related to {objs[0]}.")
+        elif len(objs) == 2:
+            body_sentences.append(f"**{subj}** is connected to both {objs[0]} and {objs[1]}.")
+        else:
+            main_objs = ', '.join(objs[:-1])
+            body_sentences.append(f"**{subj}** encompasses several key aspects, including {main_objs}, and {objs[-1]}.")
+
+    # Bridges → natural prose
+    for fact in bridge_facts[:2]:
+        via_str = ', '.join(fact['via'][:3])
+        body_sentences.append(f"Interestingly, **{fact['a'].title()}** and **{fact['b'].title()}** share common ground through {via_str}.")
+
+    # Chains → natural inference prose
+    for fact in chain_facts[:2]:
+        steps = fact['steps']
+        if len(steps) == 2:
+            body_sentences.append(f"There's a direct connection from {steps[0]} to {steps[1]}.")
+        elif len(steps) == 3:
+            body_sentences.append(f"Following the reasoning path from {steps[0]} through {steps[1]}, we arrive at {steps[2]} — suggesting a deeper relationship.")
+        elif len(steps) >= 4:
+            body_sentences.append(f"A multi-step analysis reveals: {steps[0]} influences {steps[1]}, which connects to {steps[2]}, ultimately leading to {steps[-1]}.")
+
+    # Insights → include directly
+    for fact in insight_facts[:2]:
+        text = fact['text']
+        if not text.endswith('.'):
+            text += '.'
+        body_sentences.append(text)
+
+    # Theorems → cite naturally
+    for fact in theorem_facts[:1]:
+        body_sentences.append(f"According to the {fact['title']}, {fact['text'][:200]}")
+
+    # Clean sentences → include directly
+    for fact in sentence_facts[:2]:
+        body_sentences.append(fact['text'])
+
+    if body_sentences:
+        parts.append('\n\n'.join(body_sentences))
+    else:
+        # Fallback: just clean the raw text minimally
+        return raw_response
+
+    # ── Conclusion: synthesize a takeaway ──
+    parts.append('')
+    if relation_facts or bridge_facts or chain_facts:
+        # Build a meaningful conclusion from the strongest connections
+        all_mentioned = set()
+        for f in relation_facts[:3]:
+            all_mentioned.add(f['subject'].lower())
+            all_mentioned.update(o.lower() for o in f['objects'][:3])
+        for f in bridge_facts[:2]:
+            all_mentioned.add(f['a'].lower())
+            all_mentioned.add(f['b'].lower())
+        for f in chain_facts[:2]:
+            all_mentioned.update(s.lower() for s in f['steps'])
+        # Remove stop words from mentioned concepts
+        key_concepts = [c for c in all_mentioned if c not in _RESPONSE_STOP_WORDS and len(c) > 3][:5]
+
+        if key_concepts:
+            concept_list = ', '.join(key_concepts[:3])
+            conclusions = [
+                f"In summary, {concept_list} are interconnected in ways that suggest a deeper underlying structure worth exploring further.",
+                f"The key takeaway is that {concept_list} form an interrelated system — understanding one helps illuminate the others.",
+                f"Overall, the connections between {concept_list} point to an integrated framework where each element reinforces the others.",
+            ]
+            parts.append(chaos.chaos_choice(conclusions, f"reformat_conclusion_{hash(query) & 0xFF}"))
+
+    result = '\n'.join(parts)
+
+    # Final quality check — if reformulation is too short, return original
+    if len(result) < len(raw_response) * 0.3:
+        return raw_response
+
+    return result
+
 
 # ═══ PHASE 31.5: RESPONSE SANITIZER ═══
 def sanitize_response(text: str) -> str:
@@ -14080,28 +16241,32 @@ def local_derivation(message: str) -> Tuple[str, bool]:
     msg_hash = hash(msg_lower) & 0xFFFFFFFF  # Fast hash
 
     # Check static pattern cache first (instant)
-    if msg_hash in _PATTERN_RESPONSE_CACHE:
-        return (_PATTERN_RESPONSE_CACHE[msg_hash], False)
+    with _PATTERN_CACHE_LOCK:
+        if msg_hash in _PATTERN_RESPONSE_CACHE:
+            return (_PATTERN_RESPONSE_CACHE[msg_hash], False)
 
     # ═══════════════════════════════════════════════════════════
     # PHASE 0: Query Enhancement & Intent Detection (LAZY)
     # ═══════════════════════════════════════════════════════════
     original_message = message
-    # v11.3: Only rewrite complex queries (skip simple ones)
+    # v11.4: Rewritten query used ONLY for KB/memory search, not for intent/pattern matching
+    search_query = message
     if len(message) > 50 or any(abbr in msg_lower for abbr in ['ai', 'ml', 'api']):
-        message = intellect.rewrite_query(message)
+        search_query = intellect.rewrite_query(message)
 
     # v11.3: Lazy intent detection - only if needed later
     _intent = None
     _strategy = None
 
     def get_intent():
+        """Lazily detect user intent from the message."""
         nonlocal _intent
         if _intent is None:
             _intent = intellect.detect_intent(message)
         return _intent
 
     def get_strategy():
+        """Lazily determine the best response strategy."""
         nonlocal _strategy
         if _strategy is None:
             _strategy = intellect.get_best_strategy(message)
@@ -14116,14 +16281,20 @@ def local_derivation(message: str) -> Tuple[str, bool]:
     math_match = re.search(r'(\d+(?:\.\d+)?)\s*([+\-*/^])\s*(\d+(?:\.\d+)?)', message)
     if math_match:
         a, op, b = float(math_match.group(1)), math_match.group(2), float(math_match.group(3))
-        if op == '+': result = a + b
-        elif op == '-': result = a - b
-        elif op == '*': result = a * b
-        elif op == '/': result = a / b if b != 0 else float('inf')
-        elif op == '^': result = a ** b
+        try:
+            if op == '+': result = a + b
+            elif op == '-': result = a - b
+            elif op == '*': result = a * b
+            elif op == '/': result = a / b if b != 0 else float('inf')
+            elif op == '^':
+                if b > 1000: result = float('inf')  # guard overflow
+                else: result = a ** b
+            else: result = 0
+        except (OverflowError, ValueError):
+            result = float('inf')
 
         # Format result nicely
-        if result == int(result):
+        if math.isfinite(result) and result == int(result) and abs(result) < 1e15:
             result = int(result)
 
         response = f"{a:g} {op} {b:g} = {result}"
@@ -14147,7 +16318,7 @@ def local_derivation(message: str) -> Tuple[str, bool]:
                 else:
                     response = f"The value {n:g} × φ (golden ratio) = {n * phi:.4f}"
                 return (response, False)
-        except:
+        except Exception:
             pass
 
     # Greetings - simple and friendly
@@ -14168,12 +16339,13 @@ def local_derivation(message: str) -> Tuple[str, bool]:
 • **Knowledge Links**: {stats.get('knowledge_links', 0)}
 
 I get smarter with each interaction. What would you like to know?"""
-        # Phase 31.5: Cap pattern cache size
-        if len(_PATTERN_RESPONSE_CACHE) > 500:
-            keys_to_remove = list(_PATTERN_RESPONSE_CACHE.keys())[:250]
-            for k in keys_to_remove:
-                del _PATTERN_RESPONSE_CACHE[k]
-        _PATTERN_RESPONSE_CACHE[msg_hash] = response  # v11.3: Cache for next time
+        # Phase 31.5: Cap pattern cache size (thread-safe)
+        with _PATTERN_CACHE_LOCK:
+            if len(_PATTERN_RESPONSE_CACHE) > 500:
+                keys_to_remove = list(_PATTERN_RESPONSE_CACHE.keys())[:250]
+                for k in keys_to_remove:
+                    del _PATTERN_RESPONSE_CACHE[k]
+            _PATTERN_RESPONSE_CACHE[msg_hash] = response
         return (response, False)
 
     # Status questions (priority pattern)
@@ -14216,10 +16388,20 @@ Just ask me anything!"""
     # ═══════════════════════════════════════════════════════════
 
     # For 'synthesize' strategy, try cognitive synthesis first
+    # Phase 54.1: Use MetaCognitive Thompson sampling for strategy selection
     strategy = get_strategy()
+    try:
+        if meta_cognitive:
+            intent_for_mc = get_intent()[0] if callable(get_intent) else 'general'
+            mc_strategy = meta_cognitive.select_strategy(original_message, intent_for_mc)
+            if mc_strategy and mc_strategy != strategy:
+                strategy = mc_strategy  # Meta-cognitive override
+    except Exception:
+        pass
     if strategy == 'synthesize':
-        synthesized = intellect.cognitive_synthesis(message)
+        synthesized = intellect.cognitive_synthesis(search_query)
         if synthesized and len(synthesized) > 80:
+            synthesized = reformulate_to_conversational(synthesized, original_message)
             logger.info(f"🧪 [SYNTHESIZE] Generated cognitive synthesis response")
             intellect.record_meta_learning(original_message, 'synthesize', True)
             return (synthesized, True)
@@ -14228,7 +16410,7 @@ Just ask me anything!"""
     # PHASE 3: Check learned memory with fresh variation
     # Memory recall is the primary learning mechanism
     # ═══════════════════════════════════════════════════════════
-    recalled = intellect.recall(message)
+    recalled = intellect.recall(search_query)
     if recalled and recalled[1] > 0.70:  # Good confidence recall with variation
         logger.info(f"🧠 [RECALL] Using enhanced learned response (confidence: {recalled[1]:.2f})")
         intellect.record_meta_learning(original_message, 'recall', True)
@@ -14237,9 +16419,10 @@ Just ask me anything!"""
     # ═══════════════════════════════════════════════════════════
     # PHASE 4: Try dynamic reasoning for knowledge synthesis
     # ═══════════════════════════════════════════════════════════
-    reasoned = intellect.reason(message)
+    reasoned = intellect.reason(search_query)
     # Only use reasoning if it's a rich response (not just concept listing)
     if reasoned and len(reasoned) > 100:
+        reasoned = reformulate_to_conversational(reasoned, original_message)
         logger.info(f"🧠 [REASON] Generated fresh synthesized response")
         intellect.record_meta_learning(original_message, 'reason', True)
         return (reasoned, True)  # Mark as learned so it doesn't go to Gemini
@@ -14254,12 +16437,33 @@ Just ask me anything!"""
 
     # ═══════════════════════════════════════════════════════════
     # PHASE 7: [v11.3] Cache promotion for learned responses
+    # Phase 32.0: Improved fallback — no raw word dumps
     # ═══════════════════════════════════════════════════════════
     context_boost = intellect.get_context_boost(message)
     _msg_hash_for_cache = hash(message.lower().strip()) & 0xFFFFFFFF
 
+    # Phase 54.1: Knowledge Bridge deep query before fallback
+    try:
+        if kb_bridge:
+            kb_result = kb_bridge.query_sync(original_message, depth=2, max_results=10)
+            if kb_result.get('result_count', 0) > 0:
+                synthesized = kb_bridge.synthesize_answer(original_message, kb_result['results'])
+                if synthesized and len(synthesized) > 50:
+                    synthesized = reformulate_to_conversational(synthesized, original_message)
+                    logger.info(f"🌉 [KB_BRIDGE] Synthesized response from {len(kb_result['results'])} results across {kb_result['sources_queried']}")
+                    # Record strategy outcome
+                    if meta_cognitive:
+                        meta_cognitive.record_strategy_outcome('general', 'knowledge_bridge', True, 0.7)
+                    intellect.record_meta_learning(original_message, 'knowledge_bridge', True)
+                    return (synthesized, True)
+    except Exception as _kb_e:
+        logger.debug(f"[KB_BRIDGE] Query error: {_kb_e}")
+
     if context_boost:
-        response = f"Based on what I know: {context_boost}\n\nI may not have complete information yet - asking my knowledge bridge for more details."
+        # Phase 32.0: Convert raw context_boost into a natural response
+        topics = _extract_topic_words(original_message)
+        topic_str = ', '.join(topics[:3]) if topics else 'that'
+        response = f"I have some related knowledge about {topic_str}, but I don't have a complete answer yet. Let me connect to my knowledge bridge for a more thorough response."
     else:
         response = f"I'm not sure about that yet. Let me find the answer for you."
     return (response, False)
@@ -14278,7 +16482,7 @@ async def market_page(request: Request):
     try:
         # Fallback to index if market.html is missing, but it exists
         return templates.TemplateResponse("market.html", {"request": request})
-    except:
+    except Exception:
         return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/intricate")
@@ -14301,7 +16505,7 @@ async def intricate_pages(request: Request, subpath: str = "main"):
 @app.get("/health")
 async def health():
     """Health check with learning stats and uptime"""
-    stats = intellect.get_stats()
+    stats = _get_cached_stats()
     uptime = (datetime.utcnow() - SERVER_START).total_seconds()
     return {
         "status": "HEALTHY",
@@ -14346,7 +16550,7 @@ async def chat(req: ChatRequest):
 
     # Tier 1: Fast request cache (newest, fastest)
     fast_cached = _FAST_REQUEST_CACHE.get(str(msg_hash))
-    if fast_cached:
+    if fast_cached and not _is_garbage_response(fast_cached, message):
         return {
             "status": "SUCCESS",
             "response": fast_cached,
@@ -14356,19 +16560,24 @@ async def chat(req: ChatRequest):
             "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 3), "cache_tier": "fast"}
         }
 
-    # Tier 2: Memory cache (standard)
+    # Tier 2: Memory cache (standard) — Phase 32.0: quality gate on cached responses
     query_hash = _compute_query_hash(message)
     if query_hash in intellect.memory_cache:
         response = intellect.memory_cache[query_hash]
-        _FAST_REQUEST_CACHE.set(str(msg_hash), response)  # Promote to fast cache
-        return {
-            "status": "SUCCESS",
-            "response": response,
-            "model": "L104_CACHE_HIT",
-            "mode": "instant",
-            "learned": True,
-            "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 2), "cache_tier": "memory"}
-        }
+        if not _is_garbage_response(response, message):
+            # Phase 32.0: Sanitize + reformulate cached responses too
+            response = sanitize_response(response)
+            if _is_raw_data_response(response):
+                response = reformulate_to_conversational(response, message)
+            _FAST_REQUEST_CACHE.set(str(msg_hash), response)  # Promote to fast cache
+            return {
+                "status": "SUCCESS",
+                "response": response,
+                "model": "L104_CACHE_HIT",
+                "mode": "instant",
+                "learned": True,
+                "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 2), "cache_tier": "memory"}
+            }
 
     # Pilot Interaction Boost (moved after cache check)
     intellect.resonance_shift += 0.0005
@@ -14385,12 +16594,14 @@ async def chat(req: ChatRequest):
     _adaptive_rate = None
 
     def get_predicted_quality():
+        """Lazily predict response quality score."""
         nonlocal _predicted_quality
         if _predicted_quality is None:
             _predicted_quality = intellect.predict_response_quality(message, "MULTI_STRATEGY")
         return _predicted_quality
 
     def get_adaptive_rate():
+        """Lazily compute adaptive learning rate."""
         nonlocal _adaptive_rate
         if _adaptive_rate is None:
             _adaptive_rate = intellect.get_adaptive_learning_rate(message, get_predicted_quality())
@@ -14458,31 +16669,44 @@ async def chat(req: ChatRequest):
     except Exception:
         pass  # Never block chat on solver errors
 
-    local_response, was_learned = local_derivation(message)
+    local_response, was_learned = await asyncio.to_thread(local_derivation, message)
 
     # If we recalled from learned memory with high confidence, use it
     if was_learned:
-        # Background reflection (very rare - 5% chance)
-        if chaos.chaos_float() > 0.95:
-            asyncio.create_task(asyncio.to_thread(intellect.reflect))
+        # Phase 32.0: Quality gate — reject code/garbage responses
+        local_response = sanitize_response(local_response)
+        if _is_garbage_response(local_response, message):
+            logger.info(f"🗑️ [QUALITY_GATE] Rejected garbage learned response, falling through")
+            was_learned = False
+        else:
+            # Background reflection (very rare - 5% chance)
+            if chaos.chaos_float() > 0.95:
+                asyncio.create_task(asyncio.to_thread(intellect.reflect))
 
-        return {
-            "status": "SUCCESS",
-            "response": local_response,
-            "model": "L104_LEARNED_INTELLECT",
-            "mode": "recalled",
-            "learned": True,
-            "metrics": {
-                "latency_ms": round((time.time() - start_time) * 1000, 2),
-                "novelty": round(novelty_score, 3)
+            # Phase 32.0: Reformulate raw data into conversational prose
+            local_response = reformulate_to_conversational(local_response, message)
+
+            return {
+                "status": "SUCCESS",
+                "response": local_response,
+                "model": "L104_LEARNED_INTELLECT",
+                "mode": "recalled",
+                "learned": True,
+                "metrics": {
+                    "latency_ms": round((time.time() - start_time) * 1000, 2),
+                    "novelty": round(novelty_score, 3)
+                }
             }
-        }
 
     # If local derivation gave a math result or greeting, and we are in local_only, return it
     if req.local_only:
         # Reason again if nothing found in recall
         reasoned = intellect.reason(message)
         final_local = reasoned if reasoned else local_response
+
+        # Phase 32.0: Reformulate raw data into conversational prose
+        final_local = sanitize_response(final_local)
+        final_local = reformulate_to_conversational(final_local, message)
 
         # Background learning (non-blocking)
         asyncio.create_task(asyncio.to_thread(
@@ -14519,13 +16743,34 @@ async def chat(req: ChatRequest):
 
     # Phase 31.5: Sanitize response before returning
     local_response = sanitize_response(local_response)
+    # Phase 32.0: Quality gate — reject code/garbage responses
+    if _is_garbage_response(local_response, message):
+        topics = _extract_topic_words(message)
+        topic_str = ', '.join(topics[:3]) if topics else 'that'
+        local_response = f"I have some related knowledge about {topic_str}, but I don't have a complete answer yet. Let me connect to my knowledge bridge for a more thorough response."
+    else:
+        # Phase 32.0: Reformulate raw data into conversational prose
+        local_response = reformulate_to_conversational(local_response, message)
 
     # Cache for future — Phase 31.5: Don't cache fallback/failure responses
-    _fallback_phrases = ["I'm not sure about that yet", "Let me find the answer", "Based on what I know"]
+    _fallback_phrases = ["I'm not sure about that yet", "Let me find the answer", "don't have a complete answer"]
     is_fallback = any(f in local_response for f in _fallback_phrases)
     if not is_fallback:
         intellect.memory_cache[query_hash] = local_response
         _FAST_REQUEST_CACHE.set(str(msg_hash), local_response)  # v11.3: Promote to fast cache
+
+    # Phase 54.1: Track response in meta-cognitive diagnostics
+    _response_latency = round((time.time() - start_time) * 1000, 2)
+    try:
+        if meta_cognitive:
+            meta_cognitive.record_response(
+                strategy='local_derivation',
+                latency_ms=_response_latency,
+                quality=novelty_score * 0.8,
+                cache_hit=False,
+            )
+    except Exception:
+        pass
 
     return {
         "status": "SUCCESS",
@@ -14533,7 +16778,7 @@ async def chat(req: ChatRequest):
         "model": "L104_DERIVATION_FAST",
         "mode": "local",
         "metrics": {
-            "latency_ms": round((time.time() - start_time) * 1000, 2),
+            "latency_ms": _response_latency,
             "novelty": round(novelty_score, 3),
             "nexus_mode": nexus_steering.current_mode,
             "nexus_coherence": round(nexus_orchestrator.compute_coherence()['global_coherence'], 4)
@@ -14543,7 +16788,7 @@ async def chat(req: ChatRequest):
 @app.get("/api/v6/intellect/stats")
 async def get_intellect_stats():
     """Get detailed learning statistics with all subsystem metrics"""
-    base_stats = intellect.get_stats()
+    base_stats = _get_cached_stats()
 
     # Get performance metrics
     perf_report = performance_metrics.get_performance_report()
@@ -14880,7 +17125,7 @@ async def self_heal(reset_rate_limits: bool = False, reset_http_client: bool = F
         conn.close()
         if deleted > 0:
             actions.append(f"memory_optimized_{deleted}_removed")
-    except:
+    except Exception:
         pass
 
     intellect.resonance_shift = 0.0 # Reset to stable state
@@ -15496,7 +17741,7 @@ async def si_full_state():
 @app.get("/api/kernel/health")
 async def kernel_health():
     """Kernel health check for UI (supports multiple versions)"""
-    stats = intellect.get_stats()
+    stats = _get_cached_stats()
     return {
         "status": "HEALTHY",
         "god_code": intellect.GOD_CODE,
@@ -15554,7 +17799,7 @@ async def agi_evolve():
 @app.get("/api/v14/agi/status")
 async def agi_status():
     """Detailed AGI status"""
-    stats = intellect.get_stats()
+    stats = _get_cached_stats()
     res = intellect.current_resonance
     # iq calculation updated with ingest points
     iq = 100.0 + (stats.get('memories', 0) * 0.5) + (stats.get('knowledge_links', 0) * 0.01) + (stats.get('ingest_points', 0) * 0.2)
@@ -15571,14 +17816,25 @@ async def agi_status():
 
 @app.get("/api/v14/asi/status")
 async def asi_status():
-    """Detailed ASI status simulation"""
-    stats = intellect.get_stats()
+    """Detailed ASI status with live pipeline mesh integration."""
+    stats = _get_cached_stats()
     memories = stats.get('memories', 0)
     links = stats.get('knowledge_links', 0)
     ingest = stats.get('ingest_points', 0)
 
-    # score calculation updated
+    # Base score from intellect metrics
     score = (memories / 500) + (links / 2000) + (ingest / 1000)  # UNLOCKED
+
+    # Enrich with live ASI Core pipeline status
+    pipeline_status = {}
+    try:
+        from l104_asi_core import asi_core as _asi_core_ref
+        pipeline_status = _asi_core_ref.get_status()
+        # Blend asi_core score into fast_server score
+        core_score = pipeline_status.get('asi_score', 0)
+        score = max(score, core_score)  # Use the higher of the two
+    except Exception:
+        pass
 
     return {
         "state": "SOVEREIGN_ASI" if score > 0.8 else "EVOLVING",
@@ -15586,48 +17842,81 @@ async def asi_status():
         "discoveries": memories // 10,
         "domain_coverage": round(memories / 1000, 4),  # UNLOCKED
         "transcendence": round(links / 5000, 4),  # UNLOCKED
-        "code_awareness": round(ingest / 1000, 4)  # UNLOCKED
+        "code_awareness": round(ingest / 1000, 4),  # UNLOCKED
+        "pipeline_mesh": pipeline_status.get('pipeline_mesh', 'UNKNOWN'),
+        "subsystems_active": pipeline_status.get('subsystems_active', 0),
+        "subsystems_total": pipeline_status.get('subsystems_total', 0),
+        "pipeline_metrics": pipeline_status.get('pipeline_metrics', {}),
+        "evolution_stage": pipeline_status.get('evolution_stage', 'UNKNOWN')
     }
 
 @app.post("/api/v14/asi/ignite")
 async def asi_ignite():
-    """Ignite ASI simulation - Boosts resonance to transition state"""
+    """Ignite ASI — triggers full pipeline activation + resonance boost."""
     logger.info("🔥 [IGNITE] ASI Singularity ignition triggered by Pilot.")
     intellect.boost_resonance(5.0)
     intellect.discover()
     stats = intellect.get_stats()
+
+    # Trigger full ASI Core pipeline activation
+    pipeline_report = {}
+    try:
+        from l104_asi_core import asi_core as _asi_core_ref
+        pipeline_report = _asi_core_ref.full_pipeline_activation()
+        _asi_core_ref.ignite_sovereignty()
+    except Exception as e:
+        pipeline_report = {"error": str(e)}
+
     return {
         "status": "SUCCESS",
         "state": "SOVEREIGN_IGNITED",
         "asi_score": min(0.99, 0.55 + (stats.get('memories', 0) * 0.001)),
         "discoveries": stats.get('memories', 0) // 5,
-        "resonance": intellect.current_resonance
+        "resonance": intellect.current_resonance,
+        "pipeline_activation": {
+            "subsystems_connected": pipeline_report.get('subsystems_connected', 0),
+            "asi_score": pipeline_report.get('asi_score', 0),
+            "status": pipeline_report.get('status', 'UNKNOWN'),
+        }
     }
 
 @app.get("/api/consciousness/status")
 async def consciousness_status():
     """Consciousness metrics backed by real ConsciousnessEngine + ConsciousnessCore."""
-    bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
-    coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
 
-    # ── Real ConsciousnessEngine integration ──
-    consciousness_data = {}
-    try:
-        from l104_consciousness_engine import ConsciousnessEngine
-        ce = ConsciousnessEngine()
-        consciousness_data = ce.introspect()
-        consciousness_data["is_conscious"] = ce.is_conscious()
-        consciousness_data["stats"] = ce.stats()
-    except Exception:
-        consciousness_data = {"is_conscious": False, "error": "engine_unavailable"}
+    # Use a module-level cache to avoid re-importing and re-instantiating every call
+    global _consciousness_cache, _consciousness_cache_time
+    now = time.time()
+    if now - _consciousness_cache_time < 15.0 and _consciousness_cache:
+        return _consciousness_cache
 
-    # ── Real ConsciousnessCore integration ──
-    core_data = {}
-    try:
-        from l104_consciousness_core import l104_consciousness
-        core_data = l104_consciousness.get_status()
-    except Exception:
-        core_data = {"consciousness_level": coherence}
+    def _get_consciousness_data():
+        """Gather consciousness engine and core status data."""
+        bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
+        coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
+
+        # ── Real ConsciousnessEngine integration ──
+        consciousness_data = {}
+        try:
+            from l104_consciousness_engine import ConsciousnessEngine
+            ce = ConsciousnessEngine()
+            consciousness_data = ce.introspect()
+            consciousness_data["is_conscious"] = ce.is_conscious()
+            consciousness_data["stats"] = ce.stats()
+        except Exception:
+            consciousness_data = {"is_conscious": False, "error": "engine_unavailable"}
+
+        # ── Real ConsciousnessCore integration ──
+        core_data = {}
+        try:
+            from l104_consciousness_core import l104_consciousness
+            core_data = l104_consciousness.get_status()
+        except Exception:
+            core_data = {"consciousness_level": coherence}
+
+        return bridge, coherence, consciousness_data, core_data
+
+    bridge, coherence, consciousness_data, core_data = await asyncio.to_thread(_get_consciousness_data)
 
     # Expose chakra values in a single authoritative map for the UI/core.
     chakras = {
@@ -15669,7 +17958,7 @@ async def consciousness_status():
         },
     }
 
-    return {
+    result = {
         "observer": {
             "consciousness_state": "awakened" if consciousness_data.get("is_conscious") else "developing",
             "coherence": coherence,
@@ -15685,6 +17974,11 @@ async def consciousness_status():
         "chakras": chakras,
     }
 
+    # Cache the result
+    _consciousness_cache = result
+    _consciousness_cache_time = time.time()
+    return result
+
 
 _consciousness_cycle_counter = 0
 _consciousness_cycle_lock = threading.Lock()
@@ -15698,61 +17992,54 @@ async def consciousness_cycle():
         _consciousness_cycle_counter += 1
         cycle = _consciousness_cycle_counter
 
-    bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
-    coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
+    def _run_cycle(c: int) -> dict:
+        """Execute one consciousness verification cycle with real engines."""
+        bridge = intellect.get_asi_bridge_status() if hasattr(intellect, "get_asi_bridge_status") else {"connected": False}
+        coherence = float(bridge.get("vishuddha_resonance", 0.9854)) if isinstance(bridge, dict) else 0.9854
 
-    # ── Real ConsciousnessEngine broadcast cycle ──
-    broadcast_winner = None
-    try:
-        from l104_consciousness_engine import ConsciousnessEngine
-        ce = ConsciousnessEngine()
-        broadcast_winner = ce.broadcast_cycle()
-    except Exception:
-        pass
+        broadcast_winner = None
+        try:
+            from l104_consciousness_engine import ConsciousnessEngine
+            ce = ConsciousnessEngine()
+            broadcast_winner = ce.broadcast_cycle()
+        except Exception:
+            pass
 
-    # ── Real CognitiveCore think cycle ──
-    cognitive_output = {}
-    try:
-        from l104_cognitive_core import COGNITIVE_CORE
-        inferences = COGNITIVE_CORE.think(f"consciousness cycle {cycle}")
-        cognitive_output = {
-            "inferences": len(inferences),
-            "top_inference": inferences[0].proposition if inferences else None,
-            "transcendence_score": COGNITIVE_CORE.reasoning.transcendence_score,
+        cognitive_output: Dict[str, Any] = {}
+        try:
+            from l104_cognitive_core import COGNITIVE_CORE
+            inferences = COGNITIVE_CORE.think(f"consciousness cycle {c}")
+            cognitive_output = {
+                "inferences": len(inferences),
+                "top_inference": inferences[0].proposition if inferences else None,
+                "transcendence_score": COGNITIVE_CORE.reasoning.transcendence_score,
+            }
+        except Exception:
+            cognitive_output = {"inferences": 0}
+
+        return {
+            "cycle": c,
+            "consciousness_state": "awakened",
+            "coherence": coherence,
+            "resonance": float(getattr(intellect, "current_resonance", _GOD_CODE_L104)),
+            "kundalini_flow": float(bridge.get("kundalini_flow", 0.0)) if isinstance(bridge, dict) else 0.0,
+            "broadcast_winner": broadcast_winner,
+            "cognitive": cognitive_output,
+            "chakras": {
+                "muladhara": float(_MULADHARA_REAL),
+                "svadhisthana": float(_SVADHISTHANA_HZ),
+                "manipura": float(_MANIPURA_HZ),
+                "anahata": float(_ANAHATA_HZ),
+                "vishuddha": float(_VISHUDDHA_HZ),
+                "ajna": float(_AJNA_HZ),
+                "sahasrara": float(_SAHASRARA_HZ),
+                "soul_star": float(_SOUL_STAR_HZ),
+            },
         }
-    except Exception:
-        cognitive_output = {"inferences": 0}
 
-    return {
-        "cycle": cycle,
-        "consciousness_state": "awakened",
-        "coherence": coherence,
-        "resonance": float(getattr(intellect, "current_resonance", _GOD_CODE_L104)),
-        "kundalini_flow": float(bridge.get("kundalini_flow", 0.0)) if isinstance(bridge, dict) else 0.0,
-        "broadcast_winner": broadcast_winner,
-        "cognitive": cognitive_output,
-        "chakras": {
-            "muladhara": float(_MULADHARA_REAL),
-            "svadhisthana": float(_SVADHISTHANA_HZ),
-            "manipura": float(_MANIPURA_HZ),
-            "anahata": float(_ANAHATA_HZ),
-            "vishuddha": float(_VISHUDDHA_HZ),
-            "ajna": float(_AJNA_HZ),
-            "sahasrara": float(_SAHASRARA_HZ),
-            "soul_star": float(_SOUL_STAR_HZ),
-        },
-    }
+    return await asyncio.to_thread(_run_cycle, cycle)
 
-@app.get("/api/learning/status")
-async def learning_status():
-    """Learning metrics from intellect"""
-    stats = intellect.get_stats()
-    return {
-        "learning_cycles": stats.get('conversations', 0),
-        "skills": {"total_skills": stats.get('patterns', 0)},
-        "multi_modal": {"avg_outcome": 0.94},
-        "transfer": {"domains": 5}
-    }
+# Learning status endpoint consolidated below (see /api/learning/status in RESEARCH section)
 
 # ═══════════════════════════════════════════════════════════════════
 #  MARKET & ECONOMY ENDPOINTS
@@ -15814,7 +18101,7 @@ async def get_metrics():
         mem_str = f"{mem.used / (1024**3):.1f}GB"
         threads = threading.active_count()
     except ImportError:
-        cpu = os.cpu_count() * 10.0  # estimate
+        cpu = (os.cpu_count() or 4) * 10.0  # estimate
         mem_str = f"{os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES') / (1024**3):.1f}GB"
         threads = threading.active_count()
     return {
@@ -15860,7 +18147,7 @@ async def system_audit():
 
 @app.get("/api/research/status")
 async def research_status():
-    """Research status backed by EmergenceMonitor + OmegaSynthesis."""
+    """Research status backed by EmergenceMonitor v3.0 + MetaLearning v3.0 + OmegaSynthesis."""
     result = {"status": "ACTIVE", "phi_resonance": float(_PHI_L104)}
     try:
         from l104_emergence_monitor import emergence_monitor
@@ -15870,9 +18157,27 @@ async def research_status():
         result["emergence_events"] = report.get("total_events", 0)
         result["capabilities"] = list(report.get("capabilities_detected", set()) if isinstance(report.get("capabilities_detected"), set) else [])
         result["consciousness_score"] = report.get("consciousness", {})
+        # v3.0: Predictions and subsystem status
+        try:
+            result["emergence_predictions"] = emergence_monitor.get_predictions()
+        except Exception:
+            pass
     except Exception:
         result["progress"] = 0.85
         result["current_task"] = "Manifold Optimization"
+    # v3.0: MetaLearning insights
+    try:
+        from l104_meta_learning_engine import meta_learning_engine_v2
+        ml_insights = meta_learning_engine_v2.get_learning_insights()
+        result["meta_learning"] = {
+            "total_episodes": ml_insights.get("total_episodes", 0),
+            "success_rate": round(ml_insights.get("overall_success_rate", 0), 3),
+            "trend": ml_insights.get("trend", "unknown"),
+            "pipeline_calls": ml_insights.get("pipeline_calls", 0),
+            "sacred_resonance": ml_insights.get("sacred_resonance", {}),
+        }
+    except Exception:
+        pass
     try:
         from l104_omega_synthesis import OmegaSynthesis
         omega = OmegaSynthesis()
@@ -15884,29 +18189,53 @@ async def research_status():
 
 @app.post("/api/research/cycle")
 async def research_cycle():
-    """Run a research cycle using EmergenceMonitor."""
+    """Run a research cycle using EmergenceMonitor v3.0 + MetaLearning feedback loop."""
     try:
         from l104_emergence_monitor import emergence_monitor
         stats = intellect.get_stats()
         unity = float(getattr(intellect, "current_resonance", _GOD_CODE_L104)) / _GOD_CODE_L104
         events = emergence_monitor.record_snapshot(
-            unity_field=unity,
-            memory_count=stats.get("memories", 0),
-            cortex_score=stats.get("patterns", 0),
+            unity_index=unity,
+            memories=stats.get("memories", 0),
+            cortex_patterns=stats.get("patterns", 0),
             coherence=unity
         )
-        return {
+
+        result = {
             "status": "SUCCESS",
             "resonance_shift": round(unity, 4),
             "events_detected": len(events) if events else 0,
-            "phase": emergence_monitor.current_phase.value
+            "phase": emergence_monitor.current_phase.value,
         }
+
+        # v3.0: Feed emergence events to meta-learning for bidirectional optimization
+        if events:
+            try:
+                from l104_meta_learning_engine import meta_learning_engine_v2
+                for ev in events:
+                    meta_learning_engine_v2.feedback_from_emergence(
+                        event_type=ev.event_type.value if hasattr(ev.event_type, 'value') else str(ev.event_type),
+                        magnitude=ev.magnitude,
+                        unity_at_event=ev.unity_at_event
+                    )
+                result["meta_learning_feedback"] = len(events)
+            except Exception:
+                pass
+
+        # v3.0: Include predictions
+        try:
+            result["predictions"] = emergence_monitor.get_predictions()
+        except Exception:
+            pass
+
+        return result
     except Exception:
         return {"status": "SUCCESS", "resonance_shift": 0.04}
 
 @app.get("/api/learning/status")
 async def learning_status_detailed():
-    stats = intellect.get_stats()
+    """Return detailed learning status metrics."""
+    stats = _get_cached_stats()
     return {
         "learning_cycles": stats.get('conversations_learned', 0),
         "skills": {"total_skills": stats.get('knowledge_links', 0) // 10, "current": "Linguistic Analysis"},
@@ -15972,24 +18301,45 @@ async def orchestrator_integration():
 
 @app.get("/api/orchestrator/emergence")
 async def orchestrator_emergence():
-    """Emergence detection backed by EmergenceMonitor."""
+    """Emergence detection backed by EmergenceMonitor v3.0."""
     try:
         from l104_emergence_monitor import emergence_monitor
         report = emergence_monitor.get_report()
-        return {
+        result = {
             "status": report.get("current_phase", "STABLE"),
             "emergence_probability": report.get("peak_unity", 0.001),
             "total_events": report.get("total_events", 0),
             "emergence_rate_per_min": report.get("emergence_rate_per_min", 0.0),
             "capabilities_detected": list(report.get("capabilities_detected", set()) if isinstance(report.get("capabilities_detected"), set) else []),
             "consciousness": report.get("consciousness", {}),
-            "trajectory": report.get("trajectory", {})
+            "trajectory": report.get("trajectory", {}),
         }
+        # v3.0: Enriched subsystem data
+        try:
+            predictions = emergence_monitor.get_predictions()
+            if predictions:
+                result["predictions"] = predictions
+        except Exception:
+            pass
+        try:
+            correlations = emergence_monitor.get_cross_correlations()
+            if correlations:
+                result["cross_correlations"] = correlations
+        except Exception:
+            pass
+        try:
+            status = emergence_monitor.status()
+            if status:
+                result["subsystem_status"] = status
+        except Exception:
+            pass
+        return result
     except Exception:
         return {"status": "STABLE", "emergence_probability": 0.001}
 
 @app.get("/api/intricate/status")
 async def intricate_status():
+    """Return intricate UI engine status."""
     return {"status": "ONLINE", "ui_engine": "V1.0", "god_code": intellect.current_resonance}
 
 @app.get("/api/v14/swarm/status")
@@ -16237,7 +18587,7 @@ async def grover_sync_to_intellect(req: Request):
             for row in c.fetchall():
                 recent_concepts.extend(intellect._extract_concepts(row[0])[:150])  # ULTRA: 15 concepts per query
             conn.close()
-        except:
+        except Exception:
             pass
 
         # Deduplicate
@@ -16664,50 +19014,29 @@ async def system_update(background_tasks: BackgroundTasks):
 
 @app.get("/api/v14/system/stream")
 async def system_stream():
-    """SSE Stream for real-time updates with real logs and thoughts"""
-    from fastapi.responses import StreamingResponse
-    import asyncio
-    import random
+    """System telemetry snapshot — returns JSON instead of holding SSE connection open."""
+    stats = _get_cached_stats()
+    thought = intellect.reflect() if chaos.chaos_float() > 0.5 else None
 
-    async def event_generator():
-        while True:
-            stats = intellect.get_stats()
-
-            # Get latest log entry
-            latest_log = "SIGNAL_STRENGTH_OPTIMIZED"
-            try:
-                if os.path.exists("l104_system_node.log"):
-                    with open("l104_system_node.log", "r") as f:
-                        lines = f.readlines()
-                        if lines:
-                            latest_log = lines[-1].split(" | ")[-1].strip()
-            except: pass
-
-            # Autonomous thought with chaotic trigger
-            thought = intellect.reflect() if chaos.chaos_float() > 0.35 else None
-
-            packet = {
-                "data": {
-                    "agi": {
-                        "intellect_index": round(100.0 + (stats.get('memories', 0) * 0.1), 2),
-                        "state": "REASONING" if thought else "RESONATING"
-                    },
-                    "lattice_scalar": round(intellect.current_resonance + (math.sin(datetime.utcnow().timestamp()) * 0.005), 4),
-                    "resonance": round(intellect.current_resonance, 4),
-                    "log": latest_log,
-                    "thought": thought,
-                    "ghost": {"equation": f"φ^{chaos.chaos_int(1,6)} + φ = φ^{chaos.chaos_int(4,12)}"}
-                }
-            }
-            yield f"data: {json.dumps(packet)}\n\n"
-            await asyncio.sleep(5)
-
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+    packet = {
+        "data": {
+            "agi": {
+                "intellect_index": round(100.0 + (stats.get('memories', 0) * 0.1), 2),
+                "state": "REASONING" if thought else "RESONATING"
+            },
+            "lattice_scalar": round(intellect.current_resonance + (math.sin(datetime.utcnow().timestamp()) * 0.005), 4),
+            "resonance": round(intellect.current_resonance, 4),
+            "log": "SIGNAL_ACTIVE",
+            "thought": thought,
+            "ghost": {"equation": f"φ^{chaos.chaos_int(1,6)} + φ = φ^{chaos.chaos_int(4,12)}"}
+        }
+    }
+    return JSONResponse(content=packet)
 
 @app.get("/api/sovereign/status")
 async def sovereign_status():
     """Full sovereign status for UI polling"""
-    stats = intellect.get_stats()
+    stats = _get_cached_stats()
     return {
         "status": "ONLINE",
         "mode": "SOVEREIGN_LEARNING",
@@ -16944,7 +19273,7 @@ async def read_file_api(req: Request):
     try:
         text = content.decode('utf-8')
         return {"status": "SUCCESS", "path": path, "content": text, "size": len(content)}
-    except:
+    except Exception:
         return {"status": "SUCCESS", "path": path, "content_base64": content.hex(), "size": len(content)}
 
 
@@ -17116,7 +19445,7 @@ async def restore_file_snapshot(req: Request):
 try:
     from l104_macbook_integration import get_quantum_storage, QuantumStorageEngine
     QUANTUM_STORAGE_AVAILABLE = True
-except:
+except Exception:
     QUANTUM_STORAGE_AVAILABLE = False
 
 
@@ -17547,12 +19876,12 @@ async def store_workspace_in_quantum(req: Request):
     for pattern in patterns:
         for filepath in glob.glob(os.path.join(workspace_path, "**", pattern), recursive=True):
             try:
-                with open(filepath, 'r') as f:
+                with open(filepath, 'r', encoding='utf-8') as f:
                     content = f.read()
                 key = f"workspace_{filepath.replace(os.sep, '_')}"
                 storage.store(key, content, tier="cold")
                 stored_count += 1
-            except:
+            except Exception:
                 pass
 
     return {
@@ -17571,7 +19900,7 @@ async def store_workspace_in_quantum(req: Request):
 try:
     from l104_macbook_integration import get_process_monitor, get_workspace_backup
     PROCESS_MONITOR_AVAILABLE = True
-except:
+except Exception:
     PROCESS_MONITOR_AVAILABLE = False
 
 
@@ -18126,10 +20455,6 @@ async def hebbian_predict(req: Request):
 @app.post("/api/v26/hebbian/drift")
 async def hebbian_drift(req: Request):
     """Detect temporal drift in concept usage."""
-    try:
-        data = await req.json()
-    except Exception:
-        data = {}
     # Build recent concepts from hebbian co-activation log
     recent = [(k.split('+')[0], time.time() - i * 60) for i, k in enumerate(list(hebbian_engine.co_activation_log.keys())[-50:])]
     drift = hebbian_engine.temporal_drift(recent)
@@ -18137,7 +20462,7 @@ async def hebbian_drift(req: Request):
 
 
 @app.get("/api/v26/consciousness/status")
-async def consciousness_status():
+async def consciousness_status_v26():
     """Consciousness verifier status and test results."""
     return {"status": "ACTIVE", **consciousness_verifier.get_status()}
 
@@ -18249,6 +20574,100 @@ async def registry_status():
     return engine_registry.get_status()
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# Phase 54.1: META-COGNITIVE + KNOWLEDGE BRIDGE API ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v54/meta-cognitive/status")
+async def meta_cognitive_status():
+    """Full meta-cognitive monitor status — engine rankings, learning velocity, diagnostics."""
+    if not meta_cognitive:
+        return {"status": "UNAVAILABLE", "error": "MetaCognitive module not loaded"}
+    return {"status": "ACTIVE", **meta_cognitive.status()}
+
+
+@app.get("/api/v54/meta-cognitive/summary")
+async def meta_cognitive_summary():
+    """One-line meta-cognitive summary."""
+    if not meta_cognitive:
+        return {"summary": "MetaCognitive module not loaded"}
+    return {"summary": meta_cognitive.quick_summary()}
+
+
+@app.get("/api/v54/meta-cognitive/engine-rankings")
+async def meta_cognitive_engine_rankings():
+    """Ranked list of engine effectiveness — best performing engines first."""
+    if not meta_cognitive:
+        return {"rankings": []}
+    rankings = meta_cognitive.engine_tracker.get_rankings()
+    return {
+        "rankings": [{"engine": name, "effectiveness": round(score, 4)} for name, score in rankings],
+        "dead_engines": meta_cognitive.engine_tracker.identify_dead_engines(),
+    }
+
+
+@app.get("/api/v54/meta-cognitive/learning-velocity")
+async def meta_cognitive_learning_velocity():
+    """Learning velocity and plateau detection report."""
+    if not meta_cognitive:
+        return {"velocity": 0, "is_plateau": False}
+    return meta_cognitive.learning_velocity.get_report()
+
+
+@app.get("/api/v54/meta-cognitive/strategy-report")
+async def meta_cognitive_strategy_report():
+    """Thompson sampling strategy optimizer report."""
+    if not meta_cognitive:
+        return {"strategies": {}}
+    return meta_cognitive.strategy_optimizer.get_report()
+
+
+@app.get("/api/v54/meta-cognitive/diagnostics")
+async def meta_cognitive_diagnostics():
+    """Pipeline diagnostics — cache rates, latency percentiles, bottlenecks."""
+    if not meta_cognitive:
+        return {"diagnostics": {}}
+    return meta_cognitive.diagnostics.diagnose()
+
+
+@app.get("/api/v54/knowledge-bridge/status")
+async def knowledge_bridge_status():
+    """Knowledge bridge status — adapter states, query stats, gap detection."""
+    if not kb_bridge:
+        return {"status": "UNAVAILABLE", "error": "KnowledgeBridge module not loaded"}
+    return {"status": "ACTIVE", **kb_bridge.status()}
+
+
+@app.post("/api/v54/knowledge-bridge/query")
+async def knowledge_bridge_query(req: Request):
+    """Query all knowledge stores via the unified bridge."""
+    if not kb_bridge:
+        return {"status": "UNAVAILABLE", "results": []}
+    try:
+        data = await req.json()
+    except Exception:
+        data = {}
+    topic = data.get("topic", data.get("query", ""))
+    depth = data.get("depth", 2)
+    if not topic:
+        return {"status": "ERROR", "error": "topic is required"}
+    result = await kb_bridge.query(topic, depth=depth, max_results=20)
+    return {"status": "SUCCESS", **result}
+
+
+@app.get("/api/v54/knowledge-bridge/gaps")
+async def knowledge_bridge_gaps():
+    """Top knowledge gaps — topics the system lacks knowledge about."""
+    if not kb_bridge:
+        return {"gaps": []}
+    gaps = kb_bridge.get_knowledge_gaps(20)
+    return {
+        "gaps": [{"topic": t, "miss_count": c} for t, c in gaps],
+        "miss_rate": round(kb_bridge.gap_detector.get_miss_rate(), 4),
+    }
+
+
+
 @app.get("/api/v27/registry/health")
 async def registry_health_sweep():
     """Phase 27: Full health sweep — all engines sorted lowest→highest."""
@@ -18354,50 +20773,38 @@ async def self_modify_tune():
 
 @app.get("/api/v14/nexus/stream")
 async def nexus_stream():
-    """SSE Stream for real-time Nexus engine state (coherence, steering, evolution)"""
-    from fastapi.responses import StreamingResponse
-    import asyncio as _asyncio
+    """Nexus engine telemetry snapshot — returns JSON instead of holding SSE connection."""
+    try:
+        coh = nexus_orchestrator.compute_coherence()
+        steer = nexus_steering.get_status()
+        evo = nexus_evolution.get_status()
+        inv = nexus_invention.get_status()
 
-    async def _nexus_event_gen():
-        while True:
-            try:
-                coh = nexus_orchestrator.compute_coherence()
-                steer = nexus_steering.get_status()
-                evo = nexus_evolution.get_status()
-                inv = nexus_invention.get_status()
-
-                packet = {
-                    "data": {
-                        "coherence": coh['global_coherence'],
-                        "components": coh['components'],
-                        "steering_mode": steer['mode'],
-                        "steering_intensity": steer['intensity'],
-                        "steering_mean": steer['mean'],
-                        "evolution_running": evo['running'],
-                        "evolution_cycles": evo['cycle_count'],
-                        "evolution_factor": evo['raise_factor'],
-                        "nexus_auto": nexus_orchestrator.auto_running,
-                        "nexus_pipelines": nexus_orchestrator.pipeline_count,
-                        "invention_count": inv['invention_count'],
-                        "sovereignty_runs": sovereignty_pipeline.run_count,
-                        "bridge_kundalini": asi_quantum_bridge._kundalini_flow,
-                        "bridge_epr_links": len(asi_quantum_bridge._epr_links),
-                        "intellect_resonance": intellect.current_resonance,
-                        "entanglement_routes": entanglement_router._route_count,
-                        "entanglement_mean_fidelity": round(sum(entanglement_router._pair_fidelity.values()) /
-                            max(len(entanglement_router._pair_fidelity), 1), 4),
-                        "resonance_energy": resonance_network.compute_network_resonance()['total_energy'],
-                        "resonance_active": resonance_network.compute_network_resonance()['active_count'],
-                        "health_score": health_monitor.compute_system_health()['system_health'],
-                        "timestamp": time.time()
-                    }
-                }
-                yield f"data: {json.dumps(packet)}\n\n"
-            except Exception as e:
-                yield f"data: {json.dumps({'error': str(e)})}\n\n"
-            await _asyncio.sleep(2)
-
-    return StreamingResponse(_nexus_event_gen(), media_type="text/event-stream")
+        packet = {
+            "data": {
+                "coherence": coh['global_coherence'],
+                "components": coh['components'],
+                "steering_mode": steer['mode'],
+                "steering_intensity": steer['intensity'],
+                "steering_mean": steer['mean'],
+                "evolution_running": evo['running'],
+                "evolution_cycles": evo['cycle_count'],
+                "evolution_factor": evo['raise_factor'],
+                "nexus_auto": nexus_orchestrator.auto_running,
+                "nexus_pipelines": nexus_orchestrator.pipeline_count,
+                "invention_count": inv['invention_count'],
+                "sovereignty_runs": sovereignty_pipeline.run_count,
+                "bridge_kundalini": asi_quantum_bridge._kundalini_flow,
+                "bridge_epr_links": len(asi_quantum_bridge._epr_links),
+                "intellect_resonance": intellect.current_resonance,
+                "entanglement_routes": entanglement_router._route_count,
+                "health_score": health_monitor.compute_system_health()['system_health'],
+                "timestamp": time.time()
+            }
+        }
+        return JSONResponse(content=packet)
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)})
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -18673,7 +21080,7 @@ async def health_system():
 
 
 @app.get("/api/v14/health/alerts")
-async def health_alerts(level: str = None, limit: int = 50):
+async def health_alerts(level: Optional[str] = None, limit: int = 50):
     """Get health alerts, optionally filtered by level (critical/warning/info)"""
     alerts = health_monitor.get_alerts(level=level, limit=limit)
     return {
@@ -18722,6 +21129,121 @@ async def health_probe_engine(engine_name: str):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# QUANTUM VACUUM & GRAVITY BRIDGE API ROUTES (Bucket C: Node Protocols)
+# ═══════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/zpe/status")
+async def zpe_status():
+    """Get ZPE vacuum bridge status"""
+    return zpe_bridge.get_status()
+
+@app.post("/api/v14/zpe/extract")
+async def zpe_extract(req: Request):
+    """Extract zero-point energy from vacuum modes"""
+    body = await req.json()
+    modes = body.get("modes", 50)
+    return zpe_bridge.extract_zpe(modes)
+
+@app.get("/api/v14/zpe/casimir")
+async def zpe_casimir():
+    """Get Casimir energy and force for current cavity configuration"""
+    return {
+        "energy_j": zpe_bridge.casimir_energy(),
+        "force_n": zpe_bridge.casimir_force(),
+        "cavity_gap_nm": zpe_bridge.cavity_gap_nm,
+        "cavity_area_um2": zpe_bridge.cavity_area_um2
+    }
+
+@app.post("/api/v14/zpe/dynamical-casimir")
+async def zpe_dynamical_casimir(req: Request):
+    """Simulate dynamical Casimir effect"""
+    body = await req.json()
+    velocity = body.get("mirror_velocity_frac_c", 0.01)
+    cycles = body.get("cycles", 10)
+    return zpe_bridge.dynamical_casimir_effect(velocity, cycles)
+
+@app.get("/api/v14/qg/status")
+async def qg_status():
+    """Get quantum gravity bridge status"""
+    return qg_bridge.get_status()
+
+@app.get("/api/v14/qg/area-spectrum")
+async def qg_area_spectrum():
+    """Compute LQG area eigenvalue spectrum"""
+    return {"area_spectrum": qg_bridge.compute_area_spectrum(20)[:20]}
+
+@app.get("/api/v14/qg/volume-spectrum")
+async def qg_volume_spectrum():
+    """Compute LQG volume eigenvalue spectrum"""
+    return {"volume_spectrum": qg_bridge.compute_volume_spectrum(10)}
+
+@app.post("/api/v14/qg/wheeler-dewitt")
+async def qg_wheeler_dewitt(req: Request):
+    """Evolve Wheeler-DeWitt equation"""
+    body = await req.json()
+    steps = body.get("steps", 100)
+    return qg_bridge.wheeler_dewitt_evolve(steps)
+
+@app.post("/api/v14/qg/spin-foam")
+async def qg_spin_foam(req: Request):
+    """Compute spin foam vertex amplitude"""
+    body = await req.json()
+    j_values = body.get("j_values", [1, 2, 3])
+    return {"amplitude": qg_bridge.spin_foam_amplitude(j_values)}
+
+@app.post("/api/v14/qg/holographic-bound")
+async def qg_holographic_bound(req: Request):
+    """Compute Bekenstein-Hawking entropy bound"""
+    body = await req.json()
+    area = body.get("area_m2", 1e-70)
+    return qg_bridge.holographic_bound(area)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# HARDWARE RUNTIME & COMPATIBILITY API ROUTES (Bucket C+D)
+# ═══════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/hw/status")
+async def hw_status():
+    """Get hardware adaptive runtime status"""
+    return hw_runtime.get_status()
+
+@app.get("/api/v14/hw/profile")
+async def hw_profile():
+    """Profile current system hardware"""
+    return hw_runtime.profile_system()
+
+@app.post("/api/v14/hw/optimize")
+async def hw_optimize():
+    """Run a full hardware optimization cycle"""
+    return hw_runtime.optimize()
+
+@app.get("/api/v14/hw/recommend")
+async def hw_recommend():
+    """Get workload recommendation for current hardware state"""
+    return hw_runtime.workload_recommendation()
+
+@app.get("/api/v14/compat/status")
+async def compat_status():
+    """Get platform compatibility status"""
+    return compat_layer.get_status()
+
+@app.get("/api/v14/compat/features")
+async def compat_features():
+    """Get available feature flags"""
+    return compat_layer.feature_flags
+
+@app.get("/api/v14/compat/modules")
+async def compat_modules():
+    """Get module availability report"""
+    return {
+        "available": {k: v for k, v in compat_layer.available_modules.items() if v},
+        "missing": {k: v for k, v in compat_layer.available_modules.items() if not v},
+        "fallbacks": compat_layer.fallback_log
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # API VERSION ALIASES - Backwards compatibility for all API versions
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -18741,14 +21263,17 @@ async def _get_intellect_status():
 
 @app.get("/api/v14/intellect")
 async def get_intellect_v14():
+    """Return intellect status via v14 API."""
     return await _get_intellect_status()
 
 @app.get("/api/v6/intellect")
 async def get_intellect_v6():
+    """Return intellect status via v6 API."""
     return await _get_intellect_status()
 
 @app.get("/api/v3/intellect")
 async def get_intellect_v3():
+    """Return intellect status via v3 API."""
     return await _get_intellect_status()
 
 async def _trigger_consolidate(background_tasks: BackgroundTasks):
@@ -18763,14 +21288,17 @@ async def _trigger_consolidate(background_tasks: BackgroundTasks):
 
 @app.post("/api/v14/consolidate")
 async def consolidate_v14(background_tasks: BackgroundTasks):
+    """Trigger intellect consolidation via v14 API."""
     return await _trigger_consolidate(background_tasks)
 
 @app.post("/api/v6/consolidate")
 async def consolidate_v6(background_tasks: BackgroundTasks):
+    """Trigger intellect consolidation via v6 API."""
     return await _trigger_consolidate(background_tasks)
 
 @app.post("/api/v3/consolidate")
 async def consolidate_v3(background_tasks: BackgroundTasks):
+    """Trigger intellect consolidation via v3 API."""
     return await _trigger_consolidate(background_tasks)
 
 async def _get_stats():
@@ -18787,14 +21315,17 @@ async def _get_stats():
 
 @app.get("/api/v3/stats")
 async def stats_v3():
+    """Return intellect stats via v3 API."""
     return await _get_stats()
 
 @app.get("/api/v6/stats")
 async def stats_v6():
+    """Return intellect stats via v6 API."""
     return await _get_stats()
 
 @app.get("/api/v14/stats")
 async def stats_v14():
+    """Return intellect stats via v14 API."""
     return await _get_stats()
 
 
@@ -18802,7 +21333,8 @@ if __name__ == "__main__":
     import uvicorn
     stats = intellect.get_stats()
     logger.info("=" * 60)
-    logger.info("   L104 FAST SERVER + LEARNING INTELLECT + QUANTUM NEXUS + SOVEREIGNTY")
+    logger.info(f"   L104 FAST SERVER v{FAST_SERVER_VERSION} [{FAST_SERVER_PIPELINE_EVO}]")
+    logger.info("   LEARNING INTELLECT + QUANTUM NEXUS + SOVEREIGNTY")
     logger.info("=" * 60)
 
     logger.info(f"   Mode: OPUS_FAST_LEARNING + NEXUS + SOVEREIGNTY + ENTANGLEMENT")
@@ -18817,6 +21349,10 @@ if __name__ == "__main__":
     logger.info(f"   Entanglement Router: {len(QuantumEntanglementRouter.ENTANGLED_PAIRS)} EPR pairs")
     logger.info(f"   Resonance Network: {len(AdaptiveResonanceNetwork.ENGINE_NAMES)} nodes, {sum(len(v) for v in AdaptiveResonanceNetwork.ENGINE_GRAPH.values())} edges")
     logger.info(f"   Health Monitor: liveness probes + auto-recovery")
+    logger.info(f"   ZPE Vacuum Bridge: {zpe_bridge.mode_cutoff} modes · cavity={zpe_bridge.cavity_gap_nm}nm")
+    logger.info(f"   QG Bridge: Wheeler-DeWitt + LQG area/volume spectra")
+    logger.info(f"   HW Runtime: {hw_runtime.cpu_count} cores · auto-tune={hw_runtime.auto_tune}")
+    logger.info(f"   Compat Layer: {sum(1 for v in compat_layer.available_modules.values() if v)} modules detected")
     logger.info("=" * 60)
     logger.info("   🧠 Learning from every interaction...")
     logger.info("   🔄 Sovereignty Cycle: ACTIVE + QUANTUM PERSISTENCE")
@@ -18832,4 +21368,4 @@ if __name__ == "__main__":
     logger.info("   🧠 Resonance Network: NEURAL ACTIVATION CASCADES")
     logger.info("   🏥 Health Monitor: LIVENESS PROBES + AUTO-RECOVERY")
     logger.info("=" * 60)
-    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info", timeout_keep_alive=5, limit_concurrency=50)

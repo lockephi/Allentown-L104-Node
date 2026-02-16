@@ -16,7 +16,7 @@ print("=" * 80)
 def analyze_file_substance(filepath):
     """Returns ratio of real code to total lines"""
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
         lines = [l.strip() for l in content.split('\n')]
@@ -30,7 +30,7 @@ def analyze_file_substance(filepath):
                     real_logic += 1
 
         return len(lines), len(code_lines), real_logic
-    except:
+    except Exception:
         return 0, 0, 0
 
 # Sample analysis of key files
@@ -85,7 +85,7 @@ except ImportError:
 print("\n3. API FUNCTIONALITY CHECK:")
 print("-" * 80)
 if os.path.exists('main.py'):
-    with open('main.py', 'r') as f:
+    with open('main.py', 'r', encoding='utf-8') as f:
         main_content = f.read()
 
     # Count actual endpoint implementations

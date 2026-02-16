@@ -68,7 +68,7 @@ class MemoryHooks:
         """Load existing session if resuming."""
         if SESSION_FILE.exists():
             try:
-                with open(SESSION_FILE, 'r') as f:
+                with open(SESSION_FILE, 'r', encoding='utf-8') as f:
                     saved = json.load(f)
                     # Resume if less than 1 hour old
                     if saved.get("start_time"):
@@ -81,12 +81,12 @@ class MemoryHooks:
 
     def _save_session(self):
         """Persist current session state."""
-        with open(SESSION_FILE, 'w') as f:
+        with open(SESSION_FILE, 'w', encoding='utf-8') as f:
             json.dump(self.session_data, f, indent=2)
 
     def _append_to_memory(self, entity: Dict[str, Any]):
         """Append entity to JSONL memory file."""
-        with open(MEMORY_FILE, 'a') as f:
+        with open(MEMORY_FILE, 'a', encoding='utf-8') as f:
             f.write(json.dumps(entity) + "\n")
 
     # ═══════════════════════════════════════════════════════════════════
@@ -95,7 +95,7 @@ class MemoryHooks:
 
     def on_file_edit(self, file_path: str, changes: str, lines_changed: int):
         """Called when a file is edited."""
-        file_hash = hashlib.md5(file_path.encode()).hexdigest()[:8]
+        file_hash = hashlib.sha256(file_path.encode()).hexdigest()[:8]
 
         self.session_data["files_edited"].append({
             "path": file_path,
@@ -135,7 +135,7 @@ class MemoryHooks:
 
     def on_error_fix(self, error_type: str, error_msg: str, solution: str):
         """Called when an error is fixed."""
-        error_hash = hashlib.md5(error_msg.encode()).hexdigest()[:8]
+        error_hash = hashlib.sha256(error_msg.encode()).hexdigest()[:8]
 
         self.session_data["errors_solved"][error_hash] = {
             "type": error_type,
@@ -160,7 +160,7 @@ class MemoryHooks:
 
     def on_architecture_decision(self, topic: str, decision: str, rationale: str):
         """Called when an architecture decision is made."""
-        decision_hash = hashlib.md5(topic.encode()).hexdigest()[:8]
+        decision_hash = hashlib.sha256(topic.encode()).hexdigest()[:8]
 
         self._append_to_memory({
             "type": "arch_decision",
@@ -257,7 +257,7 @@ class MemoryHooks:
         """Get recent session summaries."""
         sessions = []
         if MEMORY_FILE.exists():
-            with open(MEMORY_FILE, 'r') as f:
+            with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
                 for line in f:
                     try:
                         entity = json.loads(line)
@@ -271,7 +271,7 @@ class MemoryHooks:
         """Get known error patterns."""
         patterns = []
         if MEMORY_FILE.exists():
-            with open(MEMORY_FILE, 'r') as f:
+            with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
                 for line in f:
                     try:
                         entity = json.loads(line)
@@ -284,11 +284,11 @@ class MemoryHooks:
 
     def get_file_context(self, file_path: str) -> Optional[Dict]:
         """Get context for a specific file."""
-        file_hash = hashlib.md5(file_path.encode()).hexdigest()[:8]
+        file_hash = hashlib.sha256(file_path.encode()).hexdigest()[:8]
         target_name = f"file_{file_hash}"
 
         if MEMORY_FILE.exists():
-            with open(MEMORY_FILE, 'r') as f:
+            with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
                 for line in reversed(f.readlines()):
                     try:
                         entity = json.loads(line)
@@ -304,7 +304,7 @@ class MemoryHooks:
         query_lower = query.lower()
 
         if MEMORY_FILE.exists():
-            with open(MEMORY_FILE, 'r') as f:
+            with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
                 for line in f:
                     try:
                         entity = json.loads(line)

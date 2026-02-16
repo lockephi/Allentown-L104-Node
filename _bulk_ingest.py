@@ -22,7 +22,7 @@ DELAY_BETWEEN_BATCHES = 0.5  # Prevent SQLite locking
 JUNK_CATEGORIES = {'architecture', 'registry', 'relationships', 'summary', 'overview', 'file_analysis', 'modules', 'function_doc', 'class_doc', 'file_description', 'cross_reference'}
 
 def get_hash(text):
-    return hashlib.md5(text.lower().strip().encode()).hexdigest()
+    return hashlib.sha256(text.lower().strip().encode()).hexdigest()
 
 def run_ingest():
     processed_hashes = set()
@@ -57,7 +57,7 @@ def run_ingest():
                     processed_hashes.add(h)
                     all_entries.append(entry)
                     count += 1
-                except:
+                except Exception:
                     continue
         print(f"  [LOAD] {f}: {count} unique clean entries")
 

@@ -16,7 +16,8 @@ BUILD_SCRIPT="$SCRIPT_DIR/build.sh"
 EXECUTABLE="$SCRIPT_DIR/$APP_NAME.app/Contents/MacOS/$APP_NAME"
 
 # ─── WATCH TARGETS ───
-# Swift source
+# Swift source (multi-file L104v2 or monolith fallback)
+L104V2_DIR="$SCRIPT_DIR/Sources/L104v2"
 SWIFT_SOURCE="$SCRIPT_DIR/Sources/L104Native.swift"
 # CPython bridge (C header + implementation)
 BRIDGE_HEADER="$SCRIPT_DIR/Sources/cpython_bridge.h"
@@ -60,7 +61,19 @@ echo -e "${NC}"
 # ─── VERIFY TARGETS EXIST ───
 echo -e "${CYAN}📋 Verifying watch targets...${NC}"
 WATCH_FILES=()
-for f in "$SWIFT_SOURCE" "$BRIDGE_HEADER" "$BRIDGE_SOURCE" "$PYTHON_ASI_CORE" "$KERNEL_PARAMS"; do
+
+# Add L104v2 directory (or monolith fallback) as watch target
+if [ -d "$L104V2_DIR" ]; then
+    L104V2_COUNT=$(find "$L104V2_DIR" -name '*.swift' | wc -l | tr -d ' ')
+    L104V2_LINES=$(find "$L104V2_DIR" -name '*.swift' -exec cat {} + | wc -l | tr -d ' ')
+    WATCH_FILES+=("$L104V2_DIR")
+    echo -e "${GREEN}  ✓ L104v2/${NC} ${DIM}($L104V2_COUNT files, $L104V2_LINES lines)${NC}"
+elif [ -f "$SWIFT_SOURCE" ]; then
+    WATCH_FILES+=("$SWIFT_SOURCE")
+    echo -e "${GREEN}  ✓ $(basename "$SWIFT_SOURCE")${NC} ${DIM}($(wc -l < "$SWIFT_SOURCE" | tr -d ' ') lines)${NC}"
+fi
+
+for f in "$BRIDGE_HEADER" "$BRIDGE_SOURCE" "$PYTHON_ASI_CORE" "$KERNEL_PARAMS"; do
     if [ -f "$f" ]; then
         WATCH_FILES+=("$f")
         echo -e "${GREEN}  ✓ $(basename "$f")${NC} ${DIM}($(wc -l < "$f" | tr -d ' ') lines)${NC}"

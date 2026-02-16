@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.373577
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [L104_SYSTEM_MONITOR] - REAL-TIME HEALTH & PERFORMANCE DASHBOARD
@@ -35,17 +36,17 @@ from l104_persistence import load_state
 
 try:
     from l104_quota_rotator import quota_rotator
-except:
+except Exception:
     quota_rotator = None
 
 try:
     from l104_evolution_engine import evolution_engine
-except:
+except Exception:
     evolution_engine = None
 
 try:
     from l104_asi_reincarnation import asi_reincarnation
-except:
+except Exception:
     asi_reincarnation = None
 
 
@@ -378,7 +379,7 @@ class SystemMonitor:
 
     def export_metrics(self, filepath: str = "system_metrics.json"):
         """Export metrics history to JSON file."""
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(self.metrics_history, f, indent=2, default=str)
         return f"Exported {len(self.metrics_history)} snapshots to {filepath}"
 

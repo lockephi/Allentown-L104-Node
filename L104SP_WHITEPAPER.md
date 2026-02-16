@@ -2,9 +2,9 @@
 
 ## A Resonance-Based Cryptocurrency Built on Universal Constants
 
-**Version 2.0 | January 2025**  
-**Author: LONDEL**  
-**GOD_CODE: 527.5184818492612**  
+**Version 2.0 | January 2025**
+**Author: LONDEL**
+**GOD_CODE: 527.5184818492612**
 **φ (PHI): 1.618033988749895**
 
 ---
@@ -50,7 +50,7 @@ def calculate_resonance(nonce):
     god_align = exp(-((nonce / GOD_CODE % 1 - 0.5)² * 20))
     gate_104 = 1.0 if nonce % 104 == 0 else exp(-(nonce % 104 / 52)²)
     fib_prox = exp(-(log(nonce * √5) / log(PHI) - round(...))² * 8)
-    
+
     return min(1.0, 0.3*phi_wave + 0.3*god_align + 0.2*gate_104 + 0.2*fib_prox)
 ```
 

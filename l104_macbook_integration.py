@@ -72,6 +72,10 @@ import sqlite3
 
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+TAU = 1.0 / PHI
+MACBOOK_VERSION = "3.2.0"
+MACBOOK_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
 O2_BOND_STRENGTH = 498.4  # kJ/mol - Perfect molecular binding
 GROVER_AMPLITUDE = 0.7071067811865476  # 1/√2
 
@@ -127,7 +131,9 @@ class L104MacBookBridge:
             'ssd_writes_coalesced': 0,
             'cpu_throttle_events': 0,
             'cache_hits': 0,
-            'uptime_start': time.time()
+            'uptime_start': time.time(),
+            'pipeline_throttle_events': 0,  # v3.2
+            'resource_allocations': 0,  # v3.2
         }
 
         # Initialize EPR links with 8 chakra channels
@@ -213,7 +219,7 @@ class L104MacBookBridge:
                 self._stats['memory_optimizations'] += 1
 
             return self._memory_pressure
-        except:
+        except Exception:
             return 0.5
 
     def _optimize_memory(self):
@@ -245,7 +251,7 @@ class L104MacBookBridge:
                 self._cpu_throttle = 1.0
 
             return self._cpu_throttle
-        except:
+        except Exception:
             return 1.0
 
     def queue_ssd_write(self, path: str, data: bytes):
@@ -270,7 +276,7 @@ class L104MacBookBridge:
                 Path(path).parent.mkdir(parents=True, exist_ok=True)
                 Path(path).write_bytes(data)
                 self._stats['ssd_writes_coalesced'] += 1
-            except:
+            except Exception:
                 pass
 
     def queue_learning_pattern(self, prompt: str, response: str, confidence: float = 0.8):
@@ -290,7 +296,7 @@ class L104MacBookBridge:
             try:
                 self._unified_intelligence.incremental_learn(prompt, response, confidence)
                 self._stats['patterns_learned'] += 1
-            except:
+            except Exception:
                 pass
 
     def process_learning_queue(self) -> int:
@@ -311,7 +317,7 @@ class L104MacBookBridge:
                         )
                         processed += 1
                         self._stats['patterns_learned'] += 1
-                except:
+                except Exception:
                     pass
 
         return processed
@@ -378,7 +384,7 @@ class L104MacBookBridge:
                 if cycle % 1440 == 0:
                     self.admin_optimize_network()
 
-            except:
+            except Exception:
                 pass
 
             time.sleep(interval)
@@ -390,10 +396,11 @@ class L104MacBookBridge:
             self._background_thread.join(timeout=2)
 
     def get_status(self) -> Dict[str, Any]:
-        """Get comprehensive bridge status."""
+        """Get comprehensive bridge status with pipeline integration."""
         uptime = time.time() - self._stats['uptime_start']
-        return {
-            'version': '2.4 OMNI-LINK',
+        status = {
+            'version': MACBOOK_VERSION,
+            'pipeline_evo': MACBOOK_PIPELINE_EVO,
             'coherence': self._coherence,
             'epr_links': len(self._epr_links),
             'memory_pressure': self._memory_pressure,
@@ -412,9 +419,57 @@ class L104MacBookBridge:
                 'ram_aware': f'{MACBOOK_2015_RAM_GB}GB',
                 'cores': MACBOOK_2015_CORES,
                 'threads': MACBOOK_2015_THREADS,
-                'omni_link_v24': True
-            }
+                'omni_link_v30': True
+            },
+            'grover_amplification': GROVER_AMPLIFICATION,
+            'god_code': GOD_CODE
         }
+        # Pipeline subsystem health snapshot
+        pipeline = {}
+        try:
+            from l104_agi_core import agi_core
+            if agi_core:
+                pipeline['agi_core'] = 'online'
+        except Exception:
+            pipeline['agi_core'] = 'offline'
+        try:
+            from l104_asi_core import asi_core
+            if asi_core:
+                pipeline['asi_core'] = 'online'
+        except Exception:
+            pipeline['asi_core'] = 'offline'
+        try:
+            from l104_adaptive_learning import adaptive_learner
+            if adaptive_learner:
+                pipeline['adaptive_learning'] = 'online'
+        except Exception:
+            pipeline['adaptive_learning'] = 'offline'
+        # v3.1: ASI Core pipeline cross-wire status
+        try:
+            from l104_asi_core import asi_core
+            if asi_core:
+                pipeline['asi_core'] = 'online'
+                pipeline['asi_pipeline_mesh'] = asi_core.get_status().get('pipeline_mesh', 'UNKNOWN')
+                pipeline['asi_subsystems_active'] = asi_core.get_status().get('subsystems_active', 0)
+        except Exception:
+            pass
+        status['pipeline_subsystems'] = pipeline
+
+        # v3.2: ASI pipeline-aware metrics
+        try:
+            from l104_asi_core import asi_core
+            status['asi_score'] = asi_core.asi_score
+        except Exception:
+            status['asi_score'] = 0.0
+
+        status['capabilities'] = [
+            'epr_bridge', 'memory_optimization', 'fan_control',
+            'network_optimization', 'process_shielding', 'ssd_coalescing',
+            'pipeline_aware_throttle', 'asi_resource_allocation',
+            'pipeline_health_monitor',
+        ]
+
+        return status
 
     def get_epr_coherence(self) -> float:
         """Get overall EPR coherence."""
@@ -430,6 +485,133 @@ class L104MacBookBridge:
                     link['correlation'] = link['correlation'] + 0.05  # NO CAP
 
             return self.sync_epr_state()['coherence']
+
+    def pipeline_aware_throttle(self) -> Dict[str, Any]:
+        """Adjust CPU throttle based on ASI pipeline load (v3.2).
+
+        Monitors pipeline subsystem count and ASI score to dynamically
+        allocate CPU resources. When pipeline is heavily loaded, reduces
+        non-essential background work to give pipeline priority.
+        """
+        self._stats['pipeline_throttle_events'] += 1
+
+        pipeline_load = 0.0
+        subsystems_active = 0
+        try:
+            from l104_asi_core import asi_core
+            status = asi_core.get_status()
+            subsystems_active = status.get('subsystems_active', 0)
+            pipeline_load = subsystems_active / 18.0  # Normalized to 0-1
+        except Exception:
+            pass
+
+        # Adjust throttle: more pipeline load = less background work
+        old_throttle = self._cpu_throttle
+        if pipeline_load > 0.8:
+            self._cpu_throttle = max(0.3, self._cpu_throttle - 0.1)
+        elif pipeline_load > 0.5:
+            self._cpu_throttle = min(0.7, self._cpu_throttle)
+        else:
+            self._cpu_throttle = min(1.0, self._cpu_throttle + 0.05)
+
+        return {
+            'pipeline_load': round(pipeline_load, 4),
+            'subsystems_active': subsystems_active,
+            'old_throttle': round(old_throttle, 4),
+            'new_throttle': round(self._cpu_throttle, 4),
+            'throttle_direction': 'DOWN' if self._cpu_throttle < old_throttle else 'UP',
+            'events': self._stats['pipeline_throttle_events'],
+        }
+
+    def asi_resource_allocation(self) -> Dict[str, Any]:
+        """Intelligent resource distribution across pipeline subsystems (v3.2).
+
+        Queries each subsystem for resource needs and allocates CPU/memory
+        budgets proportionally based on priority and current load.
+        """
+        self._stats['resource_allocations'] += 1
+
+        allocations = {}
+        total_priority = 0
+        mem = psutil.virtual_memory()
+        available_mb = mem.available / (1024 * 1024)
+
+        subsystem_priorities = {
+            'asi_core': 5,
+            'agi_core': 4,
+            'evolution_engine': 3,
+            'cognitive_core': 3,
+            'adaptive_learning': 3,
+            'autonomous_innovation': 2,
+            'fast_server': 2,
+        }
+
+        for name, priority in subsystem_priorities.items():
+            total_priority += priority
+
+        for name, priority in subsystem_priorities.items():
+            share = priority / total_priority
+            allocations[name] = {
+                'priority': priority,
+                'cpu_share': round(share * self._cpu_throttle, 4),
+                'memory_budget_mb': round(share * available_mb * 0.6, 1),  # 60% of available
+            }
+
+        return {
+            'allocations': allocations,
+            'available_memory_mb': round(available_mb, 1),
+            'cpu_throttle': round(self._cpu_throttle, 4),
+            'total_subsystems': len(subsystem_priorities),
+            'allocation_events': self._stats['resource_allocations'],
+        }
+
+    def pipeline_health_monitor(self) -> Dict[str, Any]:
+        """Real-time pipeline health monitoring with system resource correlation (v3.2).
+
+        Combines hardware metrics with pipeline subsystem status for
+        a unified health view.
+        """
+        mem = psutil.virtual_memory()
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+
+        health = {
+            'hardware': {
+                'cpu_percent': cpu_percent,
+                'memory_percent': mem.percent,
+                'memory_available_mb': round(mem.available / (1024 * 1024), 1),
+                'memory_pressure': self._memory_pressure,
+            },
+            'pipeline': {},
+            'warnings': [],
+        }
+
+        # Check each pipeline subsystem
+        checks = [
+            ('asi_core', 'l104_asi_core', 'asi_core'),
+            ('agi_core', 'l104_agi_core', 'agi_core'),
+            ('evolution_engine', 'l104_evolution_engine', 'evolution_engine'),
+            ('adaptive_learning', 'l104_adaptive_learning', 'adaptive_learner'),
+            ('cognitive_core', 'l104_cognitive_core', 'COGNITIVE_CORE'),
+        ]
+
+        for name, module, singleton in checks:
+            try:
+                mod = __import__(module)
+                obj = getattr(mod, singleton, None)
+                health['pipeline'][name] = 'online'
+            except Exception:
+                health['pipeline'][name] = 'offline'
+                health['warnings'].append(f'{name} is offline')
+
+        if cpu_percent > 85:
+            health['warnings'].append('CPU usage critical (>85%)')
+        if mem.percent > 90:
+            health['warnings'].append('Memory pressure critical (>90%)')
+
+        health['overall'] = 'HEALTHY' if not health['warnings'] else 'DEGRADED'
+        health['coherence'] = round(self._coherence, 4)
+
+        return health
 
     # ─────────────────────────────────────────────────────────────────────────
     # v2.1: ADMIN-ELEVATED OPTIMIZATION (osascript elevation)
@@ -482,7 +664,7 @@ class L104MacBookBridge:
             if proc.returncode == 0:
                 print(f"⚡ [ADMIN] Process {pid} priority set to {nice_value}")
                 return True
-        except:
+        except Exception:
             pass
         return False
 
@@ -531,7 +713,7 @@ class L104MacBookBridge:
                     if 'l104' in cmdline or 'python' in name:
                         self.admin_set_process_priority(proc.info['pid'], -10)
                         result['processes_boosted'] += 1
-                except:
+                except Exception:
                     pass
 
             # Disable App Nap for current process (reduces throttling)
@@ -631,7 +813,7 @@ class L104MacBookBridge:
             subprocess.run(cmd, shell=True, capture_output=True, timeout=5)
             print(f"🌡️ [ADMIN] Fan speed target set to {rpm} RPM")
             return True
-        except:
+        except Exception:
             return False
 
     def admin_optimize_network(self) -> Dict[str, Any]:
@@ -677,7 +859,7 @@ class L104MacBookBridge:
             result['success'] = proc.returncode == 0
             if result['success']:
                 print("🧠 [ADMIN] Memory compression/swap optimized")
-        except:
+        except Exception:
             pass
         return result
 
@@ -697,10 +879,10 @@ class L104MacBookBridge:
                         # Set maximum priority
                         self.admin_set_process_priority(proc.info['pid'], -20)
                         result['shielded'] += 1
-                except:
+                except Exception:
                     pass
             print(f"🛡️ [ADMIN] Shielded {result['shielded']} L104 processes")
-        except:
+        except Exception:
             pass
         return result
 
@@ -713,7 +895,7 @@ class L104MacBookBridge:
             cmd = f'''osascript -e 'display notification "{message}" with title "{title}" sound name "{sound}"' '''
             subprocess.run(cmd, shell=True, capture_output=True)
             return True
-        except:
+        except Exception:
             return False
 
     def admin_set_power_profile(self, profile: str = "performance") -> bool:
@@ -752,7 +934,7 @@ class L104MacBookBridge:
 
             print(f"🔋 [ADMIN] Power profile set to: {profile.upper()}")
             return True
-        except:
+        except Exception:
             return False
 
     def admin_monitor_battery(self) -> Dict[str, Any]:
@@ -783,7 +965,7 @@ class L104MacBookBridge:
             if health.stdout:
                 result['health'] = health.stdout.split(':')[-1].strip()
 
-        except:
+        except Exception:
             pass
         return result
 
@@ -803,7 +985,7 @@ class L104MacBookBridge:
             state = "PAUSED" if pause else "RESUMED"
             print(f"🔍 [ADMIN] Spotlight indexing {state}")
             return proc.returncode == 0
-        except:
+        except Exception:
             return False
 
     def admin_pause_time_machine(self, pause: bool = True) -> bool:
@@ -818,7 +1000,7 @@ class L104MacBookBridge:
             state = "PAUSED" if pause else "RESUMED"
             print(f"⏰ [ADMIN] Time Machine {state}")
             return proc.returncode == 0
-        except:
+        except Exception:
             return False
 
     def admin_monitor_disk_io(self) -> Dict[str, Any]:
@@ -841,7 +1023,7 @@ class L104MacBookBridge:
             if result['write_kbs'] > 50000:  # 50MB/s write threshold
                 self.admin_system_notification("L104 DISK ALERT", f"High SSD write: {result['write_kbs']:.0f} KB/s")
 
-        except:
+        except Exception:
             pass
         return result
 
@@ -866,14 +1048,14 @@ class L104MacBookBridge:
                                 'name': proc.info['name'],
                                 'mem_mb': mem_mb
                             })
-                except:
+                except Exception:
                     pass
 
             if result['leaks_detected']:
                 self.admin_system_notification("L104 MEMORY ALERT", f"{len(result['leaks_detected'])} process(es) using >500MB")
                 print(f"🧠 [ADMIN] Memory leak suspects: {result['leaks_detected']}")
 
-        except:
+        except Exception:
             pass
         return result
 
@@ -895,7 +1077,7 @@ class L104MacBookBridge:
                 'cpu_throttle': self._cpu_throttle
             }
             snapshot_path = Path.home() / '.l104_crash_recovery.json'
-            with open(snapshot_path, 'w') as f:
+            with open(snapshot_path, 'w', encoding='utf-8') as f:
                 json.dump(snapshot, f)
             result['success'] = True
             result['path'] = str(snapshot_path)
@@ -912,7 +1094,7 @@ class L104MacBookBridge:
         try:
             snapshot_path = Path.home() / '.l104_crash_recovery.json'
             if snapshot_path.exists():
-                with open(snapshot_path, 'r') as f:
+                with open(snapshot_path, 'r', encoding='utf-8') as f:
                     snapshot = json.load(f)
                 self._coherence = snapshot.get('coherence', 1.0)
                 self._memory_pressure = snapshot.get('memory_pressure', 0.0)
@@ -923,7 +1105,7 @@ class L104MacBookBridge:
                         self._epr_links[k]['correlation'] = v.get('correlation', 0.9)
                 print(f"🔄 [ADMIN] Restored from snapshot (coherence: {self._coherence:.4f})")
                 return True
-        except:
+        except Exception:
             pass
         return False
 
@@ -944,9 +1126,9 @@ class L104MacBookBridge:
                             'created': proc.info['create_time'],
                             'children': [c.pid for c in proc.children()]
                         }
-                except:
+                except Exception:
                     pass
-        except:
+        except Exception:
             pass
         return genealogy
 
@@ -1062,7 +1244,7 @@ class AutoSaveRegistry:
                 self._quantum_storage = QuantumStorageEngine(
                     base_path=os.path.expanduser("~/.l104_quantum_storage")
                 )
-            except:
+            except Exception:
                 self._quantum_enabled = False
         return self._quantum_storage
 
@@ -1106,7 +1288,7 @@ class AutoSaveRegistry:
                     checksum=row[4],
                     auto_restore=bool(row[5])
                 )
-            except:
+            except Exception:
                 pass
         conn.close()
 
@@ -1196,7 +1378,7 @@ class AutoSaveRegistry:
                         tier='cold',
                         quantum=True
                     )
-                except:
+                except Exception:
                     pass
 
             return True
@@ -1250,7 +1432,7 @@ class AutoSaveRegistry:
                 # Quantum sync every 6th cycle (30 seconds)
                 if cycle % 6 == 0:
                     self._quantum_sync_states()
-            except:
+            except Exception:
                 pass
             time.sleep(self.save_interval)
 
@@ -1290,7 +1472,7 @@ class AutoSaveRegistry:
                 },
                 tier='warm'
             )
-        except:
+        except Exception:
             pass
 
     def quantum_recall_state(self, pid: int, name: str = None) -> Optional[Dict]:
@@ -1307,7 +1489,7 @@ class AutoSaveRegistry:
             record = qs.recall(search_pattern, grover=True)
             if record:
                 return record.value
-        except:
+        except Exception:
             pass
         return None
 
@@ -1397,7 +1579,7 @@ class SystemController:
                 return None
             else:
                 return Path(path).read_bytes()
-        except:
+        except Exception:
             return None
 
     def write_file(self, path: str, content: Union[str, bytes],
@@ -1450,7 +1632,7 @@ class SystemController:
             # Replace and write
             new_file = current_str.replace(old_content, new_content)
             return self.write_file(path, new_file, admin=admin, backup=False)
-        except:
+        except Exception:
             return False
 
     def chmod(self, path: str, mode: str, admin: bool = False) -> bool:
@@ -1480,7 +1662,7 @@ class SystemController:
                     'free_gb': usage.free / (1024**3),
                     'percent_used': usage.percent
                 }
-            except:
+            except Exception:
                 pass
 
         # Get disk I/O stats (may not be available on all systems)
@@ -1540,7 +1722,7 @@ class SystemController:
                 f.write(b'\x00' * size)
             fd = os.open(shm_path, os.O_RDWR)
             return mmap.mmap(fd, size)
-        except:
+        except Exception:
             return None
 
     def optimize_memory(self) -> Dict[str, Any]:
@@ -1601,7 +1783,7 @@ class SystemController:
             else:
                 os.nice(priority)
                 return True
-        except:
+        except Exception:
             return False
 
     def set_cpu_affinity(self, pid: int = None, cores: List[int] = None) -> bool:
@@ -1618,7 +1800,7 @@ class SystemController:
                 p = psutil.Process(pid or os.getpid())
                 p.cpu_affinity(cores or list(range(psutil.cpu_count())))
                 return True
-            except:
+            except Exception:
                 return False
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -1650,7 +1832,7 @@ class SystemController:
                             'cores': gpu.get('sppci_cores', 'Unknown')
                         }
                         info['gpus'].append(gpu_info)
-                except:
+                except Exception:
                     pass
 
         return info
@@ -1662,7 +1844,7 @@ class SystemController:
                 # Check for Metal support
                 code, stdout, _ = self.execute("system_profiler SPDisplaysDataType | grep Metal")
                 return code == 0 and "Metal" in stdout
-            except:
+            except Exception:
                 return False
         return False
 
@@ -1688,7 +1870,7 @@ class SystemController:
                     'status': info['status'],
                     'create_time': info['create_time']
                 })
-            except:
+            except Exception:
                 pass
         return processes
 
@@ -1710,7 +1892,7 @@ class SystemController:
                     admin=admin
                 )
                 return code == 0
-        except:
+        except Exception:
             return False
         return False
 
@@ -1746,7 +1928,7 @@ class SystemController:
             )
 
             return proc.pid
-        except:
+        except Exception:
             return None
 
     def get_process_info(self, pid: int) -> Optional[Dict[str, Any]]:
@@ -1769,7 +1951,7 @@ class SystemController:
                 'connections': len(proc.connections()),
                 'cmdline': proc.cmdline()
             }
-        except:
+        except Exception:
             return None
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -1777,9 +1959,11 @@ class SystemController:
     # ─────────────────────────────────────────────────────────────────────────
 
     def get_full_system_status(self) -> Dict[str, Any]:
-        """Get complete system status"""
-        return {
+        """Get complete system status with pipeline integration."""
+        base = {
             'timestamp': datetime.now().isoformat(),
+            'version': MACBOOK_VERSION,
+            'pipeline_evo': MACBOOK_PIPELINE_EVO,
             'god_code': GOD_CODE,
             'o2_bond_strength': O2_BOND_STRENGTH,
             'platform': {
@@ -1797,6 +1981,25 @@ class SystemController:
             'python_processes': self.list_processes('python'),
             'autosave_states': len(self.autosave.states)
         }
+        # Pipeline health
+        pipeline_health = {}
+        modules = [
+            ('l104_agi_core', 'agi_core'),
+            ('l104_asi_core', 'asi_core'),
+            ('l104_evolution_engine', 'evolution_engine'),
+            ('l104_adaptive_learning', 'adaptive_learner'),
+            ('l104_autonomous_innovation', 'innovation_engine'),
+            ('l104_cognitive_core', 'COGNITIVE_CORE'),
+        ]
+        for mod_name, attr_name in modules:
+            try:
+                mod = __import__(mod_name)
+                obj = getattr(mod, attr_name, None)
+                pipeline_health[mod_name] = 'online' if obj else 'loaded'
+            except Exception:
+                pipeline_health[mod_name] = 'offline'
+        base['pipeline_health'] = pipeline_health
+        return base
 
     def optimize_for_asi(self) -> Dict[str, Any]:
         """Optimize entire system for ASI workloads"""
@@ -2024,7 +2227,7 @@ class QuantumRecord:
             self.checksum = hashlib.sha256(data).hexdigest()
             self.original_size = len(data)
             return self.checksum
-        except:
+        except Exception:
             return ""
 
     def verify(self) -> bool:
@@ -2242,7 +2445,7 @@ class QuantumStorageEngine:
                         record.value = compressed
                         record.compressed = True
                         record.compressed_size = len(compressed)
-                except:
+                except Exception:
                     pass
 
             # Store based on tier
@@ -2412,7 +2615,7 @@ class QuantumStorageEngine:
             with open(file_path, 'rb') as f:
                 data = pickle.load(f)
             return QuantumRecord.from_dict(data)
-        except:
+        except Exception:
             return None
 
     def _decompress_if_needed(self, record: QuantumRecord) -> QuantumRecord:
@@ -2422,7 +2625,7 @@ class QuantumStorageEngine:
                 decompressed = zlib.decompress(record.value)
                 record.value = decompressed.decode()
                 record.compressed = False
-            except:
+            except Exception:
                 pass
         return record
 
@@ -2703,7 +2906,7 @@ class QuantumStorageEngine:
         while self._running:
             try:
                 self.sync_all()
-            except:
+            except Exception:
                 pass
             time.sleep(interval)
 
@@ -2750,7 +2953,7 @@ class ProcessMonitor:
         if self._qs is None:
             try:
                 self._qs = get_quantum_storage()
-            except:
+            except Exception:
                 pass
         return self._qs
 
@@ -2790,10 +2993,10 @@ class ProcessMonitor:
                             value=metrics,
                             tier='warm'
                         )
-                    except:
+                    except Exception:
                         pass
 
-            except:
+            except Exception:
                 pass
 
             time.sleep(self._interval)
@@ -2816,7 +3019,7 @@ class ProcessMonitor:
                         'cpu': pinfo['cpu_percent'],
                         'memory': pinfo['memory_percent']
                     })
-            except:
+            except Exception:
                 pass
 
         # Sort by CPU usage, get top 20
@@ -2875,7 +3078,7 @@ class ProcessMonitor:
                         tier='hot',
                         quantum=True
                     )
-                except:
+                except Exception:
                     pass
 
     def get_current_metrics(self) -> Dict[str, Any]:
@@ -2931,7 +3134,7 @@ class WorkspaceBackupManager:
         if self._qs is None:
             try:
                 self._qs = get_quantum_storage()
-            except:
+            except Exception:
                 pass
         return self._qs
 
@@ -2983,7 +3186,7 @@ class WorkspaceBackupManager:
                     self._last_backup[filepath] = checksum
                     backed_up += 1
                     total_bytes += len(content)
-                except:
+                except Exception:
                     failed += 1
 
         return {
@@ -3022,7 +3225,7 @@ class WorkspaceBackupManager:
                 quantum=True
             )
             return True
-        except:
+        except Exception:
             return False
 
     def restore_file(self, filepath: str, version: str = None) -> Optional[str]:
@@ -3039,7 +3242,7 @@ class WorkspaceBackupManager:
             record = qs.recall(search_pattern, grover=True)
             if record and record.value:
                 return record.value.get('content')
-        except:
+        except Exception:
             pass
         return None
 
@@ -3145,7 +3348,7 @@ def check_system():
         print(f"           Hot: {qs_stats['hot_records']} | Warm: {qs_stats['warm_records']} | Cold: {qs_stats['cold_records']}")
         print(f"           Superpositions: {qs_stats['superpositions']} | Entanglements: {qs_stats['entanglements']}")
         print(f"           Recalls: {qs_stats['recalls']} | Grover Amplifications: {qs_stats['grover_amplifications']}")
-    except:
+    except Exception:
         print("[QUANTUM]: Not initialized")
 
     # Process Monitor Status
@@ -3156,7 +3359,7 @@ def check_system():
         alerts = pm.get_alerts(5)
         if alerts:
             print(f"           Alerts: {len(alerts)} recent")
-    except:
+    except Exception:
         print("[MONITOR]: Not active")
 
     # Server Check
@@ -3181,7 +3384,7 @@ def check_system():
             if r_asi.status_code == 200:
                 asi = r_asi.json()
                 print(f"[ASI]: {asi.get('asi_score', 0)*100:.2f}% | State: {asi.get('state', 'UNKNOWN')}")
-    except:
+    except Exception:
         print("[SERVER]: L104 FAST SERVER OFFLINE")
 
     # Auto-save status

@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.000284
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -58,7 +59,7 @@ class Individual:
 
     def __post_init__(self):
         if not self.id:
-            self.id = hashlib.md5(self.genome.tobytes()).hexdigest()[:8]
+            self.id = hashlib.sha256(self.genome.tobytes()).hexdigest()[:8]
 
 class NoveltySearch:
     """

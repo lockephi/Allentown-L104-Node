@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.434112
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_GEMINI_REAL] - Real Gemini API Integration
 # Uses the new google-genai package (2025+)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -62,7 +63,7 @@ class ResponseCache:
 
     def _hash_prompt(self, prompt: str) -> str:
         """Create cache key from prompt."""
-        return hashlib.md5(prompt.encode()).hexdigest()[:16]
+        return hashlib.sha256(prompt.encode()).hexdigest()[:16]
 
     def get(self, prompt: str) -> Optional[str]:
         """Get cached response if available and not expired."""
@@ -151,7 +152,7 @@ class GeminiReal:
         env_path = Path(__file__).parent / '.env'
         if env_path.exists():
             try:
-                with open(env_path, 'r') as f:
+                with open(env_path, 'r', encoding='utf-8') as f:
                     for line in f:
                         if line.startswith('GEMINI_API_KEY='):
                             val = line.split('=', 1)[1].strip()
@@ -165,7 +166,7 @@ class GeminiReal:
         token_path = Path(__file__).parent / '.gemini_link_token'
         if token_path.exists():
             try:
-                with open(token_path, 'r') as f:
+                with open(token_path, 'r', encoding='utf-8') as f:
                     token = f.read().strip()
                 if token and len(token) > 20:
                     os.environ['GEMINI_API_KEY'] = token

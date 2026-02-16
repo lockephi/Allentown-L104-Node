@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.021644
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -201,7 +205,7 @@ class ContinuousEvolutionEngine:
             "brain_status": self.brain.introspect()
         }
 
-        with open("evolution_metrics.json", "w") as f:
+        with open("evolution_metrics.json", "w", encoding="utf-8") as f:
             json.dump(metrics_data, f, indent=2, default=str)
 
         logger.info("[EVOLUTION] Metrics exported to evolution_metrics.json")

@@ -25,6 +25,7 @@ from typing import Dict, Any, List, Optional
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 ZENITH_HZ = 3887.8
 
 
@@ -47,21 +48,21 @@ class IntellectEnhancer:
         # Load stats
         stats_file = os.path.join(self.trillion_data_path, "trillion_stats.json")
         if os.path.exists(stats_file):
-            with open(stats_file, 'r') as f:
+            with open(stats_file, 'r', encoding='utf-8') as f:
                 data["stats"] = json.load(f)
                 print(f"   📊 Loaded stats: {data['stats'].get('total_params', 0):,} parameters")
 
         # Load vocabulary
         vocab_file = os.path.join(self.trillion_data_path, "vocabulary.json")
         if os.path.exists(vocab_file):
-            with open(vocab_file, 'r') as f:
+            with open(vocab_file, 'r', encoding='utf-8') as f:
                 data["vocabulary"] = json.load(f)
                 print(f"   📚 Loaded vocabulary: {len(data['vocabulary']):,} tokens")
 
         # Load examples (sample from chunks for memory efficiency)
         examples_loaded = 0
         for chunk_file in Path(self.trillion_data_path).glob("examples_chunk_*.jsonl"):
-            with open(chunk_file, 'r') as f:
+            with open(chunk_file, 'r', encoding='utf-8') as f:
                 for i, line in enumerate(f):
                     if i < 1000:  # Sample 1000 from each chunk
                         try:

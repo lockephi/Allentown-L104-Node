@@ -1,4 +1,8 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 L104 ASI Language & Human Inference Engine
 ===========================================
@@ -2037,11 +2041,24 @@ class ASILanguageEngine:
         self.total_inferences = 0
         self.total_innovations = 0
 
+        # Pipeline cross-wire
+        self._asi_core_ref = None
+
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info("    ASI LANGUAGE ENGINE :: FULLY INITIALIZED")
         logger.info(f"    GOD_CODE: {self.god_code}")
         logger.info(f"    PHI: {self.phi}")
         logger.info("═══════════════════════════════════════════════════════════════")
+
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            logger.info("--- [ASI_LANGUAGE]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
 
     def process(self, text: str, mode: str = "full") -> Dict[str, Any]:
         """
@@ -2055,6 +2072,13 @@ class ASILanguageEngine:
         - 'full': All capabilities
         """
         self.total_analyses += 1
+
+        # Feed metrics back to pipeline
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref._pipeline_metrics["language_analyses"] += 1
+            except Exception:
+                pass
 
         result = {
             "input": text,
@@ -2144,7 +2168,18 @@ class ASILanguageEngine:
         return self.innovation_engine.invent(goal, constraints)
 
     def get_status(self) -> Dict:
-        """Get engine status."""
+        """Get engine status with pipeline awareness."""
+        pipeline_connected = self._asi_core_ref is not None
+        pipeline_mesh = "UNKNOWN"
+        subsystems_active = 0
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                pipeline_mesh = core_status.get("pipeline_mesh", "UNKNOWN")
+                subsystems_active = core_status.get("subsystems_active", 0)
+            except Exception:
+                pass
+
         return {
             "status": "ACTIVE",
             "god_code": self.god_code,
@@ -2159,7 +2194,10 @@ class ASILanguageEngine:
                 "innovation_engine": "ONLINE"
             },
             "beliefs_tracked": len(self.inference_engine.beliefs),
-            "innovations_generated": len(self.innovation_engine.innovations)
+            "innovations_generated": len(self.innovation_engine.innovations),
+            "pipeline_connected": pipeline_connected,
+            "pipeline_mesh": pipeline_mesh,
+            "subsystems_active": subsystems_active,
         }
 
 

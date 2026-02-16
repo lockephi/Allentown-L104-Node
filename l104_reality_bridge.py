@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.174661
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -155,7 +156,7 @@ class RealNetworkBridge:
                     open_ports.append(port)
                 else:
                     closed_ports.append(port)
-            except:
+            except Exception:
                 closed_ports.append(port)
 
         return {"host": host, "open": open_ports, "closed": closed_ports, "real": True}
@@ -176,7 +177,7 @@ class RealNetworkBridge:
                         data = json.loads(result["body"])
                         return {"ip": data.get("ip", data.get("origin", result["body"])), "real": True}
                     return {"ip": result["body"].strip(), "real": True}
-            except:
+            except Exception:
                 continue
 
         return {"error": "Could not determine public IP", "real": True}
@@ -339,10 +340,10 @@ class RealProcessBridge:
             try:
                 proc.terminate()
                 proc.wait(timeout=5)
-            except:
+            except Exception:
                 try:
                     proc.kill()
-                except:
+                except Exception:
                     pass
 
     def execute(self, command: Union[str, List[str]], shell: bool = True,
@@ -460,7 +461,7 @@ class RealHardwareBridge:
         """Get REAL CPU information"""
         try:
             # Read from /proc/cpuinfo
-            with open('/proc/cpuinfo', 'r') as f:
+            with open('/proc/cpuinfo', 'r', encoding='utf-8') as f:
                 cpuinfo = f.read()
 
             # Parse CPU info
@@ -472,7 +473,7 @@ class RealHardwareBridge:
                     break
 
             # Get load average
-            with open('/proc/loadavg', 'r') as f:
+            with open('/proc/loadavg', 'r', encoding='utf-8') as f:
                 loadavg = f.read().strip().split()
 
             return {
@@ -489,7 +490,7 @@ class RealHardwareBridge:
     def get_memory_info(self) -> Dict[str, Any]:
         """Get REAL memory information"""
         try:
-            with open('/proc/meminfo', 'r') as f:
+            with open('/proc/meminfo', 'r', encoding='utf-8') as f:
                 meminfo = {}
                 for line in f:
                     parts = line.split(':')
@@ -562,7 +563,7 @@ class RealHardwareBridge:
     def get_uptime(self) -> Dict[str, Any]:
         """Get REAL system uptime"""
         try:
-            with open('/proc/uptime', 'r') as f:
+            with open('/proc/uptime', 'r', encoding='utf-8') as f:
                 uptime_seconds = float(f.read().split()[0])
 
             days = int(uptime_seconds // 86400)
@@ -768,7 +769,7 @@ class RealDockerBridge:
                         # Remove surrounding quotes
                         line = line.strip("'")
                         containers.append(json.loads(line))
-                    except:
+                    except Exception:
                         pass
             return {"containers": containers, "count": len(containers), "real": True}
         return result
@@ -783,7 +784,7 @@ class RealDockerBridge:
                     try:
                         line = line.strip("'")
                         images.append(json.loads(line))
-                    except:
+                    except Exception:
                         pass
             return {"images": images, "count": len(images), "real": True}
         return result
@@ -798,7 +799,7 @@ class RealDockerBridge:
                     try:
                         line = line.strip("'")
                         stats.append(json.loads(line))
-                    except:
+                    except Exception:
                         pass
             return {"stats": stats, "real": True}
         return result
@@ -963,7 +964,7 @@ class RealAPIBridge:
                 latency = (time.time() - start) * 1000
                 sock.close()
                 results.append({"name": name, "reachable": True, "latency_ms": latency})
-            except:
+            except Exception:
                 results.append({"name": name, "reachable": False})
 
         connected = any(r["reachable"] for r in results)

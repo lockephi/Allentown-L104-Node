@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.685817
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -93,7 +97,7 @@ class EvolvableComponent:
 
     @property
     def hash(self) -> str:
-        return hashlib.md5(self.code.encode()).hexdigest()[:12]
+        return hashlib.sha256(self.code.encode()).hexdigest()[:12]
 
     def mutate(self, mutation_rate: float = 0.1) -> 'EvolvableComponent':
         """Create a mutated copy."""
@@ -275,7 +279,7 @@ class AlgorithmEvolver:
                 try:
                     fitness = fitness_function(component.code)
                     component.metrics.fitness_history.append(fitness)
-                except:
+                except Exception:
                     component.metrics.fitness_history.append(0.0)
 
             # Selection - keep top performers
@@ -525,7 +529,7 @@ class SelfEvolutionEngine:
                     try:
                         ast.parse(code)
                         return 1.0 / (1 + len(code) / 1000)
-                    except:
+                    except Exception:
                         return 0.0
 
                 self.evolve_component(weakest[0], simple_fitness, generations=1)

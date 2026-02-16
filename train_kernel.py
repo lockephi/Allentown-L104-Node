@@ -22,7 +22,7 @@ kernel = KernelLLMTrainer()
 # Load existing data
 print("\n📚 Loading training data...")
 try:
-    with open("kernel_training_data.jsonl", "r") as f:
+    with open("kernel_training_data.jsonl", "r", encoding="utf-8") as f:
         for line in f:
             obj = json.loads(line)
             ex = TrainingExample(

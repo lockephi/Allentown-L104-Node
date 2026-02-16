@@ -1,3 +1,6 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.030163
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -106,15 +109,18 @@ except ImportError:
         beta: complex
 
         def __post_init__(self):
+            """Normalize qubit amplitudes after initialization."""
             self.normalize()
 
         def normalize(self):
+            """Normalize qubit state to unit probability."""
             norm = math.sqrt(abs(self.alpha)**2 + abs(self.beta)**2)
             if norm > 0:
                 self.alpha /= norm
                 self.beta /= norm
 
         def measure(self) -> int:
+            """Measure qubit and collapse to |0⟩ or |1⟩."""
             prob_0 = abs(self.alpha) ** 2
             if random.random() < prob_0:
                 self.alpha, self.beta = complex(1, 0), complex(0, 0)
@@ -125,47 +131,56 @@ except ImportError:
 
         @classmethod
         def zero(cls) -> 'Qubit':
+            """Create a qubit in the |0⟩ state."""
             return cls(complex(1, 0), complex(0, 0))
 
         @classmethod
         def superposition(cls) -> 'Qubit':
+            """Create a qubit in equal superposition (|0⟩ + |1⟩)/√2."""
             return cls(complex(_SQRT2_INV, 0), complex(_SQRT2_INV, 0))
 
     class QuantumGates:
         """Fallback quantum gates"""
         @staticmethod
         def hadamard(qubit: Qubit) -> Qubit:
+            """Apply Hadamard gate to create superposition."""
             new_alpha = _SQRT2_INV * (qubit.alpha + qubit.beta)
             new_beta = _SQRT2_INV * (qubit.alpha - qubit.beta)
             return Qubit(new_alpha, new_beta)
 
         @staticmethod
         def pauli_x(qubit: Qubit) -> Qubit:
+            """Apply Pauli-X (NOT) gate to flip qubit state."""
             return Qubit(qubit.beta, qubit.alpha)
 
         @staticmethod
         def pauli_z(qubit: Qubit) -> Qubit:
+            """Apply Pauli-Z gate to flip phase of |1⟩ component."""
             return Qubit(qubit.alpha, -qubit.beta)
 
         @staticmethod
         def rotation_y(qubit: Qubit, theta: float) -> Qubit:
+            """Apply Y-axis rotation gate by angle theta."""
             cos, sin = math.cos(theta / 2), math.sin(theta / 2)
             return Qubit(cos * qubit.alpha - sin * qubit.beta,
                         sin * qubit.alpha + cos * qubit.beta)
 
         @staticmethod
         def phase(qubit: Qubit, phi: float) -> Qubit:
+            """Apply phase rotation gate by angle phi."""
             return Qubit(qubit.alpha, qubit.beta * cmath.exp(complex(0, phi)))
 
     class QuantumRegister:
         """Fallback quantum register"""
         def __init__(self, num_qubits: int):
+            """Initialize quantum register with specified number of qubits."""
             self.num_qubits = num_qubits
             self.num_states = 2 ** num_qubits
             self.amplitudes = [complex(0, 0)] * self.num_states
             self.amplitudes[0] = complex(1, 0)
 
         def measure_all(self) -> int:
+            """Measure all qubits and collapse to a basis state."""
             probs = [abs(a)**2 for a in self.amplitudes]
             r = random.random()
             cumsum = 0
@@ -209,9 +224,11 @@ except ImportError:
         name: str = ""
 
         def __len__(self) -> int:
+            """Return the dimension of the hypervector."""
             return self.dimension
 
         def copy(self) -> 'Hypervector':
+            """Return a deep copy of this hypervector."""
             return Hypervector(
                 vector=self.vector.copy(),
                 dimension=self.dimension,
@@ -223,6 +240,7 @@ except ImportError:
         """Factory for creating hypervectors - optimized fallback"""
 
         def __init__(self, dimension: int = 10000):
+            """Initialize hypervector factory with given dimension."""
             self.dimension = dimension
             self._seed_cache: Dict[str, Hypervector] = {}
 
@@ -249,6 +267,7 @@ except ImportError:
             return hv.copy()
 
         def zeros(self) -> Hypervector:
+            """Create a zero-valued hypervector."""
             return Hypervector([0.0] * self.dimension, self.dimension,
                               VectorType.DENSE_REAL, "zeros")
 
@@ -306,15 +325,18 @@ except ImportError:
         """Simple associative memory fallback"""
 
         def __init__(self, dimension: int = 10000):
+            """Initialize associative memory with given vector dimension."""
             self.dimension = dimension
             self.memory: Dict[str, Hypervector] = {}
             self.algebra = HDCAlgebra()
             self.factory = HypervectorFactory(dimension)
 
         def store(self, key: str, value: Hypervector) -> None:
+            """Store a hypervector with the given key."""
             self.memory[key] = value.copy()
 
         def retrieve(self, query: Hypervector, threshold: float = 0.3) -> List[Tuple[str, float]]:
+            """Retrieve stored vectors above similarity threshold."""
             results = []
             for key, stored in self.memory.items():
                 sim = self.algebra.similarity(query, stored)
@@ -326,12 +348,14 @@ except ImportError:
         """Sequence encoding fallback"""
 
         def __init__(self, dimension: int = 10000):
+            """Initialize sequence encoder with given vector dimension."""
             self.dimension = dimension
             self.factory = HypervectorFactory(dimension)
             self.algebra = HDCAlgebra()
             self._element_cache: Dict[str, Hypervector] = {}
 
         def get_element_vector(self, element: Any) -> Hypervector:
+            """Get or create a deterministic vector for an element."""
             key = str(element)
             if key not in self._element_cache:
                 self._element_cache[key] = self.factory.seed_vector(key)
@@ -384,6 +408,7 @@ class Observation:
     tags: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
+        """Convert observation to dictionary representation."""
         return {
             'timestamp': self.timestamp,
             'context': self.context,
@@ -424,6 +449,7 @@ class ContextualMemory:
     """
 
     def __init__(self, max_size: int = 100000, decay_rate: float = 0.95):  # QUANTUM AMPLIFIED (was 1000)
+        """Initialize contextual memory with max size and decay rate."""
         self.observations: deque = deque(maxlen=max_size)
         self.patterns: Dict[str, List[Dict]] = defaultdict(list)
         self.decay_rate = decay_rate
@@ -525,9 +551,8 @@ class QuantumInferenceEngine:
     """
 
     def __init__(self):
+        """Initialize quantum inference engine with empty hypothesis set."""
         self.hypotheses: Dict[str, Hypothesis] = {}
-        self.evidence_log: List[Tuple[str, float]] = []
-        self._god_code = GOD_CODE
 
     def add_hypothesis(self, name: str, statement: str, prior: float = 0.5) -> Hypothesis:
         """Add a hypothesis with quantum amplitude"""
@@ -641,6 +666,7 @@ class AdaptiveLearner:
     """
 
     def __init__(self, learning_rate: float = 0.1):
+        """Initialize adaptive learner with given learning rate."""
         self.learning_rate = learning_rate
         self.strategy_scores: Dict[str, float] = {s.name: 1.0 for s in ReasoningStrategy}
         self.action_history: List[Dict] = []
@@ -752,6 +778,7 @@ class PatternRecognizer:
     """
 
     def __init__(self, dimension: int = 5000):
+        """Initialize pattern recognizer with given HDC dimension."""
         self.dimension = dimension
         self.factory = HypervectorFactory(dimension)
         self.algebra = HDCAlgebra()
@@ -855,8 +882,8 @@ class MetaCognition:
     """
 
     def __init__(self):
+        """Initialize meta-cognition system for reasoning introspection."""
         self.reasoning_log: List[Dict] = []
-        self.performance_metrics: Dict[str, List[float]] = defaultdict(list)
         self.current_confidence: float = 0.5
         self.cognitive_load: float = 0.0
         self._uncertainty_threshold = 0.3
@@ -954,8 +981,8 @@ class PredictiveReasoner:
     """
 
     def __init__(self):
+        """Initialize predictive reasoner with transition tracking."""
         self.state_history: List[Dict[str, Any]] = []
-        self.transition_matrix: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
         self._evolution_steps = 0
 
     def record_state(self, state_name: str, state_data: Dict[str, Any]):
@@ -1044,6 +1071,7 @@ class CausalLink:
     is_direct: bool = True
 
     def __hash__(self):
+        """Hash causal link by cause-effect pair."""
         return hash((self.cause, self.effect))
 
 
@@ -1054,6 +1082,7 @@ class CausalReasoner:
     """
 
     def __init__(self):
+        """Initialize causal reasoner with empty causal graph."""
         self.causal_graph: Dict[str, Set[str]] = defaultdict(set)  # cause -> {effects}
         self.reverse_graph: Dict[str, Set[str]] = defaultdict(set)  # effect -> {causes}
         self.link_strengths: Dict[Tuple[str, str], CausalLink] = {}
@@ -1244,6 +1273,7 @@ class CounterfactualEngine:
     """
 
     def __init__(self, causal_reasoner: CausalReasoner = None):
+        """Initialize counterfactual engine with optional causal reasoner."""
         self.causal = causal_reasoner or CausalReasoner()
         self.worlds: Dict[str, Dict[str, Any]] = {}  # Possible worlds
         self._quantum_amplitudes: Dict[str, complex] = {}
@@ -1408,6 +1438,7 @@ class GoalPlanner:
     """
 
     def __init__(self):
+        """Initialize goal planner with action library."""
         self.goals: Dict[str, Goal] = {}
         self.current_plan: List[str] = []
         self.action_library: Dict[str, Dict] = {}
@@ -1565,6 +1596,7 @@ class AttentionMechanism:
     """
 
     def __init__(self, dimension: int = 1000):
+        """Initialize attention mechanism with given dimension."""
         self.dimension = dimension
         self._attention_weights: Dict[str, float] = {}
         self._focus_history: List[str] = []
@@ -1649,6 +1681,7 @@ class AbductiveReasoner:
     """
 
     def __init__(self):
+        """Initialize abductive reasoner for inference to best explanation."""
         self.explanations: List[Dict[str, Any]] = []
         self._coherence_matrix: Dict[Tuple[str, str], float] = {}
         self._god_code = GOD_CODE
@@ -1762,6 +1795,7 @@ class CreativeInsight:
     """
 
     def __init__(self):
+        """Initialize creative insight engine with HDC support."""
         self._concept_vectors: Dict[str, Any] = {}
         self._hdc_factory = HypervectorFactory(10000)
         self._algebra = HDCAlgebra()
@@ -1926,6 +1960,7 @@ class TemporalReasoner:
     """
 
     def __init__(self, max_history: int = 1000000):
+        """Initialize temporal reasoner with timeline history."""
         self.timeline: List[Dict[str, Any]] = []
         self.max_history = max_history
         self.temporal_patterns: Dict[str, List[float]] = defaultdict(list)
@@ -2070,6 +2105,7 @@ class EmotionalResonance:
     }
 
     def __init__(self):
+        """Initialize emotional resonance engine with valence-arousal state."""
         self.current_state: Dict[str, float] = {'valence': 0.0, 'arousal': 0.3}
         self.emotional_history: List[Dict] = []
         self._entangled_entities: Dict[str, Dict[str, float]] = {}
@@ -2189,6 +2225,7 @@ class QuantumNeuralLayer:
     """A single layer in a quantum neural network"""
 
     def __init__(self, input_dim: int, output_dim: int, activation: str = 'quantum'):
+        """Initialize quantum neural layer with complex-valued weights."""
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.activation = activation
@@ -2238,6 +2275,7 @@ class QuantumNeuralNetwork:
     """
 
     def __init__(self, layer_sizes: List[int] = None):
+        """Initialize quantum neural network with given layer sizes."""
         layer_sizes = layer_sizes or [64, 32, 16, 8]
         self.layers: List[QuantumNeuralLayer] = []
         self._god_code = GOD_CODE
@@ -2359,6 +2397,7 @@ class ConsciousnessSimulator:
     """
 
     def __init__(self, capacity: int = 7):
+        """Initialize consciousness simulator with workspace capacity."""
         self.workspace: List[ConsciousContent] = []
         self.capacity = capacity  # Miller's 7±2
         self._broadcast_history: List[Dict] = []
@@ -2485,15 +2524,18 @@ class LogicalTerm:
     is_variable: bool = False
 
     def __str__(self):
+        """Return string representation of the logical term."""
         if not self.args:
             return f"?{self.name}" if self.is_variable else self.name
         args_str = ", ".join(str(a) for a in self.args)
         return f"{self.name}({args_str})"
 
     def __hash__(self):
+        """Hash logical term by its string representation."""
         return hash(str(self))
 
     def __eq__(self, other):
+        """Check equality of logical terms by string comparison."""
         return str(self) == str(other)
 
 
@@ -2503,6 +2545,7 @@ class LogicalClause:
     literals: List[Tuple[bool, LogicalTerm]]  # (is_positive, term)
 
     def __str__(self):
+        """Return string representation of the logical clause."""
         parts = []
         for pos, term in self.literals:
             parts.append(str(term) if pos else f"¬{term}")
@@ -2516,6 +2559,7 @@ class SymbolicReasoner:
     """
 
     def __init__(self):
+        """Initialize symbolic reasoner with knowledge base."""
         self.knowledge_base: List[LogicalClause] = []
         self.facts: Dict[str, Set[Tuple]] = defaultdict(set)
         self.rules: List[Dict] = []
@@ -2700,6 +2744,7 @@ class WorkingMemory:
     """
 
     def __init__(self, capacity: int = 7, decay_rate: float = 0.1):
+        """Initialize working memory with capacity limit and decay."""
         self.capacity = capacity
         self.decay_rate = decay_rate
         self.items: List[Dict[str, Any]] = []
@@ -2791,6 +2836,7 @@ class EpisodicMemory:
     """
 
     def __init__(self, max_episodes: int = 1000):
+        """Initialize episodic memory with max episode limit."""
         self.episodes: List[Episode] = []
         self.max_episodes = max_episodes
         self._index_by_context: Dict[str, List[int]] = defaultdict(list)
@@ -2910,6 +2956,7 @@ class IntuitionEngine:
     """
 
     def __init__(self):
+        """Initialize intuition engine with default heuristics."""
         self.heuristics: Dict[str, Callable] = {}
         self.pattern_cache: Dict[str, Any] = {}
         self._decision_history: List[Dict] = []
@@ -3032,6 +3079,7 @@ class SocialIntelligence:
     """
 
     def __init__(self):
+        """Initialize social intelligence for theory of mind modeling."""
         self.agents: Dict[str, Agent] = {}
         self.interaction_history: List[Dict] = []
         self._god_code = GOD_CODE
@@ -3185,6 +3233,7 @@ class DreamState:
     """
 
     def __init__(self, episodic_memory: EpisodicMemory = None):
+        """Initialize dream state for offline memory consolidation."""
         self.episodic = episodic_memory or EpisodicMemory()
         self._dream_log: List[Dict] = []
         self._god_code = GOD_CODE
@@ -3308,6 +3357,7 @@ class EvolutionaryOptimizer:
     """
 
     def __init__(self, genome_size: int = 20, population_size: int = 50):
+        """Initialize evolutionary optimizer with population parameters."""
         self.genome_size = genome_size
         self.population_size = population_size
         self.population: List[Individual] = []
@@ -3444,6 +3494,7 @@ class CognitiveControl:
     """
 
     def __init__(self):
+        """Initialize cognitive control for executive function management."""
         self.current_task: Optional[str] = None
         self.task_stack: List[str] = []
         self.inhibited: Set[str] = set()
@@ -3549,6 +3600,7 @@ class IntelligentSynthesizer:
     """
 
     def __init__(self):
+        """Initialize intelligent synthesizer with all cognitive subsystems."""
         # Core reasoning components (EVO_52)
         self.memory = ContextualMemory()
         self.inference = QuantumInferenceEngine()
@@ -4209,6 +4261,7 @@ class SuperpositionMagic:
     """
 
     def __init__(self):
+        """Initialize superposition magic for thought state management."""
         self.god_code = GOD_CODE
         self.phi = PHI
         self._interference_cache: Dict[int, Dict[str, Any]] = {}
@@ -4422,6 +4475,7 @@ class EntanglementMagic:
     """
 
     def __init__(self):
+        """Initialize entanglement magic for concept pairing."""
         self.god_code = GOD_CODE
         self.entangled_pairs: Dict[str, Tuple[Any, Any]] = {}
         self._bell_states: Dict[str, Any] = {}  # Store quantum states
@@ -4581,6 +4635,7 @@ class WaveFunctionMagic:
     """
 
     def __init__(self):
+        """Initialize wave function magic for quantum packets."""
         self.god_code = GOD_CODE
         self.phi = PHI
         self._packet_cache: Dict[Tuple, Dict] = {}
@@ -4727,6 +4782,7 @@ class HyperdimensionalMagic:
     """
 
     def __init__(self, dimension: int = 10000):
+        """Initialize hyperdimensional magic with given vector dimension."""
         self.dimension = dimension
         self.god_code = GOD_CODE
 
@@ -4937,6 +4993,7 @@ class QuantumMagicSynthesizer:
     """
 
     def __init__(self):
+        """Initialize quantum magic synthesizer with all magic subsystems."""
         self.superposition = SuperpositionMagic()
         self.entanglement = EntanglementMagic()
         self.wave_function = WaveFunctionMagic()
@@ -5605,6 +5662,7 @@ if __name__ == "__main__":
     print("◆ EVOLUTIONARY OPTIMIZER (EVO_54):")
     # Quick evolution run
     def fitness_fn(x):
+        """Minimize sum of squares fitness function."""
         return sum(g ** 2 for g in x) * -1  # Minimize sum of squares
     best_solution = synthesizer.intelligence.evolution.evolve(
         fitness_fn,

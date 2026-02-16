@@ -24,7 +24,7 @@ kernel = KernelLLMTrainer()
 # Load existing data
 print("\n📚 Loading training data...")
 try:
-    with open("kernel_training_data.jsonl", "r") as f:
+    with open("kernel_training_data.jsonl", "r", encoding="utf-8") as f:
         for line in f:
             obj = json.loads(line)
             ex = TrainingExample(
@@ -81,13 +81,13 @@ print(f"Trained:         {kernel.trained}")
 
 # Load and display manifest
 try:
-    with open("KERNEL_MANIFEST.json", "r") as f:
+    with open("KERNEL_MANIFEST.json", "r", encoding="utf-8") as f:
         manifest = json.load(f)
     stages = manifest.get("evolution_stages", [])
     print(f"\n🧬 Evolution Stages: {len(stages)}")
     for s in stages[-5:]:  # Last 5 stages
         print(f"   • {s}")
-except:
+except Exception:
     pass
 
 print("\n✨ Kernel Debug Complete.")

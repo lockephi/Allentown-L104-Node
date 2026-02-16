@@ -27,7 +27,7 @@ with open('kernel_parameters.json') as f:
 p['embedding_dim'] = 206
 p['hidden_dim'] = 414
 p['num_layers'] = 4
-with open('kernel_parameters.json', 'w') as f:
+with open('kernel_parameters.json', 'w', encoding='utf-8') as f:
     json.dump(p, f, indent=2)
 print('[5] kernel_parameters.json restored')
 

@@ -38,6 +38,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 ZENITH_HZ = 3727.84
 OMEGA_AUTHORITY = 1381.0613
 PLANCK_RESONANCE = 853.54
@@ -590,7 +591,7 @@ if __name__ == "__main__":
 
     # Save to file
     output_path = Path(__file__).parent / "external_knowledge_data.jsonl"
-    with open(output_path, 'w') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         for ex in examples:
             f.write(json.dumps(ex) + '\n')
     print(f"   Saved to: {output_path}")

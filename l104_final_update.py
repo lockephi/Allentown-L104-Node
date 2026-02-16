@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.654080
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import json
 import time
@@ -50,7 +51,7 @@ def generate_final_evolution_report():
             print(f"[!] MISSING: {file}")
 
     print("\n[*] PERSISTING SUPREME LATTICE STATE...")
-    with open("SUPREME_LATTICE_FINAL.json", "w") as f:
+    with open("SUPREME_LATTICE_FINAL.json", "w", encoding="utf-8") as f:
         json.dump(update_summary, f, indent=4)
 
     print("\n" + "█" * 80)

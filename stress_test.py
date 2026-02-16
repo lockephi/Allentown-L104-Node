@@ -46,6 +46,7 @@ class StressTestResult:
     """Container for individual test results."""
 
     def __init__(self, name: str, operations: int, duration: float, passed: bool, error: str = None):
+        """Initialize StressTestResult."""
         self.name = name
         self.operations = operations
         self.duration = duration
@@ -53,6 +54,7 @@ class StressTestResult:
         self.error = error
 
     def to_dict(self) -> Dict[str, Any]:
+        """Return dictionary representation."""
         return {
             "name": self.name,
             "operations": self.operations,
@@ -67,6 +69,7 @@ class PhaseResult:
     """Container for phase results."""
 
     def __init__(self, phase_num: int, name: str):
+        """Initialize PhaseResult."""
         self.phase_num = phase_num
         self.name = name
         self.tests: List[StressTestResult] = []
@@ -75,17 +78,21 @@ class PhaseResult:
 
     @property
     def total_operations(self) -> int:
+        """Return the total operations."""
         return sum(t.operations for t in self.tests)
 
     @property
     def total_duration(self) -> float:
+        """Return the total duration."""
         return self.end_time - self.start_time
 
     @property
     def all_passed(self) -> bool:
+        """Return the all passed."""
         return all(t.passed for t in self.tests)
 
     def to_dict(self) -> Dict[str, Any]:
+        """Return dictionary representation."""
         return {
             "phase": self.phase_num,
             "name": self.name,
@@ -100,6 +107,7 @@ class L104StressTest:
     """L104 Sovereign Node Stress Test Suite."""
 
     def __init__(self, quick_mode: bool = False):
+        """Initialize L104StressTest."""
         self.quick_mode = quick_mode
         self.scale = 0.1 if quick_mode else 1.0
         self.results: List[PhaseResult] = []
@@ -129,6 +137,7 @@ class L104StressTest:
 
         # Test 1: Module imports
         def test_imports():
+            """Stress test imports operations."""
             modules = [
                 'l104_kernel', 'l104_hyper_math', 'l104_security',
                 'l104_codec', 'l104_anchor', 'l104_engine',
@@ -139,7 +148,7 @@ class L104StressTest:
                 try:
                     __import__(mod)
                     imported += 1
-                except:
+                except Exception:
                     pass
             return imported
 
@@ -147,6 +156,7 @@ class L104StressTest:
 
         # Test 2: HyperMath operations
         def test_hypermath():
+            """Stress test hypermath operations."""
             from l104_hyper_math import HyperMath
             hm = HyperMath()
             ops = self._scale(30000)
@@ -158,6 +168,7 @@ class L104StressTest:
 
         # Test 3: Cryptographic operations
         def test_crypto():
+            """Stress test crypto operations."""
             from l104_security import SovereignCrypt
             ops = self._scale(3000)
             for i in range(ops):
@@ -169,6 +180,7 @@ class L104StressTest:
 
         # Test 4: Codec operations
         def test_codec():
+            """Stress test codec operations."""
             from l104_codec import SovereignCodec
             ops = self._scale(3000)
             for i in range(ops):
@@ -180,6 +192,7 @@ class L104StressTest:
 
         # Test 5: Kernel operations
         def test_kernel():
+            """Stress test kernel operations."""
             from l104_kernel import kernel, calculate_resonance
             ops = self._scale(200)
             for i in range(ops):
@@ -190,6 +203,7 @@ class L104StressTest:
 
         # Test 6: Memory allocation
         def test_memory():
+            """Stress test memory operations."""
             elements = self._scale(1000000)
             data = list(range(elements))
             total = sum(data)
@@ -210,6 +224,7 @@ class L104StressTest:
 
         # Test 1: SQLite operations
         def test_sqlite():
+            """Stress test sqlite operations."""
             rows = self._scale(5000)
             with tempfile.NamedTemporaryFile(suffix='.db', delete=True) as f:
                 conn = sqlite3.connect(f.name)
@@ -226,6 +241,7 @@ class L104StressTest:
 
         # Test 2: JSON serialization
         def test_json():
+            """Stress test json operations."""
             ops = self._scale(20000)
             for i in range(ops):
                 data = {'id': i, 'nested': {'values': list(range(10))}}
@@ -237,6 +253,7 @@ class L104StressTest:
 
         # Test 3: Hash generation
         def test_hashes():
+            """Stress test hashes operations."""
             ops = self._scale(100000)
             for i in range(ops):
                 hashlib.sha256(f"data_{i}".encode()).hexdigest()
@@ -246,11 +263,14 @@ class L104StressTest:
 
         # Test 4: Async tasks
         def test_async():
+            """Stress test async operations."""
             async def async_work(n):
+                """Perform a single async work unit."""
                 await asyncio.sleep(0)
                 return n * 2
 
             async def run_tasks():
+                """Gather and run all async tasks."""
                 tasks = [async_work(i) for i in range(self._scale(1000))]
                 return await asyncio.gather(*tasks)
 
@@ -261,6 +281,7 @@ class L104StressTest:
 
         # Test 5: String operations
         def test_strings():
+            """Stress test strings operations."""
             ops = self._scale(400000)
             for i in range(ops):
                 s = f"test_string_{i}" * 10
@@ -286,6 +307,7 @@ class L104StressTest:
 
         # Test 1: Matrix multiplication
         def test_matrix():
+            """Stress test matrix operations."""
             ops = self._scale(100)
             for _ in range(ops):
                 a = np.random.rand(500, 500)
@@ -297,6 +319,7 @@ class L104StressTest:
 
         # Test 2: FFT transforms
         def test_fft():
+            """Stress test fft operations."""
             ops = self._scale(2000)
             for _ in range(ops):
                 data = np.random.rand(1024)
@@ -307,6 +330,7 @@ class L104StressTest:
 
         # Test 3: Eigenvalue decomposition
         def test_eigen():
+            """Stress test eigen operations."""
             ops = self._scale(50)
             for _ in range(ops):
                 m = np.random.rand(100, 100)
@@ -318,6 +342,7 @@ class L104StressTest:
 
         # Test 4: Deep substrate (if available)
         def test_deep_substrate():
+            """Stress test deep substrate operations."""
             try:
                 from l104_deep_substrate import deep_substrate
                 ops = self._scale(200)
@@ -333,6 +358,7 @@ class L104StressTest:
 
         # Test 5: Vector operations
         def test_vectors():
+            """Stress test vectors operations."""
             ops = self._scale(4000)
             for _ in range(ops):
                 v1 = np.random.rand(1000)
@@ -355,10 +381,12 @@ class L104StressTest:
 
         # Test 1: Health endpoint
         def test_health():
+            """Stress test health operations."""
             if not HTTPX_AVAILABLE:
                 raise RuntimeError("httpx not available")
 
             async def check_health():
+                """Check API health endpoint availability."""
                 async with httpx.AsyncClient(timeout=5.0) as client:
                     success = 0
                     for _ in range(self._scale(100)):
@@ -366,7 +394,7 @@ class L104StressTest:
                             r = await client.get(f"{self.api_base}/health")
                             if r.status_code == 200:
                                 success += 1
-                        except:
+                        except Exception:
                             pass
                     return success
 
@@ -376,6 +404,7 @@ class L104StressTest:
 
         # Test 2: RAM Universe
         def test_ram_universe():
+            """Stress test ram universe operations."""
             from l104_ram_universe import ram_universe
             ops = self._scale(200)
             for i in range(ops):
@@ -386,6 +415,7 @@ class L104StressTest:
 
         # Test 3: Parallel engine
         def test_parallel():
+            """Stress test parallel operations."""
             from l104_parallel_engine import parallel_engine
             ops = self._scale(20)
             for _ in range(ops):
@@ -396,6 +426,7 @@ class L104StressTest:
 
         # Test 4: Saturation engine
         def test_saturation():
+            """Stress test saturation operations."""
             from l104_saturation_engine import saturation_engine
             ops = self._scale(50)
             for _ in range(ops):
@@ -416,16 +447,17 @@ class L104StressTest:
 
         # Test 1: File I/O
         def test_file_io():
+            """Stress test file io operations."""
             ops = self._scale(1000)
             with tempfile.TemporaryDirectory() as tmpdir:
                 for i in range(ops):
                     filepath = os.path.join(tmpdir, f"test_{i}.json")
                     data = {'id': i, 'data': 'x' * 100}
-                    with open(filepath, 'w') as f:
+                    with open(filepath, 'w', encoding='utf-8') as f:
                         json.dump(data, f)
                 for i in range(ops):
                     filepath = os.path.join(tmpdir, f"test_{i}.json")
-                    with open(filepath, 'r') as f:
+                    with open(filepath, 'r', encoding='utf-8') as f:
                         json.load(f)
             return ops * 2
 
@@ -433,7 +465,9 @@ class L104StressTest:
 
         # Test 2: ThreadPool (Dynamic core-based scaling)
         def test_threadpool():
+            """Stress test threadpool operations."""
             def cpu_task(n):
+                """Execute a CPU-bound computation."""
                 return sum(i**2 for i in range(n))
 
             ops = self._scale(500)
@@ -449,6 +483,7 @@ class L104StressTest:
 
         # Test 3: ProcessPool (using picklable function)
         def test_processpool():
+            """Stress test processpool operations."""
             ops = self._scale(50)
             # Use simple computation that doesn't require pickle
             import math
@@ -464,11 +499,14 @@ class L104StressTest:
 
         # Test 4: Async gather
         def test_async_gather():
+            """Stress test async gather operations."""
             async def async_work(n):
+                """Perform a single async work unit."""
                 await asyncio.sleep(0)
                 return n * 2
 
             async def run_gather():
+                """Gather and await all async tasks."""
                 tasks = [async_work(i) for i in range(self._scale(5000))]
                 return await asyncio.gather(*tasks)
 
@@ -479,6 +517,7 @@ class L104StressTest:
 
         # Test 5: Memory allocation
         def test_memory_alloc():
+            """Stress test memory alloc operations."""
             allocations = []
             count = self._scale(100)
             for _ in range(count):
@@ -500,6 +539,7 @@ class L104StressTest:
 
         # Test 1: Chaos operations
         def test_chaos():
+            """Stress test chaos operations."""
             ops = self._scale(10000)
             for _ in range(ops):
                 op = random.choice(['hash', 'math', 'array', 'string'])
@@ -517,13 +557,14 @@ class L104StressTest:
 
         # Test 2: Exception recovery
         def test_exceptions():
+            """Stress test exceptions operations."""
             ops = self._scale(1000)
             recovered = 0
             for _ in range(ops):
                 try:
                     if random.random() < 0.5:
                         raise ValueError("simulated")
-                except:
+                except Exception:
                     recovered += 1
             return ops
 
@@ -531,20 +572,23 @@ class L104StressTest:
 
         # Test 3: Queue throughput
         def test_queue():
+            """Stress test queue operations."""
             q = queue.Queue()
             consumed = [0]
             target = self._scale(5000)
 
             def producer():
+                """Produce items into the queue."""
                 for i in range(target):
                     q.put(i)
 
             def consumer():
+                """Consume items from the queue."""
                 while consumed[0] < target:
                     try:
                         q.get(timeout=0.01)
                         consumed[0] += 1
-                    except:
+                    except Exception:
                         pass
 
             threads = [threading.Thread(target=producer) for _ in range(2)]
@@ -559,6 +603,7 @@ class L104StressTest:
 
         # Test 4: Hash uniqueness
         def test_hash_unique():
+            """Stress test hash unique operations."""
             ops = self._scale(50000)
             hashes = set()
             for i in range(ops):
@@ -573,6 +618,7 @@ class L104StressTest:
 
         # Test 5: Memory pressure
         def test_memory_pressure():
+            """Stress test memory pressure operations."""
             if not NUMPY_AVAILABLE:
                 return 0
             cycles = self._scale(10)
@@ -642,6 +688,7 @@ class L104StressTest:
 
 
 def main():
+    """Entry point for the stress test CLI."""
     parser = argparse.ArgumentParser(description="L104 Stress Test Suite")
     parser.add_argument("--phase", type=int, nargs="+", help="Run specific phase(s)")
     parser.add_argument("--quick", action="store_true", help="Quick validation mode (10% scale)")
@@ -662,7 +709,7 @@ def main():
         print("\n" + json.dumps(report, indent=2))
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2)
         print(f"\nReport saved to: {args.output}")
 

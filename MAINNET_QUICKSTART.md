@@ -155,7 +155,7 @@ export L104SP_RPC=http://localhost:10401  # RPC URL
 
 ---
 
-**GOD_CODE: 527.5184818492612**  
+**GOD_CODE: 527.5184818492612**
 **φ (PHI): 1.618033988749895**
 
 *"In resonance, we find truth."*

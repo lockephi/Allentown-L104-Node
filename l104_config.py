@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.564930
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -187,7 +188,7 @@ class L104Config:
         token_path = BASE_PATH / '.gemini_link_token'
         if token_path.exists():
             try:
-                with open(token_path, 'r') as f:
+                with open(token_path, 'r', encoding='utf-8') as f:
                     token = f.read().strip()
                 if token and len(token) > 20:
                     os.environ['GEMINI_API_KEY'] = token
@@ -199,7 +200,7 @@ class L104Config:
         env_path = BASE_PATH / '.env'
         if env_path.exists():
             try:
-                with open(env_path, 'r') as f:
+                with open(env_path, 'r', encoding='utf-8') as f:
                     for line in f:
                         if line.startswith('GEMINI_API_KEY='):
                             val = line.split('=', 1)[1].strip()
@@ -246,7 +247,7 @@ def save_config(config: L104Config, path: str = None):
             return [to_dict(i) for i in obj]
         return obj
 
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         json.dump(to_dict(config), f, indent=2)
 
 def load_config(path: str = None) -> L104Config:

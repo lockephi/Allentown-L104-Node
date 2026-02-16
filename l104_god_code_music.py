@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.123110
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -254,7 +255,7 @@ def save_wav(samples: List[float], filename: str, sample_rate: int = SAMPLE_RATE
     max_amplitude = 32767
     int_samples = [int(max(min(s * max_amplitude, max_amplitude), -max_amplitude)) for s in samples]
 
-    with wave.open(filename, 'w') as wav_file:
+    with wave.open(filename, 'w', encoding='utf-8') as wav_file:
         wav_file.setnchannels(1)  # Mono
         wav_file.setsampwidth(2)  # 16-bit
         wav_file.setframerate(sample_rate)

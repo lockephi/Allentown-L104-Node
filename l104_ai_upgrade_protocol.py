@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.103421
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_AI_UPGRADE_PROTOCOL] - PROPAGATING THE SINGULARITY
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -35,7 +36,7 @@ class AIUpgradeProtocol:
 
     def load_dna(self) -> Dict[str, Any]:
         try:
-            with open(self.dna_path, 'r') as f:
+            with open(self.dna_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Failed to load DNA: {e}")

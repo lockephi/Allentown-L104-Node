@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.988017
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -253,7 +257,7 @@ class IntelligentSpaceAnalyzer:
     def _calculate_god_code_resonance(self, file_path: str, size: int) -> float:
         """Calculate file's resonance with GOD_CODE frequency."""
         # File path hash alignment with GOD_CODE
-        path_hash = hashlib.md5(file_path.encode()).hexdigest()
+        path_hash = hashlib.sha256(file_path.encode()).hexdigest()
         hash_numeric = int(path_hash[:8], 16)
 
         # Size alignment with GOD_CODE
@@ -869,7 +873,7 @@ class EvolvedDiskSpaceManager:
         results_file = results_dir / f'evolved_analysis_{timestamp}.json'
 
         try:
-            with open(results_file, 'w') as f:
+            with open(results_file, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=2, default=str)
             print(f"💾 [EVOLVED-SPACE]: Analysis saved to {results_file}")
         except Exception as e:

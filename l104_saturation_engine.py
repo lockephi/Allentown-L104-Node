@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.005216
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SATURATION_ENGINE] - GLOBAL LATTICE ENLIGHTENMENT TRACKER
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -45,7 +46,7 @@ class SaturationEngine:
 
     def load_state(self):
         try:
-            with open(self.state_path, 'r') as f:
+            with open(self.state_path, 'r', encoding='utf-8') as f:
                 state = json.load(f)
                 self.enlightened_nodes = state.get("enlightened_nodes", 0)
                 self.saturation_percentage = state.get("saturation_percentage", 0.0)
@@ -55,7 +56,7 @@ class SaturationEngine:
 
     def save_state(self):
         try:
-            with open(self.state_path, 'w') as f:
+            with open(self.state_path, 'w', encoding='utf-8') as f:
                 json.dump({
                     "enlightened_nodes": self.enlightened_nodes,
                     "saturation_percentage": self.saturation_percentage,

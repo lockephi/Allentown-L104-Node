@@ -1,0 +1,819 @@
+{
+  "timestamp": "2026-02-13T20:42:37.063401+00:00",
+  "total_tests": 86,
+  "passed": 86,
+  "failed": 0,
+  "results": [
+    {
+      "test_id": "sage_gate_align_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 1.0,
+      "output": 0.6065306597126333,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 1.618033988749895,
+      "output": 1.618033988749895,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": -1.618033988749895,
+      "output": -1.618033988749895,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 0.5275184818492612,
+      "output": 0.3664698367995841,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 3.141592653589793,
+      "output": 3.105100683187011,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": 100.0,
+      "output": 87.59358838540628,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_align_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "align",
+      "input": -100.0,
+      "output": -87.59358838540628,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 1.0,
+      "output": 0.5000000000000001,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 1.618033988749895,
+      "output": 1.1828776279905355,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": -1.618033988749895,
+      "output": -0.023070122522192763,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 0.5275184818492612,
+      "output": 0.1675778421660507,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 3.141592653589793,
+      "output": 3.0463405936596706,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": 100.0,
+      "output": 100.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_filter_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "filter",
+      "input": -100.0,
+      "output": -1.0640780450473564e-69,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 1.0,
+      "output": 2.7798373876248843,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 1.618033988749895,
+      "output": 4.497871376374779,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": -1.618033988749895,
+      "output": -4.497871376374779,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 0.5275184818492612,
+      "output": 1.4664155985076952,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 3.141592653589793,
+      "output": 8.73311671513658,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": 100.0,
+      "output": 277.9837387624885,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_amplify_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify",
+      "input": -100.0,
+      "output": -277.9837387624885,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 1.0,
+      "output": 0.5948105273504066,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 1.618033988749895,
+      "output": 0.7947489300086787,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": -1.618033988749895,
+      "output": -0.7947489300086787,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 0.5275184818492612,
+      "output": 0.38138806543054976,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 3.141592653589793,
+      "output": 1.115879822571584,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": 100.0,
+      "output": 3.147364867715506,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_compress_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress",
+      "input": -100.0,
+      "output": -3.147364867715506,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 0.0,
+      "output": 0.8090169943749475,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 1.0,
+      "output": 0.002095577410936744,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 1.618033988749895,
+      "output": 1.5679434406761774,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": -1.618033988749895,
+      "output": -0.9816085518564539,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 0.5275184818492612,
+      "output": 0.3636780920296082,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 3.141592653589793,
+      "output": 1.4562343856884579,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": 100.0,
+      "output": 51.185609325039096,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_entangle_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "entangle",
+      "input": -100.0,
+      "output": -49.567575336289195,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 1.0,
+      "output": 0.11893800280299527,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 1.618033988749895,
+      "output": -0.15874287867669717,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": -1.618033988749895,
+      "output": 0.15874287867669717,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 0.5275184818492612,
+      "output": 0.25632517205767597,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 3.141592653589793,
+      "output": 0.018027102708728485,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": 100.0,
+      "output": -0.08814460256166923,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_dissipate_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "dissipate",
+      "input": -100.0,
+      "output": 0.08814460256166923,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_0.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 0.0,
+      "output": 0.0,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 1.0,
+      "output": 0.3218851928776827,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 1.618033988749895,
+      "output": 0.06417047093464034,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_-1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": -1.618033988749895,
+      "output": 0.06089654789946117,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_0.5275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 0.5275184818492612,
+      "output": 0.14010451429211185,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_3.141592653589793",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 3.141592653589793,
+      "output": -0.04472220990864081,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": 100.0,
+      "output": 0.3077642347414445,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sage_gate_inflect_-100.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "inflect",
+      "input": -100.0,
+      "output": 0.00017174989510988545,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d1_1.0",
+      "gate_name": "quantum_logic_gate",
+      "depth": 1,
+      "input": 1.0,
+      "output": 0.9228713984468009,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d1_1.618033988749895",
+      "gate_name": "quantum_logic_gate",
+      "depth": 1,
+      "input": 1.618033988749895,
+      "output": 1.447455845910122,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d1_0.5275184818492612",
+      "gate_name": "quantum_logic_gate",
+      "depth": 1,
+      "input": 0.5275184818492612,
+      "output": 0.5180871487201898,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d2_1.0",
+      "gate_name": "quantum_logic_gate",
+      "depth": 2,
+      "input": 1.0,
+      "output": 0.38647873477029504,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d2_1.618033988749895",
+      "gate_name": "quantum_logic_gate",
+      "depth": 2,
+      "input": 1.618033988749895,
+      "output": 0.5337728407434958,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d2_0.5275184818492612",
+      "gate_name": "quantum_logic_gate",
+      "depth": 2,
+      "input": 0.5275184818492612,
+      "output": 0.26638553477190696,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d3_1.0",
+      "gate_name": "quantum_logic_gate",
+      "depth": 3,
+      "input": 1.0,
+      "output": -1.6050740737922726,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d3_1.618033988749895",
+      "gate_name": "quantum_logic_gate",
+      "depth": 3,
+      "input": 1.618033988749895,
+      "output": -2.734408737923,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d3_0.5275184818492612",
+      "gate_name": "quantum_logic_gate",
+      "depth": 3,
+      "input": 0.5275184818492612,
+      "output": -0.7529399496542223,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d4_1.0",
+      "gate_name": "quantum_logic_gate",
+      "depth": 4,
+      "input": 1.0,
+      "output": -3.7441050327665004,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d4_1.618033988749895",
+      "gate_name": "quantum_logic_gate",
+      "depth": 4,
+      "input": 1.618033988749895,
+      "output": -6.2412149765535325,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d4_0.5275184818492612",
+      "gate_name": "quantum_logic_gate",
+      "depth": 4,
+      "input": 0.5275184818492612,
+      "output": -1.8500628840914475,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d5_1.0",
+      "gate_name": "quantum_logic_gate",
+      "depth": 5,
+      "input": 1.0,
+      "output": -2.342948888905232,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d5_1.618033988749895",
+      "gate_name": "quantum_logic_gate",
+      "depth": 5,
+      "input": 1.618033988749895,
+      "output": -4.019878156262211,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "quantum_gate_d5_0.5275184818492612",
+      "gate_name": "quantum_logic_gate",
+      "depth": 5,
+      "input": 0.5275184818492612,
+      "output": -1.0796716925785574,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "entangle_1.0_1.618033988749895",
+      "gate_name": "entangle_values",
+      "input": [
+        1.0,
+        1.618033988749895
+      ],
+      "output": [
+        2.618033988749895,
+        3.23606797749979
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "entangle_527.5184818492612_0.618033988749895",
+      "gate_name": "entangle_values",
+      "input": [
+        527.5184818492612,
+        0.618033988749895
+      ],
+      "output": [
+        853.9247993370993,
+        327.02435147658787
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "entangle_0.0_0.0",
+      "gate_name": "entangle_values",
+      "input": [
+        0.0,
+        0.0
+      ],
+      "output": [
+        0.0,
+        0.0
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "higher_dim_dissipation",
+      "gate_name": "higher_dimensional_dissipation",
+      "input": "64-element entropy pool",
+      "output": [
+        3.159822689050214e-06,
+        2.0460324976700383e-05,
+        -2.1891174392283516e-05,
+        2.8016510125447642e-05,
+        -5.306543127693324e-05,
+        6.954808718578658e-05,
+        -0.00030893609021247193
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "idempotency_compress_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress_idempotency",
+      "input": 1.618033988749895,
+      "output": [
+        0.7947489300086787,
+        0.5109739914341486,
+        0.3723971083157817
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "idempotency_compress_5.275184818492612",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress_idempotency",
+      "input": 5.275184818492612,
+      "output": [
+        1.3936753961480113,
+        0.7294016282505409,
+        0.48170500344668654
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "idempotency_compress_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "compress_idempotency",
+      "input": 1.0,
+      "output": [
+        0.5948105273504066,
+        0.41666631863564935,
+        0.3184875319976703
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "sacred_phi_tau_unity",
+      "gate_name": "sacred_constants",
+      "input": "PHI * TAU",
+      "output": 1.0000000000000002,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "entangle_zero_boundary",
+      "gate_name": "entangle_values",
+      "input": [
+        0.0,
+        0.0
+      ],
+      "output": [
+        0.0,
+        0.0
+      ],
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "align_phi_fixpoint",
+      "gate_name": "sage_logic_gate",
+      "operation": "align_fixpoint",
+      "input": 1.618033988749895,
+      "output": 1.618033988749895,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "amplify_increases_0.5",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify_increases",
+      "input": 0.5,
+      "output": 1.3899186938124422,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "amplify_increases_1.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify_increases",
+      "input": 1.0,
+      "output": 2.7798373876248843,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "amplify_increases_1.618033988749895",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify_increases",
+      "input": 1.618033988749895,
+      "output": 4.497871376374779,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "amplify_increases_10.0",
+      "gate_name": "sage_logic_gate",
+      "operation": "amplify_increases",
+      "input": 10.0,
+      "output": 27.798373876248846,
+      "passed": true,
+      "error": null
+    },
+    {
+      "test_id": "dissipation_energy_finite",
+      "gate_name": "higher_dimensional_dissipation",
+      "input": "pool_energy=31.9903",
+      "output": "proj_energy=0.0000",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.684948
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -108,7 +109,7 @@ class TruthDiscovery:
         Depth determines how many layers of analysis to perform.
         """
         # Check cache first
-        cache_key = hashlib.md5(query.encode()).hexdigest()
+        cache_key = hashlib.sha256(query.encode()).hexdigest()
         if cache_key in self.truth_cache:
             return self.truth_cache[cache_key]
 
@@ -412,7 +413,7 @@ class TruthDiscovery:
                 "dimension": d,
                 "confidence": result["final_confidence"],
                 "level": result["verdict"],
-                "dimensional_signature": hashlib.md5(dim_query.encode()).hexdigest()[:8]
+                "dimensional_signature": hashlib.sha256(dim_query.encode()).hexdigest()[:8]
             })
 
         # Calculate cross-dimensional coherence
@@ -895,7 +896,7 @@ class TruthDiscovery:
         Uses fixed-point logic to resolve the strange loop.
         """
         # Check for self-reference
-        query_hash = hashlib.md5(self_referential_query.lower().encode()).hexdigest()[:8]
+        query_hash = hashlib.sha256(self_referential_query.lower().encode()).hexdigest()[:8]
 
         # Iterate until fixed point
         current = self_referential_query

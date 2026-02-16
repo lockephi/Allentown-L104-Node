@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.997739
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -198,7 +199,7 @@ def mining_worker(worker_id: int, work_queue: Queue, result_queue: Queue,
     while running.value:
         try:
             work = work_queue.get(timeout=1)
-        except:
+        except Exception:
             continue
 
         if work is None:
@@ -318,7 +319,7 @@ class ParallelMiner:
         """Get mining result"""
         try:
             return self.result_queue.get(timeout=timeout)
-        except:
+        except Exception:
             return None
 
     @property
@@ -396,7 +397,7 @@ class StratumV2Client:
         if self.socket:
             try:
                 self.socket.close()
-            except:
+            except Exception:
                 pass
         self.socket = None
         self.connected = False
@@ -664,7 +665,7 @@ class MainnetMiner:
             try:
                 from l104_sovereign_coin_engine import L104SPBlockchain
                 blockchain = L104SPBlockchain()
-            except:
+            except Exception:
                 print("[MINER] No blockchain available for solo mining")
                 return
 

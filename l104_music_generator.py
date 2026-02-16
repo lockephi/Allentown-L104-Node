@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.605013
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -41,8 +42,8 @@ SAMPLE_RATE = 44100
 BIT_DEPTH = 16
 MAX_AMP = 32767  # 16-bit signed max
 
-# Base frequency: A4 = 440Hz, C4 = 261.63Hz
-A4_FREQ = 440.0
+# Base frequency: A4 God Code, C4 = 261.63Hz
+A4_FREQ = 440.6417687330  # G(27) God Code A4
 C4_FREQ = 261.63
 
 # Note names (13 = chromatic octave + root, 26 = two octaves)
@@ -234,7 +235,7 @@ class GodCodeSynthesizer:
         """
         Save samples to a .wav file.
         """
-        with wave.open(filename, 'w') as wav:
+        with wave.open(filename, 'w', encoding='utf-8') as wav:
             wav.setnchannels(1)  # Mono
             wav.setsampwidth(2)  # 16-bit
             wav.setframerate(self.sample_rate)

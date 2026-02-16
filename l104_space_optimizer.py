@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.670925
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -287,11 +291,11 @@ class SpaceOptimizer:
                     original_size = os.path.getsize(file_path)
 
                     # Load and minify JSON
-                    with open(file_path, 'r') as f:
+                    with open(file_path, 'r', encoding='utf-8') as f:
                         data = json.load(f)
 
                     # Write minified JSON
-                    with open(file_path, 'w') as f:
+                    with open(file_path, 'w', encoding='utf-8') as f:
                         json.dump(data, f, separators=(',', ':'))
 
                     new_size = os.path.getsize(file_path)
@@ -337,7 +341,7 @@ class SpaceOptimizer:
             # Read existing gitignore
             existing_content = ""
             if gitignore_path.exists():
-                with open(gitignore_path, 'r') as f:
+                with open(gitignore_path, 'r', encoding='utf-8') as f:
                     existing_content = f.read()
 
             # Add new patterns if not already present
@@ -347,7 +351,7 @@ class SpaceOptimizer:
                     additions.append(pattern)
 
             if additions:
-                with open(gitignore_path, 'a') as f:
+                with open(gitignore_path, 'a', encoding='utf-8') as f:
                     f.write('\n' + '\n'.join(additions) + '\n')
                 print(f"  ✓ Added {len(additions)} patterns to .gitignore")
             else:
@@ -437,7 +441,7 @@ echo "$(date): Space cleanup completed" >> .space_cleanup.log
     script_path = Path('./cleanup_schedule.sh')
 
     try:
-        with open(script_path, 'w') as f:
+        with open(script_path, 'w', encoding='utf-8') as f:
             f.write(script_content)
 
         # Make executable
@@ -456,7 +460,7 @@ if __name__ == "__main__":
 
         # Save results
         results_path = Path('./.space_optimization_results.json')
-        with open(results_path, 'w') as f:
+        with open(results_path, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, default=str)
 
     else:

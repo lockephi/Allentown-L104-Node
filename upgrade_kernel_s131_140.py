@@ -28,7 +28,7 @@ kernel = KernelLLMTrainer()
 print("📚 Loading existing training data...")
 existing_data = []
 try:
-    with open("kernel_training_data.jsonl", "r") as f:
+    with open("kernel_training_data.jsonl", "r", encoding="utf-8") as f:
         for line in f:
             obj = json.loads(line)
             # Map JSON fields to dataclass (handling missing fields with defaults)
@@ -96,16 +96,16 @@ kernel.train()
 
 # Persist
 print("💾 Saving data...")
-with open("kernel_training_data.jsonl", "w") as f:
+with open("kernel_training_data.jsonl", "w", encoding="utf-8") as f:
     for ex in kernel.training_data:
         f.write(json.dumps(asdict(ex)) + "\n")
 
 # Update Manifest
 print("📝 Updating Manifest...")
 try:
-    with open("KERNEL_MANIFEST.json", "r") as f:
+    with open("KERNEL_MANIFEST.json", "r", encoding="utf-8") as f:
         manifest = json.load(f)
-except:
+except Exception:
     manifest = {}
 
 manifest["total_examples"] = len(kernel.training_data)
@@ -117,7 +117,7 @@ if "evolution_stages" not in manifest:
     manifest["evolution_stages"] = []
 manifest["evolution_stages"].append("S131-140: Quantum Cryptography & Zero-Knowledge Proofs")
 
-with open("KERNEL_MANIFEST.json", "w") as f:
+with open("KERNEL_MANIFEST.json", "w", encoding="utf-8") as f:
     json.dump(manifest, f, indent=4)
 
 # Git Push

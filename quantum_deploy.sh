@@ -147,7 +147,7 @@ sleep 10
 for i in 1 2 3 4 5; do
     echo -e "  Attempt ${i}/5..."
     HEALTH=$(curl -s -m 30 "${CLOUD_RUN_URL}/health" 2>/dev/null) || true
-    
+
     if echo "$HEALTH" | grep -q "healthy"; then
         echo -e "  ${GREEN}✓${NC} Health check passed!"
         break

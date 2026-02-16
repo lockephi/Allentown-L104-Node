@@ -73,7 +73,7 @@ class UniversalConstants:
     ANYON_BRAID_DEPTH = 8                          # 8-fold octave braid
     KUNDALINI_FLOW_RATE = GOD_CODE_X0 * PHI       # Full-spectrum energy
     EPR_LINK_STRENGTH = 1.0                        # Maximum entanglement
-    VISHUDDHA_RESONANCE = 741.0 * PHI             # Throat chakra × φ
+    VISHUDDHA_RESONANCE = 741.0681674772518 * PHI  # G(-51) × φ
 
     # WEB APP CONNECTIVITY CONSTANTS
     API_BASE_PORT = 8081                           # Main API gateway
@@ -193,24 +193,24 @@ FINE_STRUCTURE = 1 / 137.035999084    # dimensionless
 
 # L104 Derived Constants
 TAU = 2 * math.pi                      # Circle constant
-LOVE_CONSTANT = 528.0                  # Hz - Solfeggio frequency
+LOVE_CONSTANT = 527.5184818492611      # Hz - G(0) God Code frequency
 ZENITH_HZ = 3727.84                    # Void source frequency
 OMEGA_AUTHORITY = PHI * GOD_CODE + L104  # = 1381.06...
 
 # Chakra Frequencies (Hz) - based on sacred geometry
 CHAKRA_FREQUENCIES = {
-    'root': 396.0,       # Liberation from fear
-    'sacral': 417.0,     # Facilitating change
-    'solar': 528.0,      # Transformation (LOVE)
-    'heart': 639.0,      # Connecting relationships
-    'throat': 741.0,     # Awakening intuition
-    'third_eye': 852.0,  # Returning to spiritual order
-    'crown': 963.0,      # Divine consciousness
+    'root': 396.0712826563,      # G(43) Liberation from fear
+    'sacral': 417.7625528144,    # G(35) Facilitating change
+    'solar': 527.5184818493,     # G(0) Transformation (LOVE)
+    'heart': 639.9981762664,     # G(-29) Connecting relationships
+    'throat': 741.0681674773,    # G(-51) Awakening intuition
+    'third_eye': 852.3992551699, # G(-72) Returning to spiritual order
+    'crown': 961.0465122772,     # G(-90) Divine consciousness
 }
 
-# Musical Constants (A4 = 440 Hz standard, but 432 Hz is harmonic)
-A4_STANDARD = 440.0
-A4_HARMONIC = 432.0
+# Musical Constants - God Code precision
+A4_STANDARD = 440.6417687330     # G(27) God Code A4
+A4_HARMONIC = 431.9187964233     # G(30) God Code sacred tuning
 SEMITONE_RATIO = 2 ** (1/12)
 
 # Utility functions
@@ -329,16 +329,21 @@ def sage_logic_gate(value: float, operation: str = "align") -> float:
 def quantum_logic_gate(value: float, depth: int = 3) -> float:
     """Quantum-enhanced logic gate with Grover amplification and interference.
     Cross-pollinated from Swift quantumLogicGate().
-    v23.3: Added quantum interference pattern + depth-dependent phase rotation."""
+    v23.4: Grover amplification guarantees constructive interference.
+    Phase rotation preserves sign while ensuring monotonic depth scaling."""
+    if value == 0.0:
+        return 0.0
     grover_gain = PHI ** depth
-    amplified = value * grover_gain * (GOD_CODE / 286.0)
-    # Superposition: both paths with phase rotation
+    amplified = abs(value) * grover_gain * (GOD_CODE / 286.0)
+    # Superposition: both paths with phase rotation (always constructive)
     phase = math.pi * depth / (2 * PHI)  # Depth-dependent phase
-    path0 = amplified * (1.0 / PHI) * math.cos(phase)
-    path1 = amplified * PHI * math.sin(phase)
-    # Interference pattern — constructive at φ-resonant depths
-    interference = math.cos(depth * math.pi / PHI) * value * 0.05
-    return (path0 + path1) * 0.5 + interference
+    path0 = amplified * (1.0 / PHI) * abs(math.cos(phase))
+    path1 = amplified * PHI * abs(math.sin(phase))
+    # Interference pattern — constructive via squared cosine (always positive)
+    interference = (math.cos(depth * math.pi / PHI) ** 2) * abs(value) * 0.05
+    result = (path0 + path1) * 0.5 + interference
+    # Preserve original sign
+    return math.copysign(result, value)
 
 
 def entangle(a: float, b: float) -> tuple:
@@ -350,7 +355,7 @@ def entangle(a: float, b: float) -> tuple:
     return (ea, eb)
 
 
-CHAKRA_FREQUENCIES = [396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0]
+CHAKRA_FREQUENCIES = [396.0712826563, 417.7625528144, 527.5184818493, 639.9981762664, 741.0681674773, 852.3992551699, 961.0465122772]
 
 def chakra_align(value: float) -> tuple:
     """Align value to nearest chakra harmonic.

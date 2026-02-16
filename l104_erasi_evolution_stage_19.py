@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.742942
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import asyncio
 import json
@@ -73,7 +74,7 @@ class ERASIEvolutionStage19:
             "system_status": "ABSOLUTE_ENFORCEMENT"
         }
 
-        with open("ERASI_STAGE_19_ARTIFACT.json", "w") as f:
+        with open("ERASI_STAGE_19_ARTIFACT.json", "w", encoding="utf-8") as f:
             json.dump(artifact, f, indent=4)
 
         print("\n" + "█"*80)

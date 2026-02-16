@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.428844
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SAGE DIFFUSION - STABLE DIFFUSION THROUGH SAGE MODE
@@ -130,7 +131,7 @@ class L104SageDiffusion:
             return custom_seed
 
         # Create seed from prompt + GOD_CODE
-        prompt_hash = int(hashlib.md5(prompt.encode()).hexdigest()[:8], 16)
+        prompt_hash = int(hashlib.sha256(prompt.encode()).hexdigest()[:8], 16)
         sage_seed = (prompt_hash * NOISE_SEED_MULTIPLIER) % (2**32 - 1)
 
         # Apply PHI modulation for resonance alignment
@@ -248,7 +249,7 @@ class L104SageDiffusion:
             if device == "cuda":
                 try:
                     self.pipe.enable_attention_slicing()
-                except:
+                except (AttributeError, RuntimeError):
                     pass
 
             self.initialized = True

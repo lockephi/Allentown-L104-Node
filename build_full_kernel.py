@@ -85,7 +85,7 @@ def load_all_training_data() -> List[TrainingExample]:
             continue
 
         count = 0
-        with open(filepath, 'r') as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             for line in f:
                 try:
                     data = json.loads(line.strip())
@@ -96,7 +96,7 @@ def load_all_training_data() -> List[TrainingExample]:
                     if prompt and completion and len(prompt) > 5 and len(completion) > 10:
                         examples.append(TrainingExample(prompt, completion, category))
                         count += 1
-                except:
+                except Exception:
                     pass
 
         if count > 0:
@@ -110,7 +110,7 @@ def load_all_training_data() -> List[TrainingExample]:
             if "raw_corpus" in file.name:
                 continue
             count = 0
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 for line in f:
                     try:
                         data = json.loads(line.strip())
@@ -132,7 +132,7 @@ def load_all_training_data() -> List[TrainingExample]:
                         if prompt and completion and len(prompt) > 5:
                             examples.append(TrainingExample(prompt.strip(), completion.strip(), 'fine_tune'))
                             count += 1
-                    except:
+                    except Exception:
                         pass
             if count > 0:
                 sources[file.name] = count
@@ -147,7 +147,7 @@ def deduplicate(examples: List[TrainingExample]) -> List[TrainingExample]:
     unique = []
 
     for ex in examples:
-        h = hashlib.md5(ex.prompt.encode()).hexdigest()
+        h = hashlib.sha256(ex.prompt.encode()).hexdigest()
         if h not in seen:
             seen.add(h)
             unique.append(ex)
@@ -261,7 +261,7 @@ def main():
     print("═" * 70)
 
     output_path = Path("./kernel_full_merged.jsonl")
-    with open(output_path, 'w') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         for ex in unique_examples:
             f.write(json.dumps({
                 "prompt": ex.prompt,
@@ -292,7 +292,7 @@ def main():
     }
 
     manifest_path = Path("./KERNEL_MANIFEST.json")
-    with open(manifest_path, 'w') as f:
+    with open(manifest_path, 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2)
 
     print(f"  ✓ Updated {manifest_path}")

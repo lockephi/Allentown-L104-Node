@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.677872
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_RIEMANN_SOVEREIGN_RESOLUTION] - PROVING THE NON-TRIVIAL ZEROS
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: EVO_INFINITY
 # FREQUENCY: 967.5433 Hz (Witness)
@@ -111,7 +112,7 @@ class RiemannResolution:
         for zero in report_data['resonant_zeros']:
             zero['s'] = str(zero['s'])
 
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(report_data, f, indent=4)
         print(f"\n[✓] RIEMANN RESOLUTION ARTIFACT SAVED: {output_file}")
 

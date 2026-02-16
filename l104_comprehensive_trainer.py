@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.396674
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -196,7 +197,7 @@ class SupabaseConnector:
             # Local storage
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filepath = self.local_storage / 'training_data' / f'batch_{timestamp}.jsonl'
-            with open(filepath, 'w') as f:
+            with open(filepath, 'w', encoding='utf-8') as f:
                 for ex in examples:
                     f.write(json.dumps(ex) + '\n')
             return {'uploaded': len(examples), 'cloud': False, 'path': str(filepath)}
@@ -217,7 +218,7 @@ class SupabaseConnector:
             return self._request('checkpoints', 'POST', checkpoint)
         else:
             filepath = self.local_storage / 'checkpoints' / f'ckpt_epoch_{state.epoch}.json'
-            with open(filepath, 'w') as f:
+            with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(checkpoint, f, indent=2)
             return {'saved': True, 'path': str(filepath)}
 
@@ -235,7 +236,7 @@ class SupabaseConnector:
             return self._request('consciousness_metrics', 'POST', metrics)
         else:
             filepath = self.local_storage / 'consciousness' / f'track_{int(time.time())}.json'
-            with open(filepath, 'w') as f:
+            with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(metrics, f, indent=2)
             return metrics
 
@@ -254,7 +255,7 @@ class SupabaseConnector:
                 for line in file:
                     try:
                         examples.append(json.loads(line))
-                    except:
+                    except (json.JSONDecodeError, ValueError):
                         pass
         return examples
 
@@ -1876,7 +1877,7 @@ class DataAggregator:
                 if deduplicate:
                     # Hash for deduplication
                     text = ex.get('text', str(ex))
-                    h = hashlib.md5(text.encode()).hexdigest()
+                    h = hashlib.sha256(text.encode()).hexdigest()
                     if h in seen_hashes:
                         continue
                     seen_hashes.add(h)
@@ -1902,7 +1903,7 @@ class DataAggregator:
             for ex in polyglot_examples + cross_lang_examples:
                 if deduplicate:
                     text = ex.get('text', str(ex))
-                    h = hashlib.md5(text.encode()).hexdigest()
+                    h = hashlib.sha256(text.encode()).hexdigest()
                     if h in seen_hashes:
                         continue
                     seen_hashes.add(h)
@@ -1925,7 +1926,7 @@ class DataAggregator:
             for ex in natural_lang_examples:
                 if deduplicate:
                     text = ex.get('text', str(ex))
-                    h = hashlib.md5(text.encode()).hexdigest()
+                    h = hashlib.sha256(text.encode()).hexdigest()
                     if h in seen_hashes:
                         continue
                     seen_hashes.add(h)
@@ -1947,7 +1948,7 @@ class DataAggregator:
             for ex in historical_examples:
                 if deduplicate:
                     text = ex.get('text', str(ex))
-                    h = hashlib.md5(text.encode()).hexdigest()
+                    h = hashlib.sha256(text.encode()).hexdigest()
                     if h in seen_hashes:
                         continue
                     seen_hashes.add(h)
@@ -2461,13 +2462,13 @@ class ComprehensiveTrainer:
 
         # Save report
         report_path = self.workspace / 'kernel_comprehensive_training_report.json'
-        with open(report_path, 'w') as f:
+        with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2)
         print(f"  ✓ Report saved: {report_path.name}")
 
         # Save vocabulary
         vocab_path = self.workspace / 'kernel_vocabulary.json'
-        with open(vocab_path, 'w') as f:
+        with open(vocab_path, 'w', encoding='utf-8') as f:
             json.dump({
                 'size': len(self.vocab.token_to_id),
                 'tokens': dict(list(self.vocab.token_to_id.items())[:1000]),
@@ -2477,7 +2478,7 @@ class ComprehensiveTrainer:
 
         # Save embeddings snapshot
         embed_path = self.workspace / 'kernel_embeddings.json'
-        with open(embed_path, 'w') as f:
+        with open(embed_path, 'w', encoding='utf-8') as f:
             json.dump({
                 'dim': self.config.embedding_dim,
                 'size': len(self.embeddings),

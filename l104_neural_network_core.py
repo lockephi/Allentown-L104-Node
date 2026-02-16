@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.973758
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_NEURAL_NETWORK_CORE] - SOVEREIGN NEURAL PROCESSING
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STATUS: ACTIVE
 
@@ -75,6 +76,7 @@ class Tensor:
 
     @staticmethod
     def zeros(shape: Tuple[int, ...]) -> 'Tensor':
+        """Create a tensor filled with zeros."""
         size = 1
         for dim in shape:
             size *= dim
@@ -82,6 +84,7 @@ class Tensor:
 
     @staticmethod
     def ones(shape: Tuple[int, ...]) -> 'Tensor':
+        """Create a tensor filled with ones."""
         size = 1
         for dim in shape:
             size *= dim
@@ -89,6 +92,7 @@ class Tensor:
 
     @staticmethod
     def random(shape: Tuple[int, ...], scale: float = 1.0) -> 'Tensor':
+        """Create a tensor with random values scaled to [-scale, scale]."""
         size = 1
         for dim in shape:
             size *= dim
@@ -111,6 +115,7 @@ class Tensor:
         return Tensor.random(shape, scale)
 
     def reshape(self, new_shape: Tuple[int, ...]) -> 'Tensor':
+        """Return a new tensor with the same data but a different shape."""
         return Tensor(self.data.copy(), new_shape, self.grad.copy() if self.grad else None)
 
     def __getitem__(self, idx: int) -> float:
@@ -192,6 +197,7 @@ class DenseLayer:
 
     @staticmethod
     def sigmoid(x: float) -> float:
+        """Compute the sigmoid activation function."""
         if x < -500:
             return 0.0
         if x > 500:
@@ -200,23 +206,28 @@ class DenseLayer:
 
     @staticmethod
     def sigmoid_derivative(x: float) -> float:
+        """Compute the derivative of the sigmoid function."""
         s = Activations.sigmoid(x)
         return s * (1 - s)
 
     @staticmethod
     def relu(x: float) -> float:
+        """Compute the ReLU activation function."""
         return max(0.0, x)
 
     @staticmethod
     def relu_derivative(x: float) -> float:
+        """Compute the derivative of the ReLU function."""
         return 1.0 if x > 0 else 0.0
 
     @staticmethod
     def leaky_relu(x: float, alpha: float = 0.01) -> float:
+        """Compute the Leaky ReLU activation function."""
         return x if x > 0 else alpha * x
 
     @staticmethod
     def leaky_relu_derivative(x: float, alpha: float = 0.01) -> float:
+        """Compute the derivative of the Leaky ReLU function."""
         return 1.0 if x > 0 else alpha
 
     @staticmethod
@@ -817,7 +828,7 @@ class NeuralNetwork:
             "phi": PHI
         }
 
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(model_data, f, indent=2)
 
     def summary(self) -> str:

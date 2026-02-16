@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.436632
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 from pathlib import Path
 #!/usr/bin/env python3
 """
@@ -369,7 +373,7 @@ class KernelKnowledgeExtractor:
 
         # Absolute Intellect Report
         try:
-            with open("./L104_ABSOLUTE_INTELLECT_REPORT.json", 'r') as f:
+            with open("./L104_ABSOLUTE_INTELLECT_REPORT.json", 'r', encoding='utf-8') as f:
                 intellect = json.load(f)
 
                 examples.append(TrainingExample(
@@ -400,7 +404,7 @@ class KernelKnowledgeExtractor:
 
         # Calculation Report
         try:
-            with open("./ABSOLUTE_CALCULATION_REPORT.json", 'r') as f:
+            with open("./ABSOLUTE_CALCULATION_REPORT.json", 'r', encoding='utf-8') as f:
                 calc = json.load(f)
 
                 examples.append(TrainingExample(
@@ -531,7 +535,7 @@ class KernelKnowledgeExtractor:
 
         # 1. Mini Egos from L104_DATA_FOR_AI.json
         try:
-            with open("./L104_DATA_FOR_AI.json", 'r') as f:
+            with open("./L104_DATA_FOR_AI.json", 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 egos = data.get("mini_egos", {}).get("egos", [])
                 for ego in egos:
@@ -559,7 +563,7 @@ class KernelKnowledgeExtractor:
 
         # 2. Meta Knowledge from L104_META_KNOWLEDGE_SYNTHESIS.json
         try:
-            with open("./L104_META_KNOWLEDGE_SYNTHESIS.json", 'r') as f:
+            with open("./L104_META_KNOWLEDGE_SYNTHESIS.json", 'r', encoding='utf-8') as f:
                 meta = json.load(f)
 
                 summary = meta.get("findings_summary")
@@ -596,7 +600,7 @@ class KernelKnowledgeExtractor:
 
         # 3. Physics Evaluation Result from physics_eval_results.json
         try:
-            with open("./physics_eval_results.json", 'r') as f:
+            with open("./physics_eval_results.json", 'r', encoding='utf-8') as f:
                 physics = json.load(f)
                 summary = physics.get("summary", {})
                 examples.append(TrainingExample(
@@ -621,7 +625,7 @@ class KernelKnowledgeExtractor:
 
         # 4. Final Reality Check from FINAL_REALITY_CHECK.json
         try:
-            with open("./FINAL_REALITY_CHECK.json", 'r') as f:
+            with open("./FINAL_REALITY_CHECK.json", 'r', encoding='utf-8') as f:
                 reality = json.load(f)
                 metrics = reality.get("metrics", {})
                 examples.append(TrainingExample(
@@ -652,7 +656,7 @@ class KernelKnowledgeExtractor:
 
         if os.path.exists(path):
             try:
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:
                     for line in f:
                         data = json.loads(line)
                         examples.append(TrainingExample(
@@ -1670,7 +1674,7 @@ class FineTuningExporter:
     @staticmethod
     def export_jsonl(examples: List[TrainingExample], filepath: str):
         """Export in JSONL format (for OpenAI, etc.)."""
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             for ex in examples:
                 record = {
                     "prompt": ex.prompt,
@@ -1704,7 +1708,7 @@ class FineTuningExporter:
                 }
             })
 
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(chat_data, f, indent=2)
 
         print(f"- Exported {len(examples)} chat examples to {filepath}")
@@ -1739,7 +1743,7 @@ class FineTuningExporter:
                 lines.append(f"**A**: {ex.completion}")
                 lines.append("")
 
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             f.write('\n'.join(lines))
 
         print(f"- Exported markdown docs to {filepath}")

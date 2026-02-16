@@ -459,7 +459,7 @@ def extract_from_skills() -> List[Dict]:
     import yaml
     for skill_file in list(skills_dir.glob("*.yaml")) + list(skills_dir.glob("*.yml")):
         try:
-            with open(skill_file, 'r') as f:
+            with open(skill_file, 'r', encoding='utf-8') as f:
                 data = yaml.safe_load(f)
 
             skill_id = data.get("id", skill_file.stem)
@@ -491,7 +491,7 @@ def extract_from_system_yaml() -> List[Dict]:
         return examples
 
     try:
-        with open(yaml_path, 'r') as f:
+        with open(yaml_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
 
         # System section
@@ -601,7 +601,7 @@ def extract_from_sovereign_mesh() -> List[Dict]:
         return examples
 
     try:
-        with open(mesh_path, 'r') as f:
+        with open(mesh_path, 'r', encoding='utf-8') as f:
             content = f.read()
             # Handle multi-doc YAML
             docs = list(yaml.safe_load_all(content))
@@ -776,7 +776,7 @@ def extract_from_blueprints() -> List[Dict]:
 
 
 def extract_from_docker_config() -> List[Dict]:
-    """Extract from Dockerfile, docker-compose.yml, fly.toml."""
+    """Extract from Dockerfile, docker-compose.yml."""
     examples = []
 
     # Dockerfile
@@ -826,7 +826,7 @@ def extract_from_docker_config() -> List[Dict]:
     if compose_path.exists():
         try:
             import yaml
-            with open(compose_path, 'r') as f:
+            with open(compose_path, 'r', encoding='utf-8') as f:
                 data = yaml.safe_load(f)
 
             services = data.get("services", {})
@@ -855,48 +855,7 @@ def extract_from_docker_config() -> List[Dict]:
         except Exception as e:
             pass
 
-    # fly.toml
-    fly_path = BASE_DIR / "fly.toml"
-    if fly_path.exists():
-        try:
-            content = fly_path.read_text(encoding='utf-8')
-
-            app_match = re.search(r"app\s*=\s*'([^']+)'", content)
-            if app_match:
-                examples.append({
-                    "prompt": "What is the Fly.io app name?",
-                    "completion": f"Fly.io app: {app_match.group(1)}",
-                    "category": "deployment",
-                    "importance": 0.85,
-                    "difficulty": 0.4
-                })
-
-            region_match = re.search(r"primary_region\s*=\s*'([^']+)'", content)
-            if region_match:
-                examples.append({
-                    "prompt": "What is the L104 primary deployment region?",
-                    "completion": f"L104 primary region: {region_match.group(1)}",
-                    "category": "deployment",
-                    "importance": 0.8,
-                    "difficulty": 0.3
-                })
-
-            # Extract env vars
-            env_matches = re.findall(r"(\w+)\s*=\s*'([^']+)'", content)
-            for k, v in env_matches:
-                if k not in ['app', 'primary_region']:
-                    examples.append({
-                        "prompt": f"What is the Fly.io {k} setting?",
-                        "completion": f"Fly.io {k}={v}",
-                        "category": "deployment",
-                        "importance": 0.75,
-                        "difficulty": 0.4
-                    })
-
-        except Exception as e:
-            pass
-
-    print(f"  ✓ Extracted {len(examples)} from Docker/Fly configs")
+    print(f"  ✓ Extracted {len(examples)} from Docker configs")
     return examples
 
 
@@ -4288,7 +4247,7 @@ def store_upgrade_state(training_count: int, updated_count: int, upgrades: List[
 
     # Save local report
     report_path = BASE_DIR / "kernel_upgrade_report.json"
-    with open(report_path, 'w') as f:
+    with open(report_path, 'w', encoding='utf-8') as f:
         json.dump(state, f, indent=2)
     print(f"  ✓ Report saved: {report_path}")
 

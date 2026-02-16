@@ -7,7 +7,7 @@ import os
 path = os.path.expanduser("~/Library/Application Support/L104Sovereign/permanent_memory.json")
 
 print("Loading permanent memory...")
-with open(path, 'r') as f:
+with open(path, 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 total_removed = 0
@@ -45,7 +45,7 @@ if 'history' in data and isinstance(data['history'], list):
         total_removed += removed
 
 if total_removed > 0:
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
     print(f"\nTotal removed: {total_removed} corrupted entries")
     print("Permanent memory cleaned and saved!")
@@ -53,7 +53,7 @@ else:
     print("No corrupted entries found")
 
 # Verify
-with open(path, 'r') as f:
+with open(path, 'r', encoding='utf-8') as f:
     content = f.read()
 count = content.count('storyHeaders')
 print(f"\nVerification: {count} storyHeaders occurrences remaining")

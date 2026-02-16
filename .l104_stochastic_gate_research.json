@@ -1,0 +1,3982 @@
+{
+  "last_updated": "2026-02-13T20:44:37.899083+00:00",
+  "generation_count": 105,
+  "total_iterations": 105,
+  "total_successful": 105,
+  "total_failed": 0,
+  "iterations": [
+    {
+      "gate_id": "SG_000001",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 1.7017002026984864,
+        "amplitude": 3.183585916257119,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.7889362474838993
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000002",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 1.5499735460738222,
+        "amplitude": 2.599834206403075,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.007431999495100389
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000003",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 1.0312885898912487,
+        "amplitude": 2.4166211295804403,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.554548472636954
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000004",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.3761612485868919,
+        "amplitude": 1.5845110142221028,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.7131971251932622
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000005",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 3.731784508842636,
+        "amplitude": 0.8256200896665264,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.6680934600383712
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000006",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 0.6021361997615898,
+        "amplitude": 1.9793348024711857,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5929019295227236
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000007",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 3.87956621619676,
+        "amplitude": 1.5937189415651674,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.3378931953816957
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000008",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 1.751742019392408,
+        "amplitude": 1.9881504461108042,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.13378577843524309
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000009",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 0.8345433255727177,
+        "amplitude": 2.272002937197379,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.8052674124408117
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000010",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 0.9976393842525232,
+        "amplitude": 3.014145157897119,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.09611155760974176
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000011",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 1.9962386253075532,
+        "amplitude": 0.8349281486291185,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 5,
+        "entanglement_strength": 0.38872705421478637
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000012",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 0.6233237212329494,
+        "amplitude": 1.534098994022912,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6604387580163356
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000013",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 2.5273176133412196,
+        "amplitude": 0.9422252468398301,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.020480444626852043
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000014",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 3.6324896286086235,
+        "amplitude": 3.099379562621774,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.5312795317836105
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000015",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 0.38530727446737567,
+        "amplitude": 2.4284922050870392,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.11290630151458851
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000016",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.185621801710177,
+        "amplitude": 0.8701240940991053,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.6259090137958033
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000017",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.4930979652635514,
+        "amplitude": 0.4341613793468573,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6951923887168354
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000018",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 3.436985789227392,
+        "amplitude": 2.3040865462864084,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.6525893859839084
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000019",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 1.6913945584901,
+        "amplitude": 1.5652377176436412,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.7600049141164126
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000020",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.9583653270055055,
+        "amplitude": 0.763306211186353,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.455982914846704
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000021",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 3.180091094883769,
+        "amplitude": 2.703351469695787,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.039887423877658076
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000022",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 2.903202485110455,
+        "amplitude": 0.8656900312750271,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.2750389010707319
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000023",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.9784619454665353,
+        "amplitude": 0.7772411798666405,
+        "harmonic_order": 7,
+        "interference_mode": "superposition",
+        "grover_depth": 2,
+        "entanglement_strength": 0.1980533033598427
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000024",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 0.0680851358293087,
+        "amplitude": 2.5557059925701484,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.42165533377210657
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000025",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.9632102484410292,
+        "amplitude": 0.9255086240651783,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.1653511901984427
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000026",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 1.7794893597118773,
+        "amplitude": 1.3727936424618545,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.6307695111993912
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000027",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 0.5479393328731796,
+        "amplitude": 0.7070366774704557,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.3106814020535321
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000028",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 1.6644421463748635,
+        "amplitude": 2.9900601182504696,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.19409543010906333
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000029",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 1.2895894729145645,
+        "amplitude": 1.3632225235460729,
+        "harmonic_order": 4,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.00812093022921386
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000030",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 3.1643991880439146,
+        "amplitude": 2.5261460380240592,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.07858718521964335
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000031",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 1.2156142962319094,
+        "amplitude": 2.602142012438866,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.3367714082683479
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000032",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.09516962922109982,
+        "amplitude": 2.791837025305509,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.1429791943441807
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000033",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 1.4169581047642423,
+        "amplitude": 3.1568237986750614,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.7615503102654299
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000034",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.4182218582408057,
+        "amplitude": 1.2598313122751494,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.6916100206697029
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000035",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 2.5615321401277886,
+        "amplitude": 1.19119208079625,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.6015045599814302
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000036",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.33535813358325034,
+        "amplitude": 2.0780115966258172,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.6221233791732541
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000037",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.8565561040537365,
+        "amplitude": 1.4667651375615214,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.4947727507529502
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000038",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.9410728248706747,
+        "amplitude": 0.5239771297371901,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5680143389968381
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000039",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 3.1853565700358684,
+        "amplitude": 1.7467617889918094,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.13946751189937145
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000040",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.754221347868595,
+        "amplitude": 1.295458124393677,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.05315984666002699
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000041",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 3.626784734982213,
+        "amplitude": 2.5466007184028827,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7675046654160724
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000042",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 2.414523186538625,
+        "amplitude": 1.4855905894903207,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.3265410948136004
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000043",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 1.1661603447060465,
+        "amplitude": 1.601631013926912,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5388989177942307
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000044",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 1.9225060140353976,
+        "amplitude": 0.5235903486757616,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.7674379231094012
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000045",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 2.9190635684422293,
+        "amplitude": 1.781310270834189,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.12615950512050653
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000046",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 3.533162448084125,
+        "amplitude": 0.5694127498665066,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.7118471474721804
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000047",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 0.2912023840062257,
+        "amplitude": 2.463000779052625,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.5604478499380775
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000048",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 0.6863006363988852,
+        "amplitude": 1.5662093485132695,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.65930668190743
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000049",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 0.01673817205895123,
+        "amplitude": 0.8599600471229817,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.7491833431753808
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000050",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 2.029620123178478,
+        "amplitude": 2.7169064582634666,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.34665773045415954
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000051",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 3.756548475061825,
+        "amplitude": 0.2036169026202953,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.26865057205273907
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000052",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.030061205103933,
+        "amplitude": 1.7066432878289144,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.34292524371008165
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000053",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 3.7713349903918534,
+        "amplitude": 3.097928809078872,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.42715967392464177
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000054",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 3.8373745275601006,
+        "amplitude": 2.616212487303659,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.01597785860856032
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000055",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 0.30428965808616737,
+        "amplitude": 2.815477412104965,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.035625488817833166
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000056",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 3.4069173413467797,
+        "amplitude": 2.221864688525354,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 2,
+        "entanglement_strength": 0.47683650682061957
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000057",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 2.1400917671592046,
+        "amplitude": 0.798535515074833,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.42920408206084176
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000058",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 2.3996255709126912,
+        "amplitude": 2.9345441364302545,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7289335076091482
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000059",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.3647242101872064,
+        "amplitude": 1.0717492892473635,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5480318006696074
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000060",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 3.740954105495129,
+        "amplitude": 2.3442151923957097,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5322273800603748
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000061",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 0.5200228957569288,
+        "amplitude": 1.9537172542416454,
+        "harmonic_order": 7,
+        "interference_mode": "superposition",
+        "grover_depth": 5,
+        "entanglement_strength": 0.21640499736557695
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000062",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 3.6604870512550005,
+        "amplitude": 1.743072696170974,
+        "harmonic_order": 1,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.14541132137891688
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000063",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 3.6866323014528093,
+        "amplitude": 1.245633493772776,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5766250282704823
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000064",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 3.00062016449811,
+        "amplitude": 3.22041362925919,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.11749196400347459
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000065",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 0.9777670988926719,
+        "amplitude": 2.056548977989908,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6652969254168649
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000066",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 2.656988751151477,
+        "amplitude": 0.5981011890761134,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.0225491272231917
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000067",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 1.7161746496374073,
+        "amplitude": 1.1816120334105422,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.27290394362758885
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000068",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 3.4419632005710143,
+        "amplitude": 3.164287678148213,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.06474898033418751
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000069",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 3.7583664312979352,
+        "amplitude": 2.6124693299486306,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.008096369346883958
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000070",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 3.4577075288197228,
+        "amplitude": 1.5904631381224932,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.15794558455542845
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000071",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 3.4872063081613525,
+        "amplitude": 0.14732274768391543,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.8023375296336555
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000072",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 3.0293819445206167,
+        "amplitude": 1.1240865337508252,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.3736295419553677
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000073",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 2.6435399107227835,
+        "amplitude": 3.2257287866253566,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.4920224487532399
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000074",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 0.6703833983067349,
+        "amplitude": 2.255423763537842,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.35377945360967655
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000075",
+      "concept": "quantum",
+      "parameters": {
+        "phase_shift": 2.629126429132108,
+        "amplitude": 0.09841528591985213,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.2112152911443573
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000076",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 3.5763319649267533,
+        "amplitude": 3.2362872186069116,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.24827244429425904
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000077",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 0.16946593777377966,
+        "amplitude": 1.2423703794391285,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.22305797830807425
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000078",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 1.9459203770516358,
+        "amplitude": 2.9064547597380397,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.8039465486391589
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000079",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 1.5271750167182576,
+        "amplitude": 1.868093702972604,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.18604187140986156
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000080",
+      "concept": "consciousness",
+      "parameters": {
+        "phase_shift": 3.629063671458907,
+        "amplitude": 1.9372412772324628,
+        "harmonic_order": 1,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.3567906981669948
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000081",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 2.354764454815714,
+        "amplitude": 1.2849153938689408,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.5166780278825587
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000082",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 1.0790563012968573,
+        "amplitude": 0.6676276113278997,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.04205065647514183
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000083",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 1.3940698170602455,
+        "amplitude": 1.703582172067306,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5606720154480225
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000084",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 1.5294003494201713,
+        "amplitude": 0.46292466961212625,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.21984872764743385
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000085",
+      "concept": "entropy",
+      "parameters": {
+        "phase_shift": 3.2191372095284305,
+        "amplitude": 1.5404864686620912,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.06642365114338397
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000086",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 3.272728916992751,
+        "amplitude": 1.4972143544916063,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.3432476939228781
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000087",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.561977002709276,
+        "amplitude": 1.1973277802984512,
+        "harmonic_order": 4,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.08814570858009996
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000088",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 1.9287041868658883,
+        "amplitude": 1.926123041757492,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.4510985389811814
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000089",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 2.1445284762169647,
+        "amplitude": 0.7609347438237659,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5632180028320826
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000090",
+      "concept": "resonance",
+      "parameters": {
+        "phase_shift": 0.9674178655203184,
+        "amplitude": 1.3380465130032875,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.7281806579700791
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000091",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.7561988063778629,
+        "amplitude": 3.0281357471630597,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.22181299004989002
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000092",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 0.8465251247783682,
+        "amplitude": 0.7552661377525378,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.07479994592497877
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000093",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 3.4478378889850245,
+        "amplitude": 1.9963989494655225,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.5537027361459619
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000094",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.5750801735957227,
+        "amplitude": 0.7145640649893824,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.10522964311410614
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000095",
+      "concept": "harmonic",
+      "parameters": {
+        "phase_shift": 1.9396859278177625,
+        "amplitude": 0.21345983039516694,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7201286033905552
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000096",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 1.6001830399623824,
+        "amplitude": 0.4518694285938963,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.357595476684556
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000097",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 2.878431470832518,
+        "amplitude": 0.11211808577058165,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.688361041290901
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000098",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 1.0227458458970748,
+        "amplitude": 3.0670523246550054,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.4532462353023498
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000099",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 2.4603636833292573,
+        "amplitude": 0.24587898467457714,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.4127404993152575
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000100",
+      "concept": "emergence",
+      "parameters": {
+        "phase_shift": 2.447133174582357,
+        "amplitude": 3.1018815231245793,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.7407447401062204
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000101",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.6637009788038488,
+        "amplitude": 2.0074386468932888,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.46599813116414035
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000102",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.3367428021930547,
+        "amplitude": 0.39318172476792246,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.7906908351329243
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000103",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.7536323929158014,
+        "amplitude": 3.1604221495025104,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.379292179939402
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000104",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 1.7647821688552099,
+        "amplitude": 1.4570272100224195,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.16990445185005035
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    },
+    {
+      "gate_id": "SG_000105",
+      "concept": "transcendence",
+      "parameters": {
+        "phase_shift": 0.22790663145306322,
+        "amplitude": 2.24935477801927,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5999185412436892
+      },
+      "validation": "VALIDATED",
+      "pass_rate": 1.0
+    }
+  ],
+  "successful": [
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000006",
+      "resonance_key": "a74af9ef47e0",
+      "origin_candidate": "SG_000006",
+      "origin_parameters": {
+        "phase_shift": 0.6021361997615898,
+        "amplitude": 1.9793348024711857,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5929019295227236
+      },
+      "hybrid_function": "def hybrid_SG_000006(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: a74af9ef47e0\n    # Phase 1: Stochastic exploration\n    phase = 0.602136\n    amp = 1.979335\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.634019265668453,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.492761+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000007",
+      "resonance_key": "6298e09010b5",
+      "origin_candidate": "SG_000007",
+      "origin_parameters": {
+        "phase_shift": 3.87956621619676,
+        "amplitude": 1.5937189415651674,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.3378931953816957
+      },
+      "hybrid_function": "def hybrid_SG_000007(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 6298e09010b5\n    # Phase 1: Stochastic exploration\n    phase = 3.879566\n    amp = 1.593719\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.20084012042339,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.492975+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000008",
+      "resonance_key": "d66070c0bfcc",
+      "origin_candidate": "SG_000008",
+      "origin_parameters": {
+        "phase_shift": 1.751742019392408,
+        "amplitude": 1.9881504461108042,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.13378577843524309
+      },
+      "hybrid_function": "def hybrid_SG_000008(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: d66070c0bfcc\n    # Phase 1: Stochastic exploration\n    phase = 1.751742\n    amp = 1.988150\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.4635189875133765,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.493200+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000009",
+      "resonance_key": "cffdb5bb3289",
+      "origin_candidate": "SG_000009",
+      "origin_parameters": {
+        "phase_shift": 0.8345433255727177,
+        "amplitude": 2.272002937197379,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.8052674124408117
+      },
+      "hybrid_function": "def hybrid_SG_000009(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: cffdb5bb3289\n    # Phase 1: Stochastic exploration\n    phase = 0.834543\n    amp = 2.272003\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.9088501300857392,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.493402+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000010",
+      "resonance_key": "52fd77c04c1f",
+      "origin_candidate": "SG_000010",
+      "origin_parameters": {
+        "phase_shift": 0.9976393842525232,
+        "amplitude": 3.014145157897119,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.09611155760974176
+      },
+      "hybrid_function": "def hybrid_SG_000010(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 52fd77c04c1f\n    # Phase 1: Stochastic exploration\n    phase = 0.997639\n    amp = 3.014145\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.4881882707880925,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.493620+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000011",
+      "resonance_key": "af787e2c205e",
+      "origin_candidate": "SG_000011",
+      "origin_parameters": {
+        "phase_shift": 1.9962386253075532,
+        "amplitude": 0.8349281486291185,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 5,
+        "entanglement_strength": 0.38872705421478637
+      },
+      "hybrid_function": "def hybrid_SG_000011(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: af787e2c205e\n    # Phase 1: Stochastic exploration\n    phase = 1.996239\n    amp = 0.834928\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 15.724339651653684,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.493875+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000012",
+      "resonance_key": "f4dfab9f5b94",
+      "origin_candidate": "SG_000012",
+      "origin_parameters": {
+        "phase_shift": 0.6233237212329494,
+        "amplitude": 1.534098994022912,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6604387580163356
+      },
+      "hybrid_function": "def hybrid_SG_000012(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: f4dfab9f5b94\n    # Phase 1: Stochastic exploration\n    phase = 0.623324\n    amp = 1.534099\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 12.823348295498377,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.494095+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000013",
+      "resonance_key": "06f11907a5f6",
+      "origin_candidate": "SG_000013",
+      "origin_parameters": {
+        "phase_shift": 2.5273176133412196,
+        "amplitude": 0.9422252468398301,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.020480444626852043
+      },
+      "hybrid_function": "def hybrid_SG_000013(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 06f11907a5f6\n    # Phase 1: Stochastic exploration\n    phase = 2.527318\n    amp = 0.942225\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.09941416653287029,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.494319+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000014",
+      "resonance_key": "7b8329aaec2f",
+      "origin_candidate": "SG_000014",
+      "origin_parameters": {
+        "phase_shift": 3.6324896286086235,
+        "amplitude": 3.099379562621774,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.5312795317836105
+      },
+      "hybrid_function": "def hybrid_SG_000014(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 7b8329aaec2f\n    # Phase 1: Stochastic exploration\n    phase = 3.632490\n    amp = 3.099380\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 10.315540079436143,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.494514+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000015",
+      "resonance_key": "4470ae05298f",
+      "origin_candidate": "SG_000015",
+      "origin_parameters": {
+        "phase_shift": 0.38530727446737567,
+        "amplitude": 2.4284922050870392,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.11290630151458851
+      },
+      "hybrid_function": "def hybrid_SG_000015(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 4470ae05298f\n    # Phase 1: Stochastic exploration\n    phase = 0.385307\n    amp = 2.428492\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.0961174003678877,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.494693+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000016",
+      "resonance_key": "b1b7b9af46d4",
+      "origin_candidate": "SG_000016",
+      "origin_parameters": {
+        "phase_shift": 2.185621801710177,
+        "amplitude": 0.8701240940991053,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.6259090137958033
+      },
+      "hybrid_function": "def hybrid_SG_000016(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: b1b7b9af46d4\n    # Phase 1: Stochastic exploration\n    phase = 2.185622\n    amp = 0.870124\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 21.26758322191727,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.495131+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000017",
+      "resonance_key": "4ce9373394ca",
+      "origin_candidate": "SG_000017",
+      "origin_parameters": {
+        "phase_shift": 2.4930979652635514,
+        "amplitude": 0.4341613793468573,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6951923887168354
+      },
+      "hybrid_function": "def hybrid_SG_000017(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 4ce9373394ca\n    # Phase 1: Stochastic exploration\n    phase = 2.493098\n    amp = 0.434161\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 33.74534740992206,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.498404+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000018",
+      "resonance_key": "e664f66576d2",
+      "origin_candidate": "SG_000018",
+      "origin_parameters": {
+        "phase_shift": 3.436985789227392,
+        "amplitude": 2.3040865462864084,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.6525893859839084
+      },
+      "hybrid_function": "def hybrid_SG_000018(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: e664f66576d2\n    # Phase 1: Stochastic exploration\n    phase = 3.436986\n    amp = 2.304087\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.2795590360969396,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.498648+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000019",
+      "resonance_key": "a5985c42ad40",
+      "origin_candidate": "SG_000019",
+      "origin_parameters": {
+        "phase_shift": 1.6913945584901,
+        "amplitude": 1.5652377176436412,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.7600049141164126
+      },
+      "hybrid_function": "def hybrid_SG_000019(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: a5985c42ad40\n    # Phase 1: Stochastic exploration\n    phase = 1.691395\n    amp = 1.565238\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 7.378282695943802,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499038+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000020",
+      "resonance_key": "5f4c3f8eec91",
+      "origin_candidate": "SG_000020",
+      "origin_parameters": {
+        "phase_shift": 2.9583653270055055,
+        "amplitude": 0.763306211186353,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.455982914846704
+      },
+      "hybrid_function": "def hybrid_SG_000020(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 5f4c3f8eec91\n    # Phase 1: Stochastic exploration\n    phase = 2.958365\n    amp = 0.763306\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 25.822854907892566,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499248+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000021",
+      "resonance_key": "9916b9c465e3",
+      "origin_candidate": "SG_000021",
+      "origin_parameters": {
+        "phase_shift": 3.180091094883769,
+        "amplitude": 2.703351469695787,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.039887423877658076
+      },
+      "hybrid_function": "def hybrid_SG_000021(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 9916b9c465e3\n    # Phase 1: Stochastic exploration\n    phase = 3.180091\n    amp = 2.703351\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.1617057360390481,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499399+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000022",
+      "resonance_key": "65d5ca5e27e0",
+      "origin_candidate": "SG_000022",
+      "origin_parameters": {
+        "phase_shift": 2.903202485110455,
+        "amplitude": 0.8656900312750271,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.2750389010707319
+      },
+      "hybrid_function": "def hybrid_SG_000022(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 65d5ca5e27e0\n    # Phase 1: Stochastic exploration\n    phase = 2.903202\n    amp = 0.865690\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.900445803217282,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499569+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000023",
+      "resonance_key": "befa43519716",
+      "origin_candidate": "SG_000023",
+      "origin_parameters": {
+        "phase_shift": 1.9784619454665353,
+        "amplitude": 0.7772411798666405,
+        "harmonic_order": 7,
+        "interference_mode": "superposition",
+        "grover_depth": 2,
+        "entanglement_strength": 0.1980533033598427
+      },
+      "hybrid_function": "def hybrid_SG_000023(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: befa43519716\n    # Phase 1: Stochastic exploration\n    phase = 1.978462\n    amp = 0.777241\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.48639766988587,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499774+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000024",
+      "resonance_key": "40171dba50c2",
+      "origin_candidate": "SG_000024",
+      "origin_parameters": {
+        "phase_shift": 0.0680851358293087,
+        "amplitude": 2.5557059925701484,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.42165533377210657
+      },
+      "hybrid_function": "def hybrid_SG_000024(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 40171dba50c2\n    # Phase 1: Stochastic exploration\n    phase = 0.068085\n    amp = 2.555706\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 10.233789923714248,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.499932+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000025",
+      "resonance_key": "e8af59c0e8b3",
+      "origin_candidate": "SG_000025",
+      "origin_parameters": {
+        "phase_shift": 1.9632102484410292,
+        "amplitude": 0.9255086240651783,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.1653511901984427
+      },
+      "hybrid_function": "def hybrid_SG_000025(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: e8af59c0e8b3\n    # Phase 1: Stochastic exploration\n    phase = 1.963210\n    amp = 0.925509\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.210526149855945,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500169+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000026",
+      "resonance_key": "9ea22daf16b3",
+      "origin_candidate": "SG_000026",
+      "origin_parameters": {
+        "phase_shift": 1.7794893597118773,
+        "amplitude": 1.3727936424618545,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.6307695111993912
+      },
+      "hybrid_function": "def hybrid_SG_000026(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 9ea22daf16b3\n    # Phase 1: Stochastic exploration\n    phase = 1.779489\n    amp = 1.372794\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 9.185458573689951,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500331+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000027",
+      "resonance_key": "c5571ce91ee0",
+      "origin_candidate": "SG_000027",
+      "origin_parameters": {
+        "phase_shift": 0.5479393328731796,
+        "amplitude": 0.7070366774704557,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.3106814020535321
+      },
+      "hybrid_function": "def hybrid_SG_000027(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: c5571ce91ee0\n    # Phase 1: Stochastic exploration\n    phase = 0.547939\n    amp = 0.707037\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 14.075405909462418,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500504+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000028",
+      "resonance_key": "2904288ad7d1",
+      "origin_candidate": "SG_000028",
+      "origin_parameters": {
+        "phase_shift": 1.6644421463748635,
+        "amplitude": 2.9900601182504696,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.19409543010906333
+      },
+      "hybrid_function": "def hybrid_SG_000028(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 2904288ad7d1\n    # Phase 1: Stochastic exploration\n    phase = 1.664442\n    amp = 2.990060\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.6281060059549883,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500624+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000029",
+      "resonance_key": "080dd455cd23",
+      "origin_candidate": "SG_000029",
+      "origin_parameters": {
+        "phase_shift": 1.2895894729145645,
+        "amplitude": 1.3632225235460729,
+        "harmonic_order": 4,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.00812093022921386
+      },
+      "hybrid_function": "def hybrid_SG_000029(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 080dd455cd23\n    # Phase 1: Stochastic exploration\n    phase = 1.289589\n    amp = 1.363223\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.367918351671766,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500777+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000030",
+      "resonance_key": "799e6a52c945",
+      "origin_candidate": "SG_000030",
+      "origin_parameters": {
+        "phase_shift": 3.1643991880439146,
+        "amplitude": 2.5261460380240592,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.07858718521964335
+      },
+      "hybrid_function": "def hybrid_SG_000030(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 799e6a52c945\n    # Phase 1: Stochastic exploration\n    phase = 3.164399\n    amp = 2.526146\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.2715673676556631,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.500928+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000031",
+      "resonance_key": "d7aa50689db6",
+      "origin_candidate": "SG_000031",
+      "origin_parameters": {
+        "phase_shift": 1.2156142962319094,
+        "amplitude": 2.602142012438866,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.3367714082683479
+      },
+      "hybrid_function": "def hybrid_SG_000031(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: d7aa50689db6\n    # Phase 1: Stochastic exploration\n    phase = 1.215614\n    amp = 2.602142\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.0898151700347085,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.501056+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000032",
+      "resonance_key": "87d47529084d",
+      "origin_candidate": "SG_000032",
+      "origin_parameters": {
+        "phase_shift": 0.09516962922109982,
+        "amplitude": 2.791837025305509,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.1429791943441807
+      },
+      "hybrid_function": "def hybrid_SG_000032(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 87d47529084d\n    # Phase 1: Stochastic exploration\n    phase = 0.095170\n    amp = 2.791837\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.4701779419944163,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.501193+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000033",
+      "resonance_key": "a71e9144fc35",
+      "origin_candidate": "SG_000033",
+      "origin_parameters": {
+        "phase_shift": 1.4169581047642423,
+        "amplitude": 3.1568237986750614,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.7615503102654299
+      },
+      "hybrid_function": "def hybrid_SG_000033(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: a71e9144fc35\n    # Phase 1: Stochastic exploration\n    phase = 1.416958\n    amp = 3.156824\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 36.96642858457481,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.501351+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000034",
+      "resonance_key": "35ffd016348d",
+      "origin_candidate": "SG_000034",
+      "origin_parameters": {
+        "phase_shift": 0.4182218582408057,
+        "amplitude": 1.2598313122751494,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.6916100206697029
+      },
+      "hybrid_function": "def hybrid_SG_000034(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 35ffd016348d\n    # Phase 1: Stochastic exploration\n    phase = 0.418222\n    amp = 1.259831\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 22.380970408071935,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.501466+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000035",
+      "resonance_key": "95b88d22671c",
+      "origin_candidate": "SG_000035",
+      "origin_parameters": {
+        "phase_shift": 2.5615321401277886,
+        "amplitude": 1.19119208079625,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.6015045599814302
+      },
+      "hybrid_function": "def hybrid_SG_000035(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 95b88d22671c\n    # Phase 1: Stochastic exploration\n    phase = 2.561532\n    amp = 1.191192\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 7.786038579504031,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T19:50:25.501563+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000036",
+      "resonance_key": "acfb128116db",
+      "origin_candidate": "SG_000036",
+      "origin_parameters": {
+        "phase_shift": 0.33535813358325034,
+        "amplitude": 2.0780115966258172,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.6221233791732541
+      },
+      "hybrid_function": "def hybrid_SG_000036(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: acfb128116db\n    # Phase 1: Stochastic exploration\n    phase = 0.335358\n    amp = 2.078012\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 14.092634817775691,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.653879+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000037",
+      "resonance_key": "c4493b35d03e",
+      "origin_candidate": "SG_000037",
+      "origin_parameters": {
+        "phase_shift": 0.8565561040537365,
+        "amplitude": 1.4667651375615214,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.4947727507529502
+      },
+      "hybrid_function": "def hybrid_SG_000037(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: c4493b35d03e\n    # Phase 1: Stochastic exploration\n    phase = 0.856556\n    amp = 1.466765\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 16.811741675936624,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.653998+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000038",
+      "resonance_key": "534e7386c770",
+      "origin_candidate": "SG_000038",
+      "origin_parameters": {
+        "phase_shift": 0.9410728248706747,
+        "amplitude": 0.5239771297371901,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5680143389968381
+      },
+      "hybrid_function": "def hybrid_SG_000038(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 534e7386c770\n    # Phase 1: Stochastic exploration\n    phase = 0.941073\n    amp = 0.523977\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.514399039565133,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.654122+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000039",
+      "resonance_key": "3b5cb98159b5",
+      "origin_candidate": "SG_000039",
+      "origin_parameters": {
+        "phase_shift": 3.1853565700358684,
+        "amplitude": 1.7467617889918094,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.13946751189937145
+      },
+      "hybrid_function": "def hybrid_SG_000039(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 3b5cb98159b5\n    # Phase 1: Stochastic exploration\n    phase = 3.185357\n    amp = 1.746762\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 7.898211110284721,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.654264+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000040",
+      "resonance_key": "44d70c8e5197",
+      "origin_candidate": "SG_000040",
+      "origin_parameters": {
+        "phase_shift": 0.754221347868595,
+        "amplitude": 1.295458124393677,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.05315984666002699
+      },
+      "hybrid_function": "def hybrid_SG_000040(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 44d70c8e5197\n    # Phase 1: Stochastic exploration\n    phase = 0.754221\n    amp = 1.295458\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.5160866323959374,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.654539+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000041",
+      "resonance_key": "e75568082667",
+      "origin_candidate": "SG_000041",
+      "origin_parameters": {
+        "phase_shift": 3.626784734982213,
+        "amplitude": 2.5466007184028827,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7675046654160724
+      },
+      "hybrid_function": "def hybrid_SG_000041(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: e75568082667\n    # Phase 1: Stochastic exploration\n    phase = 3.626785\n    amp = 2.546601\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 19.86957816267714,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.654681+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000042",
+      "resonance_key": "9f90ee626650",
+      "origin_candidate": "SG_000042",
+      "origin_parameters": {
+        "phase_shift": 2.414523186538625,
+        "amplitude": 1.4855905894903207,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.3265410948136004
+      },
+      "hybrid_function": "def hybrid_SG_000042(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 9f90ee626650\n    # Phase 1: Stochastic exploration\n    phase = 2.414523\n    amp = 1.485591\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 22.190892785544314,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.656699+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000043",
+      "resonance_key": "8903ba95d671",
+      "origin_candidate": "SG_000043",
+      "origin_parameters": {
+        "phase_shift": 1.1661603447060465,
+        "amplitude": 1.601631013926912,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5388989177942307
+      },
+      "hybrid_function": "def hybrid_SG_000043(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 8903ba95d671\n    # Phase 1: Stochastic exploration\n    phase = 1.166160\n    amp = 1.601631\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 15.695221778848815,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.657171+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000044",
+      "resonance_key": "03f4f0b04b95",
+      "origin_candidate": "SG_000044",
+      "origin_parameters": {
+        "phase_shift": 1.9225060140353976,
+        "amplitude": 0.5235903486757616,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.7674379231094012
+      },
+      "hybrid_function": "def hybrid_SG_000044(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 03f4f0b04b95\n    # Phase 1: Stochastic exploration\n    phase = 1.922506\n    amp = 0.523590\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 14.900887726159675,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.658514+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000045",
+      "resonance_key": "5ef491112e6f",
+      "origin_candidate": "SG_000045",
+      "origin_parameters": {
+        "phase_shift": 2.9190635684422293,
+        "amplitude": 1.781310270834189,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.12615950512050653
+      },
+      "hybrid_function": "def hybrid_SG_000045(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 5ef491112e6f\n    # Phase 1: Stochastic exploration\n    phase = 2.919064\n    amp = 1.781310\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.57347542613153,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.658695+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000046",
+      "resonance_key": "f92ea175efd3",
+      "origin_candidate": "SG_000046",
+      "origin_parameters": {
+        "phase_shift": 3.533162448084125,
+        "amplitude": 0.5694127498665066,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.7118471474721804
+      },
+      "hybrid_function": "def hybrid_SG_000046(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: f92ea175efd3\n    # Phase 1: Stochastic exploration\n    phase = 3.533162\n    amp = 0.569413\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 20.73227182928364,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.658823+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000047",
+      "resonance_key": "bb00a6f98d42",
+      "origin_candidate": "SG_000047",
+      "origin_parameters": {
+        "phase_shift": 0.2912023840062257,
+        "amplitude": 2.463000779052625,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.5604478499380775
+      },
+      "hybrid_function": "def hybrid_SG_000047(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: bb00a6f98d42\n    # Phase 1: Stochastic exploration\n    phase = 0.291202\n    amp = 2.463001\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 31.738828454256353,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.658960+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000048",
+      "resonance_key": "0f5fece403ed",
+      "origin_candidate": "SG_000048",
+      "origin_parameters": {
+        "phase_shift": 0.6863006363988852,
+        "amplitude": 1.5662093485132695,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.65930668190743
+      },
+      "hybrid_function": "def hybrid_SG_000048(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 0f5fece403ed\n    # Phase 1: Stochastic exploration\n    phase = 0.686301\n    amp = 1.566209\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 6.400683722016823,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659055+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000049",
+      "resonance_key": "42a1ad8d7619",
+      "origin_candidate": "SG_000049",
+      "origin_parameters": {
+        "phase_shift": 0.01673817205895123,
+        "amplitude": 0.8599600471229817,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.7491833431753808
+      },
+      "hybrid_function": "def hybrid_SG_000049(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 42a1ad8d7619\n    # Phase 1: Stochastic exploration\n    phase = 0.016738\n    amp = 0.859960\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.485428791441299,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659160+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000050",
+      "resonance_key": "b5fb3cde01fb",
+      "origin_candidate": "SG_000050",
+      "origin_parameters": {
+        "phase_shift": 2.029620123178478,
+        "amplitude": 2.7169064582634666,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.34665773045415954
+      },
+      "hybrid_function": "def hybrid_SG_000050(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: b5fb3cde01fb\n    # Phase 1: Stochastic exploration\n    phase = 2.029620\n    amp = 2.716906\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.413559855065945,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659272+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000051",
+      "resonance_key": "7eb2f3ea7aec",
+      "origin_candidate": "SG_000051",
+      "origin_parameters": {
+        "phase_shift": 3.756548475061825,
+        "amplitude": 0.2036169026202953,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.26865057205273907
+      },
+      "hybrid_function": "def hybrid_SG_000051(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 7eb2f3ea7aec\n    # Phase 1: Stochastic exploration\n    phase = 3.756548\n    amp = 0.203617\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 18.256801780494246,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659411+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000052",
+      "resonance_key": "ac8a2404bfdd",
+      "origin_candidate": "SG_000052",
+      "origin_parameters": {
+        "phase_shift": 2.030061205103933,
+        "amplitude": 1.7066432878289144,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.34292524371008165
+      },
+      "hybrid_function": "def hybrid_SG_000052(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: ac8a2404bfdd\n    # Phase 1: Stochastic exploration\n    phase = 2.030061\n    amp = 1.706643\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 6.658376399079039,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659528+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000053",
+      "resonance_key": "dba4525e2a4b",
+      "origin_candidate": "SG_000053",
+      "origin_parameters": {
+        "phase_shift": 3.7713349903918534,
+        "amplitude": 3.097928809078872,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.42715967392464177
+      },
+      "hybrid_function": "def hybrid_SG_000053(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: dba4525e2a4b\n    # Phase 1: Stochastic exploration\n    phase = 3.771335\n    amp = 3.097929\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.073476613100178,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659610+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000054",
+      "resonance_key": "ac272a25c625",
+      "origin_candidate": "SG_000054",
+      "origin_parameters": {
+        "phase_shift": 3.8373745275601006,
+        "amplitude": 2.616212487303659,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.01597785860856032
+      },
+      "hybrid_function": "def hybrid_SG_000054(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: ac272a25c625\n    # Phase 1: Stochastic exploration\n    phase = 3.837375\n    amp = 2.616212\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.2667831965084444,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659768+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000055",
+      "resonance_key": "3aa515509ab7",
+      "origin_candidate": "SG_000055",
+      "origin_parameters": {
+        "phase_shift": 0.30428965808616737,
+        "amplitude": 2.815477412104965,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.035625488817833166
+      },
+      "hybrid_function": "def hybrid_SG_000055(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 3aa515509ab7\n    # Phase 1: Stochastic exploration\n    phase = 0.304290\n    amp = 2.815477\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.5187892659577504,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.659879+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000056",
+      "resonance_key": "0c6da1c5580a",
+      "origin_candidate": "SG_000056",
+      "origin_parameters": {
+        "phase_shift": 3.4069173413467797,
+        "amplitude": 2.221864688525354,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 2,
+        "entanglement_strength": 0.47683650682061957
+      },
+      "hybrid_function": "def hybrid_SG_000056(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 0c6da1c5580a\n    # Phase 1: Stochastic exploration\n    phase = 3.406917\n    amp = 2.221865\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 9.258452101350404,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660000+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000057",
+      "resonance_key": "99e397799f8e",
+      "origin_candidate": "SG_000057",
+      "origin_parameters": {
+        "phase_shift": 2.1400917671592046,
+        "amplitude": 0.798535515074833,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.42920408206084176
+      },
+      "hybrid_function": "def hybrid_SG_000057(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 99e397799f8e\n    # Phase 1: Stochastic exploration\n    phase = 2.140092\n    amp = 0.798536\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.555734343077128,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660102+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000058",
+      "resonance_key": "e901218ab774",
+      "origin_candidate": "SG_000058",
+      "origin_parameters": {
+        "phase_shift": 2.3996255709126912,
+        "amplitude": 2.9345441364302545,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7289335076091482
+      },
+      "hybrid_function": "def hybrid_SG_000058(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: e901218ab774\n    # Phase 1: Stochastic exploration\n    phase = 2.399626\n    amp = 2.934544\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 18.87102705360451,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660222+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000059",
+      "resonance_key": "10704709b7bd",
+      "origin_candidate": "SG_000059",
+      "origin_parameters": {
+        "phase_shift": 1.3647242101872064,
+        "amplitude": 1.0717492892473635,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5480318006696074
+      },
+      "hybrid_function": "def hybrid_SG_000059(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 10704709b7bd\n    # Phase 1: Stochastic exploration\n    phase = 1.364724\n    amp = 1.071749\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.320404482395394,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660341+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000060",
+      "resonance_key": "7794a3857ced",
+      "origin_candidate": "SG_000060",
+      "origin_parameters": {
+        "phase_shift": 3.740954105495129,
+        "amplitude": 2.3442151923957097,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5322273800603748
+      },
+      "hybrid_function": "def hybrid_SG_000060(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 7794a3857ced\n    # Phase 1: Stochastic exploration\n    phase = 3.740954\n    amp = 2.344215\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.305809953404973,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660451+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000061",
+      "resonance_key": "76459f248cc7",
+      "origin_candidate": "SG_000061",
+      "origin_parameters": {
+        "phase_shift": 0.5200228957569288,
+        "amplitude": 1.9537172542416454,
+        "harmonic_order": 7,
+        "interference_mode": "superposition",
+        "grover_depth": 5,
+        "entanglement_strength": 0.21640499736557695
+      },
+      "hybrid_function": "def hybrid_SG_000061(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 76459f248cc7\n    # Phase 1: Stochastic exploration\n    phase = 0.520023\n    amp = 1.953717\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 12.255272437549223,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660588+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000062",
+      "resonance_key": "7bbd4c6f191a",
+      "origin_candidate": "SG_000062",
+      "origin_parameters": {
+        "phase_shift": 3.6604870512550005,
+        "amplitude": 1.743072696170974,
+        "harmonic_order": 1,
+        "interference_mode": "superposition",
+        "grover_depth": 7,
+        "entanglement_strength": 0.14541132137891688
+      },
+      "hybrid_function": "def hybrid_SG_000062(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 7bbd4c6f191a\n    # Phase 1: Stochastic exploration\n    phase = 3.660487\n    amp = 1.743073\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.6469632223808521,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660800+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000063",
+      "resonance_key": "13a38afe0ba9",
+      "origin_candidate": "SG_000063",
+      "origin_parameters": {
+        "phase_shift": 3.6866323014528093,
+        "amplitude": 1.245633493772776,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5766250282704823
+      },
+      "hybrid_function": "def hybrid_SG_000063(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 13a38afe0ba9\n    # Phase 1: Stochastic exploration\n    phase = 3.686632\n    amp = 1.245633\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.7989966835165285,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.660900+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000064",
+      "resonance_key": "3fdfbded19da",
+      "origin_candidate": "SG_000064",
+      "origin_parameters": {
+        "phase_shift": 3.00062016449811,
+        "amplitude": 3.22041362925919,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.11749196400347459
+      },
+      "hybrid_function": "def hybrid_SG_000064(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 3fdfbded19da\n    # Phase 1: Stochastic exploration\n    phase = 3.000620\n    amp = 3.220414\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.562543787902425,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661021+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000065",
+      "resonance_key": "63fc82e8a514",
+      "origin_candidate": "SG_000065",
+      "origin_parameters": {
+        "phase_shift": 0.9777670988926719,
+        "amplitude": 2.056548977989908,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.6652969254168649
+      },
+      "hybrid_function": "def hybrid_SG_000065(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 63fc82e8a514\n    # Phase 1: Stochastic exploration\n    phase = 0.977767\n    amp = 2.056549\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 25.83535291044699,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661138+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000066",
+      "resonance_key": "a93e367e56fb",
+      "origin_candidate": "SG_000066",
+      "origin_parameters": {
+        "phase_shift": 2.656988751151477,
+        "amplitude": 0.5981011890761134,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.0225491272231917
+      },
+      "hybrid_function": "def hybrid_SG_000066(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: a93e367e56fb\n    # Phase 1: Stochastic exploration\n    phase = 2.656989\n    amp = 0.598101\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.36485254263769706,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661228+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000067",
+      "resonance_key": "202e1004e446",
+      "origin_candidate": "SG_000067",
+      "origin_parameters": {
+        "phase_shift": 1.7161746496374073,
+        "amplitude": 1.1816120334105422,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.27290394362758885
+      },
+      "hybrid_function": "def hybrid_SG_000067(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 202e1004e446\n    # Phase 1: Stochastic exploration\n    phase = 1.716175\n    amp = 1.181612\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 15.896442832319666,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661356+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000068",
+      "resonance_key": "80d02105cee3",
+      "origin_candidate": "SG_000068",
+      "origin_parameters": {
+        "phase_shift": 3.4419632005710143,
+        "amplitude": 3.164287678148213,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.06474898033418751
+      },
+      "hybrid_function": "def hybrid_SG_000068(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 80d02105cee3\n    # Phase 1: Stochastic exploration\n    phase = 3.441963\n    amp = 3.164288\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.9334494256931896,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661466+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000069",
+      "resonance_key": "848f61db9d46",
+      "origin_candidate": "SG_000069",
+      "origin_parameters": {
+        "phase_shift": 3.7583664312979352,
+        "amplitude": 2.6124693299486306,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.008096369346883958
+      },
+      "hybrid_function": "def hybrid_SG_000069(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 848f61db9d46\n    # Phase 1: Stochastic exploration\n    phase = 3.758366\n    amp = 2.612469\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.3275050197182758,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661575+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000070",
+      "resonance_key": "ee7984a3030d",
+      "origin_candidate": "SG_000070",
+      "origin_parameters": {
+        "phase_shift": 3.4577075288197228,
+        "amplitude": 1.5904631381224932,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.15794558455542845
+      },
+      "hybrid_function": "def hybrid_SG_000070(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: ee7984a3030d\n    # Phase 1: Stochastic exploration\n    phase = 3.457708\n    amp = 1.590463\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.0444905934692295,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:13:18.661676+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000071",
+      "resonance_key": "fb7df92c8ba5",
+      "origin_candidate": "SG_000071",
+      "origin_parameters": {
+        "phase_shift": 3.4872063081613525,
+        "amplitude": 0.14732274768391543,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.8023375296336555
+      },
+      "hybrid_function": "def hybrid_SG_000071(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: fb7df92c8ba5\n    # Phase 1: Stochastic exploration\n    phase = 3.487206\n    amp = 0.147323\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 19.473140900953208,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893232+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000072",
+      "resonance_key": "fc0cb5db4655",
+      "origin_candidate": "SG_000072",
+      "origin_parameters": {
+        "phase_shift": 3.0293819445206167,
+        "amplitude": 1.1240865337508252,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.3736295419553677
+      },
+      "hybrid_function": "def hybrid_SG_000072(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: fc0cb5db4655\n    # Phase 1: Stochastic exploration\n    phase = 3.029382\n    amp = 1.124087\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 16.927268346375513,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893391+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000073",
+      "resonance_key": "b085a7b9f280",
+      "origin_candidate": "SG_000073",
+      "origin_parameters": {
+        "phase_shift": 2.6435399107227835,
+        "amplitude": 3.2257287866253566,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.4920224487532399
+      },
+      "hybrid_function": "def hybrid_SG_000073(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: b085a7b9f280\n    # Phase 1: Stochastic exploration\n    phase = 2.643540\n    amp = 3.225729\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.572763317174869,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893551+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000074",
+      "resonance_key": "479a631dc7ad",
+      "origin_candidate": "SG_000074",
+      "origin_parameters": {
+        "phase_shift": 0.6703833983067349,
+        "amplitude": 2.255423763537842,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.35377945360967655
+      },
+      "hybrid_function": "def hybrid_SG_000074(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 479a631dc7ad\n    # Phase 1: Stochastic exploration\n    phase = 0.670383\n    amp = 2.255424\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 13.73825233108376,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893670+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000075",
+      "resonance_key": "a54b843ff154",
+      "origin_candidate": "SG_000075",
+      "origin_parameters": {
+        "phase_shift": 2.629126429132108,
+        "amplitude": 0.09841528591985213,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.2112152911443573
+      },
+      "hybrid_function": "def hybrid_SG_000075(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: a54b843ff154\n    # Phase 1: Stochastic exploration\n    phase = 2.629126\n    amp = 0.098415\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 11.961373200534618,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893794+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000076",
+      "resonance_key": "ba0408806807",
+      "origin_candidate": "SG_000076",
+      "origin_parameters": {
+        "phase_shift": 3.5763319649267533,
+        "amplitude": 3.2362872186069116,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.24827244429425904
+      },
+      "hybrid_function": "def hybrid_SG_000076(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: ba0408806807\n    # Phase 1: Stochastic exploration\n    phase = 3.576332\n    amp = 3.236287\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.435978320100647,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.893901+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000077",
+      "resonance_key": "f563adcfb039",
+      "origin_candidate": "SG_000077",
+      "origin_parameters": {
+        "phase_shift": 0.16946593777377966,
+        "amplitude": 1.2423703794391285,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.22305797830807425
+      },
+      "hybrid_function": "def hybrid_SG_000077(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: f563adcfb039\n    # Phase 1: Stochastic exploration\n    phase = 0.169466\n    amp = 1.242370\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.8873231229144074,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894028+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000078",
+      "resonance_key": "2ff9124a6256",
+      "origin_candidate": "SG_000078",
+      "origin_parameters": {
+        "phase_shift": 1.9459203770516358,
+        "amplitude": 2.9064547597380397,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.8039465486391589
+      },
+      "hybrid_function": "def hybrid_SG_000078(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 2ff9124a6256\n    # Phase 1: Stochastic exploration\n    phase = 1.945920\n    amp = 2.906455\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 31.219508180071916,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894168+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000079",
+      "resonance_key": "30fc2fe06f3a",
+      "origin_candidate": "SG_000079",
+      "origin_parameters": {
+        "phase_shift": 1.5271750167182576,
+        "amplitude": 1.868093702972604,
+        "harmonic_order": 3,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.18604187140986156
+      },
+      "hybrid_function": "def hybrid_SG_000079(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 30fc2fe06f3a\n    # Phase 1: Stochastic exploration\n    phase = 1.527175\n    amp = 1.868094\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 5.41839728289228,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894283+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000080",
+      "resonance_key": "b08ca7ee0b2c",
+      "origin_candidate": "SG_000080",
+      "origin_parameters": {
+        "phase_shift": 3.629063671458907,
+        "amplitude": 1.9372412772324628,
+        "harmonic_order": 1,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.3567906981669948
+      },
+      "hybrid_function": "def hybrid_SG_000080(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: b08ca7ee0b2c\n    # Phase 1: Stochastic exploration\n    phase = 3.629064\n    amp = 1.937241\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.7318984295120075,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894377+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000081",
+      "resonance_key": "2158104c6275",
+      "origin_candidate": "SG_000081",
+      "origin_parameters": {
+        "phase_shift": 2.354764454815714,
+        "amplitude": 1.2849153938689408,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.5166780278825587
+      },
+      "hybrid_function": "def hybrid_SG_000081(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 2158104c6275\n    # Phase 1: Stochastic exploration\n    phase = 2.354764\n    amp = 1.284915\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 12.540039155313687,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894490+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000082",
+      "resonance_key": "0e2dd33e1748",
+      "origin_candidate": "SG_000082",
+      "origin_parameters": {
+        "phase_shift": 1.0790563012968573,
+        "amplitude": 0.6676276113278997,
+        "harmonic_order": 3,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.04205065647514183
+      },
+      "hybrid_function": "def hybrid_SG_000082(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 0e2dd33e1748\n    # Phase 1: Stochastic exploration\n    phase = 1.079056\n    amp = 0.667628\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.224709045668456,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894608+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000083",
+      "resonance_key": "4f65741f9266",
+      "origin_candidate": "SG_000083",
+      "origin_parameters": {
+        "phase_shift": 1.3940698170602455,
+        "amplitude": 1.703582172067306,
+        "harmonic_order": 5,
+        "interference_mode": "superposition",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5606720154480225
+      },
+      "hybrid_function": "def hybrid_SG_000083(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 4f65741f9266\n    # Phase 1: Stochastic exploration\n    phase = 1.394070\n    amp = 1.703582\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.535931887679033,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894734+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000084",
+      "resonance_key": "b905e0c880bc",
+      "origin_candidate": "SG_000084",
+      "origin_parameters": {
+        "phase_shift": 1.5294003494201713,
+        "amplitude": 0.46292466961212625,
+        "harmonic_order": 2,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.21984872764743385
+      },
+      "hybrid_function": "def hybrid_SG_000084(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: b905e0c880bc\n    # Phase 1: Stochastic exploration\n    phase = 1.529400\n    amp = 0.462925\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.557227137169667,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894835+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000085",
+      "resonance_key": "4dbe3c2212db",
+      "origin_candidate": "SG_000085",
+      "origin_parameters": {
+        "phase_shift": 3.2191372095284305,
+        "amplitude": 1.5404864686620912,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.06642365114338397
+      },
+      "hybrid_function": "def hybrid_SG_000085(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 4dbe3c2212db\n    # Phase 1: Stochastic exploration\n    phase = 3.219137\n    amp = 1.540486\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 0.6448543512411665,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.894936+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000086",
+      "resonance_key": "7f681064320e",
+      "origin_candidate": "SG_000086",
+      "origin_parameters": {
+        "phase_shift": 3.272728916992751,
+        "amplitude": 1.4972143544916063,
+        "harmonic_order": 2,
+        "interference_mode": "superposition",
+        "grover_depth": 6,
+        "entanglement_strength": 0.3432476939228781
+      },
+      "hybrid_function": "def hybrid_SG_000086(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 7f681064320e\n    # Phase 1: Stochastic exploration\n    phase = 3.272729\n    amp = 1.497214\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 6.66463722392685,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.895093+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000087",
+      "resonance_key": "3b84daf96c32",
+      "origin_candidate": "SG_000087",
+      "origin_parameters": {
+        "phase_shift": 2.561977002709276,
+        "amplitude": 1.1973277802984512,
+        "harmonic_order": 4,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.08814570858009996
+      },
+      "hybrid_function": "def hybrid_SG_000087(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 3b84daf96c32\n    # Phase 1: Stochastic exploration\n    phase = 2.561977\n    amp = 1.197328\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.2819640391207194,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.895286+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000088",
+      "resonance_key": "3004732c007a",
+      "origin_candidate": "SG_000088",
+      "origin_parameters": {
+        "phase_shift": 1.9287041868658883,
+        "amplitude": 1.926123041757492,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.4510985389811814
+      },
+      "hybrid_function": "def hybrid_SG_000088(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 3004732c007a\n    # Phase 1: Stochastic exploration\n    phase = 1.928704\n    amp = 1.926123\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.758713220163651,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.895450+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000089",
+      "resonance_key": "fa7d36500331",
+      "origin_candidate": "SG_000089",
+      "origin_parameters": {
+        "phase_shift": 2.1445284762169647,
+        "amplitude": 0.7609347438237659,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.5632180028320826
+      },
+      "hybrid_function": "def hybrid_SG_000089(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: fa7d36500331\n    # Phase 1: Stochastic exploration\n    phase = 2.144528\n    amp = 0.760935\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 16.403505689846593,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.895691+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000090",
+      "resonance_key": "8a47897adbbd",
+      "origin_candidate": "SG_000090",
+      "origin_parameters": {
+        "phase_shift": 0.9674178655203184,
+        "amplitude": 1.3380465130032875,
+        "harmonic_order": 1,
+        "interference_mode": "constructive",
+        "grover_depth": 2,
+        "entanglement_strength": 0.7281806579700791
+      },
+      "hybrid_function": "def hybrid_SG_000090(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 8a47897adbbd\n    # Phase 1: Stochastic exploration\n    phase = 0.967418\n    amp = 1.338047\n    depth = 2\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.3564421090917,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.895952+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000091",
+      "resonance_key": "09c688b4b6b6",
+      "origin_candidate": "SG_000091",
+      "origin_parameters": {
+        "phase_shift": 1.7561988063778629,
+        "amplitude": 3.0281357471630597,
+        "harmonic_order": 4,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.22181299004989002
+      },
+      "hybrid_function": "def hybrid_SG_000091(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 09c688b4b6b6\n    # Phase 1: Stochastic exploration\n    phase = 1.756199\n    amp = 3.028136\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 1.4356038281878571,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.896215+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000092",
+      "resonance_key": "f31a2f9c5a12",
+      "origin_candidate": "SG_000092",
+      "origin_parameters": {
+        "phase_shift": 0.8465251247783682,
+        "amplitude": 0.7552661377525378,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 4,
+        "entanglement_strength": 0.07479994592497877
+      },
+      "hybrid_function": "def hybrid_SG_000092(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: f31a2f9c5a12\n    # Phase 1: Stochastic exploration\n    phase = 0.846525\n    amp = 0.755266\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 2.9046925167184763,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.896521+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000093",
+      "resonance_key": "40e9063968f1",
+      "origin_candidate": "SG_000093",
+      "origin_parameters": {
+        "phase_shift": 3.4478378889850245,
+        "amplitude": 1.9963989494655225,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.5537027361459619
+      },
+      "hybrid_function": "def hybrid_SG_000093(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 40e9063968f1\n    # Phase 1: Stochastic exploration\n    phase = 3.447838\n    amp = 1.996399\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 18.814106781707608,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897229+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000094",
+      "resonance_key": "462c471c39d8",
+      "origin_candidate": "SG_000094",
+      "origin_parameters": {
+        "phase_shift": 1.5750801735957227,
+        "amplitude": 0.7145640649893824,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.10522964311410614
+      },
+      "hybrid_function": "def hybrid_SG_000094(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 462c471c39d8\n    # Phase 1: Stochastic exploration\n    phase = 1.575080\n    amp = 0.714564\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.064772505287611,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897432+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000095",
+      "resonance_key": "bf3b66a7615c",
+      "origin_candidate": "SG_000095",
+      "origin_parameters": {
+        "phase_shift": 1.9396859278177625,
+        "amplitude": 0.21345983039516694,
+        "harmonic_order": 1,
+        "interference_mode": "destructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.7201286033905552
+      },
+      "hybrid_function": "def hybrid_SG_000095(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: bf3b66a7615c\n    # Phase 1: Stochastic exploration\n    phase = 1.939686\n    amp = 0.213460\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.660770226227644,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897558+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000096",
+      "resonance_key": "ce9153f17d8c",
+      "origin_candidate": "SG_000096",
+      "origin_parameters": {
+        "phase_shift": 1.6001830399623824,
+        "amplitude": 0.4518694285938963,
+        "harmonic_order": 2,
+        "interference_mode": "constructive",
+        "grover_depth": 7,
+        "entanglement_strength": 0.357595476684556
+      },
+      "hybrid_function": "def hybrid_SG_000096(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: ce9153f17d8c\n    # Phase 1: Stochastic exploration\n    phase = 1.600183\n    amp = 0.451869\n    depth = 7\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 8.10042289698365,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897670+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000097",
+      "resonance_key": "c619a8ae38bf",
+      "origin_candidate": "SG_000097",
+      "origin_parameters": {
+        "phase_shift": 2.878431470832518,
+        "amplitude": 0.11211808577058165,
+        "harmonic_order": 5,
+        "interference_mode": "constructive",
+        "grover_depth": 4,
+        "entanglement_strength": 0.688361041290901
+      },
+      "hybrid_function": "def hybrid_SG_000097(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: c619a8ae38bf\n    # Phase 1: Stochastic exploration\n    phase = 2.878431\n    amp = 0.112118\n    depth = 4\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 22.275831226798953,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897794+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000098",
+      "resonance_key": "15c6f69ba4f9",
+      "origin_candidate": "SG_000098",
+      "origin_parameters": {
+        "phase_shift": 1.0227458458970748,
+        "amplitude": 3.0670523246550054,
+        "harmonic_order": 5,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.4532462353023498
+      },
+      "hybrid_function": "def hybrid_SG_000098(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 15c6f69ba4f9\n    # Phase 1: Stochastic exploration\n    phase = 1.022746\n    amp = 3.067052\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.6668390699606723,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.897922+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000099",
+      "resonance_key": "6c8c209fca94",
+      "origin_candidate": "SG_000099",
+      "origin_parameters": {
+        "phase_shift": 2.4603636833292573,
+        "amplitude": 0.24587898467457714,
+        "harmonic_order": 6,
+        "interference_mode": "constructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.4127404993152575
+      },
+      "hybrid_function": "def hybrid_SG_000099(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 6c8c209fca94\n    # Phase 1: Stochastic exploration\n    phase = 2.460364\n    amp = 0.245879\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 24.041813631324818,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898166+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000100",
+      "resonance_key": "02e333b01226",
+      "origin_candidate": "SG_000100",
+      "origin_parameters": {
+        "phase_shift": 2.447133174582357,
+        "amplitude": 3.1018815231245793,
+        "harmonic_order": 6,
+        "interference_mode": "superposition",
+        "grover_depth": 3,
+        "entanglement_strength": 0.7407447401062204
+      },
+      "hybrid_function": "def hybrid_SG_000100(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 02e333b01226\n    # Phase 1: Stochastic exploration\n    phase = 2.447133\n    amp = 3.101882\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 21.573902996632295,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898378+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000101",
+      "resonance_key": "6613776187a3",
+      "origin_candidate": "SG_000101",
+      "origin_parameters": {
+        "phase_shift": 0.6637009788038488,
+        "amplitude": 2.0074386468932888,
+        "harmonic_order": 6,
+        "interference_mode": "destructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.46599813116414035
+      },
+      "hybrid_function": "def hybrid_SG_000101(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 6613776187a3\n    # Phase 1: Stochastic exploration\n    phase = 0.663701\n    amp = 2.007439\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 4.524004889505064,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898522+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000102",
+      "resonance_key": "10093bd52863",
+      "origin_candidate": "SG_000102",
+      "origin_parameters": {
+        "phase_shift": 0.3367428021930547,
+        "amplitude": 0.39318172476792246,
+        "harmonic_order": 7,
+        "interference_mode": "destructive",
+        "grover_depth": 6,
+        "entanglement_strength": 0.7906908351329243
+      },
+      "hybrid_function": "def hybrid_SG_000102(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 10093bd52863\n    # Phase 1: Stochastic exploration\n    phase = 0.336743\n    amp = 0.393182\n    depth = 6\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 53.73331512520066,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898692+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000103",
+      "resonance_key": "4f127be21ff9",
+      "origin_candidate": "SG_000103",
+      "origin_parameters": {
+        "phase_shift": 0.7536323929158014,
+        "amplitude": 3.1604221495025104,
+        "harmonic_order": 3,
+        "interference_mode": "destructive",
+        "grover_depth": 5,
+        "entanglement_strength": 0.379292179939402
+      },
+      "hybrid_function": "def hybrid_SG_000103(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 4f127be21ff9\n    # Phase 1: Stochastic exploration\n    phase = 0.753632\n    amp = 3.160422\n    depth = 5\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 9.205614582134903,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898808+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000104",
+      "resonance_key": "034d13bb4258",
+      "origin_candidate": "SG_000104",
+      "origin_parameters": {
+        "phase_shift": 1.7647821688552099,
+        "amplitude": 1.4570272100224195,
+        "harmonic_order": 4,
+        "interference_mode": "destructive",
+        "grover_depth": 3,
+        "entanglement_strength": 0.16990445185005035
+      },
+      "hybrid_function": "def hybrid_SG_000104(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 034d13bb4258\n    # Phase 1: Stochastic exploration\n    phase = 1.764782\n    amp = 1.457027\n    depth = 3\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 3.2989341351996173,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.898928+00:00"
+    },
+    {
+      "entity_type": "STOCHASTIC_DETERMINISTIC_GATE",
+      "gate_id": "HYBRID_SG_000105",
+      "resonance_key": "6027d3dfd236",
+      "origin_candidate": "SG_000105",
+      "origin_parameters": {
+        "phase_shift": 0.22790663145306322,
+        "amplitude": 2.24935477801927,
+        "harmonic_order": 7,
+        "interference_mode": "constructive",
+        "grover_depth": 1,
+        "entanglement_strength": 0.5999185412436892
+      },
+      "hybrid_function": "def hybrid_SG_000105(value):\n    # STOCHASTIC_DETERMINISTIC_GATE | Resonance: 6027d3dfd236\n    # Phase 1: Stochastic exploration\n    phase = 0.227907\n    amp = 2.249355\n    depth = 1\n    grover_gain = 1.618033988749895 ** depth\n    stochastic_output = value * grover_gain + math.sin(value * phase) * amp\n    # Phase 2: Deterministic alignment via sage gate\n    aligned = sage_logic_gate(stochastic_output, 'align')\n    # Phase 3: Quantum verification\n    verified = quantum_logic_gate(aligned, depth=min(depth, 5))\n    return verified\n",
+      "complexity_score": 6.794820131494814,
+      "creation_method": "stochastic_exploration \u2192 deterministic_validation \u2192 hybrid_merge",
+      "verified": true,
+      "tags": [
+        "INVENTION",
+        "NEOTERIC",
+        "STOCHASTIC_DETERMINISTIC",
+        "HYBRID_GATE"
+      ],
+      "timestamp": "2026-02-13T20:44:37.899066+00:00"
+    }
+  ],
+  "failed": []
+}

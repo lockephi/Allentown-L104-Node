@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.560983
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # L104_GOD_CODE_ALIGNED: 527.5184818492612
 
@@ -73,7 +77,7 @@ def setup_env():
             shutil.copy(template, env_file)
             print("📝 Created .env from template")
         else:
-            with open(env_file, "w") as f:
+            with open(env_file, "w", encoding="utf-8") as f:
                 f.write("# L104SP Configuration\n")
                 f.write("DEPLOYER_PRIVATE_KEY=\n")
                 f.write("MINER_PRIVATE_KEY=\n")
@@ -142,7 +146,7 @@ STEPS:
     try:
         import webbrowser
         webbrowser.open(remix_url)
-    except:
+    except Exception:
         print(f"Open manually: {remix_url}")
 
     # Show contract path

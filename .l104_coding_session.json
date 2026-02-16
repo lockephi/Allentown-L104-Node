@@ -1,0 +1,115 @@
+{
+  "sessions": [
+    {
+      "id": "1db0bac11068398b",
+      "start_time": "2026-02-16T03:38:57.516452",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T03:38:57.516520",
+      "total_actions": 0,
+      "duration_seconds": 6.8e-05
+    },
+    {
+      "id": "5a44b997aade0270",
+      "start_time": "2026-02-16T03:39:18.771618",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T03:39:18.771673",
+      "total_actions": 0,
+      "duration_seconds": 5.5e-05
+    },
+    {
+      "id": "401fd16b6b4ddaec",
+      "start_time": "2026-02-16T04:52:04.318618",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T04:52:04.318646",
+      "total_actions": 0,
+      "duration_seconds": 2.8e-05
+    },
+    {
+      "id": "c105082a504f077a",
+      "start_time": "2026-02-16T04:55:12.687502",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T04:55:12.687568",
+      "total_actions": 0,
+      "duration_seconds": 6.6e-05
+    },
+    {
+      "id": "973069436045d732",
+      "start_time": "2026-02-16T04:56:28.023891",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T04:56:28.023923",
+      "total_actions": 0,
+      "duration_seconds": 3.2e-05
+    },
+    {
+      "id": "d4440f63833eb763",
+      "start_time": "2026-02-16T06:29:05.025662",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T06:29:05.025707",
+      "total_actions": 0,
+      "duration_seconds": 4.5e-05
+    },
+    {
+      "id": "2e6dc7290cf63e23",
+      "start_time": "2026-02-16T06:33:30.471686",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T06:33:30.471734",
+      "total_actions": 0,
+      "duration_seconds": 4.8e-05
+    },
+    {
+      "id": "3639fd4bcd13b316",
+      "start_time": "2026-02-16T06:37:41.287501",
+      "description": "integration test",
+      "actions": [],
+      "files_touched": [],
+      "reviews_performed": 0,
+      "suggestions_applied": 0,
+      "quality_checks": 0,
+      "end_time": "2026-02-16T06:37:41.287531",
+      "total_actions": 0,
+      "duration_seconds": 3e-05
+    }
+  ],
+  "patterns": {
+    "review": 8,
+    "suggest": 8,
+    "quality_check": 8,
+    "plan": 8
+  },
+  "last_updated": "2026-02-16T06:37:41.287575"
+}

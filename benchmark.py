@@ -326,7 +326,7 @@ def run_industry_benchmark():
             memories = conn.execute("SELECT COUNT(*) FROM memory").fetchone()[0]
             knowledge_links = conn.execute("SELECT COUNT(*) FROM knowledge").fetchone()[0]
             conn.close()
-        except:
+        except (sqlite3.Error, OSError):
             memories = 0
             knowledge_links = 0
 
@@ -564,7 +564,7 @@ def run_industry_benchmark():
 """)
 
     # Save results
-    with open("benchmark_results.json", "w") as f:
+    with open("benchmark_results.json", "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
     print(f"  Results saved to: benchmark_results.json")
 

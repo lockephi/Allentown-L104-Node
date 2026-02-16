@@ -1,5 +1,6 @@
 // swift-tools-version:5.9
 // L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.0
+// [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // macOS Native: Accelerate · Metal · CoreML · SIMD · BLAS
 // Whole-Module Optimization · Link-Time Optimization
 // UPGRADE v2.0:
@@ -27,6 +28,7 @@ let package = Package(
             exclude: [
                 "L104App.swift",        // SwiftUI app compiled separately
                 "L104App.swift.bak",
+                "L104Native.swift",     // Monolith — replaced by L104v2/ split (78 files)
                 "L104Native.swift.bak",
                 "cpython_bridge.c",
                 "cpython_bridge.h",

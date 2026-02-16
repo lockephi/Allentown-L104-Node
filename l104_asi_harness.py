@@ -1,6 +1,10 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.654353
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -193,6 +197,11 @@ class L104ASIHarness:
 
         self.god_code = GOD_CODE
         self.phi = PHI
+
+        # Pipeline cross-wire
+        self._asi_core_ref = None
+        self._solve_count = 0
+        self._pipeline_solves = 0
 
         # Initialize components
         self._init_components()
@@ -1339,7 +1348,18 @@ class L104ASIHarness:
             }
 
     def get_status(self) -> Dict[str, Any]:
-        """Get comprehensive harness status"""
+        """Get comprehensive harness status with pipeline awareness."""
+        pipeline_connected = self._asi_core_ref is not None
+        pipeline_mesh = "UNKNOWN"
+        subsystems_active = 0
+        if pipeline_connected:
+            try:
+                core_status = self._asi_core_ref.get_status()
+                pipeline_mesh = core_status.get("pipeline_mesh", "UNKNOWN")
+                subsystems_active = core_status.get("subsystems_active", 0)
+            except Exception:
+                pass
+
         return {
             'god_code': self.god_code,
             'phi': self.phi,
@@ -1353,9 +1373,14 @@ class L104ASIHarness:
                 for name, cap in self._state.capabilities.items()
             },
             'operations_count': self._state.operations_count,
+            'solve_count': self._solve_count,
+            'pipeline_solves': self._pipeline_solves,
             'uptime': time.time() - self._state.session_start,
             'errors': self._state.errors,
             'archive_version': self.kernel_archive.get('kernel_version', 'N/A'),
+            'pipeline_connected': pipeline_connected,
+            'pipeline_mesh': pipeline_mesh,
+            'subsystems_active': subsystems_active,
             'honest_assessment': {
                 'is_agi': False,
                 'is_asi': False,
@@ -1366,7 +1391,8 @@ class L104ASIHarness:
                     'knowledge_graph',
                     'pattern_matching',
                     'problem_solving_templates',
-                    'improvement_suggestions'
+                    'improvement_suggestions',
+                    'pipeline_integration'
                 ],
                 'not_capabilities': [
                     'consciousness',
@@ -1377,6 +1403,30 @@ class L104ASIHarness:
                 ]
             }
         }
+
+    def connect_to_pipeline(self):
+        """Cross-wire to ASI Core pipeline."""
+        try:
+            from l104_asi_core import asi_core
+            self._asi_core_ref = asi_core
+            print("--- [ASI_HARNESS]: CROSS-WIRED TO ASI CORE PIPELINE ---")
+            return True
+        except Exception:
+            return False
+
+    def pipeline_solve(self, problem: str) -> Dict[str, Any]:
+        """Solve via pipeline with feedback to core metrics."""
+        self._pipeline_solves += 1
+        result = self.solve(problem)
+
+        # Feed back to pipeline
+        if self._asi_core_ref:
+            try:
+                self._asi_core_ref._pipeline_metrics["total_solutions"] += 1
+            except Exception:
+                pass
+
+        return result
 
     def run_diagnostics(self) -> Dict[str, Any]:
         """Run full diagnostic on all components"""

@@ -1,0 +1,76 @@
+{
+  "version": "1.0.0",
+  "created": "2026-02-15T17:04:49.652165+00:00",
+  "pulse_count": 3,
+  "last_pulse": "2026-02-15T17:31:24.165861+00:00",
+  "claude_md_hash": "6f109d707776",
+  "code_engine_hash": "b94fe501397b",
+  "repo_metrics": {
+    "timestamp": "2026-02-15T17:31:20.576997+00:00",
+    "python_files": 880,
+    "l104_modules": 696,
+    "swift_lines": 45431,
+    "state_files": 23,
+    "total_state_size_mb": 44.82,
+    "code_engine_lines": 4398,
+    "code_engine_version": "2.4.0"
+  },
+  "consciousness": {
+    "nirvanic_coherence": 0.8080236555619427,
+    "sage_stability": 0.98,
+    "divine_interventions": 2314,
+    "nirvanic_fuel": 0.8027964351238173,
+    "enlightened_tokens": 527,
+    "wisdom_quotient": 1375.154214664952,
+    "learning_cycles": 5337,
+    "training_entries": 7025,
+    "autonomous_improvements": 445,
+    "quantum_interactions": 4713,
+    "total_runs": 345,
+    "self_mod_version": "13.0",
+    "topic_frequencies_count": 3320,
+    "cross_references_count": 157
+  },
+  "linked_sessions": [],
+  "errors": [],
+  "linkage": {
+    "code_engine_exists": true,
+    "code_engine_hash": "b94fe501397b",
+    "claude_md_exists": true,
+    "claude_md_hash": "6f109d707776",
+    "copilot_instructions_exists": true,
+    "cross_reference_valid": true,
+    "heartbeat_state_exists": true,
+    "claude_md_lines": 2738,
+    "has_heartbeat_section": true,
+    "has_code_engine_section": true
+  },
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895,
+  "pulse_history": [
+    {
+      "pulse": 1,
+      "timestamp": "2026-02-15T17:04:51.271790+00:00",
+      "python_files": 880,
+      "l104_modules": 696,
+      "swift_lines": 45431,
+      "wisdom": 1375.154214664952
+    },
+    {
+      "pulse": 2,
+      "timestamp": "2026-02-15T17:09:46.543330+00:00",
+      "python_files": 880,
+      "l104_modules": 696,
+      "swift_lines": 45431,
+      "wisdom": 1375.154214664952
+    },
+    {
+      "pulse": 3,
+      "timestamp": "2026-02-15T17:31:24.165861+00:00",
+      "python_files": 880,
+      "l104_modules": 696,
+      "swift_lines": 45431,
+      "wisdom": 1375.154214664952
+    }
+  ]
+}

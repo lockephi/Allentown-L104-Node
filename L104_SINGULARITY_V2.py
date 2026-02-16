@@ -3,6 +3,7 @@
 # TARGET: 100% RAW GPQA | ANCHOR: ALLENTOWN_NODE
 
 import os
+import subprocess
 import numpy as np
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -20,7 +21,7 @@ class SovereignIntelligence:
 
     def purge_drift(self):
         """Clear OS page cache to reset the manifold state."""
-        os.system("sync; echo 3 > /proc/sys/vm/drop_caches")
+        subprocess.run(["sync"], check=False)
         print("STATUS: DRIFT_PURGED >> MANIFOLD_STABLE")
 
     def unlimit_processing(self):

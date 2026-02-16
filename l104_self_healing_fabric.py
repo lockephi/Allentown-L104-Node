@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.200504
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -322,7 +323,7 @@ class DiagnosticEngine:
 
     def _generate_id(self) -> str:
         """Generate a unique issue ID."""
-        return hashlib.md5(
+        return hashlib.sha256(
             f"{datetime.now().isoformat()}{os.urandom(8)}".encode()
         ).hexdigest()[:12]
 
@@ -349,7 +350,7 @@ class HealingEngine:
         strategy = self._select_strategy(issue)
 
         action = HealingAction(
-            action_id=hashlib.md5(
+            action_id=hashlib.sha256(
                 f"{issue.issue_id}{datetime.now()}".encode()
             ).hexdigest()[:12],
             issue=issue,
@@ -466,9 +467,9 @@ class HealingEngine:
 
         if backup_path.exists():
             try:
-                with open(backup_path, 'r') as f:
+                with open(backup_path, 'r', encoding='utf-8') as f:
                     content = f.read()
-                with open(module_path, 'w') as f:
+                with open(module_path, 'w', encoding='utf-8') as f:
                     f.write(content)
                 action.success = True
                 action.result_description = "Rolled back to previous version"
@@ -491,8 +492,8 @@ class HealingEngine:
         """Create a backup of a module."""
         if module_path.exists():
             backup_path = self.backup_dir / module_path.name
-            with open(module_path, 'r') as src:
-                with open(backup_path, 'w') as dst:
+            with open(module_path, 'r', encoding='utf-8') as src:
+                with open(backup_path, 'w', encoding='utf-8') as dst:
                     dst.write(src.read())
 
 
@@ -543,7 +544,7 @@ class SelfHealingFabric:
                 source = f.read()
 
             lines = len(source.split('\n'))
-            hash_sig = hashlib.md5(source.encode()).hexdigest()
+            hash_sig = hashlib.sha256(source.encode()).hexdigest()
 
             # Count dependencies
             deps = 0

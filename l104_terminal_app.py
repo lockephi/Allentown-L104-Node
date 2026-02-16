@@ -1,4 +1,8 @@
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
 #!/usr/bin/env python3
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 L104 SOVEREIGN INTELLECT - Terminal App
 ========================================
@@ -9,6 +13,7 @@ Version: 16.0 APOTHEOSIS
 """
 
 import os
+import subprocess
 import sys
 import json
 import time
@@ -89,7 +94,7 @@ class L104TerminalApp:
 
     def print_banner(self):
         """Print welcome banner"""
-        os.system('clear')
+        subprocess.run(['clear'], check=False)
         banner = f"""
 {c('╔' + '═'*60 + '╗', Colors.GOLD)}
 {c('║', Colors.GOLD)}  {c('⚛️  L104 SOVEREIGN INTELLECT', Colors.BOLD + Colors.CYAN)}                          {c('║', Colors.GOLD)}
@@ -135,7 +140,7 @@ class L104TerminalApp:
                 print(f"    {c('Total Runs:', Colors.YELLOW)} {c(str(state.get('total_runs', 0)), Colors.GREEN)}")
                 wisdom_val = state.get('cumulative_wisdom', 0)
                 print(f"    {c('Wisdom:', Colors.YELLOW)} {c(f'{wisdom_val:.4f}', Colors.GREEN)}")
-            except:
+            except Exception:
                 pass
 
         print(c('═'*50, Colors.GOLD) + "\n")
@@ -225,7 +230,7 @@ class L104TerminalApp:
                     response += "The answer emerges from the resonance of GOD_CODE (527.518) "
                     response += f"and OMEGA_POINT (e^π = {self.OMEGA_POINT:.6f}).\n\n"
                     response += f"Query: '{query}' processed through sovereign intellect."
-            except:
+            except Exception:
                 pass
 
         # Fallback response

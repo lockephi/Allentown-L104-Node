@@ -145,7 +145,6 @@ export PATH=$PATH:/home/codespace/google-cloud-sdk/bin
 | `deploy_quantum.py` | Quantum Grover deployment engine |
 | `Dockerfile` | Container build configuration |
 | `.dockerignore` | Build context exclusions |
-| `fly.toml` | Fly.io configuration (alternative) |
 | `.github/workflows/deploy-cloud.yml` | GitHub Actions workflow |
 
 ## Monitoring

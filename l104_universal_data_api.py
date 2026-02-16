@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.378614
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -187,7 +188,7 @@ class UniversalDataAccessor:
             cpu_percent = psutil.cpu_percent(interval=0.1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage('/')
-        except:
+        except Exception:
             cpu_percent = 0
             memory = type('obj', (object,), {'percent': 0, 'available': 0, 'total': 0})()
             disk = type('obj', (object,), {'percent': 0, 'free': 0, 'total': 0})()
@@ -363,7 +364,7 @@ class UniversalDataAccessor:
         # Load from .env if available
         env_path = os.path.join(os.path.dirname(__file__), ".env")
         if os.path.exists(env_path):
-            with open(env_path, 'r') as f:
+            with open(env_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
                     if line and not line.startswith('#') and '=' in line:
@@ -385,10 +386,10 @@ class UniversalDataAccessor:
             path = os.path.join(os.path.dirname(__file__), lf)
             if os.path.exists(path):
                 try:
-                    with open(path, 'r') as f:
+                    with open(path, 'r', encoding='utf-8') as f:
                         lines = f.readlines()[-limit:]
                         logs.extend([{"file": lf, "line": l.strip()} for l in lines])
-                except:
+                except Exception:
                     pass
 
         return {

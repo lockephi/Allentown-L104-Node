@@ -1,5 +1,6 @@
 //
 //  L104App.swift
+// [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 //  L104 SOVEREIGN INTELLECT - Native SwiftUI App v4.0 SAGE LOGIC GATE
 //
 //  UPGRADE v4.0 — SAGE LOGIC GATE CORE:
@@ -550,7 +551,7 @@ class L104State: ObservableObject {
                 scored.append((score: sEntropy, text: sentence))
             }
             // Sort by information density (descending)
-            scored.sort { $0.score > $1.score }
+            scored.sort { abs($0.score - $1.score) < 0.01 ? Bool.random() : $0.score > $1.score }
 
             // Store knowledge fragments for data reconstruction
             for s in scored.prefix(5) {
@@ -585,7 +586,7 @@ class L104State: ObservableObject {
         }
 
         guard !relevant.isEmpty else { return nil }
-        relevant.sort { $0.score > $1.score }
+        relevant.sort { $0.score == $1.score ? Bool.random() : $0.score > $1.score }
 
         let topFragments = relevant.prefix(3).map { $0.text }
         dataReconstructionOps += 1

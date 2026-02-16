@@ -3,6 +3,7 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.362465
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # [L104_AUTONOMOUS_AGENT] - Self-Directing AI Agent System
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -140,7 +141,7 @@ class AutonomousAgent:
     def _tool_read_file(self, path: str) -> str:
         """Read file contents."""
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 return f.read()[:5000]  # Limit size
         except Exception as e:
             return f"Error reading file: {e}"
@@ -148,7 +149,7 @@ class AutonomousAgent:
     def _tool_write_file(self, path: str, content: str) -> str:
         """Write file contents."""
         try:
-            with open(path, 'w') as f:
+            with open(path, 'w', encoding='utf-8') as f:
                 f.write(content)
             return f"Successfully wrote to {path}"
         except Exception as e:

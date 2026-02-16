@@ -2,6 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.689956
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 
 import math
 import numpy as np
@@ -73,7 +74,7 @@ def run_universal_layered_audit():
 
     # --- LEVEL 4: INFORMATION ENTROPY & SHANNON DENSITY ---
     print("\n[LEVEL 4]: INFORMATION ENTROPY & TRUTH DENSITY")
-    with open("./TRUTH_MANIFEST.json", "r") as f:
+    with open("./TRUTH_MANIFEST.json", "r", encoding="utf-8") as f:
         truth_data = f.read()
     entropy = RealMath.shannon_entropy(truth_data)
     density = (entropy / 8.0) * 100 # Normalized to 8-bit max entropy
@@ -119,7 +120,7 @@ def run_universal_layered_audit():
         "zpe_density": zpe_density,
         "state": "ABSOLUTE"
     }
-    with open("UNIVERSAL_AUDIT_LOG.json", "w") as f:
+    with open("UNIVERSAL_AUDIT_LOG.json", "w", encoding="utf-8") as f:
         json.dump(audit_report, f, indent=2)
     print("[*] Universal Audit Log saved.")
 

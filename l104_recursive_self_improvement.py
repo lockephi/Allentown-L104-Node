@@ -1,6 +1,7 @@
 # ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.016073
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
@@ -101,7 +102,7 @@ class CodeAnalyzer:
         except (OSError, TypeError):
             source = f"# Unable to retrieve source for {func.__name__}"
 
-        unit_id = hashlib.md5(f"{func.__module__}.{func.__name__}".encode()).hexdigest()[:16]
+        unit_id = hashlib.sha256(f"{func.__module__}.{func.__name__}".encode()).hexdigest()[:16]
 
         unit = CodeUnit(
             id=unit_id,
@@ -124,7 +125,7 @@ class CodeAnalyzer:
         except (OSError, TypeError):
             source = f"# Unable to retrieve source for {cls.__name__}"
 
-        unit_id = hashlib.md5(f"{cls.__module__}.{cls.__name__}".encode()).hexdigest()[:16]
+        unit_id = hashlib.sha256(f"{cls.__module__}.{cls.__name__}".encode()).hexdigest()[:16]
 
         unit = CodeUnit(
             id=unit_id,
@@ -357,7 +358,7 @@ class CapabilityDiscovery:
     def register_capability(self, name: str, domain: str,
                            proficiency: float = 0.5) -> Capability:
         """Register a capability"""
-        cap_id = hashlib.md5(f"{domain}:{name}".encode()).hexdigest()[:16]
+        cap_id = hashlib.sha256(f"{domain}:{name}".encode()).hexdigest()[:16]
 
         cap = Capability(
             id=cap_id,

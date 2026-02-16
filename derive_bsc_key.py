@@ -45,13 +45,13 @@ def derive_child_key(private_key: bytes, chain_code: bytes, index: int, hardened
         # For non-hardened, we'd need to compute public key
         # But ETH path uses all hardened except last two
         data = b'\x00' + private_key + index.to_bytes(4, 'big')
-    
+
     h = hmac.new(chain_code, data, hashlib.sha512).digest()
-    
+
     # Add child key to parent (mod curve order)
     SECP256K1_ORDER = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
     child_key_int = (int.from_bytes(h[:32], 'big') + int.from_bytes(private_key, 'big')) % SECP256K1_ORDER
-    
+
     return child_key_int.to_bytes(32, 'big'), h[32:]
 
 def derive_eth_private_key(mnemonic: str) -> str:
@@ -62,16 +62,16 @@ def derive_eth_private_key(mnemonic: str) -> str:
     # Clean mnemonic
     mnemonic = ' '.join(mnemonic.lower().strip().split())
     words = mnemonic.split()
-    
+
     if len(words) != 12:
         raise ValueError(f"Expected 12 words, got {len(words)}")
-    
+
     # Convert to seed
     seed = mnemonic_to_seed(mnemonic)
-    
+
     # Derive master key
     private_key, chain_code = derive_master_key(seed)
-    
+
     # Derive path: m/44'/60'/0'/0/0
     # 44' - BIP-44 purpose
     private_key, chain_code = derive_child_key(private_key, chain_code, 44, hardened=True)
@@ -83,7 +83,7 @@ def derive_eth_private_key(mnemonic: str) -> str:
     private_key, chain_code = derive_child_key(private_key, chain_code, 0, hardened=False)
     # 0 - First address
     private_key, chain_code = derive_child_key(private_key, chain_code, 0, hardened=False)
-    
+
     return private_key.hex()
 
 def private_key_to_address(private_key_hex: str) -> str:
@@ -105,7 +105,7 @@ def main():
     print("   - Never enter it on untrusted websites")
     print("   - This runs LOCALLY on your machine")
     print()
-    
+
     if len(sys.argv) > 1:
         # Mnemonic provided as arguments
         mnemonic = ' '.join(sys.argv[1:])
@@ -113,15 +113,15 @@ def main():
         # Interactive input
         print("Enter your 12-word mnemonic phrase:")
         mnemonic = input("> ").strip()
-    
+
     if not mnemonic:
         print("No mnemonic provided. Exiting.")
         return
-    
+
     try:
         private_key = derive_eth_private_key(mnemonic)
         address = private_key_to_address(private_key)
-        
+
         print()
         print("=" * 60)
         print("✅ DERIVED PRIVATE KEY:")
@@ -136,7 +136,7 @@ def main():
         print()
         print("⚠️  DELETE THIS TERMINAL OUTPUT after copying the key!")
         print("=" * 60)
-        
+
     except Exception as e:
         print(f"❌ Error: {e}")
         return 1
