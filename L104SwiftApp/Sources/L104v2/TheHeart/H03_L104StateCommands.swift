@@ -1792,92 +1792,351 @@ extension L104State {
         }
 
         // ═════════════════════════════════════════════════════════════════
-        // ⚛️ QUANTUM COMPUTING COMMANDS — Real Qiskit circuits via Python
+        // ⚛️ QUANTUM COMPUTING COMMANDS — Real IBM QPUs + Simulator Fallback
+        // Phase 46.1: Real quantum hardware via IBM Quantum REST API +
+        //             Qiskit Runtime (l104_quantum_mining_engine.py)
         // ═════════════════════════════════════════════════════════════════
 
+        // ─── IBM QUANTUM HARDWARE COMMANDS ───
+
+        if q.hasPrefix("quantum connect ") {
+            let token = String(q.dropFirst(16)).trimmingCharacters(in: .whitespaces)
+            if token.isEmpty { return "Usage: quantum connect <ibm_api_token>\nGet your token at https://quantum.ibm.com/account" }
+            // Store token and init Python engine
+            let pyResult = PythonBridge.shared.quantumHardwareInit(token: token)
+            // Connect Swift REST client
+            IBMQuantumClient.shared.connect(token: token) { [weak self] success, msg in
+                DispatchQueue.main.async {
+                    self?.quantumHardwareConnected = success
+                    if success {
+                        self?.quantumBackendName = IBMQuantumClient.shared.connectedBackendName
+                        self?.quantumBackendQubits = IBMQuantumClient.shared.availableBackends
+                            .first(where: { $0.name == IBMQuantumClient.shared.connectedBackendName })?
+                            .numQubits ?? 0
+                    }
+                }
+            }
+            if pyResult.success, let dict = pyResult.returnValue as? [String: Any] {
+                let backend = dict["backend"] as? String ?? "unknown"
+                let qubits = dict["qubits"] as? Int ?? 0
+                let isReal = dict["real_hardware"] as? Bool ?? false
+                return "⚛️ IBM Quantum Connected!\n  Backend: \(backend)\n  Qubits:  \(qubits)\n  Real HW: \(isReal ? "YES" : "No (simulator)")\n  Token:   Saved for auto-reconnect"
+            }
+            return "⚛️ IBM Quantum: Token saved. REST client connecting...\n  Python engine: \(pyResult.success ? "OK" : pyResult.error)"
+        }
+
+        if q == "quantum disconnect" {
+            IBMQuantumClient.shared.disconnect()
+            quantumHardwareConnected = false
+            quantumBackendName = "none"
+            quantumBackendQubits = 0
+            return "⚛️ IBM Quantum disconnected. Token cleared."
+        }
+
+        if q == "quantum backends" || q == "quantum backend" || q == "quantum hardware" {
+            let client = IBMQuantumClient.shared
+            if !client.isConnected && client.ibmToken == nil {
+                return "⚛️ Not connected to IBM Quantum.\n  Use: quantum connect <token>"
+            }
+            let backends = client.availableBackends
+            if backends.isEmpty {
+                return "⚛️ No backends loaded. Try: quantum connect <token>"
+            }
+            var lines = ["╔═══════════════════════════════════════════════════════════╗",
+                         "║  ⚛️ IBM QUANTUM BACKENDS                                ║",
+                         "╠═══════════════════════════════════════════════════════════╣"]
+            for b in backends.prefix(10) {
+                let marker = b.name == client.connectedBackendName ? " ◀ SELECTED" : ""
+                let hwTag = b.isSimulator ? "[SIM]" : "[QPU]"
+                lines.append("║  \(hwTag) \(b.name) — \(b.numQubits) qubits, queue:\(b.pendingJobs), QV:\(b.quantumVolume)\(marker)")
+            }
+            lines.append("╚═══════════════════════════════════════════════════════════╝")
+            return lines.joined(separator: "\n")
+        }
+
+        if q.hasPrefix("quantum submit ") {
+            let circuit = String(q.dropFirst(15)).trimmingCharacters(in: .whitespaces)
+            if circuit.isEmpty { return "Usage: quantum submit <openqasm_circuit>" }
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            client.submitCircuit(openqasm: circuit) { [weak self] submission, error in
+                if let sub = submission {
+                    DispatchQueue.main.async {
+                        self?.quantumJobsSubmitted += 1
+                    }
+                    HyperBrain.shared.postThought("⚛️ Job submitted: \(sub.jobId) → \(sub.backend)")
+                }
+            }
+            return "⚛️ Circuit submitted to \(client.connectedBackendName)...\n  Use 'quantum jobs' to check status."
+        }
+
+        if q == "quantum jobs" {
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            var result = "⚛️ Local submitted jobs: \(client.submittedJobs.count)\n"
+            for (id, job) in client.submittedJobs.prefix(10) {
+                result += "  [\(id.prefix(12))...] → \(job.backend) (submitted \(job.submitted))\n"
+            }
+            result += "\n  Fetching remote jobs..."
+            // Also trigger async list
+            client.listRecentJobs(limit: 5) { jobs, error in
+                if let jobs = jobs {
+                    let summary = jobs.prefix(5).map { "  [\($0.jobId.prefix(12))...] \($0.status) — \($0.backend)" }.joined(separator: "\n")
+                    HyperBrain.shared.postThought("⚛️ Recent IBM Jobs:\n\(summary)")
+                }
+            }
+            return result
+        }
+
+        if q.hasPrefix("quantum result ") {
+            let jobId = String(q.dropFirst(15)).trimmingCharacters(in: .whitespaces)
+            if jobId.isEmpty { return "Usage: quantum result <job_id>" }
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            client.getJobResult(jobId: jobId) { result, error in
+                if let result = result {
+                    let counts = result["counts"] as? [String: Int] ?? [:]
+                    let shots = result["shots"] as? Int ?? 0
+                    var msg = "⚛️ Job \(jobId.prefix(12))... Results:\n  Shots: \(shots)\n  Counts:"
+                    for (state, count) in counts.sorted(by: { $0.value > $1.value }).prefix(8) {
+                        msg += "\n    |\(state)⟩: \(count) (\(String(format: "%.1f", Double(count)/Double(max(1,shots))*100))%)"
+                    }
+                    HyperBrain.shared.postThought(msg)
+                } else {
+                    HyperBrain.shared.postThought("⚛️ Result fetch error: \(error ?? "unknown")")
+                }
+            }
+            return "⚛️ Fetching results for job \(jobId.prefix(12))...\n  Results will appear in HyperBrain feed."
+        }
+
+        // ─── QUANTUM STATUS — Real hardware first, simulator fallback ───
+
         if q == "quantum" || q == "quantum status" || q == "qiskit" || q == "qiskit status" {
+            let ibmClient = IBMQuantumClient.shared
+            // Try real hardware status first
+            if ibmClient.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareStatus()
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let qubits = dict["qubits"] as? Int ?? 0
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let connected = dict["connected"] as? Bool ?? false
+                    let queueDepth = dict["queue_depth"] as? Int ?? 0
+                    return "╔═══════════════════════════════════════════════════════╗\n║  ⚛️ QUANTUM ENGINE — \(isReal ? "REAL HARDWARE" : "SIMULATOR")          ║\n╠═══════════════════════════════════════════════════════╣\n║  Backend:    \(backend)\n║  Qubits:     \(qubits)\n║  Connected:  \(connected)\n║  Queue:      \(queueDepth) jobs\n║  REST API:   \(ibmClient.isConnected ? "CONNECTED" : "PENDING")\n║  Jobs Sent:  \(ibmClient.submittedJobs.count)\n╚═══════════════════════════════════════════════════════╝"
+                }
+            }
+            // Fallback to simulator
             let result = PythonBridge.shared.quantumStatus()
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let caps = dict["capabilities"] as? [String] ?? []
                 let circuits = dict["circuits_executed"] as? Int ?? 0
-                return "╔═══════════════════════════════════════════════╗\n║  ⚛️ QUANTUM COMPUTING ENGINE — Qiskit 2.3.0  ║\n╠═══════════════════════════════════════════════╣\n║  Circuits Executed: \(circuits)\n║  Algorithms: \(caps.count)\n║    \(caps.joined(separator: ", "))\n║  Use: quantum grover, quantum vqe, etc.\n╚═══════════════════════════════════════════════╝"
+                return "╔═══════════════════════════════════════════════════════╗\n║  ⚛️ QUANTUM ENGINE — SIMULATOR                       ║\n╠═══════════════════════════════════════════════════════╣\n║  Circuits Executed: \(circuits)\n║  Algorithms: \(caps.count)\n║    \(caps.joined(separator: ", "))\n║  IBM Token:  NOT SET\n║  Tip: quantum connect <token> for real QPU\n╚═══════════════════════════════════════════════════════╝"
             }
             return "⚛️ Quantum Engine: \(result.output)"
         }
+
+        // ─── REWIRED: Grover — Real hardware first, simulator fallback ───
+
         if q == "quantum grover" || q.hasPrefix("quantum grover") {
             var target = 7; var nQubits = 4
             let parts = q.components(separatedBy: " ")
             if parts.count >= 3, let t = Int(parts[2]) { target = t }
             if parts.count >= 4, let n = Int(parts[3]) { nQubits = n }
+
+            // Try real hardware if token configured
+            if IBMQuantumClient.shared.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareGrover(target: target, nQubits: nQubits)
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let nonce = dict["nonce"] as? Int
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let details = dict["details"] as? [String: Any] ?? [:]
+                    let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                    return "🔍 Grover's Search \(tag):\n  Target: \(target)  Qubits: \(nQubits)\n  Nonce Found: \(nonce.map(String.init) ?? "none")\n  Details: \(details.keys.sorted().prefix(5).joined(separator: ", "))\n  Time: \(String(format: "%.2f", hwResult.executionTime))s"
+                }
+            }
+            // Simulator fallback
             let result = PythonBridge.shared.quantumGrover(target: target, nQubits: nQubits)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let found = dict["found_index"] as? Int ?? -1
                 let prob = dict["target_probability"] as? Double ?? 0
                 let success = dict["success"] as? Bool ?? false
                 let iters = dict["grover_iterations"] as? Int ?? 0
-                return "🔍 Grover's Search:\n  Target: |\(target)⟩  Qubits: \(nQubits)\n  Found:  |\(found)⟩  P=\(String(format: "%.4f", prob))\n  Iterations: \(iters)  \(success ? "✅ SUCCESS" : "❌ FAILED")\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "🔍 Grover's Search [SIMULATOR]:\n  Target: |\(target)⟩  Qubits: \(nQubits)\n  Found:  |\(found)⟩  P=\(String(format: "%.4f", prob))\n  Iterations: \(iters)  \(success ? "✅ SUCCESS" : "❌ FAILED")\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ Grover failed: \(result.error)"
         }
+
+        // ─── REWIRED: QPE — Real hardware first, simulator fallback ───
+
         if q == "quantum qpe" || q == "quantum phase" || q == "quantum phase estimation" {
+            if IBMQuantumClient.shared.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareReport(difficultyBits: 16)
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let report = dict["report"] as? String ?? ""
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                    return "📐 Quantum Phase Report \(tag):\n\(report.prefix(500))\n  Time: \(String(format: "%.2f", hwResult.executionTime))s"
+                }
+            }
             let result = PythonBridge.shared.quantumQPE(precisionQubits: 5)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let target = dict["target_phase"] as? Double ?? 0
                 let est = dict["estimated_phase"] as? Double ?? 0
                 let error = dict["phase_error"] as? Double ?? 0
-                return "📐 Quantum Phase Estimation:\n  Target Phase:    \(String(format: "%.6f", target))\n  Estimated Phase: \(String(format: "%.6f", est))\n  Phase Error:     \(String(format: "%.6f", error))\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "📐 Quantum Phase Estimation [SIMULATOR]:\n  Target Phase:    \(String(format: "%.6f", target))\n  Estimated Phase: \(String(format: "%.6f", est))\n  Phase Error:     \(String(format: "%.6f", error))\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ QPE failed: \(result.error)"
         }
+
+        // ─── REWIRED: VQE — Real hardware first, simulator fallback ───
+
         if q == "quantum vqe" || q == "quantum eigensolver" {
+            if IBMQuantumClient.shared.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareVQE()
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    if dict["error"] == nil {
+                        let isReal = dict["real_hardware"] as? Bool ?? false
+                        let backend = dict["backend"] as? String ?? "unknown"
+                        let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                        return "⚡ VQE Optimizer \(tag):\n  Result: \(dict.keys.sorted().prefix(6).joined(separator: ", "))\n  Time: \(String(format: "%.2f", hwResult.executionTime))s"
+                    }
+                }
+            }
             let result = PythonBridge.shared.quantumVQE(nQubits: 4, iterations: 50)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let energy = dict["optimized_energy"] as? Double ?? 0
                 let exact = dict["exact_energy"] as? Double ?? 0
                 let error = dict["energy_error"] as? Double ?? 0
                 let iters = dict["iterations_used"] as? Int ?? 0
-                return "⚡ VQE Eigensolver:\n  Optimized: \(String(format: "%.6f", energy))\n  Exact:     \(String(format: "%.6f", exact))\n  Error:     \(String(format: "%.6f", error))\n  Iterations: \(iters)\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "⚡ VQE Eigensolver [SIMULATOR]:\n  Optimized: \(String(format: "%.6f", energy))\n  Exact:     \(String(format: "%.6f", exact))\n  Error:     \(String(format: "%.6f", error))\n  Iterations: \(iters)\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ VQE failed: \(result.error)"
         }
+
+        // ─── REWIRED: QAOA — Real hardware first, simulator fallback ───
+
         if q == "quantum qaoa" || q == "quantum maxcut" {
+            if IBMQuantumClient.shared.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareMine(strategy: "qaoa")
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let nonce = dict["nonce"] as? Int
+                    let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                    return "🔀 QAOA Mining \(tag):\n  Strategy: qaoa\n  Nonce: \(nonce.map(String.init) ?? "none")\n  Time: \(String(format: "%.2f", hwResult.executionTime))s"
+                }
+            }
             let edges: [(Int, Int)] = [(0,1),(1,2),(2,3),(3,0)]
             let result = PythonBridge.shared.quantumQAOA(edges: edges, p: 2)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let ratio = dict["approximation_ratio"] as? Double ?? 0
                 let cut = dict["best_cut_value"] as? Double ?? 0
                 let optimal = dict["optimal_cut"] as? Double ?? 0
-                return "🔀 QAOA MaxCut:\n  Graph: 4 nodes, 4 edges (cycle)\n  Best Cut:  \(String(format: "%.4f", cut))\n  Optimal:   \(String(format: "%.4f", optimal))\n  Ratio:     \(String(format: "%.4f", ratio))\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "🔀 QAOA MaxCut [SIMULATOR]:\n  Graph: 4 nodes, 4 edges (cycle)\n  Best Cut:  \(String(format: "%.4f", cut))\n  Optimal:   \(String(format: "%.4f", optimal))\n  Ratio:     \(String(format: "%.4f", ratio))\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ QAOA failed: \(result.error)"
         }
+
+        // ─── REWIRED: Amplitude Estimation ───
+
         if q == "quantum amplitude" || q == "quantum ampest" {
+            if IBMQuantumClient.shared.ibmToken != nil {
+                let hwResult = PythonBridge.shared.quantumHardwareRandomOracle()
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let seed = dict["seed"] as? Int ?? 0
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                    return "📊 Quantum Random Oracle \(tag):\n  Sacred Nonce Seed: \(seed)\n  Time: \(String(format: "%.2f", hwResult.executionTime))s"
+                }
+            }
             let result = PythonBridge.shared.quantumAmplitudeEstimation(targetProb: 0.3, countingQubits: 5)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let est = dict["estimated_probability"] as? Double ?? 0
                 let error = dict["estimation_error"] as? Double ?? 0
-                return "📊 Amplitude Estimation:\n  Target:    0.3000\n  Estimated: \(String(format: "%.4f", est))\n  Error:     \(String(format: "%.4f", error))\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "📊 Amplitude Estimation [SIMULATOR]:\n  Target:    0.3000\n  Estimated: \(String(format: "%.4f", est))\n  Error:     \(String(format: "%.4f", error))\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ AmpEst failed: \(result.error)"
         }
+
+        // ─── REWIRED: Quantum Walk ───
+
         if q == "quantum walk" {
             let result = PythonBridge.shared.quantumWalk(nNodes: 8, steps: 10)
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let spread = dict["spread_metric"] as? Double ?? 0
-                return "🚶 Quantum Walk:\n  Nodes: 8 (cyclic)  Steps: 10\n  Spread: \(String(format: "%.4f", spread))\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "🚶 Quantum Walk [SIMULATOR]:\n  Nodes: 8 (cyclic)  Steps: 10\n  Spread: \(String(format: "%.4f", spread))\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ Walk failed: \(result.error)"
         }
+
+        // ─── REWIRED: Quantum Kernel ───
+
         if q == "quantum kernel" {
             let result = PythonBridge.shared.quantumKernel(x1: [1.0, 2.0, 3.0, 4.0], x2: [1.1, 2.1, 3.1, 4.1])
             if result.success, let dict = result.returnValue as? [String: Any] {
                 let val = dict["kernel_value"] as? Double ?? 0
-                return "🧬 Quantum Kernel:\n  x₁: [1.0, 2.0, 3.0, 4.0]\n  x₂: [1.1, 2.1, 3.1, 4.1]\n  Kernel Value: \(String(format: "%.6f", val))\n  Time: \(String(format: "%.2f", result.executionTime))s"
+                return "🧬 Quantum Kernel [SIMULATOR]:\n  x₁: [1.0, 2.0, 3.0, 4.0]\n  x₂: [1.1, 2.1, 3.1, 4.1]\n  Kernel Value: \(String(format: "%.6f", val))\n  Time: \(String(format: "%.2f", result.executionTime))s"
             }
             return "❌ Kernel failed: \(result.error)"
         }
+
+        // ─── QUANTUM MINE — Direct real hardware mining ───
+
+        if q == "quantum mine" || q.hasPrefix("quantum mine ") {
+            var strategy = "auto"
+            let parts = q.components(separatedBy: " ")
+            if parts.count >= 3 { strategy = parts[2] }
+            if IBMQuantumClient.shared.ibmToken == nil {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            let result = PythonBridge.shared.quantumHardwareMine(strategy: strategy)
+            if result.success, let dict = result.returnValue as? [String: Any] {
+                let nonce = dict["nonce"] as? Int
+                let isReal = dict["real_hardware"] as? Bool ?? false
+                let backend = dict["backend"] as? String ?? "unknown"
+                let tag = isReal ? "[REAL HW: \(backend)]" : "[SIMULATOR]"
+                return "⛏️ Quantum Mining \(tag):\n  Strategy: \(strategy)\n  Nonce: \(nonce.map(String.init) ?? "searching...")\n  Time: \(String(format: "%.2f", result.executionTime))s"
+            }
+            return "❌ Mining failed: \(result.error)"
+        }
+
+        // ─── QUANTUM HELP — Updated with all commands ───
+
         if q == "quantum help" {
-            return "⚛️ Quantum Computing Commands:\n  quantum status     — Engine & capability status\n  quantum grover [target] [qubits] — Grover's search\n  quantum qpe        — Phase estimation (5 precision qubits)\n  quantum vqe        — VQE eigensolver (4 qubits, 50 iters)\n  quantum qaoa       — QAOA MaxCut (4-node cycle)\n  quantum amplitude  — Amplitude estimation (target=0.3)\n  quantum walk       — Quantum walk (8 nodes, 10 steps)\n  quantum kernel     — Quantum kernel similarity\n\n  Or use the ⚛️ Quantum tab for interactive execution."
+            let hwStatus = IBMQuantumClient.shared.ibmToken != nil ? "CONNECTED" : "NOT SET"
+            return """
+            ⚛️ Quantum Computing Commands:
+              ── IBM Quantum Hardware ──
+              quantum connect <token> — Connect to IBM Quantum (real QPU)
+              quantum disconnect      — Disconnect & clear token
+              quantum backends        — List available IBM backends
+              quantum submit <qasm>   — Submit OpenQASM 3.0 circuit
+              quantum jobs            — List submitted jobs
+              quantum result <job_id> — Get measurement results
+              quantum mine [strategy] — Quantum mining (auto/grover/vqe)
+
+              ── Algorithms (real HW → simulator fallback) ──
+              quantum status          — Engine & hardware status
+              quantum grover [t] [q]  — Grover's search
+              quantum qpe             — Phase estimation
+              quantum vqe             — VQE eigensolver
+              quantum qaoa            — QAOA MaxCut
+              quantum amplitude       — Amplitude / random oracle
+              quantum walk            — Quantum walk
+              quantum kernel          — Quantum kernel similarity
+
+              IBM Token: \(hwStatus)
+              Get token: https://quantum.ibm.com/account
+            """
         }
 
         // ═════════════════════════════════════════════════════════════════

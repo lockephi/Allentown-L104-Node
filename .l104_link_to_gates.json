@@ -1,0 +1,811 @@
+{
+  "source": "quantum_link_builder",
+  "version": "4.2.0",
+  "timestamp": "2026-02-16T21:43:09.200416+00:00",
+  "export_count": 1,
+  "total_links": 5522,
+  "avg_fidelity": 0.8263073675145571,
+  "avg_strength": 0.995572921738893,
+  "links": [
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.95,
+      "strength": 1.618033988749895,
+      "link_type": "entanglement",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    },
+    {
+      "source": "",
+      "target": "",
+      "fidelity": 0.85,
+      "strength": 1.0,
+      "link_type": "mirror",
+      "sacred_alignment": 0
+    }
+  ]
+}
