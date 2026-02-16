@@ -1942,6 +1942,9 @@ extension L104State {
         let net = NetworkLayer.shared
         let alivePeers = net.peers.values.filter { $0.latencyMs >= 0 }.count
         let meshIcon = meshStatus == "ONLINE" ? "🟢" : meshStatus == "DEGRADED" ? "🟡" : meshStatus == "OFFLINE" ? "🔴" : "⚪"
+        let qHW = IBMQuantumClient.shared
+        let qIcon = quantumHardwareConnected ? "🟢" : qHW.ibmToken != nil ? "🟡" : "⚪"
+        let qStatus = quantumHardwareConnected ? "CONNECTED (\(quantumBackendName))" : qHW.ibmToken != nil ? "TOKEN SET (reconnecting)" : "NOT CONNECTED"
         return """
         ╔═══════════════════════════════════════════════════════════════╗
         ║  L104 SOVEREIGN INTELLECT v\(VERSION)                    ║
@@ -1960,6 +1963,11 @@ extension L104State {
         ║    O₂ Bond:       \(String(format: "%.4f", bridge.o2BondStrength)) | Superfluid η: \(String(format: "%.6f", bridge.superfluidViscosity))
         ║    Nirvanic Fuel:  \(String(format: "%.4f", bridge.nirvanicFuelLevel)) [\(bridge.nirvanicEntropyPhase)]
         ║    Ouroboros:      \(bridge.ouroborosCycleCount) cycles | \(bridge.nirvanicRecycleCount) recycled
+        ╠═══════════════════════════════════════════════════════════════╣
+        ║  \(qIcon) IBM QUANTUM HARDWARE (Phase 46.1):                           ║
+        ║    Status:         \(qStatus)
+        ║    Qubits:         \(quantumBackendQubits) | Jobs: \(quantumJobsSubmitted)
+        ║    REST API:       \(qHW.isConnected ? "LIVE" : "IDLE") | Engines: \(qHW.availableBackends.count) backends
         ╠═══════════════════════════════════════════════════════════════╣
         ║  \(meshIcon) QUANTUM MESH NETWORK:                                    ║
         ║    Status:         \(meshStatus) | Health: \(String(format: "%.1f%%", networkHealth * 100))

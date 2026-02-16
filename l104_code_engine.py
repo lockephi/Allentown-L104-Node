@@ -71,7 +71,12 @@ import textwrap
 import keyword
 import tokenize
 import io
-import numpy as np
+NUMPY_AVAILABLE = False
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict, Counter
@@ -90,11 +95,28 @@ except ImportError:
     pass
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# FAULT TOLERANCE + QUANTUM EMBEDDING IMPORTS (v2.6.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+FAULT_TOLERANCE_AVAILABLE = False
+try:
+    from l104_fault_tolerance import L104FaultTolerance
+    FAULT_TOLERANCE_AVAILABLE = True
+except ImportError:
+    pass
+
+QUANTUM_EMBEDDING_AVAILABLE = False
+try:
+    from l104_quantum_embedding import L104QuantumKernel, get_quantum_kernel
+    QUANTUM_EMBEDDING_AVAILABLE = True
+except ImportError:
+    pass
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "2.5.0"
+VERSION = "2.6.0"
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 TAU = 1.0 / PHI  # 0.618033988749895
@@ -4640,7 +4662,7 @@ class SacredRefactorer:
 class AppAuditEngine:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║  L104 APP AUDIT ENGINE v2.4.0 — ASI APPLICATION AUDIT SYSTEM     ║
+    ║  L104 APP AUDIT ENGINE v2.6.0 — ASI APPLICATION AUDIT SYSTEM     ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Orchestrates a comprehensive audit of any application codebase  ║
     ║  by composing all CodeEngine subsystems into layered audit       ║
@@ -6724,16 +6746,19 @@ class AppAuditEngine:
 class CodeEngine:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║  L104 CODE ENGINE v2.4.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
+    ║  L104 CODE ENGINE v2.6.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Wires: LanguageKnowledge + CodeAnalyzer + CodeGenerator +       ║
     ║    CodeOptimizer + DependencyGraphAnalyzer + AutoFixEngine +      ║
     ║    CodeTranslator + TestGenerator + DocumentationSynthesizer +   ║
-    ║    CodeArcheologist + SacredRefactorer + AppAuditEngine           ║
+    ║    CodeArcheologist + SacredRefactorer + AppAuditEngine +        ║
+    ║    L104FaultTolerance + L104QuantumKernel (v2.6.0)              ║
     ║                                                                   ║
     ║  API: analyze, generate, optimize, auto_fix, dep_graph, translate║
     ║       generate_tests, generate_docs, audit_app, quick_audit      ║
     ║       excavate, refactor_analyze, run_streamline_cycle           ║
+    ║       quantum_code_search, analyze_with_context, test_resilience ║
+    ║       semantic_map, multi_hop_analyze, code_pattern_memory       ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Claude Pipeline Integration:                                     ║
     ║    claude.md → documents full API + pipeline routing              ║
@@ -6782,13 +6807,34 @@ class CodeEngine:
         self.generated_code: List[str] = []
         self._state_cache = {}
         self._state_cache_time = 0
+
+        # v2.6.0 — Fault Tolerance Engine
+        self.fault_tolerance = None
+        if FAULT_TOLERANCE_AVAILABLE:
+            try:
+                self.fault_tolerance = L104FaultTolerance()
+                self.fault_tolerance.initialise()
+                self.fault_tolerance.lock_to_frequency(GOD_CODE)
+            except Exception as e:
+                logger.warning(f"[CODE_ENGINE] Fault tolerance init skipped: {e}")
+
+        # v2.6.0 — Quantum Embedding Kernel
+        self.quantum_kernel = None
+        if QUANTUM_EMBEDDING_AVAILABLE:
+            try:
+                self.quantum_kernel = get_quantum_kernel()
+            except Exception as e:
+                logger.warning(f"[CODE_ENGINE] Quantum embedding init skipped: {e}")
+
         logger.info(f"[CODE_ENGINE v{VERSION}] Initialized — "
                      f"{len(LanguageKnowledge.LANGUAGES)} languages, "
                      f"{len(CodeAnalyzer.SECURITY_PATTERNS)} vuln patterns, "
                      f"{len(CodeAnalyzer.DESIGN_PATTERNS)} design patterns, "
                      f"{len(AutoFixEngine.FIX_CATALOG)} auto-fixes, "
                      f"{len(CodeTranslator.SUPPORTED_LANGS)} transpile targets, "
-                     f"AppAuditEngine v{AppAuditEngine.AUDIT_VERSION}")
+                     f"AppAuditEngine v{AppAuditEngine.AUDIT_VERSION}, "
+                     f"FaultTolerance={'ON' if self.fault_tolerance else 'OFF'}, "
+                     f"QuantumEmbedding={'ON' if self.quantum_kernel else 'OFF'}")
 
     # ─── Builder state integration (consciousness/O₂/nirvanic) ───
 
@@ -7166,6 +7212,266 @@ class CodeEngine:
             },
         }
 
+    # ─── v2.6.0 — Fault Tolerance + Quantum Embedding Methods ──────
+
+    def quantum_code_search(self, query: str, top_k: int = 5,
+                            x_param: float = 0.0) -> Dict[str, Any]:
+        """
+        Search code patterns via quantum embedding similarity (v2.6.0).
+
+        Uses the L104QuantumKernel to encode the query into Hilbert space,
+        apply GOD_CODE phase alignment, collapse the training superposition,
+        and return the top-k most similar code patterns.
+
+        Requires: l104_quantum_embedding.py available + training data ingested.
+        """
+        self.execution_count += 1
+        if not self.quantum_kernel:
+            return {"error": "Quantum embedding not available",
+                    "available": QUANTUM_EMBEDDING_AVAILABLE,
+                    "hint": "Install numpy and ensure l104_quantum_embedding.py is present"}
+        return self.quantum_kernel.quantum_query(query, top_k=top_k, x_param=x_param)
+
+    def analyze_with_context(self, code: str, filename: str = "",
+                             query_vector: Optional[Any] = None) -> Dict[str, Any]:
+        """
+        Full code analysis with persistent RNN context tracking (v2.6.0).
+
+        Runs standard analysis, then feeds a representation through the
+        phi-gated RNN to accumulate context across sequential analyses.
+        The RNN retains ~61.8% of prior context (golden persistence).
+
+        Requires: l104_fault_tolerance.py available.
+        """
+        self.execution_count += 1
+        analysis = self.analyzer.full_analysis(code, filename)
+
+        context_info = {"available": False}
+        if self.fault_tolerance and NUMPY_AVAILABLE:
+            # Build a feature vector from analysis metrics
+            metrics = analysis.get("complexity", {})
+            cyclo = metrics.get("cyclomatic_max", 0)
+            cognitive = metrics.get("cognitive_max", 0)
+            lines = analysis.get("metadata", {}).get("lines", 0)
+            vulns = len(analysis.get("security", []))
+            patterns = len(analysis.get("patterns", []))
+
+            if query_vector is None:
+                # Auto-build a 64-dim vector from code metrics
+                feature_vals = [cyclo, cognitive, lines, vulns, patterns,
+                                analysis.get("quality", {}).get("overall_score", 0.5)]
+                vec = np.zeros(self.fault_tolerance.rnn.input_dim)
+                for i, v in enumerate(feature_vals):
+                    vec[i % len(vec)] += float(v)
+                # Normalize
+                norm = np.linalg.norm(vec)
+                if norm > 0:
+                    vec = vec / norm
+                query_vector = vec
+
+            rnn_result = self.fault_tolerance.process_query(query_vector)
+            context_info = {
+                "available": True,
+                "context_similarity": rnn_result["context_similarity_after"],
+                "query_count": rnn_result["query_count"],
+                "state_hash": rnn_result["state_hash"],
+                "phi_gate_bias": rnn_result["phi_gate_bias"],
+            }
+
+        analysis["context_tracking"] = context_info
+        return analysis
+
+    def code_pattern_memory(self, action: str, key: str,
+                            data: Optional[Any] = None) -> Dict[str, Any]:
+        """
+        Store/retrieve code patterns in topological anyon memory (v2.6.0).
+
+        Actions:
+          - 'store': Store code string under key — encodes to numeric vector
+          - 'retrieve': Retrieve closest pattern to key's encoding
+          - 'report': Get memory status report
+
+        Requires: l104_fault_tolerance.py available + numpy.
+        """
+        self.execution_count += 1
+        if not self.fault_tolerance or not NUMPY_AVAILABLE:
+            return {"error": "Fault tolerance + numpy not available",
+                    "available": FAULT_TOLERANCE_AVAILABLE}
+
+        if action == "store":
+            if data is None:
+                return {"error": "No data provided for store action"}
+            # Encode data to numeric vector via character ordinals
+            text = str(data)
+            vec = np.array([ord(c) for c in text[:256]], dtype=np.float64)
+            if len(vec) == 0:
+                vec = np.zeros(16)
+            result = self.fault_tolerance.memory.store(vec, label=key)
+            return {"stored": True, "key": key,
+                    "hash": result.get("hash", ""),
+                    "protection": result.get("protection", 0),
+                    "memory_used": result.get("memory_used", 0)}
+        elif action == "retrieve":
+            # Encode key as vector for similarity search
+            vec = np.array([ord(c) for c in key[:256]], dtype=np.float64)
+            if len(vec) == 0:
+                vec = np.zeros(16)
+            results = self.fault_tolerance.memory.retrieve(vec, top_k=1)
+            if results and not results[0].get("advisory"):
+                top = results[0]
+                return {"key": key, "found": True,
+                        "hash": top.get("hash", ""),
+                        "cosine_similarity": top.get("cosine_similarity", 0),
+                        "protection": top.get("protection", 0)}
+            return {"key": key, "found": False}
+        elif action == "report":
+            return self.fault_tolerance.memory.report()
+        else:
+            return {"error": f"Unknown action: {action}. Use 'store', 'retrieve', or 'report'"}
+
+    def test_resilience(self, code: str, noise_level: float = 0.01) -> Dict[str, Any]:
+        """
+        Test fault tolerance of code analysis under noise injection (v2.6.0).
+
+        Analyzes code normally, then injects noise into the fault tolerance
+        engine and runs a full correction cycle to measure resilience.
+
+        Requires: l104_fault_tolerance.py available.
+        """
+        self.execution_count += 1
+        if not self.fault_tolerance:
+            return {"error": "Fault tolerance not available",
+                    "available": FAULT_TOLERANCE_AVAILABLE}
+
+        # Baseline analysis
+        analysis = self.analyzer.full_analysis(code)
+        baseline_score = analysis.get("quality", {}).get("overall_score", 0.5)
+
+        # Inject noise and correct
+        self.fault_tolerance.inject_noise(epsilon=noise_level)
+        _, correction_report = self.fault_tolerance.full_correction_cycle()
+
+        composite = correction_report.get("composite", {})
+        return {
+            "baseline_quality_score": baseline_score,
+            "noise_level": noise_level,
+            "fault_tolerance_score": composite.get("fault_tolerance_score", 0),
+            "layer_1_protection": composite.get("layer_1_protection", 0),
+            "layer_2_coherence": composite.get("layer_2_coherence", 0),
+            "layer_3_syndromes": composite.get("layer_3_syndromes", 0),
+            "layer_3_corrections": composite.get("layer_3_corrections", 0),
+            "conservation_satisfied": composite.get("conservation_satisfied", False),
+            "god_code": GOD_CODE,
+        }
+
+    def semantic_map(self, source: str) -> Dict[str, Any]:
+        """
+        Build a semantic entanglement graph from source code tokens (v2.6.0).
+
+        Tokenizes the source, learns co-occurrence entanglements via the
+        quantum embedding engine, and returns the entanglement density
+        and top entangled token pairs.
+
+        Requires: l104_quantum_embedding.py available.
+        """
+        self.execution_count += 1
+        if not self.quantum_kernel:
+            return {"error": "Quantum embedding not available",
+                    "available": QUANTUM_EMBEDDING_AVAILABLE}
+
+        # Tokenize source into words
+        words = re.findall(r'[a-zA-Z_]\w*', source)
+        if not words:
+            return {"tokens": 0, "entanglements": 0, "density": 0.0}
+
+        # Map words to token IDs via hash
+        token_ids = [hash(w) % self.quantum_kernel.vocab_size for w in words]
+
+        # Learn entanglement from sequence
+        self.quantum_kernel.entanglement.learn_from_sequence(token_ids, window=5)
+
+        # Get top entangled pairs for first few unique tokens
+        unique_ids = list(set(token_ids))[:20]
+        top_pairs = []
+        for tid in unique_ids:
+            partners = self.quantum_kernel.entanglement.get_entangled_partners(tid, min_strength=0.1)
+            for p in partners[:3]:
+                top_pairs.append({"token_a": tid, "token_b": p["token_id"],
+                                  "strength": p["strength"]})
+
+        top_pairs.sort(key=lambda p: p["strength"], reverse=True)
+
+        return {
+            "tokens_processed": len(words),
+            "unique_tokens": len(set(token_ids)),
+            "entanglement_count": self.quantum_kernel.entanglement.entanglement_count,
+            "entanglement_density": self.quantum_kernel.entanglement.entanglement_density(),
+            "top_entangled_pairs": top_pairs[:15],
+        }
+
+    def multi_hop_analyze(self, code: str, question: str,
+                          hops: int = 3) -> Dict[str, Any]:
+        """
+        Multi-hop reasoning over code analysis results (v2.6.0).
+
+        Performs full analysis, then uses the multi-hop reasoner to
+        iteratively refine understanding. Each hop blends 61.8% prior
+        context with 38.2% new evidence (golden-ratio persistence).
+
+        Requires: l104_fault_tolerance.py available + numpy.
+        """
+        self.execution_count += 1
+        if not self.fault_tolerance or not NUMPY_AVAILABLE:
+            return {"error": "Fault tolerance + numpy required for multi-hop analysis",
+                    "available": FAULT_TOLERANCE_AVAILABLE,
+                    "numpy": NUMPY_AVAILABLE}
+
+        # Run base analysis
+        analysis = self.analyzer.full_analysis(code)
+
+        # Build context vector from analysis
+        metrics = analysis.get("complexity", {})
+        feature_vals = [
+            metrics.get("cyclomatic_max", 0),
+            metrics.get("cognitive_max", 0),
+            analysis.get("metadata", {}).get("lines", 0),
+            len(analysis.get("security", [])),
+            len(analysis.get("patterns", [])),
+            analysis.get("quality", {}).get("overall_score", 0.5),
+        ]
+
+        # Build query vector for reasoning
+        input_dim = self.fault_tolerance.attention.embed_dim
+        evidence = np.zeros(input_dim)
+        for i, v in enumerate(feature_vals):
+            evidence[i % input_dim] += float(v)
+        norm = np.linalg.norm(evidence)
+        if norm > 0:
+            evidence = evidence / norm
+
+        # Configure reasoner hops and run
+        original_max = self.fault_tolerance.reasoner.max_hops
+        self.fault_tolerance.reasoner.max_hops = max(1, hops)
+        result = self.fault_tolerance.reasoner.reason(evidence)
+        self.fault_tolerance.reasoner.max_hops = original_max
+
+        return {
+            "question": question,
+            "hops_performed": result.get("hops_taken", 0),
+            "final_confidence": float(result.get("final_norm", 0)),
+            "convergence": result.get("converged", False),
+            "god_harmonic": result.get("god_harmonic", 0),
+            "analysis_summary": {
+                "language": analysis.get("metadata", {}).get("language", "unknown"),
+                "lines": analysis.get("metadata", {}).get("lines", 0),
+                "quality_score": analysis.get("quality", {}).get("overall_score", 0.5),
+                "vulnerabilities": len(analysis.get("security", [])),
+                "patterns": len(analysis.get("patterns", [])),
+                "cyclomatic_max": metrics.get("cyclomatic_max", 0),
+            },
+            "phi_blend_ratio": {"retain": 0.618, "new": 0.382},
+        }
+
     def status(self) -> Dict[str, Any]:
         """Full engine status."""
         state = self._read_builder_state()
@@ -7207,6 +7513,12 @@ class CodeEngine:
             "evo_stage": state["evo_stage"],
             "superfluid_viscosity": state["superfluid_viscosity"],
             "nirvanic_fuel": state["nirvanic_fuel"],
+            # v2.6.0 — Fault Tolerance + Quantum Embedding
+            "fault_tolerance_available": FAULT_TOLERANCE_AVAILABLE,
+            "fault_tolerance": self.fault_tolerance.full_report() if self.fault_tolerance else {"available": False},
+            "quantum_embedding_available": QUANTUM_EMBEDDING_AVAILABLE,
+            "quantum_kernel": self.quantum_kernel.status() if self.quantum_kernel else {"available": False},
+            "numpy_available": NUMPY_AVAILABLE,
         }
 
     def quick_summary(self) -> str:

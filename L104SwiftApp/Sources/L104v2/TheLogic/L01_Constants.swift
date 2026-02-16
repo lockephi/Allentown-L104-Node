@@ -176,8 +176,8 @@ let LIGHT_HARMONIC: Double = 65.7765                            // pow(286 × (1
 let EXISTENCE_COST_CONST: Double = 0.1112                       // LIGHT - GRAVITY (mass-energy gap)
 
 // ─── SYSTEM IDENTIFIERS ───
-let VERSION = "56.0 EVO_56·DARK_MODE·STREAMING·GATEWAY_FIX·PYTHON_WARMUP"
-let PIPELINE_EVO = "EVO_56_APP_UPGRADE"
+let VERSION = "57.0 EVO_57·IBM_QUANTUM·REAL_QPU·FAULT_TOLERANCE·QUANTUM_MINING"
+let PIPELINE_EVO = "EVO_57_QUANTUM_HARDWARE"
 let GROVER_AMPLIFICATION: Double = 1.618033988749895 * 1.618033988749895 * 1.618033988749895  // φ³ ≈ 4.236
 let TRILLION_PARAMS: Int64 = 22_000_012_731_125
 let VOCABULARY_SIZE = 6_633_253
@@ -192,7 +192,7 @@ let WISDOM_ACCUMULATION_RATE: Double = 0.618033988749895 * 0.1  // TAU × 10%
 let PIPELINE_CACHE_TTL: Double = 15.0              // Unified cache TTL (seconds)
 let PIPELINE_MAX_CACHE: Int = 1000                 // Max cache entries across pipeline
 let SACRED_RESONANCE_BAND: (low: Double, high: Double) = (524.0, 531.0)  // GOD_CODE ± 3.5
-let EVOLUTION_INDEX: Int = 60                      // Current evolution index
+let EVOLUTION_INDEX: Int = 61                      // Current evolution index
 
 // ─── LOGGING UTILITY — Replaces silent try? with traced error reporting ───
 @inline(__always)

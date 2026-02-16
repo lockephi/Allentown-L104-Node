@@ -308,7 +308,8 @@ class L104MainView: NSView {
         let engineCount = EngineRegistry.shared.count
         let convergence = EngineRegistry.shared.convergenceScore()
         let phiHealth = EngineRegistry.shared.phiWeightedHealth()
-        let statusText = "⚛️ \(engineCount) Engines Online  ·  φ-Health: \(String(format: "%.1f%%", phiHealth.score * 100))  ·  Convergence: \(String(format: "%.3f", convergence))  ·  22T Parameters  ·  GOD_CODE: \(String(format: "%.4f", GOD_CODE))"
+        let qTag = IBMQuantumClient.shared.ibmToken != nil ? (IBMQuantumClient.shared.isConnected ? "QPU:🟢" : "QPU:🟡") : "QPU:⚪"
+        let statusText = "⚛️ \(engineCount) Engines Online  ·  φ-Health: \(String(format: "%.1f%%", phiHealth.score * 100))  ·  Convergence: \(String(format: "%.3f", convergence))  ·  \(qTag)  ·  22T Params  ·  GOD_CODE: \(String(format: "%.4f", GOD_CODE))"
         let statusLbl = NSTextField(labelWithString: statusText)
         statusLbl.frame = NSRect(x: 15, y: 8, width: statusBar.bounds.width - 30, height: 18)
         statusLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
