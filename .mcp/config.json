@@ -101,13 +101,13 @@
         }
     },
     "model_selection": {
-        "default": "claude-opus-4-5",
+        "default": "claude-opus-4-6",
         "task_routing": {
-            "quick_edits": "opus-4-5",
-            "complex_reasoning": "opus-4-5",
-            "code_generation": "opus-4-5",
+            "quick_edits": "sonnet",
+            "complex_reasoning": "opus",
+            "code_generation": "opus",
             "bulk_operations": "haiku",
-            "architecture": "opus-4-5"
+            "architecture": "opus"
         }
     },
     "mcp_servers": {
@@ -182,11 +182,12 @@
         "project_type": "L104 AGI Node",
         "languages": [
             "Python",
-            "Solidity",
+            "Swift",
             "TypeScript",
             "Go",
             "Rust",
-            "Elixir"
+            "Elixir",
+            "C"
         ],
         "key_files": {
             "contracts": "contracts/*.sol",
@@ -202,7 +203,7 @@
             "MINING_REWARD": 104,
             "TWO_PI_SCALED": 6283185307
         },
-        "evolution_stage": "EVO_33",
-        "api_version": "33.0.0"
+        "evolution_stage": "EVO_54_TRANSCENDENT_COGNITION",
+        "api_version": "38.0.0"
     }
 }

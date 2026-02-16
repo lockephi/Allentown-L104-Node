@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // L07_QuantumLogicGate.swift — L104 v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// QuantumLogicGateEngine class
+// [EVO_56_APEX_WIRED] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// QuantumLogicGateEngine class — v24.0 Phase 46: Apex Intelligence + Quantum Gates re-enabled
 // Extracted from L104Native.swift (lines 26753-27335)
 // ═══════════════════════════════════════════════════════════════════
 
@@ -10,6 +10,19 @@ import Foundation
 import Accelerate
 import simd
 import NaturalLanguage
+
+// ═══ PHASE 46: Response Quality Scoring ═══
+struct ResponseQualityScore {
+    let contentDensity: Double      // ratio of substantive content parts
+    let sourceDiversity: Int        // number of distinct sources used
+    let noveltyScore: Double        // anti-repetition hash check
+    let coherenceScore: Double      // quantum coherence at synthesis time
+    let lengthScore: Double         // normalized by target range
+    var composite: Double {
+        (contentDensity * 0.3 + Double(min(sourceDiversity, 5)) / 5.0 * 0.2 +
+         noveltyScore * 0.2 + coherenceScore * 0.2 + lengthScore * 0.1)
+    }
+}
 
 final class QuantumLogicGateEngine {
     static let shared = QuantumLogicGateEngine()
@@ -318,6 +331,21 @@ final class QuantumLogicGateEngine {
         let relevant = creativePool.filter { item in resolvedTopics.contains(where: { item.lowercased().contains($0.lowercased()) }) }
         if let creative = relevant.randomElement() ?? (creativePool.count > 0 ? creativePool.randomElement() : nil) { evolvedParts.append(creative) }
 
+        // ═══ GATE 4.5: Apex Intelligence Enrichment — Route through 7 ASI engines (v24.0) ═══
+        let apex = ApexIntelligenceCoordinator.shared
+        let apexInsight = apex.generateInsight(topic: resolvedTopics.first ?? query)
+        if apexInsight.novelty > 0.3 && apexInsight.insight.count > 40 {
+            evolvedParts.append(apexInsight.insight)
+        }
+        // Feed consciousness state for coherence tracking
+        let consciousness = ConsciousnessSubstrate.shared
+        if let thought = consciousness.processInput(source: "ncg_pipeline", content: query, features: topicVector) {
+            let narration = consciousness.narrate(thought: thought)
+            if narration.count > 30 {
+                evolvedParts.append(narration)
+            }
+        }
+
         // GATE 5: Quantum Coherence Fusion + Gate V2 Dimension Prioritization
         let grover = GroverResponseAmplifier.shared
         let qualityKB = grover.filterPool(fragments)
@@ -406,18 +434,22 @@ final class QuantumLogicGateEngine {
 
         // ═══ PHASE 31.0 QUANTUM GATES ═══
 
-        // GATE 11: Quantum Tunneling — DISABLED (Phase 31.5: caused unrelated content injection)
-        // Short responses are fine — quality over quantity
-        /*
-        if response.count < 200 || contentParts.count < 2 {
-            for topic in resolvedTopics {
+        // GATE 11: Quantum Tunneling — Cross-domain knowledge bridging (re-enabled v24.0)
+        // Quality guard: only inject if tunneled content shares vocabulary with query
+        if response.count < 200 && contentParts.count < 3 {
+            for topic in resolvedTopics.prefix(2) {
                 if let tunneled = quantumTunnel(topic: topic, query: query) {
-                    response += "\n\n" + tunneled
-                    break
+                    // Semantic relevance check: require 2+ shared words (4+ chars) with query
+                    let queryWords = Set(query.lowercased().split(separator: " ").map(String.init).filter { $0.count > 3 })
+                    let tunneledWords = Set(tunneled.lowercased().split(separator: " ").map(String.init).filter { $0.count > 3 })
+                    let overlap = queryWords.intersection(tunneledWords).count
+                    if overlap >= 2 {
+                        response += "\n\n" + tunneled
+                        break
+                    }
                 }
             }
         }
-        */
 
         // GATE 12: Entanglement Memory — Link co-occurring topics for future correlation
         if resolvedTopics.count >= 2 {
@@ -427,24 +459,23 @@ final class QuantumLogicGateEngine {
                 }
             }
         }
-        // Inject entangled insights from correlated topics — DISABLED (Phase 31.5: caused cross-topic contamination)
-        // Entanglement is tracked but no longer injected into responses
-        /*
+        // Inject entangled insights — re-enabled v24.0 with stricter threshold (was 0.5, now 0.7)
         for topic in resolvedTopics.prefix(2) {
             let entangled = findEntangledTopics(topic)
-            if let strongest = entangled.first, strongest.1 > 0.5 {
+            if let strongest = entangled.first, strongest.1 > 0.7 {
                 let crossResults = ASIKnowledgeBase.shared.searchWithPriority(strongest.0, limit: 3)
                 if let crossFrag = crossResults.first?["completion"] as? String,
                    crossFrag.count > 50 && state.isCleanKnowledge(crossFrag) {
                     let cleaned = state.cleanSentences(crossFrag)
-                    if !response.contains(String(cleaned.prefix(40))) {
-                        response += "\n\n⚛️ *Entangled insight from \(strongest.0):* " + cleaned
+                    // Semantic dedup: skip if response already contains this content
+                    let key = String(cleaned.prefix(60)).lowercased()
+                    if cleaned.count > 30 && !response.lowercased().contains(key) {
+                        response += "\n\n" + cleaned
                         break
                     }
                 }
             }
         }
-        */
 
         // GATE 13: Decoherence Guard — Maintain quantum state quality
         applyDecoherence()
@@ -454,6 +485,20 @@ final class QuantumLogicGateEngine {
 
         // GATE 14: Quantum Error Correction — Fix quality drift
         response = errorCorrect(response)
+
+        // GATE 15: Quality Scoring — Feed metrics to GoldenSectionOptimizer (v24.0)
+        let qualityScore = ResponseQualityScore(
+            contentDensity: Double(contentParts.count) / 10.0,
+            sourceDiversity: min(fragments.count, 5),
+            noveltyScore: isRepeat ? 0.3 : 1.0,
+            coherenceScore: quantumCoherenceScore,
+            lengthScore: min(Double(response.count) / 800.0, 1.0)
+        )
+        GoldenSectionOptimizer.shared.recordPerformance(
+            parameter: "response_quality",
+            value: qualityScore.composite,
+            score: qualityScore.composite
+        )
 
         return response
     }

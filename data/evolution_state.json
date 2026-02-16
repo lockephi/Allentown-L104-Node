@@ -515,6 +515,11 @@
       "generation": 5533,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
+    },
+    {
+      "generation": 5341,
+      "fitness": 53.7425,
+      "outcome": "SAGE_EVOLUTION"
     }
   ],
   "sage_mode_active": true,

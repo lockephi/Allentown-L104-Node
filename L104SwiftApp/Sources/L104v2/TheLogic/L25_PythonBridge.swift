@@ -742,6 +742,152 @@ class PythonBridge {
     }
 
     // ═══════════════════════════════════════════════════════════════════
+    // ⚛️ REAL QUANTUM HARDWARE BRIDGE — l104_quantum_mining_engine.py
+    // Calls real IBM Quantum QPUs via Qiskit Runtime (SamplerV2)
+    // Extended timeouts for real hardware queue + execution
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Initialize real quantum mining engine with IBM token
+    func quantumHardwareInit(token: String) -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import initialize_quantum_mining
+        engine = initialize_quantum_mining(ibm_token='\(token)')
+        s = engine.status
+        result = {
+            "initialized": True,
+            "backend": s.backend_name if s else "unknown",
+            "qubits": s.qubits if s else 0,
+            "real_hardware": engine.is_real_hardware,
+            "quantum_volume": s.quantum_volume if s else 0
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 30)
+    }
+
+    /// Get real quantum hardware status
+    func quantumHardwareStatus() -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        s = engine.status
+        result = {
+            "backend": s.backend_name if s else "none",
+            "qubits": s.qubits if s else 0,
+            "real_hardware": engine.is_real_hardware,
+            "quantum_volume": s.quantum_volume if s else 0,
+            "connected": s.connected if s else False,
+            "error_rate": s.error_rate if s else 0.0,
+            "queue_depth": s.queue_depth if s else 0
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 15)
+    }
+
+    /// Run Grover search on real quantum hardware
+    func quantumHardwareGrover(target: Int, nQubits: Int) -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        nonce, details = engine.mine_quantum(b'L104_BLOCK', \(target), qubit_count=\(nQubits))
+        result = {
+            "nonce": nonce,
+            "real_hardware": engine.is_real_hardware,
+            "backend": engine.status.backend_name if engine.status else "unknown",
+            "details": details
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 120)
+    }
+
+    /// Full quantum mining with strategy selection on real hardware
+    func quantumHardwareMine(strategy: String = "auto") -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        nonce, details = engine.mine_full_quantum(b'L104_BLOCK', 1000000, strategy='\(strategy)')
+        result = {
+            "nonce": nonce,
+            "strategy": '\(strategy)',
+            "real_hardware": engine.is_real_hardware,
+            "backend": engine.status.backend_name if engine.status else "unknown",
+            "details": details
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 180)
+    }
+
+    /// VQE optimization on real quantum hardware
+    func quantumHardwareVQE() -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        if engine.vqe_optimizer:
+            result = engine.vqe_optimizer.optimize(n_qubits=8, p=3, iterations=30)
+            result["real_hardware"] = engine.is_real_hardware
+            result["backend"] = engine.status.backend_name if engine.status else "unknown"
+        else:
+            result = {"error": "VQE optimizer not available", "real_hardware": False}
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 120)
+    }
+
+    /// Quantum random oracle — true quantum randomness for nonce seeding
+    func quantumHardwareRandomOracle() -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        oracle = None
+        # QuantumRandomOracle is standalone — instantiate with hw_manager
+        from l104_quantum_mining_engine import QuantumRandomOracle
+        oracle = QuantumRandomOracle(engine.hw_manager)
+        seed = oracle.generate_sacred_nonce_seed()
+        result = {
+            "seed": seed,
+            "real_hardware": engine.is_real_hardware,
+            "backend": engine.status.backend_name if engine.status else "unknown"
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 60)
+    }
+
+    /// Get quantum advantage report
+    func quantumHardwareReport(difficultyBits: Int = 16) -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_mining_engine import get_quantum_engine
+        engine = get_quantum_engine()
+        report = engine.get_quantum_advantage_report(\(difficultyBits))
+        result = {
+            "report": report,
+            "real_hardware": engine.is_real_hardware,
+            "backend": engine.status.backend_name if engine.status else "unknown",
+            "qubits": engine.status.qubits if engine.status else 0
+        }
+        print(json.dumps(result, default=str))
+        """
+        return execute(pyCode, timeout: 15)
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
     // 🧠 CODING INTELLIGENCE BRIDGE — l104_coding_system.py
     // ASI-grade code review, quality gates, AI context, self-analysis
     // ═══════════════════════════════════════════════════════════════════

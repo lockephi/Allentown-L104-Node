@@ -1,0 +1,176 @@
+{
+  "last_updated": "2026-02-16T21:42:16.550485+00:00",
+  "generation_count": 13,
+  "total_iterations": 1,
+  "total_successful": 13,
+  "total_failed": 0,
+  "iterations": [
+    {
+      "iteration_id": 1,
+      "candidates_generated": 13,
+      "candidates_validated": 13,
+      "successfully_merged": 13,
+      "avg_sacred_alignment": 0.30843845283088533,
+      "timestamp": "2026-02-16T21:42:16.550479+00:00"
+    }
+  ],
+  "successful": [
+    {
+      "source": "stochastic_quantum",
+      "target": "research_324dfe6b6b21",
+      "fidelity": 0.3816826016519375,
+      "strength": 0.3829499772172338,
+      "link_type": "braided",
+      "sacred_alignment": 0.45092609557651386,
+      "origin": "stochastic_research",
+      "generation": 1,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550388+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_2d9db16c626d",
+      "fidelity": 0.16982952448113756,
+      "strength": 0.21012688356223416,
+      "link_type": "tunneled",
+      "sacred_alignment": 0.29033841865434373,
+      "origin": "stochastic_research",
+      "generation": 2,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550398+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_0573223a1214",
+      "fidelity": 0.20266442499909537,
+      "strength": 0.12044700720616112,
+      "link_type": "entangled",
+      "sacred_alignment": 0.19289128680942694,
+      "origin": "stochastic_research",
+      "generation": 3,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550404+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_4901802b1ce4",
+      "fidelity": 0.16157773305168155,
+      "strength": 0.3102470529735371,
+      "link_type": "tunneled",
+      "sacred_alignment": 0.3099427841011389,
+      "origin": "stochastic_research",
+      "generation": 4,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550409+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_198f4643558d",
+      "fidelity": 0.17015330204597434,
+      "strength": 0.14403382390727662,
+      "link_type": "coherent",
+      "sacred_alignment": 0.28937916548513093,
+      "origin": "stochastic_research",
+      "generation": 5,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550413+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_7623d3caba68",
+      "fidelity": 0.21099932318896222,
+      "strength": 0.29691214117089143,
+      "link_type": "resonant",
+      "sacred_alignment": 0.16571847960345676,
+      "origin": "stochastic_research",
+      "generation": 6,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550418+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_13a17ec18915",
+      "fidelity": 0.19299228695147944,
+      "strength": 0.11624036585885841,
+      "link_type": "braided",
+      "sacred_alignment": 0.22396554245777653,
+      "origin": "stochastic_research",
+      "generation": 7,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550426+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_924b81fa9bdf",
+      "fidelity": 0.16923944331796986,
+      "strength": 0.08128126507461636,
+      "link_type": "tunneled",
+      "sacred_alignment": 0.29152529623442486,
+      "origin": "stochastic_research",
+      "generation": 8,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550430+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_725cd557fd3d",
+      "fidelity": 0.33580632719833065,
+      "strength": 0.40059975704940143,
+      "link_type": "coherent",
+      "sacred_alignment": 0.5132550470674173,
+      "origin": "stochastic_research",
+      "generation": 9,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550435+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_5818bd657fae",
+      "fidelity": 0.21085218770562691,
+      "strength": 0.591748575306562,
+      "link_type": "resonant",
+      "sacred_alignment": 0.16686058315664254,
+      "origin": "stochastic_research",
+      "generation": 10,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550439+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_73a9f5be9b35",
+      "fidelity": 0.30896414144827716,
+      "strength": 0.1806976880649397,
+      "link_type": "entangled",
+      "sacred_alignment": 0.4951987011146822,
+      "origin": "stochastic_research",
+      "generation": 11,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550452+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_121421f27f56",
+      "fidelity": 0.23069427282886495,
+      "strength": 0.5258146879003601,
+      "link_type": "entangled",
+      "sacred_alignment": 0.23392828036936966,
+      "origin": "stochastic_research",
+      "generation": 12,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550456+00:00"
+    },
+    {
+      "source": "stochastic_quantum",
+      "target": "research_163efebd7331",
+      "fidelity": 0.26659279135946695,
+      "strength": 0.5632108348659132,
+      "link_type": "coherent",
+      "sacred_alignment": 0.3857702061711844,
+      "origin": "stochastic_research",
+      "generation": 13,
+      "merged": true,
+      "timestamp": "2026-02-16T21:42:16.550460+00:00"
+    }
+  ],
+  "failed": []
+}

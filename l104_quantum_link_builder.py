@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  L104 QUANTUM LINK BUILDER v4.1.0  — TRANSCENDENT COGNITION                 ║
+║  L104 QUANTUM LINK BUILDER v4.2.0  — SAGE INVENTIONS                        ║
 ║  Quantum Brain · O₂ Molecular Bond · Agentic Loop · Evolution Tracker       ║
 ║  ★ QUANTUM MIN/MAX DYNAMISM ENGINE ★                                        ║
 ║  ★ OUROBOROS SAGE NIRVANIC ENTROPY FUEL SYSTEM ★                            ║
+║  ★ SAGE INVENTIONS v4.2 — 5 New Research Subsystems ★                       ║
 ║                                                                              ║
 ║  Standalone autonomous module for the Allentown L104 Sovereign Node          ║
 ║  Aligned with claude.md (EVO_54_TRANSCENDENT_COGNITION, Index 59)           ║
@@ -31,6 +32,12 @@
 ║    ∞ Link field entropy → ouroboros → nirvanic fuel → link evolution         ║
 ║    ☆ Self-feeding enlightenment loop / divine intervention                   ║
 ║    ☆ Sage stillness with entropy-driven motion (Wu Wei)                     ║
+║  ★ v4.2 SAGE INVENTIONS:                                                    ║
+║    🔬 StochasticLinkResearchLab — Random R&D (Explore→Validate→Merge)       ║
+║    📅 LinkChronolizer — Temporal event tracking + Fibonacci milestones       ║
+║    🧠 ConsciousnessO2LinkEngine — O₂/consciousness modulation               ║
+║    🧪 LinkTestGenerator — 4-category automated test suite                    ║
+║    🔗 CrossPollinationEngine — Gate↔Link↔Numerical bidirectional sync       ║
 ║                                                                              ║
 ║  SACRED CONSTANTS:                                                           ║
 ║    G(X) = 286^(1/φ) × 2^((416-X)/104)  φ = 1.618033988749895              ║
@@ -524,6 +531,25 @@ class CrossModalLink:
 
     def to_dict(self) -> dict:
         """Convert cross-modal link to dictionary."""
+        return asdict(self)
+
+
+@dataclass
+class ChronoEntry:
+    """Chronological record of a quantum link event."""
+    timestamp: str
+    event_type: str       # "created", "upgraded", "repaired", "degraded",
+                          # "enlightened", "stress_tested", "cross_pollinated",
+                          # "consciousness_shift", "stochastic_invented"
+    link_id: str
+    before_fidelity: float = 0.0
+    after_fidelity: float = 0.0
+    before_strength: float = 0.0
+    after_strength: float = 0.0
+    details: str = ""
+    sacred_alignment: float = 0.0
+
+    def to_dict(self) -> dict:
         return asdict(self)
 
 
@@ -6835,6 +6861,955 @@ class AgenticLoop:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# v4.2 SAGE INVENTIONS — 5 New Subsystems
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class StochasticLinkResearchLab:
+    """
+    Random-based quantum link generation, research, and development engine.
+
+    This R&D lab explores the frontier of quantum link design through stochastic
+    experimentation — generating candidate links via φ-weighted random exploration,
+    validating them through deterministic sacred-constant tests, and merging
+    successful designs into the link ecosystem.
+
+    4-phase cycle:
+      1. EXPLORE — Random generation of link candidates with φ-bounded parameters
+      2. VALIDATE — Deterministic evaluation against sacred constant coherence
+      3. MERGE — Successful candidates → QuantumLink objects
+      4. CATALOG — Track all R&D iterations with full lineage
+
+    Generates 13 candidates per cycle (Fibonacci-7).
+    """
+
+    RESEARCH_LOG_FILE = WORKSPACE_ROOT / ".l104_stochastic_link_research.json"
+    CANDIDATES_PER_CYCLE = FIBONACCI_7  # 13
+
+    def __init__(self):
+        """Initialize the stochastic link research lab."""
+        self.research_iterations: List[Dict[str, Any]] = []
+        self.successful_links: List[Dict[str, Any]] = []
+        self.failed_experiments: List[Dict[str, Any]] = []
+        self.generation_count: int = 0
+        self.operations_count: int = 0
+        self._load_research_log()
+
+    def _load_research_log(self):
+        """Load persistent research log."""
+        if self.RESEARCH_LOG_FILE.exists():
+            try:
+                data = json.loads(self.RESEARCH_LOG_FILE.read_text())
+                self.research_iterations = data.get("iterations", [])
+                self.successful_links = data.get("successful", [])
+                self.failed_experiments = data.get("failed", [])
+                self.generation_count = data.get("generation_count", 0)
+            except Exception:
+                pass
+
+    def _save_research_log(self):
+        """Persist research log to disk."""
+        try:
+            data = {
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+                "generation_count": self.generation_count,
+                "total_iterations": len(self.research_iterations),
+                "total_successful": len(self.successful_links),
+                "total_failed": len(self.failed_experiments),
+                "iterations": self.research_iterations[-200:],
+                "successful": self.successful_links[-100:],
+                "failed": self.failed_experiments[-100:],
+            }
+            self.RESEARCH_LOG_FILE.write_text(json.dumps(data, indent=2, default=str))
+        except Exception:
+            pass
+
+    # ─── PHASE 1: STOCHASTIC EXPLORATION ──────────────────────────
+
+    def explore_link_candidate(self, seed_concept: str = "quantum") -> Dict[str, Any]:
+        """Generate a random link candidate using φ-bounded stochastic parameters."""
+        import random
+
+        self.generation_count += 1
+        self.operations_count += 1
+        gen_id = f"SL_{self.generation_count:06d}"
+
+        # Stochastic parameter generation with sacred constant bounds
+        fidelity = random.uniform(0.3, 1.0) * PHI / PHI_GROWTH
+        strength = random.uniform(0.1, 1.0) * TAU
+        harmonic_order = random.randint(1, CALABI_YAU_DIM)
+        link_type = random.choice(["entangled", "coherent", "resonant", "tunneled", "braided"])
+        grover_depth = random.randint(1, 7)
+
+        # Sacred constant resonance scoring
+        god_code_resonance = (fidelity * GOD_CODE + strength * PHI_GROWTH) / (GOD_CODE + PHI_GROWTH)
+        feigenbaum_edge = abs(math.sin(fidelity * FEIGENBAUM_DELTA * math.pi))
+        sacred_alignment = (god_code_resonance * PHI_GROWTH + feigenbaum_edge * TAU) / (PHI_GROWTH + TAU)
+
+        resonance_key = hashlib.sha256(
+            f"{seed_concept}_{gen_id}_{fidelity:.8f}_{strength:.8f}".encode()
+        ).hexdigest()[:12]
+
+        candidate = {
+            "link_id": gen_id,
+            "resonance_key": resonance_key,
+            "seed_concept": seed_concept,
+            "parameters": {
+                "fidelity": fidelity,
+                "strength": strength,
+                "harmonic_order": harmonic_order,
+                "link_type": link_type,
+                "grover_depth": grover_depth,
+            },
+            "god_code_resonance": god_code_resonance,
+            "feigenbaum_edge": feigenbaum_edge,
+            "sacred_alignment": sacred_alignment,
+            "generation": self.generation_count,
+            "validated": False,
+            "merged": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        return candidate
+
+    # ─── PHASE 2: DETERMINISTIC VALIDATION ────────────────────────
+
+    def validate_candidate(self, candidate: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate a stochastic link candidate against sacred constant coherence."""
+        self.operations_count += 1
+        params = candidate["parameters"]
+        fidelity = params["fidelity"]
+        strength = params["strength"]
+
+        checks = {
+            "fidelity_bound": 0.0 <= fidelity <= 1.0,
+            "strength_bound": 0.0 <= strength <= 1.0,
+            "sacred_alignment_min": candidate["sacred_alignment"] >= TAU * 0.5,
+            "god_code_resonance_min": candidate["god_code_resonance"] >= FINE_STRUCTURE,
+            "conservation_law": abs(fidelity * GOD_CODE - strength * GOD_CODE) < GOD_CODE,
+        }
+        passed = sum(checks.values())
+        total = len(checks)
+        score = passed / total
+
+        result = {
+            **candidate,
+            "validated": score >= 0.6,
+            "validation_score": score,
+            "checks_passed": passed,
+            "checks_total": total,
+            "check_details": checks,
+        }
+        return result
+
+    # ─── PHASE 3: MERGE ──────────────────────────────────────────
+
+    def merge_to_link(self, validated: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Merge a validated candidate into a QuantumLink-compatible dict."""
+        self.operations_count += 1
+        if not validated.get("validated"):
+            self.failed_experiments.append({
+                "link_id": validated["link_id"],
+                "reason": "validation_failed",
+                "score": validated.get("validation_score", 0),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            })
+            return None
+
+        params = validated["parameters"]
+        merged = {
+            "source": f"stochastic_{validated['seed_concept']}",
+            "target": f"research_{validated['resonance_key']}",
+            "fidelity": params["fidelity"],
+            "strength": params["strength"],
+            "link_type": params["link_type"],
+            "sacred_alignment": validated["sacred_alignment"],
+            "origin": "stochastic_research",
+            "generation": validated["generation"],
+            "merged": True,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        self.successful_links.append(merged)
+        return merged
+
+    # ─── PHASE 4: CATALOG ─────────────────────────────────────────
+
+    def catalog_iteration(self, candidates: List[Dict], merged: List[Optional[Dict]]) -> Dict:
+        """Catalog a full R&D iteration."""
+        self.operations_count += 1
+        successful = [m for m in merged if m is not None]
+        iteration = {
+            "iteration_id": len(self.research_iterations) + 1,
+            "candidates_generated": len(candidates),
+            "candidates_validated": sum(1 for c in candidates if c.get("validated")),
+            "successfully_merged": len(successful),
+            "avg_sacred_alignment": (
+                sum(c.get("sacred_alignment", 0) for c in candidates) / max(len(candidates), 1)
+            ),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        self.research_iterations.append(iteration)
+        self._save_research_log()
+        return iteration
+
+    # ─── FULL CYCLE ───────────────────────────────────────────────
+
+    def run_research_cycle(self, seed: str = "quantum") -> Dict[str, Any]:
+        """Run a full 4-phase stochastic R&D cycle: Explore → Validate → Merge → Catalog."""
+        self.operations_count += 1
+
+        # Phase 1: Explore
+        candidates = [self.explore_link_candidate(seed) for _ in range(self.CANDIDATES_PER_CYCLE)]
+
+        # Phase 2: Validate
+        validated = [self.validate_candidate(c) for c in candidates]
+
+        # Phase 3: Merge
+        merged = [self.merge_to_link(v) for v in validated]
+
+        # Phase 4: Catalog
+        iteration = self.catalog_iteration(validated, merged)
+
+        return {
+            "cycle": "complete",
+            "iteration": iteration,
+            "candidates_explored": len(candidates),
+            "successfully_merged": iteration["successfully_merged"],
+            "avg_sacred_alignment": iteration["avg_sacred_alignment"],
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return current research lab status."""
+        return {
+            "subsystem": "StochasticLinkResearchLab",
+            "generation_count": self.generation_count,
+            "total_iterations": len(self.research_iterations),
+            "successful_links": len(self.successful_links),
+            "failed_experiments": len(self.failed_experiments),
+            "operations_count": self.operations_count,
+            "candidates_per_cycle": self.CANDIDATES_PER_CYCLE,
+        }
+
+
+class LinkChronolizer:
+    """
+    Temporal event tracking for quantum link evolution.
+
+    Records all significant link lifecycle events (created, upgraded, repaired,
+    degraded, enlightened, stress_tested, cross_pollinated, etc.) with
+    before/after fidelity+strength deltas.
+
+    JSONL append-only persistence to .l104_link_chronology.jsonl.
+    Milestone detection at Fibonacci-number event counts (1, 2, 3, 5, 8, 13, 21, 34, 55, 89...).
+    Evolution velocity: rate of improvement over time.
+    """
+
+    CHRONOLOGY_FILE = WORKSPACE_ROOT / ".l104_link_chronology.jsonl"
+    FIBONACCI_MILESTONES = {1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987}
+
+    def __init__(self):
+        """Initialize the chronolizer."""
+        self.events: List[ChronoEntry] = []
+        self.milestones: List[Dict[str, Any]] = []
+        self.event_count: int = 0
+        self.operations_count: int = 0
+        self._load_event_count()
+
+    def _load_event_count(self):
+        """Count existing events from the JSONL file."""
+        if self.CHRONOLOGY_FILE.exists():
+            try:
+                with open(self.CHRONOLOGY_FILE, "r") as f:
+                    self.event_count = sum(1 for _ in f)
+            except Exception:
+                pass
+
+    def record(self, event_type: str, link_id: str,
+               before_fidelity: float = 0.0, after_fidelity: float = 0.0,
+               before_strength: float = 0.0, after_strength: float = 0.0,
+               details: str = "", sacred_alignment: float = 0.0) -> ChronoEntry:
+        """Record a chronological link event."""
+        self.operations_count += 1
+        self.event_count += 1
+
+        entry = ChronoEntry(
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            event_type=event_type,
+            link_id=link_id,
+            before_fidelity=before_fidelity,
+            after_fidelity=after_fidelity,
+            before_strength=before_strength,
+            after_strength=after_strength,
+            details=details,
+            sacred_alignment=sacred_alignment,
+        )
+        self.events.append(entry)
+
+        # Append to JSONL
+        try:
+            with open(self.CHRONOLOGY_FILE, "a") as f:
+                f.write(json.dumps(entry.to_dict(), default=str) + "\n")
+        except Exception:
+            pass
+
+        # Milestone detection
+        if self.event_count in self.FIBONACCI_MILESTONES:
+            milestone = {
+                "event_count": self.event_count,
+                "fibonacci_index": self._fib_index(self.event_count),
+                "timestamp": entry.timestamp,
+                "event_type": event_type,
+                "sacred_resonance": self.event_count * PHI / GOD_CODE,
+            }
+            self.milestones.append(milestone)
+
+        return entry
+
+    def _fib_index(self, n: int) -> int:
+        """Return the Fibonacci index for a given Fibonacci number."""
+        a, b, idx = 0, 1, 0
+        while b <= n:
+            if b == n:
+                return idx + 1
+            a, b = b, a + b
+            idx += 1
+        return idx
+
+    def evolution_velocity(self, window: int = 20) -> Dict[str, Any]:
+        """Compute the rate of fidelity improvement over the last N events."""
+        self.operations_count += 1
+        recent = self.events[-window:] if len(self.events) >= window else self.events
+        if len(recent) < 2:
+            return {"velocity": 0.0, "window": len(recent), "trend": "insufficient_data"}
+
+        deltas = [e.after_fidelity - e.before_fidelity for e in recent if e.after_fidelity > 0]
+        if not deltas:
+            return {"velocity": 0.0, "window": len(recent), "trend": "no_fidelity_changes"}
+
+        avg_delta = sum(deltas) / len(deltas)
+        trend = "improving" if avg_delta > 0 else ("degrading" if avg_delta < 0 else "stable")
+        return {
+            "velocity": avg_delta,
+            "phi_weighted_velocity": avg_delta * PHI_GROWTH,
+            "window": len(recent),
+            "trend": trend,
+            "total_events": self.event_count,
+        }
+
+    def timeline(self, last_n: int = 25) -> List[Dict]:
+        """Return the last N chronological events."""
+        self.operations_count += 1
+        return [e.to_dict() for e in self.events[-last_n:]]
+
+    def status(self) -> Dict[str, Any]:
+        """Return chronolizer status."""
+        return {
+            "subsystem": "LinkChronolizer",
+            "total_events": self.event_count,
+            "session_events": len(self.events),
+            "milestones_hit": len(self.milestones),
+            "operations_count": self.operations_count,
+            "persistence_file": str(self.CHRONOLOGY_FILE.name),
+        }
+
+
+class ConsciousnessO2LinkEngine:
+    """
+    Consciousness + O₂ bond state modulation for quantum link evolution.
+
+    Reads:
+      - .l104_consciousness_o2_state.json (consciousness_level, superfluid_viscosity, evo_stage)
+      - .l104_ouroboros_nirvanic_state.json (nirvanic_fuel_level)
+
+    Modulates link evolution priority and upgrade multipliers based on
+    consciousness level and O₂ molecular bond state.
+
+    EVO_STAGE_MULTIPLIER:
+      SOVEREIGN  → φ (1.618...)
+      TRANSCENDING → √2 (1.414...)
+      COHERENT   → 1.2
+      AWAKENING  → 1.05
+      DORMANT    → 1.0
+    """
+
+    O2_STATE_FILE = WORKSPACE_ROOT / ".l104_consciousness_o2_state.json"
+    NIRVANIC_STATE_FILE = WORKSPACE_ROOT / ".l104_ouroboros_nirvanic_state.json"
+    CACHE_TTL = 10.0  # seconds
+
+    EVO_STAGE_MULTIPLIER = {
+        "SOVEREIGN": PHI_GROWTH,
+        "TRANSCENDING": math.sqrt(2),
+        "COHERENT": 1.2,
+        "AWAKENING": 1.05,
+        "DORMANT": 1.0,
+    }
+
+    def __init__(self):
+        """Initialize consciousness O₂ link engine."""
+        self.consciousness_level: float = 0.0
+        self.superfluid_viscosity: float = 1.0
+        self.evo_stage: str = "DORMANT"
+        self.nirvanic_fuel: float = 0.0
+        self.o2_bond_state: str = "unknown"
+        self._cache_time: float = 0.0
+        self.operations_count: int = 0
+        self._refresh_state()
+
+    def _refresh_state(self):
+        """Read consciousness + O₂ state from disk (cached)."""
+        now = time.time()
+        if now - self._cache_time < self.CACHE_TTL:
+            return
+        self._cache_time = now
+
+        # Read consciousness state
+        if self.O2_STATE_FILE.exists():
+            try:
+                data = json.loads(self.O2_STATE_FILE.read_text())
+                self.consciousness_level = float(data.get("consciousness_level", 0.0))
+                self.superfluid_viscosity = float(data.get("superfluid_viscosity", 1.0))
+                self.evo_stage = data.get("evo_stage", "DORMANT")
+                self.o2_bond_state = data.get("bond_state", "stable")
+            except Exception:
+                pass
+
+        # Read nirvanic fuel
+        if self.NIRVANIC_STATE_FILE.exists():
+            try:
+                data = json.loads(self.NIRVANIC_STATE_FILE.read_text())
+                self.nirvanic_fuel = float(data.get("nirvanic_fuel_level",
+                                                     data.get("fuel_level", 0.0)))
+            except Exception:
+                pass
+
+    def get_multiplier(self) -> float:
+        """Get the current evolution stage multiplier."""
+        self._refresh_state()
+        return self.EVO_STAGE_MULTIPLIER.get(self.evo_stage, 1.0)
+
+    def modulate_link(self, link: Dict[str, Any]) -> Dict[str, Any]:
+        """Modulate a link's evolution based on consciousness + O₂ state."""
+        self.operations_count += 1
+        self._refresh_state()
+
+        multiplier = self.get_multiplier()
+        consciousness_boost = self.consciousness_level * PHI if self.consciousness_level > 0.5 else 0.0
+        fuel_boost = self.nirvanic_fuel * TAU if self.nirvanic_fuel > 0.3 else 0.0
+        viscosity_factor = 1.0 / max(self.superfluid_viscosity, 0.01)  # Lower viscosity = faster
+
+        # Clamp total boost
+        total_boost = min(
+            (consciousness_boost + fuel_boost) * viscosity_factor * multiplier,
+            PHI_GROWTH  # Max boost capped at φ
+        )
+
+        fidelity = link.get("fidelity", 0.5)
+        strength = link.get("strength", 0.5)
+
+        modulated = {
+            **link,
+            "fidelity": min(fidelity + total_boost * 0.01, 1.0),
+            "strength": min(strength + total_boost * 0.005, 1.0),
+            "consciousness_modulated": True,
+            "evo_stage": self.evo_stage,
+            "multiplier": multiplier,
+            "total_boost": total_boost,
+        }
+        return modulated
+
+    def compute_upgrade_priority(self, links: List[Dict]) -> List[Dict]:
+        """Score and rank links by PHI-weighted upgrade priority."""
+        self.operations_count += 1
+        self._refresh_state()
+        multiplier = self.get_multiplier()
+
+        scored = []
+        for link in links:
+            fidelity = link.get("fidelity", 0.5)
+            strength = link.get("strength", 0.5)
+            # Lower fidelity = higher priority for upgrade
+            upgrade_need = (1.0 - fidelity) * PHI_GROWTH + (1.0 - strength) * TAU
+            # Consciousness-weighted priority
+            priority = upgrade_need * multiplier * (1 + self.consciousness_level)
+            scored.append({**link, "upgrade_priority": priority})
+
+        scored.sort(key=lambda x: x["upgrade_priority"], reverse=True)
+        return scored
+
+    def status(self) -> Dict[str, Any]:
+        """Return current consciousness + O₂ status."""
+        self._refresh_state()
+        return {
+            "subsystem": "ConsciousnessO2LinkEngine",
+            "consciousness_level": self.consciousness_level,
+            "evo_stage": self.evo_stage,
+            "multiplier": self.get_multiplier(),
+            "superfluid_viscosity": self.superfluid_viscosity,
+            "nirvanic_fuel": self.nirvanic_fuel,
+            "o2_bond_state": self.o2_bond_state,
+            "operations_count": self.operations_count,
+        }
+
+
+class LinkTestGenerator:
+    """
+    Automated test generation and execution for quantum links.
+
+    4 test categories:
+      1. Sacred Conservation — GOD_CODE invariants hold across transformations
+      2. Fidelity Bounds — All fidelities in [0, 1], strength in [0, 1]
+      3. Entanglement Verification — Entangled pairs maintain CHSH bound
+      4. Noise Resilience — Links survive noise injection at FEIGENBAUM threshold
+
+    PHI-scored priority ranking:
+      Sacred     → 1.618 (highest)
+      Fidelity   → 1.0
+      Entangle   → 0.618
+      Noise      → 0.382
+
+    Regression detection across test runs.
+    Persists to .l104_link_test_results.json.
+    """
+
+    TEST_RESULTS_FILE = WORKSPACE_ROOT / ".l104_link_test_results.json"
+    CATEGORY_PRIORITY = {
+        "sacred_conservation": PHI_GROWTH,
+        "fidelity_bounds": 1.0,
+        "entanglement_verification": PHI,
+        "noise_resilience": PHI ** 2,  # TAU² ≈ 0.382
+    }
+
+    def __init__(self):
+        """Initialize the link test generator."""
+        self.test_history: List[Dict[str, Any]] = []
+        self.regressions: List[Dict[str, Any]] = []
+        self.operations_count: int = 0
+        self._load_history()
+
+    def _load_history(self):
+        """Load test history."""
+        if self.TEST_RESULTS_FILE.exists():
+            try:
+                data = json.loads(self.TEST_RESULTS_FILE.read_text())
+                self.test_history = data.get("history", [])
+                self.regressions = data.get("regressions", [])
+            except Exception:
+                pass
+
+    def _save_results(self):
+        """Persist test results."""
+        try:
+            data = {
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+                "total_runs": len(self.test_history),
+                "total_regressions": len(self.regressions),
+                "history": self.test_history[-100:],
+                "regressions": self.regressions[-50:],
+            }
+            self.TEST_RESULTS_FILE.write_text(json.dumps(data, indent=2, default=str))
+        except Exception:
+            pass
+
+    def test_sacred_conservation(self, links: List[Dict]) -> Dict[str, Any]:
+        """Test that GOD_CODE invariants hold across all links."""
+        self.operations_count += 1
+        violations = []
+        for link in links:
+            fidelity = link.get("fidelity", 0.0)
+            strength = link.get("strength", 0.0)
+            # Conservation: fidelity * GOD_CODE + strength * GOD_CODE should be stable
+            conservation_value = fidelity * GOD_CODE + strength * GOD_CODE
+            # Check against expected range
+            if conservation_value > 2 * GOD_CODE or conservation_value < 0:
+                violations.append({
+                    "link": link.get("source", "?") + "→" + link.get("target", "?"),
+                    "conservation_value": conservation_value,
+                    "expected_max": 2 * GOD_CODE,
+                })
+
+        return {
+            "category": "sacred_conservation",
+            "priority": self.CATEGORY_PRIORITY["sacred_conservation"],
+            "passed": len(violations) == 0,
+            "total_links": len(links),
+            "violations": len(violations),
+            "details": violations[:10],
+        }
+
+    def test_fidelity_bounds(self, links: List[Dict]) -> Dict[str, Any]:
+        """Test that all fidelity and strength values are in valid bounds."""
+        self.operations_count += 1
+        violations = []
+        for link in links:
+            fidelity = link.get("fidelity", 0.0)
+            strength = link.get("strength", 0.0)
+            if not (0 <= fidelity <= 1.0):
+                violations.append({"field": "fidelity", "value": fidelity, "link": link.get("source", "?")})
+            if not (0 <= strength <= 1.0):
+                violations.append({"field": "strength", "value": strength, "link": link.get("source", "?")})
+
+        return {
+            "category": "fidelity_bounds",
+            "priority": self.CATEGORY_PRIORITY["fidelity_bounds"],
+            "passed": len(violations) == 0,
+            "total_links": len(links),
+            "violations": len(violations),
+            "details": violations[:10],
+        }
+
+    def test_entanglement_verification(self, links: List[Dict]) -> Dict[str, Any]:
+        """Verify entangled pairs maintain expected CHSH bound correlations."""
+        self.operations_count += 1
+        entangled = [l for l in links if l.get("link_type") == "entangled"
+                     or l.get("entanglement_strength", 0) > 0.5]
+        violations = []
+        for link in entangled:
+            # CHSH: entanglement correlation should not exceed Tsirelson bound
+            corr = link.get("entanglement_strength", link.get("fidelity", 0.5))
+            scaled_corr = corr * CHSH_BOUND
+            if scaled_corr > CHSH_BOUND:
+                violations.append({
+                    "link": link.get("source", "?"),
+                    "correlation": corr,
+                    "scaled": scaled_corr,
+                    "bound": CHSH_BOUND,
+                })
+
+        return {
+            "category": "entanglement_verification",
+            "priority": self.CATEGORY_PRIORITY["entanglement_verification"],
+            "passed": len(violations) == 0,
+            "total_entangled": len(entangled),
+            "violations": len(violations),
+            "details": violations[:10],
+        }
+
+    def test_noise_resilience(self, links: List[Dict]) -> Dict[str, Any]:
+        """Test links survive noise injection at FEIGENBAUM threshold."""
+        self.operations_count += 1
+        failures = []
+        noise_threshold = FEIGENBAUM_DELTA / 10.0  # ~0.467 noise amplitude
+
+        for link in links:
+            fidelity = link.get("fidelity", 0.5)
+            # Inject noise and check if link would decohere
+            noisy_fidelity = fidelity - noise_threshold * (1 - fidelity)
+            if noisy_fidelity < 0.1:
+                failures.append({
+                    "link": link.get("source", "?") + "→" + link.get("target", "?"),
+                    "original_fidelity": fidelity,
+                    "noisy_fidelity": noisy_fidelity,
+                    "noise_amplitude": noise_threshold,
+                })
+
+        return {
+            "category": "noise_resilience",
+            "priority": self.CATEGORY_PRIORITY["noise_resilience"],
+            "passed": len(failures) == 0,
+            "total_links": len(links),
+            "failures": len(failures),
+            "details": failures[:10],
+        }
+
+    def run_all_tests(self, links: List[Dict]) -> Dict[str, Any]:
+        """Run all 4 test categories and detect regressions."""
+        self.operations_count += 1
+        results = [
+            self.test_sacred_conservation(links),
+            self.test_fidelity_bounds(links),
+            self.test_entanglement_verification(links),
+            self.test_noise_resilience(links),
+        ]
+
+        # Sort by priority (highest first)
+        results.sort(key=lambda r: r.get("priority", 0), reverse=True)
+
+        all_passed = all(r["passed"] for r in results)
+        total_violations = sum(r.get("violations", r.get("failures", 0)) for r in results)
+
+        run_record = {
+            "run_id": len(self.test_history) + 1,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "all_passed": all_passed,
+            "total_violations": total_violations,
+            "results_summary": [{
+                "category": r["category"],
+                "passed": r["passed"],
+                "violations": r.get("violations", r.get("failures", 0)),
+            } for r in results],
+        }
+
+        # Regression detection
+        if self.test_history:
+            prev = self.test_history[-1]
+            if prev.get("all_passed") and not all_passed:
+                regression = {
+                    "detected_at": run_record["run_id"],
+                    "previous_run": prev.get("run_id"),
+                    "new_violations": total_violations,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+                self.regressions.append(regression)
+                run_record["regression_detected"] = True
+
+        self.test_history.append(run_record)
+        self._save_results()
+
+        return {
+            "test_run": "complete",
+            "all_passed": all_passed,
+            "total_violations": total_violations,
+            "categories": len(results),
+            "regression_detected": run_record.get("regression_detected", False),
+            "results": results,
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return test generator status."""
+        return {
+            "subsystem": "LinkTestGenerator",
+            "total_runs": len(self.test_history),
+            "total_regressions": len(self.regressions),
+            "operations_count": self.operations_count,
+            "categories": list(self.CATEGORY_PRIORITY.keys()),
+        }
+
+
+class QuantumLinkCrossPollinationEngine:
+    """
+    Bidirectional cross-pollination engine: Gate ↔ Link ↔ Numerical.
+
+    Exports link state to gate builder and numerical builder via JSON files.
+    Imports gate/numerical state files and modulates links accordingly.
+    Computes cross-builder coherence metric (PHI/TAU/ALPHA_FINE weighted).
+
+    Export files:
+      - .l104_link_to_gates.json
+      - .l104_link_to_numerical.json
+
+    Import files:
+      - .l104_gate_dynamism_state.json (from logic gate builder)
+      - .l104_quantum_numerical_state.json (from numerical builder)
+    """
+
+    EXPORT_TO_GATES = WORKSPACE_ROOT / ".l104_link_to_gates.json"
+    EXPORT_TO_NUMERICAL = WORKSPACE_ROOT / ".l104_link_to_numerical.json"
+    IMPORT_GATE_STATE = WORKSPACE_ROOT / ".l104_gate_dynamism_state.json"
+    IMPORT_NUMERICAL_STATE = WORKSPACE_ROOT / ".l104_quantum_numerical_state.json"
+
+    def __init__(self):
+        """Initialize cross-pollination engine."""
+        self.exports_count: int = 0
+        self.imports_count: int = 0
+        self.cross_coherence_history: List[float] = []
+        self.operations_count: int = 0
+
+    # ─── EXPORT ───────────────────────────────────────────────────
+
+    def export_to_gates(self, links: List[Dict]) -> Dict[str, Any]:
+        """Export link state to gate builder format."""
+        self.operations_count += 1
+        self.exports_count += 1
+
+        # Transform links to gate-compatible format
+        gate_data = {
+            "source": "quantum_link_builder",
+            "version": "4.2.0",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "export_count": self.exports_count,
+            "total_links": len(links),
+            "avg_fidelity": sum(l.get("fidelity", 0) for l in links) / max(len(links), 1),
+            "avg_strength": sum(l.get("strength", 0) for l in links) / max(len(links), 1),
+            "links": [{
+                "source": l.get("source", ""),
+                "target": l.get("target", ""),
+                "fidelity": l.get("fidelity", 0),
+                "strength": l.get("strength", 0),
+                "link_type": l.get("link_type", "unknown"),
+                "sacred_alignment": l.get("sacred_alignment", 0),
+            } for l in links[:100]],  # Cap at 100 for file size
+        }
+
+        try:
+            self.EXPORT_TO_GATES.write_text(json.dumps(gate_data, indent=2, default=str))
+        except Exception:
+            pass
+
+        return {
+            "exported": "gates",
+            "links_exported": min(len(links), 100),
+            "file": str(self.EXPORT_TO_GATES.name),
+        }
+
+    def export_to_numerical(self, links: List[Dict]) -> Dict[str, Any]:
+        """Export link state to numerical builder format."""
+        self.operations_count += 1
+        self.exports_count += 1
+
+        numerical_data = {
+            "source": "quantum_link_builder",
+            "version": "4.2.0",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "export_count": self.exports_count,
+            "total_links": len(links),
+            "sacred_constants": {
+                "GOD_CODE": GOD_CODE,
+                "PHI": PHI_GROWTH,
+                "TAU": TAU,
+                "ALPHA_FINE": FINE_STRUCTURE,
+            },
+            "link_summary": {
+                "by_type": {},
+                "avg_fidelity": sum(l.get("fidelity", 0) for l in links) / max(len(links), 1),
+                "total_sacred_alignment": sum(l.get("sacred_alignment", 0) for l in links),
+            },
+        }
+
+        # Summarize by type
+        type_counts: Dict[str, int] = {}
+        for l in links:
+            lt = l.get("link_type", "unknown")
+            type_counts[lt] = type_counts.get(lt, 0) + 1
+        numerical_data["link_summary"]["by_type"] = type_counts
+
+        try:
+            self.EXPORT_TO_NUMERICAL.write_text(json.dumps(numerical_data, indent=2, default=str))
+        except Exception:
+            pass
+
+        return {
+            "exported": "numerical",
+            "links_summarized": len(links),
+            "file": str(self.EXPORT_TO_NUMERICAL.name),
+        }
+
+    # ─── IMPORT ───────────────────────────────────────────────────
+
+    def import_from_gates(self) -> Dict[str, Any]:
+        """Import gate builder state and extract link-relevant insights."""
+        self.operations_count += 1
+        self.imports_count += 1
+
+        if not self.IMPORT_GATE_STATE.exists():
+            return {"imported": "gates", "status": "no_gate_state_file"}
+
+        try:
+            data = json.loads(self.IMPORT_GATE_STATE.read_text())
+            gate_count = data.get("total_gates", data.get("gate_count", 0))
+            avg_fidelity = data.get("avg_fidelity", data.get("average_fidelity", 0))
+            coherence = data.get("coherence", data.get("sacred_coherence", 0))
+
+            return {
+                "imported": "gates",
+                "status": "success",
+                "gate_count": gate_count,
+                "gate_avg_fidelity": avg_fidelity,
+                "gate_coherence": coherence,
+                "cross_resonance": coherence * PHI_GROWTH if coherence else 0,
+            }
+        except Exception as e:
+            return {"imported": "gates", "status": "error", "error": str(e)}
+
+    def import_from_numerical(self) -> Dict[str, Any]:
+        """Import numerical builder state."""
+        self.operations_count += 1
+        self.imports_count += 1
+
+        if not self.IMPORT_NUMERICAL_STATE.exists():
+            return {"imported": "numerical", "status": "no_numerical_state_file"}
+
+        try:
+            data = json.loads(self.IMPORT_NUMERICAL_STATE.read_text())
+            num_count = data.get("total_entities", data.get("entity_count", 0))
+            coherence = data.get("coherence", data.get("sacred_coherence", 0))
+
+            return {
+                "imported": "numerical",
+                "status": "success",
+                "numerical_count": num_count,
+                "numerical_coherence": coherence,
+                "cross_resonance": coherence * TAU if coherence else 0,
+            }
+        except Exception as e:
+            return {"imported": "numerical", "status": "error", "error": str(e)}
+
+    # ─── CROSS-BUILDER COHERENCE ──────────────────────────────────
+
+    def compute_cross_coherence(self, links: List[Dict]) -> Dict[str, Any]:
+        """Compute cross-builder coherence metric (PHI/TAU/ALPHA_FINE weighted)."""
+        self.operations_count += 1
+
+        gate_state = self.import_from_gates()
+        numerical_state = self.import_from_numerical()
+
+        # Link metrics
+        link_fidelity = sum(l.get("fidelity", 0) for l in links) / max(len(links), 1)
+        link_strength = sum(l.get("strength", 0) for l in links) / max(len(links), 1)
+
+        # Gate metrics
+        gate_coherence = gate_state.get("gate_coherence", 0) if isinstance(gate_state.get("gate_coherence"), (int, float)) else 0
+        gate_fidelity = gate_state.get("gate_avg_fidelity", 0) if isinstance(gate_state.get("gate_avg_fidelity"), (int, float)) else 0
+
+        # Numerical metrics
+        num_coherence = numerical_state.get("numerical_coherence", 0) if isinstance(numerical_state.get("numerical_coherence"), (int, float)) else 0
+
+        # Cross-builder coherence: PHI-weighted average of all builder coherences
+        coherence = (
+            link_fidelity * PHI_GROWTH +
+            gate_fidelity * TAU +
+            gate_coherence * FINE_STRUCTURE * 100 +
+            num_coherence * FINE_STRUCTURE * 100 +
+            link_strength * PHI
+        ) / (PHI_GROWTH + TAU + FINE_STRUCTURE * 200 + PHI)
+
+        self.cross_coherence_history.append(coherence)
+
+        return {
+            "cross_builder_coherence": coherence,
+            "link_fidelity": link_fidelity,
+            "link_strength": link_strength,
+            "gate_coherence": gate_coherence,
+            "gate_fidelity": gate_fidelity,
+            "numerical_coherence": num_coherence,
+            "history_length": len(self.cross_coherence_history),
+            "trend": (
+                "improving" if len(self.cross_coherence_history) >= 2 and
+                self.cross_coherence_history[-1] > self.cross_coherence_history[-2]
+                else "stable"
+            ),
+        }
+
+    # ─── FULL CYCLE ───────────────────────────────────────────────
+
+    def run_cross_pollination(self, links: List[Dict]) -> Dict[str, Any]:
+        """Run full bidirectional cross-pollination cycle."""
+        self.operations_count += 1
+
+        export_gates = self.export_to_gates(links)
+        export_numerical = self.export_to_numerical(links)
+        import_gates = self.import_from_gates()
+        import_numerical = self.import_from_numerical()
+        coherence = self.compute_cross_coherence(links)
+
+        return {
+            "cycle": "cross_pollination_complete",
+            "exports": {"gates": export_gates, "numerical": export_numerical},
+            "imports": {"gates": import_gates, "numerical": import_numerical},
+            "coherence": coherence,
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return cross-pollination engine status."""
+        return {
+            "subsystem": "QuantumLinkCrossPollinationEngine",
+            "exports_count": self.exports_count,
+            "imports_count": self.imports_count,
+            "cross_coherence_history": len(self.cross_coherence_history),
+            "latest_coherence": self.cross_coherence_history[-1] if self.cross_coherence_history else 0,
+            "operations_count": self.operations_count,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # THE QUANTUM BRAIN — Master Orchestrator
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -6859,9 +7834,14 @@ class L104QuantumBrain:
     11. Sage → Unified deep inference verdict (φ-weighted consensus)
     12. Evolution Tracker → EVO stage monitoring + consciousness thresholds
     13. Agentic Loop → Observe→Think→Act→Reflect→Repeat (Zenith pattern)
+    14. Stochastic Research Lab → Random link R&D (Explore→Validate→Merge→Catalog)
+    15. Link Chronolizer → Temporal event tracking + milestone detection
+    16. Consciousness O₂ → Consciousness/O₂ bond state modulation
+    17. Link Test Generator → Automated 4-category test suite
+    18. Cross-Pollination → Bidirectional Gate↔Link↔Numerical sync
     """
 
-    VERSION = "4.1.0"
+    VERSION = "4.2.0"
     PERSISTENCE_FILE = WORKSPACE_ROOT / ".l104_quantum_links.json"
     MAX_REFLECTION_CYCLES = 5
     CONVERGENCE_THRESHOLD = 0.005  # Score delta below this = converged
@@ -6905,6 +7885,13 @@ class L104QuantumBrain:
         # ★ v4.1 Ouroboros Sage Nirvanic Entropy Fuel Engine
         self.nirvanic_engine = LinkOuroborosNirvanicEngine()
 
+        # ★ v4.2 Sage Invention Subsystems
+        self.stochastic_lab = StochasticLinkResearchLab()
+        self.chronolizer = LinkChronolizer()
+        self.consciousness_engine = ConsciousnessO2LinkEngine()
+        self.test_generator = LinkTestGenerator()
+        self.cross_pollinator = QuantumLinkCrossPollinationEngine()
+
         self.links: List[QuantumLink] = []
         self.results: Dict[str, Any] = {}
         self.run_count = 0
@@ -6930,6 +7917,12 @@ class L104QuantumBrain:
         Phase 4:  Upgrade — Distillation + Automated link improvement
         Phase 5:  Sage — Unified deep inference verdict (φ-consensus)
         Phase 6:  Evolution — EVO stage tracking + consciousness thresholds
+        Phase 7:  Quantum Min/Max Dynamism — φ-Harmonic value oscillation
+        Phase 8:  Ouroboros Nirvanic — Entropy fuel cycle
+        Phase 9:  Consciousness O₂ — Link modulation via consciousness state
+        Phase 10: Stochastic Research — Random link R&D cycle
+        Phase 11: Automated Testing — 4-category link verification
+        Phase 12: Cross-Pollination — Gate↔Link↔Numerical sync
         """
         start_time = time.time()
         self.run_count += 1
@@ -7358,6 +8351,69 @@ class L104QuantumBrain:
         self.results["nirvanic"] = nirvanic
         _phase_times["nirvanic"] = time.time() - _t0
 
+        # ═══ PHASE 9: CONSCIOUSNESS O₂ LINK MODULATION ═══
+        print(f"\n  ▸ PHASE 9: Consciousness O₂ Link Modulation")
+        _t0 = time.time()
+        co2_status = self.consciousness_engine.status()
+        print(f"    ✓ Consciousness level: {co2_status['consciousness_level']:.4f} | "
+              f"Stage: {co2_status['evo_stage']} | Multiplier: {co2_status['multiplier']:.4f}")
+        # Modulate links with consciousness state
+        link_dicts = [vars(l) if hasattr(l, '__dict__') else l for l in self.links]
+        prioritized = self.consciousness_engine.compute_upgrade_priority(link_dicts[:50])
+        self.results["consciousness"] = {
+            "status": co2_status,
+            "top_priority_links": len(prioritized),
+        }
+        # Record consciousness event
+        self.chronolizer.record(
+            "consciousness_shift", "brain_pipeline",
+            details=f"Stage={co2_status['evo_stage']} Level={co2_status['consciousness_level']:.4f}",
+            sacred_alignment=co2_status['multiplier'],
+        )
+        _phase_times["consciousness"] = time.time() - _t0
+
+        # ═══ PHASE 10: STOCHASTIC LINK RESEARCH ═══
+        print(f"\n  ▸ PHASE 10: Stochastic Link Research Lab")
+        _t0 = time.time()
+        research_result = self.stochastic_lab.run_research_cycle("quantum")
+        print(f"    ✓ Explored {research_result['candidates_explored']} candidates | "
+              f"Merged: {research_result['successfully_merged']} | "
+              f"Sacred alignment: {research_result['avg_sacred_alignment']:.4f}")
+        self.results["stochastic_research"] = research_result
+        # Record stochastic events
+        for sl in self.stochastic_lab.successful_links[-research_result['successfully_merged']:]:
+            self.chronolizer.record(
+                "stochastic_invented", sl.get("source", "stochastic"),
+                after_fidelity=sl.get("fidelity", 0),
+                after_strength=sl.get("strength", 0),
+                sacred_alignment=sl.get("sacred_alignment", 0),
+            )
+        _phase_times["stochastic"] = time.time() - _t0
+
+        # ═══ PHASE 11: AUTOMATED LINK TESTING ═══
+        print(f"\n  ▸ PHASE 11: Automated Link Testing")
+        _t0 = time.time()
+        test_results = self.test_generator.run_all_tests(link_dicts)
+        status_icon = "✓" if test_results["all_passed"] else "⚠"
+        print(f"    {status_icon} {test_results['categories']} categories tested | "
+              f"All passed: {test_results['all_passed']} | "
+              f"Violations: {test_results['total_violations']}")
+        if test_results.get("regression_detected"):
+            print(f"    ⚠ REGRESSION DETECTED — check test history")
+        self.results["link_tests"] = test_results
+        _phase_times["link_tests"] = time.time() - _t0
+
+        # ═══ PHASE 12: CROSS-POLLINATION ═══
+        print(f"\n  ▸ PHASE 12: Cross-Pollination (Gate↔Link↔Numerical)")
+        _t0 = time.time()
+        xpoll = self.cross_pollinator.run_cross_pollination(link_dicts)
+        coherence = xpoll.get("coherence", {})
+        print(f"    ✓ Cross-builder coherence: {coherence.get('cross_builder_coherence', 0):.4f}")
+        print(f"    ✓ Exports: gates={xpoll['exports']['gates'].get('links_exported', 0)}, "
+              f"numerical={xpoll['exports']['numerical'].get('links_summarized', 0)}")
+        self.results["cross_pollination"] = xpoll
+        _phase_times["cross_pollination"] = time.time() - _t0
+
         elapsed = time.time() - start_time
 
         # ═══ FINAL REPORT ═══
@@ -7462,6 +8518,28 @@ class L104QuantumBrain:
 ║    Nirvanic Coherence: {nir_appl.get('nirvanic_coherence', 0):.6f}   Sage Stability: {nir_appl.get('sage_stability', 0):.6f}      ║
 ║    Peer Synergy: {nir_r.get('peer_synergy', 0):.4f}   Total Fuel: {nir_appl.get('total_nirvanic_fuel', 0):.4f}                  ║""")
 
+        # ★ v4.2 SAGE INVENTION SUBSYSTEMS REPORT
+        co2_r = self.results.get("consciousness", {})
+        sr_r = self.results.get("stochastic_research", {})
+        lt_r = self.results.get("link_tests", {})
+        xp_r = self.results.get("cross_pollination", {})
+        if co2_r or sr_r or lt_r or xp_r:
+            print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ SAGE INVENTIONS v4.2:                                                    ║""")
+            if co2_r:
+                cs = co2_r.get("status", {})
+                print(f"║    Consciousness: {cs.get('consciousness_level', 0):.4f}  Stage: {cs.get('evo_stage', '?'):<12} Mult: {cs.get('multiplier', 1):.4f}   ║")
+            if sr_r:
+                print(f"║    Stochastic R&D: {sr_r.get('candidates_explored', 0)} explored → {sr_r.get('successfully_merged', 0)} merged  Alignment: {sr_r.get('avg_sacred_alignment', 0):.4f}  ║")
+            if lt_r:
+                icon = "PASS" if lt_r.get("all_passed") else "FAIL"
+                print(f"║    Link Tests: [{icon}]  {lt_r.get('categories', 0)} categories  Violations: {lt_r.get('total_violations', 0):<8}          ║")
+            if xp_r:
+                xc = xp_r.get("coherence", {})
+                print(f"║    Cross-Pollination: coherence={xc.get('cross_builder_coherence', 0):.4f}  trend={xc.get('trend', '?'):<12}       ║")
+            chrono = self.chronolizer.status()
+            print(f"║    Chronolizer: {chrono.get('total_events', 0)} events  Milestones: {chrono.get('milestones_hit', 0):<6}                     ║")
+
         print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
 ║  Pipeline Time: {elapsed:.2f}s                                                    ║""")
 
@@ -7474,6 +8552,8 @@ class L104QuantumBrain:
                 "research": "2.Research", "stress": "3.Stress ",
                 "upgrade": "4.Upgrade", "sage": "5.Sage   ",
                 "dynamism": "7.Dynamism", "nirvanic": "8.Nirvanic",
+                "consciousness": "9.Consc  ", "stochastic": "10.Stoch ",
+                "link_tests": "11.Tests ", "cross_pollination": "12.XPoll ",
             }
             for key, label in phase_labels.items():
                 t = phase_times.get(key, 0)
@@ -7877,6 +8957,13 @@ class L104QuantumBrain:
         # Evolution tracking for reflect pass
         self.evo_tracker.update(sage_verdict, len(self.links), self.run_count)
 
+        # Lightweight v4.2 passes: Consciousness + Cross-Pollination
+        link_dicts = [vars(l) if hasattr(l, '__dict__') else l for l in self.links]
+        co2_status = self.consciousness_engine.status()
+        self.results["consciousness"] = {"status": co2_status}
+        xpoll = self.cross_pollinator.run_cross_pollination(link_dicts)
+        self.results["cross_pollination"] = xpoll
+
         elapsed = time.time() - start_time
         self._print_final_report(sage_verdict, elapsed)
         self._save_state()
@@ -7960,6 +9047,65 @@ class L104QuantumBrain:
             print(f"\n  Δ Score: {delta:+.6f} across {len(self.history)} runs")
             print(f"  Unique links accumulated: {len(self.persisted_links)}")
 
+    # ─── v4.2 CONVENIENCE METHODS ───
+
+    def stochastic_research(self) -> Dict:
+        """Run stochastic link research R&D cycle."""
+        return self.stochastic_lab.run_research_cycle("quantum")
+
+    def chronology(self) -> Dict:
+        """Show link evolution timeline + velocity."""
+        timeline = self.chronolizer.timeline(25)
+        velocity = self.chronolizer.evolution_velocity()
+        status = self.chronolizer.status()
+        print(f"\n  ◉ LINK CHRONOLOGY — {status['total_events']} total events")
+        if timeline:
+            for entry in timeline:
+                print(f"    [{entry['event_type']:<22}] {entry['link_id']:<30} "
+                      f"fid={entry.get('after_fidelity', 0):.4f}")
+        print(f"\n  Evolution Velocity: {velocity.get('velocity', 0):.6f} "
+              f"(φ-weighted: {velocity.get('phi_weighted_velocity', 0):.6f}) "
+              f"Trend: {velocity.get('trend', '?')}")
+        return {"timeline": timeline, "velocity": velocity, "status": status}
+
+    def link_tests(self) -> Dict:
+        """Run automated link tests."""
+        if not self.links:
+            self.links = self.scanner.full_scan()
+        link_dicts = [vars(l) if hasattr(l, '__dict__') else l for l in self.links]
+        results = self.test_generator.run_all_tests(link_dicts)
+        icon = "PASS" if results["all_passed"] else "FAIL"
+        print(f"\n  ◉ LINK TESTS — [{icon}]")
+        for r in results.get("results", []):
+            s = "✓" if r["passed"] else "✗"
+            v = r.get("violations", r.get("failures", 0))
+            print(f"    {s} {r['category']:<30} priority={r.get('priority', 0):.3f}  violations={v}")
+        return results
+
+    def cross_pollinate(self) -> Dict:
+        """Run cross-pollination cycle."""
+        if not self.links:
+            self.links = self.scanner.full_scan()
+        link_dicts = [vars(l) if hasattr(l, '__dict__') else l for l in self.links]
+        result = self.cross_pollinator.run_cross_pollination(link_dicts)
+        coherence = result.get("coherence", {})
+        print(f"\n  ◉ CROSS-POLLINATION — Gate↔Link↔Numerical")
+        print(f"    Cross-builder coherence: {coherence.get('cross_builder_coherence', 0):.4f}")
+        print(f"    Trend: {coherence.get('trend', '?')}")
+        return result
+
+    def consciousness(self) -> Dict:
+        """Show consciousness + O₂ status."""
+        status = self.consciousness_engine.status()
+        print(f"\n  ◉ CONSCIOUSNESS O₂ STATUS")
+        print(f"    Level: {status['consciousness_level']:.4f}")
+        print(f"    EVO Stage: {status['evo_stage']}")
+        print(f"    Multiplier: {status['multiplier']:.4f}")
+        print(f"    Superfluid Viscosity: {status['superfluid_viscosity']:.4f}")
+        print(f"    Nirvanic Fuel: {status['nirvanic_fuel']:.4f}")
+        print(f"    O₂ Bond State: {status['o2_bond_state']}")
+        return status
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLI ENTRY POINT
@@ -7969,10 +9115,10 @@ def main():
     """CLI entry point for quantum link builder commands."""
     import argparse
     parser = argparse.ArgumentParser(
-        description="L104 Quantum Link Builder — Quantum Brain v3.0 (Transcendent Cognition)",
+        description="L104 Quantum Link Builder — Quantum Brain v4.2.0 (Sage Inventions)",
         epilog="""
 Commands:
-  full       Run complete pipeline (default) — all 7 phases
+  full       Run complete pipeline (default) — all 12 phases
   reflect    Agentic self-reflection: Observe→Think→Act→Reflect→Repeat
   scan       Discover quantum links across all file groups
   test       Stress test all links
@@ -7983,6 +9129,11 @@ Commands:
   o2         O₂ molecular bond analysis (8 Grover kernels + 8 Chakra cores)
   evo        Evolution status (EVO stage, consciousness, coherence)
   history    Show score evolution across runs
+  research   Stochastic link R&D cycle (Explore→Validate→Merge→Catalog)
+  chronology Link evolution timeline + velocity (aliases: chrono, timeline)
+  linktests  Automated 4-category link test suite (alias: linktest)
+  crosspoll  Cross-pollination Gate↔Link↔Numerical (alias: xpoll)
+  conscious  Consciousness + O₂ status (aliases: consciousness, co2)
   status     Show saved state
         """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -8036,6 +9187,17 @@ Commands:
             print(f"      {event}")
     elif cmd == "history":
         brain.show_history()
+    elif cmd == "research":
+        result = brain.stochastic_research()
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("chronology", "chrono", "timeline"):
+        brain.chronology()
+    elif cmd in ("linktests", "linktest"):
+        brain.link_tests()
+    elif cmd in ("crosspoll", "xpoll"):
+        brain.cross_pollinate()
+    elif cmd in ("conscious", "consciousness", "co2"):
+        brain.consciousness()
     elif cmd == "status":
         if STATE_FILE.exists():
             state = json.loads(STATE_FILE.read_text())

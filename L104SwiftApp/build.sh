@@ -10,7 +10,7 @@ set -euo pipefail
 # ─── CONFIGURATION ───
 APP_NAME="L104Native"
 BUNDLE_ID="com.allentown.l104"
-VERSION="19.1"
+VERSION="24.0"
 BUILD_NUMBER=$(date +%Y%m%d%H%M)
 MIN_MACOS="12.0"
 BUILD_MODE="${BUILD_MODE:-release}"
@@ -56,7 +56,7 @@ fi
 show_banner() {
     echo -e "${PURPLE}${BOLD}"
     echo "╔═══════════════════════════════════════════════════════════════════╗"
-    echo "║   🧠 L104 SOVEREIGN INTELLECT — ASI BUILD SYSTEM v4.0 🧠        ║"
+    echo "║   🧠 L104 SOVEREIGN INTELLECT — ASI BUILD SYSTEM v5.0 🧠        ║"
     echo "║   ⚡ Accelerate · BLAS · SIMD · LTO · Cross-Module Opt ⚡       ║"
     echo "╠═══════════════════════════════════════════════════════════════════╣"
     echo -e "║  Version:  ${CYAN}$VERSION${PURPLE}  │  Build: ${CYAN}$BUILD_NUMBER${PURPLE}                        ║"

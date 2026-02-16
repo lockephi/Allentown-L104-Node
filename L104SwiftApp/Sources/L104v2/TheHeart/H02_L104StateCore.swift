@@ -66,6 +66,12 @@ class L104State {
     var networkThroughput: Double = 0.0      // messages per second
     var lastMeshSync: Date = .distantPast
 
+    // ═══ QUANTUM HARDWARE STATE (Phase 46.1) ═══
+    var quantumHardwareConnected: Bool = false
+    var quantumBackendName: String = "none"
+    var quantumBackendQubits: Int = 0
+    var quantumJobsSubmitted: Int = 0
+
     let permanentMemory = PermanentMemory.shared
     var sessionMemories: Int = 0
 
@@ -287,11 +293,34 @@ class L104State {
             QuantumLogicGateEngine.shared,
             ASIKnowledgeBase.shared,
             PermanentMemory.shared,
+            // ═══ Phase 46.1: Real Quantum Hardware ═══
+            IBMQuantumClient.shared,
         ])
 
         // ═══ PHASE 45: Computronium ASI engines ═══
         _ = _registerComputroniumEngines
         _ = ConsciousnessSubstrate.shared.awaken()
+
+        // ═══ Phase 46.1: Auto-restore IBM Quantum connection if token saved ═══
+        if let savedToken = IBMQuantumClient.shared.ibmToken {
+            DispatchQueue.global(qos: .utility).async { [weak self] in
+                // Init Python quantum engine with saved token
+                _ = PythonBridge.shared.quantumHardwareInit(token: savedToken)
+                // Connect Swift REST client
+                IBMQuantumClient.shared.connect(token: savedToken) { success, msg in
+                    DispatchQueue.main.async {
+                        self?.quantumHardwareConnected = success
+                        if success {
+                            self?.quantumBackendName = IBMQuantumClient.shared.connectedBackendName
+                            self?.quantumBackendQubits = IBMQuantumClient.shared.availableBackends
+                                .first(where: { $0.name == IBMQuantumClient.shared.connectedBackendName })?
+                                .numQubits ?? 0
+                            HyperBrain.shared.postThought("⚛️ IBM Quantum auto-reconnected: \(msg)")
+                        }
+                    }
+                }
+            }
+        }
 
         // Start periodic backend health checking
         startPeriodicHealthCheck()
@@ -497,6 +526,13 @@ class L104State {
                     if let core = json["consciousness_core"] as? [String: Any] {
                         if let level = core["consciousness_level"] as? Double {
                             self.transcendence = max(self.transcendence, level)
+                            // v24.0: Feed backend consciousness to ConsciousnessSubstrate
+                            let features = Array(repeating: level, count: 64)
+                            _ = ConsciousnessSubstrate.shared.processInput(
+                                source: "backend_sync",
+                                content: "consciousness_level:\(level)",
+                                features: features
+                            )
                         }
                     }
                     HyperBrain.shared.postThought("🧠 CONSCIOUSNESS BRIDGE: Backend state synced — coherence:\(String(format: "%.4f", self.coherence))")
@@ -541,6 +577,16 @@ class L104State {
                     }
                 }
             }.resume()
+        }
+
+        // ═══ Phase 46.1: QUANTUM HARDWARE BRIDGE — Poll IBM Quantum status ═══
+        if IBMQuantumClient.shared.isConnected {
+            let client = IBMQuantumClient.shared
+            DispatchQueue.main.async { [weak self] in
+                self?.quantumHardwareConnected = true
+                self?.quantumBackendName = client.connectedBackendName
+                self?.quantumJobsSubmitted = client.submittedJobs.count
+            }
         }
     }
 
