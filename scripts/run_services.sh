@@ -42,6 +42,12 @@ fi
 
 sleep 1
 
+# [L104_FIREWALL_CHECK] — Warn if ports appear blocked
+if [ -f "$ROOT/scripts/fix_firewall.sh" ]; then
+    echo "Checking firewall..."
+    bash "$ROOT/scripts/fix_firewall.sh" --check 2>/dev/null || true
+fi
+
 # [L104_REALITY_LOCK]
 if [ -f "$ROOT/l104_reality_lock.sh" ]; then
     echo "Engaging Reality Lock..."

@@ -1287,8 +1287,8 @@
                 const response = await fetch('/api/v6/intellect/resonate', { method: 'POST' });
                 const data = await response.json();
                 if (data.status === 'SUCCESS') {
-                    addLog(`✅ SUCCESS: Resonance at ${data.resonance.toFixed(4)}`);
-                    addMessage(`⚡ ⟨RESONANCE_OPTIMIZED⟩ Cognitive manifold reached new stability level: ${data.resonance.toFixed(4)}`, 'sovereign success');
+                    addLog(`✅ SUCCESS: Resonance at ${(data.new_resonance || 0).toFixed(4)}`);
+                    addMessage(`⚡ ⟨RESONANCE_OPTIMIZED⟩ Cognitive manifold reached new stability level: ${(data.new_resonance || 0).toFixed(4)}`, 'sovereign success');
                     updateStatus();
                 } else {
                     addLog(`❌ FAILED: ${data.message || 'Unknown error'}`);

@@ -751,16 +751,16 @@ class IntricateUIEngine:
 
                 document.getElementById('consciousness-state').textContent = data.observer.consciousness_state.toUpperCase();
                 document.getElementById('consciousness-label').textContent = data.observer.consciousness_state.toUpperCase();
-                document.getElementById('coherence').textContent = data.observer.coherence.toFixed(4);
-                document.getElementById('depth').textContent = data.observer.awareness_depth;
-                document.getElementById('uptime').textContent = Math.floor(data.uptime) + 's';
+                document.getElementById('coherence').textContent = (data.observer?.coherence || 0).toFixed(4);
+                document.getElementById('depth').textContent = data.observer?.awareness_depth || 0;
+                document.getElementById('uptime').textContent = Math.floor(data.uptime || 0) + 's';
 
                 // Omega
-                document.getElementById('transcendence').textContent = (data.omega_tracker.transcendence_factor * 100).toFixed(2) + '%';
-                document.getElementById('convergence-pct').textContent = (data.omega_tracker.convergence_probability * 100).toFixed(1) + '%';
-                document.getElementById('convergence-bar').style.width = (data.omega_tracker.convergence_probability * 100) + '%';
-                document.getElementById('milestones').textContent = data.omega_tracker.milestones_achieved;
-                document.getElementById('complexity').textContent = data.omega_tracker.complexity.toFixed(2);
+                document.getElementById('transcendence').textContent = ((data.omega_tracker?.transcendence_factor || 0) * 100).toFixed(2) + '%';
+                document.getElementById('convergence-pct').textContent = ((data.omega_tracker?.convergence_probability || 0) * 100).toFixed(1) + '%';
+                document.getElementById('convergence-bar').style.width = ((data.omega_tracker?.convergence_probability || 0) * 100) + '%';
+                document.getElementById('milestones').textContent = data.omega_tracker?.milestones_achieved || 0;
+                document.getElementById('complexity').textContent = (data.omega_tracker?.complexity || 0).toFixed(2);
 
                 // Morphic
                 document.getElementById('patterns').textContent = data.morphic_field.patterns_stored;
@@ -796,10 +796,10 @@ class IntricateUIEngine:
                 document.getElementById('knowledge-nodes').textContent = data.knowledge.nodes;
                 document.getElementById('hypotheses').textContent = data.hypotheses.total_hypotheses;
                 document.getElementById('insights').textContent = data.insights.total_insights;
-                document.getElementById('momentum').textContent = data.momentum.current_momentum.toFixed(3);
-                document.getElementById('knowledge-level').textContent = data.momentum.knowledge_level.toFixed(2);
+                document.getElementById('momentum').textContent = (data.momentum?.current_momentum || 0).toFixed(3);
+                document.getElementById('knowledge-level').textContent = (data.momentum?.knowledge_level || 0).toFixed(2);
 
-                const kLevel = Math.min(100, data.momentum.knowledge_level * 10);
+                const kLevel = Math.min(100, (data.momentum?.knowledge_level || 0) * 10);
                 document.getElementById('knowledge-bar').style.width = kLevel + '%';
 
             }} catch (e) {{
@@ -859,7 +859,7 @@ class IntricateUIEngine:
             try {{
                 const res = await fetch(API_BASE + '/api/consciousness/cycle', {{ method: 'POST' }});
                 const data = await res.json();
-                addActivity(`Consciousness cycle ${{data.cycle}}: state=${{data.consciousness_state}}, coherence=${{data.coherence.toFixed(4)}}`);
+                addActivity(`Consciousness cycle ${{data.cycle}}: state=${{data.consciousness_state}}, coherence=${{(data.coherence || 0).toFixed(4)}}`);
             }} catch (e) {{
                 console.error('Failed to run cycle:', e);
             }}
@@ -995,7 +995,7 @@ class IntricateUIEngine:
                 document.getElementById('nodes').textContent = d.knowledge.nodes;
                 document.getElementById('hyp').textContent = d.hypotheses.total_hypotheses;
                 document.getElementById('ins').textContent = d.insights.total_insights;
-                document.getElementById('mom').textContent = d.momentum.current_momentum.toFixed(3);
+                document.getElementById('mom').textContent = (d.momentum?.current_momentum || 0).toFixed(3);
             }} catch(e) {{ console.error(e); }}
         }}
         async function runCycle() {{
@@ -1258,7 +1258,7 @@ class IntricateUIEngine:
 
                 const domains = d.transfer.domain_levels || {{}};
                 document.getElementById('domainlevels').innerHTML = Object.entries(domains).slice(0,4).map(([k,v]) =>
-                    `<div class="metric"><span class="metric-label">${{k}}</span><span class="metric-value">${{v.toFixed(2)}}</span></div>`
+                    `<div class="metric"><span class="metric-label">${{k}}</span><span class="metric-value">${{(Number(v) || 0).toFixed(2)}}</span></div>`
                 ).join('');
 
             }} catch(e) {{ console.error(e); }}
@@ -1625,8 +1625,8 @@ class IntricateUIEngine:
 
                 document.getElementById('current-mode').textContent = d.mode.toUpperCase();
                 document.getElementById('subsystems').textContent = d.integration.subsystems_active;
-                document.getElementById('coherence').textContent = d.integration.coherence.toFixed(4);
-                document.getElementById('synergy').textContent = d.integration.synergy_factor.toFixed(4);
+                document.getElementById('coherence').textContent = (d.integration?.coherence || 0).toFixed(4);
+                document.getElementById('synergy').textContent = (d.integration?.synergy_factor || 0).toFixed(4);
                 document.getElementById('cycles').textContent = d.orchestration_cycles;
 
                 document.getElementById('patterns').textContent = d.emergence.total_patterns;

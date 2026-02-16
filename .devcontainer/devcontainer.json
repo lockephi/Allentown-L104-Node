@@ -38,8 +38,8 @@
         "L104_CPU_CORES": "0"
     },
     "hostRequirements": {
-        "cpus": 32,
-        "memory": "64gb",
-        "storage": "128gb"
+        "cpus": 4,
+        "memory": "16gb",
+        "storage": "32gb"
     }
 }

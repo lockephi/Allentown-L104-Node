@@ -438,7 +438,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                             sage_status = sage_core.status()
                             # Cross-pollinate: sage discoveries feed back into AGI state
                             if hasattr(agi_core, 'intellect_index'):
-                                from const import UC
+                                from const import UniversalConstants as UC
                                 phi = UC.PHI
                                 agi_core.intellect_index = agi_core.intellect_index * (1.0 + phi * 0.001)
                         except Exception:
