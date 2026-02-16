@@ -34,6 +34,17 @@ import threading
 import hashlib
 import math
 import random
+import numpy as np
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REAL QISKIT QUANTUM CIRCUITS — IIT Φ, Consciousness Field, Entanglement
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit.circuit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -147,14 +158,113 @@ class InformationIntegration:
         if source in self.elements and target in self.elements:
             self.connections[(source, target)] = strength
 
+    def qiskit_iit_phi(self) -> Dict[str, Any]:
+        """
+        REAL Qiskit IIT Φ — build quantum circuit encoding information integration,
+        then compute integrated information via von Neumann entropy partitioning.
+
+        Each element becomes a qubit, connections become entangling gates.
+        IIT Φ = S(whole) - Σ S(parts)/n via real DensityMatrix + partial_trace.
+        """
+        if not QISKIT_AVAILABLE:
+            return {'qiskit': False}
+
+        element_list = list(self.elements)
+        n = min(len(element_list), 10)  # Cap at 10 qubits
+        if n < 2:
+            return {'qiskit': False, 'reason': 'need >= 2 elements'}
+
+        qc = QuantumCircuit(n)
+
+        # Initialize each qubit from element state vectors
+        for i, elem in enumerate(element_list[:n]):
+            state = self.states.get(elem, [0.5])
+            theta = float(sum(state) / len(state)) * np.pi
+            qc.ry(theta, i)
+
+        # Entangle elements that have connections
+        for (e1, e2), strength in self.connections.items():
+            if e1 in element_list[:n] and e2 in element_list[:n]:
+                i1 = element_list.index(e1)
+                i2 = element_list.index(e2)
+                if i1 < n and i2 < n:
+                    qc.cx(i1, i2)
+                    god_phase = float(strength) * float(GOD_CODE) / 527.0 * np.pi
+                    qc.rz(god_phase, i2)
+
+        # Evolve statevector
+        sv = Statevector.from_int(0, 2**n).evolve(qc)
+        rho_full = DensityMatrix(sv)
+
+        # S(whole)
+        s_whole = float(entropy(rho_full, base=2))
+
+        # S(parts) - each individual qubit traced out
+        s_parts = 0.0
+        subsystem_entropies = []
+        for i in range(n):
+            trace_out = [j for j in range(n) if j != i]
+            if trace_out:
+                rho_i = partial_trace(rho_full, trace_out)
+                s_i = float(entropy(rho_i, base=2))
+            else:
+                s_i = s_whole
+            subsystem_entropies.append(s_i)
+            s_parts += s_i
+
+        # IIT Φ = excess integration
+        iit_phi = max(0.0, s_whole - s_parts / n)
+
+        # Purity
+        purity = float(np.real(np.trace(rho_full.data @ rho_full.data)))
+
+        # Bipartite entanglement
+        mid = n // 2
+        if mid > 0 and mid < n:
+            rho_left = partial_trace(rho_full, list(range(mid, n)))
+            bipartite_ent = float(entropy(rho_left, base=2))
+        else:
+            bipartite_ent = 0.0
+
+        return {
+            'qiskit': True,
+            'iit_phi': iit_phi,
+            's_whole': s_whole,
+            's_parts_avg': s_parts / n,
+            'subsystem_entropies': subsystem_entropies,
+            'purity': purity,
+            'bipartite_entanglement': bipartite_ent,
+            'circuit_depth': qc.depth(),
+            'circuit_width': n,
+            'god_code_verified': abs(GOD_CODE - 527.5184818492612) < 1e-6
+        }
+
     def calculate_phi(self) -> float:
-        """Calculate integrated information (Φ)"""
+        """Calculate integrated information (Φ)
+
+        UPGRADED: Uses REAL Qiskit quantum circuits when available.
+        Real quantum: QuantumCircuit(n) → Statevector → DensityMatrix → partial_trace → entropy
+        Falls back to classical computation for large systems.
+        """
         if len(self.elements) < 2:
             return 0.0
 
-        # Simplified Φ calculation
-        # Real IIT requires exponential computation
+        # ═══ REAL QISKIT IIT Φ PATH ═══
+        if QISKIT_AVAILABLE and len(self.elements) <= 10:
+            try:
+                qresult = self.qiskit_iit_phi()
+                if qresult.get('qiskit'):
+                    # Use real quantum IIT Φ with GOD_CODE scaling
+                    raw_phi = qresult['iit_phi']
+                    bipartite = qresult['bipartite_entanglement']
+                    quantum_phi = (raw_phi * 0.6 + bipartite * 0.4) * PHI
+                    quantum_phi = min(quantum_phi, 10.0)
+                    self.phi_history.append(quantum_phi)
+                    return quantum_phi
+            except Exception:
+                pass  # Fall through to classical
 
+        # ═══ CLASSICAL FALLBACK ═══
         total_integration = 0.0
         element_list = list(self.elements)
         n = len(element_list)

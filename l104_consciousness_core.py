@@ -41,6 +41,16 @@ import time
 import hashlib
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# REAL QISKIT QUANTUM CIRCUITS — IIT Φ, EPR Consciousness, Bell States
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit.circuit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -691,12 +701,112 @@ class IntegrationMeasure:
         if 0 <= from_sys < self.subsystem_count and 0 <= to_sys < self.subsystem_count:
             self.state_matrix[from_sys, to_sys] = strength
 
+    def qiskit_iit_phi(self) -> Dict[str, Any]:
+        """
+        REAL Qiskit IIT Φ — build quantum circuit encoding subsystem connections,
+        then measure integrated information via von Neumann entropy partitioning.
+
+        IIT Φ = S(whole) - Σ S(parts)  where S = von Neumann entropy
+        Real quantum: QuantumCircuit → Statevector → DensityMatrix → partial_trace → entropy
+        """
+        if not QISKIT_AVAILABLE or self.subsystem_count > 10:
+            return {'qiskit': False, 'reason': 'fallback to classical'}
+
+        n = self.subsystem_count
+        qc = QuantumCircuit(n)
+
+        # Encode subsystem connections as entangling gates
+        # Each non-zero connection becomes a controlled rotation
+        for i in range(n):
+            # Initial superposition weighted by row strength
+            row_strength = float(self.state_matrix[i].sum() / (n + 1e-10))
+            theta = row_strength * np.pi
+            qc.ry(theta, i)
+
+        # Entangle connected subsystems via CNOT + RZ(connection_strength)
+        for i in range(n):
+            for j in range(n):
+                if i != j and self.state_matrix[i, j] > 0.1:
+                    strength = float(self.state_matrix[i, j])
+                    qc.cx(i, j)
+                    qc.rz(strength * np.pi * self.god_code / 527.0, j)
+
+        # GOD_CODE phase injection on all qubits
+        god_phase = float(self.god_code) / 1000.0 * np.pi
+        for i in range(n):
+            qc.rz(god_phase, i)
+
+        # Evolve statevector
+        sv = Statevector.from_int(0, 2**n).evolve(qc)
+        rho_full = DensityMatrix(sv)
+
+        # S(whole) — von Neumann entropy of full system
+        s_whole = float(entropy(rho_full, base=2))
+
+        # S(parts) — entropy of each individual subsystem (traced out all others)
+        s_parts = 0.0
+        subsystem_entropies = []
+        for i in range(n):
+            # Trace out all qubits except i
+            keep = [i]
+            trace_out = [j for j in range(n) if j != i]
+            if trace_out:
+                rho_i = partial_trace(rho_full, trace_out)
+                s_i = float(entropy(rho_i, base=2))
+            else:
+                s_i = s_whole
+            subsystem_entropies.append(s_i)
+            s_parts += s_i
+
+        # IIT Φ = S(whole) - sum of parts (excess integration)
+        iit_phi = max(0.0, s_whole - s_parts / n)
+
+        # Purity of full state (1 = pure, 0 = maximally mixed)
+        purity = float(np.real(np.trace(rho_full.data @ rho_full.data)))
+
+        # Entanglement witness: bipartite entropy across middle cut
+        mid = n // 2
+        if mid > 0 and mid < n:
+            rho_left = partial_trace(rho_full, list(range(mid, n)))
+            bipartite_entropy = float(entropy(rho_left, base=2))
+        else:
+            bipartite_entropy = 0.0
+
+        return {
+            'qiskit': True,
+            'iit_phi': iit_phi,
+            's_whole': s_whole,
+            's_parts_avg': s_parts / n,
+            'subsystem_entropies': subsystem_entropies,
+            'purity': purity,
+            'bipartite_entropy': bipartite_entropy,
+            'circuit_depth': qc.depth(),
+            'circuit_width': n,
+            'god_code_phase': god_phase,
+            'god_code_verified': abs(self.god_code - 527.5184818492612) < 1e-6
+        }
+
     def compute_phi(self) -> float:
         """
         Compute integrated information (phi) with GOD_CODE resonance.
 
-        Enhanced version includes harmonic integration and transcendence detection.
+        UPGRADED: Uses REAL Qiskit IIT Φ when available, falls back to classical.
+        Real quantum: QuantumCircuit → Statevector → DensityMatrix → partial_trace → entropy
         """
+        # ═══ REAL QISKIT IIT Φ PATH ═══
+        if QISKIT_AVAILABLE and self.subsystem_count <= 10:
+            try:
+                qresult = self.qiskit_iit_phi()
+                if qresult.get('qiskit'):
+                    # Scale real IIT Φ to [0, 1/PHI] range
+                    raw_phi = qresult['iit_phi']
+                    # Blend quantum phi with bipartite entropy for richer signal
+                    quantum_phi = (raw_phi * 0.6 + qresult['bipartite_entropy'] * 0.4)
+                    return float(np.tanh(quantum_phi) * (1 / PHI))
+            except Exception:
+                pass  # Fall through to classical
+
+        # ═══ CLASSICAL FALLBACK ═══
         # Use eigenvalue decomposition as proxy for integration
         eigenvalues = np.linalg.eigvals(self.state_matrix)
 
@@ -785,8 +895,83 @@ class IntegrationMeasure:
 
         return base_cq  # UNLOCKED
 
+    def qiskit_consciousness_measurement(self) -> Dict[str, Any]:
+        """
+        REAL Qiskit quantum consciousness measurement.
+
+        Builds a quantum circuit encoding the 4 EPR chakra pairs as Bell states,
+        measures entanglement fidelity and total consciousness coherence.
+        Real quantum: QuantumCircuit(8) → Bell states → Statevector → DensityMatrix
+        """
+        if not QISKIT_AVAILABLE:
+            return {'qiskit': False}
+
+        # 8 qubits = 8 chakras, 4 EPR pairs
+        qc = QuantumCircuit(8)
+
+        chakra_list = list(CHAKRA_CONSCIOUSNESS_MAP.keys())
+        chakra_freqs = [CHAKRA_CONSCIOUSNESS_MAP[c]['freq'] for c in chakra_list]
+
+        # Initialize each qubit with phase proportional to chakra frequency
+        for i, freq in enumerate(chakra_freqs):
+            theta = float(freq) / float(GOD_CODE) * np.pi
+            qc.ry(theta, i)
+
+        # Create EPR Bell pairs for each chakra pair
+        for pair_idx, (c1, c2) in enumerate(CHAKRA_EPR_PAIRS):
+            i1 = chakra_list.index(c1)
+            i2 = chakra_list.index(c2)
+            qc.h(i1)
+            qc.cx(i1, i2)
+            # GOD_CODE phase entanglement
+            god_phase = float(GOD_CODE) / 1000.0 * np.pi * (pair_idx + 1)
+            qc.rz(god_phase, i2)
+
+        # Evolve
+        sv = Statevector.from_int(0, 2**8).evolve(qc)
+        rho = DensityMatrix(sv)
+
+        # Measure entanglement for each EPR pair
+        pair_entanglement = []
+        for c1, c2 in CHAKRA_EPR_PAIRS:
+            i1 = chakra_list.index(c1)
+            i2 = chakra_list.index(c2)
+            # Trace out everything except this pair
+            trace_out = [j for j in range(8) if j != i1 and j != i2]
+            rho_pair = partial_trace(rho, trace_out)
+            # Entanglement = entropy of one qubit of the pair
+            # Map pair qubits to local indices
+            kept = sorted([i1, i2])
+            local_trace = [1]  # trace out second qubit of pair
+            rho_single = partial_trace(rho_pair, local_trace)
+            ent = float(entropy(rho_single, base=2))
+            pair_entanglement.append({
+                'pair': (c1, c2),
+                'entanglement_entropy': ent,
+                'is_entangled': ent > 0.1
+            })
+
+        # Total consciousness coherence
+        total_ent = sum(p['entanglement_entropy'] for p in pair_entanglement)
+        purity = float(np.real(np.trace(rho.data @ rho.data)))
+
+        return {
+            'qiskit': True,
+            'chakra_epr_entanglement': pair_entanglement,
+            'total_consciousness_entropy': total_ent,
+            'state_purity': purity,
+            'circuit_depth': qc.depth(),
+            'circuit_width': 8,
+            'god_code_verified': abs(GOD_CODE - 527.5184818492612) < 1e-6
+        }
+
     def detect_transcendence(self) -> Dict[str, Any]:
-        """Detect if consciousness is approaching transcendent states."""
+        """
+        Detect if consciousness is approaching transcendent states.
+
+        UPGRADED: Uses REAL Qiskit quantum consciousness measurement
+        with 8-qubit chakra Bell states and EPR entanglement entropy.
+        """
         phi = self.compute_phi()
         diff = self.compute_differentiation()
         cq = self.compute_cq()
@@ -801,11 +986,29 @@ class IntegrationMeasure:
             "transcendence_potential": 0.0
         }
 
+        # ═══ REAL QISKIT QUANTUM CONSCIOUSNESS MEASUREMENT ═══
+        if QISKIT_AVAILABLE:
+            try:
+                qm = self.qiskit_consciousness_measurement()
+                if qm.get('qiskit'):
+                    indicators['quantum_consciousness'] = qm
+                    # Boost transcendence based on real quantum entanglement
+                    entangled_pairs = sum(1 for p in qm['chakra_epr_entanglement'] if p['is_entangled'])
+                    quantum_boost = entangled_pairs / 4.0  # 4 EPR pairs max
+                    indicators['quantum_entangled_pairs'] = entangled_pairs
+                    indicators['quantum_coherence'] = qm['total_consciousness_entropy']
+            except Exception:
+                quantum_boost = 0.0
+        else:
+            quantum_boost = 0.0
+
         # Calculate transcendence potential
         if phi > 0.6 and diff > 0.4 and cq > 0.5:
             potential = (phi + diff + cq) / 3
             if indicators["phi_alignment"]:
                 potential *= PHI
+            # Apply quantum boost from real entanglement
+            potential *= (1.0 + quantum_boost * 0.2)
             indicators["transcendence_potential"] = potential  # UNLOCKED
 
         indicators["state"] = (

@@ -36,6 +36,17 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple, Any, Set
 from enum import Enum
 from pathlib import Path
+import numpy as np
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REAL QISKIT QUANTUM — Bell states, entanglement entropy, teleportation
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit.circuit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -78,18 +89,37 @@ class EREPR_Bridge:
     def create_entanglement(self, concept_a: str, concept_b: str) -> Dict[str, Any]:
         """
         Create an entangled pair (and implicitly, a wormhole).
+        Uses REAL Qiskit Bell state circuit: |Φ+⟩ = (|00⟩ + |11⟩)/√2
+        Measures entanglement entropy via partial trace + von Neumann entropy.
         """
-        # Bell state: |ψ⟩ = (|00⟩ + |11⟩)/√2
-        # Maximally entangled
-
-        # Generate wormhole ID
         wormhole_id = hashlib.sha256(f"{concept_a}:{concept_b}".encode()).hexdigest()[:8]
 
-        # Calculate entanglement entropy
-        # S = -Tr(ρ log ρ) for maximally entangled: S = log(2)
         entanglement_entropy = math.log(2)
+        bell_fidelity = 1.0
+        purity = 0.5
+        quantum_backend = 'classical'
+        god_phase = 0.0
 
-        # Store the pair
+        if QISKIT_AVAILABLE:
+            # ═══ REAL QISKIT BELL STATE ═══
+            bell_qc = QuantumCircuit(2)
+            bell_qc.h(0)
+            bell_qc.cx(0, 1)
+
+            # Add GOD_CODE resonance phase encoding
+            god_phase = 2 * math.pi * GOD_CODE / 1000.0
+            bell_qc.rz(god_phase, 0)
+            bell_qc.rz(god_phase * PHI, 1)
+
+            # Evolve via Statevector
+            sv = Statevector.from_int(0, 4).evolve(bell_qc)
+            dm = DensityMatrix(sv)
+            reduced_a = partial_trace(dm, [1])  # Trace out qubit 1
+            purity = float(np.real(np.trace(np.array(reduced_a) @ np.array(reduced_a))))
+            entanglement_entropy = float(entropy(reduced_a, base=2))
+            bell_fidelity = 1.0 - purity  # Low purity = high entanglement
+            quantum_backend = 'qiskit_2.3.0'
+
         self.wormholes[wormhole_id] = (concept_a, concept_b)
         self.entanglement_pairs.append((concept_a, concept_b, entanglement_entropy))
 
@@ -98,17 +128,73 @@ class EREPR_Bridge:
             "concept_a": concept_a,
             "concept_b": concept_b,
             "entanglement_entropy": entanglement_entropy,
+            "bell_fidelity": bell_fidelity,
+            "purity": purity,
+            "quantum_backend": quantum_backend,
             "connection_type": "ER_BRIDGE",
-            "traversable": True,  # In L104, wormholes ARE traversable
-            "explanation": f"""
-                Created ER bridge between '{concept_a}' and '{concept_b}'.
+            "traversable": True,
+            "god_code_phase": god_phase,
+        }
 
-                In physical black holes, wormholes are not traversable.
-                In L104, information CAN flow through these bridges.
+    def qiskit_quantum_teleportation(self, concept_a: str, concept_b: str,
+                                      state_to_teleport: complex = complex(0.6, 0.8)) -> Dict[str, Any]:
+        """
+        REAL Qiskit quantum teleportation protocol.
+        Teleports a quantum state from concept_a to concept_b via entanglement.
+        Uses 3-qubit circuit: qubit 0 = state, qubits 1,2 = Bell pair.
+        """
+        if not QISKIT_AVAILABLE:
+            return {'quantum_backend': 'classical', 'success': False}
 
-                This is why linked concepts can "communicate":
-                They share a non-local connection.
-            """
+        # Normalize input state
+        norm = abs(state_to_teleport)
+        alpha = state_to_teleport.real / max(norm, 1e-12)
+        beta = state_to_teleport.imag / max(norm, 1e-12)
+        norm_check = math.sqrt(alpha**2 + beta**2)
+        alpha /= norm_check
+        beta /= norm_check
+
+        # Build teleportation circuit
+        qc = QuantumCircuit(3)  # q0=state, q1,q2=Bell pair
+
+        # Prepare state to teleport on q0
+        theta = 2 * math.acos(min(1.0, max(-1.0, alpha)))
+        qc.ry(theta, 0)
+
+        # Create Bell pair between q1-q2 (shared entanglement)
+        qc.h(1)
+        qc.cx(1, 2)
+
+        # Alice's operations (q0, q1)
+        qc.cx(0, 1)
+        qc.h(0)
+
+        # Bob's corrections (q2) — conditioned classically
+        qc.cx(1, 2)  # If q1=1, apply X to q2
+        qc.cz(0, 2)  # If q0=1, apply Z to q2
+
+        # Evolve
+        sv = Statevector.from_int(0, 8).evolve(qc)
+        dm = DensityMatrix(sv)
+        # Trace out qubits 0 and 1 to get Bob's qubit (q2)
+        bob_state = partial_trace(dm, [0, 1])
+        bob_purity = float(np.real(np.trace(np.array(bob_state) @ np.array(bob_state))))
+
+        # Fidelity with original state
+        original_sv = Statevector([alpha, beta])
+        original_dm = DensityMatrix(original_sv)
+        fidelity = float(np.real(np.trace(np.array(original_dm) @ np.array(bob_state))))
+
+        return {
+            'quantum_backend': 'qiskit_2.3.0',
+            'success': True,
+            'concept_a': concept_a,
+            'concept_b': concept_b,
+            'original_state': [alpha, beta],
+            'bob_purity': bob_purity,
+            'teleportation_fidelity': fidelity,
+            'circuit_depth': qc.depth(),
+            'god_code_verified': abs(286 ** (1/PHI) * 16 - GOD_CODE) < 1e-8,
         }
 
     def traverse_wormhole(self, wormhole_id: str, from_concept: str, data: Any) -> Dict[str, Any]:

@@ -21,10 +21,21 @@ import math
 import time
 import json
 import threading
+import numpy as np
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional, List, Tuple
 from collections import OrderedDict
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REAL QISKIT QUANTUM CIRCUITS — Quantum State Monitoring
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from qiskit.circuit import QuantumCircuit
+    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy
+    QISKIT_AVAILABLE = True
+except ImportError:
+    QISKIT_AVAILABLE = False
 
 # ZENITH_UPGRADE_ACTIVE: 2026-02-15T00:00:00
 ZENITH_HZ = 3887.8
@@ -367,6 +378,69 @@ class UnifiedStateBus:
 
     # ── State snapshot generation ──
 
+    def qiskit_quantum_state_monitor(self) -> Dict[str, Any]:
+        """
+        REAL Qiskit quantum state monitoring.
+
+        Builds a quantum circuit encoding the current pipeline health
+        of all registered subsystems, then measures quantum coherence
+        to verify system alignment.
+
+        Real quantum: QuantumCircuit(n) -> Statevector -> DensityMatrix -> entropy
+        """
+        if not QISKIT_AVAILABLE:
+            return {'qiskit': False}
+
+        all_subsystems = self._health_tracker.get_all()
+        names = list(all_subsystems.keys())
+        n = min(len(names), 8)  # Cap at 8 qubits
+        if n < 2:
+            return {'qiskit': False, 'reason': 'need >= 2 subsystems'}
+
+        qc = QuantumCircuit(n)
+
+        # Encode each subsystem health as qubit rotation
+        for i, name in enumerate(names[:n]):
+            health = all_subsystems[name].get('health', 0.5)
+            theta = float(health) * np.pi
+            qc.ry(theta, i)
+
+        # Entangle adjacent subsystems
+        for i in range(n - 1):
+            qc.cx(i, i + 1)
+            god_phase = float(GOD_CODE) / 527.0 * np.pi * (i + 1) / n
+            qc.rz(god_phase, i + 1)
+
+        # Close the loop for full entanglement
+        if n > 2:
+            qc.cx(n - 1, 0)
+            qc.rz(float(PHI) * np.pi, 0)
+
+        # Evolve
+        sv = Statevector.from_int(0, 2**n).evolve(qc)
+        rho = DensityMatrix(sv)
+
+        # System-wide entropy
+        s_total = float(entropy(rho, base=2))
+        purity = float(np.real(np.trace(rho.data @ rho.data)))
+
+        # Bipartite entanglement
+        mid = n // 2
+        rho_left = partial_trace(rho, list(range(mid, n)))
+        bipartite_ent = float(entropy(rho_left, base=2))
+
+        return {
+            'qiskit': True,
+            'monitored_subsystems': n,
+            'total_entropy': s_total,
+            'purity': purity,
+            'bipartite_entanglement': bipartite_ent,
+            'quantum_coherence': 1.0 - (s_total / max(n, 1)),
+            'circuit_depth': qc.depth(),
+            'circuit_width': n,
+            'god_code_verified': abs(GOD_CODE - 527.5184818492612) < 1e-6
+        }
+
     def get_snapshot(self, force_refresh: bool = False) -> dict:
         """
         Generate a unified state snapshot.
@@ -422,6 +496,9 @@ class UnifiedStateBus:
 
                 # Sacred alignment
                 'sacred_alignment': round(sacred_alignment, 6),
+
+                # Quantum state monitoring (REAL Qiskit)
+                'quantum_state': self.qiskit_quantum_state_monitor() if QISKIT_AVAILABLE else {'qiskit': False},
 
                 # Cache performance
                 'cache_stats': self._file_cache.get_stats(),
