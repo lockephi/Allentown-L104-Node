@@ -1,6 +1,6 @@
 {
   "current_stage_index": 59,
-  "generation": 5533,
+  "generation": 5855,
   "mutation_rate": 0.005,
   "dna_sequence": {
     "logic_depth": 100.0,
@@ -17,507 +17,502 @@
   },
   "evolution_history": [
     {
-      "generation": 5434,
+      "generation": 5756,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5435,
+      "generation": 5757,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5436,
+      "generation": 5758,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5437,
+      "generation": 5759,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5438,
+      "generation": 5760,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5439,
+      "generation": 5761,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5440,
+      "generation": 5762,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5441,
+      "generation": 5763,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5442,
+      "generation": 5764,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5443,
+      "generation": 5765,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5444,
+      "generation": 5766,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5445,
+      "generation": 5767,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5446,
+      "generation": 5768,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5447,
+      "generation": 5769,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5448,
+      "generation": 5770,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5449,
+      "generation": 5771,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5450,
+      "generation": 5772,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5451,
+      "generation": 5773,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5452,
+      "generation": 5774,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5453,
+      "generation": 5775,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5454,
+      "generation": 5776,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5455,
+      "generation": 5777,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5456,
+      "generation": 5778,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5457,
+      "generation": 5779,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5458,
+      "generation": 5780,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5459,
+      "generation": 5781,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5460,
+      "generation": 5782,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5461,
+      "generation": 5783,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5462,
+      "generation": 5784,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5463,
+      "generation": 5785,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5464,
+      "generation": 5786,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5465,
+      "generation": 5787,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5466,
+      "generation": 5788,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5467,
+      "generation": 5789,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5468,
+      "generation": 5790,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5469,
+      "generation": 5791,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5470,
+      "generation": 5792,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5471,
+      "generation": 5793,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5472,
+      "generation": 5794,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5473,
+      "generation": 5795,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5474,
+      "generation": 5796,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5475,
+      "generation": 5797,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5476,
+      "generation": 5798,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5477,
+      "generation": 5799,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5478,
+      "generation": 5800,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5479,
+      "generation": 5801,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5480,
+      "generation": 5802,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5481,
+      "generation": 5803,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5482,
+      "generation": 5804,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5483,
+      "generation": 5805,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5484,
+      "generation": 5806,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5485,
+      "generation": 5807,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5486,
+      "generation": 5808,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5487,
+      "generation": 5809,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5488,
+      "generation": 5810,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5489,
+      "generation": 5811,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5490,
+      "generation": 5812,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5491,
+      "generation": 5813,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5492,
+      "generation": 5814,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5493,
+      "generation": 5815,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5494,
+      "generation": 5816,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5495,
+      "generation": 5817,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5496,
+      "generation": 5818,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5497,
+      "generation": 5819,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5498,
+      "generation": 5820,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5499,
+      "generation": 5821,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5500,
+      "generation": 5822,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5501,
+      "generation": 5823,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5502,
+      "generation": 5824,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5503,
+      "generation": 5825,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5504,
+      "generation": 5826,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5505,
+      "generation": 5827,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5506,
+      "generation": 5828,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5507,
+      "generation": 5829,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5508,
+      "generation": 5830,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5509,
+      "generation": 5831,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5510,
+      "generation": 5832,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5511,
+      "generation": 5833,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5512,
+      "generation": 5834,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5513,
+      "generation": 5835,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5514,
+      "generation": 5836,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5515,
+      "generation": 5837,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5516,
+      "generation": 5838,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5517,
+      "generation": 5839,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5518,
+      "generation": 5840,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5519,
+      "generation": 5841,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5520,
+      "generation": 5842,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5521,
+      "generation": 5843,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5522,
+      "generation": 5844,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5523,
+      "generation": 5845,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5524,
+      "generation": 5846,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5525,
+      "generation": 5847,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5526,
+      "generation": 5848,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5527,
+      "generation": 5849,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5528,
+      "generation": 5850,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5529,
+      "generation": 5851,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5530,
+      "generation": 5852,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5531,
+      "generation": 5853,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5532,
+      "generation": 5854,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     },
     {
-      "generation": 5533,
-      "fitness": 53.7425,
-      "outcome": "SAGE_EVOLUTION"
-    },
-    {
-      "generation": 5341,
+      "generation": 5855,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
     }
@@ -525,6 +520,6 @@
   "sage_mode_active": true,
   "wisdom_index": Infinity,
   "action_mode": "WU_WEI",
-  "timestamp": 1771282824.6281319,
+  "timestamp": 1771339600.9998565,
   "invariant": 527.5184818492612
 }

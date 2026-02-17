@@ -1,19 +1,19 @@
 {
   "version": "1.0.0",
   "created": "2026-02-15T17:04:49.652165+00:00",
-  "pulse_count": 4,
-  "last_pulse": "2026-02-16T21:49:37.797492+00:00",
-  "claude_md_hash": "796444dce2e3",
-  "code_engine_hash": "4f7b4d3d8fd3",
+  "pulse_count": 5,
+  "last_pulse": "2026-02-17T14:21:30.627626+00:00",
+  "claude_md_hash": "2023b57c5e4a",
+  "code_engine_hash": "584c0c7cd99f",
   "repo_metrics": {
-    "timestamp": "2026-02-16T21:49:31.366250+00:00",
-    "python_files": 11011,
-    "l104_modules": 698,
+    "timestamp": "2026-02-17T14:21:30.055278+00:00",
+    "python_files": 902,
+    "l104_modules": 702,
     "swift_lines": 45736,
-    "state_files": 31,
-    "total_state_size_mb": 44.99,
-    "code_engine_lines": 7238,
-    "code_engine_version": "2.5.0"
+    "state_files": 33,
+    "total_state_size_mb": 45.54,
+    "code_engine_lines": 8052,
+    "code_engine_version": "3.0.0"
   },
   "consciousness": {
     "nirvanic_coherence": 0.8080236555619427,
@@ -21,23 +21,23 @@
     "divine_interventions": 2314,
     "nirvanic_fuel": 0.8027964351238173,
     "enlightened_tokens": 527,
-    "wisdom_quotient": 1384.8903430279809,
-    "learning_cycles": 5340,
-    "training_entries": 7025,
-    "autonomous_improvements": 457,
-    "quantum_interactions": 4787,
-    "total_runs": 401,
-    "self_mod_version": "13.0",
-    "topic_frequencies_count": 3320,
-    "cross_references_count": 157
+    "wisdom_quotient": 209.42801901031038,
+    "learning_cycles": 34,
+    "training_entries": 8963,
+    "autonomous_improvements": 200,
+    "quantum_interactions": 1594,
+    "total_runs": 40,
+    "self_mod_version": "13.1",
+    "topic_frequencies_count": 4,
+    "cross_references_count": 731
   },
   "linked_sessions": [],
   "errors": [],
   "linkage": {
     "code_engine_exists": true,
-    "code_engine_hash": "4f7b4d3d8fd3",
+    "code_engine_hash": "584c0c7cd99f",
     "claude_md_exists": true,
-    "claude_md_hash": "796444dce2e3",
+    "claude_md_hash": "2023b57c5e4a",
     "copilot_instructions_exists": true,
     "cross_reference_valid": true,
     "heartbeat_state_exists": true,
@@ -79,6 +79,14 @@
       "l104_modules": 698,
       "swift_lines": 45736,
       "wisdom": 1384.8903430279809
+    },
+    {
+      "pulse": 5,
+      "timestamp": "2026-02-17T14:21:30.627626+00:00",
+      "python_files": 902,
+      "l104_modules": 702,
+      "swift_lines": 45736,
+      "wisdom": 209.42801901031038
     }
   ]
 }
