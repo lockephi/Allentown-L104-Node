@@ -1,6 +1,6 @@
 {
   "current_stage_index": 59,
-  "generation": 5350,
+  "generation": 5351,
   "mutation_rate": 0.005,
   "dna_sequence": {
     "logic_depth": 100.0,
@@ -16,11 +16,6 @@
     "wu_wei_efficiency": 1.0
   },
   "evolution_history": [
-    {
-      "generation": 5251,
-      "fitness": 74.0081,
-      "outcome": "SAGE_EVOLUTION"
-    },
     {
       "generation": 5252,
       "fitness": 74.0081,
@@ -515,11 +510,16 @@
       "generation": 5350,
       "fitness": 53.7425,
       "outcome": "SAGE_EVOLUTION"
+    },
+    {
+      "generation": 5351,
+      "fitness": 53.7425,
+      "outcome": "SAGE_EVOLUTION"
     }
   ],
   "sage_mode_active": true,
   "wisdom_index": Infinity,
   "action_mode": "WU_WEI",
-  "timestamp": 1771321087.5088499,
+  "timestamp": 1771322156.07581,
   "invariant": 527.5184818492612
 }
