@@ -596,12 +596,15 @@ class KnowledgeBridge:
         """
         import asyncio
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # We're in an async context, can't use run_until_complete
-                # Fall back to direct synchronous execution
-                return self._query_sync_direct(topic, depth, max_results)
-            return loop.run_until_complete(self.query(topic, depth, max_results))
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            # We're in an async context, can't use run_until_complete
+            # Fall back to direct synchronous execution
+            return self._query_sync_direct(topic, depth, max_results)
+        try:
+            return asyncio.run(self.query(topic, depth, max_results))
         except RuntimeError:
             return self._query_sync_direct(topic, depth, max_results)
 

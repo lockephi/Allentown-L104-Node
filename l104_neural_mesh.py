@@ -822,7 +822,7 @@ class NeuralMeshNetwork:
                            mesh_name: str = "main",
                            steps: int = 10) -> Dict[str, float]:
         """Async version of process"""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         return await loop.run_in_executor(
             self.executor,
             lambda: self.process(inputs, mesh_name, steps)

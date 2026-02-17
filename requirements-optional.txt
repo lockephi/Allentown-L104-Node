@@ -3,10 +3,6 @@
 # Install only what you need: pip install -r requirements-optional.txt
 # ═══════════════════════════════════════════════════════════
 
-# Legacy web dashboard (replaced by FastAPI + Jinja2 in v2.0)
-flask>=3.1.0
-flask-cors>=5.0.0
-
 # Voice interface
 pyttsx3>=2.90
 SpeechRecognition>=3.12.0
@@ -16,6 +12,3 @@ kivy>=2.3.0
 
 # Additional JSON library
 ujson>=5.10.0
-
-# Google Generative AI (legacy, replaced by google-genai)
-google-generativeai>=0.8.4

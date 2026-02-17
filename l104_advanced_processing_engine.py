@@ -478,20 +478,18 @@ class AdvancedProcessingEngine:
     ) -> ProcessingResult:
         """Synchronous processing wrapper."""
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8) as executor:  # QUANTUM AMPLIFIED
-                    future = executor.submit(
-                        asyncio.run,
-                        self.process_async(query, mode, context)
-                    )
-                    return future.result()
-            else:
-                return loop.run_until_complete(
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 8) as executor:  # QUANTUM AMPLIFIED
+                future = executor.submit(
+                    asyncio.run,
                     self.process_async(query, mode, context)
                 )
-        except RuntimeError:
+                return future.result()
+        else:
             return asyncio.run(self.process_async(query, mode, context))
 
     async def _process_quick(self, query: str, context: Dict = None) -> ProcessingResult:

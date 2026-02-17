@@ -2944,11 +2944,8 @@ def train_single_kernel(
 
     # Set up event loop for this thread BEFORE any imports
     # This prevents "no current event loop in thread" errors
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     start_time = time.time()
     result = KernelTrainingResult(kernel_name=kernel_name, success=False)

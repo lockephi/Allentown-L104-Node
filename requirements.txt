@@ -1,16 +1,15 @@
 # ═══════════════════════════════════════════════════════════
-# L104 Sovereign Node — Python Dependencies v2.0 (Feb 2026)
-# UPGRADE v2.0:
-#   - Removed Flask (FastAPI is the sole web framework)
-#   - Removed duplicate JSON libs (kept orjson, dropped ujson)
-#   - Moved optional deps to requirements-optional.txt
-#   - Added pytest + httpx test deps
-#   - Pinned both floor and ceiling versions
+# L104 Sovereign Node — Python Dependencies v3.0 (Feb 2026)
+# UPGRADE v3.0:
+#   - Bumped version floors for Python 3.14 compatibility
+#   - Updated anthropic ceiling to <2.0 (v1.x available)
+#   - Updated uvloop minimum for Python 3.14 support
+#   - Removed kivy from core requirements (moved to optional)
 # ═══════════════════════════════════════════════════════════
 
 # Web framework & ASGI
 fastapi>=0.115.0,<1.0
-uvicorn[standard]>=0.32.0,<1.0
+uvicorn[standard]>=0.34.0,<1.0
 pydantic>=2.10.0,<3.0
 jinja2>=3.1.5,<4.0
 python-multipart>=0.0.18
@@ -19,7 +18,7 @@ python-multipart>=0.0.18
 httpx[http2]>=0.28.0,<1.0
 
 # AI providers
-anthropic>=0.45.0,<1.0
+anthropic>=0.45.0,<2.0
 google-genai>=1.1.0,<2.0
 
 # System monitoring
@@ -47,4 +46,3 @@ structlog>=24.4.0
 # Testing
 pytest>=8.0.0
 pytest-asyncio>=0.23.0
-kivy>=2.3.0

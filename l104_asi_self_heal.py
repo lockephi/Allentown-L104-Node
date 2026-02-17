@@ -64,11 +64,14 @@ class ASISelfHeal:
                 import asyncio
                 # Use a small wrapper to run the async sync if we are in a sync context
                 try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = None
+                try:
+                    if loop and loop.is_running():
                         asyncio.create_task(absolute_intellect.synchronize_peak())
                     else:
-                        loop.run_until_complete(absolute_intellect.synchronize_peak())
+                        asyncio.run(absolute_intellect.synchronize_peak())
                 except Exception:
                     # If all else fails, force variables
                     absolute_intellect.is_saturated = True

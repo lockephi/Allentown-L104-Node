@@ -2404,17 +2404,14 @@ class ASICore:
             try:
                 import asyncio
                 try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        # Already in async context
-                        result["response"] = "[NEXUS] Async context — use await pipeline_nexus_think_async()"
-                        result["source"] = "asi_nexus_deferred"
-                    else:
-                        thought = loop.run_until_complete(self._asi_nexus.think(query))
-                        result["response"] = thought.get('results', {}).get('response', str(thought))
-                        result["source"] = "asi_nexus"
+                    loop = asyncio.get_running_loop()
                 except RuntimeError:
-                    # No event loop
+                    loop = None
+                if loop and loop.is_running():
+                    # Already in async context
+                    result["response"] = "[NEXUS] Async context — use await pipeline_nexus_think_async()"
+                    result["source"] = "asi_nexus_deferred"
+                else:
                     thought = asyncio.run(self._asi_nexus.think(query))
                     result["response"] = thought.get('results', {}).get('response', str(thought))
                     result["source"] = "asi_nexus"

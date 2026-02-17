@@ -458,21 +458,19 @@ class ClaudeNodeBridge:
     ) -> ClaudeResponse:
         """Synchronous query wrapper."""
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # Already in async context
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(
-                        asyncio.run,
-                        self.query_async(prompt, model, system, max_tokens, use_cache)
-                    )
-                    return future.result()
-            else:
-                return loop.run_until_complete(
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            # Already in async context
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(
+                    asyncio.run,
                     self.query_async(prompt, model, system, max_tokens, use_cache)
                 )
-        except RuntimeError:
+                return future.result()
+        else:
             return asyncio.run(
                 self.query_async(prompt, model, system, max_tokens, use_cache)
             )
@@ -857,20 +855,18 @@ class ClaudeNodeBridge:
     ) -> ClaudeResponse:
         """Synchronous chat wrapper."""
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(
-                        asyncio.run,
-                        self.chat_async(message, conversation_id, model, use_tools=use_tools)
-                    )
-                    return future.result()
-            else:
-                return loop.run_until_complete(
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(
+                    asyncio.run,
                     self.chat_async(message, conversation_id, model, use_tools=use_tools)
                 )
-        except RuntimeError:
+                return future.result()
+        else:
             return asyncio.run(
                 self.chat_async(message, conversation_id, model, use_tools=use_tools)
             )

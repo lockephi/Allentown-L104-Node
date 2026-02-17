@@ -1751,7 +1751,7 @@ async def ai_chat(req: ChatRequest):
 
     try:
         # Run in thread to bypass asyncio event loop blocking
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         with concurrent.futures.ThreadPoolExecutor() as pool:
             result = await loop.run_in_executor(pool, unified_local_think, req.message)
         return result
@@ -1773,7 +1773,7 @@ async def ai_chat_deep(req: ChatRequest):
 
     try:
         from l104_local_intellect import local_intellect
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         response = await loop.run_in_executor(
             None,
             lambda: local_intellect.think(req.message)
@@ -1804,7 +1804,7 @@ async def ai_chat_enhanced(req: ChatRequest):
         from l104_gemini_real import gemini_real
 
         if gemini_real.is_connected or gemini_real.connect():
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             try:
                 response = await asyncio.wait_for(
                     loop.run_in_executor(
@@ -1956,7 +1956,7 @@ async def intellect_train(payload: Dict[str, Any]):
         embedding_norm = 0.0
         learning_quality = quality
         try:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             def _train_sync():
                 """Retrain memory and feed data into FT engine synchronously."""
                 # Retrain memory with the new data
@@ -2127,7 +2127,7 @@ async def unified_sync(payload: Dict[str, Any] = None):
                         count += 1
                 return count
 
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             with concurrent.futures.ThreadPoolExecutor() as pool:
                 ingested_count = await loop.run_in_executor(pool, _ingest_knowledge)
 
@@ -2145,7 +2145,7 @@ async def unified_sync(payload: Dict[str, Any] = None):
                         count += 1
                 return count
 
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             with concurrent.futures.ThreadPoolExecutor() as pool:
                 ingested_count += await loop.run_in_executor(pool, _ingest_convos)
 

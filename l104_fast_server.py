@@ -1990,7 +1990,7 @@ response_compressor = ResponseCompressor()
 async def run_in_executor(func, *args):
     """Run CPU-bound function in thread pool"""
     import asyncio
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     return await loop.run_in_executor(PERF_THREAD_POOL, func, *args)
 
 # Fast hash computation using built-in
