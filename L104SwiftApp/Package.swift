@@ -1,20 +1,21 @@
-// swift-tools-version:5.9
-// L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.0
-// [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// swift-tools-version:5.7
+// L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.1
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // macOS Native: Accelerate · Metal · CoreML · SIMD · BLAS
 // Whole-Module Optimization · Link-Time Optimization
-// UPGRADE v2.0:
-//   - swift-tools-version 5.9 (modern Swift features: @Observable, macros)
-//   - Platform minimum macOS 13 (Ventura) for Observation framework
-//   - Trimmed unused framework links (MetalKit, IOKit, QuartzCore)
-//   - Added testTarget for unit tests
+// UPGRADE v2.1 (Feb 17, 2026):
+//   - swift-tools-version 5.7 (matched to host Swift 5.7.2 toolchain)
+//   - Platform minimum macOS 12 (Monterey) — compatible with host system
+//   - EVO_58 QUANTUM_COGNITION pipeline alignment
+//   - Added L104Native.swift.bak2 exclusion
+//   - Security dependency audit passed
 
 import PackageDescription
 
 let package = Package(
     name: "L104SovereignIntellect",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v12)
     ],
     products: [
         .executable(name: "L104", targets: ["L104"])
@@ -30,6 +31,7 @@ let package = Package(
                 "L104App.swift.bak",
                 "L104Native.swift",     // Monolith — replaced by L104v2/ split (78 files)
                 "L104Native.swift.bak",
+                "L104Native.swift.bak2",
                 "cpython_bridge.c",
                 "cpython_bridge.h",
                 "apply_changes.py",
@@ -53,7 +55,7 @@ let package = Package(
         ),
         .testTarget(
             name: "L104Tests",
-            dependencies: ["L104"],
+            dependencies: [.target(name: "L104")],
             path: "Tests"
         ),
     ]
