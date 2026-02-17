@@ -294,6 +294,12 @@ class DataMatrix:
         """
         Collapse a quantum process to a single classical state.
         Observer bias (-1 to 1) can influence the collapse toward lower or higher indices.
+        
+        v2.1 enhancements:
+        - Enhanced collapse probability with GOD_CODE weighting
+        - Improved observer bias with PHI scaling
+        - Coherence tracking during collapse
+        - Decoherence simulation
         """
         import random
 
@@ -304,14 +310,25 @@ class DataMatrix:
         states = data.get("states", [])
         if not states:
             return {"error": "No states to collapse", "collapsed": False}
+        
+        # v2.1: Get initial coherence
+        initial_coherence = data.get("coherence", 1.0)
+        decoherence_rate = data.get("decoherence_rate", ALPHA_FINE_STRUCTURE)
 
-        # Calculate collapse probabilities with observer bias
+        # Calculate collapse probabilities with enhanced weighting
         probabilities = []
         for i, state in enumerate(states):
             base_prob = state["amplitude_real"]**2 + state["amplitude_imag"]**2
-            # Apply observer bias: positive bias favors later states, negative favors earlier
-            bias_factor = 1.0 + (observer_bias * (i / len(states) - 0.5))
-            probabilities.append(base_prob * bias_factor)
+            
+            # v2.1: Apply GOD_CODE harmonic weighting
+            god_code_factor = 1.0 + 0.1 * math.sin(i * PHI / GOD_CODE)
+            
+            # Apply observer bias with PHI scaling (v2.1)
+            bias_factor = 1.0 + (observer_bias * PHI * (i / len(states) - 0.5))
+            
+            # v2.1: Combined probability with coherence influence
+            enhanced_prob = base_prob * god_code_factor * bias_factor * initial_coherence
+            probabilities.append(enhanced_prob)
 
         # Normalize
         total = sum(probabilities)
@@ -329,6 +346,9 @@ class DataMatrix:
                 collapsed_state = states[i]["data"]
                 collapsed_index = i
                 break
+        
+        # v2.1: Calculate post-collapse decoherence
+        post_collapse_coherence = initial_coherence * math.exp(-decoherence_rate)
 
         # Store collapsed result
         collapsed_data = {
@@ -339,16 +359,32 @@ class DataMatrix:
             "result": collapsed_state,
             "collapse_probability": probabilities[collapsed_index],
             "observer_bias": observer_bias,
+            "initial_coherence": initial_coherence,  # v2.1
+            "post_collapse_coherence": post_collapse_coherence,  # v2.1
+            "decoherence_rate": decoherence_rate,  # v2.1
+            "god_code_alignment": math.cos(collapsed_index * PHI / GOD_CODE),  # v2.1
             "timestamp": datetime.now(UTC).isoformat()
         }
 
         self.store(f"qprocess:{process_id}", collapsed_data, category="QUANTUM_PROCESS", utility=1.0)
-        return {"collapsed": True, "result": collapsed_state, "index": collapsed_index, "probability": probabilities[collapsed_index]}
+        return {
+            "collapsed": True, 
+            "result": collapsed_state, 
+            "index": collapsed_index, 
+            "probability": probabilities[collapsed_index],
+            "coherence_loss": initial_coherence - post_collapse_coherence,  # v2.1
+            "final_coherence": post_collapse_coherence,  # v2.1
+        }
 
     def process_interference(self, process_a: str, process_b: str) -> Dict[str, Any]:
         """
         Create quantum interference between two superposed processes.
         Returns constructive/destructive interference pattern.
+        
+        v2.1 enhancements:
+        - Enhanced interference pattern calculation with phase information
+        - Improved quantum correlation metrics
+        - GOD_CODE phase alignment detection
         """
         data_a = self.retrieve(f"qprocess:{process_a}")
         data_b = self.retrieve(f"qprocess:{process_b}")
@@ -364,9 +400,10 @@ class DataMatrix:
         states_a = data_a.get("states", [])
         states_b = data_b.get("states", [])
 
-        # Calculate interference
+        # Calculate interference with enhanced metrics
         constructive = 0.0
         destructive = 0.0
+        phase_alignment = []  # v2.1: Track phase alignment
 
         for sa in states_a:
             for sb in states_b:
@@ -375,6 +412,13 @@ class DataMatrix:
 
                 # Interference term
                 interference_term = (amp_a * amp_b.conjugate()).real
+                
+                # v2.1: Calculate phase alignment with GOD_CODE reference
+                phase_a = cmath.phase(amp_a)
+                phase_b = cmath.phase(amp_b)
+                phase_diff = abs(phase_a - phase_b)
+                god_code_alignment = math.cos(phase_diff * GOD_CODE / (2 * math.pi))
+                phase_alignment.append(god_code_alignment)
 
                 if interference_term > 0:
                     constructive += interference_term
@@ -386,6 +430,9 @@ class DataMatrix:
             interference_pattern = (constructive - destructive) / total
         else:
             interference_pattern = 0.0
+        
+        # v2.1: Enhanced quantum correlation with phase alignment
+        avg_phase_alignment = sum(phase_alignment) / len(phase_alignment) if phase_alignment else 0.0
 
         return {
             "process_a": process_a,
@@ -393,13 +440,20 @@ class DataMatrix:
             "constructive": constructive,
             "destructive": destructive,
             "interference_pattern": interference_pattern,  # -1 to 1
-            "quantum_correlation": abs(interference_pattern)
+            "quantum_correlation": abs(interference_pattern),
+            "phase_alignment": avg_phase_alignment,  # v2.1: GOD_CODE phase alignment
+            "coherence_product": data_a.get("coherence", 1.0) * data_b.get("coherence", 1.0),  # v2.1
         }
 
     def quantum_parallel_execute(self, process_id: str, executor_func: str) -> Dict[str, Any]:
         """
         Conceptually execute all superposed states in parallel.
         Returns results for all branches before collapse.
+        
+        v2.1 enhancements:
+        - Improved quantum execution with coherence tracking
+        - Enhanced probability distribution analysis
+        - GOD_CODE-weighted branching metrics
         """
         data = self.retrieve(f"qprocess:{process_id}")
         if not data or data.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
@@ -407,27 +461,50 @@ class DataMatrix:
 
         states = data.get("states", [])
         results = []
+        max_probability = 0.0
+        god_code_weights = []  # v2.1: GOD_CODE-weighted state importance
 
         for state in states:
             # Each state gets its own execution result
             state_data = state["data"]
             amplitude = complex(state["amplitude_real"], state["amplitude_imag"])
+            prob = state["probability"]
+            
+            # v2.1: Calculate GOD_CODE weight for this branch
+            god_code_weight = prob * (1 + math.sin(state["state_id"] * PHI / GOD_CODE))
+            god_code_weights.append(god_code_weight)
+            
+            max_probability = max(max_probability, prob)
 
             result = {
                 "state_id": state["state_id"],
                 "input": state_data,
                 "amplitude": abs(amplitude),
-                "probability": state["probability"],
+                "probability": prob,
+                "god_code_weight": god_code_weight,  # v2.1
                 "executed": True,
                 "executor": executor_func
             }
             results.append(result)
+        
+        # v2.1: Calculate quantum execution metrics
+        total_prob = sum(r["probability"] for r in results)
+        entropy = -sum(p * math.log2(p) if p > 0 else 0 
+                      for p in [r["probability"] for r in results])
+        
+        # v2.1: Coherence estimate based on probability distribution
+        coherence_estimate = max_probability / total_prob if total_prob > 0 else 0.0
 
         return {
             "process_id": process_id,
             "parallel_results": results,
             "branches": len(results),
-            "total_probability": sum(r["probability"] for r in results)
+            "total_probability": total_prob,
+            "max_branch_probability": max_probability,  # v2.1
+            "quantum_entropy": entropy,  # v2.1: Shannon entropy of branches
+            "coherence_estimate": coherence_estimate,  # v2.1
+            "god_code_weighted_average": sum(god_code_weights) / len(god_code_weights) if god_code_weights else 0.0,  # v2.1
+        }
         }
 
     def list_quantum_processes(self) -> List[Dict]:
