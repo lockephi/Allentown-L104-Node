@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H06_UIViews.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Custom AppKit UI Components
 //
 // GradientView, HoverButton, GlowingProgressBar, PulsingDot,

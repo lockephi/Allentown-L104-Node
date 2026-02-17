@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════
 // B05_PowerScheduler.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Power-Aware Compute Scheduler
 //
 // PowerAwareScheduler dispatches work to performance, balanced,
 // or efficiency queues based on thermal state and power mode.
 // Includes parallel-map with power-aware chunking.
-// EVO_55: Thread-safe counters, φ-weighted load balancing.
+// EVO_58: Thread-safe counters, φ-weighted load balancing.
 //
 // Extracted from L104Native.swift lines 1309-1442
 // ═══════════════════════════════════════════════════════════════════
@@ -29,7 +29,7 @@ class PowerAwareScheduler {
     private let balancedQueue = DispatchQueue(label: "asi.balanced", qos: .userInitiated, attributes: .concurrent)
     private let efficiencyQueue = DispatchQueue(label: "asi.efficiency", qos: .utility, attributes: .concurrent)
 
-    // EVO_55: Thread-safe counters — protected by statsLock
+    // EVO_58: Thread-safe counters — protected by statsLock
     private let statsLock = NSLock()
     private var _tasksScheduled: Int = 0
     private var _tasksCompleted: Int = 0
@@ -105,7 +105,7 @@ class PowerAwareScheduler {
         return results.compactMap { $0 }
     }
 
-    /// EVO_55: Scheduler statistics
+    /// EVO_58: Scheduler statistics
     func schedulerStats() -> [String: Any] {
         statsLock.lock()
         let s = _tasksScheduled

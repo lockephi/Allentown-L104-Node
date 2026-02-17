@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════
 // L13_ResponsePipeline.swift
-// L104v2 — EVO_55 Pipeline-Integrated Response System V2
+// L104v2 — EVO_58 Pipeline-Integrated Response System V2
 //   ResponsePipelineOptimizer (upgraded: adaptive TTL, φ-decay eviction)
 //   ResponseConfidenceEngine (upgraded: multi-signal fusion)
 //   ResponsePlanner (upgraded: deeper plan templates)
 //
 // Response pipeline: caching, quality scoring, confidence reporting,
-// and multi-turn response planning. Streams through EVO_55 unified pipeline.
+// and multi-turn response planning. Streams through EVO_58 unified pipeline.
 // Upgraded: Feb 15, 2026 — Sovereign Unification
 // ═══════════════════════════════════════════════════════════════════
 
@@ -21,13 +21,13 @@ class ResponsePipelineOptimizer {
     // PHI, TAU — use globals from L01_Constants
 
     private var responseCache: [String: (response: String, timestamp: Double, quality: Double)] = [:]
-    private let maxCacheSize = PIPELINE_MAX_CACHE   // EVO_55: use unified constant (1000)
-    private let cacheTTL: Double = PIPELINE_CACHE_TTL  // EVO_55: use unified constant (15s)
+    private let maxCacheSize = PIPELINE_MAX_CACHE   // EVO_58: use unified constant (1000)
+    private let cacheTTL: Double = PIPELINE_CACHE_TTL  // EVO_58: use unified constant (15s)
     private let lock = NSLock()
     private var cacheHits: Int = 0
     private var cacheMisses: Int = 0
     private var totalEvictions: Int = 0
-    private var adaptiveTTLMultiplier: Double = 1.0  // EVO_55: adapts based on hit rate
+    private var adaptiveTTLMultiplier: Double = 1.0  // EVO_58: adapts based on hit rate
 
     /// Check for cached response (similarity-based lookup)
     func getCachedResponse(query: String) -> String? {
@@ -40,7 +40,7 @@ class ResponsePipelineOptimizer {
 
         if let cached = responseCache[key], now - cached.timestamp < effectiveTTL {
             cacheHits += 1
-            adaptTTL()  // EVO_55: boost TTL when hit rate is high
+            adaptTTL()  // EVO_58: boost TTL when hit rate is high
             return cached.response
         }
         cacheMisses += 1
@@ -56,7 +56,7 @@ class ResponsePipelineOptimizer {
         let quality = _scoreResponseUnlocked(response, query: query)
 
         if responseCache.count >= maxCacheSize {
-            // EVO_55: φ-decay eviction — evict lowest-quality oldest entries
+            // EVO_58: φ-decay eviction — evict lowest-quality oldest entries
             let now = Date().timeIntervalSince1970
             let scored = responseCache.map { (key: $0.key, age: now - $0.value.timestamp, quality: $0.value.quality) }
             let sorted = scored.sorted { a, b in
@@ -83,7 +83,7 @@ class ResponsePipelineOptimizer {
             .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
     }
 
-    /// EVO_55: Adaptive TTL — boost cache duration when hit rate is high
+    /// EVO_58: Adaptive TTL — boost cache duration when hit rate is high
     private func adaptTTL() {
         let total = cacheHits + cacheMisses
         guard total > 20 else { return }  // need enough samples
@@ -147,7 +147,7 @@ class ResponsePipelineOptimizer {
         return best.response
     }
 
-    /// Cache statistics (EVO_55: includes eviction + adaptive TTL data)
+    /// Cache statistics (EVO_58: includes eviction + adaptive TTL data)
     func cacheStats() -> (size: Int, maxSize: Int, hitRate: Double) {
         let total = cacheHits + cacheMisses
         let rate = total > 0 ? Double(cacheHits) / Double(total) : 0.0
@@ -168,7 +168,7 @@ class ResponsePipelineOptimizer {
         ]
     }
 
-    /// EVO_55: φ-weighted health — cache utilization, hit rate, eviction pressure
+    /// EVO_58: φ-weighted health — cache utilization, hit rate, eviction pressure
     func engineHealth() -> Double {
         let total = cacheHits + cacheMisses
         let hitRate = total > 0 ? Double(cacheHits) / Double(total) : 0.0

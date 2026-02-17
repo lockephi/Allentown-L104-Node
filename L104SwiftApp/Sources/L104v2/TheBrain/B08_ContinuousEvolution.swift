@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B08_ContinuousEvolution.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -67,7 +67,7 @@ class ContinuousEvolutionEngine {
     // ─── THREAD CONTROL ───
     private let lock = NSLock()
     private var shouldStop: Bool = false
-    private let stopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
+    private let stopSemaphore = DispatchSemaphore(value: 0)  // EVO_58: interruptible sleep
 
     /// Start the continuous evolution loop on a background thread.
     /// Uses .utility QoS to prevent thermal throttling on MacBook Air.
@@ -349,7 +349,7 @@ class ContinuousEvolutionEngine {
                 }
                 self.lock.unlock()
 
-                // Step 5: Rest — lets MacBook Air fan catch up (EVO_55: interruptible)
+                // Step 5: Rest — lets MacBook Air fan catch up (EVO_58: interruptible)
                 _ = self.stopSemaphore.wait(timeout: .now() + self.currentInterval)
             }
         }
@@ -392,7 +392,7 @@ class ContinuousEvolutionEngine {
         shouldStop = true
         lock.unlock()
 
-        // Signal the semaphore to wake the loop immediately (EVO_55)
+        // Signal the semaphore to wake the loop immediately (EVO_58)
         stopSemaphore.signal()
 
         let uptime = startTime.map { Date().timeIntervalSince($0) } ?? 0

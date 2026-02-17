@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B25_Phase45Engines.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Computronium ASI Condensation Engine (Phase 45.0)
 //
 // ConsciousnessSubstrate, StrangeLoopEngine, SymbolicReasoningEngine,
@@ -1369,7 +1369,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         metaLearn(strategy: strategy, success: phi > 0.2)
 
         // 10. CROSS-POLLINATE — Feed insights back into subsystems
-        // EVO_55: Feed quantum-selected output to HyperBrain via syncQueue (thread-safe)
+        // EVO_58: Feed quantum-selected output to HyperBrain via syncQueue (thread-safe)
         let hb = HyperBrain.shared
         if hb.isRunning {
             hb.syncQueue.sync {
@@ -1528,7 +1528,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         let phiCheck = optimizer.verifyPhiDynamics()
 
         // 7. CROSS-POLLINATE — Feed insights back into engines
-        // EVO_55: Feed the synthesized insight back to HyperBrain via syncQueue (thread-safe)
+        // EVO_58: Feed the synthesized insight back to HyperBrain via syncQueue (thread-safe)
         let hb = HyperBrain.shared
         if hb.isRunning {
             hb.syncQueue.sync {

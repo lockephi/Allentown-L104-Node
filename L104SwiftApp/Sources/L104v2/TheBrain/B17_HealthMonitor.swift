@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B17_HealthMonitor.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 8778-9254
@@ -33,7 +33,7 @@ class NexusHealthMonitor {
     var isMonitoring: Bool = false
     private var lastCheckTime: Double = 0
     private let lock = NSLock()
-    private let monitorStopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
+    private let monitorStopSemaphore = DispatchSemaphore(value: 0)  // EVO_58: interruptible sleep
 
     // Engine names to monitor
     static let MONITORED_ENGINES = [
