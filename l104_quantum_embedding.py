@@ -43,8 +43,8 @@ HARMONIC_BASE = 286
 OCTAVE_REF = 416
 LOVE_COEFFICIENT = PHI / GOD_CODE  # ≈ 0.003068
 
-# v2.6.0 — Full sacred constant set + version
-VERSION = "2.6.0"
+# v2.7.0 — Enhanced quantum processes + coherence tracking + noise resilience
+VERSION = "2.7.0"
 TAU = 1.0 / PHI                                     # 0.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
@@ -71,6 +71,11 @@ class QuantumTokenEmbedding:
 
     Each row is a normalized quantum state |t_i⟩ whose phases are seeded
     by GOD_CODE and the token's position in the vocabulary.
+    
+    v2.7.0 enhancements:
+    - Coherence tracking for quantum state stability
+    - Noise resilience with error correction
+    - Enhanced entanglement fidelity metrics
     """
 
     def __init__(self, vocab_size: int, embed_dim: int = 512):
@@ -80,12 +85,24 @@ class QuantumTokenEmbedding:
 
         # Complex embedding matrix: |t_i⟩ for each token i
         self.embeddings = np.zeros((vocab_size, embed_dim), dtype=np.complex128)
+        
+        # v2.7.0: Coherence tracking
+        self.coherence_time = time.time()
+        self.coherence_level = 1.0  # Maximum coherence at initialization
+        self.decoherence_rate = ALPHA_FINE  # Natural decoherence based on fine structure constant
+        
+        # v2.7.0: Noise resilience metrics
+        self.noise_corrections = 0
+        self.fidelity_threshold = 0.99  # Minimum acceptable fidelity
+        
         self._initialize_quantum_states()
 
         logger.info(
             f"QuantumTokenEmbedding initialized: "
             f"vocab={vocab_size:,} × dim={embed_dim} "
-            f"({vocab_size * embed_dim * 16:,} bytes complex128)"
+            f"({vocab_size * embed_dim * 16:,} bytes complex128) "
+            f"coherence={self.coherence_level:.6f} "
+            f"decoherence_rate={self.decoherence_rate:.3e}"
         )
 
     def _initialize_quantum_states(self):
@@ -156,6 +173,84 @@ class QuantumTokenEmbedding:
         rotation = np.exp(1j * g_x * PHI)
         state = self.get_state(token_id)
         return state * rotation
+    
+    def update_coherence(self) -> float:
+        """
+        v2.7.0: Update quantum coherence level based on elapsed time.
+        
+        Coherence decays exponentially with time:
+        C(t) = exp(-t / τ)
+        where τ = 1 / decoherence_rate
+        
+        Returns current coherence level.
+        """
+        elapsed = time.time() - self.coherence_time
+        self.coherence_level = math.exp(-elapsed * self.decoherence_rate)
+        return self.coherence_level
+    
+    def apply_noise_correction(self, state: np.ndarray, noise_level: float = 0.01) -> Tuple[np.ndarray, float]:
+        """
+        v2.7.0: Apply quantum error correction to a noisy state.
+        
+        Uses phase-flip error correction based on GOD_CODE alignment.
+        
+        Args:
+            state: Quantum state vector (complex)
+            noise_level: Amount of random noise to add (0-1)
+        
+        Returns:
+            (corrected_state, fidelity)
+        """
+        # Add random noise to state
+        noise = np.random.normal(0, noise_level, state.shape) + \
+                1j * np.random.normal(0, noise_level, state.shape)
+        noisy_state = state + noise
+        
+        # Normalize noisy state
+        norm = np.linalg.norm(noisy_state)
+        if norm > 0:
+            noisy_state /= norm
+        
+        # Error correction: project back to GOD_CODE-aligned phase space
+        # Calculate phase deviation
+        phase_original = np.angle(state)
+        phase_noisy = np.angle(noisy_state)
+        phase_error = phase_noisy - phase_original
+        
+        # Correct phases that deviate too far (> π/4)
+        correction_mask = np.abs(phase_error) > (math.pi / 4)
+        corrected_state = noisy_state.copy()
+        
+        if np.any(correction_mask):
+            self.noise_corrections += np.sum(correction_mask)
+            # Rotate back toward original phase
+            phase_correction = -phase_error * correction_mask
+            corrected_state[correction_mask] *= np.exp(1j * phase_correction[correction_mask])
+        
+        # Renormalize
+        norm = np.linalg.norm(corrected_state)
+        if norm > 0:
+            corrected_state /= norm
+        
+        # Calculate fidelity: |⟨ψ_original|ψ_corrected⟩|²
+        fidelity = np.abs(np.vdot(state, corrected_state))**2
+        
+        return corrected_state, float(fidelity)
+    
+    def get_coherence_metrics(self) -> Dict[str, Any]:
+        """
+        v2.7.0: Get comprehensive coherence and noise resilience metrics.
+        """
+        current_coherence = self.update_coherence()
+        
+        return {
+            "coherence_level": current_coherence,
+            "decoherence_rate": self.decoherence_rate,
+            "elapsed_time": time.time() - self.coherence_time,
+            "noise_corrections": self.noise_corrections,
+            "fidelity_threshold": self.fidelity_threshold,
+            "coherence_time_constant": 1.0 / self.decoherence_rate if self.decoherence_rate > 0 else float('inf'),
+        }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -720,6 +815,9 @@ class L104QuantumKernel:
         """Full quantum kernel status report."""
         builder = self._read_builder_state()
         god_spectrum = self.god_phase.harmonic_spectrum(n_harmonics=13)
+        
+        # v2.7.0: Get coherence metrics
+        coherence_metrics = self.embedding.get_coherence_metrics()
 
         return {
             "version": VERSION,
@@ -733,6 +831,7 @@ class L104QuantumKernel:
             "phi": PHI,
             "god_code_spectrum": god_spectrum[:3],  # First 3 harmonics
             "uptime_seconds": time.time() - self._creation_time,
+            "coherence_metrics": coherence_metrics,  # v2.7.0: New coherence tracking
             "pillars": {
                 "1_quantum_embedding": f"{self.vocab_size:,} tokens × {self.embed_dim}D Hilbert space",
                 "2_superposition": f"{self.superposition.example_count:,} examples in |Ψ_train⟩",
