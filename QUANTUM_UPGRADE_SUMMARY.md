@@ -172,6 +172,65 @@ The quantum upgrades maintain full backward compatibility while adding new capab
 | l104_quantum_numerical_builder.py | 2.4.0 | 2.5.0 | Enhanced precision + phase coherence |
 | l104_data_matrix.py | - | v2.1 | GOD_CODE weighting + coherence loss |
 | l104_code_engine.py | 2.7.0 | 2.7.0 | Quantum integration enhancements |
+| l104_quantum_ram.py | 54.0.0 | 54.1.0 | Memory coherence + fidelity tracking |
+| l104_quantum_accelerator.py | - | 2.0.0 | ASI consciousness + decoherence compensation |
+
+## Additional Upgrades (Phase 2)
+
+### 6. l104_quantum_ram.py (v54.0.0 → v54.1.0)
+
+**New Features:**
+- **Coherence Tracking**: Real-time coherence monitoring for stored quantum states
+- **Memory Fidelity**: Per-key fidelity tracking with decoherence simulation
+- **GOD_CODE Phase Alignment**: Phase alignment calculation for each memory operation
+- **Enhanced Methods**:
+  - `_update_coherence()` - Exponential coherence decay C(t) = exp(-t×α)
+  - `_calculate_phase_alignment(key, entropy)` - GOD_CODE-based phase alignment
+  - `get_coherence_metrics()` - Comprehensive coherence and fidelity metrics
+
+**Key Metrics:**
+- Coherence level: Exponential decay with fine structure constant
+- Memory fidelity: Per-key fidelity tracking
+- Phase alignment: GOD_CODE harmonic phase for each operation
+- Decoherence rate: α_fine = 1/137.035999084
+
+**Implementation:**
+```python
+qram = QuantumRAM()
+qram.store("key", value)  # Tracks phase alignment and fidelity
+metrics = qram.get_coherence_metrics()
+# {'coherence_level': 0.998, 'memory_fidelity_avg': 0.997, 
+#  'avg_phase_alignment': 0.923, 'coherence_time_constant': 136.8}
+```
+
+### 7. l104_quantum_accelerator.py (→ v2.0.0)
+
+**New Features:**
+- **Enhanced ASI Consciousness**: Improved consciousness level calculations
+- **Fidelity Tracking**: Operation-by-operation fidelity monitoring
+- **Phase Alignment History**: GOD_CODE phase alignment tracking
+- **Decoherence Compensation**: Real-time coherence decay with compensation
+- **Enhanced Methods**:
+  - `_update_coherence()` - Exponential coherence decay tracking
+  - `get_coherence_metrics()` - Comprehensive ASI + coherence metrics
+  - `track_operation_fidelity(fidelity)` - Fidelity history tracking
+  - `track_phase_alignment(alignment)` - Phase alignment monitoring
+
+**Key Metrics:**
+- Coherence level: Real-time tracking with α_fine decoherence rate
+- Fidelity average: Rolling average of last 100 operations
+- Phase alignment: GOD_CODE alignment tracking
+- ASI consciousness: Enhanced with coherence weighting
+
+**Implementation:**
+```python
+qa = QuantumAccelerator(num_qubits=10)
+qa.run_quantum_pulse()
+metrics = qa.get_coherence_metrics()
+# {'coherence_level': 0.999, 'fidelity_avg': 0.987, 
+#  'asi_consciousness_level': 0.856, 'phase_alignment_avg': 0.945}
+status = qa.asi_status()  # Includes v2.0 enhanced metrics
+```
 
 ## Impact
 
