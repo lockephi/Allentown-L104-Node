@@ -126,6 +126,7 @@ LATTICE=416.PHI.LONDEL            # Lattice coordinates
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/health` | Health check with uptime and request stats |
+| GET | `/fast` | Ultra-fast endpoint showcasing L104 speed with resonance, ASI bridge status, and cache metrics |
 | GET | `/metrics` | System metrics and performance data |
 | GET | `/system/capacity` | Current system capacity and DMA status |
 
