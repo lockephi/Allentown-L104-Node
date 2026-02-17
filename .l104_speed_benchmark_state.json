@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "total_benchmarks": 5,
+  "regression_history": {
+    "math_phi_pow": [
+      0.182
+    ],
+    "sha256": [
+      0.655
+    ],
+    "list_comp_1k": [
+      50.152
+    ],
+    "dict_lookup_10k": [
+      0.167
+    ]
+  }
+}

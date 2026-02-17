@@ -1,0 +1,71 @@
+{
+  "timestamp": 1771335100.0585642,
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895,
+  "tests": {
+    "multithreaded": {
+      "1_threads": {
+        "duration_ms": 8.214950561523438,
+        "throughput_ops_sec": 12172.927791966566,
+        "tasks_completed": 100
+      },
+      "2_threads": {
+        "duration_ms": 7.819414138793945,
+        "throughput_ops_sec": 12788.68189163643,
+        "tasks_completed": 100
+      },
+      "4_threads": {
+        "duration_ms": 7.754802703857422,
+        "throughput_ops_sec": 12895.234581565517,
+        "tasks_completed": 100
+      },
+      "8_threads": {
+        "duration_ms": 9.032487869262695,
+        "throughput_ops_sec": 11071.146891909726,
+        "tasks_completed": 100
+      }
+    },
+    "concurrent": {
+      "concurrent_10": {
+        "total_duration_ms": 1.079559326171875,
+        "avg_latency_ms": 0.008988380432128906,
+        "requests_per_sec": 9263.03886925795
+      },
+      "concurrent_50": {
+        "total_duration_ms": 5.237102508544922,
+        "avg_latency_ms": 0.014238357543945312,
+        "requests_per_sec": 9547.2639533825
+      },
+      "concurrent_100": {
+        "total_duration_ms": 11.018514633178711,
+        "avg_latency_ms": 0.010995864868164062,
+        "requests_per_sec": 9075.633452342314
+      },
+      "concurrent_200": {
+        "total_duration_ms": 20.35808563232422,
+        "avg_latency_ms": 0.008511543273925781,
+        "requests_per_sec": 9824.106431817117
+      }
+    },
+    "memory": {
+      "baseline_kb": 0.0,
+      "current_kb": 4433.375,
+      "peak_kb": 4433.4140625,
+      "data_structures": 10000
+    },
+    "sustained": {
+      "duration_sec": 5.000005483627319,
+      "operations": 739661,
+      "throughput_ops_sec": 147932.03775916726,
+      "avg_latency_ms": 0.006759860914158404
+    },
+    "resilience": {
+      "total_tasks": 100,
+      "successful": 90,
+      "failed": 10,
+      "recovered": 10,
+      "success_rate": 0.9,
+      "recovery_rate": 1.0
+    }
+  }
+}
