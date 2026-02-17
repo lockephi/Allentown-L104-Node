@@ -681,7 +681,8 @@ class PythonBridge {
         sys.path.insert(0, '\(workspacePath)')
         from l104_quantum_coherence import QuantumCoherenceEngine
         e = QuantumCoherenceEngine()
-        r = e.qaoa_maxcut([\(edgeStr)], p=\(p))
+        edges = [\(edgeStr)]
+        r = e.qaoa_maxcut(edges, p=\(p))
         print(json.dumps(r, default=str))
         """
         return execute(pyCode, timeout: 45)
@@ -707,7 +708,12 @@ class PythonBridge {
         sys.path.insert(0, '\(workspacePath)')
         from l104_quantum_coherence import QuantumCoherenceEngine
         e = QuantumCoherenceEngine()
-        r = e.quantum_walk(n_nodes=\(nNodes), steps=\(steps))
+        n = \(nNodes)
+        adj = [[0]*n for _ in range(n)]
+        for i in range(n):
+            adj[i][(i+1)%n] = 1
+            adj[(i+1)%n][i] = 1
+        r = e.quantum_walk(adjacency=adj, steps=\(steps))
         print(json.dumps(r, default=str))
         """
         return execute(pyCode, timeout: 30)
