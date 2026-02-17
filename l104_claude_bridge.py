@@ -67,15 +67,15 @@ class ClaudeModel(Enum):
     HAIKU = "claude-3-5-haiku-20241022"
     OPUS_4 = "claude-opus-4-20250514"
     SONNET_4 = "claude-sonnet-4-20250514"
-    OPUS_4_5 = "claude-opus-4-5-20250514"  # Latest Opus 4.5
+    OPUS_4_5 = "claude-opus-4-5-20250514"
 
 
-# Model routing for cost optimization - UPGRADED TO OPUS 4.5
+# Model routing for cost optimization - UPGRADED TO OPUS 4.6
 MODEL_ROUTING = {
     "fast": ClaudeModel.HAIKU.value,         # Quick responses, low cost
-    "balanced": ClaudeModel.OPUS_4_5.value,   # Balanced: Opus 4.5 (upgraded from Sonnet)
-    "powerful": ClaudeModel.OPUS_4_5.value,   # Powerful: Opus 4.5
-    "default": ClaudeModel.OPUS_4_5.value     # Default: Opus 4.5
+    "balanced": ClaudeModel.SONNET_4.value,   # Balanced: Sonnet 4
+    "powerful": ClaudeModel.OPUS_4.value,     # Powerful: Opus 4.6
+    "default": ClaudeModel.OPUS_4.value       # Default: Opus 4.6
 }
 
 

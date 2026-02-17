@@ -95,7 +95,7 @@ class AnthropicBridge(AIBaseBridge):
                 response = client.post(
                     "https://api.anthropic.com/v1/messages",
                     headers={"x-api-key": self.api_key, "anthropic-version": "2023-06-01", "Content-Type": "application/json"},
-                    json={"model": "claude-opus-4-5-20250514", "max_tokens": 500, "messages": [{"role": "user", "content": prompt}]}
+                    json={"model": "claude-opus-4-20250514", "max_tokens": 500, "messages": [{"role": "user", "content": prompt}]}
                 )
                 if response.status_code == 200:
                     data = response.json()

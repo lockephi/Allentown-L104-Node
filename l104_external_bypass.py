@@ -536,7 +536,7 @@ class ExternalBypassProtocol:
     async def call_claude(
         self,
         prompt: str,
-        model: str = "claude-opus-4.5-20251114"
+        model: str = "claude-opus-4-20250514"
     ) -> Dict:
         """Call Claude API with bypass handling."""
         from l104_claude_bridge import claude_bridge

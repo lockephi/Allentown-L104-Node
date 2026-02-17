@@ -599,7 +599,7 @@ class ProviderOrchestrationUpgrader:
         "anthropic": {
             "base_url": "https://api.anthropic.com/v1",
             "env_key": "ANTHROPIC_API_KEY",
-            "models": ["claude-opus-4-5-20250514", "claude-opus-4-20250514", "claude-sonnet-4-20250514"]
+            "models": ["claude-opus-4-20250514", "claude-opus-4-5-20250514", "claude-sonnet-4-20250514"]
         },
         "deepseek": {
             "base_url": "https://api.deepseek.com/v1",

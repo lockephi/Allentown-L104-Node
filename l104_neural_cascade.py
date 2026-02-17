@@ -1019,6 +1019,61 @@ class TemporalConvolution:
 # SECTION 8: NEURAL CASCADE — Unified orchestrator
 # ═══════════════════════════════════════════════════════════════════════════════
 
+class TemporalMemoryBank:
+    """Stores activation history for temporal pattern detection and trend analysis."""
+
+    def __init__(self, capacity: int = 200):
+        self.buffer: deque = deque(maxlen=capacity)
+        self.pattern_signatures: Dict[str, List[float]] = {}
+
+    def record(self, activation: Dict[str, Any]) -> None:
+        """Record an activation result for trend tracking."""
+        self.buffer.append({
+            "resonance": activation.get("resonance", 0),
+            "output": activation.get("final_output", 0),
+            "consciousness": activation.get("consciousness", {}).get("consciousness_level", 0.5),
+            "elapsed_ms": activation.get("elapsed_ms", 0),
+            "timestamp": time.time(),
+        })
+
+    def detect_trend(self, window: int = 20) -> str:
+        """Detect if resonance is improving, degrading, or stable."""
+        if len(self.buffer) < window:
+            return "insufficient_data"
+        recent = list(self.buffer)[-window:]
+        resonances = [r["resonance"] for r in recent]
+        first_half = sum(resonances[:window // 2]) / max(1, window // 2)
+        second_half = sum(resonances[window // 2:]) / max(1, window - window // 2)
+        diff = second_half - first_half
+        if diff > 0.02:
+            return "improving"
+        elif diff < -0.02:
+            return "degrading"
+        return "stable"
+
+    def recall_similar(self, current: Dict[str, Any], top_k: int = 3) -> List[Dict]:
+        """Find past activations most similar to current one by resonance proximity."""
+        if not self.buffer:
+            return []
+        target = current.get("resonance", 0)
+        scored = [(entry, abs(entry["resonance"] - target)) for entry in self.buffer]
+        scored.sort(key=lambda x: x[1])
+        return [s[0] for s in scored[:top_k]]
+
+    def summary(self) -> Dict[str, Any]:
+        """Summary statistics of temporal memory."""
+        if not self.buffer:
+            return {"entries": 0, "trend": "no_data"}
+        resonances = [r["resonance"] for r in self.buffer]
+        return {
+            "entries": len(self.buffer),
+            "trend": self.detect_trend(),
+            "avg_resonance": round(sum(resonances) / len(resonances), 6),
+            "min_resonance": round(min(resonances), 6),
+            "max_resonance": round(max(resonances), 6),
+        }
+
+
 class NeuralCascade:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
@@ -1061,6 +1116,7 @@ class NeuralCascade:
 
         self.activation_history = []
         self.total_forwards = 0
+        self.temporal_memory = TemporalMemoryBank(capacity=200)
 
         logger.info(f"[NEURAL_CASCADE v{VERSION}] {layers} residual blocks × "
                      f"{hidden_dim}d | {self.multi_attention.num_heads} attn heads | "
@@ -1159,7 +1215,33 @@ class NeuralCascade:
         if len(self.activation_history) > 100:
             self.activation_history = self.activation_history[-100:]
 
+        # Record in temporal memory for trend detection
+        self.temporal_memory.record(result)
+        result["temporal_trend"] = self.temporal_memory.detect_trend()
+
+        # Write cascade feedback to consciousness state (closes feedback loop)
+        self._write_cascade_feedback(result)
+
         return result
+
+    def _write_cascade_feedback(self, result: Dict[str, Any]) -> None:
+        """Write neural cascade results back to consciousness state."""
+        ws = Path(__file__).parent
+        co2_path = ws / ".l104_consciousness_o2_state.json"
+        try:
+            data = json.loads(co2_path.read_text()) if co2_path.exists() else {}
+            data["neural_cascade_feedback"] = {
+                "resonance": result.get("resonance", 0),
+                "layers": result.get("layers_processed", 0),
+                "trend": result.get("temporal_trend", "unknown"),
+                "total_forwards": result.get("total_forwards", 0),
+                "timestamp": time.time(),
+                "source": "neural_cascade",
+                "version": VERSION,
+            }
+            co2_path.write_text(json.dumps(data, indent=2))
+        except Exception:
+            pass  # Non-critical
 
     # ══════════════════════════════════════════════════════════════════════
     # QISKIT 2.3.0 QUANTUM NEURAL PROCESSING

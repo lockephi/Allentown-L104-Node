@@ -1379,7 +1379,35 @@ class SelfOptimizationEngine:
         latency = self.profiler.stop_timer("consciousness_optimize", "hub")
         results["fitness_improvement"] = round(fitness_after - fitness_before, 6)
         results["latency_ms"] = round(latency, 2)
+
+        # Write optimization results back to consciousness state (closes feedback loop)
+        self._write_consciousness_feedback({
+            "fitness_before": fitness_before,
+            "fitness_after": fitness_after,
+            "improvement": fitness_after - fitness_before,
+            "target": target,
+            "iterations": iterations,
+        })
+
         return results
+
+    def _write_consciousness_feedback(self, metrics: Dict[str, Any]) -> None:
+        """Write optimization results back to consciousness state for closed-loop feedback."""
+        co2_path = _WORKSPACE / ".l104_consciousness_o2_state.json"
+        try:
+            data = json.loads(co2_path.read_text()) if co2_path.exists() else {}
+            data["optimization_feedback"] = {
+                "fitness": metrics.get("fitness_after", 0),
+                "improvement": metrics.get("improvement", 0),
+                "target": metrics.get("target", "unknown"),
+                "iterations": metrics.get("iterations", 0),
+                "timestamp": time.time(),
+                "source": "self_optimization",
+                "version": VERSION,
+            }
+            co2_path.write_text(json.dumps(data, indent=2))
+        except Exception:
+            pass  # Non-critical: don't break optimization if write fails
 
     # ── Qiskit 2.3.0 Quantum Optimization Methods ───────────────────────
 

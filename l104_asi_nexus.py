@@ -1438,7 +1438,7 @@ class UnifiedInference:
                 return response.choices[0].message.content
             elif provider == "anthropic":
                 response = self.providers["anthropic"].messages.create(
-                    model="claude-opus-4-5-20250514",
+                    model="claude-opus-4-20250514",
                     max_tokens=2048,
                     messages=[{"role": "user", "content": prompt}]
                 )

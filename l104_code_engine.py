@@ -7439,6 +7439,19 @@ class CodeEngine:
         self.smell_detector = CodeSmellDetector()
         self.complexity_verifier = RuntimeComplexityVerifier()
         self.analysis_cache = IncrementalAnalysisCache()
+        # v3.1.0 — Wire FaultTolerance + QuantumKernel (documented in claude.md v2.6.0)
+        self.fault_tolerance = None
+        self.quantum_kernel = None
+        try:
+            from l104_fault_tolerance import L104FaultTolerance
+            self.fault_tolerance = L104FaultTolerance()
+        except ImportError:
+            pass
+        try:
+            from l104_quantum_embedding import L104QuantumKernel
+            self.quantum_kernel = L104QuantumKernel()
+        except ImportError:
+            pass
         self.execution_count = 0
         self.generated_code: List[str] = []
         self._state_cache = {}
@@ -7976,6 +7989,103 @@ class CodeEngine:
                 "evo_stage": state["evo_stage"],
             },
         }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # v3.1.0 — FAULT TOLERANCE + QUANTUM EMBEDDING INTEGRATION
+    # These 6 methods were documented in claude.md v2.6.0 but never wired in.
+    # They delegate to l104_fault_tolerance.py and l104_quantum_embedding.py.
+    # ═══════════════════════════════════════════════════════════════════
+
+    def quantum_code_search(self, query: str, top_k: int = 5, x_param: float = 0.0) -> Dict[str, Any]:
+        """Quantum embedding similarity search across code patterns."""
+        if self.quantum_kernel is None:
+            return {"error": "quantum_kernel not available (l104_quantum_embedding not installed)",
+                    "query": query, "results": []}
+        try:
+            results = self.quantum_kernel.quantum_query(query, top_k=top_k)
+            return {
+                "query": query,
+                "top_k": top_k,
+                "x_param": x_param,
+                "results": results if isinstance(results, list) else [results],
+                "god_code_G_x": GOD_CODE * (1 + x_param / 104),
+                "coherence": getattr(self.quantum_kernel, 'coherence', 0.0),
+            }
+        except Exception as e:
+            return {"error": str(e), "query": query, "results": []}
+
+    def analyze_with_context(self, code: str, filename: str = '',
+                              query_vector: Any = None) -> Dict[str, Any]:
+        """Analysis with fault-tolerance context tracking (phi-RNN)."""
+        # Run standard analysis
+        analysis = self.analyzer.analyze(code, filename)
+        # Layer on fault-tolerance context tracking if available
+        if self.fault_tolerance is not None:
+            try:
+                context = self.fault_tolerance.track_context(code)
+                analysis["fault_tolerance_context"] = context
+            except Exception:
+                analysis["fault_tolerance_context"] = {"available": False}
+        else:
+            analysis["fault_tolerance_context"] = {"available": False}
+        return analysis
+
+    def code_pattern_memory(self, action: str, key: str,
+                             data: Any = None) -> Dict[str, Any]:
+        """Topological anyon memory for code patterns — store/retrieve/report."""
+        if self.fault_tolerance is None:
+            return {"error": "fault_tolerance not available", "action": action}
+        try:
+            if action == "store" and data is not None:
+                self.fault_tolerance.store_pattern(key, data)
+                return {"action": "stored", "key": key, "status": "ok"}
+            elif action == "retrieve":
+                result = self.fault_tolerance.retrieve_pattern(key)
+                return {"action": "retrieved", "key": key, "data": result}
+            elif action == "report":
+                report = self.fault_tolerance.pattern_report()
+                return {"action": "report", "data": report}
+            return {"error": f"unknown action: {action}"}
+        except Exception as e:
+            return {"error": str(e), "action": action, "key": key}
+
+    def test_resilience(self, code: str, noise_level: float = 0.01) -> Dict[str, Any]:
+        """Fault injection + 3-layer error correction resilience test."""
+        if self.fault_tolerance is None:
+            return {"error": "fault_tolerance not available",
+                    "fault_tolerance_score": 0.0, "layer_scores": {}}
+        try:
+            result = self.fault_tolerance.test_resilience(code, noise_level=noise_level)
+            return result if isinstance(result, dict) else {"result": result}
+        except Exception as e:
+            return {"error": str(e), "fault_tolerance_score": 0.0}
+
+    def semantic_map(self, source: str) -> Dict[str, Any]:
+        """Quantum token entanglement graph from code tokens."""
+        if self.quantum_kernel is None:
+            return {"error": "quantum_kernel not available",
+                    "tokens": 0, "entanglement_count": 0}
+        try:
+            result = self.quantum_kernel.semantic_map(source)
+            return result if isinstance(result, dict) else {"map": result}
+        except Exception as e:
+            return {"error": str(e), "tokens": 0}
+
+    def multi_hop_analyze(self, code: str, question: str,
+                           hops: int = 3) -> Dict[str, Any]:
+        """Iterative multi-hop reasoning over code analysis."""
+        if self.fault_tolerance is None:
+            return {"error": "fault_tolerance not available",
+                    "confidence": 0.0, "analysis_summary": ""}
+        try:
+            result = self.fault_tolerance.multi_hop_reason(code, question, hops=hops)
+            return result if isinstance(result, dict) else {
+                "confidence": 0.5, "hops": hops, "analysis_summary": str(result)
+            }
+        except Exception as e:
+            return {"error": str(e), "confidence": 0.0, "hops": hops}
+
+    # ═══════════════════════════════════════════════════════════════════
 
     def status(self) -> Dict[str, Any]:
         """Full engine status."""

@@ -119,7 +119,7 @@ PROVIDERS: Dict[str, ProviderConfig] = {
         name="anthropic",
         base_url="https://api.anthropic.com/v1",
         api_key_env="ANTHROPIC_API_KEY",
-        model="claude-3-5-sonnet-20241022"
+        model="claude-opus-4-20250514"
     ),
     "deepseek": ProviderConfig(
         name="deepseek",

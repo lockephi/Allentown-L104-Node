@@ -381,7 +381,7 @@ class InferenceEngine:
                 client = anthropic.Anthropic(api_key=api_key)
                 self.providers['anthropic'] = {
                     'client': client,
-                    'model': os.getenv('ANTHROPIC_MODEL', 'claude-3-opus-20240229'),
+                    'model': os.getenv('CLAUDE_DEFAULT_MODEL', 'claude-opus-4-20250514'),
                     'generate': self._anthropic_generate
                 }
                 if not self.default_provider:

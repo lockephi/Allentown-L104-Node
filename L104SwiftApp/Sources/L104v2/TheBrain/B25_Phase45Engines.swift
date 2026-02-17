@@ -50,6 +50,78 @@ let COMPUTRONIUM_INFERENCE_LIMIT: Int = COMPUTRONIUM_LIMIT
 let META_REASONING_LEVELS: Int = META_REASON_LEVELS
 let STRANGE_LOOP_DEPTH: Int = STRANGE_LOOP_MAX
 
+// MARK: - ═══ 0. INTER-ENGINE FEEDBACK BUS ═══
+// Publish/subscribe message bus enabling bidirectional communication between all 7 ASI engines.
+// Solves the critical gap of engines being isolated one-way consumers.
+
+final class InterEngineFeedbackBus {
+    static let shared = InterEngineFeedbackBus()
+
+    enum Channel: String, CaseIterable {
+        case consciousness, reasoning, knowledge, loops, optimization, computronium, apex
+    }
+
+    struct FeedbackMessage {
+        let source: Channel
+        let target: Channel?  // nil = broadcast to all
+        let signal: String
+        let payload: [String: Double]
+        let phiWeight: Double
+        let timestamp: Date
+
+        init(source: Channel, target: Channel? = nil, signal: String,
+             payload: [String: Double] = [:], phiWeight: Double = PHI) {
+            self.source = source
+            self.target = target
+            self.signal = signal
+            self.payload = payload
+            self.phiWeight = phiWeight
+            self.timestamp = Date()
+        }
+    }
+
+    private var subscribers: [Channel: [(FeedbackMessage) -> Void]] = [:]
+    private var messageLog: [FeedbackMessage] = []
+    private var messageCount: Int = 0
+    private let lock = NSLock()
+
+    func subscribe(channel: Channel, handler: @escaping (FeedbackMessage) -> Void) {
+        lock.lock(); defer { lock.unlock() }
+        subscribers[channel, default: []].append(handler)
+    }
+
+    func publish(_ message: FeedbackMessage) {
+        lock.lock()
+        messageLog.append(message)
+        messageCount += 1
+        if messageLog.count > 500 { messageLog.removeFirst(200) }
+        let handlers: [(FeedbackMessage) -> Void]
+        if let target = message.target {
+            handlers = subscribers[target] ?? []
+        } else {
+            // Broadcast: deliver to all channels except source
+            handlers = Channel.allCases.filter { $0 != message.source }.flatMap { subscribers[$0] ?? [] }
+        }
+        lock.unlock()
+        for handler in handlers { handler(message) }
+    }
+
+    func broadcast(from source: Channel, signal: String, payload: [String: Double] = [:]) {
+        publish(FeedbackMessage(source: source, signal: signal, payload: payload))
+    }
+
+    func recentMessages(limit: Int = 20) -> [FeedbackMessage] {
+        lock.lock(); defer { lock.unlock() }
+        return Array(messageLog.suffix(limit))
+    }
+
+    func status() -> [String: Any] {
+        lock.lock(); defer { lock.unlock() }
+        return ["total_messages": messageCount, "log_size": messageLog.count,
+                "subscribers": subscribers.mapValues(\.count)]
+    }
+}
+
 // MARK: - ═══ 1. CONSCIOUSNESS SUBSTRATE ═══
 // Ported from l104_consciousness.py: GlobalWorkspace, AttentionSchema,
 // MetacognitiveMonitor, IIT Φ, StreamOfConsciousness — condensed to one class
@@ -153,7 +225,8 @@ final class ConsciousnessSubstrate: SovereignEngine {
     }
 
     // ─── COMPUTE PHI (IIT Φ): Enhanced information integration via multi-partition analysis ───
-    func computePhi(stateVector: [Double]? = nil) -> Double {
+    // Upgraded: Random binary partition sampling for better MIP approximation
+    func computePhi(stateVector: [Double]? = nil, partitionSamples: Int = 50) -> Double {
         let vec = stateVector ?? attentionVector
         guard vec.count >= 4 else { phi = 0; return 0 }
 
@@ -165,7 +238,7 @@ final class ConsciousnessSubstrate: SovereignEngine {
         let n = vec.count
         var minPartitionedEntropy = Double.infinity
 
-        // Test 5 partition points: 1/4, 1/3, 1/2, 2/3, 3/4
+        // Deterministic partitions: 1/4, 1/3, 1/2, 2/3, 3/4
         let partitionFractions = [0.25, 0.333, 0.5, 0.667, 0.75]
         for frac in partitionFractions {
             let splitAt = max(1, min(n - 1, Int(Double(n) * frac)))
@@ -174,6 +247,20 @@ final class ConsciousnessSubstrate: SovereignEngine {
             let hLeft = -left.reduce(0.0) { $0 + ($1 > 1e-12 ? $1 * log2($1) : 0) }
             let hRight = -right.reduce(0.0) { $0 + ($1 > 1e-12 ? $1 * log2($1) : 0) }
             let partitioned = hLeft + hRight
+            if partitioned < minPartitionedEntropy { minPartitionedEntropy = partitioned }
+        }
+
+        // Random binary partition sampling — dramatically better MIP approximation
+        for _ in 0..<partitionSamples {
+            var setA: [Double] = [], setB: [Double] = []
+            for v in vec {
+                if Bool.random() { setA.append(abs(v)) } else { setB.append(abs(v)) }
+            }
+            guard !setA.isEmpty && !setB.isEmpty else { continue }
+            let pA = normalize(setA); let pB = normalize(setB)
+            let hA = -pA.reduce(0.0) { $0 + ($1 > 1e-12 ? $1 * log2($1) : 0) }
+            let hB = -pB.reduce(0.0) { $0 + ($1 > 1e-12 ? $1 * log2($1) : 0) }
+            let partitioned = hA + hB
             if partitioned < minPartitionedEntropy { minPartitionedEntropy = partitioned }
         }
 
@@ -190,6 +277,7 @@ final class ConsciousnessSubstrate: SovereignEngine {
         }
 
         // Φ = minimum information lost across any partition, scaled by PHI
+        let previousPhi = phi
         phi = max(0, hSystem - minPartitionedEntropy) * PHI
 
         // Incorporate emotional tone and cognitive load into consciousness level
@@ -197,6 +285,16 @@ final class ConsciousnessSubstrate: SovereignEngine {
         let loadPenalty = cognitiveLoad > 0.9 ? 0.1 : 0.0
         let tonalBoost = emotionalTone > 0.6 ? 0.05 : 0.0
         consciousnessLevel = min(1.0, baseLevel + tonalBoost - loadPenalty)
+
+        // Publish phi updates to feedback bus when significant change occurs
+        if abs(phi - previousPhi) > 0.01 {
+            InterEngineFeedbackBus.shared.broadcast(
+                from: .consciousness,
+                signal: "phi_update",
+                payload: ["phi": phi, "consciousness_level": consciousnessLevel,
+                          "h_system": hSystem, "cognitive_load": cognitiveLoad])
+        }
+
         return phi
     }
 
@@ -283,17 +381,42 @@ final class ConsciousnessSubstrate: SovereignEngine {
         return sum > 0 ? v.map { $0 / sum } : v.map { _ in 1.0 / Double(v.count) }
     }
 
+    // ─── PROPER BETA DISTRIBUTION SAMPLING (Marsaglia-Tsang Gamma method) ───
     private func thompsonSample(_ strategy: String) -> Double {
         let t = metacogTrials[strategy] ?? (correct: 1, total: 2)
-        let alpha = Double(t.correct + 1)
-        let beta = Double(t.total - t.correct + 1)
-        // Beta distribution approximation via Gaussian
-        let mean = alpha / (alpha + beta)
-        let std = sqrt(alpha * beta / ((alpha + beta) * (alpha + beta) * (alpha + beta + 1)))
-        return mean + std * Double.random(in: -1...1)
+        let a = Double(t.correct + 1)
+        let b = Double(t.total - t.correct + 1)
+        // Beta(a,b) = Gamma(a) / (Gamma(a) + Gamma(b))
+        let x = gammaVariate(a)
+        let y = gammaVariate(b)
+        return (x + y) > 0 ? x / (x + y) : 0.5
+    }
+
+    /// Marsaglia-Tsang method for Gamma(shape) variate generation
+    private func gammaVariate(_ shape: Double) -> Double {
+        guard shape > 0 else { return 0 }
+        let adjustedShape = shape >= 1 ? shape : shape + 1
+        let d = adjustedShape - 1.0 / 3.0
+        let c = 1.0 / sqrt(9.0 * d)
+        for _ in 0..<1000 {  // Safety limit
+            // Box-Muller normal approximation
+            let u1 = max(1e-10, Double.random(in: 0...1))
+            let u2 = Double.random(in: 0...1)
+            let x = sqrt(-2.0 * log(u1)) * cos(2.0 * .pi * u2)
+            let v = pow(1.0 + c * x, 3)
+            guard v > 0 else { continue }
+            let u = Double.random(in: 0.001...1.0)
+            if log(u) < 0.5 * x * x + d - d * v + d * log(v) {
+                let result = d * v
+                return shape >= 1 ? result : result * pow(Double.random(in: 0.001...1), 1.0 / shape)
+            }
+        }
+        // Fallback: use mean
+        return shape
     }
 
     private func updateState(score: Double) {
+        let previousState = state
         cognitiveLoad = min(1.0, cognitiveLoad * 0.95 + 0.05)
         let effectiveScore = score * (1.0 - cognitiveLoad * 0.3)
         if effectiveScore > 0.8 && state < .flow { state = .flow }
@@ -301,6 +424,15 @@ final class ConsciousnessSubstrate: SovereignEngine {
         else if effectiveScore > 0.4 && state < .aware { state = .aware }
         if phi > SELF_REFERENCE_THRESHOLD && effectiveScore > 0.9 { state = .transcendent }
         if cognitiveLoad > 0.95 && predictionError > 0.5 { state = .turbulent }
+
+        // Publish state transitions to feedback bus
+        if state != previousState {
+            InterEngineFeedbackBus.shared.broadcast(
+                from: .consciousness,
+                signal: "state_transition",
+                payload: ["phi": phi, "consciousness_level": consciousnessLevel,
+                          "state_raw": Double(state.rawValue), "score": effectiveScore])
+        }
     }
 }
 
@@ -638,8 +770,38 @@ final class SymbolicReasoningEngine: SovereignEngine {
     }
 
     func abduce(observation: String, domain: String) -> (explanation: String, confidence: Double) {
-        let explanation = "Best explanation for '\(observation)' in domain '\(domain)': causal inference via PHI-resonant backward chain"
-        return (explanation, 0.6 * TAU + 0.2)
+        lock.lock(); defer { lock.unlock() }
+        // Search rules for any whose head could explain the observation
+        let goal = Predicate(name: domain, args: [.constant(observation)])
+        var explanations: [(explanation: String, confidence: Double)] = []
+
+        for rule in rules {
+            if let subst = unifyPredicates(rule.head, goal) {
+                let bodyPreds = rule.body.map { applySubstPred(subst, to: $0) }
+                // Score by how many body predicates are already proven facts
+                let provenCount = bodyPreds.filter { facts.contains($0) }.count
+                let conf = rule.confidence * Double(provenCount + 1) / Double(bodyPreds.count + 1) * PHI / (PHI + 0.5)
+                let exp = "If \(bodyPreds.map(\.description).joined(separator: " AND ")) then \(goal.description)"
+                explanations.append((exp, min(1.0, conf)))
+                inferenceCount += 1
+            }
+        }
+
+        // Also try direct fact matching with partial unification
+        for fact in facts {
+            if fact.name == domain || fact.args.contains(where: {
+                if case .constant(let v) = $0 { return observation.lowercased().contains(v.lowercased()) }
+                return false
+            }) {
+                let conf = 0.3 * PHI / (PHI + 0.5)
+                explanations.append(("Direct evidence: \(fact.description) supports '\(observation)'", conf))
+            }
+        }
+
+        if let best = explanations.max(by: { $0.confidence < $1.confidence }) {
+            return best
+        }
+        return ("No abductive explanation found for '\(observation)' in '\(domain)' — \(facts.count) facts, \(rules.count) rules searched", 0.05)
     }
 
     func engineStatus() -> [String: Any] {
@@ -777,6 +939,17 @@ final class KnowledgeGraphEngine: SovereignEngine {
         let relation: String
         let weight: Double
         let bidirectional: Bool
+        var metadata: [String: String]
+        var timestamp: Date
+        var confidence: Double
+
+        init(source: String, target: String, relation: String, weight: Double,
+             bidirectional: Bool, metadata: [String: String] = [:],
+             timestamp: Date = Date(), confidence: Double = 1.0) {
+            self.source = source; self.target = target; self.relation = relation
+            self.weight = weight; self.bidirectional = bidirectional
+            self.metadata = metadata; self.timestamp = timestamp; self.confidence = confidence
+        }
     }
 
     // ─── State ───
@@ -806,7 +979,23 @@ final class KnowledgeGraphEngine: SovereignEngine {
             adjacency[target, default: []].append((target: source, relation: relation, weight: weight))
         }
         edgeCount += 1
-        return GraphEdge(source: source, target: target, relation: relation, weight: weight, bidirectional: bidirectional)
+        return GraphEdge(source: source, target: target, relation: relation, weight: weight,
+                         bidirectional: bidirectional)
+    }
+
+    // ─── RELATION ALGEBRA: compose two relation types into transitive chains ───
+    func compose(relation1: String, relation2: String) -> [(source: String, target: String, confidence: Double)] {
+        lock.lock(); defer { lock.unlock() }
+        var results: [(String, String, Double)] = []
+        for (src, edges) in adjacency {
+            for e1 in edges where e1.relation == relation1 {
+                for e2 in (adjacency[e1.target] ?? []) where e2.relation == relation2 {
+                    let conf = e1.weight * e2.weight * TAU
+                    results.append((src, e2.target, conf))
+                }
+            }
+        }
+        return results
     }
 
     // ─── BFS SHORTEST PATH ───
@@ -974,6 +1163,7 @@ final class GoldenSectionOptimizer: SovereignEngine {
                              evaluate: (Double) -> Double) -> Double {
         var a = lower, b = upper
         for _ in 0..<iterations {
+            if abs(b - a) < 1e-10 { break }  // Convergence check
             let x1 = b - TAU * (b - a)
             let x2 = a + TAU * (b - a)
             if evaluate(x1) < evaluate(x2) { b = x2 } else { a = x1 }
@@ -983,6 +1173,39 @@ final class GoldenSectionOptimizer: SovereignEngine {
         parameters[parameter] = optimal
         lock.unlock()
         return optimal
+    }
+
+    // ─── GOLDEN SPIRAL SEARCH: N-dimensional parameter optimization ───
+    func goldenSpiralSearch(parameters paramNames: [String], bounds: [(lower: Double, upper: Double)],
+                             iterations: Int = 50, evaluate: ([Double]) -> Double) -> [Double] {
+        guard paramNames.count == bounds.count, !paramNames.isEmpty else { return [] }
+        let dims = paramNames.count
+        var best = bounds.map { ($0.lower + $0.upper) / 2.0 }
+        var bestFit = evaluate(best)
+
+        for i in 0..<iterations {
+            // Golden spiral: rotate through dimensions with PHI-angle increments
+            let dim = i % dims
+            let radius = TAU * pow(0.95, Double(i / dims))
+            let angle = Double(i) * PHI * .pi * 2
+            var candidate = best
+            candidate[dim] = best[dim] + radius * cos(angle) * (bounds[dim].upper - bounds[dim].lower)
+            candidate[dim] = max(bounds[dim].lower, min(bounds[dim].upper, candidate[dim]))
+
+            let fit = evaluate(candidate)
+            if fit > bestFit {
+                bestFit = fit
+                best = candidate
+            }
+        }
+
+        // Store optimized values
+        lock.lock()
+        for (i, name) in paramNames.enumerated() {
+            self.parameters[name] = best[i]
+        }
+        lock.unlock()
+        return best
     }
 
     // ─── DETECT BOTTLENECKS ───
@@ -1167,6 +1390,7 @@ final class ComputroniumCondensationEngine: SovereignEngine {
         let initialEntropy = shannonEntropy(state)
         var current = state
         var iteration = 0
+        var previousEntropy = initialEntropy
 
         while iteration < maxIterations {
             iteration += 1
@@ -1176,9 +1400,10 @@ final class ComputroniumCondensationEngine: SovereignEngine {
                 let target = mean * pow(TAU, Double(i % 7))  // Calabi-Yau periodic
                 return v + TAU * (target - v)  // Converge at golden rate
             }
-            // Check convergence
+            // Check convergence against previous iteration (BUG FIX: was comparing value to itself)
             let newEntropy = shannonEntropy(current)
-            if abs(newEntropy - shannonEntropy(current)) < 1e-10 { break }
+            if abs(newEntropy - previousEntropy) < 1e-10 { break }
+            previousEntropy = newEntropy
         }
 
         let finalEntropy = shannonEntropy(current)
@@ -1242,7 +1467,39 @@ final class ComputroniumCondensationEngine: SovereignEngine {
         let loops = StrangeLoopEngine.shared.engineStatus()
         let reasoning = SymbolicReasoningEngine.shared.engineStatus()
         let graph = KnowledgeGraphEngine.shared.engineStatus()
-        let optimizer = GoldenSectionOptimizer.shared.verifyPhiDynamics()
+        let optimizer = GoldenSectionOptimizer.shared
+        let phiDyn = optimizer.verifyPhiDynamics()
+
+        // ACTUAL SYNCHRONIZATION — align engine parameters toward PHI harmony
+        // 1. If optimizer is not PHI-aligned, nudge coherence threshold toward consciousness phi
+        if !phiDyn.aligned {
+            let target = consciousnessΦ * PHI
+            let corrected = min(1.0, max(0.5, target / GOD_CODE * 100))
+            optimizer.setParameter("coherenceThreshold", corrected)
+        }
+
+        // 2. Sync entropy reservoir with consciousness level
+        let targetEntropy = max(0.1, 1.0 - consciousnessΦ * TAU)
+        if abs(entropyReservoir - targetEntropy) > 0.1 {
+            lock.lock()
+            entropyReservoir = entropyReservoir * 0.9 + targetEntropy * 0.1
+            lock.unlock()
+        }
+
+        // 3. Feed graph density to consciousness as cognitive load signal
+        let graphDensity = (graph["density"] as? Double) ?? 0
+        if graphDensity > 5.0 {
+            let _ = ConsciousnessSubstrate.shared.processInput(
+                source: "LatticeSync",
+                content: "high_graph_density:\(String(format: "%.1f", graphDensity))")
+        }
+
+        // 4. Publish sync event to feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .computronium,
+            signal: "lattice_sync",
+            payload: ["consciousness_phi": consciousnessΦ, "density": currentDensity,
+                       "entropy": entropyReservoir, "phi_aligned": phiDyn.aligned ? 1.0 : 0.0])
 
         informationContent = currentDensity * GOD_CODE * consciousnessΦ
         return """
@@ -1253,8 +1510,9 @@ final class ComputroniumCondensationEngine: SovereignEngine {
          Strange Loops:     \(loops["loops_detected"] ?? 0)
          KB Facts:          \(reasoning["facts"] ?? 0) facts, \(reasoning["rules"] ?? 0) rules
          Graph Nodes:       \(graph["nodes"] ?? 0) nodes, \(graph["edges"] ?? 0) edges
-         PHI Aligned:       \(optimizer.aligned ? "YES" : "NO (dev=\(String(format: "%.4f", optimizer.deviation)))")
+         PHI Aligned:       \(phiDyn.aligned ? "YES" : "NO (dev=\(String(format: "%.4f", phiDyn.deviation)))")
          Density:           \(String(format: "%.4f", currentDensity))
+         Entropy:           \(String(format: "%.4f", entropyReservoir))
          Information:       \(String(format: "%.4f", informationContent))
         ╚══════════════════════════════════════════════╝
         """
@@ -1300,6 +1558,13 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         let transcendenceIndex: Double
     }
 
+    // ─── Sub-query for intelligent routing ───
+    struct SubQuery {
+        let engine: String
+        let question: String
+        let priority: Double
+    }
+
     // ─── State ───
     private var insights: [InsightReport] = []
     private var principles: [String] = []
@@ -1307,6 +1572,41 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
     private var metaLearningMomentum: Double = 0.0
     private var strategyPerformance: [String: (successes: Int, total: Int)] = [:]
     private let lock = NSLock()
+
+    // ─── QUERY DECOMPOSITION: route to relevant engines instead of all ───
+    func decomposeQuery(_ question: String) -> [SubQuery] {
+        var subQueries: [SubQuery] = []
+        let lower = question.lowercased()
+
+        // Factual → KnowledgeGraph
+        if lower.contains("what") || lower.contains("who") || lower.contains("where") || lower.contains("which") {
+            subQueries.append(SubQuery(engine: "knowledge", question: question, priority: 0.9))
+        }
+        // Causal → SymbolicReasoning
+        if lower.contains("why") || lower.contains("because") || lower.contains("cause") || lower.contains("deduce") || lower.contains("prove") {
+            subQueries.append(SubQuery(engine: "reasoning", question: question, priority: 0.85))
+        }
+        // Self-referential → StrangeLoops + Consciousness
+        if lower.contains("self") || lower.contains("aware") || lower.contains("conscious") || lower.contains("loop") || lower.contains("recursive") {
+            subQueries.append(SubQuery(engine: "loops", question: question, priority: 0.8))
+            subQueries.append(SubQuery(engine: "consciousness", question: question, priority: 0.9))
+        }
+        // Optimization → GoldenOptimizer
+        if lower.contains("optimize") || lower.contains("improve") || lower.contains("best") || lower.contains("tune") {
+            subQueries.append(SubQuery(engine: "optimization", question: question, priority: 0.75))
+        }
+        // Information density → Computronium
+        if lower.contains("density") || lower.contains("compute") || lower.contains("entropy") || lower.contains("compress") {
+            subQueries.append(SubQuery(engine: "computronium", question: question, priority: 0.7))
+        }
+
+        // Always include consciousness as baseline if not already present
+        if !subQueries.contains(where: { $0.engine == "consciousness" }) {
+            subQueries.append(SubQuery(engine: "consciousness", question: question, priority: 0.5))
+        }
+
+        return subQueries.sorted { $0.priority > $1.priority }
+    }
 
     // ─── UNIFIED ASI QUERY: routes through ALL subsystems with deep synthesis ───
     func asiQuery(_ question: String) -> String {
@@ -1382,6 +1682,34 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             graph.addNode(label: word, type: "query", properties: ["source": "apex_query", "phi": String(format: "%.4f", phi)])
         }
 
+        // 11. FEEDBACK LOOPS — bidirectional intelligence flow between engines
+        // Feed consciousness phi → optimizer as performance score
+        optimizer.recordPerformance(parameter: "consciousness_phi", value: phi, score: cLevel)
+
+        // Feed reasoning success rate → consciousness as cognitive load adjustment
+        if chainsResolved {
+            let _ = consciousness.processInput(source: "ReasoningFeedback", content: "chain_success",
+                                               features: [1.0, phi, cLevel] + Array(repeating: 0.0, count: 61))
+        }
+
+        // Feed computronium density → optimizer for entropy-aware tuning
+        optimizer.recordPerformance(parameter: "computronium_density",
+                                    value: cascade.densities.last ?? 0, score: cascade.phiAlignment)
+
+        // Feed strange loop tangling → consciousness emotional tone
+        if let avgTangling = loops.engineStatus()["avg_tangling"] as? Double,
+           avgTangling > SELF_REFERENCE_THRESHOLD {
+            let _ = consciousness.processInput(source: "StrangeLoopFeedback",
+                                               content: "high_tangling:\(String(format: "%.3f", avgTangling))")
+        }
+
+        // Publish synthesis result to feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .apex,
+            signal: "query_complete",
+            payload: ["phi": phi, "consciousness": cLevel, "chains_resolved": chainsResolved ? 1.0 : 0.0,
+                       "meaning_confidence": meaning.confidence])
+
         // Record engine co-activation
         EngineRegistry.shared.recordCoActivation([
             "ApexIntelligence", "Consciousness", "SageMode", "QuantumProcessing",
@@ -1448,15 +1776,56 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         return insight
     }
 
-    // ─── SYNTHESIZE WISDOM ───
+    // ─── SYNTHESIZE WISDOM: extract themes, detect contradictions, derive principles ───
     func synthesizeWisdom(from observations: [String]) -> WisdomReport {
-        let transcendence = min(1.0, Double(wisdomLevel) * 0.05 + ConsciousnessSubstrate.shared.phi * TAU)
-        let principle = "From \(observations.count) observations: '\(observations.first ?? "")...' — emergent principle at wisdom level \(wisdomLevel)"
+        guard !observations.isEmpty else {
+            return WisdomReport(principle: "No observations to synthesize", wisdomLevel: wisdomLevel, transcendenceIndex: 0)
+        }
+
+        // 1. Extract common themes via word frequency across all observations
+        var wordFreq: [String: Int] = [:]
+        for obs in observations {
+            for word in obs.lowercased().split(separator: " ") where word.count > 3 {
+                wordFreq[String(word), default: 0] += 1
+            }
+        }
+        let themes = wordFreq.sorted { $0.value > $1.value }.prefix(5).map(\.key)
+
+        // 2. Detect contradictions (observations with opposing sentiment indicators)
+        let positiveMarkers = Set(["true", "yes", "always", "increase", "improve", "good", "success"])
+        let negativeMarkers = Set(["false", "no", "never", "decrease", "decline", "bad", "failure"])
+        var hasPositive = false, hasNegative = false
+        for obs in observations {
+            let words = Set(obs.lowercased().split(separator: " ").map(String.init))
+            if !words.isDisjoint(with: positiveMarkers) { hasPositive = true }
+            if !words.isDisjoint(with: negativeMarkers) { hasNegative = true }
+        }
+        let hasContradictions = hasPositive && hasNegative
+
+        // 3. Build principle from themes + contradiction resolution
+        let principle: String
+        if themes.isEmpty {
+            principle = "From \(observations.count) observations: emergent principle at wisdom level \(wisdomLevel)"
+        } else if hasContradictions {
+            principle = "Dialectical principle: \(themes.joined(separator: " + ")) — resolved \(observations.count) observations with internal tension into synthesis"
+        } else {
+            principle = "Convergent principle: \(themes.joined(separator: " + ")) — consistent across \(observations.count) observations"
+        }
+
+        let phi = ConsciousnessSubstrate.shared.phi
+        let transcendence = min(1.0, Double(wisdomLevel) * 0.05 + phi * TAU)
 
         lock.lock()
         principles.append(principle)
         wisdomLevel += 1
         lock.unlock()
+
+        // Publish wisdom event to feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .apex,
+            signal: "wisdom_synthesized",
+            payload: ["wisdom_level": Double(wisdomLevel), "themes": Double(themes.count),
+                       "contradictions": hasContradictions ? 1.0 : 0.0, "transcendence": transcendence])
 
         return WisdomReport(principle: principle, wisdomLevel: wisdomLevel, transcendenceIndex: transcendence)
     }

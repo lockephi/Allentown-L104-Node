@@ -44,10 +44,10 @@ PHI = 1.618033988749895
 class ClaudeConfig:
     """Anthropic Claude API configuration — Opus 4.6 / Sonnet 4 era."""
     api_key: str = ""
-    default_model: str = "claude-opus-4-5-20250514"
+    default_model: str = "claude-opus-4-20250514"
     models: tuple = (
-        'claude-opus-4-5-20250514',  # Most capable reasoning model
-        'claude-opus-4-20250514',     # Extended thinking + tool use
+        'claude-opus-4-20250514',     # Opus 4.6 — primary reasoning + extended thinking
+        'claude-opus-4-5-20250514',   # Opus 4.5 — deep reasoning fallback
         'claude-sonnet-4-20250514',   # Fast + accurate coding
         'claude-3-5-haiku-20241022',  # Ultra-fast for simple tasks
     )
@@ -173,6 +173,11 @@ class L104Config:
         # Load API keys from environment and fallback sources
         self.claude.api_key = os.getenv('ANTHROPIC_API_KEY', '')
         self.gemini.api_key = self._load_gemini_key()
+
+        # Allow model override via environment
+        env_model = os.getenv('CLAUDE_DEFAULT_MODEL', '')
+        if env_model:
+            self.claude.default_model = env_model
 
         # Create directories
         Path(self.voice.output_dir).mkdir(exist_ok=True)

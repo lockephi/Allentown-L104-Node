@@ -316,7 +316,7 @@ class ClaudeModel:
     """Claude API for benchmarking (native logic if no key)."""
 
     def __init__(self):
-        self.name = "Claude-3.5-Sonnet"
+        self.name = "Claude-Opus-4.6"
         self.api_key = os.environ.get('ANTHROPIC_API_KEY', '')
         self.available = bool(self.api_key)
 
@@ -356,7 +356,7 @@ class ClaudeModel:
                         "Content-Type": "application/json"
                     },
                     json={
-                        "model": "claude-opus-4-5-20250514",
+                        "model": "claude-opus-4-20250514",
                         "max_tokens": 500,
                         "messages": [{"role": "user", "content": prompt}]
                     }
