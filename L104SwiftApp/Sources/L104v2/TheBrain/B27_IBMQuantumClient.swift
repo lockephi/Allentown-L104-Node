@@ -242,9 +242,9 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        quantumSession.dataTask(with: req) { data, resp, error in
-            if let error = error {
-                completion(nil, error.localizedDescription)
+        executeWithRetry(req) { [weak self] data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(nil, retryError)
                 return
             }
 
@@ -258,7 +258,7 @@ final class IBMQuantumClient: SovereignEngine {
                 // IBM API may return { "devices": [...] }
                 if let wrapper = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    let devices = wrapper["devices"] as? [[String: Any]] {
-                    let backends = self.parseBackends(devices)
+                    let backends = self?.parseBackends(devices) ?? []
                     completion(backends, nil)
                     return
                 }
@@ -267,9 +267,9 @@ final class IBMQuantumClient: SovereignEngine {
                 return
             }
 
-            let backends = self.parseBackends(json)
+            let backends = self?.parseBackends(json) ?? []
             completion(backends, nil)
-        }.resume()
+        }
     }
 
     private func parseBackends(_ array: [[String: Any]]) -> [IBMQuantumBackend] {
@@ -351,9 +351,9 @@ final class IBMQuantumClient: SovereignEngine {
         req.httpBody = body
         req.timeoutInterval = 30
 
-        quantumSession.dataTask(with: req) { [weak self] data, resp, error in
-            if let error = error {
-                completion(nil, error.localizedDescription)
+        executeWithRetry(req) { [weak self] data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(nil, retryError)
                 return
             }
 
@@ -364,7 +364,7 @@ final class IBMQuantumClient: SovereignEngine {
                 return
             }
 
-            let statusCode = (resp as? HTTPURLResponse)?.statusCode ?? 0
+            let statusCode = httpResp?.statusCode ?? 0
             if statusCode >= 400 {
                 let msg = json["message"] as? String ?? json["error"] as? String ?? "HTTP \(statusCode)"
                 completion(nil, msg)
@@ -383,7 +383,7 @@ final class IBMQuantumClient: SovereignEngine {
                 self?.submittedJobs[jobId] = submission
             }
             completion(submission, nil)
-        }.resume()
+        }
     }
 
     func getJobStatus(jobId: String, completion: @escaping (IBMQuantumJob?, String?) -> Void) {
@@ -401,9 +401,9 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        quantumSession.dataTask(with: req) { data, _, error in
-            if let error = error {
-                completion(nil, error.localizedDescription)
+        executeWithRetry(req) { data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(nil, retryError)
                 return
             }
 
@@ -423,7 +423,7 @@ final class IBMQuantumClient: SovereignEngine {
             )
 
             completion(job, nil)
-        }.resume()
+        }
     }
 
     func getJobResult(jobId: String, completion: @escaping ([String: Any]?, String?) -> Void) {
@@ -441,13 +441,13 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 30
 
-        quantumSession.dataTask(with: req) { data, resp, error in
-            if let error = error {
-                completion(nil, error.localizedDescription)
+        executeWithRetry(req) { data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(nil, retryError)
                 return
             }
 
-            let statusCode = (resp as? HTTPURLResponse)?.statusCode ?? 0
+            let statusCode = httpResp?.statusCode ?? 0
 
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -480,7 +480,7 @@ final class IBMQuantumClient: SovereignEngine {
             }
 
             completion(resultDict, nil)
-        }.resume()
+        }
     }
 
     func listRecentJobs(limit: Int = 10, completion: @escaping ([IBMQuantumJob]?, String?) -> Void) {
@@ -498,9 +498,9 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        quantumSession.dataTask(with: req) { data, _, error in
-            if let error = error {
-                completion(nil, error.localizedDescription)
+        executeWithRetry(req) { data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(nil, retryError)
                 return
             }
 
@@ -531,7 +531,7 @@ final class IBMQuantumClient: SovereignEngine {
             }
 
             completion(jobs, nil)
-        }.resume()
+        }
     }
 
     func cancelJob(jobId: String, completion: @escaping (Bool, String) -> Void) {
@@ -550,22 +550,22 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        quantumSession.dataTask(with: req) { data, resp, error in
-            if let error = error {
-                completion(false, error.localizedDescription)
+        executeWithRetry(req) { [weak self] data, httpResp, retryError in
+            if let retryError = retryError {
+                completion(false, retryError)
                 return
             }
 
-            let statusCode = (resp as? HTTPURLResponse)?.statusCode ?? 0
+            let statusCode = httpResp?.statusCode ?? 0
             if statusCode == 200 || statusCode == 204 {
-                DispatchQueue.main.async { [weak self] in
+                DispatchQueue.main.async {
                     self?.submittedJobs.removeValue(forKey: jobId)
                 }
                 completion(true, "Job \(jobId) cancelled")
             } else {
                 completion(false, "Cancel failed (HTTP \(statusCode))")
             }
-        }.resume()
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -632,9 +632,12 @@ final class IBMQuantumClient: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════════
 
     /// Poll a job until it completes or timeout expires
+    /// Resilient polling: transient errors are retried, backoff increases for long waits
     func waitForJob(jobId: String, maxWaitSeconds: Int = 600, pollInterval: TimeInterval = 5,
                     completion: @escaping ([String: Any]?, String?) -> Void) {
         let deadline = Date().addingTimeInterval(TimeInterval(maxWaitSeconds))
+        var consecutiveErrors = 0
+        var currentInterval = pollInterval
 
         func poll() {
             if Date() > deadline {
@@ -644,9 +647,21 @@ final class IBMQuantumClient: SovereignEngine {
 
             getJobStatus(jobId: jobId) { [weak self] job, error in
                 if let error = error {
-                    completion(nil, error)
+                    consecutiveErrors += 1
+                    if consecutiveErrors >= 5 {
+                        // 5 consecutive failures even with retry — give up
+                        completion(nil, "Polling failed after \(consecutiveErrors) errors: \(error)")
+                        return
+                    }
+                    // Transient error — wait longer and try again
+                    let retryDelay = currentInterval * Double(consecutiveErrors + 1)
+                    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + retryDelay) {
+                        poll()
+                    }
                     return
                 }
+
+                consecutiveErrors = 0  // Reset on success
 
                 guard let job = job else {
                     completion(nil, "Failed to get job status")
@@ -660,8 +675,12 @@ final class IBMQuantumClient: SovereignEngine {
                 } else if status == "failed" || status == "cancelled" || status == "error" {
                     completion(nil, "Job \(status): \(jobId.prefix(12))...")
                 } else {
-                    // Still running/queued — poll again
-                    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + pollInterval) {
+                    // Still running/queued — progressive backoff (cap at 30s)
+                    let elapsed = Date().timeIntervalSince(deadline.addingTimeInterval(-TimeInterval(maxWaitSeconds)))
+                    if elapsed > 120 { currentInterval = min(30, pollInterval * 3) }
+                    else if elapsed > 60 { currentInterval = min(20, pollInterval * 2) }
+
+                    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + currentInterval) {
                         poll()
                     }
                 }

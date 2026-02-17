@@ -2132,6 +2132,82 @@ extension L104State {
             return "❌ Mining failed: \(result.error)"
         }
 
+        // ─── QUANTUM CANCEL — Abort a running/queued job ───
+
+        if q.hasPrefix("quantum cancel ") {
+            let jobId = String(q.dropFirst(15)).trimmingCharacters(in: .whitespaces)
+            if jobId.isEmpty { return "Usage: quantum cancel <job_id>" }
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            client.cancelJob(jobId: jobId) { success, message in
+                HyperBrain.shared.postThought("⚛️ Cancel: \(message)")
+            }
+            return "⚛️ Cancelling job \(jobId.prefix(12))...\n  Result will appear in HyperBrain feed."
+        }
+
+        // ─── QUANTUM CIRCUIT TEMPLATES — Submit pre-built circuits to real hardware ───
+
+        if q == "quantum bell" || q == "quantum bell-state" {
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>\n  Bell state requires real QPU or submit via IBM."
+            }
+            let circuit = IBMQuantumClient.bellStateCircuit()
+            client.submitCircuit(openqasm: circuit) { [weak self] submission, error in
+                if let sub = submission {
+                    DispatchQueue.main.async { self?.quantumJobsSubmitted += 1 }
+                    HyperBrain.shared.postThought("⚛️ Bell State submitted: \(sub.jobId) → \(sub.backend)\n  Creates EPR pair |Φ+⟩ = (|00⟩+|11⟩)/√2")
+                } else {
+                    HyperBrain.shared.postThought("⚛️ Bell State failed: \(error ?? "unknown")")
+                }
+            }
+            return "⚛️ Submitting Bell State (EPR pair) to \(client.connectedBackendName)...\n  2 qubits: H(q0) → CNOT(q0,q1) → Measure\n  Use 'quantum jobs' to track."
+        }
+
+        if q == "quantum ghz" || q.hasPrefix("quantum ghz ") {
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            var nQubits = 3
+            if q.hasPrefix("quantum ghz "), let n = Int(String(q.dropFirst(12)).trimmingCharacters(in: .whitespaces)) {
+                nQubits = min(max(n, 2), 20)  // Clamp to 2-20 qubits
+            }
+            let circuit = IBMQuantumClient.ghzCircuit(nQubits: nQubits)
+            client.submitCircuit(openqasm: circuit) { [weak self] submission, error in
+                if let sub = submission {
+                    DispatchQueue.main.async { self?.quantumJobsSubmitted += 1 }
+                    HyperBrain.shared.postThought("⚛️ GHZ State (\(nQubits)q) submitted: \(sub.jobId) → \(sub.backend)\n  Creates (|00...0⟩+|11...1⟩)/√2")
+                } else {
+                    HyperBrain.shared.postThought("⚛️ GHZ failed: \(error ?? "unknown")")
+                }
+            }
+            return "⚛️ Submitting \(nQubits)-qubit GHZ State to \(client.connectedBackendName)...\n  Maximal entanglement across \(nQubits) qubits\n  Use 'quantum jobs' to track."
+        }
+
+        if q == "quantum qrng" || q == "quantum random" || q.hasPrefix("quantum qrng ") {
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            var nBits = 8
+            if q.hasPrefix("quantum qrng "), let n = Int(String(q.dropFirst(13)).trimmingCharacters(in: .whitespaces)) {
+                nBits = min(max(n, 1), 32)  // Clamp to 1-32 bits
+            }
+            let circuit = IBMQuantumClient.qrngCircuit(nBits: nBits)
+            client.submitCircuit(openqasm: circuit) { [weak self] submission, error in
+                if let sub = submission {
+                    DispatchQueue.main.async { self?.quantumJobsSubmitted += 1 }
+                    HyperBrain.shared.postThought("⚛️ QRNG (\(nBits)-bit) submitted: \(sub.jobId) → \(sub.backend)")
+                } else {
+                    HyperBrain.shared.postThought("⚛️ QRNG failed: \(error ?? "unknown")")
+                }
+            }
+            return "⚛️ Submitting \(nBits)-bit Quantum RNG to \(client.connectedBackendName)...\n  True randomness from quantum measurement\n  Use 'quantum jobs' to track."
+        }
+
         // ─── QUANTUM HELP — Updated with all commands ───
 
         if q == "quantum help" {
@@ -2143,10 +2219,17 @@ extension L104State {
               quantum disconnect      — Disconnect & clear token
               quantum backends        — List available IBM backends
               quantum submit <qasm>   — Submit OpenQASM 3.0 circuit
+              quantum cancel <job_id> — Cancel a running/queued job
               quantum jobs            — List submitted jobs
               quantum result <job_id> — Get measurement results
               quantum wait <job_id>   — Poll until job completes (10 min)
               quantum mine [strategy] — Quantum mining (auto/grover/vqe)
+
+              ── Circuit Templates (submit to real QPU) ──
+              quantum bell            — Bell state (EPR pair, 2 qubits)
+              quantum ghz [n]         — GHZ state (n qubits, default 3)
+              quantum qrng [bits]     — Quantum RNG (default 8 bits)
+              quantum random          — Alias for quantum qrng
 
               ── Algorithms (real HW → simulator fallback) ──
               quantum status          — Engine & hardware status
