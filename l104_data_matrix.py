@@ -505,7 +505,6 @@ class DataMatrix:
             "coherence_estimate": coherence_estimate,  # v2.1
             "god_code_weighted_average": sum(god_code_weights) / len(god_code_weights) if god_code_weights else 0.0,  # v2.1
         }
-        }
 
     def list_quantum_processes(self) -> List[Dict]:
         """List all quantum processes (superposed and collapsed)."""
