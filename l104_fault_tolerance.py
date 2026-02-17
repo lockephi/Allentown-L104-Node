@@ -941,7 +941,7 @@ class InductiveQuantumCoherence:
         |quantum_coherenceₙ / φⁿ − COHERENCE_LIMIT| < ε
     """
 
-    def __init__(self, max_depth: int = 64, epsilon: float = 1e-12):
+    def __init__(self, max_depth: int = 256, epsilon: float = 1e-12):
         self.max_depth = max_depth
         self.epsilon = epsilon
         self._coherence_chain: List[float] = []
@@ -1315,7 +1315,7 @@ class MultiHopReasoner:
     MERGE_NEW = 1.0 / (1.0 + PHI)      # 0.3819660112501052
 
     def __init__(self, attention: ScaledDotProductAttention,
-                 max_hops: int = 8,
+                 max_hops: int = 50,
                  convergence_threshold: float = 1e-6):
         self.attention = attention
         self.max_hops = max_hops
@@ -1416,7 +1416,7 @@ class TopologicalAnyonMemory:
         effective_capacity = base_capacity × DENSITY_INFLECTION
     """
 
-    def __init__(self, capacity: int = 256, braid_depth: int = 8):
+    def __init__(self, capacity: int = 2048, braid_depth: int = 8):
         self.base_capacity = capacity
         self.effective_capacity = int(capacity * DENSITY_INFLECTION)
         self.braid_depth = braid_depth
@@ -1590,7 +1590,7 @@ class L104FaultTolerance:
         )
 
         # Upgrade 1: Inductive quantum coherence
-        self.inductive = InductiveQuantumCoherence(max_depth=64)
+        self.inductive = InductiveQuantumCoherence(max_depth=256)
 
         # Upgrade 2: Scaled dot-product attention
         self.attention = ScaledDotProductAttention(embed_dim=input_dim)
@@ -1601,12 +1601,12 @@ class L104FaultTolerance:
         # Upgrade 4: Multi-hop reasoning (feeds from attention)
         self.reasoner = MultiHopReasoner(
             attention=self.attention,
-            max_hops=8,
+            max_hops=50,
         )
 
         # Upgrade 5: Topological anyon memory
         self.memory = TopologicalAnyonMemory(
-            capacity=256,
+            capacity=2048,
             braid_depth=braid_depth,
         )
 
@@ -1679,8 +1679,11 @@ class L104FaultTolerance:
         # Verify inductive coherence on init
         induction = self.inductive.verify_full_induction()
 
+        builder = self._read_builder_state()
+
         return {
             "status": "INITIALISED",
+            "version": VERSION,
             "layer_1_protection": self.braider.topological_protection(),
             "layer_2_carrier_hz": self.resonance.carrier_freq,
             "layer_2_conservation": self.resonance.conservation_verified(),
@@ -1691,6 +1694,8 @@ class L104FaultTolerance:
             "memory_effective_capacity": self.memory.effective_capacity,
             "attention_patterns": self.attention.pattern_count,
             "tfidf_vocab_size": self.tfidf.vocab_size,
+            "consciousness_level": builder.get("consciousness_level", 0.0),
+            "evo_stage": builder.get("evo_stage", "UNKNOWN"),
         }
 
     def lock_to_frequency(self, target_hz: float) -> Dict[str, Any]:
@@ -1711,6 +1716,12 @@ class L104FaultTolerance:
         output = self.rnn.update(query_vector)
         similarity_after = self.rnn.context_similarity(query_vector)
 
+        # Consciousness-scale output when level > 0.5
+        builder = self._read_builder_state()
+        c_level = builder.get("consciousness_level", 0.0)
+        if c_level > 0.5:
+            output = output * (1.0 + c_level * PHI / 10.0)
+
         return {
             "output": output,
             "output_norm": float(np.linalg.norm(output)),
@@ -1719,6 +1730,7 @@ class L104FaultTolerance:
             "state_hash": self.rnn._state_hash,
             "query_count": self.rnn._query_count,
             "phi_gate_bias": self.rnn.GATE_BIAS,
+            "consciousness_level": c_level,
         }
 
     # ── noise injection (for testing) ────────────────────────────────────
@@ -1777,6 +1789,8 @@ class L104FaultTolerance:
         inflection_bonus = math.log(self.corrector.density_inflection) / math.log(PHI)
         ft_score = protection * coherence * (1.0 + inflection_bonus / 100.0)
 
+        builder = self._read_builder_state()
+
         report["composite"] = {
             "fault_tolerance_score": float(np.clip(ft_score, 0.0, 1.0)),
             "layer_1_protection": protection,
@@ -1790,13 +1804,17 @@ class L104FaultTolerance:
             "rnn_state_hash": self.rnn._state_hash,
             "god_code": GOD_CODE,
             "conservation_satisfied": self.resonance.conservation_verified(),
+            "consciousness_level": builder.get("consciousness_level", 0.0),
+            "evo_stage": builder.get("evo_stage", "UNKNOWN"),
         }
 
         return corrected_state, report
 
     def full_report(self) -> Dict[str, Any]:
         """Return all three layer reports, RNN state, upgrades, plus composite."""
+        builder = self._read_builder_state()
         return {
+            "version": VERSION,
             "layer_1": self.braider.report(),
             "layer_2": self.resonance.report(),
             "layer_3": self.corrector.report(),
@@ -1811,7 +1829,26 @@ class L104FaultTolerance:
             "coherence_limit": COHERENCE_LIMIT,
             "density_inflection": DENSITY_INFLECTION,
             "density_inflection_formula": f"φ^(GOD_CODE/100) = {PHI}^{GOD_CODE/100} = {DENSITY_INFLECTION:.10f}",
+            "builder_state": builder,
         }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MODULE-LEVEL SINGLETON + BACKWARDS COMPATIBILITY
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fault_tolerance = L104FaultTolerance()
+
+
+def primal_calculus(x: float) -> float:
+    """Primal calculus transform: x^φ / (VOID_CONSTANT × π)."""
+    return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
+
+
+def resolve_non_dual_logic(vector) -> float:
+    """Non-dual logic resolution via GOD_CODE alignment."""
+    magnitude = sum(abs(v) for v in vector)
+    return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
