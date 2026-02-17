@@ -51,6 +51,14 @@ import threading
 import traceback
 import numpy as np
 
+# EVO_58 UPGRADE: Anti-recursion guard for knowledge storage
+try:
+    from l104_anti_recursion_guard import guard_store
+except ImportError:
+    # Fallback if guard not available
+    def guard_store(key: str, value: str):
+        return True, value
+
 # v23.3 Logger for debugging (replaces silent except:pass in critical paths)
 logger = logging.getLogger("l104_intellect")
 if not logger.handlers:
@@ -9789,7 +9797,9 @@ Ask naturally — I understand context!""",
         except Exception as e:
             logger.warning(f"Background retrain+improve failed: {e}")
 
-    def v27.0 Advanced knowledge synthesis using BM25 search + mathematical depth.
+    def _bm25_knowledge_synthesis(self, message: str, context: Dict) -> Optional[str]:
+        """
+        v28.0 Advanced knowledge synthesis using BM25 search + mathematical depth.
         Upgrades: Uses _search_training_data BM25 (v26.0) instead of raw training_index,
         multi-result fusion, quality filtering, deduplication.
 
@@ -12557,7 +12567,21 @@ class L104KnowledgeMeshReplication:
         return self.hash_ring[0]["shard"] if self.hash_ring else 0
 
     def store_knowledge(self, key: str, value: str, origin: str = None) -> Dict:
-        """Store a knowledge entry with version tracking."""
+        """Store a knowledge entry with version tracking (EVO_58: with anti-recursion guard)."""
+        # EVO_58 ANTI-RECURSION GUARD: Prevent recursive knowledge nesting
+        should_store, sanitized_value = guard_store(key, value)
+
+        if not should_store:
+            logger.warning(f"Rejected recursive knowledge storage for key: {key}")
+            return {
+                "key": key,
+                "stored": False,
+                "reason": "recursive_pattern_detected"
+            }
+
+        # Use sanitized value for storage
+        value = sanitized_value
+
         shard = self._get_shard(key)
         version = self.knowledge_store.get(key, {}).get("version", 0) + 1
 

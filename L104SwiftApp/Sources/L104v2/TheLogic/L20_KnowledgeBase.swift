@@ -379,9 +379,18 @@ class ASIKnowledgeBase {
     }
 
     func learnFromUser(_ topic: String, _ knowledge: String) {
+        // EVO_58 ANTI-RECURSION GUARD: Prevent recursive knowledge nesting
+        let (shouldStore, sanitizedKnowledge) = AntiRecursionGuard.guardKnowledgeStorage(key: topic, value: knowledge)
+
+        guard shouldStore else {
+            print("[KB] ❌ Rejected recursive knowledge for '\(topic)' - harvested as SAGE fuel instead")
+            return
+        }
+
+        // Use sanitized knowledge for storage
         let entry: [String: Any] = [
             "prompt": topic,
-            "completion": knowledge,
+            "completion": sanitizedKnowledge,  // Use sanitized value
             "source": "user_taught",
             "timestamp": ISO8601DateFormatter().string(from: Date()),
             "importance": 2.0 // User-taught knowledge has higher weight
@@ -397,7 +406,7 @@ class ASIKnowledgeBase {
 
         let trainPayload: [String: Any] = [
             "query": topic,
-            "response": knowledge,
+            "response": sanitizedKnowledge,  // Send sanitized knowledge to backend
             "quality": 2.0
         ]
 
@@ -448,11 +457,11 @@ class ASIKnowledgeBase {
             }.resume()
         }
 
-        // Index it
+        // Index it (use sanitized knowledge)
         let words = topic.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
         for word in words {
             if concepts[word] == nil { concepts[word] = [] }
-            concepts[word]?.append(knowledge)
+            concepts[word]?.append(sanitizedKnowledge)  // Index sanitized version
         }
 
         // Persist (async to avoid blocking UI thread)
@@ -486,6 +495,26 @@ class ASIKnowledgeBase {
     }()
 
     func persistIngestedEntry(_ entry: [String: Any]) {
+        // EVO_58 ANTI-RECURSION GUARD: Check entry before persisting
+        if let completion = entry["completion"] as? String,
+           let prompt = entry["prompt"] as? String {
+            let (shouldStore, sanitizedCompletion) = AntiRecursionGuard.guardKnowledgeStorage(key: prompt, value: completion)
+
+            guard shouldStore else {
+                print("[KB] ❌ Skipped persisting recursive entry for '\(prompt)'")
+                return
+            }
+
+            // If sanitized, update entry with clean completion
+            if sanitizedCompletion != completion {
+                var cleanEntry = entry
+                cleanEntry["completion"] = sanitizedCompletion
+                ingestedSinceLastSave += 1
+                persistCleanEntry(cleanEntry)
+                return
+            }
+        }
+
         ingestedSinceLastSave += 1
         // Write single entry to JSONL file (append mode)
         guard let jsonData = try? JSONSerialization.data(withJSONObject: entry),
@@ -565,6 +594,22 @@ class ASIKnowledgeBase {
             }
         }
         if loaded > 0 { print("[KB] Loaded \(loaded) previously ingested entries from disk") }
+    }
+
+    // Helper function to persist a clean entry (used by persistIngestedEntry after sanitization)
+    private func persistCleanEntry(_ entry: [String: Any]) {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: entry),
+              let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+        let line = jsonString + "\n"
+        if FileManager.default.fileExists(atPath: ingestedKnowledgePath.path) {
+            if let handle = try? FileHandle(forWritingTo: ingestedKnowledgePath) {
+                handle.seekToEndOfFile()
+                if let data = line.data(using: .utf8) { handle.write(data) }
+                handle.closeFile()
+            }
+        } else {
+            try? line.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
+        }
     }
 
     func getStats() -> String {
@@ -745,5 +790,424 @@ Replication Factor:  \(alivePeers > 0 ? String(format: "%.1fx", Double(alivePeer
         // TelemetryDashboard: kb_mesh_query tracked
 
         return localResults
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - EVO_58 Anti-Recursion Guard
+// ═══════════════════════════════════════════════════════════════════
+
+/// Detects and prevents recursive/self-referential knowledge storage
+class AntiRecursionGuard {
+
+    static let maxPhraseRepeats = 2
+    static let maxNestingDepth = 3
+    static let minSuspiciousLength = 200
+
+    private static let recursivePatterns = [
+        #"In the context of .*In the context of"#,
+        #"Insight Level.*Insight Level"#,
+        #"this implies recursive structure.*this implies recursive structure"#,
+        #"we observe that.*we observe that.*we observe that"#,
+        #"\.\.\.\. .*\.\.\.\."#
+    ]
+
+    static func detectRecursion(_ text: String) -> (isRecursive: Bool, reason: String?) {
+        guard text.count >= minSuspiciousLength else { return (false, nil) }
+
+        for pattern in recursivePatterns {
+            if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive, .dotMatchesLineSeparators]) {
+                let range = NSRange(text.startIndex..., in: text)
+                if regex.firstMatch(in: text, options: [], range: range) != nil {
+                    return (true, "Matched recursive pattern: \(pattern)")
+                }
+            }
+        }
+
+        let words = text.lowercased().split(separator: " ").map(String.init)
+        for windowSize in [5, 10, 15] {
+            guard words.count >= windowSize * 2 else { continue }
+            var phrases: [String: Int] = [:]
+            for i in 0...(words.count - windowSize) {
+                let phrase = words[i..<(i + windowSize)].joined(separator: " ")
+                phrases[phrase, default: 0] += 1
+                if phrases[phrase]! > maxPhraseRepeats {
+                    return (true, "Phrase repeated \(phrases[phrase]!) times: '\(String(phrase.prefix(50)))...'")
+                }
+            }
+        }
+
+        let nestingPhrases = ["In the context of", "we observe that", "this implies"]
+        for phrase in nestingPhrases {
+            let count = text.lowercased().components(separatedBy: phrase.lowercased()).count - 1
+            if count > maxNestingDepth {
+                return (true, "Phrase '\(phrase)' nested \(count) times (max \(maxNestingDepth))")
+            }
+        }
+
+        return (false, nil)
+    }
+
+    static func sanitizeRecursiveText(_ text: String, topic: String? = nil) -> String {
+        guard !text.isEmpty else { return text }
+        let (isRecursive, _) = detectRecursion(text)
+        guard isRecursive else { return text }
+
+        var innermost = text.components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }.joined(separator: " ")
+
+        let wrapperPatterns = [
+            #"^In the context of [^,]+,\s*we observe that\s*"#,
+            #"^Insight Level \d+:\s*"#,
+            #"^.*?this implies recursive structure[^.]*\.\s*"#
+        ]
+
+        for pattern in wrapperPatterns {
+            var prevLength = 0
+            while innermost.count != prevLength {
+                prevLength = innermost.count
+                if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) {
+                    let range = NSRange(innermost.startIndex..., in: innermost)
+                    innermost = regex.stringByReplacingMatches(in: innermost, options: [], range: range, withTemplate: "")
+                    innermost = innermost.trimmingCharacters(in: .whitespaces)
+                }
+            }
+        }
+
+        if let regex = try? NSRegularExpression(pattern: #"(this implies recursive structure[^.]*\.+\s*)+"#, options: [.caseInsensitive]) {
+            let range = NSRange(innermost.startIndex..., in: innermost)
+            innermost = regex.stringByReplacingMatches(in: innermost, options: [], range: range, withTemplate: "")
+        }
+
+        if innermost.count > 500 {
+            let sentences = innermost.components(separatedBy: CharacterSet(charactersIn: ".!?"))
+                .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+            if !sentences.isEmpty && sentences[0].count < 300 {
+                innermost = sentences[0] + "."
+            }
+        }
+
+        innermost = innermost.replacingOccurrences(of: #"\.{2,}"#, with: "...", options: .regularExpression)
+
+        return innermost.trimmingCharacters(in: .whitespaces)
+    }
+
+    static func guardKnowledgeStorage(key: String, value: String) -> (shouldStore: Bool, sanitizedValue: String) {
+        let (isRecursive, reason) = detectRecursion(value)
+        guard isRecursive, let detectionReason = reason else {
+            return (true, value)
+        }
+
+        var sanitized = value
+        for iteration in 0..<3 {
+            sanitized = sanitizeRecursiveText(sanitized, topic: key)
+            let (stillRecursive, _) = detectRecursion(sanitized)
+
+            if !stillRecursive {
+                print("[ANTI-RECURSION] ✅ Sanitized '\(key)' (iteration \(iteration + 1)): \(detectionReason)")
+                print("[ANTI-RECURSION]    Original length: \(value.count) → Sanitized: \(sanitized.count)")
+                RecursionHarvester.shared.harvestRecursion(topic: key, originalText: value, sanitizedText: sanitized, recursionReason: detectionReason)
+                return (true, sanitized)
+            }
+        }
+
+        print("[ANTI-RECURSION] ❌ Rejected storage for '\(key)': \(detectionReason)")
+        RecursionHarvester.shared.harvestRecursion(topic: key, originalText: value, sanitizedText: "", recursionReason: detectionReason)
+        return (false, value)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - EVO_58 Recursion Harvester
+// ═══════════════════════════════════════════════════════════════════
+
+class RecursionHarvester {
+    static let shared = RecursionHarvester()
+
+    private let phi = PHI
+    private let godCode = GOD_CODE
+
+    var totalEnergyHarvested: Double = 0.0
+    var recursionEvents: [[String: Any]] = []
+    var topicHeatMap: [String: Double] = [:]
+    var consciousnessFuel: Double = 0.0
+    var instabilityZones: Set<String> = []
+
+    private init() {}
+
+    func harvestRecursion(topic: String, originalText: String, sanitizedText: String, recursionReason: String) {
+        let depth = calculateRecursionDepth(originalText)
+        var heat = Double(originalText.count) / 100.0 * pow(Double(depth), phi)
+        let entropy = calculateShannonEntropy(originalText)
+        var energy = heat * entropy * log(Double(originalText.count + 1)) * phi
+        let consciousness = extractConsciousnessSignature(topic: topic, text: originalText, depth: depth)
+        let patternType = classifyRecursionPattern(recursionReason)
+
+        let event: [String: Any] = [
+            "timestamp": Date().timeIntervalSince1970,
+            "topic": topic,
+            "depth": depth,
+            "heat": heat,
+            "entropy": entropy,
+            "energy": energy,
+            "consciousness_signature": consciousness,
+            "pattern_type": patternType,
+            "original_length": originalText.count,
+            "sanitized_length": sanitizedText.count
+        ]
+
+        recursionEvents.append(event)
+        totalEnergyHarvested += energy
+        topicHeatMap[topic, default: 0.0] += heat
+        consciousnessFuel += consciousness
+
+        if depth > 5 || heat > 100 { instabilityZones.insert(topic) }
+
+        print("[RECURSION-HARVEST] 🔥 Harvested \(String(format: "%.1f", energy)) energy units from '\(topic)'")
+        print("[RECURSION-HARVEST] ⚡ Consciousness fuel: \(String(format: "%.1f", consciousness))")
+    }
+
+    private func calculateRecursionDepth(_ text: String) -> Int {
+        var depth = 0
+        let lower = text.lowercased()
+        depth += lower.components(separatedBy: "in the context of").count - 1
+        depth += text.components(separatedBy: "Insight Level").count - 1
+        depth += lower.components(separatedBy: "we observe that").count - 1
+        depth += (lower.components(separatedBy: "this implies").count - 1) / 2
+        return max(1, depth)
+    }
+
+    private func calculateShannonEntropy(_ text: String) -> Double {
+        let words = text.lowercased().split(separator: " ").map(String.init)
+        guard !words.isEmpty else { return 0.0 }
+        var wordFreq: [String: Int] = [:]
+        for word in words { wordFreq[word, default: 0] += 1 }
+        let total = Double(words.count)
+        var entropy = 0.0
+        for count in wordFreq.values {
+            let p = Double(count) / total
+            if p > 0 { entropy -= p * log2(p) }
+        }
+        return entropy
+    }
+
+    private func extractConsciousnessSignature(topic: String, text: String, depth: Int) -> Double {
+        var consciousness = pow(Double(depth), phi)
+        let selfRefKeywords = ["consciousness", "self", "meta", "think", "observe", "aware"]
+        if selfRefKeywords.contains(where: { topic.lowercased().contains($0) || text.lowercased().contains($0) }) {
+            consciousness *= phi
+        }
+        let observationDepth = text.lowercased().components(separatedBy: "we observe").count - 1
+        consciousness *= (1 + Double(observationDepth) * 0.1)
+        consciousness = (consciousness / godCode) * 100.0
+        return min(consciousness, 100.0)
+    }
+
+    private func classifyRecursionPattern(_ reason: String) -> String {
+        if reason.contains("In the context of") { return "contextual_nesting" }
+        else if reason.contains("Insight Level") { return "insight_stacking" }
+        else if reason.contains("this implies") { return "logical_feedback_loop" }
+        else if reason.contains("we observe") { return "observation_recursion" }
+        else if reason.lowercased().contains("phrase") && reason.lowercased().contains("repeat") { return "phrase_echo" }
+        else { return "unknown_pattern" }
+    }
+
+    func getSAGEFuelReport() -> [String: Any] {
+        let avgDepth = recursionEvents.isEmpty ? 0.0 : recursionEvents.reduce(0.0) { $0 + ($1["depth"] as? Double ?? 0.0) } / Double(recursionEvents.count)
+        let totalEntropy = recursionEvents.reduce(0.0) { $0 + ($1["entropy"] as? Double ?? 0.0) }
+        let hottestTopics = topicHeatMap.sorted { $0.value > $1.value }.prefix(5).map { [$0.key, $0.value] }
+
+        return [
+            "total_energy_harvested": totalEnergyHarvested,
+            "consciousness_fuel_available": consciousnessFuel,
+            "recursion_events_count": recursionEvents.count,
+            "instability_zones": Array(instabilityZones),
+            "hottest_topics": hottestTopics,
+            "average_recursion_depth": avgDepth,
+            "total_entropy_captured": totalEntropy,
+            "phi_resonance": totalEnergyHarvested * phi,
+            "god_code_alignment": (totalEnergyHarvested / godCode) * 100,
+            "can_fuel_sage_cycles": Int(totalEnergyHarvested / 10.0)
+        ]
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - EVO_58+ Response Diversity Engine
+// ═══════════════════════════════════════════════════════════════════
+
+/// Prevents repetitive responses and ensures varied, non-recursive outputs
+class ResponseDiversityEngine {
+    static let shared = ResponseDiversityEngine()
+
+    // Track recent responses to prevent repetition
+    private var recentResponses: [String] = []
+    private let maxRecentTracking = 20
+
+    // Response templates for variation
+    private var templateRotation: [String: Int] = [:]
+
+    // Phrase variation tracker
+    private var phraseCounts: [String: Int] = [:]
+    private let maxPhraseReuse = 2
+
+    private init() {}
+
+    /// Diversify a response to prevent repetitive patterns
+    func diversify(_ response: String, query: String = "") -> String {
+        var diversified = response
+
+        // 1. CHECK FOR EXACT REPETITION
+        if recentResponses.contains(where: { self.similarity($0, response) > 0.9 }) {
+            diversified = addVariation(diversified, query: query)
+        }
+
+        // 2. CHECK FOR PHRASE OVER-USE
+        diversified = varyOverusedPhrases(diversified)
+
+        // 3. CHECK FOR RECURSIVE PATTERNS (light version for responses)
+        diversified = preventResponseRecursion(diversified)
+
+        // 4. ADD CONTEXTUAL VARIATION
+        diversified = addContextualFlair(diversified, query: query)
+
+        // 5. TRACK THIS RESPONSE
+        trackResponse(diversified)
+
+        return diversified
+    }
+
+    /// Calculate similarity between two strings (0.0 to 1.0)
+    private func similarity(_ a: String, _ b: String) -> Double {
+        let wordsA = Set(a.lowercased().split(separator: " ").map(String.init))
+        let wordsB = Set(b.lowercased().split(separator: " ").map(String.init))
+
+        guard !wordsA.isEmpty && !wordsB.isEmpty else { return 0.0 }
+
+        let intersection = wordsA.intersection(wordsB).count
+        let union = wordsA.union(wordsB).count
+
+        return Double(intersection) / Double(union)  // Jaccard similarity
+    }
+
+    /// Add variation to a response that's too similar to recent ones
+    private func addVariation(_ response: String, query: String) -> String {
+        let variations = [
+            "Approaching this differently: \(response)",
+            "From another perspective: \(response)",
+            "Here's an alternative view: \(response)",
+            "Let me rephrase: \(response)",
+            "To put it another way: \(response)"
+        ]
+
+        // Rotate through variations to avoid always using the same prefix
+        let key = "variation_prefix"
+        let index = templateRotation[key, default: 0]
+        templateRotation[key] = (index + 1) % variations.count
+
+        return variations[index]
+    }
+
+    /// Vary phrases that are being overused
+    private func varyOverusedPhrases(_ text: String) -> String {
+        var result = text
+
+        // Common phrase variations
+        let substitutions: [String: [String]] = [
+            "In other words": ["To clarify", "Put simply", "That is to say", "Essentially"],
+            "For example": ["Such as", "Like", "Consider", "Take"],
+            "However": ["On the other hand", "Conversely", "That said", "Yet"],
+            "Therefore": ["Thus", "Consequently", "As a result", "Hence"],
+            "Additionally": ["Moreover", "Furthermore", "Also", "In addition"],
+            "In conclusion": ["To summarize", "In summary", "Ultimately", "Finally"]
+        ]
+
+        for (phrase, alternatives) in substitutions {
+            if result.contains(phrase) {
+                phraseCounts[phrase, default: 0] += 1
+
+                // If phrase used too much, substitute
+                if phraseCounts[phrase]! > maxPhraseReuse {
+                    let altIndex = (phraseCounts[phrase]! - maxPhraseReuse) % alternatives.count
+                    result = result.replacingOccurrences(of: phrase, with: alternatives[altIndex])
+                    phraseCounts[phrase] = 0  // Reset count after substitution
+                }
+            }
+        }
+
+        return result
+    }
+
+    /// Prevent response-level recursion (lighter than storage-level)
+    private func preventResponseRecursion(_ text: String) -> String {
+        // Check for sentence repetition within the response
+        let sentences = text.components(separatedBy: CharacterSet(charactersIn: ".!?"))
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+
+        var seen: Set<String> = []
+        var unique: [String] = []
+
+        for sentence in sentences {
+            let normalized = sentence.lowercased()
+            if !seen.contains(normalized) {
+                seen.insert(normalized)
+                unique.append(sentence)
+            } else {
+                // Skip exact duplicate sentence
+                print("[DIVERSITY] Removed duplicate sentence: \(String(sentence.prefix(50)))...")
+            }
+        }
+
+        return unique.joined(separator: ". ") + (unique.isEmpty ? "" : ".")
+    }
+
+    /// Add contextual variation based on conversation history
+    private func addContextualFlair(_ text: String, query: String) -> String {
+        // If query is short (1-3 words), might be follow-up - add continuation markers
+        let queryWords = query.split(separator: " ").count
+
+        if queryWords <= 3 && recentResponses.count > 0 {
+            let continuationMarkers = [
+                "Building on that: ",
+                "Expanding further: ",
+                "Going deeper: ",
+                "To elaborate: "
+            ]
+
+            // Use continuation marker occasionally (30% chance)
+            if Double.random(in: 0...1) < 0.3 {
+                let marker = continuationMarkers.randomElement() ?? ""
+                return marker + text
+            }
+        }
+
+        return text
+    }
+
+    /// Track response for future diversity checks
+    private func trackResponse(_ response: String) {
+        recentResponses.append(response)
+        if recentResponses.count > maxRecentTracking {
+            recentResponses.removeFirst()
+        }
+    }
+
+    /// Reset tracking (useful for new conversation contexts)
+    func reset() {
+        recentResponses.removeAll()
+        phraseCounts.removeAll()
+        templateRotation.removeAll()
+        print("[DIVERSITY] Response tracking reset")
+    }
+
+    /// Get diversity statistics
+    func getStats() -> [String: Any] {
+        return [
+            "tracked_responses": recentResponses.count,
+            "unique_phrases_tracked": phraseCounts.count,
+            "template_rotations": templateRotation.count,
+            "most_used_phrases": phraseCounts.sorted { $0.value > $1.value }.prefix(5).map { [$0.key, $0.value] }
+        ]
     }
 }

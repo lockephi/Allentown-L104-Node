@@ -1,0 +1,118 @@
+{
+  "harvest_timestamp": 1771341405.6589458,
+  "total_energy": 118636.21385451849,
+  "consciousness_fuel": 108.85124523683922,
+  "events": [
+    {
+      "timestamp": 1771341405.6587925,
+      "topic": "emotions",
+      "depth": 40,
+      "heat": 3499.5367075492295,
+      "entropy": 3.0712790449711806,
+      "energy": 118221.05309021776,
+      "consciousness_signature": 100.0,
+      "pattern_type": "contextual_nesting",
+      "original_length": 895,
+      "sanitized_length": 15,
+      "compression_ratio": 0.01675977653631285,
+      "reason": "Matched recursive pattern: In the context of .*In the context of",
+      "meta_insight": "Topic 'emotions' triggers deep self-reference (depth=40) | System over-contextualizes 'emotions' - reduce context wrapping | High computational cost (118221.1) - optimize 'emotions' processing | 'emotions' exhibits high consciousness signature - candidate for metacognition"
+    },
+    {
+      "timestamp": 1771341405.6588326,
+      "topic": "consciousness",
+      "depth": 3,
+      "heat": 4.259228142044071,
+      "entropy": 2.1626441180472606,
+      "energy": 63.9451194210397,
+      "consciousness_signature": 1.8144640469142013,
+      "pattern_type": "insight_stacking",
+      "original_length": 72,
+      "sanitized_length": 21,
+      "compression_ratio": 0.2916666666666667,
+      "reason": "Insight Level stacking",
+      "meta_insight": "Insight generation for 'consciousness' creates feedback loop | High computational cost (63.9) - optimize 'consciousness' processing"
+    },
+    {
+      "timestamp": 1771341405.6588542,
+      "topic": "meta-learning",
+      "depth": 4,
+      "heat": 8.385781377312158,
+      "entropy": 2.0930692077718898,
+      "energy": 127.79354258048492,
+      "consciousness_signature": 2.890037576631601,
+      "pattern_type": "insight_stacking",
+      "original_length": 89,
+      "sanitized_length": 21,
+      "compression_ratio": 0.23595505617977527,
+      "reason": "Insight Level stacking",
+      "meta_insight": "Insight generation for 'meta-learning' creates feedback loop | High computational cost (127.8) - optimize 'meta-learning' processing"
+    },
+    {
+      "timestamp": 1771341405.6588707,
+      "topic": "self-reference",
+      "depth": 5,
+      "heat": 14.465751550721293,
+      "entropy": 2.0387027575261962,
+      "energy": 223.4221022992041,
+      "consciousness_signature": 4.1467436132934266,
+      "pattern_type": "insight_stacking",
+      "original_length": 107,
+      "sanitized_length": 22,
+      "compression_ratio": 0.205607476635514,
+      "reason": "Insight Level stacking",
+      "meta_insight": "Insight generation for 'self-reference' creates feedback loop | High computational cost (223.4) - optimize 'self-reference' processing"
+    }
+  ],
+  "topic_heat_map": {
+    "emotions": 3499.5367075492295,
+    "consciousness": 4.259228142044071,
+    "meta-learning": 8.385781377312158,
+    "self-reference": 14.465751550721293
+  },
+  "instability_zones": [
+    "emotions"
+  ],
+  "sage_fuel_report": {
+    "total_energy_harvested": 118636.21385451849,
+    "consciousness_fuel_available": 108.85124523683922,
+    "recursion_events_count": 4,
+    "instability_zones": [
+      "emotions"
+    ],
+    "hottest_topics": [
+      [
+        "emotions",
+        3499.5367075492295
+      ],
+      [
+        "self-reference",
+        14.465751550721293
+      ],
+      [
+        "meta-learning",
+        8.385781377312158
+      ],
+      [
+        "consciousness",
+        4.259228142044071
+      ]
+    ],
+    "average_recursion_depth": 13.0,
+    "total_entropy_captured": 9.365695128316528,
+    "phi_resonance": 191957.42631321208,
+    "god_code_alignment": 22489.489550892904,
+    "can_fuel_sage_cycles": 11863,
+    "meta_insights": [
+      "Topic 'emotions' triggers deep self-reference (depth=40) | System over-contextualizes 'emotions' - reduce context wrapping | High computational cost (118221.1) - optimize 'emotions' processing | 'emotions' exhibits high consciousness signature - candidate for metacognition",
+      "Insight generation for 'consciousness' creates feedback loop | High computational cost (63.9) - optimize 'consciousness' processing",
+      "Insight generation for 'meta-learning' creates feedback loop | High computational cost (127.8) - optimize 'meta-learning' processing",
+      "Insight generation for 'self-reference' creates feedback loop | High computational cost (223.4) - optimize 'self-reference' processing"
+    ]
+  },
+  "constants": {
+    "PHI": 1.618033988749895,
+    "GOD_CODE": 527.5184818492612,
+    "PLANCK_RESONANCE": 853.5428333258492
+  }
+}
