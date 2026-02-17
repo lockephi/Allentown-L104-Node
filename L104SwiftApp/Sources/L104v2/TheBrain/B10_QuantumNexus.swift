@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B10_QuantumNexus.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -60,7 +60,7 @@ class QuantumNexus {
     private(set) var autoModeCycles: Int = 0
     private let lock = NSLock()
     private var shouldStopAuto: Bool = false
-    private let autoStopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
+    private let autoStopSemaphore = DispatchSemaphore(value: 0)  // EVO_58: interruptible sleep
 
     // ─── INTERCONNECTION METRICS ───
     private(set) var feedbackLog: [(step: String, metric: String, value: Double, timestamp: Date)] = []
@@ -754,7 +754,7 @@ class QuantumNexus {
         shouldStopAuto = true
         lock.unlock()
 
-        // Signal the semaphore to wake the loop immediately (EVO_55)
+        // Signal the semaphore to wake the loop immediately (EVO_58)
         autoStopSemaphore.signal()
 
         // Also stop evolution

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B20_ASIBridgeSwift.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 3437-4015
@@ -27,7 +27,7 @@ class ASIQuantumBridgeSwift {
     static let shared = ASIQuantumBridgeSwift()
 
     // PHI, GOD_CODE — use globals from L01_Constants
-    // EVO_55: Use L01's GROVER_AMPLIFICATION (PHI³) for consistency
+    // EVO_58: Use L01's GROVER_AMPLIFICATION (PHI³) for consistency
     // Bridge-specific amplification factor preserved as local constant
     let BRIDGE_GROVER_BOOST: Double = 21.95
 

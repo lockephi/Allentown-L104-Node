@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // B21_MathEngines1.swift — L104 · TheBrain · v2 Architecture
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift lines 12883-14127
 // Classes: AdvancedMathEngine, FluidWaveEngine, InformationSignalEngine
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -136,7 +136,7 @@ class AdvancedMathEngine {
         return sum * h / 3.0
     }
 
-    /// EVO_55: O(n³) determinant via LU decomposition (LAPACK dgetrf)
+    /// EVO_58: O(n³) determinant via LU decomposition (LAPACK dgetrf)
     /// Replaces O(n!) cofactor expansion — safe for any matrix size
     func determinant(_ matrix: [[Double]]) -> Double {
         computations += 1

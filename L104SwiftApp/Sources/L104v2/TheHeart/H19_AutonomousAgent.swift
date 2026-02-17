@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H19_AutonomousAgent.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Mesh-Aware Autonomous Agent
 //
 // Goal-directed autonomous task execution with quantum mesh distribution.
@@ -56,7 +56,7 @@ final class AutonomousAgent: AutonomousAgentProtocol {
     private(set) var totalTasksDelegated: Int = 0
     private(set) var totalTasksFailed: Int = 0
     private var isRunningLoop: Bool = false
-    private let agentStopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
+    private let agentStopSemaphore = DispatchSemaphore(value: 0)  // EVO_58: interruptible sleep
 
     // ─── LIFECYCLE ───
 
@@ -286,7 +286,7 @@ final class AutonomousAgent: AutonomousAgentProtocol {
                     self.lock.unlock()
                 }
 
-                _ = self.agentStopSemaphore.wait(timeout: .now() + 2.0) // Agent tick interval (EVO_55: interruptible)
+                _ = self.agentStopSemaphore.wait(timeout: .now() + 2.0) // Agent tick interval (EVO_58: interruptible)
             }
             self.isRunningLoop = false
         }

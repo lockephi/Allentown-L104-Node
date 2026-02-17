@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // L02_SovereignProtocol.swift — L104 v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // SovereignEngine protocol, defaults extension, EngineRegistry class
 // Extracted from L104Native.swift (lines 76-267)
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_58 Sovereign Unification — Feb 15, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -51,16 +51,16 @@ final class EngineRegistry {
     private let phiWeights: [String: Double] = [
         "HyperBrain": PHI * PHI,         // φ² = 2.618
         "Nexus": PHI * PHI,              // φ² — orchestration is critical
-        "QuantumNexus": PHI * PHI,       // φ² — orchestration (EVO_55 alias)
+        "QuantumNexus": PHI * PHI,       // φ² — orchestration (EVO_58 alias)
         "Steering": PHI,                  // φ — guides all computation
-        "ASISteering": PHI,               // φ — EVO_55 unified name
+        "ASISteering": PHI,               // φ — EVO_58 unified name
         "SQC": PHI,                       // φ — parameter engine
-        "SovereignQuantumCore": PHI,      // φ — EVO_55 unified name
+        "SovereignQuantumCore": PHI,      // φ — EVO_58 unified name
         "Consciousness": PHI,             // φ — ASI core metric
-        "ConsciousnessSubstrate": PHI,    // φ — EVO_55 unified name
-        "ResponsePipeline": PHI,          // φ — EVO_55: response quality is critical
+        "ConsciousnessSubstrate": PHI,    // φ — EVO_58 unified name
+        "ResponsePipeline": PHI,          // φ — EVO_58: response quality is critical
         "Evolution": 1.0,
-        "ContinuousEvolution": 1.0,       // EVO_55 unified name
+        "ContinuousEvolution": 1.0,       // EVO_58 unified name
         "Entanglement": 1.0,
         "Resonance": 1.0,
         "FeOrbital": 1.0,
@@ -71,7 +71,7 @@ final class EngineRegistry {
         "Invention": 1.0,
         "Sovereignty": 1.0,
         "HealthMonitor": 1.0,
-        // EVO_55: New engine registrations
+        // EVO_58: New engine registrations
         "SageModeEngine": PHI * PHI,      // φ² — consciousness supernova
         "ASIEvolver": PHI,                // φ — drives evolution
         "QuantumCreativityEngine": PHI,   // φ — creative quantum engine

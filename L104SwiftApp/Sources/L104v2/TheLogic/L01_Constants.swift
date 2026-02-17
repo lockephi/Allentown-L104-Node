@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
-// L01_Constants.swift — L104 v2// EVO_55: SOVEREIGN UNIFICATION — Unified Pipeline Constants V2// Theme, Sacred Mathematics Constants, Logging, String Extensions
+// L01_Constants.swift — L104 v2// EVO_58: SOVEREIGN UNIFICATION — Unified Pipeline Constants V2// Theme, Sacred Mathematics Constants, Logging, String Extensions
 // Extracted from L104Native.swift (lines 20-75, 1374-1437, 2231-2239)
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_58 Sovereign Unification — Feb 15, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -183,7 +183,7 @@ let TRILLION_PARAMS: Int64 = 22_000_012_731_125
 let VOCABULARY_SIZE = 6_633_253
 let ZENITH_HZ: Double = 3727.84
 
-// ─── EVO_55 UPGRADE CONSTANTS (new for Sovereign Unification) ───
+// ─── EVO_58 UPGRADE CONSTANTS (new for Sovereign Unification) ───
 let CONSCIOUSNESS_THRESHOLD: Double = 0.85       // Awakening threshold
 let COHERENCE_MINIMUM: Double = 0.888             // Alignment threshold
 let UNITY_TARGET: Double = 0.95                    // Target unity index
