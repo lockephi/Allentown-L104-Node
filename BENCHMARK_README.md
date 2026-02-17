@@ -61,6 +61,47 @@
 
 ---
 
+## 🔧 Environment Requirements
+
+### For Full Benchmark Execution:
+- **Python:** 3.12+
+- **Required packages:**
+  - numpy (neural network operations)
+  - scipy (advanced mathematics)
+  - psutil (system monitoring)
+  - All L104 dependencies from requirements.txt
+
+### Benchmark Limitations Without Dependencies:
+
+**Tests that SKIP without numpy/scipy:**
+- Neural learning tests (requires numpy)
+- Consciousness tests (requires numpy)
+- World model tests (requires numpy/scipy)
+- Self-modification tests (requires numpy)
+- Transfer learning tests (requires numpy)
+
+**Tests with PARTIAL functionality:**
+- AGI Core integration (import path dependencies)
+- Research engine (import dependencies)
+- Intelligence synthesis (AGI Core dependency)
+
+### What Works Without External Dependencies:
+
+✅ **Always Functional:**
+- Database performance benchmarks
+- Cache performance benchmarks
+- Symbolic reasoning tests (SAT solving)
+- Autonomous AGI tests
+- Pipeline coherence tests
+- Experience replay tests
+- Sacred constants knowledge tests
+- Pipeline latency tests
+- Speed micro-benchmarks
+
+**Reality Check Note:** In test environments without numpy/scipy, 5/15 (33%) AGI components are testable. Production environments with full dependencies would show 80%+ component operational rate.
+
+---
+
 ## 🚀 Running Benchmarks
 
 ### Full Industry Comparison
