@@ -57,7 +57,10 @@ final class IBMQuantumClient: SovereignEngine {
             "backends": availableBackends.count,
             "connected_backend": connectedBackendName,
             "jobs_submitted": submittedJobs.count,
-            "has_token": ibmToken != nil
+            "has_token": ibmToken != nil,
+            "total_requests": totalRequests,
+            "retried_requests": retriedRequests,
+            "failed_requests": failedRequests
         ]
     }
 
@@ -77,6 +80,9 @@ final class IBMQuantumClient: SovereignEngine {
         connectedBackendName = ""
         accessToken = nil
         tokenExpiry = .distantPast
+        totalRequests = 0
+        retriedRequests = 0
+        failedRequests = 0
     }
 
     // ─── TOKEN MANAGEMENT (UserDefaults) ───
@@ -101,9 +107,23 @@ final class IBMQuantumClient: SovereignEngine {
     private var accessToken: String?
     private var tokenExpiry: Date = .distantPast
 
+    // ─── RELIABILITY METRICS ───
+    private(set) var totalRequests: Int = 0
+    private(set) var retriedRequests: Int = 0
+    private(set) var failedRequests: Int = 0
+
     // ─── IBM QUANTUM API ENDPOINTS ───
     // IBM Quantum Platform (ibm_quantum channel) uses API token directly as bearer
     private let quantumAPIBase = "https://api.quantum-computing.ibm.com/api"
+
+    // ─── DEDICATED URL SESSION (proper timeouts for quantum hardware) ───
+    private lazy var quantumSession: URLSession = {
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForRequest = 60       // 60s per request (QPU queue)
+        config.timeoutIntervalForResource = 300     // 5 min total for long jobs
+        config.waitsForConnectivity = true
+        return URLSession(configuration: config)
+    }()
 
     // ─── STATUS ───
     var isConnected: Bool { connectionState == .connected }
@@ -144,7 +164,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        URLSession.shared.dataTask(with: req) { [weak self] data, resp, error in
+        quantumSession.dataTask(with: req) { [weak self] data, resp, error in
             guard let self = self else { return }
 
             if let error = error {
@@ -222,7 +242,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        URLSession.shared.dataTask(with: req) { data, resp, error in
+        quantumSession.dataTask(with: req) { data, resp, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -331,7 +351,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.httpBody = body
         req.timeoutInterval = 30
 
-        URLSession.shared.dataTask(with: req) { [weak self] data, resp, error in
+        quantumSession.dataTask(with: req) { [weak self] data, resp, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -381,7 +401,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        URLSession.shared.dataTask(with: req) { data, _, error in
+        quantumSession.dataTask(with: req) { data, _, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -421,7 +441,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 30
 
-        URLSession.shared.dataTask(with: req) { data, resp, error in
+        quantumSession.dataTask(with: req) { data, resp, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -478,7 +498,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        URLSession.shared.dataTask(with: req) { data, _, error in
+        quantumSession.dataTask(with: req) { data, _, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -530,7 +550,7 @@ final class IBMQuantumClient: SovereignEngine {
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         req.timeoutInterval = 15
 
-        URLSession.shared.dataTask(with: req) { data, resp, error in
+        quantumSession.dataTask(with: req) { data, resp, error in
             if let error = error {
                 completion(false, error.localizedDescription)
                 return
@@ -546,6 +566,109 @@ final class IBMQuantumClient: SovereignEngine {
                 completion(false, "Cancel failed (HTTP \(statusCode))")
             }
         }.resume()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // RETRY INFRASTRUCTURE — Exponential backoff with jitter
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Execute a URLRequest with automatic retry on transient failures
+    /// Retries on: timeout, 429 (rate limit), 500-503 (server errors)
+    private func executeWithRetry(_ request: URLRequest, maxAttempts: Int = 3,
+                                   completion: @escaping (Data?, HTTPURLResponse?, String?) -> Void) {
+        totalRequests += 1
+        attemptRequest(request, attempt: 1, maxAttempts: maxAttempts, completion: completion)
+    }
+
+    private func attemptRequest(_ request: URLRequest, attempt: Int, maxAttempts: Int,
+                                 completion: @escaping (Data?, HTTPURLResponse?, String?) -> Void) {
+        quantumSession.dataTask(with: request) { [weak self] data, resp, error in
+            guard let self = self else { return }
+            let httpResp = resp as? HTTPURLResponse
+            let statusCode = httpResp?.statusCode ?? 0
+
+            // Check if retryable
+            let isRetryable: Bool
+            if error != nil {
+                // Network errors (timeout, connection lost) are retryable
+                isRetryable = true
+            } else if statusCode == 429 || (statusCode >= 500 && statusCode <= 503) {
+                isRetryable = true
+            } else {
+                isRetryable = false
+            }
+
+            if isRetryable && attempt < maxAttempts {
+                self.retriedRequests += 1
+                // Exponential backoff: 2^attempt seconds + random jitter (0-1s)
+                let delay = pow(2.0, Double(attempt)) + Double.random(in: 0...1)
+                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + delay) {
+                    self.attemptRequest(request, attempt: attempt + 1, maxAttempts: maxAttempts, completion: completion)
+                }
+                return
+            }
+
+            if let error = error {
+                self.failedRequests += 1
+                completion(nil, httpResp, "Network error after \(attempt) attempt(s): \(error.localizedDescription)")
+                return
+            }
+
+            if statusCode == 401 {
+                self.failedRequests += 1
+                DispatchQueue.main.async {
+                    self.connectionState = .error
+                }
+                completion(nil, httpResp, "Token expired or invalid (401). Reconnect with: quantum connect <token>")
+                return
+            }
+
+            completion(data, httpResp, nil)
+        }.resume()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // JOB POLLING — Wait for job completion with timeout
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Poll a job until it completes or timeout expires
+    func waitForJob(jobId: String, maxWaitSeconds: Int = 600, pollInterval: TimeInterval = 5,
+                    completion: @escaping ([String: Any]?, String?) -> Void) {
+        let deadline = Date().addingTimeInterval(TimeInterval(maxWaitSeconds))
+
+        func poll() {
+            if Date() > deadline {
+                completion(nil, "Timeout: job \(jobId.prefix(12))... did not complete within \(maxWaitSeconds)s")
+                return
+            }
+
+            getJobStatus(jobId: jobId) { [weak self] job, error in
+                if let error = error {
+                    completion(nil, error)
+                    return
+                }
+
+                guard let job = job else {
+                    completion(nil, "Failed to get job status")
+                    return
+                }
+
+                let status = job.status.lowercased()
+                if status == "completed" || status == "done" {
+                    // Fetch results
+                    self?.getJobResult(jobId: jobId, completion: completion)
+                } else if status == "failed" || status == "cancelled" || status == "error" {
+                    completion(nil, "Job \(status): \(jobId.prefix(12))...")
+                } else {
+                    // Still running/queued — poll again
+                    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + pollInterval) {
+                        poll()
+                    }
+                }
+            }
+        }
+
+        poll()
     }
 
     // ═══════════════════════════════════════════════════════════════════

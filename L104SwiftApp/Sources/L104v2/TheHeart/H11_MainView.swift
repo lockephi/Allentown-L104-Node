@@ -2468,12 +2468,14 @@ class L104MainView: NSView {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // ⚛️ QUANTUM COMPUTING TAB — Real Qiskit algorithm execution & results
+    // ⚛️ QUANTUM COMPUTING TAB — Real IBM QPU + Qiskit Simulator Fallback
     // Grover · QPE · VQE · QAOA · Amplitude Estimation · Quantum Walk · Kernel
+    // Phase 46.1: Real IBM Quantum hardware via REST API + Qiskit Runtime
     // ═══════════════════════════════════════════════════════════════════
 
     private var quantumOutputView: NSTextView?
     private var quantumStatusLabel: NSTextField?
+    private var quantumHWStatusLabel: NSTextField?
 
     func createQuantumComputingView() -> NSView {
         let v = NSView(frame: NSRect(x: 0, y: 0, width: 1200, height: 500))
@@ -2481,20 +2483,58 @@ class L104MainView: NSView {
         v.layer?.backgroundColor = L104Theme.void.cgColor
 
         // Header
-        let header = NSTextField(labelWithString: "⚛️  QUANTUM COMPUTING LAB — Qiskit 2.3.0 Real Circuits")
+        let header = NSTextField(labelWithString: "⚛️  QUANTUM COMPUTING LAB — IBM Quantum + Qiskit 2.3.0")
         header.font = NSFont.systemFont(ofSize: 16, weight: .bold)
         header.textColor = L104Theme.goldFlame
-        header.frame = NSRect(x: 20, y: 450, width: 600, height: 30)
+        header.frame = NSRect(x: 20, y: 460, width: 600, height: 30)
         v.addSubview(header)
+
+        // IBM Hardware status line
+        let ibm = IBMQuantumClient.shared
+        let hwIcon: String
+        let hwText: String
+        if ibm.isConnected {
+            hwIcon = "🟢"
+            hwText = "IBM QPU: \(ibm.connectedBackendName) — Real Hardware"
+        } else if ibm.ibmToken != nil {
+            hwIcon = "🟡"
+            hwText = "IBM QPU: Token set — reconnecting..."
+        } else {
+            hwIcon = "⚪"
+            hwText = "IBM QPU: Not connected — algorithms use simulator"
+        }
+        let hwLabel = NSTextField(labelWithString: "\(hwIcon) \(hwText)")
+        hwLabel.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .medium)
+        hwLabel.textColor = ibm.isConnected ? .systemGreen : (ibm.ibmToken != nil ? .systemYellow : .secondaryLabelColor)
+        hwLabel.frame = NSRect(x: 20, y: 440, width: 700, height: 18)
+        v.addSubview(hwLabel)
+        quantumHWStatusLabel = hwLabel
 
         let statusLbl = NSTextField(labelWithString: "Status: Ready")
         statusLbl.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
         statusLbl.textColor = .systemGreen
-        statusLbl.frame = NSRect(x: 20, y: 425, width: 600, height: 20)
+        statusLbl.frame = NSRect(x: 20, y: 422, width: 600, height: 18)
         v.addSubview(statusLbl)
         quantumStatusLabel = statusLbl
 
-        // Algorithm buttons — 2 rows
+        // ─── IBM HARDWARE BUTTONS (row 0) ───
+        let ibmActions: [(String, String, Selector)] = [
+            ("🔗 Connect IBM", "ibm_connect", #selector(quantumIBMConnect)),
+            ("📡 Backends", "ibm_backends", #selector(quantumIBMBackends)),
+            ("📋 Jobs", "ibm_jobs", #selector(quantumIBMJobs)),
+            ("🔌 Disconnect", "ibm_disconnect", #selector(quantumIBMDisconnect)),
+        ]
+
+        for (i, action) in ibmActions.enumerated() {
+            let btn = NSButton(title: action.0, target: self, action: action.2)
+            btn.bezelStyle = .rounded
+            btn.frame = NSRect(x: 20 + i * 155, y: 393, width: 145, height: 26)
+            btn.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+            btn.identifier = NSUserInterfaceItemIdentifier(action.1)
+            v.addSubview(btn)
+        }
+
+        // ─── ALGORITHM BUTTONS (rows 1-2) ───
         let algorithms: [(String, String, Selector)] = [
             ("🔍 Grover Search", "grover", #selector(runQuantumGrover)),
             ("📐 Phase Estimation", "qpe", #selector(runQuantumQPE)),
@@ -2511,14 +2551,14 @@ class L104MainView: NSView {
             let col = i % 4
             let btn = NSButton(title: algo.0, target: self, action: algo.2)
             btn.bezelStyle = .rounded
-            btn.frame = NSRect(x: 20 + col * 155, y: 385 - row * 35, width: 145, height: 28)
+            btn.frame = NSRect(x: 20 + col * 155, y: 360 - row * 32, width: 145, height: 28)
             btn.font = NSFont.systemFont(ofSize: 11, weight: .medium)
             btn.identifier = NSUserInterfaceItemIdentifier(algo.1)
             v.addSubview(btn)
         }
 
         // Output area — scrollable text view
-        let scrollView = NSScrollView(frame: NSRect(x: 20, y: 10, width: 760, height: 300))
+        let scrollView = NSScrollView(frame: NSRect(x: 20, y: 10, width: 760, height: 280))
         scrollView.autoresizingMask = [.width, .height]
         scrollView.hasVerticalScroller = true
         scrollView.borderType = .bezelBorder
@@ -2533,13 +2573,23 @@ class L104MainView: NSView {
         v.addSubview(scrollView)
         quantumOutputView = tv
 
-        // Welcome message
+        // Welcome message — hardware-aware
+        let hwWelcome: String
+        if ibm.isConnected {
+            hwWelcome = "║  Hardware:  🟢 IBM \(ibm.connectedBackendName) (Real QPU)     ║"
+        } else if ibm.ibmToken != nil {
+            hwWelcome = "║  Hardware:  🟡 IBM Token set (reconnecting)          ║"
+        } else {
+            hwWelcome = "║  Hardware:  ⚪ Simulator (click Connect IBM for QPU)  ║"
+        }
+
         let welcome = """
         ╔═══════════════════════════════════════════════════════════╗
         ║  ⚛️  L104 QUANTUM COMPUTING LAB                          ║
         ╠═══════════════════════════════════════════════════════════╣
-        ║  Framework:  Qiskit 2.3.0 (Statevector Simulator)        ║
-        ║  Algorithms: 7 real quantum circuits                     ║
+        ║  Framework:  Qiskit 2.3.0 + IBM Quantum REST API         ║
+        \(hwWelcome)
+        ║  Algorithms: 7 quantum circuits (real HW → sim fallback) ║
         ║                                                           ║
         ║  🔍 Grover    — O(√N) search on 4-qubit register         ║
         ║  📐 QPE       — Phase estimation with precision qubits   ║
@@ -2549,7 +2599,10 @@ class L104MainView: NSView {
         ║  🚶 Walk      — Quantum walk on cyclic graph             ║
         ║  🧬 Kernel    — Quantum kernel for ML similarity         ║
         ║                                                           ║
-        ║  Click any algorithm to execute a real quantum circuit.   ║
+        ║  When IBM Quantum is connected, algorithms run on real    ║
+        ║  QPU hardware first. Simulator is used as fallback.       ║
+        ║                                                           ║
+        ║  Get your IBM token: https://quantum.ibm.com/account      ║
         ╚═══════════════════════════════════════════════════════════╝
 
         """
@@ -2568,29 +2621,190 @@ class L104MainView: NSView {
         tv.scrollToEndOfDocument(nil)
     }
 
-    @objc func runQuantumGrover() {
-        quantumStatusLabel?.stringValue = "⏳ Running Grover's Search (target=7, 4 qubits)..."
+    // ─── Helper: update IBM HW status label (call after state changes) ───
+    private func updateQuantumHWLabel() {
+        let ibm = IBMQuantumClient.shared
+        if ibm.isConnected {
+            quantumHWStatusLabel?.stringValue = "🟢 IBM QPU: \(ibm.connectedBackendName) — Real Hardware"
+            quantumHWStatusLabel?.textColor = .systemGreen
+        } else if ibm.ibmToken != nil {
+            quantumHWStatusLabel?.stringValue = "🟡 IBM QPU: Token set — reconnecting..."
+            quantumHWStatusLabel?.textColor = .systemYellow
+        } else {
+            quantumHWStatusLabel?.stringValue = "⚪ IBM QPU: Not connected — algorithms use simulator"
+            quantumHWStatusLabel?.textColor = .secondaryLabelColor
+        }
+    }
+
+    // ─── IBM HARDWARE BUTTON HANDLERS ───
+
+    @objc func quantumIBMConnect() {
+        // Prompt for token via alert
+        let alert = NSAlert()
+        alert.messageText = "Connect to IBM Quantum"
+        alert.informativeText = "Enter your IBM Quantum API token.\nGet it at: https://quantum.ibm.com/account"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Connect")
+        alert.addButton(withTitle: "Cancel")
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 360, height: 24))
+        input.placeholderString = "Paste your IBM Quantum API token here"
+        alert.accessoryView = input
+        alert.window.initialFirstResponder = input
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        let token = input.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !token.isEmpty else {
+            appendQuantumOutput("[⚠️] No token provided.", color: .systemYellow)
+            return
+        }
+
+        appendQuantumOutput("\n[🔗] Connecting to IBM Quantum...", color: .systemYellow)
+        quantumStatusLabel?.stringValue = "⏳ Connecting to IBM Quantum..."
         quantumStatusLabel?.textColor = .systemYellow
-        appendQuantumOutput("\n[⏳] Executing Grover's Search Algorithm...", color: .systemYellow)
+
+        // Init Python engine + Swift REST client in parallel
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let result = PythonBridge.shared.quantumGrover(target: 7, nQubits: 4)
+            let pyResult = PythonBridge.shared.quantumHardwareInit(token: token)
             DispatchQueue.main.async {
+                if pyResult.success, let dict = pyResult.returnValue as? [String: Any] {
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let qubits = dict["qubits"] as? Int ?? 0
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    self?.appendQuantumOutput("✅ Python engine connected!", color: .systemGreen)
+                    self?.appendQuantumOutput("   Backend: \(backend) (\(qubits) qubits)", color: .white)
+                    self?.appendQuantumOutput("   Real HW: \(isReal ? "YES" : "No (simulator)")", color: isReal ? .systemGreen : .systemYellow)
+                } else {
+                    self?.appendQuantumOutput("[⚠️] Python engine: \(pyResult.error)", color: .systemYellow)
+                }
+            }
+        }
+
+        IBMQuantumClient.shared.connect(token: token) { [weak self] success, msg in
+            DispatchQueue.main.async {
+                if success {
+                    let state = L104State.shared
+                    state.quantumHardwareConnected = true
+                    state.quantumBackendName = IBMQuantumClient.shared.connectedBackendName
+                    self?.appendQuantumOutput("✅ REST API connected: \(msg)", color: .systemGreen)
+                    self?.quantumStatusLabel?.stringValue = "✅ Connected to IBM Quantum"
+                    self?.quantumStatusLabel?.textColor = .systemGreen
+                } else {
+                    self?.appendQuantumOutput("[❌] REST API: \(msg)", color: .systemRed)
+                    self?.quantumStatusLabel?.stringValue = "❌ Connection failed"
+                    self?.quantumStatusLabel?.textColor = .systemRed
+                }
+                self?.updateQuantumHWLabel()
+            }
+        }
+    }
+
+    @objc func quantumIBMDisconnect() {
+        IBMQuantumClient.shared.disconnect()
+        let state = L104State.shared
+        state.quantumHardwareConnected = false
+        state.quantumBackendName = "none"
+        state.quantumBackendQubits = 0
+        appendQuantumOutput("\n[🔌] Disconnected from IBM Quantum. Token cleared.", color: .secondaryLabelColor)
+        quantumStatusLabel?.stringValue = "⚪ Disconnected"
+        quantumStatusLabel?.textColor = .secondaryLabelColor
+        updateQuantumHWLabel()
+    }
+
+    @objc func quantumIBMBackends() {
+        let client = IBMQuantumClient.shared
+        guard client.ibmToken != nil else {
+            appendQuantumOutput("\n[⚠️] Not connected. Click 'Connect IBM' first.", color: .systemYellow)
+            return
+        }
+        let backends = client.availableBackends
+        if backends.isEmpty {
+            appendQuantumOutput("\n[📡] No backends loaded. Reconnecting...", color: .systemYellow)
+            return
+        }
+        appendQuantumOutput("\n╔═══════════════════════════════════════════════════════════╗", color: .systemGreen)
+        appendQuantumOutput("║  📡 IBM QUANTUM BACKENDS                                ║", color: .systemGreen)
+        appendQuantumOutput("╠═══════════════════════════════════════════════════════════╣", color: .systemGreen)
+        for b in backends.prefix(10) {
+            let marker = b.name == client.connectedBackendName ? " << SELECTED" : ""
+            let hwTag = b.isSimulator ? "[SIM]" : "[QPU]"
+            appendQuantumOutput("║  \(hwTag) \(b.name) — \(b.numQubits)q, queue:\(b.pendingJobs), QV:\(b.quantumVolume)\(marker)", color: b.isSimulator ? .secondaryLabelColor : .systemCyan)
+        }
+        appendQuantumOutput("╚═══════════════════════════════════════════════════════════╝", color: .systemGreen)
+        quantumStatusLabel?.stringValue = "📡 \(backends.count) backends (\(backends.filter { !$0.isSimulator }.count) real QPUs)"
+    }
+
+    @objc func quantumIBMJobs() {
+        let client = IBMQuantumClient.shared
+        guard client.ibmToken != nil else {
+            appendQuantumOutput("\n[⚠️] Not connected. Click 'Connect IBM' first.", color: .systemYellow)
+            return
+        }
+        let localJobs = client.submittedJobs
+        appendQuantumOutput("\n[📋] Local submitted jobs: \(localJobs.count)", color: .systemCyan)
+        for (id, job) in localJobs.prefix(10) {
+            appendQuantumOutput("  [\(id.prefix(16))...] → \(job.backend)", color: .white)
+        }
+        // Fetch remote jobs async
+        appendQuantumOutput("  Fetching remote jobs...", color: .secondaryLabelColor)
+        client.listRecentJobs(limit: 5) { [weak self] jobs, error in
+            DispatchQueue.main.async {
+                if let jobs = jobs {
+                    self?.appendQuantumOutput("  📡 Recent IBM jobs:", color: .systemCyan)
+                    for j in jobs.prefix(5) {
+                        self?.appendQuantumOutput("  [\(j.jobId.prefix(16))...] \(j.status) — \(j.backend)", color: .white)
+                    }
+                    self?.quantumStatusLabel?.stringValue = "📋 \(jobs.count) remote jobs"
+                } else {
+                    self?.appendQuantumOutput("  [⚠️] \(error ?? "unknown error")", color: .systemYellow)
+                }
+            }
+        }
+    }
+
+    // ─── ALGORITHM METHODS — Real hardware first, simulator fallback ───
+
+    @objc func runQuantumGrover() {
+        let useHW = IBMQuantumClient.shared.ibmToken != nil
+        let tag = useHW ? "[REAL HW]" : "[SIMULATOR]"
+        quantumStatusLabel?.stringValue = "⏳ Running Grover's Search \(tag) (target=7, 4 qubits)..."
+        quantumStatusLabel?.textColor = .systemYellow
+        appendQuantumOutput("\n[⏳] Executing Grover's Search \(tag)...", color: .systemYellow)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            // Try real hardware first if token exists
+            var result = PythonBridge.shared.quantumGrover(target: 7, nQubits: 4)
+            var isRealHW = false
+            if useHW {
+                let hwResult = PythonBridge.shared.quantumHardwareGrover(target: 7, nQubits: 4)
+                if hwResult.success {
+                    result = hwResult
+                    isRealHW = true
+                }
+            }
+            DispatchQueue.main.async {
+                let hwLabel = isRealHW ? " [REAL HW]" : " [SIMULATOR]"
                 if result.success, let dict = result.returnValue as? [String: Any] {
-                    let found = dict["found_index"] as? Int ?? -1
+                    let found = (dict["found_index"] as? Int) ?? (dict["nonce"] as? Int) ?? -1
                     let prob = dict["target_probability"] as? Double ?? 0
-                    let success = dict["success"] as? Bool ?? false
+                    let success = dict["success"] as? Bool ?? (found >= 0)
                     let shots = dict["grover_iterations"] as? Int ?? 0
                     self?.appendQuantumOutput("╔═══════════════════════════════════════╗", color: .systemGreen)
-                    self?.appendQuantumOutput("║  🔍 GROVER'S SEARCH — RESULT          ║", color: .systemGreen)
+                    self?.appendQuantumOutput("║  🔍 GROVER'S SEARCH\(hwLabel)       ║", color: .systemGreen)
                     self?.appendQuantumOutput("╠═══════════════════════════════════════╣", color: .systemGreen)
                     self?.appendQuantumOutput("║  Target:      |7⟩ (|0111⟩)            ║", color: .white)
                     self?.appendQuantumOutput("║  Found:       |\(found)⟩                      ║", color: success ? .systemGreen : .systemRed)
-                    self?.appendQuantumOutput("║  Probability: \(String(format: "%.4f", prob))                ║", color: .systemCyan)
-                    self?.appendQuantumOutput("║  Iterations:  \(shots)                        ║", color: .white)
+                    if prob > 0 {
+                        self?.appendQuantumOutput("║  Probability: \(String(format: "%.4f", prob))                ║", color: .systemCyan)
+                    }
+                    if shots > 0 {
+                        self?.appendQuantumOutput("║  Iterations:  \(shots)                        ║", color: .white)
+                    }
                     self?.appendQuantumOutput("║  Success:     \(success ? "✅ YES" : "❌ NO")                    ║", color: success ? .systemGreen : .systemRed)
                     self?.appendQuantumOutput("║  Time:        \(String(format: "%.2f", result.executionTime))s                    ║", color: .white)
+                    if isRealHW, let backend = dict["backend"] as? String {
+                        self?.appendQuantumOutput("║  Backend:     \(backend)        ║", color: .systemCyan)
+                    }
                     self?.appendQuantumOutput("╚═══════════════════════════════════════╝", color: .systemGreen)
-                    self?.quantumStatusLabel?.stringValue = "✅ Grover: Found |\(found)⟩ with p=\(String(format: "%.4f", prob))"
+                    self?.quantumStatusLabel?.stringValue = "✅ Grover\(hwLabel): Found |\(found)⟩"
                 } else {
                     self?.appendQuantumOutput("[❌] Grover failed: \(result.error)", color: .systemRed)
                     self?.quantumStatusLabel?.stringValue = "❌ Grover failed"
@@ -2601,21 +2815,36 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumQPE() {
-        quantumStatusLabel?.stringValue = "⏳ Running Quantum Phase Estimation..."
-        appendQuantumOutput("\n[⏳] Executing QPE with 5 precision qubits...", color: .systemYellow)
+        let useHW = IBMQuantumClient.shared.ibmToken != nil
+        let tag = useHW ? "[REAL HW]" : "[SIMULATOR]"
+        quantumStatusLabel?.stringValue = "⏳ Running QPE \(tag)..."
+        appendQuantumOutput("\n[⏳] Executing QPE \(tag) with 5 precision qubits...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let result = PythonBridge.shared.quantumQPE(precisionQubits: 5)
+            var result = PythonBridge.shared.quantumQPE(precisionQubits: 5)
+            var isRealHW = false
+            if useHW {
+                let hwResult = PythonBridge.shared.quantumHardwareReport(difficultyBits: 16)
+                if hwResult.success { result = hwResult; isRealHW = true }
+            }
             DispatchQueue.main.async {
+                let hwLabel = isRealHW ? " [REAL HW]" : " [SIMULATOR]"
                 if result.success, let dict = result.returnValue as? [String: Any] {
-                    let targetPhase = dict["target_phase"] as? Double ?? 0
-                    let estPhase = dict["estimated_phase"] as? Double ?? 0
-                    let error = dict["phase_error"] as? Double ?? 0
-                    self?.appendQuantumOutput("📐 QPE RESULT:", color: .systemGreen)
-                    self?.appendQuantumOutput("  Target Phase:    \(String(format: "%.6f", targetPhase))", color: .white)
-                    self?.appendQuantumOutput("  Estimated Phase: \(String(format: "%.6f", estPhase))", color: .systemCyan)
-                    self?.appendQuantumOutput("  Phase Error:     \(String(format: "%.6f", error))", color: error < 0.05 ? .systemGreen : .systemYellow)
+                    if isRealHW {
+                        let report = dict["report"] as? String ?? ""
+                        let backend = dict["backend"] as? String ?? "unknown"
+                        self?.appendQuantumOutput("📐 QPE RESULT\(hwLabel) (\(backend)):", color: .systemGreen)
+                        self?.appendQuantumOutput("  \(String(report.prefix(400)))", color: .systemCyan)
+                    } else {
+                        let targetPhase = dict["target_phase"] as? Double ?? 0
+                        let estPhase = dict["estimated_phase"] as? Double ?? 0
+                        let error = dict["phase_error"] as? Double ?? 0
+                        self?.appendQuantumOutput("📐 QPE RESULT\(hwLabel):", color: .systemGreen)
+                        self?.appendQuantumOutput("  Target Phase:    \(String(format: "%.6f", targetPhase))", color: .white)
+                        self?.appendQuantumOutput("  Estimated Phase: \(String(format: "%.6f", estPhase))", color: .systemCyan)
+                        self?.appendQuantumOutput("  Phase Error:     \(String(format: "%.6f", error))", color: error < 0.05 ? .systemGreen : .systemYellow)
+                    }
                     self?.appendQuantumOutput("  Time:            \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ QPE: phase=\(String(format: "%.4f", estPhase)), err=\(String(format: "%.6f", error))"
+                    self?.quantumStatusLabel?.stringValue = "✅ QPE\(hwLabel) completed"
                 } else { self?.appendQuantumOutput("[❌] QPE failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2623,23 +2852,34 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumVQE() {
-        quantumStatusLabel?.stringValue = "⏳ Running VQE Eigensolver (4 qubits, 50 iterations)..."
-        appendQuantumOutput("\n[⏳] Executing VQE optimization...", color: .systemYellow)
+        let useHW = IBMQuantumClient.shared.ibmToken != nil
+        let tag = useHW ? "[REAL HW]" : "[SIMULATOR]"
+        quantumStatusLabel?.stringValue = "⏳ Running VQE \(tag) (4 qubits, 50 iterations)..."
+        appendQuantumOutput("\n[⏳] Executing VQE \(tag)...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let result = PythonBridge.shared.quantumVQE(nQubits: 4, iterations: 50)
+            var result = PythonBridge.shared.quantumVQE(nQubits: 4, iterations: 50)
+            var isRealHW = false
+            if useHW {
+                let hwResult = PythonBridge.shared.quantumHardwareVQE()
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any], dict["error"] == nil {
+                    result = hwResult; isRealHW = true
+                }
+            }
             DispatchQueue.main.async {
+                let hwLabel = isRealHW ? " [REAL HW]" : " [SIMULATOR]"
                 if result.success, let dict = result.returnValue as? [String: Any] {
                     let energy = dict["optimized_energy"] as? Double ?? 0
                     let exact = dict["exact_energy"] as? Double ?? 0
                     let error = dict["energy_error"] as? Double ?? 0
                     let iters = dict["iterations_used"] as? Int ?? 0
-                    self?.appendQuantumOutput("⚡ VQE EIGENSOLVER RESULT:", color: .systemGreen)
+                    self?.appendQuantumOutput("⚡ VQE EIGENSOLVER\(hwLabel):", color: .systemGreen)
                     self?.appendQuantumOutput("  Optimized Energy: \(String(format: "%.6f", energy))", color: .systemCyan)
-                    self?.appendQuantumOutput("  Exact Energy:     \(String(format: "%.6f", exact))", color: .white)
-                    self?.appendQuantumOutput("  Energy Error:     \(String(format: "%.6f", error))", color: error < 0.1 ? .systemGreen : .systemYellow)
-                    self?.appendQuantumOutput("  Iterations:       \(iters)", color: .white)
+                    if exact != 0 { self?.appendQuantumOutput("  Exact Energy:     \(String(format: "%.6f", exact))", color: .white) }
+                    if error != 0 { self?.appendQuantumOutput("  Energy Error:     \(String(format: "%.6f", error))", color: error < 0.1 ? .systemGreen : .systemYellow) }
+                    if iters > 0 { self?.appendQuantumOutput("  Iterations:       \(iters)", color: .white) }
                     self?.appendQuantumOutput("  Time:             \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ VQE: energy=\(String(format: "%.4f", energy)), err=\(String(format: "%.4f", error))"
+                    if isRealHW, let backend = dict["backend"] as? String { self?.appendQuantumOutput("  Backend:          \(backend)", color: .systemCyan) }
+                    self?.quantumStatusLabel?.stringValue = "✅ VQE\(hwLabel): energy=\(String(format: "%.4f", energy))"
                 } else { self?.appendQuantumOutput("[❌] VQE failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2647,23 +2887,39 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumQAOA() {
-        quantumStatusLabel?.stringValue = "⏳ Running QAOA MaxCut..."
-        appendQuantumOutput("\n[⏳] Executing QAOA MaxCut on 4-node graph...", color: .systemYellow)
+        let useHW = IBMQuantumClient.shared.ibmToken != nil
+        let tag = useHW ? "[REAL HW]" : "[SIMULATOR]"
+        quantumStatusLabel?.stringValue = "⏳ Running QAOA MaxCut \(tag)..."
+        appendQuantumOutput("\n[⏳] Executing QAOA MaxCut \(tag) on 4-node graph...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let edges: [(Int, Int)] = [(0,1),(1,2),(2,3),(3,0)]
-            let result = PythonBridge.shared.quantumQAOA(edges: edges, p: 2)
+            var result = PythonBridge.shared.quantumQAOA(edges: edges, p: 2)
+            var isRealHW = false
+            if useHW {
+                let hwResult = PythonBridge.shared.quantumHardwareMine(strategy: "qaoa")
+                if hwResult.success { result = hwResult; isRealHW = true }
+            }
             DispatchQueue.main.async {
+                let hwLabel = isRealHW ? " [REAL HW]" : " [SIMULATOR]"
                 if result.success, let dict = result.returnValue as? [String: Any] {
-                    let ratio = dict["approximation_ratio"] as? Double ?? 0
-                    let cut = dict["best_cut_value"] as? Double ?? 0
-                    let optimal = dict["optimal_cut"] as? Double ?? 0
-                    self?.appendQuantumOutput("🔀 QAOA MAXCUT RESULT:", color: .systemGreen)
-                    self?.appendQuantumOutput("  Graph:     4 nodes, \(edges.count) edges (cycle)", color: .white)
-                    self?.appendQuantumOutput("  Best Cut:  \(String(format: "%.4f", cut))", color: .systemCyan)
-                    self?.appendQuantumOutput("  Optimal:   \(String(format: "%.4f", optimal))", color: .white)
-                    self?.appendQuantumOutput("  Ratio:     \(String(format: "%.4f", ratio))", color: ratio > 0.7 ? .systemGreen : .systemYellow)
+                    if isRealHW {
+                        let nonce = dict["nonce"] as? Int
+                        let backend = dict["backend"] as? String ?? "unknown"
+                        self?.appendQuantumOutput("🔀 QAOA MINING\(hwLabel) (\(backend)):", color: .systemGreen)
+                        self?.appendQuantumOutput("  Strategy:  qaoa", color: .white)
+                        self?.appendQuantumOutput("  Nonce:     \(nonce.map(String.init) ?? "searching...")", color: .systemCyan)
+                    } else {
+                        let ratio = dict["approximation_ratio"] as? Double ?? 0
+                        let cut = dict["best_cut_value"] as? Double ?? 0
+                        let optimal = dict["optimal_cut"] as? Double ?? 0
+                        self?.appendQuantumOutput("🔀 QAOA MAXCUT\(hwLabel):", color: .systemGreen)
+                        self?.appendQuantumOutput("  Graph:     4 nodes, \(edges.count) edges (cycle)", color: .white)
+                        self?.appendQuantumOutput("  Best Cut:  \(String(format: "%.4f", cut))", color: .systemCyan)
+                        self?.appendQuantumOutput("  Optimal:   \(String(format: "%.4f", optimal))", color: .white)
+                        self?.appendQuantumOutput("  Ratio:     \(String(format: "%.4f", ratio))", color: ratio > 0.7 ? .systemGreen : .systemYellow)
+                    }
                     self?.appendQuantumOutput("  Time:      \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ QAOA: ratio=\(String(format: "%.4f", ratio))"
+                    self?.quantumStatusLabel?.stringValue = "✅ QAOA\(hwLabel) completed"
                 } else { self?.appendQuantumOutput("[❌] QAOA failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2671,20 +2927,35 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumAmpEst() {
-        quantumStatusLabel?.stringValue = "⏳ Running Amplitude Estimation..."
-        appendQuantumOutput("\n[⏳] Executing Amplitude Estimation (target=0.3)...", color: .systemYellow)
+        let useHW = IBMQuantumClient.shared.ibmToken != nil
+        let tag = useHW ? "[REAL HW]" : "[SIMULATOR]"
+        quantumStatusLabel?.stringValue = "⏳ Running Amplitude Estimation \(tag)..."
+        appendQuantumOutput("\n[⏳] Executing Amplitude Estimation \(tag) (target=0.3)...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let result = PythonBridge.shared.quantumAmplitudeEstimation(targetProb: 0.3, countingQubits: 5)
+            var result = PythonBridge.shared.quantumAmplitudeEstimation(targetProb: 0.3, countingQubits: 5)
+            var isRealHW = false
+            if useHW {
+                let hwResult = PythonBridge.shared.quantumHardwareRandomOracle()
+                if hwResult.success { result = hwResult; isRealHW = true }
+            }
             DispatchQueue.main.async {
+                let hwLabel = isRealHW ? " [REAL HW]" : " [SIMULATOR]"
                 if result.success, let dict = result.returnValue as? [String: Any] {
-                    let est = dict["estimated_probability"] as? Double ?? 0
-                    let error = dict["estimation_error"] as? Double ?? 0
-                    self?.appendQuantumOutput("📊 AMPLITUDE ESTIMATION RESULT:", color: .systemGreen)
-                    self?.appendQuantumOutput("  Target:    0.3000", color: .white)
-                    self?.appendQuantumOutput("  Estimated: \(String(format: "%.4f", est))", color: .systemCyan)
-                    self?.appendQuantumOutput("  Error:     \(String(format: "%.4f", error))", color: error < 0.05 ? .systemGreen : .systemYellow)
+                    if isRealHW {
+                        let seed = dict["seed"] as? Int ?? 0
+                        let backend = dict["backend"] as? String ?? "unknown"
+                        self?.appendQuantumOutput("📊 QUANTUM RANDOM ORACLE\(hwLabel) (\(backend)):", color: .systemGreen)
+                        self?.appendQuantumOutput("  Sacred Nonce Seed: \(seed)", color: .systemCyan)
+                    } else {
+                        let est = dict["estimated_probability"] as? Double ?? 0
+                        let error = dict["estimation_error"] as? Double ?? 0
+                        self?.appendQuantumOutput("📊 AMPLITUDE ESTIMATION\(hwLabel):", color: .systemGreen)
+                        self?.appendQuantumOutput("  Target:    0.3000", color: .white)
+                        self?.appendQuantumOutput("  Estimated: \(String(format: "%.4f", est))", color: .systemCyan)
+                        self?.appendQuantumOutput("  Error:     \(String(format: "%.4f", error))", color: error < 0.05 ? .systemGreen : .systemYellow)
+                    }
                     self?.appendQuantumOutput("  Time:      \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ AmpEst: p=\(String(format: "%.4f", est))"
+                    self?.quantumStatusLabel?.stringValue = "✅ AmpEst\(hwLabel) completed"
                 } else { self?.appendQuantumOutput("[❌] AmpEst failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2692,19 +2963,19 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumWalk() {
-        quantumStatusLabel?.stringValue = "⏳ Running Quantum Walk..."
-        appendQuantumOutput("\n[⏳] Executing Quantum Walk (8 nodes, 10 steps)...", color: .systemYellow)
+        quantumStatusLabel?.stringValue = "⏳ Running Quantum Walk [SIMULATOR]..."
+        appendQuantumOutput("\n[⏳] Executing Quantum Walk [SIMULATOR] (8 nodes, 10 steps)...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = PythonBridge.shared.quantumWalk(nNodes: 8, steps: 10)
             DispatchQueue.main.async {
                 if result.success, let dict = result.returnValue as? [String: Any] {
                     let spread = dict["spread_metric"] as? Double ?? 0
-                    self?.appendQuantumOutput("🚶 QUANTUM WALK RESULT:", color: .systemGreen)
+                    self?.appendQuantumOutput("🚶 QUANTUM WALK [SIMULATOR]:", color: .systemGreen)
                     self?.appendQuantumOutput("  Nodes:     8 (cyclic graph)", color: .white)
                     self?.appendQuantumOutput("  Steps:     10", color: .white)
                     self?.appendQuantumOutput("  Spread:    \(String(format: "%.4f", spread))", color: .systemCyan)
                     self?.appendQuantumOutput("  Time:      \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ Walk: spread=\(String(format: "%.4f", spread))"
+                    self?.quantumStatusLabel?.stringValue = "✅ Walk [SIM]: spread=\(String(format: "%.4f", spread))"
                 } else { self?.appendQuantumOutput("[❌] Walk failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2712,19 +2983,19 @@ class L104MainView: NSView {
     }
 
     @objc func runQuantumKernel() {
-        quantumStatusLabel?.stringValue = "⏳ Computing Quantum Kernel..."
-        appendQuantumOutput("\n[⏳] Computing Quantum Kernel similarity...", color: .systemYellow)
+        quantumStatusLabel?.stringValue = "⏳ Computing Quantum Kernel [SIMULATOR]..."
+        appendQuantumOutput("\n[⏳] Computing Quantum Kernel [SIMULATOR] similarity...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = PythonBridge.shared.quantumKernel(x1: [1.0, 2.0, 3.0, 4.0], x2: [1.1, 2.1, 3.1, 4.1])
             DispatchQueue.main.async {
                 if result.success, let dict = result.returnValue as? [String: Any] {
                     let val = dict["kernel_value"] as? Double ?? 0
-                    self?.appendQuantumOutput("🧬 QUANTUM KERNEL RESULT:", color: .systemGreen)
-                    self?.appendQuantumOutput("  x₁: [1.0, 2.0, 3.0, 4.0]", color: .white)
-                    self?.appendQuantumOutput("  x₂: [1.1, 2.1, 3.1, 4.1]", color: .white)
+                    self?.appendQuantumOutput("🧬 QUANTUM KERNEL [SIMULATOR]:", color: .systemGreen)
+                    self?.appendQuantumOutput("  x\u{2081}: [1.0, 2.0, 3.0, 4.0]", color: .white)
+                    self?.appendQuantumOutput("  x\u{2082}: [1.1, 2.1, 3.1, 4.1]", color: .white)
                     self?.appendQuantumOutput("  Kernel:  \(String(format: "%.6f", val))", color: .systemCyan)
                     self?.appendQuantumOutput("  Time:    \(String(format: "%.2f", result.executionTime))s", color: .white)
-                    self?.quantumStatusLabel?.stringValue = "✅ Kernel: \(String(format: "%.6f", val))"
+                    self?.quantumStatusLabel?.stringValue = "✅ Kernel [SIM]: \(String(format: "%.6f", val))"
                 } else { self?.appendQuantumOutput("[❌] Kernel failed: \(result.error)", color: .systemRed) }
                 self?.quantumStatusLabel?.textColor = .systemGreen
             }
@@ -2734,21 +3005,59 @@ class L104MainView: NSView {
     @objc func runQuantumStatus() {
         appendQuantumOutput("\n[📡] Fetching Quantum Engine Status...", color: .systemYellow)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let ibmClient = IBMQuantumClient.shared
+            let hasToken = ibmClient.ibmToken != nil
+
+            // Try real hardware status first
+            if hasToken {
+                let hwResult = PythonBridge.shared.quantumHardwareStatus()
+                if hwResult.success, let dict = hwResult.returnValue as? [String: Any] {
+                    let backend = dict["backend"] as? String ?? "unknown"
+                    let qubits = dict["qubits"] as? Int ?? 0
+                    let isReal = dict["real_hardware"] as? Bool ?? false
+                    let connected = dict["connected"] as? Bool ?? false
+                    let queueDepth = dict["queue_depth"] as? Int ?? 0
+                    DispatchQueue.main.async {
+                        self?.appendQuantumOutput("╔═══════════════════════════════════════════╗", color: .systemGreen)
+                        self?.appendQuantumOutput("║  ⚛️ QUANTUM ENGINE — \(isReal ? "REAL HARDWARE" : "SIMULATOR")  ║", color: .systemGreen)
+                        self?.appendQuantumOutput("╠═══════════════════════════════════════════╣", color: .systemGreen)
+                        self?.appendQuantumOutput("║  Backend:    \(backend)", color: .white)
+                        self?.appendQuantumOutput("║  Qubits:     \(qubits)", color: .systemCyan)
+                        self?.appendQuantumOutput("║  Connected:  \(connected ? "YES" : "NO")", color: connected ? .systemGreen : .systemRed)
+                        self?.appendQuantumOutput("║  Queue:      \(queueDepth) jobs", color: .white)
+                        self?.appendQuantumOutput("║  REST API:   \(ibmClient.isConnected ? "CONNECTED" : "PENDING")", color: .white)
+                        self?.appendQuantumOutput("║  Jobs Sent:  \(ibmClient.submittedJobs.count)", color: .white)
+                        self?.appendQuantumOutput("║  Backends:   \(ibmClient.availableBackends.count) available", color: .white)
+                        self?.appendQuantumOutput("╚═══════════════════════════════════════════╝", color: .systemGreen)
+                        self?.quantumStatusLabel?.stringValue = "✅ \(backend) — \(qubits) qubits [REAL HW]"
+                        self?.quantumStatusLabel?.textColor = .systemGreen
+                        self?.updateQuantumHWLabel()
+                    }
+                    return
+                }
+            }
+
+            // Simulator fallback
             let result = PythonBridge.shared.quantumStatus()
             DispatchQueue.main.async {
                 if result.success, let dict = result.returnValue as? [String: Any] {
                     let caps = dict["capabilities"] as? [String] ?? []
                     let qubits = dict["total_qubits_used"] as? Int ?? 0
                     let circuits = dict["circuits_executed"] as? Int ?? 0
-                    self?.appendQuantumOutput("╔═══════════════════════════════════════╗", color: .systemGreen)
-                    self?.appendQuantumOutput("║  📡 QUANTUM ENGINE STATUS             ║", color: .systemGreen)
-                    self?.appendQuantumOutput("╠═══════════════════════════════════════╣", color: .systemGreen)
+                    self?.appendQuantumOutput("╔═══════════════════════════════════════════╗", color: .systemGreen)
+                    self?.appendQuantumOutput("║  📡 QUANTUM ENGINE — SIMULATOR            ║", color: .systemGreen)
+                    self?.appendQuantumOutput("╠═══════════════════════════════════════════╣", color: .systemGreen)
                     self?.appendQuantumOutput("║  Qubits Used:    \(qubits)", color: .white)
                     self?.appendQuantumOutput("║  Circuits Run:   \(circuits)", color: .white)
+                    self?.appendQuantumOutput("║  IBM Token:      \(hasToken ? "SET" : "NOT SET")", color: hasToken ? .systemGreen : .systemYellow)
                     self?.appendQuantumOutput("║  Capabilities:", color: .white)
                     for cap in caps { self?.appendQuantumOutput("║    ⚛️ \(cap)", color: .systemCyan) }
-                    self?.appendQuantumOutput("╚═══════════════════════════════════════╝", color: .systemGreen)
-                    self?.quantumStatusLabel?.stringValue = "✅ Engine: \(caps.count) algorithms, \(circuits) circuits executed"
+                    if !hasToken {
+                        self?.appendQuantumOutput("║", color: .white)
+                        self?.appendQuantumOutput("║  💡 Use 'Connect IBM' button for real QPU", color: .systemYellow)
+                    }
+                    self?.appendQuantumOutput("╚═══════════════════════════════════════════╝", color: .systemGreen)
+                    self?.quantumStatusLabel?.stringValue = "✅ Engine: \(caps.count) algorithms, \(circuits) circuits [SIMULATOR]"
                 } else {
                     self?.appendQuantumOutput("[📡] Status: \(result.output)", color: .white)
                     self?.quantumStatusLabel?.stringValue = "✅ Status retrieved"

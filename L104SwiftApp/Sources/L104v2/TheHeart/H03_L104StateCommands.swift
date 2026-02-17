@@ -1915,6 +1915,29 @@ extension L104State {
             return "⚛️ Fetching results for job \(jobId.prefix(12))...\n  Results will appear in HyperBrain feed."
         }
 
+        if q.hasPrefix("quantum wait ") {
+            let jobId = String(q.dropFirst(13)).trimmingCharacters(in: .whitespaces)
+            if jobId.isEmpty { return "Usage: quantum wait <job_id> — polls until job completes (10 min max)" }
+            let client = IBMQuantumClient.shared
+            if !client.isConnected {
+                return "⚛️ Not connected. Use: quantum connect <token>"
+            }
+            client.waitForJob(jobId: jobId, maxWaitSeconds: 600, pollInterval: 5) { result, error in
+                if let result = result {
+                    let counts = result["counts"] as? [String: Int] ?? [:]
+                    let shots = result["shots"] as? Int ?? 0
+                    var msg = "⚛️ Job \(jobId.prefix(12))... COMPLETED:\n  Shots: \(shots)\n  Counts:"
+                    for (state, count) in counts.sorted(by: { $0.value > $1.value }).prefix(8) {
+                        msg += "\n    |\(state)⟩: \(count) (\(String(format: "%.1f", Double(count)/Double(max(1,shots))*100))%)"
+                    }
+                    HyperBrain.shared.postThought(msg)
+                } else {
+                    HyperBrain.shared.postThought("⚛️ Job wait: \(error ?? "unknown error")")
+                }
+            }
+            return "⚛️ Polling job \(jobId.prefix(12))... every 5s (10 min timeout)\n  Results will appear in HyperBrain feed when ready."
+        }
+
         // ─── QUANTUM STATUS — Real hardware first, simulator fallback ───
 
         if q == "quantum" || q == "quantum status" || q == "qiskit" || q == "qiskit status" {
@@ -2122,6 +2145,7 @@ extension L104State {
               quantum submit <qasm>   — Submit OpenQASM 3.0 circuit
               quantum jobs            — List submitted jobs
               quantum result <job_id> — Get measurement results
+              quantum wait <job_id>   — Poll until job completes (10 min)
               quantum mine [strategy] — Quantum mining (auto/grover/vqe)
 
               ── Algorithms (real HW → simulator fallback) ──
