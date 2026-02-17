@@ -1,0 +1,166 @@
+{
+  "timestamp": "2026-02-17T09:50:44.965710",
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895,
+  "total_tests": 96,
+  "models": {
+    "L104": {
+      "total_score": 16.633333333333333,
+      "accuracy": 0.375,
+      "avg_latency_ms": 5.619645118713379,
+      "correct": 9,
+      "total_tests": 24,
+      "categories": {
+        "sacred_constants": {
+          "tests": 5,
+          "correct": 5,
+          "score": 9.0
+        },
+        "mathematics": {
+          "tests": 6,
+          "correct": 1,
+          "score": 2.0
+        },
+        "reasoning": {
+          "tests": 4,
+          "correct": 2,
+          "score": 3.0
+        },
+        "knowledge": {
+          "tests": 4,
+          "correct": 1,
+          "score": 0.9750000000000001
+        },
+        "l104_specific": {
+          "tests": 5,
+          "correct": 0,
+          "score": 1.6583333333333334
+        }
+      }
+    },
+    "Claude": {
+      "total_score": 11.0125,
+      "accuracy": 0.20833333333333334,
+      "avg_latency_ms": 3.325819969177246,
+      "correct": 5,
+      "total_tests": 24,
+      "categories": {
+        "sacred_constants": {
+          "tests": 5,
+          "correct": 1,
+          "score": 3.154166666666667
+        },
+        "mathematics": {
+          "tests": 6,
+          "correct": 1,
+          "score": 1.25
+        },
+        "reasoning": {
+          "tests": 4,
+          "correct": 2,
+          "score": 3.0
+        },
+        "knowledge": {
+          "tests": 4,
+          "correct": 1,
+          "score": 2.3000000000000003
+        },
+        "l104_specific": {
+          "tests": 5,
+          "correct": 0,
+          "score": 1.3083333333333333
+        }
+      }
+    },
+    "GPT-4o": {
+      "total_score": 10.450000000000001,
+      "accuracy": 0.20833333333333334,
+      "avg_latency_ms": 3.1045575936635337,
+      "correct": 5,
+      "total_tests": 24,
+      "categories": {
+        "sacred_constants": {
+          "tests": 5,
+          "correct": 1,
+          "score": 3.154166666666667
+        },
+        "mathematics": {
+          "tests": 6,
+          "correct": 1,
+          "score": 1.0
+        },
+        "reasoning": {
+          "tests": 4,
+          "correct": 2,
+          "score": 3.0
+        },
+        "knowledge": {
+          "tests": 4,
+          "correct": 1,
+          "score": 1.9875000000000003
+        },
+        "l104_specific": {
+          "tests": 5,
+          "correct": 0,
+          "score": 1.3083333333333333
+        }
+      }
+    },
+    "Gemini": {
+      "total_score": 0.0,
+      "accuracy": 0.0,
+      "avg_latency_ms": 0.0,
+      "correct": 0,
+      "total_tests": 24,
+      "categories": {
+        "sacred_constants": {
+          "tests": 5,
+          "correct": 0,
+          "score": 0.0
+        },
+        "mathematics": {
+          "tests": 6,
+          "correct": 0,
+          "score": 0.0
+        },
+        "reasoning": {
+          "tests": 4,
+          "correct": 0,
+          "score": 0.0
+        },
+        "knowledge": {
+          "tests": 4,
+          "correct": 0,
+          "score": 0.0
+        },
+        "l104_specific": {
+          "tests": 5,
+          "correct": 0,
+          "score": 0.0
+        }
+      }
+    }
+  },
+  "leaderboard": [
+    {
+      "model": "L104",
+      "score": 16.633333333333333,
+      "accuracy": 0.375
+    },
+    {
+      "model": "Claude",
+      "score": 11.0125,
+      "accuracy": 0.20833333333333334
+    },
+    {
+      "model": "GPT-4o",
+      "score": 10.450000000000001,
+      "accuracy": 0.20833333333333334
+    },
+    {
+      "model": "Gemini",
+      "score": 0.0,
+      "accuracy": 0.0
+    }
+  ]
+}
