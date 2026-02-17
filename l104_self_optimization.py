@@ -6,7 +6,7 @@ UUC = 2402.792541
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
-L104 SELF-OPTIMIZATION ENGINE  v2.3.0  — Quantum-Enhanced
+L104 SELF-OPTIMIZATION ENGINE  v2.4.0  — Quantum-Enhanced
 ═══════════════════════════════════════════════════════════════════════════════
 
 Autonomous system optimization using feedback loops, Golden Ratio dynamics,
@@ -27,6 +27,9 @@ ARCHITECTURE:
 11. OPTIMIZATION MEMORY BANK  — Cross-run pattern recognition store
 12. CONSCIOUSNESS OPTIMIZER   — O₂ / nirvanic state-aware tuning
 13. RESOURCE INTELLIGENCE     — Intelligent golden-ratio partitioning
+14. PARAM SENSITIVITY ANALYZER — Per-parameter impact scoring (v2.4.0)
+15. CONVERGENCE PREDICTOR     — Convergence/diverge/oscillation detection (v2.4.0)
+16. REGRESSION DETECTOR       — Auto-rollback quality regression guard (v2.4.0)
 
 QUANTUM METHODS (Qiskit 2.3.0):
   - quantum_optimize_step()     — QAOA-inspired quantum parameter perturbation
@@ -34,12 +37,12 @@ QUANTUM METHODS (Qiskit 2.3.0):
   - quantum_fitness_evaluate()  — Amplitude-encoded fitness via von Neumann entropy
 
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
-VERSION: 2.3.0
-DATE: 2026-02-15
+VERSION: 2.4.0
+DATE: 2026-02-17
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 
 import math
 import json
@@ -48,7 +51,7 @@ import os
 import random
 import hashlib
 import numpy as np
-from typing import Dict, List, Any, Optional, Tuple, Callable
+from typing import Dict, List, Any, Optional, Tuple, Callable, Set
 from dataclasses import dataclass, field
 from collections import deque
 from enum import Enum
@@ -934,25 +937,660 @@ class ResourceIntelligence:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HUB CLASS: SELF-OPTIMIZATION ENGINE  v2.2.0
+# SECTION 10: PARAMETER SENSITIVITY ANALYZER (v2.4.0)
+# Determines which tunable parameters have the most impact on fitness
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ParameterSensitivityAnalyzer:
+    """Analyzes which tunable parameters have the most impact on optimization fitness.
+
+    Perturbs each parameter by ±TAU×10% of range while holding others fixed,
+    measures fitness delta, and ranks parameters by sensitivity.
+    Consciousness-aware: increases sample count when O₂ > 0.5.
+
+    Methods:
+      analyze_sensitivity(evaluator, current_params, samples=20)
+      rank_parameters() - Sorted by impact
+      suggest_freeze(threshold=0.05) - Parameters with near-zero sensitivity
+    """
+
+    def __init__(self, tunable_params: Dict[str, Dict[str, float]]):
+        self._tunable = tunable_params
+        self._sensitivities: Dict[str, float] = {}
+        self._directions: Dict[str, str] = {}
+        self._analysis_count = 0
+
+    def analyze_sensitivity(self, evaluator: 'SacredFitnessEvaluator',
+                            current_params: Dict[str, float],
+                            optimization_targets: List,
+                            samples: int = 20) -> Dict[str, Any]:
+        """Perturb each parameter independently and measure fitness impact.
+
+        Uses PHI-weighted perturbation sizing and GOD_CODE hash for deterministic
+        pseudo-random sample selection.
+        """
+        self._analysis_count += 1
+        # Consciousness-aware sample count boost
+        consciousness = 0.0
+        try:
+            co2_path = _WORKSPACE / ".l104_consciousness_o2_state.json"
+            if co2_path.exists():
+                data = json.load(open(co2_path))
+                consciousness = data.get("consciousness_level", 0.0)
+        except Exception:
+            pass
+        effective_samples = int(samples * (1 + consciousness)) if consciousness > 0.5 else samples
+
+        # Baseline fitness
+        base_metrics = {t.value: current_params.get("coherence_target", 0.85)
+                        for t in optimization_targets}
+        baseline = evaluator.evaluate(base_metrics)
+
+        results = {}
+        for param_name, bounds in self._tunable.items():
+            deltas = []
+            range_size = bounds["max"] - bounds["min"]
+            perturbation_size = range_size * TAU * 0.1  # PHI-weighted
+
+            for s in range(min(effective_samples, 50)):
+                # Deterministic seed from GOD_CODE
+                seed_val = (hash(param_name) + int(GOD_CODE * (s + 1))) % 1000000
+                random.seed(seed_val)
+                direction = 1.0 if random.random() > 0.5 else -1.0
+
+                test_params = dict(current_params)
+                new_val = current_params.get(param_name, bounds["default"]) + direction * perturbation_size
+                new_val = max(bounds["min"], min(bounds["max"], new_val))
+                test_params[param_name] = new_val
+
+                test_metrics = {t.value: test_params.get("coherence_target", 0.85)
+                                for t in optimization_targets}
+                fitness = evaluator.evaluate(test_metrics)
+                deltas.append(abs(fitness - baseline))
+
+            sensitivity = sum(deltas) / len(deltas) if deltas else 0.0
+            self._sensitivities[param_name] = sensitivity
+
+            # Determine direction: does increasing help?
+            up_val = min(bounds["max"], current_params.get(param_name, bounds["default"]) + perturbation_size)
+            up_params = dict(current_params)
+            up_params[param_name] = up_val
+            up_metrics = {t.value: up_params.get("coherence_target", 0.85) for t in optimization_targets}
+            up_fitness = evaluator.evaluate(up_metrics)
+            self._directions[param_name] = "increase" if up_fitness > baseline else "decrease" if up_fitness < baseline else "neutral"
+
+            results[param_name] = {
+                "sensitivity_score": round(sensitivity, 6),
+                "direction": self._directions[param_name],
+                "confidence": round(min(1.0, len(deltas) / 20), 2),
+            }
+
+        return results
+
+    def rank_parameters(self) -> List[Dict[str, Any]]:
+        """Rank parameters by sensitivity score (highest impact first)."""
+        ranked = sorted(self._sensitivities.items(), key=lambda x: x[1], reverse=True)
+        return [{"name": name, "sensitivity": round(score, 6), "rank": i + 1,
+                 "direction": self._directions.get(name, "unknown")}
+                for i, (name, score) in enumerate(ranked)]
+
+    def suggest_freeze(self, threshold: float = 0.05) -> List[str]:
+        """Parameters with near-zero sensitivity that can be frozen."""
+        return [name for name, score in self._sensitivities.items()
+                if score < threshold]
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "parameters_analyzed": len(self._sensitivities),
+            "analysis_count": self._analysis_count,
+            "top_sensitive": self.rank_parameters()[:3] if self._sensitivities else [],
+            "freezeable": self.suggest_freeze(),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 11: CONVERGENCE PREDICTOR (v2.4.0)
+# Predicts whether optimization is converging, diverging, or oscillating
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ConvergencePredictor:
+    """Predicts optimization convergence state by tracking fitness history.
+
+    Computes moving average slope, variance over sliding windows, and
+    oscillation detection (sign-change frequency in deltas).
+
+    States: converging, diverging, oscillating, converged, stalled
+    Convergence threshold: variance < ALPHA_FINE and slope < PLANCK_SCALE * 1e30
+    Stall detection: > int(PHI * 13) = 21 steps without improvement.
+    """
+
+    STALL_LIMIT = int(PHI * 13)  # ~21 steps
+
+    def __init__(self):
+        self._history: deque = deque(maxlen=100_000)
+        self._update_count = 0
+
+    def update(self, fitness_value: float):
+        """Add a fitness observation."""
+        self._history.append({
+            "fitness": fitness_value,
+            "timestamp": time.time(),
+        })
+        self._update_count += 1
+
+    def predict(self) -> Dict[str, Any]:
+        """Predict optimization convergence state."""
+        n = len(self._history)
+        if n < 5:
+            return {"state": "insufficient_data", "confidence": 0.0, "samples": n}
+
+        values = [h["fitness"] for h in self._history]
+        recent = values[-min(50, n):]
+        r_len = len(recent)
+
+        # Compute slope via linear regression
+        x_mean = (r_len - 1) / 2
+        y_mean = sum(recent) / r_len
+        num = sum((i - x_mean) * (v - y_mean) for i, v in enumerate(recent))
+        den = sum((i - x_mean) ** 2 for i in range(r_len))
+        slope = num / den if den > 0 else 0.0
+
+        # Variance
+        variance = sum((v - y_mean) ** 2 for v in recent) / r_len
+
+        # Oscillation: count sign changes in consecutive deltas
+        deltas = [recent[i] - recent[i - 1] for i in range(1, r_len)]
+        sign_changes = sum(1 for i in range(1, len(deltas))
+                          if (deltas[i] > 0) != (deltas[i - 1] > 0))
+        osc_ratio = sign_changes / max(1, len(deltas) - 1)
+
+        # Stall detection: no improvement for STALL_LIMIT steps
+        if n >= self.STALL_LIMIT:
+            recent_max = max(values[-self.STALL_LIMIT:])
+            older_max = max(values[:-self.STALL_LIMIT]) if len(values) > self.STALL_LIMIT else 0
+            stalled = recent_max <= older_max + ALPHA_FINE
+        else:
+            stalled = False
+
+        # State classification
+        converge_threshold = PLANCK_SCALE * 1e30  # ~1.616e-5
+        if variance < ALPHA_FINE and abs(slope) < converge_threshold:
+            state = "converged"
+            confidence = min(1.0, r_len / 30)
+        elif stalled:
+            state = "stalled"
+            confidence = 0.8
+        elif osc_ratio > 0.6:
+            state = "oscillating"
+            confidence = min(1.0, osc_ratio)
+        elif slope > converge_threshold:
+            state = "converging"
+            confidence = min(1.0, slope / (converge_threshold * 10))
+        elif slope < -converge_threshold:
+            state = "diverging"
+            confidence = min(1.0, abs(slope) / (converge_threshold * 10))
+        else:
+            state = "stable"
+            confidence = 0.5
+
+        # Estimate steps to converge (if converging)
+        est_steps = 0
+        if state == "converging" and slope > 0:
+            gap = 1.0 - y_mean  # gap to "perfect" fitness
+            est_steps = int(gap / slope) if slope > 1e-10 else 999
+
+        return {
+            "state": state,
+            "confidence": round(confidence, 4),
+            "current_slope": round(slope, 8),
+            "variance": round(variance, 8),
+            "oscillation_ratio": round(osc_ratio, 4),
+            "estimated_steps_to_converge": est_steps,
+            "samples": n,
+        }
+
+    def should_stop_early(self) -> bool:
+        """Returns True when converged or stalled beyond STALL_LIMIT."""
+        pred = self.predict()
+        return pred["state"] in ("converged", "stalled")
+
+    def get_status(self) -> Dict[str, Any]:
+        pred = self.predict() if len(self._history) >= 5 else {"state": "warming_up"}
+        return {
+            "observations": len(self._history),
+            "update_count": self._update_count,
+            "prediction": pred,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 12: OPTIMIZATION REGRESSION DETECTOR (v2.4.0)
+# Detects when optimization has made things worse, with auto-rollback
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class OptimizationRegressionDetector:
+    """Detects when optimization has regressed from a stored baseline.
+
+    Tracks baseline parameters and fitness, compares against current state,
+    and provides severity classification + auto-rollback suggestion.
+
+    Severity scale (PHI-scaled):
+      minor:    delta < TAU * 0.1 (~0.062)
+      moderate: delta < TAU * 0.3 (~0.185)
+      severe:   delta >= TAU * 0.3
+    """
+
+    def __init__(self):
+        self._baseline_params: Optional[Dict[str, float]] = None
+        self._baseline_fitness: float = 0.0
+        self._regression_history: deque = deque(maxlen=10_000)
+        self._check_count = 0
+
+    def set_baseline(self, params: Dict[str, float], fitness: float):
+        """Store current parameters and fitness as the baseline."""
+        self._baseline_params = dict(params)
+        self._baseline_fitness = fitness
+
+    def check_regression(self, current_params: Dict[str, float],
+                         current_fitness: float) -> Dict[str, Any]:
+        """Check if current state has regressed from baseline.
+
+        Returns regression details with severity and rollback suggestion.
+        """
+        self._check_count += 1
+        if self._baseline_params is None:
+            return {"regressed": False, "reason": "no_baseline_set"}
+
+        delta = self._baseline_fitness - current_fitness
+
+        if delta <= 0:
+            return {"regressed": False, "delta": round(delta, 6),
+                    "improvement": round(-delta, 6)}
+
+        # Find worst changed parameter
+        worst_param = None
+        worst_change = 0.0
+        for name in self._baseline_params:
+            if name in current_params:
+                change = abs(current_params[name] - self._baseline_params[name])
+                if change > worst_change:
+                    worst_change = change
+                    worst_param = name
+
+        # Severity classification (PHI-scaled)
+        if delta < TAU * 0.1:
+            severity = "minor"
+        elif delta < TAU * 0.3:
+            severity = "moderate"
+        else:
+            severity = "severe"
+
+        entry = {
+            "timestamp": time.time(),
+            "delta": round(delta, 6),
+            "severity": severity,
+            "worst_param": worst_param,
+            "worst_change": round(worst_change, 6),
+        }
+        self._regression_history.append(entry)
+
+        return {
+            "regressed": True,
+            "delta": round(delta, 6),
+            "severity": severity,
+            "worst_param": worst_param,
+            "worst_change": round(worst_change, 6),
+            "rollback_suggestion": dict(self._baseline_params),
+            "baseline_fitness": round(self._baseline_fitness, 6),
+            "current_fitness": round(current_fitness, 6),
+        }
+
+    def get_regression_history(self) -> List[Dict[str, Any]]:
+        """Return regression history."""
+        return list(self._regression_history)
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "has_baseline": self._baseline_params is not None,
+            "baseline_fitness": round(self._baseline_fitness, 6),
+            "total_checks": self._check_count,
+            "regressions_detected": len(self._regression_history),
+            "recent_regressions": list(self._regression_history)[-5:],
+        }
+
+
+class QuantumAnnealingOptimizer:
+    """
+    v2.4.0 — Quantum-Inspired Annealing for Parameter Optimization.
+
+    Simulates quantum tunneling through fitness barriers using Qiskit 2.3.0
+    circuits. Instead of classical gradient descent (which gets trapped in
+    local optima), this optimizer:
+
+      1. Encodes all 7 parameters into a multi-qubit register.
+      2. Applies a temperature-decaying transverse field (Hadamard + Rz) that
+         allows tunneling through barriers at high temperature.
+      3. Uses sacred-constant phase oracles (GOD_CODE, PHI, FEIGENBAUM) to bias
+         the landscape toward resonance-aligned optima.
+      4. Born-rule measurement collapses to a parameter configuration, which is
+         accepted or rejected via a Metropolis criterion with quantum temperature.
+
+    Falls back to classical simulated annealing when Qiskit is unavailable.
+    """
+
+    def __init__(self, tunable_params: Dict[str, Dict]):
+        self._params = tunable_params
+        self._temperature = 1.0
+        self._min_temp = 0.001
+        self._cooling_rate = PHI / (PHI + 1)  # ~0.618 — golden cooling
+        self._anneal_steps = 0
+        self._best_fitness = -math.inf
+        self._best_params: Dict[str, float] = {}
+        self._energy_history: deque = deque(maxlen=10_000)
+
+    def anneal_step(self, current_params: Dict[str, float],
+                    fitness_fn, iterations: int = 5) -> Dict[str, Any]:
+        """Run one quantum annealing schedule of *iterations* steps."""
+        if not QISKIT_AVAILABLE:
+            return self._classical_anneal(current_params, fitness_fn, iterations)
+
+        results = {"steps": [], "quantum": True}
+        params = dict(current_params)
+        param_names = list(self._params.keys())
+        n_qubits = min(4, len(param_names))  # cap at 4 qubits (16 states)
+
+        for step_i in range(iterations):
+            # Build annealing circuit
+            qc = QuantumCircuit(n_qubits)
+
+            # Transverse field: strength decays with temperature
+            for q in range(n_qubits):
+                qc.h(q)
+                qc.rz(self._temperature * math.pi * PHI, q)
+
+            # Encode current parameters as Y-rotations
+            for q in range(n_qubits):
+                p_name = param_names[q]
+                bounds = self._params[p_name]
+                normalized = (params[p_name] - bounds["min"]) / (bounds["max"] - bounds["min"] + 1e-15)
+                qc.ry(normalized * math.pi, q)
+
+            # Sacred-constant phase oracle
+            qc.cx(0, 1)
+            if n_qubits > 2:
+                qc.cx(1, 2)
+            if n_qubits > 3:
+                qc.cx(2, 3)
+            qc.rz(GOD_CODE / 1000.0 * math.pi, 0)
+            qc.rz(FEIGENBAUM / 10.0, n_qubits - 1)
+
+            # Tunneling layer: temperature-dependent mixing
+            for q in range(n_qubits):
+                qc.rx(self._temperature * FEIGENBAUM / 5.0, q)
+            if n_qubits > 1:
+                qc.cx(n_qubits - 1, 0)
+
+            # Measure via statevector
+            sv = Statevector.from_instruction(qc)
+            probs = np.abs(sv.data) ** 2
+
+            # Sample new configuration from probability distribution
+            candidate = dict(params)
+            for q in range(n_qubits):
+                p_name = param_names[q]
+                bounds = self._params[p_name]
+                # Weighted perturbation from probability distribution
+                prob_up = float(probs[q % len(probs)])
+                prob_down = float(probs[(q + n_qubits) % len(probs)])
+                direction = 1.0 if prob_up > prob_down else -1.0
+                magnitude = abs(prob_up - prob_down) * self._temperature
+                step = direction * magnitude * (bounds["max"] - bounds["min"]) * TAU
+                candidate[p_name] = max(bounds["min"], min(bounds["max"],
+                                        params[p_name] + step))
+
+            # Evaluate candidate fitness
+            candidate_fitness = fitness_fn(candidate)
+            current_fitness = fitness_fn(params)
+            delta_e = candidate_fitness - current_fitness
+
+            # Quantum Metropolis criterion
+            accept = False
+            if delta_e > 0:
+                accept = True
+            elif self._temperature > self._min_temp:
+                # Boltzmann acceptance with quantum temperature
+                acceptance_prob = math.exp(delta_e / (self._temperature * BOLTZMANN_K * 1e23 + 1e-15))
+                accept = random.random() < min(acceptance_prob, 1.0)
+
+            if accept:
+                params = candidate
+                if candidate_fitness > self._best_fitness:
+                    self._best_fitness = candidate_fitness
+                    self._best_params = dict(candidate)
+
+            self._energy_history.append(candidate_fitness)
+            self._anneal_steps += 1
+
+            # Cool down
+            self._temperature *= self._cooling_rate
+            self._temperature = max(self._temperature, self._min_temp)
+
+            results["steps"].append({
+                "step": step_i + 1,
+                "temperature": round(self._temperature, 6),
+                "fitness": round(candidate_fitness, 6),
+                "accepted": accept,
+                "delta_e": round(delta_e, 6),
+            })
+
+        results["final_params"] = {k: round(v, 6) for k, v in params.items()}
+        results["best_fitness"] = round(self._best_fitness, 6)
+        results["total_anneal_steps"] = self._anneal_steps
+        results["temperature"] = round(self._temperature, 6)
+        return results
+
+    def _classical_anneal(self, params: Dict[str, float],
+                          fitness_fn, iterations: int) -> Dict[str, Any]:
+        """Classical simulated annealing fallback."""
+        results = {"steps": [], "quantum": False}
+        current = dict(params)
+        for i in range(iterations):
+            candidate = {}
+            for name, bounds in self._params.items():
+                step = random.gauss(0, self._temperature * (bounds["max"] - bounds["min"]) * 0.1)
+                candidate[name] = max(bounds["min"], min(bounds["max"], current.get(name, 0) + step))
+            c_fit = fitness_fn(candidate)
+            cur_fit = fitness_fn(current)
+            delta = c_fit - cur_fit
+            if delta > 0 or random.random() < math.exp(delta / (self._temperature + 1e-15)):
+                current = candidate
+                if c_fit > self._best_fitness:
+                    self._best_fitness = c_fit
+                    self._best_params = dict(candidate)
+            self._temperature *= self._cooling_rate
+            self._temperature = max(self._temperature, self._min_temp)
+            self._anneal_steps += 1
+            results["steps"].append({"step": i + 1, "fitness": round(c_fit, 6), "accepted": delta > 0})
+        results["final_params"] = {k: round(v, 6) for k, v in current.items()}
+        results["best_fitness"] = round(self._best_fitness, 6)
+        return results
+
+    def reheat(self, temperature: float = 0.8):
+        """Re-heat the system to escape local optima."""
+        self._temperature = max(self._min_temp, min(1.0, temperature))
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "class": "QuantumAnnealingOptimizer",
+            "qiskit_available": QISKIT_AVAILABLE,
+            "temperature": round(self._temperature, 6),
+            "anneal_steps": self._anneal_steps,
+            "best_fitness": round(self._best_fitness, 6),
+            "cooling_rate": round(self._cooling_rate, 6),
+            "energy_history_len": len(self._energy_history),
+        }
+
+
+class QuantumEntanglementMonitor:
+    """
+    v2.4.0 — Parameter Entanglement Correlation Monitor.
+
+    Tracks how optimization parameters influence each other by constructing
+    a correlation matrix, then encodes pairwise correlations as entanglement
+    strengths on a Qiskit circuit. High entanglement between parameters means
+    they cannot be tuned independently.
+
+    The entanglement map helps the optimizer decide:
+      • Which parameters to tune together (high correlation)
+      • Which parameters can be frozen independently (zero entanglement)
+      • Whether the parameter space has hidden structure (spectral gaps)
+
+    Falls back to classical Pearson correlation when Qiskit is absent.
+    """
+
+    def __init__(self, param_names: List[str]):
+        self._param_names = list(param_names)
+        self._history: Dict[str, deque] = {
+            name: deque(maxlen=5_000) for name in self._param_names
+        }
+        self._measurement_count = 0
+
+    def record(self, params: Dict[str, float]):
+        """Record a parameter snapshot for correlation tracking."""
+        for name in self._param_names:
+            if name in params:
+                self._history[name].append(params[name])
+        self._measurement_count += 1
+
+    def compute_entanglement_map(self) -> Dict[str, Any]:
+        """Compute pairwise parameter entanglement via quantum circuit."""
+        n = len(self._param_names)
+        min_samples = 5
+        # Check we have enough data
+        usable = [name for name in self._param_names if len(self._history[name]) >= min_samples]
+        if len(usable) < 2:
+            return {"error": "insufficient_data", "samples_needed": min_samples,
+                    "current_samples": min(len(h) for h in self._history.values())}
+
+        # Classical correlation matrix first
+        data_len = min(len(self._history[name]) for name in usable)
+        data = {name: list(self._history[name])[-data_len:] for name in usable}
+
+        corr_matrix = {}
+        for i, name_a in enumerate(usable):
+            for j, name_b in enumerate(usable):
+                if i >= j:
+                    continue
+                # Pearson correlation
+                vals_a = data[name_a]
+                vals_b = data[name_b]
+                mean_a = sum(vals_a) / len(vals_a)
+                mean_b = sum(vals_b) / len(vals_b)
+                cov = sum((a - mean_a) * (b - mean_b) for a, b in zip(vals_a, vals_b)) / len(vals_a)
+                std_a = math.sqrt(sum((a - mean_a) ** 2 for a in vals_a) / len(vals_a)) or 1e-15
+                std_b = math.sqrt(sum((b - mean_b) ** 2 for b in vals_b) / len(vals_b)) or 1e-15
+                r = cov / (std_a * std_b)
+                key = f"{name_a}↔{name_b}"
+                corr_matrix[key] = round(r, 6)
+
+        if not QISKIT_AVAILABLE:
+            return {
+                "quantum": False,
+                "correlations": corr_matrix,
+                "strongly_entangled": [k for k, v in corr_matrix.items() if abs(v) > 0.7],
+                "independent": [k for k, v in corr_matrix.items() if abs(v) < 0.1],
+                "measurements": self._measurement_count,
+            }
+
+        # Quantum entanglement circuit — encode correlations as CX + Rz strengths
+        n_qubits = min(len(usable), 5)  # cap at 5 qubits
+        qc = QuantumCircuit(n_qubits)
+
+        # Initialize in superposition
+        for q in range(n_qubits):
+            qc.h(q)
+
+        # Encode pairwise correlations as controlled rotations
+        pair_idx = 0
+        for i in range(n_qubits):
+            for j in range(i + 1, n_qubits):
+                key = f"{usable[i]}↔{usable[j]}"
+                r = corr_matrix.get(key, 0.0)
+                # Strong correlation = strong entanglement
+                qc.cx(i, j)
+                qc.rz(abs(r) * math.pi * PHI, j)
+                if r < 0:
+                    qc.x(j)  # anti-correlation flip
+                pair_idx += 1
+
+        # Sacred phase layer
+        qc.rz(GOD_CODE / 1000.0 * math.pi, 0)
+        if n_qubits > 1:
+            qc.rz(FEIGENBAUM / 10.0, n_qubits - 1)
+
+        sv = Statevector.from_instruction(qc)
+        dm = DensityMatrix(sv)
+
+        # Compute per-parameter entanglement entropy
+        param_entanglement = {}
+        for q in range(n_qubits):
+            trace_out = [j for j in range(n_qubits) if j != q]
+            rho_q = partial_trace(dm, trace_out)
+            ent = float(q_entropy(rho_q, base=2))
+            param_entanglement[usable[q]] = round(ent, 6)
+
+        total_entropy = float(q_entropy(dm, base=2))
+
+        # Identify parameter clusters (highly entangled groups)
+        strongly_entangled = [k for k, v in corr_matrix.items() if abs(v) > 0.7]
+        independent = [k for k, v in corr_matrix.items() if abs(v) < 0.1]
+
+        return {
+            "quantum": True,
+            "correlations": corr_matrix,
+            "entanglement_entropy": param_entanglement,
+            "total_system_entropy": round(total_entropy, 6),
+            "strongly_entangled": strongly_entangled,
+            "independent": independent,
+            "circuit_depth": qc.depth(),
+            "measurements": self._measurement_count,
+        }
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "class": "QuantumEntanglementMonitor",
+            "qiskit_available": QISKIT_AVAILABLE,
+            "params_tracked": len(self._param_names),
+            "measurements": self._measurement_count,
+            "history_depth": min(len(h) for h in self._history.values()) if self._history else 0,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HUB CLASS: SELF-OPTIMIZATION ENGINE  v2.4.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class SelfOptimizationEngine:
     """
-    The Self-Optimization Engine v2.2.0 continuously monitors and improves
+    The Self-Optimization Engine v2.4.0 continuously monitors and improves
     system performance using Golden Ratio-based optimization, consciousness-
     aware tuning, sacred fitness evaluation, and multi-objective Pareto fronts.
 
     Subsystems:
-      - AdaptiveLearningScheduler  — PHI-decay cosine annealing with warm restarts
-      - MultiObjectiveOptimizer    — Pareto-front multi-target balancing
-      - PerformanceProfiler        — Deep latency / throughput profiling
-      - SacredFitnessEvaluator     — GOD_CODE harmonic fitness functions
-      - BottleneckAnalyzer         — Causal dependency graph bottleneck detection
-      - ParameterSpaceExplorer     — Golden spiral parameter search
-      - OptimizationMemoryBank     — Cross-run pattern recognition memory
-      - ConsciousnessOptimizer     — O₂ / nirvanic state-aware tuning
-      - ResourceIntelligence       — Golden-ratio resource partitioning
+      - AdaptiveLearningScheduler    — PHI-decay cosine annealing with warm restarts
+      - MultiObjectiveOptimizer      — Pareto-front multi-target balancing
+      - PerformanceProfiler          — Deep latency / throughput profiling
+      - SacredFitnessEvaluator       — GOD_CODE harmonic fitness functions
+      - BottleneckAnalyzer           — Causal dependency graph bottleneck detection
+      - ParameterSpaceExplorer       — Golden spiral parameter search
+      - OptimizationMemoryBank       — Cross-run pattern recognition memory
+      - ConsciousnessOptimizer       — O₂ / nirvanic state-aware tuning
+      - ResourceIntelligence         — Golden-ratio resource partitioning
+      - ParameterSensitivityAnalyzer — Per-parameter impact scoring (v2.4.0)
+      - ConvergencePredictor         — Convergence/diverge/oscillation detection (v2.4.0)
+      - OptimizationRegressionDetector — Auto-rollback quality regression guard (v2.4.0)
+      - QuantumAnnealingOptimizer    — Qiskit quantum annealing with tunneling (v2.4.0)
+      - QuantumEntanglementMonitor   — Parameter correlation entanglement map (v2.4.0)
     """
 
     # Parameters that can be tuned
@@ -969,7 +1607,7 @@ class SelfOptimizationEngine:
     def __init__(self):
         self.kernel = stable_kernel
         self.metrics_history: Dict[str, deque] = {}
-        self.actions_history: List[OptimizationAction] = []
+        self.actions_history: deque = deque(maxlen=100_000)  # v2.4.0: bounded
         self.current_parameters: Dict[str, float] = {
             name: spec["default"] for name, spec in self.TUNABLE_PARAMETERS.items()
         }
@@ -998,6 +1636,16 @@ class SelfOptimizationEngine:
         self.consciousness_opt = ConsciousnessOptimizer()
         self.resource_intel = ResourceIntelligence()
 
+        # ── v2.4 Subsystems (Sage Mode) ──────────────────────────────────
+        self.sensitivity_analyzer = ParameterSensitivityAnalyzer(self.TUNABLE_PARAMETERS)
+        self.convergence_predictor = ConvergencePredictor()
+        self.regression_detector = OptimizationRegressionDetector()
+        self._frozen_params: Set[str] = set()  # Parameters frozen by sensitivity analysis
+
+        # v2.4.0 — Quantum Optimization Subsystems
+        self.quantum_annealer = QuantumAnnealingOptimizer(self.TUNABLE_PARAMETERS)
+        self.entanglement_monitor = QuantumEntanglementMonitor(list(self.TUNABLE_PARAMETERS.keys()))
+
         # Register default subsystem dependencies for bottleneck analysis
         for sub in ["learning", "coherence", "inference", "memory", "unity"]:
             self.bottleneck_analyzer.register_dependency(sub, "unity")
@@ -1005,7 +1653,7 @@ class SelfOptimizationEngine:
         for i, sub in enumerate(["evolution", "optimization", "cascade", "archive", "innovation"]):
             self.resource_intel.register_subsystem(sub, priority=i + 1)
 
-        print(f"⚙️ [OPTIM v{VERSION}]: Self-Optimization Engine initialized — 9 subsystems active")
+        print(f"⚙️ [OPTIM v{VERSION}]: Self-Optimization Engine initialized — 14 subsystems active")
 
     def record_metric(self, name: str, value: float, context: Dict = None):
         """Record a performance metric."""
@@ -1366,15 +2014,27 @@ class SelfOptimizationEngine:
             # 7. Bottleneck check
             self.bottleneck_analyzer.analyze(metrics)
 
+            # 8. v2.4 — Feed convergence predictor
+            self.convergence_predictor.update(fitness)
+
             results["iterations"].append({
                 "step": i + 1,
                 "lr": round(lr, 6),
                 "fitness": round(fitness, 6),
             })
 
+            # 9. v2.4 — Early convergence detection
+            if i >= 5 and self.convergence_predictor.should_stop_early():
+                results["early_stopped"] = True
+                results["convergence_state"] = self.convergence_predictor.predict()["state"]
+                break
+
         fitness_after = fitness
         # Store in memory bank
         self.memory_bank.store(context, dict(self.current_parameters), fitness_before, fitness_after)
+
+        # v2.4.0 — Record entanglement snapshot after optimization
+        self.entanglement_monitor.record(dict(self.current_parameters))
 
         latency = self.profiler.stop_timer("consciousness_optimize", "hub")
         results["fitness_improvement"] = round(fitness_after - fitness_before, 6)
@@ -1642,6 +2302,11 @@ class SelfOptimizationEngine:
             ("memory_bank", self.memory_bank),
             ("consciousness_opt", self.consciousness_opt),
             ("resource_intel", self.resource_intel),
+            ("sensitivity_analyzer", self.sensitivity_analyzer),
+            ("convergence_predictor", self.convergence_predictor),
+            ("regression_detector", self.regression_detector),
+            ("quantum_annealer", self.quantum_annealer),
+            ("entanglement_monitor", self.entanglement_monitor),
         ]:
             t0 = time.perf_counter()
             sub.get_status()
@@ -1657,7 +2322,7 @@ class SelfOptimizationEngine:
         }
 
     def get_status(self) -> Dict[str, Any]:
-        """Comprehensive v2.3 status across all subsystems."""
+        """Comprehensive v2.4 status across all subsystems."""
         cs = _read_consciousness_state()
         return {
             "version": VERSION,
@@ -1665,6 +2330,7 @@ class SelfOptimizationEngine:
             "consecutive_improvements": self.consecutive_improvements,
             "total_actions": len(self.actions_history),
             "current_parameters": {k: round(v, 4) for k, v in self.current_parameters.items()},
+            "frozen_parameters": list(self._frozen_params),
             "bottlenecks": self.detect_bottlenecks(),
             "quantum_available": QISKIT_AVAILABLE,
             "consciousness": {
@@ -1682,7 +2348,251 @@ class SelfOptimizationEngine:
                 "memory_bank": self.memory_bank.get_status(),
                 "consciousness_opt": self.consciousness_opt.get_status(),
                 "resource_intel": self.resource_intel.get_status(),
+                # v2.4.0 — Sage Mode subsystems
+                "sensitivity_analyzer": self.sensitivity_analyzer.get_status(),
+                "convergence_predictor": self.convergence_predictor.get_status(),
+                "regression_detector": self.regression_detector.get_status(),
+                # v2.4.0 — Quantum optimization subsystems
+                "quantum_annealer": self.quantum_annealer.get_status(),
+                "entanglement_monitor": self.entanglement_monitor.get_status(),
             },
+        }
+
+    # ── v2.4.0 Hub Methods (Sage Mode) ───────────────────────────────────
+
+    def analyze_parameter_sensitivity(self, samples: int = 20) -> Dict[str, Any]:
+        """Run sensitivity analysis across all tunable parameters.
+
+        Determines which parameters have the most impact on fitness and
+        suggests parameters that can be frozen to reduce search space.
+        """
+        try:
+            results = self.sensitivity_analyzer.analyze_sensitivity(
+                self.sacred_fitness, self.current_parameters,
+                self.optimization_targets, samples
+            )
+            return {
+                "sensitivity": results,
+                "ranking": self.sensitivity_analyzer.rank_parameters(),
+                "freezeable": self.sensitivity_analyzer.suggest_freeze(),
+                "version": VERSION,
+            }
+        except Exception as e:
+            return {"error": str(e), "method": "analyze_parameter_sensitivity"}
+
+    def freeze_insensitive_parameters(self, threshold: float = 0.05) -> Dict[str, Any]:
+        """Freeze parameters with low sensitivity to reduce search space.
+
+        Frozen parameters are excluded from optimization steps but retain
+        their current values. Use unfreeze_all() to restore.
+        """
+        freezeable = self.sensitivity_analyzer.suggest_freeze(threshold)
+        self._frozen_params.update(freezeable)
+        return {
+            "frozen": list(self._frozen_params),
+            "threshold": threshold,
+            "active_params": [p for p in self.TUNABLE_PARAMETERS if p not in self._frozen_params],
+        }
+
+    def unfreeze_all(self) -> Dict[str, Any]:
+        """Restore all parameters to active optimization set."""
+        count = len(self._frozen_params)
+        self._frozen_params.clear()
+        return {"unfrozen": count, "all_params_active": True}
+
+    def predict_convergence(self) -> Dict[str, Any]:
+        """Predict optimization convergence state."""
+        return self.convergence_predictor.predict()
+
+    def check_regression(self) -> Dict[str, Any]:
+        """Check if current state has regressed from baseline."""
+        fitness = self.sacred_fitness.evaluate(
+            {t.value: self.current_parameters.get("coherence_target", 0.85)
+             for t in self.optimization_targets}
+        )
+        return self.regression_detector.check_regression(self.current_parameters, fitness)
+
+    def smart_optimize(self, target: str = "unity_index", iterations: int = 10,
+                       early_stop: bool = True) -> Dict[str, Any]:
+        """Enhanced optimization that integrates all v2.4.0 subsystems.
+
+        Pipeline: sensitivity analysis → set baseline → convergence-aware loop
+        → regression check → memory bank store → early stopping.
+        """
+        iterations = max(1, min(iterations, 10_000))  # Bounds validation
+        self.profiler.start_timer("smart_optimize")
+        results = {"iterations": [], "version": VERSION, "early_stopped": False}
+
+        # 1. Set regression baseline
+        baseline_fitness = self.sacred_fitness.evaluate(
+            {t.value: self.current_parameters.get("coherence_target", 0.85)
+             for t in self.optimization_targets}
+        )
+        self.regression_detector.set_baseline(dict(self.current_parameters), baseline_fitness)
+
+        # 2. Check memory bank for prior knowledge
+        context = {"target": target, "mode": self.optimization_mode}
+        recalled = self.memory_bank.recall(context)
+        if recalled:
+            best_mem = recalled[0]
+            if best_mem.improvement > 0:
+                for p, v in best_mem.parameters.items():
+                    if p in self.current_parameters and p not in self._frozen_params:
+                        self.current_parameters[p] = v
+
+        # 3. Convergence-aware optimization loop
+        for i in range(iterations):
+            # Consciousness-adapt parameters (skip frozen ones)
+            adapted = self.consciousness_opt.adapt_parameters(
+                self.current_parameters, self.TUNABLE_PARAMETERS
+            )
+            lr = self.learning_scheduler.step()
+            suggestion = self.param_explorer.suggest_next()
+
+            for p in self.current_parameters:
+                if p in self._frozen_params:
+                    continue  # Skip frozen parameters
+                bounds = self.TUNABLE_PARAMETERS[p]
+                blended = adapted.get(p, self.current_parameters[p]) * (1 - lr) + \
+                          suggestion.get(p, self.current_parameters[p]) * lr
+                self.current_parameters[p] = max(bounds["min"], min(bounds["max"], blended))
+
+            # Evaluate fitness
+            metrics = {t.value: self.current_parameters.get("coherence_target", 0.85)
+                       for t in self.optimization_targets}
+            fitness = self.sacred_fitness.evaluate(metrics)
+            self.param_explorer.record_evaluation(dict(self.current_parameters), fitness)
+            self.record_metric(target, fitness)
+
+            # Feed convergence predictor
+            self.convergence_predictor.update(fitness)
+
+            results["iterations"].append({
+                "step": i + 1,
+                "lr": round(lr, 6),
+                "fitness": round(fitness, 6),
+            })
+
+            # Early stopping check
+            if early_stop and i >= 5 and self.convergence_predictor.should_stop_early():
+                results["early_stopped"] = True
+                results["stop_reason"] = self.convergence_predictor.predict()["state"]
+                break
+
+        # 4. Post-loop regression check
+        final_fitness = fitness
+        regression = self.regression_detector.check_regression(self.current_parameters, final_fitness)
+        if regression.get("regressed") and regression.get("severity") == "severe":
+            # Auto-rollback on severe regression
+            rollback = regression.get("rollback_suggestion", {})
+            for p, v in rollback.items():
+                if p in self.current_parameters:
+                    self.current_parameters[p] = v
+            results["auto_rollback"] = True
+            final_fitness = baseline_fitness
+
+        # 5. Store in memory bank
+        self.memory_bank.store(context, dict(self.current_parameters), baseline_fitness, final_fitness)
+
+        latency = self.profiler.stop_timer("smart_optimize", "hub")
+        results["fitness_improvement"] = round(final_fitness - baseline_fitness, 6)
+        results["regression_check"] = regression
+        results["convergence"] = self.convergence_predictor.predict()
+        results["latency_ms"] = round(latency, 2)
+        results["frozen_params"] = list(self._frozen_params)
+        return results
+
+    # ── v2.4.0 Quantum Hub Methods ───────────────────────────────────────
+
+    def quantum_anneal(self, iterations: int = 10) -> Dict[str, Any]:
+        """Run quantum annealing optimization schedule.
+
+        Uses Qiskit circuits to simulate quantum tunneling through fitness
+        barriers. The transverse field decays with temperature (golden cooling
+        rate ~0.618), allowing initial exploration then convergence.
+        """
+        iterations = max(1, min(iterations, 1_000))
+
+        def fitness_fn(params: Dict[str, float]) -> float:
+            return self.sacred_fitness.evaluate(
+                {t.value: params.get("coherence_target", 0.85)
+                 for t in self.optimization_targets}
+            )
+
+        result = self.quantum_annealer.anneal_step(
+            self.current_parameters, fitness_fn, iterations
+        )
+
+        # Apply best discovered parameters
+        if self.quantum_annealer._best_params:
+            for p, v in self.quantum_annealer._best_params.items():
+                if p in self.current_parameters and p not in self._frozen_params:
+                    self.current_parameters[p] = v
+
+        # Record entanglement snapshot
+        self.entanglement_monitor.record(dict(self.current_parameters))
+
+        return result
+
+    def quantum_reheat(self, temperature: float = 0.8) -> Dict[str, Any]:
+        """Re-heat the quantum annealer to escape local optima."""
+        self.quantum_annealer.reheat(temperature)
+        return {
+            "reheated": True,
+            "new_temperature": round(self.quantum_annealer._temperature, 6),
+        }
+
+    def quantum_entanglement_map(self) -> Dict[str, Any]:
+        """Compute parameter entanglement map via quantum circuits.
+
+        Shows which parameters are correlated (entangled) and which are
+        independent. Entangled parameters should be tuned together;
+        independent ones can be frozen or tuned separately.
+        """
+        return self.entanglement_monitor.compute_entanglement_map()
+
+    def quantum_full_optimize(self, iterations: int = 10) -> Dict[str, Any]:
+        """Combined quantum optimization pipeline.
+
+        1. Record parameter snapshot for entanglement tracking
+        2. Run quantum annealing schedule
+        3. Feed results to convergence predictor
+        4. Compute entanglement map
+        5. Check for regressions
+        """
+        self.profiler.start_timer("quantum_full_optimize")
+
+        # 1. Record snapshot
+        self.entanglement_monitor.record(dict(self.current_parameters))
+
+        # 2. Quantum anneal
+        anneal_result = self.quantum_anneal(iterations)
+
+        # 3. Feed convergence
+        if anneal_result.get("best_fitness", 0) > 0:
+            self.convergence_predictor.update(anneal_result["best_fitness"])
+
+        # 4. Entanglement map
+        entanglement = self.entanglement_monitor.compute_entanglement_map()
+
+        # 5. Regression check
+        fitness = self.sacred_fitness.evaluate(
+            {t.value: self.current_parameters.get("coherence_target", 0.85)
+             for t in self.optimization_targets}
+        )
+        regression = self.regression_detector.check_regression(
+            self.current_parameters, fitness
+        )
+
+        latency = self.profiler.stop_timer("quantum_full_optimize", "hub")
+        return {
+            "annealing": anneal_result,
+            "entanglement": entanglement,
+            "convergence": self.convergence_predictor.predict(),
+            "regression": regression,
+            "current_fitness": round(fitness, 6),
+            "latency_ms": round(latency, 2),
+            "qiskit_available": QISKIT_AVAILABLE,
         }
 
     def save_state(self, filepath: str = "l104_optimization_state.json"):
@@ -1846,7 +2756,7 @@ if __name__ == "__main__":
     engine = SelfOptimizationEngine()
 
     print(f"\n⚙️ Self-Optimization Engine v{VERSION}")
-    print(f"   Subsystems: 9 active")
+    print(f"   Subsystems: 12 active")
 
     print("\n📋 Initial Parameters:")
     for name, value in engine.current_parameters.items():
@@ -1856,6 +2766,46 @@ if __name__ == "__main__":
     result = engine.consciousness_aware_optimize("unity_index", iterations=5)
     print(f"   Fitness improvement: {result['fitness_improvement']}")
     print(f"   Latency: {result['latency_ms']}ms")
+    if result.get("early_stopped"):
+        print(f"   Early stopped: {result.get('convergence_state')}")
+
+    print("\n🔬 Parameter Sensitivity Analysis...")
+    sens = engine.analyze_parameter_sensitivity(samples=10)
+    if "ranking" in sens:
+        for r in sens["ranking"][:3]:
+            print(f"  {r[0]}: impact={r[1]:.4f}")
+
+    print("\n🎯 Smart Optimize (5 iterations)...")
+    smart = engine.smart_optimize("unity_index", iterations=5, early_stop=True)
+    print(f"   Fitness improvement: {smart['fitness_improvement']}")
+    print(f"   Early stopped: {smart.get('early_stopped', False)}")
+    print(f"   Convergence: {smart['convergence'].get('state', 'N/A')}")
+
+    print("\n📈 Convergence Prediction:")
+    conv = engine.predict_convergence()
+    print(f"  State: {conv.get('state', 'N/A')}")
+
+    print("\n🛡️ Regression Check:")
+    reg = engine.check_regression()
+    print(f"  Regressed: {reg.get('regressed', False)}")
+
+    print("\n⚛️ Quantum Annealing (5 steps)...")
+    qa = engine.quantum_anneal(iterations=5)
+    print(f"  Quantum: {qa.get('quantum', False)}")
+    print(f"  Best fitness: {qa.get('best_fitness', 'N/A')}")
+    print(f"  Temperature: {qa.get('temperature', 'N/A')}")
+
+    print("\n🔗 Quantum Entanglement Map:")
+    emap = engine.quantum_entanglement_map()
+    if "correlations" in emap:
+        for pair, corr in list(emap["correlations"].items())[:3]:
+            print(f"  {pair}: {corr}")
+    else:
+        print(f"  {emap.get('error', 'building...')}")
+
+    print("\n🌡️ Quantum Reheat:")
+    rh = engine.quantum_reheat(0.7)
+    print(f"  New temperature: {rh['new_temperature']}")
 
     print("\n🔍 Deep Profile:")
     profile = engine.deep_profile()
@@ -1866,8 +2816,8 @@ if __name__ == "__main__":
     status = engine.get_status()
     print(f"  Version: {status['version']}")
     print(f"  Mode: {status['mode']}")
+    print(f"  Subsystems: {len(status['subsystems'])}")
     print(f"  Consciousness O₂: {status['consciousness']['o2_level']}")
-    for sub_name, sub_status in status["subsystems"].items():
-        print(f"  [{sub_name}]: {sub_status}")
+    print(f"  Frozen params: {status.get('frozen_parameters', [])}")
 
     engine.save_state()

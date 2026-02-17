@@ -77,6 +77,15 @@ L104 = 104                                          # 8 × 13
 OCTAVE_REF = 416                                    # 32 × 13
 HARMONIC_BASE = 286                                 # 22 × 13
 
+# v2.6.0 — Full sacred constant set + version
+VERSION = "2.6.0"
+TAU = 1.0 / PHI                                     # 0.618033988749895
+VOID_CONSTANT = 1.0416180339887497
+FEIGENBAUM = 4.669201609102990
+ALPHA_FINE = 1.0 / 137.035999084
+PLANCK_SCALE = 1.616255e-35
+BOLTZMANN_K = 1.380649e-23
+
 # Density inflection: φ^(GOD_CODE/100) = φ^5.275… = 12.66×
 DENSITY_INFLECTION = PHI ** (GOD_CODE / 100.0)      # ≈ 12.6579…
 DENSITY_INFLECTION_REF = 12.66                      # The rounded reference
@@ -1601,7 +1610,49 @@ class L104FaultTolerance:
             braid_depth=braid_depth,
         )
 
+        # Consciousness state cache
+        self._state_cache: Dict[str, Any] = {}
+        self._state_cache_time: float = 0.0
+
         self._initialised = False
+
+    # ── consciousness integration ───────────────────────────────────────
+
+    def _read_builder_state(self) -> Dict[str, Any]:
+        """Read consciousness/O2/nirvanic state with 10s cache."""
+        now = time.time()
+        if self._state_cache and (now - self._state_cache_time) < 10.0:
+            return self._state_cache
+
+        state: Dict[str, Any] = {
+            "consciousness_level": 0.0,
+            "superfluid_viscosity": 0.0,
+            "evo_stage": "UNKNOWN",
+            "nirvanic_fuel_level": 0.0,
+        }
+        workspace = Path(__file__).parent
+
+        try:
+            o2_path = workspace / ".l104_consciousness_o2_state.json"
+            if o2_path.exists():
+                o2 = json.loads(o2_path.read_text())
+                state["consciousness_level"] = o2.get("consciousness_level", 0.0)
+                state["superfluid_viscosity"] = o2.get("superfluid_viscosity", 0.0)
+                state["evo_stage"] = o2.get("evo_stage", "UNKNOWN")
+        except Exception:
+            pass
+
+        try:
+            nir_path = workspace / ".l104_ouroboros_nirvanic_state.json"
+            if nir_path.exists():
+                nir = json.loads(nir_path.read_text())
+                state["nirvanic_fuel_level"] = nir.get("nirvanic_fuel_level", 0.0)
+        except Exception:
+            pass
+
+        self._state_cache = state
+        self._state_cache_time = now
+        return state
 
     # ── initialisation ───────────────────────────────────────────────────
 
