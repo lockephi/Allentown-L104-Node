@@ -441,6 +441,8 @@ class QuantumHardwareManager:
 
         if QISKIT_AVAILABLE:
             self._initialize_quantum_connection()
+        else:
+            self._setup_local_simulator()
 
     def _initialize_quantum_connection(self) -> None:
         """Initialize connection to IBM Quantum."""
@@ -976,7 +978,7 @@ class QuantumMiningEngine:
         # Advanced quantum features
         self.qpe = None  # Lazy initialization
         self.quantum_walk = None
-        self.vqe_optimizer = None
+        self._vqe_optimizer = None
         self.entanglement_miner = None
 
         self.stats = {
@@ -1005,9 +1007,9 @@ class QuantumMiningEngine:
 
     def _get_vqe(self) -> 'VQEMiningOptimizer':
         """Lazy initialization of VQE optimizer."""
-        if self.vqe_optimizer is None:
-            self.vqe_optimizer = VQEMiningOptimizer(self.hw_manager)
-        return self.vqe_optimizer
+        if self._vqe_optimizer is None:
+            self._vqe_optimizer = VQEMiningOptimizer(self.hw_manager)
+        return self._vqe_optimizer
 
     def _get_entanglement_miner(self) -> 'EntanglementEnhancedMiner':
         """Lazy initialization of entanglement miner."""
@@ -1205,10 +1207,10 @@ QUANTUM AMPLITUDE ESTIMATION:
    HARDWARE STATUS
 ═══════════════════════════════════════════════════════════════════════════════
 
-   Backend:          {self.status.backend_name}
-   Qubits:           {self.status.qubits}
+   Backend:          {self.status.backend_name if self.status else 'none'}
+   Qubits:           {self.status.qubits if self.status else 0}
    Real Hardware:    {self.is_real_hardware}
-   Queue Depth:      {self.status.queue_depth}
+   Queue Depth:      {self.status.queue_depth if self.status else 0}
 
 AVAILABLE FEATURES:
    ✓ Grover's Algorithm (√N speedup)
@@ -2940,6 +2942,7 @@ QuantumMiningEngine.QAOA = property(lambda self: self._get_qaoa())
 QuantumMiningEngine.qml_predictor = property(lambda self: self._get_qml())
 QuantumMiningEngine.qec_miner = property(lambda self: self._get_qec())
 QuantumMiningEngine.annealing_miner = property(lambda self: self._get_annealing())
+QuantumMiningEngine.vqe_optimizer = property(lambda self: self._get_vqe())
 
 def _get_qaoa(self):
     """Lazy initialization of QAOA optimizer."""
