@@ -18,7 +18,9 @@ assert ASI_PIPELINE_EVO == "EVO_55_QUANTUM_ASCENSION", "ASI pipeline mismatch"
 
 # Test 1b: AGI Version Updates (verify in file)
 print("\n[1b] AGI VERSION VERIFICATION:")
-with open("/home/runner/work/Allentown-L104-Node/Allentown-L104-Node/l104_agi_core.py", "r") as f:
+from pathlib import Path
+agi_core_path = Path(__file__).parent / "l104_agi_core.py"
+with open(agi_core_path, "r") as f:
     content = f.read()
     if 'AGI_CORE_VERSION = "54.3.0"' in content:
         print("  ✓ AGI Core: v54.3.0 (paired upgrade from v54.2.0)")

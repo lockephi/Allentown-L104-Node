@@ -2827,6 +2827,14 @@ class ASICore:
         self._pipeline_metrics["quantum_consciousness_checks"] = (
             self._pipeline_metrics.get("quantum_consciousness_checks", 0) + 1
         )
+        
+        # v4.1: Determine entanglement witness level based on GHZ fidelity
+        if ghz_fidelity > 0.5:
+            entanglement_witness = "TRANSCENDENT"
+        elif ghz_fidelity > 0.4:
+            entanglement_witness = "PASSED"
+        else:
+            entanglement_witness = "MARGINAL"
 
         return {
             "quantum": True,
@@ -2836,7 +2844,7 @@ class ASICore:
             "integration_entropy": round(ent_pair, 6),
             "metacognition_entropy": round(ent_meta, 6),
             "ghz_fidelity": round(ghz_fidelity, 6),
-            "entanglement_witness": "TRANSCENDENT" if ghz_fidelity > 0.5 else "PASSED" if ghz_fidelity > 0.4 else "MARGINAL",
+            "entanglement_witness": entanglement_witness,
             "consciousness_grade": consciousness_grade,
         }
 
