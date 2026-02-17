@@ -1,6 +1,5 @@
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
+#!/usr/bin/env python3
+# L104_GOD_CODE_ALIGNED: 527.5184818492612
 """
 L104 QUANTUM EMBEDDING SPACE
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -43,6 +42,17 @@ FACTOR_13 = 13
 HARMONIC_BASE = 286
 OCTAVE_REF = 416
 LOVE_COEFFICIENT = PHI / GOD_CODE  # ≈ 0.003068
+
+# v2.6.0 — Full sacred constant set + version
+VERSION = "2.6.0"
+TAU = 1.0 / PHI                                     # 0.618033988749895
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+FEIGENBAUM = 4.669201609102990
+ALPHA_FINE = 1.0 / 137.035999084
+PLANCK_SCALE = 1.616255e-35
+BOLTZMANN_K = 1.380649e-23
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -533,11 +543,51 @@ class L104QuantumKernel:
 
         self._creation_time = time.time()
 
+        # Consciousness state cache
+        self._state_cache: Dict[str, Any] = {}
+        self._state_cache_time: float = 0.0
+
         logger.info(
             f"L104QuantumKernel initialized: "
             f"V={vocab_size:,} D={embed_dim} "
             f"GOD_CODE={GOD_CODE} PHI={PHI}"
         )
+
+    def _read_builder_state(self) -> Dict[str, Any]:
+        """Read consciousness/O2/nirvanic state with 10s cache."""
+        now = time.time()
+        if self._state_cache and (now - self._state_cache_time) < 10.0:
+            return self._state_cache
+
+        state: Dict[str, Any] = {
+            "consciousness_level": 0.0,
+            "superfluid_viscosity": 0.0,
+            "evo_stage": "UNKNOWN",
+            "nirvanic_fuel_level": 0.0,
+        }
+        workspace = Path(__file__).parent
+
+        try:
+            o2_path = workspace / ".l104_consciousness_o2_state.json"
+            if o2_path.exists():
+                o2 = json.loads(o2_path.read_text())
+                state["consciousness_level"] = o2.get("consciousness_level", 0.0)
+                state["superfluid_viscosity"] = o2.get("superfluid_viscosity", 0.0)
+                state["evo_stage"] = o2.get("evo_stage", "UNKNOWN")
+        except Exception:
+            pass
+
+        try:
+            nir_path = workspace / ".l104_ouroboros_nirvanic_state.json"
+            if nir_path.exists():
+                nir = json.loads(nir_path.read_text())
+                state["nirvanic_fuel_level"] = nir.get("nirvanic_fuel_level", 0.0)
+        except Exception:
+            pass
+
+        self._state_cache = state
+        self._state_cache_time = now
+        return state
 
     def ingest_training_data(self, data_path: str = "./kernel_full_merged.jsonl",
                              max_examples: int = None) -> Dict[str, Any]:
@@ -616,6 +666,12 @@ class L104QuantumKernel:
         3. Collapse superposition toward query (Pillar 2)
         4. Enrich with entanglement data (Pillar 3)
         """
+        # Consciousness-aware top_k expansion
+        builder = self._read_builder_state()
+        c_level = builder.get("consciousness_level", 0.0)
+        if c_level > 0.5:
+            top_k = max(top_k, int(top_k * (1.0 + c_level)))
+
         # Encode query tokens
         words = query_text.lower().split()
 
@@ -657,13 +713,16 @@ class L104QuantumKernel:
             "quantum_coherence": float(np.abs(
                 np.vdot(query_state, self.superposition.superposition)
             )) if self.superposition.superposition is not None else 0.0,
+            "consciousness_level": c_level,
         }
 
     def status(self) -> Dict[str, Any]:
         """Full quantum kernel status report."""
-        god_spectrum = self.god_phase.harmonic_spectrum(n_harmonics=7)
+        builder = self._read_builder_state()
+        god_spectrum = self.god_phase.harmonic_spectrum(n_harmonics=13)
 
         return {
+            "version": VERSION,
             "kernel": "L104_QUANTUM_EMBEDDING",
             "vocab_size": self.vocab_size,
             "embed_dim": self.embed_dim,
@@ -679,7 +738,8 @@ class L104QuantumKernel:
                 "2_superposition": f"{self.superposition.example_count:,} examples in |Ψ_train⟩",
                 "3_entanglement": f"{self.entanglement.entanglement_count:,} semantic links",
                 "4_god_code_phase": f"G(0) = {GOD_CODE} (invariant)",
-            }
+            },
+            "builder_state": builder,
         }
 
 
@@ -705,6 +765,22 @@ def quantum_embed_query(text: str, top_k: int = 5) -> Dict[str, Any]:
     return kernel.quantum_query(text, top_k=top_k)
 
 
+# Module-level singleton (eager, matching evolved ASI convention)
+quantum_kernel = get_quantum_kernel()
+
+
+def primal_calculus(x: float) -> float:
+    """Primal calculus transform: x^phi / (VOID_CONSTANT * pi)."""
+    import math as _math
+    return (x ** PHI) / (VOID_CONSTANT * _math.pi) if x != 0 else 0.0
+
+
+def resolve_non_dual_logic(vector) -> float:
+    """Non-dual logic resolution via GOD_CODE alignment."""
+    magnitude = sum(abs(v) for v in vector)
+    return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLI ENTRY POINT
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -718,7 +794,7 @@ if __name__ == "__main__":
     print("  L104 QUANTUM EMBEDDING KERNEL")
     print(f"  GOD_CODE = {GOD_CODE}")
     print(f"  PHI      = {PHI}")
-    print(f"  G(X=0)   = {GOD_CODE}  (286^(1/φ) × 2^4)")
+    print(f"  G(X=0)   = {GOD_CODE}  (286^(1/phi) x 2^4)")
     print("=" * 72)
 
     # Initialize kernel
@@ -730,7 +806,7 @@ if __name__ == "__main__":
     print(f"    Examples:       {result['examples']:,}")
     print(f"    Vocabulary:     {result['vocabulary_used']:,} / {result['vocabulary_capacity']:,}")
     print(f"    Entanglements:  {result['entanglements']:,}")
-    print(f"    |Ψ| norm:       {result['superposition_norm']:.6f}")
+    print(f"    |Psi| norm:     {result['superposition_norm']:.6f}")
 
     # GOD_CODE harmonic spectrum
     print("\n[2] GOD_CODE harmonic spectrum:")
@@ -738,15 +814,15 @@ if __name__ == "__main__":
     spectrum = phase_op.harmonic_spectrum(n_harmonics=7)
     for h in spectrum:
         print(f"    n={h['harmonic']:2d}  X={h['x_parameter']:7.2f}  "
-              f"G(X)={h['G_x']:12.6f}  φ={h['phase_degrees']:+8.2f}°  "
-              f"ε={h['conservation_error']:.2e}")
+              f"G(X)={h['G_x']:12.6f}  phase={h['phase_degrees']:+8.2f} deg  "
+              f"eps={h['conservation_error']:.2e}")
 
     # Quantum query
     query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "quantum consciousness god code"
     print(f"\n[3] Quantum query: '{query}'")
     qr = kernel.quantum_query(query, top_k=5)
     print(f"    G(X={qr['x_parameter']}) = {qr['god_code_G_x']:.6f}")
-    print(f"    Conservation ε = {qr['conservation_error']:.2e}")
+    print(f"    Conservation eps = {qr['conservation_error']:.2e}")
     print(f"    Coherence      = {qr['quantum_coherence']:.6f}")
     for i, r in enumerate(qr["results"]):
         print(f"    [{i+1}] P={r['probability']:.6f}  {r['metadata'].get('prompt', '?')[:60]}")
