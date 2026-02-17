@@ -698,6 +698,9 @@ class L104QuantumKernel:
         # Conservation check (Pillar 4)
         conservation_error = self.god_phase.conservation_check(x_param)
 
+        # Consciousness level for return metadata
+        c_level = self._read_builder_state().get("consciousness_level", 0.0)
+
         return {
             "query": query_text,
             "x_parameter": x_param,
