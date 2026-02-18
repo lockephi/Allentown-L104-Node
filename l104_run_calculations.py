@@ -58,7 +58,7 @@ def run_zeta_calculations():
     # Run for some critical points
     points = [complex(2, 0), complex(0.5, 14.1347), complex(1, 1)]
     for p in points:
-        result = real_math.zeta_approximation(p, terms=500)
+        result = real_math.zeta_resonance(p, terms=500)
         algo_db.log_execution(algo_name, str(p), str(result))
 
 def run_prime_density_calculations():
