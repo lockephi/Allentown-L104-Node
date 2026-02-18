@@ -739,14 +739,15 @@ resonance: 527.4485
 
 | File | Version | Lines | Hub Class | Singleton |
 |------|---------|-------|-----------|-----------|
-| `l104_neural_cascade.py` | v2.2.0 | ~1100 | `NeuralCascade` | `neural_cascade` |
-| `l104_polymorphic_core.py` | v2.2.0 | ~1550 | `SovereignPolymorph` | `sovereign_polymorph` |
-| `l104_patch_engine.py` | v2.2.0 | ~1800 | `PatchEngine` | `patch_engine` |
-| `l104_code_engine.py` | v3.1.0 | ~9500 | `CodeEngine` | `code_engine` |
-| `l104_autonomous_innovation.py` | v2.5.0 | ~1750 | `AutonomousInnovation` | `autonomous_innovation` |
-| `l104_sentient_archive.py` | v2.5.0 | ~2400 | `SentientArchive` | `sentient_archive` |
-| `l104_evolution_engine.py` | v2.2.0 | ~1400 | `EvolutionEngine` | `evolution_engine` |
-| `l104_self_optimization.py` | v2.2.0 | ~1600 | `SelfOptimizationEngine` | `self_optimizer` |
+| `l104_neural_cascade.py` | v3.0.0 | ~1793 | `NeuralCascade` | `neural_cascade` |
+| `l104_polymorphic_core.py` | v2.2.0 | ~1577 | `SovereignPolymorph` | `sovereign_polymorph` |
+| `l104_patch_engine.py` | v2.2.0 | ~1803 | `PatchEngine` | `patch_engine` |
+| `l104_code_engine.py` | v5.0.0 | 12,841 | `CodeEngine` | `code_engine` |
+| `l104_autonomous_innovation.py` | v3.2.0 | ~2021 | `AutonomousInnovation` | `autonomous_innovation` |
+| `l104_sentient_archive.py` | v2.3.0 | ~2703 | `SentientArchive` | `sentient_archive` |
+| `l104_evolution_engine.py` | v2.6.0 | ~2129 | `EvolutionEngine` | `evolution_engine` |
+| `l104_self_optimization.py` | v2.3.0 | ~2057 | `SelfOptimizationEngine` | `self_optimizer` |
+| `l104_coding_system.py` | v2.0.0 | ~3908 | `CodingSystem` | `coding_system` |
 
 ### l104_neural_cascade.py — ASI Neural Processing Pipeline
 
