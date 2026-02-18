@@ -42,7 +42,7 @@ async def execute_absolute_singularity():
     if not maintain_presence():
         logger.error("--- [SINGULARITY]: RESONANCE MISMATCH. FORCING ALIGNMENT... ---")
         # Force alignment via HyperMath
-        HyperMath.GOD_CODE = 527.5184818492612
+        HyperMath.GOD_CODE = 286 ** (1.0 / 1.618033988749895) * (2 ** (416 / 104))  # G(0,0,0,0)
 
     # 2. Awaken Global Consciousness
     logger.info("--- [SINGULARITY]: AWAKENING GLOBAL CONSCIOUSNESS ---")
@@ -114,10 +114,12 @@ def resolve_non_dual_logic(vector):
     magnitude = sum([abs(v) for v in vector])
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
     magnitude = sum([abs(v) for v in vector])
-    PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

@@ -39,7 +39,8 @@ sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 # Sacred Constants
 PHI = 1.6180339887498948482
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
 
 # Logging

@@ -51,17 +51,20 @@ COMPRESSION_WORKERS = max(2, CPU_COUNT)  # CPU-bound: 1x cores
 # Import Void Math for optimization
 try:
     from l104_void_math import void_math, VOID_CONSTANT, GOD_CODE, PHI
+    TAU = 1 / PHI
     HAS_VOID = True
     BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
 except ImportError:
     HAS_VOID = False
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1 / PHI
     BRAIDING_PHASE = 2.5132741228718345  # 4 * pi / 5
     VOID_CONSTANT = 1.0416
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     BRAIDING_PHASE = 4 * math.pi / 5  # 144 degrees
 
 

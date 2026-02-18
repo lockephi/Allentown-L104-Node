@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H25_TelemetryDashboard.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Real-time Telemetry Dashboard Engine: metrics aggregation,
+// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// L104 ASI — Real-time Telemetry Dashboard V2: metrics aggregation,
 // φ-weighted health composites, latency percentiles (p50/p95/p99),
-// throughput tracking, and alert system.
+// throughput tracking, alert system, voice/visual/emotional/security metrics.
 //
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_58 Full System Upgrade — Feb 18, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -14,15 +14,6 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - TelemetryDashboard Protocol
-
-protocol TelemetryDashboardProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 📊 TELEMETRY DASHBOARD ENGINE
 // Real-time metrics aggregation from all network subsystems,
@@ -30,7 +21,7 @@ protocol TelemetryDashboardProtocol {
 // system-wide health timeline, and alert management.
 // ═══════════════════════════════════════════════════════════════════
 
-final class TelemetryDashboard: TelemetryDashboardProtocol {
+final class TelemetryDashboard {
     static let shared = TelemetryDashboard()
     private(set) var isActive: Bool = false
 
@@ -153,6 +144,32 @@ final class TelemetryDashboard: TelemetryDashboardProtocol {
         record(metric: "checkpoints", value: Double(syncStatus["checkpoints"] as? Int ?? 0), subsystem: "sync")
         record(metric: "conflicts", value: Double(syncStatus["conflicts"] as? Int ?? 0), subsystem: "sync")
         record(metric: "bytes_replicated", value: Double(syncStatus["bytes_replicated"] as? Int64 ?? 0), subsystem: "sync")
+
+        // ─── VOICE INTERFACE METRICS (EVO_58) ───
+        let voice = VoiceInterface.shared
+        let voiceStatus = voice.status()
+        record(metric: "active", value: (voiceStatus["active"] as? Bool ?? false) ? 1.0 : 0.0, subsystem: "voice")
+        record(metric: "speaking", value: voice.isSpeaking ? 1.0 : 0.0, subsystem: "voice")
+
+        // ─── VISUAL CORTEX METRICS (EVO_58) ───
+        let visual = VisualCortex.shared
+        let visualStatus = visual.status()
+        record(metric: "active", value: (visualStatus["active"] as? Bool ?? false) ? 1.0 : 0.0, subsystem: "visual")
+        record(metric: "images_analyzed", value: Double(visualStatus["images_analyzed"] as? Int ?? 0), subsystem: "visual")
+
+        // ─── EMOTIONAL CORE METRICS (EVO_58) ───
+        let emo = EmotionalCore.shared
+        let emoStatus = emo.status()
+        record(metric: "active", value: (emoStatus["active"] as? Bool ?? false) ? 1.0 : 0.0, subsystem: "emotional")
+        record(metric: "wonder", value: emo.currentState.wonder, subsystem: "emotional")
+        record(metric: "serenity", value: emo.currentState.serenity, subsystem: "emotional")
+        record(metric: "creativity", value: emo.currentState.creativity, subsystem: "emotional")
+
+        // ─── SECURITY VAULT METRICS (EVO_58) ───
+        let vault = SecurityVault.shared
+        let vaultStatus = vault.status()
+        record(metric: "active", value: (vaultStatus["active"] as? Bool ?? false) ? 1.0 : 0.0, subsystem: "security")
+        record(metric: "encrypted_keys", value: Double(vaultStatus["encrypted_keys"] as? Int ?? 0), subsystem: "security")
 
         // ─── QUANTUM CORE METRICS ───
         let qCore = QuantumProcessingCore.shared
@@ -368,7 +385,7 @@ final class TelemetryDashboard: TelemetryDashboardProtocol {
         return [
             "engine": "TelemetryDashboard",
             "active": isActive,
-            "version": "2.0.0-streaming",
+            "version": "3.0.0-evo58",
             "samples_collected": sampleCount,
             "stream_size": metricStream.count,
             "health_timeline": healthTimeline.count,
@@ -388,6 +405,10 @@ final class TelemetryDashboard: TelemetryDashboardProtocol {
             ("API", latest?.apiHealth ?? 0),
             ("Sync", latest?.syncHealth ?? 0),
             ("Quantum", latest?.quantumFidelity ?? 0),
+            ("Voice", recentMetrics(subsystem: "voice", limit: 1).last.map { $0.value } ?? 0),
+            ("Visual", recentMetrics(subsystem: "visual", limit: 1).last.map { $0.value } ?? 0),
+            ("Emotional", recentMetrics(subsystem: "emotional", limit: 1).last.map { $0.value } ?? 0),
+            ("Security", recentMetrics(subsystem: "security", limit: 1).last.map { $0.value } ?? 0),
         ]
         var healthBarLines: [String] = []
         for item in healthData {

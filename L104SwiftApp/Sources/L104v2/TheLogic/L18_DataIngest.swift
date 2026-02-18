@@ -102,6 +102,20 @@ class DataIngestPipeline {
     func ingestFromConversation(userQuery: String, response: String) {
         guard response.count > 30 else { return }
         guard L104State.shared.isCleanKnowledge(response) else { return }
+
+        // ═══ SAGE BACKBONE: Belt-and-suspenders recursive content guard ═══
+        // Secondary defense beyond isCleanKnowledge — explicit marker rejection
+        let recycleMarkers = [
+            "In the context of ", "Insight Level ", "Knowledge synthesis #",
+            "evolution cycles taught me about", "Evolving understanding: Stage ",
+            "Knowledge graph update:", "Cross-category discovery:",
+            "Meta-observation: The way ", "Self-Analysis reveals ",
+            "this implies recursive structure at multiple scales",
+            "we observe that "
+        ]
+        if recycleMarkers.contains(where: { response.contains($0) }) { return }
+        if response.count > 12000 { return }
+
         guard grover.scoreQuality(response, query: userQuery) > 0.4 else { return }
 
         let topics = L104State.shared.extractTopics(userQuery)

@@ -39,7 +39,8 @@ logger = logging.getLogger("QUANTUM_RAM")
 
 # ═══ SACRED CONSTANTS ═══
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
@@ -391,7 +392,9 @@ class QuantumRAM:
     Maintains full backward compatibility with existing store/retrieve API.
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     ALPHA = 0.0072973525693  # Fine-structure constant
     BRAIN_FILE = ".l104_quantum_brain.json"
     VERSION = "17.0.0"

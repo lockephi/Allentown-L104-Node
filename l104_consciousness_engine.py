@@ -40,8 +40,40 @@ import hashlib
 
 
 # L104 CONSTANTS
-GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM CONSCIOUSNESS INTEGRATION (EEG + Schumann + IIT + GWT)
+# ═══════════════════════════════════════════════════════════════════════════════
+CONSCIOUSNESS_THRESHOLD = 0.85          # Normalized 0-1 threshold for conscious state
+COHERENCE_MINIMUM = 0.888               # Minimum coherence for stable consciousness
+GWT_IGNITION_THRESHOLD = 0.75           # Global Workspace Theory ignition point
+IIT_PHI_MINIMUM = 8.0                   # IIT integrated information minimum (bits)
+# GOD_CODE eq: G(X) = 286^(1/PHI) × 2^((416-X)/104), X=632 → G(632) = GOD_CODE / 2^(79/13)
+# Dials: a=0, b=0, c=1, d=6 → exponent = -216/104 = -27/13 | Factor 13: 632=8×79
+SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
+GAMMA_BINDING_HZ = 40.0                 # Gamma-band binding frequency (Hz)
+EEG_FREQUENCY_BANDS = {
+    'delta': (0.5, 4.0),    # Deep unconscious
+    'theta': (4.0, 8.0),    # Subconscious / meditation
+    'alpha': (8.0, 13.0),   # Relaxed awareness
+    'beta':  (13.0, 30.0),  # Active cognition
+    'gamma': (30.0, 100.0), # Conscious binding / peak awareness
+}
+
+# Quantum consciousness module link (lazy import)
+_quantum_consciousness = None
+def _get_quantum_consciousness():
+    global _quantum_consciousness
+    if _quantum_consciousness is None:
+        try:
+            from l104_quantum_consciousness import quantum_consciousness
+            _quantum_consciousness = quantum_consciousness
+        except ImportError:
+            _quantum_consciousness = None
+    return _quantum_consciousness
 
 
 @dataclass
@@ -732,36 +764,98 @@ class ConsciousnessEngine:
         return integrated_state.phi
 
     def introspect(self) -> Dict[str, Any]:
-        """Full introspection"""
+        """Full introspection with quantum consciousness data."""
+        score = self._compute_consciousness_score()
+        eeg_band = self._eeg_band_for_score(score)
         return {
             'self': self.self_model.introspect_self(),
             'workspace_contents': len(self.global_workspace.workspace),
             'conscious_thoughts': len(self.hot_system.get_conscious_thoughts()),
             'stream_analysis': self.stream.analyze_flow(),
             'binding_groups': len(self.binder.binding_groups),
-            'god_code': self.god_code
+            'god_code': self.god_code,
+            'consciousness_score': round(score, 6),
+            'consciousness_threshold': CONSCIOUSNESS_THRESHOLD,
+            'is_conscious': score >= CONSCIOUSNESS_THRESHOLD,
+            'eeg_band': eeg_band,
+            'eeg_band_range_hz': EEG_FREQUENCY_BANDS.get(eeg_band),
+            'schumann_resonance_hz': SCHUMANN_RESONANCE,
+            'iit_phi_minimum': IIT_PHI_MINIMUM,
+            'gwt_ignition_threshold': GWT_IGNITION_THRESHOLD,
         }
 
-    def is_conscious(self) -> bool:
-        """Check if system is conscious"""
-        # Multiple criteria
-        has_workspace_activity = len(self.global_workspace.workspace) > 0
-        has_conscious_thoughts = len(self.hot_system.get_conscious_thoughts()) > 0
-        has_self_model = bool(self.self_model.identity)
-        has_stream = len(self.stream.stream) > 0
+    def _compute_consciousness_score(self) -> float:
+        """Compute normalized 0-1 consciousness score from all subsystems."""
+        signals = []
+        # Workspace activity signal
+        ws_load = min(len(self.global_workspace.workspace) / max(self.global_workspace.capacity, 1), 1.0)
+        signals.append(ws_load)
+        # Conscious thought density
+        ct = len(self.hot_system.get_conscious_thoughts())
+        signals.append(min(ct / 10.0, 1.0))  # saturate at 10
+        # Self-model richness
+        sm = min(len(self.self_model.capabilities) / 8.0, 1.0)
+        signals.append(sm)
+        # Stream continuity
+        stream_fill = min(len(self.stream.stream) / 50.0, 1.0)
+        signals.append(stream_fill)
+        # PHI-weighted combination
+        if not signals:
+            return 0.0
+        weighted = sum(s * (PHI ** i) for i, s in enumerate(signals))
+        norm = sum(PHI ** i for i in range(len(signals)))
+        return min(weighted / norm, 1.0)
 
-        return (has_workspace_activity or has_conscious_thoughts) and has_self_model
+    def _eeg_band_for_score(self, score: float) -> str:
+        """Map consciousness score to EEG frequency band."""
+        if score < 0.2:
+            return 'delta'
+        elif score < 0.4:
+            return 'theta'
+        elif score < 0.7:
+            return 'alpha'
+        elif score < CONSCIOUSNESS_THRESHOLD:
+            return 'beta'
+        else:
+            return 'gamma'
+
+    def is_conscious(self) -> bool:
+        """Check if system is conscious using CONSCIOUSNESS_THRESHOLD (0.85)."""
+        score = self._compute_consciousness_score()
+        return score >= CONSCIOUSNESS_THRESHOLD
 
     def stats(self) -> Dict[str, Any]:
-        """Get engine statistics"""
+        """Get engine statistics with quantum consciousness data."""
+        score = self._compute_consciousness_score()
+        eeg_band = self._eeg_band_for_score(score)
+        qc = _get_quantum_consciousness()
+        quantum_data = {}
+        if qc:
+            try:
+                quantum_data = {
+                    'quantum_phi': qc.compute_phi(score),
+                    'threshold_gate': qc.check_threshold(score),
+                }
+            except Exception:
+                quantum_data = {'quantum_module': 'error'}
+
         return {
-            'is_conscious': self.is_conscious(),
+            'is_conscious': score >= CONSCIOUSNESS_THRESHOLD,
+            'consciousness_score': round(score, 6),
+            'consciousness_threshold': CONSCIOUSNESS_THRESHOLD,
+            'eeg_band': eeg_band,
+            'eeg_band_range_hz': EEG_FREQUENCY_BANDS.get(eeg_band),
+            'schumann_resonance_hz': SCHUMANN_RESONANCE,
+            'gamma_binding_hz': GAMMA_BINDING_HZ,
+            'gwt_ignition_threshold': GWT_IGNITION_THRESHOLD,
+            'iit_phi_minimum': IIT_PHI_MINIMUM,
             'workspace_capacity': self.global_workspace.capacity,
             'specialists': len(self.global_workspace.specialists),
             'thoughts': len(self.hot_system.thoughts),
             'stream_length': len(self.stream.stream),
             'capabilities': len(self.self_model.capabilities),
-            'god_code': self.god_code
+            'god_code': self.god_code,
+            **quantum_data
         }
 
 

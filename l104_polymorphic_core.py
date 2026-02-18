@@ -46,8 +46,9 @@ from typing import List, Dict, Any, Optional, Tuple, Callable
 # ═══════════════════════════════════════════════════════════════════════════════
 
 VERSION = "2.2.0"
-GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 VOID_CONSTANT = 1.0416180339887497
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -1294,8 +1295,8 @@ class SovereignPolymorph:
     ╚═══════════════════════════════════════════════════════════════════╝
     """
 
-    GOD_CODE = 527.5184818492612
-    PHI = 1.6180339887498949
+    PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     LATTICE_RATIO = 286 / 416
 
     def __init__(self):

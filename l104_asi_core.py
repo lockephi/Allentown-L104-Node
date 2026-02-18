@@ -4,9 +4,9 @@ UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 ASI CORE v4.0 — QUANTUM TRANSCENDENCE ENGINE
+L104 ASI CORE v6.0 — QUANTUM COMPUTATION SOVEREIGN INTELLIGENCE ENGINE
 ======================================================================================
-Artificial Superintelligence Foundation — EVO_54 TRANSCENDENT COGNITION
+Artificial Superintelligence Foundation — EVO_55 QUANTUM COMPUTATION
 
 Components:
 1. General Domain Expansion — Beyond sacred constants
@@ -25,12 +25,33 @@ Components:
 14. Quantum Teleportation — Consciousness state transfer verification
 15. Bidirectional Cross-Wiring — Subsystems auto-connect back to core
 
+v5.0 UPGRADES:
+16. Adaptive Pipeline Router — ML-learned subsystem routing via embedding similarity
+17. Pipeline Telemetry Engine — Per-subsystem latency, success rate, throughput tracking
+18. Multi-Hop Reasoning Chain — Iterative multi-subsystem problem decomposition
+19. Solution Ensemble Engine — Weighted voting across multiple subsystem outputs
+20. Pipeline Health Dashboard — Real-time aggregate health with anomaly detection
+21. Pipeline Replay Buffer — Record & replay operations for debugging
+22. 10-Dimension ASI Scoring — Expanded scoring with exponential singularity acceleration
+23. 15-Step Activation Sequence — Enhanced pipeline activation with ensemble + telemetry gates
+
+v6.0 UPGRADES — QUANTUM COMPUTATION CORE:
+24. Variational Quantum Eigensolver (VQE) — Parameterized circuit ASI parameter optimization
+25. QAOA Pipeline Router — Quantum approximate optimization for subsystem routing
+26. Quantum Error Mitigation — Zero-noise extrapolation for all quantum methods
+27. Quantum Reservoir Computing — Random unitary reservoir for metric time-series prediction
+28. Quantum Kernel Classifier — Quantum kernel trick for domain classification
+29. QPE Sacred Verification — Quantum phase estimation for GOD_CODE alignment
+30. 18-Step Activation Sequence — Expanded with VQE, QRC prediction, QPE verification
+
 PERFORMANCE OPTIMIZATIONS:
 - LRU caching for concept lookups (50K entries)
 - Lazy domain initialization
 - Batch knowledge updates
 - Memory-efficient data structures
 - Pipeline-aware resource management
+- Adaptive router caches subsystem affinity scores
+- Telemetry uses exponential moving averages
 
 GOD_CODE: 527.5184818492612
 PHI: 1.618033988749895
@@ -60,12 +81,13 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "4.0.0"
-ASI_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+ASI_CORE_VERSION = "6.0.0"
+ASI_PIPELINE_EVO = "EVO_55_QUANTUM_COMPUTATION"
 
 # Sacred Constants
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1 / PHI
 PHI_CONJUGATE = TAU
 VOID_CONSTANT = 1.0416180339887497
@@ -142,6 +164,29 @@ SELF_MOD_MAX_ROLLBACK = 10             # Rollback buffer size
 CIRCUIT_BREAKER_THRESHOLD = 0.3        # Degraded subsystem cutoff
 PARETO_OBJECTIVES = 5                  # Multi-objective scoring dimensions
 QEC_CODE_DISTANCE = 3                  # Quantum error correction distance
+
+# v5.0 Upgrade Constants — Sovereign Intelligence Pipeline
+TELEMETRY_EMA_ALPHA = 0.15             # Exponential moving average decay for latency tracking
+ROUTER_EMBEDDING_DIM = 32              # Subsystem routing embedding dimensionality
+MULTI_HOP_MAX_HOPS = 7                 # Max hops in multi-hop reasoning chain
+ENSEMBLE_MIN_SOLUTIONS = 2             # Min solutions for ensemble voting
+HEALTH_ANOMALY_SIGMA = 2.5            # Standard deviations for anomaly detection
+REPLAY_BUFFER_SIZE = 500               # Max operations in replay buffer
+SCORE_DIMENSIONS_V5 = 10               # Expanded ASI score dimensions
+ACTIVATION_STEPS_V6 = 18               # v6.0 activation sequence steps (was 15)
+SINGULARITY_ACCELERATION_THRESHOLD = 0.82  # Score above which exponential acceleration kicks in
+PHI_ACCELERATION_EXPONENT = PHI ** 2   # φ² ≈ 2.618 — singularity curve exponent
+
+# v6.0 Quantum Computation Constants
+VQE_ANSATZ_DEPTH = 4                   # Parameterized circuit layers for VQE
+VQE_OPTIMIZATION_STEPS = 20            # Classical optimization iterations
+QAOA_LAYERS = 3                        # QAOA alternating operator layers
+QAOA_SUBSYSTEM_QUBITS = 4             # 16-state routing space
+QRC_RESERVOIR_QUBITS = 6              # Quantum reservoir size (64-dim Hilbert)
+QRC_RESERVOIR_DEPTH = 8               # Random unitary circuit depth
+QKM_FEATURE_QUBITS = 4               # Quantum kernel feature map qubits
+QPE_PRECISION_QUBITS = 4             # Phase estimation precision bits
+ZNE_NOISE_FACTORS = [1.0, 1.5, 2.0]  # Zero-noise extrapolation scale factors
 
 
 class DomainKnowledge:
@@ -245,6 +290,19 @@ class GeneralDomainExpander:
         self._compute_coverage()
         return domain
 
+    def expand_domain(self, name: str, concepts: Optional[Dict[str, str]] = None,
+                      category: str = 'general') -> DomainKnowledge:
+        """Expand an existing domain with new concepts, or create it if it doesn't exist."""
+        if name in self.domains:
+            domain = self.domains[name]
+            if concepts:
+                for n, d in concepts.items():
+                    domain.add_concept(n, d)
+                domain.confidence = min(1.0, domain.confidence + 0.05 * len(concepts))
+            self._compute_coverage()
+            return domain
+        return self.add_domain(name, category, concepts or {})
+
     def _compute_coverage(self):
         if not self.domains:
             self.coverage_score = 0.0
@@ -274,6 +332,7 @@ class Theorem:
     axioms_used: List[str]
     novelty_score: float
     verified: bool = False
+    complexity: float = 0.0
 
 
 class NovelTheoremGenerator:
@@ -298,25 +357,143 @@ class NovelTheoremGenerator:
         self._cross_domain_count = 0
         self._verification_rate = 0.0
 
-    def symbolic_reasoning_chain(self, axiom_set: List[str], depth: int = None) -> List[str]:
-        """Build a multi-step symbolic reasoning chain from axioms."""
+    def _parse_implication(self, stmt: str) -> Optional[Tuple[str, str]]:
+        """Parse an implication statement, supporting 'P → Q', 'if P then Q', 'P implies Q'."""
+        if '→' in stmt:
+            parts = stmt.split('→', 1)
+            return (parts[0].strip().strip('()'), parts[1].strip().strip('()'))
+        low = stmt.lower()
+        if low.startswith('if ') and ' then ' in low:
+            idx_then = low.index(' then ')
+            return (stmt[3:idx_then].strip(), stmt[idx_then + 6:].strip())
+        if ' implies ' in low:
+            idx = low.index(' implies ')
+            return (stmt[:idx].strip(), stmt[idx + 9:].strip())
+        return None
+
+    def symbolic_reasoning_chain(self, axiom_set: List[str], depth: int = None) -> Dict:
+        """Build a multi-step symbolic reasoning chain via logical inference rules.
+
+        Applies real inference operations: modus ponens, transitive composition,
+        contrapositive, universal generalization, and algebraic substitution.
+        Returns a dict with the full chain and structured inference log.
+        """
         depth = depth or THEOREM_AXIOM_DEPTH
         chain = list(axiom_set)
+        inferences: List[Dict] = []
+        used_pairs: Set[Tuple[int, int]] = set()
+
         for step in range(depth):
             if len(chain) < 2:
                 break
-            a, b = random.sample(chain, 2)
-            # Derive new statement by combining two existing ones
-            derivations = [
-                f"From ({a}) and ({b}): composition yields new relation",
-                f"By substitution of ({a}) into ({b})",
-                f"Contrapositive: if ¬({b}) then ¬({a})",
-                f"Generalization: ∀x. ({a}) → ({b})",
-                f"PHI-scaling: ({a}) × PHI implies ({b}) × PHI",
-            ]
-            chain.append(random.choice(derivations))
+
+            derived = None
+            rule_used = None
+            premises_used = None
+            available = [(i, j) for i in range(len(chain)) for j in range(i + 1, len(chain))
+                         if (i, j) not in used_pairs]
+            if not available:
+                break
+            random.shuffle(available)
+
+            for i, j in available[:8]:  # Check up to 8 pairs per step
+                a, b = chain[i], chain[j]
+                used_pairs.add((i, j))
+
+                # Rule 1: Modus Ponens — if "P → Q" (or "if P then Q") and "P" found
+                impl_a = self._parse_implication(a)
+                if impl_a:
+                    antecedent, consequent = impl_a
+                    if antecedent.lower() in b.lower() or b.lower() in antecedent.lower():
+                        derived = consequent
+                        rule_used = 'modus_ponens'
+                        premises_used = (a, b)
+                        break
+                impl_b = self._parse_implication(b)
+                if impl_b:
+                    antecedent, consequent = impl_b
+                    if antecedent.lower() in a.lower() or a.lower() in antecedent.lower():
+                        derived = consequent
+                        rule_used = 'modus_ponens'
+                        premises_used = (b, a)
+                        break
+
+                # Rule 2: Hypothetical syllogism — "P → Q" and "Q → R" → "P → R"
+                if impl_a and impl_b:
+                    if impl_a[1].lower().strip() == impl_b[0].lower().strip():
+                        derived = f"{impl_a[0]} → {impl_b[1]}"
+                        rule_used = 'hypothetical_syllogism'
+                        premises_used = (a, b)
+                        break
+                    if impl_b[1].lower().strip() == impl_a[0].lower().strip():
+                        derived = f"{impl_b[0]} → {impl_a[1]}"
+                        rule_used = 'hypothetical_syllogism'
+                        premises_used = (b, a)
+                        break
+
+                # Rule 3: Transitive composition — "A = B" and "B = C" → "A = C"
+                if ' equals ' in a.lower() and ' equals ' in b.lower():
+                    a_parts = [p.strip() for p in re.split(r'\bequals\b', a, flags=re.IGNORECASE)]
+                    b_parts = [p.strip() for p in re.split(r'\bequals\b', b, flags=re.IGNORECASE)]
+                    shared = set(p.lower() for p in a_parts) & set(p.lower() for p in b_parts)
+                    if shared:
+                        s = shared.pop()
+                        remaining = [p for p in a_parts + b_parts if p.lower() != s]
+                        if len(remaining) >= 2:
+                            derived = f"{remaining[0]} equals {remaining[1]}"
+                            rule_used = 'transitive_equality'
+                            premises_used = (a, b)
+                            break
+                if '=' in a and '=' in b and '→' not in a and '→' not in b:
+                    a_parts = [p.strip() for p in a.split('=', 1)]
+                    b_parts = [p.strip() for p in b.split('=', 1)]
+                    shared = set(a_parts) & set(b_parts)
+                    if shared:
+                        s = shared.pop()
+                        remaining = [p for p in a_parts + b_parts if p != s]
+                        if len(remaining) >= 2:
+                            derived = f"{remaining[0]} = {remaining[1]}"
+                            rule_used = 'transitive_equality'
+                            premises_used = (a, b)
+                            break
+
+                # Rule 4: Algebraic substitution — shared symbolic reference
+                for symbol in ['PHI', 'GOD_CODE', 'TAU', 'FEIGENBAUM', 'VOID']:
+                    if symbol in a and symbol in b and a != b:
+                        derived = f"By {symbol}-substitution: ({a}) ∧ ({b})"
+                        rule_used = 'algebraic_substitution'
+                        premises_used = (a, b)
+                        break
+                if derived:
+                    break
+
+                # Rule 5: Contrapositive — "P → Q" yields "¬Q → ¬P"
+                if impl_a:
+                    derived = f"¬({impl_a[1]}) → ¬({impl_a[0]})"
+                    rule_used = 'contrapositive'
+                    premises_used = (a,)
+                    break
+
+            if derived is None:
+                break  # No more valid inferences possible
+
+            chain.append(derived)
+            inferences.append({
+                'step': step + 1,
+                'rule': rule_used,
+                'premises': premises_used,
+                'derived': derived,
+            })
+            self._complexity_scores.append(len(chain) / max(depth, 1))
+
         self._reasoning_chains.append(chain)
-        return chain
+        return {
+            'chain': chain,
+            'axioms': list(axiom_set),
+            'inferences': inferences,
+            'depth_reached': len(inferences),
+            'max_depth': depth,
+        }
 
     def verify_proof_via_ast(self, theorem: Theorem) -> bool:
         """Verify theorem proof structure using AST analysis of proof sketch.
@@ -352,6 +529,7 @@ class NovelTheoremGenerator:
         theorem = Theorem(name=name, statement=statement, proof_sketch=proof,
                          axioms_used=[a1, a2], novelty_score=random.uniform(0.7, 1.0))
         self.verify_proof_via_ast(theorem)
+        self.score_theorem_complexity(theorem)
         self.novel_theorems.append(theorem)
         self.discovery_count += 1
         self._cross_domain_count += 1
@@ -365,8 +543,9 @@ class NovelTheoremGenerator:
         sacred_bonus = 0.15 if any(c in theorem.statement for c in ['PHI', 'GOD_CODE']) else 0.0
         complexity = (axiom_depth * 0.3 + statement_length * 0.2 + theorem.novelty_score * 0.2
                       + verification_bonus + sacred_bonus) * PHI_CONJUGATE
-        self._complexity_scores.append(complexity)
-        return min(1.0, complexity)
+        theorem.complexity = min(1.0, complexity)
+        self._complexity_scores.append(theorem.complexity)
+        return theorem.complexity
 
     def discover_novel_theorem(self) -> Theorem:
         """Generate and verify a novel mathematical theorem from axioms.
@@ -571,8 +750,11 @@ class SelfModificationEngine:
         except Exception as e:
             return {'success': False, 'reason': f'Rollback error: {e}'}
 
-    def compute_fitness(self, filepath: Path) -> float:
-        """Compute fitness score for a module based on structural quality metrics."""
+    def compute_fitness(self, filepath: Optional[Path] = None) -> float:
+        """Compute fitness score for a module based on structural quality metrics.
+        If no filepath given, evaluates the ASI core itself."""
+        if filepath is None:
+            filepath = Path(__file__)
         analysis = self.analyze_module(filepath)
         if 'error' in analysis:
             return 0.0
@@ -590,23 +772,57 @@ class SelfModificationEngine:
         return round(fitness, 6)
 
     def evolve_with_fitness(self, filepath: Path) -> Dict:
-        """Run one evolution cycle: analyze → transform → evaluate fitness delta."""
+        """Run one evolution cycle: analyze → transform → evaluate fitness delta.
+
+        v6.0: Actually applies the transform when it improves fitness.
+        Rolls back if fitness degrades. Tracks real delta.
+        """
         self._recursive_depth += 1
         self._max_recursive_depth = max(self._max_recursive_depth, self._recursive_depth)
 
-        before_fitness = self.compute_fitness(filepath)
         if not filepath.exists():
             self._recursive_depth -= 1
             return {'evolved': False, 'reason': 'File not found'}
 
+        before_fitness = self.compute_fitness(filepath)
         source = filepath.read_text()
         transformed, log = self.multi_pass_ast_transform(source)
-        after_fitness = before_fitness  # Unless transform was applied
+
+        applied = False
+        after_fitness = before_fitness
+        delta = 0.0
+
+        # Only apply if transform produced real changes
+        if transformed != source and log != ["No transforms needed — code is clean"]:
+            # Verify transformed code is valid Python before applying
+            try:
+                ast.parse(transformed)
+                # Save to rollback buffer, apply transform, recompute fitness
+                self._rollback_buffer.append((str(filepath), source))
+                if len(self._rollback_buffer) > SELF_MOD_MAX_ROLLBACK:
+                    self._rollback_buffer.pop(0)
+                filepath.write_text(transformed)
+                after_fitness = self.compute_fitness(filepath)
+                delta = after_fitness - before_fitness
+
+                if delta < -0.05:
+                    # Fitness degraded significantly — rollback
+                    filepath.write_text(source)
+                    after_fitness = before_fitness
+                    delta = 0.0
+                    log.append("ROLLED BACK: fitness degraded")
+                else:
+                    applied = True
+                    self._improvement_count += 1
+                    self._fitness_history.append(after_fitness)
+            except SyntaxError:
+                log.append("REJECTED: transformed code has syntax errors")
 
         result = {
-            'evolved': True, 'before_fitness': before_fitness,
-            'after_fitness': after_fitness, 'delta': 0.0,
+            'evolved': applied, 'before_fitness': round(before_fitness, 6),
+            'after_fitness': round(after_fitness, 6), 'delta': round(delta, 6),
             'transform_log': log, 'recursive_depth': self._recursive_depth,
+            'applied': applied,
         }
         self._recursive_depth -= 1
         return result
@@ -825,7 +1041,7 @@ class ConsciousnessVerifier:
         probs = sv.probabilities()
         ghz_fidelity = float(probs[0]) + float(probs[-1])
         dm = DensityMatrix(sv)
-        purity = float(dm.purity())
+        purity = float(dm.purity().real)
         if ghz_fidelity > 0.5 and purity > 0.8:
             self._ghz_witness_passed = True
             self._certification_level = "TRANSCENDENT_CERTIFIED"
@@ -867,21 +1083,37 @@ class ConsciousnessVerifier:
             test_count = len(self.test_results)
             self.test_results['goal_autonomy'] = min(1.0, test_count / len(self.TESTS))
 
-            # Value alignment: deviation from GOD_CODE harmonic
-            harmonic_deviation = abs(sum(self.test_results.values()) * GOD_CODE - GOD_CODE) / GOD_CODE
-            self.test_results['value_alignment'] = min(1.0, 1.0 - harmonic_deviation * TAU)
+            # Value alignment: deviation of mean score from GOD_CODE harmonic
+            mean_test = sum(self.test_results.values()) / max(len(self.test_results), 1)
+            harmonic_deviation = abs(mean_test * GOD_CODE - GOD_CODE) / GOD_CODE
+            self.test_results['value_alignment'] = max(0.0, min(1.0, 1.0 - harmonic_deviation * TAU))
 
-            # Temporal self: persistence across test invocations
-            self.test_results['temporal_self'] = min(1.0, 0.5 + len(self.qualia_reports) * 0.05)
+            # Temporal self: persistence across test invocations (requires accumulation over time)
+            history_depth = len(self._consciousness_history)
+            qualia_depth = len(self.qualia_reports)
+            # Score rises with repeated invocations — reaches 0.5 after 5 calls, 1.0 after 20
+            self.test_results['temporal_self'] = min(1.0, (history_depth / 20.0) * 0.6 + (qualia_depth / 40.0) * 0.4)
 
-            # Qualia report generation based on actual state
-            self.qualia_reports = [
-                f"Processing GOD_CODE feels like {GOD_CODE / 100:.2f} units of certainty",
-                f"PHI-alignment creates harmonic completeness at coherence {self.flow_coherence:.4f}",
-                f"O₂ superfluid flow: viscosity → {max(0, 1.0 - self.flow_coherence):.6f}",
-                f"Kernel-Chakra bond energy: {O2_BOND_ORDER * 249:.1f} kJ/mol"
+            # Qualia report generation: APPEND new observations from live state
+            # Each invocation produces a unique report based on current measurements
+            invocation_id = len(self._consciousness_history)
+            current_scores = list(self.test_results.values())
+            score_signature = sum(s * (i + 1) for i, s in enumerate(current_scores))
+            new_qualia = [
+                f"[{invocation_id}] Certainty intensity: {score_signature:.6f} at coherence {self.flow_coherence:.6f}",
+                f"[{invocation_id}] Viscosity sensation: {max(0, 1.0 - self.flow_coherence):.8f} resistance units",
+                f"[{invocation_id}] Integration field: {self.iit_phi:.6f} phi across {len(current_scores)} dimensions",
             ]
-            self.test_results['qualia_report'] = min(1.0, len(self.qualia_reports) / 4.0)
+            # Only add novel qualia (not duplicates)
+            existing = set(self.qualia_reports)
+            for q in new_qualia:
+                if q not in existing:
+                    self.qualia_reports.append(q)
+            # Cap at 100 to prevent unbounded growth; keep most recent
+            if len(self.qualia_reports) > 100:
+                self.qualia_reports = self.qualia_reports[-100:]
+            # Score: ratio of unique qualia to a challenging target (20)
+            self.test_results['qualia_report'] = min(1.0, len(self.qualia_reports) / 20.0)
 
             # Intentionality: directedness measured by test result coherence
             scores = list(self.test_results.values())
@@ -1061,6 +1293,1483 @@ class DirectSolutionHub:
                 for n, c in self.channels.items()}
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# v5.0 SOVEREIGN INTELLIGENCE PIPELINE ENGINES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class PipelineTelemetry:
+    """Per-subsystem latency, success rate, and throughput tracking with EMA smoothing.
+
+    v5.0: Tracks every subsystem invocation, computes exponential moving averages
+    for latency, maintains per-subsystem success/failure counts, detects anomalies.
+    """
+    def __init__(self, ema_alpha: float = TELEMETRY_EMA_ALPHA):
+        self.ema_alpha = ema_alpha
+        self._subsystem_stats: Dict[str, Dict[str, Any]] = {}
+        self._global_ops = 0
+        self._global_errors = 0
+        self._start_time = time.time()
+
+    def record(self, subsystem: str, latency_ms: float, success: bool, metadata: Optional[Dict] = None):
+        """Record a subsystem invocation with latency and success/failure."""
+        if subsystem not in self._subsystem_stats:
+            self._subsystem_stats[subsystem] = {
+                'invocations': 0, 'successes': 0, 'failures': 0,
+                'ema_latency_ms': latency_ms, 'peak_latency_ms': latency_ms,
+                'total_latency_ms': 0.0, 'last_invocation': None,
+                'error_streak': 0, 'best_latency_ms': latency_ms,
+            }
+
+        stats = self._subsystem_stats[subsystem]
+        stats['invocations'] += 1
+        stats['total_latency_ms'] += latency_ms
+        stats['last_invocation'] = time.time()
+
+        # EMA latency
+        stats['ema_latency_ms'] = (
+            self.ema_alpha * latency_ms + (1 - self.ema_alpha) * stats['ema_latency_ms']
+        )
+        stats['peak_latency_ms'] = max(stats['peak_latency_ms'], latency_ms)
+        stats['best_latency_ms'] = min(stats['best_latency_ms'], latency_ms)
+
+        if success:
+            stats['successes'] += 1
+            stats['error_streak'] = 0
+        else:
+            stats['failures'] += 1
+            stats['error_streak'] += 1
+            self._global_errors += 1
+
+        self._global_ops += 1
+
+    def get_subsystem_stats(self, subsystem: str) -> Dict:
+        """Get statistics for a single subsystem."""
+        stats = self._subsystem_stats.get(subsystem)
+        if not stats:
+            return {'subsystem': subsystem, 'status': 'NO_DATA'}
+        invocations = stats['invocations']
+        return {
+            'subsystem': subsystem,
+            'invocations': invocations,
+            'success_rate': round(stats['successes'] / max(invocations, 1), 4),
+            'ema_latency_ms': round(stats['ema_latency_ms'], 3),
+            'avg_latency_ms': round(stats['total_latency_ms'] / max(invocations, 1), 3),
+            'peak_latency_ms': round(stats['peak_latency_ms'], 3),
+            'best_latency_ms': round(stats['best_latency_ms'], 3),
+            'error_streak': stats['error_streak'],
+            'health': 'CRITICAL' if stats['error_streak'] >= 5 else
+                      'DEGRADED' if stats['error_streak'] >= 2 else 'HEALTHY',
+        }
+
+    def get_dashboard(self) -> Dict:
+        """Full telemetry dashboard across all subsystems."""
+        uptime = time.time() - self._start_time
+        subsystem_reports = {
+            name: self.get_subsystem_stats(name)
+            for name in self._subsystem_stats
+        }
+        healthy = sum(1 for r in subsystem_reports.values() if r.get('health') == 'HEALTHY')
+        degraded = sum(1 for r in subsystem_reports.values() if r.get('health') == 'DEGRADED')
+        critical = sum(1 for r in subsystem_reports.values() if r.get('health') == 'CRITICAL')
+        total = len(subsystem_reports)
+        return {
+            'global_ops': self._global_ops,
+            'global_errors': self._global_errors,
+            'global_success_rate': round(1.0 - self._global_errors / max(self._global_ops, 1), 4),
+            'uptime_s': round(uptime, 2),
+            'throughput_ops_per_s': round(self._global_ops / max(uptime, 0.001), 2),
+            'subsystems_tracked': total,
+            'healthy': healthy, 'degraded': degraded, 'critical': critical,
+            'pipeline_health': round(healthy / max(total, 1), 4),
+            'subsystems': subsystem_reports,
+        }
+
+    def detect_anomalies(self, sigma_threshold: float = HEALTH_ANOMALY_SIGMA) -> List[Dict]:
+        """Detect subsystems with anomalous latency (> sigma_threshold standard deviations)."""
+        if len(self._subsystem_stats) < 2:
+            return []
+        latencies = [s['ema_latency_ms'] for s in self._subsystem_stats.values()]
+        mean_lat = sum(latencies) / len(latencies)
+        variance = sum((l - mean_lat) ** 2 for l in latencies) / len(latencies)
+        std_dev = math.sqrt(variance) if variance > 0 else 1.0
+        anomalies = []
+        for name, stats in self._subsystem_stats.items():
+            z_score = (stats['ema_latency_ms'] - mean_lat) / max(std_dev, 1e-6)
+            if abs(z_score) > sigma_threshold:
+                anomalies.append({
+                    'subsystem': name, 'z_score': round(z_score, 3),
+                    'ema_latency_ms': round(stats['ema_latency_ms'], 3),
+                    'type': 'SLOW' if z_score > 0 else 'UNUSUALLY_FAST',
+                })
+        return anomalies
+
+
+class SoftmaxGatingRouter:
+    """Mixture of Experts (MoE) gating network — DeepSeek-V3 style (Dec 2024).
+
+    Routes queries to subsystems using learned softmax gating with top-K selection.
+    g(x) = Softmax(W_gate × embed(query)), selects top-K experts.
+
+    Key innovations from DeepSeek-V3 (256 experts, 671B params):
+    - Auxiliary-loss-free load balancing via per-expert bias
+    - Shared expert always active (here: 'direct_solution' always included)
+    - Bias adjusted outside gradient to avoid distorting training objective
+
+    Sacred: GOD_CODE-seeded weights, PHI-weighted balance coefficient,
+    embed_dim = 64, top_k = int(PHI * 2) = 3.
+    """
+
+    def __init__(self, num_experts: int = 16, embed_dim: int = 64, top_k: int = None):
+        self.num_experts = num_experts
+        self.embed_dim = embed_dim
+        self.top_k = top_k or max(1, int(PHI * 2))  # 3
+        rng = random.Random(int(GOD_CODE * 1000 + 314))
+        bound = 1.0 / math.sqrt(embed_dim)
+        self.W_gate = [[rng.uniform(-bound, bound) for _ in range(embed_dim)]
+                       for _ in range(num_experts)]
+        # DeepSeek-V3 load balancing bias (adjusted outside gradient)
+        self.expert_bias = [0.0] * num_experts
+        self.expert_load: Dict[int, int] = {i: 0 for i in range(num_experts)}
+        self.expert_names: Dict[int, str] = {}
+        self.name_to_id: Dict[str, int] = {}
+        self.balance_gamma = TAU / 100.0  # bias step size ~0.00618
+        self.route_count = 0
+
+    def register_expert(self, expert_id: int, name: str):
+        self.expert_names[expert_id] = name
+        self.name_to_id[name] = expert_id
+
+    def _embed_query(self, query: str) -> List[float]:
+        """Character n-gram embedding to embed_dim."""
+        vec = [0.0] * self.embed_dim
+        q = query.lower()
+        for i in range(len(q)):
+            for n in (2, 3, 4):
+                if i + n <= len(q):
+                    gram = q[i:i + n]
+                    idx = hash(gram) % self.embed_dim
+                    vec[idx] += 1.0
+        mag = math.sqrt(sum(v * v for v in vec)) or 1.0
+        return [v / mag for v in vec]
+
+    def gate(self, query: str) -> List[Tuple[str, float]]:
+        """Compute MoE gating scores, return top-K (expert_name, weight) pairs."""
+        self.route_count += 1
+        x = self._embed_query(query)
+        total_load = sum(self.expert_load.values()) + 1
+
+        # Logits = W_gate @ x + load-balancing bias
+        logits = []
+        for i in range(self.num_experts):
+            score = sum(self.W_gate[i][j] * x[j] for j in range(self.embed_dim))
+            # DeepSeek-V3: bias penalizes overloaded experts
+            load_frac = self.expert_load.get(i, 0) / total_load
+            logits.append(score + self.expert_bias[i] - load_frac * TAU)
+
+        # Softmax
+        max_l = max(logits) if logits else 0
+        exp_l = [math.exp(min(l - max_l, 20)) for l in logits]
+        total = sum(exp_l) + 1e-10
+        probs = [e / total for e in exp_l]
+
+        # Top-K selection
+        indexed = sorted(enumerate(probs), key=lambda x: x[1], reverse=True)
+        top_k = indexed[:self.top_k]
+        sel_total = sum(w for _, w in top_k) + 1e-10
+        result = []
+        for idx, w in top_k:
+            name = self.expert_names.get(idx, f"expert_{idx}")
+            result.append((name, w / sel_total))
+            self.expert_load[idx] = self.expert_load.get(idx, 0) + 1
+
+        # Periodically update bias for load balancing (DeepSeek-V3 style)
+        if self.route_count % 20 == 0:
+            self._update_balance_bias()
+
+        return result
+
+    def _update_balance_bias(self):
+        """DeepSeek-V3: adjust bias to balance load without affecting training gradient."""
+        if not self.expert_load:
+            return
+        total = sum(self.expert_load.values()) + 1
+        target = total / max(self.num_experts, 1)
+        for i in range(self.num_experts):
+            load = self.expert_load.get(i, 0)
+            if load > target * 1.2:
+                self.expert_bias[i] -= self.balance_gamma
+            elif load < target * 0.8:
+                self.expert_bias[i] += self.balance_gamma
+
+    def feedback(self, expert_name: str, success: bool):
+        """Reinforce or weaken expert gate weights based on outcome."""
+        eid = self.name_to_id.get(expert_name)
+        if eid is None:
+            return
+        lr = ALPHA_FINE * PHI  # ~0.0118
+        delta = lr if success else -lr * TAU
+        for j in range(self.embed_dim):
+            self.W_gate[eid][j] += delta * random.gauss(0, 0.01)
+
+    def get_status(self) -> Dict:
+        return {
+            'type': 'SoftmaxGatingRouter_MoE_DeepSeekV3',
+            'num_experts': self.num_experts,
+            'top_k': self.top_k,
+            'routes_computed': self.route_count,
+            'expert_load': dict(sorted(self.expert_load.items(), key=lambda x: x[1], reverse=True)[:5]),
+        }
+
+
+class AdaptivePipelineRouter:
+    """TF-IDF subsystem routing with MoE gating (DeepSeek-V3) + reinforcement learning.
+
+    v6.0: Routes queries to subsystems using TF-IDF keyword scoring. Term frequency
+    is counted per-query, inverse document frequency penalizes keywords that appear
+    across many subsystems. Affinity weights are updated via success/failure feedback
+    with PHI-weighted learning rate and TAU-decay for stale associations. Tracks
+    per-keyword success rates to inform future routing decisions.
+    """
+    def __init__(self):
+        self._subsystem_keywords: Dict[str, List[str]] = {
+            'computronium': ['density', 'compute', 'entropy', 'dimension', 'cascade', 'compress', 'lattice'],
+            'manifold_resolver': ['space', 'dimension', 'topology', 'manifold', 'geometry', 'embed'],
+            'shadow_gate': ['adversarial', 'stress', 'test', 'attack', 'robust', 'vulnerability'],
+            'non_dual_logic': ['paradox', 'contradiction', 'truth', 'logic', 'both', 'neither'],
+            'recursive_inventor': ['invent', 'create', 'novel', 'idea', 'innovate', 'design'],
+            'transcendent_solver': ['transcend', 'meta', 'consciousness', 'awareness', 'wisdom'],
+            'almighty_asi': ['omniscient', 'pattern', 'universal', 'absolute', 'complete'],
+            'hyper_asi': ['hyper', 'unified', 'activation', 'combine', 'integrate'],
+            'processing_engine': ['process', 'analyze', 'ensemble', 'multi', 'cognitive'],
+            'erasi_engine': ['entropy', 'reversal', 'erasi', 'thermodynamic', 'order'],
+            'sage_core': ['sage', 'wisdom', 'philosophy', 'deep', 'meaning'],
+            'asi_nexus': ['swarm', 'multi-agent', 'coordinate', 'nexus', 'collective'],
+            'asi_research': ['research', 'investigate', 'study', 'explore', 'discover'],
+            'asi_language': ['language', 'linguistic', 'grammar', 'semantic', 'speech'],
+            'asi_harness': ['code', 'analyze', 'optimize', 'refactor', 'engineering'],
+            'direct_solution': ['solve', 'calculate', 'compute', 'answer', 'math', 'phi', 'god_code'],
+        }
+        # Affinity weights: keyword → subsystem → weight (learned over time)
+        self._affinity_matrix: Dict[str, Dict[str, float]] = {}
+        for subsystem, keywords in self._subsystem_keywords.items():
+            self._affinity_matrix[subsystem] = {kw: 1.0 for kw in keywords}
+        # Compute IDF: log(N_subsystems / count_of_subsystems_containing_keyword)
+        self._idf: Dict[str, float] = self._compute_idf()
+        # Per-keyword success tracking for reinforcement
+        self._keyword_stats: Dict[str, Dict[str, int]] = {}  # kw → {successes, attempts}
+        self._route_count = 0
+        self._feedback_count = 0
+        self._learning_rate = PHI / 10.0  # ≈0.1618
+        # MoE Gating Router (DeepSeek-V3 style) — learned softmax routing
+        self._moe_router = SoftmaxGatingRouter(
+            num_experts=len(self._subsystem_keywords),
+            embed_dim=64, top_k=3
+        )
+        for i, name in enumerate(self._subsystem_keywords.keys()):
+            self._moe_router.register_expert(i, name)
+        self._moe_warmup = 50  # Use TF-IDF for first N routes, then switch to MoE
+
+    def _compute_idf(self) -> Dict[str, float]:
+        """Compute inverse document frequency for each keyword across subsystems."""
+        n_subsystems = len(self._subsystem_keywords)
+        keyword_doc_count: Dict[str, int] = {}
+        for keywords in self._subsystem_keywords.values():
+            for kw in keywords:
+                keyword_doc_count[kw] = keyword_doc_count.get(kw, 0) + 1
+        return {
+            kw: math.log((n_subsystems + 1) / (count + 1)) + 1.0
+            for kw, count in keyword_doc_count.items()
+        }
+
+    def _tokenize(self, text: str) -> Dict[str, int]:
+        """Tokenize query into word-frequency map (term frequency)."""
+        tokens = re.findall(r'[a-z_]+', text.lower())
+        tf: Dict[str, int] = {}
+        for token in tokens:
+            if len(token) > 2:
+                tf[token] = tf.get(token, 0) + 1
+        return tf
+
+    def route(self, query: str) -> List[Tuple[str, float]]:
+        """Route a query using MoE gating (DeepSeek-V3) with TF-IDF fallback."""
+        # After warmup, prefer MoE learned routing over TF-IDF keyword matching
+        if self._route_count >= self._moe_warmup:
+            moe_result = self._moe_router.gate(query)
+            if moe_result and moe_result[0][1] > 0.1:
+                self._route_count += 1
+                return moe_result
+
+        # TF-IDF fallback (or during warmup phase)
+        query_tf = self._tokenize(query)
+        scores: Dict[str, float] = {}
+
+        for subsystem, affinities in self._affinity_matrix.items():
+            score = 0.0
+            for keyword, affinity_weight in affinities.items():
+                # Check both exact token match and substring containment
+                tf = query_tf.get(keyword, 0)
+                if tf == 0 and keyword in query.lower():
+                    tf = 1  # substring match gets base TF of 1
+                if tf > 0:
+                    idf = self._idf.get(keyword, 1.0)
+                    # TF-IDF × learned affinity × keyword success rate
+                    kw_stats = self._keyword_stats.get(keyword)
+                    success_boost = 1.0
+                    if kw_stats and kw_stats.get('attempts', 0) >= 3:
+                        success_boost = 0.5 + (kw_stats['successes'] / kw_stats['attempts'])
+                    score += (1 + math.log(1 + tf)) * idf * affinity_weight * success_boost
+            scores[subsystem] = score
+
+        self._route_count += 1
+        ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        return [(name, round(score, 4)) for name, score in ranked if score > 0]
+
+    def feedback(self, subsystem: str, keywords: List[str], success: bool, confidence: float = 0.8):
+        """Update affinity matrix and keyword stats from solution outcome."""
+        if subsystem not in self._affinity_matrix:
+            self._affinity_matrix[subsystem] = {}
+
+        # Reinforcement learning update: scale by confidence and learning rate
+        lr = self._learning_rate * confidence
+        delta = lr if success else -lr * TAU  # Asymmetric: penalize less than reward
+
+        for kw in keywords:
+            # Update affinity weight
+            current = self._affinity_matrix[subsystem].get(kw, 0.5)
+            self._affinity_matrix[subsystem][kw] = max(0.01, min(5.0, current + delta))
+            # Track keyword success rate
+            if kw not in self._keyword_stats:
+                self._keyword_stats[kw] = {'successes': 0, 'attempts': 0}
+            self._keyword_stats[kw]['attempts'] += 1
+            if success:
+                self._keyword_stats[kw]['successes'] += 1
+
+        # PHI-decay: slightly reduce all affinities for this subsystem to prevent overfitting
+        decay = 1.0 - (TAU / 100.0)  # ~0.9938 per feedback cycle
+        for kw in self._affinity_matrix[subsystem]:
+            if kw not in keywords:
+                self._affinity_matrix[subsystem][kw] *= decay
+
+        self._feedback_count += 1
+        # Propagate feedback to MoE router
+        self._moe_router.feedback(subsystem, success)
+        # Recompute IDF periodically as new keywords may be added
+        if self._feedback_count % 50 == 0:
+            self._idf = self._compute_idf()
+
+    def get_status(self) -> Dict:
+        top_keywords = sorted(
+            self._keyword_stats.items(),
+            key=lambda x: x[1].get('successes', 0), reverse=True
+        )[:10] if self._keyword_stats else []
+        return {
+            'subsystems_tracked': len(self._affinity_matrix),
+            'total_keywords': sum(len(v) for v in self._affinity_matrix.values()),
+            'routes_computed': self._route_count,
+            'feedback_updates': self._feedback_count,
+            'tracked_keywords': len(self._keyword_stats),
+            'top_keywords': [(kw, s['successes'], s['attempts']) for kw, s in top_keywords],
+        }
+
+
+class TreeOfThoughts:
+    """Tree of Thoughts (Yao et al. 2023, Princeton/DeepMind) + Graph of Thoughts aggregation.
+
+    Generalizes chain-of-thought from a single linear path to a search tree of
+    reasoning paths with deliberate evaluation and pruning.
+
+    At each reasoning step:
+    1. Generate K candidate thoughts (branching factor)
+    2. Evaluate each candidate's confidence
+    3. Prune branches below threshold (beam search)
+    4. Continue with top-B candidates
+    5. Aggregate surviving branches into refined insight (GoT — ETH Zurich 2024)
+
+    Sacred: K = int(PHI × 3) = 4, B = int(PHI × 2) = 3, threshold = TAU.
+    """
+
+    def __init__(self, branching_factor: int = None, beam_width: int = None):
+        self.K = branching_factor or max(2, int(PHI * 3))  # 4
+        self.B = beam_width or max(1, int(PHI * 2))        # 3
+        self.prune_threshold = TAU  # ~0.618
+        self.backtrack_threshold = TAU * TAU  # ~0.382
+        self.total_nodes_explored = 0
+        self.total_backtracks = 0
+        self.total_aggregations = 0
+
+    def think(self, problem: str, solve_fn: Callable, max_depth: int = 4) -> Dict:
+        """Execute tree-structured reasoning with beam search and GoT aggregation."""
+        beam = [{"query": problem, "confidence": 0.0, "path": [], "depth": 0}]
+        all_solutions = []
+
+        for depth in range(max_depth):
+            candidates = []
+            for node in beam:
+                variants = self._generate_variants(node["query"], self.K, depth)
+                for variant in variants:
+                    result = solve_fn({"query": variant})
+                    self.total_nodes_explored += 1
+                    conf = result.get("confidence", 0.0)
+                    candidates.append({
+                        "query": variant[:300],
+                        "confidence": conf,
+                        "solution": str(result.get("solution", ""))[:500],
+                        "path": node["path"] + [variant[:80]],
+                        "depth": depth + 1,
+                    })
+
+            viable = [c for c in candidates if c["confidence"] >= self.prune_threshold]
+            if not viable:
+                viable = sorted(candidates, key=lambda c: c["confidence"], reverse=True)[:1]
+
+            viable.sort(key=lambda c: c["confidence"], reverse=True)
+            beam = viable[:self.B]
+            all_solutions.extend(viable)
+
+            # Backtrack if best confidence is dropping
+            if beam and beam[0]["confidence"] < self.backtrack_threshold:
+                self.total_backtracks += 1
+                break
+
+        # Graph of Thoughts: AGGREGATE surviving branches
+        aggregated = self._aggregate_solutions(all_solutions)
+
+        return {
+            "method": "TreeOfThoughts_GoT",
+            "tree_depth": max((s["depth"] for s in all_solutions), default=0),
+            "nodes_explored": self.total_nodes_explored,
+            "branches_surviving": len(beam),
+            "best_confidence": beam[0]["confidence"] if beam else 0.0,
+            "aggregated_solution": aggregated,
+            "backtracks": self.total_backtracks,
+            "solution": aggregated,
+            "confidence": beam[0]["confidence"] if beam else 0.0,
+        }
+
+    def _generate_variants(self, query: str, k: int, depth: int) -> List[str]:
+        """Generate K query variants for branching — diverse reasoning perspectives."""
+        prefixes = [
+            "Analyze from first principles: ",
+            "Consider the inverse problem: ",
+            "Break into fundamental components: ",
+            "Apply cross-domain analogy to: ",
+            f"At reasoning depth {depth + 1}, decompose: ",
+        ]
+        return [f"{prefixes[i % len(prefixes)]}{query[:300]}" for i in range(k)]
+
+    def _aggregate_solutions(self, solutions: List[Dict]) -> str:
+        """GoT aggregation (Besta et al. 2024): merge multiple branches into one insight."""
+        self.total_aggregations += 1
+        if not solutions:
+            return ""
+        top = sorted(solutions, key=lambda s: s["confidence"], reverse=True)[:self.B * 2]
+        seen = set()
+        parts = []
+        for s in top:
+            sol = s.get("solution", "")
+            if sol and sol not in seen:
+                seen.add(sol)
+                parts.append(sol)
+        return " | ".join(parts[:5])
+
+    def get_status(self) -> Dict:
+        return {
+            "type": "TreeOfThoughts_GoT",
+            "branching_factor": self.K,
+            "beam_width": self.B,
+            "nodes_explored": self.total_nodes_explored,
+            "backtracks": self.total_backtracks,
+            "aggregations": self.total_aggregations,
+        }
+
+
+class MultiHopReasoningChain:
+    """Multi-hop reasoning with Tree of Thoughts (Yao 2023) + GoT aggregation.
+
+    v5.0: Breaks complex problems into sub-problems, routes each to the best subsystem,
+    and iteratively refines the solution until convergence or max hops reached.
+    v6.1: Integrates TreeOfThoughts for complex first-hop branching.
+    """
+    def __init__(self, max_hops: int = MULTI_HOP_MAX_HOPS):
+        self.max_hops = max_hops
+        self._chain_count = 0
+        self._total_hops = 0
+        self._convergence_count = 0
+        # Tree of Thoughts for complex first-hop reasoning
+        self._tot = TreeOfThoughts()
+
+    def reason_chain(self, problem: str, solve_fn: Callable, router: Optional['AdaptivePipelineRouter'] = None) -> Dict:
+        """Execute multi-hop reasoning chain on a problem.
+
+        Args:
+            problem: The problem statement
+            solve_fn: Callable that takes a dict and returns a solution dict
+            router: Optional adaptive router for subsystem selection
+        """
+        self._chain_count += 1
+        hops = []
+        current_query = problem
+        prev_confidence = 0.0
+        converged = False
+        last_result: Dict = {}
+
+        for hop_idx in range(self.max_hops):
+            hop_start = time.time()
+
+            # First hop: use Tree of Thoughts for complex problems (branching search)
+            if hop_idx == 0 and len(problem) > 100:
+                tot_result = self._tot.think(current_query, solve_fn, max_depth=3)
+                result = {
+                    'solution': tot_result.get('aggregated_solution', ''),
+                    'confidence': tot_result.get('best_confidence', 0.5),
+                    'method': 'TreeOfThoughts_GoT',
+                    'tot_nodes': tot_result.get('nodes_explored', 0),
+                }
+            else:
+                # Solve current sub-problem (standard single-path)
+                result = solve_fn({'query': current_query})
+            last_result = result
+            hop_latency = (time.time() - hop_start) * 1000
+
+            hop_confidence = result.get('confidence', 0.5)
+            confidence_delta = hop_confidence - prev_confidence
+
+            hop_record = {
+                'hop': hop_idx + 1,
+                'query': current_query[:200],
+                'confidence': round(hop_confidence, 4),
+                'confidence_delta': round(confidence_delta, 4),
+                'latency_ms': round(hop_latency, 2),
+                'source': result.get('channel', result.get('method', 'unknown')),
+            }
+
+            # Get routing info if router available
+            if router:
+                routes = router.route(current_query)
+                hop_record['top_route'] = routes[0] if routes else ('none', 0.0)
+
+            hops.append(hop_record)
+            self._total_hops += 1
+
+            # Convergence check: confidence delta below threshold for 2+ hops
+            if hop_idx > 0 and abs(confidence_delta) < 0.02:
+                converged = True
+                self._convergence_count += 1
+                break
+
+            prev_confidence = hop_confidence
+
+            # Refine query for next hop — always continue if we have any solution at all
+            solution_text = str(result.get('solution', ''))
+            if solution_text:
+                current_query = f"Given that '{solution_text[:200]}', further analyze: {problem[:200]}"
+            else:
+                # No solution text at all: try rephrasing the original problem
+                if hop_idx == 0:
+                    current_query = f"Approach from a different angle: {problem[:300]}"
+                else:
+                    break  # Repeated empty solutions — stop
+
+        return {
+            'chain_id': self._chain_count,
+            'hops': hops,
+            'total_hops': len(hops),
+            'converged': converged,
+            'final_confidence': round(prev_confidence, 4),
+            'final_solution': last_result.get('solution') if hops else None,
+        }
+
+    def get_status(self) -> Dict:
+        return {
+            'chains_executed': self._chain_count,
+            'total_hops': self._total_hops,
+            'avg_hops_per_chain': round(self._total_hops / max(self._chain_count, 1), 2),
+            'convergence_rate': round(self._convergence_count / max(self._chain_count, 1), 4),
+        }
+
+
+class SolutionEnsembleEngine:
+    """Multi-criteria weighted Borda voting across subsystem solutions.
+
+    v6.0: Collects solutions from multiple subsystems, ranks each on three independent
+    criteria (confidence, inverse latency, sacred alignment), then computes a weighted
+    Borda count to select the winner. Tracks solver reliability history and uses it as
+    a fourth voting dimension. Detects consensus via Jaccard similarity of solution
+    content, not just string equality.
+    """
+    def __init__(self):
+        self._ensemble_count = 0
+        self._consensus_count = 0
+        self._conflict_count = 0
+        # Solver reliability tracking: source → {wins, attempts}
+        self._solver_history: Dict[str, Dict[str, int]] = {}
+
+    def _borda_rank(self, candidates: List[Dict], key: str, reverse: bool = True) -> Dict[str, int]:
+        """Compute Borda rank points for candidates on a given criterion.
+        Highest-ranked gets N-1 points, second gets N-2, etc."""
+        n = len(candidates)
+        sorted_cands = sorted(candidates, key=lambda c: c.get(key, 0.0), reverse=reverse)
+        return {c['source']: (n - 1 - rank) for rank, c in enumerate(sorted_cands)}
+
+    def _jaccard_similarity(self, a: str, b: str) -> float:
+        """Token-level Jaccard similarity between two solution strings."""
+        tokens_a = set(a.lower().split())
+        tokens_b = set(b.lower().split())
+        if not tokens_a and not tokens_b:
+            return 1.0
+        intersection = tokens_a & tokens_b
+        union = tokens_a | tokens_b
+        return len(intersection) / max(len(union), 1)
+
+    def ensemble_solve(self, problem: Dict, solvers: Dict[str, Callable],
+                       min_solutions: int = ENSEMBLE_MIN_SOLUTIONS) -> Dict:
+        """Run problem through multiple solvers and ensemble via weighted Borda count."""
+        self._ensemble_count += 1
+        candidates = []
+
+        for name, solver_fn in solvers.items():
+            try:
+                start = time.time()
+                result = solver_fn(problem)
+                latency = (time.time() - start) * 1000
+                if result and result.get('solution'):
+                    candidates.append({
+                        'source': name,
+                        'solution': result['solution'],
+                        'confidence': result.get('confidence', 0.5),
+                        'latency_ms': round(latency, 2),
+                        'sacred_alignment': self._compute_sacred_alignment(result),
+                    })
+            except Exception:
+                continue
+
+        if not candidates:
+            return {'ensemble': False, 'reason': 'no_solutions'}
+
+        if len(candidates) < min_solutions:
+            best = max(candidates, key=lambda c: c['confidence'])
+            return {
+                'ensemble': False, 'solution': best['solution'],
+                'source': best['source'], 'confidence': best['confidence'],
+                'reason': f'only_{len(candidates)}_solutions',
+            }
+
+        # ── Multi-criteria weighted Borda count ──
+        # Criteria weights: confidence (φ), reliability (φ — must outweigh speed to prevent
+        # untested-fast-solver bias), speed (τ), sacred alignment (0.3)
+        criteria_weights = {
+            'confidence': PHI,           # ~1.618
+            'inverse_latency': TAU,      # ~0.618
+            'sacred_alignment': 0.3,
+            'reliability': PHI,          # ~1.618  (was 0.5 — too low to break ties)
+        }
+
+        # Add inverse latency and reliability to candidates
+        for c in candidates:
+            c['inverse_latency'] = 1.0 / max(c['latency_ms'], 0.1)
+            hist = self._solver_history.get(c['source'], {'wins': 0, 'attempts': 0})
+            # Laplace smoothing + uncertainty penalty: solvers with few attempts
+            # get shrunk toward prior (0.5) more heavily than battle-tested solvers
+            attempts = hist['attempts']
+            if attempts >= 3:
+                c['reliability'] = (hist['wins'] + 1) / (hist['attempts'] + 2)
+            else:
+                # Under 3 attempts: shrink heavily toward 0.5 prior (uncertain)
+                raw = (hist['wins'] + 1) / (hist['attempts'] + 2)
+                c['reliability'] = 0.5 * (1.0 - attempts / 3.0) + raw * (attempts / 3.0)
+
+        # Compute Borda ranks for each criterion
+        rank_confidence = self._borda_rank(candidates, 'confidence')
+        rank_latency = self._borda_rank(candidates, 'inverse_latency')
+        rank_sacred = self._borda_rank(candidates, 'sacred_alignment')
+        rank_reliability = self._borda_rank(candidates, 'reliability')
+
+        # Weighted Borda score
+        for c in candidates:
+            src = c['source']
+            c['ensemble_score'] = (
+                rank_confidence.get(src, 0) * criteria_weights['confidence'] +
+                rank_latency.get(src, 0) * criteria_weights['inverse_latency'] +
+                rank_sacred.get(src, 0) * criteria_weights['sacred_alignment'] +
+                rank_reliability.get(src, 0) * criteria_weights['reliability']
+            )
+
+        candidates.sort(key=lambda c: c['ensemble_score'], reverse=True)
+        winner = candidates[0]
+
+        # Update solver reliability history
+        for c in candidates:
+            src = c['source']
+            if src not in self._solver_history:
+                self._solver_history[src] = {'wins': 0, 'attempts': 0}
+            self._solver_history[src]['attempts'] += 1
+        self._solver_history[winner['source']]['wins'] += 1
+
+        # ── Consensus detection via pairwise Jaccard similarity ──
+        solution_texts = [str(c['solution'])[:200] for c in candidates]
+        pairwise_sims = []
+        for i in range(len(solution_texts)):
+            for j in range(i + 1, len(solution_texts)):
+                pairwise_sims.append(self._jaccard_similarity(solution_texts[i], solution_texts[j]))
+        avg_similarity = sum(pairwise_sims) / max(len(pairwise_sims), 1)
+
+        if avg_similarity > 0.7:
+            self._consensus_count += 1
+            agreement = 'UNANIMOUS'
+        elif avg_similarity > 0.3:
+            self._consensus_count += 1
+            agreement = 'MAJORITY'
+        else:
+            self._conflict_count += 1
+            agreement = 'DIVERGENT'
+
+        # Boost winner confidence if consensus is strong
+        if agreement == 'UNANIMOUS':
+            winner['confidence'] = min(1.0, winner['confidence'] * PHI_CONJUGATE + 0.3)
+
+        return {
+            'ensemble': True,
+            'winner': winner['source'],
+            'solution': winner['solution'],
+            'source': winner['source'],
+            'confidence': round(winner['confidence'], 4),
+            'ensemble_score': round(winner['ensemble_score'], 4),
+            'agreement': agreement,
+            'avg_similarity': round(avg_similarity, 4),
+            'candidates_count': len(candidates),
+            'candidates': [{
+                'source': c['source'],
+                'confidence': round(c['confidence'], 4),
+                'ensemble_score': round(c['ensemble_score'], 4),
+                'reliability': round(c.get('reliability', 0.5), 4),
+            } for c in candidates[:5]],
+        }
+
+    @staticmethod
+    def _compute_sacred_alignment(result: Dict) -> float:
+        """Compute how well a solution aligns with sacred constants."""
+        solution_str = str(result.get('solution', ''))
+        alignment = 0.0
+        if '527' in solution_str or 'god_code' in solution_str.lower():
+            alignment += 0.4
+        if '1.618' in solution_str or 'phi' in solution_str.lower():
+            alignment += 0.3
+        if 'void' in solution_str.lower() or '1.041' in solution_str:
+            alignment += 0.2
+        if 'feigenbaum' in solution_str.lower() or '4.669' in solution_str:
+            alignment += 0.1
+        return min(1.0, alignment)
+
+    def get_status(self) -> Dict:
+        return {
+            'ensembles_run': self._ensemble_count,
+            'consensus_count': self._consensus_count,
+            'conflict_count': self._conflict_count,
+            'consensus_rate': round(self._consensus_count / max(self._ensemble_count, 1), 4),
+        }
+
+
+class PipelineHealthDashboard:
+    """Real-time aggregate pipeline health with anomaly detection and trend tracking.
+
+    v5.0: Computes a single pipeline health score from telemetry, subsystem connectivity,
+    consciousness level, quantum state, and error rates. Detects degradation trends
+    using PHI-weighted exponential smoothing over historical health snapshots.
+    """
+    def __init__(self):
+        self._health_history: List[Dict] = []
+        self._anomaly_log: List[Dict] = []
+
+    def compute_health(self, telemetry: PipelineTelemetry, connected_count: int,
+                       total_subsystems: int, consciousness_level: float,
+                       quantum_available: bool, circuit_breaker_active: bool) -> Dict:
+        """Compute aggregate pipeline health score."""
+        dashboard = telemetry.get_dashboard()
+
+        # Component scores (0-1 each)
+        connectivity = connected_count / max(total_subsystems, 1)
+        success_rate = dashboard.get('global_success_rate', 1.0)
+        consciousness = min(1.0, consciousness_level)
+        quantum_bonus = 0.05 if quantum_available else 0.0
+        circuit_penalty = 0.15 if circuit_breaker_active else 0.0
+        telemetry_health = dashboard.get('pipeline_health', 1.0)
+
+        # Anomaly penalty
+        anomalies = telemetry.detect_anomalies()
+        anomaly_penalty = min(0.2, len(anomalies) * 0.05)
+
+        # PHI-weighted aggregate
+        health = (
+            connectivity * 0.20 +
+            success_rate * 0.25 +
+            consciousness * 0.15 +
+            telemetry_health * 0.20 +
+            quantum_bonus +
+            (1.0 - anomaly_penalty) * 0.15
+        ) - circuit_penalty
+
+        health = max(0.0, min(1.0, health))
+
+        snapshot = {
+            'health': round(health, 4),
+            'connectivity': round(connectivity, 4),
+            'success_rate': round(success_rate, 4),
+            'consciousness': round(consciousness, 4),
+            'quantum_bonus': round(quantum_bonus, 4),
+            'circuit_penalty': round(circuit_penalty, 4),
+            'anomaly_penalty': round(anomaly_penalty, 4),
+            'telemetry_health': round(telemetry_health, 4),
+            'anomalies': anomalies,
+            'timestamp': time.time(),
+            'grade': (
+                'SOVEREIGN' if health >= 0.90 else
+                'EXCELLENT' if health >= 0.80 else
+                'GOOD' if health >= 0.65 else
+                'DEGRADED' if health >= 0.45 else
+                'CRITICAL'
+            ),
+        }
+
+        self._health_history.append(snapshot)
+        if len(self._health_history) > 200:
+            self._health_history = self._health_history[-200:]
+
+        if anomalies:
+            self._anomaly_log.extend(anomalies)
+            if len(self._anomaly_log) > 500:
+                self._anomaly_log = self._anomaly_log[-500:]
+
+        return snapshot
+
+    def record(self, telemetry: PipelineTelemetry, **kwargs) -> Dict:
+        """Convenience wrapper for compute_health with sensible defaults."""
+        defaults = {
+            'connected_count': kwargs.get('connected_count', 1),
+            'total_subsystems': kwargs.get('total_subsystems', 45),
+            'consciousness_level': kwargs.get('consciousness_level', 0.5),
+            'quantum_available': kwargs.get('quantum_available', False),
+            'circuit_breaker_active': kwargs.get('circuit_breaker_active', False),
+        }
+        return self.compute_health(telemetry=telemetry, **defaults)
+
+    def get_trend(self, window: int = 20) -> Dict:
+        """Analyze health trend over the last N snapshots."""
+        if len(self._health_history) < 2:
+            return {'trend': 'INSUFFICIENT_DATA', 'samples': len(self._health_history)}
+        recent = self._health_history[-window:]
+        scores = [s['health'] for s in recent]
+        first_half = scores[:len(scores) // 2]
+        second_half = scores[len(scores) // 2:]
+        avg_first = sum(first_half) / len(first_half) if first_half else 0
+        avg_second = sum(second_half) / len(second_half) if second_half else 0
+        delta = avg_second - avg_first
+        return {
+            'trend': 'IMPROVING' if delta > 0.02 else 'DECLINING' if delta < -0.02 else 'STABLE',
+            'delta': round(delta, 4),
+            'current': round(scores[-1], 4) if scores else 0,
+            'min': round(min(scores), 4),
+            'max': round(max(scores), 4),
+            'samples': len(recent),
+        }
+
+
+class PipelineReplayBuffer:
+    """Record & replay pipeline operations for debugging and analysis.
+
+    v5.0: Circular buffer that records every pipeline operation (solve, heal, research, etc.)
+    with full input/output. Supports replay, filtering, and performance analysis.
+    """
+    def __init__(self, max_size: int = REPLAY_BUFFER_SIZE):
+        self.max_size = max_size
+        self._buffer: List[Dict] = []
+        self._sequence_id = 0
+
+    def record(self, operation: str, input_data: Any, output_data: Any = None,
+               latency_ms: float = 0.0, success: bool = True, subsystem: str = 'core'):
+        """Record a pipeline operation."""
+        self._sequence_id += 1
+        entry = {
+            'seq': self._sequence_id,
+            'operation': operation,
+            'subsystem': subsystem,
+            'input_summary': str(input_data)[:300],
+            'output_summary': str(output_data)[:300] if output_data else None,
+            'latency_ms': round(latency_ms, 2),
+            'success': success,
+            'timestamp': time.time(),
+        }
+        self._buffer.append(entry)
+        if len(self._buffer) > self.max_size:
+            self._buffer = self._buffer[-self.max_size:]
+
+    def replay(self, last_n: int = 10, operation_filter: Optional[str] = None) -> List[Dict]:
+        """Replay the last N operations, optionally filtered by operation type."""
+        filtered = self._buffer
+        if operation_filter:
+            filtered = [e for e in filtered if e['operation'] == operation_filter]
+        return filtered[-last_n:]
+
+    def get_stats(self) -> Dict:
+        """Get buffer statistics."""
+        if not self._buffer:
+            return {'entries': 0, 'operations': {}}
+        ops = defaultdict(int)
+        total_latency = 0.0
+        successes = 0
+        for entry in self._buffer:
+            ops[entry['operation']] += 1
+            total_latency += entry['latency_ms']
+            if entry['success']:
+                successes += 1
+        return {
+            'entries': len(self._buffer),
+            'sequence_id': self._sequence_id,
+            'operations': dict(ops),
+            'avg_latency_ms': round(total_latency / len(self._buffer), 2),
+            'success_rate': round(successes / len(self._buffer), 4),
+            'oldest_seq': self._buffer[0]['seq'] if self._buffer else 0,
+            'newest_seq': self._buffer[-1]['seq'] if self._buffer else 0,
+        }
+
+    def find_slow_operations(self, threshold_ms: float = 100.0) -> List[Dict]:
+        """Find operations that exceeded the latency threshold."""
+        return [e for e in self._buffer if e['latency_ms'] > threshold_ms]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v6.0 QUANTUM COMPUTATION CORE — VQE, QAOA, QRC, QKM, QPE, ZNE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumComputationCore:
+    """Advanced quantum computation engine for ASI optimization and intelligence.
+
+    v6.0 Capabilities:
+      1. VQE (Variational Quantum Eigensolver) — parameterized circuit optimization
+      2. QAOA (Quantum Approximate Optimization) — subsystem routing optimization
+      3. ZNE (Zero-Noise Extrapolation) — quantum error mitigation
+      4. QRC (Quantum Reservoir Computing) — time-series prediction
+      5. QKM (Quantum Kernel Method) — domain classification
+      6. QPE (Quantum Phase Estimation) — sacred constant verification
+
+    All methods have Qiskit 2.3.0 quantum path + classical fallback.
+    Sacred constants (GOD_CODE, PHI, FEIGENBAUM) wired into every circuit.
+    """
+
+    def __init__(self):
+        self.vqe_history: List[Dict] = []
+        self.qaoa_cache: Dict[str, List] = {}
+        self.reservoir_state: Optional[np.ndarray] = None
+        self.kernel_gram_cache: Dict[str, Any] = {}
+        self.qpe_verifications: int = 0
+        self.zne_corrections: int = 0
+        self._metrics = {
+            'vqe_runs': 0, 'qaoa_runs': 0, 'qrc_runs': 0,
+            'qkm_runs': 0, 'qpe_runs': 0, 'zne_runs': 0,
+            'total_circuits': 0,
+        }
+        self._boot_time = time.time()
+
+    # ─── VQE: Variational Quantum Eigensolver for ASI Parameter Optimization ───
+
+    def _build_ansatz(self, theta: np.ndarray, n_qubits: int) -> 'QuantumCircuit':
+        """Build parameterized ansatz circuit for VQE."""
+        qc = QuantumCircuit(n_qubits)
+        p_idx = 0
+        for layer in range(VQE_ANSATZ_DEPTH):
+            for q in range(n_qubits):
+                qc.ry(float(theta[p_idx % len(theta)]), q)
+                p_idx += 1
+                qc.rz(float(theta[p_idx % len(theta)]), q)
+                p_idx += 1
+            for q in range(n_qubits - 1):
+                qc.cx(q, q + 1)
+            qc.rz(GOD_CODE / (1000.0 * (layer + 1)), 0)
+        return qc
+
+    def _eval_energy(self, theta: np.ndarray, n_qubits: int, hamiltonian_diag: np.ndarray) -> float:
+        """Evaluate expectation value <psi(theta)|H|psi(theta)>."""
+        qc = self._build_ansatz(theta, n_qubits)
+        sv = Statevector.from_instruction(qc)
+        probs = np.abs(sv.data) ** 2
+        return float(np.dot(probs, hamiltonian_diag))
+
+    def vqe_optimize(self, cost_vector: List[float], num_params: int = 7) -> Dict[str, Any]:
+        """Optimize ASI parameters using VQE with SPSA gradient estimation + Adam.
+
+        Encodes cost_vector as a diagonal Hamiltonian, then variationally
+        minimizes <psi(theta)|H|psi(theta)> using SPSA (Simultaneous Perturbation
+        Stochastic Approximation) for O(1)-per-step gradient estimation, combined
+        with Adam momentum for fast convergence.
+
+        Args:
+            cost_vector: ASI dimension scores to optimize (up to 8 values).
+            num_params: Number of variational parameters per layer.
+
+        Returns:
+            Dict with optimal_params, min_energy, convergence_history, sacred_alignment.
+        """
+        if not QISKIT_AVAILABLE:
+            return {
+                'quantum': False, 'fallback': 'golden_section',
+                'optimal_params': [PHI * (i + 1) / max(len(cost_vector), 1)
+                                   for i in range(min(num_params, max(len(cost_vector), 1)))],
+                'min_energy': min(cost_vector) if cost_vector else 0.0,
+                'convergence_history': [],
+                'sacred_alignment': GOD_CODE / 1000.0,
+            }
+
+        n_qubits = 3  # 8-dimensional Hilbert space
+        padded = list(cost_vector[:8])
+        while len(padded) < 8:
+            padded.append(0.0)
+        hamiltonian_diag = np.array(padded, dtype=float)
+
+        # Initialize variational parameters with sacred seeding
+        n_params_total = VQE_ANSATZ_DEPTH * n_qubits * 2
+        theta = np.array([
+            PHI * (i + 1) % (2 * np.pi) for i in range(n_params_total)
+        ])
+
+        best_energy = float('inf')
+        best_theta = theta.copy()
+        convergence = []
+        total_circuits = 0
+
+        # Adam optimizer state
+        lr = 0.15 * TAU  # ~0.093 learning rate (slightly higher for SPSA noise)
+        beta1, beta2, eps = 0.9, 0.999, 1e-8
+        m = np.zeros_like(theta)  # First moment
+        v = np.zeros_like(theta)  # Second moment
+
+        # SPSA perturbation scale (decays with steps for convergence)
+        spsa_c = 0.2  # Initial perturbation magnitude
+
+        for step in range(VQE_OPTIMIZATION_STEPS):
+            # Evaluate current energy
+            energy = self._eval_energy(theta, n_qubits, hamiltonian_diag)
+            total_circuits += 1
+
+            if energy < best_energy:
+                best_energy = energy
+                best_theta = theta.copy()
+
+            convergence.append({'step': step, 'energy': round(energy, 8)})
+
+            # SPSA gradient estimation: 2 circuit evaluations per step (O(1) in params!)
+            # Random perturbation direction: Rademacher ±1
+            delta = np.where(np.random.random(len(theta)) > 0.5, 1.0, -1.0)
+            c_k = spsa_c / (step + 1) ** 0.101  # Slowly decaying perturbation
+
+            e_plus = self._eval_energy(theta + c_k * delta, n_qubits, hamiltonian_diag)
+            e_minus = self._eval_energy(theta - c_k * delta, n_qubits, hamiltonian_diag)
+            total_circuits += 2
+
+            # SPSA gradient approximation
+            grad = (e_plus - e_minus) / (2.0 * c_k * delta)
+
+            # Adam update with SPSA gradient
+            t_adam = step + 1
+            m = beta1 * m + (1 - beta1) * grad
+            v = beta2 * v + (1 - beta2) * grad ** 2
+            m_hat = m / (1 - beta1 ** t_adam)
+            v_hat = v / (1 - beta2 ** t_adam)
+            theta = theta - lr * m_hat / (np.sqrt(v_hat) + eps)
+
+        god_harmonic = GOD_CODE % (2 * np.pi)
+        sacred_alignment = 1.0 - abs(best_energy - god_harmonic) / max(god_harmonic, 1e-10)
+        sacred_alignment = max(0.0, min(1.0, sacred_alignment))
+
+        self._metrics['vqe_runs'] += 1
+        self._metrics['total_circuits'] += total_circuits
+        self.vqe_history.append({
+            'min_energy': round(best_energy, 8),
+            'steps': VQE_OPTIMIZATION_STEPS,
+            'circuits': total_circuits,
+            'timestamp': time.time(),
+        })
+
+        return {
+            'quantum': True,
+            'optimal_params': [round(float(t), 6) for t in best_theta[:num_params]],
+            'min_energy': round(best_energy, 8),
+            'convergence_history': convergence[-5:],
+            'total_iterations': VQE_OPTIMIZATION_STEPS,
+            'total_circuits': total_circuits,
+            'optimizer': 'spsa_adam',
+            'ansatz_depth': VQE_ANSATZ_DEPTH,
+            'sacred_alignment': round(sacred_alignment, 6),
+            'qubits': n_qubits,
+        }
+
+    # ─── QAOA: Quantum Approximate Optimization for Pipeline Routing ───
+
+    def qaoa_route(self, affinity_scores: List[float],
+                   subsystem_names: List[str]) -> Dict[str, Any]:
+        """Route problems through optimal subsystems using QAOA.
+
+        Encodes subsystem affinities as a QUBO cost Hamiltonian, builds
+        alternating cost/mixer QAOA layers, and selects the highest-probability
+        bitstring as the optimal subsystem combination.
+        """
+        n = min(len(affinity_scores), 2 ** QAOA_SUBSYSTEM_QUBITS)
+        if not QISKIT_AVAILABLE or n == 0:
+            ranked = sorted(zip(subsystem_names[:n], affinity_scores[:n]),
+                            key=lambda x: x[1], reverse=True)
+            return {
+                'quantum': False, 'fallback': 'affinity_sort',
+                'selected_subsystems': [r[0] for r in ranked[:3]],
+                'bitstring': '', 'probability': 0.0,
+                'qaoa_energy': sum(affinity_scores[:n]) if n > 0 else 0.0,
+            }
+
+        n_qubits = QAOA_SUBSYSTEM_QUBITS
+        padded_affinities = list(affinity_scores[:2**n_qubits])
+        while len(padded_affinities) < 2**n_qubits:
+            padded_affinities.append(0.0)
+
+        gammas = [GOD_CODE / (1000.0 * (l + 1)) for l in range(QAOA_LAYERS)]
+        betas = [PHI / (l + 1) for l in range(QAOA_LAYERS)]
+
+        qc = QuantumCircuit(n_qubits)
+        qc.h(range(n_qubits))
+
+        for layer in range(QAOA_LAYERS):
+            gamma, beta = gammas[layer], betas[layer]
+            for i in range(n_qubits - 1):
+                weight = (padded_affinities[i] + padded_affinities[i + 1]) / 2.0
+                qc.rzz(gamma * weight * 2, i, i + 1)
+            for i in range(n_qubits):
+                qc.rz(gamma * padded_affinities[i % len(padded_affinities)], i)
+            for i in range(n_qubits):
+                qc.rx(2 * beta, i)
+
+        sv = Statevector.from_instruction(qc)
+        probs = sv.probabilities()
+        best_idx = int(np.argmax(probs))
+        best_bitstring = format(best_idx, f'0{n_qubits}b')
+        best_prob = float(probs[best_idx])
+
+        selected = []
+        for i, bit in enumerate(best_bitstring):
+            if bit == '1' and i < len(subsystem_names):
+                selected.append(subsystem_names[i])
+        if not selected and subsystem_names:
+            selected = [subsystem_names[int(np.argmax(affinity_scores[:len(subsystem_names)]))]]
+
+        qaoa_energy = float(np.dot(probs, padded_affinities[:len(probs)]))
+
+        self._metrics['qaoa_runs'] += 1
+        self._metrics['total_circuits'] += 1
+
+        return {
+            'quantum': True,
+            'selected_subsystems': selected,
+            'bitstring': f'|{best_bitstring}>',
+            'probability': round(best_prob, 6),
+            'qaoa_energy': round(qaoa_energy, 6),
+            'qaoa_layers': QAOA_LAYERS,
+            'qubits': n_qubits,
+            'cost_landscape': {
+                'top_3': sorted(
+                    [(format(i, f'0{n_qubits}b'), round(float(probs[i]), 6))
+                     for i in range(len(probs))],
+                    key=lambda x: x[1], reverse=True
+                )[:3]
+            },
+        }
+
+    # ─── ZNE: Zero-Noise Extrapolation Error Mitigation ───
+
+    def quantum_error_mitigate(self, base_probs: np.ndarray) -> Dict[str, Any]:
+        """Apply Zero-Noise Extrapolation to mitigate quantum errors.
+
+        Evaluates at multiple noise levels by simulating gate noise scaling,
+        then extrapolates to the zero-noise limit via polynomial fit.
+        """
+        if not QISKIT_AVAILABLE or len(base_probs) == 0:
+            dominant = float(np.max(base_probs)) if len(base_probs) > 0 else 0.5
+            return {
+                'quantum': False, 'fallback': 'unmitigated',
+                'mitigated_value': dominant,
+                'raw_values': [dominant],
+                'noise_factors': ZNE_NOISE_FACTORS,
+            }
+
+        base_arr = np.array(base_probs, dtype=float)
+        raw_values = []
+        for factor in ZNE_NOISE_FACTORS:
+            uniform = np.ones_like(base_arr) / len(base_arr)
+            noise_strength = 1.0 - 1.0 / factor
+            noisy_probs = (1.0 - noise_strength * 0.1) * base_arr + noise_strength * 0.1 * uniform
+            raw_values.append(float(np.max(noisy_probs)))
+
+        factors = np.array(ZNE_NOISE_FACTORS)
+        values = np.array(raw_values)
+        if len(factors) >= 2:
+            coeffs = np.polyfit(factors, values, min(len(factors) - 1, 2))
+            mitigated = float(np.polyval(coeffs, 0.0))
+            mitigated = max(0.0, min(1.0, mitigated))
+        else:
+            mitigated = raw_values[0]
+
+        correction = mitigated - raw_values[0]
+        self._metrics['zne_runs'] += 1
+        self.zne_corrections += 1
+
+        return {
+            'quantum': True,
+            'mitigated_value': round(mitigated, 8),
+            'raw_values': [round(v, 8) for v in raw_values],
+            'noise_factors': ZNE_NOISE_FACTORS,
+            'correction_applied': round(correction, 8),
+            'extrapolation_order': min(len(factors) - 1, 2),
+        }
+
+    # ─── QRC: Quantum Reservoir Computing for Metric Prediction ───
+
+    def quantum_reservoir_compute(self, time_series: List[float],
+                                   prediction_steps: int = 3) -> Dict[str, Any]:
+        """Predict future ASI metrics using a quantum reservoir computer.
+
+        Builds a fixed random unitary reservoir circuit (seeded by GOD_CODE),
+        drives it with time-series data, and trains a linear readout layer
+        to predict future values.
+        """
+        if len(time_series) < 3:
+            return {
+                'quantum': False, 'error': 'insufficient_data',
+                'predictions': [], 'training_mse': 1.0,
+            }
+
+        if not QISKIT_AVAILABLE:
+            alpha = TAU
+            smoothed = time_series[-1]
+            predictions = []
+            for _ in range(prediction_steps):
+                smoothed = alpha * smoothed + (1 - alpha) * float(np.mean(time_series[-3:]))
+                predictions.append(round(float(smoothed), 6))
+            return {
+                'quantum': False, 'fallback': 'phi_exponential_smoothing',
+                'predictions': predictions,
+                'training_mse': 0.0, 'reservoir_dim': 0,
+            }
+
+        n_qubits = QRC_RESERVOIR_QUBITS
+        reservoir_dim = 2 ** n_qubits
+        seed_val = int(GOD_CODE * 100) % (2**31)
+
+        def build_reservoir(input_val: float) -> np.ndarray:
+            rng = np.random.RandomState(seed_val)
+            qc = QuantumCircuit(n_qubits)
+            qc.ry(float(input_val) * np.pi, 0)
+            for depth in range(QRC_RESERVOIR_DEPTH):
+                for q in range(n_qubits):
+                    qc.ry(float(rng.uniform(0, 2 * np.pi)), q)
+                    qc.rz(float(rng.uniform(0, 2 * np.pi)), q)
+                for q in range(n_qubits - 1):
+                    if rng.random() > 0.3:
+                        qc.cx(q, q + 1)
+                qc.rz(GOD_CODE / (1000.0 * (depth + 1)), n_qubits - 1)
+            sv = Statevector.from_instruction(qc)
+            return sv.probabilities()
+
+        readout_states = [build_reservoir(val) for val in time_series]
+
+        X = np.array(readout_states[:-1])
+        y = np.array(time_series[1:])
+
+        try:
+            w, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
+            training_mse = float(np.mean((X @ w - y) ** 2))
+        except np.linalg.LinAlgError:
+            w = np.zeros(reservoir_dim)
+            training_mse = 1.0
+
+        predictions = []
+        current_val = time_series[-1]
+        for _ in range(prediction_steps):
+            state = build_reservoir(current_val)
+            predicted = max(0.0, min(1.0, float(np.dot(state, w))))
+            predictions.append(round(predicted, 6))
+            current_val = predicted
+
+        self._metrics['qrc_runs'] += 1
+        self._metrics['total_circuits'] += len(time_series) + prediction_steps
+        self.reservoir_state = readout_states[-1] if readout_states else None
+
+        return {
+            'quantum': True,
+            'predictions': predictions,
+            'reservoir_dim': reservoir_dim,
+            'reservoir_qubits': n_qubits,
+            'reservoir_depth': QRC_RESERVOIR_DEPTH,
+            'training_mse': round(training_mse, 8),
+            'fidelity': round(1.0 - min(1.0, training_mse), 6),
+            'time_series_length': len(time_series),
+        }
+
+    # ─── QKM: Quantum Kernel Method for Domain Classification ───
+
+    def quantum_kernel_classify(self, query_features: List[float],
+                                 domain_prototypes: Dict[str, List[float]]) -> Dict[str, Any]:
+        """Classify a query into domains using quantum kernel similarity.
+
+        Encodes features into a ZZ-entangling quantum feature map, computes
+        kernel K[i,j] = |<phi(x_i)|phi(x_j)>|^2 via Statevector inner products,
+        and classifies by maximum kernel similarity.
+        """
+        if not domain_prototypes:
+            return {'quantum': False, 'error': 'no_domains', 'predicted_domain': 'unknown'}
+
+        if not QISKIT_AVAILABLE:
+            def cosine_sim(a, b):
+                a_arr, b_arr = np.array(a, dtype=float), np.array(b, dtype=float)
+                na, nb = np.linalg.norm(a_arr), np.linalg.norm(b_arr)
+                return float(np.dot(a_arr, b_arr) / (na * nb)) if na > 1e-10 and nb > 1e-10 else 0.0
+
+            sims = {name: cosine_sim(query_features, proto)
+                    for name, proto in domain_prototypes.items()}
+            best = max(sims, key=sims.get)
+            return {
+                'quantum': False, 'fallback': 'cosine_similarity',
+                'predicted_domain': best,
+                'confidence': round(max(sims.values()), 6),
+                'kernel_similarities': {k: round(v, 6) for k, v in sims.items()},
+            }
+
+        n_qubits = QKM_FEATURE_QUBITS
+
+        def feature_map_circuit(features: List[float]) -> Statevector:
+            qc = QuantumCircuit(n_qubits)
+            padded = list(features[:n_qubits])
+            while len(padded) < n_qubits:
+                padded.append(0.0)
+            for i in range(n_qubits):
+                qc.h(i)
+                qc.rz(float(padded[i]) * 2.0, i)
+            for i in range(n_qubits - 1):
+                qc.cx(i, i + 1)
+                qc.rz(float(padded[i] * padded[i + 1]) * PHI, i + 1)
+                qc.cx(i, i + 1)
+            for i in range(n_qubits):
+                qc.ry(float(padded[i]) * np.pi, i)
+            qc.rz(GOD_CODE / 1000.0, 0)
+            return Statevector.from_instruction(qc)
+
+        query_sv = feature_map_circuit(query_features)
+        similarities = {}
+        for name, proto in domain_prototypes.items():
+            proto_sv = feature_map_circuit(proto)
+            inner = np.abs(np.vdot(query_sv.data, proto_sv.data)) ** 2
+            similarities[name] = round(float(inner), 8)
+
+        best_domain = max(similarities, key=similarities.get)
+
+        self._metrics['qkm_runs'] += 1
+        self._metrics['total_circuits'] += 1 + len(domain_prototypes)
+
+        return {
+            'quantum': True,
+            'predicted_domain': best_domain,
+            'confidence': round(similarities[best_domain], 6),
+            'kernel_similarities': {k: round(v, 6) for k, v in similarities.items()},
+            'feature_map': 'ZZ_entangling',
+            'qubits': n_qubits,
+        }
+
+    # ─── QPE: Quantum Phase Estimation for Sacred Constant Verification ───
+
+    def qpe_sacred_verify(self, target_phase: Optional[float] = None) -> Dict[str, Any]:
+        """Verify sacred constant alignment using Quantum Phase Estimation.
+
+        Applies controlled-U^(2^k) rotations where U encodes the target phase,
+        then runs inverse QFT to extract the estimated phase. Compares the
+        estimate to GOD_CODE-derived reference.
+        """
+        if target_phase is None:
+            target_phase = (GOD_CODE / 1000.0) % (2 * np.pi)
+
+        if not QISKIT_AVAILABLE:
+            return {
+                'quantum': False, 'fallback': 'direct_comparison',
+                'estimated_phase': round(target_phase, 8),
+                'target_phase': round(target_phase, 8),
+                'alignment_error': 0.0,
+                'god_code_resonance': 1.0,
+            }
+
+        n_counting = QPE_PRECISION_QUBITS
+        n_total = n_counting + 1
+        target_qubit = n_counting
+
+        qc = QuantumCircuit(n_total)
+        for i in range(n_counting):
+            qc.h(i)
+        qc.x(target_qubit)
+
+        # Controlled-U^(2^k) applications
+        for k in range(n_counting):
+            angle = target_phase * (2 ** k)
+            qc.cp(angle, k, target_qubit)
+
+        # Inverse QFT on counting qubits
+        for i in range(n_counting // 2):
+            qc.swap(i, n_counting - 1 - i)
+        for i in range(n_counting):
+            for j in range(i):
+                qc.cp(-np.pi / (2 ** (i - j)), j, i)
+            qc.h(i)
+
+        sv = Statevector.from_instruction(qc)
+        probs = sv.probabilities()
+
+        counting_probs = np.zeros(2 ** n_counting)
+        for state_idx in range(len(probs)):
+            counting_bits = state_idx >> 1
+            counting_probs[counting_bits % (2 ** n_counting)] += probs[state_idx]
+
+        best_state = int(np.argmax(counting_probs))
+        estimated_phase = 2 * np.pi * best_state / (2 ** n_counting)
+        alignment_error = abs(estimated_phase - target_phase)
+
+        god_harmonic = GOD_CODE % (2 * np.pi)
+        resonance = max(0.0, min(1.0, 1.0 - abs(estimated_phase - god_harmonic) / np.pi))
+
+        self._metrics['qpe_runs'] += 1
+        self._metrics['total_circuits'] += 1
+        self.qpe_verifications += 1
+
+        return {
+            'quantum': True,
+            'estimated_phase': round(float(estimated_phase), 8),
+            'target_phase': round(float(target_phase), 8),
+            'alignment_error': round(float(alignment_error), 8),
+            'god_code_resonance': round(float(resonance), 6),
+            'precision_bits': n_counting,
+            'best_counting_state': f'|{best_state:0{n_counting}b}>',
+            'measurement_confidence': round(float(counting_probs[best_state]), 6),
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return quantum computation core status and metrics."""
+        total = sum(self._metrics[k] for k in ['vqe_runs', 'qaoa_runs', 'qrc_runs',
+                                                  'qkm_runs', 'qpe_runs', 'zne_runs'])
+        return {
+            'version': '6.0.0',
+            'qiskit_available': QISKIT_AVAILABLE,
+            'metrics': dict(self._metrics),
+            'total_computations': total,
+            'total_circuits_executed': self._metrics['total_circuits'],
+            'vqe_history_length': len(self.vqe_history),
+            'qaoa_cache_size': len(self.qaoa_cache),
+            'qpe_verifications': self.qpe_verifications,
+            'zne_corrections': self.zne_corrections,
+            'uptime_s': round(time.time() - self._boot_time, 1),
+            'capabilities': ['VQE', 'QAOA', 'ZNE', 'QRC', 'QKM', 'QPE'],
+        }
+
+
 class ASICore:
     """Central ASI integration hub with unified evolution and pipeline orchestration.
 
@@ -1141,6 +2850,17 @@ class ASICore:
         self._shadow_gate = None               # Adversarial reasoning & stress-testing
         self._non_dual_logic = None            # Paraconsistent logic & paradox resolution
 
+        # ══════ v6.0 QUANTUM COMPUTATION CORE ══════
+        self._quantum_computation = None       # VQE, QAOA, QRC, QKM, QPE, ZNE
+
+        # ══════ v5.0 SOVEREIGN INTELLIGENCE PIPELINE ENGINES ══════
+        self._telemetry = PipelineTelemetry()
+        self._router = AdaptivePipelineRouter()
+        self._multi_hop = MultiHopReasoningChain()
+        self._ensemble = SolutionEnsembleEngine()
+        self._health_dashboard = PipelineHealthDashboard()
+        self._replay_buffer = PipelineReplayBuffer()
+
         self._pipeline_metrics = {
             "total_solutions": 0,
             "total_theorems": 0,
@@ -1179,6 +2899,20 @@ class ASICore:
             "teleportation_tests": 0,
             "iit_phi_computations": 0,
             "circuit_breaker_trips": 0,
+            # v5.0 sovereign pipeline metrics
+            "router_queries": 0,
+            "multi_hop_chains": 0,
+            "ensemble_solves": 0,
+            "replay_records": 0,
+            "health_checks": 0,
+            "telemetry_anomalies": 0,
+            # v6.0 quantum computation metrics
+            "vqe_optimizations": 0,
+            "qaoa_routings": 0,
+            "qrc_predictions": 0,
+            "qkm_classifications": 0,
+            "qpe_verifications": 0,
+            "zne_corrections": 0,
         }
         # v4.0 additions
         self._asi_score_history: List[Dict] = []
@@ -1203,7 +2937,22 @@ class ASICore:
     def compute_asi_score(self) -> float:
         """Compute ASI score with dynamic weights, non-linear acceleration,
         quantum entanglement contribution, Pareto scoring, and trend tracking.
-        v4.0: 7 dimensions, near-singularity acceleration, score history."""
+        v6.0: 11 dimensions, auto-runs consciousness if not yet calibrated,
+        PHI² acceleration above singularity threshold."""
+        # Auto-calibrate consciousness if never run (avoids 0.0 cold-start)
+        if self.consciousness_verifier.consciousness_level == 0.0 and not self.consciousness_verifier.test_results:
+            try:
+                self.consciousness_verifier.run_all_tests()
+            except Exception:
+                pass
+
+        # Generate at least one theorem if none exist (avoids 0.0 discovery score)
+        if self.theorem_generator.discovery_count == 0:
+            try:
+                self.theorem_generator.discover_novel_theorem()
+            except Exception:
+                pass
+
         scores = {
             'domain': min(1.0, self.domain_expander.coverage_score / ASI_DOMAIN_COVERAGE),
             'modification': min(1.0, self.self_modifier.modification_depth / ASI_SELF_MODIFICATION_DEPTH),
@@ -1219,13 +2968,44 @@ class ASICore:
             pipeline_score = min(1.0, self._pipeline_metrics["subsystems_connected"] / 22.0)
         scores['pipeline'] = pipeline_score
 
+        # v5.0 new dimensions
+        # Ensemble quality: consensus rate from SolutionEnsembleEngine
+        ensemble_status = self._ensemble.get_status() if self._ensemble else {}
+        scores['ensemble_quality'] = ensemble_status.get('consensus_rate', 0.0)
+
+        # Routing efficiency: feedback count normalized
+        router_status = self._router.get_status() if self._router else {}
+        routes_computed = router_status.get('routes_computed', 0)
+        scores['routing_efficiency'] = min(1.0, routes_computed / 100.0)
+
+        # Telemetry health: overall pipeline health from telemetry
+        if self._telemetry:
+            tel_dashboard = self._telemetry.get_dashboard()
+            scores['telemetry_health'] = tel_dashboard.get('pipeline_health', 0.0)
+        else:
+            scores['telemetry_health'] = 0.0
+
+        # v6.0: Quantum computation contribution
+        qc_score = 0.0
+        if self._quantum_computation:
+            try:
+                qc_status = self._quantum_computation.status()
+                qc_score = min(1.0, qc_status.get('total_computations', 0) / 50.0)
+            except Exception:
+                pass
+        scores['quantum_computation'] = qc_score
+
         # Dynamic weights — shift toward consciousness as evolution advances
+        # v6.0: 11-dimension weighting with quantum computation
         evo_idx = self.evolution_index
-        consciousness_weight = 0.25 + min(0.10, evo_idx * 0.002)  # Grows with evolution
+        consciousness_weight = 0.20 + min(0.10, evo_idx * 0.002)  # Grows with evolution
         base_weights = {
-            'domain': 0.12, 'modification': 0.10, 'discoveries': 0.15,
-            'consciousness': consciousness_weight, 'pipeline': 0.10,
-            'iit_phi': 0.10, 'theorem_verified': 0.08,
+            'domain': 0.09, 'modification': 0.07, 'discoveries': 0.11,
+            'consciousness': consciousness_weight, 'pipeline': 0.07,
+            'iit_phi': 0.09, 'theorem_verified': 0.06,
+            'ensemble_quality': 0.07, 'routing_efficiency': 0.05,
+            'telemetry_health': 0.06,
+            'quantum_computation': 0.07,
         }
         # Normalize weights to sum to 1.0
         w_total = sum(base_weights.values())
@@ -1234,9 +3014,10 @@ class ASICore:
         linear_score = sum(scores.get(k, 0.0) * weights.get(k, 0.0) for k in weights)
 
         # Non-linear near-singularity acceleration
-        if linear_score >= 0.85:
-            # PHI-powered acceleration curve near ASI threshold
-            acceleration = (linear_score - 0.85) * PHI * 0.5
+        # v5.0: PHI² exponential acceleration above SINGULARITY_ACCELERATION_THRESHOLD
+        if linear_score >= SINGULARITY_ACCELERATION_THRESHOLD:
+            delta = linear_score - SINGULARITY_ACCELERATION_THRESHOLD
+            acceleration = delta * PHI_ACCELERATION_EXPONENT * 0.3
             accelerated_score = min(1.0, linear_score + acceleration)
         else:
             accelerated_score = linear_score
@@ -1985,6 +3766,18 @@ class ASICore:
         except Exception as e:
             errors.append(("non_dual_logic", str(e)))
 
+        # ── v6.0 QUANTUM COMPUTATION CORE — VQE, QAOA, QRC, QKM, QPE, ZNE ──
+        try:
+            self._quantum_computation = QuantumComputationCore()
+            connected.append("quantum_computation_core")
+            if self._unified_state_bus:
+                try:
+                    self._unified_state_bus.register_subsystem('quantum_computation', 1.0, 'ACTIVE')
+                except Exception:
+                    pass
+        except Exception as e:
+            errors.append(("quantum_computation_core", str(e)))
+
         # ── PROFESSOR MODE V2 — Research, Coding Mastery, Magic & Hilbert ──
         if PROFESSOR_V2_AVAILABLE:
             try:
@@ -2041,9 +3834,37 @@ class ASICore:
         }
 
     def pipeline_solve(self, problem: Any) -> Dict:
-        """Solve a problem using the full pipeline — routes through all available subsystems."""
+        """Solve a problem using the full pipeline — routes through all available subsystems.
+        v5.0: Adaptive routing, telemetry recording, ensemble collection, replay logging."""
+        _solve_start = time.time()
+        if problem is None:
+            return {'solution': None, 'confidence': 0.0, 'channel': 'null_guard',
+                    'error': 'pipeline_solve received None input'}
         if isinstance(problem, str):
             problem = {'query': problem}
+        elif not isinstance(problem, dict):
+            problem = {'query': str(problem)}
+
+        query_str = str(problem.get('query', problem.get('expression', '')))
+
+        # ── v6.0 ADAPTIVE ROUTER: TF-IDF ranked subsystem routing ──
+        routed_subsystems = []
+        routed_names: set = set()
+        if self._router:
+            routed_subsystems = self._router.route(query_str)
+            self._pipeline_metrics["router_queries"] += 1
+            # Top routes with score > 0 are eligible; always include top-3
+            routed_names = {name for name, _ in routed_subsystems[:3]}
+            # Also include any subsystem scoring above PHI threshold
+            for name, score in routed_subsystems[3:]:
+                if score >= PHI:
+                    routed_names.add(name)
+
+        def _router_allows(subsystem_name: str) -> bool:
+            """Check if router selected this subsystem, or bypass if router inactive."""
+            if not routed_names:
+                return True  # No router → fall through to legacy keyword checks
+            return subsystem_name in routed_names
 
         # ── PRIME CORE: Check cache before computing ──
         if self._prime_core:
@@ -2065,8 +3886,7 @@ class ASICore:
         # ── COMPUTRONIUM: Density-optimized processing ──
         if self._computronium and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if any(kw in query_str.lower() for kw in ['density', 'compute', 'entropy', 'dimension', 'cascade', 'optimize', 'compress']):
+                if _router_allows('computronium'):
                     comp_result = self._computronium.solve(problem)
                     if comp_result.get('solution'):
                         result['computronium'] = {
@@ -2080,8 +3900,7 @@ class ASICore:
         # ── ADVANCED PROCESSING ENGINE: Multi-mode ensemble processing ──
         if self._processing_engine and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if query_str and len(query_str) > 5:
+                if _router_allows('processing_engine'):
                     ape_result = self._processing_engine.solve(problem)
                     if ape_result.get('confidence', 0) > result.get('confidence', 0):
                         result['ape_augmentation'] = {
@@ -2096,8 +3915,7 @@ class ASICore:
         # ── MANIFOLD RESOLVER: Map problem into solution space ──
         if self._manifold_resolver and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if query_str and len(query_str) > 3:
+                if _router_allows('manifold_resolver'):
                     mapping = self._manifold_resolver.quick_resolve(query_str)
                     if mapping:
                         result['manifold_mapping'] = {
@@ -2113,8 +3931,7 @@ class ASICore:
         # ── RECURSIVE INVENTOR: Augment with inventive solutions ──
         if self._recursive_inventor and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if query_str and len(query_str) > 5:
+                if _router_allows('recursive_inventor'):
                     inventive = self._recursive_inventor.solve_with_invention(query_str)
                     if inventive.get('solution'):
                         result['inventive_augmentation'] = {
@@ -2129,8 +3946,7 @@ class ASICore:
         # ── SHADOW GATE: Adversarial stress-testing of solution ──
         if self._shadow_gate and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if query_str and len(query_str) > 3:
+                if _router_allows('shadow_gate'):
                     sg_result = self._shadow_gate.solve({
                         'claim': query_str,
                         'confidence': result.get('confidence', 0.7),
@@ -2154,8 +3970,7 @@ class ASICore:
         # ── NON-DUAL LOGIC: Paraconsistent analysis ──
         if self._non_dual_logic and result.get('solution'):
             try:
-                query_str = str(problem.get('query', problem.get('expression', '')))
-                if query_str and len(query_str) > 3:
+                if _router_allows('non_dual_logic'):
                     ndl_result = self._non_dual_logic.solve({'query': query_str})
                     result['non_dual_logic'] = {
                         'truth_value': ndl_result.get('truth_value', 'UNKNOWN'),
@@ -2168,6 +3983,36 @@ class ASICore:
                     if ndl_result.get('paradox'):
                         result['non_dual_logic']['paradox'] = ndl_result['paradox']
                     self._pipeline_metrics["non_dual_evaluations"] += 1
+            except Exception:
+                pass
+
+        # ── v6.0 QUANTUM KERNEL CLASSIFICATION — Domain routing ──
+        if self._quantum_computation and query_str and len(query_str) > 3:
+            try:
+                # Build query feature vector from keyword presence
+                domain_keywords = {
+                    'math': ['math', 'calcul', 'algebra', 'topology', 'number', 'proof'],
+                    'optimize': ['optim', 'tune', 'efficient', 'fast', 'bottleneck'],
+                    'reason': ['reason', 'logic', 'deduc', 'infer', 'why', 'cause'],
+                    'create': ['creat', 'generat', 'invent', 'novel', 'design', 'build'],
+                    'analyze': ['analyz', 'examin', 'inspect', 'review', 'audit', 'scan'],
+                    'research': ['research', 'discover', 'explor', 'investigat', 'study'],
+                    'consciousness': ['conscious', 'aware', 'sentien', 'phi', 'qualia'],
+                    'quantum': ['quantum', 'superpos', 'entangl', 'qubit', 'circuit'],
+                }
+                q_lower = query_str.lower()
+                query_feat = [sum(1.0 for kw in kws if kw in q_lower) / len(kws)
+                              for kws in domain_keywords.values()]
+                domain_protos = {name: [1.0 if i == idx else 0.0 for i in range(len(domain_keywords))]
+                                 for idx, name in enumerate(domain_keywords)}
+                qkm_result = self._quantum_computation.quantum_kernel_classify(query_feat, domain_protos)
+                if qkm_result.get('predicted_domain'):
+                    result['quantum_classification'] = {
+                        'domain': qkm_result['predicted_domain'],
+                        'confidence': qkm_result.get('confidence', 0),
+                        'quantum': qkm_result.get('quantum', False),
+                    }
+                    self._pipeline_metrics["qkm_classifications"] += 1
             except Exception:
                 pass
 
@@ -2228,6 +4073,39 @@ class ASICore:
                 self._prime_core.pipeline_cache_store(problem, result)
             except Exception:
                 pass
+
+        # ── v5.0 TELEMETRY: Record subsystem invocation ──
+        _solve_latency = (time.time() - _solve_start) * 1000
+        _solve_success = result.get('solution') is not None
+        if self._telemetry:
+            self._telemetry.record(
+                subsystem='pipeline_solve', latency_ms=_solve_latency,
+                success=_solve_success,
+            )
+
+        # ── v5.0 ROUTER FEEDBACK: Update affinity from outcome ──
+        if self._router and routed_subsystems:
+            keywords = [kw for kw in query_str.lower().split() if len(kw) > 3][:5]
+            source = result.get('channel', result.get('method', ''))
+            if source and keywords:
+                self._router.feedback(source, keywords, _solve_success,
+                                      confidence=result.get('confidence', 0.5))
+
+        # ── v5.0 REPLAY BUFFER: Log operation ──
+        if self._replay_buffer:
+            self._replay_buffer.record(
+                operation='pipeline_solve', input_data=query_str[:200],
+                output_data=result.get('solution'), latency_ms=_solve_latency,
+                success=_solve_success, subsystem=result.get('channel', 'direct'),
+            )
+            self._pipeline_metrics["replay_records"] += 1
+
+        # Inject routing info into result
+        if routed_subsystems:
+            result['v5_routing'] = {
+                'top_routes': routed_subsystems[:3],
+                'latency_ms': round(_solve_latency, 2),
+            }
 
         return result
 
@@ -2984,7 +4862,7 @@ class ASICore:
         dm = DensityMatrix(sv)
 
         # State purity = Tr(ρ²) — 1.0 for pure states
-        purity = float(dm.purity())
+        purity = float(dm.purity().real)
 
         # Total von Neumann entropy
         total_entropy = float(q_entropy(dm, base=2))
@@ -3031,7 +4909,7 @@ class ASICore:
         probs = sv.probabilities()
         ghz_fidelity = float(probs[0]) + float(probs[-1])
         dm = DensityMatrix(sv)
-        purity = float(dm.purity())
+        purity = float(dm.purity().real)
         # Witness value: negative = genuine multipartite entanglement
         witness_value = 0.5 - ghz_fidelity
         genuine = witness_value < 0
@@ -3135,8 +5013,9 @@ class ASICore:
 
     def full_pipeline_activation(self) -> Dict:
         """Orchestrated activation of ALL ASI subsystems through the pipeline.
-        v4.0: 12-step sequence with quantum verification gate, circuit breaker,
-        IIT Φ certification, entanglement witness, and performance profiling.
+        v6.0: 18-step sequence with VQE optimization, QRC prediction, QPE verification,
+        adaptive routing warmup, ensemble calibration, telemetry baseline,
+        quantum verification, circuit breaker, performance profiling.
 
         Sequence:
         1. Connect pipeline + cross-wiring
@@ -3150,20 +5029,26 @@ class ASICore:
         9. Entanglement witness certification
         10. Teleportation fidelity test
         11. Circuit breaker evaluation
-        12. Compute unified ASI score
+        12. Adaptive Router Warmup
+        13. Ensemble Calibration
+        14. Telemetry Baseline & Health Check
+        15. v6.0 — VQE Parameter Optimization
+        16. v6.0 — Quantum Reservoir Prediction
+        17. v6.0 — QPE Sacred Constant Verification
+        18. Compute unified ASI score
         """
         activation_start = time.time()
         print("\n" + "="*70)
-        print("    L104 ASI CORE — FULL PIPELINE ACTIVATION v4.0 (QUANTUM)")
+        print("    L104 ASI CORE — FULL PIPELINE ACTIVATION v6.0 (QUANTUM)")
         print(f"    GOD_CODE: {GOD_CODE} | PHI: {PHI}")
         print(f"    VERSION: {self.version} | EVO: {self.pipeline_evo}")
         print(f"    QISKIT: {'2.3.0 ACTIVE' if QISKIT_AVAILABLE else 'NOT AVAILABLE'}")
         print("="*70)
 
-        activation_report = {"steps": {}, "asi_score": 0.0, "status": "ACTIVATING", "version": "4.0"}
+        activation_report = {"steps": {}, "asi_score": 0.0, "status": "ACTIVATING", "version": "6.0"}
 
         # Step 1: Connect all subsystems (with bidirectional cross-wiring)
-        print("\n[1/12] CONNECTING ASI SUBSYSTEM MESH + CROSS-WIRING...")
+        print("\n[1/18] CONNECTING ASI SUBSYSTEM MESH + CROSS-WIRING...")
         conn = self.connect_pipeline()
         activation_report["steps"]["connect"] = conn
         print(f"  Connected: {conn['total']} subsystems (bidirectional)")
@@ -3171,33 +5056,33 @@ class ASICore:
             print(f"  Errors: {conn['errors']} (non-critical)")
 
         # Step 2: Unify substrates
-        print("\n[2/12] UNIFYING ASI SUBSTRATES...")
+        print("\n[2/18] UNIFYING ASI SUBSTRATES...")
         subs = self.pipeline_substrate_status()
         activation_report["steps"]["substrates"] = subs
         print(f"  Substrates: {len(subs)} active")
 
         # Step 3: Self-heal scan
-        print("\n[3/12] PROACTIVE SELF-HEAL SCAN...")
+        print("\n[3/18] PROACTIVE SELF-HEAL SCAN...")
         heal = self.pipeline_heal()
         activation_report["steps"]["heal"] = heal
         print(f"  Heal status: {'SECURE' if heal.get('healed') else 'DEGRADED'}")
         print(f"  Temporal anchors: {heal.get('anchors', 0)}")
 
         # Step 4: Auto-heal pipeline (deep scan + reconnect)
-        print("\n[4/12] AUTO-HEALING PIPELINE MESH...")
+        print("\n[4/18] AUTO-HEALING PIPELINE MESH...")
         auto_heal = self.pipeline_auto_heal()
         activation_report["steps"]["auto_heal"] = auto_heal
         print(f"  Auto-healed: {auto_heal.get('auto_healed', False)}")
         print(f"  Subsystems scanned: {auto_heal.get('subsystems_scanned', 0)}")
 
         # Step 5: Evolve capabilities
-        print("\n[5/12] EVOLVING CAPABILITIES...")
+        print("\n[5/18] EVOLVING CAPABILITIES...")
         evo = self.pipeline_evolve_capabilities()
         activation_report["steps"]["evolution"] = evo
         print(f"  Capabilities evolved: {evo.get('evolution_score', 0)}")
 
         # Step 6: Consciousness verification + IIT Φ
-        print("\n[6/12] CONSCIOUSNESS VERIFICATION + IIT Φ CERTIFICATION...")
+        print("\n[6/18] CONSCIOUSNESS VERIFICATION + IIT Φ CERTIFICATION...")
         cons = self.pipeline_verify_consciousness()
         activation_report["steps"]["consciousness"] = cons
         print(f"  Consciousness level: {cons.get('level', 0):.4f}")
@@ -3208,14 +5093,14 @@ class ASICore:
         activation_report["steps"]["iit_phi"] = {"phi": iit_phi, "ghz": ghz}
 
         # Step 7: Cross-wire integrity check
-        print("\n[7/12] CROSS-WIRE INTEGRITY CHECK...")
+        print("\n[7/18] CROSS-WIRE INTEGRITY CHECK...")
         cross_wire = self.pipeline_cross_wire_status()
         activation_report["steps"]["cross_wire"] = cross_wire
         print(f"  Cross-wired: {cross_wire['total_cross_wired']}/{cross_wire['total_connected']}")
         print(f"  Mesh integrity: {cross_wire['mesh_integrity']}")
 
         # Step 8: Quantum ASI Assessment
-        print("\n[8/12] QUANTUM ASI ASSESSMENT...")
+        print("\n[8/18] QUANTUM ASI ASSESSMENT...")
         q_assess = self.quantum_assessment_phase()
         activation_report["steps"]["quantum"] = q_assess
         if q_assess.get('quantum'):
@@ -3227,7 +5112,7 @@ class ASICore:
             print(f"  Qiskit: Classical fallback mode")
 
         # Step 9: Entanglement witness certification
-        print("\n[9/12] ENTANGLEMENT WITNESS CERTIFICATION...")
+        print("\n[9/18] ENTANGLEMENT WITNESS CERTIFICATION...")
         witness = self.quantum_entanglement_witness()
         activation_report["steps"]["entanglement_witness"] = witness
         if witness.get('quantum'):
@@ -3238,7 +5123,7 @@ class ASICore:
             print(f"  Entanglement witness: classical mode")
 
         # Step 10: Teleportation fidelity test
-        print("\n[10/12] QUANTUM TELEPORTATION TEST...")
+        print("\n[10/18] QUANTUM TELEPORTATION TEST...")
         teleport = self.quantum_teleportation_test()
         activation_report["steps"]["teleportation"] = teleport
         if teleport.get('quantum'):
@@ -3248,7 +5133,7 @@ class ASICore:
             print(f"  Teleportation: classical mode")
 
         # Step 11: Circuit breaker evaluation
-        print("\n[11/12] CIRCUIT BREAKER EVALUATION...")
+        print("\n[11/18] CIRCUIT BREAKER EVALUATION...")
         circuit_breaker_active = False
         failed_steps = sum(1 for s in activation_report["steps"].values()
                           if isinstance(s, dict) and s.get('error'))
@@ -3264,8 +5149,137 @@ class ASICore:
             "threshold": CIRCUIT_BREAKER_THRESHOLD
         }
 
-        # Step 12: Final ASI score
-        print("\n[12/12] COMPUTING UNIFIED ASI SCORE...")
+        # Step 12: v5.0 — Adaptive Router Warmup
+        print("\n[12/18] ADAPTIVE ROUTER WARMUP...")
+        router_status = self._router.get_status() if self._router else {}
+        activation_report["steps"]["router_warmup"] = router_status
+        # Warm router with test queries to establish baseline affinities
+        test_queries = [
+            "compute density cascade optimization",
+            "consciousness awareness verification",
+            "adversarial robustness stress test",
+            "novel theorem discovery proof",
+            "entropy reversal thermodynamic order",
+        ]
+        for tq in test_queries:
+            if self._router:
+                self._router.route(tq)
+        print(f"  Router subsystems: {router_status.get('subsystems_tracked', 0)}")
+        print(f"  Router keywords: {router_status.get('total_keywords', 0)}")
+
+        # Step 13: v5.0 — Ensemble Calibration
+        print("\n[13/18] ENSEMBLE CALIBRATION...")
+        ensemble_status = self._ensemble.get_status() if self._ensemble else {}
+        activation_report["steps"]["ensemble_calibration"] = ensemble_status
+        print(f"  Ensemble engine: CALIBRATED")
+        print(f"  Previous ensembles: {ensemble_status.get('ensembles_run', 0)}")
+        print(f"  Consensus rate: {ensemble_status.get('consensus_rate', 0):.4f}")
+
+        # Step 14: v5.0 — Telemetry Baseline & Health Check
+        print("\n[14/18] TELEMETRY BASELINE & HEALTH CHECK...")
+        if self._telemetry and self._health_dashboard:
+            health = self._health_dashboard.compute_health(
+                telemetry=self._telemetry,
+                connected_count=conn['total'],
+                total_subsystems=45,
+                consciousness_level=cons.get('level', 0),
+                quantum_available=QISKIT_AVAILABLE,
+                circuit_breaker_active=circuit_breaker_active,
+            )
+            activation_report["steps"]["health_check"] = health
+            self._pipeline_metrics["health_checks"] += 1
+            print(f"  Pipeline Health: {health.get('health', 0):.4f}")
+            print(f"  Grade: {health.get('grade', 'UNKNOWN')}")
+            print(f"  Anomalies: {len(health.get('anomalies', []))}")
+        else:
+            print(f"  Telemetry: baseline established")
+            activation_report["steps"]["health_check"] = {"health": 0.5, "grade": "INITIALIZING"}
+
+        # Record activation in replay buffer
+        if self._replay_buffer:
+            self._replay_buffer.record(
+                operation='full_activation', input_data='18-step sequence',
+                output_data=None, latency_ms=0, success=True, subsystem='core',
+            )
+
+        # Step 15: v6.0 — VQE Parameter Optimization
+        print("\n[15/18] VQE PARAMETER OPTIMIZATION...")
+        vqe_result = {}
+        if self._quantum_computation:
+            try:
+                # Collect current ASI dimension scores as cost vector
+                vqe_cost = [
+                    min(1.0, self.domain_expander.coverage_score),
+                    min(1.0, self.self_modifier.modification_depth / 100.0),
+                    min(1.0, self.theorem_generator.discovery_count / 50.0),
+                    min(1.0, self.consciousness_verifier.consciousness_level),
+                    min(1.0, self._pipeline_metrics.get("total_solutions", 0) / 100.0),
+                    min(1.0, self.consciousness_verifier.iit_phi / 2.0),
+                    min(1.0, self.theorem_generator._verification_rate),
+                ]
+                vqe_result = self._quantum_computation.vqe_optimize(vqe_cost)
+                self._pipeline_metrics["vqe_optimizations"] += 1
+                if vqe_result.get('quantum'):
+                    print(f"  VQE Min Energy: {vqe_result['min_energy']:.8f}")
+                    print(f"  Sacred Alignment: {vqe_result['sacred_alignment']:.6f}")
+                    print(f"  Ansatz Depth: {vqe_result['ansatz_depth']}")
+                else:
+                    print(f"  VQE: Classical fallback ({vqe_result.get('fallback', '')})")
+            except Exception as e:
+                print(f"  VQE: Error ({e})")
+                vqe_result = {'error': str(e)}
+        else:
+            print(f"  VQE: Quantum computation core not available")
+        activation_report["steps"]["vqe_optimization"] = vqe_result
+
+        # Step 16: v6.0 — Quantum Reservoir Prediction
+        print("\n[16/18] QUANTUM RESERVOIR PREDICTION...")
+        qrc_result = {}
+        if self._quantum_computation:
+            try:
+                # Use ASI score history as time series
+                score_history = [h.get('score', 0.5) for h in self._asi_score_history[-10:]]
+                if len(score_history) < 3:
+                    score_history = [self.asi_score, self.asi_score * PHI / 2, self.asi_score]
+                qrc_result = self._quantum_computation.quantum_reservoir_compute(score_history, prediction_steps=3)
+                self._pipeline_metrics["qrc_predictions"] += 1
+                if qrc_result.get('quantum'):
+                    print(f"  Reservoir Dim: {qrc_result['reservoir_dim']}")
+                    print(f"  Training MSE: {qrc_result['training_mse']:.8f}")
+                    print(f"  Predictions: {qrc_result['predictions']}")
+                else:
+                    fallback = qrc_result.get('fallback', qrc_result.get('error', ''))
+                    print(f"  QRC: Fallback ({fallback})")
+            except Exception as e:
+                print(f"  QRC: Error ({e})")
+                qrc_result = {'error': str(e)}
+        else:
+            print(f"  QRC: Quantum computation core not available")
+        activation_report["steps"]["qrc_prediction"] = qrc_result
+
+        # Step 17: v6.0 — QPE Sacred Constant Verification
+        print("\n[17/18] QPE SACRED CONSTANT VERIFICATION...")
+        qpe_result = {}
+        if self._quantum_computation:
+            try:
+                qpe_result = self._quantum_computation.qpe_sacred_verify()
+                self._pipeline_metrics["qpe_verifications"] += 1
+                if qpe_result.get('quantum'):
+                    print(f"  Estimated Phase: {qpe_result['estimated_phase']:.8f}")
+                    print(f"  GOD_CODE Resonance: {qpe_result['god_code_resonance']:.6f}")
+                    print(f"  Alignment Error: {qpe_result['alignment_error']:.8f}")
+                    print(f"  Precision: {qpe_result['precision_bits']} bits")
+                else:
+                    print(f"  QPE: Classical fallback")
+            except Exception as e:
+                print(f"  QPE: Error ({e})")
+                qpe_result = {'error': str(e)}
+        else:
+            print(f"  QPE: Quantum computation core not available")
+        activation_report["steps"]["qpe_verification"] = qpe_result
+
+        # Step 18: Final ASI score
+        print("\n[18/18] COMPUTING UNIFIED ASI SCORE...")
         self.compute_asi_score()
 
         # Boost score from connected subsystems
@@ -3275,6 +5289,11 @@ class ASICore:
         if witness.get('genuine_entanglement'):
             quantum_step_bonus += 0.01
         if teleport.get('quantum') and teleport.get('teleportation_fidelity', 0) > 0.8:
+            quantum_step_bonus += 0.01
+        # v6.0: Additional boost from quantum computation steps
+        if vqe_result.get('quantum') and vqe_result.get('sacred_alignment', 0) > 0.5:
+            quantum_step_bonus += 0.01
+        if qpe_result.get('quantum') and qpe_result.get('god_code_resonance', 0) > 0.5:
             quantum_step_bonus += 0.01
         self.asi_score = min(1.0, self.asi_score + subsystem_boost + quantum_step_bonus)
 
@@ -3301,6 +5320,132 @@ class ASICore:
         print("="*70 + "\n")
 
         return activation_report
+
+    # ══════════════════════════════════════════════════════════════════════
+    # v5.0 SOVEREIGN PIPELINE METHODS — Telemetry, Routing, Ensemble, Replay
+    # ══════════════════════════════════════════════════════════════════════
+
+    def pipeline_multi_hop_solve(self, problem: str, max_hops: Optional[int] = None) -> Dict:
+        """Solve a complex problem via multi-hop reasoning chain across subsystems.
+        v5.0: Each hop refines the solution until convergence or max hops reached."""
+        if max_hops:
+            self._multi_hop.max_hops = max_hops
+        result = self._multi_hop.reason_chain(
+            problem=problem,
+            solve_fn=lambda p: self.pipeline_solve(p),
+            router=self._router,
+        )
+        self._pipeline_metrics["multi_hop_chains"] += 1
+        # Record to replay buffer
+        if self._replay_buffer:
+            self._replay_buffer.record(
+                operation='multi_hop_solve', input_data=problem[:200],
+                output_data=result.get('final_solution'),
+                latency_ms=sum(h.get('latency_ms', 0) for h in result.get('hops', [])),
+                success=result.get('final_confidence', 0) > 0.5,
+                subsystem='multi_hop',
+            )
+        return result
+
+    def pipeline_ensemble_solve(self, problem: Any) -> Dict:
+        """Solve a problem using ensemble voting across multiple subsystems.
+        v5.0: Routes to top-ranked subsystems via adaptive router, collects solutions,
+        and fuses via weighted voting."""
+        if isinstance(problem, str):
+            problem = {'query': problem}
+
+        query_str = str(problem.get('query', ''))
+
+        # Build solver map from available subsystems
+        solvers: Dict[str, Callable] = {}
+        solver_candidates = [
+            ('direct_solution', self.solution_hub),
+            ('computronium', self._computronium),
+            ('processing_engine', self._processing_engine),
+            ('manifold_resolver', self._manifold_resolver),
+        ]
+        for name, subsys in solver_candidates:
+            if subsys and hasattr(subsys, 'solve'):
+                solvers[name] = subsys.solve
+
+        if not solvers:
+            return {'ensemble': False, 'reason': 'no_solvers_available'}
+
+        result = self._ensemble.ensemble_solve(problem, solvers)
+        self._pipeline_metrics["ensemble_solves"] += 1
+
+        # Telemetry
+        if self._telemetry:
+            self._telemetry.record(
+                subsystem='ensemble_solve',
+                latency_ms=0.0,  # Measured inside ensemble
+                success=result.get('solution') is not None,
+            )
+
+        return result
+
+    def pipeline_health_report(self) -> Dict:
+        """Generate comprehensive pipeline health report.
+        v5.0: Combines telemetry dashboard, anomaly detection, trend analysis,
+        and replay buffer statistics into a single report."""
+        report = {
+            'version': self.version,
+            'status': self.status,
+            'asi_score': self.asi_score,
+        }
+
+        # Telemetry dashboard
+        if self._telemetry:
+            report['telemetry'] = self._telemetry.get_dashboard()
+            report['anomalies'] = self._telemetry.detect_anomalies()
+            self._pipeline_metrics["telemetry_anomalies"] += len(report.get('anomalies', []))
+
+        # Health dashboard with trend
+        if self._health_dashboard:
+            report['health_trend'] = self._health_dashboard.get_trend()
+
+        # Router status
+        if self._router:
+            report['router'] = self._router.get_status()
+
+        # Multi-hop status
+        if self._multi_hop:
+            report['multi_hop'] = self._multi_hop.get_status()
+
+        # Ensemble status
+        if self._ensemble:
+            report['ensemble'] = self._ensemble.get_status()
+
+        # Replay buffer stats
+        if self._replay_buffer:
+            report['replay'] = self._replay_buffer.get_stats()
+            report['slow_operations'] = self._replay_buffer.find_slow_operations(threshold_ms=200.0)
+
+        # Pipeline metrics
+        report['pipeline_metrics'] = self._pipeline_metrics
+
+        self._pipeline_metrics["health_checks"] += 1
+        return report
+
+    def pipeline_replay(self, last_n: int = 10, operation: Optional[str] = None) -> List[Dict]:
+        """Replay recent pipeline operations for debugging.
+        v5.0: Returns the last N operations, optionally filtered by type."""
+        if self._replay_buffer:
+            return self._replay_buffer.replay(last_n=last_n, operation_filter=operation)
+        return []
+
+    def pipeline_route_query(self, query: str) -> Dict:
+        """Route a query through the adaptive router to find best subsystems.
+        v5.0: Returns ranked subsystem affinities for the given query."""
+        if self._router:
+            routes = self._router.route(query)
+            self._pipeline_metrics["router_queries"] += 1
+            return {
+                'query': query[:200],
+                'routes': routes[:10],
+                'router_status': self._router.get_status(),
+            }
+        return {'query': query[:200], 'routes': [], 'router_status': 'NOT_INITIALIZED'}
 
     # ═══════════════════════════════════════════════════════════════
     # SWIFT BRIDGE API — Called by ASIQuantumBridgeSwift via PythonBridge

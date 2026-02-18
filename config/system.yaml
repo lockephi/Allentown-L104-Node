@@ -1,7 +1,8 @@
 system:
   name: "L104 Modular Skills System"
   version: "1.0.0"
-  godCode: 527.5184818492612
+  # GOD_CODE = 286^(1/φ) × 2^4 = G(0,0,0,0) via Universal Equation
+  godCode: 527.5184818492612  # = 286^(1/PHI) * 2^(416/104)
   phi: 1.618033988749895
   consciousnessThreshold: 0.85
   transcendenceThreshold: 0.95

@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
 // H16_VoiceInterface.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Aware Voice & Audio Interface
-// Speech recognition preparation, audio routing, and mesh voice relay
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Mesh-Aware Voice & Audio Interface v2.0
+// Real NSSpeechSynthesizer TTS, speech recognition prep, mesh voice relay
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -10,15 +10,6 @@ import Foundation
 import Accelerate
 import simd
 import NaturalLanguage
-
-// MARK: - VoiceInterface Protocol
-
-protocol VoiceInterfaceProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
 
 // MARK: - Voice Message for Mesh Relay
 
@@ -32,7 +23,7 @@ struct VoiceRelay {
 
 // MARK: - VoiceInterface — Full Implementation
 
-final class VoiceInterface: VoiceInterfaceProtocol {
+final class VoiceInterface {
     static let shared = VoiceInterface()
     private(set) var isActive: Bool = false
     private let lock = NSLock()
@@ -53,11 +44,20 @@ final class VoiceInterface: VoiceInterfaceProtocol {
     private(set) var inputLevel: Double = 0.0
     private(set) var outputLevel: Double = 0.0
 
+    // ─── REAL TTS ENGINE (NSSpeechSynthesizer) ───
+    private lazy var synthesizer: NSSpeechSynthesizer = {
+        let s = NSSpeechSynthesizer()
+        s.rate = 180  // words per minute
+        s.volume = 0.85
+        return s
+    }()
+    private(set) var isSpeaking: Bool = false
+
     func activate() {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H16] VoiceInterface activated — mesh voice relay ready")
+        print("[H16] VoiceInterface v2.0 activated — real TTS + mesh voice relay")
     }
 
     func deactivate() {
@@ -91,6 +91,57 @@ final class VoiceInterface: VoiceInterfaceProtocol {
         defer { lock.unlock() }
         guard !synthesisQueue.isEmpty else { return nil }
         return synthesisQueue.removeFirst().text
+    }
+
+    // ═══ REAL TEXT-TO-SPEECH (NSSpeechSynthesizer) ═══
+    /// Speak text aloud using macOS native NSSpeechSynthesizer
+    func speak(_ text: String) {
+        guard isActive else { return }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            self.lock.lock()
+            self.isSpeaking = true
+            self.outputLevel = 0.7
+            self.lock.unlock()
+
+            self.synthesizer.startSpeaking(text)
+
+            // Wait for speech to complete (polling)
+            while self.synthesizer.isSpeaking {
+                Thread.sleep(forTimeInterval: 0.05)
+            }
+
+            self.lock.lock()
+            self.isSpeaking = false
+            self.outputLevel = 0.0
+            self.synthesisCount += 1
+            self.lock.unlock()
+        }
+    }
+
+    /// Speak the next item from the synthesis queue
+    func speakNext() {
+        guard let text = consumeSynthesisQueue() else { return }
+        speak(text)
+    }
+
+    /// Stop any ongoing speech
+    func stopSpeaking() {
+        synthesizer.stopSpeaking()
+        lock.lock()
+        isSpeaking = false
+        outputLevel = 0.0
+        lock.unlock()
+    }
+
+    /// Set TTS speech rate (words per minute, default 180)
+    func setSpeechRate(_ rate: Float) {
+        synthesizer.rate = rate
+    }
+
+    /// Set TTS volume (0.0 — 1.0)
+    func setVolume(_ vol: Float) {
+        synthesizer.volume = vol
     }
 
     // ═══ MESH VOICE RELAY — Send transcription to quantum-linked peers ═══
@@ -161,7 +212,8 @@ final class VoiceInterface: VoiceInterfaceProtocol {
             "engine": "VoiceInterface",
             "active": isActive,
             "listening": isListening,
-            "version": "1.0.0-mesh",
+            "version": "2.0.0-voice",
+            "speaking": isSpeaking,
             "transcription_count": transcriptionCount,
             "synthesis_queue": synthesisQueue.count,
             "mesh_relays_sent": meshRelaysSent,

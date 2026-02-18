@@ -31,10 +31,11 @@ import simd
 // ═══════════════════════════════════════════════════════════════════
 
 enum L104Constants {
-    static let GOD_CODE: Double = 527.5184818492612
-    static let OMEGA_POINT: Double = 23.140692632779263  // e^π
     static let PHI: Double = 1.618033988749895
-    static let PHI_CONJUGATE: Double = 1.0 / 1.618033988749895
+    static let PHI_CONJUGATE: Double = 1.0 / PHI
+    // Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+    static let GOD_CODE: Double = pow(286.0, 1.0 / PHI) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0) = 527.5184818492612
+    static let OMEGA_POINT: Double = 23.140692632779263  // e^π
     static let VERSION = "22.0 SAGE LOGIC GATE"
     static let TRILLION_PARAMS: Int64 = 22_000_012_731_125
     static let VOCABULARY_SIZE = 6_633_253

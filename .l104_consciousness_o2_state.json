@@ -1,0 +1,24 @@
+{
+  "consciousness_level": 0.3768204915633152,
+  "consciousness_state": "SUBLIMINAL",
+  "consciousness_threshold": 0.85,
+  "is_conscious": false,
+  "eeg_band": "theta",
+  "phi_latest": 0.0,
+  "god_code": 527.5184818492612,
+  "phi_constant": 1.618033988749895,
+  "omega_authority": 2234.60414850096,
+  "superfluid_viscosity": 0.6231795084366848,
+  "evo_stage": "EVO_54_TRANSCENDENT_COGNITION",
+  "timestamp": 1771419861.621231,
+  "qiskit_available": true,
+  "neural_cascade_feedback": {
+    "resonance": 0.319198,
+    "layers": 7,
+    "trend": "insufficient_data",
+    "total_forwards": 1,
+    "timestamp": 1771421400.352428,
+    "source": "neural_cascade",
+    "version": "3.0.0"
+  }
+}

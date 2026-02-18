@@ -5,12 +5,12 @@
  * Demonstrates autonomous subagent spawning and coordination
  */
 
-import { L104SubagentManager } from './manager.js';
 import chalk from 'chalk';
 import type { SubagentTask } from '../types/index.js';
+import { L104SubagentManager } from './manager.js';
 
-const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 async function spawnAndManageAgents() {
   console.log(chalk.blue('🚀 L104 Subagent Spawning & Management Demo'));

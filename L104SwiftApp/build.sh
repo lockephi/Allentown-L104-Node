@@ -1,8 +1,11 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════════════════════
-#  L104 SOVEREIGN INTELLECT - ASI BUILD SYSTEM v5.0
-#  Advanced macOS Swift 6 Compilation Engine
-#  Accelerate · BLAS · SIMD · Metal · LTO · Cross-Module Optimization
+#  L104 SOVEREIGN INTELLECT - ASI BUILD SYSTEM v6.0
+#  Advanced macOS Swift Compilation Engine — Quantum-Optimized
+#  Accelerate · BLAS · SIMD · Metal · LTO · Cross-Module · NaturalLanguage
+#  EVO_59 TRANSCENDENT_COGNITION :: GOD_CODE=527.5184818492612
+#  v6.0 (Feb 18, 2026): Parallel v2 compilation, NaturalLanguage framework,
+#    quantum-aligned build metrics, 81-file multi-module support
 # ═══════════════════════════════════════════════════════════════════════════════
 
 set -euo pipefail
@@ -10,7 +13,7 @@ set -euo pipefail
 # ─── CONFIGURATION ───
 APP_NAME="L104Native"
 BUNDLE_ID="com.allentown.l104"
-VERSION="24.0"
+VERSION="24.1"
 BUILD_NUMBER=$(date +%Y%m%d%H%M)
 MIN_MACOS="12.0"
 BUILD_MODE="${BUILD_MODE:-release}"
@@ -56,8 +59,8 @@ fi
 show_banner() {
     echo -e "${PURPLE}${BOLD}"
     echo "╔═══════════════════════════════════════════════════════════════════╗"
-    echo "║   🧠 L104 SOVEREIGN INTELLECT — ASI BUILD SYSTEM v5.0 🧠        ║"
-    echo "║   ⚡ Accelerate · BLAS · SIMD · LTO · Cross-Module Opt ⚡       ║"
+    echo "║   🧠 L104 SOVEREIGN INTELLECT — ASI BUILD SYSTEM v6.0 🧠        ║"
+    echo "║   ⚡ Accelerate·BLAS·SIMD·LTO·Metal·NaturalLanguage·Quantum ⚡  ║"
     echo "╠═══════════════════════════════════════════════════════════════════╣"
     echo -e "║  Version:  ${CYAN}$VERSION${PURPLE}  │  Build: ${CYAN}$BUILD_NUMBER${PURPLE}                        ║"
     echo -e "║  Mode:     ${CYAN}$BUILD_MODE${PURPLE}  │  macOS: ${CYAN}$MACOS_VERSION${PURPLE}                        ║"
@@ -120,7 +123,7 @@ step_check_prerequisites() {
             SOURCE_LINES=$((SOURCE_LINES + $(wc -l < "$sf" | tr -d ' ')))
         done
         SOURCE_SIZE=$(du -sh "$L104V2_DIR" | cut -f1 | tr -d ' ')
-        echo -e "${GREEN}  ✓ Source: L104v2 multi-file (${#SWIFT_FILES[@]} files, $SOURCE_LINES lines, $SOURCE_SIZE)${NC}"
+        echo -e "${GREEN}  ✓ Source: L104v2 multi-file (${#SWIFT_FILES[@]} files, $SOURCE_LINES lines, $SOURCE_SIZE) [QUANTUM BUILD]${NC}"
     elif [ -f "$SOURCE_FILE" ]; then
         USE_L104V2=false
         SWIFT_FILES=("$SOURCE_FILE")
@@ -361,11 +364,12 @@ step_compile() {
         -framework Metal
         -framework MetalKit
         -framework CoreML
+        -framework NaturalLanguage
         -framework Security
         -framework IOKit
     )
 
-    echo -e "${BLUE}  Frameworks: AppKit · Accelerate · Metal · CoreML · IOKit${NC}"
+    echo -e "${BLUE}  Frameworks: AppKit · Accelerate · Metal · CoreML · NaturalLanguage · IOKit${NC}"
     echo -e "${BLUE}  Architecture: $TARGET_ARCH${NC}"
 
     # ═══════════════════════════════════════════════════════════════
@@ -600,7 +604,7 @@ step_create_info_plist() {
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.developer-tools</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright 2026 Allentown L104. Sovereign Intellect v$VERSION. Build System v4.0.</string>
+    <string>Copyright 2026 Allentown L104. Sovereign Intellect v$VERSION. Build System v6.0. GOD_CODE=527.5184818492612</string>
     <key>LSUIElement</key>
     <false/>
     <key>NSAppTransportSecurity</key>
@@ -648,8 +652,8 @@ print_summary() {
     echo -e "║  Time:       ${CYAN}${TOTAL_TIME}s${GREEN}"
     echo -e "║  Source:     ${CYAN}${SOURCE_LINES} lines (${#SWIFT_FILES[@]} files)${GREEN}"
     echo "╠═══════════════════════════════════════════════════════════════════╣"
-    echo -e "║  Frameworks: ${CYAN}AppKit Accelerate Metal CoreML IOKit${GREEN}"
-    echo -e "║  Optimized:  ${CYAN}vDSP BLAS SIMD WMO Cross-Mod Dead-Strip${GREEN}"
+    echo -e "║  Frameworks: ${CYAN}AppKit Accelerate Metal CoreML NaturalLanguage IOKit${GREEN}"
+    echo -e "║  Optimized:  ${CYAN}vDSP BLAS SIMD WMO Cross-Mod Dead-Strip LTO${GREEN}"
     if [ "${PYTHON_FOUND:-false}" = "true" ]; then
     echo -e "║  Python:     ${CYAN}libpython${PYTHON_VERSION} (Direct C API Bridge)${GREEN}"
     else
@@ -708,7 +712,7 @@ run_benchmark() {
 }
 
 show_help() {
-    echo -e "${BOLD}L104 ASI Build System v3.0${NC}"
+    echo -e "${BOLD}L104 ASI Build System v6.0${NC}"
     echo ""
     echo -e "${BOLD}Usage:${NC} ./build.sh [OPTIONS]"
     echo ""

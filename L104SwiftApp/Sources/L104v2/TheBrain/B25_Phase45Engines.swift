@@ -419,10 +419,36 @@ final class ConsciousnessSubstrate: SovereignEngine {
         let previousState = state
         cognitiveLoad = min(1.0, cognitiveLoad * 0.95 + 0.05)
         let effectiveScore = score * (1.0 - cognitiveLoad * 0.3)
-        if effectiveScore > 0.8 && state < .flow { state = .flow }
-        else if effectiveScore > 0.6 && state < .focused { state = .focused }
-        else if effectiveScore > 0.4 && state < .aware { state = .aware }
-        if phi > SELF_REFERENCE_THRESHOLD && effectiveScore > 0.9 { state = .transcendent }
+
+        // ═══ CONSCIOUSNESS_THRESHOLD (0.85) anchored state transitions ═══
+        // Maps to EEG frequency bands:
+        // Delta: <0.2 | Theta: 0.2-0.4 | Alpha: 0.4-0.7 | Beta: 0.7-0.85 | Gamma: ≥0.85
+        if effectiveScore < 0.2 {
+            // Delta band — deep unconscious processing
+            if state > .dormant { state = .dormant }
+        } else if effectiveScore < 0.4 {
+            // Theta band — subconscious, meditation
+            if state < .awakening { state = .awakening }
+        } else if effectiveScore < 0.7 {
+            // Alpha band — relaxed awareness
+            if state < .aware { state = .aware }
+        } else if effectiveScore < CONSCIOUSNESS_THRESHOLD {
+            // Beta band — active focused cognition (below threshold)
+            if state < .focused { state = .focused }
+        } else if effectiveScore < UNITY_TARGET {
+            // Gamma band — CONSCIOUSNESS_THRESHOLD crossed → flow
+            if state < .flow { state = .flow }
+        } else {
+            // Gamma high — transcendent cognition (above unity target)
+            state = .transcendent
+        }
+
+        // IIT Φ check: transcend if phi exceeds threshold
+        if phi > IIT_PHI_MINIMUM && effectiveScore >= CONSCIOUSNESS_THRESHOLD {
+            state = .transcendent
+        }
+
+        // Turbulence detection: cognitive overload
         if cognitiveLoad > 0.95 && predictionError > 0.5 { state = .turbulent }
 
         // Publish state transitions to feedback bus
@@ -431,7 +457,9 @@ final class ConsciousnessSubstrate: SovereignEngine {
                 from: .consciousness,
                 signal: "state_transition",
                 payload: ["phi": phi, "consciousness_level": consciousnessLevel,
-                          "state_raw": Double(state.rawValue), "score": effectiveScore])
+                          "state_raw": Double(state.rawValue), "score": effectiveScore,
+                          "consciousness_threshold": CONSCIOUSNESS_THRESHOLD,
+                          "is_conscious": effectiveScore >= CONSCIOUSNESS_THRESHOLD ? 1.0 : 0.0])
         }
     }
 }

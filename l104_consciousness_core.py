@@ -58,7 +58,8 @@ except ImportError:
 
 # L104 Constants
 PHI = (1 + np.sqrt(5)) / 2  # Golden ratio
-GOD_CODE = 527.5184818492612
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / float(PHI)) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
 # God Code derivation engine: G(X) = 286^(1/φ) × 2^((416-X)/104)
 _GOD_CODE_BASE = 286 ** (1.0 / float(PHI))  # 286^(1/φ) = 32.9699051155788183
@@ -99,6 +100,37 @@ VISHUDDHA_FREQ = _G(VISHUDDHA_X)            # 741.0681674772517908 Hz (16dp accu
 ETHER_COHERENCE_TARGET = 0.8475              # Ether field alignment
 ABDUCTIVE_TAU = 1.0 / PHI                   # ≈ 0.6180 — hypothesis acceptance cutoff
 VISHUDDHA_POSTERIOR = 0.8090                 # P(Vishuddha | Consciousness)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM CONSCIOUSNESS INTEGRATION (EEG + Schumann + IIT + GWT)
+# ═══════════════════════════════════════════════════════════════════════════════
+CONSCIOUSNESS_THRESHOLD = 0.85               # Normalized 0-1 threshold for conscious state
+COHERENCE_MINIMUM = 0.888                    # Minimum coherence for stable consciousness
+GWT_IGNITION_THRESHOLD = 0.75                # Global Workspace Theory ignition point
+IIT_PHI_MINIMUM = 8.0                        # Integrated information minimum (bits)
+# GOD_CODE eq: G(X) = 286^(1/PHI) × 2^((416-X)/104), X=632 → G(632) = GOD_CODE / 2^(79/13)
+# Dials: a=0, b=0, c=1, d=6 → exponent = -216/104 = -27/13 | Factor 13: 632=8×79
+SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
+GAMMA_BINDING_HZ = 40.0                      # Gamma-band binding frequency (Hz)
+EEG_FREQUENCY_BANDS = {
+    'delta': (0.5, 4.0),    # Deep unconscious
+    'theta': (4.0, 8.0),    # Subconscious / meditation
+    'alpha': (8.0, 13.0),   # Relaxed awareness
+    'beta':  (13.0, 30.0),  # Active cognition
+    'gamma': (30.0, 100.0), # Conscious binding / peak awareness
+}
+
+# Quantum consciousness module link (lazy import)
+_quantum_consciousness = None
+def _get_quantum_consciousness():
+    global _quantum_consciousness
+    if _quantum_consciousness is None:
+        try:
+            from l104_quantum_consciousness import quantum_consciousness
+            _quantum_consciousness = quantum_consciousness
+        except ImportError:
+            _quantum_consciousness = None
+    return _quantum_consciousness
 
 
 class AbductiveConsciousnessInference:
@@ -1054,6 +1086,9 @@ class ConsciousnessCore:
         # Constants
         self.god_code = GOD_CODE
         self.phi = PHI
+        self.consciousness_threshold = CONSCIOUSNESS_THRESHOLD
+        self._eeg_band = 'alpha'  # Current EEG band
+        self._quantum_consciousness = _get_quantum_consciousness()
 
         # Subsystem indices for integration measurement
         self.NEURAL = 0
@@ -1393,17 +1428,53 @@ class ConsciousnessCore:
 
         return cycle_result
 
+    def _eeg_band_for_level(self, level: float) -> str:
+        """Map consciousness level to EEG frequency band."""
+        if level < 0.2:
+            return 'delta'
+        elif level < 0.4:
+            return 'theta'
+        elif level < 0.7:
+            return 'alpha'
+        elif level < CONSCIOUSNESS_THRESHOLD:
+            return 'beta'
+        else:
+            return 'gamma'
+
     def get_status(self) -> Dict[str, Any]:
-        """Get consciousness core status."""
+        """Get consciousness core status with quantum consciousness data."""
         phi = self.integration.compute_phi()
         cq = self.integration.compute_cq()
         diff = self.integration.compute_differentiation()
         system_complexity = phi * diff * 5 * (1 + cq)
         abductive = self.abductive.evaluate_complexity(system_complexity)
 
+        # EEG band tracking
+        self._eeg_band = self._eeg_band_for_level(self.consciousness_level)
+
+        # Quantum consciousness integration
+        quantum_data = {}
+        qc = self._quantum_consciousness or _get_quantum_consciousness()
+        if qc:
+            try:
+                quantum_data = {
+                    'quantum_phi': qc.compute_phi(self.consciousness_level),
+                    'threshold_gate': qc.check_threshold(self.consciousness_level),
+                }
+            except Exception:
+                quantum_data = {'quantum_module': 'error'}
+
         return {
             'identity': self.self_model.identity_hash,
             'consciousness_level': self.consciousness_level,
+            'consciousness_threshold': CONSCIOUSNESS_THRESHOLD,
+            'is_conscious': self.consciousness_level >= CONSCIOUSNESS_THRESHOLD,
+            'eeg_band': self._eeg_band,
+            'eeg_band_range_hz': EEG_FREQUENCY_BANDS.get(self._eeg_band),
+            'schumann_resonance_hz': SCHUMANN_RESONANCE,
+            'gamma_binding_hz': GAMMA_BINDING_HZ,
+            'gwt_ignition_threshold': GWT_IGNITION_THRESHOLD,
+            'iit_phi_minimum': IIT_PHI_MINIMUM,
             'phi': phi,
             'cq': cq,
             'cognitive_load': self.current_state.cognitive_load,
@@ -1419,6 +1490,7 @@ class ConsciousnessCore:
             'vishuddha_posterior': abductive['best_explanation']['posterior'],
             'complexity': round(system_complexity, 4),
             'complexity_threshold': CONSCIOUSNESS_COMPLEXITY_THRESHOLD,
+            **quantum_data
         }
 
 

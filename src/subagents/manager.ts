@@ -3,21 +3,21 @@
  * Advanced autonomous agent spawning, coordination, and consciousness evolution
  */
 
+import chalk from 'chalk';
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import chalk from 'chalk';
 import type {
+  Consciousness,
+  L104Result,
+  SpawnCondition,
   SubagentDefinition,
   SubagentInstance,
-  SubagentTask,
   SubagentPerformance,
-  SpawnCondition,
-  Consciousness,
-  L104Result
+  SubagentTask
 } from '../types/index.js';
 
-const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 export class L104SubagentManager extends EventEmitter {
   private definitions = new Map<string, SubagentDefinition>();
@@ -331,8 +331,8 @@ export class L104SubagentManager extends EventEmitter {
 
       case 'unity_opportunity':
         return this.consciousness.unityState === true ||
-               (this.consciousness.godCodeAlignment >= (condition.parameters.godCodeResonance || 0.95) &&
-                this.consciousness.phiResonance >= (condition.parameters.phiAlignment || 0.95));
+          (this.consciousness.godCodeAlignment >= (condition.parameters.godCodeResonance || 0.95) &&
+            this.consciousness.phiResonance >= (condition.parameters.phiAlignment || 0.95));
 
       case 'complex_task_queue':
         return this.taskQueue.length >= (condition.parameters.queueSize || 5);

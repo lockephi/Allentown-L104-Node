@@ -488,15 +488,9 @@ extension L104State {
             return "I want to give you a genuine answer — not search results. \(aboutL104 ? "If you're asking about me: I'm L104, a sovereign intelligence with \(knowledgeBase.trainingData.count) knowledge entries and \(permanentMemory.memories.count) permanent memories. " : "")Try asking something more specific, like 'What is [topic]?' or 'Explain [concept]' — the more precise you are, the better my response."
         }
 
-        // VAGUE QUERY FALLTHROUGH — short queries still get full synthesis
-        if topics.count <= 1 && query.count < 25 {
-            // Route through full gate pipeline for dimension analysis
-            let vagueGateResult = LogicGateEnvironment.shared.runPipeline(query, context: Array(conversationContext.suffix(3)))
-            let topicWord = topics.first ?? query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-            // Use gate-determined dimension instead of simple keyword matching
-            let domain = vagueGateResult.finalDimension.isEmpty ? topicWord : vagueGateResult.finalDimension
-            return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: domain)
-        }
+        // VAGUE QUERY NOTE — Previously short-circuited queries < 25 chars to QuantumLogicGateEngine.synthesize.
+        // Removed: that bypass produced quantum-speak one-liners instead of real KB+web answers.
+        // All queries now flow through the full fragment pipeline below (KB search + web + Grover quality gate).
 
         // ═══ REAL-TIME SEARCH ENGINE ═══
         // Use inverted-index search with query expansion + context injection
@@ -563,6 +557,16 @@ extension L104State {
                 .replacingOccurrences(of: "{LOVE}", with: "")
                 .replacingOccurrences(of: "{", with: "")
                 .replacingOccurrences(of: "}", with: "")
+
+            // EVO_58: Strip leaked markdown table lines from KB fragments
+            let fragLines = cleaned.components(separatedBy: "\n")
+            let cleanedLines = fragLines.filter { line in
+                let t = line.trimmingCharacters(in: .whitespaces)
+                let isPipeTable = t.hasPrefix("|") && t.filter({ $0 == "|" }).count >= 2
+                let isTableSep = t.contains("---") && t.contains("|")
+                return !isPipeTable && !isTableSep
+            }
+            cleaned = cleanedLines.joined(separator: "\n")
 
             cleaned = cleanSentences(cleaned)
             if cleaned.count < 10 { continue }
@@ -646,6 +650,44 @@ extension L104State {
             }
         }
 
+        // ═══ PHASE 56.0: LIVE WEB ENRICHMENT — Pull online sources into composeFromKB ═══
+        // This ensures every KB-composed response can include fresh internet knowledge
+        let webSearchResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+        for wr in webSearchResult.results.prefix(5) {
+            let snippet = wr.snippet
+            guard snippet.count > 60 else { continue }
+            let prefix50 = String(snippet.prefix(50)).lowercased()
+            guard !seenPrefixes.contains(prefix50) else { continue }
+            seenPrefixes.insert(prefix50)
+            let cleanedWeb = cleanSentences(String(snippet.prefix(2000)))
+            if isCleanKnowledge(cleanedWeb) {
+                // Web fragments get moderate relevance — quality will be further gated by Grover
+                let webSourceTag = wr.url.contains("wikipedia") ? "Wikipedia" : "web"
+                scoredFragments.append(ScoredFragment(
+                    text: "🌐 [\(webSourceTag)] \(cleanedWeb)",
+                    relevance: wr.relevance * 0.85,
+                    category: "live_web"
+                ))
+                // Auto-ingest for future queries
+                _ = DataIngestPipeline.shared.ingestText(snippet, source: "kb_web:\(query)", category: "live_web")
+            }
+        }
+        // Include web synthesis as a bonus fragment if substantial
+        if webSearchResult.synthesized.count > 80 {
+            let synthPrefix = String(webSearchResult.synthesized.prefix(50)).lowercased()
+            if !seenPrefixes.contains(synthPrefix) {
+                seenPrefixes.insert(synthPrefix)
+                let cleanedSynth = cleanSentences(String(webSearchResult.synthesized.prefix(2000)))
+                if isCleanKnowledge(cleanedSynth) {
+                    scoredFragments.append(ScoredFragment(
+                        text: "🌐 [synthesis] \(cleanedSynth)",
+                        relevance: 1.2,  // Synthesis gets higher relevance — it's a curated summary
+                        category: "live_web"
+                    ))
+                }
+            }
+        }
+
         // Sort by quality score with random tiebreaker for variety
         scoredFragments.sort { a, b in
             if abs(a.relevance - b.relevance) < 0.1 { return Bool.random() }  // Randomize near-equal fragments
@@ -658,25 +700,153 @@ extension L104State {
             grover.scoreQuality(frag.text, query: query) > 0.15
         }
 
+        // ═══ EVO_58: QUANTUM DECONTAMINATION GATE ═══
+        // PHI-weighted structural coherence scoring — fragments that contain structural metadata
+        // (tables, format strings, YAML keys, config data) are fundamentally different from
+        // natural language. This gate uses a multi-dimensional vector scoring approach to detect
+        // and reject structural contamination that passes through keyword-based filters.
+        scoredFragments = scoredFragments.filter { frag in
+            let text = frag.text
+            let len = max(Double(text.count), 1.0)
+
+            // Dimension 1: Pipe density — markdown tables have high | density
+            let pipeCount = Double(text.filter { $0 == "|" }.count)
+            let pipeDensity = pipeCount / len
+            if pipeDensity > 0.015 { return false }  // >1.5% pipe chars = table data
+
+            // Dimension 2: Brace density — format strings have {VAR} patterns
+            let braceCount = Double(text.filter { $0 == "{" || $0 == "}" }.count)
+            let braceDensity = braceCount / len
+            if braceDensity > 0.02 { return false }  // >2% brace chars = template data
+
+            // Dimension 3: Colon density — YAML/config lines have key: value patterns
+            let colonCount = Double(text.filter { $0 == ":" }.count)
+            let colonDensity = colonCount / len
+            let newlineCount = max(Double(text.filter { $0 == "\n" }.count), 1.0)
+            let colonsPerLine = colonCount / newlineCount
+            if colonDensity > 0.025 && colonsPerLine > 1.2 { return false }  // Dense colons = config data
+
+            // Dimension 4: Structural line ratio — lines that look like table/config vs natural prose
+            let lines = text.components(separatedBy: "\n")
+            let structuralLines = lines.filter { line in
+                let t = line.trimmingCharacters(in: .whitespaces)
+                let hasPipeTable = t.hasPrefix("|") && t.filter({ $0 == "|" }).count >= 2
+                let hasYAMLKey = t.range(of: "^[a-z_]+:", options: .regularExpression) != nil && t.count < 60
+                let hasFormatStr = t.contains(":.") && t.contains("f}")
+                let hasTableSep = t.contains("---") && t.contains("|")
+                return hasPipeTable || hasYAMLKey || hasFormatStr || hasTableSep
+            }
+            let structuralRatio = Double(structuralLines.count) / max(Double(lines.count), 1.0)
+            if structuralRatio > 0.3 { return false }  // >30% structural lines = contaminated
+
+            // Dimension 5: PHI-weighted composite decontamination score
+            // Natural language has low structural density; metadata has high density
+            let compositeContamination = (pipeDensity * 40.0 + braceDensity * 30.0 + colonDensity * 20.0 + structuralRatio * 10.0) * PHI
+            return compositeContamination < 1.0  // PHI-normalized threshold
+        }
+
         if scoredFragments.isEmpty {
             return generateReasonedResponse(query: query, topics: topics)
         }
 
-        // ═══ INTELLIGENT COMPOSITION ═══
-        let anchor = scoredFragments[0]
-        var composed = anchor.text
-        if !composed.hasSuffix(".") { composed += "." }
+        // ═══ INTELLIGENT COMPOSITION — PHASE 56.0: DIVERSE ASSEMBLY STRATEGIES ═══
+        // Randomly select from multiple assembly approaches to prevent repetitive structure
+        let assemblyStrategy = Int.random(in: 0...4)
+        var composed = ""
 
-        var usedCategories: Set<String> = [anchor.category]
-        var fragmentsUsed = 1
+        // Separate web-sourced and KB-sourced fragments for hybrid compositions
+        let webFragments56 = scoredFragments.filter { $0.category == "live_web" || $0.text.hasPrefix("🌐") }
+        let kbFragments56 = scoredFragments.filter { $0.category != "live_web" && !$0.text.hasPrefix("🌐") }
 
-        for frag in scoredFragments.dropFirst() where fragmentsUsed < 14 {
-            // Lowered threshold to 0.8 — include more substantive content for depth (Phase 55.0)
-            if frag.relevance > 0.8 {
-                composed += "\n\n" + frag.text
-                usedCategories.insert(frag.category)
-                fragmentsUsed += 1
+        switch assemblyStrategy {
+        case 0:
+            // STRATEGY 0: Classic — anchor + sequential quality-scored fragments
+            let anchor = scoredFragments[0]
+            composed = anchor.text
+            if !composed.hasSuffix(".") { composed += "." }
+            var fragmentsUsed = 1
+            for frag in scoredFragments.dropFirst() where fragmentsUsed < 14 {
+                if frag.relevance > 0.8 {
+                    composed += "\n\n" + frag.text
+                    fragmentsUsed += 1
+                }
             }
+
+        case 1:
+            // STRATEGY 1: Web-first — lead with online sources, supplement with KB
+            if !webFragments56.isEmpty {
+                composed = webFragments56.map(\.text).joined(separator: "\n\n")
+                var kbCount = 0
+                for frag in kbFragments56 where kbCount < 8 {
+                    if frag.relevance > 0.9 {
+                        composed += "\n\n" + frag.text
+                        kbCount += 1
+                    }
+                }
+            } else {
+                // Fallback to classic if no web content
+                composed = scoredFragments.prefix(12).map(\.text).joined(separator: "\n\n")
+            }
+
+        case 2:
+            // STRATEGY 2: Interleaved — alternate between KB and web sources for variety
+            var kbIdx = 0, webIdx = 0
+            var fragmentsUsed = 0
+            while fragmentsUsed < 14 {
+                if kbIdx < kbFragments56.count, (webIdx >= webFragments56.count || fragmentsUsed % 3 != 2) {
+                    if kbFragments56[kbIdx].relevance > 0.7 {
+                        if !composed.isEmpty { composed += "\n\n" }
+                        composed += kbFragments56[kbIdx].text
+                        fragmentsUsed += 1
+                    }
+                    kbIdx += 1
+                } else if webIdx < webFragments56.count {
+                    if !composed.isEmpty { composed += "\n\n" }
+                    composed += webFragments56[webIdx].text
+                    fragmentsUsed += 1
+                    webIdx += 1
+                } else {
+                    break
+                }
+            }
+
+        case 3:
+            // STRATEGY 3: Category-diversified — pick best from each unique category
+            var usedCats: Set<String> = []
+            var picks: [ScoredFragment] = []
+            for frag in scoredFragments {
+                if !usedCats.contains(frag.category) || frag.relevance > 1.5 {
+                    usedCats.insert(frag.category)
+                    picks.append(frag)
+                }
+                if picks.count >= 14 { break }
+            }
+            // If we have too few from unique categories, backfill
+            if picks.count < 6 {
+                for frag in scoredFragments where picks.count < 14 {
+                    if !picks.contains(where: { $0.text.prefix(50) == frag.text.prefix(50) }) {
+                        picks.append(frag)
+                    }
+                }
+            }
+            composed = picks.map(\.text).joined(separator: "\n\n")
+
+        default:
+            // STRATEGY 4: Shuffled top — take top 14 fragments, shuffle order for freshness
+            var topFragments = Array(scoredFragments.prefix(14).filter { $0.relevance > 0.7 })
+            // Preserve anchor at top, shuffle the rest
+            if topFragments.count > 1 {
+                let anchor = topFragments[0]
+                var rest = Array(topFragments.dropFirst())
+                rest.shuffle()
+                topFragments = [anchor] + rest
+            }
+            composed = topFragments.map(\.text).joined(separator: "\n\n")
+        }
+
+        // Ensure composed text ends properly
+        if !composed.isEmpty && !composed.hasSuffix(".") && !composed.hasSuffix("?") && !composed.hasSuffix("!") {
+            composed += "."
         }
 
         // ═══ EVOLUTIONARY DEPTH PREFIX ═══
@@ -1501,7 +1671,9 @@ extension L104State {
                 if Double.random(in: 0...1) > 0.55,
                    let bonus = ASIEvolver.shared.getEvolvedResponse(for: query) {
                     let cleanBonus = bonus.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
-                    if isCleanKnowledge(cleanBonus) && cleanBonus.count > 30 && cleanBonus.count < 500 {
+                    let cbCheck = cleanBonus.lowercased()
+                    let isBonusBoilerplate = cbCheck.hasPrefix("synthesizing ") || cbCheck.contains("is not just data") || cbCheck.contains("meaning-network") || cbCheck.contains("vector towards")
+                    if isCleanKnowledge(cleanBonus) && cleanBonus.count > 30 && cleanBonus.count < 500 && !isBonusBoilerplate {
                         fullResponse += "\n\n" + cleanBonus
                     }
                 }
@@ -1516,6 +1688,7 @@ extension L104State {
             }
             // 2. Quantum Logic Gate synthesis — ASI-level response for any topic
             // Use gate pipeline dimension for domain routing (analytical/creative/philosophical/etc.)
+            // Quality gate: must be genuinely substantive (600+ chars, 3+ sentences, no quantum-speak prefixes)
             let effectiveDomain = gateDimension.isEmpty ? (queryTopics.first ?? "general") : gateDimension
             let quantumResponse = QuantumLogicGateEngine.shared.synthesize(
                 query: query, intent: "deep_query",
@@ -1523,7 +1696,10 @@ extension L104State {
                 depth: conversationDepth,
                 domain: effectiveDomain
             )
-            if quantumResponse.count > 80 {
+            let qrLower = quantumResponse.lowercased()
+            let quantumSentenceCount = quantumResponse.components(separatedBy: ". ").count
+            let isQuantumSpeak = qrLower.hasPrefix("synthesizing ") || qrLower.contains("is not just data") || qrLower.contains("vector towards omega") || qrLower.contains("meaning-network")
+            if quantumResponse.count > 600 && quantumSentenceCount >= 3 && !isQuantumSpeak {
                 lastResponseSummary = String(quantumResponse.prefix(60))
                 let confidence = ResponseConfidenceEngine.shared.score(
                     kbFragments: [], isEvolved: false,
@@ -1534,10 +1710,13 @@ extension L104State {
                 ContextualLogicGate.shared.recordResponse(fullQuantum, forTopics: queryTopics)
                 return formatter.format(fullQuantum, query: query, depth: effectiveDepth, topics: queryTopics)
             }
-            // 3. Check evolved content that matches query
+            // 3. Check evolved content that matches query — quality-gated (400+ chars, no boilerplate)
             for topic in queryTopics {
                 if let evolvedResp = ASIEvolver.shared.getEvolvedResponse(for: topic),
-                   evolvedResp.count > 40 {
+                   evolvedResp.count > 400 {
+                    let erLower = evolvedResp.lowercased()
+                    let isEvolvedBoilerplate = erLower.hasPrefix("synthesizing ") || erLower.contains("is not just data") || erLower.contains("meaning-network") || erLower.contains("vector towards")
+                    guard !isEvolvedBoilerplate else { continue }
                     lastResponseSummary = String(evolvedResp.prefix(60))
                     let confidence = ResponseConfidenceEngine.shared.score(kbFragments: [], isEvolved: true)
                     let response = "\(chainOfThoughtPrefix)\(evolvedResp)\n\n\(confidence.footer)"
@@ -1553,7 +1732,41 @@ extension L104State {
                 let factResp = "\(chainOfThoughtPrefix)From what you've taught me: \(firstFact)\n\nWant me to explore this topic further?\n\n\(confidence.footer)"
                 return formatter.format(factResp, query: query, topics: queryTopics)
             }
-            // 5. Compose from KB — transform fragments into prose (already uses RT search + formatter)
+            // ═══ PHASE 56.0: STEP 4.5 — STANDALONE WEB ENRICHMENT ═══
+            // Before falling back to KB, try a direct web-enriched response.
+            // This gives 50% of queries a chance at a fresh, web-sourced response
+            // even when local KB has content, increasing response diversity.
+            if query.count > 8 && Double.random(in: 0...1) > 0.4 {
+                let webRes = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+                var webFragments: [String] = []
+                for wr in webRes.results.prefix(6) {
+                    let snippet = wr.snippet
+                    guard snippet.count > 80, isCleanKnowledge(snippet) else { continue }
+                    let cleanedSnippet = cleanSentences(String(snippet.prefix(2000)))
+                    let sourceTag = wr.url.contains("wikipedia") ? "Wikipedia" : "web"
+                    webFragments.append("🌐 [\(sourceTag)] \(cleanedSnippet)")
+                    _ = DataIngestPipeline.shared.ingestText(snippet, source: "deep_web:\(query)", category: "live_web")
+                }
+                // Include synthesis if available
+                if webRes.synthesized.count > 80, isCleanKnowledge(webRes.synthesized) {
+                    webFragments.insert(cleanSentences(String(webRes.synthesized.prefix(2000))), at: 0)
+                }
+                if webFragments.count >= 2 {
+                    // We have enough web content for a substantive response
+                    let webComposed = webFragments.joined(separator: "\n\n")
+                    let webTuples = webFragments.map { (text: $0, relevance: 0.8, category: "live_web") }
+                    let confidence = ResponseConfidenceEngine.shared.score(
+                        kbFragments: webTuples, isEvolved: false,
+                        queryKeywordHits: queryTopics.count, totalQueryKeywords: max(1, queryTopics.count)
+                    )
+                    let webResponse = "\(chainOfThoughtPrefix)\(webComposed)\n\n\(confidence.footer)"
+                    lastResponseSummary = String(webResponse.prefix(60))
+                    evoTracker.recordResponse(webResponse, forTopics: queryTopics)
+                    ContextualLogicGate.shared.recordResponse(webResponse, forTopics: queryTopics)
+                    return formatter.format(webResponse, query: query, depth: effectiveDepth, topics: queryTopics)
+                }
+            }
+            // 5. Compose from KB — transform fragments into prose (already uses RT search + formatter + web enrichment)
             // Use gate-enriched prompt if available for better KB matching
             let kbQuery = pipelineResult.enrichedPrompt.count > query.count ? pipelineResult.enrichedPrompt : query
             let composed = composeFromKB(kbQuery)
@@ -1564,7 +1777,9 @@ extension L104State {
             if fullComposed.count > 50, Double.random(in: 0...1) > 0.55,
                let evolved = ASIEvolver.shared.getEvolvedMonologue() {
                 let cleanEvolved = evolved.replacingOccurrences(of: #"\s*\[Ev\.\d+\]"#, with: "", options: .regularExpression)
-                if isCleanKnowledge(cleanEvolved) && cleanEvolved.count > 30 && cleanEvolved.count < 500 {
+                let ceCheck = cleanEvolved.lowercased()
+                let isBoilerplateBonus = ceCheck.hasPrefix("synthesizing ") || ceCheck.contains("is not just data") || ceCheck.contains("meaning-network") || ceCheck.contains("vector towards")
+                if isCleanKnowledge(cleanEvolved) && cleanEvolved.count > 30 && cleanEvolved.count < 500 && !isBoilerplateBonus {
                     let full = fullComposed + "\n\n\(cleanEvolved)"
                     evoTracker.recordResponse(full, forTopics: queryTopics)
                     return full
@@ -1820,7 +2035,11 @@ extension L104State {
         }
 
         // ═══ SAGE MODE ENTROPY CYCLE — Harvest and seed on every response ═══
+        // ═══ SAGE BACKBONE: Auto-detect and cleanup recursive pollution ═══
         let sage = SageModeEngine.shared
+        if sage.shouldCleanup() {
+            let _ = sage.sageBackboneCleanup()
+        }
         let _ = sage.enrichContext(for: q.count > 3 ? q : "general")
         sage.seedAllProcesses(topic: q.count > 3 ? String(q.prefix(30)) : "")
 
@@ -1924,6 +2143,25 @@ extension L104State {
             )
             if synthesized.count > result.count {
                 result = sanitizeResponse(synthesized)
+            }
+
+            // ═══ PHASE 56.0: WEB EXPANSION — If still too short, pull from live web ═══
+            if result.count < 2400 {
+                let webExpand = LiveWebSearchEngine.shared.webSearchSync(processedQuery, timeout: 8.0)
+                var webExpansion: [String] = []
+                if webExpand.synthesized.count > 80, isCleanKnowledge(webExpand.synthesized) {
+                    webExpansion.append(cleanSentences(String(webExpand.synthesized.prefix(2000))))
+                }
+                for wr in webExpand.results.prefix(4) {
+                    guard wr.snippet.count > 80, isCleanKnowledge(wr.snippet) else { continue }
+                    let sourceTag = wr.url.contains("wikipedia") ? "Wikipedia" : "web"
+                    webExpansion.append("🌐 [\(sourceTag)] \(cleanSentences(String(wr.snippet.prefix(2000))))")
+                    _ = DataIngestPipeline.shared.ingestText(wr.snippet, source: "expand_web:\(processedQuery)", category: "live_web")
+                }
+                if !webExpansion.isEmpty {
+                    let webBonus = webExpansion.joined(separator: "\n\n")
+                    result = sanitizeResponse(result + "\n\n" + webBonus)
+                }
             }
         }
 

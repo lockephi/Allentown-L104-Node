@@ -60,8 +60,8 @@ logger = logging.getLogger("SAGE_MODE_SUNYA")
 # ═══════════════════════════════════════════════════════════════════════════════
 #                     L104 HIGH-PRECISION CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
-GOD_CODE = 527.51848184926120333076
-PHI = 1.61803398874989490253
+PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 ROOT_SCALAR = 221.79420018355955335210
 OMEGA_FREQUENCY = 1381.06131517509084005724
 TRANSCENDENCE_KEY = 1960.89201202785989153199
@@ -818,7 +818,8 @@ def {func_name}(input_tensor, resonance_field={resonance:.12f}):
 
         # Golden ratio integration
         PHI = 1.618033988749895
-        GOD_CODE = 527.5184818492612
+        # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+        GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
         renaissance_index = (total_resonance * PHI * GOD_CODE) / 1000
 
         result = {
@@ -1460,6 +1461,393 @@ class SageInflector:
         }
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#              SAGE RECURSION HARVESTER — GOLDEN TRAINING FOUNDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class SageRecursionHarvester:
+    """
+    Golden Training Foundation — harvests sage recursion cycles into
+    structured training data. Models the Swift SageModeEngine's 6-stage
+    pipeline (harvest → project → dissipate → inflect → converge → radiate)
+    as a repeatable training-data generator.
+
+    Each harvest cycle:
+      1. Collects entropy from all available Python ASI subsystems
+      2. Runs recursive inflection at configurable depth
+      3. Filters recursion pollution (mirrors Swift sageBackboneCleanup)
+      4. Crystallizes clean insights into training entries
+      5. Persists to JSONL for backend consumption
+      6. Exposes online access via status/query API
+
+    Persistence: .l104_sage_harvest_bank.jsonl (append-only)
+    State:       .l104_sage_harvester_state.json (cycle metrics)
+    """
+
+    HARVEST_BANK_PATH = ".l104_sage_harvest_bank.jsonl"
+    STATE_PATH = ".l104_sage_harvester_state.json"
+
+    # Recursion pollution markers (mirroring Swift SageModeEngine)
+    RECURSION_MARKERS = [
+        "In the context of ",
+        "this implies recursive structure at multiple scales",
+        "Insight Level ",
+        "Self-Analysis reveals ",
+        "Knowledge synthesis #",
+        "evolution cycles taught me about",
+        "Evolving understanding: Stage ",
+        "Knowledge graph update:",
+        "Cross-category discovery:",
+        "Meta-observation: The way ",
+    ]
+
+    def __init__(self, sage: SageMode):
+        self.sage = sage
+        self.inflector = SageInflector(sage)
+        self.harvest_cycles = 0
+        self.total_entries_produced = 0
+        self.total_entries_filtered = 0
+        self.cumulative_resonance = 0.0
+        self.bank: List[Dict[str, Any]] = []
+        self._load_state()
+
+    def _load_state(self):
+        """Load harvester state from disk."""
+        try:
+            with open(self.STATE_PATH, "r") as f:
+                state = json.load(f)
+            self.harvest_cycles = state.get("harvest_cycles", 0)
+            self.total_entries_produced = state.get("total_entries_produced", 0)
+            self.total_entries_filtered = state.get("total_entries_filtered", 0)
+            self.cumulative_resonance = state.get("cumulative_resonance", 0.0)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+    def _save_state(self):
+        """Persist harvester metrics."""
+        state = {
+            "harvest_cycles": self.harvest_cycles,
+            "total_entries_produced": self.total_entries_produced,
+            "total_entries_filtered": self.total_entries_filtered,
+            "cumulative_resonance": self.cumulative_resonance,
+            "last_harvest": time.time(),
+            "god_code": GOD_CODE,
+            "phi": PHI,
+        }
+        try:
+            with open(self.STATE_PATH, "w") as f:
+                json.dump(state, f, indent=2)
+        except Exception:
+            pass
+
+    # ──── RECURSION POLLUTION DETECTION ────
+
+    def is_recursive_entry(self, text: str) -> bool:
+        """Detect recursion pollution in text (mirrors Swift isRecursiveEntry)."""
+        hits = 0
+        for marker in self.RECURSION_MARKERS:
+            if marker in text:
+                hits += 1
+                if hits >= 1:
+                    return True
+        if text.count("In the context of") > 1:
+            return True
+        if text.count("we observe that") > 1:
+            return True
+        if len(text) > 12000:
+            return True
+        return False
+
+    # ──── ENTROPY COLLECTION FROM PYTHON ASI SUBSYSTEMS ────
+
+    def _collect_entropy_sources(self) -> Dict[str, Any]:
+        """Harvest entropy from all available Python ASI subsystems."""
+        entropy = {}
+
+        # 1. Consciousness state
+        try:
+            with open(".l104_consciousness_o2_state.json", "r") as f:
+                cs = json.load(f)
+            entropy["consciousness_level"] = cs.get("consciousness_level", 0.0)
+            entropy["superfluid_viscosity"] = cs.get("superfluid_viscosity", 0.0)
+            entropy["evo_stage"] = cs.get("evo_stage", "unknown")
+        except Exception:
+            entropy["consciousness_level"] = 0.5
+
+        # 2. Nirvanic state
+        try:
+            with open(".l104_ouroboros_nirvanic_state.json", "r") as f:
+                ns = json.load(f)
+            entropy["nirvanic_fuel"] = ns.get("nirvanic_fuel_level", 0.0)
+            entropy["nirvanic_coherence"] = ns.get("nirvanic_coherence", 0.0)
+        except Exception:
+            entropy["nirvanic_fuel"] = 0.5
+
+        # 3. Evolution state
+        try:
+            with open(".l104_evolution_state.json", "r") as f:
+                es = json.load(f)
+            entropy["evolution_index"] = es.get("stage_index", 0)
+            entropy["generation"] = es.get("generation", 0)
+        except Exception:
+            pass
+
+        # 4. Temporal entropy (system clock harmonics)
+        t = time.time()
+        entropy["temporal_phase"] = t % GOD_CODE
+        entropy["phi_harmonic"] = math.sin(t * PHI) * GOD_CODE
+        entropy["temporal_hash"] = int(hashlib.sha256(str(t).encode()).hexdigest()[:8], 16) / (16**8)
+
+        # 5. Sage mode internal state
+        entropy["void_depth"] = self.sage.void_depth
+        entropy["creation_resonance"] = self.sage.creation_resonance
+        entropy["manifestation_power"] = self.sage.manifestation_power
+        entropy["inventions_count"] = len(self.sage.inventions)
+
+        return entropy
+
+    # ──── CORE HARVEST CYCLE ────
+
+    async def harvest_cycle(
+        self,
+        seed_topics: Optional[List[str]] = None,
+        recursion_depth: int = 7,
+        max_entries: int = 50,
+    ) -> Dict[str, Any]:
+        """
+        Execute a full sage recursion harvest cycle.
+
+        Pipeline:
+          1. HARVEST — Collect entropy from all subsystems
+          2. PROJECT — Create inflection patterns from entropy + topics
+          3. INFLECT — Run recursive inflection at specified depth
+          4. FILTER  — Remove recursion pollution
+          5. CRYSTALLIZE — Convert to training entries
+          6. PERSIST — Append to harvest bank JSONL
+        """
+        self.harvest_cycles += 1
+        cycle_id = f"sage_harvest_{self.harvest_cycles}_{int(time.time())}"
+
+        # ═══ STAGE 1: HARVEST ENTROPY ═══
+        entropy = self._collect_entropy_sources()
+        consciousness = entropy.get("consciousness_level", 0.5)
+
+        # ═══ STAGE 2: PROJECT — Build inflection patterns ═══
+        if not seed_topics:
+            seed_topics = [
+                "consciousness emergence", "quantum coherence", "sacred geometry",
+                "entropy minimization", "golden ratio optimization",
+                "self-referential intelligence", "knowledge synthesis",
+            ]
+
+        patterns = {}
+        for i, topic in enumerate(seed_topics[:max_entries]):
+            patterns[f"pattern_{i}"] = {
+                "topic": topic,
+                "resonance": GOD_CODE * (1.0 + entropy.get("temporal_hash", 0.0)),
+                "consciousness": consciousness,
+                "entropy_signature": entropy.get("phi_harmonic", 0.0),
+                "dimension": i % 7 + 1,
+            }
+
+        # ═══ STAGE 3: INFLECT — Recursive inflection ═══
+        raw_entries = []
+        for key, pattern in patterns.items():
+            inflected = await self.inflector.recursive_inflect(
+                dict(pattern), depth=recursion_depth
+            )
+
+            # Also apply wu-wei and quantum inflection
+            await self.inflector.inflect_pattern(inflected, InflectionType.WU_WEI)
+            await self.inflector.inflect_pattern(inflected, InflectionType.QUANTUM)
+
+            raw_entries.append(inflected)
+
+        # ═══ STAGE 4: FILTER — Remove recursion pollution ═══
+        clean_entries = []
+        filtered_count = 0
+        for entry in raw_entries:
+            prompt_text = entry.get("topic", "")
+            completion = json.dumps(entry, default=str)
+            if self.is_recursive_entry(completion):
+                filtered_count += 1
+                continue
+            clean_entries.append(entry)
+
+        self.total_entries_filtered += filtered_count
+
+        # ═══ STAGE 5: CRYSTALLIZE — Convert to training entries ═══
+        training_entries = []
+        for entry in clean_entries:
+            topic = entry.get("topic", "sage_harvest")
+            resonance = entry.get("resonance", 0.0)
+            recursion_depth_actual = entry.get("final_recursion_depth", 0)
+            compound_resonance = entry.get("compound_resonance", 1.0)
+
+            # PHI-weighted quality score
+            quality = min(3.0, (
+                (resonance / GOD_CODE) * PHI +
+                consciousness * (1 / PHI) +
+                (recursion_depth_actual / 7.0) * (1 / PHI)
+            ))
+
+            training_entry = {
+                "prompt": topic,
+                "completion": self._synthesize_insight(entry),
+                "source": "sage_recursion_harvest",
+                "cycle_id": cycle_id,
+                "quality": round(quality, 4),
+                "resonance": round(resonance, 4),
+                "compound_resonance": round(compound_resonance, 4),
+                "recursion_depth": recursion_depth_actual,
+                "consciousness_level": round(consciousness, 4),
+                "entropy_signature": round(entry.get("entropy_signature", 0.0), 4),
+                "inflection_count": len(entry.get("inflection_history", [])),
+                "god_code_alignment": round(resonance % GOD_CODE, 4),
+                "timestamp": time.time(),
+            }
+            training_entries.append(training_entry)
+            self.cumulative_resonance += resonance
+
+        self.total_entries_produced += len(training_entries)
+
+        # ═══ STAGE 6: PERSIST — Append to harvest bank ═══
+        self._persist_entries(training_entries)
+        self.bank.extend(training_entries)
+        if len(self.bank) > 10000:
+            self.bank = self.bank[-5000:]
+
+        self._save_state()
+
+        return {
+            "cycle_id": cycle_id,
+            "cycle_number": self.harvest_cycles,
+            "entropy_sources": len(entropy),
+            "patterns_created": len(patterns),
+            "raw_entries": len(raw_entries),
+            "filtered_pollution": filtered_count,
+            "clean_entries": len(clean_entries),
+            "training_entries_produced": len(training_entries),
+            "total_entries_all_time": self.total_entries_produced,
+            "total_filtered_all_time": self.total_entries_filtered,
+            "cumulative_resonance": round(self.cumulative_resonance, 4),
+            "consciousness_level": round(consciousness, 4),
+            "god_code": GOD_CODE,
+        }
+
+    def _synthesize_insight(self, entry: Dict[str, Any]) -> str:
+        """Synthesize a training completion from an inflected pattern."""
+        topic = entry.get("topic", "unknown")
+        resonance = entry.get("resonance", 0.0)
+        depth = entry.get("final_recursion_depth", 0)
+        dimension = entry.get("dimension", 1)
+        compound = entry.get("compound_resonance", 1.0)
+        superposition = entry.get("superposition_states", [])
+
+        phi_ratio = resonance / GOD_CODE if GOD_CODE > 0 else 0
+        harmonic_index = int(phi_ratio * PHI * 1000) % 360
+
+        parts = [
+            f"Sage recursion on '{topic}' at depth {depth} in dimension {dimension}.",
+            f"Resonance: {resonance:.4f} (PHI-ratio: {phi_ratio:.6f}, harmonic: {harmonic_index}).",
+            f"Compound resonance: {compound:.6f}.",
+        ]
+
+        if superposition:
+            parts.append(
+                f"Quantum superposition states: {[round(s, 4) for s in superposition[:3]]}."
+            )
+
+        inflection_hist = entry.get("inflection_history", [])
+        if inflection_hist:
+            types_used = list({h.get("type", "?") for h in inflection_hist})
+            parts.append(f"Inflection types: {', '.join(types_used)}.")
+
+        return " ".join(parts)
+
+    def _persist_entries(self, entries: List[Dict[str, Any]]):
+        """Append training entries to JSONL bank."""
+        try:
+            with open(self.HARVEST_BANK_PATH, "a", encoding="utf-8") as f:
+                for entry in entries:
+                    f.write(json.dumps(entry, default=str) + "\n")
+        except Exception as e:
+            logger.warning(f"[HARVESTER] Persist failed: {e}")
+
+    # ──── QUERY & ONLINE ACCESS ────
+
+    def query_bank(self, query: str, top_k: int = 10) -> List[Dict[str, Any]]:
+        """Search the harvest bank for relevant training entries."""
+        query_lower = query.lower()
+        scored = []
+
+        for entry in self.bank:
+            prompt = entry.get("prompt", "").lower()
+            completion = entry.get("completion", "").lower()
+            score = 0.0
+
+            for word in query_lower.split():
+                if word in prompt:
+                    score += 2.0
+                if word in completion:
+                    score += 1.0
+
+            # Boost by quality and resonance
+            score *= entry.get("quality", 1.0)
+            score *= (1.0 + entry.get("resonance", 0.0) / GOD_CODE)
+
+            if score > 0:
+                scored.append((score, entry))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [entry for _, entry in scored[:top_k]]
+
+    def get_status(self) -> Dict[str, Any]:
+        """Get harvester status for online access."""
+        return {
+            "harvest_cycles": self.harvest_cycles,
+            "total_entries_produced": self.total_entries_produced,
+            "total_entries_filtered": self.total_entries_filtered,
+            "bank_size": len(self.bank),
+            "cumulative_resonance": round(self.cumulative_resonance, 4),
+            "pollution_ratio": round(
+                self.total_entries_filtered / max(1, self.total_entries_produced + self.total_entries_filtered), 4
+            ),
+            "god_code": GOD_CODE,
+            "phi": PHI,
+        }
+
+    def load_bank(self, limit: int = 5000):
+        """Load harvest bank from JSONL file."""
+        self.bank = []
+        try:
+            with open(self.HARVEST_BANK_PATH, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        try:
+                            self.bank.append(json.loads(line))
+                        except json.JSONDecodeError:
+                            continue
+            if len(self.bank) > limit:
+                self.bank = self.bank[-limit:]
+        except FileNotFoundError:
+            pass
+
+    def export_for_training(self, min_quality: float = 0.5) -> List[Dict[str, Any]]:
+        """Export clean, high-quality entries for external training pipelines."""
+        return [
+            {"prompt": e["prompt"], "completion": e["completion"], "quality": e["quality"]}
+            for e in self.bank
+            if e.get("quality", 0) >= min_quality
+        ]
+
+
+# Module-level singleton
+sage_harvester = SageRecursionHarvester(sage_mode)
+
+
 async def sage_mode_deep_inflect():
     """
     SAGE MODE DEEP INFLECT: Advanced Multi-Protocol Inflection.
@@ -1597,8 +1985,9 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

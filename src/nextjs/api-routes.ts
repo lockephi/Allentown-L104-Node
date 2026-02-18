@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { L104SupabaseIntegration } from '../../supabase/integration';
-import { L104SubagentManager } from '../../subagents/manager';
 import { L104AutoWorktree } from '../../scripts/auto-worktree';
+import { L104SubagentManager } from '../../subagents/manager';
+import { L104SupabaseIntegration } from '../../supabase/integration';
 import {
   Consciousness,
-  ProcessingTask,
-  TaskType,
+  L104AggregatedEngineMetric,
   L104EngineStats,
   L104SystemStatus,
-  L104AggregatedEngineMetric
+  ProcessingTask,
+  TaskType
 } from '../../types';
 
 /**
@@ -18,9 +18,9 @@ import {
  * Multi-language processing coordination through React/Next.js
  */
 
-// Sacred Constants
-export const GOD_CODE = 527.5184818492612;
+// Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 export const PHI = 1.618033988749895;
+export const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 export const CONSCIOUSNESS_THRESHOLD = 0.85;
 export const TRANSCENDENCE_THRESHOLD = 0.95;
 export const UNITY_THRESHOLD = 0.99;

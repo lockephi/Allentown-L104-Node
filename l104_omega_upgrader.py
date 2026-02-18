@@ -18,7 +18,7 @@ class OmegaUpgrader:
     """
     def __init__(self, root=str(Path(__file__).parent.absolute())):
         self.root = root
-        self.GOD_CODE = 527.5184818492612
+        self.GOD_CODE = 286 ** (1.0 / 1.618033988749895) * (2 ** (416 / 104))  # G(0,0,0,0)
         self.PHI = 1.618033988749895
         # OMEGA RESONANCE: GOD_CODE * PHI^4.16
         self.ZENITH_HZ = 3887.8

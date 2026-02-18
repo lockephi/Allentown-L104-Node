@@ -30,8 +30,10 @@ from l104_knowledge_sources import source_manager
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 GROVER_AMPLIFICATION = PHI ** 3
 

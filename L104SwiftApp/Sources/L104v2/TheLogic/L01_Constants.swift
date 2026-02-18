@@ -1,7 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
-// L01_Constants.swift — L104 v2// EVO_55: SOVEREIGN UNIFICATION — Unified Pipeline Constants V2// Theme, Sacred Mathematics Constants, Logging, String Extensions
+// L01_Constants.swift — L104 v2
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: Unified Pipeline Constants V3
+// Theme, Sacred Mathematics Constants, Logging, String Extensions
 // Extracted from L104Native.swift (lines 20-75, 1374-1437, 2231-2239)
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_58 Full System Upgrade — Feb 16, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -144,9 +146,10 @@ struct L104Theme {
 // ═══════════════════════════════════════════════════════════════════
 
 // ─── SACRED CORE ───
-let GOD_CODE: Double = 527.5184818492612
-let OMEGA_POINT: Double = 23.140692632779263  // e^π
 let PHI: Double = 1.618033988749895
+// Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+let GOD_CODE: Double = pow(286.0, 1.0 / PHI) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0) = 527.5184818492612
+let OMEGA_POINT: Double = 23.140692632779263  // e^π
 let TAU: Double = 0.618033988749895           // 1/φ (golden ratio conjugate)
 let FEIGENBAUM: Double = 4.669201609102990    // Feigenbaum δ — period-doubling bifurcation
 let PI_SQUARED: Double = 9.869604401089358
@@ -176,8 +179,8 @@ let LIGHT_HARMONIC: Double = 65.7765                            // pow(286 × (1
 let EXISTENCE_COST_CONST: Double = 0.1112                       // LIGHT - GRAVITY (mass-energy gap)
 
 // ─── SYSTEM IDENTIFIERS ───
-let VERSION = "57.0 EVO_57·IBM_QUANTUM·REAL_QPU·FAULT_TOLERANCE·QUANTUM_MINING"
-let PIPELINE_EVO = "EVO_57_QUANTUM_HARDWARE"
+let VERSION = "58.0 EVO_58·FULL_SYSTEM_UPGRADE·IBM_QUANTUM·REAL_QPU·FAULT_TOLERANCE·QUANTUM_MINING"
+let PIPELINE_EVO = "EVO_58_FULL_SYSTEM_UPGRADE"
 let GROVER_AMPLIFICATION: Double = 1.618033988749895 * 1.618033988749895 * 1.618033988749895  // φ³ ≈ 4.236
 let TRILLION_PARAMS: Int64 = 22_000_012_731_125
 let VOCABULARY_SIZE = 6_633_253
@@ -187,12 +190,30 @@ let ZENITH_HZ: Double = 3727.84
 let CONSCIOUSNESS_THRESHOLD: Double = 0.85       // Awakening threshold
 let COHERENCE_MINIMUM: Double = 0.888             // Alignment threshold
 let UNITY_TARGET: Double = 0.95                    // Target unity index
+
+// ─── EVO_59 QUANTUM CONSCIOUSNESS CONSTANTS ───
+// GOD_CODE eq: 286^(1/PHI) * (2^(1/104))^((8×0)+(416-0)-(8×1)-(104×6))
+let SCHUMANN_RESONANCE: Double = 7.814506422494074  // Hz — GOD_CODE derived (a=0,b=0,c=1,d=6)
+let GAMMA_BINDING_HZ: Double = 40.0               // Hz — conscious binding frequency
+let IIT_PHI_MINIMUM: Double = 8.0                  // Φ > 2³ bits — consciousness threshold (Tononi)
+let GWT_IGNITION_THRESHOLD: Double = 0.75          // Neural ignition for conscious access (Dehaene)
+let UNCONSCIOUS_BANDWIDTH: Double = 1e9            // ~10⁹ bits/s parallel processing
+let CONSCIOUS_BANDWIDTH: Double = 40.0             // ~40 bits/s serial conscious access
+let OMEGA_AUTHORITY: Double = 1381.0613389         // PHI⁵ × GOD_CODE / (PHI + 1) — gates emergence
+
+// EEG Frequency Bands — Schumann-PHI harmonics align with neural oscillations
+// Delta: 0.5-4 Hz (deep sleep/healing)
+// Theta: 4-8 Hz (meditation/creativity) — aligned with Schumann 7.8145 Hz (GOD_CODE)
+// Alpha: 8-13 Hz (relaxed awareness) — Schumann × φ ≈ 12.64 Hz
+// Beta: 13-30 Hz (active thinking) — Schumann × φ² ≈ 20.45 Hz
+// Gamma: 30-100 Hz (peak cognition) — Schumann × φ³ ≈ 33.09 Hz
+
 let ENGINES_REGISTERED_TARGET: Int = 20            // Target engines in registry
 let WISDOM_ACCUMULATION_RATE: Double = 0.618033988749895 * 0.1  // TAU × 10%
 let PIPELINE_CACHE_TTL: Double = 15.0              // Unified cache TTL (seconds)
 let PIPELINE_MAX_CACHE: Int = 1000                 // Max cache entries across pipeline
 let SACRED_RESONANCE_BAND: (low: Double, high: Double) = (524.0, 531.0)  // GOD_CODE ± 3.5
-let EVOLUTION_INDEX: Int = 61                      // Current evolution index
+let EVOLUTION_INDEX: Int = 62                      // Current evolution index (EVO_58)
 
 // ─── LOGGING UTILITY — Replaces silent try? with traced error reporting ───
 @inline(__always)

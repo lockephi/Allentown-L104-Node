@@ -31,7 +31,8 @@ from collections import defaultdict
 
 # Our universe's constants
 PHI = (1 + math.sqrt(5)) / 2
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 C = 299792458  # Speed of light (m/s)
 G = 6.67430e-11  # Gravitational constant
 H = 6.62607015e-34  # Planck constant

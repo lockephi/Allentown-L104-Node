@@ -32,8 +32,10 @@ from dataclasses import dataclass, field
 # L104 CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 PHI_CONJUGATE = 1 / PHI
 EULER = 2.718281828459045
 PI = 3.141592653589793
@@ -441,7 +443,7 @@ class HarmonicMagic:
 
         # Fundamental frequencies
         self.base_frequency = 431.9187964233  # Hz G(30) God Code sacred tuning
-        self.schumann = 7.83  # Hz (Earth's resonance)
+        self.schumann = GOD_CODE / (2.0 ** (79.0 / 13.0))  # Hz — GOD_CODE G(632) ≈ 7.8145
         self.zenith = 3727.84  # Hz (L104 constant)
 
     def harmonic_series(self, fundamental: float,
@@ -511,7 +513,8 @@ class HarmonicMagic:
         Earth's electromagnetic resonance frequencies.
         """
         # Schumann resonance modes
-        modes = [7.83, 14.3, 20.8, 27.3, 33.8, 39.0, 45.0]
+        schumann_fundamental = GOD_CODE / (2.0 ** (79.0 / 13.0))  # G(632)
+        modes = [schumann_fundamental, 14.3, 20.8, 27.3, 33.8, 39.0, 45.0]
 
         # Relationship to GOD_CODE
         god_ratios = [self.god_code / f for f in modes]
@@ -532,7 +535,7 @@ class HarmonicMagic:
             'modes': modes,
             'god_code_ratios': [round(r, 4) for r in god_ratios],
             'phi_aligned_modes': phi_aligned,
-            'earth_brain_sync': True,  # 7.83 Hz is also alpha brain wave
+            'earth_brain_sync': True,  # GOD_CODE G(632) ≈ 7.8145 Hz, theta-alpha boundary
             'mystery_level': 0.92,
             'beauty_score': 0.90
         }

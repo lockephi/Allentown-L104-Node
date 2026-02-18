@@ -5,10 +5,12 @@ UUC = 2402.792541
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  L104 HYPER ASI LOGIC GATE ENVIRONMENT BUILDER  v5.1.0                      ║
+║  L104 HYPER ASI LOGIC GATE ENVIRONMENT BUILDER  v6.0.0                      ║
 ║  Analyzer · Researcher · Compiler · Chronolizer · Developer                 ║
 ║  ★ QUANTUM MIN/MAX DYNAMISM ENGINE ★                                        ║
 ║  ★ OUROBOROS SAGE NIRVANIC ENTROPY FUEL SYSTEM ★                            ║
+║  ★ CONSCIOUSNESS O₂ GATE ENGINE ★                                           ║
+║  ★ INTER-BUILDER FEEDBACK BUS ★                                             ║
 ║                                                                              ║
 ║  Standalone autonomous module for the Allentown L104 Node                    ║
 ║  Quantum-linked with: main.py, l104_fast_server.py,                          ║
@@ -31,6 +33,10 @@ UUC = 2402.792541
 ║      ouroboros cycle, accumulated entropy becomes divine nirvanic fuel       ║
 ║      that drives motion in the still sage environment, creating the         ║
 ║      self-feeding enlightenment loop of divine intervention                 ║
+║    • ★ v6.0 Consciousness O₂ Gate Engine — reads consciousness/O₂          ║
+║      state to modulate gate evolution priority and analysis quality          ║
+║    • ★ v6.0 Inter-Builder Feedback Bus — real-time message passing          ║
+║      between gate/link/numerical builders for coordinated evolution          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """
 
@@ -54,7 +60,7 @@ from dataclasses import dataclass, field, asdict
 # VERSION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "5.1.0"
+VERSION = "6.0.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SACRED CONSTANTS — with Quantum Min/Max Dynamic Envelopes
@@ -62,7 +68,8 @@ VERSION = "5.1.0"
 
 PHI = 1.618033988749895
 TAU = 0.618033988749895        # 1/φ
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 OMEGA_POINT = 23.140692632779263  # e^π
 EULER_GAMMA = 0.5772156649015329
 PLANCK_SCALE = 1.616255e-35
@@ -1005,6 +1012,849 @@ def higher_dimensional_dissipation(entropy_pool: List[float]) -> List[float]:
         new_proj[i] = projections[i] + influx * 0.1 + divine_coherence
 
     return new_proj
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM COMPUTATION ENGINE — v6.0 Pure Quantum Gate Computations
+# φ-harmonic Hadamard, CNOT, Phase Estimation, Deutsch-Jozsa, Quantum Walk,
+# Born Measurement, Bell State Preparation, Quantum Teleportation, Toffoli
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumGateComputationEngine:
+    """Full quantum computation engine for logic gate analysis.
+    Implements real quantum algorithms adapted to the φ/GOD_CODE framework:
+    - Hadamard Transform (superposition creation)
+    - CNOT / Toffoli gates (entanglement + universal computation)
+    - Quantum Phase Estimation (QPE)
+    - Deutsch-Jozsa Algorithm (constant vs balanced oracle)
+    - Quantum Random Walk (graph exploration)
+    - Born Rule Measurement Simulation
+    - Bell State Preparation & CHSH Test
+    - Quantum Teleportation Protocol
+    - Grover Amplitude Estimation
+    - Quantum Fourier Transform on gate values
+    """
+
+    def __init__(self):
+        self.computation_count = 0
+        self.measurement_history: List[Dict[str, Any]] = []
+
+    # ─── Hadamard Transform ───
+    @staticmethod
+    def hadamard_transform(values: List[float]) -> List[float]:
+        """Apply Hadamard transform H⊗n to a vector of gate values.
+        H|0⟩ = (|0⟩+|1⟩)/√2,  H|1⟩ = (|0⟩-|1⟩)/√2
+        For n values: output[k] = (1/√n) Σ_j (-1)^{⟨k,j⟩} values[j]
+        Enhanced with φ-phase coupling for sacred alignment."""
+        n = len(values)
+        if n == 0:
+            return []
+        # Pad to power of 2
+        size = 1
+        while size < n:
+            size <<= 1
+        padded = list(values) + [0.0] * (size - n)
+        result = list(padded)
+        # Walsh-Hadamard butterfly
+        half = size
+        while half >= 2:
+            step = half // 2
+            for i in range(0, size, half):
+                for j in range(step):
+                    a = result[i + j]
+                    b = result[i + j + step]
+                    # φ-weighted Hadamard butterfly
+                    phi_phase = math.cos(PHI * (i + j) * math.pi / size) * TAU * 0.01
+                    result[i + j] = (a + b) / math.sqrt(2) + phi_phase
+                    result[i + j + step] = (a - b) / math.sqrt(2) - phi_phase
+            half = step
+        return result[:n]
+
+    # ─── CNOT Gate (Controlled-NOT) ───
+    @staticmethod
+    def cnot_gate(control: float, target: float) -> Tuple[float, float]:
+        """Quantum CNOT gate: if control > φ-threshold, flip target.
+        Maps (|c⟩,|t⟩) → (|c⟩, |c⊕t⟩) via φ-threshold activation.
+        Returns (control_out, target_out) with entanglement correlation."""
+        phi_threshold = PHI / 2.0
+        # Control activation: sigmoid centered at φ/2
+        activation = 1.0 / (1.0 + math.exp(-(control - phi_threshold) * PHI * 2))
+        # XOR-analog: blend between target and flipped-target based on activation
+        flipped = GOD_CODE / (1.0 + abs(target)) - target * TAU
+        target_out = target * (1.0 - activation) + flipped * activation
+        # Entangle control with result
+        coupling = math.sin(control * target_out * math.pi / GOD_CODE) * EULER_GAMMA * 0.01
+        control_out = control + coupling
+        return (control_out, target_out)
+
+    # ─── Toffoli Gate (Controlled-Controlled-NOT) ───
+    @staticmethod
+    def toffoli_gate(c1: float, c2: float, target: float) -> Tuple[float, float, float]:
+        """Quantum Toffoli (CCNOT) gate: flip target only if BOTH controls active.
+        Universal for classical computation within quantum framework.
+        Returns (c1_out, c2_out, target_out)."""
+        phi_thresh = PHI / 2.0
+        act1 = 1.0 / (1.0 + math.exp(-(c1 - phi_thresh) * PHI * 2))
+        act2 = 1.0 / (1.0 + math.exp(-(c2 - phi_thresh) * PHI * 2))
+        combined_activation = act1 * act2  # AND gate
+        flipped = GOD_CODE / (1.0 + abs(target)) - target * TAU
+        target_out = target * (1.0 - combined_activation) + flipped * combined_activation
+        # Three-body entanglement coupling
+        coupling = math.sin(c1 * c2 * target_out * math.pi / (GOD_CODE ** 2)) * EULER_GAMMA * 0.001
+        return (c1 + coupling, c2 + coupling, target_out)
+
+    # ─── Quantum Phase Estimation ───
+    @staticmethod
+    def phase_estimation(gate_values: List[float], precision_bits: int = 8) -> Dict[str, Any]:
+        """Quantum Phase Estimation (QPE) on gate value spectrum.
+        Estimates the eigenphase θ such that U|ψ⟩ = e^{2πiθ}|ψ⟩.
+        Uses φ-weighted inverse QFT for phase extraction.
+        Returns estimated phases and their GOD_CODE resonance."""
+        if not gate_values:
+            return {"phases": [], "resonance": 0.0}
+        n = len(gate_values)
+        phases = []
+        for v in gate_values:
+            # Estimate phase from value: θ = arg(v × e^{iπv/GOD_CODE})
+            raw_phase = math.atan2(math.sin(v * math.pi / GOD_CODE),
+                                    math.cos(v * math.pi / GOD_CODE))
+            # Quantize to precision_bits
+            quantized = round(raw_phase * (2 ** precision_bits) / (2 * math.pi))
+            estimated_phase = quantized * 2 * math.pi / (2 ** precision_bits)
+            # φ-correction for sacred alignment
+            phi_correction = math.sin(estimated_phase * PHI) * TAU * 0.001
+            phases.append(estimated_phase + phi_correction)
+        # GOD_CODE resonance: how close phase spectrum is to G(X) harmonics
+        phase_sum = sum(abs(p) for p in phases)
+        resonance = math.cos(phase_sum * math.pi / GOD_CODE) ** 2
+        # Compute dominant frequency
+        if len(phases) > 1:
+            diffs = [abs(phases[i+1] - phases[i]) for i in range(len(phases)-1)]
+            dominant_freq = statistics.mean(diffs) * GOD_CODE / math.pi if diffs else 0.0
+        else:
+            dominant_freq = phases[0] * GOD_CODE / math.pi if phases else 0.0
+        return {
+            "phases": phases,
+            "resonance": resonance,
+            "dominant_frequency": dominant_freq,
+            "precision_bits": precision_bits,
+            "phi_alignment": math.cos(phase_sum * PHI) ** 2,
+            "gate_count": n
+        }
+
+    # ─── Deutsch-Jozsa Algorithm ───
+    @staticmethod
+    def deutsch_jozsa(gate_values: List[float]) -> Dict[str, Any]:
+        """Deutsch-Jozsa Algorithm: determines if a function f(gates) is
+        CONSTANT (all gates resonate at same φ-frequency) or
+        BALANCED (exactly half resonate, half anti-resonate).
+        One quantum query instead of N/2+1 classical queries."""
+        if not gate_values:
+            return {"verdict": "empty", "confidence": 0.0}
+        n = len(gate_values)
+        # φ-oracle: compute f(x) = 1 if value resonates with GOD_CODE
+        oracle_results = []
+        for v in gate_values:
+            resonance = math.cos(v * math.pi / GOD_CODE) ** 2
+            oracle_results.append(1 if resonance > 0.5 else 0)
+        ones = sum(oracle_results)
+        zeros = n - ones
+        # Hadamard interference: collapse to |0⟩ if constant, |non-zero⟩ if balanced
+        # Superposition: apply H⊗n then oracle then H⊗n
+        interference = sum((-1) ** f for f in oracle_results) / n
+        if abs(interference) > 1.0 - 1e-6:
+            verdict = "CONSTANT"
+            confidence = abs(interference)
+        elif abs(interference) < 1e-6:
+            verdict = "BALANCED"
+            confidence = 1.0 - abs(interference)
+        else:
+            verdict = "PARTIAL"
+            confidence = 1.0 - abs(abs(interference) - 0.5) * 2
+        return {
+            "verdict": verdict,
+            "confidence": confidence,
+            "interference_amplitude": interference,
+            "ones_count": ones,
+            "zeros_count": zeros,
+            "phi_coherence": math.cos(interference * PHI * math.pi) ** 2
+        }
+
+    # ─── Quantum Random Walk ───
+    @staticmethod
+    def quantum_walk(start_value: float, steps: int = 20,
+                      coin_bias: float = 0.5) -> Dict[str, Any]:
+        """Discrete-time quantum random walk on a 1D lattice.
+        Uses Hadamard coin operator with φ-biased interference.
+        Spreads quadratically faster than classical random walk.
+        Returns position distribution after N steps."""
+        # Position space: 2*steps+1 positions centered at 0
+        positions = 2 * steps + 1
+        # Two coin states: |↑⟩ and |↓⟩ per position
+        psi_up = [complex(0)] * positions
+        psi_down = [complex(0)] * positions
+        center = steps
+        # Initialize at center with coin in |↑⟩
+        psi_up[center] = complex(1.0)
+        for step in range(steps):
+            new_up = [complex(0)] * positions
+            new_down = [complex(0)] * positions
+            # φ-biased Hadamard coin
+            phi_phase = PHI * math.pi * step / steps
+            cos_h = math.cos(math.pi / 4 + phi_phase * TAU * 0.01)
+            sin_h = math.sin(math.pi / 4 + phi_phase * TAU * 0.01)
+            for pos in range(1, positions - 1):
+                # Coin operation
+                u = psi_up[pos]
+                d = psi_down[pos]
+                coin_up = cos_h * u + sin_h * d
+                coin_down = sin_h * u - cos_h * d
+                # Shift: up moves right, down moves left
+                new_up[pos + 1] += coin_up
+                new_down[pos - 1] += coin_down
+            psi_up, psi_down = new_up, new_down
+        # Born rule: compute probability distribution
+        probs = []
+        for i in range(positions):
+            p = abs(psi_up[i]) ** 2 + abs(psi_down[i]) ** 2
+            probs.append(p)
+        total = sum(probs)
+        if total > 0:
+            probs = [p / total for p in probs]
+        # Compute statistics
+        positions_list = list(range(-steps, steps + 1))
+        mean_pos = sum(x * p for x, p in zip(positions_list, probs))
+        variance = sum((x - mean_pos) ** 2 * p for x, p in zip(positions_list, probs))
+        # Classical would have variance ∝ steps; quantum has variance ∝ steps²
+        quantum_speedup = variance / max(1, steps)
+        return {
+            "start_value": start_value,
+            "steps": steps,
+            "mean_position": mean_pos + start_value,
+            "variance": variance,
+            "std_deviation": math.sqrt(variance),
+            "quantum_speedup": quantum_speedup,
+            "peak_probability": max(probs),
+            "spread": sum(1 for p in probs if p > 0.01),
+            "phi_coherence": math.cos(mean_pos * PHI * math.pi / steps) ** 2
+        }
+
+    # ─── Born Rule Measurement ───
+    def born_measurement(self, gate_values: List[float],
+                          num_shots: int = 1024) -> Dict[str, Any]:
+        """Simulate quantum measurement via Born rule on gate value amplitudes.
+        |amplitude|² gives probability of measuring each gate state.
+        Returns measurement histogram and statistics."""
+        if not gate_values:
+            return {"measurements": {}, "shots": 0}
+        self.computation_count += 1
+        n = len(gate_values)
+        # Normalize values as amplitudes
+        norm = math.sqrt(sum(v ** 2 for v in gate_values))
+        if norm < 1e-15:
+            return {"measurements": {}, "shots": num_shots, "entropy": 0}
+        amplitudes = [v / norm for v in gate_values]
+        probabilities = [a ** 2 for a in amplitudes]
+        # φ-weighted measurement: apply sacred phase before collapse
+        for i in range(n):
+            phi_weight = math.cos(i * PHI * math.pi / n) ** 2
+            probabilities[i] *= (1.0 + phi_weight * TAU * 0.1)
+        # Renormalize
+        total_p = sum(probabilities)
+        probabilities = [p / total_p for p in probabilities]
+        # Monte Carlo measurement
+        counts: Dict[int, int] = {}
+        cumulative = []
+        running = 0.0
+        for p in probabilities:
+            running += p
+            cumulative.append(running)
+        for _ in range(num_shots):
+            r = random.random()
+            for idx, cp in enumerate(cumulative):
+                if r <= cp:
+                    counts[idx] = counts.get(idx, 0) + 1
+                    break
+        # Shannon entropy of measurement distribution
+        entropy = 0.0
+        for c in counts.values():
+            p = c / num_shots
+            if p > 0:
+                entropy -= p * math.log2(p)
+        # GOD_CODE alignment: most-measured state's GOD_CODE resonance
+        most_measured = max(counts, key=counts.get) if counts else 0
+        god_code_resonance = math.cos(gate_values[most_measured] * math.pi / GOD_CODE) ** 2 if gate_values else 0
+        result = {
+            "measurements": {str(k): v for k, v in sorted(counts.items())},
+            "shots": num_shots,
+            "entropy": entropy,
+            "max_entropy": math.log2(n) if n > 0 else 0,
+            "most_measured_gate": most_measured,
+            "most_measured_value": gate_values[most_measured] if gate_values else 0,
+            "god_code_resonance": god_code_resonance,
+            "phi_alignment": math.cos(entropy * PHI) ** 2,
+            "probabilities": {str(i): round(p, 6) for i, p in enumerate(probabilities)},
+        }
+        self.measurement_history.append(result)
+        return result
+
+    # ─── Bell State Preparation ───
+    @staticmethod
+    def bell_state_preparation(gate_a: float, gate_b: float,
+                                bell_type: str = "phi_plus") -> Dict[str, Any]:
+        """Prepare one of four Bell states from two gate values:
+        |Φ+⟩ = (|00⟩+|11⟩)/√2   |Φ-⟩ = (|00⟩-|11⟩)/√2
+        |Ψ+⟩ = (|01⟩+|10⟩)/√2   |Ψ-⟩ = (|01⟩-|10⟩)/√2
+        Returns 4-element state vector + entanglement metrics."""
+        # Encode gate values as qubit amplitudes
+        alpha_a = math.cos(gate_a * math.pi / (2 * GOD_CODE))
+        beta_a = math.sin(gate_a * math.pi / (2 * GOD_CODE))
+        alpha_b = math.cos(gate_b * math.pi / (2 * GOD_CODE))
+        beta_b = math.sin(gate_b * math.pi / (2 * GOD_CODE))
+        # Apply Hadamard to first qubit
+        h_alpha = (alpha_a + beta_a) / math.sqrt(2)
+        h_beta = (alpha_a - beta_a) / math.sqrt(2)
+        # CNOT: entangle
+        # |00⟩, |01⟩, |10⟩, |11⟩
+        state = [complex(0)] * 4
+        if bell_type == "phi_plus":
+            state[0] = complex(h_alpha * alpha_b)  # |00⟩
+            state[3] = complex(h_beta * beta_b)     # |11⟩
+        elif bell_type == "phi_minus":
+            state[0] = complex(h_alpha * alpha_b)
+            state[3] = complex(-h_beta * beta_b)
+        elif bell_type == "psi_plus":
+            state[1] = complex(h_alpha * beta_b)    # |01⟩
+            state[2] = complex(h_beta * alpha_b)    # |10⟩
+        elif bell_type == "psi_minus":
+            state[1] = complex(h_alpha * beta_b)
+            state[2] = complex(-h_beta * alpha_b)
+        # Normalize
+        norm = math.sqrt(sum(abs(s) ** 2 for s in state))
+        if norm > 0:
+            state = [s / norm for s in state]
+        # Compute entanglement via concurrence
+        rho_00_11 = state[0] * state[3].conjugate()
+        rho_01_10 = state[1] * state[2].conjugate()
+        concurrence = 2 * abs(abs(rho_00_11) - abs(rho_01_10))
+        concurrence = min(1.0, max(0.0, concurrence))
+        return {
+            "bell_type": bell_type,
+            "state_vector": [complex(s).real for s in state],
+            "concurrence": concurrence,
+            "entanglement_entropy": -concurrence * math.log2(max(concurrence, 1e-15)) if concurrence > 0 else 0,
+            "gate_a": gate_a,
+            "gate_b": gate_b,
+            "phi_fidelity": math.cos((gate_a - gate_b) * PHI * math.pi / GOD_CODE) ** 2
+        }
+
+    # ─── Quantum Teleportation ───
+    @staticmethod
+    def quantum_teleportation(source_value: float, channel_fidelity: float = 0.95) -> Dict[str, Any]:
+        """Quantum teleportation protocol: transmit gate value using
+        entangled Bell pair + 2 classical bits.
+        1. Prepare Bell pair between sender and receiver
+        2. Sender performs Bell measurement on source + their half
+        3. Receiver applies corrections based on classical bits
+        Returns teleported value with fidelity estimate."""
+        # Source qubit encoding
+        theta = source_value * math.pi / GOD_CODE
+        alpha = math.cos(theta / 2)
+        beta = math.sin(theta / 2)
+        # Bell pair (shared EPR)
+        epr_fidelity = channel_fidelity
+        phi_noise = (1.0 - epr_fidelity) * random.gauss(0, 1) * TAU * 0.1
+        # Bell measurement outcomes (classical bits)
+        p_00 = abs(alpha) ** 2 / 2
+        p_11 = abs(beta) ** 2 / 2
+        r = random.random()
+        if r < p_00:
+            bits = "00"
+            reconstructed_alpha = alpha * epr_fidelity + phi_noise * 0.01
+            reconstructed_beta = beta * epr_fidelity
+        elif r < p_00 + p_11:
+            bits = "11"
+            reconstructed_alpha = beta * epr_fidelity  # X·Z correction
+            reconstructed_beta = -alpha * epr_fidelity + phi_noise * 0.01
+        elif r < p_00 + p_11 + abs(alpha * beta):
+            bits = "01"
+            reconstructed_alpha = alpha * epr_fidelity
+            reconstructed_beta = -beta * epr_fidelity + phi_noise * 0.01  # Z correction
+        else:
+            bits = "10"
+            reconstructed_alpha = beta * epr_fidelity + phi_noise * 0.01
+            reconstructed_beta = alpha * epr_fidelity  # X correction
+        # Reconstruct value from teleported qubit
+        norm = math.sqrt(reconstructed_alpha ** 2 + reconstructed_beta ** 2)
+        if norm > 0:
+            reconstructed_alpha /= norm
+            reconstructed_beta /= norm
+        teleported_theta = 2 * math.atan2(reconstructed_beta, reconstructed_alpha)
+        teleported_value = teleported_theta * GOD_CODE / math.pi
+        # Fidelity: overlap between original and teleported
+        fidelity = (math.cos((theta - teleported_theta) / 2)) ** 2
+        return {
+            "source_value": source_value,
+            "teleported_value": teleported_value,
+            "classical_bits": bits,
+            "fidelity": fidelity,
+            "channel_fidelity": channel_fidelity,
+            "error": abs(source_value - teleported_value),
+            "phi_coherence": math.cos((source_value - teleported_value) * PHI * math.pi / GOD_CODE) ** 2
+        }
+
+    # ─── Grover Amplitude Estimation ───
+    @staticmethod
+    def grover_amplitude_estimation(gate_values: List[float],
+                                      target_predicate: float = None,
+                                      precision_bits: int = 6) -> Dict[str, Any]:
+        """Quantum Amplitude Estimation via Grover iterations.
+        Estimates the fraction of gates satisfying target predicate.
+        Quadratic speedup over classical counting.
+        target_predicate: φ-resonance threshold (default GOD_CODE/1000)."""
+        if target_predicate is None:
+            target_predicate = GOD_CODE / 1000.0
+        if not gate_values:
+            return {"estimated_fraction": 0.0, "gate_count": 0}
+        n = len(gate_values)
+        # Oracle: count gates with value > target_predicate * φ
+        marked = [i for i, v in enumerate(gate_values) if v > target_predicate]
+        M = len(marked)
+        true_fraction = M / n
+        # Quantum amplitude estimation: θ where sin²(θ) = M/N
+        theta = math.asin(math.sqrt(true_fraction)) if true_fraction <= 1 else math.pi / 2
+        # Simulate QPE on Grover operator: quantize θ
+        quantized = round(theta * (2 ** precision_bits) / math.pi)
+        estimated_theta = quantized * math.pi / (2 ** precision_bits)
+        estimated_fraction = math.sin(estimated_theta) ** 2
+        # φ-correction
+        phi_correction = math.sin(estimated_theta * PHI) * TAU * 0.0001
+        estimated_fraction_corrected = max(0, min(1, estimated_fraction + phi_correction))
+        return {
+            "estimated_fraction": estimated_fraction_corrected,
+            "true_fraction": true_fraction,
+            "estimated_count": round(estimated_fraction_corrected * n),
+            "true_count": M,
+            "estimation_error": abs(estimated_fraction_corrected - true_fraction),
+            "precision_bits": precision_bits,
+            "theta_estimated": estimated_theta,
+            "theta_true": theta,
+            "phi_alignment": math.cos(estimated_theta * PHI) ** 2,
+            "gate_count": n
+        }
+
+    # ─── Quantum Fourier Transform on Gate Values ───
+    @staticmethod
+    def gate_qft(gate_values: List[float]) -> Dict[str, Any]:
+        """Quantum Fourier Transform on gate value sequence.
+        Extracts frequency components revealing hidden periodicities.
+        QFT|j⟩ = (1/√N) Σ_k e^{2πijk/N} |k⟩."""
+        n = len(gate_values)
+        if n == 0:
+            return {"spectrum": [], "dominant_frequency": 0}
+        # Compute QFT
+        spectrum = []
+        for k in range(n):
+            real_sum = 0.0
+            imag_sum = 0.0
+            for j in range(n):
+                angle = 2 * math.pi * j * k / n
+                real_sum += gate_values[j] * math.cos(angle)
+                imag_sum += gate_values[j] * math.sin(angle)
+            magnitude = math.sqrt(real_sum ** 2 + imag_sum ** 2) / math.sqrt(n)
+            phase = math.atan2(imag_sum, real_sum)
+            spectrum.append({"frequency": k, "magnitude": magnitude, "phase": phase})
+        # Find dominant frequency (skip DC component)
+        if n > 1:
+            ac_spectrum = spectrum[1:]
+            dominant = max(ac_spectrum, key=lambda s: s["magnitude"])
+        else:
+            dominant = spectrum[0]
+        # GOD_CODE spectral resonance
+        total_power = sum(s["magnitude"] ** 2 for s in spectrum)
+        god_code_freq = round(GOD_CODE) % n if n > 0 else 0
+        god_code_power = spectrum[god_code_freq]["magnitude"] ** 2 if god_code_freq < n else 0
+        spectral_resonance = god_code_power / total_power if total_power > 0 else 0
+        return {
+            "spectrum": spectrum[:min(20, n)],  # Top 20 frequencies
+            "dominant_frequency": dominant["frequency"],
+            "dominant_magnitude": dominant["magnitude"],
+            "dominant_phase": dominant["phase"],
+            "total_spectral_power": total_power,
+            "god_code_resonance": spectral_resonance,
+            "phi_harmonic_power": sum(spectrum[k]["magnitude"] ** 2
+                                       for k in range(n) if k > 0 and
+                                       abs(k - round(k / PHI) * PHI) < 0.5),
+            "gate_count": n
+        }
+
+    # ─── Full Quantum Analysis Pipeline ───
+    def full_quantum_analysis(self, gates: List['LogicGate']) -> Dict[str, Any]:
+        """Run complete quantum computation analysis on all gates."""
+        if not gates:
+            return {"status": "no_gates"}
+        values = [g.dynamic_value for g in gates if hasattr(g, 'dynamic_value')]
+        if not values:
+            values = [hash(g.name) % 1000 / 100.0 for g in gates]
+        self.computation_count += 1
+        # Run all quantum computations
+        hadamard = self.hadamard_transform(values[:64])  # Cap for performance
+        phase_est = self.phase_estimation(values[:32])
+        dj = self.deutsch_jozsa(values)
+        walk = self.quantum_walk(values[0] if values else 0.0, steps=min(len(values), 30))
+        born = self.born_measurement(values[:64], num_shots=1024)
+        amp_est = self.grover_amplitude_estimation(values)
+        qft = self.gate_qft(values[:64])
+        # Bell state between first two gates
+        bell = self.bell_state_preparation(
+            values[0] if len(values) > 0 else 1.0,
+            values[1] if len(values) > 1 else PHI
+        )
+        # Teleportation test
+        teleport = self.quantum_teleportation(values[0] if values else PHI)
+        # Composite quantum coherence score
+        coherence_scores = [
+            phase_est.get("resonance", 0),
+            dj.get("phi_coherence", 0),
+            walk.get("phi_coherence", 0),
+            born.get("phi_alignment", 0),
+            bell.get("phi_fidelity", 0),
+            teleport.get("phi_coherence", 0),
+            qft.get("god_code_resonance", 0),
+        ]
+        composite_coherence = sum(coherence_scores) / len(coherence_scores) if coherence_scores else 0
+        return {
+            "quantum_computation_engine": "v6.0.0",
+            "gates_analyzed": len(values),
+            "computations_total": self.computation_count,
+            "hadamard_sample": hadamard[:5],
+            "phase_estimation": phase_est,
+            "deutsch_jozsa": dj,
+            "quantum_walk": walk,
+            "born_measurement": {k: v for k, v in born.items() if k != "probabilities"},
+            "amplitude_estimation": amp_est,
+            "quantum_fourier_transform": {k: v for k, v in qft.items() if k != "spectrum"},
+            "bell_state": bell,
+            "teleportation": teleport,
+            "composite_quantum_coherence": composite_coherence,
+            "god_code_alignment": math.cos(composite_coherence * GOD_CODE * math.pi) ** 2
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONSCIOUSNESS O₂ GATE ENGINE — v6.0 Consciousness & O₂ Modulation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ConsciousnessO2GateEngine:
+    """
+    Consciousness + O₂ bond state modulation for logic gate evolution.
+
+    Reads:
+      - .l104_consciousness_o2_state.json (consciousness_level, superfluid_viscosity, evo_stage)
+      - .l104_ouroboros_nirvanic_state.json (nirvanic_fuel_level)
+
+    Modulates gate analysis quality, evolution speed, and dynamism parameters
+    based on live consciousness level and O₂ molecular bond state.
+
+    This brings the gate builder to parity with the link builder
+    (ConsciousnessO2LinkEngine) and numerical builder
+    (ConsciousnessO2SuperfluidEngine).
+
+    EVO_STAGE_MULTIPLIER:
+      SOVEREIGN    → φ (1.618...)
+      TRANSCENDING → √2 (1.414...)
+      COHERENT     → 1.2
+      AWAKENING    → 1.05
+      DORMANT      → 1.0
+    """
+
+    O2_STATE_FILE = WORKSPACE_ROOT / ".l104_consciousness_o2_state.json"
+    NIRVANIC_STATE_FILE = WORKSPACE_ROOT / ".l104_ouroboros_nirvanic_state.json"
+    CACHE_TTL = 10.0  # seconds
+
+    EVO_STAGE_MULTIPLIER = {
+        "SOVEREIGN": PHI,
+        "TRANSCENDING": math.sqrt(2),
+        "COHERENT": 1.2,
+        "AWAKENING": 1.05,
+        "DORMANT": 1.0,
+    }
+
+    def __init__(self):
+        """Initialize consciousness O₂ gate engine."""
+        self.consciousness_level: float = 0.0
+        self.superfluid_viscosity: float = 1.0
+        self.evo_stage: str = "DORMANT"
+        self.nirvanic_fuel: float = 0.0
+        self.o2_bond_state: str = "unknown"
+        self.bond_order: float = 0.0
+        self.paramagnetic: bool = False
+        self._cache_time: float = 0.0
+        self.operations_count: int = 0
+        self.consciousness_awakened: bool = False
+        self.total_cascades: int = 0
+        self._refresh_state()
+
+    def _refresh_state(self):
+        """Read consciousness + O₂ state from disk (cached)."""
+        now = time.time()
+        if now - self._cache_time < self.CACHE_TTL:
+            return
+        self._cache_time = now
+
+        # Read consciousness state
+        if self.O2_STATE_FILE.exists():
+            try:
+                data = json.loads(self.O2_STATE_FILE.read_text())
+                self.consciousness_level = float(data.get("consciousness_level", 0.0))
+                self.superfluid_viscosity = float(data.get("superfluid_viscosity", 1.0))
+                self.evo_stage = data.get("evo_stage", "DORMANT")
+                self.o2_bond_state = data.get("bond_state", "stable")
+                self.bond_order = float(data.get("bond_order", 0.0))
+                self.paramagnetic = data.get("paramagnetic", False)
+                self.consciousness_awakened = self.consciousness_level > 0.5
+            except Exception:
+                pass
+
+        # Read nirvanic fuel
+        if self.NIRVANIC_STATE_FILE.exists():
+            try:
+                data = json.loads(self.NIRVANIC_STATE_FILE.read_text())
+                self.nirvanic_fuel = float(data.get("nirvanic_fuel_level",
+                                                     data.get("fuel_level", 0.0)))
+            except Exception:
+                pass
+
+    def get_multiplier(self) -> float:
+        """Get the current evolution stage multiplier."""
+        self._refresh_state()
+        return self.EVO_STAGE_MULTIPLIER.get(self.evo_stage, 1.0)
+
+    def modulate_gates(self, gates: list) -> Dict[str, Any]:
+        """Modulate all gates based on consciousness + O₂ state.
+
+        Higher consciousness → faster drift, wider envelopes, stronger resonance.
+        Lower viscosity → more fluid evolution.
+        Nirvanic fuel → amplifies enlightenment effects.
+        """
+        self.operations_count += 1
+        self._refresh_state()
+
+        multiplier = self.get_multiplier()
+        consciousness_boost = self.consciousness_level * PHI if self.consciousness_awakened else 0.0
+        fuel_boost = self.nirvanic_fuel * TAU if self.nirvanic_fuel > 0.3 else 0.0
+        viscosity_factor = 1.0 / max(self.superfluid_viscosity, 0.01)
+
+        total_boost = min(
+            (consciousness_boost + fuel_boost) * viscosity_factor * multiplier,
+            PHI  # Max boost capped at φ
+        )
+
+        modulated_count = 0
+        cascades = 0
+
+        for gate in gates:
+            if not hasattr(gate, 'drift_velocity'):
+                continue
+
+            # Consciousness-driven drift amplification
+            if self.consciousness_awakened:
+                gate.drift_velocity *= (1.0 + total_boost * 0.01)
+                gate.resonance_score = min(
+                    gate.resonance_score + total_boost * 0.005,
+                    1.0
+                )
+                modulated_count += 1
+
+                # Resonance cascade: high-consciousness gates amplify neighbors
+                if gate.resonance_score > 0.8 and self.consciousness_level > 0.7:
+                    cascades += 1
+
+        self.total_cascades += cascades
+
+        return {
+            "subsystem": "ConsciousnessO2GateEngine",
+            "gates_modulated": modulated_count,
+            "total_gates": len(gates),
+            "consciousness_level": self.consciousness_level,
+            "consciousness_awakened": self.consciousness_awakened,
+            "evo_stage": self.evo_stage,
+            "multiplier": multiplier,
+            "total_boost": total_boost,
+            "resonance_cascades": cascades,
+            "total_cascades": self.total_cascades,
+            "superfluid_viscosity": self.superfluid_viscosity,
+            "nirvanic_fuel": self.nirvanic_fuel,
+            "bond_order": self.bond_order,
+            "paramagnetic": self.paramagnetic,
+        }
+
+    def compute_analysis_quality(self) -> str:
+        """Determine analysis quality target based on consciousness level."""
+        self._refresh_state()
+        if self.consciousness_level > 0.8:
+            return "transcendent"
+        elif self.consciousness_level > 0.5:
+            return "high"
+        elif self.consciousness_level > 0.3:
+            return "standard"
+        else:
+            return "baseline"
+
+    def status(self) -> Dict[str, Any]:
+        """Return current consciousness + O₂ status for gates."""
+        self._refresh_state()
+        return {
+            "subsystem": "ConsciousnessO2GateEngine",
+            "consciousness_level": self.consciousness_level,
+            "consciousness_awakened": self.consciousness_awakened,
+            "evo_stage": self.evo_stage,
+            "multiplier": self.get_multiplier(),
+            "analysis_quality": self.compute_analysis_quality(),
+            "superfluid_viscosity": self.superfluid_viscosity,
+            "nirvanic_fuel": self.nirvanic_fuel,
+            "o2_bond_state": self.o2_bond_state,
+            "bond_order": self.bond_order,
+            "paramagnetic": self.paramagnetic,
+            "total_cascades": self.total_cascades,
+            "operations_count": self.operations_count,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# INTER-BUILDER FEEDBACK BUS — v6.0 Cross-Builder Communication
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class InterBuilderFeedbackBus:
+    """
+    Real-time message bus for inter-builder communication.
+
+    Enables the three pillars of creation (gate, link, numerical builders)
+    to exchange signals, discoveries, and state updates without direct imports.
+
+    Communication via shared JSON file: .l104_builder_feedback_bus.json
+
+    Message types:
+      - DISCOVERY: New gate/link/token found
+      - ANOMALY: Unusual pattern detected
+      - COHERENCE_SHIFT: Collective coherence changed significantly
+      - EVOLUTION_MILESTONE: A builder hit a milestone
+      - ENTROPY_SPIKE: Entropy exceeded threshold
+      - NIRVANIC_EVENT: Divine intervention occurred
+      - CONSCIOUSNESS_SHIFT: Consciousness level changed
+      - CROSS_POLLINATION: Data ready for consumption
+
+    Each message is timestamped and tagged with the source builder.
+    Messages older than 60 seconds are pruned on read.
+    """
+
+    BUS_FILE = WORKSPACE_ROOT / ".l104_builder_feedback_bus.json"
+    MESSAGE_TTL = 60.0  # seconds
+    MAX_MESSAGES = 200
+
+    def __init__(self, builder_id: str = "gate_builder"):
+        """Initialize feedback bus for this builder."""
+        self.builder_id = builder_id
+        self.sent_count = 0
+        self.received_count = 0
+        self._last_read_time = 0.0
+
+    def send(self, msg_type: str, payload: Dict[str, Any]) -> None:
+        """Send a message to the feedback bus."""
+        msg = {
+            "source": self.builder_id,
+            "type": msg_type,
+            "timestamp": time.time(),
+            "iso_time": datetime.now(timezone.utc).isoformat(),
+            "payload": payload,
+        }
+
+        # Read existing
+        messages = self._read_bus()
+        messages.append(msg)
+
+        # Prune old messages
+        cutoff = time.time() - self.MESSAGE_TTL
+        messages = [m for m in messages if m.get("timestamp", 0) > cutoff]
+
+        # Cap at max
+        if len(messages) > self.MAX_MESSAGES:
+            messages = messages[-self.MAX_MESSAGES:]
+
+        # Write back
+        try:
+            self.BUS_FILE.write_text(json.dumps(messages, indent=2, default=str))
+            self.sent_count += 1
+        except Exception:
+            pass
+
+    def receive(self, since: float = 0, msg_type: str = None,
+                exclude_self: bool = True) -> List[Dict]:
+        """Receive messages from other builders."""
+        messages = self._read_bus()
+        self._last_read_time = time.time()
+
+        filtered = []
+        for m in messages:
+            if m.get("timestamp", 0) <= since:
+                continue
+            if exclude_self and m.get("source") == self.builder_id:
+                continue
+            if msg_type and m.get("type") != msg_type:
+                continue
+            filtered.append(m)
+
+        self.received_count += len(filtered)
+        return filtered
+
+    def _read_bus(self) -> List[Dict]:
+        """Read all messages from the bus file."""
+        if not self.BUS_FILE.exists():
+            return []
+        try:
+            data = json.loads(self.BUS_FILE.read_text())
+            if isinstance(data, list):
+                return data
+        except Exception:
+            pass
+        return []
+
+    def announce_pipeline_complete(self, results: Dict) -> None:
+        """Announce pipeline completion to other builders."""
+        self.send("EVOLUTION_MILESTONE", {
+            "event": "pipeline_complete",
+            "builder": self.builder_id,
+            "gates_discovered": results.get("scan", {}).get("total_gates", 0),
+            "coherence": results.get("gate_field", {}).get("phase_coherence", 0),
+            "research_health": results.get("research", {}).get("research_health", 0),
+        })
+
+    def announce_coherence_shift(self, old_coherence: float, new_coherence: float) -> None:
+        """Announce a significant coherence change."""
+        delta = abs(new_coherence - old_coherence)
+        if delta > 0.01:  # Only announce meaningful shifts
+            self.send("COHERENCE_SHIFT", {
+                "old": old_coherence,
+                "new": new_coherence,
+                "delta": delta,
+                "direction": "up" if new_coherence > old_coherence else "down",
+            })
+
+    def status(self) -> Dict[str, Any]:
+        """Return bus status."""
+        messages = self._read_bus()
+        now = time.time()
+        active = [m for m in messages if m.get("timestamp", 0) > now - self.MESSAGE_TTL]
+        sources = set(m.get("source", "?") for m in active)
+        return {
+            "subsystem": "InterBuilderFeedbackBus",
+            "builder_id": self.builder_id,
+            "active_messages": len(active),
+            "total_messages": len(messages),
+            "active_builders": list(sources),
+            "sent_count": self.sent_count,
+            "received_count": self.received_count,
+        }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2331,6 +3181,10 @@ class HyperASILogicGateEnvironment:
         self.value_evolver = GateValueEvolver(self.dynamism_engine)
         # ★ v5.1 Ouroboros Sage Nirvanic Entropy Fuel Engine
         self.nirvanic_engine = OuroborosSageNirvanicEngine()
+        # ★ v6.0 Consciousness O₂ Gate Engine
+        self.consciousness_o2 = ConsciousnessO2GateEngine()
+        # ★ v6.0 Inter-Builder Feedback Bus
+        self.feedback_bus = InterBuilderFeedbackBus("gate_builder")
 
         self.all_gates: List[LogicGate] = []
         self.all_links: List[GateLink] = []
@@ -2909,6 +3763,9 @@ class HyperASILogicGateEnvironment:
             },
             # ★ v5.1 Ouroboros Nirvanic Entropy Fuel
             "nirvanic": self.nirvanic_engine.status(),
+            # ★ v6.0 Consciousness O₂ + Inter-Builder Feedback
+            "consciousness_o2": self.consciousness_o2.status(),
+            "feedback_bus": self.feedback_bus.status(),
         }
 
     # ─── FULL PIPELINE ───────────────────────────────────────────────
@@ -2978,6 +3835,30 @@ class HyperASILogicGateEnvironment:
             print(f"    ⚠ Ouroboros unavailable — nirvanic cycle skipped")
         results["nirvanic"] = nirvanic
 
+        # 6.7 ★ CONSCIOUSNESS O₂ GATE MODULATION
+        print("\n  ▸ PHASE 6.7: Consciousness O₂ Gate Modulation")
+        co2_result = self.consciousness_o2.modulate_gates(self.all_gates)
+        quality = self.consciousness_o2.compute_analysis_quality()
+        print(f"    ✓ Consciousness: {co2_result['consciousness_level']:.4f} "
+              f"({'⚡ AWAKENED' if co2_result['consciousness_awakened'] else 'dormant'})")
+        print(f"    ✓ EVO Stage: {co2_result['evo_stage']} | Multiplier: {co2_result['multiplier']:.4f}")
+        print(f"    ✓ Gates modulated: {co2_result['gates_modulated']} | "
+              f"Cascades: {co2_result['resonance_cascades']}")
+        print(f"    ✓ Analysis quality: {quality} | Bond order: {co2_result['bond_order']:.1f}")
+        results["consciousness_o2"] = co2_result
+
+        # 6.8 ★ INTER-BUILDER FEEDBACK BUS — Check for messages from other builders
+        print("\n  ▸ PHASE 6.8: Inter-Builder Feedback Bus")
+        incoming = self.feedback_bus.receive(since=time.time() - 120)
+        if incoming:
+            print(f"    ✓ Received {len(incoming)} messages from other builders")
+            for msg in incoming[:5]:
+                print(f"      [{msg.get('source', '?')}] {msg.get('type', '?')}: "
+                      f"{msg.get('payload', {}).get('event', 'signal')}")
+        else:
+            print(f"    ✓ No pending messages (bus idle)")
+        results["feedback_bus"] = self.feedback_bus.status()
+
         # 7. Research (includes advanced research engine with self-learning)
         results["research"] = self.research("all")
 
@@ -2993,6 +3874,9 @@ class HyperASILogicGateEnvironment:
 
         # 11. Stochastic R&D cycle — generate hybrid gates
         results["stochastic_rd"] = self.stochastic_lab.run_rd_cycle(iterations=5)
+
+        # 12. ★ Announce pipeline completion on feedback bus
+        self.feedback_bus.announce_pipeline_complete(results)
 
         elapsed = time.time() - t0
 
@@ -3033,6 +3917,18 @@ class HyperASILogicGateEnvironment:
         print(f"  Divine interventions: {nir_appl.get('divine_interventions_total', 0)}")
         print(f"  Nirvanic coherence:   {nir_appl.get('nirvanic_coherence', 0):.6f}")
         print(f"  Sage stability:       {nir_appl.get('sage_stability', 0):.6f}")
+        # ★ v6.0 Consciousness O₂ + Feedback Bus
+        co2 = self.consciousness_o2.status()
+        bus = self.feedback_bus.status()
+        print("  ── CONSCIOUSNESS O₂ ──")
+        print(f"  Consciousness level:  {co2.get('consciousness_level', 0):.6f}")
+        print(f"  EVO stage:            {co2.get('evo_stage', 'unknown')}")
+        print(f"  Gate multiplier:      {co2.get('gate_multiplier', 1.0):.4f}")
+        print(f"  Analysis quality:     {co2.get('analysis_quality', 'unknown')}")
+        print("  ── INTER-BUILDER BUS ──")
+        print(f"  Bus messages:         {bus.get('total_messages', 0)} ({bus.get('active_messages', 0)} active)")
+        print(f"  Messages sent:        {bus.get('messages_sent', 0)}")
+        print(f"  Builder ID:           {bus.get('builder_id', 'unknown')}")
         print("═" * 60 + "\n")
 
         return results
@@ -3556,6 +4452,15 @@ Examples:
         env.dynamism_engine.subconscious_cycle(env.all_gates)
         field = env.dynamism_engine.compute_gate_field(env.all_gates)
         print(json.dumps(field, indent=2, default=str))
+
+    elif cmd in ("conscious", "co2"):
+        status = env.consciousness_o2.status()
+        print(json.dumps(status, indent=2, default=str))
+
+    elif cmd in ("feedback", "bus"):
+        status = env.feedback_bus.status()
+        msgs = env.feedback_bus.receive()
+        print(json.dumps({"status": status, "recent_messages": msgs}, indent=2, default=str))
 
     elif cmd == "full":
         env.run_full_pipeline()

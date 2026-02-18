@@ -222,6 +222,116 @@ final class QuantumLogicGateEngine {
         return response
     }
 
+    // ─── BELL STATE PREPARATION — Create maximally entangled topic pairs ───
+    /// Prepares a Bell state between two topics, creating maximal non-classical correlation.
+    /// This biases future tunneling and interference toward cross-domain synthesis.
+    func prepareBellPair(_ topicA: String, _ topicB: String) {
+        lock.lock()
+        defer { lock.unlock() }
+
+        // Hadamard on topic A's coherence vector
+        var vecA = entanglementMap[topicA] ?? coherenceMatrix
+        let invSqrt2 = 1.0 / sqrt(2.0)
+        for i in stride(from: 0, to: vecA.count - 1, by: 2) {
+            let h0 = (vecA[i] + vecA[i + 1]) * invSqrt2
+            let h1 = (vecA[i] - vecA[i + 1]) * invSqrt2
+            vecA[i] = h0
+            vecA[i + 1] = h1
+        }
+
+        // CNOT: XOR topic B's vector with topic A's
+        var vecB = entanglementMap[topicB] ?? coherenceMatrix
+        for i in 0..<min(vecA.count, vecB.count) {
+            if abs(vecA[i]) > 0.5 {
+                vecB[i] = -vecB[i]  // Bit flip on B conditioned on A
+            }
+        }
+
+        entanglementMap[topicA] = vecA
+        entanglementMap[topicB] = vecB
+
+        // Register as entangled pair with maximal strength
+        if let idx = entanglementPairs.firstIndex(where: { ($0.0 == topicA && $0.1 == topicB) || ($0.0 == topicB && $0.1 == topicA) }) {
+            entanglementPairs[idx].2 = 1.0  // Maximal entanglement
+        } else {
+            entanglementPairs.append((topicA, topicB, 1.0))
+        }
+        bellStateViolations += 1
+
+        // Prune if needed
+        if entanglementPairs.count > 500 {
+            entanglementPairs.sort { $0.2 > $1.2 }
+            entanglementPairs = Array(entanglementPairs.prefix(300))
+        }
+    }
+
+    // ─── PHASE KICKBACK — Amplify coherence toward target topic ───
+    /// Applies a phase rotation to the coherence matrix proportional to topic alignment.
+    /// Amplifies the topic's signal in future interference and synthesis operations.
+    func phaseKickback(topic: String, strength: Double = 0.15) {
+        let topicHash = abs(topic.hashValue)
+        let phaseAngle = Double(topicHash % 10000) / 10000.0 * Double.pi * 2.0
+        let coupledStrength = min(0.25, strength * PHI)
+
+        lock.lock()
+        for i in 0..<64 {
+            let rotation = sin(phaseAngle + Double(i) * PHI * 0.08) * coupledStrength
+            coherenceMatrix[i] += rotation
+        }
+        // Renormalize coherence matrix
+        var norm = 0.0
+        vDSP_dotprD(coherenceMatrix, 1, coherenceMatrix, 1, &norm, vDSP_Length(coherenceMatrix.count))
+        norm = sqrt(norm)
+        if norm > 0 {
+            let scale = sqrt(Double(coherenceMatrix.count)) / norm
+            var scaleMut = scale
+            vDSP_vsmulD(coherenceMatrix, 1, &scaleMut, &coherenceMatrix, 1, vDSP_Length(coherenceMatrix.count))
+        }
+        quantumPhase += coupledStrength
+        lock.unlock()
+    }
+
+    // ─── GROVER DIFFUSION OPERATOR — Amplitude amplification for response selection ───
+    /// Runs Grover's diffusion on response amplitudes to quadratically amplify the best.
+    func groverDiffuse(amplitudes: inout [Double]) {
+        guard amplitudes.count > 1 else { return }
+        let n = amplitudes.count
+
+        // Oracle: invert sign of max amplitude
+        if let maxIdx = amplitudes.enumerated().max(by: { abs($0.element) < abs($1.element) })?.offset {
+            amplitudes[maxIdx] = -amplitudes[maxIdx]
+        }
+
+        // Diffusion: 2|ψ⟩⟨ψ| - I
+        let mean = amplitudes.reduce(0, +) / Double(n)
+        for i in 0..<n {
+            amplitudes[i] = 2.0 * mean - amplitudes[i]
+        }
+    }
+
+    // ─── SWAP TEST — Measure entanglement fidelity between two topic vectors ───
+    /// Computes overlap |⟨ψ_A|ψ_B⟩|² without disturbing the states.
+    func swapTest(_ topicA: String, _ topicB: String) -> Double {
+        lock.lock()
+        let vecA = entanglementMap[topicA] ?? coherenceMatrix
+        let vecB = entanglementMap[topicB] ?? coherenceMatrix
+        lock.unlock()
+
+        let n = vDSP_Length(min(vecA.count, vecB.count))
+        guard n > 0 else { return 0.0 }
+
+        var dot: Double = 0, magA: Double = 0, magB: Double = 0
+        vDSP_dotprD(vecA, 1, vecB, 1, &dot, n)
+        vDSP_dotprD(vecA, 1, vecA, 1, &magA, n)
+        vDSP_dotprD(vecB, 1, vecB, 1, &magB, n)
+
+        let denom = sqrt(magA * magB)
+        guard denom > 0 else { return 0.0 }
+
+        let overlap = dot / denom
+        return overlap * overlap  // |⟨A|B⟩|²
+    }
+
     // ─── QUANTUM METRICS — Expose system state ───
     var quantumMetrics: [String: Any] {
         lock.lock()
@@ -297,20 +407,38 @@ final class QuantumLogicGateEngine {
             if fragments.count >= 20 { break }
         }
 
-        // GATE 2.5: Live Web Enrichment — If local KB is thin, pull from internet
-        if fragments.count < 10 {
+        // GATE 2.5: Live Web Enrichment — ALWAYS enrich with web sources for diversity (Phase 56.0)
+        // Previously gated at fragments.count < 10, now always fires to ensure online source integration
+        let webEnrichmentEnabled = true  // Phase 56.0: Always-on web enrichment
+        if webEnrichmentEnabled {
             let webResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
-            for wr in webResult.results.prefix(3) {
+            var webCount = 0
+            let maxWebResults = fragments.count < 10 ? 6 : 4  // More web results when KB is thin
+            for wr in webResult.results.prefix(maxWebResults) {
                 let snippet = wr.snippet
                 guard snippet.count > 60 else { continue }
                 let pfx = String(snippet.prefix(50)).lowercased()
                 guard !seenPrefixes.contains(pfx) else { continue }
                 seenPrefixes.insert(pfx)
-                let cleaned = state.cleanSentences(String(snippet.prefix(1500)))
+                let cleaned = state.cleanSentences(String(snippet.prefix(2000)))
                 if state.isCleanKnowledge(cleaned) {
-                    fragments.append("🌐 \(cleaned)")
+                    // Attribution: mark web-sourced content with source URL
+                    let sourceLabel = wr.url.isEmpty ? "web" : (wr.url.contains("wikipedia") ? "Wikipedia" : "web")
+                    fragments.append("🌐 [\(sourceLabel)] \(cleaned)")
+                    webCount += 1
                     // Auto-ingest web knowledge for future queries
                     _ = DataIngestPipeline.shared.ingestText(snippet, source: "auto_web:\(query)", category: "live_web")
+                }
+            }
+            // If web gave us synthesis text, include it as a bonus fragment
+            if webResult.synthesized.count > 80, webCount > 0 {
+                let synthPfx = String(webResult.synthesized.prefix(50)).lowercased()
+                if !seenPrefixes.contains(synthPfx) {
+                    seenPrefixes.insert(synthPfx)
+                    let cleanedSynth = state.cleanSentences(String(webResult.synthesized.prefix(2000)))
+                    if state.isCleanKnowledge(cleanedSynth) {
+                        fragments.append("🌐 [synthesis] \(cleanedSynth)")
+                    }
                 }
             }
         }

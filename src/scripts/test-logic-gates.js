@@ -5,11 +5,11 @@
  * Tests logic gate system and autonomous processing
  */
 
-import { LogicGateManager } from '../core/logic-gate-manager.js';
 import chalk from 'chalk';
+import { LogicGateManager } from '../core/logic-gate-manager.js';
 
-const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 async function testLogicGates() {
     console.log(chalk.blue('⚡ L104 Logic Gates Testing'));

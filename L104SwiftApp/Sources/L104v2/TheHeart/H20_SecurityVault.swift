@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H20_SecurityVault.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Quantum Security Vault
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Quantum Security Vault v3.0 + macOS Keychain
 //
 // Peer authentication via quantum-derived key exchange, message signing,
-// mesh trust scoring, session management, and sovereign data protection.
-// Integrates with NetworkLayer for peer identity verification.
+// mesh trust scoring, session management, sovereign data protection,
+// and macOS Keychain secure credential storage (IBM Quantum tokens, API keys).
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -13,19 +13,11 @@ import Foundation
 import Accelerate
 import simd
 import NaturalLanguage
-
-// MARK: - SecurityVault Protocol
-
-protocol SecurityVaultProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
+import Security
 
 // MARK: - Quantum Security Vault
 
-final class SecurityVault: SecurityVaultProtocol {
+final class SecurityVault {
     static let shared = SecurityVault()
     private(set) var isActive: Bool = false
     private let lock = NSLock()
@@ -232,6 +224,77 @@ final class SecurityVault: SecurityVaultProtocol {
         return allTrust.reduce(0, +) / Double(allTrust.count)
     }
 
+    // ─── macOS KEYCHAIN INTEGRATION (Security framework) ───
+
+    private let keychainService = "com.l104.sovereign.vault"
+
+    /// Store a secret (e.g. IBM Quantum token, API key) in the macOS Keychain
+    @discardableResult
+    func storeSecret(key: String, value: String) -> Bool {
+        guard let data = value.data(using: .utf8) else { return false }
+
+        // Delete existing entry first
+        deleteSecret(key: key)
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: keychainService,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        ]
+
+        let status = SecItemAdd(query as CFDictionary, nil)
+        if status == errSecSuccess {
+            l104Log("[H20] Keychain: stored secret for '\(key)'")
+            return true
+        } else {
+            l104Log("[H20] Keychain: failed to store '\(key)' (\(status))")
+            return false
+        }
+    }
+
+    /// Retrieve a secret from the macOS Keychain
+    func retrieveSecret(key: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: keychainService,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        if status == errSecSuccess, let data = result as? Data {
+            return String(data: data, encoding: .utf8)
+        }
+        return nil
+    }
+
+    /// Delete a secret from the macOS Keychain
+    @discardableResult
+    func deleteSecret(key: String) -> Bool {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: keychainService,
+            kSecAttrAccount as String: key
+        ]
+        let status = SecItemDelete(query as CFDictionary)
+        return status == errSecSuccess || status == errSecItemNotFound
+    }
+
+    /// Store IBM Quantum API token securely
+    @discardableResult
+    func storeIBMQuantumToken(_ token: String) -> Bool {
+        return storeSecret(key: "ibm_quantum_token", value: token)
+    }
+
+    /// Retrieve IBM Quantum API token
+    func retrieveIBMQuantumToken() -> String? {
+        return retrieveSecret(key: "ibm_quantum_token")
+    }
+
     // ─── STATUS ───
 
     func status() -> [String: Any] {
@@ -243,7 +306,7 @@ final class SecurityVault: SecurityVaultProtocol {
         return [
             "engine": "SecurityVault",
             "active": isActive,
-            "version": "2.0.0-quantum",
+            "version": "3.0.0-keychain",
             "sovereign_id": sovereignId,
             "sessions": sessionCount,
             "quantum_secured": qSecured,

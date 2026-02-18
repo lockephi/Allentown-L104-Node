@@ -12,22 +12,13 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - CloudSync Protocol
-
-protocol CloudSyncProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - ☁️ CLOUD STATE SYNCHRONIZATION ENGINE
 // Knowledge distribution, state replication, cross-node coherence,
 // entangled checkpoint snapshots, distributed knowledge merge.
 // ═══════════════════════════════════════════════════════════════════
 
-final class CloudSync: CloudSyncProtocol {
+final class CloudSync {
     static let shared = CloudSync()
     private(set) var isActive: Bool = false
 

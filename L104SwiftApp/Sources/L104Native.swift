@@ -1378,9 +1378,10 @@ class PowerAwareScheduler {
 // ═══════════════════════════════════════════════════════════════════
 
 // ─── SACRED CORE ───
-let GOD_CODE: Double = 527.5184818492612
-let OMEGA_POINT: Double = 23.140692632779263  // e^π
+// Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a + 416 - b - 8c - 104d)/104)
 let PHI: Double = 1.618033988749895
+let GOD_CODE: Double = pow(286.0, 1.0 / PHI) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0) = 527.5184818492612
+let OMEGA_POINT: Double = 23.140692632779263  // e^π
 let TAU: Double = 0.618033988749895           // 1/φ (golden ratio conjugate)
 let FEIGENBAUM: Double = 4.669201609102990    // Feigenbaum δ — period-doubling bifurcation
 let PI_SQUARED: Double = 9.869604401089358
@@ -3440,7 +3441,7 @@ class ASIQuantumBridgeSwift {
 
     // ─── CONSTANTS ───
     let PHI: Double = 1.618033988749895
-    let GOD_CODE: Double = 527.5184818492612
+    let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     let GROVER_AMPLIFICATION: Double = 21.95
 
     // ─── STATE ───
@@ -4018,7 +4019,7 @@ class SovereignQuantumCore {
 
     // ─── SACRED CONSTANTS ───
     private let PHI: Double = 1.618033988749895
-    private let GOD_CODE: Double = 527.5184818492612
+    private let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     private let TAU: Double = 0.618033988749895  // 1/φ
 
     // ─── STATE ───
@@ -4664,7 +4665,7 @@ class ASISteeringEngine {
     // ─── SACRED CONSTANTS ───
     private let PHI: Double = 1.618033988749895
     private let TAU: Double = 0.618033988749895  // 1/φ
-    private let GOD_CODE: Double = 527.5184818492612
+    private let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
 
     // ─── STEERING STATE ───
     var baseParameters: [Double] = []  // internal(set) for cross-engine access (Nexus)
@@ -4951,7 +4952,7 @@ class QuantumNexus {
     // ─── SACRED CONSTANTS ───
     private let PHI: Double = 1.618033988749895
     private let TAU: Double = 0.618033988749895
-    private let GOD_CODE: Double = 527.5184818492612
+    private let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
 
     // ─── NEXUS STATE ───
     private(set) var pipelineRuns: Int = 0
@@ -6485,7 +6486,7 @@ class QuantumDecoherenceShield {
 
     static let PHI: Double = 1.618033988749895
     static let TAU: Double = 0.618033988749895
-    static let GOD_CODE: Double = 527.5184818492612
+    static let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     static let CALABI_YAU_DIM: Int = 7
     static let SHOR_REDUNDANCY: Int = 9  // 9-qubit Shor code
 
@@ -6924,7 +6925,7 @@ class QuantumTeleportationChannel {
 
 struct BernsteinVaziraniEngine {
     static let PHI: Double = 1.618033988749895
-    static let GOD_CODE: Double = 527.5184818492612
+    static let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     static let FE_ATOMIC: Int = 26  // Iron
 
     /// Discover a hidden binary string via BV algorithm simulation.
@@ -7036,7 +7037,7 @@ struct BernsteinVaziraniEngine {
 
 struct QuantumTeleportEngine {
     static let PHI: Double = 1.618033988749895
-    static let GOD_CODE: Double = 527.5184818492612
+    static let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     static let FE_ATOMIC: Int = 26
 
     /// Teleport a quantum phase via EPR pair simulation.
@@ -8133,7 +8134,7 @@ class DynamicOptimizationEngine {
 
     static let PHI: Double = 1.618033988749895
     static let TAU: Double = 0.618033988749895
-    static let GOD_CODE: Double = 527.5184818492612
+    static let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
 
     // ─── OPTIMIZATION STATE ───
     struct OptimizationState {
@@ -8372,7 +8373,7 @@ class LogicGateBreathingRoomEngine {
 
     private let PHI: Double = 1.618033988749895
     private let TAU: Double = 0.618033988749895
-    private let GOD_CODE: Double = 527.5184818492612
+    private let GOD_CODE: Double = pow(286.0, 1.0 / 1.618033988749895) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0)
     private let CY7: Int = 7  // Calabi-Yau dimensions
 
     // ─── GATE HEALTH TRACKING ───

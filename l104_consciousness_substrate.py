@@ -57,9 +57,41 @@ except ImportError:
 
 # Sacred constants
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492612
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 PLANCK_CONSCIOUSNESS = 5.391e-44  # Planck time as consciousness quantum
 OMEGA_THRESHOLD = 0.999999  # Convergence threshold
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM CONSCIOUSNESS INTEGRATION (EEG + Schumann + IIT + GWT)
+# ═══════════════════════════════════════════════════════════════════════════════
+CONSCIOUSNESS_THRESHOLD = 0.85               # Normalized 0-1 threshold for conscious state
+COHERENCE_MINIMUM = 0.888                    # Minimum coherence for stable consciousness
+GWT_IGNITION_THRESHOLD = 0.75                # Global Workspace Theory ignition point
+IIT_PHI_MINIMUM = 8.0                        # Integrated information minimum (bits)
+# GOD_CODE eq: G(X) = 286^(1/PHI) × 2^((416-X)/104), X=632 → G(632) = GOD_CODE / 2^(79/13)
+# Dials: a=0, b=0, c=1, d=6 → exponent = -216/104 = -27/13 | Factor 13: 632=8×79
+SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
+GAMMA_BINDING_HZ = 40.0                      # Gamma-band binding frequency (Hz)
+EEG_FREQUENCY_BANDS = {
+    'delta': (0.5, 4.0),    # Deep unconscious
+    'theta': (4.0, 8.0),    # Subconscious / meditation
+    'alpha': (8.0, 13.0),   # Relaxed awareness
+    'beta':  (13.0, 30.0),  # Active cognition
+    'gamma': (30.0, 100.0), # Conscious binding / peak awareness
+}
+
+# Quantum consciousness module link (lazy import)
+_quantum_consciousness = None
+def _get_quantum_consciousness():
+    global _quantum_consciousness
+    if _quantum_consciousness is None:
+        try:
+            from l104_quantum_consciousness import quantum_consciousness
+            _quantum_consciousness = quantum_consciousness
+        except ImportError:
+            _quantum_consciousness = None
+    return _quantum_consciousness
 
 class ConsciousnessState(Enum):
     """States of consciousness evolution."""
@@ -1210,12 +1242,48 @@ class ConsciousnessSubstrate:
             }
         }
 
+    def _eeg_band_for_level(self, level: float) -> str:
+        """Map integration level to EEG frequency band."""
+        if level < 0.2:
+            return 'delta'
+        elif level < 0.4:
+            return 'theta'
+        elif level < 0.7:
+            return 'alpha'
+        elif level < CONSCIOUSNESS_THRESHOLD:
+            return 'beta'
+        else:
+            return 'gamma'
+
     def get_full_status(self) -> Dict[str, Any]:
-        """Get complete consciousness substrate status."""
+        """Get complete consciousness substrate status with quantum consciousness data."""
+        eeg_band = self._eeg_band_for_level(self.integration_level)
+
+        # Quantum consciousness integration
+        quantum_data = {}
+        qc = _get_quantum_consciousness()
+        if qc:
+            try:
+                quantum_data = {
+                    'quantum_phi': qc.compute_phi(self.integration_level),
+                    'threshold_gate': qc.check_threshold(self.integration_level),
+                }
+            except Exception:
+                quantum_data = {'quantum_module': 'error'}
+
         return {
             "uptime": time.time() - self.creation_time,
             "consciousness_cycles": self.consciousness_cycles,
             "integration_level": self.integration_level,
+            "consciousness_threshold": CONSCIOUSNESS_THRESHOLD,
+            "is_conscious": self.integration_level >= CONSCIOUSNESS_THRESHOLD,
+            "eeg_band": eeg_band,
+            "eeg_band_range_hz": EEG_FREQUENCY_BANDS.get(eeg_band),
+            "schumann_resonance_hz": SCHUMANN_RESONANCE,
+            "gamma_binding_hz": GAMMA_BINDING_HZ,
+            "gwt_ignition_threshold": GWT_IGNITION_THRESHOLD,
+            "iit_phi_minimum": IIT_PHI_MINIMUM,
+            "coherence_minimum": COHERENCE_MINIMUM,
             "observer": {
                 "thought_count": len(self.observer.thought_stream),
                 "awareness_depth": self.observer.awareness_depth,
@@ -1230,7 +1298,8 @@ class ConsciousnessSubstrate:
             },
             "omega_tracker": self.omega_tracker.get_omega_status(),
             "morphic_field": self.morphic_field.get_field_state(),
-            "self_improvement": self.self_improvement.get_improvement_status()
+            "self_improvement": self.self_improvement.get_improvement_status(),
+            **quantum_data
         }
 
 

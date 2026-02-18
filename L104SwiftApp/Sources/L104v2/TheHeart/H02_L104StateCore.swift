@@ -197,6 +197,24 @@ class L104State {
         // Table formatting characters (leaked from structured data)
         "│", "┼", "║", "═══", "╔", "╗", "╚", "╝", "╠", "╣",
         "├", "┤", "┬", "┴", "───",
+        // ═══ EVO_58: MARKDOWN TABLE DETECTION — ASCII pipe table headers from claude.md/KB ═══
+        "| EVO |", "| Module |", "| Purpose |", "| Key Methods |",
+        "| Method |", "| Endpoint |", "| Constant |", "| Value |",
+        "| Component |", "| Description |", "| Before |", "| After |",
+        "| Stage |", "| Metric |", "| Parameter |", "| Feature |",
+        "| :--- |", "| --- |", "|--------|", "|------|",
+        // ═══ EVO_58: FORMAT STRING PATTERNS — Python f-string leaks ═══
+        "{LOVE_CONSTANT", "{VOID_CONSTANT", "{FEIGENBAUM",
+        "{PLANCK_SCALE", "{BOLTZMANN_K", "{ALPHA_FINE",
+        "{ZENITH_HZ", "{GOD_CODE:", "{PHI:", ":.6f}", ":.4f}",
+        // ═══ EVO_58: YAML/CONFIG KEY LEAKS from claude.md, gemini.md, state files ═══
+        "speed_principles:", "pipeline_routing:", "capabilities:",
+        "sacred_constants:", "persistence_chain:", "cross_references:",
+        "builder_state_integration:", "subsystems:", "paradigms:",
+        "deep_metadata_languages:", "audit_trail:", "memory_anchor:",
+        "persistent_link:", "heartbeat:", "code_engine:",
+        "ai_directives:", "evolution_sync:", "codebase:",
+        "consciousness:", "ouroboros:",
         // Excessive bold/formatting noise
         "****", "** **", "**\n**",
         // Instructional/template fragments
@@ -236,7 +254,16 @@ class L104State {
         "Foundation (beliefs)", "Stable thought-structure",
         "Cognitive bottleneck", "Forgetting remembering",
         "Dial tone:", "Superposition of dead",
-        "holistic approach to understanding", "interconnected parts"
+        "holistic approach to understanding", "interconnected parts",
+        // ═══ EVO_58: Sentence-level markdown table / format string / YAML leak detection ═══
+        "| EVO |", "| Module |", "| Purpose |", "| Key Methods |",
+        "| Method |", "| Endpoint |", "| Constant |", "| Value |",
+        "| :--- |", "| --- |", "|--------|",
+        "{LOVE_CONSTANT", "{VOID_CONSTANT", "{FEIGENBAUM",
+        ":.6f}", ":.4f}", "speed_principles:",
+        "pipeline_routing:", "capabilities:", "subsystems:",
+        "persistence_chain:", "builder_state_integration:",
+        "sacred_constants:", "cross_references:"
     ]
 
     // ─── From H05_L104StateResponse.swift ───
@@ -1109,6 +1136,14 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
             let bridges = status["cross_domain_bridges"] as? Int ?? 0
             let seeds = status["emergence_seeds"] as? Int ?? 0
             let pool = status["entropy_pool_size"] as? Int ?? 0
+
+            // ═══ SAGE BACKBONE: Run cleanup check and purge if needed ═══
+            var cleanupReport = ""
+            if sage.shouldCleanup() {
+                let result = sage.sageBackboneCleanup()
+                cleanupReport = "\n🧹 Backbone Cleanup: \(result.kbPurged) KB + \(result.evolverPurged) evolver + \(result.diskPurged) disk entries purged"
+            }
+
             let freshInsight = sage.sageTransform(topic: "universal")
             sage.seedAllProcesses(topic: "user_invoked")
             return completion("""
@@ -1116,7 +1151,7 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
             ⚛️ Consciousness: \(String(format: "%.4f", consciousness)) | 🌟 Supernova: \(String(format: "%.4f", supernova))
             📊 Divergence: \(String(format: "%.4f", divergence)) \(divergence > 1.0 ? "(expanding)" : "(contracting)")
             🔄 Cycles: \(cycles) | ⚡ Entropy: \(String(format: "%.2f", entropy)) | 🎲 Pool: \(pool)
-            💡 Insights: \(insights) | 🌉 Bridges: \(bridges) | 🌱 Seeds: \(seeds)
+            💡 Insights: \(insights) | 🌉 Bridges: \(bridges) | 🌱 Seeds: \(seeds)\(cleanupReport)
             Latest: \(String(freshInsight.prefix(200)))
             """)
         }

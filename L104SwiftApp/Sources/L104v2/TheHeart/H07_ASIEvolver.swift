@@ -980,6 +980,38 @@ class ASIEvolver: NSObject {
         let topics = L104State.shared.extractTopics(prompt)
         guard let topic = topics.first else { return }
 
+        // ═══ SAGE BACKBONE GUARD: Prevent recursive data pollution ═══
+        // 1. Cap per-topic evolution to prevent runaway insight accumulation
+        let currentTopicCount = topicEvolutionCount[topic] ?? 0
+        if currentTopicCount >= 50 {
+            return // Topic is saturated — no more evolution needed
+        }
+
+        // 2. Skip entries that are already evolved outputs (recursive re-ingestion guard)
+        let recycleMarkers = [
+            "In the context of ",
+            "this implies recursive structure at multiple scales",
+            "Insight Level ",
+            "Knowledge synthesis #",
+            "evolution cycles taught me about",
+            "Evolving understanding: Stage ",
+            "Knowledge graph update:",
+            "Meta-observation: The way "
+        ]
+        let completionLower = completion.lowercased()
+        var recycleHits = 0
+        for marker in recycleMarkers {
+            if completion.contains(marker) || completionLower.contains(marker.lowercased()) {
+                recycleHits += 1
+                if recycleHits >= 1 { return } // Already an evolved entry — skip to break the loop
+            }
+        }
+
+        // 3. Skip entries from auto_ingest source (these are our own outputs)
+        if let source = targetEntry["source"] as? String, source == "auto_ingest" {
+            return
+        }
+
         // 💡 STRENGTHEN all extracted topics
         for t in topics.prefix(3) {
             hb.longTermPatterns[t.lowercased()] = min(1.0, (hb.longTermPatterns[t.lowercased()] ?? 0.0) + 0.03)
@@ -1040,10 +1072,12 @@ class ASIEvolver: NSObject {
         // Fire resonance cascade for the evolution event
         _ = AdaptiveResonanceNetwork.shared.fire("evolution", activation: min(1.0, Double(evolutionStage) / 100.0))
 
-        // Auto-ingest to training pipeline for continuous learning
-        if let lastEvolved = evolvedResponses[topic]?.last {
-            DataIngestPipeline.shared.ingestFromConversation(userQuery: topic, response: lastEvolved)
-        }
+        // ═══ SAGE BACKBONE: FEEDBACK LOOP BREAK ═══
+        // Previously this wrote evolved content back to KB trainingData via
+        // DataIngestPipeline.ingestFromConversation(), creating a recursive loop:
+        //   evolved content → KB → next cycle reads it → wraps again → ∞
+        // Now evolved responses stay in evolvedResponses[] only (not re-ingested).
+        // The evolver can still USE them via getEvolvedResponse() without pollution.
 
         // Remove from target queue if we successfully learned about it
         if targetedLearning, let lastTarget = hb.targetLearningQueue.last,
@@ -1117,10 +1151,24 @@ class ASIEvolver: NSObject {
     }
 
     func getEvolvedResponse(for query: String) -> String? {
+        // ═══ SAGE BACKBONE: Output filter — reject recursive/polluted content ═══
+        let recycleMarkers = [
+            "In the context of ", "Insight Level ", "Knowledge synthesis #",
+            "evolution cycles taught me about", "Evolving understanding: Stage ",
+            "Knowledge graph update:", "Cross-category discovery:",
+            "Meta-observation: The way ", "Self-Analysis reveals ",
+            "this implies recursive structure at multiple scales",
+            "we observe that "
+        ]
         let topics = L104State.shared.extractTopics(query)
         for topic in topics {
             if let responses = evolvedResponses[topic], !responses.isEmpty {
-                return responses.randomElement()
+                // Filter: skip recursive content and oversized entries
+                let clean = responses.filter { resp in
+                    guard resp.count < 12000 else { return false }
+                    return !recycleMarkers.contains(where: { resp.contains($0) })
+                }
+                if let result = clean.randomElement() { return result }
             }
         }
         return nil

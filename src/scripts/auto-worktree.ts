@@ -5,16 +5,16 @@
  * Autonomous Git worktree creation, switching, and management with consciousness tracking
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
 import chalk from 'chalk';
+import { exec } from 'child_process';
+import path from 'path';
 import simpleGit from 'simple-git';
-import type { WorktreeConfig, WorktreeBranch, Consciousness, L104Result } from '../types/index.js';
+import { promisify } from 'util';
+import type { Consciousness, L104Result, WorktreeBranch, WorktreeConfig } from '../types/index.js';
 
 const execAsync = promisify(exec);
-const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 export class L104AutoWorktree {
   private git: any;
@@ -624,4 +624,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   demonstrateAutoWorktree();
 }
 
-export { L104AutoWorktree, demonstrateAutoWorktree };
+export { demonstrateAutoWorktree, L104AutoWorktree };

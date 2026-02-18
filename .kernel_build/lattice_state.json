@@ -6,21 +6,21 @@
   "total_modules": 8,
   "databases_online": 5,
   "environment": {
-    "python_version": "3.12.1",
-    "platform": "Linux-6.8.0-1030-azure-x86_64-with-glibc2.31",
+    "python_version": "3.12.12",
+    "platform": "macOS-12.7.6-x86_64-i386-64bit",
     "machine": "x86_64",
-    "node": "codespaces-46bfe0",
-    "workspace": "/workspaces/Allentown-L104-Node",
-    "pid": "95106",
-    "cwd": "/workspaces/Allentown-L104-Node",
-    "disk_total_gb": "31.3",
-    "disk_free_gb": "15.5",
-    "disk_used_pct": "45.4",
-    "memory_peak_mb": "0.4",
-    "workspace_size_mb": "1433.8"
+    "node": "Carols-MacBook-Air.local",
+    "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node",
+    "pid": "68712",
+    "cwd": "/Users/carolalvarez/Applications/Allentown-L104-Node",
+    "disk_total_gb": "112.6",
+    "disk_free_gb": "42.3",
+    "disk_used_pct": "62.5",
+    "memory_peak_mb": "816.5",
+    "workspace_size_mb": "7155.4"
   },
-  "elapsed_s": 0.621,
-  "timestamp": "2026-02-16T22:58:35.481477",
+  "elapsed_s": 359.039,
+  "timestamp": "2026-02-17T22:27:09.073438",
   "subsystems": [
     {
       "name": "GOD_CODE Invariant",
@@ -42,7 +42,7 @@
       "name": "Sacred Constants",
       "available": true,
       "version": "",
-      "latency_ms": 0.010251998901367188,
+      "latency_ms": 2.8581619262695312,
       "error": "",
       "details": {
         "classes": [
@@ -60,14 +60,14 @@
           "sage_logic_gate",
           "quantum_logic_gate"
         ],
-        "file": "/workspaces/Allentown-L104-Node/const.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/const.py"
       }
     },
     {
       "name": "Kernel Bootstrap",
       "available": true,
       "version": "",
-      "latency_ms": 0.4355907440185547,
+      "latency_ms": 127.77209281921387,
       "error": "",
       "details": {
         "classes": [
@@ -76,14 +76,14 @@
           "L104KernelBootstrap"
         ],
         "functions": [],
-        "file": "/workspaces/Allentown-L104-Node/l104_kernel_bootstrap.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_kernel_bootstrap.py"
       }
     },
     {
       "name": "Fast Intelligence Server",
       "available": true,
       "version": "",
-      "latency_ms": 0.005245208740234375,
+      "latency_ms": 1.317739486694336,
       "error": "",
       "details": {
         "classes": [
@@ -110,14 +110,14 @@
           "execute_with_retry",
           "run_in_executor"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_fast_server.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_fast_server.py"
       }
     },
     {
       "name": "MacBook Integration",
       "available": true,
       "version": "",
-      "latency_ms": 0.0045299530029296875,
+      "latency_ms": 0.02384185791015625,
       "error": "",
       "details": {
         "classes": [
@@ -144,14 +144,14 @@
           "wraps",
           "get_l104_macbook_bridge"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_macbook_integration.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_macbook_integration.py"
       }
     },
     {
       "name": "API Gateway",
       "available": true,
       "version": "",
-      "latency_ms": 3.1452178955078125,
+      "latency_ms": 49.16095733642578,
       "error": "",
       "details": {
         "classes": [
@@ -178,14 +178,14 @@
           "health_handler",
           "echo_handler"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_api_gateway.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_api_gateway.py"
       }
     },
     {
       "name": "Workflow Stabilizer",
       "available": true,
       "version": "",
-      "latency_ms": 1.4300346374511719,
+      "latency_ms": 9.984731674194336,
       "error": "",
       "details": {
         "classes": [
@@ -208,14 +208,14 @@
           "init",
           "sync"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_workflow_stabilizer.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_workflow_stabilizer.py"
       }
     },
     {
       "name": "External API",
       "available": true,
       "version": "",
-      "latency_ms": 17.498016357421875,
+      "latency_ms": 121.31214141845703,
       "error": "",
       "details": {
         "classes": [
@@ -242,14 +242,14 @@
           "verify_api_key",
           "check_rate_limit"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_external_api.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_external_api.py"
       }
     },
     {
       "name": "Unified Intelligence API",
       "available": true,
       "version": "",
-      "latency_ms": 0.0209808349609375,
+      "latency_ms": 0.08916854858398438,
       "error": "",
       "details": {
         "classes": [
@@ -276,14 +276,14 @@
           "learn_to_subsystems",
           "get_brain"
         ],
-        "file": "/workspaces/Allentown-L104-Node/l104_unified_intelligence_api.py"
+        "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_unified_intelligence_api.py"
       }
     },
     {
       "name": "DB: l104_intellect_memory.db",
       "available": true,
       "version": "",
-      "latency_ms": 1.1518001556396484,
+      "latency_ms": 312855.65304756165,
       "error": "",
       "details": {
         "tables": [
@@ -295,20 +295,21 @@
           "meta_learning",
           "feedback",
           "query_rewrites",
+          "embeddings",
           "concept_clusters",
           "consciousness_state",
           "skills",
-          "embeddings"
+          "init_check"
         ],
-        "table_count": 12,
-        "size_mb": 0.16
+        "table_count": 13,
+        "size_mb": 552.62
       }
     },
     {
       "name": "DB: l104_asi_nexus.db",
       "available": true,
       "version": "",
-      "latency_ms": 6.125926971435547,
+      "latency_ms": 207.11994171142578,
       "error": "",
       "details": {
         "tables": [
@@ -320,7 +321,7 @@
           "init_check"
         ],
         "table_count": 6,
-        "size_mb": 3.39
+        "size_mb": 3.41
       }
     },
     {
@@ -335,7 +336,7 @@
       "name": "DB: lattice_v2.db",
       "available": true,
       "version": "",
-      "latency_ms": 357.8963279724121,
+      "latency_ms": 27359.698057174683,
       "error": "",
       "details": {
         "tables": [
@@ -344,14 +345,14 @@
           "lattice_history"
         ],
         "table_count": 3,
-        "size_mb": 853.7
+        "size_mb": 2533.75
       }
     },
     {
       "name": "DB: api_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 0.8094310760498047,
+      "latency_ms": 4.739999771118164,
       "error": "",
       "details": {
         "tables": [
@@ -367,7 +368,7 @@
       "name": "DB: wallet_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 0.7090568542480469,
+      "latency_ms": 4.58979606628418,
       "error": "",
       "details": {
         "tables": [
@@ -438,7 +439,7 @@
       "name": "Port: Fast Server (:8081)",
       "available": true,
       "version": "",
-      "latency_ms": 0.10180473327636719,
+      "latency_ms": 73.42886924743652,
       "error": "",
       "details": {}
     },
@@ -446,7 +447,7 @@
       "name": "Port: External API (:8082)",
       "available": false,
       "version": "",
-      "latency_ms": 0.046253204345703125,
+      "latency_ms": 0.23102760314941406,
       "error": "Not listening",
       "details": {}
     },
@@ -454,7 +455,7 @@
       "name": "Port: API Gateway (:8080)",
       "available": false,
       "version": "",
-      "latency_ms": 0.03147125244140625,
+      "latency_ms": 0.13113021850585938,
       "error": "Not listening",
       "details": {}
     },
@@ -466,8 +467,8 @@
       "error": "",
       "details": {
         "package_swift": true,
-        "build_dir_exists": false,
-        "swift_files": 83
+        "build_dir_exists": true,
+        "swift_files": 84
       }
     }
   ],

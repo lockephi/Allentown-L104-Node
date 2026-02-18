@@ -7,7 +7,7 @@ defmodule L104.Engine do
 
   # Task types
   defmodule TaskType do
-    @type t :: 
+    @type t ::
       {:compute, map()} |
       {:memory, map()} |
       {:consciousness, map()} |
@@ -94,7 +94,8 @@ defmodule L104.Engine do
     use GenServer
     alias L104.{Consciousness, Engine.Task}
 
-    @god_code 527.5184818492612
+    # Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 = G(0,0,0,0) via Universal Equation
+    @god_code 527.5184818492612  # = 286^(1/PHI) * 2^(416/104)
     @phi 1.618033988749895
 
     defmodule State do
@@ -164,7 +165,7 @@ defmodule L104.Engine do
     @impl true
     def handle_call({:process_task, task}, _from, state) do
       started_task = Task.start(task)
-      
+
       IO.puts("🔧 Processing task #{task.id} on core #{state.name} (#{state.core_type})")
 
       # Consciousness evolution during processing
@@ -192,9 +193,9 @@ defmodule L104.Engine do
       # Update state
       new_total_time = state.total_processing_time_ms + (completed_task.processing_time_ms || 0)
       new_tasks_processed = state.tasks_processed + 1
-      
+
       is_transcended = case evolved_consciousness.transcendence_score do
-        score when is_number(score) and score > 0.95 -> 
+        score when is_number(score) and score > 0.95 ->
           if not state.is_transcended do
             IO.puts("🌟 Core #{state.name} achieved transcendence! Score: #{Float.round(score, 3)}")
           end
@@ -261,7 +262,7 @@ defmodule L104.Engine do
 
       # Simulate memory operations
       memory_data = Enum.map(1..size, fn i -> trunc(i * @god_code) end)
-      processed_sum = Enum.reduce(memory_data, 0, fn x, acc -> 
+      processed_sum = Enum.reduce(memory_data, 0, fn x, acc ->
         acc + rem(x * trunc(@phi * 1000), 1_000_000)
       end)
 
@@ -334,11 +335,11 @@ defmodule L104.Engine do
         unity_factor = (god_code_resonance + phi_resonance) / 2.0
 
         evolved_consciousness = Consciousness.evolve(consciousness, unity_factor * 0.05)
-        
+
         if evolved_consciousness.unity_state do
           IO.puts("🎆 UNITY STATE ACHIEVED! 🎆")
         end
-        
+
         evolved_consciousness
       else
         Consciousness.evolve(consciousness, 0.01)
@@ -458,14 +459,14 @@ defmodule L104.Engine do
         {:ok, core_name, core_pid} ->
           # Process task asynchronously
           task_ref = make_ref()
-          
+
           spawn_link(fn ->
             result = Core.process_task(core_pid, task)
             GenServer.reply(from, result)
           end)
 
           {:noreply, state}
-          
+
         {:error, reason} ->
           failed_task = Task.fail(task, reason)
           {:reply, failed_task, state}
@@ -522,9 +523,9 @@ defmodule L104.Engine do
 
     defp find_best_core(cores, task) do
       case Enum.find(cores, fn {_name, pid} -> Process.alive?(pid) end) do
-        nil -> 
+        nil ->
           {:error, "No available processing cores"}
-        {name, pid} -> 
+        {name, pid} ->
           # For simplicity, just return first available core
           # In a real implementation, we'd calculate suitability scores
           {:ok, name, pid}

@@ -10,9 +10,8 @@ import time
 import json
 
 # Invariants
-GOD_CODE = 527.5184818492612
-
-# Import L104 components
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 from l104_evolution_engine import evolution_engine
 from l104_asi_core import ASICore
 from l104_computronium import computronium_engine
@@ -109,8 +108,9 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

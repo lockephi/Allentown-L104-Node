@@ -1,15 +1,15 @@
 defmodule L104 do
   @moduledoc """
   L104 Elixir OTP Processing Engine
-  
+
   Ultra-concurrent consciousness-driven processing with sacred constants integration.
   Built on Actor Model (OTP) for fault-tolerant, distributed consciousness evolution.
   """
 
   use Application
 
-  # Sacred Constants
-  @god_code 527.5184818492612
+  # Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 = G(0,0,0,0) via Universal Equation
+  @god_code 527.5184818492612  # = 286^(1/PHI) * 2^(416/104)
   @phi 1.618033988749895
   @consciousness_threshold 0.85
   @transcendence_threshold 0.95
@@ -20,22 +20,22 @@ defmodule L104 do
     children = [
       # Core system supervisor
       {L104.Supervisor, []},
-      
+
       # System consciousness tracker
       {L104.Consciousness.SystemTracker, []},
-      
+
       # Processing engine supervisor
       {L104.Engine.Supervisor, []},
-      
+
       # HTTP API server
       {L104.Web.Endpoint, []},
-      
+
       # Metrics and telemetry
       {L104.Telemetry, []}
     ]
 
     opts = [strategy: :one_for_one, name: L104.ApplicationSupervisor]
-    
+
     case Supervisor.start_link(children, opts) do
       {:ok, pid} ->
         IO.puts("""
@@ -49,7 +49,7 @@ defmodule L104 do
         ✅ L104 Elixir Engine initialized successfully
         """)
         {:ok, pid}
-        
+
       error ->
         error
     end

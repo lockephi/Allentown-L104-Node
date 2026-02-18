@@ -615,6 +615,34 @@ extension L104State {
             return IntelligentSearchEngine.shared.status
         }
 
+        // ─── AI SOURCE CODE ANALYSIS COMMANDS (Phase 56.0) ───
+        // Analyzes AI source code from OpenAI, Anthropic, Google, DeepSeek, Meta, Mistral etc.
+        // using quantum computations for pattern detection and adaptation
+        if q.hasPrefix("analyze ai") || q.hasPrefix("ai source") || q.hasPrefix("ai code") ||
+           q.hasPrefix("research ai source") || q.hasPrefix("quantum ai") ||
+           (q.contains("source code") && (q.contains("openai") || q.contains("anthropic") || q.contains("gemini") || q.contains("deepseek") || q.contains("llama") || q.contains("mistral"))) {
+            let topic = query.replacingOccurrences(of: "analyze ai", with: "")
+                .replacingOccurrences(of: "ai source", with: "")
+                .replacingOccurrences(of: "ai code", with: "")
+                .replacingOccurrences(of: "research ai source", with: "")
+                .replacingOccurrences(of: "quantum ai", with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let searchTopic = topic.isEmpty ? "transformer attention mechanism architecture" : topic
+            discoveries += 1; learningCycles += 1; intellectIndex += 2.0; saveState()
+            return AISourceAnalyzer.shared.analyzeAISources(query: searchTopic)
+        }
+        // Analyze a specific repo: "analyze repo whisper", "analyze repo deepseek-v3"
+        if q.hasPrefix("analyze repo ") || q.hasPrefix("ai repo ") {
+            let repoName = String(query.dropFirst(q.hasPrefix("analyze repo ") ? 13 : 8))
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            discoveries += 1; intellectIndex += 1.5; saveState()
+            return AISourceAnalyzer.shared.analyzeSpecificRepo(repoName)
+        }
+        // AI analyzer status
+        if q == "ai status" || q == "ai analyzer" || q == "analyzer status" {
+            return AISourceAnalyzer.shared.getStatus()
+        }
+
         if q.hasPrefix("research ") {
             let topic = String(query.dropFirst(9)); discoveries += 1; learningCycles += 1; intellectIndex += 1.5; saveState()
 

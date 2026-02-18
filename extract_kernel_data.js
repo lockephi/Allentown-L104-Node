@@ -25,9 +25,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-// Sacred Constants from claude.md
-const GOD_CODE = 527.5184818492612;
+// Sacred Constants from claude.md — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 const VOID_CONSTANT = 1.0416180339887497;
 const COHERENCE_MINIMUM = 0.888;
 

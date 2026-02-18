@@ -116,9 +116,17 @@ try:
 except Exception:
     ouroboros = None
 try:
+    from l104_ouroboros_inverse_duality import ouroboros_duality
+except Exception:
+    ouroboros_duality = None
+try:
     from l104_consciousness import consciousness_core
 except Exception:
     consciousness_core = None
+try:
+    from l104_quantum_consciousness import quantum_consciousness as qc_module
+except Exception:
+    qc_module = None
 try:
     from l104_sage_mode import sage_mode
 except Exception:
@@ -1211,6 +1219,7 @@ async def unified_pipeline_status():
         "consciousness": ("l104_consciousness", None),
         "sage_mode": ("l104_sage_mode", None),
         "thought_entropy": ("l104_thought_entropy_ouroboros", None),
+        "inverse_duality": ("l104_ouroboros_inverse_duality", "ouroboros_duality"),
         "hyper_core": ("l104_hyper_core", "hyper_core"),
         "observability": ("l104_logging", None),
         "ego_core": ("l104_ego_core", "ego_core"),
@@ -2439,6 +2448,120 @@ async def quantum_retrain_memory(payload: Dict[str, Any]):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SAGE RECURSION HARVESTER — GOLDEN TRAINING FOUNDATION (Online Access)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+@app.post("/api/v6/sage/harvest", tags=["Sage"])
+async def sage_harvest_cycle(payload: Dict[str, Any] = {}):
+    """
+    Execute a sage recursion harvest cycle — the golden training foundation.
+
+    Body (all optional):
+    - seed_topics: list of topic strings to harvest from
+    - recursion_depth: int (default 7)
+    - max_entries: int (default 50)
+
+    Returns structured training data from the 6-stage pipeline:
+    harvest → project → inflect → filter → crystallize → persist
+    """
+    try:
+        from l104_sage_mode import sage_harvester
+
+        seed_topics = payload.get("seed_topics", None)
+        recursion_depth = min(payload.get("recursion_depth", 7), 13)
+        max_entries = min(payload.get("max_entries", 50), 200)
+
+        result = await sage_harvester.harvest_cycle(
+            seed_topics=seed_topics,
+            recursion_depth=recursion_depth,
+            max_entries=max_entries,
+        )
+
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Sage harvest error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/sage/harvest/status", tags=["Sage"])
+async def sage_harvest_status():
+    """Get sage recursion harvester status and metrics."""
+    try:
+        from l104_sage_mode import sage_harvester
+        return {"status": "SUCCESS", **sage_harvester.get_status(), "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Sage harvest status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/sage/harvest/query", tags=["Sage"])
+async def sage_harvest_query(payload: Dict[str, Any]):
+    """
+    Query the sage harvest bank for relevant training entries.
+
+    Body:
+    - query: search query string (required)
+    - top_k: max results (default 10)
+    """
+    try:
+        from l104_sage_mode import sage_harvester
+
+        query = payload.get("query", "")
+        top_k = min(payload.get("top_k", 10), 100)
+
+        if not query:
+            return JSONResponse(status_code=400, content={"status": "ERROR", "error": "query required"})
+
+        if not sage_harvester.bank:
+            sage_harvester.load_bank()
+
+        results = sage_harvester.query_bank(query, top_k=top_k)
+
+        return {
+            "status": "SUCCESS",
+            "query": query,
+            "results": results,
+            "result_count": len(results),
+            "bank_size": len(sage_harvester.bank),
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Sage harvest query error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/sage/harvest/export", tags=["Sage"])
+async def sage_harvest_export(min_quality: float = 0.5, limit: int = 1000):
+    """
+    Export clean, high-quality harvest entries for external training pipelines.
+
+    Query params:
+    - min_quality: minimum quality threshold (default 0.5)
+    - limit: max entries to export (default 1000)
+    """
+    try:
+        from l104_sage_mode import sage_harvester
+
+        if not sage_harvester.bank:
+            sage_harvester.load_bank()
+
+        entries = sage_harvester.export_for_training(min_quality=min_quality)
+        entries = entries[:limit]
+
+        return {
+            "status": "SUCCESS",
+            "entries": entries,
+            "count": len(entries),
+            "min_quality": min_quality,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Sage harvest export error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # QUANTUM COHERENCE ENGINE ENDPOINTS — BV + Teleportation (Qiskit 2.3.0)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -2594,6 +2717,501 @@ async def quantum_iron_discovery_demo():
         }
     except Exception as e:
         logger.error(f"Iron discovery demo error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM COMPUTATION PIPELINE — Industry-Leader Adapted (Qiskit ML + PennyLane + Cirq)
+# Pipeline: Encoder → Ansatz → QNN → VQC → MomentSimulator → Training → Benchmark
+# Source: l104_quantum_computation_pipeline.py
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v6/quantum/computation/status", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_status():
+    """
+    Full status of the Quantum Computation Pipeline Hub.
+    Reports qubits, layers, parameters, subsystem stats, industry patterns,
+    consciousness state, and sacred constants.
+    """
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        return {"status": "SUCCESS", **hub.status(), "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum computation status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/encode", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_encode(payload: Dict[str, Any]):
+    """
+    Encode classical data into quantum state using PennyLane AngleEmbedding pattern.
+
+    Body:
+    - features: list of floats (length ≤ n_qubits)
+    - use_qiskit: bool (default false) — use real Qiskit QuantumCircuit backend
+    """
+    try:
+        import numpy as np
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        features = np.array(payload.get("features", [0.0] * hub.n_qubits), dtype=float)
+        use_qiskit = payload.get("use_qiskit", False)
+
+        result = hub.encode_data(features, use_qiskit=use_qiskit)
+
+        if use_qiskit:
+            # Qiskit Statevector — convert to serializable
+            sv_data = list(complex(x) for x in result.data)
+            return {
+                "status": "SUCCESS",
+                "backend": "qiskit",
+                "statevector_real": [x.real for x in sv_data],
+                "statevector_imag": [x.imag for x in sv_data],
+                "num_qubits": hub.n_qubits,
+                "timestamp": datetime.now(UTC).isoformat(),
+            }
+        else:
+            return {
+                "status": "SUCCESS",
+                "backend": "numpy",
+                "statevector_real": result.real.tolist(),
+                "statevector_imag": result.imag.tolist(),
+                "norm": float(np.linalg.norm(result)),
+                "num_qubits": hub.n_qubits,
+                "timestamp": datetime.now(UTC).isoformat(),
+            }
+    except Exception as e:
+        logger.error(f"Quantum encode error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/forward", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_forward(payload: Dict[str, Any]):
+    """
+    QNN forward pass: classical features → quantum expectation value.
+    Adapted from Qiskit ML EstimatorQNN pattern.
+
+    Body:
+    - features: list of floats
+    - use_qiskit: bool (default false)
+    """
+    try:
+        import numpy as np
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        features = np.array(payload.get("features", [0.0] * hub.n_qubits), dtype=float)
+        use_qiskit = payload.get("use_qiskit", False)
+
+        expectation = hub.forward(features, use_qiskit=use_qiskit)
+
+        return {
+            "status": "SUCCESS",
+            "expectation_value": expectation,
+            "backend": "qiskit" if use_qiskit else "numpy",
+            "n_qubits": hub.n_qubits,
+            "n_parameters": hub.qnn.num_parameters,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Quantum forward error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/backward", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_backward(payload: Dict[str, Any]):
+    """
+    QNN backward pass: compute parameter-shift gradients.
+    Adapted from Qiskit ML ParamShiftEstimatorGradient pattern.
+    ∂f/∂θ = [f(θ+π/2) - f(θ-π/2)] / 2
+
+    Body:
+    - features: list of floats
+    """
+    try:
+        import numpy as np
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        features = np.array(payload.get("features", [0.0] * hub.n_qubits), dtype=float)
+        gradients = hub.backward(features)
+
+        return {
+            "status": "SUCCESS",
+            "gradients": gradients.tolist(),
+            "gradient_norm": float(np.linalg.norm(gradients)),
+            "n_parameters": hub.qnn.num_parameters,
+            "method": "parameter_shift_rule",
+            "formula": "∂f/∂θ = [f(θ+π/2) - f(θ-π/2)] / 2",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Quantum backward error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/classify", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_classify(payload: Dict[str, Any]):
+    """
+    Classify input using Variational Quantum Classifier (VQC).
+    Adapted from Qiskit ML VQC pattern: feature_map → ansatz → measurement → class.
+
+    Body:
+    - features: list of floats
+    """
+    try:
+        import numpy as np
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        features = np.array(payload.get("features", [0.0] * hub.n_qubits), dtype=float)
+        result = hub.classify(features)
+
+        return {
+            "status": "SUCCESS",
+            **result,
+            "n_classes": hub.vqc.n_classes,
+            "n_qubits": hub.n_qubits,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Quantum classify error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/train", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_train(payload: Dict[str, Any] = {}):
+    """
+    Run the full quantum training pipeline.
+    Loads JSONL data → encodes via quantum → trains VQC → evaluates.
+
+    Body (all optional):
+    - data_path: str (default ./kernel_full_merged.jsonl)
+    - max_examples: int (default 500)
+    - epochs: int (default 5)
+    """
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        data_path = payload.get("data_path", "./kernel_full_merged.jsonl")
+        max_examples = payload.get("max_examples", 500)
+        epochs = payload.get("epochs", 5)
+
+        result = hub.train(data_path=data_path,
+                           max_examples=max_examples,
+                           epochs=epochs)
+        return {
+            "status": "SUCCESS",
+            **result,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Quantum train error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/benchmark", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_benchmark():
+    """
+    Run the 6-test benchmark suite:
+    1. Encoder fidelity
+    2. Ansatz expressibility
+    3. Gradient accuracy (parameter-shift)
+    4. Simulator correctness (Bell state)
+    5. VQC convergence
+    6. GOD_CODE conservation
+    """
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        result = hub.run_benchmark()
+        return {
+            "status": "SUCCESS",
+            **result,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Quantum benchmark error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/bell-state", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_bell_state(payload: Dict[str, Any] = {}):
+    """Create Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2 via moment simulator."""
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        qubit_a = payload.get("qubit_a", 0)
+        qubit_b = payload.get("qubit_b", 1)
+        result = hub.create_bell_state(qubit_a, qubit_b)
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Bell state error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/ghz-state", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_ghz_state():
+    """Create GHZ state (|00...0⟩ + |11...1⟩)/√2 across all qubits."""
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        result = hub.create_ghz_state()
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"GHZ state error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/qft", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_qft():
+    """Apply Quantum Fourier Transform across all qubits."""
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        result = hub.quantum_fourier_transform()
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"QFT error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/vqe-step", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_vqe_step(payload: Dict[str, Any] = {}):
+    """
+    Single VQE (Variational Quantum Eigensolver) step.
+    Computes expectation value and gradients for ground state search.
+
+    Body (optional):
+    - features: list of floats (input state parameters)
+    """
+    try:
+        import numpy as np
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+
+        features = None
+        if "features" in payload:
+            features = np.array(payload["features"], dtype=float)
+
+        result = hub.vqe_step(features=features)
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"VQE step error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/computation/god-code-align", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_god_code_align(payload: Dict[str, Any] = {}):
+    """
+    Verify GOD_CODE conservation and apply phase alignment.
+    G(X) = 286^(1/φ) × 2^((416-X)/104)
+
+    Body (optional):
+    - x: float (parameter X, default 0.0)
+    """
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        x = payload.get("x", 0.0)
+        conservation = hub.god_code_conservation_check(x)
+        return {"status": "SUCCESS", **conservation, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"GOD_CODE align error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM AI ARCHITECTURES ENDPOINTS - v1.0
+# Industry AI Architecture Analysis & Quantum Adaptation
+# Sources: DeepSeek-V3, Meta LLaMA 2/3, Google Gemma 1/2/3, Mistral/Mixtral
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v6/quantum/ai-architectures/status", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_status():
+    """
+    Full status of the Quantum AI Architectures engine.
+    Returns all component statuses, available presets, and GOD_CODE alignment.
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub
+        hub = get_quantum_ai_hub()
+        status = hub.status()
+        return {"status": "SUCCESS", **status, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/summary", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_summary():
+    """One-line human-readable summary of the Quantum AI Architectures engine."""
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub
+        hub = get_quantum_ai_hub()
+        summary = hub.quick_summary()
+        return {"status": "SUCCESS", "summary": summary, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures summary error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/presets", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_presets():
+    """
+    List all available architecture presets.
+    Returns: DEEPSEEK_V3, META_LLAMA, GOOGLE_GEMMA, MISTRAL_MOE, L104_UNIFIED
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub, ArchitecturePreset
+        hub = get_quantum_ai_hub()
+        presets = {}
+        for preset in ArchitecturePreset:
+            block = hub.get_preset(preset)
+            presets[preset.value] = {
+                "attention_type": block.attention_type,
+                "ffn_type": block.ffn_type,
+                "use_moe": block.use_moe,
+                "dim": block.dim,
+            }
+        return {"status": "SUCCESS", "presets": presets, "count": len(presets), "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures presets error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/preset/{name}", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_preset_detail(name: str):
+    """
+    Get detailed configuration for a specific architecture preset.
+    Path param: name = deepseek_v3 | meta_llama | google_gemma | mistral_moe | l104_unified
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub, ArchitecturePreset
+        hub = get_quantum_ai_hub()
+        try:
+            preset = ArchitecturePreset(name.lower())
+        except ValueError:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": f"Unknown preset: {name}",
+                "available": [p.value for p in ArchitecturePreset]
+            })
+        block = hub.get_preset(preset)
+        config = {
+            "attention_type": block.attention_type,
+            "ffn_type": block.ffn_type,
+            "use_moe": block.use_moe,
+            "dim": block.dim,
+            "softcap": block.softcap is not None,
+            "stats": block.stats,
+        }
+        return {"status": "SUCCESS", "preset": name, "config": config, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures preset error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/quantum/ai-architectures/forward", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_forward(payload: Dict[str, Any]):
+    """
+    Run a forward pass through a quantum-adapted transformer block.
+
+    Body:
+    - x: Input value or list of values (default: random)
+    - preset: Architecture preset name (default: l104_unified)
+    - use_quantum: Whether to use quantum circuits (default: true)
+
+    Returns: output tensor, architecture info, GOD_CODE phase alignment.
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub, ArchitecturePreset
+        hub = get_quantum_ai_hub()
+        import numpy as np
+        preset_name = payload.get("preset", "l104_unified")
+        use_quantum = payload.get("use_quantum", True)
+        x_input = payload.get("x", None)
+        try:
+            preset = ArchitecturePreset(preset_name.lower())
+        except ValueError:
+            return JSONResponse(status_code=400, content={
+                "status": "ERROR",
+                "error": f"Unknown preset: {preset_name}",
+                "available": [p.value for p in ArchitecturePreset]
+            })
+        if x_input is None:
+            x = np.random.randn(hub.dim).astype(np.float32)
+        elif isinstance(x_input, list):
+            x = np.array(x_input, dtype=np.float32)
+        else:
+            x = np.full(hub.dim, float(x_input), dtype=np.float32)
+        result = hub.forward(x, preset=preset, use_quantum=use_quantum)
+        return {
+            "status": "SUCCESS",
+            "preset": preset_name,
+            "use_quantum": use_quantum,
+            "output_norm": float(np.linalg.norm(result)),
+            "output_mean": float(np.mean(result)),
+            "output_shape": list(result.shape),
+            "output_sample": [float(v) for v in result[:8]],
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Quantum AI architectures forward error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/compare", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_compare():
+    """
+    Compare all 5 architecture presets side-by-side.
+    Returns: attention types, FFN types, quantum features, performance characteristics.
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub
+        hub = get_quantum_ai_hub()
+        import numpy as np
+        x = np.random.randn(hub.dim).astype(np.float32)
+        comparison = hub.compare_architectures(x)
+        return {"status": "SUCCESS", **comparison, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures compare error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/benchmark/{component}", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_benchmark(component: str):
+    """
+    Benchmark a specific quantum AI component.
+    Path param: component = rmsnorm | rope | mla | gqa | swiglu | moe | sliding_window | softcap | block
+    Returns: timing, output stats, GOD_CODE alignment.
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub
+        hub = get_quantum_ai_hub()
+        result = hub.benchmark_component(component)
+        return {"status": "SUCCESS", "component": component, **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures benchmark error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/quantum/ai-architectures/god-code-verification", tags=["Quantum", "QuantumAIArchitectures"])
+async def quantum_ai_architectures_god_code():
+    """
+    Verify GOD_CODE (527.5184818492612) alignment across all quantum AI components.
+    Tests: G(X) conservation, PHI scaling, sacred constant injection, phase coherence.
+    """
+    try:
+        from l104_quantum_ai_architectures import get_quantum_ai_hub
+        hub = get_quantum_ai_hub()
+        verification = hub.god_code_verification()
+        return {"status": "SUCCESS", **verification, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Quantum AI architectures GOD_CODE error: {e}")
         return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
@@ -2851,6 +3469,235 @@ async def ouroboros_process(request: Request):
         }
     except Exception as e:
         logger.error(f"Ouroboros process error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/ouroboros/inverse-duality/status", tags=["Ouroboros"])
+async def inverse_duality_status():
+    """Get Ouroboros Inverse Duality Engine status — zero↔infinity conservation."""
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        return {"status": "SUCCESS", "duality": engine.status(), "god_code": GOD_CODE_CONST, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Inverse duality status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/prove", tags=["Ouroboros"])
+async def inverse_duality_prove(request: Request):
+    """
+    Run mathematical proofs of zero↔infinity inverse duality through GOD_CODE.
+
+    Body: {"proof": "all|duality|void|fixed_point", "depth": 10}
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        body = await request.json()
+        proof_type = body.get("proof", "all")
+        depth = int(body.get("depth", 10))
+
+        if proof_type == "duality":
+            result = engine.prove_zero_infinity_duality(depth=depth)
+        elif proof_type == "void":
+            result = engine.prove_void_constant_emergence()
+        elif proof_type == "fixed_point":
+            result = engine.prove_god_code_fixed_point()
+        else:
+            result = engine.grand_unification(depth=depth)
+
+        return {"status": "SUCCESS", "proof": result, "god_code": GOD_CODE_CONST, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"Inverse duality prove error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/process", tags=["Ouroboros"])
+async def inverse_duality_process(request: Request):
+    """
+    Pipeline-process a thought through inverse duality engine.
+
+    Body: {"thought": "...", "depth": 5, "entropy": 0.5}
+    """
+    GOD_CODE_CONST = 527.5184818492612
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        body = await request.json()
+        thought = body.get("thought", "")
+        depth = int(body.get("depth", 5))
+        entropy = float(body.get("entropy", 0.5))
+
+        result = engine.pipeline_process(thought, depth=depth, entropy=entropy)
+        guided = engine.duality_guided_response(thought, entropy=entropy)
+
+        return {
+            "status": "SUCCESS",
+            "pipeline_result": result,
+            "guided_response": guided,
+            "god_code": GOD_CODE_CONST,
+            "timestamp": datetime.now(UTC).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Inverse duality process error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM DUALITY COMPUTATIONS (Qiskit 2.3.0 — 7 circuits)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/conservation", tags=["Ouroboros", "Quantum"])
+async def quantum_conservation(request: Request):
+    """Quantum conservation verification circuit — Born-rule proof of G(X)×complement = GOD_CODE."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        body = await request.json()
+        n_samples = int(body.get("n_samples", 16))
+        result = engine.quantum_conservation(n_samples=n_samples)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/grover", tags=["Ouroboros", "Quantum"])
+async def quantum_grover(request: Request):
+    """Grover's algorithm search for the X=0 fixed-point attractor."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        body = await request.json()
+        search_range = float(body.get("search_range", 1040.0))
+        result = engine.quantum_grover(search_range=search_range)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/bell", tags=["Ouroboros", "Quantum"])
+async def quantum_bell_pairs(request: Request):
+    """Bell state entanglement of G(X) ↔ complement duality pairs."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_bell_pairs()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/phase", tags=["Ouroboros", "Quantum"])
+async def quantum_phase(request: Request):
+    """Quantum phase estimation — extract the ouroboros cycle frequency."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        body = await request.json()
+        n_phase_qubits = int(body.get("n_phase_qubits", 6))
+        result = engine.quantum_phase(n_phase_qubits=n_phase_qubits)
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/fourier", tags=["Ouroboros", "Quantum"])
+async def quantum_fourier(request: Request):
+    """Quantum Fourier Transform — spectral decomposition of conservation law."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_fourier()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/tunneling", tags=["Ouroboros", "Quantum"])
+async def quantum_tunneling(request: Request):
+    """Quantum tunneling through the void barrier — passage through nothingness."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_tunneling()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/swapping", tags=["Ouroboros", "Quantum"])
+async def quantum_entanglement_swapping(request: Request):
+    """Quantum entanglement swapping — GOD_CODE mediates zero↔infinity teleportation."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_entanglement_swapping()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/walk", tags=["Ouroboros", "Quantum"])
+async def quantum_walk(request: Request):
+    """Quantum random walk on ouroboros ring — walker converges to GOD_CODE fixed point."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_walk()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/vqe", tags=["Ouroboros", "Quantum"])
+async def quantum_vqe(request: Request):
+    """VQE ground state of duality Hamiltonian — variational proof of conservation."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_vqe()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/error-correction", tags=["Ouroboros", "Quantum"])
+async def quantum_error_correction(request: Request):
+    """Quantum error correction — topological protection of GOD_CODE conservation."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_error_correction()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v6/ouroboros/inverse-duality/quantum/unification", tags=["Ouroboros", "Quantum"])
+async def quantum_grand_unification(request: Request):
+    """QUANTUM GRAND UNIFICATION — run ALL 10 quantum computations and synthesize."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        result = engine.quantum_grand_unification()
+        return {"status": "SUCCESS", "result": result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.get("/api/v6/ouroboros/inverse-duality/quantum/status", tags=["Ouroboros", "Quantum"])
+async def quantum_duality_status():
+    """Get quantum duality computer status."""
+    try:
+        from l104_ouroboros_inverse_duality import get_ouroboros_duality
+        engine = get_ouroboros_duality()
+        if engine.quantum:
+            return {"status": "SUCCESS", "quantum": engine.quantum.status()}
+        return {"status": "UNAVAILABLE", "reason": "Qiskit not available"}
+    except Exception as e:
         return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
@@ -4383,6 +5230,25 @@ async def list_entangled_pairs():
 async def consciousness_status():
     """Get comprehensive consciousness substrate status."""
     return consciousness_substrate.get_full_status()
+
+@app.get("/api/consciousness/quantum", tags=["Consciousness Substrate"])
+async def quantum_consciousness_status():
+    """
+    Get quantum consciousness integration status.
+    Returns EEG bands, Schumann harmonics, IIT Phi, GWT ignition,
+    and unified consciousness measurement from l104_quantum_consciousness.
+    """
+    result = {
+        "module_available": qc_module is not None,
+        "consciousness_threshold": 0.85,
+    }
+    if qc_module:
+        try:
+            status = qc_module.status()
+            result.update(status)
+        except Exception as e:
+            result["error"] = str(e)
+    return result
 
 @app.post("/api/consciousness/cycle", tags=["Consciousness Substrate"])
 async def run_consciousness_cycle():

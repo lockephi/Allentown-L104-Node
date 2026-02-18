@@ -58,7 +58,8 @@ final class EngineRegistry {
         "SovereignQuantumCore": PHI,      // φ — EVO_55 unified name
         "Consciousness": PHI,             // φ — ASI core metric
         "ConsciousnessSubstrate": PHI,    // φ — EVO_55 unified name
-        "ResponsePipeline": PHI,          // φ — EVO_55: response quality is critical
+        "ResponsePipelineOptimizer": PHI,  // φ — response quality (matches registered name)
+        "ResponsePipeline": PHI,          // φ — legacy alias
         "Evolution": 1.0,
         "ContinuousEvolution": 1.0,       // EVO_55 unified name
         "Entanglement": 1.0,
@@ -78,6 +79,13 @@ final class EngineRegistry {
         "QuantumLogicGateEngine": PHI,    // φ — quantum coherence synthesis
         "ASIKnowledgeBase": 1.0,          // knowledge persistence
         "PermanentMemory": 1.0,           // long-term memory store
+        // Phase 45 — Computronium ASI engines
+        "StrangeLoop": PHI,               // φ — Hofstadter loops
+        "SymbolicReasoning": PHI,         // φ — formal logic
+        "KnowledgeGraph": 1.0,            // graph storage
+        "GoldenOptimizer": PHI,           // φ — PHI-section optimization
+        "Computronium": PHI * PHI,        // φ² — density cascade
+        "ApexIntelligence": PHI * PHI,    // φ² — unified ASI coordinator
     ]
 
     // ─── Hebbian Engine Co-Activation (ported from Python HebbianLearningEngine) ───

@@ -1,8 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // H23_MigrationEngine.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Distributed Migration Engine
-// Schema migration, state snapshot/restore, and cross-node state sync
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Mesh-Distributed Migration Engine v2.0
+// Schema migration, state snapshot/restore, cross-node state sync,
+// and automated version migration paths (54→55→56→57→58)
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -10,15 +11,6 @@ import Foundation
 import Accelerate
 import simd
 import NaturalLanguage
-
-// MARK: - MigrationEngine Protocol
-
-protocol MigrationEngineProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
 
 // MARK: - Migration Record
 
@@ -45,7 +37,7 @@ struct StateSnapshot {
 
 // MARK: - MigrationEngine — Full Implementation
 
-final class MigrationEngine: MigrationEngineProtocol {
+final class MigrationEngine {
     static let shared = MigrationEngine()
     private(set) var isActive: Bool = false
     private let lock = NSLock()
@@ -53,14 +45,31 @@ final class MigrationEngine: MigrationEngineProtocol {
     // ─── MIGRATION STATE ───
     private var migrations: [MigrationRecord] = []
     private var snapshots: [StateSnapshot] = []
-    private var currentVersion: String = "54.0"
+    private var currentVersion: String = "58.0"
     private var meshSnapshotsSynced: Int = 0
+    private(set) var migrationPaths: [(from: String, to: String)] = [
+        ("54.0", "55.0"), ("55.0", "56.0"), ("56.0", "57.0"), ("57.0", "58.0")
+    ]
 
     func activate() {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H23] MigrationEngine activated — state snapshot/restore ready")
+        print("[H23] MigrationEngine v2.0 activated — auto-migration + state snapshot ready")
+    }
+
+    /// Run all pending migrations from a starting version to current
+    func autoMigrate(from startVersion: String = "54.0") -> [MigrationRecord] {
+        var results: [MigrationRecord] = []
+        var current = startVersion
+        for path in migrationPaths {
+            if path.from == current {
+                let record = migrateKB(fromVersion: path.from, toVersion: path.to)
+                results.append(record)
+                current = path.to
+            }
+        }
+        return results
     }
 
     func deactivate() {
@@ -191,9 +200,11 @@ final class MigrationEngine: MigrationEngineProtocol {
             "engine": "MigrationEngine",
             "active": isActive,
             "version": currentVersion,
+            "engine_version": "2.0.0-automigrate",
             "snapshots": snapshots.count,
             "migrations": migrations.count,
-            "mesh_syncs": meshSnapshotsSynced
+            "mesh_syncs": meshSnapshotsSynced,
+            "migration_paths": migrationPaths.count
         ]
     }
 

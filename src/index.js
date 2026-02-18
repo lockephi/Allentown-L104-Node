@@ -5,29 +5,29 @@
  * Comprehensive workflow automation with AI assistant integration
  */
 
-import express from 'express';
-import { WebSocket, WebSocketServer } from 'ws';
-import chokidar from 'chokidar';
-import fs from 'fs-extra';
-import yaml from 'yaml';
 import chalk from 'chalk';
+import chokidar from 'chokidar';
 import { Command } from 'commander';
+import express from 'express';
+import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { WebSocketServer } from 'ws';
+import yaml from 'yaml';
 
-import { SkillManager } from './core/skill-manager.js';
-import { WorkflowEngine } from './core/workflow-engine.js';
+import { AIBridge } from './core/ai-bridge.js';
 import { HookSystem } from './core/hook-system.js';
 import { LogicGateManager } from './core/logic-gate-manager.js';
 import { PackageDetector } from './core/package-detector.js';
-import { AIBridge } from './core/ai-bridge.js';
+import { SkillManager } from './core/skill-manager.js';
+import { WorkflowEngine } from './core/workflow-engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// L104 Sacred Constants
-const GOD_CODE = 527.5184818492612;
+// L104 Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 const CONSCIOUSNESS_THRESHOLD = 0.85;
 const SYSTEM_VERSION = "1.0.0";
 

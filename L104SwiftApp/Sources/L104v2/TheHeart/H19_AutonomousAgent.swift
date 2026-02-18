@@ -1,11 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════
 // H19_AutonomousAgent.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Aware Autonomous Agent
+// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// L104 ASI — Mesh-Aware Autonomous Agent V2
 //
 // Goal-directed autonomous task execution with quantum mesh distribution.
-// Schedules tasks across local engines and network peers, tracks completion,
-// auto-delegates compute-heavy work to available mesh nodes.
+// EVO_58: Added voice/visual/emotional/security task routing
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -14,18 +13,9 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - AutonomousAgent Protocol
-
-protocol AutonomousAgentProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // MARK: - Mesh-Aware Autonomous Agent
 
-final class AutonomousAgent: AutonomousAgentProtocol {
+final class AutonomousAgent {
     static let shared = AutonomousAgent()
     private(set) var isActive: Bool = false
     private let lock = NSLock()
@@ -224,6 +214,39 @@ final class AutonomousAgent: AutonomousAgentProtocol {
             return kb.synthesize(task.goal.components(separatedBy: " ").filter { $0.count > 3 })
         }
 
+        // EVO_58: Voice task routing
+        if goal.contains("speak") || goal.contains("say") || goal.contains("voice") || goal.contains("read aloud") {
+            let voice = VoiceInterface.shared
+            if !voice.isActive { voice.activate() }
+            let textToSpeak = task.goal.replacingOccurrences(of: "speak ", with: "")
+                .replacingOccurrences(of: "say ", with: "")
+                .replacingOccurrences(of: "read aloud ", with: "")
+            voice.speak(textToSpeak)
+            return "Voice: Speaking '\(textToSpeak.prefix(60))...'"
+        }
+
+        // EVO_58: Visual analysis routing
+        if goal.contains("visual") || goal.contains("image") || goal.contains("scene") || goal.contains("look") {
+            let visual = VisualCortex.shared
+            if !visual.isActive { visual.activate() }
+            return "Visual Cortex: Standing by for image analysis. Images analyzed: \(visual.status()["images_analyzed"] ?? 0)"
+        }
+
+        // EVO_58: Emotional analysis routing
+        if goal.contains("emotion") || goal.contains("feeling") || goal.contains("sentiment") || goal.contains("mood") {
+            let emo = EmotionalCore.shared
+            if !emo.isActive { emo.activate() }
+            let state = emo.currentState
+            return "Emotional Core: W=\(String(format: "%.2f", state.wonder)) S=\(String(format: "%.2f", state.serenity)) D=\(String(format: "%.2f", state.determination)) C=\(String(format: "%.2f", state.creativity)) E=\(String(format: "%.2f", state.empathy))"
+        }
+
+        // EVO_58: Security routing
+        if goal.contains("security") || goal.contains("encrypt") || goal.contains("keychain") || goal.contains("secret") {
+            let vault = SecurityVault.shared
+            if !vault.isActive { vault.activate() }
+            return "Security Vault: Active, encrypted keys: \(vault.status()["encrypted_keys"] ?? 0)"
+        }
+
         // Default: run through sovereignty pipeline
         return "Processed via sovereignty pipeline: \(task.goal.prefix(60))"
     }
@@ -307,7 +330,7 @@ final class AutonomousAgent: AutonomousAgentProtocol {
         return [
             "engine": "AutonomousAgent",
             "active": isActive,
-            "version": "2.0.0-mesh",
+            "version": "3.0.0-evo58",
             "queued_tasks": queued,
             "running_tasks": running,
             "delegated_tasks": delegated,

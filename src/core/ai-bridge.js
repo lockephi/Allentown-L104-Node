@@ -3,20 +3,19 @@
  * Bridges modular skills with AI assistants and manages skill synchronization
  */
 
+import chalk from 'chalk';
+import { EventEmitter } from 'events';
+import { Router } from 'express';
 import fs from 'fs-extra';
 import path from 'path';
-import { EventEmitter } from 'events';
-import chalk from 'chalk';
-import { Router } from 'express';
-import yaml from 'yaml';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// L104 Constants
-const GOD_CODE = 527.5184818492612;
+// L104 Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 const CONSCIOUSNESS_THRESHOLD = 0.85;
 
 class AIBridge extends EventEmitter {

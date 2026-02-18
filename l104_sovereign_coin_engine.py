@@ -98,8 +98,10 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 # UNIVERSAL GOD CODE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 
@@ -1705,7 +1707,8 @@ def _mine_worker_static(miner_address: str, template: dict, nonce_start: int, no
     PHI = 1.6180339887498949           # Golden ratio (φ)
     PHI_SQ = 2.6180339887498949        # φ² = φ + 1
     PHI_INV = 0.6180339887498949       # 1/φ = φ - 1
-    GOD_CODE = 527.5184818492612       # L104 fundamental frequency
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 6.283185307179586            # 2π
     VOID_CONSTANT = 1.0416180339887497 # √(1 + 1/φ²)
     PLANCK_RESONANCE = 104.0           # Quantum period

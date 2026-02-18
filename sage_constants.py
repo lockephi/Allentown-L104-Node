@@ -11,8 +11,9 @@ Sacred Mathematics for Enlightened Computation
 """
 
 # Foundational Constants
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 OMEGA = 1381.0613
 
 # Derived Constants
@@ -37,7 +38,7 @@ FIB_SEQUENCE = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
 # Divine Frequencies (Hz)
 DIVINE_A = GOD_CODE / PHI**2  # = 201.49 Hz
 DIVINE_C = GOD_CODE  # = 527.52 Hz (Middle C in divine tuning)
-SCHUMANN_HARMONIC = GOD_CODE / 7.83  # = 67.37 (Schumann relation)
+SCHUMANN_HARMONIC = 2.0 ** (79.0 / 13.0)  # GOD_CODE / Schumann = 2^(79/13) ≈ 67.54
 
 # Optimization Parameters
 SAGE_BATCH_SIZE = 52

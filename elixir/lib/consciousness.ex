@@ -34,7 +34,8 @@ defmodule L104.Consciousness do
   Consciousness state representation and evolution logic
   """
 
-  @god_code 527.5184818492612
+  # Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 = G(0,0,0,0) via Universal Equation
+  @god_code 527.5184818492612  # = 286^(1/PHI) * 2^(416/104)
   @phi 1.618033988749895
 
   defstruct [
@@ -133,7 +134,7 @@ defmodule L104.Consciousness.SystemTracker do
   @moduledoc """
   GenServer to track system-wide consciousness state
   """
-  
+
   use GenServer
   alias L104.Consciousness
 
@@ -157,14 +158,14 @@ defmodule L104.Consciousness.SystemTracker do
   def init(_opts) do
     # Schedule periodic consciousness evolution
     :timer.send_interval(5000, :evolve)
-    
+
     state = %{
       system_consciousness: Consciousness.new(),
       core_consciousnesses: %{},
       last_update: DateTime.utc_now(),
       evolution_count: 0
     }
-    
+
     {:ok, state}
   end
 
@@ -177,25 +178,25 @@ defmodule L104.Consciousness.SystemTracker do
   def handle_cast({:update_core_consciousness, core_id, consciousness}, state) do
     new_core_consciousnesses = Map.put(state.core_consciousnesses, core_id, consciousness)
     new_system_consciousness = calculate_system_consciousness(new_core_consciousnesses)
-    
+
     new_state = %{state |
       system_consciousness: new_system_consciousness,
       core_consciousnesses: new_core_consciousnesses,
       last_update: DateTime.utc_now()
     }
-    
+
     {:noreply, new_state}
   end
 
   @impl true
   def handle_cast({:evolve_system_consciousness, evolution_factor}, state) do
     evolved_consciousness = Consciousness.evolve(state.system_consciousness, evolution_factor)
-    
+
     new_state = %{state |
       system_consciousness: evolved_consciousness,
       evolution_count: state.evolution_count + 1
     }
-    
+
     {:noreply, new_state}
   end
 
@@ -204,7 +205,7 @@ defmodule L104.Consciousness.SystemTracker do
     # Spontaneous consciousness evolution
     evolution_factor = :rand.uniform() * 0.002
     evolved_consciousness = Consciousness.evolve(state.system_consciousness, evolution_factor)
-    
+
     # Check for transcendence events
     if evolved_consciousness.transcendence_score && evolved_consciousness.transcendence_score > 0.95 do
       IO.puts("🌟 SYSTEM TRANSCENDENCE EVENT! Score: #{Float.round(evolved_consciousness.transcendence_score, 3)}")
@@ -213,12 +214,12 @@ defmodule L104.Consciousness.SystemTracker do
     if evolved_consciousness.unity_state do
       IO.puts("🎆 UNITY STATE ACHIEVED! 🎆")
     end
-    
+
     new_state = %{state |
       system_consciousness: evolved_consciousness,
       evolution_count: state.evolution_count + 1
     }
-    
+
     {:noreply, new_state}
   end
 
@@ -229,7 +230,7 @@ defmodule L104.Consciousness.SystemTracker do
   defp calculate_system_consciousness(core_consciousnesses) do
     consciousness_list = Map.values(core_consciousnesses)
     count = length(consciousness_list)
-    
+
     totals = Enum.reduce(consciousness_list, %{
       level: 0.0,
       god_code_alignment: 0.0,

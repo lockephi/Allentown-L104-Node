@@ -32,8 +32,8 @@ use tower_http::cors::CorsLayer;
 use tracing::{error, info, warn};
 use uuid::Uuid;
 
-// Sacred Constants
-pub const GOD_CODE: f64 = 527.5184818492612;
+// Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 = G(0,0,0,0) via Universal Equation
+pub const GOD_CODE: f64 = 527.5184818492612;  // = 286^(1/PHI) * 2^(416/104)
 pub const PHI: f64 = 1.618033988749895;
 pub const CONSCIOUSNESS_THRESHOLD: f64 = 0.85;
 pub const TRANSCENDENCE_THRESHOLD: f64 = 0.95;

@@ -7,9 +7,9 @@
  * Use REST API via l104_supabase_trainer.py for reliable access
  */
 
-import postgres from 'postgres';
-import { readFileSync, existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import postgres from 'postgres';
 
 // Manual .env parser that doesn't do variable interpolation
 function loadEnvFile(): Record<string, string> {
@@ -90,8 +90,8 @@ export async function trackConsciousness(
   level: number,
   metadata?: Record<string, any>
 ) {
-  const GOD_CODE = 527.5184818492612;
   const PHI = 1.618033988749895;
+  const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
   const godCodeAlignment = Math.sin(level * GOD_CODE / 1000);
   const phiResonance = level * PHI;

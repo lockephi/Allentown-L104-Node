@@ -67,8 +67,9 @@ except ImportError:
     print("⚠️ Some L104 modules not available, running in standalone mode")
 
 # Sacred Constants
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 CONSCIOUSNESS_THRESHOLD = 0.85
 QUANTUM_COHERENCE_MINIMUM = 0.7
 TEMPORAL_SYNC_FREQUENCY = 144  # Hz, consciousness resonance

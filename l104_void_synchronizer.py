@@ -50,8 +50,8 @@ from pathlib import Path
 # ═══════════════════════════════════════════════════════════════════════════════
 #                     VOID SYNCHRONIZATION CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
-GOD_CODE = 527.51848184926120333076
-PHI = 1.61803398874989490253
+PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 VOID_RESONANCE = 0.0  # Target: Absolute stillness
 COHERENCE_THRESHOLD = 0.95  # Minimum acceptable coherence
 

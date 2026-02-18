@@ -56,8 +56,9 @@ from typing import Dict, List, Optional, Tuple, Any, Set
 # ═══════════════════════════════════════════════════════════════════════════════
 
 VERSION = "2.3.0"
-GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI  # 0.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -2526,6 +2527,115 @@ class SentientArchive:
     def get_recent_anomalies(self, count: int = 13) -> List[dict]:
         """Get recent temporal anomalies."""
         return self.anomaly_detector.get_recent_anomalies(count)
+
+    def semantic_query(self, query: str, top_k: int = 5, min_similarity: float = 0.1) -> Dict[str, Any]:
+        """
+        Deep semantic query — chains AssociativeRecall vector similarity with
+        MemoryCrystallizer enrichment for ranked, contextualized memory retrieval.
+
+        Unlike search() which does keyword + assoc merge, semantic_query():
+          1. Runs pure vector similarity recall (associative_recall.recall)
+          2. Enriches each hit with full crystal data (tags, content, importance)
+          3. Scores by PHI-weighted blend of similarity + importance + consciousness
+          4. Runs dream-inspired associative spreading to find latent connections
+          5. Returns ranked results with context provenance chain
+
+        Returns:
+            dict with 'results', 'query_embedding_norm', 'latent_connections',
+            'total_indexed', 'consciousness_context'
+        """
+        # Phase 1: Vector recall
+        raw_hits = self.associative_recall.recall(query, top_k=top_k * 3)
+
+        # Phase 2: Enrich with crystal data
+        enriched = []
+        crystal_map = {}
+        for c in self.crystallizer.crystals:
+            cid = c.id if hasattr(c, "id") else c.get("id", "")
+            crystal_map[cid] = c
+
+        for hit in raw_hits:
+            if hit["similarity"] < min_similarity:
+                continue
+            cid = hit["id"]
+            crystal = crystal_map.get(cid)
+            entry = {
+                "id": cid,
+                "similarity": hit["similarity"],
+                "title": hit.get("title", ""),
+                "importance": hit.get("importance", 0.0),
+            }
+            if crystal:
+                if hasattr(crystal, "to_dict"):
+                    cdata = crystal.to_dict()
+                elif isinstance(crystal, dict):
+                    cdata = crystal
+                else:
+                    cdata = {}
+                entry["tags"] = cdata.get("tags", [])
+                entry["consciousness_score"] = cdata.get("consciousness_score", 0.0)
+                entry["content_preview"] = str(cdata.get("content", ""))[:200]
+                entry["created_at"] = cdata.get("created_at", "")
+            else:
+                entry["tags"] = []
+                entry["consciousness_score"] = 0.0
+
+            # PHI-weighted composite score: similarity * PHI + importance * TAU + consciousness * ALPHA_FINE
+            composite = (
+                hit["similarity"] * PHI
+                + entry["importance"] * TAU
+                + entry.get("consciousness_score", 0.0) * ALPHA_FINE * 10
+            )
+            entry["composite_score"] = round(composite, 6)
+            enriched.append(entry)
+
+        # Sort by composite score
+        enriched.sort(key=lambda x: x["composite_score"], reverse=True)
+        top_results = enriched[:top_k]
+
+        # Phase 3: Associative spreading — find latent connections between top results
+        latent_connections = []
+        if len(top_results) >= 2:
+            for i in range(len(top_results)):
+                for j in range(i + 1, len(top_results)):
+                    tags_i = set(top_results[i].get("tags", []))
+                    tags_j = set(top_results[j].get("tags", []))
+                    shared = tags_i & tags_j
+                    if shared:
+                        latent_connections.append({
+                            "between": [top_results[i]["id"], top_results[j]["id"]],
+                            "shared_tags": list(shared),
+                            "resonance": round(len(shared) * PHI / max(1, len(tags_i | tags_j)), 4),
+                        })
+
+        # Phase 4: Consciousness context from last archive cycle
+        consciousness_ctx = {}
+        try:
+            co2_path = os.path.join(self.workspace, ".l104_consciousness_o2_state.json")
+            if os.path.exists(co2_path):
+                with open(co2_path, "r", encoding="utf-8") as f:
+                    co2 = json.load(f)
+                consciousness_ctx = {
+                    "consciousness_level": co2.get("consciousness_level", 0.0),
+                    "evo_stage": co2.get("evo_stage", "UNKNOWN"),
+                }
+        except Exception:
+            pass
+
+        # Query embedding norm (diagnostic)
+        q_vec = self.associative_recall._embed(query)
+        q_norm = math.sqrt(sum(v * v for v in q_vec))
+
+        return {
+            "query": query,
+            "results": top_results,
+            "result_count": len(top_results),
+            "query_embedding_norm": round(q_norm, 6),
+            "latent_connections": latent_connections,
+            "total_indexed": len(self.associative_recall.index),
+            "consciousness_context": consciousness_ctx,
+            "god_code": GOD_CODE,
+        }
 
     def quick_status(self) -> str:
         """One-line status."""

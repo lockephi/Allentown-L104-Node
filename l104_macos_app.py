@@ -97,9 +97,11 @@ def load_engine_full():
 # CONSTANTS - 22 TRILLION PARAMETER SYSTEM
 # ═══════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
-OMEGA_POINT = 23.140692632779263  # e^π
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895
+OMEGA_POINT = 23.140692632779263  # e^π
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 VERSION = "16.0 APOTHEOSIS"
 
 # 22T KNOWLEDGE PARAMETERS

@@ -98,7 +98,9 @@ _load_env()
 # ║                              CONSTANTS                                        ║
 # ╚═══════════════════════════════════════════════════════════════════════════════╝
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 VERSION = "12.0.0-ASI-QUANTUM"  # ASI Quantum Lattice with LocalIntellect + Fast Server integration
 DB_PATH = _ROOT / "l104_unified.db"
 

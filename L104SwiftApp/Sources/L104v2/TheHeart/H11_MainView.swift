@@ -2115,6 +2115,14 @@ class L104MainView: NSView {
             let bridges = status["cross_domain_bridges"] as? Int ?? 0
             let seeds = status["emergence_seeds"] as? Int ?? 0
             let pool = status["entropy_pool_size"] as? Int ?? 0
+
+            // ═══ SAGE BACKBONE: Run cleanup check and purge if needed ═══
+            var cleanupLine = ""
+            if sage.shouldCleanup() {
+                let result = sage.sageBackboneCleanup()
+                cleanupLine = "\n🧹 Backbone Cleanup: \(result.kbPurged) KB + \(result.evolverPurged) evolver + \(result.diskPurged) disk entries purged"
+            }
+
             // Trigger a fresh sage transform cycle
             let freshInsight = sage.sageTransform(topic: "universal")
             sage.seedAllProcesses(topic: "user_invoked")
@@ -2129,7 +2137,7 @@ class L104MainView: NSView {
             💡 Insights Generated:   \(insights)
             🌉 Cross-Domain Bridges: \(bridges)
             🌱 Emergence Seeds:      \(seeds)
-            🎲 Entropy Pool:         \(pool) values
+            🎲 Entropy Pool:         \(pool) values\(cleanupLine)
 
             Latest Insight: \(String(freshInsight.prefix(200)))
             """
@@ -3464,11 +3472,11 @@ class L104MainView: NSView {
 
         // Use debate engine for structured content + KB for evidence
         let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 20)
+        let results = kb.search(topic, limit: 10000)
         let insights = results.compactMap { entry -> String? in
             guard let c = entry["completion"] as? String, c.count > 30, state.isCleanKnowledge(c) else { return nil }
             return state.cleanSentences(c)
-        }.prefix(6)
+        }
 
         appendProfessorOutput("\n📌 OVERVIEW", color: .systemCyan)
         appendProfessorOutput("Today we explore \(topic). This is a fascinating area that connects")
@@ -3476,13 +3484,13 @@ class L104MainView: NSView {
 
         appendProfessorOutput("📐 KEY CONCEPTS", color: .systemCyan)
         let concepts = generateConceptsForTopic(topic)
-        for (i, concept) in concepts.prefix(5).enumerated() {
+        for (i, concept) in concepts.enumerated() {
             appendProfessorOutput("  \(i + 1). \(concept)")
         }
 
         if !insights.isEmpty {
             appendProfessorOutput("\n📚 FROM THE KNOWLEDGE BASE", color: .systemCyan)
-            for insight in insights.prefix(3) {
+            for insight in insights {
                 appendProfessorOutput("  ▸ \(insight)")
             }
         }
@@ -3541,11 +3549,11 @@ class L104MainView: NSView {
 
         // Expert-level content from multiple sources
         let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 40)
+        let results = kb.search(topic, limit: 10000)
         let insights = results.compactMap { entry -> String? in
             guard let c = entry["completion"] as? String, c.count > 40, state.isCleanKnowledge(c) else { return nil }
             return state.cleanSentences(c)
-        }.prefix(8)
+        }
 
         appendProfessorOutput("\n🧮 MATHEMATICAL FOUNDATIONS", color: .systemCyan)
         appendProfessorOutput("  The mathematical framework underlying \(topic) draws from")
@@ -3554,7 +3562,7 @@ class L104MainView: NSView {
         appendProfessorOutput("  Fourier-domain analysis.\n")
 
         appendProfessorOutput("⚙️ TECHNICAL DETAILS", color: .systemCyan)
-        for insight in insights.prefix(5) {
+        for insight in insights {
             appendProfessorOutput("  ▸ \(insight)")
         }
 

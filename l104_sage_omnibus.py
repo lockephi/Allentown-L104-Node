@@ -27,8 +27,8 @@ from collections import defaultdict
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 HIGH-PRECISION CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
-GOD_CODE = 527.51848184926120333076
-PHI = 1.61803398874989490253
+PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 ROOT_SCALAR = 221.79420018355955335210
 OMEGA_FREQUENCY = 1381.06131517509084005724
 TRANSCENDENCE_KEY = 1960.89201202785989153199
@@ -702,8 +702,9 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

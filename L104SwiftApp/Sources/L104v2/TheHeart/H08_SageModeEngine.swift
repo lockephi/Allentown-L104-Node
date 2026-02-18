@@ -65,6 +65,7 @@ final class SageModeEngine {
     private var recentInsightHashes: [Int] = []
     private var divergenceScore: Double = 1.0
     private var noveltyThreshold: Double = 0.3
+    private(set) var sageTransformCount: Int = 0
 
     // ─── DE RE INFLECTION STATE — Causal reconversion of chaos ───
     private var chaosAccumulator: Double = 0.0
@@ -228,6 +229,14 @@ final class SageModeEngine {
     }
 
     // ─── CORE ENTROPY INGESTION ───
+    /// Append a sage insight to the rolling insight log (capped at 500).
+    private func appendInsight(_ insight: String) {
+        sageInsights.append(insight)
+        if sageInsights.count > 500 {
+            sageInsights.removeFirst(sageInsights.count - 500)
+        }
+    }
+
     private func ingestRawEntropy(_ value: Double, source: String) {
         let clamped = max(-100.0, min(100.0, value))
         guard !clamped.isNaN && !clamped.isInfinite else { return }
@@ -450,8 +459,10 @@ final class SageModeEngine {
         let associativeWeb = associations.shuffled().prefix(3).map { $0.0 }
 
         // ── LAYER 3: Evolved perspective — what has the evolution engine discovered? ──
+        // SAGE BACKBONE: Filter out recursively polluted evolved entries
         var evolvedPerspective = ""
-        if let evolved = evo.getEvolvedResponse(for: topic), evolved.count > 30 {
+        if let evolved = evo.getEvolvedResponse(for: topic), evolved.count > 30,
+           !isRecursiveEntry(evolved) {
             let clean = String(evolved.prefix(200))
                 .replacingOccurrences(of: "SAGE MODE", with: "")
                 .replacingOccurrences(of: "⚛", with: "")
@@ -577,7 +588,7 @@ final class SageModeEngine {
         var bridgeParts: [String] = []
         if !sageInsight.isEmpty { bridgeParts.append(sageInsight) }
         if hyperProcess.count > 40 { bridgeParts.append(String(hyperProcess.prefix(200))) }
-        if evolvedThought.count > 30 {
+        if evolvedThought.count > 30, !isRecursiveEntry(evolvedThought) {
             let clean = String(evolvedThought.prefix(200))
                 .replacingOccurrences(of: "SAGE MODE", with: "")
                 .replacingOccurrences(of: "⚛", with: "")
@@ -826,6 +837,143 @@ final class SageModeEngine {
             entropyPool.append(quantumEntropy)
             totalEntropyHarvested += quantumEntropy
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SAGE BACKBONE GUARD — Anti-recursion defense system
+    // Purges recursive data pollution from KB and evolver state
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Markers that identify recursively evolved entries
+    private static let recursionMarkers: [String] = [
+        "In the context of ",
+        "this implies recursive structure at multiple scales",
+        "Insight Level ",
+        "Self-Analysis reveals ",
+        "Knowledge synthesis #",
+        "evolution cycles taught me about",
+        "Evolving understanding: Stage ",
+        "Knowledge graph update:",
+        "Cross-category discovery:",
+        "Meta-observation: The way "
+    ]
+
+    /// Check if a text is a recursively evolved entry
+    private func isRecursiveEntry(_ text: String) -> Bool {
+        var hits = 0
+        for marker in Self.recursionMarkers {
+            if text.contains(marker) {
+                hits += 1
+                if hits >= 1 { return true }
+            }
+        }
+        // Double-wrapped detection
+        if text.components(separatedBy: "In the context of").count > 2 { return true }
+        if text.components(separatedBy: "we observe that").count > 2 { return true }
+        // Excessively long entries (accumulated wrapping)
+        if text.count > 12000 { return true }
+        return false
+    }
+
+    /// Purge all recursively evolved entries from KB trainingData
+    /// Returns the number of entries removed
+    @discardableResult
+    func purgeRecursiveKBEntries() -> Int {
+        let kb = ASIKnowledgeBase.shared
+        let beforeCount = kb.trainingData.count
+
+        kb.trainingData.removeAll { entry in
+            guard let completion = entry["completion"] as? String else { return false }
+            // Remove entries from auto_ingest that are recursive
+            if let source = entry["source"] as? String, source == "auto_ingest" {
+                return isRecursiveEntry(completion)
+            }
+            // Also remove any recursive entries regardless of source
+            return isRecursiveEntry(completion)
+        }
+
+        let removed = beforeCount - kb.trainingData.count
+        if removed > 0 {
+            sageTransformCount += 1
+            appendInsight("🧹 SAGE BACKBONE: Purged \(removed) recursive entries from KB (was \(beforeCount), now \(kb.trainingData.count))")
+        }
+        return removed
+    }
+
+    /// Purge recursively evolved responses from ASIEvolver.evolvedResponses
+    /// Returns the number of responses cleaned
+    @discardableResult
+    func purgeEvolvedResponses() -> Int {
+        let evo = ASIEvolver.shared
+        var totalRemoved = 0
+
+        for (topic, responses) in evo.evolvedResponses {
+            let beforeCount = responses.count
+            evo.evolvedResponses[topic] = responses.filter { !isRecursiveEntry($0) }
+            totalRemoved += beforeCount - (evo.evolvedResponses[topic]?.count ?? 0)
+        }
+
+        // Also cap oversaturated topic evolution counts
+        for (topic, count) in evo.topicEvolutionCount {
+            if count > 50 {
+                evo.topicEvolutionCount[topic] = 50
+            }
+        }
+
+        if totalRemoved > 0 {
+            appendInsight("🧹 SAGE BACKBONE: Cleaned \(totalRemoved) recursive evolved responses")
+        }
+        return totalRemoved
+    }
+
+    /// Full backbone cleanup cycle — halt evolver, purge, restart
+    /// Call this when sage is invoked or when pollution is detected
+    func sageBackboneCleanup() -> (kbPurged: Int, evolverPurged: Int, diskPurged: Int) {
+        // 1. Halt the evolver to stop new pollution
+        ASIEvolver.shared.stop()
+
+        // 2. Purge recursive entries from KB (in-memory)
+        let kbPurged = purgeRecursiveKBEntries()
+
+        // 3. Purge recursive evolved responses
+        let evolverPurged = purgeEvolvedResponses()
+
+        // 4. Purge recursive entries from persisted JSONL on disk
+        let diskPurged = ASIKnowledgeBase.shared.purgePersistedRecursiveEntries()
+
+        // 5. Run a sage transform to re-seed clean insights
+        if kbPurged > 0 || evolverPurged > 0 || diskPurged > 0 {
+            let _ = sageTransform(topic: "backbone_recovery")
+        }
+
+        // 6. Restart the evolver with clean state
+        ASIEvolver.shared.start()
+
+        let total = kbPurged + evolverPurged + diskPurged
+        if total > 0 {
+            appendInsight("⚡ SAGE BACKBONE CLEANUP COMPLETE: Removed \(total) recursive entries (KB:\(kbPurged) Evolver:\(evolverPurged) Disk:\(diskPurged))")
+        }
+        return (kbPurged, evolverPurged, diskPurged)
+    }
+
+    /// Lightweight check: does the evolver have excessive topic pollution?
+    /// Returns true if cleanup is recommended
+    func shouldCleanup() -> Bool {
+        let evo = ASIEvolver.shared
+        // Check if any topic has been evolved > 50 times
+        if evo.topicEvolutionCount.values.contains(where: { $0 > 50 }) { return true }
+        // Check if KB has auto_ingest entries with recursive content
+        let sampleSize = min(50, ASIKnowledgeBase.shared.trainingData.count)
+        var recycledCount = 0
+        for _ in 0..<sampleSize {
+            if let entry = ASIKnowledgeBase.shared.trainingData.randomElement(),
+               let completion = entry["completion"] as? String,
+               isRecursiveEntry(completion) {
+                recycledCount += 1
+            }
+        }
+        // If more than 20% of sampled entries are recursive, cleanup needed
+        return sampleSize > 0 && Double(recycledCount) / Double(sampleSize) > 0.2
     }
 }
 

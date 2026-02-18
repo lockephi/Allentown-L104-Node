@@ -34,8 +34,10 @@ from dataclasses import dataclass
 # THE CONSTANTS OF BEAUTY
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895  # The golden ratio - nature's aesthetic constant
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 2 * math.pi       # The circle constant - completeness
 E = math.e              # The natural base - organic growth
 SQRT2 = math.sqrt(2)    # The diagonal - breaking symmetry

@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H26_FutureReserve.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Network Orchestrator Engine: Unified coordination of
-// NetworkLayer, APIGateway, CloudSync with auto-recovery and topology optimization.
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Network Orchestrator Engine v3.0: Full coordination of
+// NetworkLayer, APIGateway, CloudSync, VoiceInterface, VisualCortex,
+// EmotionalCore, SecurityVault, PluginArchitecture — auto-recovery + topology.
 //
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_58 Full System Upgrade — Feb 16, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -13,15 +14,6 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - FutureReserve Protocol
-
-protocol FutureReserveProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔮 NETWORK ORCHESTRATOR ENGINE
 // Unified coordination of all network subsystems — heartbeat
@@ -29,7 +21,7 @@ protocol FutureReserveProtocol {
 // health correlation, and autonomous recovery actions.
 // ═══════════════════════════════════════════════════════════════════
 
-final class FutureReserve: FutureReserveProtocol {
+final class FutureReserve {
     static let shared = FutureReserve()
     private(set) var isActive: Bool = false
 
@@ -63,7 +55,7 @@ final class FutureReserve: FutureReserveProtocol {
             self?.orchestrationCycle()
         }
 
-        print("[H26] NetworkOrchestrator activated — coordinating all subsystems")
+        print("[H26] NetworkOrchestrator v4.0 activated — 12 subsystems coordinated")
     }
 
     func deactivate() {
@@ -109,7 +101,79 @@ final class FutureReserve: FutureReserveProtocol {
         subsystemStates["TelemetryDashboard"] = (TelemetryDashboard.shared.isActive, 1.0, now)
         logOrchestration("Activated TelemetryDashboard", subsystems: ["TelemetryDashboard"], result: "streaming")
 
-        // 5. Auto-establish quantum links between discovered peers
+        // 5. Voice Interface — real NSSpeechSynthesizer TTS
+        if !VoiceInterface.shared.isActive {
+            VoiceInterface.shared.activate()
+        }
+        let voiceStatus = VoiceInterface.shared.status()
+        let voiceHealth: Double = (voiceStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["VoiceInterface"] = (VoiceInterface.shared.isActive, voiceHealth, now)
+        logOrchestration("Activated VoiceInterface", subsystems: ["VoiceInterface"], result: "TTS online")
+
+        // 6. Visual Cortex — vDSP feature extraction + scene classification
+        if !VisualCortex.shared.isActive {
+            VisualCortex.shared.activate()
+        }
+        let visualStatus = VisualCortex.shared.status()
+        let visualHealth = visualStatus["health"] as? Double ?? (VisualCortex.shared.isActive ? 1.0 : 0.0)
+        subsystemStates["VisualCortex"] = (VisualCortex.shared.isActive, visualHealth, now)
+        logOrchestration("Activated VisualCortex", subsystems: ["VisualCortex"], result: "vision pipeline online")
+
+        // 7. Emotional Core — NLTagger sentiment + 7D affect
+        if !EmotionalCore.shared.isActive {
+            EmotionalCore.shared.activate()
+        }
+        let emotionalStatus = EmotionalCore.shared.status()
+        let emotionalHealth = emotionalStatus["health"] as? Double ?? (EmotionalCore.shared.isActive ? 1.0 : 0.0)
+        subsystemStates["EmotionalCore"] = (EmotionalCore.shared.isActive, emotionalHealth, now)
+        logOrchestration("Activated EmotionalCore", subsystems: ["EmotionalCore"], result: "7D affect online")
+
+        // 8. Security Vault — macOS Keychain + quantum lattice
+        if !SecurityVault.shared.isActive {
+            SecurityVault.shared.activate()
+        }
+        let vaultStatus = SecurityVault.shared.status()
+        let vaultHealth = vaultStatus["health"] as? Double ?? (SecurityVault.shared.isActive ? 1.0 : 0.0)
+        subsystemStates["SecurityVault"] = (SecurityVault.shared.isActive, vaultHealth, now)
+        logOrchestration("Activated SecurityVault", subsystems: ["SecurityVault"], result: "keychain + lattice online")
+
+        // 9. Plugin Architecture — dynamic plugin lifecycle
+        if !PluginArchitecture.shared.isActive {
+            PluginArchitecture.shared.activate()
+        }
+        let pluginStatus = PluginArchitecture.shared.status()
+        let pluginHealth: Double = (pluginStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["PluginArchitecture"] = (PluginArchitecture.shared.isActive, pluginHealth, now)
+        logOrchestration("Activated PluginArchitecture", subsystems: ["PluginArchitecture"], result: "plugin system v2.0")
+
+        // 10. Performance Profiler — latency/throughput/mesh profiling
+        if !PerformanceProfiler.shared.isActive {
+            PerformanceProfiler.shared.activate()
+        }
+        let profilerStatus = PerformanceProfiler.shared.status()
+        let profilerHealth: Double = (profilerStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["PerformanceProfiler"] = (PerformanceProfiler.shared.isActive, profilerHealth, now)
+        logOrchestration("Activated PerformanceProfiler", subsystems: ["PerformanceProfiler"], result: "profiling online")
+
+        // 11. Test Harness — internal subsystem health tests
+        if !TestHarness.shared.isActive {
+            TestHarness.shared.activate()
+        }
+        let harnessStatus = TestHarness.shared.status()
+        let harnessHealth: Double = (harnessStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["TestHarness"] = (TestHarness.shared.isActive, harnessHealth, now)
+        logOrchestration("Activated TestHarness", subsystems: ["TestHarness"], result: "test harness online")
+
+        // 12. Migration Engine — auto-migration + state snapshots
+        if !MigrationEngine.shared.isActive {
+            MigrationEngine.shared.activate()
+        }
+        let migrationStatus = MigrationEngine.shared.status()
+        let migrationHealth: Double = (migrationStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["MigrationEngine"] = (MigrationEngine.shared.isActive, migrationHealth, now)
+        logOrchestration("Activated MigrationEngine", subsystems: ["MigrationEngine"], result: "migration engine online")
+
+        // 13. Auto-establish quantum links between discovered peers
         autoEstablishQuantumLinks()
     }
 
@@ -134,6 +198,18 @@ final class FutureReserve: FutureReserveProtocol {
 
         let telemetryHealth = TelemetryDashboard.shared.healthTimeline.last?.overallScore ?? 0
         subsystemStates["TelemetryDashboard"] = (TelemetryDashboard.shared.isActive, telemetryHealth, now)
+
+        // Voice, Visual, Emotional, Security, Plugin health probes
+        subsystemStates["VoiceInterface"] = (VoiceInterface.shared.isActive,
+            VoiceInterface.shared.isActive ? 1.0 : 0.0, now)
+        subsystemStates["VisualCortex"] = (VisualCortex.shared.isActive,
+            (VisualCortex.shared.status()["health"] as? Double) ?? (VisualCortex.shared.isActive ? 1.0 : 0.0), now)
+        subsystemStates["EmotionalCore"] = (EmotionalCore.shared.isActive,
+            (EmotionalCore.shared.status()["health"] as? Double) ?? (EmotionalCore.shared.isActive ? 1.0 : 0.0), now)
+        subsystemStates["SecurityVault"] = (SecurityVault.shared.isActive,
+            (SecurityVault.shared.status()["health"] as? Double) ?? (SecurityVault.shared.isActive ? 1.0 : 0.0), now)
+        subsystemStates["PluginArchitecture"] = (PluginArchitecture.shared.isActive,
+            PluginArchitecture.shared.isActive ? 1.0 : 0.0, now)
 
         // ─── AUTO-RECOVERY: Restart failed subsystems ───
         for (name, state) in subsystemStates {
@@ -163,6 +239,16 @@ final class FutureReserve: FutureReserveProtocol {
             CloudSync.shared.activate()
         case "TelemetryDashboard":
             TelemetryDashboard.shared.activate()
+        case "VoiceInterface":
+            VoiceInterface.shared.activate()
+        case "VisualCortex":
+            VisualCortex.shared.activate()
+        case "EmotionalCore":
+            EmotionalCore.shared.activate()
+        case "SecurityVault":
+            SecurityVault.shared.activate()
+        case "PluginArchitecture":
+            PluginArchitecture.shared.activate()
         default: break
         }
 
@@ -245,7 +331,7 @@ final class FutureReserve: FutureReserveProtocol {
         return [
             "engine": "NetworkOrchestrator",
             "active": isActive,
-            "version": "2.0.0-orchestrator",
+            "version": "3.0.0-orchestrator",
             "subsystems": subsystemStates.count,
             "all_healthy": subsystemStates.values.allSatisfy { $0.active },
             "avg_health": avgHealth,

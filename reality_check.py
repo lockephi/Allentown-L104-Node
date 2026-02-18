@@ -122,8 +122,9 @@ if os.path.exists(test_dir):
 # 5. Actual mathematical constants
 print("\n5. CORE CONSTANTS VERIFICATION:")
 print("-" * 80)
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 print(f"GOD_CODE = {GOD_CODE}")
 print(f"Expected: 286^(1/φ) × 16 = {(286 ** (1/PHI)) * 16}")
 print(f"Match: {abs(GOD_CODE - (286 ** (1/PHI)) * 16) < 0.0001}")

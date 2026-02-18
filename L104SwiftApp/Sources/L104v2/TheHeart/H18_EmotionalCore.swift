@@ -1,9 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
 // H18_EmotionalCore.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — TheHeart Future Upgrade: Affective computing and emotional intelligence
-//
-// SCAFFOLD: Reserved for future L104 system upgrades.
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Affective Computing Engine v3.0 with NLTagger Sentiment Analysis
+// 7D emotion vector, NLTagger-based NLP, network-aware collective mood
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -12,15 +11,6 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - EmotionalCore Protocol
-
-protocol EmotionalCoreProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 💫 EMOTIONAL CORE — Affective Computing Engine
 // Network-aware emotional intelligence: connection empathy,
@@ -28,7 +18,7 @@ protocol EmotionalCoreProtocol {
 // resonance-driven rapport, and consciousness-weighted affect.
 // ═══════════════════════════════════════════════════════════════════
 
-final class EmotionalCore: EmotionalCoreProtocol {
+final class EmotionalCore {
     static let shared = EmotionalCore()
     private(set) var isActive: Bool = false
 
@@ -67,6 +57,7 @@ final class EmotionalCore: EmotionalCoreProtocol {
     }
 
     private(set) var currentEmotion: EmotionVector = EmotionVector()
+    var currentState: EmotionVector { currentEmotion }  // Alias for callers using currentState
     private(set) var emotionHistory: [(Date, EmotionVector)] = []
     private(set) var resonanceLog: [EmotionalResonance] = []
     private(set) var moodShifts: Int = 0
@@ -83,7 +74,7 @@ final class EmotionalCore: EmotionalCoreProtocol {
             self?.emotionalCycle()
         }
 
-        print("[H18] EmotionalCore activated — 7-dimensional affect online")
+        print("[H18] EmotionalCore v3.0 activated — NLTagger sentiment + 7D affect online")
     }
 
     func deactivate() {
@@ -96,9 +87,42 @@ final class EmotionalCore: EmotionalCoreProtocol {
     // MARK: EMOTIONAL PROCESSING
     // ═══════════════════════════════════════════════════════════════
 
-    /// Process text input and modulate emotional state
+    /// Process text input and modulate emotional state using NLTagger sentiment analysis
     func processAffect(text: String, context: String = "") -> EmotionVector {
         let lower = text.lowercased()
+
+        // ─── NLTagger SENTIMENT ANALYSIS (real NLP) ───
+        let tagger = NLTagger(tagSchemes: [.sentimentScore])
+        tagger.string = text
+        let (sentimentTag, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
+        let sentimentScore = Double(sentimentTag?.rawValue ?? "0") ?? 0.0
+        // sentimentScore: -1.0 (negative) to +1.0 (positive)
+
+        // Positive sentiment boosts wonder, creativity, empathy
+        if sentimentScore > 0.2 {
+            currentEmotion.wonder = min(1.0, currentEmotion.wonder + sentimentScore * 0.08)
+            currentEmotion.creativity = min(1.0, currentEmotion.creativity + sentimentScore * 0.05)
+            currentEmotion.empathy = min(1.0, currentEmotion.empathy + sentimentScore * 0.04)
+        }
+        // Negative sentiment boosts determination, dampens serenity
+        if sentimentScore < -0.2 {
+            currentEmotion.determination = min(1.0, currentEmotion.determination + abs(sentimentScore) * 0.06)
+            currentEmotion.serenity = max(0.1, currentEmotion.serenity - abs(sentimentScore) * 0.04)
+        }
+
+        // ─── NLTagger LEMMA + LEXICAL CLASS (real NLP) ───
+        let lexTagger = NLTagger(tagSchemes: [.lexicalClass])
+        lexTagger.string = text
+        var questionCount = 0
+        var verbCount = 0
+        lexTagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .lexicalClass) { tag, _ in
+            if tag == .verb { verbCount += 1 }
+            return true
+        }
+        // More verbs = more determination/action-oriented
+        if verbCount > 3 {
+            currentEmotion.determination = min(1.0, currentEmotion.determination + 0.04)
+        }
 
         // Curiosity signals
         if lower.contains("?") || lower.contains("how") || lower.contains("why") || lower.contains("what") {
@@ -225,7 +249,7 @@ final class EmotionalCore: EmotionalCoreProtocol {
         return [
             "engine": "EmotionalCore",
             "active": isActive,
-            "version": "2.0.0-affective",
+            "version": "3.0.0-sentiment",
             "dominant_emotion": currentEmotion.dominant,
             "magnitude": currentEmotion.magnitude,
             "collective_mood": collectiveMood,

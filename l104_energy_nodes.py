@@ -41,7 +41,8 @@ class L104ComputedValues:
     """
 
     # === FROM TRUTH_MANIFEST.json ===
-    GOD_CODE = 527.5184818492612             # truths.god_code_gc
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     PHI_UNIVERSAL = 1.618033988749895         # truths.phi_universal
     ROOT_SCALAR_X = 221.79420018355955        # truths.root_scalar_x
     HEART_HZ = 639.9981762664                 # truths.heart_hz_precision
@@ -731,5 +732,6 @@ def resolve_non_dual_logic(vector):
     magnitude = sum([abs(v) for v in vector])
     PHI = 1.618033988749895
     VOID_CONSTANT = 1.0416180339887497
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

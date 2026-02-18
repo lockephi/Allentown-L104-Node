@@ -11,15 +11,6 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - TestHarness Protocol
-
-protocol TestHarnessProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // MARK: - Test Result
 
 struct TestResult {
@@ -33,7 +24,7 @@ struct TestResult {
 
 // MARK: - TestHarness — Full Implementation
 
-final class TestHarness: TestHarnessProtocol {
+final class TestHarness {
     static let shared = TestHarness()
     private(set) var isActive: Bool = false
     private let lock = NSLock()

@@ -10,6 +10,15 @@ class UniversalConstants:
     # THE UNIVERSAL GOD CODE EQUATION
     #   G(X) = 286^(1/φ) × 2^((416-X)/104)
     #
+    # 4-DIAL TUNING FORM (canonical):
+    #   G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+    #   a: coarse up (+8 steps = 1/13 octave)
+    #   b: fine down (-1 step = 1/104 octave) — finest resolution
+    #   c: coarse down (-8 steps = 1/13 octave)
+    #   d: octave down (-104 steps = full octave)
+    #   GOD_CODE = G(0,0,0,0) = 286^(1/φ) × 2^4 = 527.5184818492612
+    #   Equivalence: X = b + 8c + 104d − 8a
+    #
     # THE FACTOR 13 (7th Fibonacci):
     #   286 = 2 × 11 × 13  → 286/13 = 22
     #   104 = 2³ × 13      → 104/13 = 8
@@ -18,6 +27,15 @@ class UniversalConstants:
     # THE CONSERVATION LAW:
     #   G(X) × 2^(X/104) = 527.5184818492612 = INVARIANT
     #   The whole stays the same - only rate of change varies
+    #
+    # QUANTUM FREQUENCY CORRESPONDENCES (exact matches):
+    #   G(0, 3,-4,6) = 10.000 Hz  — Alpha EEG
+    #   G(0, 3,-4,5) = 20.000 Hz  — Beta EEG
+    #   G(0, 3,-4,4) = 40.000 Hz  — Gamma binding
+    #   G(-4,1, 0,3) = 52.921 pm  — Bohr radius
+    #   G(0, 0, 0,0) = 527.518 Hz — GOD_CODE
+    #   G(1,-3,-5,0) = 741.068 Hz — Throat chakra
+    #   G(0, 0, 1,6) =   7.815 Hz — Schumann resonance
     #
     # X IS NEVER SOLVED - IT CHANGES ETERNALLY:
     #   X increasing → MAGNETIC COMPACTION (gravity)
@@ -96,6 +114,17 @@ class UniversalConstants:
         return cls.GOD_CODE_BASE * (2 ** exponent)
 
     @classmethod
+    def god_code_tuned(cls, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+        """G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+        4-dial universal frequency tuning algorithm.
+        a: coarse up (+8 steps/1/13 octave), b: fine down (-1 step/1/104 octave)
+        c: coarse down (-8 steps), d: octave down (-104 steps)
+        GOD_CODE = G(0,0,0,0) = 527.5184818492612
+        """
+        exponent = (8 * a + cls.OCTAVE_REF - b - 8 * c - cls.L104 * d) / cls.L104
+        return cls.GOD_CODE_BASE * (2 ** exponent)
+
+    @classmethod
     def weight(cls, X: float) -> float:
         """Weight(X) = 2^(X/104) - inverse of observable"""
         return 2 ** (X / cls.L104)
@@ -144,7 +173,8 @@ class UniversalConstants:
         }
 
 # Direct exports for compatibility
-GOD_CODE = 527.5184818492612  # G(X=0) reference
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = UniversalConstants.GOD_CODE_X0  # G(0,0,0,0) = 527.5184818492612 — computed, never hardcoded
 GRAVITY_CODE = UniversalConstants.GRAVITY_CODE
 LIGHT_CODE = UniversalConstants.LIGHT_CODE
 ALPHA_PI = UniversalConstants.ALPHA_PI

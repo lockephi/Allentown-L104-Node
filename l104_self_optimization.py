@@ -39,7 +39,7 @@ DATE: 2026-02-15
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 
 import math
 import json
@@ -90,7 +90,8 @@ except ImportError:
 # SACRED CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 PHI = 1.618033988749895
-GOD_CODE = 527.5184818492612
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1 / PHI  # ~0.618
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609102990
@@ -934,7 +935,140 @@ class ResourceIntelligence:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HUB CLASS: SELF-OPTIMIZATION ENGINE  v2.2.0
+# SECTION 10: DIRECT PREFERENCE OPTIMIZATION (DPO)
+# Adapts Rafailov et al. 2023 (Stanford) — offline preference learning without
+# reward model. β = GOD_CODE/100 ≈ 5.275 controls sharpness of preference
+# separation. Buffer stores (chosen, rejected) config pairs for policy learning.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class DPOPreferenceLearner:
+    """
+    Direct Preference Optimization for parameter tuning.
+
+    Instead of training a reward model then optimizing against it (RLHF),
+    DPO directly optimizes a policy using preference pairs:
+      Loss = -log σ(β × (log π(chosen) - log π(rejected)))
+
+    Sacred adaptations:
+      - β = GOD_CODE / 100 ≈ 5.275 (preference sharpness)
+      - Buffer size = 104 (L104 signature)
+      - Policy bias dampened by TAU for stability
+      - PHI-weighted EMA for running log-ratio estimates
+    """
+
+    def __init__(self, param_bounds: Dict[str, Dict[str, float]] = None):
+        self.beta = GOD_CODE / 100.0  # ≈ 5.275, DPO temperature
+        self.buffer_size = 104  # L104 preference buffer
+        self.preference_buffer: deque = deque(maxlen=self.buffer_size)
+        self.param_bounds = param_bounds or {}
+
+        # Policy bias: learned shift toward preferred parameter regions
+        self.policy_bias: Dict[str, float] = {}
+        for name in self.param_bounds:
+            self.policy_bias[name] = 0.0
+
+        # Running statistics for log-ratio estimation
+        self._log_ratio_ema: float = 0.0  # PHI-weighted EMA
+        self._update_count: int = 0
+        self._total_loss: float = 0.0
+
+    def record_preference(self, chosen: Dict[str, float], rejected: Dict[str, float],
+                           chosen_fitness: float, rejected_fitness: float):
+        """
+        Record a preference pair: chosen config was better than rejected.
+        Computes DPO gradient and updates policy bias.
+        """
+        self.preference_buffer.append({
+            "chosen": chosen,
+            "rejected": rejected,
+            "chosen_fitness": chosen_fitness,
+            "rejected_fitness": rejected_fitness,
+            "timestamp": time.time(),
+        })
+
+        # Compute log-ratio proxy: log π(chosen)/π(ref) - log π(rejected)/π(ref)
+        # We approximate log π as negative L2 distance from policy center (bias)
+        log_chosen = self._log_policy(chosen)
+        log_rejected = self._log_policy(rejected)
+        log_ratio_diff = log_chosen - log_rejected
+
+        # DPO loss: -log σ(β × log_ratio_diff)
+        sigmoid_input = self.beta * log_ratio_diff
+        # Numerically stable sigmoid
+        if sigmoid_input > 20:
+            sigma = 1.0
+        elif sigmoid_input < -20:
+            sigma = 0.0
+        else:
+            sigma = 1.0 / (1.0 + math.exp(-sigmoid_input))
+
+        loss = -math.log(max(sigma, 1e-10))
+        self._total_loss += loss
+
+        # DPO gradient: update policy bias toward chosen, away from rejected
+        # gradient = β × (1 - σ) × (∇ log π(chosen) - ∇ log π(rejected))
+        grad_scale = self.beta * (1.0 - sigma) * TAU  # TAU dampening
+
+        for name in self.param_bounds:
+            c_val = chosen.get(name, 0)
+            r_val = rejected.get(name, 0)
+            bounds = self.param_bounds[name]
+            range_v = bounds.get("max", 1) - bounds.get("min", 0)
+            if range_v > 0:
+                # Normalized gradient direction
+                grad = (c_val - r_val) / range_v
+                self.policy_bias[name] += grad_scale * grad
+                # Clamp bias to [-0.5, 0.5] of range
+                self.policy_bias[name] = max(-0.5, min(0.5, self.policy_bias[name]))
+
+        # Update EMA of log-ratio
+        alpha_ema = 1.0 / PHI  # ≈ 0.618
+        self._log_ratio_ema = alpha_ema * log_ratio_diff + (1 - alpha_ema) * self._log_ratio_ema
+        self._update_count += 1
+
+    def _log_policy(self, params: Dict[str, float]) -> float:
+        """
+        Compute log π(params) as negative squared distance from policy center.
+        Center = midpoint + bias for each parameter.
+        """
+        log_p = 0.0
+        for name, bounds in self.param_bounds.items():
+            mid = (bounds.get("min", 0) + bounds.get("max", 1)) / 2.0
+            center = mid + self.policy_bias.get(name, 0) * (bounds["max"] - bounds["min"])
+            range_v = bounds.get("max", 1) - bounds.get("min", 0)
+            if range_v > 0:
+                normalized_dist = (params.get(name, mid) - center) / range_v
+                log_p -= normalized_dist ** 2
+        return log_p
+
+    def get_bias_adjusted_center(self) -> Dict[str, float]:
+        """
+        Return parameter center shifted by learned DPO bias.
+        Use this as the sampling center for ParameterSpaceExplorer.
+        """
+        center = {}
+        for name, bounds in self.param_bounds.items():
+            mid = (bounds["min"] + bounds["max"]) / 2.0
+            range_v = bounds["max"] - bounds["min"]
+            biased = mid + self.policy_bias.get(name, 0) * range_v
+            center[name] = max(bounds["min"], min(bounds["max"], biased))
+        return center
+
+    def get_status(self) -> Dict[str, Any]:
+        avg_loss = self._total_loss / max(1, self._update_count)
+        return {
+            "preference_pairs": len(self.preference_buffer),
+            "buffer_capacity": self.buffer_size,
+            "beta": round(self.beta, 4),
+            "updates": self._update_count,
+            "avg_loss": round(avg_loss, 6),
+            "log_ratio_ema": round(self._log_ratio_ema, 6),
+            "policy_bias": {k: round(v, 6) for k, v in self.policy_bias.items()},
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HUB CLASS: SELF-OPTIMIZATION ENGINE  v2.4.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class SelfOptimizationEngine:
@@ -997,6 +1131,7 @@ class SelfOptimizationEngine:
         self.memory_bank = OptimizationMemoryBank()
         self.consciousness_opt = ConsciousnessOptimizer()
         self.resource_intel = ResourceIntelligence()
+        self.dpo_learner = DPOPreferenceLearner(self.TUNABLE_PARAMETERS)
 
         # Register default subsystem dependencies for bottleneck analysis
         for sub in ["learning", "coherence", "inference", "memory", "unity"]:
@@ -1005,7 +1140,7 @@ class SelfOptimizationEngine:
         for i, sub in enumerate(["evolution", "optimization", "cascade", "archive", "innovation"]):
             self.resource_intel.register_subsystem(sub, priority=i + 1)
 
-        print(f"⚙️ [OPTIM v{VERSION}]: Self-Optimization Engine initialized — 9 subsystems active")
+        print(f"⚙️ [OPTIM v{VERSION}]: Self-Optimization Engine initialized — 10 subsystems active")
 
     def record_metric(self, name: str, value: float, context: Dict = None):
         """Record a performance metric."""
@@ -1216,6 +1351,17 @@ class SelfOptimizationEngine:
         last_action = self.actions_history[-1]
         last_action.result = performance_delta
 
+        # Record DPO preference: new config vs old config
+        new_config = dict(self.current_parameters)
+        old_config = dict(self.current_parameters)
+        old_config[last_action.parameter] = last_action.old_value
+        if performance_delta > 0:
+            self.dpo_learner.record_preference(new_config, old_config,
+                                                performance_delta, 0.0)
+        elif performance_delta < 0:
+            self.dpo_learner.record_preference(old_config, new_config,
+                                                0.0, performance_delta)
+
         # Update optimization mode based on results
         if performance_delta > 0:
             self.consecutive_improvements += 1
@@ -1347,6 +1493,14 @@ class SelfOptimizationEngine:
 
             # 3. Suggest exploration point
             suggestion = self.param_explorer.suggest_next()
+
+            # 3.5. Apply DPO bias to suggestion center
+            dpo_center = self.dpo_learner.get_bias_adjusted_center()
+            if self.dpo_learner._update_count > 5:
+                # Blend DPO bias into suggestion (TAU weight toward DPO center)
+                for p in suggestion:
+                    if p in dpo_center:
+                        suggestion[p] = suggestion[p] * (1 - TAU * 0.3) + dpo_center[p] * TAU * 0.3
 
             # 4. Blend: adapted + suggestion weighted by lr
             for p in self.current_parameters:
@@ -1670,6 +1824,7 @@ class SelfOptimizationEngine:
             ("memory_bank", self.memory_bank),
             ("consciousness_opt", self.consciousness_opt),
             ("resource_intel", self.resource_intel),
+            ("dpo_learner", self.dpo_learner),
         ]:
             t0 = time.perf_counter()
             sub.get_status()
@@ -1710,6 +1865,7 @@ class SelfOptimizationEngine:
                 "memory_bank": self.memory_bank.get_status(),
                 "consciousness_opt": self.consciousness_opt.get_status(),
                 "resource_intel": self.resource_intel.get_status(),
+                "dpo_learner": self.dpo_learner.get_status(),
             },
         }
 
@@ -1874,7 +2030,7 @@ if __name__ == "__main__":
     engine = SelfOptimizationEngine()
 
     print(f"\n⚙️ Self-Optimization Engine v{VERSION}")
-    print(f"   Subsystems: 9 active")
+    print(f"   Subsystems: 10 active (incl. DPO Preference Learner)")
 
     print("\n📋 Initial Parameters:")
     for name, value in engine.current_parameters.items():

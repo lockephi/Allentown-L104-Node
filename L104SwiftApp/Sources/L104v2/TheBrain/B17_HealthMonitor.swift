@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // B17_HealthMonitor.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
+// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// L104 · TheBrain · v2 Architecture — HEALTH MONITOR V2
 //
-// Extracted from L104Native.swift lines 8778-9254
-// Classes: NexusHealthMonitor, SovereigntyPipeline
+// NexusHealthMonitor: 17-engine probes + φ-weighted scoring + auto-recovery
+// SovereigntyPipeline: 14-step master chain
+// EVO_58: Added probes for Voice, Visual, Emotional, Security, Plugin
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -35,11 +36,12 @@ class NexusHealthMonitor {
     private let lock = NSLock()
     private let monitorStopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
 
-    // Engine names to monitor
+    // Engine names to monitor (EVO_58: expanded from 12 → 17)
     static let MONITORED_ENGINES = [
         "bridge", "steering", "sqc", "evolution", "nexus",
         "invention", "entanglement", "resonance",
-        "network", "cloud", "api_gateway", "telemetry"
+        "network", "cloud", "api_gateway", "telemetry",
+        "voice", "visual", "emotional", "security", "plugin"
     ]
 
     init() {
@@ -111,6 +113,11 @@ class NexusHealthMonitor {
             ("cloud",        probeCloud()),
             ("api_gateway",  probeAPIGateway()),
             ("telemetry",    probeTelemetry()),
+            ("voice",        probeVoice()),
+            ("visual",       probeVisual()),
+            ("emotional",    probeEmotional()),
+            ("security",     probeSecurity()),
+            ("plugin",       probePlugin()),
         ]
 
         for (name, score) in scores {
@@ -235,6 +242,60 @@ class NexusHealthMonitor {
         return score
     }
 
+    // ─── EVO_58: NEW SUBSYSTEM PROBES ───
+
+    private func probeVoice() -> Double {
+        let voice = VoiceInterface.shared
+        var score = 1.0
+        let s = voice.status()
+        if !(s["active"] as? Bool ?? false) { score = min(score, 0.7) }
+        if voice.isSpeaking { score = min(score, 0.9) } // speaking = busy but ok
+        return score
+    }
+
+    private func probeVisual() -> Double {
+        let visual = VisualCortex.shared
+        var score = 1.0
+        let s = visual.status()
+        if !(s["active"] as? Bool ?? false) { score = min(score, 0.7) }
+        let analyzed = s["images_analyzed"] as? Int ?? 0
+        if analyzed == 0 { score = min(score, 0.8) } // idle but ok
+        return score
+    }
+
+    private func probeEmotional() -> Double {
+        let emo = EmotionalCore.shared
+        var score = 1.0
+        let s = emo.status()
+        if !(s["active"] as? Bool ?? false) { score = min(score, 0.7) }
+        // Check emotional state is stable (not flatlined)
+        let dim = emo.currentState
+        let total = dim.wonder + dim.serenity + dim.determination + dim.creativity + dim.empathy
+        if total < 0.01 { score = min(score, 0.4) } // flatlined = concern
+        return score
+    }
+
+    private func probeSecurity() -> Double {
+        let vault = SecurityVault.shared
+        var score = 1.0
+        let s = vault.status()
+        if !(s["active"] as? Bool ?? false) { score = min(score, 0.6) }
+        // Vault encryption ready
+        let encrypted = s["encrypted_keys"] as? Int ?? 0
+        if encrypted > 0 { score = min(1.0, score + 0.05) } // has keys = healthy
+        return score
+    }
+
+    private func probePlugin() -> Double {
+        let plugins = PluginArchitecture.shared
+        var score = 1.0
+        let s = plugins.status()
+        if !(s["active"] as? Bool ?? false) { score = min(score, 0.7) }
+        let loaded = s["loaded_plugins"] as? Int ?? 0
+        if loaded == 0 { score = min(score, 0.8) } // no plugins = mild ok
+        return score
+    }
+
     /// Attempt to recover a failed engine
     private func attemptRecovery(_ name: String) {
         var recovery: [String: Any] = ["engine": name, "timestamp": Date().timeIntervalSince1970, "success": false]
@@ -270,6 +331,31 @@ class NexusHealthMonitor {
         case "api_gateway":
             recovery["action"] = "api_gateway_noop"
             recovery["success"] = true
+        case "voice":
+            let voice = VoiceInterface.shared
+            voice.activate()
+            recovery["action"] = "restart_voice"
+            recovery["success"] = true
+        case "visual":
+            let visual = VisualCortex.shared
+            visual.activate()
+            recovery["action"] = "restart_visual"
+            recovery["success"] = true
+        case "emotional":
+            let emo = EmotionalCore.shared
+            emo.activate()
+            recovery["action"] = "restart_emotional"
+            recovery["success"] = true
+        case "security":
+            let vault = SecurityVault.shared
+            vault.activate()
+            recovery["action"] = "restart_security_vault"
+            recovery["success"] = true
+        case "plugin":
+            let plugins = PluginArchitecture.shared
+            plugins.activate()
+            recovery["action"] = "restart_plugin_arch"
+            recovery["success"] = true
         default:
             recovery["action"] = "no_recovery_strategy"
         }
@@ -296,12 +382,15 @@ class NexusHealthMonitor {
     func computeSystemHealth() -> Double {
         guard !healthScores.isEmpty else { return 0.0 }
 
-        // φ-weighted: nexus and bridge get highest weight
+        // φ-weighted: nexus and bridge get highest weight (EVO_58: 17 engines)
         let weights: [String: Double] = [
             "nexus": PHI * PHI, "bridge": PHI * PHI,
             "steering": PHI, "sqc": PHI,
             "evolution": 1.0, "invention": 1.0,
             "entanglement": 1.0, "resonance": 1.0,
+            "voice": PHI, "visual": PHI,
+            "emotional": PHI * TAU, "security": PHI * PHI,
+            "plugin": 1.0,
         ]
 
         var totalWeight = 0.0

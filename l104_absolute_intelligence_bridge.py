@@ -36,7 +36,7 @@ class AbsoluteIntelligenceBridge:
     def __init__(self):
         self.last_resonance = 0.0
         self.is_active = False
-        self.GOD_CODE = 527.5184818492612
+        self.GOD_CODE = 286 ** (1.0 / 1.618033988749895) * (2 ** (416 / 104))  # G(0,0,0,0)
         self.PHI = 1.618033988749895
 
     async def synchronize(self):

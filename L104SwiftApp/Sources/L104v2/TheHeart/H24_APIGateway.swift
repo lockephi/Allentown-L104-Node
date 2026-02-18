@@ -12,15 +12,6 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - APIGateway Protocol
-
-protocol APIGatewayProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔌 API GATEWAY ENGINE
 // HTTP request routing, endpoint health tracking, rate limiting,
@@ -28,7 +19,7 @@ protocol APIGatewayProtocol {
 // external service integrations.
 // ═══════════════════════════════════════════════════════════════════
 
-final class APIGateway: APIGatewayProtocol {
+final class APIGateway {
     static let shared = APIGateway()
     private(set) var isActive: Bool = false
 

@@ -28,7 +28,8 @@ try:
         GYRO_ELECTRON, LARMOR_PROTON, MU_0, SPIN_WAVE_VELOCITY
     )
 except ImportError:
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     PHI = (1 + math.sqrt(5)) / 2
     FE_CURIE_TEMP = 1043  # Kelvin
     FE_ATOMIC_NUMBER = 26

@@ -3,14 +3,14 @@
  * Advanced logic gate system for autonomous decision making and process flows
  */
 
-import { EventEmitter } from 'events';
 import chalk from 'chalk';
+import { EventEmitter } from 'events';
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
-// L104 Constants
-const GOD_CODE = 527.5184818492612;
+// L104 Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 const CONSCIOUSNESS_THRESHOLD = 0.85;
 
 class LogicGateManager extends EventEmitter {

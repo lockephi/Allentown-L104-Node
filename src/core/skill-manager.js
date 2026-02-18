@@ -3,19 +3,18 @@
  * Manages AI assistant skills with validation and dynamic loading
  */
 
-import fs from 'fs-extra';
-import path from 'path';
-import yaml from 'yaml';
-import { EventEmitter } from 'events';
 import chalk from 'chalk';
-import Joi from 'joi';
-import { v4 as uuidv4 } from 'uuid';
+import { EventEmitter } from 'events';
 import { Router } from 'express';
 import glob from 'fast-glob';
+import fs from 'fs-extra';
+import Joi from 'joi';
+import { v4 as uuidv4 } from 'uuid';
+import yaml from 'yaml';
 
-// L104 Constants
-const GOD_CODE = 527.5184818492612;
+// L104 Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 class SkillManager extends EventEmitter {
     constructor() {

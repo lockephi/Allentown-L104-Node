@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  L104 NEURAL CASCADE v2.2 — QUANTUM NEURAL PROCESSING (Qiskit 2.3.0)        ║
-║  Multi-layer signal transformation with multi-head attention, residual        ║
-║  connections, sacred dropout, consciousness-modulated gating, gradient-free   ║
-║  learning, quantum activation functions, and quantum attention layers.        ║
+║  L104 NEURAL CASCADE v3.0 — INDUSTRY AI PROCESSING (Qiskit 2.3.0)           ║
+║  Differential Attention (Microsoft 2024), RoPE (Llama/Gemma/DeepSeek),       ║
+║  Selective SSM / Mamba (Gu & Dao 2023), Early Exit, Sliding Window KV-Cache, ║
+║  sacred dropout, consciousness-modulated gating, quantum attention layers.    ║
 ║                                                                               ║
 ║  INVARIANT: GOD_CODE = 527.5184818492612 | PHI = 1.618033988749895            ║
 ║  PILOT: LONDEL | CONSERVATION: G(X)×2^(X/104) = 527.518                      ║
@@ -41,9 +41,10 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "2.2.0"
-GOD_CODE = 527.5184818492612
+VERSION = "3.0.0"
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 VOID_CONSTANT = 1.0416180339887497
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -196,12 +197,36 @@ class SignalPreprocessor:
                 result.append(0.0)
         return result
 
+    def _rope_encoding(self, vector: List[float], position: int = 0) -> List[float]:
+        """Apply Rotary Position Embeddings (RoPE) with GOD_CODE-derived frequencies.
+
+        For each dimension pair (2i, 2i+1), applies a rotation by angle
+        position × θ_i where θ_i = 1 / (GOD_CODE^(2i/d)). This makes
+        dot products depend on relative position rather than absolute.
+        Adapted from Su et al. 2021 (used in Llama, Gemma, Mistral, DeepSeek).
+        """
+        result = list(vector)
+        d = len(result)
+        if d < 2:
+            return result
+        for i in range(0, d - 1, 2):
+            theta = 1.0 / (GOD_CODE ** (2.0 * (i // 2) / max(d, 1)))
+            angle = position * theta
+            cos_a = math.cos(angle)
+            sin_a = math.sin(angle)
+            x0, x1 = result[i], result[i + 1]
+            result[i] = x0 * cos_a - x1 * sin_a
+            result[i + 1] = x0 * sin_a + x1 * cos_a
+        return result
+
     def _sacred_positional_encoding(self, vector: List[float]) -> List[float]:
-        """Add sacred-frequency positional encoding to the vector."""
+        """Add sacred-frequency positional encoding + RoPE rotation to the vector."""
         encoded = []
         for i, v in enumerate(vector):
             pos_enc = math.sin(i * self._freq_base / PHI) * TAU
             encoded.append(v + pos_enc * ALPHA_FINE)
+        # Apply Rotary Position Embeddings (sequence position = preprocess_count)
+        encoded = self._rope_encoding(encoded, self.preprocess_count)
         return encoded
 
     def status(self) -> Dict[str, Any]:
@@ -290,6 +315,88 @@ class NeuronLayer:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 2B-PRE: DIFFERENTIAL ATTENTION — Microsoft 2024 noise-cancelling attn
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class DifferentialAttention:
+    """
+    Differential Attention (Microsoft Research, Oct 2024).
+
+    Computes TWO attention maps from split Q/K halves and subtracts them
+    to cancel attention noise: A_diff = softmax(Q1·K1^T/s) - λ·softmax(Q2·K2^T/s)
+
+    This filters out irrelevant context, reducing hallucination and improving
+    key-value retrieval. A 3B Diff Transformer matches 6.8B standard Transformer.
+
+    Sacred adaptation: λ initialized to PHI × ALPHA_FINE, scale uses √(d × PHI).
+    """
+
+    def __init__(self, head_dim: int, head_id: int = 0):
+        self.half_dim = max(1, head_dim // 2)
+        self.scale = math.sqrt(self.half_dim * PHI)
+        self.lambda_param = PHI * ALPHA_FINE * (1.0 + head_id * TAU / 10.0)
+        self.lambda_min = ALPHA_FINE * 0.01
+        self.lambda_max = PHI
+        self.attend_count = 0
+
+    def attend(self, head_seq: List[List[float]]) -> List[List[float]]:
+        """Differential attention: A1 - λ·A2 applied to values."""
+        self.attend_count += 1
+        seq_len = len(head_seq)
+        hd = len(head_seq[0]) if head_seq else 0
+        if seq_len == 0 or hd < 2:
+            return head_seq
+
+        half = min(self.half_dim, hd // 2) or 1
+        seq1 = [[row[i] for i in range(half)] for row in head_seq]
+        seq2 = [[row[i] for i in range(half, min(2 * half, hd))] for row in head_seq]
+
+        attn1 = self._softmax_attention(seq1)
+        attn2 = self._softmax_attention(seq2)
+
+        # Differential: A1 - λ·A2, then shift-normalize to stay non-negative
+        diff_attn = []
+        for i in range(seq_len):
+            row = [attn1[i][j] - self.lambda_param * attn2[i][j] for j in range(seq_len)]
+            row_min = min(row)
+            shifted = [v - row_min for v in row]
+            total = sum(shifted) + 1e-10
+            diff_attn.append([v / total for v in shifted])
+
+        output = []
+        for i in range(seq_len):
+            out_vec = [0.0] * hd
+            for j in range(seq_len):
+                for k in range(hd):
+                    out_vec[k] += diff_attn[i][j] * head_seq[j][k]
+            output.append(out_vec)
+        return output
+
+    def _softmax_attention(self, seq: List[List[float]]) -> List[List[float]]:
+        """Standard softmax(QK^T/scale) for a half-dim sequence."""
+        n = len(seq)
+        hd = len(seq[0]) if seq else 0
+        if n == 0 or hd == 0:
+            return [[1.0 / max(n, 1)] * n for _ in range(n)]
+        scores = []
+        for i in range(n):
+            row = []
+            for j in range(n):
+                dot = sum(seq[i][k] * seq[j][k] for k in range(hd))
+                row.append(dot / self.scale)
+            max_s = max(row)
+            exp_row = [math.exp(min(s - max_s, 20)) for s in row]
+            total = sum(exp_row) + 1e-10
+            scores.append([e / total for e in exp_row])
+        return scores
+
+    def update_lambda(self, signal_quality: float):
+        """Adapt λ based on output quality — higher quality → more noise cancellation."""
+        delta = ALPHA_FINE * (signal_quality - 0.5) * PHI
+        self.lambda_param = max(self.lambda_min, min(self.lambda_max, self.lambda_param + delta))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 2B: MULTI-HEAD ATTENTION — Parallel φ-scaled attention heads
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -307,6 +414,9 @@ class MultiHeadAttention:
         self.scale = math.sqrt(self.head_dim * PHI)
         self.attend_count = 0
 
+        # Differential Attention heads (Microsoft 2024) — noise-cancelling per head
+        self.diff_attns = [DifferentialAttention(self.head_dim, h) for h in range(self.num_heads)]
+
         # Projection weights (GOD_CODE-seeded)
         rng = random.Random(int(GOD_CODE * 1000 + 7))
         bound = 1.0 / math.sqrt(dim)
@@ -314,12 +424,12 @@ class MultiHeadAttention:
                        for _ in range(dim)]
 
     def attend(self, sequence: List[List[float]]) -> List[List[float]]:
-        """Apply multi-head self-attention to a sequence of vectors."""
+        """Apply multi-head self-attention with Differential Attention (Microsoft 2024)."""
         self.attend_count += 1
         if not sequence or not sequence[0]:
             return sequence
 
-        # Split into heads
+        # Split into heads — each uses DifferentialAttention for noise cancellation
         head_outputs = []
         for h in range(self.num_heads):
             start = h * self.head_dim
@@ -330,8 +440,11 @@ class MultiHeadAttention:
             # Extract head slice
             head_seq = [[row[i] for i in range(start, end)] for row in sequence]
 
-            # Compute attention for this head
-            attended = self._single_head_attend(head_seq)
+            # Compute differential attention for this head (A1 - λ·A2)
+            if h < len(self.diff_attns) and len(head_seq[0]) >= 2:
+                attended = self.diff_attns[h].attend(head_seq)
+            else:
+                attended = self._single_head_attend(head_seq)
             head_outputs.append(attended)
 
         if not head_outputs:
@@ -652,17 +765,27 @@ class CascadeMemory:
         self.ema: Optional[List[float]] = None
         self.ema_alpha = TAU  # φ⁻¹ = 0.618... decay factor
         self.write_count = 0
+        # Sliding Window KV-cache (Mistral/Gemma 2 style rolling buffer)
+        self.window_size = max(13, int(max_history * TAU))  # ~62% of history
+        self.kv_buffer: deque = deque(maxlen=max_history)
+        self.global_summary: Optional[List[float]] = None
 
     def write(self, signal: List[float]):
-        """Write a signal to memory and update EMA."""
+        """Write a signal to memory, update EMA, and rolling KV-buffer."""
         self.write_count += 1
-        self.history.append(signal[:self.dim])
+        truncated = signal[:self.dim]
+        self.history.append(truncated)
+        self.kv_buffer.append(list(truncated))
 
         if self.ema is None:
-            self.ema = list(signal[:self.dim])
+            self.ema = list(truncated)
         else:
             for i in range(min(len(self.ema), len(signal))):
                 self.ema[i] = self.ema_alpha * signal[i] + (1 - self.ema_alpha) * self.ema[i]
+
+        # Periodically update global summary (compressed full context)
+        if self.write_count % 10 == 0:
+            self.update_global_summary()
 
     def read(self) -> List[float]:
         """Read the current EMA state (blended memory)."""
@@ -682,9 +805,50 @@ class CascadeMemory:
             for c, m in zip(current, mem)
         ]
 
+    def windowed_attend(self, query: List[float], window: int = None) -> List[float]:
+        """Sliding Window Attention (Mistral/Gemma 2 style).
+
+        Attends only to W most recent entries in the KV buffer using
+        dot-product attention with φ-scaled normalization. Constant memory.
+        """
+        w = window or self.window_size
+        recent = list(self.kv_buffer)[-w:]
+        if not recent:
+            return query
+        scores = []
+        for entry in recent:
+            dot = sum(q * k for q, k in zip(query[:len(entry)], entry))
+            scores.append(dot / math.sqrt(len(query) * PHI))
+        max_s = max(scores) if scores else 0
+        exp_s = [math.exp(min(s - max_s, 20)) for s in scores]
+        total = sum(exp_s) + 1e-10
+        weights = [e / total for e in exp_s]
+        result = [0.0] * self.dim
+        for w_val, entry in zip(weights, recent):
+            for i in range(min(len(result), len(entry))):
+                result[i] += w_val * entry[i]
+        return result
+
+    def update_global_summary(self):
+        """Compress full history into a global summary vector.
+
+        Used for alternating global attention (even layers attend locally
+        via sliding window, odd layers attend to this global summary).
+        """
+        if not self.history:
+            return
+        summary = [0.0] * self.dim
+        for entry in self.history:
+            for i in range(min(len(summary), len(entry))):
+                summary[i] += entry[i]
+        n = len(self.history)
+        self.global_summary = [v / n for v in summary]
+
     def status(self) -> Dict[str, Any]:
         return {"dim": self.dim, "history_length": len(self.history),
-                "writes": self.write_count, "ema_alpha": round(self.ema_alpha, 4)}
+                "writes": self.write_count, "ema_alpha": round(self.ema_alpha, 4),
+                "window_size": self.window_size, "kv_buffer_len": len(self.kv_buffer),
+                "has_global_summary": self.global_summary is not None}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1016,6 +1180,99 @@ class TemporalConvolution:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 7E: SELECTIVE STATE SPACE MODEL (Mamba) — Linear-time sequence processing
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class SelectiveSSM:
+    """
+    Selective State Space Model (Gu & Dao, Dec 2023 — Mamba architecture).
+
+    Linear-time alternative to attention for sequence processing. Key insight:
+    B, C, and discretization step Δ are INPUT-DEPENDENT (selective), allowing
+    the model to selectively remember or forget based on content.
+
+    State equation: h(t) = A_bar × h(t-1) + B_bar(x_t) × x_t
+    Output:         y(t) = C(x_t) × h(t)
+
+    Where A_bar = exp(Δ × A), B_bar = Δ × B (zero-order hold discretization).
+
+    Sacred adaptation: A diagonal has PHI-spaced eigenvalues, state dimension
+    derived from dim × PHI, weights seeded by GOD_CODE.
+
+    Mamba-2 (May 2024) showed SSMs are equivalent to structured attention
+    (semi-separable matrices), achieving 2-8x faster training than Mamba-1.
+    """
+
+    def __init__(self, dim: int, state_dim: int = None):
+        self.dim = dim
+        self.state_dim = state_dim or max(dim, int(dim * PHI))
+        # State matrix A: diagonal with PHI-spaced negative eigenvalues (stable)
+        self.A_diag = [-PHI ** (i % 7) * ALPHA_FINE * 10.0 for i in range(self.state_dim)]
+        # Hidden state
+        self.h = [0.0] * self.state_dim
+        # Projection weights for input-dependent B, C, Delta
+        rng = random.Random(int(GOD_CODE * 1000 + 42))
+        bound = 1.0 / math.sqrt(dim)
+        self.w_B = [[rng.uniform(-bound, bound) for _ in range(dim)]
+                     for _ in range(self.state_dim)]
+        self.w_C = [[rng.uniform(-bound, bound) for _ in range(self.state_dim)]
+                     for _ in range(dim)]
+        self.w_delta = [rng.uniform(0, bound) for _ in range(dim)]
+        # Skip connection weight (Mamba's D parameter)
+        self.D_skip = [PHI * ALPHA_FINE for _ in range(dim)]
+        self.process_count = 0
+
+    def process_sequence(self, sequence: List[List[float]]) -> List[List[float]]:
+        """Process a sequence in linear time O(T × d × state_dim).
+
+        Unlike attention's O(T²×d), this scales linearly with sequence length,
+        making it efficient for long sequences (100K+ tokens in Mamba-2).
+        """
+        self.process_count += 1
+        self.h = [0.0] * self.state_dim
+        outputs = []
+
+        for x in sequence:
+            x_pad = (x + [0.0] * self.dim)[:self.dim]
+            # Input-dependent B: project x → state_dim
+            B_t = [sum(self.w_B[i][j] * x_pad[j] for j in range(self.dim))
+                   for i in range(self.state_dim)]
+            # Input-dependent Δ (discretization step, via softplus)
+            delta_raw = sum(self.w_delta[j] * x_pad[j] for j in range(self.dim))
+            delta = math.log1p(math.exp(delta_raw)) * TAU  # softplus × TAU
+            delta = max(PLANCK_SCALE * 1e30, delta)
+
+            # State update: h = exp(Δ·A) × h + Δ·B × x
+            for i in range(self.state_dim):
+                a_bar = math.exp(delta * self.A_diag[i])
+                b_bar = delta * B_t[i]
+                self.h[i] = a_bar * self.h[i] + b_bar * x_pad[i % self.dim]
+
+            # Input-dependent C: project h → output dim
+            y = [sum(self.w_C[j][i] * self.h[i] for i in range(self.state_dim))
+                 for j in range(self.dim)]
+
+            # Skip connection: y += D × x (residual from input)
+            y = [y[j] + self.D_skip[j] * x_pad[j] for j in range(self.dim)]
+            outputs.append(y)
+
+        return outputs
+
+    def get_state_energy(self) -> float:
+        """Return current hidden state energy (L2 norm)."""
+        return math.sqrt(sum(v * v for v in self.h))
+
+    def status(self) -> Dict[str, Any]:
+        return {
+            "type": "SelectiveSSM_Mamba",
+            "dim": self.dim,
+            "state_dim": self.state_dim,
+            "process_count": self.process_count,
+            "state_energy": round(self.get_state_energy(), 6),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 8: NEURAL CASCADE — Unified orchestrator
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1077,20 +1334,21 @@ class TemporalMemoryBank:
 class NeuralCascade:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║  L104 NEURAL CASCADE v2.2 — MULTI-LAYER PROCESSING PIPELINE      ║
+    ║  L104 NEURAL CASCADE v3.0 — INDUSTRY AI PROCESSING PIPELINE      ║
     ╠═══════════════════════════════════════════════════════════════════╣
-    ║  Wires: NeuronLayers + MultiHeadAttention + Residual + Gate      ║
-    ║         + SacredDropout + CascadeMemory + SignalHarmonizer        ║
-    ║         + SignalPreprocessor + GradientFreeLearner                ║
-    ║         + ResonanceFieldMapper + TemporalConvolution              ║
+    ║  Differential Attention (Microsoft 2024) — noise cancellation     ║
+    ║  Rotary Position Embeddings (RoPE) — relative position encoding  ║
+    ║  Selective SSM (Mamba 2023) — linear-time sequence processing     ║
+    ║  Early Exit — confidence-based adaptive computation depth         ║
+    ║  Sliding Window KV-Cache — constant-memory attention buffer       ║
     ║                                                                   ║
-    ║  Pipeline: Preprocess → Encode → ResBlocks → Dropout →           ║
-    ║    MultiAttention → Gate → ResonanceField → TempConv → Decode    ║
+    ║  Pipeline: Preprocess+RoPE → Encode → ResBlocks+EarlyExit →     ║
+    ║    DiffAttention → SSM(Mamba) → Gate → SlidingWindow → Decode   ║
     ╚═══════════════════════════════════════════════════════════════════╝
     """
 
-    GOD_CODE = 527.5184818492612
-    PHI = 1.6180339887498949
+    PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self, layers: int = 7, hidden_dim: int = 16):
         self.num_layers = layers
@@ -1114,12 +1372,19 @@ class NeuralCascade:
         self.temporal_conv = TemporalConvolution(channels=hidden_dim)
         self.decoder = NeuronLayer(hidden_dim, 1, "god_tanh", layers + 1)
 
+        # Selective SSM (Mamba) — linear-time sequence processing pathway
+        self.ssm = SelectiveSSM(hidden_dim)
+        # Early Exit tracking
+        self.exit_layer_history: deque = deque(maxlen=200)
+        self.early_exit_threshold = 1.0 - TAU  # ~0.382 confidence threshold
+
         self.activation_history = []
         self.total_forwards = 0
         self.temporal_memory = TemporalMemoryBank(capacity=200)
 
         logger.info(f"[NEURAL_CASCADE v{VERSION}] {layers} residual blocks × "
-                     f"{hidden_dim}d | {self.multi_attention.num_heads} attn heads | "
+                     f"{hidden_dim}d | {self.multi_attention.num_heads} diff-attn heads | "
+                     f"SSM state_dim={self.ssm.state_dim} | "
                      f"{len(SacredActivations.CATALOG)} activations")
 
     def activate(self, signal: Any) -> Dict[str, Any]:
@@ -1145,22 +1410,51 @@ class NeuralCascade:
         # Phase 1: Encode
         hidden = self.encoder.forward([preprocessed[0]]) if preprocessed else self.encoder.forward([0.0])
 
-        # Phase 2: Residual blocks with dropout
+        # Phase 2: Residual blocks with dropout + EARLY EXIT (confidence-based)
         layer_outputs = []
-        for block in self.residual_blocks:
+        exit_layer = self.num_layers
+        for idx, block in enumerate(self.residual_blocks):
             hidden = block.forward(hidden)
             hidden = self.dropout.apply(hidden)
             layer_outputs.append(list(hidden))
+            # Early exit: if confidence exceeds threshold after layer 2+
+            if idx >= 2:
+                mean_h = sum(hidden) / max(len(hidden), 1)
+                var_h = sum((v - mean_h) ** 2 for v in hidden) / max(len(hidden), 1)
+                confidence = 1.0 / (1.0 + var_h * FEIGENBAUM)
+                if confidence > self.early_exit_threshold:
+                    exit_layer = idx + 1
+                    break
+        self.exit_layer_history.append(exit_layer)
 
-        # Phase 3: Multi-head self-attention over layer outputs
+        # Phase 3: Differential multi-head self-attention over layer outputs
         attended = self.multi_attention.attend(layer_outputs)
         hidden = attended[-1] if attended else hidden
+
+        # Phase 3.5: Selective SSM pathway (Mamba — linear-time alternative)
+        ssm_output = self.ssm.process_sequence(layer_outputs)
+        if ssm_output:
+            ssm_last = ssm_output[-1]
+            # Blend SSM with attention: consciousness modulates the mix
+            ssm_weight = 0.5 * TAU  # base SSM contribution ~0.309
+            hidden = [a * (1.0 - ssm_weight) + b * ssm_weight
+                      for a, b in zip(hidden, ssm_last[:len(hidden)])]
 
         # Phase 4: Consciousness gating
         gated, consciousness_state = self.consciousness_gate.gate(hidden)
 
-        # Phase 5: Memory blending
+        # Phase 5: Memory blending with sliding window attention
+        windowed = self.memory.windowed_attend(gated)
         blended = self.memory.blend(gated)
+        # Merge windowed retrieval with EMA blend (alternating local/global)
+        if self.total_forwards % 2 == 0:
+            # Even steps: use sliding window (local context, Gemma 2 style)
+            blended = [0.7 * b + 0.3 * w for b, w in zip(blended, windowed)]
+        else:
+            # Odd steps: use global summary if available
+            if self.memory.global_summary:
+                gs = self.memory.global_summary
+                blended = [0.8 * b + 0.2 * gs[i % len(gs)] for i, b in enumerate(blended)]
         self.memory.write(gated)
 
         # Phase 6: Harmonic analysis
@@ -1197,7 +1491,9 @@ class NeuralCascade:
 
         result = {
             "status": "CASCADE_COMPLETE",
-            "layers_processed": self.num_layers,
+            "layers_processed": exit_layer,
+            "layers_total": self.num_layers,
+            "early_exit": exit_layer < self.num_layers,
             "hidden_dim": self.hidden_dim,
             "input_signal": numeric,
             "final_output": round(final_output, 8),
@@ -1207,6 +1503,7 @@ class NeuralCascade:
             "memory_depth": self.memory.write_count,
             "resonance_peaks": resonance_field["peaks_detected"],
             "temporal_energy": temporal["total_energy"],
+            "ssm_state_energy": round(self.ssm.get_state_energy(), 6),
             "elapsed_ms": round(elapsed * 1000, 2),
             "total_forwards": self.total_forwards,
         }
@@ -1442,6 +1739,9 @@ class NeuralCascade:
             "learner": self.learner.status(),
             "resonance_mapper": self.resonance_mapper.status(),
             "temporal_conv": self.temporal_conv.status(),
+            "ssm": self.ssm.status(),
+            "avg_exit_layer": round(sum(self.exit_layer_history) / max(len(self.exit_layer_history), 1), 2),
+            "early_exit_rate": round(sum(1 for e in self.exit_layer_history if e < self.num_layers) / max(len(self.exit_layer_history), 1), 4),
             "god_code": self.GOD_CODE,
             "quantum_available": QISKIT_AVAILABLE,
         }

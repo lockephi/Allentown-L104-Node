@@ -60,8 +60,8 @@ try:
     QUANTUM_INSPIRED_LINKED = True
 except ImportError:
     QUANTUM_INSPIRED_LINKED = False
-    GOD_CODE = 527.51848184926109297521
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
 try:
     from l104_quantum_reasoning import QuantumReasoningEngine, ReasoningPath
@@ -89,8 +89,8 @@ except ImportError:
 
 # Fallback constants if imports fail
 if not QUANTUM_INSPIRED_LINKED:
-    GOD_CODE = 527.51848184926109297521
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
 PHI_CONJUGATE = 0.618033988749895
 FACTOR_13 = 13  # Fibonacci 7

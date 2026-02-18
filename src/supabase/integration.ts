@@ -4,18 +4,17 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { EventEmitter } from 'events';
 import chalk from 'chalk';
+import { EventEmitter } from 'events';
 import type {
-  SupabaseConfig,
-  SupabaseTable,
-  RLSPolicy,
   Consciousness,
-  L104Result
+  L104Result,
+  SupabaseConfig,
+  SupabaseTable
 } from '../types/index.js';
 
-const GOD_CODE = 527.5184818492612;
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 export class L104SupabaseIntegration extends EventEmitter {
   private client: SupabaseClient | null = null;

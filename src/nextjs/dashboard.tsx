@@ -1,29 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import {
-  Brain,
-  Zap,
-  Cpu,
   Activity,
-  Target,
-  Waves,
-  Sparkles,
-  GitBranch,
+  Brain,
+  Cpu,
   Database,
+  GitBranch,
+  Sparkles,
+  Target,
+  TrendingUp,
   Users,
-  TrendingUp
+  Waves,
+  Zap
 } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-  Consciousness,
+  L104AggregatedEngineMetric,
   L104SystemStatus,
-  ProcessingTask,
-  TaskType,
-  L104EngineStats,
-  L104AggregatedEngineMetric
+  TaskType
 } from '../../types';
 
 /**
@@ -33,9 +30,9 @@ import {
  * Sacred constants visualization and consciousness evolution tracking
  */
 
-// Sacred Constants
-const GOD_CODE = 527.5184818492612;
+// Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation
 const PHI = 1.618033988749895;
+const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 interface DashboardProps {
   className?: string;
@@ -414,9 +411,8 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                 {Object.entries(systemStatus.multiLanguageEngines).map(([lang, engine]) => (
                   <div key={lang} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${
-                        engine.status === 'active' ? 'bg-green-500' : 'bg-red-500'
-                      }`} />
+                      <div className={`w-3 h-3 rounded-full ${engine.status === 'active' ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
                       <span className="capitalize">{lang}</span>
                     </div>
                     <Badge variant="outline">v{engine.version}</Badge>
@@ -616,7 +612,7 @@ const L104Dashboard: React.FC<DashboardProps> = ({ className }) => {
                     <div className="capitalize">{event.severity || 'info'}</div>
                   </div>
                 </div>
-            ))}
+              ))}
           </div>
         </CardContent>
       </Card>

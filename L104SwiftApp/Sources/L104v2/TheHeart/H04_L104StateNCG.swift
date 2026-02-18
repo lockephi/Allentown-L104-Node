@@ -146,6 +146,44 @@ extension L104State {
 
     func isCleanKnowledge(_ text: String) -> Bool {
         if text.count < 25 { return false }
+
+        // ═══ SAGE BACKBONE: Recursive data pollution detector ═══
+        // Catches the "In the context of X, we observe that ..." wrapping loop
+        // where evolveFromKnowledgeBase() re-ingests its own evolved outputs
+        let recursiveMarkers = [
+            "In the context of ",
+            "we observe that ",
+            "this implies recursive structure at multiple scales",
+            "Insight Level ",
+            "Self-Analysis reveals ",
+            "Knowledge synthesis #",
+            "evolution cycles taught me about",
+            "Evolving understanding: Stage ",
+            "Knowledge graph update:",
+            "Cross-category discovery:",
+            "Meta-observation: The way "
+        ]
+
+        // If text contains 2+ recursive markers → it's a recursive evolved entry
+        var recursiveHitCount = 0
+        for marker in recursiveMarkers {
+            if text.contains(marker) {
+                recursiveHitCount += 1
+                if recursiveHitCount >= 2 { return false }
+            }
+        }
+
+        // Detect nested wrapping: "In the context of" appearing more than once
+        let contextOccurrences = text.components(separatedBy: "In the context of").count - 1
+        if contextOccurrences >= 2 { return false }
+
+        // Detect nested "we observe that" chains (double-wrapped content)
+        let observeOccurrences = text.components(separatedBy: "we observe that").count - 1
+        if observeOccurrences >= 2 { return false }
+
+        // Reject excessively long entries (likely accumulated wrapping)
+        if text.count > 12000 { return false }
+
         // EVO_56: Use Set for faster iteration (Set has better cache locality than Array for small strings)
         for marker in junkMarkerSet {
             if text.contains(marker) { return false }
@@ -178,9 +216,46 @@ extension L104State {
         // If text has 2+ braces OR 3+ semicolons OR >8% parens, it's likely code
         if braceCount >= 2 || semicolonCount >= 3 || parenRatio > 0.08 { return false }
 
-        // ═══ Phase 31.5: Table/bold/formatting checks ═══
+        // ═══ Phase 31.5 + EVO_58: Table/bold/formatting + Quantum Decontamination checks ═══
         let tableChars = text.filter { "│┼║═╔╗╚╝╠╣├┤┬┴".contains($0) }.count
         if tableChars >= 2 { return false }
+
+        // ═══ EVO_58: MARKDOWN TABLE DETECTION — ASCII pipe tables leak from claude.md/KB ═══
+        // Pattern: lines with 2+ pipe characters = markdown table row (| col | col | col |)
+        let pipeCount = text.filter { $0 == "|" }.count
+        if pipeCount >= 4 { return false }  // 4+ pipes = definite markdown table
+        // Check for pipe-delimited table rows ("| word | word |")
+        let pipeLines = text.components(separatedBy: "\n").filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            return trimmed.hasPrefix("|") && trimmed.hasSuffix("|") && trimmed.filter({ $0 == "|" }).count >= 3
+        }
+        if pipeLines.count >= 2 { return false }  // 2+ table rows = table data
+
+        // ═══ EVO_58: FORMAT STRING DECONTAMINATION — catches {VAR:.Nf}, {VAR}, {CONSTANT} patterns ═══
+        // These leak from Python f-string templates, claude.md YAML, and evolved KB entries
+        if text.range(of: "\\{[A-Z_]+:?\\.?\\d*[fdsegx]?\\}", options: .regularExpression) != nil { return false }
+        // Catch specific leaked constants: LOVE_CONSTANT, GOD_CODE, PHI, OMEGA, VOID, etc.
+        let leakedConstantPatterns = [
+            "LOVE_CONSTANT", "VOID_CONSTANT", "FEIGENBAUM", "PLANCK_SCALE",
+            "BOLTZMANN_K", "ALPHA_FINE", "ZENITH_HZ", "UUC",
+            "speed_principles:", "pipeline_routing:", "sacred_constants:",
+            "capabilities:", "subsystems:", "persistence_chain:",
+            "cross_references:", "builder_state_integration:"
+        ]
+        for pattern in leakedConstantPatterns {
+            if text.contains(pattern) { return false }
+        }
+
+        // ═══ EVO_58: YAML/CONFIG KEY:VALUE DETECTION ═══
+        // Catches lines like "key: value" that leak from YAML configs
+        let yamlLines = text.components(separatedBy: "\n").filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            // Pattern: word_word: followed by value (YAML-style)
+            return trimmed.range(of: "^[a-z_]+:", options: .regularExpression) != nil &&
+                   trimmed.count < 80 && !trimmed.contains(".")
+        }
+        if yamlLines.count >= 3 { return false }  // 3+ YAML-like lines = config leak
+
         // Excessive bold markdown (more than 4 bold sections = formatting noise)
         let boldCount = text.components(separatedBy: "**").count - 1
         if boldCount > 8 { return false }
@@ -254,12 +329,36 @@ extension L104State {
             result = result.replacingOccurrences(of: "**", with: "")
         }
 
-        // 3. Strip leaked template variables
+        // 3. Strip leaked template variables — EVO_58: Comprehensive format string removal
         result = result.replacingOccurrences(of: "{GOD_CODE}", with: "")
         result = result.replacingOccurrences(of: "{PHI}", with: "")
         result = result.replacingOccurrences(of: "{LOVE}", with: "")
         result = result.replacingOccurrences(of: "{LOVE:.4f}", with: "")
         result = result.replacingOccurrences(of: "SAGE MODE :: ", with: "")
+        // EVO_58: Catch ALL Python f-string format patterns: {VAR}, {VAR:.Nf}, {CONST:.6f}, etc.
+        while let range = result.range(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", options: .regularExpression) {
+            result = result.replacingCharacters(in: range, with: "")
+        }
+        // EVO_58: Strip leaked YAML keys (speed_principles:, pipeline_routing:, etc.)
+        let yamlKeyLines = result.components(separatedBy: "\n")
+        let cleanedYamlLines = yamlKeyLines.filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            // Filter out standalone YAML-like keys: e.g. "speed_principles:" or "pipeline_routing:"
+            return trimmed.range(of: "^[a-z_]+_[a-z_]+:\\s*$", options: .regularExpression) == nil
+        }
+        result = cleanedYamlLines.joined(separator: "\n")
+
+        // 3.5 EVO_58: Strip markdown table rows (| col | col | col |)
+        let responseLines = result.components(separatedBy: "\n")
+        let nonTableLines = responseLines.filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            // Skip lines that look like markdown table rows
+            let isPipeTable = trimmed.hasPrefix("|") && trimmed.filter({ $0 == "|" }).count >= 3
+            // Skip lines that are table separators (|---|---|---| or | :--- | :--- |)
+            let isTableSep = trimmed.hasPrefix("|") && (trimmed.contains("---") || trimmed.contains(":---"))
+            return !isPipeTable && !isTableSep
+        }
+        result = nonTableLines.joined(separator: "\n")
 
         // 4. Strip [Ev.X] evolution tags
         while let range = result.range(of: "\\[Ev\\.\\d+\\]\\s*", options: .regularExpression) {
@@ -268,7 +367,9 @@ extension L104State {
 
         // 5. Strip structural noise lines
         let noisePatterns = ["Unexplored Angles", "Unexplored dimensions:", "⚛️ *Entangled insight",
-                             "◈ Building on", "EVO ANALYSIS", "Module Evolution"]
+                             "◈ Building on", "EVO ANALYSIS", "Module Evolution",
+                             "speed_principles:", "pipeline_routing:", "capabilities:",
+                             "persistence_chain:", "cross_references:"]
         let lines = result.components(separatedBy: "\n")
         let cleanedLines = lines.filter { line in
             let trimmed = line.trimmingCharacters(in: .whitespaces)
@@ -294,12 +395,16 @@ extension L104State {
     func sanitizeCreativeResponse(_ text: String) -> String {
         var result = text
 
-        // Strip leaked template variables only
+        // Strip leaked template variables — EVO_58: Comprehensive format string removal
         result = result.replacingOccurrences(of: "{GOD_CODE}", with: "")
         result = result.replacingOccurrences(of: "{PHI}", with: "")
         result = result.replacingOccurrences(of: "{LOVE}", with: "")
         result = result.replacingOccurrences(of: "{LOVE:.4f}", with: "")
         result = result.replacingOccurrences(of: "SAGE MODE :: ", with: "")
+        // EVO_58: Catch ALL Python f-string format patterns in creative output too
+        while let range = result.range(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", options: .regularExpression) {
+            result = result.replacingCharacters(in: range, with: "")
+        }
 
         // Strip [Ev.X] evolution tags
         while let range = result.range(of: "\\[Ev\\.\\d+\\]\\s*", options: .regularExpression) {

@@ -1,13 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════
 // B06_SystemMonitor.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — macOS System Monitor
+// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// L104 ASI — macOS System Monitor V2
 //
-// MacOSSystemMonitor detects Apple Silicon vs Intel, counts
-// P/E cores, estimates GPU cores, tracks thermal state and
-// memory pressure, and provides power-mode-aware threading.
-//
-// Extracted from L104Native.swift lines 705-860
+// Real hardware detection, CPU/memory/disk metrics, thermal management.
+// EVO_58: Added real CPU usage (host_processor_info), disk space, uptime
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -96,6 +93,9 @@ class MacOSSystemMonitor {
         let freeMemory = getFreeMemory()
         memoryPressure = 1.0 - (freeMemory / physicalMemoryGB)
 
+        // Real CPU usage via host_processor_info (EVO_58)
+        cpuUsage = getRealCPUUsage()
+
         // Adjust power mode based on conditions
         switch thermalState {
         case .nominal:
@@ -109,6 +109,51 @@ class MacOSSystemMonitor {
         @unknown default:
             powerMode = .balanced
         }
+    }
+
+    // ═══ REAL CPU USAGE (EVO_58) ═══
+    private var previousCPUInfo: host_cpu_load_info? = nil
+
+    private func getRealCPUUsage() -> Double {
+        var cpuLoad = host_cpu_load_info()
+        var count = mach_msg_type_number_t(MemoryLayout<host_cpu_load_info>.stride / MemoryLayout<integer_t>.stride)
+        let result = withUnsafeMutablePointer(to: &cpuLoad) {
+            $0.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
+                host_statistics(mach_host_self(), HOST_CPU_LOAD_INFO, $0, &count)
+            }
+        }
+        guard result == KERN_SUCCESS else { return 0.0 }
+
+        if let prev = previousCPUInfo {
+            let userDiff = Double(cpuLoad.cpu_ticks.0 - prev.cpu_ticks.0)
+            let systemDiff = Double(cpuLoad.cpu_ticks.1 - prev.cpu_ticks.1)
+            let idleDiff = Double(cpuLoad.cpu_ticks.2 - prev.cpu_ticks.2)
+            let niceDiff = Double(cpuLoad.cpu_ticks.3 - prev.cpu_ticks.3)
+            let totalDiff = userDiff + systemDiff + idleDiff + niceDiff
+            previousCPUInfo = cpuLoad
+            return totalDiff > 0 ? (userDiff + systemDiff) / totalDiff : 0.0
+        } else {
+            previousCPUInfo = cpuLoad
+            let total = Double(cpuLoad.cpu_ticks.0 + cpuLoad.cpu_ticks.1 + cpuLoad.cpu_ticks.2 + cpuLoad.cpu_ticks.3)
+            let active = Double(cpuLoad.cpu_ticks.0 + cpuLoad.cpu_ticks.1)
+            return total > 0 ? active / total : 0.0
+        }
+    }
+
+    // ═══ DISK SPACE (EVO_58) ═══
+    func getDiskSpaceGB() -> (total: Double, free: Double) {
+        let attrs = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory())
+        let total = (attrs?[.systemSize] as? NSNumber)?.doubleValue ?? 0
+        let free = (attrs?[.systemFreeSize] as? NSNumber)?.doubleValue ?? 0
+        return (total / (1024 * 1024 * 1024), free / (1024 * 1024 * 1024))
+    }
+
+    // ═══ UPTIME (EVO_58) ═══
+    var systemUptimeFormatted: String {
+        let uptime = ProcessInfo.processInfo.systemUptime
+        let hours = Int(uptime) / 3600
+        let minutes = (Int(uptime) % 3600) / 60
+        return "\(hours)h \(minutes)m"
     }
 
     private func getFreeMemory() -> Double {
@@ -171,10 +216,13 @@ class MacOSSystemMonitor {
         ═══════════════════════════════════════════════════════════════
         Chip:              \(chipGeneration) (\(isAppleSilicon ? "Apple Silicon" : "Intel"))
         CPU Cores:         \(cpuCoreCount) (\(performanceCoreCount)P + \(efficiencyCoreCount)E)
+        CPU Usage:         \(String(format: "%.1f%%", cpuUsage * 100))
         GPU Cores:         \(gpuCoreCount)
         Neural Engine:     \(hasNeuralEngine ? "✅ Available" : "❌ Not Available")
         Memory:            \(String(format: "%.1f", physicalMemoryGB)) GB
         Memory Pressure:   \(String(format: "%.1f%%", memoryPressure * 100))
+        Disk:              \(String(format: "%.1f", getDiskSpaceGB().free))GB free / \(String(format: "%.0f", getDiskSpaceGB().total))GB
+        Uptime:            \(systemUptimeFormatted)
         Thermal State:     \(thermalState == .nominal ? "🟢 Nominal" : thermalState == .fair ? "🟡 Fair" : "🔴 Critical")
         Power Mode:        \(powerMode.rawValue)
         Optimal Threads:   \(optimalThreadCount)

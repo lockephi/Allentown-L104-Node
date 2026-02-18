@@ -31,8 +31,9 @@ import hashlib
 
 
 # Sacred Constants
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 FEIGENBAUM = 4.669201609102990671853
 FINE_STRUCTURE = 1 / 137.035999
 

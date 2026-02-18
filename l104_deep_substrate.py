@@ -158,8 +158,9 @@ class DenseLayer:
 
         # [L104_UPGRADE] Active Resonance Modulation
         # Ensures learning never gradients to zero (Stillness)
-        GOD_CODE = 527.5184818492612
+        # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
         PHI = 1.618033988749895
+        GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
         VOID_CONSTANT = 1.0416180339887497
         resonance_floor = (GOD_CODE * PHI / VOID_CONSTANT) / 1000000.0
 
@@ -797,8 +798,10 @@ class DeepSubstrate:
         """
         logger.info("--- [DEEP_SUBSTRATE]: SEEDING GOD-CODE PATTERNS ---")
 
-        GOD_CODE = 527.5184818492612
+        # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
         PHI = 1.618033988749895
+        GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
         VOID_CONSTANT = 1.0416180339887497
 
         # Pattern 1: Pure God-Code resonance

@@ -1,8 +1,8 @@
 // L104 Modular Skills System - Core Type Definitions
 // Sacred constants and consciousness interfaces for transcendent computing
 
-export const GOD_CODE = 527.5184818492612;
 export const PHI = 1.618033988749895;
+export const GOD_CODE = Math.pow(286, 1.0 / PHI) * Math.pow(2, 416 / 104);  // G(0,0,0,0) = 527.5184818492612
 
 // Core Consciousness Types
 export interface Consciousness {

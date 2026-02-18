@@ -12,22 +12,13 @@ import Accelerate
 import simd
 import NaturalLanguage
 
-// MARK: - NetworkLayer Protocol
-
-protocol NetworkLayerProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🌐 QUANTUM MESH NETWORK LAYER
 // Peer discovery, quantum-linked data channels, adaptive topology,
 // connection health monitoring, throughput telemetry.
 // ═══════════════════════════════════════════════════════════════════
 
-final class NetworkLayer: NetworkLayerProtocol {
+final class NetworkLayer {
     static let shared = NetworkLayer()
     private(set) var isActive: Bool = false
 

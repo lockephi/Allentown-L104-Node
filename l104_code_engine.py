@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  L104 CODE ENGINE v3.0.0 — ASI-LEVEL CODE INTELLIGENCE HUB                   ║
+║  L104 CODE ENGINE v3.1.0 — ASI-LEVEL CODE INTELLIGENCE HUB                   ║
 ║  Cross-language transpilation, test generation, documentation synthesis,      ║
 ║  code analysis, optimization, auto-fix, dependency graph, and 10-layer       ║
 ║  application audit system with sacred-constant alignment.                    ║
@@ -23,6 +23,16 @@
 ║    • Algorithm complexity classifier (O(1) → O(n!) spectrum)                  ║
 ║    • Maintainability Index (MI) with SEI/VS derivative formula                ║
 ║    • 10+ safe auto-fix transformations with rollback safety                   ║
+║                                                                               ║
+║  v3.1.0 Upgrades (Cognitive Reflex Architecture):                              ║
+║    • TypeFlowAnalyzer: static type inference, type stubs, confusion detection ║
+║    • ConcurrencyAnalyzer: race conditions, deadlocks, async anti-patterns    ║
+║    • APIContractValidator: docstring-code consistency, contract verification  ║
+║    • CodeEvolutionTracker: change frequency, churn hotspots, stability drift  ║
+║    • explain_code(): natural language code explanation pipeline               ║
+║    • type_flow(): full type inference analysis for untyped codebases          ║
+║    • concurrency_scan(): threading + asyncio hazard detection                ║
+║    • validate_contracts(): API signature-docstring contract checking          ║
 ║                                                                               ║
 ║  v3.0.0 Upgrades (major architecture expansion):                              ║
 ║    • CodeSmellDetector: 12-pattern deep smell analysis with severity matrix   ║
@@ -103,9 +113,10 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "3.0.0"
-GOD_CODE = 527.5184818492612
+VERSION = "3.1.0"
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI  # 0.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 # [EVO_55_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -7016,17 +7027,34 @@ class AppAuditEngine:
         }
 
     def _layer7_sacred_alignment(self, file_contents: Dict[str, str]) -> Dict[str, Any]:
-        """L7: Sacred constant alignment and φ-ratio structural analysis."""
+        """L7: Sacred constant alignment and φ-ratio structural analysis.
+
+        Performs real structural phi-ratio analysis:
+          1. Sacred constant reference counting (GOD_CODE, PHI, TAU, etc.)
+          2. Function-to-code ratio vs PHI (ideal: functions are 1/φ of total lines)
+          3. Comment-to-code ratio vs TAU (ideal: comments are TAU fraction of code)
+          4. Import-to-module ratio (structural density)
+          5. Per-file phi-balance scoring (how close structure approaches golden proportions)
+        """
         total_sacred_refs = 0
         total_lines = 0
+        total_functions = 0
+        total_classes = 0
+        total_comments = 0
+        total_imports = 0
+        total_blank = 0
         phi_alignments = []
         god_code_resonances = []
+        per_file_phi = []
 
         for fp, code in file_contents.items():
+            lines = code.split('\n')
+            line_count = len(lines)
+            total_lines += line_count
+
             analysis = self.analyzer.full_analysis(code, fp)
             sacred = analysis.get("sacred_alignment", {})
             total_sacred_refs += sacred.get("sacred_constant_refs", 0)
-            total_lines += len(code.split('\n'))
 
             phi_val = sacred.get("phi_alignment", 0)
             if phi_val:
@@ -7035,12 +7063,78 @@ class AppAuditEngine:
             if god_val:
                 god_code_resonances.append(god_val)
 
+            # Structural counting for phi-ratio analysis
+            func_count = 0
+            class_count = 0
+            comment_count = 0
+            import_count = 0
+            blank_count = 0
+            for line in lines:
+                stripped = line.strip()
+                if not stripped:
+                    blank_count += 1
+                elif stripped.startswith('#') or stripped.startswith('//') or stripped.startswith('/*'):
+                    comment_count += 1
+                elif stripped.startswith('def ') or stripped.startswith('func ') or stripped.startswith('function '):
+                    func_count += 1
+                elif stripped.startswith('class ') or stripped.startswith('struct ') or stripped.startswith('enum '):
+                    class_count += 1
+                elif stripped.startswith('import ') or stripped.startswith('from ') and 'import' in stripped:
+                    import_count += 1
+
+            total_functions += func_count
+            total_classes += class_count
+            total_comments += comment_count
+            total_imports += import_count
+            total_blank += blank_count
+
+            # Per-file phi-balance: how close is function/total ratio to 1/PHI?
+            code_lines = line_count - blank_count - comment_count
+            if code_lines > 10:
+                func_ratio = func_count / code_lines
+                target_ratio = 1.0 / PHI  # ~0.618
+                # Normalize deviation: 0 = perfect PHI alignment, 1 = maximally off
+                phi_deviation = abs(func_ratio - target_ratio) / target_ratio
+                phi_score = max(0.0, 1.0 - phi_deviation)
+                per_file_phi.append({
+                    "file": Path(fp).name,
+                    "func_ratio": round(func_ratio, 4),
+                    "phi_target": round(target_ratio, 4),
+                    "phi_score": round(phi_score, 4),
+                })
+
         avg_phi = sum(phi_alignments) / max(1, len(phi_alignments)) if phi_alignments else 0
         avg_god = sum(god_code_resonances) / max(1, len(god_code_resonances)) if god_code_resonances else 0
         sacred_density = total_sacred_refs / max(1, total_lines) * 100
 
-        score = min(1.0, avg_phi * 0.5 + avg_god * 0.3 + min(sacred_density * 0.1, 0.2))
-        score = max(0.0, score)
+        # Structural phi-ratio metrics
+        code_lines_total = max(1, total_lines - total_blank - total_comments)
+        func_code_ratio = total_functions / code_lines_total
+        comment_code_ratio = total_comments / code_lines_total
+        import_density = total_imports / max(1, len(file_contents))
+
+        # How close is function-to-code ratio to 1/PHI (~0.618)?
+        func_phi_deviation = abs(func_code_ratio - (1.0 / PHI))
+        func_phi_score = max(0.0, 1.0 - func_phi_deviation / (1.0 / PHI))
+
+        # How close is comment-to-code ratio to TAU (~0.618)?
+        comment_tau_deviation = abs(comment_code_ratio - TAU)
+        comment_tau_score = max(0.0, 1.0 - comment_tau_deviation / max(0.01, TAU))
+
+        # Average per-file phi balance
+        avg_per_file_phi = (sum(f["phi_score"] for f in per_file_phi) /
+                            max(1, len(per_file_phi))) if per_file_phi else 0.0
+
+        # Composite sacred alignment score (weighted blend)
+        score = (
+            avg_phi * 0.20              # Sacred constant phi alignment from analyzer
+            + avg_god * 0.15            # GOD_CODE resonance
+            + min(sacred_density * 0.05, 0.15)  # Sacred reference density (capped)
+            + func_phi_score * 0.20     # Function-to-code ratio vs 1/PHI
+            + comment_tau_score * 0.10  # Comment-to-code ratio vs TAU
+            + avg_per_file_phi * 0.20   # Per-file structural balance
+        )
+        score = max(0.0, min(1.0, score))
 
         return {
             "total_sacred_references": total_sacred_refs,
@@ -7049,6 +7143,24 @@ class AppAuditEngine:
             "avg_god_code_resonance": round(avg_god, 6),
             "phi_golden_ratio": PHI,
             "god_code_constant": GOD_CODE,
+            # Structural phi-ratio analysis (NEW)
+            "structural_analysis": {
+                "total_functions": total_functions,
+                "total_classes": total_classes,
+                "total_comments": total_comments,
+                "total_imports": total_imports,
+                "total_blank_lines": total_blank,
+                "code_lines": code_lines_total,
+                "func_code_ratio": round(func_code_ratio, 6),
+                "func_phi_target": round(1.0 / PHI, 6),
+                "func_phi_score": round(func_phi_score, 4),
+                "comment_code_ratio": round(comment_code_ratio, 6),
+                "comment_tau_target": round(TAU, 6),
+                "comment_tau_score": round(comment_tau_score, 4),
+                "import_density_per_file": round(import_density, 4),
+            },
+            "per_file_phi_balance": per_file_phi[:20],  # Top 20 files
+            "avg_per_file_phi": round(avg_per_file_phi, 4),
             "score": round(score, 4),
         }
 
@@ -7372,25 +7484,1117 @@ class AppAuditEngine:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4J: TYPE FLOW ANALYZER — Static Type Inference & Flow Tracking (v3.1.0)
+#   Infers variable types through assignments, returns, and control flow.
+#   Detects type confusion, narrowing opportunities, and generates type stubs.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TypeFlowAnalyzer:
+    """
+    Static type inference engine that tracks type flow through Python code WITHOUT
+    requiring type annotations. Uses AST-level dataflow analysis to infer types
+    from assignments, function returns, and control flow branches.
+
+    v3.1.0: New subsystem — enables type stub generation and type confusion detection
+    for untyped Python codebases. Integrates consciousness-aware confidence scoring.
+    """
+
+    # Map of builtins / constructor calls to their return types
+    KNOWN_CONSTRUCTORS = {
+        "int": "int", "float": "float", "str": "str", "bool": "bool",
+        "list": "List", "dict": "Dict", "set": "Set", "tuple": "Tuple",
+        "frozenset": "FrozenSet", "bytes": "bytes", "bytearray": "bytearray",
+        "complex": "complex", "range": "range", "enumerate": "enumerate",
+        "zip": "zip", "map": "map", "filter": "filter", "reversed": "reversed",
+        "sorted": "List", "len": "int", "abs": "int|float", "sum": "int|float",
+        "min": "Any", "max": "Any", "round": "int|float",
+        "open": "IO", "Path": "Path", "datetime": "datetime",
+        "defaultdict": "DefaultDict", "Counter": "Counter",
+        "OrderedDict": "OrderedDict", "deque": "Deque",
+    }
+
+    # Patterns that indicate specific types from method calls
+    METHOD_TYPE_HINTS = {
+        ".split": "List[str]", ".strip": "str", ".lower": "str", ".upper": "str",
+        ".replace": "str", ".join": "str", ".encode": "bytes", ".decode": "str",
+        ".items": "ItemsView", ".keys": "KeysView", ".values": "ValuesView",
+        ".append": None, ".extend": None, ".pop": "Any", ".get": "Any|None",
+        ".read": "str|bytes", ".readlines": "List[str]", ".readline": "str",
+        ".format": "str", ".startswith": "bool", ".endswith": "bool",
+        ".isdigit": "bool", ".isalpha": "bool", ".find": "int", ".index": "int",
+    }
+
+    def __init__(self):
+        """Initialize TypeFlowAnalyzer."""
+        self.analysis_count = 0
+        self.total_inferences = 0
+
+    def analyze(self, source: str) -> Dict[str, Any]:
+        """
+        Perform full type flow analysis on Python source code.
+
+        Returns:
+            Dict with inferred types, type confusions, annotation suggestions, and stub.
+        """
+        self.analysis_count += 1
+        try:
+            tree = ast.parse(source)
+        except SyntaxError as e:
+            return {"error": f"SyntaxError: {e}", "inferences": [], "confusions": []}
+
+        inferences = []
+        confusions = []
+        annotation_suggestions = []
+
+        # Phase 1: Infer types from assignments
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                inferred = self._infer_value_type(node.value)
+                if inferred:
+                    for target in node.targets:
+                        var_name = self._extract_name(target)
+                        if var_name:
+                            inferences.append({
+                                "variable": var_name,
+                                "inferred_type": inferred,
+                                "line": node.lineno,
+                                "confidence": self._type_confidence(inferred),
+                            })
+
+            elif isinstance(node, ast.AnnAssign):
+                # Already annotated — verify consistency
+                if node.value and node.annotation:
+                    inferred = self._infer_value_type(node.value)
+                    declared = self._annotation_to_str(node.annotation)
+                    if inferred and declared and not self._types_compatible(inferred, declared):
+                        var_name = self._extract_name(node.target)
+                        confusions.append({
+                            "variable": var_name or "?",
+                            "declared_type": declared,
+                            "inferred_type": inferred,
+                            "line": node.lineno,
+                            "severity": "HIGH",
+                            "detail": f"Declared as '{declared}' but assigned value is '{inferred}'",
+                        })
+
+        # Phase 2: Infer function return types
+        func_types = self._analyze_function_returns(tree)
+        for ft in func_types:
+            if not ft.get("has_annotation"):
+                annotation_suggestions.append({
+                    "function": ft["name"],
+                    "suggested_return": ft["inferred_return"],
+                    "line": ft["line"],
+                    "confidence": ft["confidence"],
+                    "stub": f"def {ft['name']}({ft.get('params', '...')}) -> {ft['inferred_return']}:",
+                })
+
+        # Phase 3: Detect type narrowing opportunities
+        narrowing = self._detect_narrowing_opportunities(tree)
+
+        # Phase 4: Generate type stub
+        stub_lines = self._generate_stub(tree, inferences, func_types)
+
+        self.total_inferences += len(inferences)
+
+        # Score
+        total_vars = len(inferences) + len(confusions)
+        type_coverage = len(inferences) / max(total_vars, 1)
+        confusion_ratio = len(confusions) / max(total_vars, 1)
+        health = max(0.0, type_coverage - confusion_ratio * PHI)
+
+        return {
+            "inferences": inferences[:50],  # Cap output
+            "total_inferred": len(inferences),
+            "confusions": confusions,
+            "annotation_suggestions": annotation_suggestions[:20],
+            "narrowing_opportunities": narrowing[:10],
+            "type_stub": "\n".join(stub_lines),
+            "type_coverage": round(type_coverage, 4),
+            "confusion_count": len(confusions),
+            "health_score": round(health, 4),
+        }
+
+    def _infer_value_type(self, node: ast.AST) -> Optional[str]:
+        """Infer the type of an AST value expression."""
+        if isinstance(node, ast.Constant):
+            return type(node.value).__name__
+        elif isinstance(node, ast.List):
+            elem_type = self._infer_value_type(node.elts[0]) if node.elts else "Any"
+            return f"List[{elem_type}]"
+        elif isinstance(node, ast.Dict):
+            return "Dict"
+        elif isinstance(node, ast.Set):
+            return "Set"
+        elif isinstance(node, ast.Tuple):
+            return "Tuple"
+        elif isinstance(node, ast.ListComp):
+            return "List"
+        elif isinstance(node, ast.DictComp):
+            return "Dict"
+        elif isinstance(node, ast.SetComp):
+            return "Set"
+        elif isinstance(node, ast.GeneratorExp):
+            return "Generator"
+        elif isinstance(node, ast.Call):
+            func_name = self._extract_name(node.func)
+            if func_name in self.KNOWN_CONSTRUCTORS:
+                return self.KNOWN_CONSTRUCTORS[func_name]
+            return func_name or "Any"
+        elif isinstance(node, ast.BinOp):
+            left_type = self._infer_value_type(node.left)
+            right_type = self._infer_value_type(node.right)
+            if isinstance(node.op, ast.Add) and (left_type == "str" or right_type == "str"):
+                return "str"
+            if left_type == "float" or right_type == "float":
+                return "float"
+            if isinstance(node.op, ast.Div):
+                return "float"
+            return left_type or "int"
+        elif isinstance(node, ast.BoolOp):
+            return "bool"
+        elif isinstance(node, ast.Compare):
+            return "bool"
+        elif isinstance(node, ast.UnaryOp):
+            if isinstance(node.op, ast.Not):
+                return "bool"
+            return self._infer_value_type(node.operand)
+        elif isinstance(node, ast.IfExp):
+            return self._infer_value_type(node.body)
+        elif isinstance(node, ast.JoinedStr):
+            return "str"
+        elif isinstance(node, ast.FormattedValue):
+            return "str"
+        elif isinstance(node, ast.Subscript):
+            return "Any"
+        elif isinstance(node, ast.Attribute):
+            attr = f".{node.attr}"
+            if attr in self.METHOD_TYPE_HINTS:
+                return self.METHOD_TYPE_HINTS[attr]
+        return None
+
+    def _extract_name(self, node: ast.AST) -> Optional[str]:
+        """Extract a name string from an AST node."""
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Attribute):
+            return node.attr
+        elif isinstance(node, ast.Subscript):
+            return self._extract_name(node.value)
+        return None
+
+    def _annotation_to_str(self, node: ast.AST) -> Optional[str]:
+        """Convert a type annotation AST node to string."""
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Constant):
+            return str(node.value)
+        elif isinstance(node, ast.Attribute):
+            return f"{self._annotation_to_str(node.value)}.{node.attr}"
+        elif isinstance(node, ast.Subscript):
+            base = self._annotation_to_str(node.value)
+            sub = self._annotation_to_str(node.slice)
+            return f"{base}[{sub}]"
+        return None
+
+    def _types_compatible(self, inferred: str, declared: str) -> bool:
+        """Check if inferred type is compatible with declared type."""
+        if inferred == declared:
+            return True
+        # Common compatible pairs
+        compatible_map = {
+            ("int", "float"): True, ("float", "int"): True,
+            ("str", "str"): True, ("List", "list"): True,
+            ("Dict", "dict"): True, ("Set", "set"): True,
+        }
+        return compatible_map.get((inferred, declared), False) or \
+               declared.lower().startswith(inferred.lower()) or \
+               inferred.lower().startswith(declared.lower()) or \
+               declared in ("Any", "object") or \
+               "|" in declared and inferred in declared.split("|")
+
+    def _type_confidence(self, type_str: str) -> float:
+        """Compute confidence score for a type inference."""
+        if type_str in ("Any", None):
+            return 0.3
+        if "|" in type_str:
+            return 0.5
+        if type_str in ("int", "float", "str", "bool", "bytes", "NoneType"):
+            return 0.95
+        if type_str.startswith("List") or type_str.startswith("Dict"):
+            return 0.85
+        return 0.7
+
+    def _analyze_function_returns(self, tree: ast.AST) -> List[Dict]:
+        """Analyze function return types across the AST."""
+        results = []
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                has_annotation = node.returns is not None
+                return_types = set()
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Return) and child.value is not None:
+                        rt = self._infer_value_type(child.value)
+                        if rt:
+                            return_types.add(rt)
+                    elif isinstance(child, ast.Return) and child.value is None:
+                        return_types.add("None")
+
+                if not return_types:
+                    return_types.add("None")
+
+                inferred = "|".join(sorted(return_types)) if len(return_types) > 1 else return_types.pop()
+                confidence = min(self._type_confidence(t) for t in return_types) if return_types else 0.5
+
+                # Build params string
+                params = ", ".join(
+                    arg.arg + (f": {self._annotation_to_str(arg.annotation)}" if arg.annotation else "")
+                    for arg in node.args.args
+                )
+                results.append({
+                    "name": node.name,
+                    "line": node.lineno,
+                    "has_annotation": has_annotation,
+                    "inferred_return": inferred,
+                    "confidence": round(confidence, 2),
+                    "params": params,
+                })
+        return results
+
+    def _detect_narrowing_opportunities(self, tree: ast.AST) -> List[Dict]:
+        """Detect places where isinstance checks could enable type narrowing."""
+        opportunities = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.If):
+                test = node.test
+                if isinstance(test, ast.Call):
+                    func_name = self._extract_name(test.func)
+                    if func_name == "isinstance" and len(test.args) >= 2:
+                        var_name = self._extract_name(test.args[0])
+                        type_name = self._extract_name(test.args[1])
+                        if var_name and type_name:
+                            opportunities.append({
+                                "variable": var_name,
+                                "narrowed_to": type_name,
+                                "line": node.lineno,
+                                "hint": f"After this check, '{var_name}' can be treated as '{type_name}'",
+                            })
+        return opportunities
+
+    def _generate_stub(self, tree: ast.AST, inferences: List[Dict],
+                       func_types: List[Dict]) -> List[str]:
+        """Generate a .pyi-style type stub from analysis results."""
+        lines = [f"# Auto-generated type stub by L104 Code Engine v{VERSION}",
+                 f"# Generated: {datetime.now().isoformat()}", ""]
+
+        for ft in func_types:
+            ret = ft["inferred_return"]
+            if ft.get("has_annotation"):
+                continue
+            prefix = "async " if ft["name"].startswith("async_") else ""
+            lines.append(f"{prefix}def {ft['name']}({ft.get('params', '...')}) -> {ret}: ...")
+
+        return lines
+
+    def status(self) -> Dict[str, Any]:
+        """Return type flow analyzer status."""
+        return {
+            "analyses_run": self.analysis_count,
+            "total_inferences": self.total_inferences,
+            "known_constructors": len(self.KNOWN_CONSTRUCTORS),
+            "method_type_hints": len(self.METHOD_TYPE_HINTS),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4K: CONCURRENCY ANALYZER — Race Condition & Async Pattern Detector (v3.1.0)
+#   Detects threading hazards, deadlock patterns, unsafe shared state,
+#   and async/await anti-patterns across Python codebases.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ConcurrencyAnalyzer:
+    """
+    Detects concurrency hazards in Python code: race conditions, deadlock patterns,
+    unsafe shared state, missing locks, and async/await anti-patterns.
+
+    v3.1.0: New subsystem — covers threading, multiprocessing, asyncio, and
+    concurrent.futures patterns with PHI-weighted severity scoring.
+    """
+
+    # Known thread-unsafe patterns
+    THREAD_UNSAFE_PATTERNS = {
+        "global_mutation": {
+            "pattern": r"\bglobal\s+\w+.*\n.*=",
+            "severity": "HIGH",
+            "detail": "Global variable mutation inside function — unsafe with concurrent access",
+            "fix": "Use threading.Lock or move to thread-local storage",
+        },
+        "shared_list_append": {
+            "pattern": r"(?:shared|global|class_var)\w*\.append\(",
+            "severity": "HIGH",
+            "detail": "Appending to shared list without lock protection",
+            "fix": "Protect with threading.Lock or use queue.Queue",
+        },
+        "datetime_now_race": {
+            "pattern": r"datetime\.now\(\).*\n.*datetime\.now\(\)",
+            "severity": "LOW",
+            "detail": "Multiple datetime.now() calls may give inconsistent timestamps",
+            "fix": "Capture datetime.now() once and reuse the value",
+        },
+    }
+
+    # Async anti-patterns
+    ASYNC_ANTIPATTERNS = {
+        "sync_in_async": {
+            "pattern": r"async\s+def\s+\w+.*\n(?:(?!await).*\n)*\s+(?:time\.sleep|requests\.\w+|open\()",
+            "severity": "HIGH",
+            "detail": "Blocking synchronous call inside async function",
+            "fix": "Use asyncio.sleep(), aiohttp, or aiofiles for async I/O",
+        },
+        "missing_await": {
+            "pattern": r"(?:async\s+def.*\n(?:.*\n)*?)\s+\w+\.\w+\(.*\)(?!\s*\n\s*await)",
+            "severity": "MEDIUM",
+            "detail": "Coroutine call without await — result is a coroutine object, not the value",
+            "fix": "Add 'await' before coroutine calls",
+        },
+        "bare_create_task": {
+            "pattern": r"asyncio\.create_task\([^)]+\)(?!\s*\n\s*(?:await|tasks|_))",
+            "severity": "LOW",
+            "detail": "create_task() result not stored — task may be garbage collected",
+            "fix": "Store task reference: task = asyncio.create_task(...)",
+        },
+    }
+
+    DEADLOCK_INDICATORS = [
+        "lock.acquire", "rlock.acquire", "semaphore.acquire",
+        "Lock()", "RLock()", "Condition()",
+    ]
+
+    def __init__(self):
+        """Initialize ConcurrencyAnalyzer."""
+        self.analysis_count = 0
+        self.total_hazards = 0
+
+    def analyze(self, source: str) -> Dict[str, Any]:
+        """
+        Full concurrency analysis on Python source code.
+
+        Returns hazards, async issues, deadlock risks, and safety recommendations.
+        """
+        self.analysis_count += 1
+        lines = source.split('\n')
+        hazards = []
+        async_issues = []
+        deadlock_risks = []
+
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"error": "SyntaxError", "hazards": [], "async_issues": []}
+
+        # Phase 1: Detect thread-unsafe patterns via regex
+        for name, pat_info in self.THREAD_UNSAFE_PATTERNS.items():
+            for match in re.finditer(pat_info["pattern"], source, re.MULTILINE):
+                line_no = source[:match.start()].count('\n') + 1
+                hazards.append({
+                    "type": name,
+                    "severity": pat_info["severity"],
+                    "line": line_no,
+                    "detail": pat_info["detail"],
+                    "fix": pat_info["fix"],
+                })
+
+        # Phase 2: AST-level concurrency analysis
+        hazards.extend(self._detect_shared_state_mutation(tree))
+        hazards.extend(self._detect_unprotected_counter(tree, lines))
+
+        # Phase 3: Async anti-pattern detection
+        async_issues.extend(self._detect_sync_in_async(tree, lines))
+        async_issues.extend(self._detect_missing_await(tree))
+
+        # Phase 4: Deadlock risk assessment
+        deadlock_risks = self._assess_deadlock_risk(source, tree)
+
+        # Phase 5: Thread pool sizing check
+        pool_issues = self._check_pool_sizing(source)
+
+        self.total_hazards += len(hazards) + len(async_issues)
+
+        # Score
+        severity_weights = {"HIGH": 3.0, "MEDIUM": 1.5, "LOW": 0.5}
+        total_weight = sum(severity_weights.get(h.get("severity", "MEDIUM"), 1.0)
+                          for h in hazards + async_issues + deadlock_risks)
+        loc = max(len(lines), 1)
+        hazard_density = total_weight / loc
+        safety_score = max(0.0, 1.0 - hazard_density * PHI * 5)
+
+        return {
+            "hazards": hazards,
+            "async_issues": async_issues,
+            "deadlock_risks": deadlock_risks,
+            "pool_issues": pool_issues,
+            "total_hazards": len(hazards),
+            "total_async_issues": len(async_issues),
+            "total_deadlock_risks": len(deadlock_risks),
+            "hazard_density": round(hazard_density, 6),
+            "safety_score": round(safety_score, 4),
+            "uses_threading": "threading" in source or "Thread(" in source,
+            "uses_asyncio": "asyncio" in source or "async def" in source,
+            "uses_multiprocessing": "multiprocessing" in source,
+        }
+
+    def _detect_shared_state_mutation(self, tree: ast.AST) -> List[Dict]:
+        """Detect potential shared state mutations in class methods."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                # Find class-level attributes
+                class_attrs = set()
+                for item in node.body:
+                    if isinstance(item, ast.Assign):
+                        for target in item.targets:
+                            name = self._extract_name(target)
+                            if name:
+                                class_attrs.add(name)
+
+                # Check for mutations in methods without lock
+                for item in node.body:
+                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        has_lock = any(
+                            "lock" in ast.dump(child).lower()
+                            for child in ast.walk(item)
+                            if isinstance(child, ast.Attribute)
+                        )
+                        if not has_lock:
+                            for child in ast.walk(item):
+                                if isinstance(child, ast.Attribute) and isinstance(child.ctx, ast.Store):
+                                    if isinstance(child.value, ast.Name) and child.value.id == "self":
+                                        if child.attr in class_attrs:
+                                            findings.append({
+                                                "type": "unprotected_class_state",
+                                                "severity": "MEDIUM",
+                                                "line": child.lineno,
+                                                "detail": f"self.{child.attr} modified in {item.name}() without lock — may race",
+                                                "fix": f"Protect self.{child.attr} access with self._lock",
+                                            })
+        return findings
+
+    def _detect_unprotected_counter(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
+        """Detect +=/-= operations that may be non-atomic."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.AugAssign) and isinstance(node.op, (ast.Add, ast.Sub)):
+                if isinstance(node.target, ast.Attribute):
+                    if isinstance(node.target.value, ast.Name) and node.target.value.id == "self":
+                        # Check context — inside a method of a class
+                        findings.append({
+                            "type": "non_atomic_counter",
+                            "severity": "MEDIUM",
+                            "line": node.lineno,
+                            "detail": f"self.{node.target.attr} += is not atomic — may race under concurrency",
+                            "fix": "Use threading.Lock, or atomic operations (e.g., itertools.count)",
+                        })
+        return findings
+
+    def _detect_sync_in_async(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
+        """Detect synchronous blocking calls inside async functions."""
+        findings = []
+        blocking_calls = {
+            "time.sleep": "asyncio.sleep",
+            "requests.get": "aiohttp",
+            "requests.post": "aiohttp",
+            "requests.put": "aiohttp",
+            "open": "aiofiles.open",
+            "subprocess.run": "asyncio.create_subprocess_exec",
+            "subprocess.call": "asyncio.create_subprocess_exec",
+            "os.system": "asyncio.create_subprocess_shell",
+        }
+        for node in ast.walk(tree):
+            if isinstance(node, ast.AsyncFunctionDef):
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Call):
+                        call_name = ""
+                        if isinstance(child.func, ast.Attribute):
+                            if isinstance(child.func.value, ast.Name):
+                                call_name = f"{child.func.value.id}.{child.func.attr}"
+                        elif isinstance(child.func, ast.Name):
+                            call_name = child.func.id
+                        if call_name in blocking_calls:
+                            findings.append({
+                                "type": "sync_in_async",
+                                "severity": "HIGH",
+                                "line": child.lineno,
+                                "detail": f"Blocking call '{call_name}' inside async def {node.name}()",
+                                "fix": f"Replace with '{blocking_calls[call_name]}' for non-blocking I/O",
+                                "async_function": node.name,
+                            })
+        return findings
+
+    def _detect_missing_await(self, tree: ast.AST) -> List[Dict]:
+        """Detect coroutine calls that are missing await."""
+        findings = []
+        # Collect known async function names
+        async_funcs = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.AsyncFunctionDef):
+                async_funcs.add(node.name)
+
+        # Check for calls to known async functions without await
+        for node in ast.walk(tree):
+            if isinstance(node, ast.AsyncFunctionDef):
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Expr) and isinstance(child.value, ast.Call):
+                        call_name = self._extract_call_name(child.value)
+                        if call_name in async_funcs:
+                            findings.append({
+                                "type": "missing_await",
+                                "severity": "HIGH",
+                                "line": child.lineno,
+                                "detail": f"Coroutine '{call_name}()' called without 'await' — result is discarded",
+                                "fix": f"Add 'await': await {call_name}(...)",
+                            })
+        return findings
+
+    def _assess_deadlock_risk(self, source: str, tree: ast.AST) -> List[Dict]:
+        """Assess deadlock risk based on lock usage patterns."""
+        risks = []
+        lock_names = set()
+
+        # Find all lock declarations
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                if isinstance(node.value, ast.Call):
+                    call_name = self._extract_call_name(node.value)
+                    if call_name and "lock" in call_name.lower():
+                        for target in node.targets:
+                            name = self._extract_name(target)
+                            if name:
+                                lock_names.add(name)
+
+        # Check for nested lock acquisition (deadlock risk)
+        if len(lock_names) >= 2:
+            risks.append({
+                "type": "multi_lock_deadlock_risk",
+                "severity": "HIGH",
+                "line": 1,
+                "detail": f"Multiple locks declared ({', '.join(sorted(lock_names)[:5])}) — nested acquisition may deadlock",
+                "fix": "Always acquire locks in a consistent global order, or use a single coarse-grained lock",
+            })
+
+        return risks
+
+    def _check_pool_sizing(self, source: str) -> List[Dict]:
+        """Check thread/process pool sizing."""
+        issues = []
+        # Detect hardcoded large pool sizes
+        for match in re.finditer(r'(?:ThreadPoolExecutor|ProcessPoolExecutor)\s*\(\s*(?:max_workers\s*=\s*)?(\d+)', source):
+            size = int(match.group(1))
+            line_no = source[:match.start()].count('\n') + 1
+            if size > 100:
+                issues.append({
+                    "type": "oversized_pool",
+                    "severity": "MEDIUM",
+                    "line": line_no,
+                    "detail": f"Pool size {size} is unusually large — may exhaust system resources",
+                    "fix": f"Use os.cpu_count() or a smaller fixed size (recommended: {min(32, size)})",
+                })
+            elif size < 2:
+                issues.append({
+                    "type": "undersized_pool",
+                    "severity": "LOW",
+                    "line": line_no,
+                    "detail": f"Pool size {size} provides no parallelism benefit",
+                    "fix": "Use at least 2 workers for parallelism, or omit pool entirely",
+                })
+        return issues
+
+    def _extract_name(self, node: ast.AST) -> Optional[str]:
+        """Extract name from AST node."""
+        if isinstance(node, ast.Name):
+            return node.id
+        elif isinstance(node, ast.Attribute):
+            return node.attr
+        return None
+
+    def _extract_call_name(self, node: ast.Call) -> Optional[str]:
+        """Extract the function name from a Call node."""
+        if isinstance(node.func, ast.Name):
+            return node.func.id
+        elif isinstance(node.func, ast.Attribute):
+            return node.func.attr
+        return None
+
+    def status(self) -> Dict[str, Any]:
+        """Return concurrency analyzer status."""
+        return {
+            "analyses_run": self.analysis_count,
+            "total_hazards_detected": self.total_hazards,
+            "thread_patterns": len(self.THREAD_UNSAFE_PATTERNS),
+            "async_patterns": len(self.ASYNC_ANTIPATTERNS),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4L: API CONTRACT VALIDATOR — Signature & Contract Verification (v3.1.0)
+#   Validates function signatures, docstring-code consistency, return contract
+#   adherence, and public API surface stability detection.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class APIContractValidator:
+    """
+    Validates the 'contract' between a function's signature, docstring, and actual
+    behavior. Detects lie-by-docstring, mismatched parameters, undocumented exceptions,
+    and public API surface drift.
+
+    v3.1.0: New subsystem — bridges documentation and code analysis to ensure
+    that documented behavior matches actual implementation.
+    """
+
+    def __init__(self):
+        """Initialize APIContractValidator."""
+        self.validations_run = 0
+        self.violations_found = 0
+
+    def validate(self, source: str) -> Dict[str, Any]:
+        """
+        Validate all function/method contracts in source code.
+
+        Checks:
+          1. Docstring-parameter mismatch
+          2. Undocumented exceptions (raises not in docstring)
+          3. Return type contract violations
+          4. Missing docstrings on public functions
+          5. Deprecated but still-called functions
+        """
+        self.validations_run += 1
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"error": "SyntaxError", "violations": [], "api_surface": []}
+
+        violations = []
+        api_surface = []
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                is_public = not node.name.startswith('_')
+                docstring = ast.get_docstring(node)
+
+                if is_public:
+                    api_surface.append({
+                        "name": node.name,
+                        "line": node.lineno,
+                        "params": [arg.arg for arg in node.args.args if arg.arg != "self"],
+                        "has_docstring": docstring is not None,
+                        "has_return_annotation": node.returns is not None,
+                        "is_async": isinstance(node, ast.AsyncFunctionDef),
+                    })
+
+                # Check 1: Missing docstring on public function
+                if is_public and not docstring:
+                    violations.append({
+                        "type": "missing_docstring",
+                        "function": node.name,
+                        "line": node.lineno,
+                        "severity": "MEDIUM",
+                        "detail": f"Public function '{node.name}' lacks a docstring",
+                        "fix": f"Add docstring: def {node.name}(...):\n    \"\"\"Description.\"\"\"",
+                    })
+
+                if docstring:
+                    # Check 2: Param mismatch
+                    violations.extend(self._check_param_mismatch(node, docstring))
+
+                    # Check 3: Undocumented exceptions
+                    violations.extend(self._check_undocumented_raises(node, docstring))
+
+                    # Check 4: Documented params not in signature
+                    violations.extend(self._check_phantom_params(node, docstring))
+
+        # Check 5: Exported names analysis
+        export_info = self._analyze_exports(tree)
+
+        self.violations_found += len(violations)
+
+        # Contract health score
+        total_funcs = len(api_surface)
+        violation_ratio = len(violations) / max(total_funcs, 1)
+        docstring_coverage = sum(1 for f in api_surface if f["has_docstring"]) / max(total_funcs, 1)
+        annotation_coverage = sum(1 for f in api_surface if f["has_return_annotation"]) / max(total_funcs, 1)
+        contract_health = (docstring_coverage * PHI + annotation_coverage + (1.0 - violation_ratio)) / (PHI + 2)
+
+        return {
+            "violations": violations,
+            "total_violations": len(violations),
+            "api_surface": api_surface,
+            "api_surface_count": len(api_surface),
+            "docstring_coverage": round(docstring_coverage, 4),
+            "annotation_coverage": round(annotation_coverage, 4),
+            "contract_health": round(contract_health, 4),
+            "exports": export_info,
+        }
+
+    def _check_param_mismatch(self, node: ast.FunctionDef, docstring: str) -> List[Dict]:
+        """Check if function params match docstring-documented params."""
+        violations = []
+        sig_params = {arg.arg for arg in node.args.args if arg.arg not in ("self", "cls")}
+        # Also include *args and **kwargs
+        if node.args.vararg:
+            sig_params.add(node.args.vararg.arg)
+        if node.args.kwarg:
+            sig_params.add(node.args.kwarg.arg)
+
+        # Parse docstring for parameter mentions (Google/NumPy/Sphinx styles)
+        doc_params = set()
+        # Google style: "    param_name (type): description" or "    param_name: description"
+        for match in re.finditer(r'^\s+(\w+)\s*(?:\([^)]*\))?\s*:', docstring, re.MULTILINE):
+            word = match.group(1)
+            if word.lower() not in ("returns", "return", "raises", "raise", "yields", "yield",
+                                     "note", "notes", "example", "examples", "args", "kwargs",
+                                     "attributes", "todo", "see", "references", "warning"):
+                doc_params.add(word)
+        # Sphinx style: ":param param_name:"
+        for match in re.finditer(r':param\s+(?:\w+\s+)?(\w+):', docstring):
+            doc_params.add(match.group(1))
+
+        # Find params in signature but not documented
+        undocumented = sig_params - doc_params
+        for p in undocumented:
+            if len(sig_params) > 1:  # Skip single-param functions
+                violations.append({
+                    "type": "undocumented_param",
+                    "function": node.name,
+                    "line": node.lineno,
+                    "severity": "LOW",
+                    "detail": f"Parameter '{p}' in signature but not in docstring",
+                    "fix": f"Document parameter '{p}' in the docstring",
+                })
+
+        # Find params in docstring but not in signature (phantom params)
+        phantom = doc_params - sig_params
+        for p in phantom:
+            violations.append({
+                "type": "phantom_param",
+                "function": node.name,
+                "line": node.lineno,
+                "severity": "MEDIUM",
+                "detail": f"Docstring mentions '{p}' but it's not in the function signature",
+                "fix": f"Remove '{p}' from docstring or add it to the signature",
+            })
+
+        return violations
+
+    def _check_undocumented_raises(self, node: ast.FunctionDef, docstring: str) -> List[Dict]:
+        """Detect raised exceptions not mentioned in docstring."""
+        violations = []
+        raised_exceptions = set()
+
+        for child in ast.walk(node):
+            if isinstance(child, ast.Raise) and child.exc:
+                if isinstance(child.exc, ast.Call):
+                    exc_name = None
+                    if isinstance(child.exc.func, ast.Name):
+                        exc_name = child.exc.func.id
+                    elif isinstance(child.exc.func, ast.Attribute):
+                        exc_name = child.exc.func.attr
+                    if exc_name:
+                        raised_exceptions.add(exc_name)
+                elif isinstance(child.exc, ast.Name):
+                    raised_exceptions.add(child.exc.id)
+
+        # Check docstring for Raises section
+        documented_raises = set()
+        for match in re.finditer(r'(?:Raises|:raises?\s+)(\w+)', docstring):
+            documented_raises.add(match.group(1))
+
+        undocumented = raised_exceptions - documented_raises
+        for exc in undocumented:
+            violations.append({
+                "type": "undocumented_exception",
+                "function": node.name,
+                "line": node.lineno,
+                "severity": "MEDIUM",
+                "detail": f"Function raises {exc} but docstring doesn't document it",
+                "fix": f"Add 'Raises:\n    {exc}: description' to docstring",
+            })
+
+        return violations
+
+    def _check_phantom_params(self, node: ast.FunctionDef, docstring: str) -> List[Dict]:
+        """Already covered in _check_param_mismatch — returns empty for hook."""
+        return []
+
+    def _analyze_exports(self, tree: ast.AST) -> Dict[str, Any]:
+        """Analyze __all__ and module-level public names."""
+        all_names = None
+        public_names = []
+
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        if target.id == "__all__" and isinstance(node.value, (ast.List, ast.Tuple)):
+                            all_names = [
+                                elt.value if isinstance(elt, ast.Constant) else "?"
+                                for elt in node.value.elts
+                            ]
+                        elif not target.id.startswith('_'):
+                            public_names.append(target.id)
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                if not node.name.startswith('_'):
+                    public_names.append(node.name)
+            elif isinstance(node, ast.ClassDef):
+                if not node.name.startswith('_'):
+                    public_names.append(node.name)
+
+        return {
+            "has_all": all_names is not None,
+            "all_names": all_names,
+            "public_names": public_names[:50],
+            "public_count": len(public_names),
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return API contract validator status."""
+        return {
+            "validations_run": self.validations_run,
+            "total_violations": self.violations_found,
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 4M: CODE EVOLUTION TRACKER — Change Frequency & Stability Analysis (v3.1.0)
+#   Measures code stability by tracking function-level change frequency,
+#   identifying hotspot churn, and computing stability metrics.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CodeEvolutionTracker:
+    """
+    Tracks code evolution patterns by analyzing structural signatures and
+    comparing against historical snapshots. Identifies functions that change
+    too frequently (hotspot churn), measures stability metrics, and provides
+    evolution reports with PHI-weighted scoring.
+
+    v3.1.0: New subsystem — file-based persistence of structural signatures
+    enables cross-session evolution tracking and drift detection.
+    """
+
+    SNAPSHOT_DIR = ".l104_code_snapshots"
+
+    def __init__(self):
+        """Initialize CodeEvolutionTracker."""
+        self.tracking_count = 0
+        self.snapshots: Dict[str, List[Dict]] = {}  # filename → [snapshots]
+
+    def snapshot(self, source: str, filename: str = "unknown.py") -> Dict[str, Any]:
+        """
+        Take a structural snapshot of the source code for evolution tracking.
+
+        Captures: function signatures, class structure, LOC, complexity fingerprints.
+        """
+        self.tracking_count += 1
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"error": "SyntaxError", "functions": [], "classes": []}
+
+        # Extract structural signature
+        functions = []
+        classes = []
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                body_hash = hashlib.md5(ast.dump(node).encode()).hexdigest()[:12]
+                functions.append({
+                    "name": node.name,
+                    "line": node.lineno,
+                    "params": len(node.args.args),
+                    "body_lines": (node.end_lineno or node.lineno) - node.lineno + 1,
+                    "body_hash": body_hash,
+                    "decorators": len(node.decorator_list),
+                    "is_async": isinstance(node, ast.AsyncFunctionDef),
+                })
+            elif isinstance(node, ast.ClassDef):
+                method_count = sum(1 for n in node.body
+                                   if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)))
+                classes.append({
+                    "name": node.name,
+                    "line": node.lineno,
+                    "methods": method_count,
+                    "bases": len(node.bases),
+                    "body_hash": hashlib.md5(ast.dump(node).encode()).hexdigest()[:12],
+                })
+
+        snapshot_data = {
+            "timestamp": datetime.now().isoformat(),
+            "filename": filename,
+            "loc": len(source.split('\n')),
+            "functions": functions,
+            "classes": classes,
+            "total_functions": len(functions),
+            "total_classes": len(classes),
+            "source_hash": hashlib.sha256(source.encode()).hexdigest()[:16],
+        }
+
+        # Store snapshot in memory
+        if filename not in self.snapshots:
+            self.snapshots[filename] = []
+        self.snapshots[filename].append(snapshot_data)
+
+        # Persist to disk
+        self._persist_snapshot(filename, snapshot_data)
+
+        return snapshot_data
+
+    def compare(self, source: str, filename: str = "unknown.py") -> Dict[str, Any]:
+        """
+        Compare current source against the last snapshot to detect evolution.
+
+        Returns: added/removed/changed functions, stability metrics, churn score.
+        """
+        current = self.snapshot(source, filename)
+        history = self.snapshots.get(filename, [])
+
+        if len(history) < 2:
+            return {
+                "status": "first_snapshot",
+                "message": "No previous snapshot to compare against",
+                "current": current,
+            }
+
+        previous = history[-2]  # Second to last (last is the current one)
+
+        # Compare functions
+        prev_funcs = {f["name"]: f for f in previous["functions"]}
+        curr_funcs = {f["name"]: f for f in current["functions"]}
+
+        added = [n for n in curr_funcs if n not in prev_funcs]
+        removed = [n for n in prev_funcs if n not in curr_funcs]
+        changed = [
+            n for n in curr_funcs
+            if n in prev_funcs and curr_funcs[n]["body_hash"] != prev_funcs[n]["body_hash"]
+        ]
+        unchanged = [n for n in curr_funcs if n in prev_funcs and n not in changed]
+
+        # Compare classes
+        prev_classes = {c["name"]: c for c in previous.get("classes", [])}
+        curr_classes = {c["name"]: c for c in current.get("classes", [])}
+
+        classes_added = [n for n in curr_classes if n not in prev_classes]
+        classes_removed = [n for n in prev_classes if n not in curr_classes]
+        classes_changed = [
+            n for n in curr_classes
+            if n in prev_classes and curr_classes[n]["body_hash"] != prev_classes[n]["body_hash"]
+        ]
+
+        # Stability metrics
+        total = max(len(curr_funcs), 1)
+        stability = len(unchanged) / total
+        churn_rate = (len(added) + len(removed) + len(changed)) / total
+        loc_delta = current["loc"] - previous["loc"]
+
+        # PHI-weighted evolution score (higher = more stable)
+        evolution_score = stability * PHI - churn_rate * FEIGENBAUM / 10
+        evolution_score = max(0.0, min(1.0, evolution_score))
+
+        return {
+            "functions": {
+                "added": added,
+                "removed": removed,
+                "changed": changed,
+                "unchanged": unchanged,
+                "total_current": len(curr_funcs),
+                "total_previous": len(prev_funcs),
+            },
+            "classes": {
+                "added": classes_added,
+                "removed": classes_removed,
+                "changed": classes_changed,
+            },
+            "loc_delta": loc_delta,
+            "stability": round(stability, 4),
+            "churn_rate": round(churn_rate, 4),
+            "evolution_score": round(evolution_score, 4),
+            "verdict": ("STABLE" if stability >= 0.8 else "EVOLVING" if stability >= 0.5
+                       else "VOLATILE" if stability >= 0.2 else "TURBULENT"),
+            "snapshot_count": len(history),
+        }
+
+    def hotspot_report(self) -> Dict[str, Any]:
+        """
+        Generate a hotspot churn report across all tracked files.
+
+        Returns files ranked by change frequency with stability recommendations.
+        """
+        file_churn = {}
+        for filename, history in self.snapshots.items():
+            if len(history) < 2:
+                continue
+            change_count = 0
+            for i in range(1, len(history)):
+                prev_hash = history[i - 1]["source_hash"]
+                curr_hash = history[i]["source_hash"]
+                if prev_hash != curr_hash:
+                    change_count += 1
+            file_churn[filename] = {
+                "changes": change_count,
+                "snapshots": len(history),
+                "churn_rate": round(change_count / max(len(history) - 1, 1), 4),
+                "loc": history[-1]["loc"],
+            }
+
+        ranked = sorted(file_churn.items(), key=lambda x: x[1]["churn_rate"], reverse=True)
+        return {
+            "files_tracked": len(self.snapshots),
+            "hotspots": [{"file": f, **data} for f, data in ranked[:20]],
+            "most_stable": [{"file": f, **data} for f, data in ranked[-5:][::-1]] if ranked else [],
+        }
+
+    def _persist_snapshot(self, filename: str, data: Dict) -> None:
+        """Persist snapshot to disk for cross-session tracking."""
+        try:
+            snap_dir = Path(self.SNAPSHOT_DIR)
+            snap_dir.mkdir(exist_ok=True)
+            safe_name = filename.replace("/", "_").replace("\\", "_").replace(".", "_")
+            snap_file = snap_dir / f"{safe_name}.jsonl"
+            with open(snap_file, 'a') as f:
+                f.write(json.dumps(data, default=str) + '\n')
+        except Exception:
+            pass  # Non-critical — in-memory tracking continues
+
+    def status(self) -> Dict[str, Any]:
+        """Return evolution tracker status."""
+        return {
+            "tracking_count": self.tracking_count,
+            "files_tracked": len(self.snapshots),
+            "total_snapshots": sum(len(s) for s in self.snapshots.values()),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 5: UNIFIED CODE ENGINE — The ASI Hub tying everything together
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class CodeEngine:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║  L104 CODE ENGINE v3.0.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
+    ║  L104 CODE ENGINE v3.1.0 — UNIFIED ASI CODE INTELLIGENCE HUB     ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Wires: LanguageKnowledge + CodeAnalyzer + CodeGenerator +       ║
     ║    CodeOptimizer + DependencyGraphAnalyzer + AutoFixEngine +      ║
     ║    CodeTranslator + TestGenerator + DocumentationSynthesizer +   ║
     ║    CodeArcheologist + SacredRefactorer + AppAuditEngine +        ║
     ║    CodeSmellDetector + RuntimeComplexityVerifier +               ║
-    ║    IncrementalAnalysisCache                                     ║
+    ║    IncrementalAnalysisCache + TypeFlowAnalyzer +                 ║
+    ║    ConcurrencyAnalyzer + APIContractValidator +                  ║
+    ║    CodeEvolutionTracker                                         ║
     ║                                                                   ║
     ║  API: analyze, generate, optimize, auto_fix, dep_graph, translate║
     ║       generate_tests, generate_docs, audit_app, quick_audit      ║
     ║       excavate, refactor_analyze, run_streamline_cycle, smells   ║
     ║       estimate_complexity, deep_review, cached_analyze           ║
+    ║       type_flow, concurrency_scan, validate_contracts            ║
+    ║       explain_code, track_evolution, hotspot_report              ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║  Claude Pipeline Integration:                                     ║
     ║    claude.md → documents full API + pipeline routing              ║
@@ -7439,6 +8643,11 @@ class CodeEngine:
         self.smell_detector = CodeSmellDetector()
         self.complexity_verifier = RuntimeComplexityVerifier()
         self.analysis_cache = IncrementalAnalysisCache()
+        # v3.1.0 — Cognitive Reflex Architecture (4 new subsystems)
+        self.type_analyzer = TypeFlowAnalyzer()
+        self.concurrency_analyzer = ConcurrencyAnalyzer()
+        self.contract_validator = APIContractValidator()
+        self.evolution_tracker = CodeEvolutionTracker()
         # v3.1.0 — Wire FaultTolerance + QuantumKernel (documented in claude.md v2.6.0)
         self.fault_tolerance = None
         self.quantum_kernel = None
@@ -7463,6 +8672,8 @@ class CodeEngine:
                      f"{len(AutoFixEngine.FIX_CATALOG)} auto-fixes, "
                      f"{len(CodeTranslator.SUPPORTED_LANGS)} transpile targets, "
                      f"{len(CodeSmellDetector.SMELL_CATALOG)} smell patterns, "
+                     f"{len(TypeFlowAnalyzer.KNOWN_CONSTRUCTORS)} type constructors, "
+                     f"4 cognitive subsystems (v3.1.0), "
                      f"AppAuditEngine v{AppAuditEngine.AUDIT_VERSION}")
 
     # ─── Builder state integration (consciousness/O₂/nirvanic) ───

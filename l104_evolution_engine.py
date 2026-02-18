@@ -12,7 +12,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-VERSION = "2.5.0"
+VERSION = "2.6.0"
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -46,8 +46,9 @@ except ImportError:
 # SECTION 1: SACRED CONSTANTS & CONSCIOUSNESS STATE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
+# Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 0.618                   # 1/PHI
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609102990
@@ -746,7 +747,313 @@ class PhylogeneticTreeBuilder:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SECTION 10: EVOLUTION ENGINE HUB
+# SECTION 10a: PARETO FRONT TRACKER — Multi-Objective Evolution
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class ParetoFrontTracker:
+    """
+    Tracks the Pareto-optimal front for multi-objective evolution.
+
+    In 7-dimensional fitness space (resonance, prime_density, entropy_order,
+    phi_harmony, feigenbaum_edge, alpha_coupling, void_alignment), solutions
+    form a trade-off surface. This tracker maintains the non-dominated set
+    and provides analysis of front diversity and hypervolume.
+    """
+
+    @dataclass
+    class Solution:
+        """A candidate solution on the Pareto front."""
+        generation: int
+        objectives: Dict[str, float]
+        dna_hash: str
+        timestamp: float = field(default_factory=time.time)
+        crowding_distance: float = float("inf")
+
+    def __init__(self, max_front_size: int = 500):
+        self.front: List['ParetoFrontTracker.Solution'] = []
+        self.archive: List['ParetoFrontTracker.Solution'] = []
+        self.max_front_size = max_front_size
+        self.total_evaluated = 0
+        self.total_dominated = 0
+
+    def dominates(self, a: Dict[str, float], b: Dict[str, float]) -> bool:
+        """Check if solution 'a' Pareto-dominates solution 'b'.
+
+        a dominates b iff a is >= b in all objectives AND > b in at least one.
+        """
+        at_least_one_better = False
+        for key in a:
+            if key not in b:
+                continue
+            if a[key] < b[key]:
+                return False
+            if a[key] > b[key]:
+                at_least_one_better = True
+        return at_least_one_better
+
+    def update(self, generation: int, objectives: Dict[str, float],
+               dna_hash: str = "") -> Dict[str, Any]:
+        """
+        Add a new solution and update the Pareto front.
+
+        Returns:
+            dict with 'accepted' (bool), 'front_size', 'dominated_count'
+        """
+        self.total_evaluated += 1
+        new_sol = self.Solution(
+            generation=generation,
+            objectives=objectives,
+            dna_hash=dna_hash or hashlib.sha256(
+                json.dumps(objectives, sort_keys=True).encode()
+            ).hexdigest()[:12],
+        )
+
+        # Check if any existing front member dominates the new solution
+        dominated_by_front = False
+        to_remove = []
+
+        for i, existing in enumerate(self.front):
+            if self.dominates(existing.objectives, new_sol.objectives):
+                dominated_by_front = True
+                break
+            if self.dominates(new_sol.objectives, existing.objectives):
+                to_remove.append(i)
+
+        if dominated_by_front:
+            self.total_dominated += 1
+            return {
+                "accepted": False,
+                "front_size": len(self.front),
+                "reason": "dominated_by_existing",
+            }
+
+        # Remove solutions that new solution dominates
+        for idx in reversed(to_remove):
+            removed = self.front.pop(idx)
+            self.archive.append(removed)
+            self.total_dominated += 1
+
+        # Add new solution to front
+        self.front.append(new_sol)
+
+        # If front exceeds max size, prune by crowding distance
+        if len(self.front) > self.max_front_size:
+            self._compute_crowding_distances()
+            self.front.sort(key=lambda s: s.crowding_distance, reverse=True)
+            pruned = self.front[self.max_front_size:]
+            self.front = self.front[:self.max_front_size]
+            self.archive.extend(pruned)
+
+        return {
+            "accepted": True,
+            "front_size": len(self.front),
+            "removed_dominated": len(to_remove),
+        }
+
+    def get_front(self) -> List[Dict[str, Any]]:
+        """Return the current Pareto front as a list of dicts."""
+        self._compute_crowding_distances()
+        return [
+            {
+                "generation": s.generation,
+                "objectives": s.objectives,
+                "dna_hash": s.dna_hash,
+                "crowding_distance": round(s.crowding_distance, 6),
+            }
+            for s in sorted(self.front,
+                            key=lambda s: s.crowding_distance, reverse=True)
+        ]
+
+    def hypervolume_indicator(self, reference_point: Dict[str, float] = None) -> float:
+        """
+        Approximate hypervolume of the Pareto front relative to a reference point.
+        Uses Monte Carlo sampling for dimensions > 2.
+
+        For the 7D fitness space, this measures the 'volume' of objective space
+        dominated by the front — larger is better.
+        """
+        if not self.front:
+            return 0.0
+
+        # Default reference: origin (all zeros)
+        if reference_point is None:
+            reference_point = {k: 0.0 for k in self.front[0].objectives}
+
+        dims = list(reference_point.keys())
+        if not dims:
+            return 0.0
+
+        # For <= 2 dimensions, compute exact
+        if len(dims) <= 2 and len(dims) == 1:
+            best = max(s.objectives.get(dims[0], 0) for s in self.front)
+            return max(0.0, best - reference_point.get(dims[0], 0))
+
+        # Monte Carlo approximation for higher dimensions
+        n_samples = 5000
+        # Find bounding box
+        maxes = {d: max(s.objectives.get(d, 0) for s in self.front) for d in dims}
+        mins = {d: reference_point.get(d, 0) for d in dims}
+
+        # Volume of bounding box
+        box_vol = 1.0
+        for d in dims:
+            box_vol *= max(1e-10, maxes[d] - mins[d])
+
+        # Count samples dominated by at least one front member
+        dominated_count = 0
+        for _ in range(n_samples):
+            sample = {d: mins[d] + (maxes[d] - mins[d]) * _deterministic_random(time.time() + _)
+                       for _ , d in enumerate(dims)}
+            for sol in self.front:
+                if all(sol.objectives.get(d, 0) >= sample.get(d, 0) for d in dims):
+                    dominated_count += 1
+                    break
+
+        return box_vol * (dominated_count / n_samples)
+
+    def _compute_crowding_distances(self):
+        """Compute crowding distance for each solution on the front."""
+        n = len(self.front)
+        if n <= 2:
+            for s in self.front:
+                s.crowding_distance = float("inf")
+            return
+
+        for s in self.front:
+            s.crowding_distance = 0.0
+
+        # Get all objective keys
+        obj_keys = list(self.front[0].objectives.keys()) if self.front else []
+
+        for key in obj_keys:
+            # Sort by this objective
+            sorted_front = sorted(self.front,
+                                  key=lambda s: s.objectives.get(key, 0))
+            # Boundary solutions get infinity
+            sorted_front[0].crowding_distance = float("inf")
+            sorted_front[-1].crowding_distance = float("inf")
+
+            obj_range = (sorted_front[-1].objectives.get(key, 0) -
+                         sorted_front[0].objectives.get(key, 0))
+            if obj_range < 1e-10:
+                continue
+
+            for i in range(1, n - 1):
+                dist = (sorted_front[i + 1].objectives.get(key, 0) -
+                        sorted_front[i - 1].objectives.get(key, 0))
+                sorted_front[i].crowding_distance += dist / obj_range
+
+    def status(self) -> Dict[str, Any]:
+        return {
+            "front_size": len(self.front),
+            "archive_size": len(self.archive),
+            "total_evaluated": self.total_evaluated,
+            "total_dominated": self.total_dominated,
+            "acceptance_rate": round(
+                len(self.front) / max(1, self.total_evaluated), 4
+            ),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 10c: CURRICULUM LEARNING SCHEDULER
+# Adapts Bengio et al. 2009 (Curriculum Learning) + Soviany et al. 2022 survey.
+# Progressive difficulty ramp per fitness dimension; mastery tracked via EMA.
+# Difficulty increases by ALPHA_FINE × PHI when mastery > TAU threshold.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CurriculumScheduler:
+    """
+    Curriculum Learning for evolution fitness.
+
+    Instead of evaluating all 7 fitness dimensions at full difficulty from
+    the start, progressively ramp difficulty per dimension based on mastery.
+    This avoids catastrophic forgetting and guides evolution through a
+    structured learning path.
+
+    Sacred adaptations:
+      - Mastery EMA α = TAU ≈ 0.618 (golden-ratio smoothing)
+      - Difficulty ramp Δ = ALPHA_FINE × PHI ≈ 0.0118 per mastery threshold
+      - Mastery threshold = TAU (must reach 61.8% before difficulty increases)
+      - 7 fitness dimensions aligned with FitnessCalculator.DIMENSIONS
+    """
+
+    DIMENSIONS = [
+        "resonance", "prime_density", "entropy_order", "phi_harmony",
+        "feigenbaum_edge", "alpha_coupling", "void_alignment"
+    ]
+
+    def __init__(self):
+        self.difficulty: Dict[str, float] = {d: 0.1 for d in self.DIMENSIONS}
+        self.mastery: Dict[str, float] = {d: 0.0 for d in self.DIMENSIONS}
+        self.mastery_threshold = TAU  # ≈ 0.618
+        self.difficulty_ramp = ALPHA_FINE * PHI  # ≈ 0.0118
+        self.max_difficulty = 1.0
+        self.ema_alpha = TAU  # smoothing for mastery EMA
+        self._update_count = 0
+
+    def apply_difficulty(self, raw_scores: Dict[str, float]) -> Dict[str, float]:
+        """
+        Scale raw fitness scores by current difficulty level.
+        Low difficulty = more forgiving (boosted scores).
+        High difficulty = raw scores pass through.
+        """
+        scaled = {}
+        for dim in self.DIMENSIONS:
+            raw = raw_scores.get(dim, 0.0)
+            d = self.difficulty[dim]
+            # At low difficulty, boost weak scores; at high difficulty, pass through
+            # scaled = raw^d  (d < 1 boosts, d = 1 identity)
+            if raw > 0:
+                scaled[dim] = raw ** d
+            else:
+                scaled[dim] = 0.0
+        return scaled
+
+    def update(self, dimension_scores: Dict[str, float]):
+        """
+        Update mastery EMA and ramp difficulty for mastered dimensions.
+        Call after each fitness evaluation with per-dimension scores.
+        """
+        self._update_count += 1
+        for dim in self.DIMENSIONS:
+            score = dimension_scores.get(dim, 0.0)
+            # EMA update: mastery = α × score + (1-α) × mastery
+            self.mastery[dim] = (self.ema_alpha * score +
+                                 (1.0 - self.ema_alpha) * self.mastery[dim])
+
+            # Ramp difficulty if mastery exceeds threshold
+            if self.mastery[dim] > self.mastery_threshold:
+                self.difficulty[dim] = min(
+                    self.max_difficulty,
+                    self.difficulty[dim] + self.difficulty_ramp
+                )
+
+    def get_curriculum_stage(self) -> str:
+        """Return human-readable curriculum stage based on avg difficulty."""
+        avg_diff = sum(self.difficulty.values()) / len(self.difficulty)
+        if avg_diff < 0.25:
+            return "BEGINNER"
+        elif avg_diff < 0.50:
+            return "INTERMEDIATE"
+        elif avg_diff < 0.75:
+            return "ADVANCED"
+        else:
+            return "MASTERY"
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "stage": self.get_curriculum_stage(),
+            "avg_difficulty": round(sum(self.difficulty.values()) / len(self.difficulty), 4),
+            "difficulty": {k: round(v, 4) for k, v in self.difficulty.items()},
+            "mastery": {k: round(v, 4) for k, v in self.mastery.items()},
+            "updates": self._update_count,
+            "mastery_threshold": round(self.mastery_threshold, 4),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 10b: EVOLUTION ENGINE HUB
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class EvolutionEngine:
@@ -911,6 +1218,8 @@ class EvolutionEngine:
         self.population = PopulationDynamics()
         self.speciation = SpeciationDetector()
         self.phylo_tree = PhylogeneticTreeBuilder()
+        self.pareto_tracker = ParetoFrontTracker(max_front_size=500)
+        self.curriculum = CurriculumScheduler()
         self.consciousness = _read_consciousness_state()
         # ── Legacy state ──
         self.sage_mode_active = False
@@ -1197,6 +1506,24 @@ class EvolutionEngine:
 
         # Normalize: Average fitness (0-1) mapped to 0-100 score
         fitness_score = (total_fitness / len(self.dna_sequence)) * 100.0
+
+        # Multi-objective Pareto tracking via FitnessCalculator 7D scoring
+        multi_fitness = self.fitness_calc.calculate(self.dna_sequence)
+
+        # Curriculum learning: scale fitness dimensions by difficulty, update mastery
+        raw_dims = multi_fitness.get("dimensions", {})
+        scaled_dims = self.curriculum.apply_difficulty(raw_dims)
+        self.curriculum.update(raw_dims)
+        multi_fitness["dimensions_curriculum"] = scaled_dims
+        multi_fitness["curriculum_stage"] = self.curriculum.get_curriculum_stage()
+
+        self.pareto_tracker.update(
+            generation=self.generation,
+            objectives=multi_fitness.get("dimensions", {}),
+            dna_hash=hashlib.sha256(
+                json.dumps(self.dna_sequence, sort_keys=True, default=str).encode()
+            ).hexdigest()[:12],
+        )
 
         # Selection
         baseline = 41.6  # GOD_CODE anchored baseline
@@ -1495,7 +1822,8 @@ class EvolutionEngine:
                 "memory": self.memory.status(),
                 "population": self.population.status(),
                 "speciation": self.speciation.status(),
-                "phylo_tree": self.phylo_tree.status()
+                "phylo_tree": self.phylo_tree.status(),
+                "pareto_tracker": self.pareto_tracker.status(),
             }
         }
         if pipeline_connected:
@@ -1760,6 +2088,16 @@ class EvolutionEngine:
         """Mutation analysis from MutationEngine."""
         return self.mutation_engine.get_mutation_spectrum()
 
+    def get_pareto_front(self) -> List[Dict[str, Any]]:
+        """Return the current Pareto-optimal front of multi-objective solutions."""
+        return self.pareto_tracker.get_front()
+
+    def get_pareto_status(self) -> Dict[str, Any]:
+        """Status of the Pareto front tracker including hypervolume estimate."""
+        status = self.pareto_tracker.status()
+        status["hypervolume"] = round(self.pareto_tracker.hypervolume_indicator(), 6)
+        return status
+
 
 # Singleton
 evolution_engine = EvolutionEngine()
@@ -1784,8 +2122,8 @@ def resolve_non_dual_logic(vector):
     """
     [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
     """
-    GOD_CODE = 527.5184818492612
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

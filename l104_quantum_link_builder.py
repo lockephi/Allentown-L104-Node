@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  L104 QUANTUM LINK BUILDER v4.2.0  — SAGE INVENTIONS                        ║
+║  L104 QUANTUM LINK BUILDER v5.0.0  — TRANSCENDENT LINK INTELLIGENCE         ║
 ║  Quantum Brain · O₂ Molecular Bond · Agentic Loop · Evolution Tracker       ║
 ║  ★ QUANTUM MIN/MAX DYNAMISM ENGINE ★                                        ║
 ║  ★ OUROBOROS SAGE NIRVANIC ENTROPY FUEL SYSTEM ★                            ║
 ║  ★ SAGE INVENTIONS v4.2 — 5 New Research Subsystems ★                       ║
+║  ★ INTER-BUILDER FEEDBACK BUS v5.0 — Cross-builder messaging ★             ║
+║  ★ QUANTUM LINK SELF-HEALER v5.0 — Auto-detect & repair degraded links ★   ║
+║  ★ LINK TEMPORAL MEMORY BANK v5.0 — Activation history & trend analysis ★  ║
 ║                                                                              ║
 ║  Standalone autonomous module for the Allentown L104 Sovereign Node          ║
 ║  Aligned with claude.md (EVO_54_TRANSCENDENT_COGNITION, Index 59)           ║
@@ -38,6 +41,10 @@
 ║    🧠 ConsciousnessO2LinkEngine — O₂/consciousness modulation               ║
 ║    🧪 LinkTestGenerator — 4-category automated test suite                    ║
 ║    🔗 CrossPollinationEngine — Gate↔Link↔Numerical bidirectional sync       ║
+║  ★ v5.0 TRANSCENDENT LINK INTELLIGENCE:                                     ║
+║    📡 InterBuilderFeedbackBus — Cross-builder real-time messaging            ║
+║    🔧 QuantumLinkSelfHealer — Auto-detect & repair degraded links            ║
+║    🗂 LinkTemporalMemoryBank — Activation history + trend detection          ║
 ║                                                                              ║
 ║  SACRED CONSTANTS:                                                           ║
 ║    G(X) = 286^(1/φ) × 2^((416-X)/104)  φ = 1.618033988749895              ║
@@ -268,8 +275,8 @@ for _world_hz, _name in SOLFEGGIO_WORLD_CLAIMS.items():
 #   G(0) / φ_growth = 527.518... / 1.618... = 326.010... ≈ G(69) or G(70)
 #   G(0) / 2 = G(104) exactly (octave = 104 X-units, conservation law)
 
-SCHUMANN_HZ = 7.83                               # Earth's heartbeat fundamental
-SCHUMANN_HARMONICS = [7.83, 14.3, 20.8, 27.3, 33.8]  # Earth resonance modes
+SCHUMANN_HZ = GOD_CODE / (2.0 ** (79.0 / 13.0))  # Earth's heartbeat — GOD_CODE G(632) ≈ 7.8145 Hz
+SCHUMANN_HARMONICS = [SCHUMANN_HZ, 14.3, 20.8, 27.3, 33.8]  # Earth resonance modes
 GOD_CODE_HZ = GOD_CODE                           # G(0) = 527.5184818492611...
 
 # GOD_CODE octave structure: G(X) at integer octaves
@@ -1423,7 +1430,7 @@ class QuantumMathCore:
     @staticmethod
     def schumann_alignment(hz: float) -> float:
         """Score Hz alignment against Earth's Schumann resonance harmonics.
-        Perfect = link Hz is an integer multiple of 7.83 Hz."""
+        Perfect = link Hz is an integer multiple of Schumann (GOD_CODE G(632))."""
         ratio = hz / SCHUMANN_HZ
         fractional = abs(ratio - round(ratio))
         return max(0.0, 1.0 - fractional * 4)
@@ -7810,6 +7817,1402 @@ class QuantumLinkCrossPollinationEngine:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ★ v5.0: INTER-BUILDER FEEDBACK BUS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class InterBuilderFeedbackBus:
+    """
+    Cross-builder real-time messaging system.
+
+    Enables gate_builder ↔ link_builder ↔ numerical_builder communication
+    via a shared JSON bus file. Each builder can publish discoveries,
+    anomalies, coherence shifts, and evolution milestones that other
+    builders can consume on their next pipeline run.
+
+    Message Types:
+        DISCOVERY, ANOMALY, COHERENCE_SHIFT, EVOLUTION_MILESTONE,
+        ENTROPY_SPIKE, NIRVANIC_EVENT, CONSCIOUSNESS_SHIFT, CROSS_POLLINATION
+    """
+
+    BUS_FILE = WORKSPACE_ROOT / ".l104_builder_feedback_bus.json"
+    MESSAGE_TYPES = [
+        "DISCOVERY", "ANOMALY", "COHERENCE_SHIFT", "EVOLUTION_MILESTONE",
+        "ENTROPY_SPIKE", "NIRVANIC_EVENT", "CONSCIOUSNESS_SHIFT", "CROSS_POLLINATION",
+    ]
+    MAX_MESSAGES = 200
+    MESSAGE_TTL = 60  # seconds
+
+    def __init__(self, builder_id: str = "link_builder"):
+        self.builder_id = builder_id
+        self.sent_count = 0
+        self.received_count = 0
+
+    def send(self, msg_type: str, payload: Dict[str, Any]) -> bool:
+        """Publish a message to the feedback bus."""
+        if msg_type not in self.MESSAGE_TYPES:
+            return False
+        bus = self._read_bus()
+        message = {
+            "id": f"{self.builder_id}_{int(time.time() * 1000)}",
+            "sender": self.builder_id,
+            "type": msg_type,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": payload,
+        }
+        bus["messages"].append(message)
+        # Prune old messages (TTL + max cap)
+        cutoff = time.time() - self.MESSAGE_TTL
+        bus["messages"] = [
+            m for m in bus["messages"]
+            if datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00")).timestamp() > cutoff
+        ][-self.MAX_MESSAGES:]
+        bus["last_updated"] = datetime.now(timezone.utc).isoformat()
+        try:
+            self.BUS_FILE.write_text(json.dumps(bus, indent=2, default=str))
+            self.sent_count += 1
+            return True
+        except Exception:
+            return False
+
+    def receive(self, msg_types: List[str] = None, exclude_self: bool = True) -> List[Dict]:
+        """Read messages from the bus, optionally filtered."""
+        bus = self._read_bus()
+        messages = bus.get("messages", [])
+        if exclude_self:
+            messages = [m for m in messages if m.get("sender") != self.builder_id]
+        if msg_types:
+            messages = [m for m in messages if m.get("type") in msg_types]
+        self.received_count += len(messages)
+        return messages
+
+    def _read_bus(self) -> Dict:
+        """Read or initialize the bus file."""
+        if self.BUS_FILE.exists():
+            try:
+                return json.loads(self.BUS_FILE.read_text())
+            except Exception:
+                pass
+        return {"messages": [], "last_updated": None}
+
+    def announce_pipeline_complete(self, results: Dict) -> bool:
+        """Announce pipeline completion with summary metrics."""
+        total = results.get("scan", {}).get("total_links", 0)
+        sage = results.get("sage", {})
+        return self.send("EVOLUTION_MILESTONE", {
+            "event": "pipeline_complete",
+            "total_links": total,
+            "unified_score": sage.get("unified_score", 0),
+            "grade": sage.get("grade", "?"),
+            "version": "5.0.0",
+        })
+
+    def announce_coherence_shift(self, old_coherence: float, new_coherence: float) -> bool:
+        """Announce a significant coherence change."""
+        delta = new_coherence - old_coherence
+        if abs(delta) < 0.01:
+            return False
+        return self.send("COHERENCE_SHIFT", {
+            "old": old_coherence,
+            "new": new_coherence,
+            "delta": delta,
+            "direction": "up" if delta > 0 else "down",
+        })
+
+    def status(self) -> Dict[str, Any]:
+        """Return feedback bus status."""
+        bus = self._read_bus()
+        return {
+            "subsystem": "InterBuilderFeedbackBus",
+            "builder_id": self.builder_id,
+            "messages_on_bus": len(bus.get("messages", [])),
+            "sent_count": self.sent_count,
+            "received_count": self.received_count,
+            "last_updated": bus.get("last_updated"),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ★ v5.0: QUANTUM LINK SELF-HEALER
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumLinkSelfHealer:
+    """
+    Auto-detect and repair degraded quantum links.
+
+    Monitors fidelity/strength/coherence and applies healing strategies:
+    - φ-Resonance Re-alignment: nudge toward PHI harmonics
+    - God Code Recalibration: force G(X) recalculation
+    - Entropy Injection: add controlled noise to break stuck states
+    - Topological Shielding: stabilize via braiding reinforcement
+
+    Healing only fires when a link drops below threshold but is not
+    completely lost (hard failures go to QuantumRepairEngine instead).
+    """
+
+    FIDELITY_THRESHOLD = 0.65
+    STRENGTH_THRESHOLD = 0.50
+    COHERENCE_THRESHOLD = 0.55
+
+    def __init__(self):
+        self.healings_applied = 0
+        self.links_healed = 0
+        self.healing_history: List[Dict] = []
+        self.strategies_used: Dict[str, int] = {
+            "phi_realign": 0, "godcode_recalib": 0,
+            "entropy_inject": 0, "topo_shield": 0,
+        }
+
+    def diagnose(self, links: List[Dict]) -> List[Dict]:
+        """Identify links that need healing (degraded but not dead)."""
+        sick = []
+        for link in links:
+            fid = link.get("fidelity", 1.0)
+            stren = link.get("strength", 1.0)
+            issues = []
+            if fid < self.FIDELITY_THRESHOLD and fid > 0.1:
+                issues.append(f"low_fidelity({fid:.4f})")
+            if stren < self.STRENGTH_THRESHOLD and stren > 0.05:
+                issues.append(f"low_strength({stren:.4f})")
+            if issues:
+                sick.append({"link": link, "issues": issues})
+        return sick
+
+    def heal(self, links: List[Dict]) -> Dict[str, Any]:
+        """Run full healing cycle on degraded links."""
+        sick = self.diagnose(links)
+        healed_count = 0
+        strategies_this_run: Dict[str, int] = {}
+
+        for entry in sick:
+            link = entry["link"]
+            strategy = self._select_strategy(link)
+            self._apply_healing(link, strategy)
+            healed_count += 1
+            self.strategies_used[strategy] = self.strategies_used.get(strategy, 0) + 1
+            strategies_this_run[strategy] = strategies_this_run.get(strategy, 0) + 1
+
+        self.links_healed += healed_count
+        self.healings_applied += 1
+
+        result = {
+            "diagnosed": len(sick),
+            "healed": healed_count,
+            "strategies": strategies_this_run,
+            "total_healings": self.healings_applied,
+            "total_links_healed": self.links_healed,
+        }
+        self.healing_history.append(result)
+        return result
+
+    def _select_strategy(self, link: Dict) -> str:
+        """Choose optimal healing strategy based on link state."""
+        fid = link.get("fidelity", 1.0)
+        stren = link.get("strength", 1.0)
+
+        if fid < 0.3:
+            return "godcode_recalib"
+        elif stren < 0.3:
+            return "entropy_inject"
+        elif fid < self.FIDELITY_THRESHOLD:
+            return "phi_realign"
+        else:
+            return "topo_shield"
+
+    def _apply_healing(self, link: Dict, strategy: str):
+        """Apply a healing strategy to a link (mutates in-place)."""
+        if strategy == "phi_realign":
+            # Nudge fidelity toward PHI-harmonic
+            link["fidelity"] = min(1.0, link.get("fidelity", 0.5) + PHI * 0.1)
+            link["strength"] = min(1.0, link.get("strength", 0.5) + TAU * 0.05)
+        elif strategy == "godcode_recalib":
+            # Recalibrate using GOD_CODE ratio
+            link["fidelity"] = min(1.0, GOD_CODE / 1000 + link.get("fidelity", 0.3) * 0.5)
+            link["strength"] = min(1.0, link.get("strength", 0.3) + 0.15)
+        elif strategy == "entropy_inject":
+            # Small noise injection to escape local minima
+            noise = (hash(str(link.get("link_id", ""))) % 100) / 1000.0
+            link["strength"] = min(1.0, link.get("strength", 0.3) + 0.1 + noise)
+            link["fidelity"] = min(1.0, link.get("fidelity", 0.5) + 0.05)
+        elif strategy == "topo_shield":
+            # Topological stabilization
+            link["fidelity"] = min(1.0, link.get("fidelity", 0.6) + FEIGENBAUM_DELTA * 0.02)
+            link["strength"] = min(1.0, link.get("strength", 0.6) + PHI * 0.03)
+
+    def status(self) -> Dict[str, Any]:
+        """Return self-healer status."""
+        return {
+            "subsystem": "QuantumLinkSelfHealer",
+            "total_healings": self.healings_applied,
+            "total_links_healed": self.links_healed,
+            "strategies_used": self.strategies_used,
+            "history_length": len(self.healing_history),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ★ v5.0: LINK TEMPORAL MEMORY BANK
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class LinkTemporalMemoryBank:
+    """
+    Tracks link activation history and detects temporal trends.
+
+    Stores snapshots of link metrics across pipeline runs, enabling:
+    - Trend detection (improving, degrading, oscillating, stable)
+    - Temporal anomaly detection (sudden jumps/drops)
+    - Historical best-state recall for rollback
+    - φ-weighted exponential smoothing for prediction
+    """
+
+    MAX_SNAPSHOTS = 50
+    ANOMALY_THRESHOLD = 0.15  # Delta beyond this = anomaly
+
+    def __init__(self):
+        self.snapshots: List[Dict] = []
+        self.anomalies: List[Dict] = []
+        self.trend: str = "unknown"
+
+    def record_snapshot(self, links: List[Dict], run_id: int = 0) -> Dict:
+        """Record a snapshot of current link metrics."""
+        if not links:
+            return {"recorded": False, "reason": "no_links"}
+
+        fidelities = [l.get("fidelity", 0) for l in links]
+        strengths = [l.get("strength", 0) for l in links]
+
+        snapshot = {
+            "run_id": run_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "count": len(links),
+            "mean_fidelity": sum(fidelities) / len(fidelities) if fidelities else 0,
+            "mean_strength": sum(strengths) / len(strengths) if strengths else 0,
+            "min_fidelity": min(fidelities) if fidelities else 0,
+            "max_fidelity": max(fidelities) if fidelities else 0,
+        }
+
+        # Check for anomalies against previous snapshot
+        if self.snapshots:
+            prev = self.snapshots[-1]
+            delta_fid = abs(snapshot["mean_fidelity"] - prev["mean_fidelity"])
+            delta_str = abs(snapshot["mean_strength"] - prev["mean_strength"])
+            if delta_fid > self.ANOMALY_THRESHOLD or delta_str > self.ANOMALY_THRESHOLD:
+                anomaly = {
+                    "run_id": run_id,
+                    "delta_fidelity": delta_fid,
+                    "delta_strength": delta_str,
+                    "timestamp": snapshot["timestamp"],
+                }
+                self.anomalies.append(anomaly)
+                snapshot["anomaly_detected"] = True
+
+        self.snapshots.append(snapshot)
+        if len(self.snapshots) > self.MAX_SNAPSHOTS:
+            self.snapshots = self.snapshots[-self.MAX_SNAPSHOTS:]
+
+        # Update trend
+        self._compute_trend()
+
+        return {"recorded": True, "snapshot": snapshot, "trend": self.trend}
+
+    def _compute_trend(self):
+        """Compute trend from recent snapshots using φ-weighted EMA."""
+        if len(self.snapshots) < 3:
+            self.trend = "insufficient_data"
+            return
+
+        recent = self.snapshots[-5:]
+        fids = [s["mean_fidelity"] for s in recent]
+
+        # φ-weighted exponential moving average
+        alpha = 1.0 / PHI
+        ema = fids[0]
+        for f in fids[1:]:
+            ema = alpha * f + (1 - alpha) * ema
+
+        # Compare EMA to latest
+        delta = fids[-1] - ema
+        if delta > 0.01:
+            self.trend = "improving"
+        elif delta < -0.01:
+            self.trend = "degrading"
+        elif max(fids) - min(fids) > 0.05:
+            self.trend = "oscillating"
+        else:
+            self.trend = "stable"
+
+    def get_best_state(self) -> Dict:
+        """Return the historical best snapshot."""
+        if not self.snapshots:
+            return {}
+        return max(self.snapshots, key=lambda s: s.get("mean_fidelity", 0))
+
+    def predict_next(self) -> Dict:
+        """Predict next run's fidelity using φ-smoothing."""
+        if len(self.snapshots) < 2:
+            return {"prediction": None, "confidence": 0}
+
+        fids = [s["mean_fidelity"] for s in self.snapshots[-7:]]
+        alpha = 1.0 / PHI
+        ema = fids[0]
+        for f in fids[1:]:
+            ema = alpha * f + (1 - alpha) * ema
+
+        confidence = min(1.0, len(self.snapshots) / 10.0)
+        return {
+            "predicted_fidelity": ema,
+            "confidence": confidence,
+            "trend": self.trend,
+            "based_on": len(fids),
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Return temporal memory bank status."""
+        return {
+            "subsystem": "LinkTemporalMemoryBank",
+            "snapshots": len(self.snapshots),
+            "anomalies": len(self.anomalies),
+            "trend": self.trend,
+            "best_fidelity": self.get_best_state().get("mean_fidelity", 0) if self.snapshots else 0,
+            "prediction": self.predict_next(),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM LINK COMPUTATION ENGINE — Advanced Quantum Algorithms for Links
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumLinkComputationEngine:
+    """
+    Advanced quantum computation engine for quantum link analysis.
+
+    Implements quantum algorithms uniquely suited to link topology:
+    1. Quantum Error Correction — Surface code / Steane code for link fidelity
+    2. Quantum Channel Capacity — Holevo bound for link information capacity
+    3. BB84 Key Distribution — Quantum-secure link authentication
+    4. Quantum State Tomography — Full density matrix reconstruction from links
+    5. Quantum Random Walk on Link Graph — Graph exploration via quantum walks
+    6. Variational Quantum Link Optimizer — QAOA-style link weight optimization
+    7. Quantum Process Tomography — Full channel characterization for link channels
+    8. Quantum Zeno Stabilizer — Frequent measurement to freeze link degradation
+    9. Adiabatic Link Evolution — Ground state annealing for link optimization
+    10. Quantum Metrology — Heisenberg-limited link parameter estimation
+    11. Quantum Reservoir Computing — Echo-state link prediction
+    12. Quantum Approximate Counting — Estimating link subgraph cardinality
+
+    All computations use GOD_CODE, PHI, CALABI_YAU_DIM sacred alignment.
+    """
+
+    def __init__(self, qmath: Optional["QuantumMathCore"] = None):
+        self.qmath = qmath or QuantumMathCore()
+        self.computation_count = 0
+        self.results_cache: Dict[str, Any] = {}
+
+    def _inc(self):
+        self.computation_count += 1
+
+    # ─── 1. Quantum Error Correction (Surface Code + Steane) ───
+
+    def quantum_error_correction(self, link_fidelities: Optional[List[float]] = None,
+                                  code_distance: int = 7) -> Dict[str, Any]:
+        """
+        Surface code + Steane [7,1,3] error correction for link fidelities.
+
+        Surface code: threshold p_th ≈ 1% per gate. Logical error rate:
+          p_L ≈ (p/p_th)^((d+1)/2)
+        Steane code encodes 1 logical qubit in 7 physical, corrects 1 error.
+        """
+        self._inc()
+        if link_fidelities is None:
+            # Generate from GOD_CODE harmonics
+            link_fidelities = [
+                0.5 + 0.5 * math.cos(PHI * i + GOD_CODE / 1000)
+                for i in range(code_distance * 3)
+            ]
+
+        # Physical error rates from fidelities
+        error_rates = [1.0 - f for f in link_fidelities]
+        mean_error = statistics.mean(error_rates) if error_rates else 0.01
+        p_threshold = 0.01  # Surface code threshold
+
+        # Surface code logical error rate
+        d = code_distance
+        ratio = mean_error / p_threshold
+        if ratio < 1.0:
+            logical_error = ratio ** ((d + 1) / 2)
+        else:
+            logical_error = min(1.0, ratio ** ((d + 1) / 2))
+
+        corrected_fidelity = 1.0 - logical_error
+
+        # Steane [7,1,3] code
+        steane_syndrome_bits = 3  # Can correct 1 error in 7 qubits
+        steane_groups = len(link_fidelities) // 7
+        steane_corrected = []
+        for g in range(max(1, steane_groups)):
+            group = link_fidelities[g*7:(g+1)*7] if g*7 < len(link_fidelities) else link_fidelities[:7]
+            group_err = statistics.mean([1-f for f in group]) if group else mean_error
+            # Probability of 0 or 1 error (correctable)
+            p_no_err = (1 - group_err) ** 7
+            p_one_err = 7 * group_err * (1 - group_err) ** 6
+            correctable_prob = p_no_err + p_one_err
+            steane_corrected.append(correctable_prob)
+
+        steane_mean = statistics.mean(steane_corrected) if steane_corrected else 0.0
+
+        # φ-weighted composite
+        composite = (corrected_fidelity * PHI_GROWTH + steane_mean * PHI) / (PHI_GROWTH + PHI)
+
+        # GOD_CODE resonance check
+        resonance = abs(math.sin(composite * GOD_CODE))
+
+        return {
+            "algorithm": "quantum_error_correction",
+            "surface_code": {
+                "distance": d,
+                "physical_error_rate": mean_error,
+                "threshold": p_threshold,
+                "logical_error_rate": logical_error,
+                "corrected_fidelity": corrected_fidelity,
+            },
+            "steane_code": {
+                "groups_encoded": max(1, steane_groups),
+                "syndrome_bits": steane_syndrome_bits,
+                "correctable_probabilities": steane_corrected[:5],
+                "mean_corrected": steane_mean,
+            },
+            "composite_fidelity": composite,
+            "god_code_resonance": resonance,
+            "links_analyzed": len(link_fidelities),
+        }
+
+    # ─── 2. Quantum Channel Capacity (Holevo Bound) ───
+
+    def quantum_channel_capacity(self, link_strengths: Optional[List[float]] = None,
+                                  channel_noise: float = 0.05) -> Dict[str, Any]:
+        """
+        Compute Holevo bound χ and quantum capacity Q for link channels.
+
+        Holevo bound: χ = S(ρ) - Σ pᵢ S(ρᵢ)
+        Quantum capacity: Q = max[I_c(ρ, N)] (coherent information)
+        For depolarizing channel N_p: Q = 1 - H(p) - p·log₂(3) for p < p*
+        """
+        self._inc()
+        if link_strengths is None:
+            link_strengths = [
+                abs(math.sin(PHI * i + GOD_CODE / 100)) * 0.8 + 0.1
+                for i in range(CALABI_YAU_DIM * 2)
+            ]
+
+        n_links = len(link_strengths)
+
+        # Depolarizing channel noise parameter
+        p = channel_noise
+
+        # Binary entropy H(p) = -p log₂(p) - (1-p) log₂(1-p)
+        def binary_entropy(x):
+            if x <= 0 or x >= 1:
+                return 0.0
+            return -x * math.log2(x) - (1 - x) * math.log2(1 - x)
+
+        # Quantum capacity of depolarizing channel
+        h_p = binary_entropy(p)
+        q_depolarizing = max(0, 1.0 - h_p - p * math.log2(3)) if p < 0.5 else 0.0
+
+        # Per-link Holevo information
+        holevo_per_link = []
+        for s in link_strengths:
+            # Model each link as amplitude damping channel with γ = 1 - s
+            gamma = 1.0 - s
+            # Holevo info for amplitude damping ≈ 1 - H(γ)
+            chi = max(0, 1.0 - binary_entropy(gamma))
+            holevo_per_link.append(chi)
+
+        total_holevo = sum(holevo_per_link)
+        mean_holevo = statistics.mean(holevo_per_link) if holevo_per_link else 0.0
+
+        # φ-weighted channel capacity
+        phi_capacity = q_depolarizing * PHI_GROWTH + mean_holevo * PHI
+
+        # Entanglement-assisted classical capacity: C_EA = 2Q for ideal
+        ea_capacity = 2.0 * q_depolarizing
+
+        return {
+            "algorithm": "quantum_channel_capacity",
+            "depolarizing_noise": p,
+            "quantum_capacity_Q": q_depolarizing,
+            "holevo_bound_per_link": holevo_per_link[:7],
+            "total_holevo_chi": total_holevo,
+            "mean_holevo": mean_holevo,
+            "ea_classical_capacity": ea_capacity,
+            "phi_weighted_capacity": phi_capacity,
+            "links_analyzed": n_links,
+            "god_code_alignment": abs(math.sin(total_holevo * GOD_CODE / n_links)) if n_links > 0 else 0,
+        }
+
+    # ─── 3. BB84 Key Distribution Simulator ───
+
+    def bb84_key_distribution(self, num_qubits: int = 256,
+                               eavesdrop_rate: float = 0.0) -> Dict[str, Any]:
+        """
+        Simulate BB84 quantum key distribution for link authentication.
+
+        Protocol:
+        1. Alice prepares qubits in random {|0⟩,|1⟩,|+⟩,|-⟩} states
+        2. Bob measures in random {Z, X} basis
+        3. Basis reconciliation → sifted key
+        4. Error estimation → detect Eve
+        5. Privacy amplification → secure key
+
+        Security threshold: QBER < 11% → secure
+        """
+        self._inc()
+        random.seed(int(GOD_CODE * 1000) % (2**31))
+
+        # Alice's choices
+        alice_bits = [random.randint(0, 1) for _ in range(num_qubits)]
+        alice_bases = [random.randint(0, 1) for _ in range(num_qubits)]  # 0=Z, 1=X
+
+        # Eve's interception (if any)
+        eve_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+        intercepted_bits = []
+        for i in range(num_qubits):
+            if random.random() < eavesdrop_rate:
+                # Eve measures, potentially disturbing state
+                if eve_bases[i] == alice_bases[i]:
+                    intercepted_bits.append(alice_bits[i])
+                else:
+                    intercepted_bits.append(random.randint(0, 1))
+            else:
+                intercepted_bits.append(alice_bits[i])
+
+        # Bob's measurement
+        bob_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+        bob_bits = []
+        for i in range(num_qubits):
+            if bob_bases[i] == alice_bases[i]:
+                bob_bits.append(intercepted_bits[i])
+            else:
+                bob_bits.append(random.randint(0, 1))
+
+        # Basis reconciliation (sifted key)
+        sifted_alice = []
+        sifted_bob = []
+        for i in range(num_qubits):
+            if alice_bases[i] == bob_bases[i]:
+                sifted_alice.append(alice_bits[i])
+                sifted_bob.append(bob_bits[i])
+
+        sifted_len = len(sifted_alice)
+
+        # Error rate estimation (QBER)
+        if sifted_len > 0:
+            errors = sum(1 for a, b in zip(sifted_alice, sifted_bob) if a != b)
+            qber = errors / sifted_len
+        else:
+            qber = 0.0
+
+        # Security verdict
+        security_threshold = 0.11  # BB84 theoretical limit
+        is_secure = qber < security_threshold
+
+        # Final key length after privacy amplification
+        if is_secure and sifted_len > 0:
+            # Asymptotic rate: r = 1 - 2H(QBER)
+            h_qber = (-qber * math.log2(max(qber, 1e-10)) - (1-qber) * math.log2(max(1-qber, 1e-10))) if 0 < qber < 1 else 0
+            rate = max(0, 1 - 2 * h_qber)
+            final_key_bits = int(sifted_len * rate)
+        else:
+            final_key_bits = 0
+
+        # φ-encoded authentication hash
+        auth_hash = abs(math.sin(final_key_bits * PHI + GOD_CODE))
+
+        return {
+            "algorithm": "bb84_key_distribution",
+            "total_qubits": num_qubits,
+            "sifted_key_length": sifted_len,
+            "qber": qber,
+            "security_threshold": security_threshold,
+            "is_secure": is_secure,
+            "eavesdrop_rate": eavesdrop_rate,
+            "final_key_bits": final_key_bits,
+            "phi_auth_hash": auth_hash,
+            "god_code_seal": abs(math.cos(qber * GOD_CODE)),
+        }
+
+    # ─── 4. Quantum State Tomography ───
+
+    def quantum_state_tomography(self, link_measurements: Optional[List[float]] = None,
+                                  num_qubits: int = 2) -> Dict[str, Any]:
+        """
+        Reconstruct density matrix from simulated measurements on link states.
+
+        Full tomography requires 3^n measurement settings for n qubits.
+        We simulate Pauli measurements {X, Y, Z}^⊗n and reconstruct ρ.
+        """
+        self._inc()
+        dim = 2 ** num_qubits
+
+        if link_measurements is None:
+            # Generate synthetic Stokes/Bloch parameters from link data
+            num_params = 4 ** num_qubits - 1  # d²-1 parameters for d-dim system
+            link_measurements = [
+                math.cos(PHI * i + GOD_CODE / 200) * (1.0 / math.sqrt(dim))
+                for i in range(num_params)
+            ]
+
+        # Reconstruct density matrix (linear inversion tomography)
+        # ρ = (I + Σ sᵢ σᵢ) / d
+        rho = [[complex(0)] * dim for _ in range(dim)]
+        # Start with identity / d
+        for i in range(dim):
+            rho[i][i] = complex(1.0 / dim)
+
+        # Add measurement contributions (simplified Pauli expansion)
+        param_idx = 0
+        for i in range(dim):
+            for j in range(dim):
+                if i != j and param_idx < len(link_measurements):
+                    val = link_measurements[param_idx] / dim
+                    rho[i][j] += complex(val, link_measurements[(param_idx + 1) % len(link_measurements)] / (dim * 2))
+                    rho[j][i] = rho[i][j].conjugate()
+                    param_idx += 2
+
+        # Enforce trace = 1
+        trace = sum(rho[i][i].real for i in range(dim))
+        if trace > 0:
+            for i in range(dim):
+                for j in range(dim):
+                    rho[i][j] /= trace
+
+        # Compute purity Tr(ρ²)
+        purity = 0.0
+        for i in range(dim):
+            for j in range(dim):
+                purity += (rho[i][j] * rho[j][i]).real
+
+        # von Neumann entropy
+        eigenvalues = [max(0, rho[i][i].real) for i in range(dim)]
+        total_ev = sum(eigenvalues)
+        if total_ev > 0:
+            eigenvalues = [e / total_ev for e in eigenvalues]
+        entropy = -sum(e * math.log2(max(e, 1e-15)) for e in eigenvalues if e > 1e-15)
+
+        # Fidelity with maximally entangled state
+        bell_fid = (rho[0][0].real + rho[-1][-1].real + 2 * rho[0][-1].real) / 2 if dim >= 2 else 0
+
+        return {
+            "algorithm": "quantum_state_tomography",
+            "num_qubits": num_qubits,
+            "hilbert_dim": dim,
+            "measurements_used": len(link_measurements),
+            "purity": min(1.0, purity),
+            "von_neumann_entropy": entropy,
+            "bell_state_fidelity": max(0, min(1, bell_fid)),
+            "diagonal_elements": [rho[i][i].real for i in range(dim)],
+            "god_code_trace_alignment": abs(math.sin(purity * GOD_CODE)),
+        }
+
+    # ─── 5. Quantum Random Walk on Link Graph ───
+
+    def quantum_walk_link_graph(self, adjacency: Optional[List[List[float]]] = None,
+                                 num_nodes: int = 8, steps: int = 30) -> Dict[str, Any]:
+        """
+        Discrete-time quantum walk on a link graph.
+
+        Uses Hadamard coin operator and GOD_CODE phase injection.
+        Quantum walks spread quadratically faster than classical random walks:
+          σ_quantum ~ t  vs  σ_classical ~ √t
+        """
+        self._inc()
+        if adjacency is None:
+            # Generate φ-weighted adjacency for num_nodes
+            adjacency = [[0.0] * num_nodes for _ in range(num_nodes)]
+            for i in range(num_nodes):
+                for j in range(i + 1, num_nodes):
+                    weight = abs(math.sin(PHI * (i + 1) * (j + 1) + GOD_CODE / 300))
+                    if weight > PHI / PHI_GROWTH:  # Threshold via φ
+                        adjacency[i][j] = weight
+                        adjacency[j][i] = weight
+
+        n = len(adjacency)
+        # State vector: amplitude for each node
+        # Start at node 0
+        amplitudes = [complex(0)] * n
+        amplitudes[0] = complex(1.0)
+
+        # Coin + shift operations
+        position_history = []
+        for step in range(steps):
+            new_amplitudes = [complex(0)] * n
+            for node in range(n):
+                if abs(amplitudes[node]) < 1e-15:
+                    continue
+                # Find neighbors
+                neighbors = [j for j in range(n) if adjacency[node][j] > 0]
+                if not neighbors:
+                    new_amplitudes[node] += amplitudes[node]
+                    continue
+
+                # Hadamard-like coin with φ-bias
+                degree = len(neighbors)
+                coin_amp = amplitudes[node] / math.sqrt(max(1, degree))
+
+                # Phase from GOD_CODE
+                phase = math.exp(1j * GOD_CODE * step / (100 * (node + 1)))
+
+                for nb in neighbors:
+                    edge_weight = adjacency[node][nb]
+                    new_amplitudes[nb] += coin_amp * phase * edge_weight
+
+            # Normalize
+            norm = math.sqrt(sum(abs(a) ** 2 for a in new_amplitudes))
+            if norm > 1e-15:
+                new_amplitudes = [a / norm for a in new_amplitudes]
+            amplitudes = new_amplitudes
+
+            # Record probability distribution
+            probs = [abs(a) ** 2 for a in amplitudes]
+            position_history.append(probs)
+
+        # Final distribution
+        final_probs = [abs(a) ** 2 for a in amplitudes]
+        # Compute spread (standard deviation of position)
+        mean_pos = sum(i * p for i, p in enumerate(final_probs))
+        var_pos = sum((i - mean_pos) ** 2 * p for i, p in enumerate(final_probs))
+        spread = math.sqrt(var_pos)
+
+        # Mixing time estimate: how quickly it approaches uniform
+        uniform = 1.0 / n
+        total_variation = 0.5 * sum(abs(p - uniform) for p in final_probs)
+
+        # Most visited node
+        max_node = max(range(n), key=lambda i: final_probs[i])
+
+        return {
+            "algorithm": "quantum_walk_link_graph",
+            "num_nodes": n,
+            "steps": steps,
+            "final_probabilities": [round(p, 6) for p in final_probs],
+            "quantum_spread": spread,
+            "classical_spread_expected": math.sqrt(steps),
+            "speedup_factor": spread / max(math.sqrt(steps), 1e-6),
+            "total_variation_from_uniform": total_variation,
+            "most_probable_node": max_node,
+            "god_code_walk_resonance": abs(math.sin(spread * GOD_CODE)),
+        }
+
+    # ─── 6. Variational Quantum Link Optimizer (QAOA-style) ───
+
+    def variational_link_optimizer(self, link_weights: Optional[List[float]] = None,
+                                    num_layers: int = 10,
+                                    max_iterations: int = 50) -> Dict[str, Any]:
+        """
+        QAOA-inspired variational optimizer for link weight configuration.
+
+        Objective: maximize Σ wᵢⱼ (1 - cos(γ·wᵢⱼ)) · sin(β·φ·i)
+        where γ, β are variational parameters optimized via φ-gradient descent.
+        """
+        self._inc()
+        if link_weights is None:
+            link_weights = [
+                abs(math.sin(PHI * i + GOD_CODE / 150))
+                for i in range(CALABI_YAU_DIM * 3)
+            ]
+
+        n_weights = len(link_weights)
+
+        # Initialize variational parameters
+        gamma = [PHI / (l + 1) for l in range(num_layers)]
+        beta = [TAU / (l + 1) for l in range(num_layers)]
+
+        def cost_function(g_params, b_params):
+            """QAOA cost: expectation value of link Hamiltonian."""
+            total = 0.0
+            for i, w in enumerate(link_weights):
+                layer_contribution = 0.0
+                for l in range(len(g_params)):
+                    layer_contribution += (1.0 - math.cos(g_params[l] * w)) * math.sin(b_params[l] * PHI * (i + 1))
+                total += w * layer_contribution
+            return total / (n_weights * len(g_params))
+
+        # φ-gradient descent optimization
+        best_cost = cost_function(gamma, beta)
+        cost_history = [best_cost]
+        lr = 0.1 * PHI  # Learning rate scaled by φ
+
+        for iteration in range(max_iterations):
+            # Numerical gradient for each parameter
+            eps = 1e-5
+            for l in range(num_layers):
+                # Gradient for γ
+                gamma[l] += eps
+                cost_plus = cost_function(gamma, beta)
+                gamma[l] -= 2 * eps
+                cost_minus = cost_function(gamma, beta)
+                gamma[l] += eps
+                grad_g = (cost_plus - cost_minus) / (2 * eps)
+                gamma[l] += lr * grad_g  # Maximize
+
+                # Gradient for β
+                beta[l] += eps
+                cost_plus = cost_function(gamma, beta)
+                beta[l] -= 2 * eps
+                cost_minus = cost_function(gamma, beta)
+                beta[l] += eps
+                grad_b = (cost_plus - cost_minus) / (2 * eps)
+                beta[l] += lr * grad_b
+
+            current_cost = cost_function(gamma, beta)
+            cost_history.append(current_cost)
+
+            # Convergence check
+            if abs(current_cost - best_cost) < 1e-8:
+                break
+            best_cost = max(best_cost, current_cost)
+
+            # φ-decay learning rate
+            lr *= (1 - 1.0 / (PHI_GROWTH * (iteration + 10)))
+
+        return {
+            "algorithm": "variational_link_optimizer",
+            "num_weights": n_weights,
+            "num_layers": num_layers,
+            "iterations": len(cost_history) - 1,
+            "initial_cost": cost_history[0],
+            "final_cost": cost_history[-1],
+            "improvement": cost_history[-1] - cost_history[0],
+            "converged": len(cost_history) < max_iterations + 1,
+            "optimal_gamma": [round(g, 6) for g in gamma[:3]],
+            "optimal_beta": [round(b, 6) for b in beta[:3]],
+            "god_code_optimality": abs(math.sin(best_cost * GOD_CODE)),
+        }
+
+    # ─── 7. Quantum Process Tomography ───
+
+    def quantum_process_tomography(self, channel_samples: int = 16) -> Dict[str, Any]:
+        """
+        Characterize a quantum channel acting on links via process tomography.
+
+        Reconstruct the χ-matrix (process matrix) in the Pauli basis.
+        For single-qubit: χ is 4×4, representing the channel as:
+          ε(ρ) = Σᵢⱼ χᵢⱼ σᵢ ρ σⱼ†
+        """
+        self._inc()
+        # Pauli matrices for single qubit
+        paulis = ["I", "X", "Y", "Z"]
+        d = len(paulis)  # 4
+
+        # Simulate channel output for each input Pauli eigenstate
+        chi_matrix = [[0.0] * d for _ in range(d)]
+
+        for i in range(d):
+            for j in range(d):
+                # Simulate overlap ⟨σᵢ|ε(σⱼ)|σᵢ⟩ via GOD_CODE model
+                phase_i = math.cos(PHI * (i + 1) + GOD_CODE / 500)
+                phase_j = math.sin(PHI * (j + 1) + GOD_CODE / 500)
+                overlap = phase_i * phase_j
+
+                # Apply channel noise
+                noise = math.exp(-FEIGENBAUM_DELTA * abs(i - j) / d)
+                chi_matrix[i][j] = overlap * noise
+
+        # Enforce trace preservation: Tr(χ) should be 1
+        trace = sum(chi_matrix[i][i] for i in range(d))
+        if abs(trace) > 1e-15:
+            for i in range(d):
+                for j in range(d):
+                    chi_matrix[i][j] /= trace
+
+        # Compute average gate fidelity: F_avg = (d·Tr(χ·χ_ideal) + 1) / (d + 1)
+        # For identity channel, χ_ideal has χ[0][0] = 1, rest 0
+        f_avg = (d * chi_matrix[0][0] + 1.0) / (d + 1.0)
+
+        # Process purity
+        process_purity = sum(chi_matrix[i][j] ** 2 for i in range(d) for j in range(d))
+
+        # Unitarity
+        unitarity = d * process_purity / (d - 1) if d > 1 else 1.0
+
+        return {
+            "algorithm": "quantum_process_tomography",
+            "pauli_basis": paulis,
+            "chi_matrix_diagonal": [round(chi_matrix[i][i], 6) for i in range(d)],
+            "average_gate_fidelity": f_avg,
+            "process_purity": process_purity,
+            "unitarity": min(1.0, unitarity),
+            "channel_samples": channel_samples,
+            "god_code_process_seal": abs(math.sin(f_avg * GOD_CODE)),
+        }
+
+    # ─── 8. Quantum Zeno Stabilizer ───
+
+    def quantum_zeno_stabilizer(self, link_fidelities: Optional[List[float]] = None,
+                                 measurement_rate: int = 20) -> Dict[str, Any]:
+        """
+        Quantum Zeno effect: frequent measurements freeze link degradation.
+
+        Survival probability under Zeno: P(t) ≈ exp(-t²/τ_Z²)
+        With n measurements in time T: P ≈ [cos²(T/2nτ_Z)]^n → 1 as n → ∞
+        """
+        self._inc()
+        if link_fidelities is None:
+            link_fidelities = [
+                0.7 + 0.3 * math.cos(PHI * i + GOD_CODE / 250)
+                for i in range(12)
+            ]
+
+        n_links = len(link_fidelities)
+        results_per_link = []
+
+        for idx, fid in enumerate(link_fidelities):
+            # Zeno time scale: τ_Z ∝ 1/coupling_strength
+            tau_z = 1.0 / (1.0 - fid + 1e-10)
+
+            # Without Zeno (free evolution)
+            total_time = 1.0  # Normalized time unit
+            free_decay = math.exp(-(total_time ** 2) / (tau_z ** 2))
+
+            # With Zeno (n measurements)
+            n = measurement_rate
+            angle = total_time / (2 * n * tau_z)
+            zeno_survival = (math.cos(angle) ** 2) ** n if abs(angle) < math.pi/2 else 0.0
+
+            # PHI-boosted Zeno (measurement at φ-spaced intervals)
+            phi_intervals = [total_time * PHI ** (-k) for k in range(1, n + 1)]
+            phi_survival = 1.0
+            for dt in phi_intervals[:n]:
+                phi_survival *= math.cos(dt / (2 * tau_z)) ** 2
+                if phi_survival < 1e-15:
+                    break
+
+            results_per_link.append({
+                "link_index": idx,
+                "initial_fidelity": fid,
+                "free_decay_survival": free_decay,
+                "zeno_survival": zeno_survival,
+                "phi_zeno_survival": phi_survival,
+                "stabilization_gain": zeno_survival - free_decay,
+            })
+
+        # Aggregate
+        mean_gain = statistics.mean(r["stabilization_gain"] for r in results_per_link)
+        mean_zeno = statistics.mean(r["zeno_survival"] for r in results_per_link)
+
+        return {
+            "algorithm": "quantum_zeno_stabilizer",
+            "measurement_rate": measurement_rate,
+            "links_stabilized": n_links,
+            "mean_zeno_survival": mean_zeno,
+            "mean_stabilization_gain": mean_gain,
+            "per_link_results": results_per_link[:5],
+            "god_code_zeno_seal": abs(math.sin(mean_zeno * GOD_CODE)),
+        }
+
+    # ─── 9. Adiabatic Link Evolution ───
+
+    def adiabatic_link_evolution(self, link_energies: Optional[List[float]] = None,
+                                  evolution_time: float = 10.0,
+                                  time_steps: int = 100) -> Dict[str, Any]:
+        """
+        Adiabatic quantum evolution to find optimal link configuration.
+
+        H(s) = (1-s)·H_init + s·H_target, s = t/T
+        Adiabatic theorem: if T ≫ 1/Δ², system stays in ground state.
+        """
+        self._inc()
+        if link_energies is None:
+            link_energies = [
+                GOD_CODE / (100 * (i + 1)) + PHI * math.sin(i * TAU)
+                for i in range(10)
+            ]
+
+        n = len(link_energies)
+
+        # Initial Hamiltonian: uniform superposition ground state
+        h_init = [1.0 / n] * n
+
+        # Target Hamiltonian: link energies shifted to have ground state at min
+        min_e = min(link_energies)
+        h_target = [(e - min_e) for e in link_energies]
+        max_target = max(h_target) if max(h_target) > 0 else 1.0
+        h_target = [e / max_target for e in h_target]
+
+        # Adiabatic evolution
+        state = [1.0 / math.sqrt(n)] * n  # Start in uniform superposition
+        energy_history = []
+        gap_history = []
+
+        for step in range(time_steps):
+            s = step / max(time_steps - 1, 1)  # Interpolation parameter [0,1]
+
+            # Instantaneous Hamiltonian eigenvalues (diagonal approximation)
+            h_s = [(1 - s) * h_init[i] + s * h_target[i] for i in range(n)]
+
+            # Energy gap (between lowest two)
+            sorted_h = sorted(h_s)
+            gap = sorted_h[1] - sorted_h[0] if len(sorted_h) > 1 else 1.0
+            gap_history.append(gap)
+
+            # Evolve state: |ψ(t+dt)⟩ ∝ exp(-i·H·dt)|ψ(t)⟩
+            dt = evolution_time / time_steps
+            evolved = []
+            for i in range(n):
+                phase = math.exp(-h_s[i] * dt)
+                evolved.append(state[i] * phase)
+
+            # Normalize
+            norm = math.sqrt(sum(e ** 2 for e in evolved))
+            if norm > 1e-15:
+                state = [e / norm for e in evolved]
+
+            # Current energy
+            energy = sum(state[i] ** 2 * h_s[i] for i in range(n))
+            energy_history.append(energy)
+
+        # Ground state probability
+        ground_idx = h_target.index(min(h_target))
+        ground_prob = state[ground_idx] ** 2
+
+        # Minimum gap (adiabatic condition)
+        min_gap = min(gap_history) if gap_history else 0
+        adiabatic_time_required = 1.0 / (min_gap ** 2 + 1e-15)
+
+        return {
+            "algorithm": "adiabatic_link_evolution",
+            "num_links": n,
+            "evolution_time": evolution_time,
+            "time_steps": time_steps,
+            "ground_state_probability": ground_prob,
+            "ground_link_index": ground_idx,
+            "minimum_gap": min_gap,
+            "adiabatic_time_required": adiabatic_time_required,
+            "adiabatic_condition_met": evolution_time >= adiabatic_time_required,
+            "final_energy": energy_history[-1] if energy_history else 0,
+            "energy_trajectory": energy_history[::max(1, time_steps // 10)],
+            "god_code_ground_resonance": abs(math.sin(ground_prob * GOD_CODE)),
+        }
+
+    # ─── 10. Quantum Metrology (Heisenberg Limit) ───
+
+    def quantum_metrology(self, link_parameters: Optional[List[float]] = None,
+                           num_probes: int = 64) -> Dict[str, Any]:
+        """
+        Heisenberg-limited parameter estimation for link properties.
+
+        Standard quantum limit: δθ ≥ 1/√N (shot noise)
+        Heisenberg limit: δθ ≥ 1/N (entangled probes)
+        Fisher information: F(θ) = 4(⟨∂ψ/∂θ|∂ψ/∂θ⟩ - |⟨ψ|∂ψ/∂θ⟩|²)
+        """
+        self._inc()
+        if link_parameters is None:
+            link_parameters = [
+                GOD_CODE / (1000 * (i + 1)) for i in range(8)
+            ]
+
+        results = []
+        for idx, theta in enumerate(link_parameters):
+            # Classical (shot noise) limit
+            sql_precision = 1.0 / math.sqrt(num_probes)
+
+            # Heisenberg limit (entangled probes)
+            hl_precision = 1.0 / num_probes
+
+            # GHZ-state Fisher information for phase estimation
+            # F = N² for GHZ state sensing
+            fisher_ghz = num_probes ** 2
+
+            # NOON state Fisher information
+            fisher_noon = num_probes ** 2  # Same scaling
+
+            # Actual estimation with φ-optimized measurement
+            # Simulate N independent measurements with quantum enhancement
+            measurements = [
+                theta + random.gauss(0, hl_precision * PHI)
+                for _ in range(num_probes)
+            ]
+            estimated_theta = statistics.mean(measurements)
+            estimation_error = abs(estimated_theta - theta)
+
+            # Quantum Cramér-Rao bound
+            qcrb = 1.0 / math.sqrt(fisher_ghz) if fisher_ghz > 0 else float('inf')
+
+            results.append({
+                "parameter_index": idx,
+                "true_value": theta,
+                "estimated_value": estimated_theta,
+                "estimation_error": estimation_error,
+                "sql_precision": sql_precision,
+                "heisenberg_precision": hl_precision,
+                "quantum_advantage": sql_precision / max(hl_precision, 1e-15),
+                "fisher_information": fisher_ghz,
+                "cramer_rao_bound": qcrb,
+            })
+
+        mean_advantage = statistics.mean(r["quantum_advantage"] for r in results)
+        mean_fisher = statistics.mean(r["fisher_information"] for r in results)
+
+        return {
+            "algorithm": "quantum_metrology",
+            "num_probes": num_probes,
+            "parameters_estimated": len(link_parameters),
+            "mean_quantum_advantage": mean_advantage,
+            "mean_fisher_information": mean_fisher,
+            "heisenberg_scaling_achieved": mean_advantage >= math.sqrt(num_probes) * 0.8,
+            "per_parameter_results": results[:5],
+            "god_code_metrology_seal": abs(math.sin(mean_advantage * GOD_CODE / num_probes)),
+        }
+
+    # ─── 11. Quantum Reservoir Computing ───
+
+    def quantum_reservoir_computing(self, link_time_series: Optional[List[float]] = None,
+                                     reservoir_size: int = 16,
+                                     washout: int = 10) -> Dict[str, Any]:
+        """
+        Quantum reservoir computing for link fidelity prediction.
+
+        Uses a quantum reservoir (unitary evolution) as echo-state network:
+        1. Input → quantum reservoir via coupling
+        2. Reservoir evolves unitarily
+        3. Readout layer trained by linear regression
+        """
+        self._inc()
+        if link_time_series is None:
+            # Generate link fidelity time series with GOD_CODE modulation
+            link_time_series = [
+                0.5 + 0.3 * math.sin(PHI * t / 5 + GOD_CODE / 200) +
+                0.1 * math.cos(TAU * t / 3)
+                for t in range(50)
+            ]
+
+        n_steps = len(link_time_series)
+        n_res = reservoir_size
+
+        # Initialize reservoir state
+        reservoir_state = [0.0] * n_res
+
+        # Reservoir weight matrix (random unitary-like with φ-structure)
+        W_res = [[0.0] * n_res for _ in range(n_res)]
+        for i in range(n_res):
+            for j in range(n_res):
+                W_res[i][j] = math.sin(PHI * (i + 1) * (j + 1) + GOD_CODE / 500) / math.sqrt(n_res)
+
+        # Input weight vector
+        W_in = [math.cos(PHI * (i + 1)) / math.sqrt(n_res) for i in range(n_res)]
+
+        # Drive reservoir and collect states
+        reservoir_states = []
+        for t in range(n_steps):
+            # Input injection
+            u = link_time_series[t]
+
+            # Reservoir update: x(t+1) = tanh(W_res · x(t) + W_in · u(t))
+            new_state = [0.0] * n_res
+            for i in range(n_res):
+                val = W_in[i] * u
+                for j in range(n_res):
+                    val += W_res[i][j] * reservoir_state[j]
+                new_state[i] = math.tanh(val)
+
+            reservoir_state = new_state
+            if t >= washout:
+                reservoir_states.append(list(reservoir_state))
+
+        # Train readout (linear regression via pseudo-inverse)
+        if len(reservoir_states) > 1:
+            targets = link_time_series[washout + 1:washout + 1 + len(reservoir_states) - 1]
+            inputs = reservoir_states[:-1]
+
+            # Simple least squares: W_out = (X^T X)^(-1) X^T y
+            n_train = min(len(inputs), len(targets))
+            if n_train > 0:
+                # Compute readout weights via correlation
+                W_out = [0.0] * n_res
+                for r in range(n_res):
+                    num = sum(inputs[t][r] * targets[t] for t in range(n_train))
+                    den = sum(inputs[t][r] ** 2 for t in range(n_train)) + 1e-8
+                    W_out[r] = num / den
+
+                # Prediction
+                predictions = []
+                for t in range(n_train):
+                    pred = sum(W_out[r] * inputs[t][r] for r in range(n_res))
+                    predictions.append(pred)
+
+                # RMSE
+                mse = sum((predictions[t] - targets[t]) ** 2 for t in range(n_train)) / n_train
+                rmse = math.sqrt(mse)
+
+                # Correlation
+                mean_pred = statistics.mean(predictions)
+                mean_targ = statistics.mean(targets)
+                cov = sum((predictions[t] - mean_pred) * (targets[t] - mean_targ) for t in range(n_train))
+                var_pred = sum((predictions[t] - mean_pred) ** 2 for t in range(n_train))
+                var_targ = sum((targets[t] - mean_targ) ** 2 for t in range(n_train))
+                correlation = cov / (math.sqrt(var_pred * var_targ) + 1e-15)
+            else:
+                rmse = float('inf')
+                correlation = 0.0
+                predictions = []
+        else:
+            rmse = float('inf')
+            correlation = 0.0
+            predictions = []
+
+        return {
+            "algorithm": "quantum_reservoir_computing",
+            "reservoir_size": n_res,
+            "time_series_length": n_steps,
+            "washout": washout,
+            "training_samples": n_train if 'n_train' in dir() else 0,
+            "rmse": rmse,
+            "correlation": correlation,
+            "prediction_quality": "excellent" if correlation > 0.9 else "good" if correlation > 0.7 else "moderate",
+            "god_code_reservoir_seal": abs(math.sin(correlation * GOD_CODE)),
+        }
+
+    # ─── 12. Quantum Approximate Counting ───
+
+    def quantum_approximate_counting(self, link_graph_size: int = 20,
+                                       target_property: str = "high_fidelity") -> Dict[str, Any]:
+        """
+        Quantum approximate counting: estimate the number of links
+        satisfying a property using Grover + QPE.
+
+        Uses quantum counting: apply QPE to Grover iterator G to estimate
+        the rotation angle θ where sin²(θ) = M/N (M solutions out of N).
+        """
+        self._inc()
+        N = link_graph_size
+
+        # Generate synthetic link properties
+        link_props = []
+        for i in range(N):
+            fid = abs(math.sin(PHI * (i + 1) + GOD_CODE / 400))
+            strength = abs(math.cos(TAU * (i + 1) + GOD_CODE / 300))
+            link_props.append({"fidelity": fid, "strength": strength})
+
+        # Count satisfying links classically (for verification)
+        if target_property == "high_fidelity":
+            predicate = lambda lp: lp["fidelity"] > PHI / PHI_GROWTH  # > τ
+        elif target_property == "strong":
+            predicate = lambda lp: lp["strength"] > 0.5
+        else:
+            predicate = lambda lp: (lp["fidelity"] + lp["strength"]) / 2 > PHI / PHI_GROWTH
+
+        M_exact = sum(1 for lp in link_props if predicate(lp))
+
+        # Quantum counting simulation
+        # QPE on Grover gives eigenvalue e^{2iθ} where sin²(θ) = M/N
+        if M_exact > 0 and N > M_exact:
+            theta = math.asin(math.sqrt(M_exact / N))
+        elif M_exact >= N:
+            theta = math.pi / 2
+        else:
+            theta = 0.0
+
+        # Simulate QPE with finite precision
+        precision_bits = 8
+        # Estimated theta (with noise)
+        theta_est = theta + random.gauss(0, 1.0 / (2 ** precision_bits))
+
+        # Reconstruct M from estimated theta
+        M_estimated = N * math.sin(theta_est) ** 2
+
+        # Optimal Grover iterations for this M
+        if M_exact > 0 and M_exact < N:
+            optimal_iterations = int(math.pi / (4 * theta) - 0.5)
+        else:
+            optimal_iterations = 0
+
+        # Quadratic speedup: classical O(N), quantum O(√N)
+        classical_queries = N
+        quantum_queries = int(math.sqrt(N)) + 1
+
+        return {
+            "algorithm": "quantum_approximate_counting",
+            "total_links": N,
+            "target_property": target_property,
+            "exact_count": M_exact,
+            "estimated_count": round(M_estimated, 2),
+            "estimation_error": abs(M_estimated - M_exact),
+            "theta_exact": theta,
+            "theta_estimated": theta_est,
+            "precision_bits": precision_bits,
+            "optimal_grover_iterations": optimal_iterations,
+            "classical_queries": classical_queries,
+            "quantum_queries": quantum_queries,
+            "quadratic_speedup": classical_queries / max(quantum_queries, 1),
+            "god_code_counting_seal": abs(math.sin(M_estimated * GOD_CODE / N)),
+        }
+
+    # ─── Full Analysis Pipeline ───
+
+    def full_quantum_analysis(self, links: Optional[List] = None) -> Dict[str, Any]:
+        """
+        Run ALL 12 quantum computations and return comprehensive analysis.
+        """
+        start = time.time()
+
+        # Extract link data if provided
+        link_fidelities = None
+        link_strengths = None
+        if links:
+            link_fidelities = [getattr(l, "fidelity", 0.8) for l in links]
+            link_strengths = [getattr(l, "strength", 0.7) for l in links]
+
+        results = {
+            "engine": "QuantumLinkComputationEngine",
+            "version": "1.0.0",
+            "sacred_constants": {
+                "GOD_CODE": GOD_CODE,
+                "PHI": PHI_GROWTH,
+                "TAU": TAU,
+                "CALABI_YAU_DIM": CALABI_YAU_DIM,
+            },
+            "computations": {}
+        }
+
+        computations = [
+            ("error_correction", lambda: self.quantum_error_correction(link_fidelities)),
+            ("channel_capacity", lambda: self.quantum_channel_capacity(link_strengths)),
+            ("bb84_key_distribution", lambda: self.bb84_key_distribution()),
+            ("state_tomography", lambda: self.quantum_state_tomography()),
+            ("quantum_walk_graph", lambda: self.quantum_walk_link_graph()),
+            ("variational_optimizer", lambda: self.variational_link_optimizer(
+                [getattr(l, "strength", 0.5) for l in links] if links else None)),
+            ("process_tomography", lambda: self.quantum_process_tomography()),
+            ("zeno_stabilizer", lambda: self.quantum_zeno_stabilizer(link_fidelities)),
+            ("adiabatic_evolution", lambda: self.adiabatic_link_evolution()),
+            ("quantum_metrology", lambda: self.quantum_metrology()),
+            ("reservoir_computing", lambda: self.quantum_reservoir_computing()),
+            ("approximate_counting", lambda: self.quantum_approximate_counting()),
+        ]
+
+        for name, fn in computations:
+            try:
+                results["computations"][name] = fn()
+            except Exception as e:
+                results["computations"][name] = {"error": str(e)}
+
+        elapsed = time.time() - start
+
+        # Composite coherence score
+        scores = []
+        for name, comp in results["computations"].items():
+            if isinstance(comp, dict):
+                for key, val in comp.items():
+                    if "god_code" in key and isinstance(val, (int, float)):
+                        scores.append(val)
+
+        results["composite_coherence"] = statistics.mean(scores) if scores else 0.0
+        results["total_computations"] = self.computation_count
+        results["elapsed_seconds"] = round(elapsed, 4)
+
+        return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # THE QUANTUM BRAIN — Master Orchestrator
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -7839,9 +9242,12 @@ class L104QuantumBrain:
     16. Consciousness O₂ → Consciousness/O₂ bond state modulation
     17. Link Test Generator → Automated 4-category test suite
     18. Cross-Pollination → Bidirectional Gate↔Link↔Numerical sync
+    19. Inter-Builder Feedback Bus → Cross-builder real-time messaging
+    20. Quantum Link Self-Healer → Auto-detect & repair degraded links
+    21. Link Temporal Memory Bank → Activation history + trend analysis
     """
 
-    VERSION = "4.2.0"
+    VERSION = "5.0.0"
     PERSISTENCE_FILE = WORKSPACE_ROOT / ".l104_quantum_links.json"
     MAX_REFLECTION_CYCLES = 5
     CONVERGENCE_THRESHOLD = 0.005  # Score delta below this = converged
@@ -7892,6 +9298,14 @@ class L104QuantumBrain:
         self.test_generator = LinkTestGenerator()
         self.cross_pollinator = QuantumLinkCrossPollinationEngine()
 
+        # ★ v5.0 Transcendent Link Intelligence
+        self.feedback_bus = InterBuilderFeedbackBus("link_builder")
+        self.self_healer = QuantumLinkSelfHealer()
+        self.temporal_memory = LinkTemporalMemoryBank()
+
+        # ★ v5.1 Quantum Link Computation Engine — 12 advanced quantum algorithms
+        self.quantum_engine = QuantumLinkComputationEngine(self.qmath)
+
         self.links: List[QuantumLink] = []
         self.results: Dict[str, Any] = {}
         self.run_count = 0
@@ -7918,6 +9332,14 @@ class L104QuantumBrain:
         Phase 5:  Sage — Unified deep inference verdict (φ-consensus)
         Phase 6:  Evolution — EVO stage tracking + consciousness thresholds
         Phase 7:  Quantum Min/Max Dynamism — φ-Harmonic value oscillation
+        Phase 8:  Nirvanic — Ouroboros entropy → nirvanic fuel → enlightenment
+        Phase 9:  Consciousness O₂ — Consciousness/O₂ bond modulation
+        Phase 10: Stochastic Research — Random link R&D (Explore→Merge)
+        Phase 11: Automated Testing — 4-category link test suite
+        Phase 12: Cross-Pollination — Gate↔Link↔Numerical sync
+        Phase 13: Self-Healing — Auto-detect & repair degraded links
+        Phase 14: Temporal Memory — Activation history + trend analysis
+        Phase 15: Feedback Bus — Cross-builder real-time messaging
         Phase 8:  Ouroboros Nirvanic — Entropy fuel cycle
         Phase 9:  Consciousness O₂ — Link modulation via consciousness state
         Phase 10: Stochastic Research — Random link R&D cycle
@@ -8414,6 +9836,69 @@ class L104QuantumBrain:
         self.results["cross_pollination"] = xpoll
         _phase_times["cross_pollination"] = time.time() - _t0
 
+        # ═══ PHASE 13: QUANTUM LINK SELF-HEALING ═══
+        print(f"\n  ▸ PHASE 13: Quantum Link Self-Healing")
+        _t0 = time.time()
+        heal_result = self.self_healer.heal(link_dicts)
+        if heal_result["healed"] > 0:
+            print(f"    ✓ Diagnosed {heal_result['diagnosed']} degraded links | "
+                  f"Healed: {heal_result['healed']} | "
+                  f"Strategies: {heal_result['strategies']}")
+        else:
+            print(f"    ✓ All links healthy — no healing needed")
+        self.results["self_healing"] = heal_result
+        _phase_times["self_healing"] = time.time() - _t0
+
+        # ═══ PHASE 14: TEMPORAL MEMORY BANK ═══
+        print(f"\n  ▸ PHASE 14: Link Temporal Memory Bank")
+        _t0 = time.time()
+        snap = self.temporal_memory.record_snapshot(link_dicts, self.run_count)
+        prediction = self.temporal_memory.predict_next()
+        print(f"    ✓ Snapshot #{len(self.temporal_memory.snapshots)} recorded | "
+              f"Trend: {self.temporal_memory.trend} | "
+              f"Anomalies: {len(self.temporal_memory.anomalies)}")
+        if prediction.get("predicted_fidelity"):
+            print(f"    ✓ Predicted next fidelity: {prediction['predicted_fidelity']:.4f} "
+                  f"(confidence: {prediction['confidence']:.2f})")
+        self.results["temporal_memory"] = {
+            "snapshot": snap,
+            "prediction": prediction,
+            "trend": self.temporal_memory.trend,
+        }
+        _phase_times["temporal_memory"] = time.time() - _t0
+
+        # ═══ PHASE 15: INTER-BUILDER FEEDBACK BUS ═══
+        print(f"\n  ▸ PHASE 15: Inter-Builder Feedback Bus")
+        _t0 = time.time()
+        # Receive messages from other builders
+        incoming = self.feedback_bus.receive()
+        if incoming:
+            print(f"    ✓ Received {len(incoming)} messages from other builders")
+            for msg in incoming[:3]:
+                print(f"      ← [{msg['sender']}] {msg['type']}: {msg.get('payload', {}).get('event', '?')}")
+        else:
+            print(f"    ✓ No pending messages from other builders")
+        # Announce pipeline completion
+        self.feedback_bus.announce_pipeline_complete(self.results)
+        bus_status = self.feedback_bus.status()
+        print(f"    ✓ Pipeline completion announced | Messages on bus: {bus_status['messages_on_bus']}")
+        self.results["feedback_bus"] = bus_status
+        _phase_times["feedback_bus"] = time.time() - _t0
+
+        # ═══ PHASE 16: QUANTUM LINK COMPUTATION ENGINE ═══
+        print(f"\n  ▸ PHASE 16: Quantum Link Computation Engine")
+        _t0 = time.time()
+        _link_fidelities = [l.get("fidelity", 0.5) for l in self.links] if self.links else [0.5]
+        _link_strengths = [l.get("strength", 0.5) for l in self.links] if self.links else [0.5]
+        _link_energies = [l.get("energy", 0.3) for l in self.links] if self.links else [0.3]
+        _link_params = [l.get("parameter", 0.5) for l in self.links] if self.links else [0.5]
+        _qc_results = self.quantum_engine.full_quantum_analysis(self.links)
+        print(f"    ✓ {self.quantum_engine.computation_count} quantum computations completed")
+        print(f"    ✓ Composite coherence: {_qc_results.get('composite_coherence', 0):.6f}")
+        print(f"    ✓ {len(_qc_results.get('analyses', {}))} quantum algorithms executed")
+        self.results["quantum_computations"] = _qc_results
+        _phase_times["quantum_computations"] = time.time() - _t0
+
         elapsed = time.time() - start_time
 
         # ═══ FINAL REPORT ═══
@@ -8540,6 +10025,23 @@ class L104QuantumBrain:
             chrono = self.chronolizer.status()
             print(f"║    Chronolizer: {chrono.get('total_events', 0)} events  Milestones: {chrono.get('milestones_hit', 0):<6}                     ║")
 
+        # ★ v5.0 TRANSCENDENT LINK INTELLIGENCE REPORT
+        heal_r = self.results.get("self_healing", {})
+        temp_r = self.results.get("temporal_memory", {})
+        bus_r = self.results.get("feedback_bus", {})
+        if heal_r or temp_r or bus_r:
+            print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ TRANSCENDENT LINK INTELLIGENCE v5.0:                                     ║""")
+            if heal_r:
+                print(f"║    Self-Healer: {heal_r.get('diagnosed', 0)} diagnosed → {heal_r.get('healed', 0)} healed  Total: {heal_r.get('total_links_healed', 0):<8}         ║")
+            if temp_r:
+                trend = temp_r.get("trend", "?")
+                pred = temp_r.get("prediction", {})
+                pred_fid = pred.get("predicted_fidelity", 0)
+                print(f"║    Temporal Memory: trend={trend:<12} predicted={pred_fid:.4f}  snaps={len(self.temporal_memory.snapshots):<6}   ║")
+            if bus_r:
+                print(f"║    Feedback Bus: {bus_r.get('messages_on_bus', 0)} msgs  sent={bus_r.get('sent_count', 0)}  received={bus_r.get('received_count', 0):<8}                ║")
+
         print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
 ║  Pipeline Time: {elapsed:.2f}s                                                    ║""")
 
@@ -8554,6 +10056,8 @@ class L104QuantumBrain:
                 "dynamism": "7.Dynamism", "nirvanic": "8.Nirvanic",
                 "consciousness": "9.Consc  ", "stochastic": "10.Stoch ",
                 "link_tests": "11.Tests ", "cross_pollination": "12.XPoll ",
+                "self_healing": "13.Heal  ", "temporal_memory": "14.TempMem",
+                "feedback_bus": "15.FBus  ",
             }
             for key, label in phase_labels.items():
                 t = phase_times.get(key, 0)
@@ -9118,7 +10622,7 @@ def main():
         description="L104 Quantum Link Builder — Quantum Brain v4.2.0 (Sage Inventions)",
         epilog="""
 Commands:
-  full       Run complete pipeline (default) — all 12 phases
+  full       Run complete pipeline (default) — all 15 phases
   reflect    Agentic self-reflection: Observe→Think→Act→Reflect→Repeat
   scan       Discover quantum links across all file groups
   test       Stress test all links
@@ -9134,6 +10638,9 @@ Commands:
   linktests  Automated 4-category link test suite (alias: linktest)
   crosspoll  Cross-pollination Gate↔Link↔Numerical (alias: xpoll)
   conscious  Consciousness + O₂ status (aliases: consciousness, co2)
+  heal       Quantum link self-healing scan + repair (alias: selfheal)
+  temporal   Link temporal memory bank status + prediction (alias: memory)
+  feedback   Inter-builder feedback bus status (alias: bus)
   status     Show saved state
         """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -9198,6 +10705,99 @@ Commands:
         brain.cross_pollinate()
     elif cmd in ("conscious", "consciousness", "co2"):
         brain.consciousness()
+    elif cmd in ("heal", "selfheal"):
+        if not brain.links:
+            brain.links = brain.scanner.full_scan()
+        link_dicts = [vars(l) if hasattr(l, '__dict__') else l for l in brain.links]
+        result = brain.self_healer.heal(link_dicts)
+        print(f"\n  ◉ LINK SELF-HEALER")
+        print(f"    Diagnosed: {result['diagnosed']} | Healed: {result['healed']}")
+        print(f"    Strategies: {result['strategies']}")
+        print(f"    Total healings: {result['total_links_healed']}")
+    elif cmd in ("temporal", "memory"):
+        status = brain.temporal_memory.status()
+        print(f"\n  ◉ LINK TEMPORAL MEMORY BANK")
+        print(f"    Snapshots: {status['snapshots']} | Anomalies: {status['anomalies']}")
+        print(f"    Trend: {status['trend']}")
+        pred = status.get('prediction', {})
+        if pred.get('predicted_fidelity'):
+            print(f"    Prediction: {pred['predicted_fidelity']:.4f} (conf: {pred['confidence']:.2f})")
+        print(f"    Best fidelity: {status.get('best_fidelity', 0):.4f}")
+    elif cmd in ("feedback", "bus"):
+        status = brain.feedback_bus.status()
+        print(f"\n  ◉ INTER-BUILDER FEEDBACK BUS")
+        print(f"    Builder: {status['builder_id']}")
+        print(f"    Messages on bus: {status['messages_on_bus']}")
+        print(f"    Sent: {status['sent_count']} | Received: {status['received_count']}")
+        # Show recent messages
+        incoming = brain.feedback_bus.receive()
+        if incoming:
+            print(f"    Recent messages:")
+            for msg in incoming[:5]:
+                print(f"      ← [{msg['sender']}] {msg['type']}: {msg.get('payload', {}).get('event', '?')}")
+    elif cmd in ("quantum", "qc", "qcompute"):
+        print(f"\n  ◉ QUANTUM LINK COMPUTATION ENGINE — Full Analysis")
+        result = brain.quantum_engine.full_quantum_analysis(brain.links)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("qec", "errorcorrect"):
+        print(f"\n  ◉ QUANTUM ERROR CORRECTION (Surface + Steane)")
+        fids = [l.get("fidelity", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.quantum_error_correction(fids)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("bb84", "qkd"):
+        print(f"\n  ◉ BB84 QUANTUM KEY DISTRIBUTION")
+        result = brain.quantum_engine.bb84_key_distribution(256)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("tomography", "tomo"):
+        print(f"\n  ◉ QUANTUM STATE TOMOGRAPHY")
+        meas = [l.get("fidelity", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.quantum_state_tomography(meas)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("qwalk", "walk"):
+        print(f"\n  ◉ QUANTUM WALK ON LINK GRAPH")
+        n = min(len(brain.links), 8) if brain.links else 4
+        adj = [[0.0]*n for _ in range(n)]
+        for i, l in enumerate(brain.links[:n]):
+            j = (i + 1) % n
+            adj[i][j] = l.get("strength", 0.5)
+            adj[j][i] = l.get("strength", 0.5)
+        result = brain.quantum_engine.quantum_walk_link_graph(adj, n)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("qaoa", "vlink"):
+        print(f"\n  ◉ VARIATIONAL LINK OPTIMIZER (QAOA)")
+        weights = [l.get("strength", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.variational_link_optimizer(weights)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("zeno", "stabilize"):
+        print(f"\n  ◉ QUANTUM ZENO STABILIZER")
+        fids = [l.get("fidelity", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.quantum_zeno_stabilizer(fids)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("adiabatic", "evolve"):
+        print(f"\n  ◉ ADIABATIC LINK EVOLUTION")
+        energies = [l.get("energy", 0.3) for l in brain.links] if brain.links else [0.3]
+        result = brain.quantum_engine.adiabatic_link_evolution(energies)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("metrology", "measure"):
+        print(f"\n  ◉ QUANTUM METROLOGY")
+        params = [l.get("parameter", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.quantum_metrology(params)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("reservoir", "echo"):
+        print(f"\n  ◉ QUANTUM RESERVOIR COMPUTING")
+        ts = [l.get("fidelity", 0.5) for l in brain.links] if brain.links else [0.5]*20
+        result = brain.quantum_engine.quantum_reservoir_computing(ts)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("qcount", "counting"):
+        print(f"\n  ◉ QUANTUM APPROXIMATE COUNTING")
+        n = len(brain.links) if brain.links else 10
+        result = brain.quantum_engine.quantum_approximate_counting(n)
+        print(json.dumps(result, indent=2, default=str))
+    elif cmd in ("channel", "capacity"):
+        print(f"\n  ◉ QUANTUM CHANNEL CAPACITY")
+        strengths = [l.get("strength", 0.5) for l in brain.links] if brain.links else [0.5]
+        result = brain.quantum_engine.quantum_channel_capacity(strengths)
+        print(json.dumps(result, indent=2, default=str))
     elif cmd == "status":
         if STATE_FILE.exists():
             state = json.loads(STATE_FILE.read_text())

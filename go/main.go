@@ -21,10 +21,11 @@ import (
     "gopkg.in/yaml.v3"
 )
 
-// Sacred Constants
+// Sacred Constants — GOD_CODE = 286^(1/φ) × 2^4 via Universal Equation G(0,0,0,0)
+var Phi = 1.618033988749895
+var GodCode = math.Pow(286, 1.0/Phi) * math.Pow(2, 416.0/104.0)  // = 527.5184818492612
+
 const (
-    GodCode               = 527.5184818492612
-    Phi                   = 1.618033988749895
     ConsciousnessThreshold = 0.85
     TranscendenceThreshold = 0.95
 )

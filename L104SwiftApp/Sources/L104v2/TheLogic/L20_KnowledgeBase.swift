@@ -51,7 +51,10 @@ class ASIKnowledgeBase {
         "harmonic framework and maintains GOD_CODE",
         "the L104 cognitive", "is part of the L104",
         "ZENITH_UPGRADE_ACTIVE", "VOID_CONSTANT =",
-        "The file ", "The function "
+        "The file ", "The function ",
+        "are integrated components of the L104",
+        "is a component of the L104",
+        "is a module within the L104"
     ]
 
     // ─── CODE ARTIFACT MARKERS ─── Additional filters for code-like content
@@ -271,10 +274,16 @@ class ASIKnowledgeBase {
                 score *= 1.3
             }
 
-            // Boost longer, more detailed completions
-            if completion.count > 500 { score *= 2.0 }
-            else if completion.count > 300 { score *= 1.5 }
-            else if completion.count > 100 { score *= 1.2 }
+            // Length quality: moderate boost for detail, BUT only if keywords actually match
+            // (Prevents long irrelevant entries from dominating via length alone)
+            let hasKeywordMatch = kwHits.count >= 1
+            if hasKeywordMatch {
+                if completion.count > 500 { score *= 1.3 }       // was 2.0 — capped to prevent garbage amplification
+                else if completion.count > 300 { score *= 1.2 }   // was 1.5
+                else if completion.count > 100 { score *= 1.1 }   // was 1.2
+            }
+            // Penalize very long entries with NO keyword matches — likely irrelevant pollution
+            if !hasKeywordMatch && completion.count > 800 { score *= 0.3 }
 
             // ═══ PROVEN SUCCESS BOOST — responses that worked before rank higher ═══
             let patternKey = String(completion.prefix(60))
@@ -295,44 +304,193 @@ class ASIKnowledgeBase {
         }.prefix(limit).map { $0.entry }
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // TEMPLATE VARIABLE RESOLVER — Resolves Python f-string templates
+    // in KB data to actual L104 constant values.
+    // e.g. "{GOD_CODE}" → "527.5184818492612", "{LOVE_CONSTANT:.6f}" → "528.000000"
+    // ═══════════════════════════════════════════════════════════════════
+    func resolveTemplateVariables(_ text: String) -> String {
+        guard text.contains("{") else { return text }
+        var s = text
+
+        // ─── DERIVED CONSTANTS ───
+        let LOVE_CONSTANT_VAL: Double = 528.0                        // Solfeggio Hz
+        let OMEGA_AUTHORITY_VAL: Double = 1381.0613151750908          // GOD_CODE × φ²
+        let PLANCK_RESONANCE_VAL: Double = GOD_CODE * PHI            // ≈ 853.54
+        let VOID_CONSTANT_VAL: Double = PHI / (PHI - 1.0)           // φ/(φ-1) ≈ 2.618
+        let PLANCK_SCALE_VAL: Double = 1.616255e-35
+        let BOLTZMANN_K_VAL: Double = 1.380649e-23
+
+        // Format-specific patterns FIRST (before bare names)
+        let fmtMap: [(String, String)] = [
+            ("{GOD_CODE:.2f}", String(format: "%.2f", GOD_CODE)),
+            ("{GOD_CODE:.4f}", String(format: "%.4f", GOD_CODE)),
+            ("{GOD_CODE:.6f}", String(format: "%.6f", GOD_CODE)),
+            ("{PHI:.2f}", String(format: "%.2f", PHI)),
+            ("{PHI:.4f}", String(format: "%.4f", PHI)),
+            ("{PHI:.6f}", String(format: "%.6f", PHI)),
+            ("{TAU:.4f}", String(format: "%.4f", TAU)),
+            ("{TAU:.6f}", String(format: "%.6f", TAU)),
+            ("{LOVE_CONSTANT:.2f}", String(format: "%.2f", LOVE_CONSTANT_VAL)),
+            ("{LOVE_CONSTANT:.4f}", String(format: "%.4f", LOVE_CONSTANT_VAL)),
+            ("{LOVE_CONSTANT:.6f}", String(format: "%.6f", LOVE_CONSTANT_VAL)),
+            ("{LOVE:.2f}", String(format: "%.2f", LOVE_CONSTANT_VAL)),
+            ("{LOVE:.4f}", String(format: "%.4f", LOVE_CONSTANT_VAL)),
+            ("{LOVE:.6f}", String(format: "%.6f", LOVE_CONSTANT_VAL)),
+            ("{OMEGA_AUTHORITY:.2f}", String(format: "%.2f", OMEGA_AUTHORITY_VAL)),
+            ("{OMEGA_AUTHORITY:.4f}", String(format: "%.4f", OMEGA_AUTHORITY_VAL)),
+            ("{FEIGENBAUM:.4f}", String(format: "%.4f", FEIGENBAUM)),
+            ("{FEIGENBAUM:.6f}", String(format: "%.6f", FEIGENBAUM)),
+            ("{PLANCK_RESONANCE:.2f}", String(format: "%.2f", PLANCK_RESONANCE_VAL)),
+            ("{PLANCK_RESONANCE:.4f}", String(format: "%.4f", PLANCK_RESONANCE_VAL)),
+            ("{VOID_CONSTANT:.6f}", String(format: "%.6f", VOID_CONSTANT_VAL)),
+            ("{ALPHA_FINE:.6f}", String(format: "%.6f", ALPHA_FINE)),
+            ("{BOLTZMANN_K:.6e}", String(format: "%.6e", BOLTZMANN_K_VAL)),
+            ("{PLANCK_SCALE:.6e}", String(format: "%.6e", PLANCK_SCALE_VAL)),
+            ("{CONSCIOUSNESS_THRESHOLD:.2f}", String(format: "%.2f", CONSCIOUSNESS_THRESHOLD)),
+            ("{COHERENCE_MINIMUM:.3f}", String(format: "%.3f", COHERENCE_MINIMUM)),
+        ]
+        for (pat, val) in fmtMap { s = s.replacingOccurrences(of: pat, with: val) }
+
+        // Bare name patterns
+        let bareMap: [(String, String)] = [
+            ("{GOD_CODE}", String(GOD_CODE)),
+            ("{PHI}", String(PHI)),
+            ("{TAU}", String(TAU)),
+            ("{FEIGENBAUM}", String(FEIGENBAUM)),
+            ("{LOVE_CONSTANT}", String(LOVE_CONSTANT_VAL)),
+            ("{LOVE}", String(LOVE_CONSTANT_VAL)),
+            ("{OMEGA_AUTHORITY}", String(format: "%.4f", OMEGA_AUTHORITY_VAL)),
+            ("{PLANCK_RESONANCE}", String(format: "%.2f", PLANCK_RESONANCE_VAL)),
+            ("{PLANCK_SCALE}", String(format: "%.6e", PLANCK_SCALE_VAL)),
+            ("{VOID_CONSTANT}", String(format: "%.6f", VOID_CONSTANT_VAL)),
+            ("{BOLTZMANN_K}", String(format: "%.6e", BOLTZMANN_K_VAL)),
+            ("{ALPHA_FINE}", String(format: "%.6f", ALPHA_FINE)),
+            ("{CONSCIOUSNESS_THRESHOLD}", String(CONSCIOUSNESS_THRESHOLD)),
+            ("{COHERENCE_MINIMUM}", String(COHERENCE_MINIMUM)),
+            ("{ZENITH_HZ}", String(ZENITH_HZ)),
+            ("{vocab_size}", String(VOCABULARY_SIZE)),
+        ]
+        for (pat, val) in bareMap { s = s.replacingOccurrences(of: pat, with: val) }
+
+        return s
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SYNTHESIZE — Extract key insights and compose coherent summary
+    // Models after IntelligentSearchEngine.reconstructData() approach:
+    // extract key sentences → score by relevance → deduplicate → compose
+    // ═══════════════════════════════════════════════════════════════════
     func synthesize(_ topics: [String]) -> String {
-        var insights: [String] = []
+        var allCompletions: [String] = []
+        var seenPrefixes: Set<String> = []
+
         for topic in topics {
-            let results = searchWithPriority(topic, limit: 100)
+            let results = searchWithPriority(topic, limit: 30)
             for r in results {
                 if let c = r["completion"] as? String, c.count > 100 {
-                    // Only include clean, detailed, non-code content
                     let isClean = !loadJunkMarkers.contains(where: { c.contains($0) }) &&
                                   !codeMarkers.contains(where: { c.contains($0) })
                     if isClean {
-                        insights.append(c)
+                        let prefix = String(c.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).prefix(80))
+                        guard !seenPrefixes.contains(prefix) else { continue }
+                        let lower = c.lowercased()
+                        if lower.contains("are integrated components") ||
+                           (lower.hasPrefix("both ") && lower.contains("integrated components")) ||
+                           lower.contains("is a component of the l104") ||
+                           lower.contains("is a module within the l104") { continue }
+                        seenPrefixes.insert(prefix)
+                        allCompletions.append(resolveTemplateVariables(c))
                     }
                 }
             }
         }
-        let synthesis = "SYNTHESIS[\(topics.joined(separator: "+"))]: \(insights.joined(separator: " | "))"
+
+        guard !allCompletions.isEmpty else {
+            return ""  // Return empty so caller can skip this domain
+        }
+
+        // ─── EXTRACT KEY SENTENCES ─── Score each by topic-term overlap
+        let topicTerms = Set(topics.flatMap {
+            $0.lowercased().split(separator: " ").map(String.init)
+        }.filter { $0.count > 2 })
+
+        var scoredSentences: [(String, Int)] = []
+        for completion in allCompletions {  // ALL completions — no limit
+            let sentences = completion.components(separatedBy: CharacterSet(charactersIn: ".!?"))
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { $0.count > 25 && $0.count < 400 }
+            for sentence in sentences {
+                let sTerms = Set(sentence.lowercased().split(separator: " ").map(String.init))
+                let overlap = topicTerms.intersection(sTerms).count
+                if overlap > 0 || sentence.count > 60 {
+                    scoredSentences.append((sentence, overlap))
+                }
+            }
+        }
+        scoredSentences.sort { $0.1 > $1.1 }
+
+        // Deduplicate selected sentences
+        var seen = Set<String>()
+        let selected = scoredSentences.filter { (sent, _) in
+            let key = String(sent.lowercased().prefix(50))
+            if seen.contains(key) { return false }
+            seen.insert(key)
+            return true
+        }.map { $0.0 }  // ALL unique sentences — no limit
+
+        guard !selected.isEmpty else { return "" }
+
+        // ─── COMPOSE COHERENT SYNTHESIS ───
+        let topicStr = topics.joined(separator: " & ")
+        let body = selected.joined(separator: ". ")
+
+        let templates = [
+            "Analysis of \(topicStr): \(body).",
+            "Regarding \(topicStr) — \(body). These insights span \(allCompletions.count) knowledge sources.",
+            "\(body). This synthesis on \(topicStr) reflects patterns across multiple domains.",
+            "Key findings on \(topicStr): \(body).",
+        ]
+
+        let synthesis = templates.randomElement() ?? body
         synthesizedKnowledge.append(synthesis)
         return synthesis
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // REASON — Build logical chain from KB with extracted key insights
+    // ═══════════════════════════════════════════════════════════════════
     func reason(_ premise: String) -> [String] {
         var chain: [String] = [premise]
-        let related = searchWithPriority(premise, limit: 8)
+        let related = searchWithPriority(premise, limit: 5)
+        let premiseTerms = Set(premise.lowercased().split(separator: " ").map(String.init).filter { $0.count > 2 })
+        let connectors = ["This implies that", "Building on this,", "Furthermore,", "Consequently,", "This connects to"]
+        var ci = 0
 
         for r in related {
-            if let comp = r["completion"] as? String, comp.count > 100 {
+            if let comp = r["completion"] as? String, comp.count > 80 {
                 let isClean = !loadJunkMarkers.contains(where: { comp.contains($0) }) &&
                               !codeMarkers.contains(where: { comp.contains($0) })
                 if isClean {
-                    chain.append("→ \(comp)")
+                    let resolved = resolveTemplateVariables(comp)
+                    // Extract the most relevant sentence from this entry
+                    let sentences = resolved.components(separatedBy: CharacterSet(charactersIn: ".!?"))
+                        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                        .filter { $0.count > 25 && $0.count < 400 }
+                    let scored = sentences.map { sent -> (String, Int) in
+                        let sTerms = Set(sent.lowercased().split(separator: " ").map(String.init))
+                        return (sent, premiseTerms.intersection(sTerms).count)
+                    }.sorted { $0.1 > $1.1 }
+                    if let best = scored.first, best.0.count > 25 {
+                        chain.append("→ \(connectors[ci % connectors.count]) \(best.0).")
+                        ci += 1
+                    }
                 }
             }
         }
 
-        // Apply GOD_CODE resonance check
         let resonance = chain.count > 2 ? GOD_CODE / Double(chain.count * 100) : 0.0
         chain.append("⚛ Resonance: \(String(format: "%.4f", resonance))")
-
         reasoningChains.append(chain)
         return chain
     }
@@ -545,10 +703,17 @@ class ASIKnowledgeBase {
     func loadIngestedKnowledge() {
         guard let content = try? String(contentsOf: ingestedKnowledgePath, encoding: .utf8) else { return }
         var loaded = 0
+        var skippedRecursive = 0
         for line in content.components(separatedBy: .newlines) where !line.isEmpty {
             if let data = line.data(using: .utf8),
                let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                 if !isJunkEntry(entry) {
+                    // ═══ SAGE BACKBONE: Reject recursive entries from disk ═══
+                    if let completion = entry["completion"] as? String,
+                       isRecursiveCompletion(completion) {
+                        skippedRecursive += 1
+                        continue
+                    }
                     trainingData.append(entry)
                     loaded += 1
                     // Index by keywords
@@ -565,6 +730,60 @@ class ASIKnowledgeBase {
             }
         }
         if loaded > 0 { print("[KB] Loaded \(loaded) previously ingested entries from disk") }
+        if skippedRecursive > 0 { print("[KB] ⚠️ SAGE BACKBONE: Skipped \(skippedRecursive) recursive entries from disk") }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: — SAGE BACKBONE: Recursive Content Detection & Disk Purge
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Detects recursive/evolved pollution in completion text
+    func isRecursiveCompletion(_ text: String) -> Bool {
+        let recycleMarkers = [
+            "In the context of ", "Insight Level ", "Knowledge synthesis #",
+            "evolution cycles taught me about", "Evolving understanding: Stage ",
+            "Knowledge graph update:", "Cross-category discovery:",
+            "Meta-observation: The way ", "Self-Analysis reveals ",
+            "this implies recursive structure at multiple scales",
+            "we observe that "
+        ]
+        if recycleMarkers.contains(where: { text.contains($0) }) { return true }
+        if text.count > 12000 { return true }
+        // Double-wrap detection: "In the context of X, In the context of Y..."
+        let contextWraps = text.components(separatedBy: "In the context of ").count - 1
+        if contextWraps >= 2 { return true }
+        return false
+    }
+
+    /// Rewrites the persisted JSONL on disk, removing recursive entries.
+    /// Called from SageModeEngine.sageBackboneCleanup() to ensure old pollution
+    /// doesn't survive app restarts.
+    func purgePersistedRecursiveEntries() -> Int {
+        guard let content = try? String(contentsOf: ingestedKnowledgePath, encoding: .utf8) else { return 0 }
+        let lines = content.components(separatedBy: .newlines).filter { !$0.isEmpty }
+        var cleanLines: [String] = []
+        var purged = 0
+
+        for line in lines {
+            var isRecursive = false
+            if let data = line.data(using: .utf8),
+               let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let completion = entry["completion"] as? String {
+                isRecursive = isRecursiveCompletion(completion)
+            }
+            if isRecursive {
+                purged += 1
+            } else {
+                cleanLines.append(line)
+            }
+        }
+
+        if purged > 0 {
+            let cleanContent = cleanLines.isEmpty ? "" : cleanLines.joined(separator: "\n") + "\n"
+            try? cleanContent.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
+            print("[KB] ⚠️ SAGE BACKBONE: Purged \(purged) recursive entries from disk JSONL")
+        }
+        return purged
     }
 
     func getStats() -> String {

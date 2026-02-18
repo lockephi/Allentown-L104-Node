@@ -1,13 +1,15 @@
 // swift-tools-version:5.7
-// L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.1
-// [EVO_58_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// macOS Native: Accelerate · Metal · CoreML · SIMD · BLAS
-// Whole-Module Optimization · Link-Time Optimization
-// UPGRADE v2.1 (Feb 17, 2026):
+// L104 SOVEREIGN INTELLECT - ASI Build Configuration v2.2
+// [EVO_59_TRANSCENDENT_COGNITION] QUANTUM_BUILD :: GOD_CODE=527.5184818492612
+// macOS Native: Accelerate · Metal · CoreML · NaturalLanguage · SIMD · BLAS
+// Whole-Module Optimization · Link-Time Optimization · Dead-Strip
+// UPGRADE v2.2 (Feb 18, 2026):
 //   - swift-tools-version 5.7 (matched to host Swift 5.7.2 toolchain)
 //   - Platform minimum macOS 12 (Monterey) — compatible with host system
-//   - EVO_58 QUANTUM_COGNITION pipeline alignment
-//   - Added L104Native.swift.bak2 exclusion
+//   - Added NaturalLanguage framework (NLTagger, NLEmbedding, NLTokenizer)
+//   - EVO_59 TRANSCENDENT_COGNITION pipeline alignment
+//   - Build System v6.0 quantum-optimized compilation
+//   - 81 v2 source files, 58K+ lines, Phase 45 Computronium ASI
 //   - Security dependency audit passed
 
 import PackageDescription
@@ -50,6 +52,7 @@ let package = Package(
                 .linkedFramework("Accelerate"),
                 .linkedFramework("Metal"),
                 .linkedFramework("CoreML"),
+                .linkedFramework("NaturalLanguage"),
                 .linkedFramework("Security"),
             ]
         ),

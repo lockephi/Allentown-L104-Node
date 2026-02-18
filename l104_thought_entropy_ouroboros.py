@@ -2053,8 +2053,8 @@ class ThoughtEntropyOuroboros:
         return response
 
     def get_ouroboros_state(self) -> Dict[str, Any]:
-        """Get current state of the Ouroboros engine."""
-        return {
+        """Get current state of the Ouroboros engine — includes inverse duality metrics."""
+        state = {
             "cycle_count": self.cycle_count,
             "total_thoughts_processed": self.total_thoughts_processed,
             "accumulated_entropy": self.accumulated_entropy,
@@ -2066,6 +2066,27 @@ class ThoughtEntropyOuroboros:
             "phi": self.phi,
             "status": "ETERNAL_CYCLE"
         }
+
+        # Cross-wire: inject inverse duality state if available
+        try:
+            from l104_ouroboros_inverse_duality import get_ouroboros_duality
+            duality = get_ouroboros_duality()
+            if duality:
+                duality_state = duality.get_pipeline_state()
+                state["inverse_duality"] = {
+                    "active": duality_state.get("inverse_duality_active", False),
+                    "version": duality_state.get("version", "unknown"),
+                    "accumulated_coherence": duality_state.get("accumulated_coherence", 0.0),
+                    "entropy_accumulator": duality_state.get("entropy_accumulator", 0.0),
+                    "conservation_law": duality_state.get("conservation_law", ""),
+                    "cycle_count": duality_state.get("cycle_count", 0)
+                }
+                # Feed our entropy to duality engine for coupling
+                duality.couple_entropy(self.accumulated_entropy)
+        except Exception:
+            state["inverse_duality"] = {"active": False}
+
+        return state
 
     def feed_language_data(self, analysis: Dict[str, Any]) -> None:
         """

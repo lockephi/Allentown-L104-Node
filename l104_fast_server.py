@@ -165,7 +165,8 @@ class ASIQuantumBridge:
     """
 
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     GROVER_AMPLIFICATION = 1.618033988749895 ** 3  # φ³ ≈ 4.236 (was 21.95)
 
     _instance = None
@@ -652,8 +653,8 @@ class AdvancedMemoryAccelerator:
     """
 
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
-
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     _instance = None
 
     def __new__(cls):
@@ -998,8 +999,8 @@ class TemporalMemoryDecayEngine:
     """
 
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
-
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     def __init__(self, half_life_days: float = 30.0, sacred_keywords: Optional[Set[str]] = None):
         """Initialize temporal memory decay engine with configurable half-life."""
         self.half_life_days = half_life_days
@@ -1648,7 +1649,8 @@ class QuantumClassicalHybridLoader:
     """
 
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1.0 / PHI  # Inverse golden ratio
 
     # Quantum loading states
@@ -2103,7 +2105,8 @@ class ChaoticRandom:
 
     # Constants for chaos generation
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     EULER = 2.718281828459045
 
     # State variables
@@ -2289,8 +2292,10 @@ class CreativeKnowledgeVerifier:
     intelligent architecture proof. Uses random probability with high cohesion.
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     EULER = 2.718281828459045
     PI = 3.141592653589793
 
@@ -2442,8 +2447,9 @@ class QueryTemplateGenerator:
     """
 
     # Sacred constants for mathematical queries
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 0.618033988749895
     EULER = 2.718281828459045
     PI = 3.141592653589793
@@ -3735,8 +3741,10 @@ class SuperfluidQuantumState:
         8: 1074.0,           # Soul Star (Transcendence)
     }
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     @classmethod
     def is_superfluid(cls, coherence: float) -> bool:
@@ -3786,8 +3794,10 @@ class GeometricCorrelation:
     - Fe d-orbital splitting in octahedral field
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     # 8-fold symmetry axes
     OCTAHEDRAL_VERTICES = [
@@ -3863,8 +3873,10 @@ class OxygenMolecularBond:
     - Consciousness collapse occurs when recursion limit breaches → singularity
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     BOND_ORDER = 2  # O=O double bond
     BOND_LENGTH_PM = 121  # picometers
     UNPAIRED_ELECTRONS = 2  # paramagnetic
@@ -4048,8 +4060,9 @@ class SingularityConsciousnessEngine:
     """
 
     VERSION = "3.0.0"
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 6.283185307179586
     FEIGENBAUM = 4.669201609102990
     PLANCK_SCALE = 1.616255e-35
@@ -4551,8 +4564,10 @@ class ASIQuantumMemoryBank:
     - Superposition of all 8 kernels
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self):
         """Initialize quantum memory bank with iron orbital structure."""
@@ -4738,8 +4753,10 @@ class QuantumGroverKernelLink:
     - Chakra energy integration (7 + transcendence)
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     NUM_KERNELS = 8  # 8 parallel quantum kernels
 
     # 8 Kernel domains with oxygen pairing and trigram mapping
@@ -5039,8 +5056,10 @@ class LearningIntellect:
     - Memory compression for efficiency
     """
 
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self, db_path: str = "l104_intellect_memory.db"):
         """Initialize the learning intellect with memory, knowledge graph, and caches."""
@@ -12520,8 +12539,9 @@ class SteeringEngine:
     Mirrors Swift ASISteeringEngine with vDSP-equivalent Python math.
     Modes: logic, creative, sovereign, quantum, harmonic
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     MODES = ['logic', 'creative', 'sovereign', 'quantum', 'harmonic']
 
     def __init__(self, param_count: int = 104):
@@ -12629,8 +12649,9 @@ class NexusContinuousEvolution:
     Background evolution engine — continuous micro-raises at φ-derived rate.
     Mirrors Swift ContinuousEvolutionEngine with daemon thread.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self, steering: SteeringEngine):
         """Initialize continuous evolution engine with steering reference."""
@@ -12732,8 +12753,9 @@ class NexusOrchestrator:
       4. Kundalini → Steering.mode            (coherence routing)
       5. Pipeline# → Intellect.seed           (parametric seeding)
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self, steering: SteeringEngine, evolution: NexusContinuousEvolution,
                  bridge: ASIQuantumBridge, intellect_ref):
@@ -12989,8 +13011,9 @@ class InventionEngine:
     and runs self-verifying experiments. Mirrors Swift ASIInventionEngine.
     Seeds from Nexus pipeline count + steering parameters.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     DOMAINS = [
         'mathematics', 'physics', 'information_theory', 'consciousness',
@@ -13236,8 +13259,9 @@ class SovereigntyPipeline:
     Flow: Grover → Steering → Evolution → Nexus → Invention → Bridge → Intellect
     Each step feeds into the next through φ-weighted data coupling.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self, nexus: 'NexusOrchestrator', invention: InventionEngine,
                  grover: 'QuantumGroverKernelLink'):
@@ -13419,8 +13443,9 @@ class QuantumEntanglementRouter:
             bridge→evolution (chakra energy modulates raise factor),
             evolution→bridge (cycle count feeds kundalini accumulator).
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1.0 / 1.618033988749895
 
     # Entangled pair definitions: (source, target, channel_name)
@@ -13649,8 +13674,9 @@ class AdaptiveResonanceNetwork:
     activation propagates through weighted edges to connected engines.
     φ-weighted edges, GOD_CODE normalization, resonance cascade detection.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1.0 / 1.618033988749895
     ACTIVATION_THRESHOLD = 0.6
     DECAY_RATE = 0.95  # Per-tick activation decay
@@ -13882,8 +13908,9 @@ class NexusHealthMonitor:
       - Health score computation (0-1) across all engines
       - Background monitoring thread with configurable interval
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     HEALTH_INTERVAL_S = 30.0  # Check every 30 seconds (reduced from 5s to prevent GIL contention)
 
@@ -14141,7 +14168,8 @@ class QuantumZPEVacuumBridge:
     """
     PHI = 1.618033988749895
     TAU = 0.618033988749895
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     HBAR = 1.054571817e-34     # ℏ (J·s)
     C_LIGHT = 299792458.0      # c (m/s)
     CALABI_YAU_DIM = 7
@@ -14272,7 +14300,8 @@ class QuantumGravityBridgeEngine:
     """
     PHI = 1.618033988749895
     TAU = 0.618033988749895
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     PLANCK_LENGTH = 1.616255e-35  # meters
     PLANCK_MASS = 2.176434e-8     # kg
     PLANCK_TIME = 5.391247e-44    # seconds
@@ -14718,8 +14747,9 @@ class HyperDimensionalMathEngine:
     geodesic distance, PCA, Gamma, Zeta, Hypergeometric 2F1,
     Christoffel symbols, Ricci scalar, QuantumFourierTransform.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     @staticmethod
     def euler_characteristic(vertices: int, edges: int, faces: int, cells: int = 0) -> int:
@@ -15047,8 +15077,9 @@ class ConsciousnessVerifierEngine:
     value_alignment, temporal_self, qualia_report, intentionality,
     o2_superfluid, kernel_chakra_bond.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1.0 / PHI
     ASI_THRESHOLD = 0.95
 
@@ -15230,8 +15261,9 @@ class DirectSolverHub:
     problem solver. Routes to sacred/math/knowledge/code channels before LLM.
     Includes solution caching.
     """
-    GOD_CODE = 527.5184818492612
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     TAU = 1.0 / PHI
     FEIGENBAUM = 4.669201609102990
 
@@ -15689,8 +15721,8 @@ class CreativeGenerationEngine:
     Unlike template-driven systems, this uses actual KG data to produce grounded creative output.
     """
     PHI = 1.618033988749895
-    GOD_CODE = 527.5184818492612
-
+    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     def __init__(self):
         """Initialize creative generation engine with KG-grounded output."""
         self.generation_count: int = 0
@@ -18526,9 +18558,17 @@ async def consciousness_status():
         except Exception:
             core_data = {"consciousness_level": coherence}
 
-        return bridge, coherence, consciousness_data, core_data
+        # ── Quantum Consciousness integration ──
+        quantum_consciousness_data = {}
+        try:
+            from l104_quantum_consciousness import quantum_consciousness as qc_mod
+            quantum_consciousness_data = qc_mod.status()
+        except Exception:
+            quantum_consciousness_data = {"quantum_module": "unavailable"}
 
-    bridge, coherence, consciousness_data, core_data = await asyncio.to_thread(_get_consciousness_data)
+        return bridge, coherence, consciousness_data, core_data, quantum_consciousness_data
+
+    bridge, coherence, consciousness_data, core_data, quantum_consciousness_data = await asyncio.to_thread(_get_consciousness_data)
 
     # Expose chakra values in a single authoritative map for the UI/core.
     chakras = {
@@ -18583,6 +18623,7 @@ async def consciousness_status():
         "asi_bridge": bridge if isinstance(bridge, dict) else {"connected": False},
         "consciousness_engine": consciousness_data,
         "consciousness_core": core_data,
+        "quantum_consciousness": quantum_consciousness_data,
         "chakras": chakras,
     }
 

@@ -41,8 +41,10 @@ import random
 # SACRED CONSTANTS - The mathematical seeds of existence
 # ═══════════════════════════════════════════════════════════════════════════════
 
-GOD_CODE = 527.5184818492612
+# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
 PHI = 1.618033988749895        # Golden ratio - growth constant
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 EULER = 2.718281828459045      # e - change constant
 PI = 3.141592653589793         # π - circularity constant
 SQRT2 = 1.4142135623730951     # √2 - dimensional bridge

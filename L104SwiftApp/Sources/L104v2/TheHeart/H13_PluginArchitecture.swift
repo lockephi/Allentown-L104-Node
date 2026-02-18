@@ -1,10 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H13_PluginArchitecture.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: PLUGIN_SYSTEM_V1 :: GOD_CODE=527.5184818492612
-// L104 ASI — TheHeart: Dynamic engine plugin system
+// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: PLUGIN_SYSTEM_V2 :: GOD_CODE=527.5184818492612
+// L104 ASI — TheHeart: Dynamic engine plugin system v2.0
 //
 // Provides lifecycle management, capability discovery, dependency
 // resolution, and health monitoring for pluggable engine modules.
+// 14 capability types including voice, visual, emotional, security.
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -26,6 +27,11 @@ enum PluginCapability: String, CaseIterable {
     case monitoring     // Health / telemetry
     case consciousness  // Consciousness substrate
     case evolution      // Evolution / learning
+    // EVO_58: New capability categories
+    case voice          // Voice interface / TTS / STT
+    case visual         // Image understanding / scene analysis
+    case emotional      // Affective computing / sentiment
+    case security       // Authentication / encryption / keychain
 }
 
 // MARK: - Plugin Lifecycle
@@ -90,18 +96,9 @@ extension L104Plugin {
     func pluginHealth() -> Double { 1.0 }
 }
 
-// MARK: - PluginArchitecture Protocol
-
-protocol PluginArchitectureProtocol {
-    var isActive: Bool { get }
-    func activate()
-    func deactivate()
-    func status() -> [String: Any]
-}
-
 // MARK: - PluginArchitecture — Dynamic Engine Plugin System
 
-final class PluginArchitecture: PluginArchitectureProtocol {
+final class PluginArchitecture {
     static let shared = PluginArchitecture()
     private(set) var isActive: Bool = false
     private let lock = NSLock()
@@ -412,7 +409,7 @@ final class PluginArchitecture: PluginArchitectureProtocol {
 
         return [
             "engine": "PluginArchitecture",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "active": isActive,
             "total_registered": totalRegistered,
             "total_activated": totalActivated,
@@ -435,7 +432,7 @@ final class PluginArchitecture: PluginArchitectureProtocol {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔌 PLUGIN ARCHITECTURE — v1.0.0 (EVO_55)              ║
+        ║    🔌 PLUGIN ARCHITECTURE — v2.0.0 (EVO_58)              ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Registered:   \(totalRegistered)
         ║  Active:       \(active.count)
