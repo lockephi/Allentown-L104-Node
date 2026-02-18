@@ -1,5 +1,10 @@
 # ═══════════════════════════════════════════════════════════
-# L104 Sovereign Node — Python Dependencies v3.0 (Feb 2026)
+# L104 Sovereign Node — Python Dependencies v3.1 (Feb 2026)
+# UPGRADE v3.1:
+#   - Added PyTorch, TensorFlow, pandas for ASI pipeline ML integration
+#   - Added scikit-learn for classical ML algorithms
+#   - Added scipy for scientific computing
+#   - Maintained Python 3.14 compatibility
 # UPGRADE v3.0:
 #   - Bumped version floors for Python 3.14 compatibility
 #   - Updated anthropic ceiling to <2.0 (v1.x available)
@@ -31,8 +36,15 @@ orjson>=3.10.0
 # Networking
 websockets>=14.0,<16.0
 
-# Numerics
+# Numerics & Scientific Computing
 numpy>=1.26.0,<3.0
+scipy>=1.11.0
+pandas>=2.2.0
+
+# Machine Learning Frameworks
+torch>=2.2.0
+tensorflow>=2.16.0
+scikit-learn>=1.4.0
 
 # Utilities
 python-dotenv>=1.0.1
