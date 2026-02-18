@@ -1,0 +1,19 @@
+{
+    "temporal": {
+        "ctc_stability": 0.318309886183672,
+        "paradox_resolution": 0.31961028533950187,
+        "resonance_lock": "DRIFTING"
+    },
+    "quantum_math": {
+        "new_primitives": 4,
+        "highest_resonance": 0.9997363116173297
+    },
+    "manifold_resonance": 180.97265793354018,
+    "topological": {
+        "protection_level": 0.32602435147658765,
+        "fusion_energy": 2.781501173249815e-20,
+        "braid_state_determinant": 0.32027934558343707
+    },
+    "final_invariant": 0.7441663833263306,
+    "total_iq_contribution": 88.5779218940014
+}

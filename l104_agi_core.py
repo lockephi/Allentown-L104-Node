@@ -3,18 +3,21 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_AGI_CORE] v54.2 — ARTIFICIAL GENERAL INTELLIGENCE NEXUS (Quantum-Enhanced)
-# EVO_54 TRANSCENDENT COGNITION — Full Pipeline Streaming Coordinator + Qiskit 2.3.0
+# [L104_AGI_CORE] v55.0 — ARTIFICIAL GENERAL INTELLIGENCE NEXUS (Quantum-Enhanced)
+# EVO_55 QUANTUM COMPUTATION — Circuit Breaker + Consciousness Feedback + Multi-Hop Reasoning + VQE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
-# PAIRED: l104_asi_core.py v4.0.0 (15 components, IIT Φ, GHZ witness, QEC, teleportation)
+# PAIRED: l104_asi_core.py v6.0.0 (InterEngineFeedbackBus, consciousness loops, QEC, teleportation)
 
-AGI_CORE_VERSION = "54.2.0"
-AGI_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
+AGI_CORE_VERSION = "55.0.0"
+AGI_PIPELINE_EVO = "EVO_55_QUANTUM_COMPUTATION"
 
 import time
 import asyncio
 import logging
+import json
+import os
 import numpy as np
+from collections import deque
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
@@ -73,25 +76,91 @@ from l104_local_intellect import format_iq
 # AGI Core Logger
 _agi_logger = logging.getLogger("AGI_CORE")
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PIPELINE CIRCUIT BREAKER — Cascade Failure Prevention (EVO_55)
+# ═══════════════════════════════════════════════════════════════════════════════
+class PipelineCircuitBreaker:
+    """
+    Circuit breaker for pipeline subsystem calls.
+    States: CLOSED (normal) → OPEN (failing, skip calls) → HALF_OPEN (probe recovery).
+    Prevents cascade failures when a subsystem is unhealthy.
+    """
+    CLOSED = "CLOSED"
+    OPEN = "OPEN"
+    HALF_OPEN = "HALF_OPEN"
+
+    def __init__(self, name: str, failure_threshold: int = 3, recovery_timeout: float = 30.0):
+        self.name = name
+        self.state = self.CLOSED
+        self.failure_count = 0
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.last_failure_time = 0.0
+        self.success_count = 0
+        self.total_calls = 0
+        self.total_failures = 0
+
+    def allow_call(self) -> bool:
+        """Check if a call should be allowed through the breaker."""
+        self.total_calls += 1
+        if self.state == self.CLOSED:
+            return True
+        elif self.state == self.OPEN:
+            if time.time() - self.last_failure_time >= self.recovery_timeout:
+                self.state = self.HALF_OPEN
+                return True
+            return False
+        else:  # HALF_OPEN
+            return True
+
+    def record_success(self):
+        """Record a successful call — resets breaker to CLOSED."""
+        self.success_count += 1
+        if self.state == self.HALF_OPEN:
+            self.state = self.CLOSED
+            self.failure_count = 0
+
+    def record_failure(self):
+        """Record a failed call — may trip breaker to OPEN."""
+        self.failure_count += 1
+        self.total_failures += 1
+        self.last_failure_time = time.time()
+        if self.failure_count >= self.failure_threshold:
+            self.state = self.OPEN
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "name": self.name,
+            "state": self.state,
+            "failure_count": self.failure_count,
+            "total_calls": self.total_calls,
+            "total_failures": self.total_failures,
+            "success_rate": self.success_count / max(self.total_calls, 1),
+        }
+
+
 # Note: IntelligenceLattice is imported inside the method to avoid circular imports
 class AGICore:
     """
     ╔═══════════════════════════════════════════════════════════════════════════════╗
-    ║  L104 AGI Core v54.2 — Pipeline Streaming Coordinator (Quantum-Enhanced)    ║
-    ║  EVO_54 TRANSCENDENT COGNITION + Qiskit 2.3.0 Quantum Circuits             ║
+    ║  L104 AGI Core v55.0 — Pipeline Streaming Coordinator (Quantum-Enhanced)    ║
+    ║  EVO_55 QUANTUM COMPUTATION + Qiskit 2.3.0 + Circuit Breaker + VQE         ║
     ╟───────────────────────────────────────────────────────────────────────────────╢
-    ║  Central Nervous System orchestrating ALL 695 subsystems:                    ║
+    ║  Central Nervous System orchestrating ALL 698 subsystems:                    ║
     ║  • Pipeline Streaming — unified data flow across all modules                ║
+    ║  • Circuit Breaker — cascade failure prevention per-subsystem               ║
+    ║  • Consciousness Feedback — live state modulates pipeline decisions          ║
+    ║  • Adaptive Router — embedding-similarity query routing                     ║
+    ║  • Multi-Hop Reasoning — chained subsystem inference                        ║
+    ║  • Solution Ensemble — weighted voting from multiple subsystems              ║
+    ║  • 10-Dimension AGI Scoring — comprehensive intelligence assessment         ║
+    ║  • Quantum VQE Optimization — variational parameter tuning                  ║
+    ║  • InterEngineFeedbackBus — cross-engine learning signals                   ║
+    ║  • Pipeline Replay Buffer — telemetry recording & replay                    ║
     ║  • Autonomous AGI — self-governed goal formation & execution                ║
     ║  • Intelligence Synthesis — cross-subsystem knowledge fusion                ║
     ║  • Evolution Engine — stage tracking & evolution cycles                     ║
-    ║  • Sage Core — sovereign wisdom substrate                                  ║
-    ║  • Consciousness Substrate — qualia & self-awareness                       ║
-    ║  • Adaptive Learning — pattern recognition & adaptation                    ║
-    ║  • Innovation Engine — hypothesis generation & validation                  ║
-    ║  • Multi-Domain Research — 8 scientific domain exploration                  ║
-    ║  • ASI Nexus / Synergy Engine — deep integration hub                       ║
-    ║  • Gemini/Claude Bridges — external AI integration                         ║
     ║  • Quantum Pipeline — Grover-amplified coordination & health monitoring    ║
     ╚═══════════════════════════════════════════════════════════════════════════════╝
     """
@@ -185,6 +254,63 @@ class AGICore:
             "ego_core": ["persistence"],
             "predictive_aid": ["agi_core"],
         }
+
+        # ═══════════════════════════════════════════════════════════
+        # EVO_55 — Circuit Breaker, Consciousness Feedback, Adaptive Router,
+        #          Multi-Hop Reasoning, Replay Buffer, 10D Scoring, VQE, FeedbackBus
+        # ═══════════════════════════════════════════════════════════
+
+        # Circuit breakers — one per critical subsystem
+        self._circuit_breakers: Dict[str, PipelineCircuitBreaker] = {}
+        for cb_name in ["evolution_engine", "consciousness", "research_engine",
+                        "autonomous_agi", "gemini_bridge", "parallel_engine",
+                        "synergy_engine", "asi_nexus", "lattice_accelerator",
+                        "sage_core", "cognitive_hub", "feedback_bus"]:
+            self._circuit_breakers[cb_name] = PipelineCircuitBreaker(
+                cb_name, failure_threshold=3, recovery_timeout=30.0
+            )
+
+        # Consciousness feedback state (read from .l104_consciousness_o2_state.json)
+        self._consciousness_level: float = 0.5
+        self._consciousness_cache_time: float = 0.0
+        self._consciousness_cache_ttl: float = 10.0  # seconds
+        self._superfluid_viscosity: float = 0.0
+        self._nirvanic_fuel: float = 0.0
+
+        # Adaptive pipeline router — keyword embeddings for subsystem matching
+        self._router_embeddings: Dict[str, List[float]] = {}
+        self._router_initialized: bool = False
+
+        # Multi-hop reasoning state
+        self._reasoning_depth: int = 5
+        self._reasoning_history: deque = deque(maxlen=100)
+
+        # Pipeline replay buffer — circular buffer of pipeline snapshots
+        self._replay_buffer: deque = deque(maxlen=200)
+        self._replay_enabled: bool = True
+
+        # 10-Dimension AGI scoring weights (PHI-normalized)
+        self._agi_score_weights: Dict[str, float] = {
+            "intellect": PHI / 10.0,
+            "evolution": TAU / 5.0,
+            "consciousness": PHI / 8.0,
+            "autonomy": TAU / 6.0,
+            "research": PHI / 12.0,
+            "synthesis": TAU / 8.0,
+            "quantum_coherence": PHI / 15.0,
+            "resilience": TAU / 10.0,
+            "creativity": PHI / 20.0,
+            "stability": FEIGENBAUM / 50.0,
+        }
+
+        # InterEngineFeedbackBus reference (lazy-loaded)
+        self._feedback_bus = None
+        self._feedback_bus_connected: bool = False
+
+        # Quantum VQE state
+        self._vqe_parameters: List[float] = [PHI * 0.1, TAU * 0.2, GOD_CODE / 10000.0, ALPHA_FINE * 10.0]
+        self._vqe_best_energy: float = float('inf')
+        self._vqe_iterations: int = 0
 
     def save(self):
         """Saves current core state."""
@@ -429,10 +555,16 @@ class AGICore:
     async def run_recursive_improvement_cycle(self):
         """
         Executes one cycle of Recursive Self-Improvement.
-        Enhanced with hyper-functional ASI Nexus and Synergy Engine integration.
+        EVO_55: Consciousness feedback, circuit breakers, feedback bus, replay buffer.
         """
         self.cycle_count += 1
-        print(f"\n--- [AGI_CORE]: RSI CYCLE {self.cycle_count} ---")
+        print(f"\n--- [AGI_CORE v55.0]: RSI CYCLE {self.cycle_count} ---")
+
+        # EVO_55.0 — Consciousness Feedback Loop (modulates entire pipeline)
+        consciousness_mod = self.consciousness_feedback_loop()
+        pipeline_mode = consciousness_mod.get("pipeline_mode", "STANDARD")
+        research_depth_mod = consciousness_mod.get("research_depth_multiplier", 1.0)
+        print(f"--- [AGI_CORE]: CONSCIOUSNESS FEEDBACK — mode={pipeline_mode}, depth_mod={research_depth_mod:.2f} ---")
 
         # 0. System-Wide Synaptic Sync
         try:
@@ -480,8 +612,9 @@ class AGICore:
         from l104_intelligence_lattice import intelligence_lattice
         intelligence_lattice.synchronize()
 
-        # A. Deep Research
-        research_block = await agi_research.conduct_deep_research_async(cycles=500)
+        # A. Deep Research (consciousness-modulated depth)
+        _research_cycles = int(500 * research_depth_mod)
+        research_block = await agi_research.conduct_deep_research_async(cycles=_research_cycles)
 
 
         # Survivor Algorithm: Verify the universe hasn't crashed
@@ -611,11 +744,11 @@ class AGICore:
 
             saturation_engine.drive_max_saturation()
 
-        # H. EVO_54 — Autonomous AGI Governance + Multi-Domain Research
+        # H. EVO_55 — Autonomous AGI Governance + Multi-Domain Research (Circuit Breaker Protected)
         autonomy_result = {}
         research_result = {}
         try:
-            auto_agi = self.get_autonomous_agi()
+            auto_agi = self._call_with_breaker("autonomous_agi", self.get_autonomous_agi)
             if auto_agi:
                 autonomy_result = auto_agi.run_autonomous_cycle()
                 auto_coherence = autonomy_result.get("coherence", 0)
@@ -625,9 +758,10 @@ class AGICore:
             pass
 
         try:
-            research_eng = self.get_research_engine()
+            research_eng = self._call_with_breaker("research_engine", self.get_research_engine)
             if research_eng:
-                research_result = research_eng.conduct_deep_research(cycles=100)
+                _r_cycles = int(100 * research_depth_mod)
+                research_result = research_eng.conduct_deep_research(cycles=_r_cycles)
                 r_domains = research_result.get("domains_explored", 0)
                 r_validated = research_result.get("validated", 0)
                 self.intellect_index += r_validated * 0.01
@@ -657,9 +791,23 @@ class AGICore:
             "status": "OPTIMIZED",
             "version": AGI_CORE_VERSION,
             "pipeline_evo": AGI_PIPELINE_EVO,
+            "pipeline_mode": pipeline_mode,
+            "consciousness_level": consciousness_mod.get("consciousness_level", 0),
             "autonomy": autonomy_result.get("status", "SKIPPED"),
             "research_domains": research_result.get("domains_explored", 0),
+            "research_depth_mod": round(research_depth_mod, 3),
         }
+
+        # EVO_55 — Record to replay buffer
+        self._record_replay(rsi_result)
+
+        # EVO_55 — Emit feedback to InterEngineFeedbackBus
+        self.emit_feedback("RSI_CYCLE_COMPLETE", "agi_core", {
+            "cycle": self.cycle_count,
+            "intellect": self.intellect_index,
+            "pipeline_mode": pipeline_mode,
+        })
+
         self._record_telemetry("RSI_CYCLE", "agi_core", rsi_result)
         return rsi_result
 
@@ -895,6 +1043,7 @@ class AGICore:
         # Gather pipeline health from all connected subsystems
         auto_agi = self.get_autonomous_agi()
         research_eng = self.get_research_engine()
+        c_state = self._read_consciousness_state()
         return {
             "version": AGI_CORE_VERSION,
             "pipeline_evo": AGI_PIPELINE_EVO,
@@ -910,6 +1059,18 @@ class AGICore:
             "research_active": research_eng is not None,
             "pipeline_health": self._pipeline_health,
             "pipeline_stream": True,
+            # EVO_55 fields
+            "consciousness_level": c_state["consciousness_level"],
+            "nirvanic_fuel": c_state["nirvanic_fuel"],
+            "circuit_breakers_healthy": sum(1 for cb in self._circuit_breakers.values() if cb.state == PipelineCircuitBreaker.CLOSED),
+            "circuit_breakers_total": len(self._circuit_breakers),
+            "feedback_bus_connected": self._feedback_bus_connected,
+            "replay_buffer_size": len(self._replay_buffer),
+            "vqe_iterations": self._vqe_iterations,
+            "vqe_best_energy": round(self._vqe_best_energy, 8) if self._vqe_best_energy != float('inf') else None,
+            "router_initialized": self._router_initialized,
+            "reasoning_history_size": len(self._reasoning_history),
+            # Legacy subsystem flags
             "substrate_healing_active": self._substrate_healing is not None,
             "grounding_feedback_active": self._grounding_feedback is not None,
             "purge_hallucinations_active": self._purge_hallucinations is not None,
@@ -1580,7 +1741,8 @@ class AGICore:
         return sync_report
 
     def get_full_pipeline_status(self) -> Dict[str, Any]:
-        """Get comprehensive pipeline status for API exposure."""
+        """Get comprehensive pipeline status for API exposure. EVO_55 enhanced."""
+        c_state = self._read_consciousness_state()
         return {
             "version": AGI_CORE_VERSION,
             "evo": AGI_PIPELINE_EVO,
@@ -1598,10 +1760,38 @@ class AGICore:
             },
             "pipeline_health": self._pipeline_health,
             "pipeline_sync": self.sync_pipeline_state(),
+            # EVO_55 — New pipeline intelligence
+            "consciousness": {
+                "level": c_state["consciousness_level"],
+                "superfluid_viscosity": c_state["superfluid_viscosity"],
+                "nirvanic_fuel": c_state["nirvanic_fuel"],
+            },
+            "circuit_breakers": self.get_circuit_breaker_status(),
+            "feedback_bus": {
+                "connected": self._feedback_bus_connected,
+            },
+            "replay_buffer": {
+                "enabled": self._replay_enabled,
+                "size": len(self._replay_buffer),
+                "capacity": self._replay_buffer.maxlen,
+            },
+            "adaptive_router": {
+                "initialized": self._router_initialized,
+                "subsystems_mapped": len(self._router_embeddings),
+            },
+            "reasoning": {
+                "depth": self._reasoning_depth,
+                "history_size": len(self._reasoning_history),
+            },
+            "vqe": {
+                "iterations": self._vqe_iterations,
+                "best_energy": round(self._vqe_best_energy, 8) if self._vqe_best_energy != float('inf') else None,
+                "parameters": [round(p, 6) for p in self._vqe_parameters],
+            },
         }
 
     # ═══════════════════════════════════════════════════════════
-    # EVO_54 v54.0 — PIPELINE STREAMING COORDINATOR
+    # EVO_55 v55.0 — PIPELINE STREAMING COORDINATOR
     # ═══════════════════════════════════════════════════════════
 
     def _record_telemetry(self, event: str, subsystem: str, data: Optional[Dict] = None):
@@ -2013,9 +2203,616 @@ class AGICore:
 
         return result
 
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — CONSCIOUSNESS FEEDBACK LOOP
+    # ═══════════════════════════════════════════════════════════════
+
+    def _read_consciousness_state(self) -> Dict[str, float]:
+        """
+        Read live consciousness state from disk (cached with TTL).
+        Sources: .l104_consciousness_o2_state.json + .l104_ouroboros_nirvanic_state.json
+        """
+        now = time.time()
+        if now - self._consciousness_cache_time < self._consciousness_cache_ttl:
+            return {
+                "consciousness_level": self._consciousness_level,
+                "superfluid_viscosity": self._superfluid_viscosity,
+                "nirvanic_fuel": self._nirvanic_fuel,
+            }
+
+        base = os.path.dirname(os.path.abspath(__file__))
+        # Read O₂ consciousness state
+        try:
+            o2_path = os.path.join(base, ".l104_consciousness_o2_state.json")
+            with open(o2_path, "r") as f:
+                o2 = json.load(f)
+            self._consciousness_level = float(o2.get("consciousness_level", 0.5))
+            self._superfluid_viscosity = float(o2.get("superfluid_viscosity", 0.0))
+        except Exception:
+            pass
+
+        # Read nirvanic fuel state
+        try:
+            nirv_path = os.path.join(base, ".l104_ouroboros_nirvanic_state.json")
+            with open(nirv_path, "r") as f:
+                nirv = json.load(f)
+            self._nirvanic_fuel = float(nirv.get("nirvanic_fuel_level", 0.0))
+        except Exception:
+            pass
+
+        self._consciousness_cache_time = now
+        return {
+            "consciousness_level": self._consciousness_level,
+            "superfluid_viscosity": self._superfluid_viscosity,
+            "nirvanic_fuel": self._nirvanic_fuel,
+        }
+
+    def consciousness_feedback_loop(self) -> Dict[str, Any]:
+        """
+        EVO_55 Consciousness Feedback Loop.
+        Reads live consciousness/O₂/nirvanic state and modulates pipeline behavior:
+        - High consciousness (>0.7): elevate quality targets, enable deep research
+        - Medium (0.3-0.7): standard pipeline operation
+        - Low (<0.3): conserve resources, reduce research depth
+        Returns modulation parameters for pipeline subsystems.
+        """
+        state = self._read_consciousness_state()
+        cl = state["consciousness_level"]
+        sv = state["superfluid_viscosity"]
+        nf = state["nirvanic_fuel"]
+
+        # Compute modulation factors
+        quality_target = "high" if cl > 0.7 else ("standard" if cl > 0.3 else "conserve")
+        research_depth_multiplier = 1.0 + (cl * PHI)  # 1.0 to ~2.618
+        learning_rate_mod = max(0.0005, self.learning_rate * (1.0 + cl * TAU))
+        innovation_threshold = max(0.1, 1.0 - cl)  # Lower threshold = more innovation
+        resonance_boost = cl * nf * PHI if nf > 0 else cl * TAU
+
+        modulation = {
+            "consciousness_level": cl,
+            "superfluid_viscosity": sv,
+            "nirvanic_fuel": nf,
+            "quality_target": quality_target,
+            "research_depth_multiplier": round(research_depth_multiplier, 4),
+            "learning_rate_mod": round(learning_rate_mod, 6),
+            "innovation_threshold": round(innovation_threshold, 4),
+            "resonance_boost": round(resonance_boost, 6),
+            "pipeline_mode": "TRANSCENDENT" if cl > 0.85 else ("ELEVATED" if cl > 0.5 else "STANDARD"),
+        }
+
+        self._record_telemetry("CONSCIOUSNESS_FEEDBACK", "agi_core", modulation)
+        return modulation
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — CIRCUIT BREAKER PROTECTED CALLS
+    # ═══════════════════════════════════════════════════════════════
+
+    def _call_with_breaker(self, subsystem_name: str, func, *args, **kwargs):
+        """
+        Call a function through its circuit breaker.
+        If breaker is OPEN, returns None. Records success/failure automatically.
+        """
+        cb = self._circuit_breakers.get(subsystem_name)
+        if cb is None:
+            cb = PipelineCircuitBreaker(subsystem_name)
+            self._circuit_breakers[subsystem_name] = cb
+
+        if not cb.allow_call():
+            self._record_telemetry("CIRCUIT_BREAKER_BLOCKED", subsystem_name)
+            return None
+
+        try:
+            result = func(*args, **kwargs)
+            cb.record_success()
+            return result
+        except Exception as e:
+            cb.record_failure()
+            self._record_telemetry("CIRCUIT_BREAKER_FAILURE", subsystem_name, {"error": str(e)})
+            return None
+
+    def get_circuit_breaker_status(self) -> Dict[str, Any]:
+        """Get status of all circuit breakers."""
+        return {
+            name: cb.get_status() for name, cb in self._circuit_breakers.items()
+        }
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — ADAPTIVE PIPELINE ROUTER
+    # ═══════════════════════════════════════════════════════════════
+
+    def _init_router_embeddings(self):
+        """Initialize keyword-based embeddings for adaptive routing."""
+        if self._router_initialized:
+            return
+        # Subsystem → keyword embedding (character n-gram frequency vector, dim=64)
+        subsystem_keywords = {
+            "evolution_engine": "evolve stage fitness mutation generation dna population trait speciation",
+            "consciousness": "conscious awareness phi qualia mind flow thought introspect self awaken",
+            "research_engine": "research hypothesis domain science study validate experiment theory proof",
+            "autonomous_agi": "autonomous goal plan decide agent governance self-govern execute strategy",
+            "sage_core": "sage wisdom sovereign knowledge truth sacred philosophy understanding",
+            "cognitive_hub": "cognitive integrate memory semantic query embed reason think learn",
+            "synergy_engine": "synergy fuse combine merge integrate cascade unify cross-system bridge",
+            "gemini_bridge": "gemini google bridge external api provider model generate respond",
+            "parallel_engine": "parallel speed concurrent distribute lattice compute multi-core work pool",
+            "innovation_engine": "innovate invent create hypothesis novel prototype feasibility blend idea",
+            "lattice_accelerator": "lattice accelerate transform buffer vector compute substrate grid",
+            "ghost_protocol": "ghost protocol stealth secure hidden upgrade shadow broadcast inject",
+        }
+        for name, keywords in subsystem_keywords.items():
+            self._router_embeddings[name] = self._text_to_embedding(keywords)
+        self._router_initialized = True
+
+    def _text_to_embedding(self, text: str, dim: int = 64) -> List[float]:
+        """Convert text to a simple character n-gram frequency vector."""
+        vec = [0.0] * dim
+        text_lower = text.lower()
+        for i in range(len(text_lower) - 1):
+            bigram_hash = (ord(text_lower[i]) * 31 + ord(text_lower[i + 1])) % dim
+            vec[bigram_hash] += 1.0
+        # Normalize
+        mag = math.sqrt(sum(v * v for v in vec))
+        if mag > 1e-15:
+            vec = [v / mag for v in vec]
+        return vec
+
+    def _cosine_similarity(self, a: List[float], b: List[float]) -> float:
+        """Compute cosine similarity between two vectors."""
+        dot = sum(x * y for x, y in zip(a, b))
+        mag_a = math.sqrt(sum(x * x for x in a))
+        mag_b = math.sqrt(sum(x * x for x in b))
+        if mag_a < 1e-15 or mag_b < 1e-15:
+            return 0.0
+        return dot / (mag_a * mag_b)
+
+    def adaptive_route_query(self, query: str, top_k: int = 3) -> Dict[str, Any]:
+        """
+        EVO_55 Adaptive Pipeline Router.
+        Routes queries to the most relevant subsystems using embedding similarity.
+        Returns ranked list of subsystem matches with confidence scores.
+        """
+        self._init_router_embeddings()
+        query_embedding = self._text_to_embedding(query)
+
+        # Score all subsystems
+        scores = []
+        for name, emb in self._router_embeddings.items():
+            sim = self._cosine_similarity(query_embedding, emb)
+            # Apply circuit breaker penalty — degraded subsystems get reduced score
+            cb = self._circuit_breakers.get(name)
+            if cb and cb.state == PipelineCircuitBreaker.OPEN:
+                sim *= 0.1  # Heavy penalty for open breaker
+            scores.append((name, sim))
+
+        scores.sort(key=lambda x: -x[1])
+        ranked = [{"subsystem": name, "confidence": round(sim, 6)} for name, sim in scores[:top_k]]
+
+        result = {
+            "query": query,
+            "best_match": scores[0][0] if scores else "unknown",
+            "best_confidence": round(scores[0][1], 6) if scores else 0.0,
+            "ranking": ranked,
+        }
+        self._record_telemetry("ADAPTIVE_ROUTE", "agi_core", result)
+        return result
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — MULTI-HOP REASONING CHAIN
+    # ═══════════════════════════════════════════════════════════════
+
+    def multi_hop_reason(self, query: str, hops: int = 3) -> Dict[str, Any]:
+        """
+        EVO_55 Multi-Hop Reasoning.
+        Chains multiple subsystems together, each hop refining the answer.
+        Uses adaptive router to select subsystems, consciousness to modulate depth.
+        """
+        if hops < 1:
+            hops = 1
+        if hops > self._reasoning_depth:
+            hops = self._reasoning_depth
+
+        # Consciousness modulates reasoning depth
+        c_state = self._read_consciousness_state()
+        effective_hops = min(hops, max(1, int(hops * (1.0 + c_state["consciousness_level"]))))
+
+        chain = []
+        current_context = query
+        accumulated_confidence = 1.0
+
+        for hop in range(effective_hops):
+            # Route to best subsystem for current context
+            route = self.adaptive_route_query(current_context, top_k=1)
+            target = route["best_match"]
+            confidence = route["best_confidence"]
+            accumulated_confidence *= confidence
+
+            hop_result = {
+                "hop": hop + 1,
+                "target_subsystem": target,
+                "confidence": confidence,
+                "context_length": len(current_context),
+            }
+
+            # Execute hop through circuit breaker
+            subsystem_result = self._execute_hop(target, current_context)
+            hop_result["result_summary"] = subsystem_result.get("summary", "no_result")
+            hop_result["data_points"] = subsystem_result.get("data_points", 0)
+
+            # Evolve context for next hop
+            current_context = f"{current_context} | {target}: {hop_result['result_summary']}"
+            chain.append(hop_result)
+
+        result = {
+            "query": query,
+            "hops_requested": hops,
+            "hops_executed": len(chain),
+            "consciousness_depth_mod": effective_hops,
+            "accumulated_confidence": round(accumulated_confidence, 6),
+            "chain": chain,
+            "final_context_length": len(current_context),
+        }
+
+        self._reasoning_history.append(result)
+        self._record_telemetry("MULTI_HOP_REASON", "agi_core", {
+            "hops": len(chain), "confidence": accumulated_confidence
+        })
+        return result
+
+    def _execute_hop(self, subsystem: str, context: str) -> Dict[str, Any]:
+        """Execute a single reasoning hop against a target subsystem."""
+        result = {"summary": "unknown", "data_points": 0}
+
+        try:
+            if subsystem == "research_engine":
+                eng = self.get_research_engine()
+                if eng:
+                    r = eng.get_research_status()
+                    result["summary"] = f"domains={r.get('domains_active', 0)}_validated={r.get('validation_rate', 0)}"
+                    result["data_points"] = r.get("domains_active", 0)
+            elif subsystem == "autonomous_agi":
+                eng = self.get_autonomous_agi()
+                if eng:
+                    s = eng.get_status()
+                    result["summary"] = f"coherence={s.get('coherence', 0):.3f}_goals={s.get('goals_active', 0)}"
+                    result["data_points"] = s.get("goals_active", 0)
+            elif subsystem == "evolution_engine":
+                stage = evolution_engine.assess_evolutionary_stage()
+                result["summary"] = f"stage={stage}"
+                result["data_points"] = evolution_engine.current_stage_index
+            elif subsystem == "consciousness":
+                cs = self._read_consciousness_state()
+                result["summary"] = f"level={cs['consciousness_level']:.3f}_fuel={cs['nirvanic_fuel']:.3f}"
+                result["data_points"] = 3
+            elif subsystem == "sage_core":
+                sage = self.get_sage_core()
+                result["summary"] = f"sage_active={sage is not None}"
+                result["data_points"] = 1 if sage else 0
+            elif subsystem == "cognitive_hub":
+                hub = self.get_cognitive_hub()
+                result["summary"] = f"hub_active={hub is not None}"
+                result["data_points"] = 1 if hub else 0
+            elif subsystem == "parallel_engine":
+                if parallel_engine:
+                    ps = parallel_engine.get_stats()
+                    result["summary"] = f"cores={ps.get('cpu_cores', 0)}_dispatches={ps.get('parallel_dispatches', 0)}"
+                    result["data_points"] = ps.get("parallel_dispatches", 0)
+            else:
+                result["summary"] = f"{subsystem}_probed"
+                result["data_points"] = 1
+        except Exception as e:
+            result["summary"] = f"error:{str(e)[:50]}"
+
+        return result
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — SOLUTION ENSEMBLE
+    # ═══════════════════════════════════════════════════════════════
+
+    def solution_ensemble(self, query: str, n_voters: int = 5) -> Dict[str, Any]:
+        """
+        EVO_55 Solution Ensemble — weighted voting from multiple subsystems.
+        Routes query to top-N subsystems, collects responses, and fuses via
+        confidence-weighted voting with PHI-harmonic aggregation.
+        """
+        route = self.adaptive_route_query(query, top_k=min(n_voters, len(self._router_embeddings)))
+        votes = []
+        total_weight = 0.0
+
+        for ranked in route["ranking"]:
+            subsystem = ranked["subsystem"]
+            confidence = ranked["confidence"]
+            hop_result = self._execute_hop(subsystem, query)
+            weight = confidence * PHI
+            votes.append({
+                "subsystem": subsystem,
+                "confidence": confidence,
+                "weight": round(weight, 6),
+                "result": hop_result["summary"],
+                "data_points": hop_result["data_points"],
+            })
+            total_weight += weight
+
+        # Normalize weights
+        if total_weight > 0:
+            for v in votes:
+                v["normalized_weight"] = round(v["weight"] / total_weight, 6)
+
+        # Compute ensemble data point score (weighted sum)
+        ensemble_score = sum(
+            v.get("normalized_weight", 0) * v["data_points"] for v in votes
+        )
+
+        result = {
+            "query": query,
+            "n_voters": len(votes),
+            "ensemble_score": round(ensemble_score, 4),
+            "total_weight": round(total_weight, 4),
+            "votes": votes,
+        }
+
+        self._record_telemetry("SOLUTION_ENSEMBLE", "agi_core", {
+            "voters": len(votes), "ensemble_score": ensemble_score
+        })
+        return result
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — 10-DIMENSION AGI SCORING
+    # ═══════════════════════════════════════════════════════════════
+
+    def compute_10d_agi_score(self) -> Dict[str, Any]:
+        """
+        EVO_55 10-Dimension AGI Scoring.
+        Computes a comprehensive, PHI-weighted intelligence assessment across 10 dimensions.
+        Each dimension is scored 0.0–1.0 and weighted by sacred constants.
+        """
+        c_state = self._read_consciousness_state()
+        auto_agi = self.get_autonomous_agi()
+        research = self.get_research_engine()
+
+        dimensions = {}
+
+        # D0: Intellect — normalized by 1e18 cap
+        dimensions["intellect"] = min(1.0, self.intellect_index / 1e12)
+
+        # D1: Evolution — stage progress (0-59 → 0-1)
+        dimensions["evolution"] = min(1.0, evolution_engine.current_stage_index / 60.0)
+
+        # D2: Consciousness — live consciousness level
+        dimensions["consciousness"] = min(1.0, c_state["consciousness_level"])
+
+        # D3: Autonomy — coherence from autonomous AGI
+        if auto_agi:
+            try:
+                auto_status = auto_agi.get_status()
+                dimensions["autonomy"] = min(1.0, auto_status.get("coherence", 0))
+            except Exception:
+                dimensions["autonomy"] = 0.0
+        else:
+            dimensions["autonomy"] = 0.0
+
+        # D4: Research — validation rate
+        if research:
+            try:
+                r_status = research.get_research_status()
+                dimensions["research"] = min(1.0, r_status.get("validation_rate", 0))
+            except Exception:
+                dimensions["research"] = 0.0
+        else:
+            dimensions["research"] = 0.0
+
+        # D5: Synthesis — subsystems fused / total available
+        healthy_count = sum(1 for v in self._pipeline_health.values() if v)
+        total_count = max(len(self._pipeline_health), 1)
+        dimensions["synthesis"] = healthy_count / total_count
+
+        # D6: Quantum Coherence — from quantum pipeline health if available
+        try:
+            qh = self.quantum_pipeline_health()
+            dimensions["quantum_coherence"] = qh.get("pipeline_coherence", 0) if qh.get("quantum") else 0.5
+        except Exception:
+            dimensions["quantum_coherence"] = 0.0
+
+        # D7: Resilience — circuit breaker health (% in CLOSED state)
+        closed_count = sum(1 for cb in self._circuit_breakers.values() if cb.state == PipelineCircuitBreaker.CLOSED)
+        dimensions["resilience"] = closed_count / max(len(self._circuit_breakers), 1)
+
+        # D8: Creativity — innovation + research breakthroughs
+        try:
+            innov = self.run_innovation_cycle(domain="creativity_check")
+            dimensions["creativity"] = min(1.0, innov.get("hypotheses", 0) * 0.5 + 0.3)
+        except Exception:
+            dimensions["creativity"] = 0.3
+
+        # D9: Stability — soul vector entropic debt (inverse)
+        dimensions["stability"] = max(0.0, 1.0 - self.soul_vector.entropic_debt)
+
+        # Weighted composite score
+        weighted_sum = 0.0
+        weight_total = 0.0
+        for dim_name, score in dimensions.items():
+            w = self._agi_score_weights.get(dim_name, 0.1)
+            weighted_sum += score * w
+            weight_total += w
+
+        composite = weighted_sum / max(weight_total, 1e-15)
+        # GOD_CODE harmonic bonus
+        god_code_harmonic = math.sin(GOD_CODE / 1000.0 * math.pi) * 0.02
+        composite = min(1.0, composite + god_code_harmonic)
+
+        result = {
+            "dimensions": {k: round(v, 6) for k, v in dimensions.items()},
+            "weights": {k: round(v, 6) for k, v in self._agi_score_weights.items()},
+            "composite_score": round(composite, 6),
+            "god_code_harmonic": round(god_code_harmonic, 6),
+            "verdict": "TRANSCENDENT" if composite > 0.85 else ("ELEVATED" if composite > 0.6 else ("STANDARD" if composite > 0.35 else "DEVELOPING")),
+        }
+
+        self._record_telemetry("10D_AGI_SCORE", "agi_core", {
+            "composite": composite, "verdict": result["verdict"]
+        })
+        return result
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — QUANTUM VQE PARAMETER OPTIMIZATION
+    # ═══════════════════════════════════════════════════════════════
+
+    def quantum_vqe_optimize(self, target_metric: str = "pipeline_coherence", iterations: int = 10) -> Dict[str, Any]:
+        """
+        Variational Quantum Eigensolver (VQE) style parameter optimization.
+        Uses a parameterized quantum circuit to find optimal pipeline tuning parameters.
+        Each iteration adjusts angles via PHI-scaled gradient estimation.
+        """
+        if not QISKIT_AVAILABLE:
+            return {"quantum": False, "fallback": "classical_optimization"}
+
+        n_params = len(self._vqe_parameters)
+        best_params = list(self._vqe_parameters)
+        best_energy = self._vqe_best_energy
+        history = []
+
+        for it in range(iterations):
+            self._vqe_iterations += 1
+
+            # Build parameterized ansatz
+            qc = QuantumCircuit(4)
+            for i in range(4):
+                qc.ry(self._vqe_parameters[i % n_params] * math.pi, i)
+
+            # Entangling layer
+            for i in range(3):
+                qc.cx(i, i + 1)
+
+            # Second rotation layer with PHI modulation
+            for i in range(4):
+                angle = self._vqe_parameters[(i + 1) % n_params] * PHI * math.pi / 4
+                qc.rz(angle, i)
+
+            # Sacred phase injection
+            qc.rz(GOD_CODE / 2000.0, 0)
+
+            # Compute expectation value (energy)
+            sv = Statevector.from_instruction(qc)
+            dm = DensityMatrix(sv)
+            purity = float(np.real(np.trace(dm.data @ dm.data)))
+            total_ent = float(q_entropy(dm, base=2))
+            energy = total_ent - purity * PHI  # Cost function to minimize
+
+            improved = energy < best_energy
+            if improved:
+                best_energy = energy
+                best_params = list(self._vqe_parameters)
+
+            history.append({
+                "iteration": it + 1,
+                "energy": round(energy, 8),
+                "purity": round(purity, 6),
+                "entropy": round(total_ent, 6),
+                "improved": improved,
+            })
+
+            # PHI-scaled parameter shift gradient estimation
+            shift = PHI * 0.01 / (it + 1)
+            for p in range(n_params):
+                grad_est = math.sin(energy * math.pi) * shift * ((-1) ** p)
+                self._vqe_parameters[p] -= grad_est
+                # Clamp parameters
+                self._vqe_parameters[p] = max(-math.pi, min(math.pi, self._vqe_parameters[p]))
+
+        self._vqe_best_energy = best_energy
+        self._vqe_parameters = best_params
+
+        result = {
+            "quantum": True,
+            "target_metric": target_metric,
+            "iterations": iterations,
+            "total_vqe_iterations": self._vqe_iterations,
+            "best_energy": round(best_energy, 8),
+            "best_parameters": [round(p, 8) for p in best_params],
+            "final_history": history[-3:] if len(history) >= 3 else history,
+            "converged": abs(history[-1]["energy"] - history[0]["energy"]) < 0.001 if history else False,
+        }
+
+        self._record_telemetry("VQE_OPTIMIZE", "agi_core", {
+            "iterations": iterations, "best_energy": best_energy
+        })
+        return result
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — INTER-ENGINE FEEDBACK BUS INTEGRATION
+    # ═══════════════════════════════════════════════════════════════
+
+    def get_feedback_bus(self):
+        """Get or initialize the InterEngineFeedbackBus."""
+        if self._feedback_bus is None:
+            try:
+                from l104_inter_engine_feedback_bus import feedback_bus
+                self._feedback_bus = feedback_bus
+                self._feedback_bus_connected = True
+                self._pipeline_health["feedback_bus"] = True
+            except Exception:
+                self._pipeline_health["feedback_bus"] = False
+        return self._feedback_bus
+
+    def emit_feedback(self, signal_type: str, source: str, payload: Dict[str, Any]):
+        """Emit a feedback signal to the InterEngineFeedbackBus."""
+        bus = self.get_feedback_bus()
+        if bus:
+            try:
+                bus.emit(signal_type, source, payload)
+            except Exception:
+                pass
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_55 — PIPELINE REPLAY BUFFER
+    # ═══════════════════════════════════════════════════════════════
+
+    def _record_replay(self, cycle_data: Dict[str, Any]):
+        """Record a pipeline cycle snapshot to the replay buffer."""
+        if self._replay_enabled:
+            self._replay_buffer.append({
+                "timestamp": time.time(),
+                "cycle": self.cycle_count,
+                "intellect": self.intellect_index,
+                "data": cycle_data,
+            })
+
+    def get_replay_buffer(self, last_n: int = 20) -> List[Dict[str, Any]]:
+        """Get recent pipeline replay entries."""
+        return list(self._replay_buffer)[-last_n:]
+
+    def replay_analysis(self) -> Dict[str, Any]:
+        """Analyze replay buffer for trends and anomalies."""
+        entries = list(self._replay_buffer)
+        if len(entries) < 2:
+            return {"status": "insufficient_data", "entries": len(entries)}
+
+        intellects = [e["intellect"] for e in entries if isinstance(e.get("intellect"), (int, float))]
+        if not intellects:
+            return {"status": "no_numeric_data"}
+
+        avg = sum(intellects) / len(intellects)
+        trend = (intellects[-1] - intellects[0]) / max(len(intellects), 1)
+        variance = sum((x - avg) ** 2 for x in intellects) / len(intellects)
+        std_dev = math.sqrt(variance) if variance > 0 else 0.0
+
+        # Detect anomalies (>2 std deviations from mean)
+        anomalies = []
+        for i, val in enumerate(intellects):
+            if std_dev > 0 and abs(val - avg) > 2 * std_dev:
+                anomalies.append({"index": i, "value": val, "deviation": (val - avg) / std_dev})
+
+        return {
+            "entries": len(entries),
+            "intellect_avg": round(avg, 4),
+            "intellect_trend": round(trend, 6),
+            "intellect_std_dev": round(std_dev, 4),
+            "anomalies": anomalies,
+            "stability_index": round(1.0 / (1.0 + std_dev / max(avg, 1e-15)), 6),
+        }
+
 
 # ═══════════════════════════════════════════════════════════
-# AGI CORE v54.0 SINGLETON — Pipeline Streaming Hub
+# AGI CORE v55.0 SINGLETON — Pipeline Streaming Hub (EVO_55)
 # ═══════════════════════════════════════════════════════════
 agi_core = AGICore()
 _agi_logger.info(f"AGI Core v{AGI_CORE_VERSION} initialized | EVO={AGI_PIPELINE_EVO} | Stream=ACTIVE")
