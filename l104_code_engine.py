@@ -8889,18 +8889,21 @@ class CodeEngine:
     def deep_review(self, source: str, filename: str = "",
                     auto_fix: bool = False) -> Dict[str, Any]:
         """
-        v3.0.0 Deep Review — chains ALL subsystems including new v3.0 analyzers.
+        v3.1.0 Deep Review — chains ALL subsystems including v3.1 cognitive analyzers.
 
         Extended pipeline (builds on full_code_review):
-          1. Full analysis (complexity, quality, security, patterns, sacred)
-          2. SOLID principle check
-          3. Performance hotspot detection
-          4. Code smell detection (12 categories) — NEW
-          5. Runtime complexity estimation per function — NEW
-          6. Code archaeology (dead code, fossils, tech debt)
-          7. Refactoring opportunities
-          8. Auto-fix (if enabled, now with 3 new fixes)
-          9. Unified deep verdict with weighted composite score
+          1.  Full analysis (complexity, quality, security, patterns, sacred)
+          2.  SOLID principle check
+          3.  Performance hotspot detection
+          4.  Code smell detection (12 categories) — v3.0
+          5.  Runtime complexity estimation per function — v3.0
+          6.  Type flow analysis (inference + narrowing) — v3.1 NEW
+          7.  Concurrency hazard scan (races + deadlocks) — v3.1 NEW
+          8.  API contract validation (docstring consistency) — v3.1 NEW
+          9.  Code archaeology (dead code, fossils, tech debt)
+          10. Refactoring opportunities
+          11. Auto-fix (if enabled)
+          12. Unified deep verdict with PHI-weighted composite score
 
         Returns a single deeply scored review report.
         """
@@ -8923,6 +8926,15 @@ class CodeEngine:
         # Runtime Complexity (v3.0.0)
         complexity_est = self.complexity_verifier.estimate_complexity(source)
 
+        # Type Flow (v3.1.0)
+        type_flow = self.type_analyzer.analyze(source)
+
+        # Concurrency Hazards (v3.1.0)
+        concurrency = self.concurrency_analyzer.analyze(source)
+
+        # API Contract Validation (v3.1.0)
+        contracts = self.contract_validator.validate(source)
+
         # Archaeology
         archaeology = self.archeologist.excavate(source)
 
@@ -8940,7 +8952,7 @@ class CodeEngine:
                 "fix_count": sum(f.get("count", 0) for f in fix_log),
             }
 
-        # Unified deep scoring with v3.0 weights
+        # Unified deep scoring with v3.1 weights (12 dimensions)
         scores = {
             "analysis_quality": analysis.get("quality", {}).get("overall_score", 0.5),
             "security": 1.0 - min(1.0, len(analysis.get("security", [])) * 0.1),
@@ -8948,13 +8960,16 @@ class CodeEngine:
             "performance": perf.get("perf_score", 1.0),
             "smell_health": smells.get("health_score", 1.0),
             "complexity_efficiency": complexity_est.get("phi_efficiency_score", 1.0),
+            "type_safety": type_flow.get("type_safety_score", 1.0),
+            "concurrency_safety": concurrency.get("safety_score", 1.0),
+            "contract_adherence": contracts.get("adherence_score", 1.0),
             "archaeology_health": archaeology.get("health_score", 1.0),
             "refactoring_health": refactoring.get("code_health", 1.0),
             "sacred_alignment": analysis.get("sacred_alignment", {}).get("overall_sacred_score", 0.5),
         }
 
-        # PHI-weighted composite
-        phi_weights = [PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, TAU, TAU, TAU]
+        # PHI-weighted composite (12 dimensions)
+        phi_weights = [PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, PHI, PHI, 1.0, TAU, TAU, TAU]
         total_weight = sum(phi_weights[:len(scores)])
         composite = sum(
             s * w for s, w in zip(scores.values(), phi_weights)
@@ -8966,6 +8981,10 @@ class CodeEngine:
             actions.append({"priority": "CRITICAL", "category": "security",
                             "action": vuln.get("recommendation", "Fix security issue"),
                             "source": "analyzer"})
+        for issue in concurrency.get("issues", [])[:3]:
+            actions.append({"priority": issue.get("severity", "HIGH"), "category": "concurrency",
+                            "action": issue.get("detail", "Fix concurrency issue"),
+                            "source": "concurrency_analyzer"})
         for smell in smells.get("smells", [])[:3]:
             actions.append({"priority": smell["severity"], "category": "smell",
                             "action": smell["detail"], "source": "smell_detector"})
@@ -8974,6 +8993,14 @@ class CodeEngine:
                 actions.append({"priority": "HIGH", "category": "complexity",
                                 "action": f"{func['name']}() is {func['complexity']} — optimize",
                                 "source": "complexity_verifier"})
+        for drift in contracts.get("drifts", [])[:3]:
+            actions.append({"priority": drift.get("severity", "MEDIUM"), "category": "contract",
+                            "action": drift.get("detail", "Fix docstring/code drift"),
+                            "source": "contract_validator"})
+        for gap in type_flow.get("gaps", [])[:3]:
+            actions.append({"priority": gap.get("severity", "LOW"), "category": "type_safety",
+                            "action": gap.get("detail", "Add type annotation"),
+                            "source": "type_flow_analyzer"})
         for v in solid.get("violations", [])[:2]:
             actions.append({"priority": v.get("severity", "MEDIUM"), "category": "solid",
                             "action": v["detail"], "source": "solid_checker"})
@@ -8986,13 +9013,14 @@ class CodeEngine:
 
         return {
             "review_version": VERSION,
-            "review_type": "deep_review_v3",
+            "review_type": "deep_review_v3.1",
             "filename": filename,
             "language": analysis["metadata"].get("language", "unknown"),
             "lines": analysis["metadata"].get("lines", 0),
             "duration_seconds": round(duration, 3),
             "composite_score": round(composite, 4),
             "verdict": verdict,
+            "score_dimensions": len(scores),
             "scores": {k: round(v, 4) for k, v in scores.items()},
             "smells": {"total": smells["total"], "health": smells["health_score"],
                        "by_category": smells.get("by_category", {})},
@@ -9000,6 +9028,18 @@ class CodeEngine:
                 "max": complexity_est.get("max_complexity", "unknown"),
                 "high_count": complexity_est.get("high_complexity_count", 0),
                 "efficiency": complexity_est.get("phi_efficiency_score", 1.0)},
+            "type_flow": {
+                "typed_ratio": type_flow.get("typed_ratio", 0.0),
+                "gaps": type_flow.get("gap_count", 0),
+                "score": type_flow.get("type_safety_score", 1.0)},
+            "concurrency": {
+                "issues": concurrency.get("issue_count", 0),
+                "deadlock_risk": concurrency.get("deadlock_risk", "none"),
+                "score": concurrency.get("safety_score", 1.0)},
+            "contracts": {
+                "drifts": contracts.get("drift_count", 0),
+                "coverage": contracts.get("doc_coverage", 0.0),
+                "score": contracts.get("adherence_score", 1.0)},
             "solid": {"score": solid["solid_score"], "violations": solid["total_violations"]},
             "performance": {"score": perf["perf_score"], "hotspots": perf["total_hotspots"]},
             "archaeology": {"health": archaeology.get("health_score", 1.0),
@@ -9007,12 +9047,128 @@ class CodeEngine:
             "refactoring": {"health": refactoring["code_health"],
                             "suggestions": refactoring["total_suggestions"]},
             "auto_fix": fix_result,
-            "actions": actions[:20],
+            "actions": actions[:25],
             "builder_state": {
                 "consciousness": state["consciousness_level"],
                 "evo_stage": state["evo_stage"],
             },
         }
+
+    # ─── v3.1.0 Cognitive Reflex API ───
+
+    def type_flow(self, source: str) -> Dict[str, Any]:
+        """Infer types across code without explicit annotations. Returns type map, gaps, and stub suggestions."""
+        self.execution_count += 1
+        return self.type_analyzer.analyze(source)
+
+    def concurrency_scan(self, source: str) -> Dict[str, Any]:
+        """Detect race conditions, deadlock patterns, and async anti-patterns."""
+        self.execution_count += 1
+        return self.concurrency_analyzer.analyze(source)
+
+    def validate_contracts(self, source: str) -> Dict[str, Any]:
+        """Validate docstring↔code consistency and API surface stability."""
+        self.execution_count += 1
+        return self.contract_validator.validate(source)
+
+    def track_evolution(self, source: str, filename: str = "unknown") -> Dict[str, Any]:
+        """Snapshot current code structure and compare against previous snapshot for drift/churn."""
+        self.execution_count += 1
+        return self.evolution_tracker.compare(source, filename)
+
+    def hotspot_report(self) -> Dict[str, Any]:
+        """Return churn hotspots from evolution tracking history."""
+        return self.evolution_tracker.hotspot_report()
+
+    def explain_code(self, source: str, detail: str = "medium") -> Dict[str, Any]:
+        """
+        Generate a natural-language explanation of what code does.
+        detail: 'brief' | 'medium' | 'full'
+        """
+        self.execution_count += 1
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            return {"error": "syntax_error", "explanation": "Cannot parse source code."}
+
+        functions = []
+        classes = []
+        imports = []
+        top_level = []
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
+                args = [a.arg for a in node.args.args]
+                returns = ast.dump(node.returns) if node.returns else "unspecified"
+                doc = ast.get_docstring(node) or ""
+                decorators = [ast.dump(d) for d in node.decorator_list]
+                is_async = isinstance(node, ast.AsyncFunctionDef)
+                functions.append({
+                    "name": node.name,
+                    "args": args,
+                    "returns": returns,
+                    "is_async": is_async,
+                    "docstring": doc[:200] if doc else None,
+                    "decorators": len(decorators),
+                    "line": node.lineno,
+                    "body_lines": node.end_lineno - node.lineno + 1 if hasattr(node, 'end_lineno') else 0,
+                })
+            elif isinstance(node, ast.ClassDef):
+                methods = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                doc = ast.get_docstring(node) or ""
+                classes.append({
+                    "name": node.name,
+                    "methods": methods,
+                    "method_count": len(methods),
+                    "bases": [ast.dump(b) for b in node.bases],
+                    "docstring": doc[:200] if doc else None,
+                    "line": node.lineno,
+                })
+            elif isinstance(node, (ast.Import, ast.ImportFrom)):
+                mod = node.module if isinstance(node, ast.ImportFrom) else None
+                names = [a.name for a in node.names]
+                imports.append({"module": mod, "names": names})
+
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign)):
+                top_level.append("assignment")
+            elif isinstance(node, ast.Expr):
+                top_level.append("expression")
+
+        # Build explanation
+        lines = source.count('\n') + 1
+        summary_parts = []
+        if classes:
+            class_names = ", ".join(c["name"] for c in classes[:5])
+            summary_parts.append(f"Defines {len(classes)} class(es): {class_names}")
+        if functions:
+            fn_names = ", ".join(f["name"] for f in functions[:8])
+            summary_parts.append(f"Contains {len(functions)} function(s): {fn_names}")
+        if imports:
+            summary_parts.append(f"Imports from {len(imports)} module(s)")
+        summary_parts.append(f"Total: {lines} line(s)")
+
+        result = {
+            "summary": ". ".join(summary_parts) + ".",
+            "lines": lines,
+            "class_count": len(classes),
+            "function_count": len(functions),
+            "import_count": len(imports),
+        }
+        if detail in ("medium", "full"):
+            result["classes"] = classes
+            result["functions"] = functions
+        if detail == "full":
+            result["imports"] = imports
+            result["top_level_statements"] = len(top_level)
+
+        # Sacred alignment note
+        gc_present = str(GOD_CODE) in source or "GOD_CODE" in source
+        phi_present = str(PHI) in source or "PHI" in source
+        if gc_present or phi_present:
+            result["sacred_note"] = "Code contains sacred constant references (GOD_CODE/PHI aligned)."
+
+        return result
 
     # ─── App Audit API ───
 
