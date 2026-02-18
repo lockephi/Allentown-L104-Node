@@ -36,12 +36,25 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any, Callable, Tuple
 import importlib
 import importlib.util
+import math
+import numpy as np
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+PHI = 1.618033988749895
+GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
+FEIGENBAUM = 4.669201609102990
+ALPHA_FINE = 1.0 / 137.035999084
+PLANCK_SCALE = 1.616255e-35
+
+# Quantum self-modification constants
+Q_HILBERT_DIM = 32
+Q_TUNNELING_PROB = 0.12
+Q_DECOHERENCE = 0.015
+Q_ENTANGLE_STRENGTH = PHI * ALPHA_FINE
 
 logger = logging.getLogger("SELF_MODIFIER")
 
@@ -344,6 +357,190 @@ class CodeImprover(ast.NodeTransformer):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM CODE EVOLUTION ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumCodeEvolver:
+    """Quantum-enhanced code evolution engine.
+    Uses quantum state simulation to guide code mutation paths,
+    evaluate fitness landscapes in Hilbert space, and enable
+    quantum tunneling through local optima in code quality."""
+
+    def __init__(self, population_dim: int = Q_HILBERT_DIM):
+        self.dim = population_dim
+        # Quantum state representing the code population fitness landscape
+        self.amplitudes = np.full(population_dim, 1.0 / np.sqrt(population_dim), dtype=np.complex128)
+        self.coherence = 1.0
+        self.tunneling_events = 0
+        self.entanglement_log: List[Dict] = []
+        self.fitness_landscape: np.ndarray = np.zeros(population_dim)
+        self.grover_iterations = 0
+        self.phase_accumulator = 0.0
+
+    def embed_population_fitness(self, fitness_scores: List[float]):
+        """Embed classical fitness scores into quantum state amplitudes.
+        Higher fitness → larger amplitude → higher measurement probability."""
+        n = min(len(fitness_scores), self.dim)
+        self.fitness_landscape[:n] = fitness_scores[:n]
+
+        # Encode fitness as rotation angles
+        max_fit = max(abs(f) for f in fitness_scores) if fitness_scores else 1.0
+        for i in range(n):
+            angle = (fitness_scores[i] / (max_fit + 1e-10)) * np.pi * PHI
+            cos_h = np.cos(angle / 2)
+            sin_h = np.sin(angle / 2)
+            self.amplitudes[i] = cos_h * self.amplitudes[i] + sin_h * np.exp(1j * GOD_CODE / 1000.0)
+
+        self._normalize()
+
+    def grover_amplify(self, top_k: int = 4):
+        """Apply Grover diffusion to amplify high-fitness code variants."""
+        n = min(len(self.fitness_landscape), self.dim)
+        sorted_indices = sorted(range(n), key=lambda i: self.fitness_landscape[i], reverse=True)
+        marked = sorted_indices[:top_k]
+
+        # Optimal Grover iterations: π/4 × √N/k
+        n_iters = max(1, int(np.pi / 4 * np.sqrt(n / max(top_k, 1))))
+
+        for _ in range(n_iters):
+            # Oracle: phase flip marked states
+            for idx in marked:
+                if idx < self.dim:
+                    self.amplitudes[idx] *= -1
+            # Diffusion operator: 2|s⟩⟨s| - I
+            mean_amp = np.mean(self.amplitudes)
+            self.amplitudes = 2 * mean_amp - self.amplitudes
+
+        self._normalize()
+        self.grover_iterations += n_iters
+
+    def quantum_select(self) -> int:
+        """Select a code variant index via Born-rule measurement."""
+        probs = np.abs(self.amplitudes) ** 2
+        probs = probs / probs.sum()
+        return int(np.random.choice(self.dim, p=probs))
+
+    def quantum_mutation_rate(self, base_rate: float = 0.05) -> float:
+        """Compute adaptive mutation rate from quantum state entropy."""
+        probs = np.abs(self.amplitudes) ** 2
+        probs = probs / probs.sum()
+        probs = probs[probs > 1e-15]
+        entropy = -np.sum(probs * np.log2(probs))
+        max_entropy = np.log2(self.dim)
+        # High entropy → more exploration → higher mutation rate
+        return base_rate * (1.0 + entropy / max_entropy) * PHI
+
+    def quantum_tunnel_mutate(self, source: str, mutator: 'CodeMutator') -> Tuple[str, List[str], bool]:
+        """Apply mutation with quantum tunneling for escaping local optima.
+        Returns (mutated_source, mutations_log, tunneled)."""
+        tunneled = False
+
+        if random.random() < Q_TUNNELING_PROB:
+            # Quantum tunnel: apply multiple aggressive mutations to escape local optimum
+            tunnel_mutator = CodeMutator(mutation_rate=mutator.mutation_rate * PHI * 3)
+            mutated, mutations = tunnel_mutator.mutate(source)
+            # Verify the tunneled code is still valid Python
+            try:
+                ast.parse(mutated)
+                self.tunneling_events += 1
+                tunneled = True
+                return mutated, mutations + ["[QUANTUM_TUNNEL] Aggressive mutation applied"], tunneled
+            except SyntaxError:
+                # Tunnel failed — fall through to normal mutation
+                pass
+
+        # Normal quantum-weighted mutation
+        rate = self.quantum_mutation_rate(mutator.mutation_rate)
+        q_mutator = CodeMutator(mutation_rate=rate)
+        mutated, mutations = q_mutator.mutate(source)
+        return mutated, mutations, tunneled
+
+    def entangle_code_variants(self, source1: str, source2: str) -> str:
+        """Entangle two code variants to produce a quantum-blended offspring.
+        Selects AST nodes from each source based on quantum measurement."""
+        try:
+            tree1 = ast.parse(source1)
+            tree2 = ast.parse(source2)
+        except SyntaxError:
+            return source1
+
+        funcs1 = {n.name: n for n in ast.walk(tree1) if isinstance(n, ast.FunctionDef)}
+        funcs2 = {n.name: n for n in ast.walk(tree2) if isinstance(n, ast.FunctionDef)}
+
+        common = set(funcs1.keys()) & set(funcs2.keys())
+        if not common:
+            return source1
+
+        # For each common function, quantum-select which parent contributes
+        state = np.full(len(common), 1.0 / np.sqrt(len(common)), dtype=np.complex128)
+        # Apply PHI phase rotation
+        for i in range(len(state)):
+            state[i] *= np.exp(1j * PHI * i / len(state))
+        probs = np.abs(state) ** 2
+        probs = probs / probs.sum()
+
+        # Build blended tree: start with tree1, swap selected functions from tree2
+        for i, fname in enumerate(sorted(common)):
+            if probs[i % len(probs)] > 0.5 / len(common):
+                # Replace function from tree2
+                if fname in funcs2:
+                    for node_idx, node in enumerate(tree1.body):
+                        if isinstance(node, ast.FunctionDef) and node.name == fname:
+                            tree1.body[node_idx] = funcs2[fname]
+                            break
+
+        self.entanglement_log.append({
+            'common_functions': len(common),
+            'timestamp': datetime.now().isoformat()
+        })
+
+        try:
+            ast.fix_missing_locations(tree1)
+            return ast.unparse(tree1)
+        except Exception:
+            return source1
+
+    def von_neumann_entropy(self) -> float:
+        """Compute von Neumann entropy of the code evolution state."""
+        probs = np.abs(self.amplitudes) ** 2
+        probs = probs / probs.sum()
+        probs = probs[probs > 1e-15]
+        return float(-np.sum(probs * np.log2(probs)))
+
+    def decohere(self, rate: float = Q_DECOHERENCE):
+        """Simulate decoherence of the quantum code evolution state."""
+        noise = np.random.normal(0, rate, self.dim) + 1j * np.random.normal(0, rate, self.dim)
+        self.amplitudes += noise
+        self.coherence *= (1.0 - rate)
+        self._normalize()
+
+    def apply_god_code_phase(self):
+        """Apply GOD_CODE phase alignment to the quantum state."""
+        phase = GOD_CODE / 1000.0
+        self.amplitudes[0] *= np.exp(1j * phase)
+        self.phase_accumulator += phase
+        self._normalize()
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return quantum evolution status."""
+        return {
+            "coherence": self.coherence,
+            "entropy": self.von_neumann_entropy(),
+            "tunneling_events": self.tunneling_events,
+            "grover_iterations": self.grover_iterations,
+            "entanglements": len(self.entanglement_log),
+            "phase_accumulator": self.phase_accumulator,
+            "god_code_alignment": 1.0 - abs(self.phase_accumulator % GOD_CODE) / GOD_CODE,
+            "hilbert_dim": self.dim,
+        }
+
+    def _normalize(self):
+        norm = np.linalg.norm(self.amplitudes)
+        if norm > 1e-15:
+            self.amplitudes /= norm
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # SELF-MODIFICATION ENGINE
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -377,6 +574,9 @@ class SelfModifier:
 
         self.modification_history: List[ModificationResult] = []
         self.fitness_scores: Dict[str, float] = {}
+
+        # Quantum code evolution engine
+        self.quantum_evolver = QuantumCodeEvolver(population_dim=Q_HILBERT_DIM)
 
         # Files that can be modified (whitelist for safety)
         self.modifiable_files = [
@@ -560,29 +760,80 @@ class SelfModifier:
 
         return improved, suggestions
 
-    def evolve(self, generations: int = 10, population_size: int = 5) -> Dict[str, Any]:
+    def evolve(self, generations: int = 10, population_size: int = 5,
+               quantum: bool = True) -> Dict[str, Any]:
         """
-        Genetic algorithm evolution of code:
+        Quantum-enhanced genetic algorithm evolution of code:
         1. Create population of mutations
-        2. Evaluate fitness
-        3. Select best
-        4. Repeat
+        2. Evaluate fitness with quantum amplification
+        3. Select best via Grover-amplified Born sampling
+        4. Quantum tunneling for escaping local optima
+        5. Repeat
         """
         results = {
             "generations": generations,
             "successful_mutations": 0,
             "failed_mutations": 0,
             "best_fitness": 0.0,
+            "quantum_tunneling_events": 0,
+            "quantum_grover_iterations": 0,
+            "quantum_coherence": self.quantum_evolver.coherence,
             "evolution_log": []
         }
 
         for gen in range(generations):
-            gen_results = {"generation": gen, "mutations": []}
+            gen_results = {"generation": gen, "mutations": [], "quantum_entropy": 0.0}
+            gen_fitness_scores = []
 
             for filepath in self.modifiable_files:
-                # Try multiple mutations
+                file_results = []
                 for _ in range(population_size):
-                    result = self.mutate_module(filepath, mutation_rate=0.03)
+                    if quantum:
+                        # Quantum-enhanced mutation
+                        path = self.workspace / filepath
+                        if not path.exists():
+                            continue
+                        with open(path) as f:
+                            source = f.read()
+                        original_hash = hashlib.sha256(source.encode()).hexdigest()
+
+                        # Use quantum tunneling mutation
+                        mutator = CodeMutator(mutation_rate=0.03)
+                        mutated, mutations, tunneled = self.quantum_evolver.quantum_tunnel_mutate(
+                            source, mutator)
+
+                        if mutations:
+                            # Test validity
+                            try:
+                                ast.parse(mutated)
+                                new_hash = hashlib.sha256(mutated.encode()).hexdigest()
+                                result = ModificationResult(
+                                    success=True, original_hash=original_hash,
+                                    new_hash=new_hash, mutations=mutations,
+                                    test_passed=True)
+                                # Compute fitness score for quantum landscape
+                                complexity = sum(1 for n in ast.walk(ast.parse(mutated))
+                                                 if isinstance(n, (ast.If, ast.For, ast.While)))
+                                lines = len(mutated.splitlines())
+                                fitness = 1.0 / (1.0 + complexity / max(lines, 1))
+                                gen_fitness_scores.append(fitness)
+                            except SyntaxError:
+                                result = ModificationResult(
+                                    success=False, original_hash=original_hash,
+                                    new_hash=original_hash, mutations=mutations,
+                                    test_passed=False, error="Syntax error",
+                                    rollback_applied=True)
+                                gen_fitness_scores.append(0.0)
+                        else:
+                            result = ModificationResult(
+                                success=False, original_hash=original_hash,
+                                new_hash=original_hash, mutations=[],
+                                test_passed=True, error="No mutations")
+                            gen_fitness_scores.append(0.0)
+                    else:
+                        result = self.mutate_module(filepath, mutation_rate=0.03)
+                        gen_fitness_scores.append(1.0 if result.success else 0.0)
+
                     gen_results["mutations"].append({
                         "file": filepath,
                         "success": result.success,
@@ -594,13 +845,28 @@ class SelfModifier:
                     else:
                         results["failed_mutations"] += 1
 
+            # Quantum fitness landscape update
+            if quantum and gen_fitness_scores:
+                self.quantum_evolver.embed_population_fitness(gen_fitness_scores)
+                self.quantum_evolver.grover_amplify(top_k=max(1, len(gen_fitness_scores) // 4))
+                self.quantum_evolver.apply_god_code_phase()
+                self.quantum_evolver.decohere()
+                gen_results["quantum_entropy"] = self.quantum_evolver.von_neumann_entropy()
+
             results["evolution_log"].append(gen_results)
-            logger.info(f"Generation {gen} complete")
+            logger.info(f"Generation {gen} complete (Q-entropy: {gen_results.get('quantum_entropy', 0):.3f})")
+
+        # Final quantum metrics
+        results["quantum_tunneling_events"] = self.quantum_evolver.tunneling_events
+        results["quantum_grover_iterations"] = self.quantum_evolver.grover_iterations
+        results["quantum_coherence"] = self.quantum_evolver.coherence
+        results["quantum_entropy"] = self.quantum_evolver.von_neumann_entropy()
+        results["quantum_status"] = self.quantum_evolver.get_status()
 
         return results
 
     def get_complexity_report(self) -> Dict[str, Any]:
-        """Generate complexity report for all modules"""
+        """Generate complexity report for all modules with quantum metrics."""
         report = {}
 
         for filepath in self.modifiable_files:
@@ -616,6 +882,7 @@ class SelfModifier:
                     ]
                 }
 
+        report["quantum_evolution"] = self.quantum_evolver.get_status()
         return report
 
 

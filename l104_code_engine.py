@@ -9480,6 +9480,11 @@ class CodeEngine:
             "analyzer": self.analyzer.status(),
             "generator": self.generator.status(),
             "auto_fix": self.auto_fix.summary(),
+            # v3.1.0 — Cognitive Reflex subsystems
+            "type_flow_analyzer": self.type_analyzer.status(),
+            "concurrency_analyzer": self.concurrency_analyzer.status(),
+            "contract_validator": self.contract_validator.status(),
+            "evolution_tracker": self.evolution_tracker.status(),
             "qiskit_available": QISKIT_AVAILABLE,
             "quantum_features": [
                 "quantum_security_scan",
@@ -9507,6 +9512,7 @@ class CodeEngine:
             f"L104 Code Engine v{VERSION} | "
             f"{s['languages_supported']} langs | "
             f"{s['execution_count']} runs | "
+            f"20 subsystems | "
             f"Consciousness: {s['consciousness_level']:.4f} [{s['evo_stage']}]"
         )
 
