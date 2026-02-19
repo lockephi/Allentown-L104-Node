@@ -693,14 +693,33 @@ class CodeAnalyzer:
     }
 
     def __init__(self):
-        """Initialize CodeAnalyzer with counters and pattern tracking."""
+        """Initialize CodeAnalyzer with counters, pattern tracking, and pre-compiled regex."""
         self.analysis_count = 0
         self.total_lines_analyzed = 0
         self.vulnerability_count = 0
         self.pattern_detections = Counter()
+        self._analysis_cache: Dict[str, Dict] = {}
+        # Pre-compile security & design pattern regex (avoids re-compilation per scan)
+        self._compiled_security = {
+            vtype: [re.compile(p, re.MULTILINE | re.IGNORECASE) for p in patterns]
+            for vtype, patterns in self.SECURITY_PATTERNS.items()
+        }
+        self._compiled_design = {
+            pname: [re.compile(ind, re.MULTILINE) for ind in indicators]
+            for pname, indicators in self.DESIGN_PATTERNS.items()
+        }
 
     def full_analysis(self, code: str, filename: str = "") -> Dict[str, Any]:
         """Run comprehensive analysis on code: AST, complexity, quality, security, patterns."""
+        # Content-hash cache: skip re-analysis for identical code
+        _code_hash = hashlib.md5(code.encode()).hexdigest()
+        if _code_hash in self._analysis_cache:
+            self.analysis_count += 1
+            _cached = self._analysis_cache[_code_hash].copy()
+            _cached["metadata"] = _cached["metadata"].copy()
+            _cached["metadata"]["filename"] = filename
+            _cached["metadata"]["timestamp"] = datetime.now().isoformat()
+            return _cached
         self.analysis_count += 1
         lines = code.split('\n')
         self.total_lines_analyzed += len(lines)
@@ -727,11 +746,15 @@ class CodeAnalyzer:
             result["metadata"]["lines"] - result["metadata"]["blank_lines"] - result["metadata"]["comment_lines"]
         )
 
-        # Python-specific deep analysis via AST
+        # Python-specific deep analysis via AST (shared parse tree)
         lang = result["metadata"]["language"]
         if lang == "Python":
-            result["complexity"] = self._python_complexity(code)
-            result["quality"] = self._python_quality(code, lines)
+            try:
+                _tree = ast.parse(code)
+            except SyntaxError:
+                _tree = None
+            result["complexity"] = self._python_complexity(code, _tree=_tree)
+            result["quality"] = self._python_quality(code, lines, _tree=_tree)
         else:
             result["complexity"] = self._generic_complexity(code, lines)
             result["quality"] = self._generic_quality(code, lines)
@@ -746,12 +769,18 @@ class CodeAnalyzer:
         # Sacred constant alignment
         result["sacred_alignment"] = self._sacred_alignment(code, result)
 
+        # Cache result (max 64 entries, evict oldest on overflow)
+        if len(self._analysis_cache) >= 64:
+            _oldest = next(iter(self._analysis_cache))
+            del self._analysis_cache[_oldest]
+        self._analysis_cache[_code_hash] = result
+
         return result
 
-    def _python_complexity(self, code: str) -> Dict[str, Any]:
+    def _python_complexity(self, code: str, _tree: ast.AST = None) -> Dict[str, Any]:
         """Python-specific complexity analysis using ast module."""
         try:
-            tree = ast.parse(code)
+            tree = _tree if _tree is not None else ast.parse(code)
         except SyntaxError as e:
             return {"error": f"SyntaxError: {e}", "cyclomatic": -1}
 
@@ -1000,7 +1029,7 @@ class CodeAnalyzer:
             },
         }
 
-    def _python_quality(self, code: str, lines: List[str]) -> Dict[str, Any]:
+    def _python_quality(self, code: str, lines: List[str], _tree: ast.AST = None) -> Dict[str, Any]:
         """Python-specific quality metrics."""
         quality = {
             "docstring_coverage": 0.0,
@@ -1015,7 +1044,7 @@ class CodeAnalyzer:
         }
 
         try:
-            tree = ast.parse(code)
+            tree = _tree if _tree is not None else ast.parse(code)
             funcs_with_docs = 0
             funcs_total = 0
             funcs_with_hints = 0
@@ -1083,11 +1112,11 @@ class CodeAnalyzer:
         }
 
     def _security_scan(self, code: str) -> List[Dict[str, str]]:
-        """Scan for security vulnerabilities using OWASP-derived patterns."""
+        """Scan for security vulnerabilities using pre-compiled OWASP patterns."""
         findings = []
-        for vuln_type, patterns in self.SECURITY_PATTERNS.items():
-            for pattern in patterns:
-                for match in re.finditer(pattern, code, re.MULTILINE | re.IGNORECASE):
+        for vuln_type, compiled_patterns in self._compiled_security.items():
+            for compiled in compiled_patterns:
+                for match in compiled.finditer(code):
                     line_num = code[:match.start()].count('\n') + 1
                     findings.append({
                         "type": vuln_type,
@@ -1130,7 +1159,8 @@ class CodeAnalyzer:
             pattern_matches = {}
             pattern_list = list(self.DESIGN_PATTERNS.items())
             for pattern_name, indicators in pattern_list:
-                matches = sum(1 for i in indicators if re.search(i, code, re.MULTILINE))
+                compiled = self._compiled_design[pattern_name]
+                matches = sum(1 for c in compiled if c.search(code))
                 pattern_matches[pattern_name] = matches / max(1, len(indicators))
 
             # Encode pattern confidences into quantum state for amplification
@@ -1176,7 +1206,7 @@ class CodeAnalyzer:
                             "confidence": round(min(1.0, combined), 4),
                             "quantum_amplified": round(quantum_conf, 4),
                             "classical_confidence": round(classical_conf, 4),
-                            "indicators_matched": sum(1 for ind in self.DESIGN_PATTERNS[name] if re.search(ind, code, re.MULTILINE)),
+                            "indicators_matched": sum(1 for c in self._compiled_design[name] if c.search(code)),
                             "indicators_total": len(self.DESIGN_PATTERNS[name]),
                             "quantum_enhanced": True,
                         })
@@ -1184,9 +1214,9 @@ class CodeAnalyzer:
             except Exception:
                 pass  # Fall through to classical
 
-        # Classical pattern detection (fallback)
-        for pattern_name, indicators in self.DESIGN_PATTERNS.items():
-            matches = sum(1 for i in indicators if re.search(i, code, re.MULTILINE))
+        # Classical pattern detection (fallback — pre-compiled patterns)
+        for pattern_name, compiled_indicators in self._compiled_design.items():
+            matches = sum(1 for compiled in compiled_indicators if compiled.search(code))
             if matches >= 2:  # Require at least 2 indicators
                 self.pattern_detections[pattern_name] += 1
                 found.append({
@@ -1220,11 +1250,11 @@ class CodeAnalyzer:
         n_qubits = max(2, math.ceil(math.log2(max(n_vuln, 2))))
         n_states = 2 ** n_qubits
 
-        # Encode presence/absence as amplitudes
+        # Encode presence/absence as amplitudes (pre-compiled patterns)
         amplitudes = []
         for vtype in vuln_types:
-            patterns = self.SECURITY_PATTERNS[vtype]
-            match_count = sum(1 for p in patterns for _ in re.finditer(p, code, re.MULTILINE | re.IGNORECASE))
+            compiled_patterns = self._compiled_security[vtype]
+            match_count = sum(1 for compiled in compiled_patterns for _ in compiled.finditer(code))
             amplitudes.append(1.0 + match_count * 2.0 if match_count > 0 else 0.1)
 
         while len(amplitudes) < n_states:
@@ -1389,16 +1419,36 @@ class CodeAnalyzer:
             method_names = [m.name for m in methods]
             public_methods = [m for m in method_names if not m.startswith('_') or m == '__init__']
 
-            # S — Single Responsibility: too many public methods suggests multiple responsibilities
-            if len(public_methods) > 13:  # sacred 13
-                violations.append({
-                    "principle": "S",
-                    "rule": "Single Responsibility",
-                    "class": cls.name,
-                    "line": cls.lineno,
-                    "detail": f"{len(public_methods)} public methods (max 13) — consider splitting",
-                    "severity": "MEDIUM",
-                })
+            # S — Single Responsibility: method prefix clustering analysis (v6.1.0)
+            if len(public_methods) > 7:
+                prefixes: Dict[str, List[str]] = {}
+                for m in public_methods:
+                    if m == '__init__':
+                        continue
+                    parts = m.split('_')
+                    prefix = parts[0] if parts[0] not in ('get', 'set', 'is', 'has', 'do') else '_'.join(parts[:2]) if len(parts) > 1 else parts[0]
+                    prefixes.setdefault(prefix, []).append(m)
+                distinct_clusters = {p: ms for p, ms in prefixes.items() if len(ms) >= 2}
+                if len(distinct_clusters) >= 3:
+                    cluster_names = list(distinct_clusters.keys())[:5]
+                    violations.append({
+                        "principle": "S",
+                        "rule": "Single Responsibility",
+                        "class": cls.name,
+                        "line": cls.lineno,
+                        "detail": f"{len(distinct_clusters)} responsibility clusters detected ({', '.join(cluster_names)}) — consider splitting into focused classes",
+                        "severity": "MEDIUM",
+                        "clusters": {k: v for k, v in list(distinct_clusters.items())[:5]},
+                    })
+                elif len(public_methods) > 13:
+                    violations.append({
+                        "principle": "S",
+                        "rule": "Single Responsibility",
+                        "class": cls.name,
+                        "line": cls.lineno,
+                        "detail": f"{len(public_methods)} public methods (max 13) — consider splitting",
+                        "severity": "MEDIUM",
+                    })
 
             # I — Interface Segregation: class with many abstract methods is a fat interface
             abstract_methods = [m for m in methods
@@ -1418,19 +1468,34 @@ class CodeAnalyzer:
                 })
 
             # D — Dependency Inversion: concrete instantiation inside methods (not __init__)
+            # v6.1.0: Skip factory methods, dataclasses, value objects, exceptions, configs
+            cls_decorators = [getattr(d, 'id', getattr(d, 'attr', '')) for d in cls.decorator_list]
+            is_dataclass = 'dataclass' in cls_decorators
             for m in methods:
                 if m.name == '__init__':
                     continue
+                # Skip factory/builder methods — they're supposed to instantiate
+                if any(m.name.startswith(p) for p in ('create', 'build', 'make', 'factory', 'from_', 'new_')):
+                    continue
                 for node in ast.walk(m):
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-                        # Heuristic: calling ClassName() inside a method body = concrete dep
                         name = node.func.id
                         if name[0].isupper() and name not in ('Exception', 'ValueError', 'TypeError',
                                                                'KeyError', 'RuntimeError', 'Path',
-                                                               'Counter', 'Dict', 'List', 'Set',
+                                                               'Counter', 'Dict', 'List', 'Set', 'Tuple',
                                                                'NotImplementedError', 'AttributeError',
                                                                'IndexError', 'OSError', 'IOError',
-                                                               'StopIteration', 'FileNotFoundError'):
+                                                               'StopIteration', 'FileNotFoundError',
+                                                               'PermissionError', 'TimeoutError',
+                                                               'ConnectionError', 'BrokenPipeError',
+                                                               'defaultdict', 'OrderedDict', 'ChainMap',
+                                                               'NamedTuple', 'Queue', 'Lock', 'Event',
+                                                               'Thread', 'Process', 'Enum', 'IntEnum'):
+                            # Skip if name ends with Error/Exception/Event/DTO/Config
+                            if any(name.endswith(s) for s in ('Error', 'Exception', 'Event', 'DTO', 'Config', 'Response', 'Request')):
+                                continue
+                            if is_dataclass:
+                                continue
                             violations.append({
                                 "principle": "D",
                                 "rule": "Dependency Inversion",
@@ -1460,23 +1525,61 @@ class CodeAnalyzer:
                     "severity": "LOW",
                 })
 
-        # L — Liskov Substitution: detect overrides that return None when parent returns value
-        # Heuristic: if a method name matches a base class method but body is just 'pass'
+        # L — Liskov Substitution: detect overrides that break substitutability
+        # v6.1.0: Enhanced — checks empty overrides AND return-type mismatches
+        class_method_map: Dict[str, List[ast.Return]] = {}
+        for cls in classes:
+            for m in cls.body:
+                if isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    returns = [n for n in ast.walk(m) if isinstance(n, ast.Return) and n.value is not None]
+                    class_method_map[f"{cls.name}.{m.name}"] = returns
+
         for cls in classes:
             if not cls.bases:
                 continue
+            # Build set of base class names for cross-reference
+            base_names = set()
+            for b in cls.bases:
+                if isinstance(b, ast.Name):
+                    base_names.add(b.id)
+                elif isinstance(b, ast.Attribute):
+                    base_names.add(b.attr)
+
             for m in cls.body:
-                if isinstance(m, ast.FunctionDef) and m.name.startswith('_') is False:
-                    body_stmts = [s for s in m.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
-                    if len(body_stmts) == 1 and isinstance(body_stmts[0], ast.Pass):
+                if not isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    continue
+                if m.name.startswith('_') and m.name != '__init__':
+                    continue
+
+                body_stmts = [s for s in m.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
+
+                # Check 1: empty override (pass only)
+                if len(body_stmts) == 1 and isinstance(body_stmts[0], ast.Pass):
+                    violations.append({
+                        "principle": "L",
+                        "rule": "Liskov Substitution",
+                        "class": cls.name,
+                        "method": m.name,
+                        "line": m.lineno,
+                        "detail": f"Override '{m.name}' is empty (pass) — may break substitutability",
+                        "severity": "LOW",
+                    })
+                    continue
+
+                # Check 2: parent returns values but override never returns a value
+                child_returns = [n for n in ast.walk(m) if isinstance(n, ast.Return) and n.value is not None]
+                for base_name in base_names:
+                    parent_key = f"{base_name}.{m.name}"
+                    parent_returns = class_method_map.get(parent_key, [])
+                    if parent_returns and not child_returns and m.name != '__init__':
                         violations.append({
                             "principle": "L",
                             "rule": "Liskov Substitution",
                             "class": cls.name,
                             "method": m.name,
                             "line": m.lineno,
-                            "detail": f"Override '{m.name}' is empty (pass) — may break substitutability",
-                            "severity": "LOW",
+                            "detail": f"Override '{m.name}' returns None but parent '{base_name}.{m.name}' returns values — contract mismatch",
+                            "severity": "MEDIUM",
                         })
 
         # Score: 1.0 = perfect, each violation deducts based on severity
@@ -1585,6 +1688,74 @@ class CodeAnalyzer:
                 "severity": "LOW",
                 "fix": "Consider capping collection size or using deque(maxlen=N)",
             })
+
+        # 6. Linear search where set/dict lookup would work (v6.1.0)
+        try:
+            tree = ast.parse(code)
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.For, ast.While)):
+                    for inner in ast.walk(node):
+                        if isinstance(inner, ast.Compare):
+                            for op in inner.ops:
+                                if isinstance(op, ast.In):
+                                    for comparator in inner.comparators:
+                                        if isinstance(comparator, ast.Name):
+                                            # Heuristic: variable name suggests list not set/dict
+                                            vname = comparator.id.lower()
+                                            if any(hint in vname for hint in ('list', 'items', 'arr', 'array', 'elements', 'data')):
+                                                hotspots.append({
+                                                    "type": "linear_search_in_loop",
+                                                    "line": getattr(inner, 'lineno', 0),
+                                                    "severity": "MEDIUM",
+                                                    "fix": f"Convert '{comparator.id}' to a set before the loop for O(1) membership testing",
+                                                })
+        except SyntaxError:
+            pass
+
+        # 7. Unnecessary list materialization: for x in list(...) (v6.1.0)
+        list_wrap_re = re.compile(r'for\s+\w+\s+in\s+list\s*\(\s*(?:range|map|filter|zip|enumerate|reversed)\s*\(', re.MULTILINE)
+        for match in list_wrap_re.finditer(code):
+            line_num = code[:match.start()].count('\n') + 1
+            hotspots.append({
+                "type": "unnecessary_list_wrap",
+                "line": line_num,
+                "severity": "LOW",
+                "fix": "Remove list() wrapper — iterate directly over the generator/iterator",
+            })
+
+        # 8. List comprehension inside aggregate function: sum([...]) → sum(...) (v6.1.0)
+        agg_listcomp_re = re.compile(r'(?:sum|any|all|min|max|sorted|list|tuple|set|frozenset)\s*\(\s*\[', re.MULTILINE)
+        for match in agg_listcomp_re.finditer(code):
+            line_num = code[:match.start()].count('\n') + 1
+            hotspots.append({
+                "type": "listcomp_in_aggregate",
+                "line": line_num,
+                "severity": "LOW",
+                "fix": "Use generator expression instead of list comprehension: sum(x for ...) not sum([x for ...])",
+            })
+
+        # 9. Repeated attribute access in tight loops (v6.1.0)
+        try:
+            tree = ast.parse(code)
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.For, ast.While)):
+                    attr_counts: Dict[str, int] = {}
+                    for inner in ast.walk(node):
+                        if isinstance(inner, ast.Attribute) and isinstance(inner.value, ast.Attribute):
+                            chain = ast.dump(inner.value) + '.' + inner.attr
+                            attr_counts[chain] = attr_counts.get(chain, 0) + 1
+                    for chain, count in attr_counts.items():
+                        if count >= 3:
+                            hotspots.append({
+                                "type": "repeated_attr_in_loop",
+                                "line": getattr(node, 'lineno', 0),
+                                "count": count,
+                                "severity": "LOW",
+                                "fix": "Cache deep attribute reference in a local variable before the loop",
+                            })
+                            break
+        except SyntaxError:
+            pass
 
         # Score: 1.0 = no issues, deducted per hotspot severity
         deductions = sum({"HIGH": 0.12, "MEDIUM": 0.06, "LOW": 0.02}.get(h.get("severity", "LOW"), 0.03) for h in hotspots)
@@ -3602,16 +3773,25 @@ class RuntimeComplexityVerifier:
         """Analyze a single function for runtime complexity."""
         name = getattr(func_node, 'name', 'anonymous')
         max_loop_depth = self._max_loop_nesting(func_node)
+        effective_loop_depth = self._effective_loop_depth(func_node)
         has_recursion = self._detect_recursion(func_node, name)
         has_sort = self._detect_sort_calls(func_node)
         has_nested_comprehension = self._detect_nested_comprehensions(func_node)
         uses_dict_set = self._detect_hash_structures(func_node)
+        has_binary_search = self._detect_binary_search(func_node)
+        has_divide_conquer = has_recursion and self._detect_halving_pattern(func_node)
 
         # Estimate complexity class
         complexity_idx = 0
         reasons = []
 
-        if max_loop_depth == 0:
+        if has_binary_search:
+            complexity_idx = 1  # O(log n)
+            reasons.append("binary search pattern detected (halving loop)")
+        elif has_divide_conquer:
+            complexity_idx = 3  # O(n log n)
+            reasons.append("divide-and-conquer pattern (recursion + halving)")
+        elif effective_loop_depth == 0:
             if has_recursion:
                 complexity_idx = 2  # O(n) at least for recursion
                 reasons.append("recursive call detected")
@@ -3621,27 +3801,30 @@ class RuntimeComplexityVerifier:
             else:
                 complexity_idx = 0
                 reasons.append("no loops or recursion — constant time")
-        elif max_loop_depth == 1:
+        elif effective_loop_depth == 1:
             complexity_idx = 2  # O(n)
-            reasons.append(f"single loop nesting depth")
+            reasons.append("single loop nesting depth")
             if has_sort:
                 complexity_idx = 3  # O(n log n)
                 reasons.append("sort operation inside loop scope")
-        elif max_loop_depth == 2:
+        elif effective_loop_depth == 2:
             complexity_idx = 4  # O(n²)
-            reasons.append(f"double-nested loops")
-        elif max_loop_depth == 3:
+            reasons.append("double-nested loops")
+        elif effective_loop_depth == 3:
             complexity_idx = 5  # O(n³)
-            reasons.append(f"triple-nested loops")
+            reasons.append("triple-nested loops")
         else:
-            complexity_idx = min(max_loop_depth + 2, 7)
-            reasons.append(f"deeply nested loops (depth={max_loop_depth})")
+            complexity_idx = min(effective_loop_depth + 2, 7)
+            reasons.append(f"deeply nested loops (depth={effective_loop_depth})")
+
+        if max_loop_depth > effective_loop_depth:
+            reasons.append(f"constant-bound loops reduced depth from {max_loop_depth} to {effective_loop_depth}")
 
         if has_nested_comprehension:
             complexity_idx = max(complexity_idx, 4)
             reasons.append("nested comprehension (O(n²)+)")
 
-        if has_recursion and max_loop_depth >= 1:
+        if has_recursion and not has_divide_conquer and effective_loop_depth >= 1:
             complexity_idx = min(complexity_idx + 1, 7)
             reasons.append("recursion combined with loops — elevated complexity")
 
@@ -3653,8 +3836,11 @@ class RuntimeComplexityVerifier:
             "complexity": cls[0],
             "complexity_index": complexity_idx,
             "max_loop_depth": max_loop_depth,
+            "effective_loop_depth": effective_loop_depth,
             "has_recursion": has_recursion,
             "has_sort": has_sort,
+            "has_binary_search": has_binary_search,
+            "has_divide_conquer": has_divide_conquer,
             "reasons": reasons,
             "optimization_potential": complexity_idx >= 4,
         }
@@ -3703,6 +3889,81 @@ class RuntimeComplexityVerifier:
             if isinstance(child, ast.Call):
                 if isinstance(child.func, ast.Name) and child.func.id in ('dict', 'set', 'defaultdict', 'Counter'):
                     return True
+        return False
+
+    def _detect_binary_search(self, func_node: ast.AST) -> bool:
+        """Detect binary search pattern: while loop with midpoint halving."""
+        source_names = set()
+        for node in ast.walk(func_node):
+            if isinstance(node, ast.Name):
+                source_names.add(node.id)
+        bsearch_vars = {'low', 'high', 'left', 'right', 'lo', 'hi', 'mid', 'start', 'end'}
+        if len(source_names & bsearch_vars) < 2:
+            return False
+        for node in ast.walk(func_node):
+            if isinstance(node, ast.While):
+                for inner in ast.walk(node):
+                    if isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.FloorDiv):
+                        return True
+                    if isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.RShift):
+                        return True
+                    if isinstance(inner, ast.Assign):
+                        for target in inner.targets:
+                            tname = getattr(target, 'id', '')
+                            if tname in ('mid', 'middle', 'pivot'):
+                                return True
+        return False
+
+    def _detect_halving_pattern(self, func_node: ast.AST) -> bool:
+        """Detect divide-and-conquer halving (e.g., slicing input in half)."""
+        for node in ast.walk(func_node):
+            if isinstance(node, ast.Subscript) and isinstance(node.slice, ast.Slice):
+                slice_node = node.slice
+                if slice_node.upper is not None or slice_node.lower is not None:
+                    for inner in ast.walk(node):
+                        if isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.FloorDiv):
+                            return True
+            if isinstance(node, ast.BinOp) and isinstance(node.op, ast.FloorDiv):
+                if isinstance(node.right, ast.Constant) and node.right.value == 2:
+                    return True
+        return False
+
+    def _effective_loop_depth(self, func_node: ast.AST) -> int:
+        """Compute loop nesting depth ignoring constant-bound loops.
+
+        A loop like `for i in range(10)` has constant iterations and does not
+        contribute to asymptotic complexity. Only variable-bound loops count.
+        """
+        return self._effective_depth_walk(func_node, 0)
+
+    def _effective_depth_walk(self, node: ast.AST, depth: int) -> int:
+        """Recursive walk computing effective loop depth."""
+        max_depth = depth
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.For, ast.While)):
+                if self._is_constant_bound_loop(child):
+                    max_depth = max(max_depth, self._effective_depth_walk(child, depth))
+                else:
+                    max_depth = max(max_depth, self._effective_depth_walk(child, depth + 1))
+            else:
+                max_depth = max(max_depth, self._effective_depth_walk(child, depth))
+        return max_depth
+
+    def _is_constant_bound_loop(self, loop_node: ast.AST) -> bool:
+        """Check if a loop has a constant (small) iteration bound."""
+        if isinstance(loop_node, ast.For):
+            iter_node = loop_node.iter
+            if isinstance(iter_node, ast.Call) and isinstance(iter_node.func, ast.Name):
+                if iter_node.func.id == 'range' and iter_node.args:
+                    bound = iter_node.args[-1] if len(iter_node.args) > 1 else iter_node.args[0]
+                    if isinstance(bound, ast.Constant) and isinstance(bound.value, (int, float)):
+                        return bound.value < 1000
+                    if isinstance(bound, ast.UnaryOp) and isinstance(bound.operand, ast.Constant):
+                        return True
+            if isinstance(iter_node, (ast.List, ast.Tuple, ast.Set)):
+                return len(iter_node.elts) < 100
+            if isinstance(iter_node, ast.Constant) and isinstance(iter_node.value, str):
+                return len(iter_node.value) < 100
         return False
 
     def status(self) -> Dict[str, Any]:
@@ -11724,6 +11985,17 @@ class SecurityThreatModeler:
         (r'sk-[A-Za-z0-9]{32,}', "OPENAI_KEY"),
         (r'-----BEGIN (?:RSA |EC )?PRIVATE KEY-----', "PRIVATE_KEY"),
         (r'(?:mongodb|postgres|mysql)://[^"\s]+:[^"\s]+@', "DATABASE_URI"),
+        # v6.1.0 — Extended secret detection
+        (r'https://hooks\.slack\.com/services/T[A-Z0-9]{8,}/B[A-Z0-9]{8,}/[A-Za-z0-9]{20,}', "SLACK_WEBHOOK"),
+        (r'sk_live_[A-Za-z0-9]{24,}', "STRIPE_KEY"),
+        (r'AC[a-f0-9]{32}', "TWILIO_SID"),
+        (r'AIzaSy[A-Za-z0-9_-]{33}', "FIREBASE_KEY"),
+        (r'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}', "JWT_TOKEN"),
+        (r'SG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}', "SENDGRID_KEY"),
+        (r'key-[A-Za-z0-9]{32}', "MAILGUN_KEY"),
+        (r'xox[bpsar]-[A-Za-z0-9-]{10,}', "SLACK_TOKEN"),
+        (r'(?:secret|key|token|password)\s*=\s*["\'][0-9a-fA-F]{32,}["\']', "HEX_SECRET"),
+        (r'(?:secret|key|token)\s*=\s*["\'][A-Za-z0-9+/]{40,}={0,2}["\']', "BASE64_SECRET"),
     ]
 
     ZERO_TRUST_CHECKS = [
@@ -11739,18 +12011,35 @@ class SecurityThreatModeler:
 
     def __init__(self):
         self.analyses = 0
+        # Pre-compile all threat modeling patterns for performance
+        self._compiled_stride = {
+            cat: [re.compile(p, re.IGNORECASE) for p in info["patterns"]]
+            for cat, info in self.STRIDE_CATEGORIES.items()
+        }
+        self._compiled_secrets = [(re.compile(p, re.IGNORECASE), stype) for p, stype in self.SECRET_PATTERNS]
+        self._compiled_zt = [(name, re.compile(p, re.IGNORECASE)) for name, p in self.ZERO_TRUST_CHECKS]
+        self._string_literal_re = re.compile(r'["\']([^"\']{20,})["\']')
+
+    @staticmethod
+    def _shannon_entropy(s: str) -> float:
+        """Compute Shannon entropy of a string in bits/char (v6.1.0)."""
+        if not s:
+            return 0.0
+        counts = Counter(s)
+        length = len(s)
+        return -sum((c / length) * math.log2(c / length) for c in counts.values() if c > 0)
 
     def model_threats(self, source: str, filename: str = "") -> Dict[str, Any]:
         """Full STRIDE + DREAD threat model for source code."""
         self.analyses += 1
         start = time.time()
 
-        # STRIDE classification
+        # STRIDE classification (pre-compiled patterns)
         stride_findings = {}
         for category, info in self.STRIDE_CATEGORIES.items():
             findings = []
-            for pattern in info["patterns"]:
-                for match in re.finditer(pattern, source, re.IGNORECASE):
+            for compiled in self._compiled_stride[category]:
+                for match in compiled.finditer(source):
                     line_num = source[:match.start()].count('\n') + 1
                     findings.append({
                         "line": line_num,
@@ -11763,10 +12052,10 @@ class SecurityThreatModeler:
                 "findings": findings[:10],
             }
 
-        # Secrets detection
+        # Secrets detection (pre-compiled patterns)
         secrets = []
-        for pattern, secret_type in self.SECRET_PATTERNS:
-            for match in re.finditer(pattern, source, re.IGNORECASE):
+        for compiled, secret_type in self._compiled_secrets:
+            for match in compiled.finditer(source):
                 line_num = source[:match.start()].count('\n') + 1
                 secrets.append({
                     "type": secret_type,
@@ -11775,10 +12064,32 @@ class SecurityThreatModeler:
                     "detail": f"Potential {secret_type} found at line {line_num}",
                 })
 
-        # Zero-trust audit
+        # v6.1.0 — Shannon entropy-based secret detection
+        # Catches high-entropy strings that no regex pattern would match
+        known_secret_lines = {s["line"] for s in secrets}
+        for match in self._string_literal_re.finditer(source):
+            literal = match.group(1)
+            if len(literal) < 20 or len(literal) > 500:
+                continue
+            entropy = self._shannon_entropy(literal)
+            line_num = source[:match.start()].count('\n') + 1
+            if line_num in known_secret_lines:
+                continue
+            if entropy > 4.5 and not literal.startswith(('http://', 'https://', '/', '.', '#')):
+                # Exclude common high-entropy non-secrets
+                if not any(kw in literal.lower() for kw in ('lorem', 'the ', 'function', 'class ', 'import ', 'return ')):
+                    secrets.append({
+                        "type": "HIGH_ENTROPY_STRING",
+                        "line": line_num,
+                        "severity": "MEDIUM",
+                        "detail": f"High-entropy string (H={entropy:.2f} bits/char) at line {line_num} — possible embedded secret",
+                        "entropy": round(entropy, 3),
+                    })
+
+        # Zero-trust audit (pre-compiled patterns)
         zt_results = {}
-        for check_name, pattern in self.ZERO_TRUST_CHECKS:
-            matches = re.findall(pattern, source, re.IGNORECASE)
+        for check_name, compiled in self._compiled_zt:
+            matches = compiled.findall(source)
             zt_results[check_name] = {
                 "present": len(matches) > 0,
                 "occurrences": len(matches),
@@ -11802,26 +12113,69 @@ class SecurityThreatModeler:
         except SyntaxError:
             entry_points = len(re.findall(r'^def\s+[a-zA-Z]', source, re.MULTILINE))
 
-        # DREAD scoring (aggregate)
+        # DREAD scoring (v6.1.0 — improved multi-factor scoring)
         total_surface = sum(s["surface_count"] for s in stride_findings.values())
         lines = source.count('\n') + 1
+        critical_secrets = sum(1 for s in secrets if s.get("severity") == "CRITICAL")
+        medium_secrets = sum(1 for s in secrets if s.get("severity") == "MEDIUM")
+        info_disclosure_surface = stride_findings.get("information_disclosure", {}).get("surface_count", 0)
+        elev_priv_surface = stride_findings.get("elevation_of_privilege", {}).get("surface_count", 0)
+        api_endpoint_count = sum(1 for s in stride_findings.values() for f in s.get("findings", []) if "route" in str(f).lower())
+
         dread = {
-            "damage": min(1.0, len(secrets) * 0.3 + total_surface * 0.02),
-            "reproducibility": min(1.0, entry_points * 0.05),
-            "exploitability": min(1.0, len(secrets) * 0.4 + stride_findings.get("elevation_of_privilege", {}).get("surface_count", 0) * 0.1),
-            "affected_users": min(1.0, entry_points * 0.03),
-            "discoverability": min(1.0, len(secrets) * 0.5 + (1.0 - zt_score) * 0.3),
+            "damage": min(1.0, critical_secrets * 0.4 + medium_secrets * 0.15 + info_disclosure_surface * 0.03 + total_surface * 0.01),
+            "reproducibility": min(1.0, api_endpoint_count * 0.08 + entry_points * 0.02),
+            "exploitability": min(1.0, critical_secrets * 0.35 + elev_priv_surface * 0.1 + (1.0 - zt_score) * 0.25),
+            "affected_users": min(1.0, api_endpoint_count * 0.06 + entry_points * 0.01),
+            "discoverability": min(1.0, critical_secrets * 0.3 + medium_secrets * 0.1 + (1.0 - zt_score) * 0.2),
         }
         dread["composite"] = round(sum(dread.values()) / 5, 4)
         risk_level = ("CRITICAL" if dread["composite"] > 0.7 else "HIGH" if dread["composite"] > 0.5
                       else "MEDIUM" if dread["composite"] > 0.3 else "LOW")
+
+        # v6.1.0 — Threat chain detection (compound threats)
+        threat_chains = []
+        has_encryption = zt_results.get("encryption", {}).get("present", False)
+        has_auth = zt_results.get("auth_required", {}).get("present", False)
+        has_rate_limit = zt_results.get("rate_limiting", {}).get("present", False)
+        has_input_val = zt_results.get("input_validation", {}).get("present", False)
+        has_csrf = zt_results.get("csrf_protection", {}).get("present", False)
+
+        if critical_secrets > 0 and not has_encryption:
+            threat_chains.append({
+                "chain": "SECRET_EXPOSURE",
+                "severity": "CRITICAL",
+                "components": ["hardcoded_secret", "no_encryption"],
+                "detail": "Secrets detected without encryption controls — plaintext exposure risk",
+            })
+        if has_auth and not has_rate_limit:
+            threat_chains.append({
+                "chain": "BRUTE_FORCE",
+                "severity": "HIGH",
+                "components": ["auth_endpoint", "no_rate_limiting"],
+                "detail": "Authentication without rate limiting — brute-force attack vector",
+            })
+        if not has_input_val and total_surface > 5:
+            threat_chains.append({
+                "chain": "INJECTION",
+                "severity": "HIGH",
+                "components": ["no_input_validation", "large_attack_surface"],
+                "detail": "Large attack surface without input validation — injection risk",
+            })
+        if not has_csrf and api_endpoint_count > 0:
+            threat_chains.append({
+                "chain": "CSRF_EXPOSURE",
+                "severity": "MEDIUM",
+                "components": ["api_endpoints", "no_csrf_protection"],
+                "detail": "API endpoints without CSRF protection — cross-site request forgery risk",
+            })
 
         # Sacred alignment: threat model resonance
         sacred_factor = round(GOD_CODE / (1 + dread["composite"] * 100), 4)
 
         duration = time.time() - start
         return {
-            "version": "6.0.0",
+            "version": "6.1.0",
             "filename": filename,
             "lines": lines,
             "duration_seconds": round(duration, 3),
@@ -11832,11 +12186,12 @@ class SecurityThreatModeler:
             "zero_trust_score": round(zt_score, 4),
             "attack_surface": {
                 "entry_points": entry_points,
-                "api_endpoints": sum(1 for s in stride_findings.values() for _ in s.get("findings", []) if "route" in str(_).lower()),
+                "api_endpoints": api_endpoint_count,
                 "total_surface": total_surface,
             },
             "dread_score": dread,
             "risk_level": risk_level,
+            "threat_chains": threat_chains,
             "sacred_threat_factor": sacred_factor,
         }
 
@@ -11994,15 +12349,62 @@ class ArchitecturalLinter:
             phi_balanced = False
 
         # Instability index: I = Ce / (Ca + Ce)
-        afferent = len(classes) + len(functions)  # Approximation
+        # v6.1.0: Improved afferent coupling — count intra-module references to each class
+        afferent = 0
+        class_names_set = {c.name for c in classes}
+        for cls in classes:
+            refs_to_cls = 0
+            for func in functions:
+                func_source = ast.dump(func)
+                if cls.name in func_source:
+                    refs_to_cls += 1
+            for other_cls in classes:
+                if other_cls.name == cls.name:
+                    continue
+                cls_source = ast.dump(other_cls)
+                if cls.name in cls_source:
+                    refs_to_cls += 1
+            afferent += refs_to_cls
+        afferent = max(afferent, len(classes) + len(functions))
         instability = efferent / max(efferent + afferent, 1)
+
+        # v6.1.0 — Martin's Main Sequence Analysis
+        # Abstractness: ratio of abstract methods to total methods
+        total_all_methods = 0
+        abstract_method_count = 0
+        for cls in classes:
+            for node in cls.body:
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    total_all_methods += 1
+                    for stmt in ast.walk(node):
+                        if isinstance(stmt, ast.Raise):
+                            exc = getattr(stmt, 'exc', None)
+                            if isinstance(exc, ast.Call) and isinstance(exc.func, ast.Name):
+                                if exc.func.id == 'NotImplementedError':
+                                    abstract_method_count += 1
+                                    break
+        abstractness = abstract_method_count / max(total_all_methods, 1)
+
+        # Distance from Main Sequence: D = |A + I - 1|
+        main_sequence_distance = abs(abstractness + instability - 1.0)
+        if main_sequence_distance < 0.2:
+            zone = "main_sequence"
+        elif abstractness < 0.3 and instability < 0.3:
+            zone = "zone_of_pain"
+        elif abstractness > 0.7 and instability > 0.7:
+            zone = "zone_of_uselessness"
+        else:
+            zone = "main_sequence"
 
         metrics = {
             "file_layer": file_layer or "unclassified",
             "imports": len(imports),
             "efferent_coupling": efferent,
-            "afferent_coupling_est": afferent,
+            "afferent_coupling": afferent,
             "instability_index": round(instability, 4),
+            "abstractness": round(abstractness, 4),
+            "main_sequence_distance": round(main_sequence_distance, 4),
+            "zone": zone,
             "classes": class_metrics,
             "class_count": len(classes),
             "function_count": total_functions,
@@ -12084,6 +12486,22 @@ class CodeMigrationEngine:
         "unittest.makeSuite": {"replacement": "unittest.TestLoader", "since": "3.8", "removed": "3.13"},
         "cgi.escape": {"replacement": "html.escape", "since": "3.2", "removed": "3.8"},
         "formatter": {"replacement": "N/A (removed)", "since": "3.4", "removed": "3.10"},
+        # v6.1.0 — Extended deprecation coverage
+        "distutils": {"replacement": "setuptools", "since": "3.10", "removed": "3.12"},
+        "pkg_resources": {"replacement": "importlib.resources / importlib.metadata", "since": "3.9", "removed": "future", "note": "setuptools legacy"},
+        "configparser.SafeConfigParser": {"replacement": "configparser.ConfigParser", "since": "3.2", "removed": "3.12"},
+        "sqlite3.OptimizedUnicode": {"replacement": "str", "since": "3.3", "removed": "3.12"},
+        "asyncio.get_event_loop": {"replacement": "asyncio.get_running_loop()", "since": "3.10", "removed": "future", "note": "deprecated in non-coroutine context"},
+        "typing.Deque": {"replacement": "collections.deque", "since": "3.9", "removed": "future"},
+        "typing.DefaultDict": {"replacement": "collections.defaultdict", "since": "3.9", "removed": "future"},
+        "typing.Counter": {"replacement": "collections.Counter", "since": "3.9", "removed": "future"},
+        "typing.ChainMap": {"replacement": "collections.ChainMap", "since": "3.9", "removed": "future"},
+        "typing.OrderedDict": {"replacement": "collections.OrderedDict", "since": "3.9", "removed": "future"},
+        "typing.Pattern": {"replacement": "re.Pattern", "since": "3.9", "removed": "future"},
+        "typing.Match": {"replacement": "re.Match", "since": "3.9", "removed": "future"},
+        "typing.Text": {"replacement": "str", "since": "3.11", "removed": "future"},
+        "pipes": {"replacement": "subprocess", "since": "3.11", "removed": "3.13"},
+        "crypt": {"replacement": "bcrypt / argon2-cffi", "since": "3.11", "removed": "3.13"},
     }
 
     FRAMEWORK_MIGRATIONS = {
@@ -12524,51 +12942,75 @@ class SemanticCodeSearchEngine:
     def __init__(self):
         self.indexed_files = 0
         self.searches = 0
-        self._index: Dict[str, Dict[str, float]] = {}  # file → {term: tfidf}
+        self._index: Dict[str, Dict[str, float]] = {}  # file → {term: tf}
         self._corpus: Dict[str, str] = {}  # file → source
+        self._document_frequency: Dict[str, int] = {}  # term → num docs containing term
+        self._idf_cache: Dict[str, float] = {}  # term → idf value (recomputed on index)
+
+    def _recompute_idf(self) -> None:
+        """Recompute IDF values for all terms in the corpus (v6.1.0).
+        Uses smoothed IDF: log(1 + N / (1 + df)) to avoid zero scores in small corpora."""
+        n_docs = max(len(self._index), 1)
+        self._idf_cache = {}
+        for term, df in self._document_frequency.items():
+            self._idf_cache[term] = math.log(1 + n_docs / (1 + df))
 
     def index_source(self, source: str, filename: str = "") -> Dict[str, Any]:
-        """Index a source file for later search."""
+        """Index a source file for later search. Uses log-scaled TF-IDF (v6.1.0)."""
         self.indexed_files += 1
 
         # Tokenize: split on non-alphanumeric, lowercase, remove short tokens
         tokens = re.findall(r'[a-zA-Z_][a-zA-Z0-9_]{2,}', source)
         tokens = [t.lower() for t in tokens]
 
-        # Term frequency
-        tf = Counter(tokens)
-        total = len(tokens) or 1
-        tfidf = {term: count / total for term, count in tf.items()}
+        # Log-scaled term frequency: tf = 1 + log(count) (v6.1.0)
+        raw_tf = Counter(tokens)
+        tf = {term: (1 + math.log(count)) for term, count in raw_tf.items() if count > 0}
 
         # Sacred constant boost
         sacred_terms = {'god_code', 'phi', 'tau', 'void_constant', 'feigenbaum', 'planck', 'boltzmann', 'sacred'}
         for term in sacred_terms:
-            if term in tfidf:
-                tfidf[term] *= PHI  # Boost sacred terms by golden ratio
+            if term in tf:
+                tf[term] *= PHI  # Boost sacred terms by golden ratio
 
-        self._index[filename] = tfidf
+        # Update document frequency counts (v6.1.0)
+        unique_terms_in_doc = set(raw_tf.keys())
+        # If re-indexing same file, remove old term contributions first
+        if filename in self._index:
+            old_terms = set(self._index[filename].keys())
+            for t in old_terms:
+                if t in self._document_frequency:
+                    self._document_frequency[t] = max(0, self._document_frequency[t] - 1)
+
+        for t in unique_terms_in_doc:
+            self._document_frequency[t] = self._document_frequency.get(t, 0) + 1
+
+        self._index[filename] = tf
         self._corpus[filename] = source
+
+        # Recompute IDF after indexing
+        self._recompute_idf()
 
         return {
             "filename": filename,
             "tokens": len(tokens),
-            "unique_terms": len(tfidf),
-            "sacred_terms_found": sum(1 for t in sacred_terms if t in tfidf),
+            "unique_terms": len(tf),
+            "sacred_terms_found": sum(1 for t in sacred_terms if t in tf),
             "indexed": True,
         }
 
     def search(self, query: str, top_k: int = 10) -> Dict[str, Any]:
-        """Search indexed files by natural language query."""
+        """Search indexed files by natural language query. Uses TF-IDF scoring (v6.1.0)."""
         self.searches += 1
         query_tokens = [t.lower() for t in re.findall(r'[a-zA-Z_][a-zA-Z0-9_]{2,}', query)]
 
         if not query_tokens:
             return {"query": query, "results": [], "total": 0}
 
-        # Score each indexed file
+        # Score each indexed file using TF * IDF (v6.1.0)
         scores = []
-        for filename, tfidf in self._index.items():
-            score = sum(tfidf.get(t, 0) for t in query_tokens)
+        for filename, tf in self._index.items():
+            score = sum(tf.get(t, 0) * self._idf_cache.get(t, 0.0) for t in query_tokens)
             if score > 0:
                 scores.append({"filename": filename, "score": round(score, 6)})
 
@@ -12798,9 +13240,6 @@ class CodeEngine:
         self.quantum_ast = QuantumASTProcessor(self.quantum_core)
         self.quantum_embedding = QuantumNeuralEmbedding(self.quantum_core)
         self.quantum_error_correction = QuantumErrorCorrectionEngine(self.quantum_core)
-        # v5.0.0 — Live Refactoring + Diff Analysis
-        self.live_refactorer = LiveCodeRefactorer()
-        self.diff_analyzer = CodeDiffAnalyzer()
         # v6.0.0 — Security + Architecture + Migration + Performance + Search (5 new subsystems)
         self.threat_modeler = SecurityThreatModeler()
         self.arch_linter = ArchitecturalLinter()
@@ -13907,7 +14346,7 @@ class CodeEngine:
     def suggest_fixes(self, source: str, filename: str = "") -> Dict[str, Any]:
         """Comprehensive fix suggestions: auto-fix + smell detection + optimization hints."""
         fixed_code, fix_log = self.auto_fix.apply_all_safe(source)
-        smells = self.smell_detector.detect(source, filename)
+        smells = self.smell_detector.detect_all(source)
         opt_suggestions = self.optimizer.analyze_and_suggest(source)
         return {
             "auto_fixed": fixed_code != source,
@@ -13969,7 +14408,7 @@ class CodeEngine:
         perf = self.perf_predictor.predict_performance(source, filename)
         deprecations = self.migration_engine.scan_deprecations(source)
         fixed_code, fix_log = self.auto_fix.apply_all_safe(source)
-        smells = self.smell_detector.detect(source, filename)
+        smells = self.smell_detector.detect_all(source)
         composite_score = (
             analysis.get("quality_score", 0.5) * PHI +
             (1.0 - threats.get("risk_score", 0.5)) * TAU +
