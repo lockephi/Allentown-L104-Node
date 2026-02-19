@@ -13,12 +13,12 @@
   "timestamp": 1771419861.621231,
   "qiskit_available": true,
   "neural_cascade_feedback": {
-    "resonance": 0.319198,
+    "resonance": 0.313546,
     "layers": 7,
     "trend": "insufficient_data",
     "total_forwards": 1,
-    "timestamp": 1771421400.352428,
+    "timestamp": 1771451324.5532024,
     "source": "neural_cascade",
-    "version": "3.0.0"
+    "version": "4.0.0"
   }
 }

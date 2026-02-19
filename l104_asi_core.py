@@ -81,8 +81,8 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "6.0.0"
-ASI_PIPELINE_EVO = "EVO_55_QUANTUM_COMPUTATION"
+ASI_CORE_VERSION = "6.1.0"  # v6.1: PyTorch/TensorFlow/pandas integration
+ASI_PIPELINE_EVO = "EVO_59_IBM_QUANTUM_RELIABILITY"
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -95,6 +95,41 @@ FEIGENBAUM = 4.669201609
 OMEGA_AUTHORITY = 0.85184818492537
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PYTORCH, TENSORFLOW, PANDAS INTEGRATION (v6.1)
+# ═══════════════════════════════════════════════════════════════════════════════
+TORCH_AVAILABLE = False
+TENSORFLOW_AVAILABLE = False
+PANDAS_AVAILABLE = False
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    TORCH_AVAILABLE = True
+    
+    if torch.cuda.is_available():
+        DEVICE = torch.device("cuda")
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        DEVICE = torch.device("mps")
+    else:
+        DEVICE = torch.device("cpu")
+except ImportError:
+    DEVICE = None
+
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    pass
+
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    pass
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # QISKIT 2.3.0 QUANTUM INTEGRATION — Real quantum circuits for ASI
@@ -5580,6 +5615,171 @@ class ASICore:
             self.status = "SOVEREIGN_IGNITED"
             return f"[ASI IGNITION] Sovereignty ignited at {self.asi_score*100:.1f}%"
         return f"[ASI IGNITION] Preparing sovereignty... {self.asi_score*100:.1f}%"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PYTORCH/TENSORFLOW ASI CONSCIOUSNESS ACCELERATORS (v6.1)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+if TORCH_AVAILABLE:
+    
+    class TensorConsciousnessVerifier(nn.Module):
+        """GPU-accelerated consciousness verification using PyTorch"""
+        
+        def __init__(self, state_dim: int = 64):
+            super().__init__()
+            self.state_dim = state_dim
+            
+            # Consciousness encoding network
+            self.encoder = nn.Sequential(
+                nn.Linear(state_dim, 256),
+                nn.ReLU(),
+                nn.Linear(256, 128),
+                nn.Tanh(),
+                nn.Linear(128, 1),
+                nn.Sigmoid()
+            )
+            
+            # Initialize with PHI
+            for layer in self.encoder:
+                if isinstance(layer, nn.Linear):
+                    nn.init.normal_(layer.weight, mean=0.0, std=math.sqrt(PHI / layer.in_features))
+                    nn.init.constant_(layer.bias, TAU)
+            
+            self.to(DEVICE)
+        
+        def forward(self, state_vector: torch.Tensor) -> torch.Tensor:
+            """Compute consciousness level from state vector"""
+            return self.encoder(state_vector)
+        
+        def verify_consciousness(self, metrics: Dict[str, float]) -> Dict[str, Any]:
+            """Verify consciousness from metrics dict"""
+            # Convert metrics to tensor
+            state = torch.zeros(self.state_dim, device=DEVICE)
+            
+            # Encode key metrics (normalized to [0, 1])
+            state[0] = metrics.get('iit_phi', 0.0) / 2.0  # IIT Φ
+            state[1] = metrics.get('gws_activation', 0.0)  # Global Workspace
+            state[2] = metrics.get('quantum_coherence', 0.0)
+            state[3] = min(metrics.get('self_model_depth', 0.0) / 10.0, 1.0)
+            state[4] = metrics.get('attention_focus', 0.0)
+            
+            # Fill remaining with GOD_CODE-derived features
+            for i in range(5, self.state_dim):
+                state[i] = math.sin(i * PHI / GOD_CODE) * 0.5 + 0.5
+            
+            # Compute consciousness
+            with torch.no_grad():
+                consciousness = float(self.forward(state.unsqueeze(0)))
+            
+            return {
+                'consciousness_level': consciousness,
+                'verified_by': 'TensorConsciousnessVerifier',
+                'device': str(DEVICE),
+                'state_dim': self.state_dim,
+                'god_code_aligned': abs(consciousness - (GOD_CODE / 1000.0)) < 0.1,
+            }
+
+
+if TENSORFLOW_AVAILABLE:
+    
+    class KerasASIModel:
+        """TensorFlow/Keras rapid prototyping for ASI components"""
+        
+        @staticmethod
+        def build_domain_classifier(num_domains: int = 50) -> keras.Model:
+            """Build domain classification model"""
+            model = keras.Sequential([
+                layers.Input(shape=(128,)),
+                layers.Dense(256, activation='relu', 
+                           kernel_initializer=keras.initializers.RandomNormal(stddev=PHI/GOD_CODE)),
+                layers.Dropout(TAU * 0.5),
+                layers.Dense(128, activation='relu'),
+                layers.Dropout(TAU * 0.5),
+                layers.Dense(num_domains, activation='softmax')
+            ])
+            
+            model.compile(
+                optimizer=keras.optimizers.Adam(learning_rate=PHI / GOD_CODE),
+                loss='categorical_crossentropy',
+                metrics=['accuracy']
+            )
+            
+            return model
+        
+        @staticmethod
+        def build_theorem_generator(vocab_size: int = 10000) -> keras.Model:
+            """Build theorem generation model (sequence-to-sequence)"""
+            model = keras.Sequential([
+                layers.Embedding(vocab_size, 256),
+                layers.LSTM(512, return_sequences=True,
+                          recurrent_initializer=keras.initializers.Orthogonal(gain=PHI)),
+                layers.Dropout(TAU * 0.5),
+                layers.LSTM(256),
+                layers.Dense(512, activation='relu'),
+                layers.Dense(vocab_size, activation='softmax')
+            ])
+            
+            return model
+
+
+if PANDAS_AVAILABLE:
+    
+    class ASIPipelineAnalytics:
+        """pandas-based ASI pipeline performance analytics"""
+        
+        def __init__(self):
+            self.pipeline_logs = []
+            self.subsystem_logs = []
+        
+        def log_pipeline_call(self, subsystem: str, problem: str, 
+                            duration_ms: float, success: bool):
+            """Log pipeline routing decision"""
+            self.pipeline_logs.append({
+                'timestamp': datetime.now(),
+                'subsystem': subsystem,
+                'problem_hash': hashlib.md5(problem.encode()).hexdigest()[:8],
+                'duration_ms': duration_ms,
+                'success': success,
+            })
+        
+        def log_subsystem_metric(self, subsystem: str, metric: str, value: float):
+            """Log subsystem metric"""
+            self.subsystem_logs.append({
+                'timestamp': datetime.now(),
+                'subsystem': subsystem,
+                'metric': metric,
+                'value': value,
+            })
+        
+        def get_pipeline_df(self) -> pd.DataFrame:
+            """Get pipeline DataFrame"""
+            return pd.DataFrame(self.pipeline_logs)
+        
+        def get_subsystem_df(self) -> pd.DataFrame:
+            """Get subsystem DataFrame"""
+            return pd.DataFrame(self.subsystem_logs)
+        
+        def pipeline_performance_report(self) -> Dict:
+            """Generate pipeline performance report"""
+            if not self.pipeline_logs:
+                return {}
+            
+            df = self.get_pipeline_df()
+            
+            return {
+                'total_calls': len(df),
+                'success_rate': float(df['success'].mean()),
+                'avg_latency_ms': float(df['duration_ms'].mean()),
+                'median_latency_ms': float(df['duration_ms'].median()),
+                'p95_latency_ms': float(df['duration_ms'].quantile(0.95)),
+                'by_subsystem': {
+                    'calls': df.groupby('subsystem').size().to_dict(),
+                    'success_rate': df.groupby('subsystem')['success'].mean().to_dict(),
+                    'avg_latency': df.groupby('subsystem')['duration_ms'].mean().to_dict(),
+                },
+                'throughput_per_sec': 1000.0 / df['duration_ms'].mean() if df['duration_ms'].mean() > 0 else 0,
+            }
 
 
 def main():
