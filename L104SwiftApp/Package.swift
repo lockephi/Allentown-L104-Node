@@ -30,10 +30,6 @@ let package = Package(
             path: "Sources",
             exclude: [
                 "L104App.swift",        // SwiftUI app compiled separately
-                "L104App.swift.bak",
-                "L104Native.swift",     // Monolith — replaced by L104v2/ split (78 files)
-                "L104Native.swift.bak",
-                "L104Native.swift.bak2",
                 "cpython_bridge.c",
                 "cpython_bridge.h",
                 "apply_changes.py",
