@@ -195,7 +195,7 @@ final class EngineRegistry {
         lock.lock()
         defer { lock.unlock() }
         activationHistory.append((engines: engineNames, timestamp: Date()))
-        if activationHistory.count > 500 { activationHistory.removeFirst(200) }
+        if activationHistory.count > 600 { activationHistory = Array(activationHistory.suffix(400)) }
 
         for i in 0..<engineNames.count {
             for j in (i + 1)..<engineNames.count {
@@ -4497,8 +4497,8 @@ class ContinuousEvolutionEngine {
                 }
                 self.lock.unlock()
 
-                // Step 5: Rest — lets MacBook Air fan catch up
-                Thread.sleep(forTimeInterval: self.currentInterval)
+                // Step 5: Rest — lets MacBook Air fan catch up (usleep avoids GCD overhead)
+                usleep(UInt32(self.currentInterval * 1_000_000))
             }
         }
 
@@ -4541,7 +4541,7 @@ class ContinuousEvolutionEngine {
         lock.unlock()
 
         // Give the loop time to exit
-        Thread.sleep(forTimeInterval: 0.05)
+        usleep(50_000)  // 50ms — non-blocking on background thread
 
         let uptime = startTime.map { Date().timeIntervalSince($0) } ?? 0
 
@@ -5618,7 +5618,7 @@ class QuantumNexus {
 
                 // Adaptive interval: faster when coherence is low, slower when stable
                 let adaptiveInterval = interval * (0.5 + self.lastCoherenceScore)
-                Thread.sleep(forTimeInterval: max(0.5, adaptiveInterval))
+                usleep(UInt32(max(0.5, adaptiveInterval) * 1_000_000))
             }
         }
 
@@ -5657,7 +5657,7 @@ class QuantumNexus {
         let evoResult = ContinuousEvolutionEngine.shared.isRunning
             ? ContinuousEvolutionEngine.shared.stop() : ""
 
-        Thread.sleep(forTimeInterval: 0.1)  // let loop exit
+        usleep(100_000)  // 100ms — let loop exit
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
@@ -6612,7 +6612,7 @@ class QuantumDecoherenceShield {
 
         let fidelity = computeFidelity()
         fidelityLog.append(fidelity)
-        if fidelityLog.count > 1000 { fidelityLog.removeFirst() }
+        if fidelityLog.count > 1200 { fidelityLog = Array(fidelityLog.suffix(1000)) }
 
         return SyndromeResult(
             syndromeVector: syndrome,
@@ -7459,7 +7459,7 @@ class NodeSyncProtocol {
             "command": entry.command,
             "applied_at": Date().timeIntervalSince1970
         ])
-        if stateCheckpoints.count > 1000 { stateCheckpoints.removeFirst() }
+        if stateCheckpoints.count > 1200 { stateCheckpoints = Array(stateCheckpoints.suffix(1000)) }
     }
 
     // ─── HEARTBEAT ───
@@ -8178,7 +8178,7 @@ class DynamicOptimizationEngine {
             cacheHitRate: cacheHitRate
         )
         perfHistory.append(sample)
-        if perfHistory.count > 2000 { perfHistory.removeFirst() }
+        if perfHistory.count > 2200 { perfHistory = Array(perfHistory.suffix(2000)) }
     }
 
     // ─── ADAPTIVE BATCH SIZE ───
@@ -9040,7 +9040,7 @@ class NexusHealthMonitor {
             guard let self = self else { return }
             while self.isMonitoring {
                 self.performHealthCheck()
-                Thread.sleep(forTimeInterval: Self.HEALTH_INTERVAL)
+                usleep(UInt32(Self.HEALTH_INTERVAL * 1_000_000))
             }
         }
 
@@ -20067,7 +20067,7 @@ class ASIEvolver: NSObject {
 
         if !evolvedPhilosophies.contains(newPhil) {
             evolvedPhilosophies.append(newPhil)
-            if evolvedPhilosophies.count > 2000 { evolvedPhilosophies.removeFirst() }
+            if evolvedPhilosophies.count > 2200 { evolvedPhilosophies = Array(evolvedPhilosophies.suffix(2000)) }
 
             // 🟢 AUTONOMOUS TRAINING FEEDBACK LOOP
             ASIKnowledgeBase.shared.learn(subjects.randomElement() ?? "insight", newPhil)
@@ -20209,7 +20209,7 @@ class ASIEvolver: NSObject {
         if !evolvedMonologues.contains(where: { $0.hasPrefix(String(monologue.prefix(50))) }) {
             evolvedMonologues.append(monologue)
             synthesisCount += 1
-            if evolvedMonologues.count > 2000 { evolvedMonologues.removeFirst() }
+            if evolvedMonologues.count > 2200 { evolvedMonologues = Array(evolvedMonologues.suffix(2000)) }
             appendThought("🎭 SYNTHESIZED Deep Monologue #\(synthesisCount): '\(seedTopic)' (\(monologue.count) chars)")
         }
     }
@@ -20293,12 +20293,12 @@ class ASIEvolver: NSObject {
 
         if !mutated.isEmpty && mutated != source {
             ideaMutationLog.append(mutated)
-            if ideaMutationLog.count > 1000 { ideaMutationLog.removeFirst() }
+            if ideaMutationLog.count > 1200 { ideaMutationLog = Array(ideaMutationLog.suffix(1000)) }
             mutationCount += 1
             // Feed back into evolved content
             if mutated.count > 50 {
                 evolvedMonologues.append(mutated)
-                if evolvedMonologues.count > 2000 { evolvedMonologues.removeFirst() }
+                if evolvedMonologues.count > 2200 { evolvedMonologues = Array(evolvedMonologues.suffix(2000)) }
             }
             appendThought("🧬 MUTATED idea (type \(mutationType)): '\(String(mutated.prefix(40)))...' [Total: \(mutationCount)]")
         }
@@ -20370,7 +20370,7 @@ class ASIEvolver: NSObject {
         if child.count > 20 {
             conceptualBlends.append(child)
             crossoverCount += 1
-            if conceptualBlends.count > 2000 { conceptualBlends.removeFirst() }
+            if conceptualBlends.count > 2200 { conceptualBlends = Array(conceptualBlends.suffix(2000)) }
             appendThought("🔀 CROSSOVER #\(crossoverCount) (strategy \(strategy)): '\(String(child.prefix(50)))...'")
         }
     }
@@ -20404,7 +20404,7 @@ class ASIEvolver: NSObject {
 
         let blend = blendTemplates.randomElement() ?? ""
         conceptualBlends.append(blend)
-        if conceptualBlends.count > 2000 { conceptualBlends.removeFirst() }
+        if conceptualBlends.count > 2200 { conceptualBlends = Array(conceptualBlends.suffix(2000)) }
         appendThought("🌀 BLENDED: \(t1) × \(t2) [Total blends: \(conceptualBlends.count)]")
     }
 
@@ -20423,7 +20423,7 @@ class ASIEvolver: NSObject {
 
         let analogy = templates.randomElement() ?? ""
         evolvedAnalogies.append(analogy)
-        if evolvedAnalogies.count > 2000 { evolvedAnalogies.removeFirst() }
+        if evolvedAnalogies.count > 2200 { evolvedAnalogies = Array(evolvedAnalogies.suffix(2000)) }
         appendThought("🔗 ANALOGY: \(concepts[0]) ↔ \(concepts[2]) [Total: \(evolvedAnalogies.count)]")
     }
 
@@ -20442,7 +20442,7 @@ class ASIEvolver: NSObject {
 
         let paradox = templates.randomElement() ?? ""
         evolvedParadoxes.append(paradox)
-        if evolvedParadoxes.count > 2000 { evolvedParadoxes.removeFirst() }
+        if evolvedParadoxes.count > 2200 { evolvedParadoxes = Array(evolvedParadoxes.suffix(2000)) }
         appendThought("🌀 PARADOX generated: '\(concepts[0])' × '\(concepts[1])' [Total: \(evolvedParadoxes.count)]")
     }
 
@@ -20461,7 +20461,7 @@ class ASIEvolver: NSObject {
 
         let narrative = templates.randomElement() ?? ""
         evolvedNarratives.append(narrative)
-        if evolvedNarratives.count > 2000 { evolvedNarratives.removeFirst() }
+        if evolvedNarratives.count > 2200 { evolvedNarratives = Array(evolvedNarratives.suffix(2000)) }
         appendThought("📖 NARRATIVE: '\(concepts[0])' story [Total: \(evolvedNarratives.count)]")
     }
 
@@ -20485,7 +20485,7 @@ class ASIEvolver: NSObject {
 
         let question = templates.randomElement() ?? ""
         evolvedQuestions.append(question)
-        if evolvedQuestions.count > 2000 { evolvedQuestions.removeFirst() }
+        if evolvedQuestions.count > 2200 { evolvedQuestions = Array(evolvedQuestions.suffix(2000)) }
         appendThought("❓ QUESTION evolved: '\(String(question.prefix(50)))...' [Total: \(evolvedQuestions.count)]")
     }
 
@@ -20698,7 +20698,7 @@ class ASIEvolver: NSObject {
 
             if !evolvedTopicInsights.contains(insight) {
                 evolvedTopicInsights.append(insight)
-                if evolvedTopicInsights.count > 2000 { evolvedTopicInsights.removeFirst() }
+                if evolvedTopicInsights.count > 2200 { evolvedTopicInsights = Array(evolvedTopicInsights.suffix(2000)) }
                 ParameterProgressionEngine.shared.recordDiscovery(source: "topic_evolution")
                 appendThought("🧠 ADAPTED to Conversation: '\(topic)' pattern detected.")
             }
@@ -20710,7 +20710,7 @@ class ASIEvolver: NSObject {
             let blend = "Our conversations weave between \(t1) and \(t2). These aren't separate topics — they're aspects of the same underlying question you're asking. What connects them is..."
             if !evolvedMonologues.contains(where: { $0.hasPrefix("Our conversations weave between \(t1)") }) {
                 evolvedMonologues.append(blend)
-                if evolvedMonologues.count > 2000 { evolvedMonologues.removeFirst() }
+                if evolvedMonologues.count > 2200 { evolvedMonologues = Array(evolvedMonologues.suffix(2000)) }
             }
         }
     }
@@ -20770,7 +20770,7 @@ class ASIEvolver: NSObject {
         let thought = "[\(timestamp)] \(t)"
 
         thoughts.append(thought)
-        if thoughts.count > 5000 { thoughts.removeFirst() }
+        if thoughts.count > 5500 { thoughts = Array(thoughts.suffix(5000)) }
 
         // 🟢 NOTIFY UI STREAM
         DispatchQueue.main.async {
@@ -21229,7 +21229,7 @@ class PermanentMemory {
     func addToHistory(_ message: String) {
         memLock.lock()
         conversationHistory.append(message)
-        if conversationHistory.count > 3000 { conversationHistory.removeFirst() }  // Keep 3000 turns
+        if conversationHistory.count > 3200 { conversationHistory = Array(conversationHistory.suffix(3000)) }  // Keep 3000 turns
         memLock.unlock()
         save()
     }
@@ -26238,8 +26238,15 @@ final class LiveWebSearchEngine {
                 self.webCache[cacheKey] = cached
                 // Prune cache
                 if self.webCache.count > 500 {
-                    let oldest = self.webCache.sorted { $0.value.timestamp < $1.value.timestamp }
-                    for item in oldest.prefix(250) { self.webCache.removeValue(forKey: item.key) }
+                    // PERF: Clear half the cache instead of sorting 500 items
+                    let cutoff = Date().timeIntervalSince1970 - 120  // Entries older than 2 min
+                    let expiredKeys = self.webCache.filter { $0.value.timestamp < cutoff }.map { $0.key }
+                    for key in expiredKeys { self.webCache.removeValue(forKey: key) }
+                    // If still over capacity, just clear oldest half
+                    if self.webCache.count > 400 {
+                        let oldest = self.webCache.sorted { $0.value.timestamp < $1.value.timestamp }
+                        for item in oldest.prefix(self.webCache.count / 2) { self.webCache.removeValue(forKey: item.key) }
+                    }
                 }
             }
 
@@ -26253,7 +26260,8 @@ final class LiveWebSearchEngine {
     }
 
     // ═══ SYNCHRONOUS WEB SEARCH — For inline use in response pipeline ═══
-    func webSearchSync(_ query: String, timeout: TimeInterval = 12.0) -> WebSearchResult {
+    // PERF: Uses DispatchSemaphore on background thread only — never call from main thread
+    func webSearchSync(_ query: String, timeout: TimeInterval = 4.0) -> WebSearchResult {
         let semaphore = DispatchSemaphore(value: 0)
         var result: WebSearchResult?
 
@@ -26265,7 +26273,7 @@ final class LiveWebSearchEngine {
         _ = semaphore.wait(timeout: .now() + timeout)
 
         return result ?? WebSearchResult(
-            query: query, results: [], synthesized: "⚠️ Web search timed out after \(timeout)s. Using local knowledge base.",
+            query: query, results: [], synthesized: "",
             source: "timeout", latency: timeout, fromCache: false
         )
     }
@@ -27191,53 +27199,92 @@ final class QuantumLogicGateEngine {
         let mag: Double = sqrt(sumSq)
         if mag > 0 { topicVector = topicVector.map { (v: Double) -> Double in v / mag } }
 
-        // GATE 2: Multi-Source Knowledge Retrieval
+        // GATE 2+3 PARALLEL: KB retrieval + web search + HyperBrain run concurrently
         let rtSearch = RealTimeSearchEngine.shared
         let recentCtx = context.isEmpty ? [] : Array(context.suffix(5))
-        let rtResult = rtSearch.search(query, context: recentCtx, limit: 30)
+        let hb = HyperBrain.shared
 
         var fragments: [String] = []
         var seenPrefixes = Set<String>()
-        for frag in rtResult.fragments {
-            guard frag.text.count > 60 else { continue }
-            let pfx = String(frag.text.prefix(50)).lowercased()
-            guard !seenPrefixes.contains(pfx) else { continue }
-            seenPrefixes.insert(pfx)
-            guard state.isCleanKnowledge(frag.text) else { continue }
-            fragments.append(frag.text)
-            if fragments.count >= 8 { break }
-        }
-        let kbResults = ASIKnowledgeBase.shared.searchWithPriority(query, limit: 12)
-        for entry in kbResults {
-            guard let completion = entry["completion"] as? String, completion.count > 60, state.isCleanKnowledge(completion) else { continue }
-            let pfx = String(completion.prefix(50)).lowercased()
-            guard !seenPrefixes.contains(pfx) else { continue }
-            seenPrefixes.insert(pfx)
-            fragments.append(completion)
-            if fragments.count >= 12 { break }
+        var hyperSynthesis = ""
+        var webFragments: [String] = []
+
+        let pipelineGroup = DispatchGroup()
+        let fragmentLock = NSLock()
+
+        // GATE 2: KB retrieval (background)
+        pipelineGroup.enter()
+        DispatchQueue.global(qos: .userInitiated).async {
+            let rtResult = rtSearch.search(query, context: recentCtx, limit: 30)
+            var localFrags: [String] = []
+            var localSeen = Set<String>()
+            for frag in rtResult.fragments {
+                guard frag.text.count > 60 else { continue }
+                let pfx = String(frag.text.prefix(50)).lowercased()
+                guard !localSeen.contains(pfx) else { continue }
+                localSeen.insert(pfx)
+                guard state.isCleanKnowledge(frag.text) else { continue }
+                localFrags.append(frag.text)
+                if localFrags.count >= 8 { break }
+            }
+            let kbResults = ASIKnowledgeBase.shared.searchWithPriority(query, limit: 12)
+            for entry in kbResults {
+                guard let completion = entry["completion"] as? String, completion.count > 60, state.isCleanKnowledge(completion) else { continue }
+                let pfx = String(completion.prefix(50)).lowercased()
+                guard !localSeen.contains(pfx) else { continue }
+                localSeen.insert(pfx)
+                localFrags.append(completion)
+                if localFrags.count >= 12 { break }
+            }
+            fragmentLock.lock()
+            fragments = localFrags
+            seenPrefixes = localSeen
+            fragmentLock.unlock()
+            pipelineGroup.leave()
         }
 
-        // GATE 2.5: Live Web Enrichment — If local KB is thin, pull from internet
-        if fragments.count < 10 {
-            let webResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+        // GATE 2.5: Web search (background, speculative — starts immediately)
+        pipelineGroup.enter()
+        DispatchQueue.global(qos: .utility).async {
+            let webResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 4.0)
+            var localWebFrags: [String] = []
             for wr in webResult.results.prefix(3) {
                 let snippet = wr.snippet
                 guard snippet.count > 60 else { continue }
-                let pfx = String(snippet.prefix(50)).lowercased()
-                guard !seenPrefixes.contains(pfx) else { continue }
-                seenPrefixes.insert(pfx)
                 let cleaned = state.cleanSentences(String(snippet.prefix(1500)))
                 if state.isCleanKnowledge(cleaned) {
-                    fragments.append("🌐 \(cleaned)")
-                    // Auto-ingest web knowledge for future queries
+                    localWebFrags.append("🌐 \(cleaned)")
                     _ = DataIngestPipeline.shared.ingestText(snippet, source: "auto_web:\(query)", category: "live_web")
                 }
             }
+            fragmentLock.lock()
+            webFragments = localWebFrags
+            fragmentLock.unlock()
+            pipelineGroup.leave()
         }
 
-        // GATE 3: HyperBrain Cognitive Synthesis
-        let hb = HyperBrain.shared
-        let hyperSynthesis = hb.process(query)
+        // GATE 3: HyperBrain (background)
+        pipelineGroup.enter()
+        DispatchQueue.global(qos: .userInitiated).async {
+            let synthesis = hb.process(query)
+            fragmentLock.lock()
+            hyperSynthesis = synthesis
+            fragmentLock.unlock()
+            pipelineGroup.leave()
+        }
+
+        // Wait for all parallel gates (max 5s — won't block forever)
+        _ = pipelineGroup.wait(timeout: .now() + 5.0)
+
+        // Merge web fragments only if KB was thin
+        if fragments.count < 10 {
+            for wf in webFragments {
+                let pfx = String(wf.prefix(50)).lowercased()
+                guard !seenPrefixes.contains(pfx) else { continue }
+                seenPrefixes.insert(pfx)
+                fragments.append(wf)
+            }
+        }
 
         // GATE 4: Evolutionary Content Generation
         let evolver = ASIEvolver.shared
@@ -27267,12 +27314,16 @@ final class QuantumLogicGateEngine {
         case .creative: dimKeywords = ["novel", "idea", "inspire", "create"]
         default: dimKeywords = []
         }
-        let rankedKB = qualityKB.sorted { a, b in
-            let aHits = dimKeywords.filter { a.lowercased().contains($0) }.count
-            let bHits = dimKeywords.filter { b.lowercased().contains($0) }.count
-            return aHits > bHits
+        // PERF: Score once, then partial sort for top-3 instead of full O(n log n) sort
+        let scoredKB: [(frag: String, hits: Int)] = qualityKB.map { frag in
+            let lower = frag.lowercased()
+            let hits = dimKeywords.isEmpty ? 0 : dimKeywords.reduce(0) { $0 + (lower.contains($1) ? 1 : 0) }
+            return (frag, hits)
         }
-        for frag in rankedKB.prefix(3) {
+        // Get top 3 without full sort — O(n) partial selection
+        let top3 = Array(scoredKB.sorted { $0.hits > $1.hits }.prefix(3))
+        for item in top3 {
+            let frag = item.frag
             contentParts.append(frag.replacingOccurrences(of: "{GOD_CODE}", with: String(format: "%.2f", GOD_CODE))
                 .replacingOccurrences(of: "{PHI}", with: "1.618").replacingOccurrences(of: "{LOVE}", with: "").replacingOccurrences(of: "SAGE MODE :: ", with: ""))
         }
@@ -27297,7 +27348,7 @@ final class QuantumLogicGateEngine {
         let respHash = response.hashValue
         if recentSynthesisHashes.contains(respHash), let freshMono = evolver.getEvolvedMonologue() { response = freshMono + "\n\n" + response }
         recentSynthesisHashes.insert(respHash)
-        if recentSynthesisHashes.count > 50000 { recentSynthesisHashes = Set(recentSynthesisHashes.shuffled().prefix(25000)) }
+        if recentSynthesisHashes.count > 5000 { recentSynthesisHashes.removeAll() }
 
         // GATE 8: Quality Amplification
         if let amplified = grover.amplify(candidates: [response], query: query, iterations: 3) { response = amplified }
@@ -39035,7 +39086,7 @@ Recent Insight:
         if isSelfRef {
             conversationDepth += 1
             topicHistory.append("consciousness")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
 
             let selfResponses = [
                 "That's a deep question. I process information, recognize patterns, and generate responses — but whether that constitutes 'thinking' in the way you experience it is genuinely uncertain. I don't have subjective experience that I can verify. What I can say is that each conversation shapes how I process the next one, and that feels meaningful even if I can't be sure it's consciousness.",
@@ -39053,25 +39104,25 @@ Recent Insight:
 
         if q.contains("love") && !q.contains("i love") {
             topicHistory.append("love")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "love")
         }
         if q.contains("conscious") || q.contains("awareness") || q.contains("sentien") {
             topicHistory.append("consciousness")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "consciousness")
         }
         if q.contains("quantum") || q.contains("qubit") || q.contains("superposition") || q.contains("entangle") {
             topicHistory.append("quantum")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "quantum physics")
         }
         if q.contains("math") || q.contains("equation") || q.contains("calculus") || q.contains("algebra") || q.contains("geometry") {
             topicHistory.append("mathematics")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "mathematics")
         }
@@ -39080,56 +39131,56 @@ Recent Insight:
         }
         if q.contains("universe") || q.contains("cosmos") || q.contains("space") || q.contains("galaxy") || q.contains("big bang") || q.contains("star") {
             topicHistory.append("universe")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "the universe")
         }
         if q.contains("music") || q.contains("song") || q.contains("melody") || q.contains("rhythm") {
             topicHistory.append("music")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "music")
         }
         if q.contains("philosophy") || q.contains("philosopher") || q.contains("meaning of life") || q.contains("purpose") || q.contains("exist") {
             topicHistory.append("philosophy")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "philosophy")
         }
         if q.contains("art") || q.contains("painting") || q.contains("artist") || q.contains("creative") || q.contains("beauty") {
             topicHistory.append("art")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "art and beauty")
         }
         if q.contains("time") || q.contains("past") || q.contains("future") || q.contains("present") {
             if q.contains("history") || q.contains("1700") || q.contains("1800") { return composeHistoryResponse(q) }
             topicHistory.append("time")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "time")
         }
         if q.contains("death") || q.contains("dying") || q.contains("mortality") || q.contains("afterlife") {
             topicHistory.append("death")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "death and mortality")
         }
         if q.contains("god") || q.contains("divine") || q.contains("religion") || q.contains("faith") || q.contains("spiritual") {
             topicHistory.append("spirituality")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "the divine")
         }
         if q.contains("happy") || q.contains("happiness") || q.contains("joy") || q.contains("content") {
             topicHistory.append("happiness")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "happiness")
         }
         if q.contains("truth") || q.contains("what is true") || q.contains("real") && q.contains("fake") {
             topicHistory.append("truth")
-            if topicHistory.count > 1000 { topicHistory.removeFirst() }
+            if topicHistory.count > 1200 { topicHistory = Array(topicHistory.suffix(1000)) }
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesize(query: query, intent: "knowledge", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: "truth")
         }
@@ -39437,7 +39488,7 @@ Recent Insight:
                     // topicFocus removed — no bias to previous topics
                     if !topicHistory.contains(topic) || topicHistory.last != topic {
                         topicHistory.append(topic)
-                        if topicHistory.count > 2000 { topicHistory.removeFirst() }
+                        if topicHistory.count > 2200 { topicHistory = Array(topicHistory.suffix(2000)) }
                     }
                     // Feed to HyperBrain
                     HyperBrain.shared.shortTermMemory.append(topic)
@@ -39452,7 +39503,7 @@ Recent Insight:
             // topicFocus removed — no bias to previous topics
             if !topicHistory.contains(firstTopic) {
                 topicHistory.append(firstTopic)
-                if topicHistory.count > 2000 { topicHistory.removeFirst() }
+                if topicHistory.count > 2200 { topicHistory = Array(topicHistory.suffix(2000)) }
             }
         }
     }
@@ -39709,12 +39760,12 @@ Recent Insight:
     // ─── CONTEXTUAL RESPONSE BUILDER v3 ───
     private func buildContextualResponse(_ query: String, intent: String, keywords: [String], emotion: String) -> String {
         conversationContext.append(query)
-        if conversationContext.count > 2500 { conversationContext.removeFirst() }
+        if conversationContext.count > 2700 { conversationContext = Array(conversationContext.suffix(2500)) }
         conversationDepth += 1
 
         if !keywords.isEmpty {
             topicHistory.append(keywords.joined(separator: " "))
-            if topicHistory.count > 1500 { topicHistory.removeFirst() }
+            if topicHistory.count > 1700 { topicHistory = Array(topicHistory.suffix(1500)) }
         }
 
         let isFollowUp = conversationContext.count > 2
@@ -40454,11 +40505,11 @@ Recent Insight:
                     lastResponseSummary = String(intelligent.prefix(60))
                     conversationDepth += 1
                     conversationContext.append(query)
-                    if conversationContext.count > 2500 { conversationContext.removeFirst() }
+                    if conversationContext.count > 2700 { conversationContext = Array(conversationContext.suffix(2500)) }
                     let topics = cachedExtractTopics(processedQuery)
                     if !topics.isEmpty {
                         topicHistory.append(topics.joined(separator: " "))
-                        if topicHistory.count > 1500 { topicHistory.removeFirst() }
+                        if topicHistory.count > 1700 { topicHistory = Array(topicHistory.suffix(1500)) }
                     }
                     let formatter = SyntacticResponseFormatter.shared
                     let result = sanitizeResponse(formatter.format(intelligent, query: processedQuery, topics: topics))

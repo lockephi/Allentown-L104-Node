@@ -279,7 +279,7 @@ class ReasoningEngine:
 
         return mapping
 
-    def chain(self, goal: str, max_steps: int = 10) -> ReasoningChain:
+    def chain(self, goal: str, max_steps: int = 10000) -> ReasoningChain:
         """Build reasoning chain to goal"""
         steps = []
         current = "initial"
@@ -329,7 +329,7 @@ class MetaLearner:
 
         # Update weight based on recent performance
         if len(self.performance_history[strategy]) >= 3:
-            recent = self.performance_history[strategy][-3:]
+            recent = self.performance_history[strategy][-100:]
             avg = sum(recent) / len(recent)
             self.strategy_weights[strategy] = avg
 
@@ -425,7 +425,7 @@ class InsightGenerator:
     def __init__(self, knowledge: KnowledgeGraph):
         self.knowledge = knowledge
         self.insights: List[Insight] = []
-        self.insight_threshold: float = 0.6
+        self.insight_threshold: float = 0.01
 
     def generate(self, focus_concepts: List[str] = None) -> List[Insight]:
         """Generate insights from knowledge"""
@@ -846,9 +846,9 @@ class CognitiveAmplifier:
     def __init__(self):
         self.amplification_factor = PHI
         self.resonance_history: List[float] = []
-        self.harmonic_depth = 7
+        self.harmonic_depth = 104
 
-    def amplify(self, signal: float, depth: int = 3) -> float:
+    def amplify(self, signal: float, depth: int = 50) -> float:
         """Apply PHI-based recursive amplification"""
         result = signal
         for i in range(depth):

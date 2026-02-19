@@ -470,13 +470,14 @@ extension L104State {
         return QuantumLogicGateEngine.shared.synthesizeHistory(query: query)
     }
 
-    // ─── KB COMPOSER v5 ─── Context-aware, dimension-routed, quality-ranked composition
-    func composeFromKB(_ query: String) -> String {
+    // ─── KB COMPOSER v6 ─── EVO_59: Context-aware, dimension-routed, quality-ranked composition
+    // Optional cachedReasoningPath avoids re-running ASILogicGateV2.process() when caller already computed it
+    func composeFromKB(_ query: String, cachedReasoningPath: ASILogicGateV2.ReasoningPath? = nil) -> String {
         let q = query.lowercased()
         let topics = extractTopics(query)
 
-        // ═══ ASI LOGIC GATE v2: Dimension-aware query routing ═══
-        let reasoningPath = ASILogicGateV2.shared.process(query, context: Array(conversationContext.suffix(3)))
+        // ═══ ASI LOGIC GATE v2: Dimension-aware query routing (reuse if caller already computed) ═══
+        let reasoningPath = cachedReasoningPath ?? ASILogicGateV2.shared.process(query, context: Array(conversationContext.suffix(3)))
         let gateDim = reasoningPath.dimension
         let gateConf = reasoningPath.totalConfidence
 
@@ -1768,8 +1769,9 @@ extension L104State {
             }
             // 5. Compose from KB — transform fragments into prose (already uses RT search + formatter + web enrichment)
             // Use gate-enriched prompt if available for better KB matching
+            // EVO_59: Pass cachedReasoningPath to avoid duplicate ASILogicGateV2.process() call
             let kbQuery = pipelineResult.enrichedPrompt.count > query.count ? pipelineResult.enrichedPrompt : query
-            let composed = composeFromKB(kbQuery)
+            let composed = composeFromKB(kbQuery, cachedReasoningPath: reasoningPath)
             lastResponseSummary = String(composed.prefix(60))
             // Prepend chain-of-thought if present
             let fullComposed = chainOfThoughtPrefix.isEmpty ? composed : chainOfThoughtPrefix + composed
@@ -2025,12 +2027,13 @@ extension L104State {
         return words.contains(word)
     }
 
-    // ─── MAIN ENTRY POINT ─── Optimized pipeline with fast paths + Logic Gates
+    // ─── MAIN ENTRY POINT ─── EVO_59 Optimized pipeline with unified cache + fast paths + Logic Gates
     func generateNCGResponse(_ query: String) -> String {
         let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let pipelineCache = ResponsePipelineOptimizer.shared
 
-        // ═══ PHASE 31.6 QUANTUM VELOCITY: Check response cache for repeat queries ═══
-        if let cached = checkResponseCache(q) {
+        // ═══ EVO_59: UNIFIED CACHE — Adaptive TTL, φ-decay eviction, mesh routing ═══
+        if let cached = pipelineCache.getCachedResponse(query: q) {
             return cached
         }
 
@@ -2057,7 +2060,7 @@ extension L104State {
             let emotion = detectEmotion(query)
             cacheIntent(q, intent: fastIntent)
             let result = sanitizeResponse(buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion))
-            responseCache[q] = (response: result, timestamp: Date())
+            pipelineCache.cacheResponse(query: q, response: result)
             return result
         }
 
@@ -2085,19 +2088,8 @@ extension L104State {
                         topicHistory.append(topics.joined(separator: " "))
                         if topicHistory.count > 1500 { topicHistory.removeFirst() }
                     }
-                    // ═══ PHASE 54.1: Creative engine bypass ═══
-                    // Story/Poem/Debate/Humor/Philosophy engines produce fully-formatted
-                    // narrative output. SyntacticResponseFormatter destroys their structure
-                    // by splitting on \n\n, reordering blocks by type, and truncating to 5.
-                    // Detect creative engine output and pass through without reformatting.
-                    let creativeMarkers = ["S T O R Y   E N G I N E", "StoryLogicGateEngine",
-                                           "P O E M   E N G I N E", "PoemLogicGateEngine",
-                                           "D E B A T E   E N G I N E", "DebateLogicGateEngine",
-                                           "H U M O R   E N G I N E", "HumorLogicGateEngine",
-                                           "P H I L O S O P H Y   E N G I N E", "PhilosophyLogicGateEngine",
-                                           "━━━ Chapter", "━━━ Act", "━━━ Beat",
-                                           "ACT I", "ACT II", "ACT III"]
-                    let isCreativeEngine = creativeMarkers.contains(where: { intelligent.contains($0) })
+                    // ═══ EVO_59: Creative engine bypass — use static Set for O(1) membership ═══
+                    let isCreativeEngine = L104State.creativeMarkerSet.contains(where: { intelligent.contains($0) })
                     let result: String
                     if isCreativeEngine {
                         // Creative content: only light sanitization, preserve structure
@@ -2106,7 +2098,7 @@ extension L104State {
                         let formatter = SyntacticResponseFormatter.shared
                         result = sanitizeResponse(formatter.format(intelligent, query: processedQuery, topics: topics))
                     }
-                    responseCache[q] = (response: result, timestamp: Date())
+                    pipelineCache.cacheResponse(query: q, response: result)
                     return result
                 }
             }
@@ -2165,7 +2157,7 @@ extension L104State {
             }
         }
 
-        responseCache[q] = (response: result, timestamp: Date())
+        pipelineCache.cacheResponse(query: q, response: result)
         return result
     }
 

@@ -106,9 +106,9 @@ final class VoiceInterface {
 
             self.synthesizer.startSpeaking(text)
 
-            // Wait for speech to complete (polling)
+            // Wait for speech to complete (polling with usleep — background thread only)
             while self.synthesizer.isSpeaking {
-                Thread.sleep(forTimeInterval: 0.05)
+                usleep(50_000)  // 50ms
             }
 
             self.lock.lock()

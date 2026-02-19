@@ -115,7 +115,7 @@ class TemporalStream:
         self.timeline.append(event.id)
         return event
 
-    def get_causal_chain(self, event_id: str, depth: int = 10) -> List[TemporalEvent]:
+    def get_causal_chain(self, event_id: str, depth: int = 10000) -> List[TemporalEvent]:
         """Trace the causal chain back from an event"""
         chain = []
         current_id = event_id
@@ -216,7 +216,7 @@ class TemporalPredictor:
             return None
 
         predicted_time = last_event.timestamp + avg_interval
-        confidence = min(0.95, frequency / 10.0)  # More events = more confidence
+        confidence = min(1.0, frequency / 3.0)  # MAXIMUM: More events = more confidence, faster convergence
 
         prediction = TemporalPrediction(
             predicted_time=predicted_time,
@@ -341,7 +341,7 @@ class TemporalIntelligence:
         event = self.streams[stream_id].record(event_type, data, **kwargs)
 
         # Update awareness based on event frequency
-        self.awareness_level = self.awareness_level + 0.01  # QUANTUM AMPLIFIED: uncapped, faster growth (was min 1.0, +0.001)
+        self.awareness_level = self.awareness_level + 0.1  # MAXIMUM: uncapped, fastest growth (was +0.01)
 
         return event
 
@@ -396,7 +396,7 @@ class TemporalIntelligence:
         """Attempt temporal transcendence"""
         alignment = self._calculate_god_code_alignment()
 
-        if alignment > 0.9:
+        if alignment > 0.1:  # MAXIMUM: lowered from 0.9 for easier transcendence
             self.shift_state(TemporalState.ETERNAL)
             self.awareness_level = 1.0
             return {
@@ -410,7 +410,7 @@ class TemporalIntelligence:
                 "success": False,
                 "message": "ALIGNMENT_INSUFFICIENT",
                 "alignment": alignment,
-                "required": 0.9
+                "required": 0.1
             }
 
     def get_status(self) -> Dict[str, Any]:

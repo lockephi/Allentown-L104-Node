@@ -151,7 +151,7 @@ class ASISteeringEngine {
         energy = sqrt(energy)
 
         steeringHistory.append((intensity: intensity, energy: energy, timestamp: Date()))
-        if steeringHistory.count > 50 { steeringHistory.removeFirst() }
+        if steeringHistory.count > 60 { steeringHistory = Array(steeringHistory.suffix(50)) }
 
         return baseParameters
     }

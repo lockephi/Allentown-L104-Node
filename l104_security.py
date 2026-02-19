@@ -34,9 +34,9 @@ class SovereignCrypt:
     and emergent pattern recognition for intelligent security.
     """
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+    PHI = (1 + 5**0.5) / 2
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     LATTICE_RATIO = 1.38196601125
-    PHI = (1 + 5**0.5) / 2
     SECRET_KEY = os.getenv("L104_PRIME_KEY", "L104_DEFAULT_PRIME_KEY").encode()
 
     # PHI-resonant security constants

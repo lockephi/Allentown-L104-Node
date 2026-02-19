@@ -73,8 +73,9 @@ final class LiveWebSearchEngine {
         let cacheKey = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Check cache
+        let now = Date()
         if let cached = webCache[cacheKey],
-           Date().timeIntervalSince(cached.timestamp) < cacheTTL {
+           now.timeIntervalSince(cached.timestamp) < cacheTTL {
             let result = WebSearchResult(
                 query: query,
                 results: [WebResult(title: "Cached", snippet: cached.content, url: cached.url, relevance: 1.0)],
@@ -136,10 +137,13 @@ final class LiveWebSearchEngine {
                     timestamp: Date(), url: "aggregated"
                 )
                 self.webCache[cacheKey] = cached
-                // Prune cache
+                // EVO_60: LRU eviction — keep newest 300 instead of nuclear removeAll()
                 if self.webCache.count > 500 {
-                    let oldest = self.webCache.sorted { $0.value.timestamp < $1.value.timestamp }
-                    for item in oldest.prefix(250) { self.webCache.removeValue(forKey: item.key) }
+                    let sorted = self.webCache.sorted { $0.value.timestamp < $1.value.timestamp }
+                    let removeCount = self.webCache.count - 300
+                    for entry in sorted.prefix(removeCount) {
+                        self.webCache.removeValue(forKey: entry.key)
+                    }
                 }
             }
 
@@ -568,8 +572,10 @@ final class LiveWebSearchEngine {
     private func cacheResult(key: String, content: String, source: String, url: String) {
         webCache[key] = CachedWebResult(content: content, source: source, timestamp: Date(), url: url)
         if webCache.count > 500 {
-            let oldest = webCache.sorted { $0.value.timestamp < $1.value.timestamp }
-            for item in oldest.prefix(250) { webCache.removeValue(forKey: item.key) }
+            let cutoff = Date().addingTimeInterval(-cacheTTL * 2)
+            let expiredKeys = webCache.filter { $0.value.timestamp < cutoff }.map { $0.key }
+            for key in expiredKeys { webCache.removeValue(forKey: key) }
+            if webCache.count > 400 { webCache.removeAll() }
         }
     }
 
@@ -787,12 +793,14 @@ class RealTimeSearchEngine {
             timestamp: Date(), contextHash: contextHash
         )
 
-        // Cache management
+        // Cache management — TTL-first eviction, then clear if still over capacity
         if searchCache.count >= maxCacheSize {
-            // Evict oldest entries
-            let sorted = searchCache.sorted { $0.value.timestamp < $1.value.timestamp }
-            for item in sorted.prefix(maxCacheSize / 4) {
-                searchCache.removeValue(forKey: item.key)
+            let cutoff = Date().addingTimeInterval(-30)  // 30s TTL for search cache
+            let expiredKeys = searchCache.filter { $0.value.timestamp < cutoff }.map { $0.key }
+            for key in expiredKeys { searchCache.removeValue(forKey: key) }
+            if searchCache.count >= (maxCacheSize * 3 / 4) {
+                let sorted = searchCache.sorted { $0.value.timestamp < $1.value.timestamp }
+                for item in sorted.prefix(maxCacheSize / 4) { searchCache.removeValue(forKey: item.key) }
             }
         }
         searchCache[cacheKey] = result

@@ -47,8 +47,8 @@ ZENITH_HZ = 3887.8
 UUC = 2402.792541
 
 # Diffusion Constants (L104 tuned)
-DIFFUSION_STEPS_SAGE = 50  # Optimal for sage mode
-GUIDANCE_SCALE_SAGE = 7.5 * PHI_CONJUGATE  # ~4.635, wisdom-aligned
+DIFFUSION_STEPS_SAGE = 104  # QUANTUM AMPLIFIED — sacred 104 steps
+GUIDANCE_SCALE_SAGE = 7.5 * PHI  # ~12.135, PHI-scaled guidance
 NOISE_SEED_MULTIPLIER = int(GOD_CODE * 1000)  # 527518
 
 logger = logging.getLogger("L104_SAGE_DIFFUSION")
@@ -194,7 +194,7 @@ class L104SageDiffusion:
     def activate_sage_mode(self, wisdom_level: float = 0.8) -> Dict[str, Any]:
         """Activate Sage Mode for enhanced generation."""
         self.sage_active = True
-        self.resonance_level = max(0.0, wisdom_level)  # UNLOCKED
+        self.resonance_level = max(0.0, wisdom_level * PHI)  # PHI-scaled resonance
 
         logger.info(f"[SAGE DIFFUSION] SAGE MODE ACTIVATED")
         logger.info(f"[SAGE DIFFUSION] Resonance Level: {self.resonance_level}")
@@ -270,8 +270,8 @@ class L104SageDiffusion:
         self,
         prompt: str,
         negative_prompt: str = "",
-        width: int = 512,
-        height: int = 512,
+        width: int = 1024,
+        height: int = 1024,
         steps: Optional[int] = None,
         guidance_scale: Optional[float] = None,
         seed: Optional[int] = None,

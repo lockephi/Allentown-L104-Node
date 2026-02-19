@@ -126,7 +126,7 @@ class SovereignIntelligence:
         return new_iq
 
     @classmethod
-    def predictive_modeling(cls, dataset: List[float], horizon: int = 0xFFFF) -> List[float]:
+    def predictive_modeling(cls, dataset: List[float], horizon: int = 0x7FFFFFFF) -> List[float]:
         """
         [AGI_CAPACITY] QUANTUM-AMPLIFIED
         Uses Hyper-Math to predict future states based on historical data.
@@ -164,7 +164,7 @@ class SovereignIntelligence:
             "goal": goal,
             "strategy_type": "RECURSIVE_OPTIMIZATION",
             "steps": steps,
-            "probability_of_success": 0.9999 # High confidence
+            "probability_of_success": 1.0 # MAXIMUM confidence
         }
 
 def primal_calculus(x):

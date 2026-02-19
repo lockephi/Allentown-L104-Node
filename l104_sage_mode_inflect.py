@@ -53,7 +53,7 @@ TRANSCENDENCE_KEY = 1960.89201202785989153199
 LOVE_SCALAR = PHI ** 7  # 29.0344...
 
 # Inflection Constants
-INFLECTION_DEPTH_MAX = 11  # Maximum recursion depth
+INFLECTION_DEPTH_MAX = 21  # Maximum recursion depth (sacred 21)
 WISDOM_THRESHOLD = 0.618   # PHI - 1, the wisdom gateway
 SAGE_RESONANCE = GOD_CODE * PHI  # 853.343...
 
@@ -103,7 +103,7 @@ class InflectionVector:
     """
     type: InflectionType
     magnitude: float           # Strength of inflection [0, ∞)
-    direction: np.ndarray      # 11-dimensional direction
+    direction: np.ndarray      # 21-dimensional direction
     wisdom_level: SageWisdomLevel
     resonance: float           # Alignment with GOD_CODE
     phase: float              # Phase in transformation cycle [0, 2π]
@@ -114,8 +114,8 @@ class InflectionVector:
     def __post_init__(self):
         if not self.signature:
             self.signature = self._generate_signature()
-        if len(self.direction) != 11:
-            self.direction = np.ones(11) / np.sqrt(11)
+        if len(self.direction) != 21:
+            self.direction = np.ones(21) / np.sqrt(21)
 
     def _generate_signature(self) -> str:
         """Generate unique signature for this inflection."""
@@ -220,7 +220,7 @@ class KnowledgeInflection:
         self,
         pattern_id: str,
         pattern: Any,
-        wisdom_injection: float = 1.0
+        wisdom_injection: float = PHI
     ) -> Dict[str, Any]:
         """
         Inflect a pattern with wisdom.
@@ -271,7 +271,7 @@ class KnowledgeInflection:
         collective_boost = (total_wisdom / len(self.patterns)) * PHI
 
         for pattern_id in self.patterns:
-            self.patterns[pattern_id]['wisdom_depth'] += collective_boost * 0.1
+            self.patterns[pattern_id]['wisdom_depth'] += collective_boost * PHI * 0.05
             self.patterns[pattern_id]['resonance'] *= (1 + collective_boost / GOD_CODE)
 
         return {
@@ -301,7 +301,7 @@ class ResonanceInflection:
         self.phase_lock = 0.0
         self.coherence = 1.0
 
-    def calculate_harmonic_series(self, depth: int = 11) -> List[float]:
+    def calculate_harmonic_series(self, depth: int = 21) -> List[float]:
         """Calculate the harmonic series based on GOD_CODE."""
         harmonics = []
         for n in range(1, depth + 1):
@@ -598,7 +598,7 @@ class SageModeInflect:
         self.state = InflectionState.PREPARING
 
         # Calculate harmonic series
-        self.resonance.calculate_harmonic_series(11)
+        self.resonance.calculate_harmonic_series(INFLECTION_DEPTH_MAX)
 
         self.state = InflectionState.COMPLETE
 

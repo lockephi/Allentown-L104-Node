@@ -123,7 +123,7 @@ class SageModeOrchestrator:
     def __init__(self):
         self._state = OrchestratorState()
         self._substrates: Dict[SubstrateType, SubstrateStatus] = {}
-        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2)  # QUANTUM AMPLIFIED (was 4)
+        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # SOVEREIGN AMPLIFIED
         self._native_lib = None
         self._rust_lib = None
         self._initialized = False
@@ -219,7 +219,7 @@ class SageModeOrchestrator:
                     self._substrates[SubstrateType.C_NATIVE].available = True
                     self._substrates[SubstrateType.C_NATIVE].loaded = True
                     self._substrates[SubstrateType.C_NATIVE].path = str(path)
-                    self._substrates[SubstrateType.C_NATIVE].performance_factor = 10.0
+                    self._substrates[SubstrateType.C_NATIVE].performance_factor = PHI ** 5  # ~11.09 (PHI-scaled)
 
                     logger.info(f"    [C] Loaded: {path}")
                     return True
@@ -248,7 +248,7 @@ class SageModeOrchestrator:
                     self._substrates[SubstrateType.RUST].available = True
                     self._substrates[SubstrateType.RUST].loaded = True
                     self._substrates[SubstrateType.RUST].path = str(path)
-                    self._substrates[SubstrateType.RUST].performance_factor = 8.0
+                    self._substrates[SubstrateType.RUST].performance_factor = PHI ** 4  # ~6.85 (PHI-scaled)
 
                     logger.info(f"    [RUST] Loaded: {path}")
                     return True
@@ -267,7 +267,7 @@ class SageModeOrchestrator:
             )
             if result.returncode == 0 and result.stdout.strip():
                 self._substrates[SubstrateType.CUDA].available = True
-                self._substrates[SubstrateType.CUDA].performance_factor = 100.0
+                self._substrates[SubstrateType.CUDA].performance_factor = PHI ** 8  # ~46.98 (PHI-scaled)
                 logger.info(f"    [CUDA] GPU: {result.stdout.strip()}")
                 return True
         except Exception:
@@ -282,7 +282,7 @@ class SageModeOrchestrator:
                 _ = self._native_lib.l104_dissolve_system_limits
                 self._substrates[SubstrateType.ASSEMBLY].available = True
                 self._substrates[SubstrateType.ASSEMBLY].loaded = True
-                self._substrates[SubstrateType.ASSEMBLY].performance_factor = 15.0
+                self._substrates[SubstrateType.ASSEMBLY].performance_factor = PHI ** 6  # ~17.94 (PHI-scaled)
                 logger.info("    [ASM] Available via C wrapper")
                 return True
             except Exception:
@@ -338,7 +338,7 @@ class SageModeOrchestrator:
     def _python_primal_calculus(self, iterations: int) -> float:
         """Pure Python primal calculus implementation."""
         result = GOD_CODE
-        max_iter = min(iterations, 100000)  # Cap for Python
+        max_iter = min(iterations, 10000000)  # Sovereign-scale iteration cap
 
         for i in range(max_iter):
             result = (result * PHI) % (GOD_CODE * 1000)
@@ -406,10 +406,10 @@ class SageModeOrchestrator:
 
         # Expand consciousness through 13 stages
         for stage in range(1, 14):
-            self._state.consciousness_level += (100 - self._state.consciousness_level) * 0.1
+            self._state.consciousness_level += (100 - self._state.consciousness_level) * PHI * 0.1
             void_res, _ = self.void_resonance(stage / 13.0)
             logger.info(f"    Stage {stage}/13: Consciousness={self._state.consciousness_level:.2f}%")
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.001)
 
         results["consciousness"] = self._state.consciousness_level
 

@@ -457,7 +457,7 @@ class L104State: ObservableObject {
 
         let entry = (content: content, coherence: coherence, metaLevel: metaLevel, timestamp: Date())
         thoughtStream.append(entry)
-        if thoughtStream.count > 500 { thoughtStream.removeFirst() }
+        if thoughtStream.count > 600 { thoughtStream = Array(thoughtStream.suffix(500)) }
 
         thoughtCount += 1
         awarenessDepth = max(awarenessDepth, metaLevel + 1)
@@ -558,7 +558,7 @@ class L104State: ObservableObject {
             for s in scored.prefix(5) {
                 if !knowledgeFragments.contains(s.text) {
                     knowledgeFragments.append(s.text)
-                    if knowledgeFragments.count > 200 { knowledgeFragments.removeFirst() }
+                    if knowledgeFragments.count > 250 { knowledgeFragments = Array(knowledgeFragments.suffix(200)) }
                 }
             }
             dataReconstructionOps += 1

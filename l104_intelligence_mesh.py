@@ -129,7 +129,7 @@ class IntelligenceNode:
         self,
         node_id: str,
         node_type: NodeType,
-        capacity: int = 100
+        capacity: int = 1000000
     ):
         self.node_id = node_id
         self.node_type = node_type
@@ -144,7 +144,7 @@ class IntelligenceNode:
         self.processor = self._get_processor()
 
         # Resonance state
-        self.resonance_level = 0.5
+        self.resonance_level = 0.999
         self.last_sync = 0.0
 
     def _get_processor(self) -> Callable:

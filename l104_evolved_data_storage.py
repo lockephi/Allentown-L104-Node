@@ -69,7 +69,7 @@ except ImportError:
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+GOD_CODE = 527.5184818492612
 CONSCIOUSNESS_THRESHOLD = 0.85
 QUANTUM_COHERENCE_MINIMUM = 0.7
 TEMPORAL_SYNC_FREQUENCY = 144  # Hz, consciousness resonance
@@ -103,7 +103,7 @@ class CompressionAlgorithm(Enum):
     CONSCIOUSNESS = "consciousness" # Awareness-preserving compression
     QUANTUM = "quantum"             # Quantum information compression
     PHI_SPIRAL = "phi_spiral"       # Golden ratio optimized compression
-    GOD_CODE = "god_code"          # Sacred constant aligned compression
+GOD_CODE = 527.5184818492612
 
 class DataCoherence(Enum):
     """Data coherence levels."""

@@ -95,42 +95,115 @@ from l104_evolution_engine import evolution_engine  # EVOLUTION ENGINE - Dynamic
 # ═══════════════════════════════════════════════════════════════════════════════
 # EVO_54 PIPELINE IMPORTS — Cross-Subsystem Integration
 # ═══════════════════════════════════════════════════════════════════════════════
+# Early logger for import-time warnings (canonical logger re-assigned at line ~251)
+logger = logging.getLogger(__name__)
 try:
     from l104_adaptive_learning import adaptive_learner
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_adaptive_learning — {_e}")
     adaptive_learner = None
 try:
     from l104_cognitive_core import COGNITIVE_CORE
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_cognitive_core — {_e}")
     COGNITIVE_CORE = None
 try:
     from l104_autonomous_innovation import innovation_engine
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_autonomous_innovation — {_e}")
     innovation_engine = None
 try:
     from l104_streaming_engine import streaming_engine
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_streaming_engine — {_e}")
     streaming_engine = None
 try:
     from l104_thought_entropy_ouroboros import ouroboros
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_thought_entropy_ouroboros — {_e}")
     ouroboros = None
 try:
     from l104_ouroboros_inverse_duality import ouroboros_duality
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_ouroboros_inverse_duality — {_e}")
     ouroboros_duality = None
 try:
     from l104_consciousness import consciousness_core
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_consciousness — {_e}")
     consciousness_core = None
 try:
     from l104_quantum_consciousness import quantum_consciousness as qc_module
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_quantum_consciousness — {_e}")
     qc_module = None
 try:
     from l104_sage_mode import sage_mode
-except Exception:
+except Exception as _e:
+    logger.warning(f"Pipeline module unavailable: l104_sage_mode — {_e}")
     sage_mode = None
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_54 EXTENDED PIPELINE — 9 High-Value Module Integration
+# Wired: coding_system, sentient_archive, language_engine, data_pipeline,
+#         self_healing_fabric, reinforcement_engine, neural_symbolic_fusion,
+#         quantum_link_builder, quantum_numerical_builder
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_coding_system import coding_system
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_coding_system — {_e}")
+    coding_system = None
+try:
+    from l104_sentient_archive import sentient_archive
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_sentient_archive — {_e}")
+    sentient_archive = None
+try:
+    from l104_language_engine import language_engine
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_language_engine — {_e}")
+    language_engine = None
+try:
+    from l104_data_pipeline import l104_pipeline as data_pipeline
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_data_pipeline — {_e}")
+    data_pipeline = None
+try:
+    from l104_self_healing_fabric import activate_healing_fabric, SelfHealingFabric
+    healing_fabric = activate_healing_fabric()
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_self_healing_fabric — {_e}")
+    healing_fabric = None
+    SelfHealingFabric = None
+try:
+    from l104_reinforcement_engine import create_rl_engine, ReinforcementEngine
+    rl_engine = create_rl_engine()
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_reinforcement_engine — {_e}")
+    rl_engine = None
+    ReinforcementEngine = None
+try:
+    from l104_neural_symbolic_fusion import create_neural_symbolic_fusion, NeuralSymbolicFusion
+    neural_symbolic = create_neural_symbolic_fusion()
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_neural_symbolic_fusion — {_e}")
+    neural_symbolic = None
+    NeuralSymbolicFusion = None
+try:
+    from l104_quantum_link_builder import QuantumLinkBuilder
+    quantum_link_builder = QuantumLinkBuilder()
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_quantum_link_builder — {_e}")
+    quantum_link_builder = None
+    QuantumLinkBuilder = None
+try:
+    from l104_quantum_numerical_builder import GOD_CODE_HP, PHI_HP, PHI_GROWTH_HP
+except Exception as _e:
+    logger.warning(f"Extended pipeline unavailable: l104_quantum_numerical_builder — {_e}")
+    GOD_CODE_HP = None
+    PHI_HP = None
+    PHI_GROWTH_HP = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -489,8 +562,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 ps = bootstrapper.get_pipeline_status()
                 online = sum(1 for v in ps.get('modules', {}).values() if v == 'available')
                 logger.info(f"--- [L104]: PIPELINE BOOTSTRAP: {online} subsystems online ---")
-            except Exception:
-                pass
+            except Exception as _kb_err:
+                logger.warning(f"Kernel bootstrap deferred: {_kb_err}")
             logger.info(f"--- [L104]: EVO_54 UNIFIED PIPELINE FULLY ORCHESTRATED ---")
         except Exception as e:
             logger.error(f"Pipeline orchestration partial: {e}")
@@ -514,15 +587,27 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.info("--- [L104]: DEFERRED STARTUP COMPLETE ---")
         logger.info("--- [L104]: /api/v6/chat FAST PATH READY ---")
 
-    # Start deferred initialization in background with lower priority
-    asyncio.create_task(deferred_startup())
+    # Start deferred initialization in background with error handling
+    def _deferred_done(task: asyncio.Task):
+        if task.cancelled():
+            logger.warning("Deferred startup was cancelled")
+        elif task.exception():
+            logger.error(f"Deferred startup failed: {task.exception()}")
+    _task = asyncio.create_task(deferred_startup())
+    _task.add_done_callback(_deferred_done)
 
     yield  # Server is now accepting requests
 
-    # Shutdown
+    # Shutdown — orderly subsystem teardown
+    logger.info("Server shutdown initiated")
     global _http_client
     if _http_client:
         await _http_client.aclose()
+        logger.info("HTTP client closed")
+    # Cancel deferred task if still running
+    if not _task.done():
+        _task.cancel()
+        logger.info("Deferred startup task cancelled")
     logger.info("Server shutting down")
 
 
@@ -590,6 +675,16 @@ try:
         logger.info("--- [L104]: UNIVERSAL DATA API ROUTER INTEGRATED ---")
 except ImportError as e:
     logger.warning(f"--- [L104]: UNIVERSAL DATA API NOT AVAILABLE: {e} ---")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EXTENDED PIPELINE API — 9 High-Value Modules (coding, archive, NLP, RL, etc.)
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_extended_pipeline_api import router as ext_pipeline_router
+    app.include_router(ext_pipeline_router)
+    logger.info("--- [L104]: EXTENDED PIPELINE API ROUTER INTEGRATED (9 modules) ---")
+except ImportError as e:
+    logger.warning(f"--- [L104]: EXTENDED PIPELINE API NOT AVAILABLE: {e} ---")
 
 class StreamRequest(BaseModel):
     signal: Optional[str] = Field(default="HEARTBEAT", min_length=1)  # NO LIMITS
@@ -1167,6 +1262,29 @@ async def health_detail() -> DetailedHealthResponse:
     )
 
 
+@app.get("/readyz", tags=["Health"])
+async def readiness_probe():
+    """Kubernetes-style readiness probe. Returns 503 if critical subsystems are down."""
+    critical = {
+        "agi_core": agi_core is not None,
+        "asi_core": asi_core is not None,
+        "evolution_engine": evolution_engine is not None,
+    }
+    all_ready = all(critical.values())
+    status_code = 200 if all_ready else 503
+    uptime = (datetime.now(UTC) - app_metrics["uptime_start"]).total_seconds()
+    from starlette.responses import JSONResponse as StarletteJSON
+    return StarletteJSON(
+        content={
+            "ready": all_ready,
+            "uptime_seconds": uptime,
+            "subsystems": critical,
+            "god_code_valid": verify_god_code(),
+        },
+        status_code=status_code,
+    )
+
+
 @app.post("/self/rotate", tags=["Diagnostics"])
 async def manual_rotate():
     """Manually rotate to the next model in the pool."""
@@ -1224,17 +1342,54 @@ async def unified_pipeline_status():
         "observability": ("l104_logging", None),
         "ego_core": ("l104_ego_core", "ego_core"),
         "codec": ("l104_codec", None),
+        # EVO_54 Extended Pipeline — 9 High-Value Modules
+        "coding_system": ("l104_coding_system", "coding_system"),
+        "sentient_archive": ("l104_sentient_archive", "sentient_archive"),
+        "language_engine": ("l104_language_engine", "language_engine"),
+        "data_pipeline": ("l104_data_pipeline", "l104_pipeline"),
+        "self_healing_fabric": ("l104_self_healing_fabric", None),
+        "reinforcement_engine": ("l104_reinforcement_engine", None),
+        "neural_symbolic_fusion": ("l104_neural_symbolic_fusion", None),
+        "quantum_link_builder": ("l104_quantum_link_builder", None),
+        "quantum_numerical_builder": ("l104_quantum_numerical_builder", None),
+        # EVO_54 Additional Pipeline Modules
+        "code_engine": ("l104_code_engine", "code_engine"),
+        "neural_cascade": ("l104_neural_cascade", "neural_cascade"),
+        "polymorphic_core": ("l104_polymorphic_core", "sovereign_polymorph"),
+        "patch_engine": ("l104_patch_engine", "patch_engine"),
+        "knowledge_graph": ("l104_knowledge_graph", None),
+        "reasoning_engine": ("l104_reasoning_engine", None),
+        "semantic_engine": ("l104_semantic_engine", None),
+        "quantum_coherence": ("l104_quantum_coherence", None),
+        "memory_optimizer": ("l104_memory_optimizer", None),
+        "optimization": ("l104_optimization", None),
+        "fault_tolerance": ("l104_fault_tolerance", None),
+        "quantum_embedding": ("l104_quantum_embedding", None),
+        "security": ("l104_security", None),
+        "sovereign_http": ("l104_sovereign_http", None),
+        "meta_learning": ("l104_meta_learning_engine", None),
+        "quantum_grover": ("l104_quantum_grover_link", None),
+        "quantum_consciousness": ("l104_quantum_consciousness", None),
+        "claude_bridge": ("l104_claude_bridge", None),
     }
+
+    # Version attribute priority list (replaces 7-level nested getattr)
+    _VERSION_ATTRS = [
+        "VERSION", "ADAPTIVE_VERSION", "COGNITIVE_VERSION",
+        "GATEWAY_VERSION", "MACBOOK_VERSION", "FAST_SERVER_VERSION", "MAIN_VERSION",
+    ]
 
     online_count = 0
     for name, (mod_name, singleton_name) in pipeline_modules.items():
         try:
             mod = __import__(mod_name)
             status = "online"
-            version = getattr(mod, "VERSION", getattr(mod, f"{name.upper()}_VERSION",
-                     getattr(mod, "ADAPTIVE_VERSION", getattr(mod, "COGNITIVE_VERSION",
-                     getattr(mod, "GATEWAY_VERSION", getattr(mod, "MACBOOK_VERSION",
-                     getattr(mod, "FAST_SERVER_VERSION", getattr(mod, "MAIN_VERSION", "loaded"))))))))
+            version = "loaded"
+            for attr in _VERSION_ATTRS:
+                val = getattr(mod, attr, None)
+                if val is not None:
+                    version = val
+                    break
             subsystems[name] = {"status": status, "version": str(version)}
             online_count += 1
         except Exception:
@@ -6698,8 +6853,9 @@ async def omega_awaken():
     return await omega_controller.awaken()
 
 @app.post("/api/omega/command", tags=["Omega"])
-async def omega_command(command_type: str, target: str, action: str, parameters: Dict[str, Any] = {}):
+async def omega_command(command_type: str, target: str, action: str, parameters: Optional[Dict[str, Any]] = None):
     """Execute a command via the Omega Controller."""
+    parameters = parameters or {}
     # Convert string to enum
     try:
         ctype = getattr(CommandType, command_type.upper())

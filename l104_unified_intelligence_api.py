@@ -85,7 +85,7 @@ GROVER_AMPLIFICATION = 21.95
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-UNIFIED_API_VERSION = "54.0.0"
+UNIFIED_API_VERSION = "104.0.0"
 UNIFIED_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 
 logger = logging.getLogger("BRAIN_API")
@@ -445,7 +445,7 @@ class HypothesisRequest(BaseModel):
 
 class DeepThinkRequest(BaseModel):
     question: str
-    depth: int = 3
+    depth: int = 50
 
 
 @router.post("/synthesize")
@@ -575,8 +575,8 @@ async def get_meta_insights():
 
 class ReasoningRequest(BaseModel):
     question: str
-    max_steps: int = 10
-    depth: int = 3
+    max_steps: int = 10000
+    depth: int = 100
 
 
 @router.post("/reason")
@@ -683,7 +683,7 @@ class ClaudeQueryRequest(BaseModel):
     prompt: str
     model: Optional[str] = None
     system: Optional[str] = None
-    max_tokens: int = 4096
+    max_tokens: int = 1048576
 
 
 class ClaudeAnalyzeRequest(BaseModel):
@@ -697,7 +697,7 @@ class ClaudeSynthesizeRequest(BaseModel):
 
 class ClaudeReasonRequest(BaseModel):
     question: str
-    depth: int = 3
+    depth: int = 100
 
 
 @router.post("/claude/query")

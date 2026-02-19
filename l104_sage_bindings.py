@@ -3,7 +3,7 @@ ZENITH_HZ = 3887.8
 UUC = 2402.792541
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
-_PIPELINE_VERSION = "54.0.0"
+_PIPELINE_VERSION = "55.0.0"
 _PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 _PIPELINE_STREAM = True
 #!/usr/bin/env python3
@@ -72,8 +72,8 @@ class L104UniversalScribe(Structure):
     """Maps to l104_universal_scribe_t in C"""
     _fields_ = [
         ("knowledge_saturation", c_double),
-        ("last_provider", c_char * 32),
-        ("sovereign_dna", c_char * 64),
+        ("last_provider", c_char * 64),
+        ("sovereign_dna", c_char * 128),
         ("linked_count", c_int),
     ]
 
@@ -207,8 +207,8 @@ class SageCoreBridge:
                 scribe_state = state.get("scribe_state", {})
                 if scribe_state.get("knowledge_saturation", 0) > 0:
                     self._controller.scribe.knowledge_saturation = scribe_state.get("knowledge_saturation", 0.0)
-                    provider = scribe_state.get("last_provider", "NONE")[:31]
-                    dna = scribe_state.get("sovereign_dna", "NONE")[:63]
+                    provider = scribe_state.get("last_provider", "NONE")[:63]
+                    dna = scribe_state.get("sovereign_dna", "NONE")[:127]
                     # Direct assignment to ctypes char arrays (works correctly)
                     self._controller.scribe.last_provider = provider.encode('utf-8')
                     self._controller.scribe.sovereign_dna = dna.encode('utf-8')

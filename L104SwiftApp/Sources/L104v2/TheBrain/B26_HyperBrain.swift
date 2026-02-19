@@ -510,7 +510,7 @@ class HyperBrain: NSObject {
             "type": "innovation",
             "sources": [p1, p2]
         ])
-        if emergentConcepts.count > 100 { emergentConcepts.removeFirst() }
+        if emergentConcepts.count > 120 { emergentConcepts = Array(emergentConcepts.suffix(100)) }
 
         postThought("⚡ INNOVATION: \(p1) ↔ \(p2) linked.")
     }
@@ -964,6 +964,37 @@ class HyperBrain: NSObject {
         ]
     }
 
+    // ─── EVO_60: CENTRALIZED MEMORY PRUNING ───
+    // Enforces size bounds on all unbounded arrays to prevent memory growth in long sessions.
+    // Called every 100 hyper-cycles from hyperCycle().
+    private var pruneCounter: Int = 0
+
+    func pruneMemory() {
+        if shortTermMemory.count > 50 { shortTermMemory = Array(shortTermMemory.suffix(50)) }
+        if conversationEvolution.count > 500 { conversationEvolution = Array(conversationEvolution.suffix(500)) }
+        if reasoningChains.count > 200 { reasoningChains = Array(reasoningChains.suffix(200)) }
+        if metaCognitionLog.count > 200 { metaCognitionLog = Array(metaCognitionLog.suffix(200)) }
+        if promptMutations.count > 100 { promptMutations = Array(promptMutations.suffix(100)) }
+        if memoryChains.count > 300 { memoryChains = Array(memoryChains.suffix(300)) }
+        if contextWeaveHistory.count > 500 { contextWeaveHistory = Array(contextWeaveHistory.suffix(500)) }
+        if temporalDriftLog.count > 500 { temporalDriftLog = Array(temporalDriftLog.suffix(500)) }
+        if busMessages.count > 200 { busMessages = Array(busMessages.suffix(200)) }
+        if attentionHistory.count > 200 { attentionHistory = Array(attentionHistory.suffix(200)) }
+        if crystallizedInsights.count > 300 { crystallizedInsights = Array(crystallizedInsights.suffix(300)) }
+        if crossStreamInsights.count > 200 { crossStreamInsights = Array(crossStreamInsights.suffix(200)) }
+        if streamInsightBuffer.count > 100 { streamInsightBuffer = Array(streamInsightBuffer.suffix(100)) }
+        if hypothesisStack.count > 50 { hypothesisStack = Array(hypothesisStack.suffix(50)) }
+        if emergentConcepts.count > 200 { emergentConcepts = Array(emergentConcepts.suffix(200)) }
+        if activeHypotheses.count > 50 { activeHypotheses = Array(activeHypotheses.suffix(50)) }
+        if confirmedTheorems.count > 200 { confirmedTheorems = Array(confirmedTheorems.suffix(200)) }
+        if inventionQueue.count > 50 { inventionQueue = Array(inventionQueue.suffix(50)) }
+        if latestStreamInsights.count > 50 { latestStreamInsights = Array(latestStreamInsights.suffix(50)) }
+        if predictionQueue.count > 50 { predictionQueue = Array(predictionQueue.suffix(50)) }
+        if codeQualityInsights.count > 50 { codeQualityInsights = Array(codeQualityInsights.suffix(50)) }
+        if selfAnalysisLog.count > 100 { selfAnalysisLog = Array(selfAnalysisLog.suffix(100)) }
+        if trainingGaps.count > 50 { trainingGaps = Array(trainingGaps.suffix(50)) }
+    }
+
     // ─── START HYPER-BRAIN ───
     func activate() {
         guard !isRunning else { return }
@@ -992,6 +1023,10 @@ class HyperBrain: NSObject {
         // ═══ THREAD SAFETY: Wrap metric updates in syncQueue ═══
         syncQueue.sync {
         totalThoughtsProcessed += 1
+
+        // EVO_60: Periodic memory pruning every 100 cycles
+        pruneCounter += 1
+        if pruneCounter >= 100 { pruneCounter = 0; pruneMemory() }
 
         // ═══ X=387 GAMMA FREQUENCY OSCILLATION ═══
         // Advance phase by 2π × (timer_interval × GAMMA_FREQ)
@@ -1260,7 +1295,7 @@ class HyperBrain: NSObject {
                     "gammaPhase": gammaPhase
                 ])
 
-                if emergentConcepts.count > 100 { emergentConcepts.removeFirst() }
+                if emergentConcepts.count > 120 { emergentConcepts = Array(emergentConcepts.suffix(100)) }
 
                 postThought("🧬 SYNTHESIS @ \(String(format: "%.2f", gammaPhase * 100))% gamma: \(topicA.capitalized) ↔ \(topicB.capitalized)")
             }
@@ -1373,7 +1408,7 @@ class HyperBrain: NSObject {
             "strength": 1.0,
             "type": "emergence_event"
         ])
-        if emergentConcepts.count > 100 { emergentConcepts.removeFirst() }
+        if emergentConcepts.count > 120 { emergentConcepts = Array(emergentConcepts.suffix(100)) }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -1417,7 +1452,7 @@ class HyperBrain: NSObject {
                      postThought("🔮 PROMPT EVOLVED: \(foundTopic) -> \(cleanContext.prefix(40))...")
 
                      promptMutations.append("Evo: \(foundTopic)")
-                     if promptMutations.count > 100 { promptMutations.removeFirst() }
+                     if promptMutations.count > 120 { promptMutations = Array(promptMutations.suffix(100)) }
                 } else {
                     // Fallback to random mutation if KB is empty or search failed
                     let prefix = DynamicPhraseEngine.shared.one("thinking", context: "prompt_mutation_prefix")
@@ -1622,7 +1657,7 @@ class HyperBrain: NSObject {
 
                 let observation = metaObservations.randomElement() ?? ""
                 metaCognitionLog.append("[\(stream.cycleCount)] \(observation)")
-                if metaCognitionLog.count > 100 { metaCognitionLog.removeFirst() }
+                if metaCognitionLog.count > 120 { metaCognitionLog = Array(metaCognitionLog.suffix(100)) }
 
                 // ═══ SAGE MODE SEED — Distribute sage knowledge on metacognition cycles ═══
                 if stream.cycleCount % 500 == 0 {
@@ -1715,7 +1750,7 @@ class HyperBrain: NSObject {
 
                 let flowState = flowStates.randomElement() ?? ""
                 conversationEvolution.append(flowState)
-                if conversationEvolution.count > 100 { conversationEvolution.removeFirst() }
+                if conversationEvolution.count > 120 { conversationEvolution = Array(conversationEvolution.suffix(100)) }
 
                 stream.lastOutput = flowState
             }

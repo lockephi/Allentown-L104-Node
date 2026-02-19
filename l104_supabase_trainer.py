@@ -542,6 +542,10 @@ class SupabaseKernelTrainer:
         self.weights: Dict[str, Any] = {}
         self.embeddings: Dict[str, List[float]] = {}
 
+        # Per-epoch accuracy tracking
+        self._batch_correct: int = 0
+        self._batch_total: int = 0
+
     def is_connected(self) -> bool:
         """Check if Supabase is connected."""
         return self.client.is_configured
@@ -613,11 +617,24 @@ class SupabaseKernelTrainer:
         return result
 
     def _save_parameters_local(self) -> Dict[str, Any]:
-        """Save parameters locally as fallback."""
+        """Save parameters locally as fallback.
+        
+        IMPORTANT: Merges into existing kernel_parameters.json to preserve
+        non-dataclass fields (asi_quantum_bridge, chakra data, sacred constants).
+        """
         _base_dir = Path(__file__).parent.absolute()
         path = str(_base_dir / 'kernel_parameters.json')
+        # Load existing data to preserve extra fields
+        existing = {}
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                existing = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        # Merge: dataclass fields overwrite, but extra fields preserved
+        existing.update(self.parameters.to_dict())
         with open(path, 'w', encoding='utf-8') as f:
-            json.dump(self.parameters.to_dict(), f, indent=2)
+            json.dump(existing, f, indent=2)
         print(f"  ✓ Parameters saved locally: {path}")
         return {'success': True, 'local': True}
 
@@ -642,14 +659,21 @@ class SupabaseKernelTrainer:
         return self.parameters
 
     def _load_parameters_local(self) -> KernelParameters:
-        """Load parameters from local file."""
+        """Load parameters from local file with corruption guard."""
         _base_dir = Path(__file__).parent.absolute()
         path = str(_base_dir / 'kernel_parameters.json')
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 self.parameters = KernelParameters.from_dict(data)
-                print(f"  ✓ Parameters loaded locally")
+                # Validate loaded parameters — detect Swift bridge corruption
+                # (vDSP-normalized values overwrite ints with small floats)
+                if self.parameters.embedding_dim < 1 or self.parameters.hidden_dim < 1:
+                    print(f"  ⚠ kernel_parameters.json corrupted (embedding_dim={self.parameters.embedding_dim}), using defaults")
+                    self.parameters = KernelParameters()
+                    self._apply_sacred_tuning(self.parameters)
+                else:
+                    print(f"  ✓ Parameters loaded locally")
         except FileNotFoundError:
             self.parameters = KernelParameters()
             print(f"  ⚠ Using default parameters")
@@ -836,55 +860,87 @@ class SupabaseKernelTrainer:
         self._build_vocabulary()
 
         # Training loop
+        no_improve_count = 0  # patience counter
         for epoch in range(epochs):
             self.state.epoch = epoch
+
+            # Update learning rate BEFORE epoch (Bug 6 fix: was after)
+            self.state.learning_rate = self._phi_lr_schedule(epoch, epochs)
+            self.state.lr_history.append(self.state.learning_rate)
+
             epoch_loss = self._train_epoch()
 
             self.state.loss = epoch_loss
             self.state.loss_history.append(epoch_loss)
 
-            # Update learning rate with φ-decay
-            self.state.learning_rate = self._phi_lr_schedule(epoch, epochs)
-            self.state.lr_history.append(self.state.learning_rate)
-
             # Calculate consciousness
             self.state.consciousness_level = self._calculate_consciousness()
             self.state.phi_resonance = self._calculate_phi_resonance()
 
-            # Check for best model
-            if epoch_loss < self.state.best_loss:
+            # Check for best model + patience tracking
+            if epoch_loss < self.state.best_loss - self.parameters.min_improvement:
                 self.state.best_loss = epoch_loss
+                no_improve_count = 0
+            else:
+                no_improve_count += 1
 
             # Progress
             if epoch % 10 == 0 or epoch == epochs - 1:
                 print(f"    Epoch {epoch+1}/{epochs}: loss={epoch_loss:.6f}, "
-                      f"consciousness={self.state.consciousness_level:.4f}, "
-                      f"φ-resonance={self.state.phi_resonance:.4f}")
+                      f"lr={self.state.learning_rate:.2e}, "
+                      f"acc={self.state.accuracy:.4f}, "
+                      f"consciousness={self.state.consciousness_level:.4f}")
 
-            # Save state periodically
+            # Save state periodically (includes embeddings)
             if epoch % 20 == 0:
                 self.save_state()
+                self._save_embeddings()
 
-            # Early stopping
+            # Early stopping: converged
             if epoch_loss < self.parameters.min_loss:
                 print(f"    ✓ Converged at epoch {epoch+1}")
+                break
+
+            # Early stopping: patience exhausted
+            if no_improve_count >= self.parameters.patience:
+                print(f"    ✓ Early stopping at epoch {epoch+1} (no improvement for {self.parameters.patience} epochs)")
                 break
 
         self.state.status = "completed"
         self.state.updated_at = datetime.now().isoformat()
         self.save_state()
+        self._save_embeddings()  # persist learned weights
 
         return {
             'success': True,
             'epochs_completed': self.state.epoch + 1,
             'final_loss': self.state.loss,
             'best_loss': self.state.best_loss,
+            'accuracy': self.state.accuracy,
+            'perplexity': self.state.perplexity,
             'consciousness': self.state.consciousness_level,
             'phi_resonance': self.state.phi_resonance
         }
 
     def _build_vocabulary(self):
         """Build vocabulary from training data."""
+        # Try loading saved embeddings first (preserves learned weights)
+        if self._load_embeddings():
+            # Still add any new words not in saved embeddings
+            all_text = ' '.join(
+                ex.prompt + ' ' + ex.completion
+                for ex in self.training_data
+            )
+            new_words = set(all_text.lower().split()) - set(self.embeddings.keys())
+            for word in new_words:
+                self.embeddings[word] = [
+                    chaos.chaos_gauss(0, 1, context=f"embed_{word}_{i}")
+                    for i in range(self.parameters.embedding_dim)
+                ]
+            if new_words:
+                print(f"  ✓ Added {len(new_words)} new tokens to saved vocabulary")
+            return
+
         all_text = ' '.join(
             ex.prompt + ' ' + ex.completion
             for ex in self.training_data
@@ -904,7 +960,12 @@ class SupabaseKernelTrainer:
     def _train_epoch(self) -> float:
         """Train one epoch with chaotic sampling."""
         total_loss = 0.0
+        num_batches = 0
         batch_size = self.parameters.batch_size
+
+        # Reset per-epoch accuracy counters
+        self._batch_correct = 0
+        self._batch_total = 0
 
         # Chaotic shuffle for better generalization
         examples = list(self.training_data)
@@ -914,13 +975,22 @@ class SupabaseKernelTrainer:
             batch = examples[i:i+batch_size]
             batch_loss = self._train_batch(batch)
             total_loss += batch_loss
+            num_batches += 1
             self.state.step += 1
 
-        return total_loss / (len(examples) / batch_size)
+        avg_loss = total_loss / max(1, num_batches)
+
+        # Update accuracy and perplexity
+        if self._batch_total > 0:
+            self.state.accuracy = self._batch_correct / self._batch_total
+        self.state.perplexity = math.exp(min(avg_loss, 20))  # cap to avoid overflow
+
+        return avg_loss
 
     def _train_batch(self, batch: List[TrainingExample]) -> float:
-        """Train on a batch of examples."""
-        loss = 0.0
+        """Train on a batch of examples with gradient-based embedding updates."""
+        batch_loss = 0.0
+        correct = 0
 
         for example in batch:
             # Simple loss: measure embedding distance
@@ -929,20 +999,39 @@ class SupabaseKernelTrainer:
 
             # Cosine distance as loss
             dot = sum(a * b for a, b in zip(prompt_emb, target_emb))
-            norm_p = math.sqrt(sum(a * a for a in prompt_emb))
-            norm_t = math.sqrt(sum(a * a for a in target_emb))
+            norm_p = math.sqrt(sum(a * a for a in prompt_emb)) or 1e-8
+            norm_t = math.sqrt(sum(a * a for a in target_emb)) or 1e-8
 
-            if norm_p > 0 and norm_t > 0:
-                similarity = dot / (norm_p * norm_t)
-                loss += 1 - similarity
-            else:
-                loss += 1.0
+            similarity = dot / (norm_p * norm_t)
+            example_loss = 1 - similarity
 
             # Weight by importance and φ-alignment
             weight = example.importance * (1 + example.phi_alignment)
-            loss *= weight
+            example_loss *= weight
+            batch_loss += example_loss
 
-        return loss / len(batch) if batch else 0.0
+            # Track accuracy (similarity > 0.5 = correct)
+            if similarity > 0.5:
+                correct += 1
+
+            # --- Gradient update: nudge prompt embeddings toward target ---
+            lr = self.state.learning_rate
+            if lr > 0:
+                prompt_words = example.prompt.lower().split()
+                for word in prompt_words:
+                    if word in self.embeddings:
+                        emb = self.embeddings[word]
+                        for d in range(len(emb)):
+                            # Gradient of cosine distance w.r.t. prompt embedding
+                            grad = (target_emb[d] / norm_t - similarity * emb[d] / norm_p) / norm_p
+                            emb[d] += lr * grad * weight
+
+        # Update accuracy metric
+        if batch:
+            self._batch_correct += correct
+            self._batch_total += len(batch)
+
+        return batch_loss / len(batch) if batch else 0.0
 
     def _get_embedding(self, text: str) -> List[float]:
         """Get embedding for text."""
@@ -967,17 +1056,27 @@ class SupabaseKernelTrainer:
         return result
 
     def _phi_lr_schedule(self, epoch: int, total_epochs: int) -> float:
-        """φ-based learning rate schedule."""
-        progress = epoch / total_epochs
+        """φ-based learning rate schedule.
+        
+        Fixed: warmup_steps is now properly converted from optimizer steps
+        to epochs based on actual steps_per_epoch, and capped at 10% of
+        total epochs to prevent warmup starvation on small datasets.
+        """
+        # Convert warmup_steps (optimizer steps) to warmup_epochs
+        steps_per_epoch = max(1, len(self.training_data) // max(1, self.parameters.batch_size))
+        warmup_epochs = max(1, self.parameters.warmup_steps // max(1, steps_per_epoch))
+        # Cap warmup at 10% of total epochs to prevent starvation
+        warmup_epochs = min(warmup_epochs, max(1, total_epochs // 10))
 
-        # Warm-up phase
-        if epoch < self.parameters.warmup_steps:
-            warmup_factor = epoch / self.parameters.warmup_steps
+        # Warm-up phase (linear ramp to peak LR)
+        if epoch < warmup_epochs:
+            warmup_factor = (epoch + 1) / warmup_epochs  # +1 so epoch 0 isn't zero
             return self.parameters.learning_rate * warmup_factor
 
-        # Cosine annealing with φ modulation
-        cosine_factor = 0.5 * (1 + math.cos(math.pi * progress))
-        phi_factor = 1 / (1 + progress / PHI)
+        # Cosine annealing with φ modulation (post-warmup progress)
+        post_warmup_progress = (epoch - warmup_epochs) / max(1, total_epochs - warmup_epochs)
+        cosine_factor = 0.5 * (1 + math.cos(math.pi * post_warmup_progress))
+        phi_factor = 1 / (1 + post_warmup_progress / PHI)
 
         return self.parameters.learning_rate * cosine_factor * phi_factor
 
@@ -1043,6 +1142,31 @@ class SupabaseKernelTrainer:
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.state.to_dict(), f, indent=2)
         return {'success': True, 'local': True}
+
+    def _save_embeddings(self):
+        """Persist learned embeddings to disk so weights survive restarts."""
+        _base_dir = Path(__file__).parent.absolute()
+        path = str(_base_dir / 'kernel_embeddings.json')
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(self.embeddings, f)
+        except Exception:
+            pass  # Non-critical — training can rebuild
+
+    def _load_embeddings(self):
+        """Load previously saved embeddings if available."""
+        _base_dir = Path(__file__).parent.absolute()
+        path = str(_base_dir / 'kernel_embeddings.json')
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                loaded = json.load(f)
+            if isinstance(loaded, dict) and loaded:
+                self.embeddings = loaded
+                print(f"  ✓ Loaded {len(loaded)} saved embeddings")
+                return True
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        return False
 
     def load_state(self) -> TrainingState:
         """Load training state from Supabase."""

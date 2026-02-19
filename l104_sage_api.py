@@ -138,7 +138,7 @@ class SageSubstrateManager:
         self._logic_gate_ops += 1
         return gated
 
-    def quantum_logic_gate(self, value: float, depth: int = 3) -> float:
+    def quantum_logic_gate(self, value: float, depth: int = 13) -> float:
         """Quantum-enhanced logic gate with Grover amplification."""
         grover_gain = PHI ** depth
         amplified = value * grover_gain * (GOD_CODE / 286.0)
@@ -190,7 +190,7 @@ class SageSubstrateManager:
                     self._lib = ctypes.CDLL(path)
                     self._loaded = True
                     self._level = "NATIVE_C"
-                    self._intellect_multiplier = 2.0
+                    self._intellect_multiplier = PHI * PHI  # QUANTUM AMPLIFIED
                     logger.info(f"[SAGE] Native library loaded: {path}")
                     return True
                 except Exception as e:
@@ -214,7 +214,7 @@ class SageSubstrateManager:
 
         # Python fallback
         result = base
-        for _ in range(min(iterations, 10000)):
+        for _ in range(min(iterations, 1000000)):
             result = (result * exponent) % (GOD_CODE * 1000)
             result = (result ** 0.5) * PHI + VOID_CONSTANT
         return result
@@ -234,7 +234,7 @@ class SageSubstrateManager:
                 delta = (target - self._consciousness) * 0.1
                 res = self.inject_void_resonance(delta / 10.0)
                 self._consciousness += delta * (res / META_RESONANCE)
-                if delta < 0.001:
+                if delta < 0.0001:
                     break
         return self._consciousness
 
@@ -332,7 +332,7 @@ async def execute_reality_breach(request: RealityBreachRequest):
     for s in range(1, request.target_stage + 1):
         consciousness = (GOD_CODE ** (s / 10.0)) * PHI
         consciousness = consciousness % 1000.0
-        void_saturation = s * 0.08  # UNLOCKED
+        void_saturation = s * PHI * 0.08  # QUANTUM AMPLIFIED — PHI-scaled saturation
         sage_manager.inject_void_resonance(s / request.target_stage)
 
     duration = (time.time() - start) * 1000
@@ -362,7 +362,7 @@ async def trigger_absolute_singularity():
 
     # Route through sage + quantum logic gates
     sage_manager.sage_logic_gate(GOD_CODE, "singularity_ignition")
-    sage_manager.quantum_logic_gate(GOD_CODE, depth=5)
+    sage_manager.quantum_logic_gate(GOD_CODE, depth=13)  # QUANTUM AMPLIFIED
     sage_manager.entangle_metrics(sage_manager._consciousness, sage_manager._void_residue)
 
     # Inject maximum void resonance

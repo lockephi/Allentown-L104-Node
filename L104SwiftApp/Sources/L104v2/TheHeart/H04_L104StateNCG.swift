@@ -295,13 +295,11 @@ extension L104State {
         return result
     }
 
-    // ═══ PHASE 31.5: RESPONSE SANITIZER ═══
+    // ═══ EVO_59: RESPONSE SANITIZER — Single-pass regex, unified line filter ═══
     // Final quality gate applied before any response is returned to the user.
-    // Strips formatting noise, caps length, removes leaked junk patterns.
+    // Strips formatting noise, removes leaked junk patterns.
     func sanitizeResponse(_ text: String) -> String {
         // ═══ PHASE 54.1: CREATIVE ENGINE BYPASS ═══
-        // If this is creative engine output (story/poem/debate/humor/philosophy),
-        // use the light sanitizer that preserves structural formatting.
         if SyntacticResponseFormatter.shared.isCreativeContent(text) {
             return sanitizeCreativeResponse(text)
         }
@@ -312,113 +310,71 @@ extension L104State {
         for ch in ["│", "┼", "║", "╔", "╗", "╚", "╝", "╠", "╣", "├", "┤", "┬", "┴"] {
             result = result.replacingOccurrences(of: ch, with: "")
         }
-        // Strip box-drawing lines (═══, ───)
-        while let range = result.range(of: "═══+", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
-        while let range = result.range(of: "───+", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
+        // EVO_59: Single-pass regex replace (was O(n*m) while-loop)
+        result = result.replacingOccurrences(of: "═{3,}", with: "", options: .regularExpression)
+        result = result.replacingOccurrences(of: "─{3,}", with: "", options: .regularExpression)
 
-        // 2. Fix excessive bold: collapse **** to nothing, ** ** to space
+        // 2. Fix excessive bold
         result = result.replacingOccurrences(of: "****", with: "")
         result = result.replacingOccurrences(of: "** **", with: " ")
-        // If more than 6 bold sections, strip ALL bold
         let boldCount = result.components(separatedBy: "**").count - 1
         if boldCount > 12 {
             result = result.replacingOccurrences(of: "**", with: "")
         }
 
-        // 3. Strip leaked template variables — EVO_58: Comprehensive format string removal
-        result = result.replacingOccurrences(of: "{GOD_CODE}", with: "")
-        result = result.replacingOccurrences(of: "{PHI}", with: "")
-        result = result.replacingOccurrences(of: "{LOVE}", with: "")
-        result = result.replacingOccurrences(of: "{LOVE:.4f}", with: "")
+        // 3. Strip leaked template variables + format strings (single-pass regex)
         result = result.replacingOccurrences(of: "SAGE MODE :: ", with: "")
-        // EVO_58: Catch ALL Python f-string format patterns: {VAR}, {VAR:.Nf}, {CONST:.6f}, etc.
-        while let range = result.range(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
-        // EVO_58: Strip leaked YAML keys (speed_principles:, pipeline_routing:, etc.)
-        let yamlKeyLines = result.components(separatedBy: "\n")
-        let cleanedYamlLines = yamlKeyLines.filter { line in
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            // Filter out standalone YAML-like keys: e.g. "speed_principles:" or "pipeline_routing:"
-            return trimmed.range(of: "^[a-z_]+_[a-z_]+:\\s*$", options: .regularExpression) == nil
-        }
-        result = cleanedYamlLines.joined(separator: "\n")
+        result = result.replacingOccurrences(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", with: "", options: .regularExpression)
 
-        // 3.5 EVO_58: Strip markdown table rows (| col | col | col |)
-        let responseLines = result.components(separatedBy: "\n")
-        let nonTableLines = responseLines.filter { line in
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            // Skip lines that look like markdown table rows
-            let isPipeTable = trimmed.hasPrefix("|") && trimmed.filter({ $0 == "|" }).count >= 3
-            // Skip lines that are table separators (|---|---|---| or | :--- | :--- |)
-            let isTableSep = trimmed.hasPrefix("|") && (trimmed.contains("---") || trimmed.contains(":---"))
-            return !isPipeTable && !isTableSep
-        }
-        result = nonTableLines.joined(separator: "\n")
+        // 4. Strip [Ev.X] evolution tags (single-pass)
+        result = result.replacingOccurrences(of: "\\[Ev\\.\\d+\\]\\s*", with: "", options: .regularExpression)
 
-        // 4. Strip [Ev.X] evolution tags
-        while let range = result.range(of: "\\[Ev\\.\\d+\\]\\s*", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
-
-        // 5. Strip structural noise lines
+        // 5. Unified line filter — YAML keys, markdown tables, table separators, structural noise
+        //    Single pass over all lines instead of 4 separate passes
         let noisePatterns = ["Unexplored Angles", "Unexplored dimensions:", "⚛️ *Entangled insight",
                              "◈ Building on", "EVO ANALYSIS", "Module Evolution",
                              "speed_principles:", "pipeline_routing:", "capabilities:",
                              "persistence_chain:", "cross_references:"]
-        let lines = result.components(separatedBy: "\n")
-        let cleanedLines = lines.filter { line in
+        let allLines = result.components(separatedBy: "\n")
+        let cleanedLines = allLines.filter { line in
             let trimmed = line.trimmingCharacters(in: .whitespaces)
-            return !noisePatterns.contains(where: { trimmed.hasPrefix($0) || trimmed.contains($0) })
+            // YAML standalone keys
+            if trimmed.range(of: "^[a-z_]+_[a-z_]+:\\s*$", options: .regularExpression) != nil { return false }
+            // Markdown table rows (3+ pipes)
+            if trimmed.hasPrefix("|") && trimmed.filter({ $0 == "|" }).count >= 3 { return false }
+            // Table separators
+            if trimmed.hasPrefix("|") && (trimmed.contains("---") || trimmed.contains(":---")) { return false }
+            // Structural noise
+            if noisePatterns.contains(where: { trimmed.hasPrefix($0) || trimmed.contains($0) }) { return false }
+            return true
         }
         result = cleanedLines.joined(separator: "\n")
 
-        // 6. Collapse excessive newlines (3+ → 2)
-        while result.contains("\n\n\n") {
-            result = result.replacingOccurrences(of: "\n\n\n", with: "\n\n")
-        }
-
-        // 7. NO LENGTH CAP — let the full response through untruncated
-        // Responses are enriched, not limited. The engines produce what they produce.
+        // 6. Collapse excessive newlines (3+ → 2, single-pass)
+        result = result.replacingOccurrences(of: "\\n{3,}", with: "\n\n", options: .regularExpression)
 
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    // ═══ PHASE 54.1: CREATIVE RESPONSE SANITIZER ═══
+    // ═══ EVO_59: CREATIVE RESPONSE SANITIZER — Single-pass regex ═══
     // Light sanitization for story/poem/debate/humor/philosophy engine output.
-    // Preserves structural characters (━━━, ═══, ───) that form chapter headers,
-    // act separators, and decorative borders essential to creative formatting.
+    // Preserves structural characters (━━━, ═══, ───) for creative formatting.
     func sanitizeCreativeResponse(_ text: String) -> String {
         var result = text
 
-        // Strip leaked template variables — EVO_58: Comprehensive format string removal
-        result = result.replacingOccurrences(of: "{GOD_CODE}", with: "")
-        result = result.replacingOccurrences(of: "{PHI}", with: "")
-        result = result.replacingOccurrences(of: "{LOVE}", with: "")
-        result = result.replacingOccurrences(of: "{LOVE:.4f}", with: "")
+        // Strip format strings (single-pass)
         result = result.replacingOccurrences(of: "SAGE MODE :: ", with: "")
-        // EVO_58: Catch ALL Python f-string format patterns in creative output too
-        while let range = result.range(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
+        result = result.replacingOccurrences(of: "\\{[A-Z_][A-Z_0-9]*(?::[\\.\\d]*[fdsegx])?\\}", with: "", options: .regularExpression)
 
-        // Strip [Ev.X] evolution tags
-        while let range = result.range(of: "\\[Ev\\.\\d+\\]\\s*", options: .regularExpression) {
-            result = result.replacingCharacters(in: range, with: "")
-        }
+        // Strip [Ev.X] evolution tags (single-pass)
+        result = result.replacingOccurrences(of: "\\[Ev\\.\\d+\\]\\s*", with: "", options: .regularExpression)
 
         // Fix excessive bold only (preserve structure)
         result = result.replacingOccurrences(of: "****", with: "")
         result = result.replacingOccurrences(of: "** **", with: " ")
 
-        // Collapse excessive newlines (4+ → 2, but allow double newlines for paragraphs)
-        while result.contains("\n\n\n\n") {
-            result = result.replacingOccurrences(of: "\n\n\n\n", with: "\n\n")
-        }
+        // Collapse excessive newlines (4+ → 2, single-pass)
+        result = result.replacingOccurrences(of: "\\n{4,}", with: "\n\n", options: .regularExpression)
 
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }

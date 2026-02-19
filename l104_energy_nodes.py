@@ -42,8 +42,9 @@ class L104ComputedValues:
 
     # === FROM TRUTH_MANIFEST.json ===
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
-    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     PHI_UNIVERSAL = 1.618033988749895         # truths.phi_universal
+    PHI = (1 + 5**0.5) / 2
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     ROOT_SCALAR_X = 221.79420018355955        # truths.root_scalar_x
     HEART_HZ = 639.9981762664                 # truths.heart_hz_precision
     AJNA_LOVE_PEAK = 853.5428333258           # truths.ajna_love_peak

@@ -56,20 +56,28 @@ class ResponsePipelineOptimizer {
         let quality = _scoreResponseUnlocked(response, query: query)
 
         if responseCache.count >= maxCacheSize {
-            // EVO_55: φ-decay eviction — evict lowest-quality oldest entries
+            // PERF: TTL-based eviction first (O(n) scan), then oldest if still over capacity
             let now = Date().timeIntervalSince1970
-            let scored = responseCache.map { (key: $0.key, age: now - $0.value.timestamp, quality: $0.value.quality) }
-            let sorted = scored.sorted { a, b in
-                // Lower quality × older = more evictable
-                let scoreA = a.quality * pow(TAU, a.age / cacheTTL)  // φ-decay
-                let scoreB = b.quality * pow(TAU, b.age / cacheTTL)
-                return scoreA < scoreB
+            let effectiveTTL = cacheTTL * adaptiveTTLMultiplier
+            var expiredKeys: [String] = []
+            for (key, entry) in responseCache {
+                if now - entry.timestamp > effectiveTTL {
+                    expiredKeys.append(key)
+                }
             }
-            let toRemove = sorted.prefix(maxCacheSize / 4)
-            for item in toRemove {
-                responseCache.removeValue(forKey: item.key)
+            for key in expiredKeys {
+                responseCache.removeValue(forKey: key)
             }
-            totalEvictions += toRemove.count
+            // If still over 75% capacity, evict oldest 25%
+            if responseCache.count >= (maxCacheSize * 3 / 4) {
+                let sortedByAge = responseCache.sorted { $0.value.timestamp < $1.value.timestamp }
+                let evictCount = maxCacheSize / 4
+                for item in sortedByAge.prefix(evictCount) {
+                    responseCache.removeValue(forKey: item.key)
+                }
+                totalEvictions += evictCount
+            }
+            totalEvictions += expiredKeys.count
         }
 
         let key = normalizeQuery(query)

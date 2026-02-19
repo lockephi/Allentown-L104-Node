@@ -38,7 +38,7 @@ FEIGENBAUM = 4.669201609
 TAU = 6.283185307179586
 GROVER_AMPLIFICATION = PHI ** 3
 
-VERSION = "2.0.0"
+VERSION = "3.0.0"
 
 
 class InvariantScanner:
@@ -218,7 +218,7 @@ class ScourPersistence:
         except Exception:
             pass
 
-    def load_recent(self, n: int = 20) -> List[Dict]:
+    def load_recent(self, n: int = 100) -> List[Dict]:
         try:
             lines = self.path.read_text().splitlines()
             return [json.loads(l) for l in lines[-n:]]
@@ -305,8 +305,8 @@ class SageScourEngine:
             'clone_blocks': len(clones),
             'avg_anomaly': round(avg_anomaly, 4),
             'health_score': self._last_health,
-            'worst_anomalies': sorted(anomaly_results, key=lambda x: x.get('anomaly_score', 0), reverse=True)[:5],
-            'worst_imports': sorted(import_results, key=lambda x: len(x.get('potentially_unused', [])), reverse=True)[:5],
+            'worst_anomalies': sorted(anomaly_results, key=lambda x: x.get('anomaly_score', 0), reverse=True)[:20],
+            'worst_imports': sorted(import_results, key=lambda x: len(x.get('potentially_unused', [])), reverse=True)[:20],
         }
 
         self._persistence.append(report)
@@ -320,16 +320,16 @@ class SageScourEngine:
 
         sacred = 0
         anomalies = []
-        for fp in files[:50]:  # Cap at 50 for speed
+        for fp in files[:500]:  # Expanded scan depth
             inv = self._invariant.scan_file(fp)
             if inv.get('sacred_aligned'):
                 sacred += 1
             anom = self._anomaly.score_file(fp)
-            if anom.get('anomaly_score', 0) > 0.3:
+            if anom.get('anomaly_score', 0) > 0.5:
                 anomalies.append(anom)
 
         return {
-            'files_checked': min(len(files), 50),
+            'files_checked': min(len(files), 500),
             'sacred_aligned': sacred,
             'high_anomaly_files': len(anomalies),
             'anomalies': anomalies[:10],

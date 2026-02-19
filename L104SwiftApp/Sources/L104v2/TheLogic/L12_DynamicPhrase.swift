@@ -343,9 +343,10 @@ class DynamicPhraseEngine {
         }
         // Clean concept from seeds — reject questions, training data, junk
         let cleanConcept = conceptSeeds.first(where: { c in
-            c.count > 3 && c.count < 25 && !c.contains("?") &&
-            !c.lowercased().hasPrefix("what") && !c.lowercased().hasPrefix("how") &&
-            !c.lowercased().hasPrefix("why") && !c.lowercased().hasPrefix("when")
+            let cl = c.lowercased()
+            return c.count > 3 && c.count < 25 && !c.contains("?") &&
+            !cl.hasPrefix("what") && !cl.hasPrefix("how") &&
+            !cl.hasPrefix("why") && !cl.hasPrefix("when")
         }) ?? "structure"
 
         // NO seedFragment injection — it was leaking raw KB data into logs

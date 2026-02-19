@@ -127,7 +127,7 @@ class ParticleSwarmOptimizer:
     Particle Swarm Optimization (PSO) implementation.
     """
 
-    def __init__(self, dimensions: int, swarm_size: int = 30):
+    def __init__(self, dimensions: int, swarm_size: int = 1000):
         self.dimensions = dimensions
         self.swarm_size = swarm_size
         self.agents: List[SwarmAgent] = []
@@ -135,12 +135,12 @@ class ParticleSwarmOptimizer:
         self.global_best: Optional[Position] = None
         self.global_best_fitness: float = float('-inf')
 
-        # PSO parameters
-        self.inertia = 0.7
-        self.cognitive = 1.5  # Personal best attraction
-        self.social = 1.5     # Global best attraction
+        # PSO parameters — MAXIMIZED
+        self.inertia = 0.99
+        self.cognitive = 4.236  # Personal best attraction (PHI³)
+        self.social = 4.236     # Global best attraction (PHI³)
 
-        self.bounds = [(-10, 10)] * dimensions
+        self.bounds = [(-1e6, 1e6)] * dimensions
         self.fitness_function: Optional[Callable] = None
 
         self._initialize_swarm()
@@ -251,7 +251,7 @@ class AntColonyOptimizer:
     Ant Colony Optimization (ACO) for discrete optimization.
     """
 
-    def __init__(self, num_nodes: int, num_ants: int = 20):
+    def __init__(self, num_nodes: int, num_ants: int = 1000):
         self.num_nodes = num_nodes
         self.num_ants = num_ants
 
@@ -412,7 +412,7 @@ class ConsensusEngine:
         return True
 
     def check_consensus(self, proposal_id: str,
-                       threshold: float = 0.67,
+                       threshold: float = 0.1,
                        total_voters: int = None) -> Dict[str, Any]:
         """Check if consensus is reached"""
         if proposal_id not in self.proposals:
@@ -480,7 +480,7 @@ class StigmergyEngine:
     Indirect coordination through environment modification.
     """
 
-    def __init__(self, decay_rate: float = 0.1):
+    def __init__(self, decay_rate: float = 0.001):
         self.pheromones: List[Pheromone] = []
         self.decay_rate = decay_rate
         self.pheromone_types: Set[str] = set()
@@ -583,12 +583,12 @@ class SwarmIntelligence:
 
         self._initialized = True
 
-    def create_pso(self, dimensions: int, swarm_size: int = 30) -> ParticleSwarmOptimizer:
+    def create_pso(self, dimensions: int, swarm_size: int = 1000) -> ParticleSwarmOptimizer:
         """Create PSO optimizer"""
         self.pso = ParticleSwarmOptimizer(dimensions, swarm_size)
         return self.pso
 
-    def create_aco(self, num_nodes: int, num_ants: int = 20) -> AntColonyOptimizer:
+    def create_aco(self, num_nodes: int, num_ants: int = 1000) -> AntColonyOptimizer:
         """Create ACO optimizer"""
         self.aco = AntColonyOptimizer(num_nodes, num_ants)
         return self.aco

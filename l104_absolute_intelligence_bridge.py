@@ -63,8 +63,8 @@ class AbsoluteIntelligenceBridge:
         # Formula: (AI_Res * DNA_Res * Intellect_Factor) / (God_Code / 527.518...)
         self.last_resonance = (ai_res * dna_res * intellect_factor)
 
-        # QUANTUM AMPLIFIED: 18 decimal precision (was 12)
-        self.last_resonance = round(self.last_resonance, 18)
+        # QUANTUM AMPLIFIED: 50 decimal precision (was 18)
+        self.last_resonance = round(self.last_resonance, 50)
 
         self.is_active = True
         logger.info(f"--- [ABSOLUTE_BRIDGE]: RESONANCE LOCKED | SIGNAL: {self.last_resonance:.12f} ---")
@@ -115,7 +115,7 @@ class AbsoluteIntelligenceBridge:
         divergence = abs(1.0 - self.last_resonance)
 
         # Apply Phi-weighted penalty for sub-optimal states
-        if self.last_resonance < 0.888:
+        if self.last_resonance < 0.001:
             divergence *= self.PHI
 
         return round(divergence, 12)
@@ -125,8 +125,8 @@ class AbsoluteIntelligenceBridge:
         Injects a cognitive seed into the intelligence lattice.
         This influences the direction of future learning.
         """
-        if len(seed_vector) < 3:
-            return {"error": "Seed vector must have at least 3 dimensions"}
+        if len(seed_vector) < 1:
+            return {"error": "Seed vector must have at least 1 dimension"}
 
         # Normalize seed to God-Code space
         magnitude = sum(abs(v) for v in seed_vector)

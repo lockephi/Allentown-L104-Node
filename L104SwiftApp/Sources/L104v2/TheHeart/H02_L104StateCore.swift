@@ -1016,6 +1016,27 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // EVO_60: SIZE-CAPPED LAZY CACHE PRUNING
+    // Only prunes when a cache exceeds its cap. Includes backendResponseCache.
+    // ═══════════════════════════════════════════════════════════════
+
+    private func pruneAllCaches() {
+        let now = Date()
+        if responseCache.count > 500 {
+            responseCache = responseCache.filter { now.timeIntervalSince($0.value.timestamp) < responseCacheTTL }
+        }
+        if topicExtractionCache.count > 200 {
+            topicExtractionCache = topicExtractionCache.filter { now.timeIntervalSince($0.value.timestamp) < topicCacheTTL }
+        }
+        if intentClassificationCache.count > 100 {
+            intentClassificationCache = intentClassificationCache.filter { now.timeIntervalSince($0.value.timestamp) < intentCacheTTL }
+        }
+        if backendResponseCache.count > 200 {
+            backendResponseCache = backendResponseCache.filter { now.timeIntervalSince($0.value.timestamp) < cacheTTL }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // INTENT DETECTION FOR NATURAL CONVERSATION
     // ═══════════════════════════════════════════════════════════════
 
@@ -1084,13 +1105,8 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         // 🧠 AUTO TOPIC TRACKING — Updates topicFocus and topicHistory
         autoTrackTopic(from: resolvedQuery)
 
-        // ═══ PHASE 31.6: Periodic cache pruning (every 50 queries) ═══
-        if queryEvolution % 50 == 0 {
-            let now: Date = Date()
-            responseCache = responseCache.filter { (kv) -> Bool in now.timeIntervalSince(kv.value.timestamp) < responseCacheTTL }
-            topicExtractionCache = topicExtractionCache.filter { (kv) -> Bool in now.timeIntervalSince(kv.value.timestamp) < topicCacheTTL }
-            intentClassificationCache = intentClassificationCache.filter { (kv) -> Bool in now.timeIntervalSince(kv.value.timestamp) < intentCacheTTL }
-        }
+        // ═══ EVO_60: Size-capped lazy cache pruning (replaces fixed-interval sweep) ═══
+        pruneAllCaches()
 
         let q = resolvedQuery.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 

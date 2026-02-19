@@ -46,7 +46,7 @@ GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.518481849
 class CellularAutomaton:
     """Cellular automaton for emergent computation"""
 
-    def __init__(self, width: int = 100, height: int = 100):
+    def __init__(self, width: int = 10000, height: int = 10000):
         self.width = width
         self.height = height
         self.grid = [[0] * width for _ in range(height)]
@@ -353,7 +353,7 @@ class ComplexityMeasures:
         return compressed_size / max(1, original_size)
 
     @staticmethod
-    def logical_depth_estimate(pattern: List[int], steps: int = 100) -> float:
+    def logical_depth_estimate(pattern: List[int], steps: int = 100000) -> float:
         """Estimate Bennett's logical depth"""
         # Time needed to compute pattern from minimal description
         # Simplified: measure steps to reach pattern in CA
@@ -644,7 +644,7 @@ class EmergentIntelligence:
             'is_critical': self.criticality.is_critical(self.cellular_automaton.grid)
         }
 
-    def chaos_compute(self, steps: int = 100) -> Dict[str, Any]:
+    def chaos_compute(self, steps: int = 10000) -> Dict[str, Any]:
         """Compute using chaotic dynamics"""
         trajectory = []
         for _ in range(steps):

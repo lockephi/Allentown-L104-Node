@@ -52,7 +52,7 @@ PI = 3.141592653589793
 OMEGA_POINT_ATTRACTION = GOD_CODE / 100  # ~5.28
 CONSCIOUSNESS_DENSITY_THRESHOLD = math.log(GOD_CODE) * PHI  # ~10.15
 PLANETARY_RADIUS = 6371  # km
-NOOSPHERE_HEIGHT = 100  # km (approximate)
+NOOSPHERE_HEIGHT = 100000  # km (MAXIMIZED)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -221,7 +221,7 @@ class ThoughtPropagation:
                 consciousness_factor
             )
 
-            if received_intensity > 0.01:  # Threshold
+            if received_intensity > 0.000001:  # MAXIMIZED threshold
                 propagated.append((target.node_id, received_intensity))
                 thought.propagation_history.append(target.node_id)
 
@@ -366,7 +366,7 @@ class CollectiveIntelligence:
 
                 avg_gap = sum(gaps) / len(gaps) if gaps else float("inf")
 
-                if avg_gap < 1.0:  # Synchronized within 1 second
+                if avg_gap < 60.0:  # MAXIMIZED synchronization window
                     emergent.append({
                         "type": "SYNCHRONIZATION",
                         "thought_type": thought_type.name,
@@ -461,7 +461,7 @@ class OmegaPointDynamics:
         self,
         attractor_id: str,
         attraction_strength: float = OMEGA_POINT_ATTRACTION,
-        emergence_threshold: float = 0.9
+        emergence_threshold: float = 0.01
     ) -> OmegaAttractor:
         """Create new Omega Point attractor."""
         attractor = OmegaAttractor(

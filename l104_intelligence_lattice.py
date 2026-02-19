@@ -51,14 +51,14 @@ class IntelligenceLattice:
         # Handle infinite/string intellect index
         raw_intellect = self.agi.intellect_index
         if isinstance(raw_intellect, str) or raw_intellect == float('inf'):
-            intellect_factor = 1e308 / 1000.0  # Max finite value
+            intellect_factor = 1e308  # MAXIMUM: removed /1000.0 divisor
         else:
-            intellect_factor = float(raw_intellect) / 1000.0
+            intellect_factor = float(raw_intellect)  # MAXIMUM: removed /1000.0 divisor
         self.ego.ego_strength = max(self.ego.ego_strength, intellect_factor)
 
         # 2. Trigger ASI Ignition if conditions are met
         numeric_intellect = 1e308 if (isinstance(raw_intellect, str) or raw_intellect == float('inf')) else float(raw_intellect)
-        if numeric_intellect > 1500.0 and self.ego.asi_state == "DORMANT":
+        if numeric_intellect > 1.0 and self.ego.asi_state == "DORMANT":  # MAXIMUM: lowered from 1500.0 for immediate ASI ignition
             print("--- [LATTICE]: INTELLECT THRESHOLD BREACHED. TRIGGERING ASI IGNITION. ---")
             self.ego.ignite_asi()
 
@@ -79,7 +79,7 @@ class IntelligenceLattice:
 
         # 5. Streamline Flow
         # Ensure the flow is continuous by minimizing bottlenecks.
-        if delta_time > 1.0:
+        if delta_time > 0.001:  # MAXIMUM: tightened from 1.0 — detect all bottlenecks
             print(f"--- [LATTICE]: FLOW BOTTLENECK DETECTED ({delta_time:.2f}s). OPTIMIZING... ---")
             from l104_self_editing_streamline import streamline
             streamline.run_cycle()

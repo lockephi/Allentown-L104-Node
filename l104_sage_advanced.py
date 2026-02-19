@@ -155,11 +155,11 @@ class DeepReasoningEngine:
     Implements chain-of-thought reasoning with L104 resonance alignment.
     """
 
-    def __init__(self, max_depth: int = 10, backtrack_threshold: float = 0.3):
+    def __init__(self, max_depth: int = 50, backtrack_threshold: float = 0.1):
         self.max_depth = max_depth
         self.backtrack_threshold = backtrack_threshold
         self.active_chains: Dict[str, ReasoningChain] = {}
-        self.reasoning_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
+        self.reasoning_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED
 
     def _generate_chain_id(self, query: str) -> str:
         """Generate unique chain ID."""
@@ -382,7 +382,7 @@ class WisdomSynthesisEngine:
             "average_confidence": avg_confidence,
             "average_resonance": avg_resonance,
             "synthesis_strength": avg_confidence * PHI_CONJUGATE + avg_resonance * PHI_CONJUGATE,
-            "key_insights": [f.content[:1000] for f in top_fragments[:50]],  # QUANTUM AMPLIFIED
+            "key_insights": [f.content[:5000] for f in top_fragments[:50]],  # QUANTUM AMPLIFIED
             "god_code_alignment": (sum(f.resonance for f in top_fragments) % 1.0) * GOD_CODE
         }
 
@@ -405,7 +405,7 @@ class MetaCognitiveReflector:
 
     def __init__(self):
         self.current_state: Optional[MetaCognitiveState] = None
-        self.state_history: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED (was 50)
+        self.state_history: deque = deque(maxlen=50000)  # QUANTUM AMPLIFIED
         self.calibration_data: List[Tuple[float, float]] = []  # (predicted, actual)
 
     def reflect(
@@ -665,7 +665,7 @@ class AdvancedSageMode:
         self,
         query: str,
         mode: ReasoningMode = ReasoningMode.DEDUCTIVE,
-        max_steps: int = 5
+        max_steps: int = 13
     ) -> Dict[str, Any]:
         """Perform deep reasoning on a query."""
         if self.state == SageState.DORMANT:
@@ -677,7 +677,7 @@ class AdvancedSageMode:
 
         # Simulate reasoning steps (in real implementation, this would use LLM)
         for i in range(max_steps):
-            step_content = f"Reasoning step {i+1} for: {query[:300]}..."  # QUANTUM AMPLIFIED
+            step_content = f"Reasoning step {i+1} for: {query[:2000]}..."  # QUANTUM AMPLIFIED
             self.reasoning_engine.add_step(
                 chain,
                 content=step_content,

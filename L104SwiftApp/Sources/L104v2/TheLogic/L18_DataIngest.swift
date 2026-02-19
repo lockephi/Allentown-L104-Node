@@ -61,7 +61,7 @@ class DataIngestPipeline {
 
         ingestCount += accepted
         ingestHistory.append((source: source, entries: accepted, timestamp: Date()))
-        if ingestHistory.count > 200 { ingestHistory.removeFirst() }
+        if ingestHistory.count > 250 { ingestHistory = Array(ingestHistory.suffix(200)) }
 
         // Rebuild search index with new data
         if accepted > 0 {
@@ -196,7 +196,7 @@ class SelfModificationEngine {
         let score = GroverResponseAmplifier.shared.scoreQuality(response, query: query)
 
         responseQualityHistory.append((score: score, timestamp: Date()))
-        if responseQualityHistory.count > 1000 { responseQualityHistory.removeFirst() }
+        if responseQualityHistory.count > 1200 { responseQualityHistory = Array(responseQualityHistory.suffix(1000)) }
 
         // Update strategy scores (exponential moving average)
         let prevScore = strategyScores[strategy] ?? 0.5
@@ -257,7 +257,7 @@ class SelfModificationEngine {
             responseTemperature = min(0.9, responseTemperature + 0.02)
         }
 
-        if modificationLog.count > 200 { modificationLog.removeFirst() }
+        if modificationLog.count > 250 { modificationLog = Array(modificationLog.suffix(200)) }
     }
 
     // ═══ SELECT STRATEGY ═══ Choose best strategy for a given query

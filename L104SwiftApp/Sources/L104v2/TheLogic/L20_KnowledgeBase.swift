@@ -15,6 +15,9 @@ class ASIKnowledgeBase {
     static let shared = ASIKnowledgeBase()
     var trainingData: [[String: Any]] = []
     var concepts: [String: [String]] = [:]  // concept -> related completions
+    // PERF EVO_60: Pre-computed inverted index for O(k) search instead of O(n) full scan
+    private var invertedIndex: [String: Set<Int>] = [:]  // keyword → trainingData indices
+    private var idfCache: [String: Double] = [:]          // keyword → pre-computed IDF value
     var inventions: [[String: Any]] = []
     var researchLog: [String] = []
     var learnedPatterns: [String: Double] = [:] // pattern -> strength
@@ -27,6 +30,9 @@ class ASIKnowledgeBase {
     var userKnowledge: [[String: Any]] = []
 
     let workspacePath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications/Allentown-L104-Node")
+
+    // PERF: Static CharacterSet avoids re-creation on every tokenization call
+    private static let nonAlphanumeric = CharacterSet.alphanumerics.inverted
 
     init() { loadTrainingData(); loadResponsePatterns(); loadUserKnowledge(); loadIngestedKnowledge() }
 
@@ -99,14 +105,18 @@ class ASIKnowledgeBase {
         if trimmedCompletion.count < 10 { return true }  // Truly empty (lowered from 20)
         if trimmedPrompt.count < 3 { return true }       // Blank prompt (lowered from 5)
 
+        // PERF: Cache lowercased versions once — avoids 4x redundant lowercasing per entry
+        let lowerPrompt = trimmedPrompt.lowercased()
+        let lowerCompletion = trimmedCompletion.lowercased()
+
         // 2️⃣ EXACT DUPLICATE CHECK — FNV-1a hash dedup (only filter blocking real content)
-        let contentKey = trimmedPrompt.lowercased() + "⊕" + trimmedCompletion.lowercased()
+        let contentKey = lowerPrompt + "⊕" + lowerCompletion
         let hash = fnvHash(contentKey)
         if _seenHashes.contains(hash) { return true }  // Exact duplicate
         _seenHashes.insert(hash)
 
         // 3️⃣ PROMPT == COMPLETION echo (not useful)
-        if trimmedPrompt.lowercased() == trimmedCompletion.lowercased() { return true }
+        if lowerPrompt == lowerCompletion { return true }
 
         // 4️⃣ REPETITION/SPAM CHECK - Only block true word-repetition spam
         let words = trimmedCompletion.components(separatedBy: .whitespaces)
@@ -124,35 +134,61 @@ class ASIKnowledgeBase {
         // Clear existing data for reload
         trainingData.removeAll()
         concepts.removeAll()
+        _seenHashes.removeAll()
 
         let files = ["kernel_trillion_data.jsonl", "kernel_training_data.jsonl", "kernel_full_merged.jsonl", "asi_knowledge_base.jsonl"]
         var junkCount = 0
+
+        // PERF: Pre-size arrays to reduce reallocation
+        trainingData.reserveCapacity(8000)
+
         for file in files {
             let path = workspacePath.appendingPathComponent(file)
             guard let content = try? String(contentsOf: path, encoding: .utf8) else { continue }
-            for line in content.components(separatedBy: .newlines) where !line.isEmpty {
-                if let data = line.data(using: .utf8),
-                   let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    // *** FILTER: Skip code documentation entries ***
-                    if isJunkEntry(entry) {
-                        junkCount += 1
-                        continue
-                    }
-                    trainingData.append(entry)
-                    // Index by keywords for fast lookup
-                    if let prompt = entry["prompt"] as? String {
-                        let words = prompt.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
-                        for word in words {
-                            if concepts[word] == nil { concepts[word] = [] }
-                            if let completion = entry["completion"] as? String {
-                                concepts[word]?.append(completion)
-                            }
-                        }
-                    }
+
+            // PERF: Use Data-based line splitting instead of String splitting (avoids extra copies)
+            let lines = content.components(separatedBy: "\n")
+            for line in lines where !line.isEmpty {
+                guard let data = line.data(using: .utf8),
+                      let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
+                if isJunkEntry(entry) {
+                    junkCount += 1
+                    continue
+                }
+                trainingData.append(entry)
+            }
+        }
+
+        // PERF: Build concept index in a single pass after all data is loaded
+        concepts.reserveCapacity(2000)
+        for entry in trainingData {
+            if let prompt = entry["prompt"] as? String, let completion = entry["completion"] as? String {
+                let words = prompt.lowercased().components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 3 }
+                for word in words {
+                    concepts[word, default: []].append(completion)
                 }
             }
         }
+
+        // PERF EVO_60: Build inverted index + IDF cache in single pass
+        invertedIndex.removeAll()
+        idfCache.removeAll()
+        var wordDocFreq: [String: Int] = [:]
+        for (idx, entry) in trainingData.enumerated() {
+            let text = ((entry["prompt"] as? String ?? "") + " " + (entry["completion"] as? String ?? "")).lowercased()
+            let words = Set(text.components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 2 })
+            for word in words {
+                invertedIndex[word, default: []].insert(idx)
+                wordDocFreq[word, default: 0] += 1
+            }
+        }
+        let totalDocs = Double(trainingData.count)
+        for (word, df) in wordDocFreq {
+            idfCache[word] = log(totalDocs / Double(df + 1))
+        }
+
         print("[KB] Loaded \(trainingData.count) knowledge entries (\(junkCount) meta-docs filtered)")
+        print("[KB] Inverted index: \(invertedIndex.count) terms, IDF cache ready")
         print("[KB] ✅ Knowledge backend ONLINE with \(trainingData.count) entries")
     }
 
@@ -164,10 +200,19 @@ class ASIKnowledgeBase {
 
     func search(_ query: String, limit: Int = 100) -> [[String: Any]] {
         let q = query.lowercased()
-        let keywords = q.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 2 }
+        let keywords = q.components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 2 }
+        guard !keywords.isEmpty else { return [] }
+
+        // EVO_60: Use inverted index to narrow candidates instead of full scan
+        var candidateIndices = Set<Int>()
+        for kw in keywords {
+            if let indices = invertedIndex[kw] { candidateIndices.formUnion(indices) }
+        }
+        guard !candidateIndices.isEmpty else { return [] }
 
         var scored: [(entry: [String: Any], score: Double)] = []
-        for entry in trainingData {
+        for idx in candidateIndices {
+            let entry = trainingData[idx]
             var score = 0.0
             let prompt = (entry["prompt"] as? String ?? "").lowercased()
             let completion = (entry["completion"] as? String ?? "").lowercased()
@@ -188,7 +233,7 @@ class ASIKnowledgeBase {
     // ─── PRIORITY SEARCH ─── Better ranking that favors conversational Q&A + user-taught
     func searchWithPriority(_ query: String, limit: Int = 100) -> [[String: Any]] {
         let q = query.lowercased()
-        let keywords = q.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 2 }
+        let keywords = q.components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 2 }
         guard !keywords.isEmpty else { return [] }
 
         // ═══ STOP WORDS — common words that don't help search ═══
@@ -202,20 +247,12 @@ class ASIKnowledgeBase {
         let meaningfulKeywords = keywords.filter { !stopWords.contains($0) }
         let searchTerms = meaningfulKeywords.isEmpty ? keywords : meaningfulKeywords
 
-        // ═══ DOCUMENT FREQUENCY — computed in single pass with scoring (merged for performance) ═══
-        // Use uniquingKeysWith to handle duplicate keywords safely (query may produce duplicates)
-        var docFreq: [String: Int] = Dictionary(searchTerms.map { ($0, 0) }, uniquingKeysWith: { first, _ in first })
-        let totalDocs = Double(trainingData.count)
-
-        // First pass: compute document frequency for each keyword
-        for entry in trainingData {
-            let text = ((entry["prompt"] as? String ?? "") + " " + (entry["completion"] as? String ?? "")).lowercased()
-            for kw in searchTerms {
-                if text.contains(kw) { docFreq[kw, default: 0] += 1 }
-            }
+        // ═══ EVO_60: INDEXED CANDIDATE RETRIEVAL — O(k) instead of O(n) full scan ═══
+        var candidateIndices = Set<Int>()
+        for kw in searchTerms {
+            if let indices = invertedIndex[kw] { candidateIndices.formUnion(indices) }
         }
-        // Ensure no zero values
-        for kw in searchTerms { docFreq[kw] = max(docFreq[kw] ?? 1, 1) }
+        guard !candidateIndices.isEmpty else { return [] }
 
         // ═══ LEARNER FEEDBACK — boost topics user cares about ═══
         let learner = AdaptiveLearner.shared
@@ -226,16 +263,17 @@ class ASIKnowledgeBase {
         let patternStrengths = hb.longTermPatterns
 
         var scored: [(entry: [String: Any], score: Double)] = []
-        for entry in trainingData {
+        for idx in candidateIndices {
+            let entry = trainingData[idx]
             var score = 0.0
             let prompt = (entry["prompt"] as? String ?? "").lowercased()
             let completion = (entry["completion"] as? String ?? "").lowercased()
             let importance = entry["importance"] as? Double ?? 1.0
             let isUserTaught = (entry["source"] as? String) == "user_taught"
 
-            // ═══ TF-IDF SCORING — rare keywords get higher weight ═══
+            // ═══ TF-IDF SCORING — uses pre-computed IDF cache ═══
             for kw in searchTerms {
-                let idf = log(totalDocs / Double(docFreq[kw] ?? 1))
+                let idf = idfCache[kw] ?? 1.0
                 let promptHit = prompt.contains(kw)
                 let completionHit = completion.contains(kw)
 
@@ -275,12 +313,11 @@ class ASIKnowledgeBase {
             }
 
             // Length quality: moderate boost for detail, BUT only if keywords actually match
-            // (Prevents long irrelevant entries from dominating via length alone)
             let hasKeywordMatch = kwHits.count >= 1
             if hasKeywordMatch {
-                if completion.count > 500 { score *= 1.3 }       // was 2.0 — capped to prevent garbage amplification
-                else if completion.count > 300 { score *= 1.2 }   // was 1.5
-                else if completion.count > 100 { score *= 1.1 }   // was 1.2
+                if completion.count > 500 { score *= 1.3 }
+                else if completion.count > 300 { score *= 1.2 }
+                else if completion.count > 100 { score *= 1.1 }
             }
             // Penalize very long entries with NO keyword matches — likely irrelevant pollution
             if !hasKeywordMatch && completion.count > 800 { score *= 0.3 }
@@ -607,7 +644,7 @@ class ASIKnowledgeBase {
         }
 
         // Index it
-        let words = topic.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
+        let words = topic.lowercased().components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 3 }
         for word in words {
             if concepts[word] == nil { concepts[word] = [] }
             concepts[word]?.append(knowledge)
@@ -718,7 +755,7 @@ class ASIKnowledgeBase {
                     loaded += 1
                     // Index by keywords
                     if let prompt = entry["prompt"] as? String {
-                        let words = prompt.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
+                        let words = prompt.lowercased().components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 3 }
                         for word in words {
                             if concepts[word] == nil { concepts[word] = [] }
                             if let completion = entry["completion"] as? String {
@@ -858,7 +895,7 @@ Replication Factor:  \(alivePeers > 0 ? String(format: "%.1fx", Double(alivePeer
             codeEngineEntries += 1
 
             // Index
-            let words = insight.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 3 }
+            let words = insight.lowercased().components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 3 }
             for word in words {
                 if concepts[word] == nil { concepts[word] = [] }
                 concepts[word]?.append(insight)

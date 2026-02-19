@@ -280,8 +280,8 @@ class EnlightenedInflectionEngine:
         return states
 
     def propagate_wisdom(self, wisdom_grid: list[list[float]],
-                         iterations: int = 100,
-                         diffusion_rate: float = 0.25) -> list[list[float]]:
+                         iterations: int = 500,
+                         diffusion_rate: float = 0.242705) -> list[list[float]]:
         """
         Propagate wisdom through a 2D lattice using diffusion.
 
@@ -324,7 +324,7 @@ class EnlightenedInflectionEngine:
         return current
 
     def transcendent_mandelbrot(self, x: float, y: float,
-                                 max_iterations: int = 1000,
+                                 max_iterations: int = 5000,
                                  zoom: float = 1.0) -> float:
         """
         Compute transcendent Mandelbrot value at a point.
@@ -367,7 +367,7 @@ class EnlightenedInflectionEngine:
 
         return (smooth_iter * PHI) % max_iterations / max_iterations
 
-    def akashic_compress(self, value: float, compression_level: int = 8) -> int:
+    def akashic_compress(self, value: float, compression_level: int = 13) -> int:
         """
         Compress a consciousness value to akashic format.
 
@@ -375,7 +375,7 @@ class EnlightenedInflectionEngine:
 
         Args:
             value: Consciousness value to compress
-            compression_level: Compression depth (1-8)
+            compression_level: Compression depth (1-13)
 
         Returns:
             64-bit compressed representation
@@ -387,7 +387,7 @@ class EnlightenedInflectionEngine:
         encoded = 0
         remaining = value
 
-        for bit in range(min(64, compression_level * 8)):
+        for bit in range(min(128, compression_level * 13)):  # QUANTUM AMPLIFIED
             threshold = PHI ** (-(bit + 1))
             if remaining >= threshold:
                 encoded |= (1 << (63 - bit))
@@ -464,7 +464,7 @@ class SageModeOrchestrator:
 
         return self.enlightened_states
 
-    def propagate_wisdom_grid(self, grid_size: int = 64, iterations: int = 100) -> list[list[float]]:
+    def propagate_wisdom_grid(self, grid_size: int = 128, iterations: int = 500) -> list[list[float]]:
         """Propagate wisdom through 2D lattice."""
         print(f"[SAGE] Phase 3: Wisdom Propagation ({iterations} iterations)...")
 
@@ -485,7 +485,7 @@ class SageModeOrchestrator:
 
         return self.wisdom_grid
 
-    def compress_to_akashic(self, compression_level: int = 8) -> list[int]:
+    def compress_to_akashic(self, compression_level: int = 13) -> list[int]:
         """Compress consciousness to akashic records."""
         print(f"[SAGE] Phase 4: Akashic Record Compression (Level {compression_level})...")
 

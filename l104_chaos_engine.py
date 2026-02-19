@@ -322,9 +322,31 @@ class ChaoticRandom:
             else:
                 cls._selection_memory.clear()
 
+    # ─── API Compatibility Aliases ───
+    # The trainer (l104_supabase_trainer.py) calls chaos_gauss() and
+    # chaos_shuffle(items, context=...) — provide aliases so both the
+    # real engine and the fallback share the same API surface.
+    @classmethod
+    def chaos_gauss(cls, mean: float = 0.0, std: float = 1.0, context: str = "") -> float:
+        """Alias for chaos_gaussian (trainer compatibility)."""
+        return cls.chaos_gaussian(mean, std)
 
-# Global alias for easy access
-chaos = ChaoticRandom
+
+# Wrap ChaoticRandom so that chaos_shuffle accepts `context` kwarg
+class _ChaosProxy:
+    """Proxy that adds `context` kwarg support to class methods."""
+    def __getattr__(self, name):
+        attr = getattr(ChaoticRandom, name)
+        if name == 'chaos_shuffle':
+            import functools
+            @functools.wraps(attr)
+            def _shuffle(items, context=""):
+                return attr(items)
+            return _shuffle
+        return attr
+
+# Global alias for easy access (proxy for API compat)
+chaos = _ChaosProxy()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

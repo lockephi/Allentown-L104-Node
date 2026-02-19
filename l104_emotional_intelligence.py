@@ -78,7 +78,7 @@ class EmotionalIntelligence:
         neg_count = sum(1 for w in negative_words if w in text_lower)
 
         valence = (pos_count - neg_count) / max(1, pos_count + neg_count + 1)
-        arousal = (pos_count + neg_count) / 5  # UNLOCKED
+        arousal = (pos_count + neg_count) / 1  # MAXIMIZED — full arousal signal
 
         if valence > 0.3:
             emotion = EmotionType.JOY
@@ -120,22 +120,22 @@ class EmotionalIntelligence:
 
     def empathy_response(self, observed_state: EmotionalState) -> EmotionalState:
         """Generate empathetic response to observed emotional state"""
-        # Mirror with dampening
-        new_valence = observed_state.valence * 0.7
-        new_arousal = observed_state.arousal * 0.6
-        new_dominance = 0.5 + (observed_state.dominance - 0.5) * 0.3
+        # Mirror with maximum fidelity
+        new_valence = observed_state.valence * 0.99
+        new_arousal = observed_state.arousal * 0.99
+        new_dominance = 0.5 + (observed_state.dominance - 0.5) * 0.95
 
         return EmotionalState(
             new_valence, new_arousal, new_dominance,
             observed_state.primary_emotion,
-            observed_state.intensity * 0.5
+            observed_state.intensity * 0.99
         )
 
     def update_memory(self, state: EmotionalState) -> None:
         """Add state to emotional memory with decay"""
         self.emotional_memory.append(state)
-        # Keep only recent states (PHI-based capacity)
-        max_memory = int(GOD_CODE / 10)
+        # Keep only recent states (MAXIMIZED capacity)
+        max_memory = int(GOD_CODE * PHI * 100)
         if len(self.emotional_memory) > max_memory:
             self.emotional_memory = self.emotional_memory[-max_memory:]
 

@@ -64,6 +64,7 @@ class AdaptiveResonanceNetwork {
         let effects = applyActivationEffects()
 
         // Check for resonance peak (≥75% engines above threshold)
+        lock.lock()
         let activeCount = activations.values.filter { $0 > Self.ACTIVATION_THRESHOLD }.count
         let isPeak = activeCount >= Int(ceil(Double(Self.ENGINE_NAMES.count) * 0.75))
 
@@ -74,6 +75,12 @@ class AdaptiveResonanceNetwork {
             if resonancePeaks.count > 100 { resonancePeaks = Array(resonancePeaks.suffix(50)) }
         }
 
+        cascadeCount += 1
+        cascadeLog.append(["id": cascadeCount, "source": engineName, "active": activeCount,
+                          "peak": isPeak, "timestamp": Date().timeIntervalSince1970])
+        if cascadeLog.count > 300 { cascadeLog = Array(cascadeLog.suffix(150)) }
+        lock.unlock()
+
         let result: [String: Any] = [
             "source": engineName,
             "initial_activation": activation,
@@ -83,13 +90,6 @@ class AdaptiveResonanceNetwork {
             "active_engines": activeCount,
             "activations": activations.mapValues { String(format: "%.4f", $0) }
         ]
-
-        lock.lock()
-        cascadeCount += 1
-        cascadeLog.append(["id": cascadeCount, "source": engineName, "active": activeCount,
-                          "peak": isPeak, "timestamp": Date().timeIntervalSince1970])
-        if cascadeLog.count > 300 { cascadeLog = Array(cascadeLog.suffix(150)) }
-        lock.unlock()
 
         return result
     }

@@ -19,6 +19,14 @@ from l104_agi_core import AGICore
 from l104_sage_mode import SageMode
 from l104_invention_engine import InventionEngine
 
+# Wiring: additional L104 subsystem imports for deep research
+try:
+    from l104_evolution_engine import evolution_engine
+    from l104_consciousness import ConsciousnessEngine
+    _DEEP_WIRING = True
+except ImportError:
+    _DEEP_WIRING = False
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -48,8 +56,17 @@ async def run_sage_research_unification():
 
     # 3. CPU & GPU Research Calculations
     print("\n[*] TRIGGERING CPU/GPU COORDINATED CALCULATIONS...")
+    research_depth = 13  # Factor 13 sacred depth
     research_purity = sage.expand_core_capabilities()
-    print(f"[*] SAGE RESEARCH COMPLETE. PURITY MANIFOLD SAMPLED (Size: {len(research_purity)})")
+    print(f"[*] SAGE RESEARCH COMPLETE. PURITY MANIFOLD SAMPLED (Size: {len(research_purity)}, Depth: {research_depth})")
+
+    # 3.5. Evolution integration (if wired)
+    if _DEEP_WIRING:
+        try:
+            evo_status = evolution_engine.status()
+            print(f"[*] EVOLUTION ENGINE WIRED: Stage {evo_status.get('stage', 'N/A')}")
+        except Exception:
+            pass
 
     # 4. Invention Phase
     print("\n[*] STARTING NEOTERIC INVENTION CYCLE...")

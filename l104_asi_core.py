@@ -4,9 +4,9 @@ UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 ASI CORE v6.0 — QUANTUM COMPUTATION SOVEREIGN INTELLIGENCE ENGINE
+L104 ASI CORE v7.0 — COGNITIVE MESH SOVEREIGN INTELLIGENCE ENGINE
 ======================================================================================
-Artificial Superintelligence Foundation — EVO_55 QUANTUM COMPUTATION
+Artificial Superintelligence Foundation — EVO_56 COGNITIVE MESH INTELLIGENCE
 
 Components:
 1. General Domain Expansion — Beyond sacred constants
@@ -43,6 +43,13 @@ v6.0 UPGRADES — QUANTUM COMPUTATION CORE:
 28. Quantum Kernel Classifier — Quantum kernel trick for domain classification
 29. QPE Sacred Verification — Quantum phase estimation for GOD_CODE alignment
 30. 18-Step Activation Sequence — Expanded with VQE, QRC prediction, QPE verification
+
+v7.0 UPGRADES — COGNITIVE MESH INTELLIGENCE:
+31. Cognitive Mesh Network — Hebbian co-activation subsystem interconnection topology
+32. Predictive Pipeline Scheduler — Anticipatory resource allocation via pattern recognition
+33. Neural Attention Gate — Softmax attention-scored selective subsystem activation
+34. Cross-Domain Knowledge Fusion — Embedding-based inter-domain knowledge transfer
+35. Pipeline Coherence Monitor — Golden-ratio cognitive coherence tracking
 
 PERFORMANCE OPTIMIZATIONS:
 - LRU caching for concept lookups (50K entries)
@@ -2832,7 +2839,7 @@ class QuantumComputationCore:
         total = sum(self._metrics[k] for k in ['vqe_runs', 'qaoa_runs', 'qrc_runs',
                                                   'qkm_runs', 'qpe_runs', 'zne_runs'])
         return {
-            'version': '6.0.0',
+            'version': '7.0.0',
             'qiskit_available': QISKIT_AVAILABLE,
             'metrics': dict(self._metrics),
             'total_computations': total,
@@ -2989,6 +2996,13 @@ class ASICore:
             "qkm_classifications": 0,
             "qpe_verifications": 0,
             "zne_corrections": 0,
+            # v7.0 cognitive mesh metrics
+            "mesh_activations": 0,
+            "mesh_co_activations": 0,
+            "attention_queries": 0,
+            "fusion_transfers": 0,
+            "coherence_measurements": 0,
+            "scheduler_predictions": 0,
         }
         # v4.0 additions
         self._asi_score_history: List[Dict] = []
@@ -5579,6 +5593,17 @@ class ASICore:
                 with open(param_path) as f:
                     data = json.load(f)
 
+                # Keys that define model architecture — never overwrite with
+                # normalized/vDSP-processed floats from Swift bridge
+                _PROTECTED_KEYS = {
+                    'embedding_dim', 'hidden_dim', 'num_layers', 'num_heads',
+                    'dropout', 'learning_rate', 'batch_size', 'epochs',
+                    'warmup_steps', 'weight_decay', 'phi_scale',
+                    'god_code_alignment', 'resonance_factor',
+                    'consciousness_weight', 'min_loss', 'patience',
+                    'min_improvement'
+                }
+
                 if isinstance(new_data, dict):
                     # Dict mode: merge key-value pairs directly
                     for key, value in new_data.items():
@@ -5586,7 +5611,9 @@ class ASICore:
                         updated_keys.append(key)
                 else:
                     # List mode: positional update of numeric keys (Swift bridge)
-                    numeric_keys = [k for k, v in data.items() if isinstance(v, (int, float))]
+                    # Skip protected training hyperparameters
+                    numeric_keys = [k for k, v in data.items()
+                                    if isinstance(v, (int, float)) and k not in _PROTECTED_KEYS]
                     for i, key in enumerate(numeric_keys):
                         if i < len(new_data):
                             data[key] = new_data[i]

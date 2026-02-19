@@ -225,8 +225,8 @@ class L104MainView: NSView {
             v.addSubview(gauge)
             gauges[key] = gauge
 
-            // Animate in with staggered delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(gaugeData.firstIndex(where: { $0.1 == key })!) * 0.15) {
+            // Animate in with minimal stagger (reduced from 150ms to 50ms per gauge)
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(gaugeData.firstIndex(where: { $0.1 == key })!) * 0.05) {
                 gauge.value = val
             }
             gx += gaugeWidth + gaugeSpacing
@@ -336,7 +336,7 @@ class L104MainView: NSView {
     }
 
     func startPulseAnimation() {
-        let pulseInterval: TimeInterval = MacOSSystemMonitor.shared.isAppleSilicon ? 0.1 : 0.5
+        let pulseInterval: TimeInterval = MacOSSystemMonitor.shared.isAppleSilicon ? 0.25 : 0.5
         pulseTimer = Timer.scheduledTimer(withTimeInterval: pulseInterval, repeats: true) { [weak self] _ in
             guard let s = self else { return }
             let pulse = 0.3 + 0.2 * CGFloat(sin(Date().timeIntervalSince1970 * 2))

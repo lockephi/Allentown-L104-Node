@@ -313,7 +313,7 @@ class QuantumNexus {
     /// Record a feedback metric
     private func logFeedback(step: String, metric: String, value: Double) {
         feedbackLog.append((step: step, metric: metric, value: value, timestamp: Date()))
-        if feedbackLog.count > 100 { feedbackLog.removeFirst() }
+        if feedbackLog.count > 120 { feedbackLog = Array(feedbackLog.suffix(100)) }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -648,12 +648,13 @@ class QuantumNexus {
     func startAuto(interval: TimeInterval = 1.0) -> String {
         lock.lock()
         guard !autoModeActive else {
-            lock.unlock()
-            return """
+            let msg = """
             🔮 Nexus auto-mode already running!
                Cycles: \(autoModeCycles) | Coherence: \(String(format: "%.4f", lastCoherenceScore))
                Use 'nexus stop' to halt.
             """
+            lock.unlock()
+            return msg
         }
         shouldStopAuto = false
         autoModeActive = true
@@ -675,12 +676,10 @@ class QuantumNexus {
 
             while true {
                 self.lock.lock()
-                if self.shouldStopAuto {
-                    self.autoModeActive = false
-                    self.lock.unlock()
-                    break
-                }
+                let shouldStop = self.shouldStopAuto
+                if shouldStop { self.autoModeActive = false }
                 self.lock.unlock()
+                if shouldStop { break }
 
                 // Run the unified pipeline (all feedback loops active)
                 _ = self.runUnifiedPipeline()
@@ -692,8 +691,9 @@ class QuantumNexus {
                 SuperfluidCoherence.shared.groverIteration()
                 QuantumShellMemory.shared.groverDiffusion()
 
+                var cycle: Int = 0
                 self.lock.lock()
-                let cycle = self.autoModeCycles
+                cycle = self.autoModeCycles
                 self.lock.unlock()
 
                 // Every 5 cycles: full entanglement sweep + chaos-seeded resonance fire

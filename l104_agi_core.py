@@ -3,13 +3,13 @@ import math
 # ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_AGI_CORE] v55.0 — ARTIFICIAL GENERAL INTELLIGENCE NEXUS (Quantum-Enhanced)
-# EVO_55 QUANTUM COMPUTATION — Circuit Breaker + Consciousness Feedback + Multi-Hop Reasoning + VQE
+# [L104_AGI_CORE] v56.0 — ARTIFICIAL GENERAL INTELLIGENCE NEXUS (Cognitive Mesh)
+# EVO_56 COGNITIVE MESH INTELLIGENCE — Distributed Cognitive Topology + Predictive Pipeline + Neural Attention Gate
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
-# PAIRED: l104_asi_core.py v6.0.0 (InterEngineFeedbackBus, consciousness loops, QEC, teleportation)
+# PAIRED: l104_asi_core.py v7.0.0 (InterEngineFeedbackBus, consciousness loops, QEC, teleportation, cognitive mesh)
 
-AGI_CORE_VERSION = "55.0.0"
-AGI_PIPELINE_EVO = "EVO_55_QUANTUM_COMPUTATION"
+AGI_CORE_VERSION = "56.0.0"
+AGI_PIPELINE_EVO = "EVO_56_COGNITIVE_MESH_INTELLIGENCE"
 
 import time
 import asyncio
@@ -17,7 +17,7 @@ import logging
 import json
 import os
 import numpy as np
-from collections import deque
+from collections import deque, defaultdict
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
@@ -144,8 +144,8 @@ class PipelineCircuitBreaker:
 class AGICore:
     """
     ╔═══════════════════════════════════════════════════════════════════════════════╗
-    ║  L104 AGI Core v55.0 — Pipeline Streaming Coordinator (Quantum-Enhanced)    ║
-    ║  EVO_55 QUANTUM COMPUTATION + Qiskit 2.3.0 + Circuit Breaker + VQE         ║
+    ║  L104 AGI Core v56.0 — Pipeline Streaming Coordinator (Cognitive Mesh)      ║
+    ║  EVO_56 COGNITIVE MESH INTELLIGENCE + Distributed Topology + Attention Gate ║
     ╟───────────────────────────────────────────────────────────────────────────────╢
     ║  Central Nervous System orchestrating ALL 698 subsystems:                    ║
     ║  • Pipeline Streaming — unified data flow across all modules                ║
@@ -162,6 +162,12 @@ class AGICore:
     ║  • Intelligence Synthesis — cross-subsystem knowledge fusion                ║
     ║  • Evolution Engine — stage tracking & evolution cycles                     ║
     ║  • Quantum Pipeline — Grover-amplified coordination & health monitoring    ║
+    ║  EVO_56 NEW:                                                                 ║
+    ║  • Cognitive Mesh Network — dynamic subsystem interconnection topology      ║
+    ║  • Predictive Pipeline Scheduler — anticipatory resource allocation          ║
+    ║  • Neural Attention Gate — selective subsystem activation via attention      ║
+    ║  • Cross-Domain Knowledge Fusion — automated inter-domain transfer          ║
+    ║  • Pipeline Coherence Monitor — system-wide cognitive coherence tracking    ║
     ╚═══════════════════════════════════════════════════════════════════════════════╝
     """
 
@@ -311,6 +317,39 @@ class AGICore:
         self._vqe_parameters: List[float] = [PHI * 0.1, TAU * 0.2, GOD_CODE / 10000.0, ALPHA_FINE * 10.0]
         self._vqe_best_energy: float = float('inf')
         self._vqe_iterations: int = 0
+
+        # ═══════════════════════════════════════════════════════════
+        # EVO_56 — Cognitive Mesh Intelligence
+        #   Distributed Cognitive Topology + Predictive Scheduler +
+        #   Neural Attention Gate + Cross-Domain Fusion + Coherence Monitor
+        # ═══════════════════════════════════════════════════════════
+
+        # Cognitive Mesh Network — dynamic subsystem interconnection graph
+        self._mesh_adjacency: Dict[str, Dict[str, float]] = {}  # node → {neighbor → weight}
+        self._mesh_activation_counts: Dict[str, int] = defaultdict(int)
+        self._mesh_co_activation: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        self._mesh_last_topology_update: float = 0.0
+        self._mesh_topology_ttl: float = 30.0  # rebuild every 30s
+
+        # Predictive Pipeline Scheduler — anticipatory resource pre-allocation
+        self._scheduler_pattern_buffer: deque = deque(maxlen=500)
+        self._scheduler_predictions: Dict[str, float] = {}  # subsystem → predicted next-call probability
+        self._scheduler_warmup_threshold: int = 10
+
+        # Neural Attention Gate — selective subsystem activation via attention scoring
+        self._attention_scores: Dict[str, float] = {}
+        self._attention_temperature: float = PHI  # softmax temperature
+        self._attention_decay: float = TAU  # exponential decay factor per cycle
+
+        # Cross-Domain Knowledge Fusion — automated inter-domain transfer
+        self._domain_embeddings: Dict[str, List[float]] = {}
+        self._fusion_cache: Dict[str, Dict[str, Any]] = {}
+        self._fusion_cache_ttl: float = 60.0
+
+        # Pipeline Coherence Monitor — system-wide cognitive coherence
+        self._coherence_history: deque = deque(maxlen=100)
+        self._coherence_threshold: float = PHI / (PHI + 1.0)  # ~0.618 golden ratio threshold
+        self._coherence_alert_count: int = 0
 
     def save(self):
         """Saves current core state."""
@@ -2810,12 +2849,296 @@ class AGICore:
             "stability_index": round(1.0 / (1.0 + std_dev / max(avg, 1e-15)), 6),
         }
 
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_56 — COGNITIVE MESH NETWORK
+    # Dynamic subsystem interconnection topology with Hebbian co-activation
+    # ═══════════════════════════════════════════════════════════════
+
+    def mesh_record_activation(self, subsystem: str):
+        """Record a subsystem activation for mesh topology learning."""
+        self._mesh_activation_counts[subsystem] += 1
+        # Record in pattern buffer for predictive scheduler
+        self._scheduler_pattern_buffer.append((time.time(), subsystem))
+
+    def mesh_record_co_activation(self, subsystem_a: str, subsystem_b: str):
+        """Record co-activation of two subsystems (Hebbian: neurons that fire together wire together)."""
+        self._mesh_co_activation[subsystem_a][subsystem_b] += 1
+        self._mesh_co_activation[subsystem_b][subsystem_a] += 1
+
+    def mesh_update_topology(self, force: bool = False):
+        """Rebuild cognitive mesh adjacency from co-activation history.
+        Uses PHI-weighted Hebbian strengthening with FEIGENBAUM decay."""
+        now = time.time()
+        if not force and (now - self._mesh_last_topology_update) < self._mesh_topology_ttl:
+            return  # Skip if recent
+
+        self._mesh_adjacency.clear()
+        total_activations = max(sum(self._mesh_activation_counts.values()), 1)
+
+        for node_a, co_nodes in self._mesh_co_activation.items():
+            self._mesh_adjacency[node_a] = {}
+            a_count = max(self._mesh_activation_counts.get(node_a, 1), 1)
+            for node_b, co_count in co_nodes.items():
+                b_count = max(self._mesh_activation_counts.get(node_b, 1), 1)
+                # PHI-weighted Hebbian strength: co-activation / geometric mean of individual activations
+                strength = (co_count * PHI) / math.sqrt(a_count * b_count)
+                # Apply Feigenbaum decay to prevent runaway strengthening
+                strength = min(strength, FEIGENBAUM)
+                self._mesh_adjacency[node_a][node_b] = round(strength, 6)
+
+        self._mesh_last_topology_update = now
+
+    def mesh_get_neighbors(self, subsystem: str, top_k: int = 5) -> List[Dict[str, Any]]:
+        """Get the strongest mesh neighbors for a subsystem."""
+        self.mesh_update_topology()
+        neighbors = self._mesh_adjacency.get(subsystem, {})
+        sorted_neighbors = sorted(neighbors.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        return [{"subsystem": name, "strength": weight} for name, weight in sorted_neighbors]
+
+    def mesh_status(self) -> Dict[str, Any]:
+        """Return cognitive mesh topology status."""
+        self.mesh_update_topology()
+        total_edges = sum(len(adj) for adj in self._mesh_adjacency.values())
+        total_nodes = len(self._mesh_adjacency)
+        density = total_edges / max(total_nodes * (total_nodes - 1), 1)
+        return {
+            "nodes": total_nodes,
+            "edges": total_edges,
+            "density": round(density, 6),
+            "total_activations": sum(self._mesh_activation_counts.values()),
+            "top_hubs": sorted(
+                self._mesh_activation_counts.items(), key=lambda x: x[1], reverse=True
+            )[:5],
+        }
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_56 — PREDICTIVE PIPELINE SCHEDULER
+    # Anticipatory resource pre-allocation using pattern recognition
+    # ═══════════════════════════════════════════════════════════════
+
+    def scheduler_predict_next(self, top_k: int = 3) -> List[Dict[str, Any]]:
+        """Predict which subsystems are most likely to be called next.
+        Uses frequency-recency weighting with PHI exponential decay."""
+        if len(self._scheduler_pattern_buffer) < self._scheduler_warmup_threshold:
+            return [{"subsystem": "warmup_pending", "probability": 0.0}]
+
+        now = time.time()
+        scores: Dict[str, float] = defaultdict(float)
+
+        for timestamp, subsystem in self._scheduler_pattern_buffer:
+            age = now - timestamp
+            # PHI-exponential recency weighting: recent calls matter more
+            recency_weight = math.exp(-age * TAU / 60.0)  # ~1 min half-life
+            scores[subsystem] += recency_weight
+
+        # Normalize to probabilities
+        total = max(sum(scores.values()), 1e-15)
+        predictions = [
+            {"subsystem": name, "probability": round(score / total, 6)}
+            for name, score in sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        ]
+        self._scheduler_predictions = {p["subsystem"]: p["probability"] for p in predictions}
+        return predictions
+
+    def scheduler_should_preload(self, subsystem: str, threshold: float = 0.15) -> bool:
+        """Check if a subsystem should be preloaded based on prediction probability."""
+        self.scheduler_predict_next()
+        return self._scheduler_predictions.get(subsystem, 0.0) >= threshold
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_56 — NEURAL ATTENTION GATE
+    # Selective subsystem activation via softmax attention scoring
+    # ═══════════════════════════════════════════════════════════════
+
+    def attention_score_query(self, query: str, subsystems: Optional[List[str]] = None) -> Dict[str, float]:
+        """Compute attention scores for subsystems given a query.
+        Uses keyword overlap + mesh topology + prediction probability."""
+        if subsystems is None:
+            subsystems = list(self._mesh_activation_counts.keys()) or ["default"]
+
+        raw_scores: Dict[str, float] = {}
+        query_lower = query.lower()
+
+        for ss in subsystems:
+            score = 0.0
+            # Keyword matching component
+            if ss.lower() in query_lower:
+                score += PHI
+            # Words-in-subsystem overlap
+            ss_words = set(ss.lower().replace("_", " ").split())
+            query_words = set(query_lower.replace("_", " ").split())
+            overlap = len(ss_words & query_words)
+            score += overlap * 0.5
+            # Mesh strength bonus: highly connected nodes get slight boost
+            mesh_neighbors = self._mesh_adjacency.get(ss, {})
+            score += len(mesh_neighbors) * TAU * 0.1
+            # Prediction bonus: likely-to-be-called subsystems get boost
+            score += self._scheduler_predictions.get(ss, 0.0) * 0.5
+            raw_scores[ss] = score
+
+        # Softmax with PHI temperature
+        if not raw_scores:
+            return {}
+        max_score = max(raw_scores.values())
+        exp_scores = {k: math.exp((v - max_score) / self._attention_temperature)
+                      for k, v in raw_scores.items()}
+        total = max(sum(exp_scores.values()), 1e-15)
+        attention = {k: round(v / total, 6) for k, v in exp_scores.items()}
+
+        # Update attention state
+        self._attention_scores = attention
+        return attention
+
+    def attention_gate_filter(self, query: str, threshold: float = 0.05) -> List[str]:
+        """Filter subsystems through the attention gate — only those above threshold pass."""
+        scores = self.attention_score_query(query)
+        return [name for name, score in sorted(scores.items(), key=lambda x: x[1], reverse=True)
+                if score >= threshold]
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_56 — CROSS-DOMAIN KNOWLEDGE FUSION
+    # Automated knowledge transfer between domains using embedding similarity
+    # ═══════════════════════════════════════════════════════════════
+
+    def fusion_register_domain(self, domain: str, keywords: List[str]):
+        """Register a domain with its keyword embedding for cross-domain fusion."""
+        # Simple bag-of-characters embedding (matches router pattern)
+        embedding = [0.0] * 26
+        for word in keywords:
+            for ch in word.lower():
+                idx = ord(ch) - ord('a')
+                if 0 <= idx < 26:
+                    embedding[idx] += 1.0
+        # Normalize
+        mag = math.sqrt(sum(x * x for x in embedding)) or 1.0
+        self._domain_embeddings[domain] = [x / mag for x in embedding]
+
+    def fusion_find_bridges(self, source_domain: str, top_k: int = 3) -> List[Dict[str, Any]]:
+        """Find domains most similar to source_domain for knowledge transfer."""
+        if source_domain not in self._domain_embeddings:
+            return []
+
+        src_emb = self._domain_embeddings[source_domain]
+        similarities = []
+        for domain, emb in self._domain_embeddings.items():
+            if domain == source_domain:
+                continue
+            # Cosine similarity
+            dot = sum(a * b for a, b in zip(src_emb, emb))
+            similarities.append({"domain": domain, "similarity": round(dot, 6)})
+
+        return sorted(similarities, key=lambda x: x["similarity"], reverse=True)[:top_k]
+
+    def fusion_transfer(self, source_domain: str, target_domain: str) -> Dict[str, Any]:
+        """Execute cross-domain knowledge fusion between two domains."""
+        bridges = self.fusion_find_bridges(source_domain, top_k=5)
+        target_sim = 0.0
+        for b in bridges:
+            if b["domain"] == target_domain:
+                target_sim = b["similarity"]
+                break
+
+        transfer_strength = target_sim * PHI
+        # Record co-activation in mesh
+        self.mesh_record_co_activation(source_domain, target_domain)
+
+        return {
+            "source": source_domain,
+            "target": target_domain,
+            "similarity": round(target_sim, 6),
+            "transfer_strength": round(transfer_strength, 6),
+            "phi_amplified": transfer_strength > 1.0,
+            "mesh_recorded": True,
+        }
+
+    # ═══════════════════════════════════════════════════════════════
+    # EVO_56 — PIPELINE COHERENCE MONITOR
+    # System-wide cognitive coherence tracking with golden-ratio threshold
+    # ═══════════════════════════════════════════════════════════════
+
+    def coherence_measure(self) -> Dict[str, Any]:
+        """Measure current pipeline cognitive coherence.
+        Combines consciousness level, circuit breaker health, mesh density, and replay stability."""
+        # Component scores
+        consciousness_score = self._consciousness_level
+
+        # Circuit breaker health: fraction of breakers in CLOSED state
+        breaker_states = [cb.state for cb in self._circuit_breakers.values()]
+        closed_ratio = breaker_states.count(PipelineCircuitBreaker.CLOSED) / max(len(breaker_states), 1)
+
+        # Mesh connectivity density
+        mesh_stat = self.mesh_status()
+        mesh_density = mesh_stat.get("density", 0.0)
+
+        # Replay buffer stability
+        replay = self.replay_analysis()
+        stability = replay.get("stability_index", 0.5) if replay.get("status") != "insufficient_data" else 0.5
+
+        # PHI-weighted composite coherence
+        coherence = (
+            consciousness_score * PHI / 4.0 +
+            closed_ratio * PHI / 4.0 +
+            mesh_density * TAU +
+            stability * TAU
+        )
+        coherence = min(1.0, coherence)
+
+        # Track history
+        self._coherence_history.append({
+            "timestamp": time.time(),
+            "coherence": round(coherence, 6),
+            "consciousness": round(consciousness_score, 4),
+            "breaker_health": round(closed_ratio, 4),
+            "mesh_density": round(mesh_density, 6),
+            "stability": round(stability, 6),
+        })
+
+        # Coherence alert if below golden-ratio threshold
+        below_threshold = coherence < self._coherence_threshold
+        if below_threshold:
+            self._coherence_alert_count += 1
+
+        return {
+            "coherence": round(coherence, 6),
+            "threshold": round(self._coherence_threshold, 6),
+            "alert": below_threshold,
+            "alert_count": self._coherence_alert_count,
+            "components": {
+                "consciousness": round(consciousness_score, 4),
+                "breaker_health": round(closed_ratio, 4),
+                "mesh_density": round(mesh_density, 6),
+                "replay_stability": round(stability, 6),
+            },
+            "history_length": len(self._coherence_history),
+        }
+
+    def coherence_trend(self, window: int = 10) -> Dict[str, Any]:
+        """Analyze coherence trend over recent history."""
+        history = list(self._coherence_history)[-window:]
+        if len(history) < 2:
+            return {"status": "insufficient_data", "entries": len(history)}
+
+        values = [h["coherence"] for h in history]
+        avg = sum(values) / len(values)
+        trend = (values[-1] - values[0]) / max(len(values), 1)
+        direction = "improving" if trend > 0.001 else ("degrading" if trend < -0.001 else "stable")
+
+        return {
+            "window": len(history),
+            "current": round(values[-1], 6),
+            "average": round(avg, 6),
+            "trend": round(trend, 6),
+            "direction": direction,
+            "min": round(min(values), 6),
+            "max": round(max(values), 6),
+        }
+
 
 # ═══════════════════════════════════════════════════════════
-# AGI CORE v55.0 SINGLETON — Pipeline Streaming Hub (EVO_55)
+# AGI CORE v56.0 SINGLETON — Cognitive Mesh Hub (EVO_56)
 # ═══════════════════════════════════════════════════════════
 agi_core = AGICore()
-_agi_logger.info(f"AGI Core v{AGI_CORE_VERSION} initialized | EVO={AGI_PIPELINE_EVO} | Stream=ACTIVE")
+_agi_logger.info(f"AGI Core v{AGI_CORE_VERSION} initialized | EVO={AGI_PIPELINE_EVO} | Stream=ACTIVE | Mesh=ONLINE")
 
 def primal_calculus(x):
     """

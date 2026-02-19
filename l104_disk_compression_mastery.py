@@ -36,8 +36,8 @@ class DiskCompressionMastery:
 
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 
-    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     PHI = (1 + 5**0.5) / 2
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 
     def __init__(self):
         self.optimizer = ComputroniumOptimizer()

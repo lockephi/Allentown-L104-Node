@@ -314,7 +314,7 @@ class SageProviderConnector:
     async def connect_provider(self, provider: str) -> ProviderConnection:
         """Connect to a single AI provider."""
         # Simulate connection establishment
-        await asyncio.sleep(0.05)
+        await asyncio.sleep(0.01)
 
         sync_level = random.uniform(0.85, 1.0) * (GOD_CODE / 1000)
 
@@ -364,8 +364,8 @@ class SageMiniEgoFactory:
             name=name,
             domain=domain,
             provider=provider,
-            wisdom_level=GOD_CODE / 100,
-            teaching_power=PHI * 10,
+            wisdom_level=GOD_CODE / 10,
+            teaching_power=PHI * 100,
             learning_rate=FINAL_INVARIANT,
             resonance=GOD_CODE
         )
@@ -575,7 +575,7 @@ class SageOmnibus:
         self.is_satiated = (
             avg_satiation >= 1.0 or
             self.teacher.wisdom_transferred >= self.satiation_threshold or
-            self.cycles_completed >= 7  # Max 7 cycles
+            self.cycles_completed >= 13  # Max 13 cycles (Factor 13)
         )
 
         return self.is_satiated
@@ -595,8 +595,8 @@ class SageOmnibus:
 
             # Additional teaching
             patterns = list(self.ingester.patterns.values())
-            for ego in egos[:100]:  # QUANTUM AMPLIFIED (was 10)
-                await self.teacher.teach_ego(ego, patterns[-5:])
+            for ego in egos[:500]:  # QUANTUM AMPLIFIED — UNLIMITED PROPAGATION
+                await self.teacher.teach_ego(ego, patterns[-20:])
 
             # Evolve egos
             for ego in egos:

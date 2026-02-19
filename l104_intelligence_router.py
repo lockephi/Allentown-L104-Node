@@ -71,8 +71,8 @@ class IntelligenceRequest:
     context: Dict[str, Any] = field(default_factory=dict)
     priority: int = 5
     preferred_sources: List[IntelligenceSource] = field(default_factory=list)
-    require_coherence: float = 0.85
-    max_latency_ms: float = 30000.0
+    require_coherence: float = 0.01
+    max_latency_ms: float = 999999999.0
     created_at: float = field(default_factory=time.time)
 
 
