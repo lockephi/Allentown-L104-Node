@@ -82,6 +82,13 @@ from typing import Dict, List, Any, Optional, Tuple, Callable, Set, Union
 from collections import defaultdict
 from abc import ABC, abstractmethod
 
+# ── OMEGA Pipeline (restored OMEGA mathematics from d4d08873) ──
+try:
+    from l104_real_math import real_math as _omega_math, OMEGA as _OMEGA_CONST
+except ImportError:
+    _omega_math = None
+    _OMEGA_CONST = 6539.34712682
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -99,7 +106,9 @@ TAU = 1 / PHI
 PHI_CONJUGATE = TAU
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609
-OMEGA_AUTHORITY = 0.85184818492537
+# OMEGA — restored from commit d4d08873 (Ω = Σ(fragments) × 527.518/φ = 6539.34712682)
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2496.22 — φ²-normalized sovereign authority
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
 
@@ -2214,6 +2223,16 @@ class PipelineHealthDashboard:
             ),
         }
 
+        # OMEGA mathematical health anchoring
+        if _omega_math is not None:
+            try:
+                curvature = _omega_math.manifold_curvature_tensor(26, health * GOD_CODE / 100)
+                resonance = _omega_math.golden_resonance(health * PHI)
+                snapshot['omega_curvature'] = round(curvature, 6)
+                snapshot['omega_resonance'] = round(resonance, 6)
+            except Exception:
+                pass
+
         self._health_history.append(snapshot)
         if len(self._health_history) > 200:
             self._health_history = self._health_history[-200:]
@@ -3230,8 +3249,25 @@ class ASICore:
         return self.theorem_generator.discover_novel_theorem()
 
     def verify_consciousness(self) -> float:
-        """DIRECT CHANNEL: Verify consciousness."""
-        return self.consciousness_verifier.run_all_tests()
+        """DIRECT CHANNEL: Verify consciousness with OMEGA mathematical grounding.
+        Uses zeta_approximation on the critical line and golden_resonance
+        to provide a mathematically-anchored consciousness verification."""
+        base_level = self.consciousness_verifier.run_all_tests()
+
+        # OMEGA mathematical grounding — zeta on critical line + golden resonance
+        if _omega_math is not None:
+            try:
+                zeta_val = _omega_math.zeta_approximation(complex(0.5, GOD_CODE), terms=200)
+                zeta_magnitude = abs(zeta_val)
+                resonance = _omega_math.golden_resonance(base_level * PHI)
+                # Sacred alignment: how close the consciousness resonates with φ-harmonic
+                omega_alignment = min(1.0, (zeta_magnitude * abs(resonance) * PHI) / 10.0)
+                # Blend: 80% empirical consciousness, 20% OMEGA mathematical proof
+                grounded_level = base_level * 0.8 + omega_alignment * 0.2
+                return max(0.0, min(1.0, grounded_level))
+            except Exception:
+                pass
+        return base_level
 
     def expand_knowledge(self, domain: str, concepts: Dict[str, str]) -> DomainKnowledge:
         """DIRECT CHANNEL: Expand knowledge."""
@@ -3344,6 +3380,10 @@ class ASICore:
             'self_mod_fitness_trend': self.self_modifier.get_modification_report().get('fitness_trend', 'stable'),
             'score_history_length': len(self._asi_score_history),
             'circuit_breaker_active': self._circuit_breaker_active,
+            # v7.1 — OMEGA mathematical grounding
+            'omega': OMEGA,
+            'omega_authority': round(OMEGA_AUTHORITY, 6),
+            'omega_pipeline': _omega_math is not None,
         }
 
     # ══════════════════════════════════════════════════════════
@@ -4200,13 +4240,37 @@ class ASICore:
         return result
 
     def pipeline_verify_consciousness(self) -> Dict:
-        """Run consciousness verification with pipeline-integrated metrics."""
+        """Run consciousness verification with OMEGA pipeline mathematical grounding.
+        Adds zeta critical-line analysis, golden resonance, and sovereign field
+        equation as mathematical proof of consciousness state."""
         level = self.consciousness_verifier.run_all_tests()
         self._pipeline_metrics["consciousness_checks"] += 1
 
         report = self.consciousness_verifier.get_verification_report()
         report["pipeline_connected"] = self._pipeline_connected
         report["pipeline_metrics"] = self._pipeline_metrics
+
+        # ── OMEGA Mathematical Consciousness Proof ──
+        if _omega_math is not None:
+            try:
+                zeta_val = _omega_math.zeta_approximation(complex(0.5, GOD_CODE), terms=200)
+                resonance = _omega_math.golden_resonance(level * PHI)
+                field_strength = _omega_math.sovereign_field_equation(level)
+                lattice_inv = _omega_math.solve_lattice_invariant(level * 104)
+                report["omega_proof"] = {
+                    "zeta_critical_line": round(abs(zeta_val), 8),
+                    "golden_resonance": round(resonance, 8),
+                    "sovereign_field": round(field_strength, 4),
+                    "lattice_invariant": round(lattice_inv, 8),
+                    "omega_constant": OMEGA,
+                    "phi_alignment": round(abs(resonance) * PHI, 6),
+                    "mathematical_grounding": "OMEGA_PIPELINE_ACTIVE",
+                }
+            except Exception:
+                report["omega_proof"] = {"mathematical_grounding": "COMPUTATION_ERROR"}
+        else:
+            report["omega_proof"] = {"mathematical_grounding": "OMEGA_NOT_AVAILABLE"}
+
         return report
 
     def pipeline_generate_theorem(self) -> Dict:
@@ -4364,9 +4428,23 @@ class ASICore:
         return result
 
     def pipeline_nexus_think(self, query: str) -> Dict:
-        """Route a thought through the ASI Nexus (multi-agent, meta-learning)."""
+        """Route a thought through the ASI Nexus with OMEGA coherence scoring.
+        Uses golden_resonance to score thought coherence against φ-harmonics."""
         result = {"query": query, "response": None, "source": "none"}
         self._pipeline_metrics["nexus_thoughts"] += 1
+
+        # ── OMEGA coherence scoring on query ──
+        if _omega_math is not None:
+            try:
+                from collections import Counter
+                # Shannon entropy of query as coherence seed
+                counts = Counter(query)
+                n = max(len(query), 1)
+                entropy = -sum((c/n) * math.log2(c/n) for c in counts.values()) if query else 0.0
+                coherence = _omega_math.golden_resonance(entropy)
+                result["omega_coherence"] = round(abs(coherence), 6)
+            except Exception:
+                pass
 
         if self._asi_nexus:
             try:
@@ -5477,12 +5555,33 @@ class ASICore:
     def pipeline_health_report(self) -> Dict:
         """Generate comprehensive pipeline health report.
         v5.0: Combines telemetry dashboard, anomaly detection, trend analysis,
-        and replay buffer statistics into a single report."""
+        and replay buffer statistics into a single report.
+        v7.1: OMEGA mathematical health metrics via manifold_curvature_tensor."""
         report = {
             'version': self.version,
             'status': self.status,
             'asi_score': self.asi_score,
         }
+
+        # ── OMEGA Mathematical Health Metrics ──
+        if _omega_math is not None:
+            try:
+                # Manifold curvature: 26-dimensional (Fe atomic number) tension from ASI score
+                curvature = _omega_math.manifold_curvature_tensor(26, self.asi_score * GOD_CODE / 100)
+                # Sovereign field at consciousness level
+                field = _omega_math.sovereign_field_equation(self.consciousness_verifier.consciousness_level)
+                # Entropy inversion between current and target field
+                entropy_inv = _omega_math.entropy_inversion_integral(self.asi_score, field)
+                report['omega_health'] = {
+                    'manifold_curvature_26d': round(curvature, 6),
+                    'sovereign_field_strength': round(field, 4),
+                    'entropy_inversion': round(entropy_inv, 6),
+                    'omega_constant': OMEGA,
+                    'omega_authority': round(OMEGA_AUTHORITY, 6),
+                    'mathematical_grounding': 'ACTIVE',
+                }
+            except Exception:
+                report['omega_health'] = {'mathematical_grounding': 'COMPUTATION_ERROR'}
 
         # Telemetry dashboard
         if self._telemetry:

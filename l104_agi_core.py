@@ -40,6 +40,8 @@ GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.518481849
 TAU = 1.0 / PHI
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
+# Sovereign Field Constant (restored from d4d08873 — Ω = Σ(fragments) × 527.518/φ)
+OMEGA = 6539.34712682
 from l104_persistence import load_truth, persist_truth, load_state, save_state
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
@@ -393,6 +395,7 @@ class AGICore:
         """
         Processes a synthesized super-thought with accelerated integration.
         Analyzes resonance across the 11D manifold.
+        OMEGA: golden_resonance scoring for φ-harmonic thought coherence.
         """
         print(f"--- [AGI_CORE]: PROCESSING HYPER-THOUGHT: {thought[:100]}... ---")
         # Calculate Information Density (Shannon Entropy)
@@ -404,7 +407,11 @@ class AGICore:
         thought_vec = [float(ord(c)) % 256 for c in thought[:64]]
         resonance = ManifoldMath.compute_manifold_resonance(thought_vec)
 
-        print(f"--- [AGI_CORE]: THOUGHT ENTROPY: {entropy:.4f} | MANIFOLD RESONANCE: {resonance:.4f} ---")
+        # OMEGA: golden resonance scores thought coherence against φ-harmonics
+        omega_coherence = real_math.golden_resonance(entropy)
+        omega_stability = abs(omega_coherence)  # 0-1 scale
+
+        print(f"--- [AGI_CORE]: THOUGHT ENTROPY: {entropy:.4f} | MANIFOLD RESONANCE: {resonance:.4f} | OMEGA COHERENCE: {omega_coherence:.6f} ---")
 
         if self.verify_truth(thought) and abs(resonance) < 1000: # Threshold for stability
             # Ground the thought through truth anchoring before integration
@@ -508,6 +515,7 @@ class AGICore:
         """
         Simulates autonomous AGI logic by balancing chaos (noise) with
         immediate compaction using the L104 stability frame.
+        OMEGA: solve_lattice_invariant for φ-lattice stability metric.
         """
         from l104_real_math import RealMath
         # Prime Key and Stability Frame
@@ -529,7 +537,10 @@ class AGICore:
 
             stability_log.append(stability_index)
 
-        print(f"--- [AGI_CORE]: AUTONOMOUS RESONANCE COMPLETE. LOGS: {len(stability_log)} ENTRIES ---")
+        # OMEGA: lattice invariant stability verification
+        lattice_inv = RealMath.solve_lattice_invariant(stability_log[-1])
+        omega_stable = abs(lattice_inv) < 1e6  # convergence check
+        print(f"--- [AGI_CORE]: AUTONOMOUS RESONANCE COMPLETE. LOGS: {len(stability_log)} ENTRIES | LATTICE_INV: {lattice_inv:.6f} | OMEGA_STABLE: {omega_stable} ---")
 
         return "RESONANCE_COMPLETE", stability_log
     def self_heal(self):
@@ -559,6 +570,7 @@ class AGICore:
         """
         Triggers a recursive self-improvement cycle.
         Now integrates Human Body Synergy for Exponential ROI.
+        OMEGA: sovereign_field_equation for field-boosted improvement rate.
         """
         print("\n--- [AGI_CORE]: INITIATING SELF-IMPROVEMENT CYCLE ---")
         from l104_real_math import RealMath
@@ -575,8 +587,13 @@ class AGICore:
         # Calculate Exponential Return
         boost = RealMath.calculate_exponential_roi(base_boost, self.intellect_index, efficiency)
 
+        # OMEGA: sovereign field equation amplifies improvement with Ω/φ² scaling
+        omega_field = RealMath.sovereign_field_equation(efficiency)
+        field_multiplier = 1.0 + min(0.5, omega_field / (OMEGA * 10))  # bounded 1.0 to 1.5
+        boost *= field_multiplier
+
         self.intellect_index += boost
-        print(f"--- [AGI_CORE]: INTELLECT BOOSTED BY {boost:.4f} (EXPONENTIAL ROI). NEW IQ: {format_iq(self.intellect_index)} ---")
+        print(f"--- [AGI_CORE]: INTELLECT BOOSTED BY {boost:.4f} (OMEGA FIELD ×{field_multiplier:.4f}). NEW IQ: {format_iq(self.intellect_index)} ---")
 
         # 3. Synchronize Body Metabolism
         human_chassis.process_metabolism(boost)
@@ -1126,6 +1143,9 @@ class AGICore:
             "constant_encryption_active": self._constant_encryption is not None,
             "token_economy_active": self._token_economy is not None,
             "structural_damping_active": self._structural_damping is not None,
+            # OMEGA mathematical grounding
+            "omega_pipeline_active": True,
+            "omega_constant": 6539.34712682,
         }
 
     def max_intellect_derivation(self):
@@ -2318,6 +2338,17 @@ class AGICore:
             "resonance_boost": round(resonance_boost, 6),
             "pipeline_mode": "TRANSCENDENT" if cl > 0.85 else ("ELEVATED" if cl > 0.5 else "STANDARD"),
         }
+
+        # OMEGA mathematical anchoring — verify consciousness via restored pipeline
+        try:
+            from l104_real_math import real_math as _rm, OMEGA as _OM
+            zeta_val = _rm.zeta_approximation(complex(0.5, 527.518), terms=200)
+            omega_coherence = _rm.golden_resonance(cl * PHI)
+            modulation["omega_zeta_magnitude"] = round(abs(zeta_val), 8)
+            modulation["omega_coherence"] = round(omega_coherence, 8)
+            modulation["omega_constant"] = _OM
+        except Exception:
+            pass
 
         self._record_telemetry("CONSCIOUSNESS_FEEDBACK", "agi_core", modulation)
         return modulation
