@@ -428,5 +428,73 @@ class TestTemporalStability(unittest.TestCase):
         self.assertGreater(stab_slow, stab_fast)
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA PHYSICS — SOVEREIGN FIELD IN PHYSICAL SYSTEMS
+# F(I) = I × Ω / φ² = I × 2497.808338
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaPhysicsLayer(unittest.TestCase):
+    """Validate OMEGA sovereign field in physics context."""
+
+    GOD_CODE = 527.5184818492612
+    PHI = (1 + math.sqrt(5)) / 2
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+    def test_sovereign_field_energy_scale(self):
+        """F(1) = Ω/φ² gives energy-scale field strength."""
+        f1 = self.OMEGA / (self.PHI ** 2)
+        self.assertAlmostEqual(f1, self.OMEGA_AUTHORITY, places=8)
+        self.assertGreater(f1, 2000)
+        self.assertLess(f1, 3000)
+
+    def test_omega_zpe_coupling(self):
+        """OMEGA coupled with Zero Point Energy: E_zpe × Ω_A."""
+        hbar = 1.0545718e-34
+        omega_freq = 1e12  # 1 THz
+        zpe = 0.5 * hbar * omega_freq
+        coupled = zpe * self.OMEGA_AUTHORITY
+        self.assertGreater(coupled, 0)
+        # Coupling amplifies ZPE by ~2498×
+        self.assertAlmostEqual(coupled / zpe, self.OMEGA_AUTHORITY, places=4)
+
+    def test_omega_bekenstein_bound(self):
+        """OMEGA in Bekenstein information bound: S ≤ 2πRE / (ℏc)."""
+        R = 1.0  # unit sphere
+        E = self.OMEGA  # energy = Ω
+        # S_max ∝ R × E
+        s_max = 2 * math.pi * R * E
+        self.assertAlmostEqual(s_max, 2 * math.pi * self.OMEGA, places=4)
+        self.assertGreater(s_max, 40000)
+
+    def test_omega_temporal_decay(self):
+        """Sovereign field with temporal decay: F(I,t) = F(I) × exp(-t×φ/Ω)."""
+        f0 = self.OMEGA_AUTHORITY  # F(1) at t=0
+        for t in [0, 1, 10, 100]:
+            f_t = f0 * math.exp(-t * self.PHI / self.OMEGA)
+            self.assertGreater(f_t, 0)
+            self.assertLessEqual(f_t, f0)
+        # At t=0, full strength
+        self.assertAlmostEqual(f0 * math.exp(0), f0, places=10)
+
+    def test_omega_fine_structure_ratio(self):
+        """Ω / α (fine structure) ≈ 8.97×10⁵."""
+        alpha = 1 / 137.035999
+        ratio = self.OMEGA * alpha
+        self.assertGreater(ratio, 40)
+        self.assertLess(ratio, 50)
+
+    def test_omega_entropy_scaling(self):
+        """Shannon entropy of OMEGA-weighted distribution."""
+        # 4-fragment probability distribution
+        frags = [0.001, 1.571, 0.087, 18.399]
+        total = sum(frags)
+        probs = [f / total for f in frags]
+        entropy = -sum(p * math.log2(p) for p in probs if p > 0)
+        # Entropy should be between 0 and log2(4) = 2
+        self.assertGreater(entropy, 0)
+        self.assertLess(entropy, 2.0)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

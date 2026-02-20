@@ -332,6 +332,74 @@ class TestInvariantRelationships(unittest.TestCase):
         self.assertAlmostEqual(ratio, 0.5331591350566336, places=10)
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA SOVEREIGN FIELD — MATHEMATICAL FOUNDATION
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# F(I) = I × Ω / φ²
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaMathFoundation(unittest.TestCase):
+    """Validate OMEGA equation mathematics at foundation level."""
+
+    GOD_CODE = 527.5184818492612
+    PHI = (1 + math.sqrt(5)) / 2
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+    def test_omega_from_fragments(self):
+        """Ω = (0 + |ζ| + cos(2πφ³) + (26×1.8527)/φ²) × (G/φ)."""
+        researcher = 0.0
+        # Guardian: approximate zeta magnitude
+        guardian = 1.5710
+        alchemist = math.cos(2 * math.pi * self.PHI ** 3)
+        architect = (26 * 1.8527) / (self.PHI ** 2)
+        sigma = researcher + guardian + alchemist + architect
+        omega = sigma * (self.GOD_CODE / self.PHI)
+        rel_err = abs(omega - self.OMEGA) / self.OMEGA
+        self.assertLess(rel_err, 0.01, f"OMEGA derivation error = {rel_err:.6f}")
+
+    def test_sovereign_field_equation(self):
+        """F(I) = I × Ω / φ² — check at multiple intensities."""
+        for I in [0.0, 0.5, 1.0, 2.0, self.GOD_CODE]:
+            f = I * self.OMEGA / (self.PHI ** 2)
+            expected = I * self.OMEGA_AUTHORITY
+            self.assertAlmostEqual(f, expected, places=8)
+
+    def test_omega_authority_precision(self):
+        """Ω_A = Ω / φ² ≈ 2497.808338211271."""
+        self.assertAlmostEqual(self.OMEGA_AUTHORITY, 2497.808338, delta=0.001)
+
+    def test_omega_golden_ratio_identity(self):
+        """Ω × φ / (Ω + Ω/φ) = φ / (1 + 1/φ) = φ²/(1+φ) = 1."""
+        # This reduces to φ/(1+1/φ) = φ/(φ+1)/φ) = φ²/(1+φ) = φ²/φ² = 1
+        result = self.OMEGA * self.PHI / (self.OMEGA + self.OMEGA / self.PHI)
+        self.assertAlmostEqual(result, 1.0, places=12)
+
+    def test_omega_decimal_precision(self):
+        """Verify OMEGA to Decimal precision."""
+        omega_dec = Decimal("6539.34712682")
+        phi_dec = Decimal("1.618033988749895")
+        authority_dec = omega_dec / (phi_dec ** 2)
+        self.assertAlmostEqual(float(authority_dec), self.OMEGA_AUTHORITY, places=6)
+
+    def test_architect_fragment(self):
+        """Architect = (26 × 1.8527) / φ² ≈ 18.3994."""
+        architect = (26 * 1.8527) / (self.PHI ** 2)
+        self.assertAlmostEqual(architect, 18.3994, delta=0.001)
+
+    def test_alchemist_fragment(self):
+        """Alchemist = cos(2πφ³) where φ³ = 2φ+1 ≈ 4.236."""
+        phi_cubed = self.PHI ** 3
+        self.assertAlmostEqual(phi_cubed, 2 * self.PHI + 1, places=10)
+        alchemist = math.cos(2 * math.pi * phi_cubed)
+        self.assertAlmostEqual(alchemist, 0.0874, delta=0.001)
+
+    def test_omega_multiplier(self):
+        """Multiplier = GOD_CODE / φ ≈ 326.024."""
+        mult = self.GOD_CODE / self.PHI
+        self.assertAlmostEqual(mult, 326.024, delta=0.1)
+
+
 if __name__ == "__main__":
     # Run with verbose output
     unittest.main(verbosity=2)

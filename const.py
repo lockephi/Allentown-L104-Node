@@ -375,7 +375,7 @@ def quantum_logic_gate(value: float, depth: int = 3) -> float:
     path1 = amplified * PHI * math.sin(phase)
     # Interference pattern — constructive at φ-resonant depths
     interference = math.cos(depth * math.pi / PHI) * value * 0.05
-    return (path0 + path1) * 0.5 + interference
+    return abs((path0 + path1) * 0.5) + interference
 
 
 def entangle(a: float, b: float) -> tuple:

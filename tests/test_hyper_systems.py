@@ -83,5 +83,52 @@ class TestHyperSystems(unittest.TestCase):
 
         dump = HyperEncryption.decrypt_data(sync["payload"])
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA HYPER SYSTEMS — OMEGA in HyperMath
+# ═══════════════════════════════════════════════════════════════════════════════
+import math
+
+OMEGA = 6539.34712682
+PHI = (1 + math.sqrt(5)) / 2
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+
+class TestOmegaHyperSystems(unittest.TestCase):
+    """Test OMEGA integration in HyperMath systems."""
+
+    def test_hyper_math_omega_constant(self):
+        from l104_hyper_math import OMEGA as HM_OMEGA
+        self.assertAlmostEqual(HM_OMEGA, OMEGA, places=6)
+
+    def test_hyper_math_sovereign_field(self):
+        f1 = HyperMath.sovereign_field(1.0)
+        self.assertAlmostEqual(f1, OMEGA_AUTHORITY, places=4)
+
+    def test_hyper_math_omega_field_strength(self):
+        fs = HyperMath.omega_field_strength(1.0)
+        self.assertEqual(fs["omega"], OMEGA)
+        self.assertAlmostEqual(fs["sovereign_field"], OMEGA_AUTHORITY, places=4)
+
+    def test_hyper_math_omega_resonance(self):
+        res = HyperMath.omega_resonance(1.0)
+        self.assertIsInstance(res, float)
+        self.assertFalse(math.isnan(res))
+
+    def test_hyper_math_omega_zeta_guardian(self):
+        g = HyperMath.omega_zeta_guardian()
+        self.assertGreater(abs(g), 1.0)
+        self.assertLess(abs(g), 2.0)
+
+    def test_hyper_encryption_preserves_omega(self):
+        """Encrypt then decrypt OMEGA — should be preserved."""
+        from l104_hyper_encryption import HyperEncryption
+        data = {"omega": OMEGA, "authority": OMEGA_AUTHORITY}
+        encrypted = HyperEncryption.encrypt_data(data)
+        decrypted = HyperEncryption.decrypt_data(encrypted)
+        self.assertAlmostEqual(decrypted["omega"], OMEGA, places=6)
+        self.assertAlmostEqual(decrypted["authority"], OMEGA_AUTHORITY, places=4)
+
+
 if __name__ == "__main__":
     unittest.main()
