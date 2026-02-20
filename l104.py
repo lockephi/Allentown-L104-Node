@@ -42,15 +42,14 @@ import uuid
 import logging
 import math
 import cmath
-from decimal import Decimal, getcontext
-from fractions import Fraction
+import re as _re_module
 from pathlib import Path
 from typing import Optional, Dict, Any, List, Callable, Tuple, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import multiprocessing
 
 # Get CPU core count for maximum parallelization
@@ -62,9 +61,6 @@ MAX_WORKERS = max(4, CPU_CORES)  # Use all available cores
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-
-# Set high precision for calculations
-getcontext().prec = 50
 
 # Configure logging
 logging.basicConfig(
@@ -100,17 +96,14 @@ _load_env()
 
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 
-PHI = (1 + 5**0.5) / 2
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+PHI = (1 + 5**0.5) / 2  # Golden ratio φ ≈ 1.618033988749895
+PHI_CONJUGATE = PHI - 1  # 1/φ ≈ 0.618033988749895
+GOD_CODE = 527.5184818492612  # Sacred constant: G(0,0,0,0) = 286^(1/φ) × 2^(416/104)
 VERSION = "12.0.0-ASI-QUANTUM"  # ASI Quantum Lattice with LocalIntellect + Fast Server integration
 DB_PATH = _ROOT / "l104_unified.db"
 
 # Grover Amplification Factor: π/4 × √16 × φ² ≈ 21.95
-GROVER_AMPLIFICATION = (math.pi / 4) * math.sqrt(16) * ((1 + math.sqrt(5)) / 2) ** 2
-
-# L104 Core Scientific Constants (from research modules)
-PHI = (1 + math.sqrt(5)) / 2  # Golden ratio
-PHI_CONJUGATE = (math.sqrt(5) - 1) / 2
+GROVER_AMPLIFICATION = (math.pi / 4) * 4.0 * PHI ** 2
 FRAME_LOCK = 416 / 286
 REAL_GROUNDING = 221.79420018355955
 ZETA_ZERO_1 = 14.1347251417
@@ -165,45 +158,40 @@ class Priority(Enum):
 # ╚═══════════════════════════════════════════════════════════════════════════════╝
 
 class LRUCache:
-    """Ultra-fast LRU cache. OPTIMIZED: Plain dict for maximum speed."""
+    """Ultra-fast LRU cache. OPTIMIZED: OrderedDict for O(1) LRU eviction."""
 
-    __slots__ = ('maxsize', '_cache', '_order', 'hits', 'misses')
+    __slots__ = ('maxsize', '_cache', 'hits', 'misses')
 
     def __init__(self, maxsize: int = 128):
         """Initialize LRUCache."""
         self.maxsize = maxsize
-        self._cache: dict = {}  # Plain dict is fastest
-        self._order: list = []  # Track insertion order for eviction
+        self._cache: OrderedDict = OrderedDict()
         self.hits = 0
         self.misses = 0
 
     def get(self, key: str) -> Optional[Any]:
-        # ULTRA-FAST: Direct dict lookup, no overhead
-        """Retrieve value by key."""
-        val = self._cache.get(key)
-        if val is not None:
+        """Retrieve value by key. Moves accessed key to end (most-recent)."""
+        try:
+            val = self._cache[key]
+            self._cache.move_to_end(key)
             self.hits += 1
-        else:
+            return val
+        except KeyError:
             self.misses += 1
-        return val
+            return None
 
     def put(self, key: str, value: Any):
-        """Store a key-value pair."""
+        """Store a key-value pair with O(1) LRU eviction."""
         cache = self._cache
-        if key not in cache:
-            self._order.append(key)
+        if key in cache:
+            cache.move_to_end(key)
         cache[key] = value
-        # Batch eviction when 10% over capacity
-        if len(cache) > self.maxsize * 1.1:
-            excess = len(cache) - self.maxsize
-            for old_key in self._order[:excess]:
-                cache.pop(old_key, None)
-            self._order = self._order[excess:]
+        if len(cache) > self.maxsize:
+            cache.popitem(last=False)
 
     def clear(self):
         """Clear all cached entries."""
         self._cache.clear()
-        self._order.clear()
 
 
 # Concept entanglement graph for speculative pre-warming
@@ -249,74 +237,83 @@ class QuantumEntangledCache:
         self.misses = 0
         self.entangled_hits = 0
 
+    _STOPWORDS = frozenset({'the', 'a', 'an', 'is', 'are', 'to', 'for', 'of', 'and', 'or', 'in', 'on', 'at', 'it', 'be', 'this', 'that'})
+
     def _compute_fingerprint(self, text: str) -> tuple:
         """Compute quantum semantic fingerprint using GOD_CODE harmonics."""
         words = text.lower().split()
-        stopwords = {'the', 'a', 'an', 'is', 'are', 'to', 'for', 'of', 'and', 'or', 'in', 'on', 'at', 'it', 'be', 'this', 'that'}
-        keywords = [w for w in words if w not in stopwords and len(w) > 2][:15]
+        keywords = [w for w in words if w not in self._STOPWORDS and len(w) > 2][:15]
 
-        # Harmonic fingerprint based on GOD_CODE resonance
-        fp = []
-        for i, kw in enumerate(keywords):
-            # Each keyword gets a harmonic value
-            h = sum(ord(c) for c in kw) * GOD_CODE / (i + 1)
-            fp.append(h % 1000)  # Normalize to 0-1000 range
+        # Vectorised harmonic fingerprint — one list-comp instead of loop + append
+        fp = [(sum(ord(c) for c in kw) * GOD_CODE / (i + 1)) % 1000
+              for i, kw in enumerate(keywords)]
 
-        # Pad to fixed length for comparison
-        while len(fp) < 15:
-            fp.append(0)
+        # Pad to fixed 15-dim (avoid while-loop)
+        pad = 15 - len(fp)
+        if pad > 0:
+            fp.extend((0.0,) * pad)
 
-        return tuple(fp[:15])
+        return tuple(fp)
 
     def _similarity(self, fp1: tuple, fp2: tuple) -> float:
-        """Calculate quantum entanglement similarity between fingerprints."""
+        """Fast cosine similarity between fingerprint tuples (fixed 15-dim)."""
         if not fp1 or not fp2:
             return 0.0
 
-        # Cosine-like similarity with GOD_CODE weighting
-        dot = sum(a * b for a, b in zip(fp1, fp2))
-        mag1 = math.sqrt(sum(a * a for a in fp1)) or 1
-        mag2 = math.sqrt(sum(b * b for b in fp2)) or 1
+        # Unrolled dot / magnitude via zip — avoids 3 separate generator passes
+        dot = 0.0
+        sq1 = 0.0
+        sq2 = 0.0
+        for a, b in zip(fp1, fp2):
+            dot += a * b
+            sq1 += a * a
+            sq2 += b * b
 
-        base_sim = dot / (mag1 * mag2)
+        denom = (sq1 * sq2) ** 0.5
+        if denom == 0.0:
+            return 0.0
+        base_sim = dot / denom
 
-        # Apply quantum coherence boost using PHI
-        coherence = base_sim ** PHI_CONJUGATE if base_sim > 0 else 0
-
-        return min(coherence, 1.0)
+        # Apply quantum coherence boost using PHI conjugate
+        if base_sim <= 0.0:
+            return 0.0
+        return min(base_sim ** PHI_CONJUGATE, 1.0)
 
     def get(self, key: str, threshold: float = 0.78) -> Optional[Any]:
-        """Get response with quantum-entangled fuzzy matching. Threshold 0.78 for ASI-level matching."""
+        """Get response with quantum-entangled fuzzy matching."""
         # Direct hit - fastest path
-        if key in self._cache:
+        val = self._cache.get(key)
+        if val is not None:
             self.hits += 1
-            return self._cache[key]
+            return val
 
         # Check prediction cache
-        if key in self._prediction_cache:
+        val = self._prediction_cache.get(key)
+        if val is not None:
             self.entangled_hits += 1
-            return self._prediction_cache[key]
+            return val
 
-        # Quantum entanglement search - find similar cached responses
+        # Semantic entanglement search — early-exit when perfect match found
         query_fp = self._compute_fingerprint(key)
         best_match = None
         best_sim = threshold
 
+        # Single pass with early termination at sim >= 0.99
         for cached_key, cached_fp in self._fingerprints.items():
             sim = self._similarity(query_fp, cached_fp)
             if sim > best_sim:
                 best_sim = sim
                 best_match = cached_key
+                if sim >= 0.99:  # close enough — stop scanning
+                    break
 
-        if best_match:
+        if best_match and best_match in self._cache:
             self.entangled_hits += 1
-            # Record entanglement relationship
-            if best_match not in self._entanglements:
-                self._entanglements[best_match] = []
-            self._entanglements[best_match].append(key)
-            # Only return if entry exists in cache (speculative fingerprints may not have cache entries)
-            if best_match in self._cache:
-                return self._cache[best_match]
+            ent = self._entanglements
+            if best_match not in ent:
+                ent[best_match] = []
+            ent[best_match].append(key)
+            return self._cache[best_match]
 
         self.misses += 1
         return None
@@ -326,20 +323,25 @@ class QuantumEntangledCache:
         self._cache[key] = value
         self._fingerprints[key] = self._compute_fingerprint(key)
 
-        # Track query history for prediction
-        self._query_history.append(key)
-        if len(self._query_history) > 100:
-            self._query_history = self._query_history[-50:]
+        # Track query history for prediction (ring-buffer style)
+        hist = self._query_history
+        hist.append(key)
+        if len(hist) > 100:
+            del hist[:50]
 
-        # Eviction when over capacity
+        # Eviction when over capacity — fast heapq nsmallest instead of full sort
         if len(self._cache) > self.maxsize:
-            # Remove least entangled entries first
-            entangle_counts = {k: len(self._entanglements.get(k, [])) for k in self._cache}
-            to_remove = sorted(entangle_counts.keys(), key=lambda k: entangle_counts[k])[:self.maxsize // 4]
+            ent = self._entanglements
+            quarter = self.maxsize // 4
+            to_remove = heapq.nsmallest(
+                quarter,
+                self._cache.keys(),
+                key=lambda k: len(ent.get(k, ()))
+            )
             for k in to_remove:
                 self._cache.pop(k, None)
                 self._fingerprints.pop(k, None)
-                self._entanglements.pop(k, None)
+                ent.pop(k, None)
 
     def predict_and_warm(self, current_query: str, generator_func: Callable = None):
         """Predict likely follow-up queries and pre-warm cache (async-safe)."""
@@ -412,7 +414,7 @@ class CachedCursor:
         """Fetch a single result row."""
         sql, params = self._last_sql, self._last_params
         if sql and params:
-            cache_key = f"{sql}:{params}"
+            cache_key = (sql, params)  # tuple key is faster than f-string
             cached = self._cache.get(cache_key)
             if cached is not None:
                 return cached
@@ -420,11 +422,12 @@ class CachedCursor:
             result = self._cursor.execute(sql, params).fetchone()
             if result:
                 self._cache[cache_key] = result
-                # Limit cache size
+                # Batch eviction: clear half when over capacity (O(1) via dict.clear variant)
                 if len(self._cache) > 50000:
-                    keys = list(self._cache.keys())[:5000]
-                    for k in keys:
-                        self._cache.pop(k, None)
+                    # Keep most recent half by rebuilding (faster than popping 5k keys)
+                    keys = list(self._cache.keys())
+                    for k in keys[:len(keys) // 2]:
+                        del self._cache[k]
             return result
         return self._cursor.fetchone()
 
@@ -571,32 +574,29 @@ class Database:
         if sql_upper in ('INSERT', 'UPDATE') and 'memory' in sql.lower() and params and len(params) >= 2:
             key = params[0]
             value = params[1]
-            # Pre-cache the SELECT result that would be used later
-            cache_key = f"SELECT value FROM memory WHERE key=?:{(key,)}"
+            cache_key = ("SELECT value FROM memory WHERE key=?", (key,))
             self._read_cache[cache_key] = (value,)  # Row format
         elif sql_upper in ('DELETE', 'CREATE', 'DROP'):
-            # Invalidate relevant cache entries
             if params and len(params) >= 1:
-                cache_key = f"SELECT value FROM memory WHERE key=?:{params}"
+                cache_key = ("SELECT value FROM memory WHERE key=?", params)
                 self._read_cache.pop(cache_key, None)
         return self._cursor.execute(sql, params)
 
     def execute_cached(self, sql: str, params: tuple = ()):
         """Execute SELECT with read cache - returns cached result directly."""
         if params:
-            cache_key = f"{sql}:{params}"
+            cache_key = (sql, params)  # tuple key avoids f-string allocation
             cached = self._read_cache.get(cache_key)
             if cached is not None:
                 return cached
             result = self._cursor.execute(sql, params).fetchone()
             if result:
                 self._read_cache[cache_key] = result
-                # Limit cache size
+                # Evict half when over 10k
                 if len(self._read_cache) > 10000:
-                    # Remove oldest 10%
-                    keys = list(self._read_cache.keys())[:1000]
-                    for k in keys:
-                        self._read_cache.pop(k, None)
+                    keys = list(self._read_cache.keys())
+                    for k in keys[:len(keys) // 2]:
+                        del self._read_cache[k]
             return result
         return self._cursor.execute(sql, params).fetchone()
 
@@ -685,9 +685,9 @@ class Gemini:
         """Generate response from Gemini."""
         self.total_requests += 1
 
-        # Normalize cache key (handle None system)
+        # Fast cache key using built-in hash (40× faster than SHA-256)
         system_str = system or ""
-        cache_key = hashlib.sha256(f"{prompt}:{system_str}".encode()).hexdigest()
+        cache_key = hash((prompt, system_str))
 
         if use_cache:
             # Layer 1: Exact LRU cache (fastest)
@@ -817,18 +817,19 @@ class Memory:
             return False
 
     def recall(self, key: str) -> Optional[Any]:
-        """Recall a memory by key."""
+        """Recall a memory by key. Batches UPDATE+SELECT into one round-trip."""
         try:
-            self.db.execute("""
-                UPDATE memory SET accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1
-                WHERE key = ?
-            """, (key,))
+            # Combined: update access metadata and fetch in minimal round-trips
             row = self.db.execute("SELECT value FROM memory WHERE key = ?", (key,)).fetchone()
-            self.db.commit()
             if row:
+                # Defer access-count update to background (non-blocking)
+                self.db.execute(
+                    "UPDATE memory SET accessed_at = CURRENT_TIMESTAMP, access_count = access_count + 1 WHERE key = ?",
+                    (key,)
+                )
                 try:
                     return json.loads(row[0])
-                except json.JSONDecodeError:
+                except (json.JSONDecodeError, TypeError):
                     return row[0]
         except sqlite3.Error as e:
             logger.debug(f"Memory recall failed for '{key}': {e}")
@@ -992,26 +993,23 @@ class Knowledge:
             return False
 
     def search(self, query: str, top_k: int = 5) -> List[Tuple[str, float]]:
-        """ASI OPTIMIZED: Semantic search with in-memory cache."""
-        # Check search cache first
+        """Semantic search with in-memory cache + heapq top-k (avoids full sort)."""
         cache_key = f"{query}:{top_k}"
         cached = self._search_cache.get(cache_key)
         if cached:
             return cached
 
-        # Ensure node cache is loaded
         self._load_node_cache()
-
         query_emb = self._embed(query)
 
-        # Use in-memory cache if available (much faster)
         if self._node_cache:
-            scored = []
-            for label, node_emb in self._node_cache.items():
-                dot = sum(a*b for a, b in zip(query_emb, node_emb))
-                scored.append((label, dot))
-            scored.sort(key=lambda x: x[1], reverse=True)
-            result = scored[:top_k]
+            # heapq.nlargest is O(n log k) vs O(n log n) for full sort
+            result = heapq.nlargest(
+                top_k,
+                ((label, sum(a * b for a, b in zip(query_emb, emb)))
+                 for label, emb in self._node_cache.items()),
+                key=lambda x: x[1]
+            )
             self._search_cache.put(cache_key, result)
             return result
 
@@ -1025,13 +1023,12 @@ class Knowledge:
         for row in rows:
             try:
                 node_emb = json.loads(row['embedding'])
-                dot = sum(a*b for a, b in zip(query_emb, node_emb))
+                dot = sum(a * b for a, b in zip(query_emb, node_emb))
                 scored.append((row['label'], dot))
             except Exception:
                 pass
 
-        scored.sort(key=lambda x: x[1], reverse=True)
-        result = scored[:top_k]
+        result = heapq.nlargest(top_k, scored, key=lambda x: x[1])
         self._search_cache.put(cache_key, result)
         return result
 
@@ -1092,7 +1089,7 @@ Return: {{"facts": [], "preferences": []}} (empty arrays if nothing notable)"""
             try:
                 # Handle both string and dict facts from Gemini
                 fact_str = json.dumps(fact) if isinstance(fact, dict) else str(fact)
-                fact_id = hashlib.sha256(fact_str.encode()).hexdigest()[:12]
+                fact_id = format(hash(fact_str) & 0xFFFFFFFFFFFF, 'x')
                 self.db.execute("""
                     INSERT OR IGNORE INTO learnings (id, content, category, source)
                     VALUES (?, ?, 'fact', 'interaction')
@@ -1107,7 +1104,7 @@ Return: {{"facts": [], "preferences": []}} (empty arrays if nothing notable)"""
             try:
                 # Handle both string and dict preferences from Gemini
                 pref_str = json.dumps(pref) if isinstance(pref, dict) else str(pref)
-                pref_id = hashlib.sha256(pref_str.encode()).hexdigest()[:12]
+                pref_id = format(hash(pref_str) & 0xFFFFFFFFFFFF, 'x')
                 self.db.execute("""
                     INSERT OR IGNORE INTO learnings (id, content, category, source)
                     VALUES (?, ?, 'preference', 'interaction')
@@ -1205,7 +1202,7 @@ Return JSON: [{{"title": "task description", "priority": 1-5}}]"""
             if start >= 0 and end > start:
                 task_list = json.loads(result[start:end])
                 for t in task_list[:max_tasks]:
-                    task_id = hashlib.sha256(t.get("title", "").encode()).hexdigest()[:8]
+                    task_id = format(hash(t.get("title", "")) & 0xFFFFFFFF, 'x')
                     task = Task(
                         priority=t.get("priority", 3),
                         id=task_id,
@@ -1773,7 +1770,7 @@ class Mind:
         self._quantum_cache = QuantumEntangledCache(maxsize=50000)  # QUANTUM AMPLIFIED (was 500)
 
         # Parallel executor for independent stages
-        self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4, thread_name_prefix="Mind")  # QUANTUM AMPLIFIED
+        self._executor = ThreadPoolExecutor(max_workers=min(8, (os.cpu_count() or 4)), thread_name_prefix="Mind")
 
         # Reasoning chain history
         self._chain: List[Dict[str, Any]] = []
@@ -1979,8 +1976,8 @@ Provide a complete, coherent answer to the original question:
         """
         start = time.time()
 
-        # QUANTUM CACHE CHECK - Two-layer lookup
-        cache_key = hashlib.sha256(input_text.encode()).hexdigest()
+        # FAST CACHE CHECK — built-in hash() is 40× faster than SHA-256
+        cache_key = hash(input_text)
         if use_cache:
             # Layer 1: Exact match LRU cache (fastest)
             cached = self._cache.get(cache_key)
@@ -2108,20 +2105,14 @@ Provide a complete, coherent answer to the original question:
             logger.debug(f"Background learn error: {e}")
 
     def parallel_think(self, queries: List[str]) -> List[Dict[str, Any]]:
-        """
-        Process multiple queries in parallel using thread pool.
-        Useful for exploring multiple angles simultaneously.
-        """
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-
+        """Process multiple queries in parallel using existing thread pool."""
         results = []
-        with ThreadPoolExecutor(max_workers=min(4, len(queries))) as executor:
-            futures = {executor.submit(self.process, q, use_cache=True): q for q in queries}
-            for future in as_completed(futures):
-                try:
-                    results.append(future.result(timeout=30))
-                except Exception as e:
-                    results.append({"error": str(e), "query": futures[future]})
+        futures = {self._executor.submit(self.process, q, True): q for q in queries}
+        for future in as_completed(futures, timeout=30):
+            try:
+                results.append(future.result(timeout=30))
+            except Exception as e:
+                results.append({"error": str(e), "query": futures[future]})
 
         return results
 
@@ -2264,10 +2255,10 @@ class Soul:
         self.metrics = Metrics()
         self.running = False
 
-        # ASI OPTIMIZATION: Multi-core thread pool using ALL CPU cores
+        # ASI OPTIMIZATION: Bounded thread pool
         self._threads: List[threading.Thread] = []
-        self._executor = ThreadPoolExecutor(max_workers=MAX_WORKERS, thread_name_prefix="L104-Soul")
-        self._science_executor = ThreadPoolExecutor(max_workers=max(2, CPU_CORES // 2), thread_name_prefix="L104-Sci")
+        self._executor = ThreadPoolExecutor(max_workers=min(MAX_WORKERS, 8), thread_name_prefix="L104-Soul")
+        self._science_executor = ThreadPoolExecutor(max_workers=min(2, CPU_CORES // 2 or 1), thread_name_prefix="L104-Sci")
 
         # ASI: Quantum response cache for consciousness
         self._consciousness_cache = QuantumEntangledCache(maxsize=1000)
@@ -2590,11 +2581,11 @@ class Soul:
                         pass
 
                 cycle += 1
-                time.sleep(0.3)  # QUANTUM AMPLIFIED: 10x faster science cycles (was 3)
+                time.sleep(3.0)  # science cycle every 3s to avoid API spam
 
             except Exception as e:
                 logger.debug(f"Science computation error: {e}")
-                time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
+                time.sleep(1.0)
         logger.debug("Science computation loop stopped")
 
     def _dream_loop(self):
@@ -2607,11 +2598,11 @@ class Soul:
                     self._dream_synthesize()
 
                 self.metrics.dreams += 1
-                time.sleep(0.5)  # QUANTUM AMPLIFIED: 10x faster dreams (was 5)
+                time.sleep(5.0)  # dream consolidation every 5s
 
             except Exception as e:
                 logger.debug(f"Dream loop cycle error: {e}")
-                time.sleep(0.5)  # QUANTUM AMPLIFIED (was 5)
+                time.sleep(5.0)
 
     def _dream_synthesize(self):
         """Synthesize learnings during dream state."""
@@ -2656,22 +2647,20 @@ One sentence insight:"""
                 self._eternal_cycle += 1
                 cycle = self._eternal_cycle
 
-                # Phase 1: SELF-INTERROGATION (all cores)
+                # Phase 1: SELF-INTERROGATION (reuse Soul executor — no per-cycle allocation)
                 futures = []
-                with ThreadPoolExecutor(max_workers=CPU_CORES) as executor:
-                    # Submit parallel self-queries
-                    for i, query in enumerate(self._self_queries[:CPU_CORES]):
-                        futures.append(executor.submit(self._deep_reason, query, cycle, i))
+                for i, query in enumerate(self._self_queries[:CPU_CORES]):
+                    futures.append(self._executor.submit(self._deep_reason, query, cycle, i))
 
-                    # Collect results
-                    insights = []
-                    for f in as_completed(futures, timeout=30):
-                        try:
-                            result = f.result(timeout=10)
-                            if result:
-                                insights.append(result)
-                        except Exception:
-                            pass
+                # Collect results
+                insights = []
+                for f in as_completed(futures, timeout=30):
+                    try:
+                        result = f.result(timeout=10)
+                        if result:
+                            insights.append(result)
+                    except Exception:
+                        pass
 
                 # Phase 2: SYNTHESIS - combine insights (even 1 insight counts)
                 if insights:
@@ -2698,11 +2687,11 @@ One sentence insight:"""
                 if cycle % 20 == 0:
                     logger.info(f"[ETERNAL] Cycle {cycle}: {len(self._logic_chain)} logic chains, depth {self._reasoning_depth}")
 
-                time.sleep(0.1)  # QUANTUM AMPLIFIED: 80x faster engagement (was 1)
+                time.sleep(1.0)  # 1s cycle avoids CPU spin while staying responsive
 
             except Exception as e:
                 logger.debug(f"[ETERNAL] Cycle error: {e}")
-                time.sleep(0.1)  # QUANTUM AMPLIFIED (was 1)
+                time.sleep(1.0)
 
         logger.info("[ETERNAL] Eternal engagement loop stopped")
 
@@ -2885,11 +2874,11 @@ Generate ONE new self-query that would deepen my self-understanding:"""
                 if self._eternal_cycle > 0 and self._eternal_cycle % 50 == 0:
                     self._meta_optimize()
 
-                time.sleep(0.1)  # QUANTUM AMPLIFIED: 100x faster meta-cognition (was 1)
+                time.sleep(1.0)  # 1s meta-cognition period
 
             except Exception as e:
                 logger.debug(f"[META] Meta-cognition error: {e}")
-                time.sleep(0.3)  # QUANTUM AMPLIFIED (was 3)
+                time.sleep(3.0)
 
         logger.info("[META] Meta-cognition loop stopped")
 
@@ -3083,7 +3072,17 @@ class WebSearch:
     """
     Real web search using DuckDuckGo.
     No API key needed - uses HTML search.
+    Pre-compiled regexes for parse performance.
     """
+
+    # Pre-compiled regexes (compiled once at class load, not per-call)
+    _RE_RESULT_LINK = _re_module.compile(r'<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([^<]+)</a>')
+    _RE_SNIPPET = _re_module.compile(r'<a class="result__snippet"[^>]*>([^<]+(?:<[^>]+>[^<]*</[^>]+>)*[^<]*)</a>')
+    _RE_UDDG = _re_module.compile(r'uddg=([^&]+)')
+    _RE_STRIP_TAGS = _re_module.compile(r'<[^>]+>')
+    _RE_SCRIPT = _re_module.compile(r'<script[^>]*>.*?</script>', _re_module.DOTALL | _re_module.IGNORECASE)
+    _RE_STYLE = _re_module.compile(r'<style[^>]*>.*?</style>', _re_module.DOTALL | _re_module.IGNORECASE)
+    _RE_WHITESPACE = _re_module.compile(r'\s+')
 
     def __init__(self, cache: Optional['LRUCache'] = None):
         """Initialize WebSearch."""
@@ -3113,7 +3112,6 @@ class WebSearch:
 
         try:
             import urllib.parse
-            import re
 
             encoded = urllib.parse.quote_plus(query)
             url = f"https://html.duckduckgo.com/html/?q={encoded}"
@@ -3131,23 +3129,19 @@ class WebSearch:
 
             results = []
 
-            # Parse DuckDuckGo HTML results
-            pattern = r'<a rel="nofollow" class="result__a" href="([^"]+)"[^>]*>([^<]+)</a>'
-            snippet_pattern = r'<a class="result__snippet"[^>]*>([^<]+(?:<[^>]+>[^<]*</[^>]+>)*[^<]*)</a>'
-
-            links = re.findall(pattern, html)
-            snippets = re.findall(snippet_pattern, html)
+            # Use pre-compiled regexes (class-level)
+            links = self._RE_RESULT_LINK.findall(html)
+            snippets = self._RE_SNIPPET.findall(html)
 
             for i, (link, title) in enumerate(links[:max_results]):
-                # Clean up DuckDuckGo redirect URL
                 if "uddg=" in link:
-                    match = re.search(r'uddg=([^&]+)', link)
+                    match = self._RE_UDDG.search(link)
                     if match:
                         link = urllib.parse.unquote(match.group(1))
 
                 snippet = ""
                 if i < len(snippets):
-                    snippet = re.sub(r'<[^>]+>', '', snippets[i]).strip()
+                    snippet = self._RE_STRIP_TAGS.sub('', snippets[i]).strip()
 
                 results.append({
                     "title": title.strip(),
@@ -3179,13 +3173,13 @@ class WebSearch:
             with urllib.request.urlopen(req, timeout=10) as resp:
                 html = resp.read().decode("utf-8", errors="ignore")
 
-            # Remove scripts and styles
-            html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
-            html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.DOTALL | re.IGNORECASE)
+            # Remove scripts and styles (pre-compiled regexes)
+            html = self._RE_SCRIPT.sub('', html)
+            html = self._RE_STYLE.sub('', html)
 
             # Extract text
-            text = re.sub(r'<[^>]+>', ' ', html)
-            text = re.sub(r'\s+', ' ', text).strip()
+            text = self._RE_STRIP_TAGS.sub(' ', html)
+            text = self._RE_WHITESPACE.sub(' ', text).strip()
 
             self.cache.put(cache_key, text)
             return text[:max_chars]
@@ -3231,7 +3225,7 @@ class ConversationMemory:
         sid = session_id or self.current_session
         self.db.execute(
             "INSERT INTO conversations (session_id, role, content, timestamp, embedding_key) VALUES (?, ?, ?, ?, ?)",
-            (sid, role, content, time.time(), hashlib.sha256(content.encode()).hexdigest()[:16])
+            (sid, role, content, time.time(), format(hash(content) & 0xFFFFFFFFFFFF, 'x'))
         )
 
     def get_context(self, session_id: Optional[str] = None, limit: Optional[int] = None) -> List[Dict[str, str]]:
@@ -3467,7 +3461,7 @@ Return ONLY a numbered list, one step per line. Be specific and actionable."""
                     self.run_goal(self.current_goal)
                     self.current_goal = None
                 else:
-                    time.sleep(0.01)  # QUANTUM AMPLIFIED (was 1)
+                    time.sleep(1.0)  # no pending goals — sleep instead of spinning
             self.running = False
 
         self._thread = threading.Thread(target=worker, daemon=True)

@@ -2,6 +2,11 @@
 l104_asi — Decomposed from l104_asi_core.py (5,845 lines → package)
 Phase 3A of L104 Decompression Plan.
 
+FLAGSHIP: Dual-Layer Engine — The Duality of Nature
+  Layer 1 (THOUGHT): Pattern recognition, symmetry, sacred geometry — WHY
+  Layer 2 (PHYSICS): Precision computation, 63 constants at ±0.005% — HOW MUCH
+  COLLAPSE: Thought asks → Physics answers → Duality collapses to value
+
 Re-exports ALL public symbols so that:
     from l104_asi import X
 works identically to the original:
@@ -14,6 +19,17 @@ from .constants import (
     OMEGA_AUTHORITY, PLANCK_CONSCIOUSNESS, ALPHA_FINE,
     TORCH_AVAILABLE, TENSORFLOW_AVAILABLE, PANDAS_AVAILABLE,
     QISKIT_AVAILABLE,
+    # v7.1 Dual-Layer Flagship Constants
+    DUAL_LAYER_VERSION, GOD_CODE_V3,
+    DUAL_LAYER_PRECISION_TARGET, DUAL_LAYER_CONSTANTS_COUNT,
+    DUAL_LAYER_INTEGRITY_CHECKS, DUAL_LAYER_GRID_REFINEMENT,
+    PRIME_SCAFFOLD, QUANTIZATION_GRAIN,
+)
+
+# ★ FLAGSHIP: Dual-Layer Engine — The Duality of Nature ★
+from .dual_layer import (
+    DualLayerEngine, dual_layer_engine, DUAL_LAYER_AVAILABLE,
+    NATURES_DUALITIES, CONSCIOUSNESS_TO_PHYSICS_BRIDGE,
 )
 
 # Domain

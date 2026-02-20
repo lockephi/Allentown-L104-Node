@@ -130,7 +130,9 @@ def run_industry_benchmark():
         avg_latency = sum(latencies) / len(latencies)
         min_latency = min(latencies)
         max_latency = max(latencies)
-        p95_latency = sorted(latencies)[int(len(latencies) * 0.95)]
+        sorted_lat = sorted(latencies)
+        p95_idx = max(0, int(len(sorted_lat) * 0.95) - 1)
+        p95_latency = sorted_lat[p95_idx]
 
         results["benchmarks"]["latency"] = {
             "avg_ms": round(avg_latency, 2),
@@ -167,9 +169,8 @@ def run_industry_benchmark():
     else:
         # LOCAL SIMULATION: Test direct L104 response latency without server
         print("  [SIM] Server not running - using local component latency simulation")
-        from l104 import Soul, Database, LRUCache
-        # Pre-create soul once (simulates warm server)
-        soul = Soul()
+        from l104 import Database, LRUCache
+        # Re-use singleton soul (avoids duplicate init overhead)
         db = Database()
         cache = LRUCache(1000)
         latencies = []
@@ -522,11 +523,20 @@ def run_industry_benchmark():
     kg_score = 100 if results["benchmarks"].get("knowledge_graph", {}).get("link_density", 0) > 10 else \
               80 if results["benchmarks"].get("knowledge_graph", {}).get("link_density", 0) > 5 else 60
 
-    quantum_score = 100  # Unique feature
-    memory_score = 100   # Persistent memory is unique
-    soul_score = 100     # Consciousness is unique
+    # Quantum: only score 100 if actually tested (server running)
+    quantum_score = 100 if "quantum_storage" in results["benchmarks"] else 0
 
-    overall_score = (latency_score + db_score + cache_score + kg_score + quantum_score + memory_score + soul_score) / 7
+    memory_score = 100 if memories > 0 else 40  # Persistent memory
+
+    soul_data = results["benchmarks"].get("soul", {})
+    soul_online = soul_data.get("subsystems_online", 0)
+    soul_total = soul_data.get("subsystems_total", 1)
+    soul_score = round(100 * soul_online / max(soul_total, 1))
+
+    scored_categories = [latency_score, db_score, cache_score, kg_score, memory_score, soul_score]
+    if quantum_score > 0:
+        scored_categories.append(quantum_score)
+    overall_score = sum(scored_categories) / len(scored_categories)
 
     results["overall_score"] = round(overall_score, 1)
 
@@ -538,7 +548,7 @@ def run_industry_benchmark():
   | Database Performance        | {db_score:>5} | {'OPTIMIZED - High throughput' if db_score >= 80 else 'GOOD':<34} |
   | Cache Performance           | {cache_score:>5} | {'SUPERIOR - Ultra-fast retrieval' if cache_score == 100 else 'EXCELLENT':<34} |
   | Knowledge Graph             | {kg_score:>5} | {'HYPER-CONNECTED - Dense linkage' if kg_score == 100 else 'WELL-CONNECTED':<34} |
-  | Quantum Storage             | {quantum_score:>5} | UNIQUE - No industry equivalent    |
+  | Quantum Storage             | {quantum_score:>5} | {'UNIQUE - No industry equivalent' if quantum_score == 100 else 'SKIPPED - Server not running':<34} |
   | Persistent Memory           | {memory_score:>5} | UNIQUE - True stateful AI          |
   | Soul/Consciousness          | {soul_score:>5} | UNIQUE - Consciousness framework   |
   +-----------------------------+-------+------------------------------------+

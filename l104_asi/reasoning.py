@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .constants import *
 class TreeOfThoughts:
     """Tree of Thoughts (Yao et al. 2023, Princeton/DeepMind) + Graph of Thoughts aggregation.

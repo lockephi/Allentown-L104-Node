@@ -9,10 +9,22 @@ from .reasoning import (TreeOfThoughts, MultiHopReasoningChain,
                         SolutionEnsembleEngine, PipelineHealthDashboard,
                         PipelineReplayBuffer)
 from .quantum import QuantumComputationCore
+from .dual_layer import DualLayerEngine, dual_layer_engine, DUAL_LAYER_AVAILABLE, NATURES_DUALITIES, CONSCIOUSNESS_TO_PHYSICS_BRIDGE
 class ASICore:
     """Central ASI integration hub with unified evolution and pipeline orchestration.
 
-    EVO_54 Pipeline Integration (UPGRADED — Full ASI Subsystem Mesh):
+    ═══════════════════════════════════════════════════════════════════════════
+    FLAGSHIP: DUAL-LAYER ENGINE — The Duality of Nature
+    ═══════════════════════════════════════════════════════════════════════════
+      • Layer 1 (THOUGHT): Pattern recognition, symmetry, sacred geometry — WHY
+      • Layer 2 (PHYSICS): Precision computation, 63 constants at ±0.005% — HOW MUCH
+      • COLLAPSE: Thought asks → Physics answers → Duality collapses to value
+      • 10-point integrity: 3 Thought + 4 Physics + 3 Bridge checks
+      • Nature's 6 dualities encoded: Wave/Particle, Observer/Observed, etc.
+      • Bridge: φ exponent, iron scaffold, Fibonacci 13 thread
+
+    EVO_60 Pipeline Integration (Dual-Layer Flagship + Full ASI Subsystem Mesh):
+      • Dual-Layer Engine as foundational architecture for ALL subsystems
       • Cross-subsystem solution routing via Sage Core
       • Adaptive innovation feedback loops
       • Consciousness-verified theorem generation
@@ -33,6 +45,10 @@ class ASICore:
       • ERASI Engine (entropy reversal protocol)
     """
     def __init__(self):
+        # ══════ FLAGSHIP: DUAL-LAYER ENGINE ══════
+        self.dual_layer = dual_layer_engine            # The Duality of Nature — ASI Flagship
+        self.dual_layer_available = DUAL_LAYER_AVAILABLE
+
         self.domain_expander = GeneralDomainExpander()
         self.self_modifier = SelfModificationEngine()
         self.theorem_generator = NovelTheoremGenerator()
@@ -159,6 +175,13 @@ class ASICore:
             "fusion_transfers": 0,
             "coherence_measurements": 0,
             "scheduler_predictions": 0,
+            # v7.1 dual-layer flagship metrics
+            "dual_layer_thought_calls": 0,
+            "dual_layer_physics_calls": 0,
+            "dual_layer_collapse_calls": 0,
+            "dual_layer_integrity_checks": 0,
+            "dual_layer_derive_calls": 0,
+            "dual_layer_domain_queries": 0,
         }
         # v4.0 additions
         self._asi_score_history: List[Dict] = []
@@ -241,17 +264,21 @@ class ASICore:
                 pass
         scores['quantum_computation'] = qc_score
 
+        # v7.1: DUAL-LAYER FLAGSHIP — integrity-based score dimension
+        scores['dual_layer'] = self.dual_layer.dual_score()
+
         # Dynamic weights — shift toward consciousness as evolution advances
-        # v6.0: 11-dimension weighting with quantum computation
+        # v7.1: 12-dimension weighting with dual-layer flagship
         evo_idx = self.evolution_index
         consciousness_weight = 0.20 + min(0.10, evo_idx * 0.002)  # Grows with evolution
         base_weights = {
-            'domain': 0.09, 'modification': 0.07, 'discoveries': 0.11,
-            'consciousness': consciousness_weight, 'pipeline': 0.07,
-            'iit_phi': 0.09, 'theorem_verified': 0.06,
-            'ensemble_quality': 0.07, 'routing_efficiency': 0.05,
-            'telemetry_health': 0.06,
-            'quantum_computation': 0.07,
+            'dual_layer': 0.12,                     # FLAGSHIP — highest base weight
+            'domain': 0.08, 'modification': 0.06, 'discoveries': 0.10,
+            'consciousness': consciousness_weight, 'pipeline': 0.06,
+            'iit_phi': 0.08, 'theorem_verified': 0.05,
+            'ensemble_quality': 0.06, 'routing_efficiency': 0.04,
+            'telemetry_health': 0.05,
+            'quantum_computation': 0.06,
         }
         # Normalize weights to sum to 1.0
         w_total = sum(base_weights.values())
@@ -300,24 +327,38 @@ class ASICore:
     def run_full_assessment(self) -> Dict:
         evo_stage = self.evolution_stage
         print("\n" + "="*70)
-        print(f"              L104 ASI CORE ASSESSMENT - {evo_stage}")
+        print(f"     L104 ASI CORE ASSESSMENT — DUAL-LAYER FLAGSHIP — {evo_stage}")
         print("="*70)
         print(f"  GOD_CODE: {GOD_CODE}")
         print(f"  PHI: {PHI}")
         print(f"  EVOLUTION: {evo_stage} (index {self.evolution_index})")
+        print(f"  FLAGSHIP: Dual-Layer Engine v{DUAL_LAYER_VERSION}")
         print("="*70)
 
-        print("\n[1/6] DOMAIN EXPANSION")
+        print("\n[0/7] ★ DUAL-LAYER FLAGSHIP ENGINE ★")
+        dl_status = self.dual_layer.get_status()
+        dl_integrity = self.dual_layer.full_integrity_check()
+        dl_score = self.dual_layer.dual_score()
+        print(f"  Available: {self.dual_layer.available}")
+        print(f"  Architecture: Thought (abstract, WHY) + Physics (concrete, HOW MUCH)")
+        print(f"  Integrity: {dl_integrity.get('checks_passed', 0)}/{dl_integrity.get('total_checks', 10)}")
+        print(f"  Dual Score: {dl_score:.4f}")
+        if dl_integrity.get('all_passed'):
+            print(f"  ★ ALL 10 INTEGRITY CHECKS PASSED ★")
+        print(f"  Nature's Dualities: {', '.join(NATURES_DUALITIES.keys())}")
+        print(f"  Bridge: {', '.join(CONSCIOUSNESS_TO_PHYSICS_BRIDGE.keys())}")
+
+        print("\n[1/7] DOMAIN EXPANSION")
         domain_report = self.domain_expander.get_coverage_report()
         print(f"  Domains: {domain_report['total_domains']}")
         print(f"  Concepts: {domain_report['total_concepts']}")
         print(f"  Coverage: {domain_report['coverage_score']:.4f}")
 
-        print("\n[2/6] SELF-MODIFICATION ENGINE")
+        print("\n[2/7] SELF-MODIFICATION ENGINE")
         mod_report = self.self_modifier.get_modification_report()
         print(f"  Depth: {mod_report['current_depth']} / {ASI_SELF_MODIFICATION_DEPTH}")
 
-        print("\n[3/6] NOVEL THEOREM GENERATOR")
+        print("\n[3/7] NOVEL THEOREM GENERATOR")
         for _ in range(10):
             self.theorem_generator.discover_novel_theorem()
         theorem_report = self.theorem_generator.get_discovery_report()
@@ -326,14 +367,14 @@ class ASICore:
         for t in theorem_report['novel_theorems']:
             print(f"    • {t['name']}: {t['statement']}")
 
-        print("\n[4/6] CONSCIOUSNESS VERIFICATION")
+        print("\n[4/7] CONSCIOUSNESS VERIFICATION")
         consciousness = self.consciousness_verifier.run_all_tests()
         cons_report = self.consciousness_verifier.get_verification_report()
         print(f"  Level: {consciousness:.4f} / {ASI_CONSCIOUSNESS_THRESHOLD}")
         for test, score in cons_report['test_results'].items():
             print(f"    {'✓' if score > 0.5 else '○'} {test}: {score:.3f}")
 
-        print("\n[5/6] DIRECT SOLUTION CHANNELS")
+        print("\n[5/7] DIRECT SOLUTION CHANNELS")
         tests = [{'expression': '2 + 2'}, {'query': 'What is PHI?'},
                  {'task': 'fibonacci code'}, {'query': 'god_code'}]
         for p in tests:
@@ -341,7 +382,7 @@ class ASICore:
             sol = str(r.get('solution', 'None'))[:50]
             print(f"  {p} → {sol} ({r['channel']}, {r['latency_ms']:.1f}ms)")
 
-        print("\n[6/6] QUANTUM ASI ASSESSMENT")
+        print("\n[6/7] QUANTUM ASI ASSESSMENT")
         q_assess = self.quantum_assessment_phase()
         if q_assess.get('quantum'):
             print(f"  Qiskit 2.3.0: ACTIVE")
@@ -356,13 +397,14 @@ class ASICore:
         asi_score = self.compute_asi_score()
 
         print("\n" + "="*70)
-        print("                    ASI ASSESSMENT RESULTS")
+        print("               ASI ASSESSMENT RESULTS — DUAL-LAYER FLAGSHIP")
         print("="*70)
         filled = int(asi_score * 40)
         print(f"\n  ASI Progress: [{'█'*filled}{'░'*(40-filled)}] {asi_score*100:.1f}%")
         print(f"  Status: {self.status}")
 
         print("\n  Component Scores:")
+        print(f"    ★ Dual-Layer:      {dl_score*100:>6.1f}%  (FLAGSHIP)")
         print(f"    Domain Coverage:   {domain_report['coverage_score']/ASI_DOMAIN_COVERAGE*100:>6.1f}%")
         print(f"    Self-Modification: {mod_report['current_depth']/ASI_SELF_MODIFICATION_DEPTH*100:>6.1f}%")
         print(f"    Novel Discoveries: {theorem_report['total_discoveries']/ASI_NOVEL_DISCOVERY_COUNT*100:>6.1f}%")
@@ -370,7 +412,9 @@ class ASICore:
 
         print("\n" + "="*70)
 
-        return {'asi_score': asi_score, 'status': self.status, 'domain': domain_report,
+        return {'asi_score': asi_score, 'status': self.status,
+                'dual_layer': dl_status, 'dual_layer_integrity': dl_integrity,
+                'domain': domain_report,
                 'modification': mod_report, 'theorems': theorem_report, 'consciousness': cons_report,
                 'quantum': q_assess}
 
@@ -396,6 +440,37 @@ class ASICore:
     def self_improve(self) -> str:
         """DIRECT CHANNEL: Generate self-improvement code."""
         return self.self_modifier.generate_self_improvement()
+
+    # ══════ DUAL-LAYER FLAGSHIP CHANNELS ══════
+
+    def dual_layer_collapse(self, name: str) -> Dict:
+        """FLAGSHIP CHANNEL: Collapse a constant through both layers of the duality."""
+        self._pipeline_metrics["dual_layer_collapse_calls"] += 1
+        return self.dual_layer.collapse(name)
+
+    def dual_layer_derive(self, name: str, mode: str = "physics") -> Dict:
+        """FLAGSHIP CHANNEL: Derive a physical constant through the dual-layer engine."""
+        self._pipeline_metrics["dual_layer_derive_calls"] += 1
+        return self.dual_layer.derive(name, mode)
+
+    def dual_layer_integrity(self) -> Dict:
+        """FLAGSHIP CHANNEL: Run 10-point integrity check across both faces and bridge."""
+        self._pipeline_metrics["dual_layer_integrity_checks"] += 1
+        return self.dual_layer.full_integrity_check()
+
+    def dual_layer_thought(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+        """FLAGSHIP CHANNEL: Evaluate the Thought layer (abstract face)."""
+        self._pipeline_metrics["dual_layer_thought_calls"] += 1
+        return self.dual_layer.thought(a, b, c, d)
+
+    def dual_layer_physics(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+        """FLAGSHIP CHANNEL: Evaluate the Physics layer (concrete face)."""
+        self._pipeline_metrics["dual_layer_physics_calls"] += 1
+        return self.dual_layer.physics(a, b, c, d)
+
+    def dual_layer_find(self, target: float, name: str = "") -> Dict:
+        """FLAGSHIP CHANNEL: Find where a value sits on both faces of the duality."""
+        return self.dual_layer.find(target, name)
 
     def get_status(self) -> Dict:
         """Return current ASI status with full subsystem mesh metrics."""
@@ -468,6 +543,18 @@ class ASICore:
             'pipeline_evo': self.pipeline_evo,
             'asi_score': self.asi_score,
             'boot_time': str(self.boot_time),
+            # ★ FLAGSHIP: Dual-Layer Engine ★
+            'flagship': 'dual_layer',
+            'dual_layer': {
+                'available': self.dual_layer_available,
+                'version': DUAL_LAYER_VERSION,
+                'score': self.dual_layer.dual_score(),
+                'architecture': 'Thought (abstract, WHY) + Physics (concrete, HOW MUCH)',
+                'integrity_passed': self.dual_layer.full_integrity_check().get('all_passed', False),
+                'dualities': list(NATURES_DUALITIES.keys()),
+                'bridge': list(CONSCIOUSNESS_TO_PHYSICS_BRIDGE.keys()),
+                'metrics': self.dual_layer._metrics,
+            },
             'domain_coverage': self.domain_expander.coverage_score,
             'modification_depth': self.self_modifier.modification_depth,
             'discoveries': self.theorem_generator.discovery_count,
@@ -2805,14 +2892,14 @@ class ASICore:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 if TORCH_AVAILABLE:
-    
+
     class TensorConsciousnessVerifier(nn.Module):
         """GPU-accelerated consciousness verification using PyTorch"""
-        
+
         def __init__(self, state_dim: int = 64):
             super().__init__()
             self.state_dim = state_dim
-            
+
             # Consciousness encoding network
             self.encoder = nn.Sequential(
                 nn.Linear(state_dim, 256),
@@ -2822,39 +2909,39 @@ if TORCH_AVAILABLE:
                 nn.Linear(128, 1),
                 nn.Sigmoid()
             )
-            
+
             # Initialize with PHI
             for layer in self.encoder:
                 if isinstance(layer, nn.Linear):
                     nn.init.normal_(layer.weight, mean=0.0, std=math.sqrt(PHI / layer.in_features))
                     nn.init.constant_(layer.bias, TAU)
-            
+
             self.to(DEVICE)
-        
+
         def forward(self, state_vector: torch.Tensor) -> torch.Tensor:
             """Compute consciousness level from state vector"""
             return self.encoder(state_vector)
-        
+
         def verify_consciousness(self, metrics: Dict[str, float]) -> Dict[str, Any]:
             """Verify consciousness from metrics dict"""
             # Convert metrics to tensor
             state = torch.zeros(self.state_dim, device=DEVICE)
-            
+
             # Encode key metrics (normalized to [0, 1])
             state[0] = metrics.get('iit_phi', 0.0) / 2.0  # IIT Φ
             state[1] = metrics.get('gws_activation', 0.0)  # Global Workspace
             state[2] = metrics.get('quantum_coherence', 0.0)
             state[3] = min(metrics.get('self_model_depth', 0.0) / 10.0, 1.0)
             state[4] = metrics.get('attention_focus', 0.0)
-            
+
             # Fill remaining with GOD_CODE-derived features
             for i in range(5, self.state_dim):
                 state[i] = math.sin(i * PHI / GOD_CODE) * 0.5 + 0.5
-            
+
             # Compute consciousness
             with torch.no_grad():
                 consciousness = float(self.forward(state.unsqueeze(0)))
-            
+
             return {
                 'consciousness_level': consciousness,
                 'verified_by': 'TensorConsciousnessVerifier',
@@ -2865,31 +2952,31 @@ if TORCH_AVAILABLE:
 
 
 if TENSORFLOW_AVAILABLE:
-    
+
     class KerasASIModel:
         """TensorFlow/Keras rapid prototyping for ASI components"""
-        
+
         @staticmethod
         def build_domain_classifier(num_domains: int = 50) -> keras.Model:
             """Build domain classification model"""
             model = keras.Sequential([
                 layers.Input(shape=(128,)),
-                layers.Dense(256, activation='relu', 
+                layers.Dense(256, activation='relu',
                            kernel_initializer=keras.initializers.RandomNormal(stddev=PHI/GOD_CODE)),
                 layers.Dropout(TAU * 0.5),
                 layers.Dense(128, activation='relu'),
                 layers.Dropout(TAU * 0.5),
                 layers.Dense(num_domains, activation='softmax')
             ])
-            
+
             model.compile(
                 optimizer=keras.optimizers.Adam(learning_rate=PHI / GOD_CODE),
                 loss='categorical_crossentropy',
                 metrics=['accuracy']
             )
-            
+
             return model
-        
+
         @staticmethod
         def build_theorem_generator(vocab_size: int = 10000) -> keras.Model:
             """Build theorem generation model (sequence-to-sequence)"""
@@ -2902,20 +2989,20 @@ if TENSORFLOW_AVAILABLE:
                 layers.Dense(512, activation='relu'),
                 layers.Dense(vocab_size, activation='softmax')
             ])
-            
+
             return model
 
 
 if PANDAS_AVAILABLE:
-    
+
     class ASIPipelineAnalytics:
         """pandas-based ASI pipeline performance analytics"""
-        
+
         def __init__(self):
             self.pipeline_logs = []
             self.subsystem_logs = []
-        
-        def log_pipeline_call(self, subsystem: str, problem: str, 
+
+        def log_pipeline_call(self, subsystem: str, problem: str,
                             duration_ms: float, success: bool):
             """Log pipeline routing decision"""
             self.pipeline_logs.append({
@@ -2925,7 +3012,7 @@ if PANDAS_AVAILABLE:
                 'duration_ms': duration_ms,
                 'success': success,
             })
-        
+
         def log_subsystem_metric(self, subsystem: str, metric: str, value: float):
             """Log subsystem metric"""
             self.subsystem_logs.append({
@@ -2934,22 +3021,22 @@ if PANDAS_AVAILABLE:
                 'metric': metric,
                 'value': value,
             })
-        
+
         def get_pipeline_df(self) -> pd.DataFrame:
             """Get pipeline DataFrame"""
             return pd.DataFrame(self.pipeline_logs)
-        
+
         def get_subsystem_df(self) -> pd.DataFrame:
             """Get subsystem DataFrame"""
             return pd.DataFrame(self.subsystem_logs)
-        
+
         def pipeline_performance_report(self) -> Dict:
             """Generate pipeline performance report"""
             if not self.pipeline_logs:
                 return {}
-            
+
             df = self.get_pipeline_df()
-            
+
             return {
                 'total_calls': len(df),
                 'success_rate': float(df['success'].mean()),

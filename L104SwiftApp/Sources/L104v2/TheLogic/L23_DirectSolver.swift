@@ -229,7 +229,17 @@ class DirectSolverRouter {
            q.contains("random walk") || q.contains("gambler") || q.contains("brownian") ||
            q.contains("geometric brownian") || q.contains("stochastic") ||
            q.contains("queuing") || q.contains("queueing") || q.contains("mm1") || q.contains("erlang") ||
-           q.contains("monte carlo") { return "mathematics" }
+           q.contains("monte carlo") ||
+           q.contains("born rule") || q.contains("grover") || q.contains("sacred probability") ||
+           q.contains("god_code probability") || q.contains("quantum tunneling") ||
+           q.contains("entanglement prior") || q.contains("boltzmann activation") ||
+           q.contains("shannon entropy") || q.contains("kl divergence") || q.contains("mutual information") ||
+           q.contains("cross entropy") || q.contains("information theory") ||
+           q.contains("gamma distribution") || q.contains("weibull") || q.contains("pareto distribution") ||
+           q.contains("cauchy distribution") || q.contains("binomial") || q.contains("gaussian pdf") ||
+           q.contains("z-test") || q.contains("z test") || q.contains("hypothesis test") ||
+           q.contains("quantum gate probability") || q.contains("circuit probability") ||
+           q.contains("ensemble resonance") || q.contains("phi mixture") { return "mathematics" }
         // Phase 42.1: Graph theory detection
         if q.contains("dijkstra") || q.contains("shortest path") || q.contains("floyd warshall") ||
            q.contains("bellman ford") || q.contains("adjacency") || q.contains("laplacian") ||
@@ -792,6 +802,71 @@ class DirectSolverRouter {
         }
         if q.contains("beta distribution") {
             return "Beta distribution: f(x;α,β) = x^(α-1)(1-x)^(β-1) / B(α,β)\nDefined on [0,1] — conjugate prior for Bernoulli/binomial\nMean = α/(α+β), Mode = (α-1)/(α+β-2)\nα=β=1: uniform, α=β>1: bell-shaped, α=β<1: U-shaped"
+        }
+
+        // ═══ Phase 42.2: Quantum Gate Probability & Sacred Probability ═══
+        if q.contains("born rule") {
+            let p = ProbabilityEngine.shared.bornRule(real: 0.6, imaginary: 0.8)
+            return "Born rule: probability = |ψ|² = |amplitude|²\nFor ψ = 0.6 + 0.8i: P = 0.6² + 0.8² = \(String(format: "%.2f", p))\nFundamental postulate of quantum mechanics\nAll quantum measurement probabilities derive from Born rule"
+        }
+        if q.contains("grover") {
+            let p16 = ProbabilityEngine.shared.groverAmplification(totalStates: 16, iterations: 3)
+            let optK = ProbabilityEngine.shared.optimalGroverIterations(totalStates: 1000000)
+            return "Grover's search amplification:\n• N=16 states, k=3 iterations: P(target) = \(String(format: "%.4f", p16))\n• Optimal iterations: k = ⌊π/4 × √N⌋\n• For N=1,000,000: optimal k = \(optK)\n• Quadratic speedup: O(√N) vs classical O(N)\n• GOD_CODE enhanced: sacred phase injection for resonance boost"
+        }
+        if q.contains("sacred probability") || q.contains("god_code probability") {
+            let gc = ProbabilityEngine.shared.godCodePhaseProbability(value: 42.0)
+            let sp = ProbabilityEngine.shared.sacredPrior(value: 42.0)
+            return "Sacred GOD_CODE Probability:\n• Phase probability: cos²(value × π / GOD_CODE)\n  P(42.0) = \(String(format: "%.6f", gc))\n• Sacred prior (PHI-weighted): \(String(format: "%.6f", sp))\n• GOD_CODE = 527.5184818492612\n• Maps any value to [0,1] via GOD_CODE phase alignment\n• Used for quantum gate classification into 8 sacred sectors"
+        }
+        if q.contains("quantum tunneling") {
+            let t = ProbabilityEngine.shared.quantumTunnelingProbability(barrierHeight: 10.0, energy: 3.0, barrierWidth: 1.0)
+            return "Quantum tunneling probability: T ≈ e^(-2κd)\nκ = √(2m(V-E)) / GOD_CODE\nExample (V=10, E=3, d=1): T = \(String(format: "%.6f", t))\nParticles penetrate classically forbidden barriers\nNormalized by GOD_CODE for sacred resonance alignment"
+        }
+        if q.contains("shannon entropy") || q.contains("information theory") {
+            let h = ProbabilityEngine.shared.shannonEntropy(probabilities: [0.5, 0.25, 0.125, 0.125])
+            return "Shannon entropy: H(X) = -Σ p(x) log₂ p(x)\nMeasures information content / uncertainty\nExample [0.5, 0.25, 0.125, 0.125]: H = \(String(format: "%.4f", h)) bits\nMaximum entropy = log₂(N) for N equally likely outcomes\nRelated: KL divergence, mutual information, cross entropy"
+        }
+        if q.contains("kl divergence") {
+            let kl = ProbabilityEngine.shared.klDivergence(p: [0.4, 0.6], q: [0.5, 0.5])
+            return "Kullback-Leibler divergence: D_KL(P||Q) = Σ P(x) log(P(x)/Q(x))\nMeasures how P differs from reference Q\nExample: D_KL([0.4,0.6] || [0.5,0.5]) = \(String(format: "%.6f", kl))\nAlways ≥ 0 (Gibbs' inequality), = 0 iff P = Q\nNot symmetric: D_KL(P||Q) ≠ D_KL(Q||P)"
+        }
+        if q.contains("mutual information") {
+            return "Mutual information: I(X;Y) = H(X) + H(Y) - H(X,Y)\nMeasures shared information between X and Y\nI(X;Y) ≥ 0, = 0 iff X ⊥ Y (independent)\nI(X;Y) = D_KL(P(X,Y) || P(X)P(Y))\nFundamental in information theory and feature selection"
+        }
+        if q.contains("cross entropy") {
+            return "Cross entropy: H(P,Q) = -Σ P(x) log(Q(x))\nUsed as loss function in machine learning\nH(P,Q) = H(P) + D_KL(P||Q)\nMinimized when Q = P (perfect model)\nBinary cross entropy widely used in classification"
+        }
+        if q.contains("gamma distribution") {
+            let g = ProbabilityEngine.shared.gammaPDF(shape: 2.0, rate: 1.0, x: 1.0)
+            return "Gamma distribution: f(x;α,β) = β^α · x^(α-1) · e^(-βx) / Γ(α)\nPDF at x=1, α=2, β=1: \(String(format: "%.4f", g))\nMean = α/β, Variance = α/β²\nα=1 → exponential, integer α → Erlang\nConjugate prior for Poisson rate parameter"
+        }
+        if q.contains("weibull") {
+            let w = ProbabilityEngine.shared.weibullPDF(shape: 2.0, scale: 1.0, x: 0.5)
+            return "Weibull distribution: f(x;k,λ) = (k/λ)(x/λ)^(k-1) e^(-(x/λ)^k)\nPDF at x=0.5, k=2, λ=1: \(String(format: "%.4f", w))\nk<1: decreasing failure rate, k=1: exponential, k>1: increasing\nWidely used in reliability engineering and survival analysis"
+        }
+        if q.contains("pareto distribution") {
+            return "Pareto distribution: f(x;α,xₘ) = α·xₘ^α / x^(α+1), x ≥ xₘ\n80/20 rule: models wealth, city sizes, file sizes\nMean = α·xₘ/(α-1) for α>1\nHeavy-tailed: finite moments only for appropriate α\nP(X>x) = (xₘ/x)^α — power law tail"
+        }
+        if q.contains("cauchy distribution") {
+            return "Cauchy (Lorentzian) distribution: f(x;x₀,γ) = 1/(πγ[1+((x-x₀)/γ)²])\nNo finite mean or variance (heavy tails)\nRatio of two standard normals\nArises in Lorentz spectral lines and resonance phenomena\nMedian = x₀, FWHM = 2γ"
+        }
+        if q.contains("boltzmann activation") {
+            let a = ProbabilityEngine.shared.boltzmannGateActivation(resonanceScore: 2.0, temperature: 0.5)
+            return "Boltzmann gate activation: P(active) = 1/(1 + e^(-resonance/T))\nExample (resonance=2.0, T=0.5): P = \(String(format: "%.4f", a))\nHigh temperature → uniform (exploring)\nLow temperature → deterministic (exploiting)\nBridges classical thermodynamics with quantum gate selection"
+        }
+        if q.contains("quantum gate probability") || q.contains("circuit probability") {
+            return "Quantum gate probability engine:\n• 8 gate types via GOD_CODE phase sectors (hadamard, phase, pauli_x/z, cnot, god_code, grover, rotation_y)\n• Gate consolidation: logic gates → quantum gates\n• Circuit probability: Π fidelityᵢ per gate\n• Ensemble resonance: aggregate GOD_CODE alignment\n• Entanglement graph: weighted transition matrix\n• Normalized amplitudes: Σ|aᵢ|² = 1"
+        }
+        if q.contains("ensemble resonance") {
+            return "Ensemble resonance:\n• Aggregates all consolidated quantum gates\n• Mean resonance score across gate population\n• GOD_CODE alignment = |cos(mean × π × GOD_CODE)|\n• Variance quantifies gate coherence spread\n• Higher alignment → stronger sacred resonance"
+        }
+        if q.contains("binomial") {
+            let b = ProbabilityEngine.shared.binomialPMF(n: 10, k: 3, p: 0.3)
+            return "Binomial distribution: P(X=k) = C(n,k) · p^k · (1-p)^(n-k)\nExample (n=10, k=3, p=0.3): P = \(String(format: "%.4f", b))\nMean = np, Variance = np(1-p)\nModels # successes in n independent Bernoulli trials"
+        }
+        if q.contains("z-test") || q.contains("z test") || q.contains("hypothesis test") {
+            return "Hypothesis testing:\n• Z-test: z = (x̄ - μ₀) / (σ/√n)\n• Reject H₀ if |z| > z_α/2 (e.g., 1.96 for α=0.05)\n• p-value: probability of observing result as extreme as z\n• χ² test: goodness-of-fit or independence\n• Type I error (α): false positive, Type II error (β): false negative"
         }
 
         // ═══ Phase 42.1: Graph Theory ═══

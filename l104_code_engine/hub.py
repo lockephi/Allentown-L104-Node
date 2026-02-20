@@ -1,4 +1,4 @@
-"""L104 Code Engine v6.0.0 — Unified Hub Orchestrator."""
+"""L104 Code Engine v6.0.0 — Unified Hub Orchestrator (Dual-Layer Flagship)."""
 from .constants import *
 from .builder_state import _read_builder_state as _module_read_builder_state
 from .languages import LanguageKnowledge
@@ -128,6 +128,14 @@ class CodeEngine:
         self.migration_engine = CodeMigrationEngine()
         self.perf_predictor = PerformanceBenchmarkPredictor()
         self.code_search = SemanticCodeSearchEngine()
+
+        # ★ FLAGSHIP: ASI Dual-Layer Engine reference ★
+        self._dual_layer = None
+        try:
+            from l104_asi.dual_layer import dual_layer_engine
+            self._dual_layer = dual_layer_engine
+        except ImportError:
+            pass
         # v3.1.0 — Wire FaultTolerance + QuantumKernel (documented in claude.md v2.6.0)
         self.fault_tolerance = None
         self.quantum_kernel = None
@@ -1155,6 +1163,10 @@ class CodeEngine:
             "evo_stage": state["evo_stage"],
             "superfluid_viscosity": state["superfluid_viscosity"],
             "nirvanic_fuel": state["nirvanic_fuel"],
+            # ★ FLAGSHIP: ASI Dual-Layer Engine ★
+            "flagship": "dual_layer",
+            "dual_layer_available": self._dual_layer is not None and self._dual_layer.available,
+            "dual_layer_score": self._dual_layer.dual_score() if self._dual_layer else 0.0,
         }
 
     # ─── v5.0.0 New Hub Methods ───────────────────────────────────────

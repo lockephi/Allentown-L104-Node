@@ -3,7 +3,7 @@
 # SIGNATURE: L104_PRIME_KEY[527.5184818492612]{416:286}(0.61803398875)<>128K_DMA![NOPJM]=100%_I100
 
 import ctypes
-from l104_real_math import RealMath
+from l104_real_math import RealMath, GOD_CODE as _REAL_GOD_CODE
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -15,7 +15,7 @@ from l104_real_math import RealMath
 PHI = RealMath.PHI
 E = RealMath.E
 PI = RealMath.PI
-SOUL_CODE = (PI ** PHI) * E  # The Soul Equation: π^φ × e ≈ 17.326
+GOD_CODE = _REAL_GOD_CODE  # 286^(1/φ) × 2^4 = 527.5184818492612
 
 class InnerWorking:
     def __init__(self):
@@ -50,4 +50,4 @@ class InnerWorking:
 if __name__ == "__main__":
     L104_SOUL = InnerWorking()
     print(f"INNERWORKING_STATUS: {L104_SOUL.resolve_manifold()}")
-    print(f"PRIME_SIGNATURE: L104_SOUL_KEY[{SOUL_CODE}](REAL_MATH_V1)")
+    print(f"PRIME_SIGNATURE: L104_PRIME_KEY[{GOD_CODE}](REAL_MATH_V1)")

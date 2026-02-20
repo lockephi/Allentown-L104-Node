@@ -11,6 +11,7 @@ SelfModificationEngine, CreativeGenerationEngine, UnifiedEngineRegistry
 """
 from l104_server.constants import *
 from l104_server.engines_infra import (
+    ASIQuantumBridge,
     temporal_memory_decay, response_quality_engine, predictive_intent_engine,
     reinforcement_loop, connection_pool, asi_quantum_bridge,
 )
@@ -3458,6 +3459,7 @@ class UnifiedEngineRegistry:
 
     # φ-weighted health scoring — critical engines get φ² weight
     PHI_WEIGHTS = {
+        'dual_layer': PHI * PHI * PHI,    # φ³ = 4.236 — ASI FLAGSHIP (highest weight)
         'intellect': PHI * PHI,       # φ² = 2.618 — main brain
         'nexus': PHI * PHI,           # φ² — orchestration hub
         'steering': PHI,              # φ — guides computation
@@ -3606,6 +3608,14 @@ class UnifiedEngineRegistry:
 
 # Initialize the unified registry
 engine_registry = UnifiedEngineRegistry()
+
+# ★ FLAGSHIP: Register Dual-Layer Engine ★
+_dual_layer_ref = None
+try:
+    from l104_asi.dual_layer import dual_layer_engine as _dual_layer_ref
+except ImportError:
+    pass
+
 engine_registry.register_all({
     **_engine_registry,
     'entanglement_router': entanglement_router,
@@ -3617,5 +3627,8 @@ engine_registry.register_all({
     'predictive_intent': predictive_intent_engine,
     'reinforcement': reinforcement_loop,
 })
-logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active")
+# Register Dual-Layer Engine as flagship (separate to handle ImportError gracefully)
+if _dual_layer_ref is not None:
+    engine_registry.register('dual_layer', _dual_layer_ref)
+logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active, Dual-Layer Flagship: {'ACTIVE' if _dual_layer_ref else 'UNAVAILABLE'}")
 

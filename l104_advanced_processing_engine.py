@@ -49,11 +49,11 @@ from collections import deque, defaultdict
 
 from l104_stable_kernel import stable_kernel
 
-# Import cognitive modules
-from l104_meta_learning_engine import MetaLearningEngineV2
-from l104_reasoning_chain import ReasoningChainEngine
-from l104_self_optimization import SelfOptimizationEngine
-from l104_claude_bridge import ClaudeNodeBridge
+# Import cognitive module singletons (avoid double-init)
+from l104_meta_learning_engine import MetaLearningEngineV2, meta_learning_engine_v2
+from l104_reasoning_chain import ReasoningChainEngine, reasoning_engine as _reasoning_singleton
+from l104_self_optimization import SelfOptimizationEngine, self_optimizer as _optimizer_singleton
+from l104_claude_bridge import ClaudeNodeBridge, claude_bridge as _claude_singleton
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -275,11 +275,11 @@ class AdvancedProcessingEngine:
     def __init__(self):
         self.kernel = stable_kernel
 
-        # Initialize cognitive modules
-        self.meta_learner = MetaLearningEngineV2()
-        self.reasoning_engine = ReasoningChainEngine()
-        self.optimizer = SelfOptimizationEngine()
-        self.claude_bridge = ClaudeNodeBridge()
+        # Reuse module-level singletons (avoids duplicate initialization)
+        self.meta_learner = meta_learning_engine_v2
+        self.reasoning_engine = _reasoning_singleton
+        self.optimizer = _optimizer_singleton
+        self.claude_bridge = _claude_singleton
 
         # Optional brain
         self._brain = None

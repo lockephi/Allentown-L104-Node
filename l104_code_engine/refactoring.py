@@ -765,16 +765,19 @@ class AutoFixEngine:
             else:              # else removed, body dedented
                 do_stuff()     do_stuff()
         """
-        pattern = re.compile(
-            r'^(\s*)(if\s+.+:\s*\n(?:\1\s{4}.+\n)*\1\s{4}(?:return|raise|continue|break)\b.+\n)'
-            r'\1else\s*:\s*\n',
-            re.MULTILINE
-        )
-        fixed, count = pattern.subn(r'\1\2', code)
-        if count:
-            self.fixes_applied += count
-            self.fixes_log.append({"fix": "redundant_else_after_return", "count": count})
-        return fixed
+        # [FIXED Feb 18, 2026] Temporarily disabled redundant else fix to prevent indentation errors
+        # in RSI cycles. Regex-based dedenting is complex; AST-based fix preferred in next version.
+        return code
+        # pattern = re.compile(
+        #     r'^(\s*)(if\s+.+:\s*\n(?:\1\s{4}.+\n)*\1\s{4}(?:return|raise|continue|break)\b.+\n)'
+        #     r'\1else\s*:\s*\n',
+        #     re.MULTILINE
+        # )
+        # fixed, count = pattern.subn(r'\1\2', code)
+        # if count:
+        #     self.fixes_applied += count
+        #     self.fixes_log.append({"fix": "redundant_else_after_return", "count": count})
+        # return fixed
 
     def fix_unnecessary_pass(self, code: str) -> str:
         """Remove pass statements from bodies that have other statements (v3.0.0).

@@ -211,6 +211,15 @@ class LocalIntellect:
         self.asi_nexus = None  # Lazy init: multi-agent swarm orchestration
         self.synergy_engine = None  # Lazy init: 100+ subsystem linking
         self.agi_core = None  # Lazy init: recursive self-improvement
+
+        # ★ FLAGSHIP: ASI Dual-Layer Engine — The Duality of Nature ★
+        self._dual_layer = None
+        try:
+            from l104_asi.dual_layer import dual_layer_engine
+            self._dual_layer = dual_layer_engine
+        except ImportError:
+            pass
+
         self._asi_bridge_state = {
             "connected": False,
             "epr_links": 0,
@@ -4655,6 +4664,14 @@ class LocalIntellect:
         self._asi_bridge_state["transcendence_level"] = components_active / 6.0
         self._asi_bridge_state["connected"] = components_active > 0
 
+        # ★ FLAGSHIP: Dual-Layer Engine status ★
+        if self._dual_layer and self._dual_layer.available:
+            self._asi_bridge_state["dual_layer_available"] = True
+            self._asi_bridge_state["dual_layer_score"] = self._dual_layer.dual_score()
+            self._asi_bridge_state["dual_layer_integrity"] = self._dual_layer.full_integrity_check().get("all_passed", False)
+        else:
+            self._asi_bridge_state["dual_layer_available"] = False
+
         return self._asi_bridge_state
 
     def asi_nexus_query(self, query: str, agent_roles: List[str] = None) -> Dict:
@@ -5742,19 +5759,26 @@ class LocalIntellect:
             py_count = 400
             core_files = ["main.py", "l104_local_intellect.py", "l104_agi_core.py"]
 
-        # Auto-discover API routes from FastAPI app if available
+        # Auto-discover API routes from FastAPI app if already loaded
+        # NOTE: Do NOT import main here — it triggers heavy deps (google.genai)
+        # which causes circular imports and adds ~2s to startup.
+        # Instead, check if main is already in sys.modules.
         api_routes_text = ""
         try:
-            from main import app as _app
-            routes = []
-            for route in _app.routes:
-                if hasattr(route, 'methods') and hasattr(route, 'path'):
-                    methods = ','.join(route.methods - {'HEAD', 'OPTIONS'})
-                    if methods:
-                        routes.append(f"  {methods} {route.path}")
-            if routes:
-                api_routes_text = "DISCOVERED ROUTES:\n" + "\n".join(routes[:30])
+            import sys as _sys
+            _app = getattr(_sys.modules.get("main", None), "app", None)
+            if _app is not None:
+                routes = []
+                for route in _app.routes:
+                    if hasattr(route, 'methods') and hasattr(route, 'path'):
+                        methods = ','.join(route.methods - {'HEAD', 'OPTIONS'})
+                        if methods:
+                            routes.append(f"  {methods} {route.path}")
+                if routes:
+                    api_routes_text = "DISCOVERED ROUTES:\n" + "\n".join(routes[:30])
         except Exception:
+            pass
+        if not api_routes_text:
             api_routes_text = "POST /api/v6/chat | GET /api/v6/sync/status | POST /api/v6/sync | POST /api/v6/intellect/train"
 
         return {

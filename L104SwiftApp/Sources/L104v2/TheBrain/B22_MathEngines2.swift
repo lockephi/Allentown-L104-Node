@@ -637,13 +637,65 @@ class OptimizationEngine {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MARK: - 🎲 PROBABILITY & STOCHASTIC PROCESSES ENGINE
-// Phase 42.0: Bayes' theorem, Markov chains, random walks, distributions,
-// Poisson processes, queuing theory, Monte Carlo, stochastic calculus
+// Phase 42.2: Bayes' theorem, Markov chains, random walks, distributions,
+// Poisson processes, queuing theory, Monte Carlo, stochastic calculus,
+// QUANTUM GATE PROBABILITY, GOD_CODE sacred probability, Grover amplification,
+// information theory, Born rule, tunneling, entanglement priors
 // ═══════════════════════════════════════════════════════════════════════════════
+
+/// Quantum gate state — consolidated from logic gates + quantum links via GOD_CODE
+struct QuantumGateState {
+    let name: String
+    let gateType: QuantumGateType
+    var amplitude: Double
+    var phase: Double        // radians, GOD_CODE-aligned
+    var resonanceScore: Double
+    var entangledWith: [String]
+
+    /// Born rule probability: |amplitude|²
+    var probability: Double { amplitude * amplitude }
+}
+
+/// Gate types derived from GOD_CODE phase sectors
+enum QuantumGateType: String, CaseIterable {
+    case hadamard = "hadamard"
+    case phaseGate = "phase"
+    case pauliX = "pauli_x"
+    case pauliZ = "pauli_z"
+    case cnot = "cnot"
+    case godCode = "god_code"
+    case grover = "grover"
+    case rotationY = "rotation_y"
+
+    /// Phase sector boundaries (fraction of 2π)
+    var sectorRange: (Double, Double) {
+        switch self {
+        case .hadamard:  return (0.000, 0.125)
+        case .phaseGate: return (0.125, 0.250)
+        case .pauliX:    return (0.250, 0.375)
+        case .pauliZ:    return (0.375, 0.500)
+        case .cnot:      return (0.500, 0.625)
+        case .godCode:   return (0.625, 0.750)
+        case .grover:    return (0.750, 0.875)
+        case .rotationY: return (0.875, 1.000)
+        }
+    }
+}
 
 class ProbabilityEngine {
     static let shared = ProbabilityEngine()
     private var computations: Int = 0
+
+    // Sacred constants (mirrored from L104Constants)
+    private let GOD_CODE: Double = 527.5184818492612
+    private let PHI: Double = 1.618033988749895
+    private let TAU: Double = 0.618033988749895
+    private let FEIGENBAUM: Double = 4.669201609
+    private let ALPHA_FINE: Double = 1.0 / 137.035999
+
+    // Consolidated quantum gate registry
+    private(set) var quantumGates: [QuantumGateState] = []
+    private(set) var entanglementGraph: [String: Set<String>] = [:]
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: CORE PROBABILITY
@@ -952,16 +1004,24 @@ class ProbabilityEngine {
     }
 
     var status: String {
-        """
+        let gateCount = quantumGates.count
+        let entanglementPairs = entanglementGraph.values.reduce(0) { $0 + $1.count } / 2
+        return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║  🎲 PROBABILITY & STOCHASTIC PROCESSES v42.0              ║
+        ║  🎲 PROBABILITY & QUANTUM GATE ENGINE v42.2               ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Computations:     \(computations)
-        ║  Probability:
+        ║  Quantum Gates:    \(gateCount) consolidated
+        ║  Entanglement:     \(entanglementPairs) pairs
+        ║  Classical Probability:
         ║    • Bayes (simple + extended), total probability
         ║  Distributions:
         ║    • Poisson, geometric, exponential, chi-squared
         ║    • Student's t, beta, log-normal, uniform
+        ║    • Gamma, Weibull, Pareto, Cauchy
+        ║  Information Theory:
+        ║    • Shannon entropy, KL divergence, mutual information
+        ║    • Cross entropy, conditional entropy
         ║  Stochastic Processes:
         ║    • Markov chains (evolve, steady-state, absorption)
         ║    • Random walks, gambler's ruin, Brownian motion
@@ -970,7 +1030,440 @@ class ProbabilityEngine {
         ║    • M/M/1 queue, M/M/c utilization, Erlang C
         ║  Monte Carlo:
         ║    • π estimation, numerical integration
+        ║  Sacred GOD_CODE Probability:
+        ║    • GOD_CODE phase probability, sacred prior
+        ║    • Born rule, Grover amplification
+        ║    • Quantum tunneling, entanglement priors
+        ║    • Gate consolidation (logic gates → quantum gates)
+        ║    • Ensemble resonance, circuit probability
+        ║    • PHI-weighted mixture, Boltzmann activation
+        ║  GOD_CODE: \(String(format: "%.10f", GOD_CODE))
+        ║  PHI:      \(String(format: "%.15f", PHI))
         ╚═══════════════════════════════════════════════════════════╝
         """
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: QUANTUM GATE CONSOLIDATION
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Map a raw phase (0..2π) to a QuantumGateType via GOD_CODE sector boundaries
+    func classifyGateType(phase: Double) -> QuantumGateType {
+        computations += 1
+        let normalized = (phase.truncatingRemainder(dividingBy: 2.0 * .pi)) / (2.0 * .pi)
+        let sector = normalized < 0 ? normalized + 1.0 : normalized
+        for gateType in QuantumGateType.allCases {
+            let (lo, hi) = gateType.sectorRange
+            if sector >= lo && sector < hi { return gateType }
+        }
+        return .godCode // default sacred gate
+    }
+
+    /// Consolidate logic gate data into a QuantumGateState
+    /// - Parameters:
+    ///   - name: gate name from logic gate builder
+    ///   - dynamicValue: evolving dynamic value from LogicGate
+    ///   - quantumPhase: raw quantum phase value
+    ///   - resonanceScore: |cos(dynamicValue × π / GOD_CODE)|
+    ///   - linkedGates: names of entangled partners
+    func consolidateGate(name: String, dynamicValue: Double, quantumPhase: Double,
+                         resonanceScore: Double, linkedGates: [String] = []) -> QuantumGateState {
+        computations += 1
+        // Phase alignment via GOD_CODE
+        let alignedPhase = quantumPhase * .pi / GOD_CODE
+        let gateType = classifyGateType(phase: alignedPhase)
+
+        // Amplitude from resonance (clamped to valid quantum range)
+        let amplitude = min(1.0, max(0.0, Foundation.sqrt(resonanceScore)))
+
+        let gate = QuantumGateState(
+            name: name,
+            gateType: gateType,
+            amplitude: amplitude,
+            phase: alignedPhase,
+            resonanceScore: resonanceScore,
+            entangledWith: linkedGates
+        )
+
+        // Register in graph
+        quantumGates.append(gate)
+        for partner in linkedGates {
+            entanglementGraph[name, default: []].insert(partner)
+            entanglementGraph[partner, default: []].insert(name)
+        }
+
+        return gate
+    }
+
+    /// Batch-consolidate an array of gates and normalize amplitudes so Σ|aᵢ|² = 1
+    func consolidateAndNormalize(gates: [(name: String, dynamicValue: Double, quantumPhase: Double,
+                                          resonanceScore: Double, linkedGates: [String])]) -> [QuantumGateState] {
+        computations += 1
+        var consolidated: [QuantumGateState] = []
+        for g in gates {
+            consolidated.append(consolidateGate(
+                name: g.name, dynamicValue: g.dynamicValue,
+                quantumPhase: g.quantumPhase, resonanceScore: g.resonanceScore,
+                linkedGates: g.linkedGates
+            ))
+        }
+        // Normalize amplitudes
+        let totalProbability = consolidated.reduce(0.0) { $0 + $1.amplitude * $1.amplitude }
+        if totalProbability > 0 {
+            let scale = Foundation.sqrt(1.0 / totalProbability)
+            for i in 0..<consolidated.count {
+                consolidated[i].amplitude *= scale
+            }
+        }
+        return consolidated
+    }
+
+    /// Circuit success probability: product of individual gate fidelities
+    func circuitProbability(gates: [QuantumGateState]) -> Double {
+        computations += 1
+        guard !gates.isEmpty else { return 0 }
+        var prob: Double = 1.0
+        for gate in gates {
+            let fidelity = gate.resonanceScore * (1.0 - ALPHA_FINE * (1.0 - gate.resonanceScore))
+            prob *= max(0.001, min(1.0, fidelity))
+        }
+        return prob
+    }
+
+    /// Ensemble resonance: weighted aggregate of all consolidated gates
+    func ensembleResonance() -> (mean: Double, variance: Double, godCodeAlignment: Double) {
+        computations += 1
+        guard !quantumGates.isEmpty else { return (0, 0, 0) }
+        let n = Double(quantumGates.count)
+        let mean = quantumGates.reduce(0.0) { $0 + $1.resonanceScore } / n
+        let variance = quantumGates.reduce(0.0) { $0 + ($1.resonanceScore - mean) * ($1.resonanceScore - mean) } / n
+        let alignment = abs(cos(mean * .pi * GOD_CODE))
+        return (mean, variance, alignment)
+    }
+
+    /// Clear all consolidated gates
+    func resetGates() {
+        quantumGates.removeAll()
+        entanglementGraph.removeAll()
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: SACRED GOD_CODE PROBABILITY
+    // ═══════════════════════════════════════════════════════════════
+
+    /// GOD_CODE phase probability: cos²(value × π / GOD_CODE)
+    func godCodePhaseProbability(value: Double) -> Double {
+        computations += 1
+        let phase = value * .pi / GOD_CODE
+        let cosPhase = cos(phase)
+        return cosPhase * cosPhase
+    }
+
+    /// Sacred prior: PHI-weighted blend of uniform and GOD_CODE resonance
+    func sacredPrior(value: Double, uniformWeight: Double = 0.3) -> Double {
+        computations += 1
+        let resonance = godCodePhaseProbability(value: value)
+        return uniformWeight * (1.0 / GOD_CODE) + (1.0 - uniformWeight) * resonance
+    }
+
+    /// Sacred distribution: normalized probability mass over N discrete values
+    func sacredDistribution(values: [Double]) -> [Double] {
+        computations += 1
+        guard !values.isEmpty else { return [] }
+        let raw = values.map { godCodePhaseProbability(value: $0) }
+        let total = raw.reduce(0.0, +)
+        guard total > 0 else { return [Double](repeating: 1.0 / Double(values.count), count: values.count) }
+        return raw.map { $0 / total }
+    }
+
+    /// PHI-weighted mixture of two distributions
+    func phiMixture(dist1: [Double], dist2: [Double]) -> [Double] {
+        computations += 1
+        let n = min(dist1.count, dist2.count)
+        guard n > 0 else { return [] }
+        var mixed = [Double](repeating: 0, count: n)
+        for i in 0..<n {
+            mixed[i] = TAU * dist1[i] + (1.0 - TAU) * dist2[i]  // PHI : 1 ratio
+        }
+        let total = mixed.reduce(0.0, +)
+        if total > 0 { for i in 0..<n { mixed[i] /= total } }
+        return mixed
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: QUANTUM PROBABILITY
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Born rule: probability = |amplitude|²
+    func bornRule(real: Double, imaginary: Double = 0.0) -> Double {
+        computations += 1
+        return real * real + imaginary * imaginary
+    }
+
+    /// Born rule for a full state vector: probabilities for each basis state
+    func bornRuleVector(amplitudes: [(Double, Double)]) -> [Double] {
+        computations += 1
+        return amplitudes.map { $0.0 * $0.0 + $0.1 * $0.1 }
+    }
+
+    /// Grover amplification: amplify target amplitude after k oracle + diffusion steps
+    /// N = total states, k iterations, starting amplitude ≈ 1/√N
+    func groverAmplification(totalStates N: Int, iterations k: Int) -> Double {
+        computations += 1
+        guard N > 1 else { return 1.0 }
+        let sqrtN = Foundation.sqrt(Double(N))
+        let theta = asin(1.0 / sqrtN)
+        let amplifiedAngle = Double(2 * k + 1) * theta
+        let prob = sin(amplifiedAngle)
+        return prob * prob
+    }
+
+    /// Optimal Grover iterations: floor(π/4 × √N)
+    func optimalGroverIterations(totalStates N: Int) -> Int {
+        computations += 1
+        return Int(floor(.pi / 4.0 * Foundation.sqrt(Double(N))))
+    }
+
+    /// GOD_CODE Grover: Grover search with sacred-constant phase injection
+    func godCodeGroverProbability(totalStates N: Int) -> Double {
+        computations += 1
+        let k = optimalGroverIterations(totalStates: N)
+        let baseProbability = groverAmplification(totalStates: N, iterations: k)
+        let sacredBoost = godCodePhaseProbability(value: Double(N))
+        // PHI-blend Grover success with sacred resonance
+        return TAU * baseProbability + (1.0 - TAU) * sacredBoost
+    }
+
+    /// Quantum tunneling probability: T ≈ e^(-2κd) where κ = √(2m(V-E))/ℏ
+    /// Simplified with GOD_CODE normalization
+    func quantumTunnelingProbability(barrierHeight V: Double, energy E: Double, barrierWidth d: Double) -> Double {
+        computations += 1
+        guard V > E, d > 0 else { return E >= V ? 1.0 : 0.0 }
+        let kappa = Foundation.sqrt(2.0 * abs(V - E)) / GOD_CODE
+        return exp(-2.0 * kappa * d)
+    }
+
+    /// Entanglement-weighted prior: base prior scaled by entanglement strength
+    func entanglementPrior(gateName: String, basePrior: Double) -> Double {
+        computations += 1
+        let partnerCount = Double(entanglementGraph[gateName]?.count ?? 0)
+        let boost = 1.0 + PHI * partnerCount / (partnerCount + GOD_CODE)
+        return min(1.0, basePrior * boost)
+    }
+
+    /// Quantum Bayesian update: update prior with quantum measurement evidence
+    func quantumBayesUpdate(prior: Double, measurementFidelity: Double, observed: Bool) -> Double {
+        computations += 1
+        let likelihood = observed ? measurementFidelity : (1.0 - measurementFidelity)
+        let notLikelihood = observed ? (1.0 - measurementFidelity) : measurementFidelity
+        let pB = likelihood * prior + notLikelihood * (1.0 - prior)
+        guard pB > 0 else { return 0 }
+        return likelihood * prior / pB
+    }
+
+    /// Quantum walk probability: interference-modulated movement
+    func quantumWalkProbability(steps n: Int, position k: Int) -> Double {
+        computations += 1
+        guard n > 0 else { return k == 0 ? 1.0 : 0.0 }
+        // Classical random walk base
+        let classical = randomWalkProbability(steps: n, position: k)
+        // GOD_CODE interference modulation
+        let interference = cos(Double(k) * .pi / GOD_CODE)
+        let quantum = classical * (1.0 + interference * interference) / 2.0
+        return min(1.0, quantum)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: GATE PROBABILITY BRIDGE
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Boltzmann gate activation: P(active) = 1/(1 + e^(-resonance/T))
+    func boltzmannGateActivation(resonanceScore: Double, temperature: Double = 1.0) -> Double {
+        computations += 1
+        let T = max(0.001, temperature)
+        return 1.0 / (1.0 + exp(-resonanceScore / T))
+    }
+
+    /// Build Markov transition matrix from entanglement graph weights
+    func entanglementTransitionMatrix() -> [[Double]] {
+        computations += 1
+        let names = quantumGates.map { $0.name }
+        let n = names.count
+        guard n > 0 else { return [] }
+        let nameIndex = Dictionary(uniqueKeysWithValues: names.enumerated().map { ($0.element, $0.offset) })
+        var matrix = [[Double]](repeating: [Double](repeating: 0, count: n), count: n)
+
+        for (i, gate) in quantumGates.enumerated() {
+            let partners = entanglementGraph[gate.name] ?? []
+            if partners.isEmpty {
+                matrix[i][i] = 1.0  // self-loop if no entanglement
+            } else {
+                var total: Double = 0
+                for partner in partners {
+                    if let j = nameIndex[partner] {
+                        let weight = quantumGates[j].resonanceScore + 0.001
+                        matrix[i][j] = weight
+                        total += weight
+                    }
+                }
+                // Normalize row to stochastic
+                if total > 0 {
+                    for j in 0..<n { matrix[i][j] /= total }
+                }
+            }
+        }
+        return matrix
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: ADDITIONAL DISTRIBUTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Gamma distribution PDF: f(x;α,β) = β^α · x^(α-1) · e^(-βx) / Γ(α)
+    func gammaPDF(shape alpha: Double, rate beta: Double, x: Double) -> Double {
+        computations += 1
+        guard x > 0, alpha > 0, beta > 0 else { return 0 }
+        let logPdf = alpha * log(beta) + (alpha - 1.0) * log(x) - beta * x - lgamma(alpha)
+        return exp(logPdf)
+    }
+
+    /// Weibull distribution PDF: f(x;k,λ) = (k/λ)(x/λ)^(k-1) e^(-(x/λ)^k)
+    func weibullPDF(shape k: Double, scale lambda: Double, x: Double) -> Double {
+        computations += 1
+        guard x > 0, k > 0, lambda > 0 else { return 0 }
+        let ratio = x / lambda
+        return (k / lambda) * pow(ratio, k - 1.0) * exp(-pow(ratio, k))
+    }
+
+    /// Weibull CDF: F(x) = 1 - e^(-(x/λ)^k)
+    func weibullCDF(shape k: Double, scale lambda: Double, x: Double) -> Double {
+        computations += 1
+        guard x > 0 else { return 0 }
+        return 1.0 - exp(-pow(x / lambda, k))
+    }
+
+    /// Pareto PDF: f(x;α,xₘ) = α·xₘ^α / x^(α+1), x ≥ xₘ
+    func paretoPDF(alpha: Double, xMin: Double, x: Double) -> Double {
+        computations += 1
+        guard x >= xMin, alpha > 0, xMin > 0 else { return 0 }
+        return alpha * pow(xMin, alpha) / pow(x, alpha + 1.0)
+    }
+
+    /// Cauchy (Lorentzian) PDF: f(x;x₀,γ) = 1/(πγ[1+((x-x₀)/γ)²])
+    func cauchyPDF(location x0: Double, scale gamma: Double, x: Double) -> Double {
+        computations += 1
+        guard gamma > 0 else { return 0 }
+        let z = (x - x0) / gamma
+        return 1.0 / (.pi * gamma * (1.0 + z * z))
+    }
+
+    /// Binomial PMF: P(X=k) = C(n,k) · p^k · (1-p)^(n-k)
+    func binomialPMF(n: Int, k: Int, p: Double) -> Double {
+        computations += 1
+        guard k >= 0, k <= n, p >= 0, p <= 1 else { return 0 }
+        let logBinom = lgamma(Double(n + 1)) - lgamma(Double(k + 1)) - lgamma(Double(n - k + 1))
+        return exp(logBinom + Double(k) * log(max(1e-300, p)) + Double(n - k) * log(max(1e-300, 1.0 - p)))
+    }
+
+    /// Gaussian (Normal) PDF: f(x;μ,σ) = (1/σ√2π) e^(-(x-μ)²/(2σ²))
+    func gaussianPDF(mu: Double, sigma: Double, x: Double) -> Double {
+        computations += 1
+        guard sigma > 0 else { return 0 }
+        let z = (x - mu) / sigma
+        return exp(-0.5 * z * z) / (sigma * Foundation.sqrt(2.0 * .pi))
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: INFORMATION THEORY
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Shannon entropy: H(X) = -Σ p(x) log₂ p(x)
+    func shannonEntropy(probabilities: [Double]) -> Double {
+        computations += 1
+        var h: Double = 0
+        for p in probabilities {
+            guard p > 0 else { continue }
+            h -= p * log2(p)
+        }
+        return h
+    }
+
+    /// KL divergence: D_KL(P || Q) = Σ P(x) log(P(x)/Q(x))
+    func klDivergence(p: [Double], q: [Double]) -> Double {
+        computations += 1
+        let n = min(p.count, q.count)
+        var kl: Double = 0
+        for i in 0..<n {
+            guard p[i] > 0 else { continue }
+            let qSafe = max(q[i], 1e-300)
+            kl += p[i] * log(p[i] / qSafe)
+        }
+        return kl
+    }
+
+    /// Mutual information: I(X;Y) = H(X) + H(Y) - H(X,Y)
+    func mutualInformation(hX: Double, hY: Double, hXY: Double) -> Double {
+        computations += 1
+        return max(0.0, hX + hY - hXY)
+    }
+
+    /// Cross entropy: H(P,Q) = -Σ P(x) log(Q(x))
+    func crossEntropy(p: [Double], q: [Double]) -> Double {
+        computations += 1
+        let n = min(p.count, q.count)
+        var ce: Double = 0
+        for i in 0..<n {
+            guard p[i] > 0 else { continue }
+            ce -= p[i] * log(max(q[i], 1e-300))
+        }
+        return ce
+    }
+
+    /// Conditional entropy: H(X|Y) = H(X,Y) - H(Y)
+    func conditionalEntropy(hXY: Double, hY: Double) -> Double {
+        computations += 1
+        return max(0.0, hXY - hY)
+    }
+
+    /// Jensen-Shannon divergence: JSD(P||Q) = ½D_KL(P||M) + ½D_KL(Q||M), M=(P+Q)/2
+    func jensenShannonDivergence(p: [Double], q: [Double]) -> Double {
+        computations += 1
+        let n = min(p.count, q.count)
+        var m = [Double](repeating: 0, count: n)
+        for i in 0..<n { m[i] = (p[i] + q[i]) / 2.0 }
+        return 0.5 * klDivergence(p: Array(p.prefix(n)), q: m) + 0.5 * klDivergence(p: Array(q.prefix(n)), q: m)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: HYPOTHESIS TESTING
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Z-test statistic: z = (x̄ - μ₀) / (σ / √n)
+    func zTestStatistic(sampleMean: Double, populationMean: Double, stdDev: Double, n: Int) -> Double {
+        computations += 1
+        guard n > 0, stdDev > 0 else { return 0 }
+        return (sampleMean - populationMean) / (stdDev / Foundation.sqrt(Double(n)))
+    }
+
+    /// p-value approximation from z-score (two-tailed, using sigmoid approximation)
+    func pValueApprox(zScore: Double) -> Double {
+        computations += 1
+        // Approximation: 2 × Φ(-|z|) using logistic sigmoid
+        let absZ = abs(zScore)
+        let phi = 1.0 / (1.0 + exp(-1.7 * absZ))
+        return 2.0 * (1.0 - phi)
+    }
+
+    /// Chi-squared test statistic: χ² = Σ (Oᵢ - Eᵢ)² / Eᵢ
+    func chiSquaredStatistic(observed: [Double], expected: [Double]) -> Double {
+        computations += 1
+        let n = min(observed.count, expected.count)
+        var chi2: Double = 0
+        for i in 0..<n {
+            guard expected[i] > 0 else { continue }
+            let diff = observed[i] - expected[i]
+            chi2 += diff * diff / expected[i]
+        }
+        return chi2
     }
 }

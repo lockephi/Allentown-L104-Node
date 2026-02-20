@@ -3121,6 +3121,29 @@ async def quantum_computation_ghz_state():
         return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
 
 
+@app.post("/api/v6/quantum/computation/ghz-process-state", tags=["Quantum", "QuantumComputation"])
+async def quantum_computation_ghz_process_state(payload: Dict[str, Any] = {}):
+    """
+    Create a GHZ state entangling N quantum processes.
+    |GHZ_proc⟩ = (|0₁0₂…0ₙ⟩ + e^{iθ}|1₁1₂…1ₙ⟩)/√2
+
+    Body (optional):
+      - process_labels: list[str] — names for each process qubit
+      - n_processes: int — number of processes (default: hub n_qubits)
+    """
+    try:
+        from l104_quantum_computation_pipeline import get_quantum_hub
+        hub = get_quantum_hub()
+        result = hub.create_ghz_process_state(
+            process_labels=payload.get("process_labels"),
+            n_processes=payload.get("n_processes"),
+        )
+        return {"status": "SUCCESS", **result, "timestamp": datetime.now(UTC).isoformat()}
+    except Exception as e:
+        logger.error(f"GHZ process state error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
 @app.post("/api/v6/quantum/computation/qft", tags=["Quantum", "QuantumComputation"])
 async def quantum_computation_qft():
     """Apply Quantum Fourier Transform across all qubits."""

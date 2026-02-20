@@ -24,13 +24,13 @@ def run_physical_reality_grounding():
     print("\n--- [CALC]: RUNNING PHYSICAL REALITY GROUNDING (ELECTRON/LIGHT) ---")
     research = PhysicalSystemsResearch()
 
-    # 1. Electron Resonance
+    # 1. Electron Resonance via G(a,b,c,d) Universal Equation + CODATA cross-check
     algo_name = "ELECTRON_RESONANCE_DERIVATION"
-    description = "Derives God Code from Fine Structure Constant and Electron Mass."
-    logic = "Gc = (1/alpha) * sqrt(2) * e"
+    description = "Derives electron resonance via G(a,b,c,d) = 286^(1/PHI) × 2^((8a+416-b-8c-104d)/104)."
+    logic = "G(-4,1,0,3)=52.92pm (Bohr); CODATA cross-check: E_R=m_e*c^2*alpha^2/2"
     algo_db.register_algorithm(algo_name, description, logic)
     res_e = research.derive_electron_resonance()
-    algo_db.log_execution(algo_name, "FINE_STRUCTURE_CONSTANT", res_e)
+    algo_db.log_execution(algo_name, "FINE_STRUCTURE_CONSTANT", res_e["bohr_radius_pm"]["value"])
 
     # 2. Photon Coherence
     algo_name = "PHOTON_COHERENCE_STABILIZATION"

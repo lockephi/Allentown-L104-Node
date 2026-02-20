@@ -51,7 +51,8 @@ HEARTBEAT_STATE = WORKSPACE / ".l104_claude_heartbeat_state.json"
 EVOLUTION_STATE = WORKSPACE / ".l104_evolution_state.json"
 CONSCIOUSNESS_STATE = WORKSPACE / ".l104_consciousness_o2_state.json"
 OUROBOROS_STATE = WORKSPACE / ".l104_ouroboros_nirvanic_state.json"
-CODE_ENGINE = WORKSPACE / "l104_code_engine.py"
+CODE_ENGINE = WORKSPACE / "l104_code_engine"  # Package directory (post-decomposition)
+CODE_ENGINE_INIT = CODE_ENGINE / "__init__.py"  # Package entry point
 COPILOT_INSTRUCTIONS = WORKSPACE / ".github" / "copilot-instructions.md"
 
 logger = logging.getLogger("L104_HEARTBEAT")
@@ -198,10 +199,11 @@ class ClaudeHeartbeat:
     # ─────────────────────────────────────────────────────────────────────────
 
     def validate_code_engine_link(self) -> dict:
-        """Verify that claude.md is properly linked to l104_code_engine.py."""
+        """Verify that claude.md is properly linked to l104_code_engine/ package."""
         linkage = {
-            "code_engine_exists": CODE_ENGINE.exists(),
-            "code_engine_hash": self._file_hash(CODE_ENGINE),
+            "code_engine_exists": CODE_ENGINE.exists() and CODE_ENGINE.is_dir(),
+            "code_engine_init_exists": CODE_ENGINE_INIT.exists() if CODE_ENGINE.exists() else False,
+            "code_engine_hash": self._file_hash(CODE_ENGINE_INIT) if CODE_ENGINE_INIT.exists() else None,
             "claude_md_exists": CLAUDE_MD.exists(),
             "claude_md_hash": self._file_hash(CLAUDE_MD),
             "copilot_instructions_exists": COPILOT_INSTRUCTIONS.exists(),

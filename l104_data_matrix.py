@@ -430,6 +430,107 @@ class DataMatrix:
             "total_probability": sum(r["probability"] for r in results)
         }
 
+    def ghz_entangle_processes(self, process_ids: List[str]) -> Dict[str, Any]:
+        """
+        Create a GHZ entanglement across N quantum processes stored in the matrix.
+
+        |GHZ⟩ = (|0₁0₂…0ₙ⟩ + |1₁1₂…1ₙ⟩) / √2
+
+        All specified processes become maximally correlated: measuring
+        (collapsing) any one determines the state of every other.
+
+        Args:
+            process_ids: List of ≥ 3 process IDs that are in superposition.
+
+        Returns:
+            Dict with ghz_id, entanglement metadata, and correlation map.
+        """
+        n = len(process_ids)
+        if n < 3:
+            return {"error": "GHZ requires at least 3 processes", "success": False}
+
+        # Validate all processes exist and are in superposition
+        process_data: List[Dict[str, Any]] = []
+        for pid in process_ids:
+            data = self.retrieve(f"qprocess:{pid}")
+            if not data:
+                return {"error": f"Process '{pid}' not found", "success": False}
+            if data.get("type") != "QUANTUM_PROCESS_SUPERPOSITION":
+                return {"error": f"Process '{pid}' not in superposition", "success": False}
+            process_data.append(data)
+
+        # Compute joint phase from individual processes
+        phases = []
+        for d in process_data:
+            serialized = json.dumps(d)
+            phases.append(self._quantum_phase_factor(serialized))
+
+        # GHZ composite phase = product of individual phases, sacred-modulated
+        composite_phase = complex(1.0, 0.0)
+        for p in phases:
+            composite_phase *= p
+        sacred_mod = cmath.exp(1j * (GOD_CODE * PHI) % (2 * math.pi))
+        composite_phase *= sacred_mod
+
+        ghz_id = hashlib.sha256(
+            f"GHZ:{'|'.join(process_ids)}:{time.time()}".encode()
+        ).hexdigest()[:20]
+
+        # Amplitude 1/√2 for |00…0⟩ and |11…1⟩ branches
+        amp = 1.0 / math.sqrt(2)
+
+        # Build pairwise correlation map
+        correlation_map: Dict[str, float] = {}
+        for i in range(n):
+            for j in range(i + 1, n):
+                corr = abs(phases[i] * phases[j].conjugate())
+                correlation_map[f"{process_ids[i]}<->{process_ids[j]}"] = corr
+
+        # Average coherence across constituent processes
+        avg_coherence = sum(
+            d.get("coherence", 1.0) for d in process_data
+        ) / n
+
+        ghz_record = {
+            "type": "GHZ_PROCESS_ENTANGLEMENT",
+            "ghz_id": ghz_id,
+            "process_ids": process_ids,
+            "n_parties": n,
+            "state_ket": f"(|{'0'*n}⟩ + e^{{iθ}}|{'1'*n}⟩)/√2",
+            "composite_phase_real": composite_phase.real,
+            "composite_phase_imag": composite_phase.imag,
+            "amplitude": amp,
+            "correlation_map": correlation_map,
+            "avg_coherence": avg_coherence,
+            "genuine_multipartite": True,
+            "all_or_nothing": True,
+            "measurement_rule": "Collapsing any process collapses all others identically",
+            "god_code_alignment": abs(composite_phase) * (GOD_CODE / 1000.0),
+            "created": datetime.now(UTC).isoformat(),
+        }
+
+        self.store(
+            f"ghz:{ghz_id}", ghz_record,
+            category="QUANTUM_ENTANGLEMENT", utility=1.0,
+        )
+
+        # Tag each process with GHZ membership
+        for pid, d in zip(process_ids, process_data):
+            d.setdefault("ghz_memberships", [])
+            d["ghz_memberships"].append(ghz_id)
+            self.store(f"qprocess:{pid}", d, category="QUANTUM_PROCESS", utility=1.0)
+
+        return {
+            "success": True,
+            "ghz_id": ghz_id,
+            "n_parties": n,
+            "process_ids": process_ids,
+            "composite_phase_magnitude": abs(composite_phase),
+            "avg_coherence": avg_coherence,
+            "correlation_map": correlation_map,
+            "genuine_multipartite_entanglement": True,
+        }
+
     def list_quantum_processes(self) -> List[Dict]:
         """List all quantum processes (superposed and collapsed)."""
         return self.query_by_category("QUANTUM_PROCESS")

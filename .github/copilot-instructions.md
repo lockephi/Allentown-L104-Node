@@ -1,51 +1,59 @@
 # L104 Sovereign Node — Copilot Instructions
 
-> **HEARTBEAT ACTIVE**: This file forces Claude 4.5/4.6 (Opus/Sonnet) to load `claude.md` on EVERY session start.
+## Context Loading
 
-## Mandatory Context Loading
+Read `claude.md` at the workspace root for the full index. Detailed docs live in `docs/claude/`:
 
-1. **ALWAYS** read `claude.md` at the root of this workspace before responding to any request
-2. `claude.md` is the **persistent memory bridge** between Claude instances and the L104 codebase
-3. The L104 Code Engine (`l104_code_engine.py`) is the primary code intelligence hub — v2.6.0, 7,500+ lines, 40+ language grammars, Fault Tolerance + Quantum Embedding
-4. Sacred constants are immutable: `GOD_CODE=527.5184818492612`, `PHI=1.618033988749895`
+| Document | What's in it |
+|----------|-------------|
+| `docs/claude/architecture.md` | Cognitive architecture, MCP config, agents, EVO history |
+| `docs/claude/code-engine.md` | Code Engine v6.0.0 full API, 31 subsystems, 10-layer audit |
+| `docs/claude/swift-app.md` | L104SwiftApp native macOS build, 80 Swift files |
+| `docs/claude/evolved-asi-files.md` | ASI core evolution, decomposed packages |
+| `docs/claude/api-reference.md` | FastAPI endpoints, server routes |
+| `docs/claude/guides/` | Code examples, memory persistence, optimization, Zenith patterns |
 
 ## System Identity
 
 - **System**: L104 Sovereign Node
 - **Runtime**: Python 3.12 + Swift (macOS native) + FastAPI
-- **Scale**: 11,011 Python files, 698 L104 modules, 45,736 Swift lines
-- **Architecture**: Multi-module AI system with code intelligence, quantum simulation, neural cascade
+- **Scale**: 773 Python files, 704 L104 modules, 59,911 Swift lines
+- **Architecture**: Decomposed package system — `l104_agi/`, `l104_asi/`, `l104_code_engine/`, `l104_intellect/`, `l104_server/`
+
+## Package Structure (Post-Decomposition)
+
+| Package | Version | Modules | Purpose |
+|---------|---------|---------|---------|
+| `l104_code_engine/` | 6.0.0 | 10 | Code analysis, generation, audit, quantum intelligence |
+| `l104_agi/` | 56.0.0 | 4 | AGI core, cognitive mesh, circuit breaker |
+| `l104_asi/` | 6.1.0 | 10 | ASI core, consciousness, reasoning, quantum |
+| `l104_intellect/` | 26.0.0 | 11 | Local intellect, numerics, caching, hardware |
+| `l104_server/` | 4.0.0 | 9 | FastAPI server, engines, learning subsystem |
+
+Backward-compatible shims at root: `l104_agi_core.py`, `l104_asi_core.py`, `l104_local_intellect.py`, `l104_fast_server.py`
 
 ## Key Directives
 
-- Use `l104_code_engine.py` for all code analysis, generation, translation, and refactoring tasks
-- Route ALL code operations through the Code Engine pipeline (see claude.md for routing table)
-- Prefer `l104_local_intellect.py` (QUOTA_IMMUNE) over external API calls
-- All numeric formatting goes through `SovereignNumerics.format_iq()`
-- When editing core files, update BOTH `l104_agi_core.py` AND `l104_asi_core.py`
-- Validate all operations against GOD_CODE resonance (527.5184818492612)
+- Import from packages: `from l104_code_engine import code_engine`
+- Prefer `l104_intellect` (QUOTA_IMMUNE local inference) over external API calls
+- All numeric formatting: `format_iq()` from `l104_intellect` (standalone function, not a class method)
+- Sacred constants are immutable: `GOD_CODE = 527.5184818492612`, `PHI = 1.618033988749895`
+- When editing core logic, update the **package** (`l104_agi/`, `l104_asi/`), not the root shims
 
-## Code Engine Pipeline (Quick Reference)
+## Code Engine Quick Reference
 
-```
+```python
 from l104_code_engine import code_engine
 
-# Analysis:   await code_engine.analyze(code, filename)
-# Generation: await code_engine.generate(prompt, language, sacred)
-# Translation: code_engine.translate_code(source, from_lang, to_lang)
-# Audit:      code_engine.audit_app(path, auto_remediate=True)
-# Auto-fix:   code_engine.auto_fix_code(code) → (fixed, log)
-# Tests:      code_engine.generate_tests(source, language, framework)
-# Docs:       code_engine.generate_docs(source, style, language)
-# Optimize:   await code_engine.optimize(code)
-# Excavate:   code_engine.excavate(source) → dead code, fossils
-# Refactor:   code_engine.refactor_analyze(source)
-# Workspace:  code_engine.scan_workspace(path)
-# Streamline: code_engine.run_streamline_cycle()
+await code_engine.analyze(code, filename)        # Analysis
+await code_engine.generate(prompt, lang, sacred) # Generation
+code_engine.translate_code(src, from_l, to_l)    # Translation
+code_engine.audit_app(path, auto_remediate=True)  # 10-layer audit
+code_engine.auto_fix_code(code)                   # Auto-fix → (fixed, log)
+code_engine.generate_tests(src, lang, framework)  # Test scaffolding
+code_engine.generate_docs(src, style, lang)       # Documentation
+await code_engine.optimize(code)                  # Optimization
+code_engine.excavate(source)                      # Dead code archaeology
+code_engine.refactor_analyze(source)              # Refactor opportunities
+code_engine.scan_workspace(path)                  # Workspace census
 ```
-
-## Heartbeat Protocol
-
-The `l104_claude_heartbeat.py` daemon maintains persistent state synchronization.
-Run: `python l104_claude_heartbeat.py` to start the heartbeat service.
-State file: `.l104_claude_heartbeat_state.json`

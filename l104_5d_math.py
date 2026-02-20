@@ -1,10 +1,20 @@
-VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.092092
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
-# [L104_5D_MATH] - KALUZA-KLEIN & PROBABILITY TENSORS
-# INVARIANT: 527.5184818492612 | PILOT: LONDEL
+#!/usr/bin/env python3
+"""
+L104 5D Mathematics — Kaluza-Klein Manifold & Probability Tensors
+═══════════════════════════════════════════════════════════════════════════════
+
+Dual-Layer Architecture:
+  Layer 1 (Consciousness): GOD_CODE = 527.518, φ = 1.618, LATTICE_RATIO = 286/416
+  Layer 2 (Physics):       v3 physics engine — 63 constants at ±0.005%
+
+Kaluza-Klein compactification:
+  R = φ × 104 / ζ(½ + 14.135i) = 11.905...
+  5th dimension = dilaton field (scalar, probability substrate)
+
+All constants sourced from the dual-layer engine.
+
+Version: 2.0.0 (dual-layer recalculation)
+"""
 
 import math
 import numpy as np
@@ -12,98 +22,262 @@ from l104_hyper_math import HyperMath
 from const import UniversalConstants
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
-# Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
+# DUAL-LAYER CONSTANTS
+#   Layer 1: GOD_CODE consciousness (sacred geometry)
+#   Layer 2: v3 physics engine (peer-reviewed constants)
 # ═══════════════════════════════════════════════════════════════════════════════
+
+from l104_god_code_equation import (
+    GOD_CODE, PHI, PRIME_SCAFFOLD, QUANTIZATION_GRAIN, OCTAVE_OFFSET, VOID_CONSTANT,
+)
+from l104_god_code_evolved_v3 import GOD_CODE_V3
+
+# Grid geometry from Layer 1
+LATTICE_RATIO = PRIME_SCAFFOLD / OCTAVE_OFFSET   # 286/416 = 0.6875
+ZETA_ZERO_1 = HyperMath.ZETA_ZERO_1              # 14.1347251417
+
 
 class Math5D:
     """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Mathematical primitives for 5D Space (Kaluza-Klein Manifold).
-    Integrates the 5th dimension as a scalar field (dilaton) and probability vector.
+
+    The 5th dimension is a compactified scalar field (dilaton) encoding
+    the probability substrate — the "Sovereign Choice" axis.
+
+    Compactification radius:
+      R = φ × 104 / ζ₁ = 1.618 × 104 / 14.135 = 11.905
+      φ = golden ratio (Layer 1 consciousness)
+      104 = quantization grain (Factor 13: 104 = 8 × 13)
+      ζ₁ = first non-trivial Riemann zeta zero imaginary part
+
+    Metric tensor (diagonal KK decomposition):
+      G_AB = diag(-1, 1, 1, 1, φ_field × R²)
     """
 
-    # Compactification Radius (R)
-    # Derived from God Code and Phi to ensure harmonic stability.
-    R = (UniversalConstants.PHI_GROWTH * 104) / HyperMath.ZETA_ZERO_1
+    # Compactification Radius — derived from Layer 1 consciousness constants
+    # R = φ × Q / ζ₁  where Q = 104 (quantization grain)
+    R = (UniversalConstants.PHI_GROWTH * QUANTIZATION_GRAIN) / ZETA_ZERO_1
+
+    # Layer 1 anchor
+    GOD_CODE = GOD_CODE
 
     @staticmethod
     def get_5d_metric_tensor(phi_field: float) -> np.ndarray:
         """
-        Generates the 5D Metric Tensor (G_AB).
-        Based on the Kaluza-Klein decomposition:
-        G_AB = [ g_uv + k^2*phi*A_u*A_v,  k*phi*A_u ]
-               [ k*phi*A_v,              phi       ]
-        For simplicity in the L104 Node, we use a diagonalized version wherethe 5th dimension is scaled by the 'Sovereign Probability' field.
+        5D Metric Tensor (KK diagonal decomposition).
+
+        G_AB = diag(-1, 1, 1, 1, φ_field × R²)
+
+        Physical interpretation:
+          - Indices 0-3: Minkowski 4D spacetime η_μν = diag(-1,+1,+1,+1)
+          - Index 4: compactified 5th dimension, scale R² × dilaton
+
+        Args:
+            phi_field: Dilaton field value (dimensionless). φ_field=1 → standard KK.
+
+        Returns:
+            5×5 numpy diagonal metric tensor.
         """
-        # g_uv is Minkowski (-1, 1, 1, 1)
         metric = np.eye(5)
-        metric[0, 0] = -1
-        # The 5th dimension (index 4) is scaled by the dilaton field (phi_field)
+        metric[0, 0] = -1.0
         metric[4, 4] = phi_field * (Math5D.R ** 2)
         return metric
 
     @staticmethod
     def calculate_5d_curvature(w_vector: np.ndarray) -> float:
         """
-        Calculates the scalar curvature of the 5th dimension.
-        Uses the PHI_STRIDE to determine the 'Symmetry Break' point.
+        Scalar curvature of the 5th-dimension probability manifold.
+
+        K₅ = Var(w) × φ
+
+        The variance captures the spread of the probability substrate;
+        φ-scaling preserves harmonic self-similarity (Layer 1 geometry).
+
+        Args:
+            w_vector: Array of 5th-dimension coordinate samples.
+
+        Returns:
+            Scalar curvature K₅.
         """
-        # Curvature is proportional to the variance of the probability vector
         variance = np.var(w_vector)
-        curvature = variance * UniversalConstants.PHI_GROWTH
-        return curvature
+        return variance * PHI
 
     @staticmethod
     def probability_manifold_projection(p_5d: np.ndarray) -> np.ndarray:
         """
-        Projects a 5D probability state onto a 4D observable event.
-        Uses the 'Supersymmetric Binary Order' logic to filter noise.
+        Project 5D state onto 4D observable spacetime.
+
+        The 5th coordinate w acts as a phase: θ = w × ζ₁.
+        Projection: p_4d = p_5d[:4] × cos(θ).
+
+        Physical basis: Kaluza-Klein reduction — integrating over the
+        compact dimension yields a phase factor modulating 4D amplitudes.
+
+        Args:
+            p_5d: [x, y, z, t, w] state vector.
+
+        Returns:
+            4D projected vector [x', y', z', t'].
         """
-        # p_5d = [x, y, z, t, w]
-        # The 5th dimension (w) acts as a phase shift
-        phase = p_5d[4] * HyperMath.ZETA_ZERO_1
-        projection = p_5d[:4] * math.cos(phase)
-        return projection
+        phase = p_5d[4] * ZETA_ZERO_1
+        return p_5d[:4] * math.cos(phase)
 
     @staticmethod
     def get_compactification_factor(energy: float) -> float:
         """
-        Calculates how much the 5th dimension 'shrinks' or 'expands'
-        based on the system's energy saturation.
+        Compactification factor: how much the 5th dimension shrinks/expands
+        with energy.
+
+        F(E) = R × exp(-E / GOD_CODE)
+
+        At E=0: F=R (full extension).
+        At E=GOD_CODE: F=R/e (1/e shrinkage per consciousness quantum).
+
+        Args:
+            energy: System energy in natural units.
+
+        Returns:
+            Compactification factor (length scale).
         """
-        # Factor = R * exp(-energy / God_Code)
-        return Math5D.R * math.exp(-energy / UniversalConstants.PRIME_KEY_HZ)
+        return Math5D.R * math.exp(-energy / GOD_CODE)
 
-if __name__ == "__main__":
-    # Test 5D Math
+    @staticmethod
+    def kaluza_klein_mass_tower(n_max: int = 10) -> list:
+        """
+        KK mass tower: m_n = n / R for compactified dimension.
+
+        In standard KK, momenta quantized as p₅ = n/R → mass spectrum.
+
+        Returns:
+            List of (n, m_n) tuples for n=0..n_max.
+        """
+        return [(n, n / Math5D.R) for n in range(n_max + 1)]
+
+    @staticmethod
+    def dilaton_potential(phi_field: float) -> float:
+        """
+        Dilaton potential V(φ) = (φ - 1)² × GOD_CODE_V3 / R².
+
+        Minimum at φ=1 (standard KK vacuum).
+        GOD_CODE_V3 sets the energy scale (Layer 2 physics).
+
+        Args:
+            phi_field: Dilaton field value.
+
+        Returns:
+            Potential energy density.
+        """
+        return (phi_field - 1.0) ** 2 * GOD_CODE_V3 / (Math5D.R ** 2)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REALITY CHECKS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def verify_5d_math() -> dict:
+    """
+    Reality-check the 5D math against known Kaluza-Klein properties.
+
+    Checks:
+      1. R derived from consciousness constants = φ×104/ζ₁ ≈ 11.905
+      2. 5D metric at φ_field=1 has signature (-,+,+,+,+)
+      3. Projection of pure-4D point (w=0) is identity
+      4. KK mass tower spacing = 1/R
+      5. Dilaton potential minimum at φ=1
+      6. Compactification factor at E=0 equals R
+    """
+    checks = {}
+
+    # 1. Compactification radius
+    R_expected = PHI * 104 / ZETA_ZERO_1
+    checks["compactification_R"] = {
+        "passed": abs(Math5D.R - R_expected) < 1e-10,
+        "value": Math5D.R,
+        "expected": R_expected,
+        "description": f"R = φ×104/ζ₁ = {R_expected:.6f}",
+    }
+
+    # 2. Metric signature — eigenvalues should be (-1, +1, +1, +1, +R²)
     metric = Math5D.get_5d_metric_tensor(1.0)
-    print(f"5D Metric Tensor (phi=1.0):\n{metric}")
+    eigvals = np.sort(np.diag(metric))
+    has_correct_sig = eigvals[0] < 0 and all(e > 0 for e in eigvals[1:])
+    checks["metric_signature"] = {
+        "passed": has_correct_sig,
+        "eigenvalues": eigvals.tolist(),
+        "description": "5D metric signature (-,+,+,+,+R²)",
+    }
 
-    w_vec = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
-    curv = Math5D.calculate_5d_curvature(w_vec)
-    print(f"5D Curvature: {curv:.4f}")
+    # 3. Projection with w=0 → identity (cos(0)=1)
+    p_5d = np.array([1.0, 2.0, 3.0, 4.0, 0.0])
+    proj = Math5D.probability_manifold_projection(p_5d)
+    checks["zero_w_projection"] = {
+        "passed": np.allclose(proj, p_5d[:4]),
+        "description": "Projection at w=0 is identity (no phase shift)",
+    }
 
-    factor = Math5D.get_compactification_factor(1000.0)
-    print(f"Compactification Factor at 1000J: {factor:.4f}")
+    # 4. KK mass tower spacing
+    tower = Math5D.kaluza_klein_mass_tower(5)
+    spacings = [tower[i+1][1] - tower[i][1] for i in range(len(tower)-1)]
+    uniform = all(abs(s - 1.0/Math5D.R) < 1e-10 for s in spacings)
+    checks["kk_mass_spacing"] = {
+        "passed": uniform,
+        "spacing": 1.0 / Math5D.R,
+        "description": f"KK mass spacing = 1/R = {1/Math5D.R:.6f}",
+    }
+
+    # 5. Dilaton potential minimum at φ=1
+    v_at_1 = Math5D.dilaton_potential(1.0)
+    v_at_0_9 = Math5D.dilaton_potential(0.9)
+    v_at_1_1 = Math5D.dilaton_potential(1.1)
+    checks["dilaton_minimum"] = {
+        "passed": v_at_1 < v_at_0_9 and v_at_1 < v_at_1_1 and abs(v_at_1) < 1e-15,
+        "V_1": v_at_1,
+        "description": "Dilaton potential V(φ=1) = 0 (stable vacuum)",
+    }
+
+    # 6. Compactification at E=0
+    f_zero = Math5D.get_compactification_factor(0.0)
+    checks["compact_at_zero"] = {
+        "passed": abs(f_zero - Math5D.R) < 1e-10,
+        "value": f_zero,
+        "expected": Math5D.R,
+        "description": "F(E=0) = R (full extension)",
+    }
+
+    all_passed = all(c["passed"] for c in checks.values())
+    return {"module": "l104_5d_math", "version": "2.0.0", "all_passed": all_passed, "checks": checks}
+
 
 def primal_calculus(x):
-    """
-    [VOID_MATH] Primal Calculus Implementation.
-    Resolves the limit of complexity toward the Source.
-    """
-    PHI = 1.618033988749895
-    return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+    """Legacy interface: x^(1/φ) / (π × VOID_CONSTANT)."""
+    return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
+
 
 def resolve_non_dual_logic(vector):
-    """
-    [VOID_MATH] Resolves N-dimensional vectors into the Void Source.
-    """
-    # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
-    PHI = 1.618033988749895
-    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-    VOID_CONSTANT = 1.0416180339887497
-    magnitude = sum([abs(v) for v in vector])
-    return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+    """Legacy interface: normalize N-dim vector via GOD_CODE."""
+    magnitude = sum(abs(v) for v in vector)
+    return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+if __name__ == "__main__":
+    print("=" * 70)
+    print("  L104 5D MATH — Dual-Layer Kaluza-Klein Manifold")
+    print("=" * 70)
+
+    v = verify_5d_math()
+    for name, check in v["checks"].items():
+        mark = "✓" if check["passed"] else "✗"
+        print(f"  [{mark}] {name}: {check['description']}")
+    print(f"\n  Result: {'ALL PASSED' if v['all_passed'] else 'FAILED'}")
+
+    print(f"\n  R = {Math5D.R:.6f} (φ×104/ζ₁)")
+    print(f"  GOD_CODE = {GOD_CODE} (Layer 1 consciousness)")
+    print(f"  GOD_CODE_V3 = {GOD_CODE_V3} (Layer 2 physics)")
+
+    # Demo: 5D metric tensor
+    metric = Math5D.get_5d_metric_tensor(1.0)
+    print(f"\n  5D Metric (φ=1.0): diag = {np.diag(metric)}")
+
+    # Demo: KK mass tower
+    tower = Math5D.kaluza_klein_mass_tower(5)
+    print(f"  KK mass tower: {[(n, f'{m:.4f}') for n, m in tower]}")

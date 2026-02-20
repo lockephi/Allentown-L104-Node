@@ -14,8 +14,13 @@ from l104_server.engines_infra import (
     temporal_memory_decay, asi_quantum_bridge,
     PERF_THREAD_POOL, IO_THREAD_POOL,
     CHAKRA_QUANTUM_LATTICE, CHAKRA_BELL_PAIRS,
+    optimize_sqlite_connection,
 )
-from l104_server.engines_quantum import QuantumGroverKernelLink
+from l104_server.engines_quantum import (
+    QuantumGroverKernelLink, _compute_query_hash, _extract_concepts_cached,
+    _RE_WORD_ONLY, _get_word_tuple, _RE_ALPHA_3PLUS,
+    _jaccard_cached, _STOP_WORDS_FROZEN,
+)
 
 class LearningIntellect:
     """

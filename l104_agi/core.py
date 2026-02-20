@@ -5,7 +5,13 @@ class AGICore:
     """
     ╔═══════════════════════════════════════════════════════════════════════════════╗
     ║  L104 AGI Core v56.0 — Pipeline Streaming Coordinator (Cognitive Mesh)      ║
-    ║  EVO_56 COGNITIVE MESH INTELLIGENCE + Distributed Topology + Attention Gate ║
+    ║  EVO_60 DUAL-LAYER FLAGSHIP + Cognitive Mesh + Distributed Topology         ║
+    ╟───────────────────────────────────────────────────────────────────────────────╢
+    ║  FLAGSHIP: Dual-Layer Engine — The Duality of Nature                         ║
+    ║  • Layer 1 (THOUGHT): Pattern recognition, symmetry, WHY                    ║
+    ║  • Layer 2 (PHYSICS): Precision computation, 63 constants, HOW MUCH         ║
+    ║  • COLLAPSE: Thought + Physics → unified value (quantum measurement)        ║
+    ║  • 10-point integrity across Thought, Physics, and Bridge                   ║
     ╟───────────────────────────────────────────────────────────────────────────────╢
     ║  Central Nervous System orchestrating ALL 698 subsystems:                    ║
     ║  • Pipeline Streaming — unified data flow across all modules                ║
@@ -943,6 +949,19 @@ class AGICore:
         auto_agi = self.get_autonomous_agi()
         research_eng = self.get_research_engine()
         c_state = self._read_consciousness_state()
+
+        # ★ FLAGSHIP: Dual-Layer Engine status ★
+        dual_layer_info = {}
+        try:
+            from l104_asi import dual_layer_engine, DUAL_LAYER_AVAILABLE
+            dual_layer_info = {
+                "available": DUAL_LAYER_AVAILABLE,
+                "score": dual_layer_engine.dual_score(),
+                "integrity_passed": dual_layer_engine.full_integrity_check().get("all_passed", False),
+            }
+        except Exception:
+            dual_layer_info = {"available": False, "score": 0.0}
+
         return {
             "version": AGI_CORE_VERSION,
             "pipeline_evo": AGI_PIPELINE_EVO,
@@ -954,6 +973,9 @@ class AGICore:
             "lattice_scalar": self.lattice_scalar,
             "survivor_algorithm": "STABLE" if verify_survivor_algorithm() else "CRITICAL",
             "quantum_available": QISKIT_AVAILABLE,
+            # ★ FLAGSHIP: Dual-Layer Engine ★
+            "flagship": "dual_layer",
+            "dual_layer": dual_layer_info,
             "autonomy_active": auto_agi is not None,
             "research_active": research_eng is not None,
             "pipeline_health": self._pipeline_health,
