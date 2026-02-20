@@ -36,7 +36,7 @@ print("   PASS")
 
 # Test 3: Predictions are actually unmatched
 print("\n3. Verifying predictions aren't known constants...")
-from l104_god_code_evolved_v3 import REAL_WORLD_CONSTANTS_V3
+from l104_god_code_dual_layer import REAL_WORLD_CONSTANTS_V3
 
 known_vals = [e["measured"] for e in REAL_WORLD_CONSTANTS_V3.values()]
 false_matches = 0

@@ -32,7 +32,7 @@ from const import UniversalConstants
 from l104_god_code_equation import (
     GOD_CODE, PHI, PRIME_SCAFFOLD, OCTAVE_OFFSET, VOID_CONSTANT,
 )
-from l104_god_code_evolved_v3 import C_V3 as C_PHYSICS
+from l104_god_code_dual_layer import C_V3 as C_PHYSICS
 
 
 class Processor5D:

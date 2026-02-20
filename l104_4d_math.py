@@ -25,7 +25,7 @@ import numpy as np
 from l104_god_code_equation import (
     GOD_CODE, PHI, PRIME_SCAFFOLD, QUANTIZATION_GRAIN, OCTAVE_OFFSET, BASE, VOID_CONSTANT,
 )
-from l104_god_code_evolved_v3 import (
+from l104_god_code_dual_layer import (
     C_V3 as C_PHYSICS,     # 299,792,458 m/s — EXACT on v3 grid
     GRAVITY_V3,             # 9.80625 m/s² (0.0041% error)
     BOHR_V3,                # 52.920 pm

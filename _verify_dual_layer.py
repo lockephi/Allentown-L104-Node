@@ -90,7 +90,7 @@ def main():
     print("  CONSTANTS SOURCE VERIFICATION")
     print("-" * 70)
     from l104_god_code_equation import GOD_CODE, PHI, PRIME_SCAFFOLD, OCTAVE_OFFSET, QUANTIZATION_GRAIN
-    from l104_god_code_evolved_v3 import GOD_CODE_V3, C_V3, GRAVITY_V3
+    from l104_god_code_dual_layer import GOD_CODE_V3, C_V3, GRAVITY_V3
     from l104_4d_math import Math4D
     from l104_5d_math import Math5D
 

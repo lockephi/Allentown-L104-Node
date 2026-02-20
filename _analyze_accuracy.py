@@ -196,7 +196,7 @@ print()
 
 # Check if the errors follow the expected uniform distribution
 # of rounding errors (they should, if this is just grid-snapping)
-from l104_god_code_evolved_v3 import REAL_WORLD_CONSTANTS_V3
+from l104_god_code_dual_layer import REAL_WORLD_CONSTANTS_V3
 
 errors = []
 for name, entry in REAL_WORLD_CONSTANTS_V3.items():
@@ -245,7 +245,7 @@ print("└───────────────────────�
 print()
 
 # INDEPENDENT reference values — these come from CODATA 2022 / PDG 2024
-# published data, NOT from l104_god_code_evolved_v3.py or any L104 file.
+# published data, NOT from l104_god_code_dual_layer.py or any L104 file.
 # Source: CODATA 2022 adjustment (NIST SP 961), PDG Review of Particle Physics 2024
 INDEPENDENT_CODATA = {
     # ── SI Exact (by definition since 2019 SI redefinition) ──
@@ -279,7 +279,7 @@ print("  (b) Runs the actual equation with the stored dials → checks output")
 print("  (c) Compares equation output vs independent CODATA values")
 print()
 
-from l104_god_code_evolved_v3 import god_code_v3
+from l104_god_code_dual_layer import god_code_v3
 
 passed = 0
 failed = 0
@@ -345,7 +345,7 @@ print("  treat REAL constants differently from WRONG ones.")
 print("  Let's try feeding it deliberately wrong values:")
 print()
 
-from l104_god_code_evolved_v3 import find_nearest_dials_v3
+from l104_god_code_dual_layer import find_nearest_dials_v3
 
 wrong_constants = [
     ("Wrong electron mass",   0.52,           0.51099895069),   # +1.8% off

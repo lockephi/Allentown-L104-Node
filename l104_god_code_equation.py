@@ -748,10 +748,10 @@ def god_code_evolved_v3_shim(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> 
     """
     Shim to the v3 evolved equation: G_v3(a,b,c,d) = 285.999^(1/φ) × (13/12)^((99a+3032-b-99c-758d)/758).
 
-    Superparticular chromatic base. For full functionality, import from l104_god_code_evolved_v3.
+    Superparticular chromatic base. For full functionality, import from l104_god_code_dual_layer.
     """
     try:
-        import l104_god_code_evolved_v3 as v3
+        import l104_god_code_dual_layer as v3
         return v3.god_code_v3(a, b, c, d)
     except ImportError:
         pass

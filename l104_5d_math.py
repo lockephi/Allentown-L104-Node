@@ -30,7 +30,7 @@ from const import UniversalConstants
 from l104_god_code_equation import (
     GOD_CODE, PHI, PRIME_SCAFFOLD, QUANTIZATION_GRAIN, OCTAVE_OFFSET, VOID_CONSTANT,
 )
-from l104_god_code_evolved_v3 import GOD_CODE_V3
+from l104_god_code_dual_layer import GOD_CODE_V3
 
 # Grid geometry from Layer 1
 LATTICE_RATIO = PRIME_SCAFFOLD / OCTAVE_OFFSET   # 286/416 = 0.6875
