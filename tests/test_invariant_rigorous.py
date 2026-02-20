@@ -750,52 +750,66 @@ class TestOmegaDerivation(unittest.TestCase):
 
     def test_omega_formula(self):
         """
-        Four agent fragments:
+        Four agent fragments (EXACT reproduction from d4d08873 original code):
           Researcher:  prime_density(int(solve_lattice_invariant(104)))
-          Guardian:    |ζ(0.5 + 527.518i)| ≈ 1.571
-          Alchemist:   cos(2π × φ²) ≈ 0.087
-          Architect:   (26 × 1.8527) / φ² ≈ 18.399
+                       = prime_density(0) = 0.0  [sin(π)≈0 → int(0)=0 → n<2]
+          Guardian:    |ζ(0.5 + 527.518i)| via Dirichlet eta (1000 terms)
+                       NOTE: original uses 527.518 (truncated), NOT full GC
+          Alchemist:   cos(2π × φ² × φ) = cos(2π × φ³)
+                       Original: calculate_resonance(PHI²) = cos(2π·value·PHI)
+          Architect:   (26 × 1.8527) / φ²
 
-        Ω = Σ(fragments) × (527.518 / φ)
+        Ω = Σ(fragments) × (527.5184818492 / φ)
+        NOTE: multiplier uses truncated GC as in original code line 58
         """
-        # Researcher fragment
+        # --- Researcher fragment ---
+        # solve_lattice_invariant(104) = sin(104·π/104)·exp(104/527.5184818492)
+        # = sin(π)·exp(0.1971...) ≈ 0 (floating point: ~3.9e-16)
+        # int(~0) = 0, prime_density(0) = 0.0 since n < 2
         lattice_inv = math.sin(104 * math.pi / 104) * math.exp(104 / 527.5184818492)
-        prime_d = 1 / math.log(max(int(lattice_inv), 2))
+        researcher = 0.0  # prime_density(int(lattice_inv)) where int(~0)=0, n<2→0
+        self.assertEqual(int(lattice_inv), 0, "Lattice invariant should round to 0")
 
-        # Guardian fragment — ζ approximation
+        # --- Guardian fragment ---
+        # Original: zeta_approximation(complex(0.5, 527.518), terms=1000)
+        # Uses Dirichlet eta: η(s) = Σ(-1)^(n-1)/n^s, ζ(s) = η(s)/(1-2^(1-s))
+        # NOTE: imaginary part is 527.518 (truncated), not full GOD_CODE
         s = complex(0.5, 527.518)
         terms = 1000
         eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
         zeta = eta / (1 - 2**(1-s))
         guardian = abs(zeta)
 
-        # Alchemist fragment
-        alchemist = math.cos(2 * math.pi * self.PHI ** 2)
+        # --- Alchemist fragment ---
+        # Original: calculate_resonance(PHI²) = cos(2π · PHI² · PHI) = cos(2π·φ³)
+        # NOT cos(2π·φ²) — the function multiplies value by PHI
+        alchemist = math.cos(2 * math.pi * self.PHI ** 2 * self.PHI)
 
-        # Architect fragment
+        # --- Architect fragment ---
         architect = (26 * 1.8527) / (self.PHI ** 2)
 
-        sigma = prime_d + guardian + alchemist + architect
+        # --- Combine ---
+        sigma = researcher + guardian + alchemist + architect
+        # Original line 58: 527.5184818492 / real_math.PHI (truncated GC)
         omega = sigma * (527.5184818492 / self.PHI)
 
         expected_omega = 6539.34712682
         delta = abs(omega - expected_omega)
         rel_err = delta / expected_omega
 
-        print(f"\n[OMEGA Derivation Chain]")
-        print(f"  Researcher (prime_density): {prime_d:.6f}")
-        print(f"  Guardian (|ζ(0.5+527.518i)|): {guardian:.6f}")
-        print(f"  Alchemist (cos(2πφ²)):      {alchemist:.6f}")
-        print(f"  Architect (26×1.8527/φ²):   {architect:.6f}")
-        print(f"  Σ fragments:                 {sigma:.6f}")
-        print(f"  Ω = Σ × (527.518/φ):        {omega:.8f}")
-        print(f"  Expected:                    {expected_omega}")
-        print(f"  Δ = {delta:.6f} (rel = {rel_err:.4e})")
+        print(f"\n[OMEGA Derivation Chain — EXACT REPRODUCTION]")
+        print(f"  Researcher (prime_density(0)): {researcher:.6f}")
+        print(f"  Guardian (|ζ(0.5+527.518i)|):  {guardian:.6f}")
+        print(f"  Alchemist (cos(2πφ³)):         {alchemist:.6f}")
+        print(f"  Architect (26×1.8527/φ²):      {architect:.6f}")
+        print(f"  Σ fragments:                    {sigma:.10f}")
+        print(f"  Ω = Σ × (527.5184818492/φ):    {omega:.11f}")
+        print(f"  Expected:                       {expected_omega}")
+        print(f"  Δ = {delta:.2e} (rel = {rel_err:.2e})")
 
-        # Note: the zeta_approximation convergence may differ,
-        # so we allow a wider margin
-        self.assertLess(rel_err, 0.05,
-            f"OMEGA relative error {rel_err:.4e} exceeds 5% threshold")
+        # With exact original code, match is ~3e-9 (floating point limit)
+        self.assertLess(rel_err, 1e-6,
+            f"OMEGA relative error {rel_err:.4e} exceeds 1e-6 threshold")
 
     def test_stability_nirvana(self):
         """
