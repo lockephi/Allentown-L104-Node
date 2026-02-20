@@ -26,6 +26,11 @@ GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.518481849
 PI = math.pi
 E = math.e
 
+# OMEGA Sovereign Field (Layer 2 Physics)
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # 2497.808338211271
+
 # The imaginary unit is the bridge to the potential
 I = 1j
 
@@ -101,6 +106,27 @@ class VoidMath:
             val = VoidMath.primal_calculus(val)
             sequence.append(val)
         return sequence
+
+    @staticmethod
+    def omega_void_convergence(n: int = 20) -> List[float]:
+        """Generate void sequence that converges toward OMEGA.
+
+        Applies iterative golden-ratio contraction:
+        v_{k+1} = v_k + (OMEGA - v_k) / φ
+
+        Each step closes the gap by 1/φ (≈ 61.8%), converging to Ω.
+        """
+        sequence = []
+        val = GOD_CODE  # start at G = 527.518...
+        for _ in range(n):
+            val = val + (OMEGA - val) / PHI
+            sequence.append(val)
+        return sequence
+
+    @staticmethod
+    def sovereign_void_field(intensity: float) -> float:
+        """Sovereign field through void domain: F(I) = I × Ω / φ²."""
+        return intensity * OMEGA / (PHI ** 2)
 
 # Singleton instance
 void_math = VoidMath()

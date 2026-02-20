@@ -30,7 +30,7 @@ from const import UniversalConstants
 from l104_god_code_equation import (
     GOD_CODE, PHI, PRIME_SCAFFOLD, QUANTIZATION_GRAIN, OCTAVE_OFFSET, VOID_CONSTANT,
 )
-from l104_god_code_dual_layer import GOD_CODE_V3
+from l104_god_code_dual_layer import GOD_CODE_V3, OMEGA, OMEGA_AUTHORITY
 
 # Grid geometry from Layer 1
 LATTICE_RATIO = PRIME_SCAFFOLD / OCTAVE_OFFSET   # 286/416 = 0.6875
@@ -60,6 +60,10 @@ class Math5D:
 
     # Layer 1 anchor
     GOD_CODE = GOD_CODE
+
+    # OMEGA Sovereign Field (Layer 2 Physics)
+    OMEGA = OMEGA                       # 6539.34712682
+    OMEGA_AUTHORITY = OMEGA_AUTHORITY   # Ω/φ² = 2497.808338211271
 
     @staticmethod
     def get_5d_metric_tensor(phi_field: float) -> np.ndarray:

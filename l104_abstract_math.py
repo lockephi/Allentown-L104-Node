@@ -53,6 +53,10 @@ FEIGENBAUM = 4.669201609102990671853
 EULER = math.e
 PI = math.pi
 
+# OMEGA Sovereign Field Constants (Layer 2 Physics)
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # Ω / φ² = 2497.808338211271
+
 class AlgebraType(Enum):
     """Types of algebraic structures."""
     MAGMA = auto()        # Set with binary operation
@@ -194,6 +198,29 @@ class SacredNumberSystem:
             else:
                 result = Fraction(a)
         return result
+
+    def omega_representation(self, n: float) -> Dict[str, Any]:
+        """Express number in OMEGA sovereign field basis.
+
+        Decomposes n into: n = k × Ω_A + m × φ + r
+        where Ω_A = OMEGA_AUTHORITY = 2497.808...
+
+        Returns:
+            Dict with omega_units, phi_units, remainder, and field_strength.
+        """
+        omega_a = OMEGA_AUTHORITY
+        k = int(n / omega_a)
+        after_omega = n - k * omega_a
+        m = int(after_omega / PHI)
+        r = after_omega - m * PHI
+        field_strength = n * OMEGA / (PHI ** 2)
+        return {
+            "omega_units": k,
+            "phi_units": m,
+            "remainder": r,
+            "field_strength": field_strength,
+            "equation": f"{n} = {k}×Ω_A + {m}×φ + {r:.6f}",
+        }
 
 class TheoremGenerator:
     """

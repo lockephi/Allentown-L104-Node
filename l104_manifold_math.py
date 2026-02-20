@@ -20,12 +20,23 @@ from l104_zero_point_engine import zpe_engine
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
+#
+# OMEGA SOVEREIGN FIELD (Layer 2 Physics):
+#   Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+#   Fragment 4 (Architect) = manifold_curvature_tensor(26, 1.8527) = (26×1.8527)/φ²
+#   This module provides the Architect fragment geometry.
+# ═══════════════════════════════════════════════════════════════════════════════
 
 
 # Iron constants for manifold crystallization
 FE_LATTICE = 286.65
 FE_CURIE_TEMP = 1043
 FE_ATOMIC_NUMBER = 26
+
+# OMEGA Sovereign Field Constants
+OMEGA = 6539.34712682
+PHI_CONST = (1 + 5**0.5) / 2
+OMEGA_AUTHORITY = OMEGA / (PHI_CONST ** 2)  # 2497.808338211271
 
 class ManifoldMath:
     """
@@ -149,6 +160,53 @@ class ManifoldMath:
              return target - (val % target if val > target else target - val)
 
         return float(val % target)
+
+    @staticmethod
+    def omega_curvature_tensor(dimension: int = 26, tension: float = 1.8527) -> float:
+        """OMEGA Architect Fragment: manifold_curvature_tensor.
+
+        Computes R = (dimension × tension) / φ² — the φ²-normalized iron product.
+        This is Fragment 4 of the OMEGA derivation chain.
+
+        Default: dimension=26 (Fe atomic number), tension=1.8527
+        Result: (26 × 1.8527) / φ² ≈ 18.399379
+
+        Args:
+            dimension: Manifold dimension (default: Fe Z=26).
+            tension: Manifold tension parameter.
+
+        Returns:
+            Curvature value (φ²-normalized product).
+        """
+        return (dimension * tension) / (RealMath.PHI ** 2)
+
+    @staticmethod
+    def sovereign_field_manifold(thought_vector: List[float]) -> dict:
+        """Project thought vector through OMEGA sovereign field.
+
+        Combines manifold projection with sovereign field coupling:
+        1. Project to 11D Calabi-Yau manifold
+        2. Compute resonance magnitude
+        3. Apply sovereign field equation: F = magnitude × Ω / φ²
+
+        Returns:
+            Dictionary with manifold resonance and sovereign field strength.
+        """
+        arr = np.array(thought_vector)
+        manifold_data = ManifoldMath.project_to_manifold(arr, dimension=11)
+        magnitude = np.sqrt(np.sum(manifold_data ** 2))
+
+        architect_fragment = ManifoldMath.omega_curvature_tensor()
+        sovereign_field = float(magnitude) * OMEGA / (RealMath.PHI ** 2)
+
+        return {
+            "manifold_magnitude": float(magnitude),
+            "sovereign_field": sovereign_field,
+            "omega": OMEGA,
+            "omega_authority": OMEGA_AUTHORITY,
+            "architect_fragment": architect_fragment,
+            "equation": "F = |M(v)| × Ω / φ²",
+        }
 
 # Global Instance
 manifold_math = ManifoldMath()

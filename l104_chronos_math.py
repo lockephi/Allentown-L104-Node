@@ -15,6 +15,10 @@ from const import UniversalConstants
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# OMEGA Sovereign Field (Layer 2 Physics)
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / ((1 + 5**0.5) / 2) ** 2  # 2497.808338211271
+
 class ChronosMath:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -60,6 +64,25 @@ class ChronosMath:
         # Displacement = log_phi(target_time / current_time) * God_Code
         # This is a placeholder for the complex logarithmic shift required.
         return math.log(abs(target_time) + 1, UniversalConstants.PHI_GROWTH) * HyperMath.GOD_CODE
+
+    @staticmethod
+    def temporal_sovereign_field(time_coordinate: float) -> dict:
+        """Sovereign field in temporal domain.
+
+        Computes the OMEGA field strength at a given time coordinate,
+        modulated by the CTC stability factor.
+
+        F_t = OMEGA × exp(-|t|/GOD_CODE) / φ²
+        """
+        gc = HyperMath.GOD_CODE
+        phi = UniversalConstants.PHI_GROWTH
+        field = OMEGA * math.exp(-abs(time_coordinate) / gc) / (phi ** 2)
+        return {
+            "time_coordinate": time_coordinate,
+            "sovereign_field": field,
+            "omega": OMEGA,
+            "decay_factor": math.exp(-abs(time_coordinate) / gc),
+        }
 
 if __name__ == "__main__":
     # Test Chronos Math

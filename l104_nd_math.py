@@ -15,6 +15,11 @@ from l104_manifold_math import manifold_math
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# OMEGA Sovereign Field (Layer 2 Physics)
+OMEGA = 6539.34712682
+_PHI = (1 + 5**0.5) / 2
+OMEGA_AUTHORITY = OMEGA / (_PHI ** 2)  # 2497.808338211271
+
 
 class MathND:
     """
@@ -41,6 +46,22 @@ class MathND:
         # ds^2 = dx.T @ metric @ dx
         interval_sq = np.dot(dx.T, np.dot(metric, dx))
         return float(np.sqrt(np.abs(interval_sq)))
+
+    @staticmethod
+    def omega_scaled_metric(n: int) -> np.ndarray:
+        """N-dimensional metric tensor scaled by OMEGA sovereign field.
+
+        Diagonal metric where compactified radii incorporate OMEGA:
+        g_ii = (OMEGA / (i × φ²))² for i ≥ 4
+
+        Returns:
+            N×N numpy diagonal metric tensor.
+        """
+        metric = MathND.get_metric_tensor(n)
+        for i in range(4, n):
+            radius = OMEGA / (i * _PHI ** 2)
+            metric[i, i] = radius ** 2 / 1e6  # Normalized
+        return metric
 
 if __name__ == "__main__":
     # Test ND Math for 10 dimensions

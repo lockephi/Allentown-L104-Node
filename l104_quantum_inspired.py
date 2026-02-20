@@ -123,6 +123,11 @@ except ImportError:
 # Iron lattice constant (connects to GOD_CODE via 286^(1/φ))
 FE_LATTICE = 286.65
 
+# OMEGA Sovereign Field Constants (Layer 2 Physics)
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # Ω / φ² = 2497.808338211271
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # QUANTUM STATE REPRESENTATION
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -370,6 +375,19 @@ class QuantumGates:
         Applies crystallographic resonance (286.65 pm ↔ GOD_CODE).
         """
         phase = FE_LATTICE / GOD_CODE * 2 * math.pi
+        rotated = cmath.exp(complex(0, phase))
+        return Qubit(qubit.alpha * rotated, qubit.beta * rotated.conjugate())
+
+    @staticmethod
+    def omega_sovereign_gate(qubit: Qubit) -> Qubit:
+        """
+        OMEGA Sovereign Field quantum gate.
+        Phase rotation by Ω/(φ²×2π) — encodes the sovereign field constant.
+
+        The gate applies: |ψ⟩ → e^(iΩ/φ²) |ψ⟩
+        This maps the sovereign field authority into a quantum phase.
+        """
+        phase = OMEGA / (PHI ** 2)  # = OMEGA_AUTHORITY ≈ 2497.808
         rotated = cmath.exp(complex(0, phase))
         return Qubit(qubit.alpha * rotated, qubit.beta * rotated.conjugate())
 

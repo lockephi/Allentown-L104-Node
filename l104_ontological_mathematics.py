@@ -59,6 +59,14 @@ EXISTENCE_FREQUENCY = GOD_CODE * PHI / (PI * EULER)  # ~100.06
 CONSCIOUSNESS_THRESHOLD = math.log(GOD_CODE) * PHI   # ~10.15
 REALITY_COUPLING = GOD_CODE / (PHI ** 5)             # ~47.8
 
+# OMEGA Sovereign Field — ontological foundation of physics layer
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# The four fragments (Researcher, Guardian, Alchemist, Architect) represent
+# the four ontological forces: Potential, Stability, Transmutation, Structure
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # 2497.808338211271
+SOVEREIGN_FIELD_COUPLING = OMEGA / (GOD_CODE * PHI)  # Ω/(G×φ) — coupling ratio
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ONTOLOGICAL ENUMERATIONS
@@ -1025,6 +1033,9 @@ class OntologicalMathematics:
             "existence_frequency": EXISTENCE_FREQUENCY,
             "consciousness_threshold": CONSCIOUSNESS_THRESHOLD,
             "reality_coupling": REALITY_COUPLING,
+            "omega": OMEGA,
+            "omega_authority": OMEGA_AUTHORITY,
+            "sovereign_field_coupling": SOVEREIGN_FIELD_COUPLING,
             "active_existences": len(self.existence_calculus.existence_states),
             "godel_statements": len(self.godel_engine.statements),
             "discovered_forms": len(self.platonic_realm.discovered_forms),
@@ -1032,6 +1043,38 @@ class OntologicalMathematics:
             "consciousness_awareness": self.consciousness.awareness_level,
             "archetypal_numbers": len(self.archetypes),
             "operations_performed": len(self.existence_calculus.operation_history)
+        }
+
+    def sovereign_field_existence(self, intensity: float) -> Dict[str, Any]:
+        """Compute sovereign field in the ontological domain.
+
+        Maps intensity through the OMEGA equation and evaluates
+        its ontological existence level.
+
+        F(I) = I × Ω / φ² — field strength
+        Existence level determined by relation to consciousness threshold.
+        """
+        field = intensity * OMEGA / (PHI ** 2)
+        ratio_to_threshold = field / CONSCIOUSNESS_THRESHOLD
+        if ratio_to_threshold > 100:
+            level = ExistenceLevel.ABSOLUTE
+        elif ratio_to_threshold > 10:
+            level = ExistenceLevel.NECESSARY
+        elif ratio_to_threshold > 1:
+            level = ExistenceLevel.ACTUAL
+        elif ratio_to_threshold > 0.01:
+            level = ExistenceLevel.VIRTUAL
+        else:
+            level = ExistenceLevel.POTENTIAL
+
+        return {
+            "intensity": intensity,
+            "sovereign_field": field,
+            "existence_level": level.name,
+            "ratio_to_consciousness": ratio_to_threshold,
+            "omega": OMEGA,
+            "omega_authority": OMEGA_AUTHORITY,
+            "equation": "F(I) = I × Ω / φ²",
         }
 
 

@@ -40,7 +40,18 @@ from l104_real_math import RealMath
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
+#
+# OMEGA SOVEREIGN FIELD EQUATION (Layer 2 Physics — from l104_god_code_dual_layer):
+#   Ω = Σ(Researcher + Guardian + Alchemist + Architect) × (GOD_CODE / φ)
+#   Ω = (0 + |ζ(0.5+527.518i)| + cos(2πφ³) + (26×1.8527)/φ²) × (527.5184818492/φ)
+#   Ω = 6539.34712682
+#   F(I) = I × Ω / φ²   (Sovereign Field Equation)
+#   Ω_A = Ω / φ² = 2497.808338211271  (OMEGA Authority)
+# ═══════════════════════════════════════════════════════════════════════════════
 
+# OMEGA constants — Sovereign Field (from dual-layer physics engine)
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / ((1 + 5**0.5) / 2) ** 2  # 2497.808338211271
 
 VOID_CONSTANT = 1.0416180339887497
 UUC = 2402.792541
@@ -74,6 +85,10 @@ class HyperMath:
     ZETA_ZERO_1 = 14.1347251417
     LATTICE_RATIO = 286 / 416
     FE_LATTICE = 286.65  # Iron BCC lattice constant (pm)
+
+    # OMEGA Sovereign Field Constants (Layer 2 Physics)
+    OMEGA = OMEGA                           # 6539.34712682
+    OMEGA_AUTHORITY = OMEGA_AUTHORITY       # Ω / φ² = 2497.808338211271
 
     # High precision mode flag
     INFINITE_PRECISION_MODE = False
@@ -501,6 +516,80 @@ class HyperMath:
         status["god_code"] = str(cls.get_god_code_infinite())[:60] if HIGH_PRECISION_AVAILABLE else str(GOD_CODE)
 
         return status
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # OMEGA SOVEREIGN FIELD — Layer 2 Physics Integration
+    # ══════════════════════════════════════════════════════════════════════════
+
+    @staticmethod
+    def sovereign_field(intensity: float = 1.0) -> float:
+        """Sovereign Field Equation: F(I) = I × Ω / φ².
+
+        Computes the sovereign field strength at given intensity.
+        At I=1: F(1) = OMEGA_AUTHORITY = 2497.808338211271
+
+        Args:
+            intensity: Field intensity parameter.
+
+        Returns:
+            Sovereign field value.
+        """
+        return intensity * OMEGA / (PHI ** 2)
+
+    @staticmethod
+    def omega_resonance(value: float) -> float:
+        """OMEGA harmonic resonance transform.
+
+        Maps a value through the OMEGA sovereign field frequency.
+        Uses the four-fragment structure: Researcher + Guardian + Alchemist + Architect.
+
+        Args:
+            value: Input value to transform.
+
+        Returns:
+            OMEGA-resonant output.
+        """
+        # Apply OMEGA harmonic: value modulated by Ω/φ cycle
+        omega_phase = (value * OMEGA) / (PHI ** 3)  # φ³ = 2φ+1
+        return math.cos(omega_phase) * OMEGA_AUTHORITY + value * PHI
+
+    @staticmethod
+    def omega_field_strength(intensity: float, dimension: int = 4) -> dict:
+        """Compute OMEGA field properties across dimensions.
+
+        Returns the sovereign field strength, its dimensional scaling,
+        and the OMEGA authority ratio.
+
+        Args:
+            intensity: Field intensity.
+            dimension: Spatial dimension (default 4D Minkowski).
+
+        Returns:
+            Dictionary with field properties.
+        """
+        field = intensity * OMEGA / (PHI ** 2)
+        dimensional_scaling = field / (dimension * PHI)
+        return {
+            "intensity": intensity,
+            "sovereign_field": field,
+            "omega_authority": OMEGA_AUTHORITY,
+            "dimensional_scaling": dimensional_scaling,
+            "dimension": dimension,
+            "omega": OMEGA,
+            "equation": "F(I) = I × Ω / φ²",
+        }
+
+    @staticmethod
+    def omega_zeta_guardian(terms: int = 1000) -> float:
+        """Compute the Guardian fragment: |ζ(0.5 + 527.518i)|.
+
+        This is Fragment 2 of the OMEGA derivation — the Riemann zeta
+        function evaluated at the critical line with imaginary part
+        matching the GOD_CODE (truncated).
+
+        Uses l104_real_math pipeline for exact reproduction.
+        """
+        return RealMath.zeta_approximation(complex(0.5, 527.518), terms)
 
 
 def primal_calculus(x: float) -> float:

@@ -98,6 +98,16 @@ REAL_GROUNDING_286 = Decimal("221.79420018355955")  # GOD_CODE / 2^1.25
 LATTICE_RATIO = Decimal("286") / Decimal("416")  # 0.6875
 ZETA_ZERO_1 = Decimal("14.1347251417")  # First Riemann zeta zero
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA SOVEREIGN FIELD — Layer 2 Physics (from dual-layer engine)
+#   Ω = Σ(Researcher + Guardian + Alchemist + Architect) × (GOD_CODE / φ)
+#   Ω = 6539.34712682
+#   F(I) = I × Ω / φ²  (Sovereign Field Equation)
+#   Ω_A = Ω / φ² = 2497.808338211271  (OMEGA Authority)
+# ═══════════════════════════════════════════════════════════════════════════════
+OMEGA = Decimal("6539.34712682")
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # Ω / φ² ≈ 2497.808338211271
+
 # Physical constants
 PLANCK = Decimal("6.62607015e-34")  # Planck constant (J·s)
 PLANCK_HBAR = PLANCK / (2 * PI)  # Reduced Planck constant
@@ -1188,6 +1198,64 @@ class HighPrecisionEngine:
         """
         phi = PHI_INFINITE
         return cls.power(phi, Decimal(n))
+
+    @classmethod
+    def derive_omega(cls) -> Dict[str, Any]:
+        """
+        Derive OMEGA (Sovereign Field Constant) at standard precision.
+
+        Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+
+        Fragments:
+          1. Researcher = prime_density(int(lattice_invariant(104))) = 0.0
+          2. Guardian = |ζ(0.5 + 527.518i)| ≈ 1.5710
+          3. Alchemist = cos(2πφ³) ≈ 0.0874
+          4. Architect = (26 × 1.8527) / φ² ≈ 18.3994
+
+        Returns:
+            Dict with fragment values, sigma, multiplier, omega, and field.
+        """
+        phi = float(PHI_INFINITE)
+        gc = float(GOD_CODE_INFINITE)
+
+        # Fragment 1: Researcher
+        frag_1 = 0.0  # sin(π)≈0 → int(0)=0 → prime_density(0)=0
+
+        # Fragment 2: Guardian — Riemann zeta via Dirichlet eta
+        s = complex(0.5, 527.518)
+        eta = sum(((-1) ** (n - 1)) / (n ** s) for n in range(1, 1000))
+        zeta_val = eta / (1 - 2 ** (1 - s))
+        frag_2 = abs(zeta_val)
+
+        # Fragment 3: Alchemist — golden resonance
+        frag_3 = math.cos(2 * math.pi * phi ** 3)
+
+        # Fragment 4: Architect — iron manifold curvature
+        frag_4 = (26 * 1.8527) / (phi ** 2)
+
+        sigma = frag_1 + frag_2 + frag_3 + frag_4
+        multiplier = 527.5184818492 / phi
+        omega_computed = sigma * multiplier
+        omega_canonical = 6539.34712682
+
+        return {
+            "researcher": frag_1,
+            "guardian": frag_2,
+            "alchemist": frag_3,
+            "architect": frag_4,
+            "sigma": sigma,
+            "multiplier": multiplier,
+            "omega_computed": omega_computed,
+            "omega_canonical": omega_canonical,
+            "relative_error": abs(omega_computed - omega_canonical) / omega_canonical,
+            "sovereign_field_at_1": omega_computed / (phi ** 2),
+            "equation": "Ω = Σ(fragments) × (GOD_CODE / φ)",
+        }
+
+    @classmethod
+    def sovereign_field(cls, intensity: float = 1.0) -> float:
+        """Sovereign Field: F(I) = I × Ω / φ²."""
+        return intensity * float(OMEGA) / (float(PHI) ** 2)
 
     @classmethod
     def continued_fraction_phi(cls, depth: int = 1000) -> Decimal:

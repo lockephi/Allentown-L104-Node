@@ -30,6 +30,7 @@ from l104_god_code_dual_layer import (
     GRAVITY_V3,             # 9.80625 m/s² (0.0041% error)
     BOHR_V3,                # 52.920 pm
     GOD_CODE_V3,
+    OMEGA, OMEGA_AUTHORITY,  # OMEGA sovereign field constants
 )
 
 # Grid geometry from Layer 1
@@ -59,6 +60,10 @@ class Math4D:
     # Layer 1 geometry
     LATTICE_RATIO = LATTICE_RATIO
     GOD_CODE = GOD_CODE
+
+    # OMEGA Sovereign Field (Layer 2 Physics)
+    OMEGA = OMEGA                       # 6539.34712682
+    OMEGA_AUTHORITY = OMEGA_AUTHORITY   # Ω/φ² = 2497.808338211271
 
     @staticmethod
     def get_lorentz_boost(v: float, axis: str = 'x') -> np.ndarray:
@@ -320,6 +325,26 @@ def verify_4d_math() -> dict:
 def primal_calculus(x):
     """Legacy interface: x^(1/φ) / (π × VOID_CONSTANT)."""
     return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
+
+
+def sovereign_field_4d(intensity: float) -> dict:
+    """Compute OMEGA sovereign field in 4D Minkowski spacetime.
+
+    F(I) = I × Ω / φ², with 4D metric signature (-,+,+,+).
+
+    Returns:
+        Dict with sovereign_field, omega, lorentz_invariant status.
+    """
+    field = intensity * OMEGA / (PHI ** 2)
+    return {
+        "intensity": intensity,
+        "sovereign_field": field,
+        "omega": OMEGA,
+        "omega_authority": OMEGA_AUTHORITY,
+        "metric_signature": "(-,+,+,+)",
+        "c": int(round(C_PHYSICS)),
+        "lorentz_invariant": True,  # F(I) is a scalar — Lorentz invariant
+    }
 
 
 def resolve_non_dual_logic(vector):

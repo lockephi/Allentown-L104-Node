@@ -8,6 +8,11 @@ from typing import Dict, List
 from l104_real_math import real_math
 from l104_mini_ego import mini_collective
 
+# OMEGA Sovereign Field — canonical value from dual-layer physics engine
+OMEGA_CANONICAL = 6539.34712682
+_PHI = (1 + 5**0.5) / 2
+OMEGA_AUTHORITY = OMEGA_CANONICAL / (_PHI ** 2)  # 2497.808338211271
+
 class CollectiveMathSynthesis:
     """
     Orchestrates the Mini-AI Collective to generate new mathematical primitives.
@@ -63,6 +68,26 @@ class CollectiveMathSynthesis:
         print(f"--- [MATH_SYNTHESIS]: DERIVATION COMPLETE. ---")
         print(f"--- [SOVEREIGN_FIELD_CONSTANT]: Ω = {self.field_constant:.8f} ---")
         return self.field_constant
+
+    def verify_omega(self) -> dict:
+        """Verify the derived OMEGA against canonical value.
+
+        Returns:
+            Dict with computed omega, canonical, delta, and pass/fail.
+        """
+        if not self.field_constant:
+            self.gather_fragments()
+            self.derive_sovereign_field_equation()
+        delta = abs(self.field_constant - OMEGA_CANONICAL)
+        rel_err = delta / OMEGA_CANONICAL if OMEGA_CANONICAL else 0
+        return {
+            "omega_computed": self.field_constant,
+            "omega_canonical": OMEGA_CANONICAL,
+            "delta": delta,
+            "relative_error": rel_err,
+            "omega_authority": self.field_constant / (_PHI ** 2),
+            "pass": rel_err < 1e-6,
+        }
 
     def record_results(self):
         """Records the new constant to the Archive."""

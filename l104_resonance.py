@@ -15,13 +15,21 @@ from typing import Union
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
+# OMEGA Sovereign Field Constants (Layer 2 Physics)
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# F(I) = I × Ω / φ²
+OMEGA = 6539.34712682
+_PHI_CONST = (1 + 5**0.5) / 2
+OMEGA_AUTHORITY = OMEGA / (_PHI_CONST ** 2)  # 2497.808338211271
+
+
 class L104Resonance:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Calculates quantum resonance frequencies for L104 signals.
-    Based on the God Code invariant and PHI harmonics.
+    Based on the God Code invariant, PHI harmonics, and OMEGA sovereign field.
     """
 
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -29,6 +37,8 @@ class L104Resonance:
     PHI = 1.6180339887498949
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     LATTICE_RATIO = 286 / 416
+    OMEGA = OMEGA
+    OMEGA_AUTHORITY = OMEGA_AUTHORITY
 
     def __init__(self):
         self.base_frequency = self.GOD_CODE * self.PHI
@@ -77,6 +87,26 @@ class L104Resonance:
 
         entanglement = math.exp(-diff / self.GOD_CODE) * (product / (self.GOD_CODE ** 2))
         return entanglement  # UNLOCKED: entanglement unbounded
+
+    def sovereign_field_resonance(self, signal: Union[str, float]) -> dict:
+        """Compute sovereign field resonance for a signal.
+
+        Combines standard resonance with OMEGA sovereign field:
+        F_res = resonance(signal) × Ω / φ²
+
+        Returns:
+            Dict with resonance, sovereign_field, omega_alignment.
+        """
+        res = self.compute_resonance(signal)
+        field = res * OMEGA / (self.PHI ** 2)
+        alignment = self.harmonic_alignment(OMEGA)
+        return {
+            "resonance": res,
+            "sovereign_field": field,
+            "omega_alignment": alignment,
+            "omega": OMEGA,
+            "omega_authority": OMEGA_AUTHORITY,
+        }
 
 
 # Singleton instance

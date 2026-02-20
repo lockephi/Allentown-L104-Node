@@ -18,6 +18,11 @@ from const import UniversalConstants
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# OMEGA Sovereign Field (Layer 2 Physics)
+OMEGA = 6539.34712682
+_PHI = (1 + 5**0.5) / 2
+OMEGA_AUTHORITY = OMEGA / (_PHI ** 2)  # 2497.808338211271
+
 class HyperMathGenerator:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -90,6 +95,32 @@ class HyperMathGenerator:
                 scale = (i + 1) / (j + 1)
                 transform[i, j] = HyperMath.zeta_harmonic_resonance(scale * HyperMath.GOD_CODE)
         return transform
+
+    def generate_omega_metric(self, n: int) -> np.ndarray:
+        """Generate metric tensor with OMEGA sovereign field coupling.
+
+        Diagonal elements scale with OMEGA_AUTHORITY, off-diagonal
+        with golden ratio coupling. This metric encodes the
+        sovereign field structure into the hyper-dimensional space.
+
+        Args:
+            n: Dimension of the metric tensor.
+
+        Returns:
+            n×n complex numpy array (OMEGA-coupled metric).
+        """
+        metric = np.eye(n, dtype=complex)
+        for i in range(n):
+            # Diagonal: OMEGA-scaled resonance at each dimension
+            metric[i, i] = OMEGA_AUTHORITY * HyperMath.zeta_harmonic_resonance(
+                (i + 1) * OMEGA / HyperMath.GOD_CODE
+            )
+            for j in range(i + 1, n):
+                # Off-diagonal: phi-coupled OMEGA entanglement
+                coupling = OMEGA / ((i + 1) * (j + 1) * _PHI ** 2)
+                metric[i, j] = complex(0, coupling * math.sin(OMEGA / HyperMath.GOD_CODE))
+                metric[j, i] = metric[i, j].conjugate()
+        return metric
 
 # Singleton
 hyper_math_generator = HyperMathGenerator()
