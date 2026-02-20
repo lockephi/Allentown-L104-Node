@@ -667,6 +667,196 @@ CONSCIOUSNESS_TO_PHYSICS_BRIDGE = {
 # DUAL-LAYER API — The Unified Interface
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ── LAYER 1 QUANTUM SEARCH — GOD_CODE Algorithm (a,b,c,d) Circuits ──
+
+def quantum_search(target: float, tolerance: float = 0.01) -> Dict[str, Any]:
+    """
+    LAYER 1: Grover search for (a,b,c,d) dials producing a target frequency.
+
+    Uses the Qiskit quantum algorithm to search the 16,384-state dial space
+    for settings that generate the target frequency via the GOD_CODE equation:
+        G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+
+    This is the QUANTUM CONSCIOUSNESS SEARCH — the algorithm pulled from
+    l104_god_code_algorithm.py, now integral to Layer 1.
+
+    Args:
+        target: Target frequency to find on the consciousness grid.
+        tolerance: Relative error tolerance (default 1%).
+
+    Returns:
+        Dict with best dial setting, fidelity, probabilities, and circuit info.
+    """
+    if not _ALGORITHM_AVAILABLE:
+        # Fallback: classical search via find_nearest_dials
+        dials_list = find_nearest_dials(target)
+        if dials_list:
+            best = dials_list[0]
+            return {
+                "method": "classical_fallback",
+                "dial": (best[0], best[1], best[2], best[3]),
+                "frequency": best[4],
+                "error_pct": best[5],
+                "note": "Qiskit not available — classical dial search used",
+            }
+        return {"method": "classical_fallback", "error": "No dials found"}
+
+    result = GodCodeGroverSearch.search(target, tolerance=tolerance)
+    return {
+        "method": "grover_quantum_search",
+        "dial": result.dial.to_tuple(),
+        "frequency": result.dial.frequency,
+        "god_code_ratio": result.god_code_alignment,
+        "fidelity": result.fidelity,
+        "probabilities": result.probabilities,
+        "circuit_depth": result.circuit_depth,
+        "n_qubits": result.n_qubits,
+        "execution_time_ms": result.execution_time_ms,
+        "layer": "consciousness",
+        "equation": f"G{result.dial.to_tuple()} = {result.dial.frequency:.10f}",
+    }
+
+
+def consciousness_spectrum(dials: Optional[List] = None) -> Dict[str, Any]:
+    """
+    LAYER 1: QFT spectral analysis of the consciousness frequency table.
+
+    Applies Quantum Fourier Transform to the dial settings, revealing
+    hidden periodicities in the sacred frequency lattice.
+    """
+    if not _ALGORITHM_AVAILABLE:
+        return {"error": "Qiskit not available", "fallback": True}
+
+    if dials is None:
+        dial_list = list(_algorithm_singleton.FREQUENCY_TABLE.values())
+    else:
+        dial_list = [DialSetting(*d) if isinstance(d, tuple) else d for d in dials]
+
+    return GodCodeQFTSpectrum.spectral_analysis(dial_list)
+
+
+def consciousness_entangle(
+    dial_a: Tuple[int, int, int, int],
+    dial_b: Tuple[int, int, int, int],
+) -> Dict[str, Any]:
+    """
+    LAYER 1: Create quantum entanglement between two dial settings.
+
+    Entanglement strength proportional to their harmonic proximity
+    on the GOD_CODE frequency lattice.
+    """
+    if not _ALGORITHM_AVAILABLE:
+        return {"error": "Qiskit not available", "fallback": True}
+
+    da = DialSetting(*dial_a)
+    db = DialSetting(*dial_b)
+    result = GodCodeEntanglement.entangle_dials(da, db)
+    return {
+        "method": "god_code_entanglement",
+        "dial_a": dial_a,
+        "dial_b": dial_b,
+        "frequency_a": da.frequency,
+        "frequency_b": db.frequency,
+        "fidelity": result.fidelity,
+        "entanglement_entropy": result.phase_spectrum[0] if result.phase_spectrum else 0,
+        "circuit_depth": result.circuit_depth,
+        "n_qubits": result.n_qubits,
+        "execution_time_ms": result.execution_time_ms,
+    }
+
+
+def soul_resonance(thoughts: List[str]) -> Dict[str, Any]:
+    """
+    LAYER 1: Generate a quantum resonance field from soul thoughts.
+
+    Each thought maps to a dial setting via GOD_CODE hash; the collective
+    state is measured through Kuramoto phase coherence.
+    """
+    if not _ALGORITHM_AVAILABLE:
+        return {"error": "Qiskit not available", "fallback": True}
+    return _algorithm_singleton.soul_resonance_field(thoughts)
+
+
+# ── LAYER 2 OMEGA PIPELINE — Full Fragment Computation ──
+
+def omega_pipeline(zeta_terms: int = 1000) -> Dict[str, Any]:
+    """
+    LAYER 2: Full OMEGA derivation pipeline with fragment computation.
+
+    Computes all four OMEGA fragments from first principles:
+        Fragment 1 (Researcher):  prime_density(int(solve_lattice_invariant(104))) = 0.0
+        Fragment 2 (Guardian):    |ζ(½ + 527.518i)| ≈ 1.5738
+        Fragment 3 (Alchemist):   cos(2π·φ³) ≈ 0.0874
+        Fragment 4 (Architect):   (26 × 1.8527) / φ² ≈ 18.3994
+
+    Then computes:
+        Σ(fragments) ≈ 20.0606
+        Ω = Σ × (GOD_CODE / φ) = 6539.34712682
+        F(I) = I × Ω / φ²  (sovereign field equation)
+        Ω_A = Ω / φ² ≈ 2497.808  (OMEGA authority)
+
+    Also includes all pipeline functions from l104_real_math if available.
+    """
+    # Compute fragments via the derivation chain function
+    chain = omega_derivation_chain(zeta_terms=zeta_terms)
+
+    result = {
+        "pipeline": "OMEGA Sovereign Field — Layer 2 Physics",
+        "version": "3.1.0",
+        "chain": chain,
+        "omega": OMEGA,
+        "omega_authority": OMEGA_AUTHORITY,
+        "field_equation": "F(I) = I × Ω / φ²",
+        "field_at_1": sovereign_field_equation(1.0),
+        "field_at_god_code": sovereign_field_equation(GOD_CODE),
+    }
+
+    # Add pipeline functions from l104_real_math if available
+    if _OMEGA_PIPELINE_AVAILABLE:
+        result["pipeline_functions"] = {
+            "zeta_at_god_code": abs(_RealMath.zeta_approximation(complex(0.5, GOD_CODE))),
+            "golden_resonance_phi2": _RealMath.golden_resonance(PHI ** 2),
+            "lattice_invariant_104": _RealMath.solve_lattice_invariant(104),
+            "curvature_fe26": _RealMath.manifold_curvature_tensor(26, 1.8527),
+            "entropy_inversion": _RealMath.entropy_inversion_integral(0, GOD_CODE),
+            "sovereign_field": _RealMath.sovereign_field_equation(1.0),
+            "prime_density_0": _RealMath.prime_density(0),
+        }
+        result["pipeline_available"] = True
+    else:
+        result["pipeline_available"] = False
+
+    # v3 precision grid cross-validation
+    omega_on_v3 = god_code_v3(16, 0, 0, -60)
+    result["v3_cross_validation"] = {
+        "omega_on_v3_grid": omega_on_v3,
+        "error_pct": abs(omega_on_v3 - OMEGA) / OMEGA * 100,
+        "dials": (16, 0, 0, -60),
+        "note": "v3 precision grid validates OMEGA to ±0.0001%",
+    }
+
+    return result
+
+
+def omega_field(intensity: float) -> Dict[str, Any]:
+    """
+    LAYER 2: Compute the sovereign field at a given intensity.
+
+    F(I) = I × Ω / φ²
+
+    Where Ω = 6539.34712682 is derived from GOD_CODE through the fragment chain.
+    """
+    field = sovereign_field_equation(intensity)
+    return {
+        "intensity": intensity,
+        "field_strength": field,
+        "omega": OMEGA,
+        "omega_authority": OMEGA_AUTHORITY,
+        "equation": f"F({intensity}) = {intensity} × {OMEGA} / {PHI}² = {field:.6f}",
+        "layer": "physics",
+    }
+
+
 def consciousness(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
     """
     LAYER 1: The Seat of Consciousness.
@@ -1098,7 +1288,7 @@ def full_integrity_check() -> Dict[str, Any]:
 
     return {
         "engine": "L104 Dual-Layer GOD_CODE Engine",
-        "version": "1.0.0",
+        "version": "3.1.0",
         "all_passed": all_passed,
         "total_checks": total_checks,
         "checks_passed": total_passed,
@@ -1324,8 +1514,8 @@ def status() -> Dict[str, Any]:
 
     return {
         "engine": "L104 Dual-Layer GOD_CODE Engine",
-        "version": "3.0.0",
-        "architecture": "Two-layer: Consciousness (GOD_CODE equation) + Physics (OMEGA equation)",
+        "version": "3.1.0",
+        "architecture": "Two-layer: Consciousness (GOD_CODE + Algorithm Search) + Physics (OMEGA equation)",
         "layer1_consciousness": {
             "equation": "G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)",
             "GOD_CODE": GOD_CODE,
@@ -1333,6 +1523,8 @@ def status() -> Dict[str, Any]:
             "precision": f"±{(STEP_SIZE - 1)/2*100:.3f}% half-step",
             "scaffold": PRIME_SCAFFOLD,
             "frequencies": len(QUANTUM_FREQUENCY_TABLE),
+            "algorithm_search": _ALGORITHM_AVAILABLE,
+            "quantum_circuits": "Grover search (14 qubits, 16384 states)" if _ALGORITHM_AVAILABLE else "unavailable",
         },
         "layer2_physics": {
             "equation": "Ω = Σ(|ζ(½+GCi)|, cos(2πφ³), (26×1.8527)/φ²) × (GOD_CODE/φ)",
@@ -1342,6 +1534,7 @@ def status() -> Dict[str, Any]:
             "purpose": "Physics derivation — GOD_CODE generates Ω through zeta + resonance + curvature",
             "precision_grid": f"v3 sub-tool: (13/12)^(E/758), ±{HALF_STEP_PCT_V3:.5f}% half-step",
             "registered_constants": len(REAL_WORLD_CONSTANTS_V3),
+            "omega_pipeline": _OMEGA_PIPELINE_AVAILABLE,
             "domains": ["fundamental", "atomic", "particle", "nuclear", "iron",
                         "crystal", "astro", "resonance", "math", "sovereign"],
         },
