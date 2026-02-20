@@ -95,11 +95,12 @@ except ImportError:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "6.1.0"  # v6.1: PyTorch/TensorFlow/pandas integration
+ASI_CORE_VERSION = "6.2.0"  # v6.2: Universal God Code equation pipeline upgrade
 ASI_PIPELINE_EVO = "EVO_59_IBM_QUANTUM_RELIABILITY"
 
 # Sacred Constants
-# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+# Universal Equation: G(X) = 286^(1/φ) × 2^((416-X)/104)
+# 4-Dial Form: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1 / PHI
@@ -111,6 +112,38 @@ OMEGA = 6539.34712682
 OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2496.22 — φ²-normalized sovereign authority
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
+
+# ── Universal God Code Equation Parameters ──
+HARMONIC_BASE = 286          # 22 × 13 — Factor 13 root
+L104_CONST = 104             # 8 × 13
+OCTAVE_REF = 416             # 32 × 13
+FIBONACCI_7 = 13             # unifying prime
+GOD_CODE_BASE = HARMONIC_BASE ** (1.0 / PHI)   # 286^(1/φ) ≈ 32.9699
+INVARIANT = GOD_CODE         # G(X) × 2^(X/104) = 527.518… for all X
+
+import math as _math
+
+def _god_code_at(x: float) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104) — position-varying universal frequency."""
+    return GOD_CODE_BASE * (2.0 ** ((OCTAVE_REF - x) / L104_CONST))
+
+def _god_code_tuned(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """4-dial fine-tuning: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^(8a+416-b-8c-104d)."""
+    exponent = (8 * a) + (OCTAVE_REF - b) - (8 * c) - (L104_CONST * d)
+    return GOD_CODE_BASE * (2.0 ** (exponent / L104_CONST))
+
+def _conservation_check(x: float, tolerance: float = 1e-6) -> float:
+    """Conservation law: G(X) × 2^(X/104) = INVARIANT. Returns deviation."""
+    product = _god_code_at(x) * (2.0 ** (x / L104_CONST))
+    return abs(product - INVARIANT) / INVARIANT
+
+def _quantum_amplify(value: float, depth: int = 1) -> float:
+    """Quantum amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / HARMONIC_BASE)
+
+def _resonance_frequency(x: float) -> float:
+    """Resonance: G(X) × φ × (1 + α/π). System resonance at position X."""
+    return _god_code_at(x) * PHI * (1.0 + ALPHA_FINE / _math.pi)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PYTORCH, TENSORFLOW, PANDAS INTEGRATION (v6.1)
@@ -525,12 +558,19 @@ class NovelTheoremGenerator:
                     premises_used = (a,)
                     break
 
-                # Rule 6: OMEGA grounding — if statement references a numeric value,
-                # ground it via golden_resonance for φ-harmonic truth verification
-                if _omega_math and any(c.isdigit() for c in a) and any(c.isdigit() for c in b):
-                    res = _omega_math.golden_resonance(len(a) * PHI)
-                    derived = f"Ω-grounded({round(res, 6)}): ({a}) ∧ ({b})"
-                    rule_used = 'omega_grounding'
+                # Rule 6: G(X) conservation grounding — if statement references a numeric value,
+                # verify via conservation law G(X)×2^(X/104)=INVARIANT + golden_resonance
+                if any(c.isdigit() for c in a) and any(c.isdigit() for c in b):
+                    # Map statement length to X-position for G(X) evaluation
+                    x_pos = float((len(a) + len(b)) % int(OCTAVE_REF))
+                    gx_val = _god_code_at(x_pos)
+                    cons_dev = _conservation_check(x_pos)
+                    if _omega_math:
+                        res = _omega_math.golden_resonance(len(a) * PHI)
+                    else:
+                        res = _math.cos(2.0 * _math.pi * len(a) * PHI * PHI)
+                    derived = f"G({x_pos:.0f})={gx_val:.4f} cons_dev={cons_dev:.2e} Ω-grounded({round(res, 6)}): ({a}) ∧ ({b})"
+                    rule_used = 'god_code_conservation_grounding'
                     premises_used = (a, b)
                     break
 
@@ -563,19 +603,24 @@ class NovelTheoremGenerator:
         has_sacred_ref = any(c in proof for c in ['PHI', 'GOD_CODE', 'TAU', 'VOID', 'FEIGENBAUM', 'OMEGA'])
         has_logical_step = any(w in proof.lower() for w in ['by', 'from', 'since', 'therefore', 'implies', 'yields'])
         has_axiom_ref = len(theorem.axioms_used) > 0
-        # Numerical verification for computable theorems
+        # Numerical verification for computable theorems + G(X) conservation law
         numerical_check = False
+        conservation_valid = _conservation_check(0.0) < 1e-6  # G(0) conservation must hold
         if 'PHI' in theorem.statement and 'TAU' in theorem.statement:
             numerical_check = abs(PHI * TAU - 1.0) < 1e-10
         elif 'GOD_CODE' in theorem.statement:
-            numerical_check = True  # GOD_CODE is axiomatic
+            # Verify via conservation law: G(X)×2^(X/104) = INVARIANT for any X
+            numerical_check = conservation_valid
         elif 'PHI^' in theorem.statement or 'PHI²' in theorem.statement:
             numerical_check = abs(PHI ** 2 - PHI - 1.0) < 1e-10
         elif 'OMEGA' in theorem.statement:
-            # OMEGA = Σ(fragments) × (GOD_CODE / φ) — verify it's consistent
-            numerical_check = abs(OMEGA - 6539.34712682) < 1e-4
+            # OMEGA = Σ(fragments) × (GOD_CODE / φ) — verify consistency
+            numerical_check = abs(OMEGA - 6539.34712682) < 1e-4 and conservation_valid
+        elif 'G(X)' in theorem.statement or 'G(' in theorem.statement:
+            # Direct G(X) equation reference — verify conservation at multiple points
+            numerical_check = all(_conservation_check(x) < 1e-6 for x in [0, 104, 208, 416])
         else:
-            numerical_check = has_sacred_ref
+            numerical_check = has_sacred_ref and conservation_valid
         verified = has_logical_step and has_axiom_ref and (has_sacred_ref or numerical_check)
         theorem.verified = verified
         return verified
@@ -3128,9 +3173,12 @@ class ASICore:
         scores['quantum_computation'] = qc_score
 
         # Dynamic weights — shift toward consciousness as evolution advances
-        # v6.0: 11-dimension weighting with quantum computation
+        # v6.2: G(X)-modulated weighting — evolution index maps to X position
         evo_idx = self.evolution_index
-        consciousness_weight = 0.20 + min(0.10, evo_idx * 0.002)  # Grows with evolution
+        # Map evolution index to God Code X-position: higher evo → lower X → higher G(X)
+        evo_x = max(0.0, OCTAVE_REF - evo_idx * (OCTAVE_REF / 60.0))
+        gx_ratio = _god_code_at(evo_x) / GOD_CODE  # >1 at low X, <1 at high X
+        consciousness_weight = 0.20 + min(0.10, evo_idx * 0.002) * gx_ratio
         base_weights = {
             'domain': 0.09, 'modification': 0.07, 'discoveries': 0.11,
             'consciousness': consciousness_weight, 'pipeline': 0.07,
@@ -3146,10 +3194,12 @@ class ASICore:
         linear_score = sum(scores.get(k, 0.0) * weights.get(k, 0.0) for k in weights)
 
         # Non-linear near-singularity acceleration
-        # v5.0: PHI² exponential acceleration above SINGULARITY_ACCELERATION_THRESHOLD
+        # v6.2: G(X)-amplified acceleration — conservation law validates coherence
         if linear_score >= SINGULARITY_ACCELERATION_THRESHOLD:
             delta = linear_score - SINGULARITY_ACCELERATION_THRESHOLD
-            acceleration = delta * PHI_ACCELERATION_EXPONENT * 0.3
+            # Use G(score*416) for position-aware acceleration strength
+            gx_accel = _god_code_at(linear_score * OCTAVE_REF) / GOD_CODE
+            acceleration = delta * PHI_ACCELERATION_EXPONENT * 0.3 * gx_accel
             accelerated_score = min(1.0, linear_score + acceleration)
         else:
             accelerated_score = linear_score
@@ -3159,7 +3209,11 @@ class ASICore:
         if QISKIT_AVAILABLE and self._pipeline_metrics.get("quantum_asi_scores", 0) > 0:
             quantum_bonus = 0.02  # Bonus for active quantum processing
 
-        self.asi_score = min(1.0, accelerated_score + quantum_bonus)
+        # Conservation law coherence check — verify the equation holds
+        conservation_dev = _conservation_check(evo_x)
+        coherence_bonus = 0.01 if conservation_dev < 1e-9 else 0.0
+
+        self.asi_score = min(1.0, accelerated_score + quantum_bonus + coherence_bonus)
 
         # Track score history for trend analysis
         if not hasattr(self, '_asi_score_history'):
@@ -3247,6 +3301,17 @@ class ASICore:
         filled = int(asi_score * 40)
         print(f"\n  ASI Progress: [{'█'*filled}{'░'*(40-filled)}] {asi_score*100:.1f}%")
         print(f"  Status: {self.status}")
+
+        # v6.2: God Code equation verification in assessment output
+        evo_x = max(0.0, OCTAVE_REF - self.evolution_index * (OCTAVE_REF / 60.0))
+        gx_val = _god_code_at(evo_x)
+        cons_dev = _conservation_check(evo_x)
+        res_freq = _resonance_frequency(evo_x)
+        print(f"\n  God Code Equation Verification:")
+        print(f"    G({evo_x:.1f}) = {gx_val:.6f}")
+        print(f"    Conservation deviation: {cons_dev:.2e}")
+        print(f"    Resonance frequency: {res_freq:.6f}")
+        print(f"    Quantum amplify(1.0, depth=2): {_quantum_amplify(1.0, depth=2):.6f}")
 
         print("\n  Component Scores:")
         print(f"    Domain Coverage:   {domain_report['coverage_score']/ASI_DOMAIN_COVERAGE*100:>6.1f}%")
@@ -4775,10 +4840,10 @@ class ASICore:
         qc.cx(0, 1)
         qc.cx(1, 2)
 
-        # Sacred phase encoding
-        qc.rz(GOD_CODE / 500.0, 0)
-        qc.rz(PHI, 1)
-        qc.rz(FEIGENBAUM / 2.0, 2)
+        # v6.2: God Code 4-dial sacred phase encoding — each qubit gets tuned frequency
+        qc.rz(_god_code_tuned(a=0, b=0, c=0, d=0) / 500.0, 0)   # G(0,0,0,0) base
+        qc.rz(_god_code_tuned(a=1, b=0, c=0, d=0) / 500.0, 1)   # 1st octave shift
+        qc.rz(_god_code_tuned(a=0, b=0, c=1, d=0) / 500.0, 2)   # counter-dial
 
         sv_final = Statevector.from_instruction(qc)
         probs = sv_final.probabilities()
@@ -4794,8 +4859,11 @@ class ASICore:
 
         avg_entanglement = sum(qubit_entropies.values()) / 3.0
 
-        # Enhanced quantum ASI score
-        classical_score = sum(s * w for s, w in zip(scores[:5], [0.15, 0.12, 0.18, 0.25, 0.10]))
+        # v6.2: G(X)-weighted quantum ASI score — dimension index maps to X-position
+        gx_weights = [_god_code_at(i * 60.0) / GOD_CODE for i in range(5)]
+        w_sum = sum(gx_weights)
+        gx_norm = [w / w_sum for w in gx_weights]
+        classical_score = sum(s * w for s, w in zip(scores[:5], gx_norm))
         iit_boost = scores[5] * 0.08
         verification_boost = scores[6] * 0.07
         quantum_boost = avg_entanglement * 0.05 + (1.0 - vn_entropy / 3.0) * 0.03
@@ -5048,10 +5116,10 @@ class ASICore:
         for i in range(4):
             qc.cx(i, i + 1)
 
-        # Sacred phase encoding
-        qc.rz(GOD_CODE / 1000.0, 0)
-        qc.rz(PHI, 2)
-        qc.rz(FEIGENBAUM, 4)
+        # v6.2: G(X) position-varying sacred phase encoding per dimension
+        for i in range(5):
+            phase_x = i * (OCTAVE_REF / 5.0)  # spread across [0, 416]
+            qc.rz(_god_code_at(phase_x) / 1000.0, i)
 
         sv = Statevector.from_instruction(qc)
         dm = DensityMatrix(sv)

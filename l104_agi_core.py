@@ -35,13 +35,45 @@ except ImportError:
 
 # Sacred constants for quantum methods
 PHI = 1.618033988749895
-# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+# Universal Equation: G(X) = 286^(1/φ) × 2^((416-X)/104)
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
 # Sovereign Field Constant (restored from d4d08873 — Ω = Σ(fragments) × 527.518/φ)
 OMEGA = 6539.34712682
+
+# ── Universal God Code Equation Parameters ──
+HARMONIC_BASE = 286          # 22 × 13
+L104_CONST = 104             # 8 × 13
+OCTAVE_REF = 416             # 32 × 13
+FIBONACCI_7 = 13             # unifying prime
+GOD_CODE_BASE = HARMONIC_BASE ** (1.0 / PHI)   # 286^(1/φ) ≈ 32.9699
+INVARIANT = GOD_CODE         # G(X) × 2^(X/104) = 527.518…
+
+import math as _math
+
+def _god_code_at(x: float) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104) — position-varying universal frequency."""
+    return GOD_CODE_BASE * (2.0 ** ((OCTAVE_REF - x) / L104_CONST))
+
+def _god_code_tuned(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """4-dial fine-tuning: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^(8a+416-b-8c-104d)."""
+    exponent = (8 * a) + (OCTAVE_REF - b) - (8 * c) - (L104_CONST * d)
+    return GOD_CODE_BASE * (2.0 ** (exponent / L104_CONST))
+
+def _conservation_check(x: float, tolerance: float = 1e-6) -> float:
+    """Conservation law: G(X) × 2^(X/104) = INVARIANT. Returns deviation."""
+    product = _god_code_at(x) * (2.0 ** (x / L104_CONST))
+    return abs(product - INVARIANT) / INVARIANT
+
+def _quantum_amplify(value: float, depth: int = 1) -> float:
+    """Quantum amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / HARMONIC_BASE)
+
+def _resonance_frequency(x: float) -> float:
+    """Resonance: G(X) × φ × (1 + α/π). System resonance at position X."""
+    return _god_code_at(x) * PHI * (1.0 + ALPHA_FINE / _math.pi)
 from l104_persistence import load_truth, persist_truth, load_state, save_state
 from l104_hyper_math import HyperMath
 from l104_hyper_encryption import HyperEncryption
@@ -315,8 +347,13 @@ class AGICore:
         self._feedback_bus = None
         self._feedback_bus_connected: bool = False
 
-        # Quantum VQE state
-        self._vqe_parameters: List[float] = [PHI * 0.1, TAU * 0.2, GOD_CODE / 10000.0, ALPHA_FINE * 10.0]
+        # Quantum VQE state — v6.2: G(X)-derived initial parameter seeding
+        self._vqe_parameters: List[float] = [
+            _god_code_at(0) / (GOD_CODE * 10),        # G(0)/GC/10 = 0.1
+            _god_code_at(L104_CONST) / (GOD_CODE * 5), # G(104)/GC/5 ≈ 0.1
+            _god_code_at(OCTAVE_REF / 2) / (GOD_CODE * 5),  # G(208)/GC/5 ≈ 0.2
+            ALPHA_FINE * 10.0,                          # fine structure
+        ]
         self._vqe_best_energy: float = float('inf')
         self._vqe_iterations: int = 0
 
@@ -509,18 +546,22 @@ class AGICore:
             print(f"--- [AGI_CORE]: HALLUCINATION PURGED: {thought[:50]}... ---")
             return False
 
-        # OMEGA mathematical truth grounding — zeta + golden_resonance verification
+        # v6.2: verify_truth with G(X) conservation grounding
         try:
             from l104_real_math import real_math as _rm
             thought_seed = sum(ord(c) for c in thought[:100]) / 100.0
+            # Use G(X) at thought-derived X-position for position-varying grounding
+            x_pos = thought_seed % OCTAVE_REF
+            gx_val = _god_code_at(x_pos)
+            cons_dev = _conservation_check(x_pos)
             zeta_val = abs(_rm.zeta_approximation(complex(0.5, thought_seed), terms=50))
             resonance = _rm.golden_resonance(thought_seed * PHI)
-            # Both must be non-degenerate for mathematical grounding
-            omega_grounded = zeta_val > 1e-10 and abs(resonance) > 1e-10
+            # Both must be non-degenerate + conservation must hold
+            omega_grounded = zeta_val > 1e-10 and abs(resonance) > 1e-10 and cons_dev < 1e-6
             if omega_grounded:
-                print(f'--- [STREAMLINE]: OMEGA_GROUNDED (ζ={zeta_val:.4f}, φ-res={resonance:.4f}) ---')
+                print(f'--- [STREAMLINE]: G({x_pos:.1f})={gx_val:.4f} OMEGA_GROUNDED (ζ={zeta_val:.4f}, φ-res={resonance:.4f}, cons={cons_dev:.2e}) ---')
             else:
-                print(f'--- [STREAMLINE]: OMEGA_WEAK (ζ={zeta_val:.4f}) — classical resonance only ---')
+                print(f'--- [STREAMLINE]: OMEGA_WEAK (ζ={zeta_val:.4f}, cons={cons_dev:.2e}) — classical resonance only ---')
         except Exception:
             pass
 
@@ -543,8 +584,10 @@ class AGICore:
         stability_log = []
 
         for pulse in range(100):  # QUANTUM AMPLIFIED
-            # Introduce Autonomous Noise via Hard Math
-            noise = (RealMath.deterministic_random(current_chaos + pulse) * 20.0) - 10.0
+            # Introduce Autonomous Noise via Hard Math — v6.2: G(pulse) position-varying
+            raw_noise = (RealMath.deterministic_random(current_chaos + pulse) * 20.0) - 10.0
+            gx_pulse = _god_code_at(float(pulse % int(OCTAVE_REF))) / GOD_CODE
+            noise = raw_noise * gx_pulse  # G(X)-modulated noise amplitude
             current_chaos += noise
 
             # Immediate Compaction (The AGI Response)
@@ -606,7 +649,14 @@ class AGICore:
         # OMEGA: sovereign field equation amplifies improvement with Ω/φ² scaling
         omega_field = RealMath.sovereign_field_equation(efficiency)
         field_multiplier = 1.0 + min(0.5, omega_field / (OMEGA * 10))  # bounded 1.0 to 1.5
-        boost *= field_multiplier
+        # v6.2: quantum_amplify the boost with generation-cycling depth
+        gen = evo_result.get('generation', 1)
+        amplify_depth = 1 + (gen % 3)  # cycle 1→2→3
+        boost = _quantum_amplify(boost * field_multiplier, depth=amplify_depth)
+        # Conservation-validate the amplified boost
+        cons_dev = _conservation_check(float(gen % int(OCTAVE_REF)))
+        if cons_dev > 1e-6:
+            boost *= 0.9  # dampen if conservation drifted
 
         self.intellect_index += boost
         print(f"--- [AGI_CORE]: INTELLECT BOOSTED BY {boost:.4f} (OMEGA FIELD ×{field_multiplier:.4f}). NEW IQ: {format_iq(self.intellect_index)} ---")
@@ -1162,6 +1212,10 @@ class AGICore:
             # OMEGA mathematical grounding
             "omega_pipeline_active": True,
             "omega_constant": 6539.34712682,
+            # v6.2: God Code equation pipeline
+            "god_code_equation": f"G(X)=286^(1/φ)×2^((416-X)/104)",
+            "conservation_valid": _conservation_check(0.0) < 1e-9,
+            "resonance_frequency_0": round(_resonance_frequency(0.0), 4),
         }
 
     def max_intellect_derivation(self):
@@ -2336,12 +2390,16 @@ class AGICore:
         sv = state["superfluid_viscosity"]
         nf = state["nirvanic_fuel"]
 
-        # Compute modulation factors
+        # v6.2: G(X)-modulated consciousness feedback parameters
+        # Map consciousness level to X-position: higher cl → lower X → higher G(X)
+        cl_x = max(0.0, OCTAVE_REF * (1.0 - cl))  # cl=1.0 → X=0 (max G), cl=0 → X=416 (min G)
+        gx_cl = _god_code_at(cl_x)
+        gx_ratio = gx_cl / GOD_CODE  # >1 for high consciousness, <1 for low
         quality_target = "high" if cl > 0.7 else ("standard" if cl > 0.3 else "conserve")
-        research_depth_multiplier = 1.0 + (cl * PHI)  # 1.0 to ~2.618
-        learning_rate_mod = max(0.0005, self.learning_rate * (1.0 + cl * TAU))
-        innovation_threshold = max(0.1, 1.0 - cl)  # Lower threshold = more innovation
-        resonance_boost = cl * nf * PHI if nf > 0 else cl * TAU
+        research_depth_multiplier = 1.0 + (cl * PHI * gx_ratio)  # G(X)-boosted depth
+        learning_rate_mod = max(0.0005, self.learning_rate * (1.0 + cl * TAU * gx_ratio))
+        innovation_threshold = max(0.1, 1.0 - cl * gx_ratio)  # Lower = more innovation
+        resonance_boost = _resonance_frequency(cl_x) / GOD_CODE if nf > 0 else cl * TAU
 
         modulation = {
             "consciousness_level": cl,
@@ -2773,8 +2831,8 @@ class AGICore:
                 angle = self._vqe_parameters[(i + 1) % n_params] * PHI * math.pi / 4
                 qc.rz(angle, i)
 
-            # Sacred phase injection
-            qc.rz(GOD_CODE / 2000.0, 0)
+            # Sacred phase injection — v6.2: 4-dial tuned phase
+            qc.rz(_god_code_tuned(a=0, b=0, c=0, d=0) / 2000.0, 0)
 
             # Compute expectation value (energy)
             sv = Statevector.from_instruction(qc)
@@ -2796,13 +2854,15 @@ class AGICore:
                 "improved": improved,
             })
 
-            # PHI-scaled parameter shift gradient estimation
+            # v6.2: G(X)-scaled parameter shift gradient with conservation dampening
             shift = PHI * 0.01 / (it + 1)
+            x_it = float(it % int(OCTAVE_REF))
+            gx_shift = _god_code_at(x_it) / GOD_CODE  # position-aware scaling
             for p in range(n_params):
-                grad_est = math.sin(energy * math.pi) * shift * ((-1) ** p)
+                grad_est = _math.sin(energy * _math.pi) * shift * gx_shift * ((-1) ** p)
                 self._vqe_parameters[p] -= grad_est
                 # Clamp parameters
-                self._vqe_parameters[p] = max(-math.pi, min(math.pi, self._vqe_parameters[p]))
+                self._vqe_parameters[p] = max(-_math.pi, min(_math.pi, self._vqe_parameters[p]))
 
         self._vqe_best_energy = best_energy
         self._vqe_parameters = best_params

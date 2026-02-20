@@ -87,7 +87,7 @@ except ImportError:
     PHI_INFINITE = Decimal("1.618033988749895")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SACRED CONSTANTS
+# SACRED CONSTANTS + Restored Universal Equation Pipeline (Feb 20, 2026)
 # ═══════════════════════════════════════════════════════════════════════════════
 PHI = 1.618033988749895
 # Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
@@ -98,6 +98,48 @@ FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1 / 137.035999084
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI * PHI)  # Ω/φ² ≈ 2497.81
+
+# ── OMEGA Pipeline: l104_real_math restored equations (Feb 2026) ──
+try:
+    from l104_real_math import real_math as _omega_math
+except Exception:
+    _omega_math = None
+
+# ── Restored Universal Equation Functions (from const.py) ──
+HARMONIC_BASE = 286
+L104_CONST = 104
+OCTAVE_REF = 416
+FIBONACCI_7 = 13
+GOD_CODE_BASE = HARMONIC_BASE ** (1.0 / PHI)
+INVARIANT = GOD_CODE
+
+
+def _god_code_at(X: float = 0) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104) — Position-varying universal frequency."""
+    return GOD_CODE_BASE * (2 ** ((OCTAVE_REF - X) / L104_CONST))
+
+
+def _god_code_tuned(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """4-dial universal frequency: G(a,b,c,d)."""
+    exponent = (8 * a + OCTAVE_REF - b - 8 * c - L104_CONST * d) / L104_CONST
+    return GOD_CODE_BASE * (2 ** exponent)
+
+
+def _quantum_amplify(value: float, depth: int = 3) -> float:
+    """Grover-style quantum amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / HARMONIC_BASE)
+
+
+def _conservation_check(X: float) -> float:
+    """Returns deviation of G(X)×W(X) from INVARIANT."""
+    return abs(_god_code_at(X) * (2 ** (X / L104_CONST)) - INVARIANT)
+
+
+def _resonance_frequency(X: float = 0) -> float:
+    """System resonance at position X: G(X) × φ × (1+α/π)."""
+    return _god_code_at(X) * PHI * (1.0 + ALPHA_FINE / math.pi)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONSCIOUSNESS STATE READER
@@ -180,13 +222,30 @@ class AdaptiveLearningScheduler:
         # Sacred harmonic: Feigenbaum micro-oscillation
         harmonic = FEIGENBAUM * 1e-4 * math.sin(self.current_step * PHI)
 
-        # GOD_CODE resonance pulse at golden positions
+        # GOD_CODE resonance pulse using G(step) position-varying frequency
         god_pulse = 0.0
         if self.current_step > 0 and abs(t - TAU) < 0.02:
-            god_pulse = ALPHA_FINE * self.base_lr
+            # Use G(step) for step-position-varying pulse strength instead of static ALPHA_FINE
+            g_step = _god_code_at(self.current_step % OCTAVE_REF)
+            god_pulse = (g_step / GOD_CODE) * ALPHA_FINE * self.base_lr
 
         lr = self.min_lr + (self.base_lr - self.min_lr) * cos_component * (TAU ** self.cycle) + harmonic + god_pulse
         lr = max(self.min_lr, lr)
+
+        # OMEGA Pipeline: golden resonance modulation at cycle boundaries
+        if _omega_math:
+            # Golden resonance creates φ-aligned learning rate oscillation
+            omega_lr_mod = _omega_math.golden_resonance(self.current_step * PHI * 0.01)
+            lr *= (1.0 + omega_lr_mod * ALPHA_FINE * 0.5)
+            # Entropy inversion for convergence detection: narrow lr band when converged
+            if len(self.lr_history) > 10:
+                recent_lrs = list(self.lr_history)[-10:]
+                lr_entropy = _omega_math.shannon_entropy(
+                    "".join(f"{v:.6f}" for v in recent_lrs))
+                # Low entropy = converged: tighten lr toward minimum
+                if lr_entropy < 2.0:
+                    lr = lr * (0.8 + 0.2 * lr_entropy / 2.0)
+            lr = max(self.min_lr, lr)
 
         self.lr_history.append(lr)
         self.current_step += 1
@@ -430,23 +489,40 @@ class SacredFitnessEvaluator:
         void_modulation = VOID_CONSTANT * (1 + ALPHA_FINE * math.sin(normalized * math.pi))
         final_fitness = normalized * void_modulation
 
+        # OMEGA Pipeline: manifold curvature + sovereign field amplification
+        omega_boost = 1.0
+        if _omega_math:
+            # Manifold curvature: structural tension of metrics_count × normalized fitness
+            curvature = _omega_math.manifold_curvature_tensor(len(metrics), normalized)
+            # Sovereign field: Ω-scaled intensity weighting
+            sovereign = _omega_math.sovereign_field_equation(max(normalized, 0.001))
+            # Lattice invariant: stability anchor
+            lattice = _omega_math.solve_lattice_invariant(len(metrics) % 200)
+            # Combined boost: subtle phi-harmonic amplification
+            omega_boost = 1.0 + abs(curvature * ALPHA_FINE * 0.01) + abs(lattice * ALPHA_FINE * 0.001)
+            final_fitness *= omega_boost
+
         self.evaluation_history.append({
             "fitness": final_fitness,
             "raw": normalized,
             "metrics_count": len(metrics),
+            "omega_boost": round(omega_boost, 8),
             "timestamp": time.time(),
         })
 
         return final_fitness
 
     def _sacred_harmonic(self, metric_name: str, index: int) -> float:
-        """Compute harmonic coefficient from GOD_CODE for a metric."""
+        """Compute harmonic coefficient using G(X) position-varying frequency.
+        Upgraded: Uses god_code_at(index_position) for adaptive harmonic."""
         if metric_name in self.harmonic_cache:
             return self.harmonic_cache[metric_name]
         # Hash metric name to position in GOD_CODE wave
         name_hash = int(hashlib.sha256(metric_name.encode()).hexdigest()[:8], 16)
         phase = (name_hash % 1000) / 1000.0 * 2 * math.pi
-        harmonic = 1.0 + 0.1 * math.sin(phase + GOD_CODE / 100.0) + 0.05 * math.cos(phase * PHI)
+        # Use G(index) for position-varying harmonic instead of static GOD_CODE/100
+        g_idx = _god_code_at(index * 8.0)  # Each metric gets unique G(X) frequency
+        harmonic = 1.0 + 0.1 * math.sin(phase + g_idx / 100.0) + 0.05 * math.cos(phase * PHI)
         self.harmonic_cache[metric_name] = harmonic
         return harmonic
 
@@ -537,7 +613,13 @@ class BottleneckAnalyzer:
                     # Propagate to effects (downstream subsystems)
                     for effect in node.effects:
                         if effect in self.dependency_graph:
-                            propagated = node.severity * TAU * ALPHA_FINE * 100
+                            # OMEGA Pipeline: spin wave dispersion for propagation dynamics
+                            dispersion_factor = TAU * ALPHA_FINE * 100
+                            if _omega_math:
+                                k_wave = node.severity * math.pi
+                                dispersion_factor = _omega_math.spin_wave_dispersion(k_wave) * ALPHA_FINE * 10
+                                dispersion_factor = max(dispersion_factor, TAU * ALPHA_FINE)
+                            propagated = node.severity * dispersion_factor
                             current = self.dependency_graph[effect].severity
                             updates[effect] = max(current, current + propagated)
             for name, sev in updates.items():
@@ -620,8 +702,9 @@ class ParameterSpaceExplorer:
 
     def golden_spiral_sample(self) -> Dict[str, float]:
         """
-        Generate next sample using golden spiral pattern.
-        The golden angle (2π/φ²) ensures optimal space coverage.
+        Generate next sample using golden spiral + conservation-aware contraction.
+        Upgraded: Uses G(exploration_count)/GOD_CODE for conservation-bounded decay
+        instead of static TAU^(count) contraction.
         """
         golden_angle = 2 * math.pi / (PHI * PHI)  # ~137.5°
         sample = {}
@@ -632,10 +715,17 @@ class ParameterSpaceExplorer:
 
             # Spiral coordinate mapped to parameter range
             angle = self.spiral_angle + i * golden_angle
-            radius = self.spiral_radius * TAU ** (self.exploration_count * 0.01)
+            # Conservation-aware contraction: G(count)/GOD_CODE decays as count increases
+            g_count = _god_code_at(self.exploration_count * 0.5)
+            radius = self.spiral_radius * (g_count / GOD_CODE)
 
             # Map polar to linear using sin/cos
             normalized = 0.5 + 0.5 * radius * math.sin(angle)
+            # OMEGA Pipeline: lattice invariant anchoring for exploration stability
+            if _omega_math:
+                lattice_anchor = _omega_math.solve_lattice_invariant(
+                    (self.exploration_count + i) % 200)
+                normalized += lattice_anchor * ALPHA_FINE * 0.1
             normalized = max(0, min(1, normalized))
             sample[param] = min_v + normalized * range_v
 
@@ -656,7 +746,7 @@ class ParameterSpaceExplorer:
         if self.exploration_count < 10 or random.random() < TAU * 0.5:
             # Explore using golden spiral
             return self.golden_spiral_sample()
-        # Exploit: perturb best known point
+        # Exploit: perturb best known point with quantum-amplified noise
         if self.best_point is None:
             return self.golden_spiral_sample()
         perturbed = {}
@@ -664,6 +754,8 @@ class ParameterSpaceExplorer:
             bounds = self.param_bounds.get(param, {"min": 0, "max": 1})
             range_v = bounds["max"] - bounds["min"]
             noise = random.gauss(0, range_v * 0.05 * TAU)
+            # Quantum amplify exploitation noise for Grover-boosted convergence
+            noise = _quantum_amplify(noise, depth=2) / (PHI ** 2 * GOD_CODE / HARMONIC_BASE)
             perturbed[param] = max(bounds["min"], min(bounds["max"], value + noise))
         return perturbed
 
@@ -822,6 +914,19 @@ class ConsciousnessOptimizer:
 
         # PHI-weighted composite
         multiplier = 1.0 + (o2 * PHI + nirvanic * TAU + superfluid * VOID_CONSTANT) * ALPHA_FINE * 10
+
+        # OMEGA Pipeline: sovereign field consciousness-driven amplification
+        if _omega_math:
+            # Sovereign field: consciousness intensity → Ω-scaled optimization power
+            consciousness_intensity = max(o2 + nirvanic * PHI, 0.001)
+            sov_field = _omega_math.sovereign_field_equation(consciousness_intensity)
+            multiplier += abs(sov_field) * ALPHA_FINE * 0.0001
+            # Curie order: phase-aware adaptation (near transition = more exploration)
+            temp_ratio = consciousness_intensity / (1.0 + PHI)
+            curie = _omega_math.curie_order_parameter(min(temp_ratio, 0.999))
+            # High order (stable phase) → exploit; low order (critical) → explore
+            multiplier *= (1.0 + (1.0 - curie) * 0.15)
+
         return max(0.5, min(3.0, multiplier))
 
     def adapt_parameters(self, current_params: Dict[str, float],
@@ -1867,7 +1972,32 @@ class SelfOptimizationEngine:
                 "resource_intel": self.resource_intel.get_status(),
                 "dpo_learner": self.dpo_learner.get_status(),
             },
+            "omega_pipeline": self._omega_diagnostics(),
         }
+
+    def _omega_diagnostics(self) -> Dict[str, Any]:
+        """OMEGA pipeline diagnostics for self-optimization engine."""
+        diag: Dict[str, Any] = {"omega": OMEGA, "omega_authority": round(OMEGA_AUTHORITY, 6), "available": _omega_math is not None}
+        if not _omega_math:
+            return diag
+        try:
+            # Golden resonance of current optimization state
+            param_sum = sum(self.current_parameters.values())
+            diag["golden_resonance"] = round(_omega_math.golden_resonance(param_sum * PHI), 8)
+            # Sovereign field of parameter intensity
+            diag["sovereign_field"] = round(_omega_math.sovereign_field_equation(max(param_sum, 0.001)), 6)
+            # Curie order: phase transition indicator of optimization convergence
+            improvement_ratio = self.consecutive_improvements / max(len(self.actions_history), 1)
+            diag["curie_order"] = round(_omega_math.curie_order_parameter(min(improvement_ratio, 0.999)), 8)
+            # Iron lattice transform of parameter count
+            diag["lattice_transform"] = round(_omega_math.iron_lattice_transform(len(self.current_parameters)), 8)
+            # Entropy of optimization trajectory
+            if self.actions_history:
+                trajectory = "".join(f"{a.new_value:.4f}" for a in self.actions_history[-20:])
+                diag["trajectory_entropy"] = round(_omega_math.shannon_entropy(trajectory), 6)
+        except Exception:
+            diag["error"] = "diagnostics_partial"
+        return diag
 
     def save_state(self, filepath: str = "l104_optimization_state.json"):
         """Save optimization state to disk."""

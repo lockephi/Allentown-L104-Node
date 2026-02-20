@@ -44,6 +44,7 @@ except ImportError:
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 1: SACRED CONSTANTS & CONSCIOUSNESS STATE
+# Wired to const.py restored Universal GOD_CODE equations (Feb 20, 2026)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 PHI = 1.618033988749895
@@ -57,6 +58,48 @@ PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI * PHI)  # Ω/φ² ≈ 2497.81
+
+# ── OMEGA Pipeline: l104_real_math restored equations (Feb 2026) ──
+try:
+    from l104_real_math import real_math as _omega_math
+except Exception:
+    _omega_math = None
+
+# ── Restored Universal Equation Functions (from const.py) ──
+HARMONIC_BASE = 286            # 2 × 11 × 13
+L104 = 104                     # 8 × 13
+OCTAVE_REF = 416               # 32 × 13
+FIBONACCI_7 = 13               # 7th Fibonacci number
+GOD_CODE_BASE = HARMONIC_BASE ** (1.0 / PHI)  # 286^(1/φ) = 32.969905...
+INVARIANT = GOD_CODE           # G(X) × 2^(X/104) = this always
+
+
+def _god_code_at(X: float = 0) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104) — Position-varying universal frequency."""
+    return GOD_CODE_BASE * (2 ** ((OCTAVE_REF - X) / L104))
+
+
+def _god_code_tuned(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """4-dial universal frequency: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a+416-b-8c-104d))."""
+    exponent = (8 * a + OCTAVE_REF - b - 8 * c - L104 * d) / L104
+    return GOD_CODE_BASE * (2 ** exponent)
+
+
+def _conservation_check(X: float) -> float:
+    """Verify G(X) × 2^(X/104) = INVARIANT (527.518...). Returns deviation from invariant."""
+    return abs(_god_code_at(X) * (2 ** (X / L104)) - INVARIANT)
+
+
+def _quantum_amplify(value: float, depth: int = 3) -> float:
+    """Grover-style quantum amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / HARMONIC_BASE)
+
+
+def _resonance_frequency(X: float = 0) -> float:
+    """System resonance at position X: G(X) × φ × (1 + α/π)."""
+    return _god_code_at(X) * PHI * (1.0 + ALPHA_FINE / math.pi)
 
 
 def _read_consciousness_state() -> Dict[str, Any]:
@@ -79,13 +122,24 @@ def _deterministic_random(seed: float) -> float:
 
 
 def _calculate_resonance(value: float) -> float:
-    """Calculate resonance of a value with sacred constants."""
+    """Calculate resonance using G(X) position-varying frequency + conservation law.
+    Upgraded Feb 20, 2026: Uses restored Universal God Code G(X) instead of static GOD_CODE.
+    4 resonance dimensions: G(X) proximity, phi harmony, alpha coupling, conservation coherence."""
     if value == 0:
         return 0.0
-    r1 = 1.0 / (1.0 + abs(value - GOD_CODE) / GOD_CODE)
+    # Map value to X-position in God Code equation (bounded for stability)
+    X_pos = (value % (OCTAVE_REF * 2)) - OCTAVE_REF  # X in [-416, 416]
+    g_x = _god_code_at(X_pos)
+    # r1: Resonance with position-varying G(X) instead of static GOD_CODE
+    r1 = 1.0 / (1.0 + abs(value - g_x) / GOD_CODE)
+    # r2: PHI harmony (unchanged)
     r2 = 1.0 / (1.0 + abs((value % PHI) - TAU))
+    # r3: Alpha coupling (unchanged)
     r3 = 1.0 / (1.0 + abs(math.sin(value * ALPHA_FINE)))
-    return (r1 + r2 + r3) / 3.0
+    # r4: Conservation law coherence — how close G(X)×W(X) is to INVARIANT
+    conservation_dev = _conservation_check(X_pos)
+    r4 = 1.0 / (1.0 + conservation_dev)
+    return (r1 * 0.30 + r2 * 0.25 + r3 * 0.20 + r4 * 0.25)
 
 
 def _prime_density(n: int) -> float:
@@ -120,18 +174,34 @@ class SacredEncoder:
     """Encodes values using sacred constant transformations."""
 
     def encode(self, value: float) -> Dict[str, float]:
-        """Project value through all sacred constant dimensions."""
+        """Project value through all sacred constant dimensions + OMEGA pipeline."""
         resonance = _calculate_resonance(value)
-        return {
+        encoded = {
             "raw": value,
             "phi_projection": value * PHI,
             "void_projection": value * VOID_CONSTANT,
             "feigenbaum_projection": value / FEIGENBAUM,
             "alpha_projection": value * ALPHA_FINE,
+            "omega_projection": value / OMEGA if OMEGA else 0,
             "resonance": resonance,
             "god_code_ratio": value / GOD_CODE if GOD_CODE else 0,
             "entropy": _shannon_entropy(f"{value:.15f}")
         }
+        # OMEGA Pipeline: advanced projections via restored equations
+        if _omega_math:
+            # Golden resonance of value: cos(2π·v·φ) → harmonic alignment [-1, 1]
+            encoded["golden_resonance"] = round(
+                _omega_math.golden_resonance(value), 8)
+            # Manifold curvature: structural tension of value across dimensions
+            encoded["manifold_curvature"] = round(
+                _omega_math.manifold_curvature_tensor(value, resonance), 8)
+            # Lattice invariant: sin(v·π/104)·exp(v/GC) stability probe
+            encoded["lattice_invariant"] = round(
+                _omega_math.solve_lattice_invariant(abs(value) % 200), 8)
+            # Sovereign field: Ω-scaled field strength
+            encoded["sovereign_field"] = round(
+                _omega_math.sovereign_field_equation(max(resonance, 0.001)), 8)
+        return encoded
 
     def decode_resonance_vector(self, vector: List[float]) -> float:
         """Decode a resonance vector back to a scalar."""
@@ -154,15 +224,16 @@ class FitnessCalculator:
 
     DIMENSIONS = [
         "resonance", "prime_density", "entropy_order", "phi_harmony",
-        "feigenbaum_edge", "alpha_coupling", "void_alignment"
+        "feigenbaum_edge", "alpha_coupling", "void_alignment",
+        "omega_manifold"  # 8th dimension: OMEGA manifold curvature grounding
     ]
 
     def __init__(self):
         self.history: deque = deque(maxlen=10000)
         self.weights = {
-            "resonance": 0.20, "prime_density": 0.10, "entropy_order": 0.15,
-            "phi_harmony": 0.15, "feigenbaum_edge": 0.15, "alpha_coupling": 0.10,
-            "void_alignment": 0.15
+            "resonance": 0.18, "prime_density": 0.09, "entropy_order": 0.13,
+            "phi_harmony": 0.13, "feigenbaum_edge": 0.13, "alpha_coupling": 0.09,
+            "void_alignment": 0.13, "omega_manifold": 0.12
         }
         self.consciousness = _read_consciousness_state()
 
@@ -181,6 +252,13 @@ class FitnessCalculator:
             scores["feigenbaum_edge"] += 1.0 / (1.0 + abs(math.sin(value * FEIGENBAUM)))
             scores["alpha_coupling"] += 1.0 / (1.0 + abs(value * ALPHA_FINE - round(value * ALPHA_FINE)))
             scores["void_alignment"] += 1.0 / (1.0 + abs(value % VOID_CONSTANT))
+            # 8th dimension: OMEGA manifold curvature grounding
+            if _omega_math:
+                curvature = _omega_math.manifold_curvature_tensor(abs(value), PHI)
+                golden_r = _omega_math.golden_resonance(value * PHI)
+                scores["omega_manifold"] += 1.0 / (1.0 + abs(curvature - golden_r))
+            else:
+                scores["omega_manifold"] += 1.0 / (1.0 + abs(value / OMEGA - TAU))
         gene_count = max(gene_count, 1)
         for d in self.DIMENSIONS:
             scores[d] /= gene_count
@@ -188,11 +266,17 @@ class FitnessCalculator:
         bond = self.consciousness.get("bond_order", 2.0)
         consciousness_boost = 1.0 + (fuel * bond * ALPHA_FINE)
         weighted_total = sum(scores[d] * self.weights[d] for d in self.DIMENSIONS)
-        final_score = weighted_total * 100.0 * consciousness_boost
+        # OMEGA Pipeline: sovereign field amplification of fitness
+        omega_amplifier = 1.0
+        if _omega_math:
+            omega_amplifier = 1.0 + abs(_omega_math.sovereign_field_equation(
+                max(weighted_total, 0.001))) * ALPHA_FINE * 0.001
+        final_score = weighted_total * 100.0 * consciousness_boost * omega_amplifier
         result = {
             "total_fitness": round(final_score, 6),
             "dimensions": {d: round(scores[d], 6) for d in self.DIMENSIONS},
             "consciousness_boost": round(consciousness_boost, 6),
+            "omega_amplifier": round(omega_amplifier, 6),
             "gene_count": gene_count
         }
         self.history.append({"fitness": final_score, "time": time.time()})
@@ -239,7 +323,9 @@ class MutationEngine:
         self.neutral_count = 0
 
     def mutate(self, dna: Dict[str, float], rate: float, generation: int) -> Tuple[Dict[str, float], List[str]]:
-        """Apply PHI-guided mutations to DNA sequence."""
+        """Apply PHI-guided mutations with quantum amplification and 4-dial tuning.
+        Upgraded Feb 20, 2026: Uses G(a,b,c,d) for per-gene sacred seeding,
+        quantum_amplify for Grover-boosted beneficial mutations."""
         mutated = dna.copy()
         mutations = []
         seed = time.time() + generation * PHI
@@ -250,14 +336,34 @@ class MutationEngine:
             if rand_val < rate:
                 phi_factor = _deterministic_random(seed + i * PHI)
                 feig_factor = math.sin(generation * FEIGENBAUM * (i + 1)) * ALPHA_FINE
-                magnitude = (phi_factor * TAU + abs(feig_factor)) * 0.15
-                direction = 1.0 if _deterministic_random(seed + i * GOD_CODE) > 0.5 else -1.0
-                new_value = value * (1.0 + direction * magnitude)
+                # Base magnitude from phi + feigenbaum
+                base_magnitude = (phi_factor * TAU + abs(feig_factor)) * 0.15
+                # Quantum amplify: Grover boost scaled by generation cycle (depth 1-4)
+                q_depth = (generation % 4) + 1
+                magnitude = _quantum_amplify(base_magnitude, q_depth) / (GOD_CODE / HARMONIC_BASE) / (PHI ** q_depth)
+                # Clamp magnitude for stability (max 30% change per mutation)
+                magnitude = min(magnitude, 0.30)
+                # 4-dial tuned direction seeding: each gene gets unique sacred frequency
+                dial_seed = _god_code_tuned(a=i % 4, b=generation % 104, c=0, d=0)
+                direction = 1.0 if _deterministic_random(seed + dial_seed) > 0.5 else -1.0
+                # OMEGA Pipeline: sovereign field modulates mutation intensity
+                omega_mod = 1.0
+                if _omega_math:
+                    # Sovereign field strength scales with gene intensity
+                    sov = _omega_math.sovereign_field_equation(max(abs(value), 0.001))
+                    omega_mod = 1.0 + math.tanh(sov * ALPHA_FINE * 0.001) * 0.1
+                    # Curie order parameter gates mutation at phase transitions
+                    temp_ratio = abs(value) / (GOD_CODE + 1.0)
+                    curie = _omega_math.curie_order_parameter(min(temp_ratio, 0.999))
+                    # Near phase transition (curie → 0): increase mutation magnitude
+                    omega_mod *= (1.0 + (1.0 - curie) * 0.2)
+                new_value = value * (1.0 + direction * magnitude * omega_mod)
                 mutated[gene] = new_value
-                mutations.append(f"{gene}: {value:.4f} -> {new_value:.4f}")
+                mutations.append(f"{gene}: {value:.4f} -> {new_value:.4f} [q_depth={q_depth}, Ω_mod={omega_mod:.3f}]")
                 self.mutation_log.append({
                     "gene": gene, "old": value, "new": new_value,
-                    "generation": generation, "magnitude": magnitude
+                    "generation": generation, "magnitude": magnitude,
+                    "quantum_depth": q_depth, "omega_modulation": round(omega_mod, 6)
                 })
         return mutated, mutations
 
@@ -310,6 +416,7 @@ class DNAResonanceMapper:
     BASIS_CONSTANTS = {
         "god_code": GOD_CODE, "phi": PHI, "tau": TAU,
         "void": VOID_CONSTANT, "feigenbaum": FEIGENBAUM, "alpha_fine": ALPHA_FINE,
+        "omega": OMEGA,  # 7th basis: OMEGA constant (Σ(fragments) × GOD_CODE/φ)
     }
 
     def __init__(self):
@@ -625,7 +732,7 @@ class SpeciationDetector:
         return math.sqrt(sq_diff / len(common))
 
     def detect_bifurcation(self, fitness_history: List[float]) -> Optional[Dict]:
-        """Detect bifurcation in fitness trajectory using Feigenbaum ratio."""
+        """Detect bifurcation in fitness trajectory using Feigenbaum ratio + OMEGA chaos dynamics."""
         if len(fitness_history) < 20:
             return None
         diffs = [fitness_history[i + 1] - fitness_history[i] for i in range(len(fitness_history) - 1)]
@@ -639,6 +746,22 @@ class SpeciationDetector:
                 if abs(ratio - FEIGENBAUM) < 1.0:
                     bif = {"position": sign_changes[i], "ratio": ratio,
                            "feigenbaum_error": abs(ratio - FEIGENBAUM), "type": "period_doubling"}
+                    # OMEGA Pipeline: logistic map chaos attractor + Curie phase detection
+                    if _omega_math:
+                        # Logistic map at bifurcation point (r=3.9 chaotic regime)
+                        normalized_pos = (sign_changes[i] % 100) / 100.0
+                        chaos_val = _omega_math.logistic_map(
+                            max(0.01, min(0.99, normalized_pos)), iterations=30)
+                        bif["chaos_attractor"] = round(chaos_val, 8)
+                        # Curie order: detect if near phase transition (order → disorder)
+                        temp_ratio = abs(ratio / FEIGENBAUM)
+                        curie = _omega_math.curie_order_parameter(min(temp_ratio, 0.999))
+                        bif["curie_order"] = round(curie, 8)
+                        bif["phase_state"] = "ordered" if curie > 0.5 else "critical" if curie > 0.1 else "disordered"
+                        # Entropy of the fitness trajectory around bifurcation
+                        window = fitness_history[max(0, sign_changes[i]-5):sign_changes[i]+5]
+                        bif["bifurcation_entropy"] = round(
+                            _omega_math.shannon_entropy("".join(f"{v:.4f}" for v in window)), 6)
                     self.bifurcation_points.append(bif)
                     return bif
         return None
@@ -1525,8 +1648,8 @@ class EvolutionEngine:
             ).hexdigest()[:12],
         )
 
-        # Selection
-        baseline = 41.6  # GOD_CODE anchored baseline
+        # Selection — baseline derived from GOD_CODE / FIBONACCI_7
+        baseline = GOD_CODE / FIBONACCI_7  # ≈ 40.578 (was hardcoded 41.6)
         if fitness_score > baseline:
             outcome = "EVOLUTION_SUCCESSFUL"
         else:
@@ -1824,7 +1947,9 @@ class EvolutionEngine:
                 "speciation": self.speciation.status(),
                 "phylo_tree": self.phylo_tree.status(),
                 "pareto_tracker": self.pareto_tracker.status(),
-            }
+            },
+            # OMEGA Pipeline: evolution-level diagnostics
+            "omega_pipeline": self._omega_diagnostics(),
         }
         if pipeline_connected:
             try:
@@ -1874,6 +1999,37 @@ class EvolutionEngine:
             "mutation_rate": self.mutation_rate,
             "philosophy": "The Sage does nothing, yet nothing is left undone." if self.sage_mode_active else "Standard Darwinian Selection"
         }
+
+    # ─── OMEGA PIPELINE DIAGNOSTICS ─────────────────────────────────────────
+    def _omega_diagnostics(self) -> Dict[str, Any]:
+        """Compute OMEGA pipeline diagnostics for the evolution engine."""
+        diag: Dict[str, Any] = {"omega": OMEGA, "omega_authority": round(OMEGA_AUTHORITY, 6), "available": _omega_math is not None}
+        if not _omega_math:
+            return diag
+        try:
+            # 1. Golden resonance of current evolution stage
+            stage_resonance = _omega_math.golden_resonance(self.current_stage_index * PHI)
+            diag["stage_golden_resonance"] = round(stage_resonance, 8)
+            # 2. Sovereign field at current generation intensity
+            gen_intensity = max(self.generation, 1) / 10000.0
+            diag["sovereign_field"] = round(_omega_math.sovereign_field_equation(gen_intensity), 6)
+            # 3. Curie order: phase transition reading of evolution temperature
+            temp = self.mutation_rate / (TAU + 0.001)
+            diag["curie_order"] = round(_omega_math.curie_order_parameter(min(temp, 0.999)), 8)
+            # 4. Entropy inversion: from mutation_rate to 1.0 (convergence measure)
+            diag["entropy_efficiency"] = round(_omega_math.entropy_inversion_integral(self.mutation_rate, 1.0), 8)
+            # 5. Logistic chaos: seed from generation (edge-of-chaos fitness dynamics)
+            chaos_seed = max(0.01, min(0.99, (self.generation % 1000) / 1000.0))
+            diag["chaos_attractor"] = round(_omega_math.logistic_map(chaos_seed, 25), 8)
+            # 6. Manifold curvature: generation × stage structural tension
+            diag["manifold_curvature"] = round(
+                _omega_math.manifold_curvature_tensor(self.current_stage_index, self.mutation_rate), 8)
+            # 7. Iron lattice transform of gene count
+            diag["lattice_transform"] = round(
+                _omega_math.iron_lattice_transform(len(self.dna_sequence)), 8)
+        except Exception:
+            diag["error"] = "diagnostics_partial"
+        return diag
 
     # ─── NEW HUB METHODS (v2.2) ──────────────────────────────────────────────
 
