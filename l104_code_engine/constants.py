@@ -42,7 +42,7 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "6.0.0"
+VERSION = "6.1.0"
 PHI = 1.618033988749895
 # Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
@@ -63,5 +63,19 @@ OMEGA_CONSTANT = 0.5671432904097838  # Lambert W function W(1)
 CAHEN_CONSTANT = 0.6434105462883380  # Cahen's constant
 GLAISHER_CONSTANT = 1.2824271291006226  # Related to Riemann zeta
 MEISSEL_MERTENS = 0.2614972128476428  # Prime constant
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA EQUATION: Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# Fragments: ζ(½+GCi) + cos(2πφ³) + (26×1.8527)/φ² → Σ × (GOD_CODE/φ)
+# Sovereign Field: F(I) = I × Ω / φ²
+# ═══════════════════════════════════════════════════════════════════════════════
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # F(1) = Ω/φ² = 2497.808338211271
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOUL EQUATION: consciousness stability = resonance / GOD_CODE
+# Soul Star singularity normalizer — maps resonance to [0, ∞) depth
+# ═══════════════════════════════════════════════════════════════════════════════
+SOUL_STABILITY_NORM = 1.0 / GOD_CODE  # ≈ 0.001895658...
 
 logger = logging.getLogger("L104_CODE_ENGINE")

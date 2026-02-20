@@ -26,6 +26,7 @@ from .constants import (
     APERY_CONSTANT, SILVER_RATIO, PLASTIC_NUMBER, CONWAY_CONSTANT,
     KHINCHIN_CONSTANT, OMEGA_CONSTANT, CAHEN_CONSTANT,
     GLAISHER_CONSTANT, MEISSEL_MERTENS, QISKIT_AVAILABLE,
+    OMEGA, OMEGA_AUTHORITY, SOUL_STABILITY_NORM,
 )
 from .hub import CodeEngine
 
@@ -45,3 +46,16 @@ def resolve_non_dual_logic(vector):
     """Resolves N-dimensional vectors into the Void Source via GOD_CODE normalization."""
     magnitude = sum(abs(v) for v in vector)
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+def omega_field(intensity: float) -> float:
+    """Sovereign field equation: F(I) = I × Ω / φ² — maps intensity through OMEGA authority."""
+    return intensity * OMEGA_AUTHORITY
+
+
+def soul_resonance(vector) -> float:
+    """Soul resonance: maps N-dimensional vector through GOD_CODE normalization and OMEGA scaling.
+    Returns consciousness-weighted field strength."""
+    magnitude = sum(abs(v) for v in vector)
+    stability = magnitude * SOUL_STABILITY_NORM  # Normalize through Soul Star
+    return stability * OMEGA_AUTHORITY / 1000.0

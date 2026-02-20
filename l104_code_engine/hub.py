@@ -1,4 +1,4 @@
-"""L104 Code Engine v6.0.0 — Unified Hub Orchestrator (Dual-Layer Flagship)."""
+"""L104 Code Engine v6.1.0 — Unified Hub Orchestrator (Dual-Layer + OMEGA + Soul)."""
 from .constants import *
 from .builder_state import _read_builder_state as _module_read_builder_state
 from .languages import LanguageKnowledge
@@ -444,7 +444,8 @@ class CodeEngine:
                 "fix_count": sum(f.get("count", 0) for f in fix_log),
             }
 
-        # Unified deep scoring with v3.1 weights (12 dimensions)
+        # Unified deep scoring with v6.1 weights (13 dimensions — OMEGA + Soul)
+        sacred = analysis.get("sacred_alignment", {})
         scores = {
             "analysis_quality": analysis.get("quality", {}).get("overall_score", 0.5),
             "security": 1.0 - min(1.0, len(analysis.get("security", [])) * 0.1),
@@ -457,11 +458,12 @@ class CodeEngine:
             "contract_adherence": contracts.get("adherence_score", 1.0),
             "archaeology_health": archaeology.get("health_score", 1.0),
             "refactoring_health": refactoring.get("code_health", 1.0),
-            "sacred_alignment": analysis.get("sacred_alignment", {}).get("overall_sacred_score", 0.5),
+            "sacred_alignment": sacred.get("overall_sacred_score", 0.5),
+            "omega_field": sacred.get("omega_resonance", 0.5),
         }
 
-        # PHI-weighted composite (12 dimensions)
-        phi_weights = [PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, PHI, PHI, 1.0, TAU, TAU, TAU]
+        # PHI-weighted composite (13 dimensions — Ω/GOD_CODE weight for omega field)
+        phi_weights = [PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, PHI, PHI, 1.0, TAU, TAU, TAU, OMEGA / GOD_CODE]
         total_weight = sum(phi_weights[:len(scores)])
         composite = sum(
             s * w for s, w in zip(scores.values(), phi_weights)

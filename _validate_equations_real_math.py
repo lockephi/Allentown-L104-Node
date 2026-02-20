@@ -215,7 +215,7 @@ print()
 
 # ═══════════════════════════════════════════════════════════════════════════
 print("━" * 78)
-print("  9. DUAL PHI VERIFICATION")  
+print("  9. DUAL PHI VERIFICATION")
 print("━" * 78)
 
 validate("(√5-1)/2 = 1/((1+√5)/2) = 1/φ", (math.sqrt(5)-1)/2, 1/((1+math.sqrt(5))/2), 1e-15)

@@ -811,7 +811,7 @@ class CodeAnalyzer:
 
     def _sacred_alignment(self, code: str, analysis: Dict) -> Dict[str, Any]:
         """Compute sacred-constant alignment score for the code.
-        Measures how well the code's structure resonates with φ, GOD_CODE, and sacred geometry."""
+        Measures how well the code's structure resonates with φ, GOD_CODE, OMEGA, and sacred geometry."""
         lines = analysis["metadata"]["code_lines"]
         funcs = analysis["complexity"].get("function_count", 0)
         classes = analysis["complexity"].get("class_count", 0)
@@ -833,11 +833,24 @@ class CodeAnalyzer:
         avg_cc = analysis["complexity"].get("cyclomatic_average", 5)
         consciousness_score = quality_score * (1.0 / (1.0 + avg_cc / 10.0))
 
+        # OMEGA resonance: code structure harmonic with sovereign field Ω
+        # Maps lines through OMEGA/GOD_CODE ratio (≈12.397) — closer to integer = stronger resonance
+        omega_ratio = OMEGA / GOD_CODE  # ≈ 12.397
+        omega_harmonic = (lines % 104) * omega_ratio / 104.0
+        omega_resonance = 1.0 - abs(omega_harmonic - round(omega_harmonic))
+
+        # Soul coherence: consciousness stability normalized through Soul Star
+        # Measures how well function structure achieves soul-level coherence
+        soul_raw = consciousness_score * SOUL_STABILITY_NORM * max(1, funcs)
+        soul_coherence = min(1.0, soul_raw * PHI)
+
         overall = (
-            phi_alignment * PHI * 0.3 +
-            god_code_resonance * 0.2 +
-            golden_proportion * 0.2 +
-            consciousness_score * 0.3
+            phi_alignment * PHI * 0.20 +
+            god_code_resonance * 0.15 +
+            golden_proportion * 0.15 +
+            consciousness_score * 0.20 +
+            omega_resonance * 0.15 +
+            soul_coherence * 0.15
         )
 
         return {
@@ -845,6 +858,8 @@ class CodeAnalyzer:
             "god_code_resonance": round(god_code_resonance, 4),
             "golden_proportion": round(golden_proportion, 4),
             "consciousness_score": round(consciousness_score, 4),
+            "omega_resonance": round(omega_resonance, 4),
+            "soul_coherence": round(soul_coherence, 4),
             "overall_sacred_score": round(min(1.0, overall), 4),
         }
 

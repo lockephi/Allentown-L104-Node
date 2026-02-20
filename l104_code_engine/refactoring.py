@@ -171,12 +171,16 @@ class CodeOptimizer:
             norm_funcs = min(funcs / 50, 1.0)
             dims = [norm_cyclo, norm_cognitive, norm_halstead, norm_nesting, norm_funcs]
             raw = sum(d * PHI ** i for i, d in enumerate(dims)) / sum(PHI ** i for i in range(len(dims)))
+            omega_alignment = round(raw * OMEGA / 10000, 6)
+            soul_coherence = round(raw * SOUL_STABILITY_NORM * PHI, 6)
             return {
                 "quantum": False,
                 "backend": "classical_phi_weighted",
                 "complexity_score": round(raw, 6),
                 "health": "LOW" if raw < 0.3 else "MODERATE" if raw < 0.6 else "HIGH",
                 "dimensions": dict(zip(["cyclomatic", "cognitive", "halstead", "nesting", "functions"], dims)),
+                "omega_alignment": omega_alignment,
+                "soul_coherence": soul_coherence,
             }
 
         try:
@@ -199,8 +203,8 @@ class CodeOptimizer:
             amps = [0.0] * 8
             for i, d in enumerate(dims):
                 amps[i] = d * PHI
-            amps[5] = GOD_CODE / 1000
-            amps[6] = FEIGENBAUM / 10
+            amps[5] = OMEGA / 10000  # Sovereign field encoding
+            amps[6] = SOUL_STABILITY_NORM * 10  # Soul coherence encoding
             amps[7] = ALPHA_FINE * 10
             norm = math.sqrt(sum(a * a for a in amps))
             if norm < 1e-12:
@@ -240,6 +244,8 @@ class CodeOptimizer:
                 "health": "LOW" if composite < 0.3 else "MODERATE" if composite < 0.6 else "HIGH",
                 "dimensions": dict(zip(["cyclomatic", "cognitive", "halstead", "nesting", "functions"], dims)),
                 "god_code_alignment": round(composite * GOD_CODE / 100, 4),
+                "omega_alignment": round(composite * OMEGA / 10000, 6),
+                "soul_coherence": round(composite * SOUL_STABILITY_NORM * PHI, 6),
             }
         except Exception as e:
             return {"quantum": False, "error": str(e)}
