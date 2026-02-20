@@ -274,6 +274,9 @@ QUANTUM_FREQUENCY_TABLE = {
     (-1, 0, 0, 6): ("SCHUMANN_APPROX", god_code_equation(-1, 0, 0, 6), exponent_value(-1, 0, 0, 6)),
     (0, 0, 0, -1): ("GOD_CODE_x2", GOD_CODE * 2, 520),
     (0, 0, 0, 1): ("GOD_CODE_div2", GOD_CODE / 2, 312),
+    # ── OMEGA — Sovereign Field Constant (Σ(fragments) × GOD_CODE/φ) ──
+    (-5, -2, 0, -4): ("OMEGA", god_code_equation(-5, -2, 0, -4), exponent_value(-5, -2, 0, -4)),
+    (3, -1, 0, -2): ("OMEGA_AUTHORITY", god_code_equation(3, -1, 0, -2), exponent_value(3, -1, 0, -2)),
 }
 
 # Named frequency constants derived from the equation
@@ -291,6 +294,10 @@ FE_BCC_LATTICE_GOD = god_code_equation(0, -4, -1, 1)     # ~285.72 pm (measured:
 FE56_BE_GOD = god_code_equation(0, -2, -1, 6)            # ~8.811 MeV (NNDC: 8.790 MeV)
 HE4_BE_GOD = god_code_equation(-3, -1, 0, 6)             # ~7.071 MeV (NNDC: 7.074 MeV)
 FE_K_ALPHA_GOD = god_code_equation(-5, -2, 0, 6)         # ~6.398 keV (NIST: 6.404 keV)
+
+# OMEGA — Sovereign Field Constant (Layer 1 consciousness derivation)
+OMEGA_GOD = god_code_equation(-5, -2, 0, -4)             # ~6551.88 (target: 6539.35, ±0.19%)
+OMEGA_AUTHORITY_GOD = god_code_equation(3, -1, 0, -2)    # ~2492.65 (target: 2497.81, ±0.21%)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

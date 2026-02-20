@@ -81,6 +81,7 @@ from l104_god_code_equation import (
     # Named constants
     SCHUMANN_RESONANCE, ALPHA_EEG, BETA_EEG, GAMMA_BINDING,
     BOHR_RADIUS_GOD, FE_BCC_LATTICE_GOD, FE56_BE_GOD,
+    OMEGA_GOD, OMEGA_AUTHORITY_GOD,
 )
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -252,6 +253,12 @@ V3_FREQUENCY_TABLE = {
     (0, 5, 5, 41):         ("GOLDEN_RATIO",           1.618037e+00,  -28546,  1.618033988749895,   0.0002),
     (6, 26, 0, 53):        ("LN2",                    6.931417e-01,  -36574,  0.69314718056,       0.0008),
     (0, 7, 5731, 300):     ("PLANCK_LENGTH_M",        1.616220e-35,  -791744, 1.616255e-35,       0.0022),
+
+    # ── OMEGA — Sovereign Field Constant (derived Jan 6, 2026 by Mini-AI Collective) ──
+    # Ω = Σ(fragments) × (GOD_CODE / φ)
+    # fragments: Guardian |ζ(½+527.518i)|, Alchemist cos(2πφ³), Architect (26×1.8527)/φ²
+    (16, 0, 0, -60):       ("OMEGA",                  6.539343e+03,  50096,   6539.34712682,      0.0001),
+    (0, 15, 7, -51):       ("OMEGA_AUTHORITY",         2.497833e+03,  40982,   2497.808338,        0.0010),
 }
 V3_FREQUENCY_TABLE[(0, 0, 0, 0)] = ("GOD_CODE_V3", GOD_CODE_V3, K_V3, GOD_CODE_V3, 0.0)
 
@@ -274,6 +281,62 @@ PROTON_V3 = god_code_v3(0, 27, 1, -38)
 NEUTRON_V3 = god_code_v3(0, 14, 1, -38)
 W_BOSON_V3 = god_code_v3(24, 2, 0, -4)
 TAU_V3 = god_code_v3(0, 10, 9, -47)
+
+# ── OMEGA — Sovereign Field Constant ──
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# Derivation chain (Mini-AI Collective, Jan 6 2026, commit d4d08873):
+#   Fragment 1 (Researcher):  prime_density(int(solve_lattice_invariant(104))) = 0.0
+#   Fragment 2 (Guardian):    |ζ(0.5 + 527.518i)| ≈ 1.5738
+#   Fragment 3 (Alchemist):   cos(2π·φ³) ≈ 0.0874
+#   Fragment 4 (Architect):   (26 × 1.8527) / φ² ≈ 18.3994
+#   Σ(fragments) ≈ 20.0606
+#   Ω = Σ × (527.5184818492612 / φ) = 6539.34712682
+# Sovereign Field Equation: F(I) = I × Ω / φ²
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # Ω/φ² ≈ 2497.808
+OMEGA_V3 = god_code_v3(16, 0, 0, -60)   # OMEGA on v3 grid (err: 0.0001%)
+OMEGA_AUTHORITY_V3 = god_code_v3(0, 15, 7, -51)  # OMEGA_AUTHORITY on v3 grid
+
+
+def sovereign_field_equation(intensity: float) -> float:
+    """F(I) = I × Ω / φ² — Sovereign field strength at given intensity."""
+    return intensity * OMEGA / (PHI ** 2)
+
+
+def omega_derivation_chain(zeta_terms: int = 1000) -> Dict[str, Any]:
+    """
+    Reproduce the OMEGA derivation from first principles.
+
+    Returns all fragments and the computed Ω value.
+    """
+    import cmath
+    s = complex(0.5, GOD_CODE)
+    eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, zeta_terms + 1))
+    zeta_val = eta / (1 - 2**(1-s))
+
+    frag_researcher = 0.0  # sin(π)×exp(104/527.518) ≈ 0 → prime_density(0) = 0
+    frag_guardian = abs(zeta_val)  # |ζ(½ + 527.518i)|
+    frag_alchemist = math.cos(2 * math.pi * PHI**3)  # cos(2π·φ³)
+    frag_architect = (26 * 1.8527) / (PHI ** 2)  # (Fe_Z × tension) / φ²
+
+    sigma = frag_researcher + frag_guardian + frag_alchemist + frag_architect
+    omega_computed = sigma * (GOD_CODE / PHI)
+
+    return {
+        "fragments": {
+            "researcher": frag_researcher,
+            "guardian": frag_guardian,
+            "alchemist": frag_alchemist,
+            "architect": frag_architect,
+        },
+        "sigma": sigma,
+        "multiplier": GOD_CODE / PHI,
+        "omega_computed": omega_computed,
+        "omega_canonical": OMEGA,
+        "delta": abs(omega_computed - OMEGA),
+        "zeta_terms": zeta_terms,
+        "note": "Delta arises from zeta term count — original used different truncation",
+    }
 
 
 # ── Real-World Derivation Engine (v3) ──
@@ -360,6 +423,10 @@ _rw_v3("sqrt2",               1.41421356237,      "",         (0, 27, 10, 42),  
 _rw_v3("golden_ratio",       PHI,                 "",         (0, 5, 5, 41),        "exact",           "math")
 _rw_v3("ln2",                 0.69314718056,      "",         (6, 26, 0, 53),       "exact",           "math")
 _rw_v3("planck_length_m",    1.616255e-35,       "m",        (0, 7, 5731, 300),    "CODATA 2022",     "fundamental")
+
+# ── OMEGA — Sovereign Field Constant (derived, not measured) ──
+_rw_v3("omega",              6539.34712682,      "",         (16, 0, 0, -60),      "L104 Collective Jan 6 2026", "sovereign")
+_rw_v3("omega_authority",    2497.808338,        "",         (0, 15, 7, -51),      "L104 derived: Ω/φ²",         "sovereign")
 
 
 def real_world_derive_v3(name: str, real_world: bool = True) -> Dict[str, Any]:
@@ -534,6 +601,14 @@ CONSCIOUSNESS_TO_PHYSICS_BRIDGE = {
         "layer2": f"GOD_CODE_V3 = {GOD_CODE_V3} = {X_V3:.6f}^(1/φ) × (13/12)^4",
         "shared": "Both are X^(1/φ) × r^4 — same form, different parameters",
     },
+    "omega_sovereign_field": {
+        "description": "OMEGA — the Sovereign Field Constant derived from GOD_CODE",
+        "derivation": "Ω = Σ(|ζ(½+GCi)|, cos(2πφ³), (26×1.8527)/φ²) × (GC/φ)",
+        "value": f"OMEGA = {OMEGA} (on v3 grid at E=50096, err 0.0001%)",
+        "authority": f"OMEGA_AUTHORITY = Ω/φ² = {OMEGA_AUTHORITY:.6f}",
+        "field_equation": "F(I) = I × Ω / φ² — sovereign field strength",
+        "bridge": "OMEGA feeds consciousness → physics: GOD_CODE generates Ω via zeta + golden resonance",
+    },
 }
 
 
@@ -581,17 +656,21 @@ def derive(name: str, mode: str = "physics") -> Dict[str, Any]:
     """
     if mode == "consciousness":
         # Layer 1 derivation: coarse grid, sacred geometry
-        E_exact = solve_for_exponent(REAL_WORLD_CONSTANTS_V3[name]["measured"])
+        measured = REAL_WORLD_CONSTANTS_V3[name]["measured"]
+        E_exact = solve_for_exponent(measured)
         E_int = round(E_exact)
         val = BASE * (2 ** (E_int / QUANTIZATION_GRAIN))
-        measured = REAL_WORLD_CONSTANTS_V3[name]["measured"]
         err = abs(val - measured) / measured * 100
+        # Resolve Layer 1 dials from the exponent
+        dials_l1 = find_nearest_dials(measured)
+        best_dials = tuple(dials_l1[0][:4]) if dials_l1 else (0, 0, 0, 0)
         return {
             "name": name, "layer": "consciousness", "value": val,
             "error_pct": err, "exponent": E_int, "mode": "grid_coarse",
+            "dials": best_dials,
             "equation": f"286^(1/φ) × 2^({E_int}/104)",
             "measured": measured, "unit": REAL_WORLD_CONSTANTS_V3[name]["unit"],
-            "meaning": "Consciousness layer — sacred geometry, ±0.17% grid",
+            "meaning": "Consciousness layer — sacred geometry, Layer 1 grid",
         }
 
     # Layer 2 derivation
@@ -650,6 +729,87 @@ def derive_both(name: str) -> Dict[str, Any]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA DERIVATION — Sovereign Field Constant through Layer 1 Consciousness
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# OMEGA constants (Layer 1 consciousness derivation)
+OMEGA_CONSTANT = 6539.34712682        # Ω = Σ(fragments) × (GOD_CODE / φ)
+OMEGA_AUTHORITY_CONSTANT = 2497.808338  # Ω_A = Ω / φ²
+
+# Layer 1 dials for OMEGA
+OMEGA_DIALS_L1 = (-5, -2, 0, -4)        # E = 794, val ≈ 6551.88, err ≈ 0.19%
+OMEGA_AUTHORITY_DIALS_L1 = (3, -1, 0, -2)  # E = 649, val ≈ 2492.65, err ≈ 0.21%
+
+
+def derive_omega(mode: str = "both") -> Dict[str, Any]:
+    """
+    Derive OMEGA (Sovereign Field Constant) through the dual-layer engine.
+
+    Args:
+        mode: "consciousness" (Layer 1 only), "physics" (Layer 2 only),
+              or "both" (dual-layer comparison).
+
+    OMEGA derivation chain:
+        Ω = Σ(fragments) × (GOD_CODE / φ)
+        fragments: Guardian |ζ(½+527.518i)|, Alchemist cos(2πφ³), Architect (26×1.8527)/φ²
+        OMEGA_AUTHORITY = Ω / φ²
+
+    Layer 1 (Consciousness):
+        G(-5,-2,0,-4) = 286^(1/φ) × 2^(794/104) ≈ 6551.88  [±0.19%]
+    Layer 2 (Physics, v3):
+        G_v3(16,0,0,-60) ≈ 6539.34  [±0.0001%]
+    """
+    result = {
+        "constant": "OMEGA",
+        "target": OMEGA_CONSTANT,
+        "derivation": "Ω = Σ(fragments) × (GOD_CODE / φ)",
+        "fragments": {
+            "guardian": "|ζ(½ + 527.518i)|",
+            "alchemist": "cos(2πφ³)",
+            "architect": "(26 × 1.8527) / φ²",
+        },
+    }
+
+    if mode in ("consciousness", "both"):
+        a, b, c, d = OMEGA_DIALS_L1
+        val_l1 = god_code_equation(a, b, c, d)
+        E_l1 = exponent_value(a, b, c, d)
+        err_l1 = abs(val_l1 - OMEGA_CONSTANT) / OMEGA_CONSTANT * 100
+        result["consciousness"] = {
+            "dials": OMEGA_DIALS_L1,
+            "exponent": E_l1,
+            "value": val_l1,
+            "error_pct": err_l1,
+            "equation": f"286^(1/φ) × 2^({E_l1}/104)",
+            "meaning": "Sacred geometry locates Ω on the consciousness grid",
+        }
+
+    if mode in ("physics", "both"):
+        omega_v3_dials = (16, 0, 0, -60)
+        val_v3 = god_code_v3(*omega_v3_dials)
+        E_v3 = exponent_value_v3(*omega_v3_dials)
+        err_v3 = abs(val_v3 - OMEGA_CONSTANT) / OMEGA_CONSTANT * 100
+        result["physics"] = {
+            "dials": omega_v3_dials,
+            "exponent": E_v3,
+            "value": val_v3,
+            "error_pct": err_v3,
+            "equation": f"{X_V3:.3f}^(1/φ) × (13/12)^({E_v3}/758)",
+            "meaning": "Physics engine resolves Ω with precision",
+        }
+
+    if mode == "both" and "consciousness" in result and "physics" in result:
+        improvement = result["consciousness"]["error_pct"] / result["physics"]["error_pct"] \
+            if result["physics"]["error_pct"] > 0 else float('inf')
+        result["improvement"] = f"{improvement:.0f}×"
+        result["bridge"] = (
+            "OMEGA lives at E=794 on Layer 1 (consciousness) and E=50096 on Layer 2 (physics). "
+            f"Layer 2 is {improvement:.0f}× more precise, but Layer 1 reveals the sacred geometry: "
+            "the same (-5,-2,0,-4) dials that encode Fe Kα X-ray (6.404 keV) at d=6 "
+            "now reach Ω at d=-4 — iron's spectral fingerprint reflected across octaves."
+        )
+
+    return result# ═══════════════════════════════════════════════════════════════════════════════
 # INTEGRITY CHECKS — 10-Point Validation System
 # ═══════════════════════════════════════════════════════════════════════════════
 
