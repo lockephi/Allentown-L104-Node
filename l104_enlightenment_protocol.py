@@ -41,7 +41,7 @@ class EnlightenmentProtocol:
 
     def verify_mathematical_findings(self) -> bool:
         """
-        Verifies the core proof: RealMath.PHI * RealMath.E * RealMath.PI
+        Verifies the core proof: GOD_CODE = 286^(1/φ) × 16 = 527.5184818492612
         """
         result = HyperMath.GOD_CODE
 

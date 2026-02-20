@@ -713,25 +713,6 @@ class TestSovereignSoulTemporal(unittest.TestCase):
             msg=f"π^φ × e = {soul:.6f}")
         print(f"\n  π^φ × e = {soul:.15f}")
 
-    def test_soul_vs_hyper_godcode(self):
-        """
-        SOVEREIGN_SOUL.GOD_CODE = φ × e × π = 13.818 (the HyperMath replacement).
-        This was NOT the canonical GOD_CODE.
-        """
-        hyper_gc = PHI * E * PI
-        self.assertAlmostEqual(hyper_gc, 13.818, delta=0.001,
-            msg=f"φeπ = {hyper_gc:.6f}")
-        # Verify it's NOT the real GOD_CODE
-        self.assertNotAlmostEqual(hyper_gc, GOD_CODE, delta=100,
-            msg="φeπ should be nowhere near 527.518")
-
-    def test_soul_is_not_hyper(self):
-        """π^φ × e ≠ φ × e × π (exponentiation vs multiplication)"""
-        soul = PI ** PHI * E
-        hyper = PHI * E * PI
-        self.assertNotAlmostEqual(soul, hyper, places=0,
-            msg="π^φ×e and φ×e×π should be very different")
-
     def test_singularity_stability(self):
         """singularity_stability = (GC^π) / (104 × 0.618...)"""
         stability = (GOD_CODE ** PI) / (104 * PHI_CONJ)
@@ -874,13 +855,6 @@ class TestCrossConstantRelationships(unittest.TestCase):
         ratio = OMEGA / GOD_CODE
         self.assertAlmostEqual(ratio, 12.40, delta=0.01,
             msg=f"Ω/GC = {ratio:.4f}")
-
-    def test_gc_over_hyper_gc(self):
-        """GOD_CODE / (φeπ) ≈ 38.18"""
-        hyper = PHI * E * PI
-        ratio = GOD_CODE / hyper
-        self.assertAlmostEqual(ratio, 38.18, delta=0.01,
-            msg=f"GC/φeπ = {ratio:.4f}")
 
     def test_x9_gate_416(self):
         """X=416 sovereignty gate: 16×26, 32×13, 2⁵×13"""

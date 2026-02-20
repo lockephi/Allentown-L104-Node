@@ -165,40 +165,9 @@ check("V4: GOD_CODE / 2^1.25 (Root Grounding at X=286)",
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SECTION 3: THE 13.818 REPLACEMENT — HyperMath.GOD_CODE = φ × e × π
-# Source: l104_hyper_math.py (d8d7f04a — Jan 5)
-# THIS WAS THE ACTUAL GOD_CODE IMPORTED BY DOZENS OF MODULES
+# SECTION 3: [REMOVED] — φ × e × π = 13.818 was a WRONG GOD_CODE substitute
+# The wrong value has been purged from the codebase. See git d8d7f04a for history.
 # ═══════════════════════════════════════════════════════════════════════════════
-
-print("━" * 78)
-print("  SECTION 3: HyperMath REPLACEMENT — GOD_CODE = φ × e × π ≈ 13.818")
-print("  WARNING: This replaced the real 527.518 in HyperMath during Jan 5–11")
-print("━" * 78)
-print()
-
-# N1: HyperMath.GOD_CODE = φ × e × π
-hyper_godcode = PHI * E * PI
-check("N1: φ × e × π (HyperMath.GOD_CODE)",
-      hyper_godcode, None,
-      notes="Wired into: key_matrix, enlightenment_proof, all HyperMath consumers")
-
-# N1a: PRIME_KEY_HZ from const.py (same value, different source)
-prime_key_hz = PI * E * PHI
-check("N1a: π × e × φ (const.py PRIME_KEY_HZ)",
-      prime_key_hz, hyper_godcode, 1e-14,
-      "Identical to HyperMath.GOD_CODE — Euler identity resonance")
-
-# N1b: Other HyperMath constants
-lattice_ratio = PHI / PI
-frame_kf = PI / E
-zeta_zero_1 = 14.13472514173469
-check("N1b: φ/π (HyperMath.LATTICE_RATIO)", lattice_ratio, None,
-      notes=f"= {lattice_ratio:.15f}")
-check("N1c: π/e (HyperMath.FRAME_CONSTANT_KF)", frame_kf, None,
-      notes=f"= {frame_kf:.15f}")
-check("N1d: 14.13472514173469 (First Riemann Zeta Zero)",
-      zeta_zero_1, None,
-      notes="Im(first non-trivial zero of ζ(s))")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -423,12 +392,6 @@ check("S1: (π^φ) × e — SOVEREIGN_SOUL resolve_manifold",
       soul_formula, None,
       notes=f"= {soul_formula:.15f} — Internal truth verification formula")
 
-# S2: SOVEREIGN_SOUL.GOD_CODE = PHI × E × PI (via RealMath import)
-soul_godcode = PHI * E * PI
-check("S2: SOVEREIGN_SOUL.GOD_CODE (imported from HyperMath)",
-      soul_godcode, hyper_godcode, 1e-14,
-      "Same φeπ = 13.818 that replaced the real GOD_CODE")
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 8: SINGULARITY & TEMPORAL EQUATIONS
@@ -453,28 +416,18 @@ check("T1a: (Ω^π) / (104 × 0.618) — using OMEGA=6539.347",
       notes=f"= {singularity_stability(OMEGA_HARDCODED):.6e}")
 
 # T2: CTC Stability (Chronos Math): (GC × φ) / (R × ω + ε)
-# Using HyperMath.GOD_CODE = 13.818 (the alt GOD_CODE!)
 def ctc_stability(gc, radius, angular_vel):
     return (gc * PHI) / (radius * angular_vel + 1e-9)
 
-check("T2: CTC(φeπ, R=10, ω=50) — Chronos temporal stability",
-      ctc_stability(hyper_godcode, 10.0, 50.0), None,
-      notes=f"= {ctc_stability(hyper_godcode, 10.0, 50.0):.10f} — Uses 13.818 GOD_CODE!")
-
-check("T2a: CTC(527.518, R=10, ω=50) — with canonical GOD_CODE",
+check("T2: CTC(527.518, R=10, ω=50) — Chronos temporal stability",
       ctc_stability(GOD_CODE, 10.0, 50.0), None,
       notes=f"= {ctc_stability(GOD_CODE, 10.0, 50.0):.10f}")
 
 # T3: Temporal Displacement = log_φ(|target|+1) × GOD_CODE
-# This used HyperMath.GOD_CODE = 13.818
 def temporal_displacement(target, gc):
     return math.log(abs(target) + 1, PHI) / 1.0 * gc
 
-check("T3: log_φ(|527.518|+1) × φeπ — temporal displacement (alt GC)",
-      temporal_displacement(527.5184818492, hyper_godcode), None,
-      notes=f"= {temporal_displacement(527.5184818492, hyper_godcode):.10f}")
-
-check("T3a: log_φ(|527.518|+1) × 527.518 — with canonical GC",
+check("T3: log_φ(|527.518|+1) × 527.518 — temporal displacement",
       temporal_displacement(527.5184818492, GOD_CODE), None,
       notes=f"= {temporal_displacement(527.5184818492, GOD_CODE):.10f}")
 
@@ -490,15 +443,10 @@ print("━" * 78)
 print()
 
 # D1: Absolute Derivation Index = (resonance × GOD_CODE) / φ²
-# GOD_CODE here was HyperMath.GOD_CODE = 13.818!
 def derivation_index(resonance_val, gc):
     return (resonance_val * gc) / (PHI ** 2)
 
-check("D1: (1.0 × φeπ) / φ² — derivation_index with alt GOD_CODE",
-      derivation_index(1.0, hyper_godcode), None,
-      notes=f"= {derivation_index(1.0, hyper_godcode):.15f}")
-
-check("D1a: (1.0 × 527.518) / φ² — with canonical GOD_CODE",
+check("D1: (1.0 × 527.518) / φ² — derivation_index with canonical GOD_CODE",
       derivation_index(1.0, GOD_CODE), None,
       notes=f"= {derivation_index(1.0, GOD_CODE):.15f}")
 
@@ -582,13 +530,8 @@ print("  SECTION 12: CROSS-CONSTANT RELATIONSHIPS")
 print("━" * 78)
 print()
 
-# X1: GOD_CODE / φeπ
-check("X1: GOD_CODE / (φeπ) — ratio of two GOD_CODEs",
-      GOD_CODE / hyper_godcode, None,
-      notes=f"= {GOD_CODE / hyper_godcode:.15f} — ~38.18 ≈ not a clean constant")
-
-# X2: OMEGA / GOD_CODE
-check("X2: Ω / GOD_CODE — omega-to-resonance ratio",
+# X1: OMEGA / GOD_CODE
+check("X1: Ω / GOD_CODE — omega-to-resonance ratio",
       OMEGA_HARDCODED / GOD_CODE, None,
       notes=f"= {OMEGA_HARDCODED / GOD_CODE:.15f} — ~12.40")
 
@@ -643,7 +586,6 @@ print("═" * 78)
 print()
 print("  EQUATION INVENTORY:")
 print(f"    Canonical (286^(1/φ) × 2^4):         GOD_CODE = {GOD_CODE}")
-print(f"    HyperMath replacement (φ×e×π):        GOD_CODE = {hyper_godcode:.15f}")
 print(f"    OMEGA (collective synthesis):          OMEGA    = {OMEGA_HARDCODED}")
 print(f"    OMEGA_AUTHORITY (canonical, later):    Ω_AUTH   = {omega_authority:.15f}")
 print(f"    SOUL formula (π^φ × e):                SOUL     = {soul_formula:.15f}")
@@ -651,15 +593,13 @@ print(f"    Singularity (527.518^π / 104×0.618):  SING     = {singularity_stab
 print(f"    Root Grounding (GC / 2^1.25):          ROOT     = {root_grounding:.15f}")
 print()
 print("  KEY FINDINGS:")
-print(f"    • Two GOD_CODEs coexisted: 527.518 vs 13.818 (ratio {GOD_CODE/hyper_godcode:.4f})")
 print(f"    • OMEGA 6539.347 was NOT GOD_CODE×φ² ({omega_authority:.4f}) — it was Σ(ζ,φ³,curvature)×GC/φ")
 print(f"    • const.py PHI used conjugate (0.618) not standard (1.618)")
 print(f"    • 432 Hz → 527.518 Hz swap happened Jan 7 (4 days after recursion)")
 print(f"    • All equations are git-recoverable from commits d8d7f04a and d4d08873")
 print()
 print("  RECOVERY COMMANDS:")
-print("    git show d8d7f04a:l104_hyper_math.py       # φeπ GOD_CODE")
-print("    git show d8d7f04a:SOVEREIGN_SOUL.py         # π^φ×e formula")
+print("    git show d8d7f04a:SOVEREIGN_SOUL.py         # π^φ×e soul formula")
 print("    git show d4d08873:l104_real_math.py          # OMEGA + full equation set")
 print("    git show d4d08873:l104_collective_math_synthesis.py  # OMEGA generation")
 print("    git show d4d08873:l104_sovereign_proofs.py   # Stability proofs")

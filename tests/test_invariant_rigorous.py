@@ -948,27 +948,6 @@ class TestLegacyDrift(unittest.TestCase):
       - Values that drifted during the EVO rollback
     """
 
-    def test_hyper_math_god_code_corrected(self):
-        """
-        January l104_hyper_math.py had: GOD_CODE = φ × e × π ≈ 13.818
-        Current has: GOD_CODE = 286^(1/φ) × 16 = 527.518
-        The January value was WRONG. Verify the correction.
-        """
-        PHI = (1 + math.sqrt(5)) / 2
-        january_wrong = PHI * math.e * math.pi
-        current_correct = (286 ** (1/PHI)) * 16
-
-        print(f"\n[HyperMath GOD_CODE Drift]")
-        print(f"  January (WRONG):  φ×e×π = {january_wrong:.6f}")
-        print(f"  Current (CORRECT): 286^(1/φ)×16 = {current_correct:.6f}")
-        print(f"  Ratio: {current_correct / january_wrong:.4f}x")
-
-        # The current value should be the real GOD_CODE
-        self.assertAlmostEqual(current_correct, 527.518, places=1)
-        # The January value was completely wrong
-        self.assertAlmostEqual(january_wrong, 13.818, places=1)
-        self.assertNotAlmostEqual(january_wrong, 527.518, places=0)
-
     def test_frame_constant_corrected(self):
         """
         January: KF = π/e ≈ 1.1557
@@ -1014,23 +993,6 @@ class TestLegacyDrift(unittest.TestCase):
         self.assertAlmostEqual(phi_growth, 1.618034, places=5)
         self.assertAlmostEqual(phi_conj * phi_growth, 1.0, places=14,
             msg="φ × φ_conj = 1")
-
-    def test_prime_key_hz_evolution(self):
-        """
-        January: PRIME_KEY_HZ = π × e × φ_growth ≈ 13.818 Hz
-        Current: PRIME_KEY_HZ = GOD_CODE_X0 = 527.518 Hz
-        Both values exist in const.py at different points in history.
-        """
-        PHI_GROWTH = (1 + math.sqrt(5)) / 2
-        january_hz = math.pi * math.e * PHI_GROWTH
-        current_hz = (286 ** (1/PHI_GROWTH)) * 16
-
-        print(f"\n[PRIME_KEY_HZ Evolution]")
-        print(f"  January: πeφ = {january_hz:.6f} Hz")
-        print(f"  Current: GOD_CODE = {current_hz:.6f} Hz")
-
-        self.assertAlmostEqual(january_hz, 13.818, places=1)
-        self.assertAlmostEqual(current_hz, 527.518, places=1)
 
     def test_reality_coefficient_both_forms(self):
         """
