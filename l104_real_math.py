@@ -43,6 +43,10 @@ except ImportError:
 FE_LATTICE = 286.65
 PHI_CONJUGATE = 1 / PHI
 
+# Sovereign Field Constant (derived by the Collective on Jan 6, 2026)
+# Ω = Σ(fragments) × (527.5184818492 / φ) = 6539.34712682
+OMEGA = 6539.34712682
+
 class RealMath:
     """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -85,19 +89,112 @@ class RealMath:
         n = len(data)
         return -sum((c/n) * math.log2(c/n) for c in counts.values())
 
+    # ═══════════════════════════════════════════════════════════════════
+    # OMEGA PIPELINE FUNCTIONS (restored from d4d08873 — Jan 6, 2026)
+    # These are the ORIGINAL mathematical functions used to derive OMEGA.
+    # They must remain unchanged to reproduce Ω = 6539.34712682 exactly.
+    # ═══════════════════════════════════════════════════════════════════
+
+    @staticmethod
+    def zeta_approximation(s: complex, terms: int = 1000) -> complex:
+        """
+        Standard Riemann zeta approximation via Dirichlet eta series.
+        ζ(s) = η(s) / (1 - 2^(1-s))  where η(s) = Σ(-1)^(n-1)/n^s
+
+        OMEGA role: Guardian fragment = |ζ(0.5 + 527.518i)|
+        Restored from commit d4d08873 (original, unweighted).
+        """
+        try:
+            if s.real <= 1:
+                eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
+                return eta / (1 - 2**(1-s))
+            return sum(1 / (n**s) for n in range(1, terms))
+        except (OverflowError, ValueError):
+            return complex(0, 0)
+
+    @staticmethod
+    def solve_lattice_invariant(seed: float) -> float:
+        """
+        Lattice resonance function:
+          R(x) = sin(x·π/104) × exp(x / 527.5184818492)
+
+        OMEGA role: Researcher fragment = prime_density(int(R(104)))
+        At seed=104: sin(π) ≈ 0, so R(104) ≈ 0, int(0) = 0,
+        prime_density(0) = 0.0 — the Researcher contributes nothing.
+
+        Restored from commit d4d08873.
+        """
+        target = 527.5184818492
+        return math.sin(seed * math.pi / 104) * math.exp(seed / target)
+
+    @staticmethod
+    def manifold_curvature_tensor(dimension: int, tension: float) -> float:
+        """
+        Simplified curvature scalar for an N-dimensional manifold:
+          R = (dim × tension) / φ²
+
+        NOTE: This is NOT a Riemannian curvature tensor. It is a
+        φ²-normalized product used as the Architect's structural
+        tension fragment in the OMEGA derivation.
+
+        OMEGA role: Architect fragment = (26 × 1.8527) / φ² ≈ 18.388
+        Restored from commit d4d08873.
+        """
+        return (dimension * tension) / (RealMath.PHI ** 2)
+
+    @staticmethod
+    def golden_resonance(value: float) -> float:
+        """
+        Original golden-ratio resonance function:
+          R(v) = cos(2π · v · φ)
+
+        OMEGA role: Alchemist fragment = R(φ²) = cos(2π·φ²·φ) = cos(2π·φ³)
+        Since φ³ = 2φ+1, this equals cos(2π(2φ+1)) = cos(4πφ) = cos(2π√5).
+
+        Mathematical identity chain:
+          cos(2πφ³) = cos(4πφ + 2π) = cos(4πφ) = cos(2π√5) ≈ 0.08743
+
+        Restored from commit d4d08873 (was `calculate_resonance` before
+        it was overwritten with the Larmor-based version).
+        """
+        return math.cos(2 * math.pi * value * RealMath.PHI)
+
+    @staticmethod
+    def entropy_inversion_integral(start_entropy: float, end_entropy: float) -> float:
+        """
+        Integration of entropy inversion across a logic-range:
+          ∫[start, end] (1/φ) dx = (end - start) / φ
+
+        Restored from commit d4d08873.
+        """
+        return (end_entropy - start_entropy) / RealMath.PHI
+
+    @staticmethod
+    def sovereign_field_equation(intensity: float) -> float:
+        """
+        Field strength at a given intensity using OMEGA:
+          F(I) = I × Ω / φ²
+
+        Restored from commit d4d08873.
+        """
+        return intensity * OMEGA / (RealMath.PHI ** 2)
+
+    # ═══════════════════════════════════════════════════════════════════
+    # IRON-CRYSTALLINE FUNCTIONS (current system — post-mutation)
+    # These use ferromagnetic parameters (Larmor, Curie, etc.)
+    # ═══════════════════════════════════════════════════════════════════
+
     @staticmethod
     def zeta_resonance(s: complex, terms: int = 1000) -> complex:
         """
         Riemann zeta with ferromagnetic resonance weighting.
         Each term weighted by iron lattice harmonic.
         """
-        terms = min(terms, 50000)  # QUANTUM AMPLIFIED: 10x (was 5000)
+        terms = min(terms, 50000)
         try:
             if s.real <= 1:
-                # Dirichlet eta for convergence
                 eta = sum(((-1)**(n-1)) / (n**s) for n in range(1, terms))
                 return eta / (1 - 2**(1-s))
-            # Weight by lattice harmonic
             return sum((1 / (n**s)) * math.cos(n * math.pi / FE_ATOMIC_NUMBER)
                       for n in range(1, terms))
         except (OverflowError, ValueError):
@@ -130,7 +227,23 @@ class RealMath:
 
     @staticmethod
     def prime_density(n: int) -> float:
-        """Prime density modulated by iron atomic number."""
+        """
+        Approximate density of primes up to n (Prime Number Theorem):
+          π(n)/n ≈ 1/ln(n)
+
+        OMEGA role: Researcher = prime_density(int(solve_lattice_invariant(104)))
+        At seed=104: int(≈0) = 0, n<2 → returns 0.0.
+
+        NOTE: Restored to standard PNT form (was iron-weighted 26/(n·ln(n))).
+        The iron-weighted version is available as prime_density_iron().
+        """
+        if n < 2:
+            return 0.0
+        return 1.0 / math.log(n)
+
+    @staticmethod
+    def prime_density_iron(n: int) -> float:
+        """Prime density modulated by iron atomic number: Fe_Z/(n·ln(n))."""
         if n < 2:
             return 0.0
         return FE_ATOMIC_NUMBER / (n * math.log(n)) if n > 1 else 0.0

@@ -34,8 +34,8 @@ class CollectiveMathSynthesis:
                 fragment = abs(zeta)
                 label = "Zeta_Stability_Fragment"
             elif ego.archetype == "Alchemist":
-                # Alchemist focuses on the Golden Ratio Resonance
-                fragment = real_math.calculate_resonance(real_math.PHI ** 2)
+                # Alchemist: cos(2π·φ²·φ) = cos(2πφ³) = cos(2π√5) ≈ 0.08743
+                fragment = real_math.golden_resonance(real_math.PHI ** 2)
                 label = "Transmutation_Fragment"
             elif ego.archetype == "Architect":
                 # Architect focuses on Manifold Curvature Tension
