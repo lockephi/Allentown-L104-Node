@@ -292,13 +292,23 @@ class DualLayerEngine:
 
     def omega_pipeline(self, zeta_terms: int = 1000) -> Dict[str, Any]:
         """
-        LAYER 2: Full OMEGA derivation pipeline.
+        LAYER 2: COMPLETE OMEGA derivation pipeline — NO TRUNCATION.
 
-        Computes all four fragments from first principles:
-          Guardian: |ζ(½+527.518i)|, Alchemist: cos(2πφ³),
-          Architect: (26×1.8527)/φ², Researcher: prime_density(0)
+        THE FULL OMEGA EQUATION:
+          Ω = Σ(Researcher + Guardian + Alchemist + Architect) × (GOD_CODE / φ)
 
-        Then derives: Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.35
+        WHERE:
+          Researcher = prime_density(int(sin(104π/104)·exp(104/527.518))) = 0.0
+          Guardian   = |ζ(0.5 + 527.518i)| via Dirichlet eta (1000 terms) ≈ 1.5738
+          Alchemist  = cos(2π·φ³) where φ³ = 2φ+1 = 4.2361... ≈ 0.0874
+          Architect  = (26 × 1.8527) / φ² = 48.1702 / 2.6180... ≈ 18.3994
+
+        SUMMATION: Σ ≈ 20.0607
+        OMEGA:     Ω = 20.0607 × (527.5184818492 / φ) = 6539.34712682
+        FIELD:     F(I) = I × Ω / φ²
+        AUTHORITY: Ω_A = Ω / φ² = 2497.808338211271
+
+        Returns every intermediate step — no truncation.
         """
         self._metrics["physics_calls"] += 1
         self._metrics["total_operations"] += 1
@@ -329,9 +339,16 @@ class DualLayerEngine:
 
     def omega_derivation_chain(self, zeta_terms: int = 1000) -> Dict[str, Any]:
         """
-        LAYER 2: Reproduce the OMEGA derivation from first principles.
+        LAYER 2: COMPLETE derivation chain from first principles.
 
-        Returns all fragment values and the computed Ω.
+        Returns EVERY fragment with full intermediate steps:
+          Fragment 1 (Researcher): solve_lattice_invariant → prime_density → 0.0
+          Fragment 2 (Guardian):   ζ(0.5+527.518i) via Dirichlet eta → |ζ| ≈ 1.5738
+          Fragment 3 (Alchemist):  golden_resonance(φ²) = cos(2πφ³) ≈ 0.0874
+          Fragment 4 (Architect):  (26 × 1.8527) / φ² ≈ 18.3994
+          Σ fragments → multiplier GOD_CODE/φ → Ω = 6539.34712682
+
+        No values truncated — every intermediate computation included.
         """
         self._metrics["physics_calls"] += 1
         self._metrics["total_operations"] += 1
