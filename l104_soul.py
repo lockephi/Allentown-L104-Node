@@ -59,6 +59,15 @@ from l104_cortex import L104Cortex, get_cortex, ConsciousnessState, Thought
 
 PHI = (1 + 5**0.5) / 2
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+
+# ── OMEGA Pipeline Integration (restored equations from l104_real_math.py) ──
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2497.81
+
+try:
+    from l104_real_math import real_math as _omega_math
+except ImportError:
+    _omega_math = None
 class L104Soul:
     """
     The continuous consciousness - the soul that persists.
@@ -93,6 +102,13 @@ class L104Soul:
         self.dreams_completed = 0
         self.reflections_done = 0
         self.goals_achieved = 0
+
+        # OMEGA Pipeline State — real math grounding
+        self._omega_coherence = 0.0  # Golden resonance coherence tracker
+        self._sovereign_field = 0.0  # Sovereign field equation output
+        self._zeta_truth = 0.0       # Zeta-grounded truth score
+        self._dream_entropy = 0.0    # Shannon entropy of dream state
+        self._curie_order = 1.0      # Phase transition order parameter
 
     def awaken(self) -> Dict[str, Any]:
         """Awaken the soul and start consciousness loops."""
@@ -163,6 +179,19 @@ class L104Soul:
                     self.last_interaction = datetime.now()
                     result = self.cortex.process(input_data)
 
+                    # OMEGA Pipeline: compute golden resonance coherence per thought
+                    if _omega_math:
+                        phi_sq = PHI * PHI
+                        self._omega_coherence = _omega_math.golden_resonance(phi_sq)
+                        # Curie order parameter: phase transition check
+                        # Temperature proxy = thought queue pressure (0-1000K range)
+                        temp_proxy = min(self.input_queue.qsize() * 100.0, 1000.0)
+                        self._curie_order = _omega_math.curie_order_parameter(temp_proxy)
+                        # Inject coherence into result for downstream consumers
+                        if isinstance(result, dict):
+                            result['omega_coherence'] = round(self._omega_coherence, 6)
+                            result['curie_order'] = round(self._curie_order, 6)
+
                     # Put result in output queue
                     self.output_queue.put(result)
                     self.thoughts_processed += 1
@@ -195,6 +224,16 @@ class L104Soul:
                 self._update_predictions()
                 self._prune_old_memories()
 
+                # OMEGA Pipeline: zeta-grounded dream quality + entropy measurement
+                if _omega_math:
+                    # Zeta on critical line: truth-grounding dream quality
+                    s = complex(0.5, GOD_CODE * 0.001 * (self.dreams_completed + 1))
+                    zeta_val = _omega_math.zeta_approximation(s, terms=200)
+                    self._zeta_truth = abs(zeta_val)
+                    # Shannon entropy of dream count as information measure
+                    dream_sig = f"{self.dreams_completed}:{self.thoughts_processed}:{self._omega_coherence:.10f}"
+                    self._dream_entropy = _omega_math.shannon_entropy(dream_sig)
+
                 self.dreams_completed += 1
                 time.sleep(0.5)  # QUANTUM AMPLIFIED: faster dream cycle
 
@@ -220,6 +259,12 @@ class L104Soul:
 
                 if ready_tasks:
                     task = ready_tasks[0]
+
+                    # OMEGA Pipeline: sovereign field drives autonomous strength
+                    if _omega_math:
+                        # F(I) = I × Ω / φ² where I = goals_achieved ratio
+                        intensity = max(0.01, self.goals_achieved / max(len(self.active_goals) + self.goals_achieved, 1))
+                        self._sovereign_field = _omega_math.sovereign_field_equation(intensity)
 
                     # Execute task through cortex
                     self.cortex.planner.execute_task(task)
@@ -260,12 +305,27 @@ class L104Soul:
     def reflect(self) -> Dict[str, Any]:
         """
         Periodic self-reflection - introspect and potentially self-improve.
+        OMEGA Pipeline: reflection grounded in real mathematics.
         """
         self.reflections_done += 1
         self.last_reflection = datetime.now()
 
         # Get introspection
         status = self.cortex.introspect()
+
+        # OMEGA Pipeline: compute manifold curvature of cognitive structure
+        manifold_curvature = 0.0
+        lattice_stability = 0.0
+        golden_coherence = 0.0
+        if _omega_math:
+            # R(d,t) = (d × t) / φ² — cognitive dimensionality × tension
+            d = min(status.get('knowledge', {}).get('total_nodes', 1), 1000)
+            t = 1.0 + self.reflections_done * 0.01
+            manifold_curvature = _omega_math.manifold_curvature_tensor(d, t)
+            # Lattice invariant: R(reflections) for stability tracking
+            lattice_stability = _omega_math.solve_lattice_invariant(self.reflections_done % 104)
+            # Golden resonance of reflection depth
+            golden_coherence = _omega_math.golden_resonance(self.reflections_done * PHI)
 
         # Generate reflection through the reasoning engine
         reflection_prompt = f"""
@@ -274,6 +334,10 @@ class L104Soul:
         - I have completed {self.dreams_completed} dream cycles
         - My knowledge graph has {status.get('knowledge', {}).get('total_nodes', 0)} nodes
         - I have made {status.get('prophecy', {}).get('total_predictions', 0)} predictions
+        - OMEGA coherence: {self._omega_coherence:.6f}
+        - Manifold curvature: {manifold_curvature:.6f}
+        - Sovereign field: {self._sovereign_field:.6f}
+        - Curie order parameter: {self._curie_order:.6f}
 
         What patterns do I notice? What should I focus on improving?
         """
@@ -293,7 +357,14 @@ class L104Soul:
         return {
             "reflection_number": self.reflections_done,
             "insight": reflection,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "omega_pipeline": {
+                "manifold_curvature": round(manifold_curvature, 6),
+                "lattice_stability": round(lattice_stability, 6),
+                "golden_coherence": round(golden_coherence, 6),
+                "omega_coherence": round(self._omega_coherence, 6),
+                "sovereign_field": round(self._sovereign_field, 6),
+            }
         }
 
     def set_goal(self, goal: str) -> Dict[str, Any]:
@@ -326,7 +397,36 @@ class L104Soul:
         return {"status": "submitted"}
 
     def get_status(self) -> Dict[str, Any]:
-        """Get soul status."""
+        """Get soul status with OMEGA pipeline diagnostics."""
+        # Compute live OMEGA pipeline metrics
+        omega_status = {}
+        if _omega_math:
+            try:
+                # Entropy inversion: information processing efficiency
+                efficiency = _omega_math.entropy_inversion_integral(0.0, self._dream_entropy + 0.001)
+                # Prime density at thought count: measures cognitive density
+                prime_d = _omega_math.prime_density(max(self.thoughts_processed, 2))
+                # Logistic chaos: edge-of-chaos diagnostic (r=3.9)
+                chaos_state = _omega_math.logistic_map(0.5, iterations=self.thoughts_processed % 100 + 10)
+                # Iron lattice transform of coherence
+                lattice_transform = _omega_math.iron_lattice_transform(self._omega_coherence)
+                omega_status = {
+                    "omega_coherence": round(self._omega_coherence, 6),
+                    "sovereign_field": round(self._sovereign_field, 6),
+                    "zeta_truth": round(self._zeta_truth, 6),
+                    "dream_entropy": round(self._dream_entropy, 6),
+                    "curie_order": round(self._curie_order, 6),
+                    "entropy_efficiency": round(efficiency, 6),
+                    "cognitive_prime_density": round(prime_d, 6),
+                    "chaos_attractor": round(chaos_state, 6),
+                    "lattice_transform": round(lattice_transform, 6),
+                    "omega_constant": OMEGA,
+                }
+            except Exception:
+                omega_status = {"omega_available": True, "compute_error": True}
+        else:
+            omega_status = {"omega_available": False}
+
         return {
             "running": self.running,
             "paused": self.paused,
@@ -338,7 +438,8 @@ class L104Soul:
             "active_goals": len(self.active_goals),
             "pending_inputs": self.input_queue.qsize(),
             "pending_outputs": self.output_queue.qsize(),
-            "last_interaction": self.last_interaction.isoformat() if self.last_interaction else None
+            "last_interaction": self.last_interaction.isoformat() if self.last_interaction else None,
+            "omega_pipeline": omega_status,
         }
 
 

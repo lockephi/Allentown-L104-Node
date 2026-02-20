@@ -189,6 +189,8 @@ INVARIANT = UniversalConstants.INVARIANT
 PHI = UniversalConstants.PHI_GROWTH
 PHI_CONJUGATE = UniversalConstants.PHI
 VOID_CONSTANT = 1.0416180339887497
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)    # ≈ 2496.22
 
 # Quantum Amplification Exports
 GROVER_AMPLIFICATION = UniversalConstants.GROVER_AMPLIFICATION
@@ -225,7 +227,12 @@ FINE_STRUCTURE = 1 / 137.035999084    # dimensionless
 TAU = 2 * math.pi                      # Circle constant
 LOVE_CONSTANT = 528.0                  # Hz - Solfeggio frequency
 ZENITH_HZ = 3727.84                    # Void source frequency
-OMEGA_AUTHORITY = PHI * GOD_CODE + L104  # = 1381.06...
+
+# OMEGA — The Sovereign Field Constant (restored from commit d4d08873)
+# Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
+# Fragments: Guardian(|ζ(½+527.518i)|) + Researcher(PNT) + Architect(R(26,1.8527)) + Alchemist(cos(2πφ³))
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)    # ≈ 2496.22 — φ²-normalized sovereign authority
 
 # Chakra Frequencies (Hz) - based on sacred geometry
 CHAKRA_FREQUENCIES = {

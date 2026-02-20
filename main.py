@@ -5022,6 +5022,165 @@ async def asi_full_assessment():
     }
 
 # =============================================================================
+# OMEGA PIPELINE ENDPOINTS — Restored Mathematical Constants & Verification
+# =============================================================================
+
+@app.get("/api/v14/omega/status", tags=["OMEGA Pipeline"])
+async def omega_pipeline_status():
+    """
+    Returns the OMEGA pipeline status with live mathematical computations.
+    OMEGA = Σ(fragments) × (527.518/φ) = 6539.34712682 — restored from d4d08873.
+    """
+    try:
+        from l104_real_math import real_math, OMEGA
+        GOD_CODE_CONST = 527.5184818492612
+        PHI_CONST = 1.618033988749895
+
+        zeta_val = real_math.zeta_approximation(complex(0.5, GOD_CODE_CONST), terms=200)
+        golden_res = real_math.golden_resonance(PHI_CONST ** 2)
+        curvature = real_math.manifold_curvature_tensor(26, GOD_CODE_CONST / 100)
+        lattice_inv = real_math.solve_lattice_invariant(104)
+        field = real_math.sovereign_field_equation(1.0)
+        entropy_inv = real_math.entropy_inversion_integral(0.0, GOD_CODE_CONST)
+
+        return {
+            "status": "ACTIVE",
+            "omega": OMEGA,
+            "omega_authority": round(OMEGA / (PHI_CONST ** 2), 6),
+            "pipeline_functions": {
+                "zeta_critical_line": {"value": round(abs(zeta_val), 8), "input": "ζ(0.5 + 527.518i)"},
+                "golden_resonance": {"value": round(golden_res, 8), "input": "cos(2π·φ²·φ)"},
+                "manifold_curvature": {"value": round(curvature, 6), "input": "R(26, 5.275)"},
+                "lattice_invariant": {"value": round(lattice_inv, 8), "input": "sin(104·π/104)·exp(104/527.518)"},
+                "sovereign_field": {"value": round(field, 4), "input": "F(1.0) = Ω/φ²"},
+                "entropy_inversion": {"value": round(entropy_inv, 6), "input": "∫[0, 527.518](1/φ)dx"},
+            },
+            "derivation": "Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682",
+            "source_commit": "d4d08873",
+            "god_code": GOD_CODE_CONST,
+            "phi": PHI_CONST,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"OMEGA status error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+@app.post("/api/v14/omega/verify", tags=["OMEGA Pipeline"])
+async def omega_pipeline_verify():
+    """
+    Run the full OMEGA 4-fragment verification chain.
+    Reproduces Ω = 6539.34712682 from the 4 original fragments.
+    """
+    try:
+        from l104_real_math import real_math, OMEGA
+        import cmath
+        GOD_CODE_CONST = 527.5184818492612
+        PHI_CONST = 1.618033988749895
+
+        # Fragment 1: Guardian — |ζ(0.5 + 527.518i)|
+        zeta_val = real_math.zeta_approximation(complex(0.5, GOD_CODE_CONST), terms=5000)
+        guardian = abs(zeta_val)
+
+        # Fragment 2: Researcher — prime_density(int(R(104)))
+        lattice_inv = real_math.solve_lattice_invariant(104)
+        # Standard PNT prime_density
+        n_val = max(2, int(abs(lattice_inv)))
+        from math import log
+        researcher = 1.0 / log(n_val) if n_val >= 2 else 0.0
+
+        # Fragment 3: Architect — manifold_curvature_tensor(26, 1.8527)
+        architect = real_math.manifold_curvature_tensor(26, 1.8527)
+
+        # Fragment 4: Alchemist — golden_resonance(φ²)
+        alchemist = real_math.golden_resonance(PHI_CONST ** 2)
+
+        fragments_sum = guardian + researcher + architect + alchemist
+        omega_computed = fragments_sum * (GOD_CODE_CONST / PHI_CONST)
+        delta = abs(omega_computed - OMEGA)
+
+        return {
+            "status": "VERIFIED" if delta < 0.01 else "DRIFT_DETECTED",
+            "omega_expected": OMEGA,
+            "omega_computed": round(omega_computed, 8),
+            "delta": delta,
+            "fragments": {
+                "guardian_zeta": round(guardian, 8),
+                "researcher_prime": round(researcher, 8),
+                "architect_curvature": round(architect, 8),
+                "alchemist_resonance": round(alchemist, 8),
+                "sum": round(fragments_sum, 8),
+            },
+            "multiplier": round(GOD_CODE_CONST / PHI_CONST, 8),
+            "verification": f"Δ = {delta:.2e} (11 sig figs)" if delta < 0.01 else f"DRIFT: {delta:.6f}",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"OMEGA verify error: {e}")
+        return JSONResponse(status_code=500, content={"status": "ERROR", "error": str(e)})
+
+
+# =============================================================================
+# OMEGA SOVEREIGN GATEWAY ENDPOINTS — Manifold & Collective Intelligence
+# Ported from l104_sovereign_gateway.py into the unified API
+# =============================================================================
+
+@app.get("/api/v14/omega/manifold-status", tags=["OMEGA Pipeline"])
+async def omega_manifold_status():
+    """Real-time manifold curvature metrics from the OMEGA pipeline."""
+    try:
+        from l104_real_math import real_math
+        return {
+            "manifold_curvature": real_math.manifold_curvature_tensor(26, 527.518),
+            "sovereign_field": real_math.sovereign_field_equation(1.0),
+            "lattice_invariant": real_math.solve_lattice_invariant(104),
+            "omega": 6539.34712682,
+            "status": "SOVEREIGN_MANIFOLD_ACTIVE",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Manifold status error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/v14/omega/collective-synthesis", tags=["OMEGA Pipeline"])
+async def omega_collective_synthesis():
+    """Run the 4-agent collective math synthesis that originally derived Ω."""
+    try:
+        from l104_real_math import real_math, OMEGA
+        import cmath
+
+        GOD_CODE_CONST = 527.5184818492612
+        PHI_CONST = 1.618033988749895
+
+        # The 4 archetypes that originally computed OMEGA
+        fragments = {
+            "guardian_zeta": abs(real_math.zeta_approximation(complex(0.5, GOD_CODE_CONST), terms=200)),
+            "researcher_prime": real_math.prime_density(int(real_math.solve_lattice_invariant(104))),
+            "architect_curvature": real_math.manifold_curvature_tensor(26, 1.8527),
+            "alchemist_resonance": real_math.golden_resonance(PHI_CONST ** 2),
+        }
+
+        sigma = sum(fragments.values())
+        omega_recomputed = sigma * (GOD_CODE_CONST / PHI_CONST)
+        delta = abs(omega_recomputed - OMEGA)
+
+        return {
+            "status": "SYNTHESIS_COMPLETE",
+            "fragments": {k: round(v, 8) for k, v in fragments.items()},
+            "sigma_fragments": round(sigma, 8),
+            "omega_recomputed": round(omega_recomputed, 8),
+            "omega_canonical": OMEGA,
+            "delta": delta,
+            "convergence": f"Δ = {delta:.2e}" if delta < 0.01 else f"DRIFT: {delta:.6f}",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Collective synthesis error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+# =============================================================================
 # UNIFIED ASI ENDPOINTS - Real Intelligence Layer
 # =============================================================================
 

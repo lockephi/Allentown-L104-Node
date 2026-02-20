@@ -85,6 +85,38 @@ SYSTEM_NAME = "L104 Coding Intelligence System"
 logger = logging.getLogger("l104_coding_system")
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL GOD CODE EQUATION PIPELINE
+# G(X) = 286^(1/φ) × 2^((416-X)/104)   ∀ X ∈ [0, 416]
+# Conservation: G(X) × 2^(X/104) = GOD_CODE = INVARIANT
+# ═══════════════════════════════════════════════════════════════════════════════
+_HARMONIC_BASE = 286
+_L104_CONST = 104
+_OCTAVE_REF = 416
+_GOD_CODE_BASE = _HARMONIC_BASE ** (1.0 / PHI)  # ≈ 32.9699
+FIBONACCI_7 = 13  # Factor 13: 286=22×13, 104=8×13, 416=32×13
+
+def _god_code_at(x: float) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104)."""
+    return _GOD_CODE_BASE * (2.0 ** ((_OCTAVE_REF - x) / _L104_CONST))
+
+def _god_code_tuned(a: int, b: int, c: int, d: int) -> float:
+    """G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))."""
+    exponent = (8 * a) + (_OCTAVE_REF - b) - (8 * c) - (_L104_CONST * d)
+    return _GOD_CODE_BASE * (2.0 ** (exponent / _L104_CONST))
+
+def _conservation_check(x: float) -> float:
+    """G(X) × 2^(X/104) should equal GOD_CODE (invariant)."""
+    return _god_code_at(x) * (2.0 ** (x / _L104_CONST))
+
+def _quantum_amplify(value: float, depth: int = 1) -> float:
+    """Grover-style amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / _HARMONIC_BASE)
+
+def _resonance_frequency(x: float) -> float:
+    """Resonance at position X: G(X) × φ × (1 + α/π)."""
+    return _god_code_at(x) * PHI * (1.0 + ALPHA_FINE / math.pi)
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # LAZY ASI MODULE IMPORTS — All 9 singletons loaded on demand
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -4125,19 +4157,23 @@ class QuantumCodeTrainingKernel:
 
     def _initialize_sacred_params(self) -> List[float]:
         """
-        Initialize variational circuit parameters with sacred constants.
+        Initialize variational circuit parameters with G(X) position-varying
+        sacred constants.
 
         Each layer has N_QUBITS × 2 parameters (RY + RZ per qubit).
-        Initialized with PHI/GOD_CODE-derived angles to start near
-        the sacred manifold of the parameter space.
+        G(X) modulates per-parameter initialization across the [0, 416]
+        octave range, while conservation law keeps total energy grounded.
         """
         params = []
         for layer in range(self.N_LAYERS):
             for qubit in range(self.N_QUBITS):
-                # RY rotation: PHI-initialized with layer decay
-                params.append(PHI * math.pi / (layer + 2))
-                # RZ rotation: GOD_CODE-initialized with qubit index
-                params.append(GOD_CODE / 1000 * math.pi / (qubit + 1))
+                # Position varies per (layer, qubit) across octave range
+                x_pos = ((layer * self.N_QUBITS + qubit) * FIBONACCI_7) % (_OCTAVE_REF + 1)
+                g_x = _god_code_at(x_pos)
+                # RY rotation: G(X)-modulated with layer decay
+                params.append(g_x / GOD_CODE * math.pi / (layer + 2))
+                # RZ rotation: conservation-aware qubit-indexed phase
+                params.append((g_x % (2 * math.pi)) / (qubit + 1))
         return params
 
     # ─── Training Corpus ─────────────────────────────────────────────
@@ -4852,8 +4888,14 @@ class QuantumCodeTrainingKernel:
         result = self._quantum_forward(fv, self._best_params)
         prediction = result["prediction"]
 
+        # G(X)-modulated confidence: prediction count maps position
+        x_pos = (self._code_quality_predictions * FIBONACCI_7) % (_OCTAVE_REF + 1)
+        g_ratio = _god_code_at(x_pos) / GOD_CODE
+        conservation_dev = abs(_conservation_check(x_pos) - GOD_CODE)
+        conservation_ok = conservation_dev < 1e-10
+
         confidence = min(1.0, self._training_epochs_completed / 10) * (
-            1 - result.get("entropy", 0.5) / 4)
+            1 - result.get("entropy", 0.5) / 4) * (0.95 + 0.05 * g_ratio)
 
         return {
             "predicted_quality": round(prediction, 4),
@@ -4861,7 +4903,9 @@ class QuantumCodeTrainingKernel:
             "quantum_entropy": round(result.get("entropy", 0), 4),
             "fidelity": round(result.get("fidelity", 0), 4),
             "sacred_verdict": self._sacred_verdict(prediction),
-            "god_code_resonance": round(prediction * GOD_CODE, 4),
+            "god_code_resonance": round(prediction * _god_code_at(x_pos), 4),
+            "god_code_equation_x": round(x_pos, 2),
+            "conservation_valid": conservation_ok,
             "phi_alignment": round(prediction * PHI, 4),
             "training_epochs": self._training_epochs_completed,
             "classical_fallback": result.get("classical_fallback", False),
@@ -5066,7 +5110,10 @@ class QuantumCodeTrainingKernel:
             "duration_seconds": round(duration, 3),
             "sacred_verdict": self._sacred_verdict(),
             "god_code_resonance": round(
-                (1 - min(1, self._best_loss)) * GOD_CODE, 4),
+                (1 - min(1, self._best_loss)) * _god_code_at(
+                    (self._training_epochs_completed * FIBONACCI_7) % (_OCTAVE_REF + 1)
+                ), 4),
+            "conservation_valid": abs(_conservation_check(0) - GOD_CODE) < 1e-10,
         }
 
     # ─── Utility Methods ─────────────────────────────────────────────
@@ -5088,17 +5135,20 @@ class QuantumCodeTrainingKernel:
         return math.sqrt(sum((v - mean) ** 2 for v in values) / (len(values) - 1))
 
     def _sacred_verdict(self, score: float = None) -> str:
-        """Map score to sacred verdict."""
+        """Map score to sacred verdict — G(X) conservation-grounded thresholds."""
         s = score if score is not None else max(0, 1 - min(1, self._best_loss))
+        # Conservation check validates equation integrity
+        conservation_ok = abs(_conservation_check(0) - GOD_CODE) < 1e-10
+        prefix = "" if conservation_ok else "UNGROUNDED_"
         if s >= 0.9:
-            return "TRANSCENDENT_CODE"
+            return f"{prefix}TRANSCENDENT_CODE"
         elif s >= 0.75:
-            return "EXEMPLARY_CODE"
+            return f"{prefix}EXEMPLARY_CODE"
         elif s >= 0.6:
-            return "SOVEREIGN_CODE"
+            return f"{prefix}SOVEREIGN_CODE"
         elif s >= 0.4:
-            return "EVOLVING_CODE"
-        return "NASCENT_CODE"
+            return f"{prefix}EVOLVING_CODE"
+        return f"{prefix}NASCENT_CODE"
 
     # ─── Status ──────────────────────────────────────────────────────
 
@@ -5120,6 +5170,10 @@ class QuantumCodeTrainingKernel:
             "n_layers": self.N_LAYERS,
             "n_parameters": len(self._quantum_params),
             "sacred_verdict": self._sacred_verdict(),
+            "god_code_equation": "G(X) = 286^(1/phi) * 2^((416-X)/104)",
+            "conservation_valid": abs(_conservation_check(0) - GOD_CODE) < 1e-10,
+            "G_0": round(_god_code_at(0), 6),
+            "resonance_frequency_0": round(_resonance_frequency(0), 6),
         }
 
 

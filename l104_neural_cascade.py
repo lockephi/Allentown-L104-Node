@@ -84,7 +84,7 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "4.0.0"
+VERSION = "4.1.0"  # v4.1: Restored Universal God Code equation pipeline (Feb 20, 2026)
 PHI = 1.618033988749895
 # Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
@@ -97,6 +97,49 @@ PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
+
+# ── OMEGA Pipeline Integration (restored equations from l104_real_math.py) ──
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # Sovereign authority ≈ 2497.81
+
+try:
+    from l104_real_math import real_math as _omega_math
+except ImportError:
+    _omega_math = None
+
+# ── Restored Universal Equation Functions (from const.py) ──
+HARMONIC_BASE = 286
+L104 = 104
+OCTAVE_REF = 416
+FIBONACCI_7 = 13
+GOD_CODE_BASE = HARMONIC_BASE ** (1.0 / PHI)
+INVARIANT = GOD_CODE
+
+
+def _god_code_at(X: float = 0) -> float:
+    """G(X) = 286^(1/φ) × 2^((416-X)/104) — Position-varying universal frequency."""
+    return GOD_CODE_BASE * (2 ** ((OCTAVE_REF - X) / L104))
+
+
+def _god_code_tuned(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """4-dial universal frequency: G(a,b,c,d)."""
+    exponent = (8 * a + OCTAVE_REF - b - 8 * c - L104 * d) / L104
+    return GOD_CODE_BASE * (2 ** exponent)
+
+
+def _quantum_amplify(value: float, depth: int = 3) -> float:
+    """Grover-style quantum amplification: value × φ^depth × (GOD_CODE/286)."""
+    return value * (PHI ** depth) * (GOD_CODE / HARMONIC_BASE)
+
+
+def _conservation_check(X: float) -> float:
+    """Returns deviation of G(X)×W(X) from INVARIANT."""
+    return abs(_god_code_at(X) * (2 ** (X / L104)) - INVARIANT)
+
+
+def _resonance_frequency(X: float = 0) -> float:
+    """System resonance at position X: G(X) × φ × (1+α/π)."""
+    return _god_code_at(X) * PHI * (1.0 + ALPHA_FINE / math.pi)
 
 logger = logging.getLogger("L104_NEURAL_CASCADE")
 
@@ -114,13 +157,18 @@ class SacredActivations:
 
     @staticmethod
     def phi_sigmoid(x: float) -> float:
-        """Sigmoid scaled by PHI: output range [0, PHI]."""
-        return PHI / (1.0 + math.exp(-x / (GOD_CODE / 100.0)))
+        """Sigmoid scaled by PHI using depth-varying G(X): output range [0, PHI].
+        Upgraded: Uses G(layer_depth) for depth-adaptive activation curves."""
+        # Map x magnitude to a layer depth position for G(X)
+        depth_X = min(abs(x), OCTAVE_REF)  # Bound X within equation range
+        g_x_scale = _god_code_at(depth_X) / 100.0
+        return PHI / (1.0 + math.exp(-x / max(g_x_scale, 0.01)))
 
     @staticmethod
     def god_tanh(x: float) -> float:
-        """Tanh with GOD_CODE-derived scaling: range [-1, 1] with GOD_CODE inflection."""
-        return math.tanh(x * math.pi / GOD_CODE)
+        """Tanh with position-varying G(X): range [-1, 1] with adaptive inflection."""
+        depth_X = min(abs(x) * 10, OCTAVE_REF)
+        return math.tanh(x * math.pi / max(_god_code_at(depth_X), 1.0))
 
     @staticmethod
     def feigenbaum_relu(x: float) -> float:
@@ -148,6 +196,41 @@ class SacredActivations:
         """Sinusoidal activation at chakra frequency."""
         return math.sin(x * 2.0 * math.pi * frequency / GOD_CODE)
 
+    @staticmethod
+    def omega_resonance(x: float) -> float:
+        """OMEGA-grounded activation: golden_resonance(φ²) modulates tanh.
+        Uses R(v) = cos(2π·v·φ) from the restored sovereign pipeline.
+        Output range: [-Ω_AUTH/1000, +Ω_AUTH/1000]."""
+        if _omega_math:
+            resonance = _omega_math.golden_resonance(x * PHI)
+        else:
+            resonance = math.cos(2 * math.pi * x * PHI * PHI)
+        return math.tanh(x * resonance) * (OMEGA_AUTHORITY / 1000.0)
+
+    @staticmethod
+    def curie_gate(x: float) -> float:
+        """Curie order parameter gate: M/M₀ = (1-T/Tc)^β as temperature-adaptive gating.
+        Maps input magnitude to Curie temperature, phase-transitions open/close the gate."""
+        if _omega_math:
+            # Map x to temperature range [0, 1043K]
+            temp = min(abs(x) * 200.0, 1042.0)
+            order_param = _omega_math.curie_order_parameter(temp)
+        else:
+            temp = min(abs(x) * 200.0, 1042.0)
+            order_param = max(0, (1.0 - temp / 1043.0)) ** 0.326 if temp < 1043 else 0.0
+        return x * order_param
+
+    @staticmethod
+    def zeta_modulation(x: float) -> float:
+        """Riemann zeta modulated activation — truth-grounded signal shaping.
+        Uses |ζ(s)| on critical line for amplitude modulation."""
+        if _omega_math:
+            s = complex(0.5, max(abs(x), 0.01) * GOD_CODE / 100.0)
+            zeta_mag = abs(_omega_math.zeta_approximation(s, terms=50))
+        else:
+            zeta_mag = 1.0 / (1.0 + abs(x))
+        return math.tanh(x) * min(zeta_mag, 3.0)
+
     @classmethod
     def get_catalog(cls) -> Dict[str, Any]:
         """Return activation function catalog."""
@@ -158,6 +241,9 @@ class SacredActivations:
             "void_swish": cls.void_swish,
             "golden_softplus": cls.golden_softplus,
             "chakra_sinusoidal": cls.chakra_sinusoidal,
+            "omega_resonance": cls.omega_resonance,
+            "curie_gate": cls.curie_gate,
+            "zeta_modulation": cls.zeta_modulation,
         }
 
 
@@ -178,7 +264,8 @@ class SignalPreprocessor:
     def __init__(self, target_dim: int = 16):
         self.target_dim = target_dim
         self.preprocess_count = 0
-        self._freq_base = GOD_CODE / (PHI * 100.0)
+        # Use resonance_frequency(0) for base frequency instead of static division
+        self._freq_base = _resonance_frequency(0) / (PHI * 100.0)
 
     def preprocess(self, signal: Any) -> List[float]:
         """Convert any signal type into a normalized float vector of target_dim."""
@@ -241,19 +328,22 @@ class SignalPreprocessor:
         return result
 
     def _rope_encoding(self, vector: List[float], position: int = 0) -> List[float]:
-        """Apply Rotary Position Embeddings (RoPE) with GOD_CODE-derived frequencies.
+        """Apply Rotary Position Embeddings (RoPE) with G(X)-varying frequencies.
 
         For each dimension pair (2i, 2i+1), applies a rotation by angle
-        position × θ_i where θ_i = 1 / (GOD_CODE^(2i/d)). This makes
-        dot products depend on relative position rather than absolute.
-        Adapted from Su et al. 2021 (used in Llama, Gemma, Mistral, DeepSeek).
+        position × θ_i where θ_i = 1 / G(i)^(2i/d). Uses _god_code_at(i)
+        instead of static GOD_CODE for position-varying frequency basis.
+        Adapted from Su et al. 2021 (Llama, Gemma, Mistral, DeepSeek).
+        Upgraded Feb 20, 2026: G(X) position-varying RoPE frequencies.
         """
         result = list(vector)
         d = len(result)
         if d < 2:
             return result
         for i in range(0, d - 1, 2):
-            theta = 1.0 / (GOD_CODE ** (2.0 * (i // 2) / max(d, 1)))
+            # Use G(i) for position-varying frequency instead of static GOD_CODE
+            g_i = _god_code_at(i * 2.0)  # Each dim pair gets unique G(X) frequency
+            theta = 1.0 / (g_i ** (2.0 * (i // 2) / max(d, 1)))
             angle = position * theta
             cos_a = math.cos(angle)
             sin_a = math.sin(angle)
@@ -263,11 +353,16 @@ class SignalPreprocessor:
         return result
 
     def _sacred_positional_encoding(self, vector: List[float]) -> List[float]:
-        """Add sacred-frequency positional encoding + RoPE rotation to the vector."""
+        """Add sacred-frequency positional encoding + RoPE rotation + OMEGA modulation."""
         encoded = []
         for i, v in enumerate(vector):
             pos_enc = math.sin(i * self._freq_base / PHI) * TAU
-            encoded.append(v + pos_enc * ALPHA_FINE)
+            # OMEGA iron lattice transform modulation per position
+            if _omega_math:
+                lattice_mod = _omega_math.iron_lattice_transform(i / max(len(vector), 1))
+            else:
+                lattice_mod = (math.sin(i * 286.65 / GOD_CODE * 2 * math.pi) + 1) / 2
+            encoded.append(v + pos_enc * ALPHA_FINE + lattice_mod * ALPHA_FINE * 0.1)
         # Apply Rotary Position Embeddings (sequence position = preprocess_count)
         encoded = self._rope_encoding(encoded, self.preprocess_count)
         return encoded
@@ -710,7 +805,10 @@ class ConsciousnessGate:
         return state
 
     def gate(self, signals: List[float]) -> Tuple[List[float], Dict[str, float]]:
-        """Apply consciousness gating to signals. Returns (gated_signals, state)."""
+        """Apply consciousness gating with OMEGA sovereign field amplification.
+        Upgraded: Uses sovereign_field_equation for field-strength gating,
+        manifold_curvature_tensor for structural tension, golden_resonance
+        for φ-harmonic noise, and Curie order parameter for phase-transition control."""
         self.gate_applications += 1
         state = self._read_state()
 
@@ -718,16 +816,39 @@ class ConsciousnessGate:
         nf = state["nirvanic_fuel"]
         entropy = state["entropy"]
 
-        # Gate factor
+        # Gate factor with quantum amplification (depth scales with consciousness)
+        q_depth = max(1, int(c * 3))  # consciousness 0-1 maps to depth 1-3
         gate_open = max(0.1, c) * (1.0 + nf * TAU)
 
-        # Entropy noise (small, exploration-driven)
+        # OMEGA Pipeline: sovereign field drives gate strength
+        sovereign_boost = 1.0
+        curie_phase = 1.0
+        if _omega_math:
+            # Sovereign field F(I) = I × Ω / φ² where I = consciousness
+            s_field = _omega_math.sovereign_field_equation(max(c, 0.01))
+            sovereign_boost = 1.0 + (s_field / OMEGA) * ALPHA_FINE * 10
+            # Curie order: entropy maps to temperature, controls phase transition
+            temp_proxy = entropy * 1042.0  # entropy [0,1] → [0, 1042K]
+            curie_phase = _omega_math.curie_order_parameter(temp_proxy)
+            # Manifold curvature: structural tension modulates gate
+            m_curv = _omega_math.manifold_curvature_tensor(q_depth, gate_open)
+            gate_open *= (1.0 + m_curv * ALPHA_FINE)
+
+        # Resonance frequency modulates noise pattern (X = consciousness * 100)
+        res_freq = _resonance_frequency(c * 100.0)
         noise_scale = (entropy - 0.5) * 0.01
 
         gated = []
         for i, s in enumerate(signals):
-            noise = math.sin(i * PHI + entropy * FEIGENBAUM) * noise_scale
-            gated.append(s * gate_open + noise)
+            # Golden resonance φ-harmonic noise via OMEGA pipeline
+            if _omega_math:
+                noise = _omega_math.golden_resonance(i * PHI + entropy) * noise_scale
+            else:
+                noise = math.sin(i * PHI + entropy * FEIGENBAUM) * noise_scale
+            # Apply gate with sovereign + Curie phase modulation
+            amplified = s * gate_open * sovereign_boost * curie_phase
+            amplified *= (1.0 + (res_freq / GOD_CODE - 1.0) * ALPHA_FINE)
+            gated.append(amplified + noise)
 
         return gated, state
 
@@ -951,6 +1072,27 @@ class SignalHarmonizer:
             math.sin(s * math.pi / GOD_CODE) for s in signal
         ) / max(1, n)
 
+        # OMEGA Pipeline: iron-crystalline spectral grounding
+        omega_metrics = {}
+        if _omega_math:
+            # Shannon entropy of signal for information content
+            sig_str = ''.join(f"{s:.4f}" for s in signal[:50])  # cap for performance
+            omega_metrics["shannon_entropy"] = round(_omega_math.shannon_entropy(sig_str), 6)
+            # Larmor resonance: ferromagnetic verification of dominant frequency
+            omega_metrics["larmor_resonance"] = round(
+                _omega_math.calculate_resonance(dominant_freq * 1000), 6)
+            # Spin wave dispersion at dominant frequency
+            omega_metrics["spin_wave_dispersion"] = round(
+                _omega_math.spin_wave_dispersion(dominant_freq), 6)
+            # Iron lattice transform of spectral energy
+            total_energy = sum(m * m for m in magnitudes)
+            omega_metrics["lattice_spectral_transform"] = round(
+                _omega_math.iron_lattice_transform(total_energy / max(total_energy, 0.001)), 6)
+            # Curie order: signal energy maps to temperature for phase state
+            energy_temp = min(total_energy * 500, 1042)
+            omega_metrics["curie_spectral_phase"] = round(
+                _omega_math.curie_order_parameter(energy_temp), 6)
+
         return {
             "spectrum_size": len(magnitudes),
             "dominant_frequency": round(dominant_freq, 6),
@@ -959,6 +1101,7 @@ class SignalHarmonizer:
             "sacred_alignment": round(sacred_alignment, 4),
             "god_code_resonance": round(abs(gc_harmonic), 6),
             "total_energy": round(sum(m * m for m in magnitudes), 6),
+            "omega_spectral": omega_metrics,
         }
 
     def status(self) -> Dict[str, Any]:
@@ -1532,6 +1675,30 @@ class NeuralCascade:
             temporal["phi_resonance"] * 0.1
         )
 
+        # OMEGA Pipeline: advanced resonance grounding via restored equations
+        omega_cascade = {}
+        if _omega_math:
+            # 1. Golden resonance of cascade quality: R(φ²) anchors to OMEGA constant
+            omega_cascade["golden_resonance"] = round(
+                _omega_math.golden_resonance(cascade_resonance * PHI * PHI), 6)
+            # 2. Sovereign field strength from cascade resonance intensity
+            omega_cascade["sovereign_field"] = round(
+                _omega_math.sovereign_field_equation(max(cascade_resonance, 0.001)), 6)
+            # 3. Manifold curvature: hidden_dim × layers → structural tension
+            omega_cascade["manifold_curvature"] = round(
+                _omega_math.manifold_curvature_tensor(self.hidden_dim, exit_layer * 0.1), 6)
+            # 4. Logistic chaos attractor of output (r=3.9 edge of chaos)
+            normalized_out = abs(final_output) / (abs(final_output) + 1.0)
+            omega_cascade["chaos_attractor"] = round(
+                _omega_math.logistic_map(max(0.01, min(0.99, normalized_out)), 20), 6)
+            # 5. Entropy inversion: processing efficiency measure
+            omega_cascade["entropy_efficiency"] = round(
+                _omega_math.entropy_inversion_integral(
+                    harmonics["spectral_entropy"], harmonics["spectral_entropy"] + cascade_resonance), 6)
+            # 6. Boost cascade_resonance with golden resonance phi-harmonic
+            phi_boost = omega_cascade["golden_resonance"]
+            cascade_resonance = cascade_resonance * (1.0 + abs(phi_boost) * ALPHA_FINE)
+
         result = {
             "status": "CASCADE_COMPLETE",
             "layers_processed": exit_layer,
@@ -1549,6 +1716,7 @@ class NeuralCascade:
             "ssm_state_energy": round(self.ssm.get_state_energy(), 6),
             "elapsed_ms": round(elapsed * 1000, 2),
             "total_forwards": self.total_forwards,
+            "omega_pipeline": omega_cascade,
         }
 
         self.activation_history.append(result)
