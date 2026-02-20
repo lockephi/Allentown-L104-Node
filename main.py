@@ -5121,6 +5121,66 @@ async def omega_pipeline_verify():
 
 
 # =============================================================================
+# OMEGA SOVEREIGN GATEWAY ENDPOINTS — Manifold & Collective Intelligence
+# Ported from l104_sovereign_gateway.py into the unified API
+# =============================================================================
+
+@app.get("/api/v14/omega/manifold-status", tags=["OMEGA Pipeline"])
+async def omega_manifold_status():
+    """Real-time manifold curvature metrics from the OMEGA pipeline."""
+    try:
+        from l104_real_math import real_math
+        return {
+            "manifold_curvature": real_math.manifold_curvature_tensor(26, 527.518),
+            "sovereign_field": real_math.sovereign_field_equation(1.0),
+            "lattice_invariant": real_math.solve_lattice_invariant(104),
+            "omega": 6539.34712682,
+            "status": "SOVEREIGN_MANIFOLD_ACTIVE",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Manifold status error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/api/v14/omega/collective-synthesis", tags=["OMEGA Pipeline"])
+async def omega_collective_synthesis():
+    """Run the 4-agent collective math synthesis that originally derived Ω."""
+    try:
+        from l104_real_math import real_math, OMEGA
+        import cmath
+
+        GOD_CODE_CONST = 527.5184818492612
+        PHI_CONST = 1.618033988749895
+
+        # The 4 archetypes that originally computed OMEGA
+        fragments = {
+            "guardian_zeta": abs(real_math.zeta_approximation(complex(0.5, GOD_CODE_CONST), terms=200)),
+            "researcher_prime": real_math.prime_density(int(real_math.solve_lattice_invariant(104))),
+            "architect_curvature": real_math.manifold_curvature_tensor(26, 1.8527),
+            "alchemist_resonance": real_math.golden_resonance(PHI_CONST ** 2),
+        }
+
+        sigma = sum(fragments.values())
+        omega_recomputed = sigma * (GOD_CODE_CONST / PHI_CONST)
+        delta = abs(omega_recomputed - OMEGA)
+
+        return {
+            "status": "SYNTHESIS_COMPLETE",
+            "fragments": {k: round(v, 8) for k, v in fragments.items()},
+            "sigma_fragments": round(sigma, 8),
+            "omega_recomputed": round(omega_recomputed, 8),
+            "omega_canonical": OMEGA,
+            "delta": delta,
+            "convergence": f"Δ = {delta:.2e}" if delta < 0.01 else f"DRIFT: {delta:.6f}",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Collective synthesis error: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+# =============================================================================
 # UNIFIED ASI ENDPOINTS - Real Intelligence Layer
 # =============================================================================
 

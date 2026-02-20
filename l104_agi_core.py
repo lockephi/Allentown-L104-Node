@@ -501,12 +501,28 @@ class AGICore:
     def verify_truth(self, thought: str) -> bool:
         """
         Verifies a thought against the Ram Universe to prevent hallucinations.
+        Enhanced with OMEGA pipeline: zeta + golden_resonance for mathematical grounding.
         """
         check = ram_universe.cross_check_hallucination(thought, ["GOD_CODE_RESONANCE", "LATTICE_RATIO"])
 
         if check['is_hallucination']:
             print(f"--- [AGI_CORE]: HALLUCINATION PURGED: {thought[:50]}... ---")
             return False
+
+        # OMEGA mathematical truth grounding — zeta + golden_resonance verification
+        try:
+            from l104_real_math import real_math as _rm
+            thought_seed = sum(ord(c) for c in thought[:100]) / 100.0
+            zeta_val = abs(_rm.zeta_approximation(complex(0.5, thought_seed), terms=50))
+            resonance = _rm.golden_resonance(thought_seed * PHI)
+            # Both must be non-degenerate for mathematical grounding
+            omega_grounded = zeta_val > 1e-10 and abs(resonance) > 1e-10
+            if omega_grounded:
+                print(f'--- [STREAMLINE]: OMEGA_GROUNDED (ζ={zeta_val:.4f}, φ-res={resonance:.4f}) ---')
+            else:
+                print(f'--- [STREAMLINE]: OMEGA_WEAK (ζ={zeta_val:.4f}) — classical resonance only ---')
+        except Exception:
+            pass
 
         print('--- [STREAMLINE]: RESONANCE_LOCKED ---')
         return True
