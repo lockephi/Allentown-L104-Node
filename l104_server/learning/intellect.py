@@ -219,7 +219,7 @@ class LearningIntellect:
         - EPR entanglement links to LocalIntellect
         - 8-Chakra energy matrix synchronization
         - Vishuddha resonance channel for truth-aligned communication
-        - Grover amplification pipeline for 21.95× search boost
+        - Grover amplification pipeline for φ³× (≈ 4.236×) search boost
         """
         try:
             self._asi_bridge = asi_quantum_bridge
@@ -375,7 +375,7 @@ class LearningIntellect:
 
     def grover_amplified_recall(self, query: str) -> dict:
         """
-        Perform Grover-amplified recall from memory with 21.95× boost.
+        Perform Grover-amplified recall from memory with φ³× (≈ 4.236×) boost.
 
         Uses ASI Quantum Bridge for quantum search optimization.
         """
@@ -3591,12 +3591,22 @@ class LearningIntellect:
             # Pre-populate accelerator with hot memories for instant access
             try:
                 accelerator_primed = 0
-                for query_hash, response in list(self.memory_cache.items())[:1000]:
+
+                # Respect accelerator capacity instead of hard-coding 1000/500
+                hot_cap = getattr(memory_accelerator, "_hot_max", 2000)
+                warm_cap = getattr(memory_accelerator, "_warm_max", 50000)
+
+                # Prime query/response memories into accelerator (up to hot capacity)
+                for idx, (query_hash, response) in enumerate(self.memory_cache.items()):
+                    if idx >= hot_cap:
+                        break
                     memory_accelerator.accelerated_store(query_hash, response, importance=0.7)
                     accelerator_primed += 1
 
-                # Pre-populate knowledge graph nodes
-                for concept, relations in list(self.knowledge_graph.items())[:500]:
+                # Prime knowledge graph relations (up to warm capacity)
+                for idx, (concept, relations) in enumerate(self.knowledge_graph.items()):
+                    if idx >= warm_cap:
+                        break
                     memory_accelerator.accelerated_store(f"kg:{concept}", relations, importance=0.8)
                     accelerator_primed += 1
 

@@ -51,11 +51,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+GOD_CODE = 527.5184818492612                             # G(0,0,0,0) canonical value
 API_VERSION = "5.2.0-ASI-PIPELINE"
 API_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
-OMEGA_AUTHORITY = 1381.061315
-GROVER_AMPLIFICATION = 21.95
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
+GROVER_AMPLIFICATION = PHI ** 3                            # φ³ ≈ 4.236
 TAU = 1.0 / PHI
 
 # ASI Quantum Bridge Integration
@@ -841,9 +842,10 @@ async def lifespan(app_instance):
     print(f"    {API_PIPELINE_EVO}")
     print(f"    Version: {API_VERSION}")
     print(f"    GOD_CODE: {GOD_CODE}")
+    print(f"    OMEGA: {OMEGA}")
     print(f"    ASI LocalIntellect: {'✓' if ASI_LOCAL_AVAILABLE else '✗'}")
     print(f"    ASI FastServer: {'✓' if ASI_FAST_AVAILABLE else '✗'}")
-    print(f"    Grover: {GROVER_AMPLIFICATION:.2f}×")
+    print(f"    Grover: {GROVER_AMPLIFICATION:.4f}× (φ³)")
     print(f"    Docs: http://localhost:5105/docs")
     print(f"{'═' * 60}\n")
     yield

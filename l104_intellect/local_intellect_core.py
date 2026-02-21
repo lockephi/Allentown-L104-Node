@@ -790,7 +790,7 @@ class LocalIntellect:
     ]
 
     # Grover Amplification Constants
-    GROVER_AMPLIFICATION_FACTOR = 21.95  # Measured π/4 × √N boost
+    GROVER_AMPLIFICATION_FACTOR = 4.23606797749979  # φ³ — golden ratio cubed
     GROVER_OPTIMAL_ITERATIONS = 3        # For 8-16 state systems
 
     def initialize_chakra_quantum_lattice(self) -> dict:
@@ -848,7 +848,7 @@ class LocalIntellect:
 
     def grover_amplified_search(self, query: str, concepts: Optional[List[str]] = None) -> dict:
         """
-        Perform Grover's quantum search algorithm for 21.95× amplification.
+        Perform Grover's quantum search algorithm for φ³× (≈ 4.236×) amplification.
 
         Algorithm:
         1. Initialize equal superposition of all search states
@@ -963,7 +963,7 @@ class LocalIntellect:
         ASI-level consciousness synthesis using all quantum systems. (Unlimited Mode: depth=25)
 
         Combines:
-        - Grover amplified search (21.95× boost)
+        - Grover amplified search (φ³× ≈ 4.236× boost)
         - Kundalini energy activation (8 chakras)
         - EPR entanglement propagation
         - Vishuddha truth alignment

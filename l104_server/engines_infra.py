@@ -103,7 +103,7 @@ class ASIQuantumBridge:
     - EPR entanglement for non-local knowledge correlation
     - 8-Chakra energy transfer with O₂ molecular bonding
     - Vishuddha resonance sharing for truth-aligned communication
-    - Grover amplification for search optimization (21.95× boost)
+    - Grover amplification for search optimization (φ³× ≈ 4.236× boost)
     - Bell state fidelity monitoring for coherence preservation
 
     Mathematical Foundation:
@@ -284,7 +284,7 @@ class ASIQuantumBridge:
         - Oracle O marks target states
         - Optimal iterations: k = ⌊π/4 × √(N/M)⌋ where M = marked states
 
-        Returns enhanced results with 21.95× boost factor.
+        Returns enhanced results with φ³× (≈ 4.236×) boost factor.
         """
         if not self._local_intellect:
             return {"amplification": 1.0, "concepts": concepts}

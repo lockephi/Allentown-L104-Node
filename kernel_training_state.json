@@ -118,7 +118,7 @@
   "asi_quantum_state": {
     "version": "v12.0-ASI-QUANTUM",
     "grover_amplification_active": true,
-    "grover_boost_factor": 21.95,
+    "grover_boost_factor": 4.23606797749979,
     "kundalini_flow": 6.0667,
     "o2_molecular_coherence": 0.7268
   },

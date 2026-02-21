@@ -28,8 +28,8 @@ class ASIQuantumBridgeSwift {
 
     // PHI, GOD_CODE — use globals from L01_Constants
     // EVO_55: Use L01's GROVER_AMPLIFICATION (PHI³) for consistency
-    // Bridge-specific amplification factor preserved as local constant
-    let BRIDGE_GROVER_BOOST: Double = 21.95
+    // Bridge-specific amplification factor: φ³ ≈ 4.236
+    let BRIDGE_GROVER_BOOST: Double = 4.23606797749979
 
     // ─── STATE ───
     var currentParameters: [String: Double] = [:]

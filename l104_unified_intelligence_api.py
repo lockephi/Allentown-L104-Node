@@ -81,10 +81,12 @@ except ImportError:
     ASI_FAST_SERVER_AVAILABLE = False
 
 # ASI Constants
-GROVER_AMPLIFICATION = 21.95
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+GOD_CODE = 527.5184818492612                             # G(0,0,0,0) canonical value
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
+GROVER_AMPLIFICATION = PHI ** 3                            # φ³ ≈ 4.236
 UNIFIED_API_VERSION = "104.0.0"
 UNIFIED_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 

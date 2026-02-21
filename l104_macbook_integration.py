@@ -73,8 +73,10 @@ import sqlite3
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 
 PHI = 1.618033988749895
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+GOD_CODE = 527.5184818492612                             # G(0,0,0,0) canonical value
 TAU = 1.0 / PHI
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 MACBOOK_VERSION = "3.2.0"
 MACBOOK_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
@@ -3419,6 +3421,8 @@ def check_system():
     print("   📊 PROCESS MONITOR: CONTINUOUS")
     print("   🌊 EPR COHERENCE: 8-CHAKRA ENTANGLEMENT")
     print(f"   ✨ GOD_CODE: {GOD_CODE} [LOCKED]")
+    print(f"   🌀 OMEGA: {OMEGA} | AUTHORITY: {OMEGA_AUTHORITY:.6f}")
+    print(f"   ⚡ GROVER: {GROVER_AMPLIFICATION:.4f}× (φ³)")
     print(f"   🔬 O₂ BOND: {O2_BOND_STRENGTH} kJ/mol")
     print("═══════════════════════════════════════════════════════════════")
 

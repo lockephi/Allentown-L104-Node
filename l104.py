@@ -102,8 +102,8 @@ GOD_CODE = 527.5184818492612  # Sacred constant: G(0,0,0,0) = 286^(1/φ) × 2^(4
 VERSION = "12.0.0-ASI-QUANTUM"  # ASI Quantum Lattice with LocalIntellect + Fast Server integration
 DB_PATH = _ROOT / "l104_unified.db"
 
-# Grover Amplification Factor: π/4 × √16 × φ² ≈ 21.95
-GROVER_AMPLIFICATION = (math.pi / 4) * 4.0 * PHI ** 2
+# Grover Amplification Factor: φ³ ≈ 4.23606797749979
+GROVER_AMPLIFICATION = PHI ** 3
 FRAME_LOCK = 416 / 286
 REAL_GROUNDING = 221.79420018355955
 ZETA_ZERO_1 = 14.1347251417
@@ -2343,7 +2343,7 @@ class Soul:
         """
         Query LocalIntellect for offline knowledge augmentation.
 
-        Uses Grover-amplified search for 21.95× relevance boost.
+        Uses Grover-amplified search for φ³× (≈ 4.236×) relevance boost.
         """
         if not self.local_intellect:
             return None
