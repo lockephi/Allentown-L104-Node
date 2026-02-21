@@ -113,7 +113,6 @@ final class EmotionalCore {
         // ─── NLTagger LEMMA + LEXICAL CLASS (real NLP) ───
         let lexTagger = NLTagger(tagSchemes: [.lexicalClass])
         lexTagger.string = text
-        var questionCount = 0
         var verbCount = 0
         lexTagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .lexicalClass) { tag, _ in
             if tag == .verb { verbCount += 1 }

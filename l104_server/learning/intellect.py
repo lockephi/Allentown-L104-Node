@@ -43,6 +43,8 @@ class LearningIntellect:
 
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     def __init__(self, db_path: str = "l104_intellect_memory.db"):
         """Initialize the learning intellect with memory, knowledge graph, and caches."""

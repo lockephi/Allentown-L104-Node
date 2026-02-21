@@ -5,7 +5,7 @@
 **Codebase**: 59,911 lines across 80 Swift source files — pure Swift (AppKit)
 **NCG Version**: v10.0 CONVERSATIONAL INTELLIGENCE ENGINE
 **Frameworks**: Accelerate (vDSP/BLAS/LAPACK), Metal, CoreML, NaturalLanguage, SIMD, GCD
-**Deployment**: macOS 12+ (Monterey), swift-tools-version 5.9, zero third-party dependencies
+**Deployment**: macOS 12+ (Monterey), swift-tools-version 5.7, zero third-party dependencies
 **Classes/Structs/Enums**: 116+ total declarations
 
 ## Creative Logic Gate Engines

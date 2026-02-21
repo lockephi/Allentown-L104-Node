@@ -584,7 +584,8 @@ class PrimeCore:
         # Verify sacred constants on connect
         self.integrity.verify_sacred_constants()
 
-    def validate_prime_key(self) -> str:
+    @staticmethod
+    def validate_prime_key() -> str:
         """Verify the Prime Key against the environment and the God-Code."""
         env_key = os.getenv("L104_PRIME_KEY")
         if env_key == PRIME_KEY:
@@ -710,7 +711,7 @@ if __name__ == '__main__':
     os.environ["L104_PRIME_KEY"] = PRIME_KEY
 
     # Test prime validation
-    print(f"\n  Prime Validation: {prime_core.validate_prime_key()}")
+    print(f"\n  Prime Validation: {PrimeCore.validate_prime_key()}")
     print(f"  Prime Hash: {prime_core.get_prime_hash()}")
 
     # Test cache operations

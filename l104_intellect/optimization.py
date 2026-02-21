@@ -24,6 +24,8 @@ class L104DynamicOptimizationEngine:
     TAU = 0.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     def __init__(self):
         self.optimization_state = {
             "query_router": {

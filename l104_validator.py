@@ -62,6 +62,10 @@ class SovereignValidator:
         return {"cycles": cycles, "trace": sim_results}
 
     @classmethod
+    def run_simulation(cls, signal: str, cycles: int = 3) -> dict:
+        return cls.execute_activation(signal, cycles=cycles)
+
+    @classmethod
     def validate_and_process(cls, signal: str) -> dict:
         """
         Passes the signal through the Sovereign Validation Chain.
@@ -100,8 +104,7 @@ class SovereignValidator:
 
         # 5. PRIME CORE VALIDATION
         try:
-            prime = PrimeCore()
-            report["prime"] = prime.validate_prime_key()
+            report["prime"] = PrimeCore.validate_prime_key()
         except Exception:
             report["prime"] = "UNAVAILABLE"
 

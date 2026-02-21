@@ -11,6 +11,7 @@ works identically to the original:
 from .constants import (
     AGI_CORE_VERSION, AGI_PIPELINE_EVO,
     PHI, GOD_CODE, TAU, FEIGENBAUM, ALPHA_FINE, VOID_CONSTANT,
+    OMEGA, OMEGA_AUTHORITY,
     QISKIT_AVAILABLE,
 )
 

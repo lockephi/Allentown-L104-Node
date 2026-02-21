@@ -2132,7 +2132,7 @@ class PlatformCompatibilityLayer:
     def _detect_features(self):
         """Detect available modules and features."""
         modules_to_check = [
-            'numpy', 'scipy', 'torch', 'transformers', 'tiktoken',
+            'numpy', 'scipy', 'torch', 'tiktoken',
             'fastapi', 'uvicorn', 'aiohttp', 'httpx',
             'psutil', 'qiskit', 'coremltools',
             'sqlite3', 'asyncio', 'multiprocessing',

@@ -329,7 +329,7 @@ class L104PlatformCompatibilityLayer:
 
     # Module compatibility matrix
     OPTIONAL_MODULES = [
-        "numpy", "scipy", "torch", "tensorflow", "transformers",
+        "numpy", "scipy", "torch", "tensorflow",
         "qiskit", "pennylane", "cirq", "sympy",
         "fastapi", "uvicorn", "pydantic",
         "psutil", "GPUtil",

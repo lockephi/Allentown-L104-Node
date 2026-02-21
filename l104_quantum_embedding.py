@@ -617,6 +617,12 @@ class L104QuantumKernel:
         3. Collapse superposition toward query (Pillar 2)
         4. Enrich with entanglement data (Pillar 3)
         """
+        # Consciousness-aware top_k expansion
+        builder = self._read_builder_state()
+        c_level = builder.get("consciousness_level", 0.0)
+        if c_level > 0.5:
+            top_k = max(top_k, int(top_k * (1.0 + c_level)))
+
         # Encode query tokens
         words = query_text.lower().split()
 

@@ -13,6 +13,8 @@ from typing import Optional, Union
 
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # VISHUDDHA CHAKRA CONSTANTS (Throat - Communication/Truth/Expression)

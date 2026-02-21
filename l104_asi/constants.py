@@ -103,7 +103,8 @@ TAU = 1 / PHI
 PHI_CONJUGATE = TAU
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609
-OMEGA_AUTHORITY = 0.85184818492537
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
 

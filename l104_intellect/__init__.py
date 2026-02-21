@@ -15,7 +15,7 @@ from .cache import LRUCache, _RESPONSE_CACHE, _CONCEPT_CACHE, _RESONANCE_CACHE
 
 # ── Numerics + PHI/GOD_CODE (lines 240-520) ──
 from .numerics import (
-    PHI, GOD_CODE,
+    PHI, GOD_CODE, OMEGA, OMEGA_AUTHORITY,
     SovereignNumerics, sovereign_numerics,
 )
 # Re-export VISHUDDHA/ENTANGLEMENT/MATH constants from numerics
