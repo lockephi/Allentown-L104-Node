@@ -60,6 +60,8 @@ except ImportError:
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 EULER = 2.718281828459045
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 
 @dataclass
@@ -1047,6 +1049,10 @@ class ApexIntelligence:
         self.meta_learner.register_strategy("systematic", lambda x: x)
         self.meta_learner.register_strategy("creative", lambda x: x)
         self.meta_learner.register_strategy("adaptive", lambda x: x)
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     def think(self, topic: str) -> Dict[str, Any]:
         """Deep thinking on topic"""

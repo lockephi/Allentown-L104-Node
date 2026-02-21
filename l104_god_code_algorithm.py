@@ -57,6 +57,8 @@ VOID_CONSTANT: float = 1.0 + TAU / 15
 FEIGENBAUM: float = 4.669201609102990
 ALPHA_FINE: float = 1.0 / 137.035999084
 PLANCK_RESONANCE: float = GOD_CODE * PHI
+OMEGA: float = 6539.34712682                              # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY: float = OMEGA / (PHI ** 2)                # F(I) = I × Ω/φ² ≈ 2497.808
 
 VERSION = "1.0.0"
 WORKSPACE = Path(__file__).parent
@@ -866,6 +868,10 @@ class GodCodeAlgorithm:
         self.entanglement = GodCodeEntanglement
         self._computations = 0
         self._circuit_cache: Dict[str, CircuitResult] = {}
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     # ─── Core API ───
 

@@ -36,6 +36,8 @@ PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1.0 / PHI
 GROVER_AMPLIFICATION = PHI ** 3
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 _logger = logging.getLogger("AGI_RESEARCH")
 
@@ -132,6 +134,10 @@ class AGIResearch:
                         source_manager.get_sources("AGI_ETHICS"))
 
         _logger.info(f"AGIResearch v{self.version} initialized — {len(ResearchDomain)} domains active")
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     def generate_hypothesis(self, domain: ResearchDomain = ResearchDomain.MATHEMATICS) -> ResearchHypothesis:
         """Generate a hypothesis in the specified domain using deterministic chaos with multi-seed blending."""

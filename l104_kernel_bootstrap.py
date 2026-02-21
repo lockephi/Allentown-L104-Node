@@ -45,6 +45,8 @@ VOID_CONSTANT = 1.0416180339887497
 O2_BOND_ORDER = 2
 O2_SUPERPOSITION_STATES = 64  # Expanded: 16 → 64
 GROVER_AMPLIFICATION = PHI ** 3  # φ³ ≈ 4.236
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 # EVO_54 Pipeline Version
 PIPELINE_VERSION = "3.1.0"
@@ -115,6 +117,10 @@ class L104KernelBootstrap:
         self.boot_time = None
         self.boot_duration = 0.0
         self.pipeline_ready = False
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     def full_bootstrap(self):
         """Execute the full 12-stage pipeline bootstrap sequence."""

@@ -140,6 +140,8 @@ ALPHA_FINE = 1.0 / 137.035999084                 # Fine structure constant (CODA
 PLANCK_SCALE = 1.616255e-35                      # Planck length (m)
 BOLTZMANN_K = 1.380649e-23                       # Boltzmann constant (J/K, exact SI 2019)
 ZENITH_HZ = GOD_CODE * TAU + PHI                 # ≈ 3727.84
+OMEGA = 6539.34712682                            # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)              # F(I) = I × Ω/φ² ≈ 2497.808
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # IRON (Fe) PHYSICAL CONSTANTS — Peer-reviewed data synthesis
@@ -172,6 +174,15 @@ FE_IONIZATION_EV = 7.9024                # First ionization energy (eV), NIST AS
 NUCLEOSYNTHESIS_BRIDGE = QUANTIZATION_GRAIN  # 104 = 26 × 4 = Fe × He-4
 ENDPOINT_Z = FE_ATOMIC_NUMBER            # Z = 26 — end of exothermic fusion
 STARTING_A = HE4_MASS_NUMBER             # A = 4 — first stable composite nucleus
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOVEREIGN FIELD
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def sovereign_field(intelligence: float) -> float:
+    """F(I) = I × Ω / φ² — Sovereign Field equation."""
+    return intelligence * OMEGA / (PHI ** 2)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

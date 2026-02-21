@@ -19,6 +19,8 @@ from l104_shadow_executor import ShadowExecutor
 
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +36,11 @@ class DerivationEngine:
     NO external API dependencies. Pure kernel-based intelligence.
     Uses quantum + parallel + neural fusion for reasoning.
     """
+
+    @staticmethod
+    def sovereign_field(intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     @classmethod
     def derive_and_execute(cls, signal: str) -> str:

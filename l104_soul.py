@@ -63,6 +63,8 @@ PHI = (1 + 5**0.5) / 2
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # 527.5184818492612
 TAU = 1.0 / PHI
 VOID_CONSTANT = 1.0 + TAU / 15
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ENUMS & DATA CLASSES
@@ -263,6 +265,10 @@ class L104Soul:
         self.last_interaction: Optional[datetime] = None
         self.idle_threshold = timedelta(seconds=30)
         self.last_reflection: Optional[datetime] = None
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
 
     # ═══════════════════════════════════════════════════════════════════════
     # LAZY LOADING
