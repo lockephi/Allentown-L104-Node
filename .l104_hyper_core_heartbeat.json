@@ -1,10 +1,10 @@
 {
   "version": "4.0.0",
-  "timestamp": 1771282791.6340477,
-  "write_count": 1,
-  "pulse": 5,
-  "health": 0.99,
-  "resonance": 0.5358,
-  "trend": "WARMING_UP",
+  "timestamp": 1771628056.16913,
+  "write_count": 12,
+  "pulse": 60,
+  "health": 0.97,
+  "resonance": 0.4501,
+  "trend": "STABLE",
   "running": true
 }

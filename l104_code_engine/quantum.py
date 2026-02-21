@@ -1,5 +1,6 @@
 """L104 Code Engine — Domain D: Quantum Intelligence."""
 from .constants import *
+from .analyzer import CodeAnalyzer
 
 class QuantumCodeIntelligenceCore:
     """
@@ -693,7 +694,14 @@ class QuantumCodeIntelligenceCore:
             weights = [PHI ** (i / len(dims)) for i in range(len(dims))]
             quality = sum(d * w for d, w in zip(dims, weights)) / sum(weights)
             return {"quantum": False, "reconstructed_quality": round(quality, 6),
-                    "dimensions": dict(zip(names, [round(d, 4) for d in dims]))}
+                    "dimensions": dict(zip(names, [round(d, 4) for d in dims])),
+                    "confidence": round(min(1.0, quality * PHI), 6),
+                    "verdict": (
+                        "EXCELLENT" if quality > 0.85 else
+                        "GOOD" if quality > 0.7 else
+                        "ACCEPTABLE" if quality > 0.5 else
+                        "NEEDS_IMPROVEMENT"
+                    )}
 
         try:
             dm = DensityMatrix(sv)

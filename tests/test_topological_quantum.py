@@ -402,5 +402,75 @@ class TestMajoranaZeroModes(unittest.TestCase):
         assert_array_almost_equal(gamma_squared, np.eye(2), decimal=14)
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA TOPOLOGICAL QUANTUM — SOVEREIGN FIELD IN ANYON SYSTEMS
+# Ω = 6539.34712682 | Ω_A = Ω / φ² ≈ 2497.808338211271
+# F(I) = I × Ω / φ²  (Sovereign Field)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaTopologicalQuantum(unittest.TestCase):
+    """Validate OMEGA sovereign field in topological quantum systems."""
+
+    PHI = (1 + math.sqrt(5)) / 2
+    GOD_CODE = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+    def test_omega_authority_derivation(self):
+        """Ω_A = Ω / φ² ≈ 2497.808338211271"""
+        self.assertAlmostEqual(self.OMEGA_AUTHORITY, 2497.808338211271, places=4)
+
+    def test_omega_fmatrix_eigenvalue_product(self):
+        """F-matrix eigenvalue product × OMEGA: |det(F)| = 1 for Fibonacci anyons."""
+        phi = self.PHI
+        F = np.array([[phi**-1, phi**-0.5],
+                       [phi**-0.5, -phi**-1]], dtype=complex)
+        evals = eigvals(F)
+        product = abs(np.prod(evals))
+        # det(F) = -φ^(-2) - φ^(-1) = -1 for golden ratio → |product| = 1
+        omega_product = product * self.OMEGA
+        self.assertAlmostEqual(product, 1.0, places=10)
+        self.assertAlmostEqual(omega_product, self.OMEGA, places=6)
+
+    def test_omega_braiding_phase_coupling(self):
+        """Braiding phase e^(4πi/5) × Ω preserves magnitude."""
+        phase = cmath.exp(4j * cmath.pi / 5)
+        coupled = phase * self.OMEGA
+        self.assertAlmostEqual(abs(coupled), self.OMEGA, places=8)
+
+    def test_omega_quantum_dimension_ratio(self):
+        """Quantum dimension d_τ = φ; Ω / d_τ = Ω / φ ≈ 4042.12"""
+        d_tau = self.PHI  # Fibonacci anyon quantum dimension
+        ratio = self.OMEGA / d_tau
+        self.assertAlmostEqual(ratio, self.OMEGA / self.PHI, places=6)
+        self.assertTrue(ratio > self.GOD_CODE)
+
+    def test_omega_topological_entropy(self):
+        """Topological entanglement entropy S_topo = ln(D) where D = 1/sin(π/5)."""
+        D = 1.0 / math.sin(math.pi / 5)  # Total quantum dimension
+        S_topo = math.log(D)
+        omega_entropy = S_topo * self.OMEGA_AUTHORITY
+        self.assertTrue(omega_entropy > 0)
+        self.assertAlmostEqual(omega_entropy / self.OMEGA_AUTHORITY, S_topo, places=10)
+
+    def test_omega_anyon_fusion_stability(self):
+        """Fusion τ×τ = 1 + τ; sovereign field scales fusion output."""
+        # N^τ_ττ = 1 (fusion multiplicity)
+        fusion_output = 1 + self.PHI  # 1 + τ dimension contribution
+        sovereign_fusion = fusion_output * self.OMEGA / (self.PHI ** 2)
+        self.assertAlmostEqual(sovereign_fusion, fusion_output * self.OMEGA_AUTHORITY, places=6)
+
+    def test_omega_pentagon_invariant(self):
+        """Pentagon equation trace invariant scaled by OMEGA."""
+        phi = self.PHI
+        F = np.array([[phi**-1, phi**-0.5],
+                       [phi**-0.5, -phi**-1]], dtype=complex)
+        F5 = np.linalg.matrix_power(F, 5)
+        trace_F5 = abs(np.trace(F5))
+        omega_trace = trace_F5 * self.OMEGA
+        self.assertTrue(omega_trace > 0)
+        self.assertAlmostEqual(omega_trace / self.OMEGA, trace_F5, places=10)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

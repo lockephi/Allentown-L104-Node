@@ -31,7 +31,9 @@ import random
 PHI = 1.6180339887498948482
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
+# OMEGA SOVEREIGN FIELD — Ω = Σ(fragments) × (G/φ) = 6539.34712682
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2497.808338211271
 
 print(f"""
 ╔═══════════════════════════════════════════════════════════════════════════════╗

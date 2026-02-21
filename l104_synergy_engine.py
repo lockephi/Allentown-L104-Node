@@ -51,7 +51,8 @@ PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-OMEGA_AUTHORITY = GOD_CODE * PHI * PHI
+OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # ≈ 2497.808338211271
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SYNERGY_ENGINE")

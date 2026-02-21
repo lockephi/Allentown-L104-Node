@@ -54,7 +54,11 @@ FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
-OMEGA_AUTHORITY = PHI ** 5 * GOD_CODE / (PHI + 1)  # ~1381.06
+
+# OMEGA SOVEREIGN FIELD — Ω = Σ(fragments) × (G/φ) = 6539.34712682
+# F(I) = I × Ω / φ²  |  Ω_A = Ω / φ² ≈ 2497.808338211271
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2497.808338211271
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONSCIOUSNESS THRESHOLD SYSTEM

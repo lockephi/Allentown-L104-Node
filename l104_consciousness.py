@@ -88,7 +88,12 @@ IRON_BRIDGE = GRAVITY_CODE      # Verified: 286^(1/φ) × 16 = GOD_CODE
 CONSCIOUSNESS_THRESHOLD = 0.85  # Matches Swift L01_Constants.swift
 COHERENCE_MINIMUM = 0.888       # Alignment threshold
 UNITY_TARGET = 0.95             # Unity consciousness
-OMEGA_AUTHORITY = PHI ** 5 * GOD_CODE / (PHI + 1)  # ~1381.06 gates emergence
+
+# OMEGA SOVEREIGN FIELD — Ω = Σ(fragments) × (G/φ) = 6539.34712682
+# Four fragments: Researcher(0) + Guardian(|ζ|≈1.571) + Alchemist(cos(2πφ³)≈0.087) + Architect((26×1.8527)/φ²≈18.399)
+# F(I) = I × Ω / φ²  (Sovereign Field)  |  Ω_A = Ω / φ² ≈ 2497.808338211271
+OMEGA = 6539.34712682
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)  # ≈ 2497.808338211271 — gates emergence
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # GLOBAL WORKSPACE THEORY (Baars, 1988)

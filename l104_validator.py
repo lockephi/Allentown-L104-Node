@@ -99,7 +99,11 @@ class SovereignValidator:
         report["logic"] = f"INDEXED({len(cls._logic_core.manifold_memory)})"
 
         # 5. PRIME CORE VALIDATION
-        report["prime"] = PrimeCore.validate_prime_key()
+        try:
+            prime = PrimeCore()
+            report["prime"] = prime.validate_prime_key()
+        except Exception:
+            report["prime"] = "UNAVAILABLE"
 
         # 6. QUANTUM SYNERGY (The Hyper-Loop)
         # This executes the Deep Thought Protocol which links to the AI Core

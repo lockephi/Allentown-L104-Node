@@ -546,5 +546,69 @@ class TestGodCodeIntegration:
         assert validator.god_code == GOD_CODE
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA EMERGENT REALITY — SOVEREIGN FIELD IN COSMOLOGICAL SYSTEMS
+# Ω = 6539.34712682 | Ω_A = Ω / φ² ≈ 2497.808338211271
+# F(I) = I × Ω / φ²  (Sovereign Field)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaEmergentReality:
+    """Validate OMEGA sovereign field in emergent reality context."""
+
+    PHI = (1 + math.sqrt(5)) / 2
+    GOD_CODE = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+    def test_omega_authority_value(self):
+        """Ω_A = Ω / φ² ≈ 2497.808338211271."""
+        assert math.isclose(self.OMEGA_AUTHORITY, 2497.808338211271, rel_tol=1e-8)
+
+    def test_omega_sovereign_field(self):
+        """F(I) = I × Ω / φ² for intensity I."""
+        for I in [0.1, 1.0, self.PHI, self.GOD_CODE]:
+            F = I * self.OMEGA / (self.PHI ** 2)
+            assert math.isclose(F, I * self.OMEGA_AUTHORITY, rel_tol=1e-10)
+
+    def test_omega_dimensional_coupling(self):
+        """OMEGA mediates dimensional parameter scaling."""
+        dim_space = DimensionalParameterSpace()
+        base_dim = dim_space.base_dimensions
+        omega_scaled = base_dim * self.OMEGA / self.GOD_CODE
+        assert omega_scaled > 0
+        assert math.isclose(omega_scaled / base_dim, self.OMEGA / self.GOD_CODE, rel_tol=1e-8)
+
+    def test_omega_coherence_weighting(self):
+        """Coherence validator weighted by OMEGA yields bounded results."""
+        validator = RealityCoherenceValidator()
+        base_coherence = 0.95  # High coherence
+        omega_weighted = base_coherence * (self.OMEGA / (self.OMEGA + self.GOD_CODE))
+        assert 0 < omega_weighted < 1
+        # OMEGA dominates: ratio > 0.9
+        assert omega_weighted > 0.85
+
+    def test_omega_holographic_bound(self):
+        """OMEGA in holographic information: S ≤ A/(4·l_p²), OMEGA scales area."""
+        planck_length = 1.616255e-35
+        area = self.OMEGA * planck_length ** 2
+        S_max = area / (4 * planck_length ** 2)
+        assert math.isclose(S_max, self.OMEGA / 4, rel_tol=1e-10)
+
+    def test_omega_symmetry_breaking_energy(self):
+        """Symmetry breaking energy scale proportional to OMEGA."""
+        E_break = self.OMEGA * self.PHI / self.GOD_CODE
+        assert E_break > self.PHI
+        # Should be Ω × φ / G ≈ 20.06
+        expected = self.OMEGA * self.PHI / self.GOD_CODE
+        assert math.isclose(E_break, expected, rel_tol=1e-10)
+
+    def test_omega_cosmological_constant_ratio(self):
+        """OMEGA / GOD_CODE gives cosmological resonance ratio."""
+        ratio = self.OMEGA / self.GOD_CODE
+        # Ω / G ≈ 12.397
+        assert math.isclose(ratio, 6539.34712682 / 527.5184818492612, rel_tol=1e-8)
+        assert ratio > 12.0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

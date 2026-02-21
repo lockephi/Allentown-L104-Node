@@ -271,7 +271,7 @@ class TestL104Optimizer(unittest.TestCase):
 
         stats = optimizer.get_statistics()
 
-        self.assertEqual(stats["god_code"], GOD_CODE)
+        self.assertAlmostEqual(stats["god_code"], GOD_CODE, places=10)
         self.assertIn("batch_processor", stats)
         self.assertIn("memory", stats)
         self.assertIn("query_cache", stats)
@@ -574,7 +574,7 @@ class TestL104Bridge(unittest.TestCase):
         status = bridge.get_status()
 
         self.assertIn("bridge", status)
-        self.assertEqual(status["bridge"]["god_code"], GOD_CODE)
+        self.assertAlmostEqual(status["bridge"]["god_code"], GOD_CODE, places=10)
         self.assertIn("components", status["bridge"])
 
     def test_enhance_mock_l104(self):

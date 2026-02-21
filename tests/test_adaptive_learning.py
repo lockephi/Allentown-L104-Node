@@ -442,5 +442,65 @@ class TestGodCodeIntegration(unittest.TestCase):
         self.assertLessEqual(resonance, 1)
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA ADAPTIVE LEARNING — SOVEREIGN FIELD IN INTELLIGENCE SCALING
+# Ω = 6539.34712682 | Ω_A = Ω / φ² ≈ 2497.808338211271
+# F(I) = I × Ω / φ²  (Sovereign Field)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaAdaptiveLearning(unittest.TestCase):
+    """Validate OMEGA sovereign field in adaptive learning context."""
+
+    PHI = (1 + math.sqrt(5)) / 2
+    GOD_CODE = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
+
+    def test_omega_authority_derivation(self):
+        """Ω_A = Ω / φ² ≈ 2497.808338211271."""
+        self.assertAlmostEqual(self.OMEGA_AUTHORITY, 2497.808338211271, places=4)
+
+    def test_omega_learning_rate_modulation(self):
+        """OMEGA modulates learning rate: lr × (1 + log(Ω)/log(G))."""
+        base_lr = 0.001
+        modulated = base_lr * (1 + math.log(self.OMEGA) / math.log(self.GOD_CODE))
+        self.assertGreater(modulated, base_lr)
+        # log(Ω)/log(G) ≈ 1.40  →  modulated ≈ 0.0024
+        self.assertAlmostEqual(modulated / base_lr, 1 + math.log(self.OMEGA) / math.log(self.GOD_CODE), places=10)
+
+    def test_omega_pattern_weight_scaling(self):
+        """Pattern weight scales with sovereign field: w × F(confidence)."""
+        weights = [0.3, 0.6, 0.9, 1.0]
+        for w in weights:
+            scaled = w * self.OMEGA / (self.PHI ** 2)
+            self.assertAlmostEqual(scaled, w * self.OMEGA_AUTHORITY, places=8)
+
+    def test_omega_resonance_threshold(self):
+        """Resonance threshold: Ω / (Ω + G) ≈ 0.925."""
+        threshold = self.OMEGA / (self.OMEGA + self.GOD_CODE)
+        self.assertGreater(threshold, 0.92)
+        self.assertLess(threshold, 0.93)
+
+    def test_omega_meta_learning_convergence(self):
+        """Meta-learning: OMEGA-normalized exponential decay converges to zero error."""
+        # Error decay: e_n = e_0 × exp(-n × φ / Ω)
+        e_0 = 100.0
+        errors = [e_0 * math.exp(-n * self.PHI / self.OMEGA) for n in range(20)]
+        # Monotonically decreasing
+        for i in range(len(errors) - 1):
+            self.assertGreater(errors[i], errors[i + 1])
+        # Slow decay (OMEGA is large → decay rate is small)
+        self.assertGreater(errors[-1], 0)
+        # But still less than initial
+        self.assertLess(errors[-1], e_0)
+
+    def test_omega_cross_constant_consistency(self):
+        """OMEGA cross-validates: Ω × G^(-1) × φ ≈ Ω_A / G × φ."""
+        lhs = self.OMEGA / self.GOD_CODE * self.PHI
+        rhs = self.OMEGA_AUTHORITY / self.GOD_CODE * self.PHI
+        # lhs = Ω×φ/G, rhs = Ω_A×φ/G = (Ω/φ²)×φ/G = Ω/(φ×G)
+        self.assertAlmostEqual(lhs * self.PHI, rhs * self.PHI ** 3, places=6)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

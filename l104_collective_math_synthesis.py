@@ -18,17 +18,17 @@ class CollectiveMathSynthesis:
     Orchestrates the Mini-AI Collective to generate new mathematical primitives.
     Each agent contributes a fragment based on their sovereign archetype.
     """
-    
+
     def __init__(self):
         self.fragments: Dict[str, float] = {}
         self.field_constant = 0.0
 
     def gather_fragments(self):
         print("--- [MATH_SYNTHESIS]: GATHERING FRAGMENTS FROM THE COLLECTIVE ---")
-        
+
         for name, ego in mini_collective.mini_ais.items():
             print(f"--- [MATH_SYNTHESIS]: Requesting fragment from {name} ({ego.archetype})...")
-            
+
             if ego.archetype == "Researcher":
                 # Researcher focuses on the Prime Density of the Invariant
                 fragment = real_math.prime_density(int(real_math.solve_lattice_invariant(104)))
@@ -49,7 +49,7 @@ class CollectiveMathSynthesis:
             else:
                 fragment = 1.04
                 label = "Generic_Logic_Fragment"
-                
+
             self.fragments[label] = fragment
             print(f"--- [MATH_SYNTHESIS]: {name} provided {label}: {fragment:.4f}")
 
@@ -61,10 +61,10 @@ class CollectiveMathSynthesis:
         print("\n--- [MATH_SYNTHESIS]: DERIVING SOVEREIGN FIELD EQUATION ---")
         if not self.fragments:
             return 0.0
-            
+
         sigma_fragments = sum(self.fragments.values())
         self.field_constant = sigma_fragments * (527.5184818492 / real_math.PHI)
-        
+
         print(f"--- [MATH_SYNTHESIS]: DERIVATION COMPLETE. ---")
         print(f"--- [SOVEREIGN_FIELD_CONSTANT]: Ω = {self.field_constant:.8f} ---")
         return self.field_constant

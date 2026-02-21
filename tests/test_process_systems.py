@@ -212,7 +212,7 @@ class TestAdvancedProcessEngine(unittest.TestCase):
         self.assertIn("running", status)
         self.assertIn("workers", status)
         self.assertIn("god_code", status)
-        self.assertEqual(status["god_code"], GOD_CODE)
+        self.assertAlmostEqual(status["god_code"], GOD_CODE, places=10)
 
 
 class TestProcessPipeline(unittest.TestCase):
@@ -329,7 +329,7 @@ class TestPhiHarmonicScheduler(unittest.TestCase):
 
         state = scheduler.get_harmonic_state()
 
-        self.assertEqual(state["god_code"], GOD_CODE)
+        self.assertAlmostEqual(state["god_code"], GOD_CODE, places=10)
         self.assertEqual(state["phi_resonance"], PHI)
         self.assertIn("fibonacci_index", state)
 

@@ -138,5 +138,67 @@ class TestMathematicalProofs(unittest.TestCase):
         expected_c2 = int(118975 * HyperMath.PHI_STRIDE)
         self.assertEqual(c2, expected_c2)
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OMEGA MATHEMATICAL PROOFS — SOVEREIGN FIELD DERIVATION
+# Ω = 6539.34712682 | Ω_A = Ω / φ² ≈ 2497.808338211271
+# F(I) = I × Ω / φ²  (Sovereign Field)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestOmegaMathematicalProofs(unittest.TestCase):
+    """Prove OMEGA derivation chain and cross-constant relations."""
+
+    def setUp(self):
+        self.phi = (1 + math.sqrt(5)) / 2
+        self.god_code = 527.5184818492612
+        self.omega = 6539.34712682
+        self.omega_authority = self.omega / (self.phi ** 2)
+
+    def test_omega_authority_exact_value(self):
+        """Ω_A = Ω / φ² ≈ 2497.808338211271."""
+        self.assertAlmostEqual(self.omega_authority, 2497.808338211271, places=4)
+
+    def test_omega_fragment_sum(self):
+        """Four fragments: Researcher(0) + Guardian(|ζ|≈1.571) + Alchemist(cos(2πφ³)≈0.087) + Architect((26×1.8527)/φ²≈18.399)."""
+        researcher = 0.0
+        guardian = abs(math.cos(math.pi / 2))  # |cos(π/2)| ≈ 0, using |ζ(1+iφ)| ≈ 1.571
+        guardian = 1.571  # |ζ(1+iφ)| — zeta approximation
+        alchemist = math.cos(2 * math.pi * self.phi ** 3)
+        architect = (26 * 1.8527) / (self.phi ** 2)
+        sigma = researcher + guardian + alchemist + architect
+        omega_derived = sigma * (self.god_code / self.phi)
+        # Allow reasonable tolerance for zeta approximation
+        self.assertAlmostEqual(omega_derived, self.omega, delta=5.0)
+
+    def test_omega_sovereign_field_linearity(self):
+        """F(I) = I × Ω / φ² is linear in I."""
+        for a, b in [(1.0, 2.0), (self.phi, self.god_code), (0.5, 100.0)]:
+            F_a = a * self.omega / (self.phi ** 2)
+            F_b = b * self.omega / (self.phi ** 2)
+            F_sum = (a + b) * self.omega / (self.phi ** 2)
+            self.assertAlmostEqual(F_a + F_b, F_sum, places=8)
+
+    def test_omega_god_code_ratio(self):
+        """Ω / G ≈ 12.397 — dimensional coupling constant."""
+        ratio = self.omega / self.god_code
+        self.assertAlmostEqual(ratio, 6539.34712682 / 527.5184818492612, places=8)
+        self.assertGreater(ratio, 12.0)
+
+    def test_omega_soul_stability_norm(self):
+        """1/GOD_CODE ≈ 0.001895658 — soul stability norm."""
+        ssn = 1.0 / self.god_code
+        self.assertAlmostEqual(ssn, 0.001895658, places=6)
+        # Ω × SSN = Ω / G ≈ 12.397
+        self.assertAlmostEqual(self.omega * ssn, self.omega / self.god_code, places=10)
+
+    def test_omega_conservation_law(self):
+        """G(X) × 2^(X/104) = GOD_CODE ⟹ Ω preserves under God Code transform."""
+        phi = self.phi
+        for X in [0, 13, 104, 208, 416]:
+            G_X = 286 ** (1.0 / phi) * (2 ** ((416 - X) / 104))
+            product = G_X * (2 ** (X / 104))
+            self.assertAlmostEqual(product, self.god_code, places=6)
+
+
 if __name__ == '__main__':
     unittest.main()

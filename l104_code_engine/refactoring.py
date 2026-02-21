@@ -106,8 +106,11 @@ class CodeOptimizer:
         """Initialize CodeOptimizer with optimization counter."""
         self.optimizations_performed = 0
 
-    def analyze_and_suggest(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
-        """Given a full_analysis result, produce optimization suggestions."""
+    def analyze_and_suggest(self, analysis) -> Dict[str, Any]:
+        """Given a full_analysis result (or raw source code string), produce optimization suggestions."""
+        if isinstance(analysis, str):
+            from .analyzer import CodeAnalyzer
+            analysis = CodeAnalyzer().full_analysis(analysis)
         self.optimizations_performed += 1
         suggestions = []
         for name, check in self.ANTI_PATTERNS.items():
@@ -646,7 +649,7 @@ class AutoFixEngine:
                 # Check if first body statement is a docstring
                 has_doc = (
                     node.body and isinstance(node.body[0], ast.Expr) and
-                    isinstance(node.body[0].value, (ast.Constant, ast.Str))
+                    isinstance(node.body[0].value, ast.Constant) and isinstance(node.body[0].value.value, str)
                 )
                 if not has_doc:
                     # Calculate indentation from the node's body
