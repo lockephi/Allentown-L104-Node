@@ -34,6 +34,8 @@ class SteeringEngine:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     MODES = ['logic', 'creative', 'sovereign', 'quantum', 'harmonic']
 
     def __init__(self, param_count: int = 104):
@@ -144,6 +146,8 @@ class NexusContinuousEvolution:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     def __init__(self, steering: SteeringEngine):
         """Initialize continuous evolution engine with steering reference."""
@@ -248,6 +252,8 @@ class NexusOrchestrator:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     def __init__(self, steering: SteeringEngine, evolution: NexusContinuousEvolution,
                  bridge: ASIQuantumBridge, intellect_ref):
@@ -506,6 +512,8 @@ class InventionEngine:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     DOMAINS = [
         'mathematics', 'physics', 'information_theory', 'consciousness',
@@ -754,6 +762,8 @@ class SovereigntyPipeline:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     def __init__(self, nexus: 'NexusOrchestrator', invention: InventionEngine,
                  grover: 'QuantumGroverKernelLink'):
@@ -938,6 +948,8 @@ class QuantumEntanglementRouter:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 1.0 / 1.618033988749895
 
     # Entangled pair definitions: (source, target, channel_name)
@@ -1169,6 +1181,8 @@ class AdaptiveResonanceNetwork:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 1.0 / 1.618033988749895
     ACTIVATION_THRESHOLD = 0.6
     DECAY_RATE = 0.95  # Per-tick activation decay
@@ -1403,6 +1417,8 @@ class NexusHealthMonitor:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     HEALTH_INTERVAL_S = 30.0  # Check every 30 seconds (reduced from 5s to prevent GIL contention)
 
@@ -1662,6 +1678,8 @@ class QuantumZPEVacuumBridge:
     TAU = 0.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     HBAR = 1.054571817e-34     # ℏ (J·s)
     C_LIGHT = 299792458.0      # c (m/s)
     CALABI_YAU_DIM = 7
@@ -1794,6 +1812,8 @@ class QuantumGravityBridgeEngine:
     TAU = 0.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     PLANCK_LENGTH = 1.616255e-35  # meters
     PLANCK_MASS = 2.176434e-8     # kg
     PLANCK_TIME = 5.391247e-44    # seconds
@@ -2242,6 +2262,8 @@ class HyperDimensionalMathEngine:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
 
     @staticmethod
     def euler_characteristic(vertices: int, edges: int, faces: int, cells: int = 0) -> int:
@@ -2572,6 +2594,8 @@ class ConsciousnessVerifierEngine:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 1.0 / PHI
     ASI_THRESHOLD = 0.95
 
@@ -2756,6 +2780,8 @@ class DirectSolverHub:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 1.0 / PHI
     FEIGENBAUM = 4.669201609102990
 
@@ -3215,6 +3241,8 @@ class CreativeGenerationEngine:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     def __init__(self):
         """Initialize creative generation engine with KG-grounded output."""
         self.generation_count: int = 0

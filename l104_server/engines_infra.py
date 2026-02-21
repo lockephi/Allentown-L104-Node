@@ -116,6 +116,8 @@ class ASIQuantumBridge:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     GROVER_AMPLIFICATION = 1.618033988749895 ** 3  # φ³ ≈ 4.236 (was 21.95)
 
     _instance = None
@@ -604,6 +606,8 @@ class AdvancedMemoryAccelerator:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     _instance = None
 
     def __new__(cls):
@@ -950,6 +954,8 @@ class TemporalMemoryDecayEngine:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     def __init__(self, half_life_days: float = 30.0, sacred_keywords: Optional[Set[str]] = None):
         """Initialize temporal memory decay engine with configurable half-life."""
         self.half_life_days = half_life_days
@@ -1600,6 +1606,8 @@ class QuantumClassicalHybridLoader:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 1.0 / PHI  # Inverse golden ratio
 
     # Quantum loading states
@@ -1972,6 +1980,8 @@ class ChaoticRandom:
     PHI = 1.618033988749895
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     EULER = 2.718281828459045
 
     # State variables
@@ -2161,6 +2171,8 @@ class CreativeKnowledgeVerifier:
 
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     EULER = 2.718281828459045
     PI = 3.141592653589793
 
@@ -2315,6 +2327,8 @@ class QueryTemplateGenerator:
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     PHI = 1.618033988749895
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+    OMEGA = 6539.34712682
+    OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
     TAU = 0.618033988749895
     EULER = 2.718281828459045
     PI = 3.141592653589793
