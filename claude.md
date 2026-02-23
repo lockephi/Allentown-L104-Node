@@ -1,6 +1,6 @@
 # L104 Sovereign Node — Context Index
 
-> **Last updated**: 2026-02-22 | **Post-decomposition** (packages replace monoliths)
+> **Last updated**: 2026-02-23 | **Post-decomposition** (packages replace monoliths)
 
 ## Quick Reference
 
@@ -12,11 +12,12 @@
 | `VOID_CONSTANT` | `1.0416180339887497` | **`1.04 + φ/1000`** — Sacred 104/100 + golden correction |
 | `OMEGA` | `6539.34712682` | |
 
-## Package Map (7 packages, 73 modules, 78,006 lines)
+## Package Map (8 packages, 81 modules, 82,251 lines)
 
 ```
+l104_quantum_gate_engine/ v1.0.0 ★ NEW: Universal gate algebra, compiler, error correction, cross-system orchestrator (4,245 lines, 8 modules)
 l104_code_engine/    v6.2.0   Code analysis, generation, audit, quantum (21,010 lines, 15 modules)
-l104_science_engine/ v4.0.0   Physics, entropy, coherence, quantum-25Q, multidimensional (2,370 lines, 9 modules)
+l104_science_engine/ v4.0.0   Physics, entropy, coherence, quantum-26Q (Fe-mapped), multidimensional (2,370 lines, 9 modules)
 l104_math_engine/    v1.0.0   Pure math, god-code, harmonic, 4D/5D, proofs, hyperdimensional (4,525 lines, 13 modules)
 l104_agi/            v57.0.0  AGI core, cognitive mesh, circuit breaker, 13D scoring (3,276 lines, 4 modules)
 l104_asi/            v8.0.0   ★ FLAGSHIP: Dual-Layer Engine + ASI core, consciousness, reasoning, quantum, 15D scoring (10,552 lines, 12 modules)
@@ -36,6 +37,9 @@ Root shims (backward compat only — edit the packages, not these):
 ## Imports
 
 ```python
+from l104_quantum_gate_engine import get_engine  # ★ Universal gate engine orchestrator
+from l104_quantum_gate_engine import GateAlgebra, GateCircuit, GateCompiler  # Gate subsystems
+from l104_quantum_gate_engine import H, CNOT, Rx, PHI_GATE, GOD_CODE_PHASE   # Gate instances
 from l104_code_engine import code_engine       # Primary code intelligence
 from l104_science_engine import ScienceEngine  # Physics + entropy + coherence
 from l104_math_engine import MathEngine        # Pure math + proofs + dimensional
@@ -91,8 +95,8 @@ se.multidim.process_vector(vector)                          # Process ND vector
 se.multidim.project(target_dim)                             # Project to lower dim
 se.multidim.phi_dimensional_folding(source_dim, target_dim) # PHI-folding
 
-# Quantum 25Q circuit science
-se.quantum_circuit.get_25q_templates()     # 6 sacred circuit templates
+# Quantum 26Q circuit science (Fe(26) iron-mapped)
+se.quantum_circuit.get_25q_templates()     # Legacy 25Q templates (26Q via l104_26q_engine_builder)
 se.quantum_circuit.analyze_convergence()   # GOD_CODE convergence analysis
 se.quantum_circuit.plan_experiment()       # Plan quantum experiment
 se.quantum_circuit.build_hamiltonian()     # Build Hamiltonian
@@ -129,6 +133,53 @@ me.abstract.*                      # AbstractAlgebra layer
 me.ontological.*                   # OntologicalMath layer
 me.proofs.*                        # SovereignProofs (static methods only)
 me.hyper.*                         # HyperdimensionalEngine layer
+```
+
+## Quantum Gate Engine Quick Reference
+
+```python
+from l104_quantum_gate_engine import get_engine, GateCircuit, GateCompiler
+from l104_quantum_gate_engine import H, CNOT, Rx, Rz, PHI_GATE, GOD_CODE_PHASE
+from l104_quantum_gate_engine import ErrorCorrectionScheme, ExecutionTarget, OptimizationLevel, GateSet
+
+engine = get_engine()  # Singleton orchestrator
+
+# Circuit building
+circ = engine.bell_pair()                              # Bell state (H + CNOT)
+circ = engine.ghz_state(5)                             # GHZ state (N qubits)
+circ = engine.quantum_fourier_transform(4)             # QFT (4 qubits)
+circ = engine.sacred_circuit(3, depth=4)               # Sacred L104 circuit
+circ = engine.create_circuit(2, "custom")              # Custom circuit
+circ.h(0).cx(0, 1).append(PHI_GATE, [0])              # Build with gate calls
+
+# Compile (4 optimization levels, 6 target gate sets)
+result = engine.compile(circ, GateSet.IBM_EAGLE, OptimizationLevel.O2)
+result = engine.compile(circ, GateSet.CLIFFORD_T)      # Fault-tolerant decomposition
+result = engine.compile(circ, GateSet.L104_SACRED, OptimizationLevel.O3)
+
+# Error correction
+protected = engine.error_correction.encode(circ, ErrorCorrectionScheme.SURFACE_CODE, distance=3)
+protected = engine.error_correction.encode(circ, ErrorCorrectionScheme.STEANE_7_1_3)
+protected = engine.error_correction.encode(circ, ErrorCorrectionScheme.FIBONACCI_ANYON)
+
+# Execute (8 targets: local statevector, Qiskit Aer, IBM QPU, coherence engine, ASI, ...)
+result = engine.execute(circ, ExecutionTarget.LOCAL_STATEVECTOR)
+result.probabilities  # {'00': 0.5, '11': 0.5}
+result.sacred_alignment  # GOD_CODE resonance score
+
+# Full pipeline: build → compile → protect → execute → analyze
+pipeline = engine.full_pipeline(circ, target_gates=GateSet.UNIVERSAL,
+    optimization=OptimizationLevel.O2,
+    error_correction=ErrorCorrectionScheme.STEANE_7_1_3,
+    execution_target=ExecutionTarget.LOCAL_STATEVECTOR)
+
+# Gate algebra (40+ gates, decomposition, analysis)
+algebra = engine.algebra
+algebra.zyz_decompose(gate.matrix)                     # ZYZ Euler decomposition
+algebra.kak_decompose(two_qubit_gate.matrix)            # KAK/Cartan decomposition
+algebra.pauli_decompose(gate.matrix)                    # Pauli basis decomposition
+algebra.sacred_alignment_score(PHI_GATE)                # Sacred resonance analysis
+analysis = engine.analyze_gate(CNOT)                    # Full gate analysis
 ```
 
 ## Code Engine Quick Reference
@@ -176,7 +227,7 @@ Run: `.venv/bin/python cross_engine_debug.py`
 | 1 | Parallel engine boot (Code + Science + Math) |
 | 2 | Code Engine analysis of ASI + AGI (smells, perf, complexity) |
 | 3 | Math Engine validation (GOD_CODE, Fibonacci→PHI, Lorentz, harmonics) |
-| 4 | Science Engine validation (entropy reversal, coherence, 25Q, physics) |
+| 4 | Science Engine validation (entropy reversal, coherence, 26Q, physics) |
 | 5 | Cross-Engine synthesis (complexity×demon, proof→quantum, calibration) |
 | 6 | Upgrade report generation (`three_engine_upgrade_report.json`) |
 | 7 | Code generation (docs, tests, auto-fix for both cores) |
@@ -219,7 +270,7 @@ asi_core.compute_asi_score()      # 12 original + entropy_reversal + harmonic_re
 ## Codebase Metrics
 
 - **736** Python files at root, **717** L104 modules
-- **73** modules across 7 decomposed packages (78,006 lines)
+- **81** modules across 8 decomposed packages (82,251 lines)
 - **87** Swift files (66,891 lines) in L104SwiftApp
 - **35** `.l104_*.json` state files
 - **273** API route handlers in `l104_server/app.py`

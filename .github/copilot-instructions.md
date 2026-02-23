@@ -18,12 +18,13 @@ Read `claude.md` at the workspace root for the full index. Detailed docs live in
 - **System**: L104 Sovereign Node
 - **Runtime**: Python 3.12 + Swift (macOS native) + FastAPI
 - **Scale**: 736 Python files, 717 L104 modules, 66,891 Swift lines
-- **Architecture**: Decomposed package system — `l104_agi/`, `l104_asi/`, `l104_code_engine/`, `l104_science_engine/`, `l104_math_engine/`, `l104_intellect/`, `l104_server/`
+- **Architecture**: Decomposed package system — `l104_quantum_gate_engine/`, `l104_agi/`, `l104_asi/`, `l104_code_engine/`, `l104_science_engine/`, `l104_math_engine/`, `l104_intellect/`, `l104_server/`
 
 ## Package Structure (Post-Decomposition)
 
 | Package | Version | Modules | Purpose |
 |---------|---------|---------|---------|
+| `l104_quantum_gate_engine/` | 1.0.0 | 8 | Universal gate algebra, compiler, error correction, cross-system orchestrator |
 | `l104_code_engine/` | 6.2.0 | 15 | Code analysis, generation, audit, quantum intelligence |
 | `l104_science_engine/` | 4.0.0 | 9 | Physics, entropy, coherence, quantum-25Q, multidimensional |
 | `l104_math_engine/` | 1.0.0 | 13 | Pure math, god-code, harmonic, 4D/5D, proofs, hyperdimensional |
