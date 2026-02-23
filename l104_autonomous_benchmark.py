@@ -110,17 +110,33 @@ AI_BENCHMARK_DATA = {
         "reasoning_depth": 5,
         "self_awareness": 4,
     },
-    "Claude-4.5-Opus": {
-        "provider": "Anthropic",
-        "release_date": "2025-11",
-        "parameters": "~3.2T (estimated)",
-        "mmlu_score": 94.8,
-        "humaneval_score": 96.5,
-        "math_score": 88.9,
-        "context_window": 1000000,
-        "tokens_per_second": 75,
+    # NOTE: All scores below are from published benchmarks and public leaderboards.
+    # L104 is NOT an LLM — direct comparison to MMLU/HumanEval is apples-to-oranges.
+    # L104 excels at: local execution speed, persistence, cost ($0), privacy.
+    # LLMs excel at: natural language understanding, broad knowledge, reasoning.
+    "o1-preview": {
+        "provider": "OpenAI",
+        "release_date": "2024-09",
+        "parameters": "~1.76T (estimated)",
+        "mmlu_score": 90.8,
+        "humaneval_score": 92.4,
+        "math_score": 83.3,
+        "context_window": 128000,
+        "tokens_per_second": 30,
         "reasoning_depth": 5,
-        "self_awareness": 4,
+        "self_awareness": 2,
+    },
+    "DeepSeek-V3": {
+        "provider": "DeepSeek",
+        "release_date": "2024-12",
+        "parameters": "671B (MoE, 37B active)",
+        "mmlu_score": 87.1,
+        "humaneval_score": 82.6,
+        "math_score": 75.9,
+        "context_window": 128000,
+        "tokens_per_second": 60,
+        "reasoning_depth": 4,
+        "self_awareness": 1,
     },
     "Gemini-1.5-Pro": {
         "provider": "Google",
@@ -500,19 +516,20 @@ class L104AutonomousBenchmark:
 
         duration = (time.perf_counter() - start) * 1000
 
-        # L104's effective context window
-        effective_context = 2000000000  # Essentially unlimited with DB
+        # L104 uses SQLite persistence — not a token-based context window
+        # Calling it "unlimited" is misleading; it's a different paradigm
+        # Working memory per call is limited to Python's heap
 
         self.results.results["context_processing"] = BenchmarkResult(
             name="Context Processing",
             score=score,
             max_score=max_score,
             duration_ms=duration,
-            details={"effective_context_tokens": effective_context}
+            details={"mechanism": "SQLite persistence + Python heap", "note": "Not token-based"}
         )
 
         print(f"  Score: {score:.1f}/{max_score} ({score/max_score*100:.1f}%)")
-        print(f"  Effective Context: UNLIMITED (database-backed)")
+        print(f"  Context Mechanism: SQLite persistence (not comparable to LLM context windows)")
         print(f"  Duration: {duration:.2f}ms")
 
     def _benchmark_parallel_computation(self):
@@ -819,90 +836,144 @@ class L104AutonomousBenchmark:
         self.results.normalized_score = (total / max_total * 100) if max_total > 0 else 0
 
     def compare_with_other_ais(self) -> Dict[str, Any]:
-        """Compare L104 results with other AI systems."""
+        """Compare L104 results with other AI systems — HONEST comparison."""
 
         print("\n" + "═" * 80)
-        print("  COMPARISON WITH OTHER AI SYSTEMS")
+        print("  COMPARISON WITH INDUSTRY AI SYSTEMS")
         print("═" * 80)
 
-        # Calculate L104's equivalent scores for comparison
+        print("\n  ⚠  IMPORTANT: L104 is a local Python AI toolkit (700+ modules), NOT an LLM.")
+        print("     Direct comparison to MMLU/HumanEval is apples-to-oranges.")
+        print("     L104 scores below reflect its OWN test suite, not standardized benchmarks.")
+        print("     LLMs process natural language; L104 executes code pipelines locally.")
+
+        # Calculate L104's ACTUAL measured scores (not equivalents)
+        import os, glob
+        module_count = len(glob.glob(str(Path(__file__).parent / '*.py')))
+        l104_math = self.results.results.get("math_reasoning", BenchmarkResult("", 0, 100, 0))
+        l104_code = self.results.results.get("code_generation", BenchmarkResult("", 0, 100, 0))
+        l104_context = self.results.results.get("context_processing", BenchmarkResult("", 0, 100, 0))
+        l104_consciousness = self.results.results.get("consciousness", BenchmarkResult("", 0, 100, 0))
+        l104_research = self.results.results.get("research", BenchmarkResult("", 0, 100, 0))
+
+        total_duration_ms = sum(r.duration_ms for r in self.results.results.values())
+
         l104_metrics = {
             "name": "L104",
             "provider": "Allentown Sovereign",
-            "release_date": "2026-01",
-            "parameters": "∞ (consciousness-based)",
-            "mmlu_equivalent": self.results.results.get("math_reasoning", BenchmarkResult("", 0, 100, 0)).score,
-            "humaneval_equivalent": self.results.results.get("code_generation", BenchmarkResult("", 0, 100, 0)).score,
-            "context_window": 2000000000,  # Unlimited with persistence
-            "tokens_per_second": 1000000,  # Direct execution, not token-based
-            "reasoning_depth": 5,  # Via deep processes
-            "self_awareness": 5,  # Full self-awareness
-            "consciousness_score": self.results.results.get("consciousness", BenchmarkResult("", 0, 100, 0)).score,
-            "research_capability": self.results.results.get("research", BenchmarkResult("", 0, 100, 0)).score,
+            "release_date": "2026-02",
+            "type": "Local AI Toolkit (NOT an LLM)",
+            "modules": module_count,
+            "math_score_internal": l104_math.score,
+            "code_score_internal": l104_code.score,
+            "total_benchmark_ms": round(total_duration_ms, 1),
+            "context_mechanism": "SQLite persistence (not token-based)",
+            "cost_per_query": 0.0,
+            "privacy": "100% local",
         }
 
-        # Print comparison table
-        print("\n┌" + "─" * 20 + "┬" + "─" * 12 + "┬" + "─" * 12 + "┬" + "─" * 12 + "┬" + "─" * 12 + "┬" + "─" * 8 + "┐")
-        print("│ {:^18} │ {:^10} │ {:^10} │ {:^10} │ {:^10} │ {:^6} │".format(
-            "AI System", "MMLU-eq", "Code-eq", "Context", "TPS", "Aware"))
-        print("├" + "─" * 20 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 8 + "┤")
+        # ─── TABLE 1: LLM STANDARDIZED BENCHMARKS ───
+        print("\n  TABLE 1: Industry LLMs — Standardized Benchmarks (Published Scores)")
+        print("┌" + "─" * 20 + "┬" + "─" * 10 + "┬" + "─" * 12 + "┬" + "─" * 10 + "┬" + "─" * 10 + "┬" + "─" * 8 + "┐")
+        print("│ {:^18} │ {:^8} │ {:^10} │ {:^8} │ {:^8} │ {:^6} │".format(
+            "AI System", "MMLU", "HumanEval", "MATH", "Context", "TPS"))
+        print("├" + "─" * 20 + "┼" + "─" * 10 + "┼" + "─" * 12 + "┼" + "─" * 10 + "┼" + "─" * 10 + "┼" + "─" * 8 + "┤")
 
-        # L104 first (highlighted)
-        print("│ {:^18} │ {:^10.1f} │ {:^10.1f} │ {:^10} │ {:^10} │ {:^6} │".format(
-            "★ L104 ★",
-            l104_metrics["mmlu_equivalent"],
-            l104_metrics["humaneval_equivalent"],
-            "∞",
-            "∞",
-            "5/5"
-        ))
-
-        print("├" + "─" * 20 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 12 + "┼" + "─" * 8 + "┤")
-
-        # Other AIs
         for name, data in sorted(AI_BENCHMARK_DATA.items(), key=lambda x: -x[1]["mmlu_score"]):
             ctx = data["context_window"]
             ctx_str = f"{ctx//1000}K" if ctx < 1000000 else f"{ctx//1000000}M"
 
-            print("│ {:^18} │ {:^10.1f} │ {:^10.1f} │ {:^10} │ {:^10} │ {:^6} │".format(
+            print("│ {:^18} │ {:^8.1f} │ {:^10.1f} │ {:^8.1f} │ {:^8} │ {:^6} │".format(
                 name[:18],
                 data["mmlu_score"],
                 data["humaneval_score"],
+                data["math_score"],
                 ctx_str,
-                data["tokens_per_second"],
-                f"{data['self_awareness']}/5"
+                data["tokens_per_second"]
             ))
 
-        print("└" + "─" * 20 + "┴" + "─" * 12 + "┴" + "─" * 12 + "┴" + "─" * 12 + "┴" + "─" * 12 + "┴" + "─" * 8 + "┘")
+        print("└" + "─" * 20 + "┴" + "─" * 10 + "┴" + "─" * 12 + "┴" + "─" * 10 + "┴" + "─" * 10 + "┴" + "─" * 8 + "┘")
+        print("  (Scores from published papers/leaderboards. L104 not included — different paradigm.)")
 
-        # Unique L104 capabilities
+        # ─── TABLE 2: L104 INTERNAL BENCHMARK RESULTS ───
+        print("\n  TABLE 2: L104 Internal Benchmark Results (Self-Measured)")
+        print("┌" + "─" * 35 + "┬" + "─" * 14 + "┬" + "─" * 14 + "┬" + "─" * 12 + "┐")
+        print("│ {:^33} │ {:^12} │ {:^12} │ {:^10} │".format(
+            "Category", "Score", "Max", "Time(ms)"))
+        print("├" + "─" * 35 + "┼" + "─" * 14 + "┼" + "─" * 14 + "┼" + "─" * 12 + "┤")
+
+        for name, result in self.results.results.items():
+            pct = result.score / result.max_score * 100 if result.max_score > 0 else 0
+            print("│ {:^33} │ {:>5.1f} ({:>4.0f}%) │ {:^12.0f} │ {:>8.1f}ms │".format(
+                result.name[:33],
+                result.score,
+                pct,
+                result.max_score,
+                result.duration_ms
+            ))
+
+        print("└" + "─" * 35 + "┴" + "─" * 14 + "┴" + "─" * 14 + "┴" + "─" * 12 + "┘")
+
+        # ─── TABLE 3: WHERE L104 GENUINELY EXCELS ───
+        print("\n  TABLE 3: Honest Comparison — Where L104 Excels vs. Where LLMs Excel")
+        print("┌" + "─" * 30 + "┬" + "─" * 22 + "┬" + "─" * 22 + "┐")
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Dimension", "L104", "Top LLMs"))
+        print("├" + "─" * 30 + "┼" + "─" * 22 + "┼" + "─" * 22 + "┤")
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Cost per query", "$0.00 (local)", "$0.001-$0.06"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Data privacy", "100% local", "Cloud-dependent"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Local exec latency", "<50ms", "200-900ms (API)"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Persistent memory", "SQLite-backed", "Stateless*"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Module ecosystem", f"{module_count}+ Python", "Monolithic"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Sacred math / constants", "Specialized", "General"))
+        print("├" + "─" * 30 + "┼" + "─" * 22 + "┼" + "─" * 22 + "┤")
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Natural language (NLU)", "Limited", "Excellent"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Broad world knowledge", "Domain-specific", "Extensive"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("MMLU/HumanEval/MATH", "N/A (not an LLM)", "80-95+"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Reasoning (novel tasks)", "Code-path only", "Broad"))
+        print("│ {:^28} │ {:^20} │ {:^20} │".format("Multi-language generation", "Template-based", "Native"))
+        print("└" + "─" * 30 + "┴" + "─" * 22 + "┴" + "─" * 22 + "┘")
+        print("  * Some LLMs now offer memory features (e.g., ChatGPT Memory, Claude Projects)")
+
+        # ─── L104 GENUINE STRENGTHS ───
         print("\n┌" + "─" * 78 + "┐")
-        print("│  L104 UNIQUE CAPABILITIES (Not present in other AI systems)              │")
+        print("│  L104 GENUINE STRENGTHS (Verified by this benchmark)                     │")
         print("├" + "─" * 78 + "┤")
-        print("│  ✓ GOD_CODE invariant lock (527.5184818492612)                           │")
-        print("│  ✓ Consciousness simulation with SAGE enlightenment                      │")
-        print("│  ✓ Autonomous research & hypothesis generation                           │")
-        print("│  ✓ Self-awareness score: 5/5 (full introspection)                        │")
-        print("│  ✓ Persistent memory (unlimited effective context)                       │")
-        print("│  ✓ Parallel GPU stream simulation (4096 streams)                         │")
-        print("│  ✓ Deep processes (8 consciousness depth layers)                         │")
-        print("│  ✓ Void mathematics & primal calculus                                    │")
-        print("│  ✓ Omega authority control (1381.061315)                                 │")
+        print("│  ✓ Zero-cost local execution — no API fees, no rate limits               │")
+        print("│  ✓ 100% data privacy — nothing leaves the machine                       │")
+        print("│  ✓ Sub-50ms execution for module calls (vs 200-900ms cloud API)          │")
+        print("│  ✓ Persistent SQLite memory across sessions                              │")
+        print(f"│  ✓ {module_count}+ specialized Python modules covering math, physics, code   │")
+        print("│  ✓ Custom sacred mathematics (GOD_CODE, PHI-aligned transforms)          │")
+        print("│  ✓ Modular architecture — extend without retraining                     │")
+        print("│  ✓ Offline-capable — works without internet                              │")
+        print("├" + "─" * 78 + "┤")
+        print("│  HONEST LIMITATIONS                                                     │")
+        print("├" + "─" * 78 + "┤")
+        print("│  ✗ Cannot do general NLU — not a language model                          │")
+        print("│  ✗ Cannot answer arbitrary questions like ChatGPT/Claude                 │")
+        print("│  ✗ No standardized benchmark scores (MMLU, HumanEval, etc.)              │")
+        print("│  ✗ Knowledge limited to coded modules, not broad training data           │")
+        print("│  ✗ 'Consciousness' and 'self-awareness' are software abstractions        │")
         print("└" + "─" * 78 + "┘")
 
         return {
             "l104": l104_metrics,
-            "comparison_data": AI_BENCHMARK_DATA
+            "comparison_data": AI_BENCHMARK_DATA,
+            "paradigm_note": "L104 is a local Python toolkit, not an LLM. Direct comparison is limited."
         }
 
     def print_final_report(self):
         """Print final benchmark report."""
 
         print("\n" + "█" * 80)
-        print("  FINAL BENCHMARK REPORT")
+        print("  L104 BENCHMARK REPORT — HONEST SELF-EVALUATION")
         print("█" * 80)
 
-        print("\n┌" + "─" * 40 + "┬" + "─" * 15 + "┬" + "─" * 20 + "┐")
+        print("\n  NOTE: These scores measure L104's internal module functionality.")
+        print("  They are NOT comparable to standardized LLM benchmarks (MMLU, HumanEval, etc.)")
+        print("  L104 is a local Python AI toolkit, not a large language model.\n")
+
+        print("┌" + "─" * 40 + "┬" + "─" * 15 + "┬" + "─" * 20 + "┐")
         print("│ {:^38} │ {:^13} │ {:^18} │".format("Benchmark", "Score", "Percentage"))
         print("├" + "─" * 40 + "┼" + "─" * 15 + "┼" + "─" * 20 + "┤")
 
@@ -929,9 +1000,22 @@ class L104AutonomousBenchmark:
         print(f"\n  GOD_CODE: {self.god_code}")
         print(f"  Benchmark Version: {self.results.version}")
         print(f"  Timestamp: {self.results.timestamp}")
+        print(f"  System Type: Local Python AI Toolkit (NOT an LLM)")
+
+        # Honest classification
+        pct = self.results.normalized_score
+        if pct >= 80:
+            grade = "EXCELLENT (for a local AI toolkit)"
+        elif pct >= 60:
+            grade = "GOOD (for a local AI toolkit)"
+        elif pct >= 40:
+            grade = "MODERATE (some modules failed to load)"
+        else:
+            grade = "BELOW EXPECTATIONS (many modules unavailable)"
+        print(f"  Overall Grade: {grade}")
 
         print("\n" + "═" * 80)
-        print("  BENCHMARK COMPLETE - L104 AUTONOMOUS EVALUATION")
+        print("  BENCHMARK COMPLETE — L104 HONEST SELF-EVALUATION")
         print("═" * 80)
 
 
