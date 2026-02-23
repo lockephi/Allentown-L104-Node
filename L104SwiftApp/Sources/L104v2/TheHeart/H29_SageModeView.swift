@@ -649,11 +649,12 @@ class SageWaveformView: NSView {
             ctx.setLineWidth(1.5)
             ctx.beginPath()
 
-            for x in stride(from: 0, to: w, by: 1) {
+            // v9.4 Perf: step by 2px and reduce harmonics to 3 (saves ~60% sin calls)
+            for x in stride(from: 0, to: w, by: 2) {
                 let normalX = Double(x) / Double(w)
-                // Multi-harmonic: Σ sin(nφx + phase)/n
+                // Multi-harmonic: Σ sin(nφx + phase)/n — truncated to 3 harmonics
                 var y = 0.0
-                for n in 1...5 {
+                for n in 1...3 {
                     y += sin(Double(n) * wave.freq * normalX * .pi * 2 + wave.phase) / Double(n)
                 }
                 y *= wave.amp / 2.0

@@ -641,7 +641,8 @@ class RadialGaugeView: NSView {
         targetValue = value
         velocity = 0
         animationTimer?.invalidate()
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0/15.0, repeats: true) { [weak self] timer in
+        // v9.4 Perf: 15 FPS → 10 FPS for gauge (spring converges in same time, 33% fewer redraws)
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0/10.0, repeats: true) { [weak self] timer in
             guard let self = self else { timer.invalidate(); return }
             // Spring physics for natural overshoot
             let spring: CGFloat = 0.08
